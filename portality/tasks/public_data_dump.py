@@ -67,6 +67,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             types = [types]
 
         urls = {"article" : None, "journal" : None}
+        sizes = {"article" : None, "journal" : None}
 
         # Scroll for article and/or journal
         for typ in types:
@@ -106,13 +107,14 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
             # Copy the source directory to main store
             try:
-                self._copy_on_complete(mainStore, tmpStore, container, zipped_path)
+                filesize = self._copy_on_complete(mainStore, tmpStore, container, zipped_path)
             except Exception as e:
                 tmpStore.delete(container)
                 raise BackgroundException("Error copying {0} data on complete {1}\n".format(typ, e.message))
 
             store_url = mainStore.url(container, zipped_name)
             urls[typ] = store_url
+            sizes[typ] = filesize
 
         if prune:
             self._prune_container(mainStore, container, day_at_start, types)
@@ -120,7 +122,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         tmpStore.delete(container)
 
         # finally update the cache
-        cache.Cache.cache_public_data_dump(urls["article"], urls["journal"])
+        cache.Cache.cache_public_data_dump(urls["article"], sizes["article"], urls["journal"], sizes["journal"])
 
         job.add_audit_message(dates.now() + u": done")
 
@@ -169,6 +171,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         self.background_job.add_audit_message(u"Storing from temporary file {0} ({1} bytes)".format(zipped_name, zipped_size))
         mainStore.store(container, zipped_name, source_path=zipped_path)
         tmpStore.delete(container, zipped_name)
+        return zipped_size
 
     def _prune_container(self, mainStore, container, day_at_start, types):
         # Delete all files and dirs in the container that does not contain today's date

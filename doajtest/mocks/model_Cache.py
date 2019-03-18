@@ -27,15 +27,15 @@ class InMemoryCache(object):
         pass
 
     @classmethod
-    def cache_public_data_dump(cls, article_url, journal_url):
+    def cache_public_data_dump(cls, article_url, article_size, journal_url, journal_size):
         cls.__memory__["public_data_dump"] = {
-            "article": article_url,
-            "journal": journal_url
+            "article": {"url" : article_url, "size" : article_size},
+            "journal": {"url" : journal_url, "size" : journal_size}
         }
 
     @classmethod
-    def get_public_data_dump(cls, record_type):
-        return cls.__memory__["public_data_dump"][record_type]
+    def get_public_data_dump(cls):
+        return cls.__memory__["public_data_dump"]
 
     def mark_for_regen(self):
         pass

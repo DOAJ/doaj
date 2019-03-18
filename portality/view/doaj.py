@@ -159,12 +159,20 @@ def sitemap():
 
 @blueprint.route("/public-data-dump")
 def public_data_dump():
-    article_url, journal_url = models.Cache.get_public_data_dumps()
-    return render_template("doaj/public_data_dump.html", show_article=article_url is not None, show_journal=journal_url is not None)
+    data_dump = models.Cache.get_public_data_dump()
+    show_article = data_dump.get("article", {}).get("url") is not None
+    article_size = data_dump.get("article", {}).get("size")
+    show_journal = data_dump.get("journal", {}).get("url") is not None
+    journal_size = data_dump.get("journal", {}).get("size")
+    return render_template("doaj/public_data_dump.html",
+                           show_article=show_article,
+                           article_size=article_size,
+                           show_journal=show_journal,
+                           journal_size=journal_size)
 
 @blueprint.route("/public-data-dump/<record_type>")
 def public_data_dump_redirect(record_type):
-    store_url = models.Cache.get_public_data_dump(record_type)
+    store_url = models.Cache.get_public_data_dump().get(record_type, {}).get("url")
     if store_url is None:
         abort(404)
     if store_url.startswith("/"):

@@ -4,18 +4,27 @@
 
     <h1>DOAJ Data Dumps</h1>
 
-    <p>You can access full data-dumps of the entire of DOAJ's public metadata below.  The following files provide you
-    complete sets of articles and journals, in the form that they would also be retrieved via the API.</p>
+    <p>You can access full data-dumps of the entire of DOAJ's public metadata below.  Data dumps are generated weekly.
+        The following files provide you complete sets of articles and journals, in the form that they would also be
+        retrieved via the API.</p>
 
     <ul>
         {% if show_journal %}
-            <li><a href="{{ url_for("doaj.public_data_dump_redirect", record_type="journal") }}">Download all Journals</a></li>
+            <li><a href="{{ url_for("doaj.public_data_dump_redirect", record_type="journal") }}">Download all Journals</a>
+            {% if journal_size %}
+            ({{ journal_size|bytesToFilesize }})
+            {% endif %}
+            </li>
         {% else %}
             <li>Journal data dump is not currently available; please check back later</li>
         {% endif %}
 
         {% if show_article %}
-            <li><a href="{{ url_for("doaj.public_data_dump_redirect", record_type="article") }}">Download all Articles</a></li>
+            <li><a href="{{ url_for("doaj.public_data_dump_redirect", record_type="article") }}">Download all Articles</a>
+            {% if article_size %}
+            ({{ article_size|bytesToFilesize }})
+            {% endif %}
+            </li>
         {% else %}
             <li>Article data dump is not currently available; please check back later</li>
         {% endif %}

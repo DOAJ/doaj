@@ -64,27 +64,17 @@ class Cache(DomainObject):
         return rec.get("filename")
 
     @classmethod
-    def cache_public_data_dump(cls, article_url, journal_url):
+    def cache_public_data_dump(cls, article_url, article_size, journal_url, journal_size):
         cobj = cls(**{
-            "article": article_url,
-            "journal": journal_url
+            "article": { "url" : article_url, "size" : article_size },
+            "journal": { "url" : journal_url, "size" : journal_size }
         })
         cobj.set_id("public_data_dump")
         cobj.save()
 
     @classmethod
-    def get_public_data_dump(cls, record_type):
-        rec = cls.pull("public_data_dump")
-        if rec is None:
-            return None
-        return rec.get(record_type)
-
-    @classmethod
-    def get_public_data_dumps(cls):
-        rec = cls.pull("public_data_dump")
-        if rec is None:
-            return None, None
-        return rec.get("article"), rec.get("journal")
+    def get_public_data_dump(cls):
+        return cls.pull("public_data_dump")
 
     def mark_for_regen(self):
         self.update({"regen" : True})

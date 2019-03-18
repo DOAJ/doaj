@@ -1081,7 +1081,7 @@ class TestClient(DoajTestCase):
 
         models.Cache.cache_sitemap("sitemap.xml")
 
-        models.Cache.cache_public_data_dump("http://example.com/article", "http://example.com/journal")
+        models.Cache.cache_public_data_dump("http://example.com/article", 100, "http://example.com/journal", 200)
 
         time.sleep(1)
 
@@ -1095,8 +1095,10 @@ class TestClient(DoajTestCase):
 
         assert models.Cache.get_latest_sitemap() == "sitemap.xml"
 
-        assert models.Cache.get_public_data_dump("article") == "http://example.com/article"
-        assert models.Cache.get_public_data_dump("journal") == "http://example.com/journal"
+        assert models.Cache.get_public_data_dump().get("article").get("url") == "http://example.com/article"
+        assert models.Cache.get_public_data_dump().get("article").get("size") == 100
+        assert models.Cache.get_public_data_dump().get("journal").get("url") == "http://example.com/journal"
+        assert models.Cache.get_public_data_dump().get("article").get("size") == 200
 
 
 # TODO: reinstate this test when author emails have been disallowed again

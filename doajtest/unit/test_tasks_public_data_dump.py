@@ -131,13 +131,13 @@ class TestPublicDataDumpTask(DoajTestCase):
         assert job.status == status_arg
 
         if job.status != "error":
-            article_url = models.cache.Cache.get_public_data_dump("article")
+            article_url = models.cache.Cache.get_public_data_dump().get("article", {}).get("url")
             if types_arg in ["-", "all", "article"]:
                 assert article_url is not None
             else:
                 assert article_url is None
 
-            journal_url = models.cache.Cache.get_public_data_dump("journal")
+            journal_url = models.cache.Cache.get_public_data_dump().get("journal", {}).get("url")
             if types_arg in ["-", "all", "journal"]:
                 assert journal_url is not None
             else:
