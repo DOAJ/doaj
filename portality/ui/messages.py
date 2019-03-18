@@ -41,6 +41,8 @@ class Messages(object):
     EXCEPTION_ARTICLE_BATCH_FAIL = u"One or more articles failed to ingest; entire batch ingest halted"
     EXCEPTION_DETECT_DUPLICATE_NO_ID = u"The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated"
 
+    CONSENT_COOKIE_VALUE = u"""By using the DOAJ website you have agreed to our cookie policy."""
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):
