@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.15.0"
+DOAJ_VERSION = "2.15.1"
 
 OFFLINE_MODE = False
 
@@ -843,3 +843,9 @@ ELASTIC_APM = {
   # Set custom APM Server URL (default: http://localhost:8200)
   'SERVER_URL': '',
 }
+
+########################################
+## Consent Cookie
+
+CONSENT_COOKIE_KEY = "doaj-cookie-consent"
+
