@@ -62,6 +62,7 @@ SERVICE_NAME = "Directory of Open Access Journals"
 SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
 HOST = "0.0.0.0"
 DEBUG = False
+DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
 PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
