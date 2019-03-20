@@ -63,6 +63,7 @@ SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access 
 HOST = "0.0.0.0"
 DEBUG = False
 DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
+DEBUG_TB_INTERCEPT_REDIRECTS = False
 PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
