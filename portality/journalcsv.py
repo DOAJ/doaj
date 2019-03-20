@@ -3,14 +3,6 @@ from portality import models, datasets, clcsv
 from portality.formcontext import choices
 from portality.formcontext.xwalk import JournalFormXWalk
 
-# OLD CSV HEADER
-"""
-CSV_HEADER = ["Title", "Title Alternative", "Identifier", "Publisher", "Language",
-                    "ISSN", "EISSN", "Keyword", "Start Year", "End Year", "Added on date",
-                    "Subjects", "Country", "Publication fee", "Further Information",
-                    "CC License", "Content in DOAJ"]
-"""
-
 YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
 
 #################################################################
@@ -36,7 +28,8 @@ def make_journals_csv(file_object):
 
         kvs = Journal2QuestionXwalk.journal2question(j)
         meta_kvs = get_doaj_meta_kvs(j)
-        cols[issn] = kvs + meta_kvs
+        articke_kvs = get_article_kvs(j)
+        cols[issn] = kvs + meta_kvs + articke_kvs
 
     issns = cols.keys()
     issns.sort()
@@ -62,6 +55,14 @@ def get_doaj_meta_kvs(journal):
         ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
         ("Added on Date", journal.created_date),
         ("Subjects", ' | '.join(journal.bibjson().lcc_paths()))
+    ]
+    return kvs
+
+def get_article_kvs(journal):
+    stats = journal.article_stats()
+    kvs = [
+        ("Number of Article Records", str(stats.get("total"))),
+        ("Most Recent Article Added", stats.get("latest"))
     ]
     return kvs
 

@@ -32,7 +32,7 @@ class JournalCSVBackgroundTask(BackgroundTask):
             os.makedirs(csvdir)
 
         # save it into the cache directory
-        attachment_name = 'doaj_' + datetime.strftime(datetime.now(), '%Y%m%d_%H%M') + '_utf8.csv'
+        attachment_name = 'doaj_' + datetime.strfdate(datetime.utcnow(), '%Y%m%d_%H%M') + '_utf8.csv'
         out = os.path.join(csvdir, attachment_name)
 
         # write the csv file
