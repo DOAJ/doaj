@@ -135,10 +135,15 @@ STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
 
 STORE_ANON_DATA_CONTAINER = "doaj-anon-data"
+STORE_CACHE_CONTAINER = "doaj-data-cache"
 
 # S3 credentials for relevant scopes
 STORE_S3_SCOPES = {
     "anon_data" : {
+        "aws_access_key_id" : "put this in your dev/test/production.cfg",
+        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    },
+    "cache" : {
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }

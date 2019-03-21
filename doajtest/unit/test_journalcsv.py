@@ -241,7 +241,7 @@ class TestJournalCSV(DoajTestCase):
         job = journal_csv.JournalCSVBackgroundTask.prepare(user)
         journal_csv.JournalCSVBackgroundTask.submit(job)
 
-        filename = models.Cache.get_latest_csv()
+        filename = models.Cache.get_latest_csv().get("filename")
         cdir = app.config.get("CACHE_DIR")
         jcsv = os.path.join(cdir, "csv", filename)
 

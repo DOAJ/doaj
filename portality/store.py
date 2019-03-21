@@ -2,6 +2,7 @@ from portality.core import app
 from portality.lib import plugin
 
 import os, shutil, codecs, boto3
+from urllib import quote_plus
 
 class StoreException(Exception):
     pass
@@ -45,6 +46,9 @@ class Store(object):
 
     def get(self, container_id, target_name):
         return None
+
+    def url(self, container_id, target_name):
+        pass
 
     def delete(self, container_id, target_name=None):
         pass
@@ -99,6 +103,11 @@ class StoreS3(Store):
         body = obj["Body"]
         return body
 
+    def url(self, container_id, target_name):
+        bucket_location = self.client.get_bucket_location(Bucket=container_id)
+        location = bucket_location['LocationConstraint']
+        return "https://s3.{0}.amazonaws.com/{1}/{2}".format(location, container_id, quote_plus(target_name))
+
     def delete(self, container_id, target_name=None):
         # we are not allowed to delete the bucket, so we just delete the contents
         keys = self.list(container_id)
@@ -146,6 +155,9 @@ class StoreLocal(Store):
             f = codecs.open(cpath, "r")
             return f
 
+    def url(self, container_id, target_name):
+        return "/" + container_id + "/" + target_name
+
     def delete(self, container_id, target_name=None):
         cpath = os.path.join(self.dir, container_id)
         if target_name is not None:
@@ -174,3 +186,25 @@ class TempStore(StoreLocal):
 
     def list_container_ids(self):
         return [x for x in os.listdir(self.dir) if os.path.isdir(os.path.join(self.dir, x))]
+
+
+def prune_container(storage, container_id, sort, filter=None, keep=1):
+    filelist = storage.list(container_id)
+
+    # filter for the files we care about
+    filtered = []
+    if filter is not None:
+        for fn in filelist:
+            if filter(fn):
+                filtered.append(fn)
+    else:
+        filtered = filelist
+
+    if len(filtered) <= keep:
+        return
+
+    filtered_sorted = sort(filtered)
+
+    remove = filtered_sorted[keep:]
+    for fn in remove:
+        storage.delete(container_id, fn)

@@ -157,9 +157,23 @@ def csv_data():
         result = executor.submit(get_csv_data).result()
     return result
     """
-    csv_file = models.Cache.get_latest_csv()
-    csv_path = os.path.join(app.config.get("CACHE_DIR"), "csv", csv_file)
-    return send_file(csv_path, mimetype="text/csv", as_attachment=True, attachment_filename=csv_file)
+    csv_info = models.Cache.get_latest_csv()
+    store_url = csv_info.get("url")
+    if store_url.startswith("/"):
+        store_url = "/store" + store_url
+    return redirect(store_url, code=307)
+    #csv_path = os.path.join(app.config.get("CACHE_DIR"), "csv", csv_file)
+    #return send_file(csv_path, mimetype="text/csv", as_attachment=True, attachment_filename=csv_file)
+
+@blueprint.route("/store/<container>/<filename>")
+def get_from_local_store(container, filename):
+    if not app.config.get("STORE_LOCAL_EXPOSE", False):
+        abort(404)
+
+    from portality import store
+    localStore = store.StoreFactory.get(None)
+    file_handle = localStore.get(container, filename)
+    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
 
 
 @blueprint.route("/sitemap.xml")

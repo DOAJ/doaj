@@ -1,10 +1,15 @@
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
-from portality import models, constants
+from portality import models, constants, clcsv
 from portality.bll import exceptions
 from portality.core import app
 from portality import lock
 from portality.bll.doaj import DOAJ
+from portality.store import StoreFactory, prune_container
+from portality.crosswalks.journal_questions import Journal2QuestionXwalk
+
+from datetime import datetime
+import codecs, os, re
 
 
 class JournalService(object):
@@ -106,3 +111,98 @@ class JournalService(object):
                 raise exceptions.ArgumentException("If you specify lock_journal on journal retrieval, you must also provide lock_account")
 
         return journal, the_lock
+
+    def csv(self, prune=True):
+        """
+        Generate the Journal CSV
+
+        :param set_cache: whether to update the cache
+        :param out_dir: the directory to output the file to.  If set_cache is True, this argument will be overridden by the cache container
+        :return: Tuple of (attachment_name, URL)
+        """
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("csv", [
+            {"arg": prune, "allow_none" : False, "arg_name" : "prune"}
+        ], exceptions.ArgumentException)
+
+        filename = 'journalcsv__doaj_' + datetime.strftime(datetime.utcnow(), '%Y%m%d_%H%M') + '_utf8.csv'
+        container_id = app.config.get("STORE_CACHE_CONTAINER")
+        tmpStore = StoreFactory.tmp()
+        out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)
+
+        YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
+
+        def _make_journals_csv(file_object):
+            """
+            Make a CSV file of information for all journals.
+            :param file_object: a utf8 encoded file object.
+            """
+
+            cols = {}
+            for j in models.Journal.all_in_doaj(page_size=100000):                     # 10x how many journals we have right now
+                assert isinstance(j, models.Journal)                                               # for pycharm type inspection
+                bj = j.bibjson()
+                issn = bj.get_one_identifier(idtype=bj.P_ISSN)
+                if issn is None:
+                    issn = bj.get_one_identifier(idtype=bj.E_ISSN)
+                if issn is None:
+                    continue
+
+                kvs = Journal2QuestionXwalk.journal2question(j)
+                meta_kvs = _get_doaj_meta_kvs(j)
+                article_kvs = _get_article_kvs(j)
+                cols[issn] = kvs + meta_kvs + article_kvs
+
+            issns = cols.keys()
+            issns.sort()
+
+            csvwriter = clcsv.UnicodeWriter(file_object)
+            qs = None
+            for i in issns:
+                if qs is None:
+                    qs = [q for q, _ in cols[i]]
+                    csvwriter.writerow(qs)
+                vs = [v for _, v in cols[i]]
+                csvwriter.writerow(vs)
+
+        def _get_doaj_meta_kvs(journal):
+            """
+            Get key, value pairs for some meta information we want from the journal object
+            :param journal: a models.Journal
+            :return: a list of (key, value) tuples for our metadata
+            """
+            kvs = [
+                ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
+                ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
+                ("Added on Date", journal.created_date),
+                ("Subjects", ' | '.join(journal.bibjson().lcc_paths()))
+            ]
+            return kvs
+
+        def _get_article_kvs(journal):
+            stats = journal.article_stats()
+            kvs = [
+                ("Number of Article Records", str(stats.get("total"))),
+                ("Most Recent Article Added", stats.get("latest"))
+            ]
+            return kvs
+
+        with codecs.open(out, 'wb', encoding='utf-8') as csvfile:
+            _make_journals_csv(csvfile)
+
+        mainStore = StoreFactory.get("cache")
+        mainStore.store(container_id, filename, source_path=out)
+        url = mainStore.url(container_id, filename)
+        tmpStore.delete(container_id, filename) # don't delete the container, just in case someone else is writing to it
+
+        if prune:
+            def sort(filelist):
+                rx = "journalcsv__doaj_(.+?)_utf8.csv"
+                return sorted(filelist, key=lambda x: datetime.strpdate(re.match(rx, x).groups(1)[0]), reverse=True)
+            def filter(filename):
+                return filename.startswith("journalcsv__")
+            prune_container(mainStore, container_id, sort, filter=filter, keep=2)
+
+        # update the ES record to point to the new file
+        models.Cache.cache_csv(url)
+        return url

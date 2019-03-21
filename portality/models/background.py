@@ -85,6 +85,16 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         self._add_to_list_with_struct("audit", obj)
 
 
+class StdOutBackgroundJob(BackgroundJob):
+
+    def __init__(self, inner):
+        super(StdOutBackgroundJob, self).__init__(**inner.data)
+
+    def add_audit_message(self, msg, timestamp=None):
+        super(StdOutBackgroundJob, self).add_audit_message(msg, timestamp)
+        print(msg)
+
+
 BACKGROUND_STRUCT = {
     "fields" : {
         "id" :{"coerce" : "unicode"},

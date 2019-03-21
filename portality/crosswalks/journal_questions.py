@@ -1,75 +1,7 @@
 from copy import deepcopy
-from portality import models, datasets, clcsv
+from portality import datasets
 from portality.formcontext import choices
 from portality.formcontext.xwalk import JournalFormXWalk
-
-YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
-
-#################################################################
-# code for creating CSVs of all Journals
-#################################################################
-
-
-def make_journals_csv(file_object):
-    """
-    Make a CSV file of information for all journals.
-    :param file_object: a utf8 encoded file object.
-    """
-
-    cols = {}
-    for j in models.Journal.all_in_doaj(page_size=100000):                     # 10x how many journals we have right now
-        assert isinstance(j, models.Journal)                                               # for pycharm type inspection
-        bj = j.bibjson()
-        issn = bj.get_one_identifier(idtype=bj.P_ISSN)
-        if issn is None:
-            issn = bj.get_one_identifier(idtype=bj.E_ISSN)
-        if issn is None:
-            continue
-
-        kvs = Journal2QuestionXwalk.journal2question(j)
-        meta_kvs = get_doaj_meta_kvs(j)
-        articke_kvs = get_article_kvs(j)
-        cols[issn] = kvs + meta_kvs + articke_kvs
-
-    issns = cols.keys()
-    issns.sort()
-
-    csvwriter = clcsv.UnicodeWriter(file_object)
-    qs = None
-    for i in issns:
-        if qs is None:
-            qs = [q for q, _ in cols[i]]
-            csvwriter.writerow(qs)
-        vs = [v for _, v in cols[i]]
-        csvwriter.writerow(vs)
-
-
-def get_doaj_meta_kvs(journal):
-    """
-    Get key, value pairs for some meta information we want from the journal object
-    :param journal: a models.Journal
-    :return: a list of (key, value) tuples for our metadata
-    """
-    kvs = [
-        ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
-        ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
-        ("Added on Date", journal.created_date),
-        ("Subjects", ' | '.join(journal.bibjson().lcc_paths()))
-    ]
-    return kvs
-
-def get_article_kvs(journal):
-    stats = journal.article_stats()
-    kvs = [
-        ("Number of Article Records", str(stats.get("total"))),
-        ("Most Recent Article Added", stats.get("latest"))
-    ]
-    return kvs
-
-#################################################################
-# Crosswalk between Journals and spreadsheet rows
-#################################################################
-
 
 class JournalXwalkException(Exception):
     pass
