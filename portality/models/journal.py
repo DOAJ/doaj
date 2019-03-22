@@ -417,7 +417,7 @@ class Journal(JournalLikeObject):
         total = hits.get("total", 0)
         latest = None
         if total > 0:
-            latest = hits.get("hits", [])[0].get("created_date")
+            latest = hits.get("hits", [])[0].get("_source").get("created_date")
         return {
             "total" : total,
             "latest" : latest
@@ -1424,7 +1424,8 @@ class ArticleStatsQuery(object):
             "query" : {
                 "bool" : {
                     "must" : [
-                        {"terms" : {"index.issn.exact" : self.issns}}
+                        {"terms" : {"index.issn.exact" : self.issns}},
+                        {"term" : {"admin.in_doaj" : True}}
                     ]
                 }
             },

@@ -198,7 +198,7 @@ class JournalService(object):
         if prune:
             def sort(filelist):
                 rx = "journalcsv__doaj_(.+?)_utf8.csv"
-                return sorted(filelist, key=lambda x: datetime.strpdate(re.match(rx, x).groups(1)[0]), reverse=True)
+                return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], '%Y%m%d_%H%M'), reverse=True)
             def filter(filename):
                 return filename.startswith("journalcsv__")
             prune_container(mainStore, container_id, sort, filter=filter, keep=2)
