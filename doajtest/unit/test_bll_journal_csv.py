@@ -6,10 +6,11 @@ from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.models import Article, Journal
+from portality import models
 from portality.lib.paths import rel2abs
 from portality.core import app
 from doajtest.mocks.store import StoreMockFactory
+from doajtest.mocks.models_Cache import ModelCacheMockFactory
 from portality import store, clcsv
 from StringIO import StringIO
 
@@ -32,12 +33,17 @@ class TestBLLJournalCSV(DoajTestCase):
         self.container_id = app.config.get("STORE_CACHE_CONTAINER")
         self.store_tmp_impl = app.config["STORE_TMP_IMPL"]
         self.store_impl = app.config["STORE_IMPL"]
+        self.cache = models.cache.Cache
+        models.cache.Cache = ModelCacheMockFactory.in_memory()
+        models.Cache = models.cache.Cache
 
     def tearDown(self):
         app.config["STORE_TMP_IMPL"] = self.store_tmp_impl
         app.config["STORE_IMPL"] = self.store_impl
         self.localStore.delete(self.container_id)
         self.tmpStore.delete(self.container_id)
+        models.cache.Cache = self.cache
+        models.Cache = self.cache
         super(TestBLLJournalCSV, self).tearDown()
 
     @parameterized.expand(load_cases)
@@ -71,7 +77,7 @@ class TestBLLJournalCSV(DoajTestCase):
 
         journals = []
         if journal_count > 0:
-            journals += [Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=journal_count, in_doaj=True)]
+            journals += [models.Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=journal_count, in_doaj=True)]
 
         comparisons = {}
         articles = []
@@ -81,16 +87,16 @@ class TestBLLJournalCSV(DoajTestCase):
             bj.alternative_title = u"Заглавие на журнала"   # checking mixed unicode
             issns = journal.bibjson().issns()
             source1 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=False)
-            articles.append(Article(**source1))
+            articles.append(models.Article(**source1))
             comparisons[issns[0]] = {"issns" : issns, "article_count": 0, "article_latest" : ""}
             if i < journals_with_articles_count:
                 source2 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
-                article2 = Article(**source2)
+                article2 = models.Article(**source2)
                 article2.set_created("2019-0{i}-01T00:00:00Z".format(i=i + 1))
                 articles.append(article2)
 
                 source3 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
-                article3 = Article(**source3)
+                article3 = models.Article(**source3)
                 article3.set_created("2019-0{i}-02T00:00:00Z".format(i=i + 1))
                 articles.append(article3)
 
@@ -98,7 +104,7 @@ class TestBLLJournalCSV(DoajTestCase):
                 comparisons[issns[0]]["article_latest"] = "2019-0{i}-02T00:00:00Z".format(i=i + 1)
 
         if journals_no_issn_count > 0:
-            noissns = [Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=journals_no_issn_count, in_doaj=True)]
+            noissns = [models.Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=journals_no_issn_count, in_doaj=True)]
             for i in range(len(noissns)):
                 noissn = noissns[i]
                 bj = noissn.bibjson()
@@ -108,7 +114,7 @@ class TestBLLJournalCSV(DoajTestCase):
             journals += noissns
 
         if not_in_doaj_count > 0:
-            nots = [Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=not_in_doaj_count, in_doaj=False)]
+            nots = [models.Journal(**s) for s in JournalFixtureFactory.make_many_journal_sources(count=not_in_doaj_count, in_doaj=False)]
             for i in range(len(nots)):
                 n = nots[i]
                 n.set_id("not_in_doaj_{i}".format(i=i))
@@ -137,6 +143,9 @@ class TestBLLJournalCSV(DoajTestCase):
             url = self.svc.csv(prune)
             assert url is not None
 
+            csv_info = models.cache.Cache.get_latest_csv()
+            assert csv_info.get("url") == url
+
             filenames = self.localStore.list(self.container_id)
             if prune:
                 assert len(filenames) == 2
@@ -148,12 +157,16 @@ class TestBLLJournalCSV(DoajTestCase):
                     latest = fn
                     break
 
-            handle = self.localStore.get(self.container_id, latest)
+            handle = self.localStore.get(self.container_id, latest, encoding="utf-8")
             reader = clcsv.UnicodeReader(handle)
             rows = [r for r in reader]
 
             if len(comparisons) > 0:
                 expected_headers = JournalFixtureFactory.csv_headers()
+                for i in range(len(expected_headers)):
+                    h = expected_headers[i]
+                    if h != rows[0][i]:
+                        print("{x} - {y}".format(x=h, y=rows[0][i]))
                 assert rows[0] == expected_headers
 
                 assert len(rows) == journal_count + 1

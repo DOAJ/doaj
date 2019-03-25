@@ -514,7 +514,7 @@ CSV_HEADERS = [
     'Submission fee URL',
     'Submission fee amount',
     'Submission fee currency',
-    'Number of articles publish in the last calendar year',
+    'Number of articles published in the last calendar year',
     'Number of articles information URL',
     'Journal waiver policy (for developing country authors etc)',
     'Waiver policy information URL',
