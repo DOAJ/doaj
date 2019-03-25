@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
@@ -76,6 +77,8 @@ class TestBLLJournalCSV(DoajTestCase):
         articles = []
         for i in range(len(journals)):
             journal = journals[i]
+            bj = journal.bibjson()
+            bj.alternative_title = u"Заглавие на журнала"   # checking mixed unicode
             issns = journal.bibjson().issns()
             source1 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=False)
             articles.append(Article(**source1))
@@ -157,11 +160,13 @@ class TestBLLJournalCSV(DoajTestCase):
 
                 for i in range(1, len(rows)):
                     row = rows[i]
+                    alt_title = row[2]
                     issn = row[3]
                     eissn = row[4]
                     article_count = int(row[57])
                     article_latest = row[58]
 
+                    assert alt_title == u"Заглавие на журнала"
                     assert issn in comparisons[issn]["issns"]
                     assert eissn in comparisons[issn]["issns"]
                     assert article_count == comparisons[issn]["article_count"]
