@@ -59,6 +59,10 @@ class JournalFixtureFactory(object):
     def make_bulk_edit_data():
         return deepcopy(JOURNAL_BULK_EDIT)
 
+    @staticmethod
+    def csv_headers():
+        return deepcopy(CSV_HEADERS)
+
 JOURNAL_SOURCE = {
     "id": "abcdefghijk_journal",
     "created_date": "2000-01-01T00:00:00Z",
@@ -486,3 +490,66 @@ JOURNAL_BULK_EDIT =  {
     "owner": "testuser",
     "contact_name": "Test User"
 }
+
+
+CSV_HEADERS = [
+    'Journal title',
+    'Journal URL',
+    'Alternative title',
+    'Journal ISSN (print version)',
+    'Journal EISSN (online version)',
+    'Publisher',
+    'Society or institution',
+    'Platform, host or aggregator',
+    'Country of publisher',
+    'Journal article processing charges (APCs)',
+    'APC information URL',
+    'APC amount',
+    'Currency',
+    'Journal article submission fee',
+    'Submission fee URL',
+    'Submission fee amount',
+    'Submission fee currency',
+    'Number of articles publish in the last calendar year',
+    'Number of articles information URL',
+    'Journal waiver policy (for developing country authors etc)',
+    'Waiver policy information URL',
+    'Digital archiving policy or program(s)',
+    'Archiving: national library',
+    'Archiving: other',
+    'Archiving infomation URL',
+    'Journal full-text crawl permission',
+    'Permanent article identifiers',
+    'Journal provides download statistics',
+    'Download statistics information URL',
+    'First calendar year journal provided online Open Access content',
+    'Full text formats',
+    'Keywords',
+    'Full text language',
+    'URL for the Editorial Board page',
+    'Review process',
+    'Review process information URL',
+    "URL for journal's aims & scope",
+    "URL for journal's instructions for authors",
+    'Journal plagiarism screening policy',
+    'Plagiarism information URL',
+    'Average number of weeks between submission and publication',
+    "URL for journal's Open Access statement",
+    'Machine-readable CC licensing information embedded or displayed in articles',
+    'URL to an example page with embedded licensing information',
+    'Journal license',
+    'License attributes',
+    'URL for license terms',
+    'Does this journal allow unrestricted reuse in compliance with BOAI?',
+    'Deposit policy directory',
+    'Author holds copyright without restrictions',
+    'Copyright information URL',
+    'Author holds publishing rights without restrictions',
+    'Publishing rights information URL',
+    'DOAJ Seal',
+    'Tick: Accepted after March 2014',
+    'Added on Date',
+    'Subjects',
+    "Number of Article Records",
+    "Most Recent Article Added"
+]

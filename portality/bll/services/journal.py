@@ -191,9 +191,11 @@ class JournalService(object):
             _make_journals_csv(csvfile)
 
         mainStore = StoreFactory.get("cache")
-        mainStore.store(container_id, filename, source_path=out)
-        url = mainStore.url(container_id, filename)
-        tmpStore.delete(container_id, filename) # don't delete the container, just in case someone else is writing to it
+        try:
+            mainStore.store(container_id, filename, source_path=out)
+            url = mainStore.url(container_id, filename)
+        finally:
+            tmpStore.delete(container_id, filename) # don't delete the container, just in case someone else is writing to it
 
         if prune:
             def sort(filelist):
