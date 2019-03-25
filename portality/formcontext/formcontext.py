@@ -647,8 +647,11 @@ class ManEdApplicationReview(ApplicationContext):
         self._carry_fixed_aspects()
         self._merge_notes_forward(allow_delete=True)
 
-        # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
-        if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
+        # if there is no owner, and the previous version had an owner, and the latest version of this
+        # is "accepted", then carry over the owner, as you are not allowed to unset it in that situation
+        if (self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED
+                and (self.target.owner is None or self.target.owner == "")
+                and (self.source.owner is not None)):
             self.target.set_owner(self.source.owner)
 
     def finalise(self):
