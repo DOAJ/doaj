@@ -39,7 +39,8 @@ setup(
         "elastic-apm[flask]",
         "parameterized==0.6.1",
         "awscli",
-        "boto3==1.9.10"
+        "boto3==1.9.10",
+        "flask-debugtoolbar"
     ] + (["setproctitle"] if "linux" in sys.platform else []),
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',

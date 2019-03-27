@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_cors import CORS
 
@@ -28,6 +29,7 @@ def create_app():
     login_manager.init_app(app)
     CORS(app)
     initialise_apm(app)
+    DebugToolbarExtension(app)
     return app
 
 
