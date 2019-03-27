@@ -13,6 +13,7 @@ from doajtest.mocks.store import StoreMockFactory
 from doajtest.mocks.models_Cache import ModelCacheMockFactory
 from portality import store, clcsv
 from StringIO import StringIO
+import os, shutil
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_journal_csv"), "journal_csv", "test_id",
@@ -28,11 +29,18 @@ class TestBLLJournalCSV(DoajTestCase):
     def setUp(self):
         super(TestBLLJournalCSV, self).setUp()
         self.svc = DOAJ.journalService()
+
+        self.store_tmp_dir = app.config["STORE_TMP_DIR"]
+        app.config["STORE_TMP_DIR"] = os.path.join("test_store", "tmp")
+        self.store_local_dir = app.config["STORE_LOCAL_DIR"]
+        app.config["STORE_LOCAL_DIR"] = os.path.join("test_store", "main")
+
         self.localStore = store.StoreLocal(None)
         self.tmpStore = store.TempStore()
         self.container_id = app.config.get("STORE_CACHE_CONTAINER")
         self.store_tmp_impl = app.config["STORE_TMP_IMPL"]
         self.store_impl = app.config["STORE_IMPL"]
+
         self.cache = models.cache.Cache
         models.cache.Cache = ModelCacheMockFactory.in_memory()
         models.Cache = models.cache.Cache
@@ -40,10 +48,14 @@ class TestBLLJournalCSV(DoajTestCase):
     def tearDown(self):
         app.config["STORE_TMP_IMPL"] = self.store_tmp_impl
         app.config["STORE_IMPL"] = self.store_impl
+        if os.path.exists("test_store"):
+            shutil.rmtree("test_store")
         self.localStore.delete(self.container_id)
         self.tmpStore.delete(self.container_id)
+
         models.cache.Cache = self.cache
         models.Cache = self.cache
+
         super(TestBLLJournalCSV, self).tearDown()
 
     @parameterized.expand(load_cases)

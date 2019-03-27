@@ -152,18 +152,16 @@ def suggestion_thanks():
 @blueprint.route("/csv")
 @analytics.sends_ga_event(event_category=app.config.get('GA_CATEGORY_JOURNALCSV', 'JournalCSV'), event_action=app.config.get('GA_ACTION_JOURNALCSV', 'Download'))
 def csv_data():
-    """
-    with futures.ProcessPoolExecutor(max_workers=1) as executor:
-        result = executor.submit(get_csv_data).result()
-    return result
-    """
     csv_info = models.Cache.get_latest_csv()
+    if csv_info is None:
+        abort(404)
     store_url = csv_info.get("url")
+    if store_url is None:
+        abort(404)
     if store_url.startswith("/"):
         store_url = "/store" + store_url
     return redirect(store_url, code=307)
-    #csv_path = os.path.join(app.config.get("CACHE_DIR"), "csv", csv_file)
-    #return send_file(csv_path, mimetype="text/csv", as_attachment=True, attachment_filename=csv_file)
+
 
 @blueprint.route("/store/<container>/<filename>")
 def get_from_local_store(container, filename):
