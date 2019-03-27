@@ -193,13 +193,6 @@ def autocomplete(doc_type, field_name):
     # you shouldn't return lists top-level in a JSON response:
     # http://flask.pocoo.org/docs/security/#json-security
 
-
-@blueprint.route("/toc")
-def list_journals():
-    js = models.Journal.all_in_doaj(page_size=1000)
-    return render_template("doaj/journals.html", journals=js)
-
-
 @blueprint.route("/toc/<identifier>")
 @blueprint.route("/toc/<identifier>/<volume>")
 @blueprint.route("/toc/<identifier>/<volume>/<issue>")
