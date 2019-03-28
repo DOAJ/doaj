@@ -136,7 +136,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         storage.delete(container, filename)
 
     def _start_new_file(self, storage, container, typ, day_at_start, file_num):
-        filename = os.path.join("doaj_" + typ + "_data_" + day_at_start, "{typ}_{file_num}.json".format(typ=typ, file_num=file_num))
+        filename = self._filename(typ, day_at_start, file_num)
         output_file = storage.path(container, filename, create_container=True, must_exist=False)
         dn = os.path.dirname(output_file)
         if not os.path.exists(dn):
@@ -151,7 +151,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         # Create a dir for today and save all files in there
         data = json.dumps(results, cls=ModelJsonEncoder)
 
-        filename = os.path.join("doaj_" + typ + "_data_" + day_at_start, "{typ}_{file_num}.json".format(typ=typ, file_num=file_num))
+        filename = self._filename(typ, day_at_start, file_num)
         output_file = storage.path(container, filename, create_container=True, must_exist=False)
         dn = os.path.dirname(output_file)
         if not os.path.exists(dn):
@@ -164,6 +164,9 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         self.background_job.add_audit_message(u"Adding file {filename} to compressed tar".format(filename=filename))
         tarball.add(output_file, arcname=filename)
         storage.delete(container, filename)
+
+    def _filename(self, typ, day_at_start, file_num):
+        return os.path.join("doaj_" + typ + "_data_" + day_at_start, "{typ}_batch_{file_num}.json".format(typ=typ, file_num=file_num))
 
     def _copy_on_complete(self, mainStore, tmpStore, container, zipped_path):
         zipped_size = os.path.getsize(zipped_path)
