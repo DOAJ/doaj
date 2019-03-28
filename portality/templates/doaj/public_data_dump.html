@@ -34,7 +34,7 @@
 
     <p>When you unzip/untar the file, you will have a single directory of the form <code>doaj_[type]_data_[date generated]</code>.</p>
 
-    <p>Inside that directory, you will find a list of files with names of the form <code>[type]_[number].json</code>.  For example
+    <p>Inside that directory, you will find a list of files with names of the form <code>[type]_batch_[number].json</code>.  For example
     <code>journal_3.json</code> or <code>article_27.json</code>.</p>
 
     <p>Each file contains up to {{ config.get("DISCOVERY_RECORDS_PER_FILE") }} records, and is UTF-8 encoded.  All files
