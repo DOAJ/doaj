@@ -168,10 +168,13 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
     def _filename(self, typ, day_at_start, file_num):
         return os.path.join("doaj_" + typ + "_data_" + day_at_start, "{typ}_batch_{file_num}.json".format(typ=typ, file_num=file_num))
 
+    def _tarball_name(self, typ, day_at_start):
+        return "doaj_" + typ + "_data_" + day_at_start + ".tar.gz"
+
     def _copy_on_complete(self, mainStore, tmpStore, container, zipped_path):
         zipped_size = os.path.getsize(zipped_path)
         zipped_name = os.path.basename(zipped_path)
-        self.background_job.add_audit_message(u"Storing from temporary file {0} ({1} bytes)".format(zipped_name, zipped_size))
+        self.background_job.add_audit_message(u"Storing from temporary file {0} ({1} bytes) to container {2}".format(zipped_name, zipped_size, container))
         mainStore.store(container, zipped_name, source_path=zipped_path)
         tmpStore.delete(container, zipped_name)
         return zipped_size
@@ -180,7 +183,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         # Delete all files and dirs in the container that does not contain today's date
         files_for_today = []
         for typ in types:
-            files_for_today.append("doaj_" + typ + "_data_" + day_at_start + ".tar.gz")
+            files_for_today.append(self._tarball_name(typ, day_at_start))
 
         # get the files in storage
         container_files = mainStore.list(container)
@@ -199,6 +202,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         # go through the container files and remove any that are not today's files
         for container_file in container_files:
             if container_file not in files_for_today:
+                self.background_job.add_audit_message(u"Pruning old file {x} from storage container {y}".format(x=container_file, y=container))
                 mainStore.delete(container, target_name=container_file)
 
     def cleanup(self):
