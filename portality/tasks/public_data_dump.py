@@ -119,6 +119,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         if prune:
             self._prune_container(mainStore, container, day_at_start, types)
 
+        self.background_job.add_audit_message(u"Removing temp store container {x}".format(x=container))
         tmpStore.delete(container)
 
         # finally update the cache
