@@ -3,12 +3,17 @@ from copy import deepcopy
 from datetime import datetime
 from portality import clcsv
 
-duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/duplicate_articles_global_2019-02-27.csv"
-noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/noids_2019-02-27.csv"
-log =  "/home/richard/tmp/doaj/article_duplicates_2019-02-27/log.txt"
-out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/out.csv"
+#duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/duplicate_articles_global_2019-03-29.csv"
+#noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/noids_2019-03-29.csv"
+#log =  "/home/richard/tmp/doaj/article_duplicates_2019-03-29/log.txt"
+#out = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/actions.csv"
 
-INVALID_DOIS = ["undefined", "-"]
+duplicate_report = "/home/richard/tmp/doaj/article_duplicates_test_sheet.csv"
+noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/noids_2019-03-29.csv"
+log =  "/home/richard/tmp/doaj/article_duplicates_test_sheet_log.txt"
+out = "/home/richard/tmp/doaj/article_duplicates_test_sheet_actions.csv"
+
+INVALID_DOIS = ["undefined", "-", "http://dx.doi.org/"]
 
 class MatchSet(object):
     def __init__(self, typ=None):
@@ -147,13 +152,19 @@ def analyse(duplicate_report, noids_report, out):
                 cont = False
 
             if cont:
-                _clean_doi_match_type(match_set, actions)
-                _clean_fulltext_match_type(match_set, actions)
+                #_clean_doi_match_type(match_set, actions)
+                #_clean_fulltext_match_type(match_set, actions)
+                _clean_matching_dois(match_set, actions)
+                _clean_matching_fulltexts(match_set, actions)
                 _sanitise(match_set, actions)
 
             if len(match_set.matches) == 1:
                 cont = False
 
+            if cont:
+                _remove_old(match_set, actions)
+
+            """
             if cont:
                 _remove_old_when_all_match(match_set, actions)
 
@@ -168,6 +179,7 @@ def analyse(duplicate_report, noids_report, out):
 
             if cont:
                 _remove_old_when_no_doi_and_ft_title_match(match_set, actions)
+            """
 
             # report on the actions on this match set
             if actions.has_actions():
@@ -189,6 +201,42 @@ def analyse(duplicate_report, noids_report, out):
         writer.writerow(["id", "action", "reason"])
         for k, v in final_instructions.iteritems():
             writer.writerow([k, v["action"], v["reason"]])
+
+
+def _remove_old(match_set, actions):
+    titles = [a["title_match"] for a in match_set.matches]
+    if False in titles:
+        return
+
+    dois = [a["doi"] for a in match_set.matches]
+    doiset = set(dois)
+    doi_match = len(doiset) == 1 and "" not in dois
+    no_doi = len(doiset) == 0
+
+    fts = [a["fulltext"] for a in match_set.matches]
+    ftset = set(fts)
+    ft_match = len(ftset) == 1 and "" not in fts
+    no_ft = len(ftset) == 0
+
+    if (doi_match and ft_match) or (doi_match and no_ft) or (no_doi and ft_match):
+        dateset = []
+        for a in match_set.matches:
+            created = datetime.strptime(a["created"], "%Y-%m-%dT%H:%M:%SZ")
+            dateset.append({"created" : created, "id" : a["id"]})
+
+        dateset.sort(key=lambda x : x["created"])
+        dateset.pop()
+        ids = [a["id"] for a in dateset]
+        match_set.remove(ids)
+
+        for id in ids:
+            if no_doi:
+                msg = "no doi; fulltext and title match, and newer article available"
+            elif no_ft:
+                msg = "no fulltext; doi and title match, and newer article available"
+            else:
+                msg = "doi, fulltext and title match, and newer article available"
+            actions.set_action(id, "delete", msg)
 
 
 def _remove_old_when_no_doi_and_ft_title_match(match_set, actions):
@@ -291,6 +339,36 @@ def _clean_fulltext_match_type(match_set, actions):
         actions.set_action(a["id"], "remove_fulltext", "duplicated fulltext, different dois")
 
 
+def _clean_matching_fulltexts(match_set, actions):
+    # first find out if the match set has a complete set of dois.  If not all the records
+    # have dois we can't clean the Fulltexts out.
+    dois = [a["doi"] for a in match_set.matches]
+    if "" in dois:
+        return
+
+    # check that all the dois are unique.  If they are not, we can't remove the fulltexts
+    doiset = set(dois)
+    if len(dois) != len(doiset):
+        return
+
+    # get all the Fulltexts that exist, and remember which IDs have Fulltextss
+    fts = []
+    has_ft = []
+    for a in match_set.matches:
+        if a["fulltext"] != "":
+            fts.append(a["fulltext"])
+            has_ft.append(a["id"])
+
+    # check that all the fulltexts we found are the same.  If they are not, we can't remove them
+    ftset = set(fts)
+    if len(ftset) != 1:
+        return
+
+    # all the fulltext are different, and the records all have the same doi, or do not have a DOI
+    for id in has_ft:
+        actions.set_action(id, "remove_fulltext", "duplicated fulltext, different doi")
+
+
 def _clean_doi_match_type(match_set, actions):
     if match_set.type != "doi":
         return
@@ -308,6 +386,34 @@ def _clean_doi_match_type(match_set, actions):
     for a in match_set.matches:
         actions.set_action(a["id"], "remove_doi", "duplicated doi, different fulltexts")
 
+def _clean_matching_dois(match_set, actions):
+    # first find out if the match set has a complete set of fulltexts.  If not all the records
+    # have fulltexts we can't clean the DOIs out.
+    fts = [a["fulltext"] for a in match_set.matches]
+    if "" in fts:
+        return
+
+    # check that all the fulltexts are unique.  If they are not, we can't remove the DOIs
+    ftset = set(fts)
+    if len(fts) != len(ftset):
+        return
+
+    # get all the DOIs that exist, and remember which IDs have DOIs
+    dois = []
+    has_doi = []
+    for a in match_set.matches:
+        if a["doi"] != "":
+            dois.append(a["doi"])
+            has_doi.append(a["id"])
+
+    # check that all the dois we found are the same.  If they are not, we can't remove them
+    doiset = set(dois)
+    if len(doiset) != 1:
+        return
+
+    # all the fulltext are different, and the records all have the same doi, or do not have a DOI
+    for id in has_doi:
+        actions.set_action(id, "remove_doi", "duplicated doi, different fulltexts")
 
 def _sanitise(match_set, actions):
     for article in match_set.matches:
@@ -369,7 +475,7 @@ def _read_match_set(reader, next_row):
         b_ft = row[12]
         b_owner = row[13]
         b_issns = row[14]
-        b_in_doaj = row[15]
+        b_in_doaj = row[15] == "True"
 
         title_match = row[17] == "True"
 
