@@ -3,33 +3,32 @@
 <records>
 
     <record>
-        <!-- create another journal record with the same issns owned by someone else -->
-        <issn>0001-5113</issn>
-        <eissn>1846-0453</eissn>
-        <fullTextUrl>http://doaj.org/testing/4.pdf</fullTextUrl>
-
         <language>fre</language>
         <publisher>Codicille éditeur et CRILCQ</publisher>
 
-        <journalTitle>Successful</journalTitle>
+        <!-- create another journal record with the same issns owned by someone else -->
+        <journalTitle>Shared</journalTitle>
+        <issn>1111-1111</issn>
+        <eissn>2222-2222</eissn>
 
         <publicationDate>2013</publicationDate>
         <volume/>
         <issue>7</issue>
         <startPage/>
         <endPage/>
+        <doi>10.1234/4</doi>
         <documentType>article</documentType>
-        <title language="fre">Imaginaires autochtones contemporains. Introduction</title>
+        <title language="fre">The issns here should be shared</title>
         <authors>
             <author>
-                <name>Papillon, Joëlle</name>
+                <name>AN Author</name>
                 <affiliationId>1</affiliationId>
             </author>
         </authors>
         <affiliationsList>
             <affiliationName affiliationId="1"/>
         </affiliationsList>
-
+        <fullTextUrl>http://doaj.org/testing/4.pdf</fullTextUrl>
         <keywords>
             <keyword>Introduction</keyword>
             <keyword>Littérature amérindienne</keyword>

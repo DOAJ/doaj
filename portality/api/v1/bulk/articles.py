@@ -1,7 +1,11 @@
-from portality.api.v1.common import Api, Api404Error, Api400Error, Api403Error
+from portality.api.v1.common import Api, Api404Error, Api400Error, Api403Error, Api401Error
 from portality.api.v1.crud import ArticlesCrudApi
 
+from portality.bll import DOAJ
+from portality.bll import exceptions
+
 from copy import deepcopy
+
 
 
 class ArticlesBulkApi(Api):
@@ -33,44 +37,21 @@ class ArticlesBulkApi(Api):
         # and deduplicating as we go. Then we .save() everything once
         # we know all incoming articles are valid.
 
-        new_articles = []
+        # as long as authentication (in the layer above) has been successful, and the account exists, then
+        # we are good to proceed
+        if account is None:
+            raise Api401Error()
 
-        ids = []
-        dois_seen = set()
-        fulltext_urls_seen = set()
-        for a in articles:
-            duplicate = False  # skip articles if their fulltext URL or DOI is the same
+        # convert the data into a suitable article models
+        articles = [ArticlesCrudApi.prep_article(data) for data in articles]
 
-            for i in a.get('bibjson', {}).get('identifier', []):
-                if i.get('type', '') == 'doi':
-                    if 'id' in i:
-                        if i['id'] in dois_seen:
-                            duplicate = True
-                            break
-                        dois_seen.add(i['id'])
+        articleService = DOAJ.articleService()
+        try:
+            result = articleService.batch_create_articles(articles, account)
+            return [a.id for a in articles]
+        except exceptions.IngestException as e:
+            raise Api400Error(e.message)
 
-            if duplicate:
-                continue
-
-            for l in a.get('bibjson', {}).get('link', []):
-                if l.get('type', '') == 'fulltext':
-                    if 'url' in l:
-                        if l['url'] in fulltext_urls_seen:
-                            duplicate = True
-                            break
-                        fulltext_urls_seen.add(l['url'])
-
-            if duplicate:
-                continue
-
-            n = ArticlesCrudApi.create(a, account, dry_run=True)
-            new_articles.append(n)
-            ids.append(n.id)
-
-        for na in new_articles:
-            na.save()
-
-        return ids
 
     @classmethod
     def delete_swag(cls):

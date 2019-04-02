@@ -1,3 +1,5 @@
+import sys, traceback
+
 class AuthoriseException(Exception):
     """
     Exception to raise if an action is not authorised
@@ -43,3 +45,35 @@ class ConfigurationException(Exception):
     Exception to raise when our own configuration is broken
     """
     pass
+
+class DuplicateArticleException(Exception):
+    """
+    Exception to raise when a duplicate article is detected, and this is not permitted
+    """
+    pass
+
+class IngestException(Exception):
+    def __init__(self, *args, **kwargs):
+        self.stack = None
+        self.message = kwargs.get("message")
+        self.inner_message = kwargs.get("inner_message")
+        self.inner = kwargs.get("inner")
+        self.result = kwargs.get("result", {})
+
+        tb = sys.exc_info()[2]
+        if self.inner is not None:
+            if self.inner_message is None and hasattr(self.inner, "message"):
+                self.inner_message = self.inner.message
+
+            if tb is not None:
+                self.stack = "".join(traceback.format_exception(self.inner.__class__, self.inner, tb))
+            else:
+                self.stack = "".join(traceback.format_exception_only(self.inner.__class__, self.inner))
+        else:
+            if tb is not None:
+                self.stack = "".join(traceback.format_tb(tb))
+            else:
+                self.stack = "".join(traceback.format_stack())
+
+    def trace(self):
+        return self.stack

@@ -131,6 +131,19 @@ class GenericBibJSON(dataobj.DataObj):
                     urls.append(link)
         return urls
 
+    def remove_urls(self, urltype=None, url=None):
+        # if we are to remove all identifiers, this is easy
+        if urltype is None and url is None:
+            self._delete("link")
+            return
+
+        match = {}
+        if urltype is not None:
+            match["type"] = urltype
+        if url is not None:
+            match["url"] = url
+        self._delete_from_list("link", matchsub=match)
+
     def get_single_url(self, urltype, unpack_urlobj=True):
         urls = self.get_urls(urltype=urltype, unpack_urlobj=unpack_urlobj)
         if len(urls) > 0:

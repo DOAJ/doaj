@@ -1,0 +1,1031 @@
+{
+  "parameters": [
+    {
+      "type": "index", 
+      "name": "test_id"
+    }, 
+    {
+      "values": {
+        "0": {
+          "constraints": {
+            "merge_duplicate": {
+              "or": [
+                "false"
+              ]
+            }, 
+            "limit_to_account": {
+              "or": [
+                "false"
+              ]
+            }, 
+            "duplicate_in_index": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "duplicate_in_batch": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "duplicate_check": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        }, 
+        "none": {
+          "constraints": {
+            "merge_duplicate": {
+              "or": [
+                "false"
+              ]
+            }, 
+            "limit_to_account": {
+              "or": [
+                "false"
+              ]
+            }, 
+            "duplicate_in_index": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "duplicate_in_batch": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "duplicate_check": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        }, 
+        "yes": {}
+      }, 
+      "type": "generated", 
+      "name": "articles"
+    }, 
+    {
+      "values": {
+        "yes": {
+          "constraints": {
+            "articles": {
+              "or": [
+                "yes"
+              ]
+            }
+          }
+        }, 
+        "no": {}
+      }, 
+      "type": "generated", 
+      "name": "duplicate_in_batch"
+    }, 
+    {
+      "values": {
+        "yes": {
+          "constraints": {
+            "articles": {
+              "or": [
+                "yes"
+              ]
+            }
+          }
+        }, 
+        "no": {}
+      }, 
+      "type": "generated", 
+      "name": "duplicate_in_index"
+    }, 
+    {
+      "values": {
+        "owner": {}, 
+        "own_1": {}, 
+        "none": {}
+      }, 
+      "type": "generated", 
+      "name": "account"
+    }, 
+    {
+      "values": {
+        "false": {}, 
+        "none": {}, 
+        "true": {}
+      }, 
+      "type": "generated", 
+      "name": "duplicate_check"
+    }, 
+    {
+      "values": {
+        "false": {}, 
+        "none": {}, 
+        "true": {}
+      }, 
+      "type": "generated", 
+      "name": "merge_duplicate"
+    }, 
+    {
+      "values": {
+        "false": {}, 
+        "none": {}, 
+        "true": {}
+      }, 
+      "type": "generated", 
+      "name": "limit_to_account"
+    }, 
+    {
+      "default": "", 
+      "values": {
+        "ArgumentException": {
+          "conditions": [
+            {
+              "articles": {
+                "or": [
+                  "none"
+                ]
+              }
+            }, 
+            {
+              "account": {
+                "or": [
+                  "none"
+                ]
+              }
+            }, 
+            {
+              "duplicate_check": {
+                "or": [
+                  "none"
+                ]
+              }
+            }, 
+            {
+              "merge_duplicate": {
+                "or": [
+                  "none"
+                ]
+              }
+            }, 
+            {
+              "limit_to_account": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        }, 
+        "ArgumentExeption": {}, 
+        "IngestException": {
+          "conditions": [
+            {
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "owner", 
+                  "own_1"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "duplicate_check": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "yes"
+                ]
+              }
+            }, 
+            {
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_check": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "yes"
+                ]
+              }
+            }, 
+            {
+              "duplicate_check": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }, 
+            {
+              "duplicate_check": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }, 
+            {
+              "duplicate_check": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "no"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }
+          ]
+        }, 
+        "DuplicateArticleException": {
+          "conditions": [
+            {
+              "duplicate_check": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "owner", 
+                  "own_1"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "limit_to_account": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }
+          ]
+        }
+      }, 
+      "type": "conditional", 
+      "name": "raises"
+    }, 
+    {
+      "default": "0", 
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_check": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "yes"
+                ]
+              }
+            }, 
+            {
+              "duplicate_check": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }, 
+            {
+              "duplicate_check": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }, 
+            {
+              "duplicate_check": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "no"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }
+          ]
+        }, 
+        "0": {}, 
+        "4": {
+          "conditions": [
+            {
+              "duplicate_check": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "owner"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "no"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }, 
+            {
+              "duplicate_check": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "owner"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }, 
+            {
+              "duplicate_check": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "owner"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "limit_to_account": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }, 
+            {
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "duplicate_check": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }
+          ]
+        }, 
+        "6": {
+          "conditions": [
+            {
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "owner"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "duplicate_check": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "yes"
+                ]
+              }
+            }, 
+            {
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "duplicate_check": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "yes"
+                ]
+              }
+            }
+          ]
+        }
+      }, 
+      "type": "conditional", 
+      "name": "success"
+    }, 
+    {
+      "default": "0", 
+      "values": {
+        "0": {}, 
+        "3": {
+          "conditions": [
+            {
+              "duplicate_check": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }, 
+            {
+              "duplicate_check": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }, 
+            {
+              "duplicate_check": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "no"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }
+          ]
+        }, 
+        "2": {}, 
+        "5": {
+          "conditions": [
+            {
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "own_1"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_check": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "yes"
+                ]
+              }
+            }
+          ]
+        }, 
+        "6": {
+          "conditions": [
+            {
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "owner", 
+                  "own_1"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "duplicate_check": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "yes"
+                ]
+              }
+            }
+          ]
+        }
+      }, 
+      "type": "conditional", 
+      "name": "fail"
+    }, 
+    {
+      "default": "0", 
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "duplicate_check": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "owner", 
+                  "own_1"
+                ]
+              }, 
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "merge_duplicate": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "limit_to_account": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "duplicate_in_batch": {
+                "or": [
+                  "no"
+                ]
+              }
+            }
+          ]
+        }, 
+        "0": {}
+      }, 
+      "type": "conditional", 
+      "name": "update"
+    }, 
+    {
+      "type": "comment", 
+      "name": "notes"
+    }
+  ]
+}

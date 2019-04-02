@@ -10,12 +10,14 @@ import codecs
 import os
 import shutil
 import json
+from datetime import datetime
 from portality import models
-from portality.article import XWalk
 from portality.lib import dates
 from portality.core import app
 from portality.clcsv import UnicodeWriter, UnicodeReader
 import csv
+from portality.bll.doaj import DOAJ
+from portality.bll import exceptions
 
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
@@ -34,66 +36,79 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
-        global_reportfile = 'duplicate_articles_global_' + dates.today() + '.csv'
-        global_reportpath = os.path.join(outdir, global_reportfile)
-
         # Location for our interim CSV file of articles
         tmpdir = self.get_param(params, "tmpdir", 'tmp_article_duplicate_report')
         if not os.path.exists(tmpdir):
             os.makedirs(tmpdir)
 
-        # Connection to the ES index, rely on esprit sorting out the port from the host
-        conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None,
-                                          app.config["ELASTIC_SEARCH_DB"])
-
-        tmp_csvfile = 'tmp_articles_' + dates.today() + '.csv'
-        tmp_csvpath = os.path.join(tmpdir, tmp_csvfile)
-
-        with codecs.open(tmp_csvpath, 'wb', 'utf-8') as t:
-            self._create_article_csv(conn, t)
+        tmp_csvname = self.get_param(params, "article_csv", False)
+        tmp_csvpath, total = self._make_csv_dump(tmpdir, tmp_csvname)
 
         # Initialise our reports
+        global_reportfile = 'duplicate_articles_global_' + dates.today() + '.csv'
+        global_reportpath = os.path.join(outdir, global_reportfile)
         f = codecs.open(global_reportpath, "wb", "utf-8")
         global_report = UnicodeWriter(f)
-        
         header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "article_in_doaj", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns", "match_in_doaj", "owners_match", "titles_match", "article_title", "match_title"]
         global_report.writerow(header)
+
+        noids_reportfile = 'noids_' + dates.today() + '.csv'
+        noids_reportpath = os.path.join(outdir, noids_reportfile)
+        g = codecs.open(noids_reportpath, "wb", "utf-8")
+        noids_report = UnicodeWriter(g)
+        header = ["article_id", "article_created", "article_owner", "article_issns", "article_in_doaj"]
+        noids_report.writerow(header)
 
         # Record the sets of duplicated articles
         global_matches = []
 
-        a_count = gd_count = 0
+        a_count = 0
+
+        articleService = DOAJ.articleService()
 
         # Read back in the article csv file we created earlier
         with codecs.open(tmp_csvpath, 'rb', 'utf-8') as t:
             article_reader = UnicodeReader(t)
 
+            start = datetime.now()
+            estimated_finish = ""
             for a in article_reader:
+                if a_count > 1 and a_count % 100 == 0:
+                    n = datetime.now()
+                    diff = (n - start).total_seconds()
+                    expected_total = ((diff / a_count) * total)
+                    estimated_finish = dates.format(dates.after(start, expected_total))
                 a_count += 1
+
                 article = models.Article(_source={'id': a[0], 'created_date': a[1], 'bibjson': {'identifier': json.loads(a[2]), 'link': json.loads(a[3]), 'title': a[4]}, 'admin': {'in_doaj': json.loads(a[5])}})
-                app.logger.debug('{0} {1}'.format(a_count, article.id))
 
                 # Get the global duplicates
-                global_duplicates = XWalk.discover_duplicates(article, owner=None, results_per_match_type=10000)
+                try:
+                    global_duplicates = articleService.discover_duplicates(article, owner=None, results_per_match_type=10000)
+                except exceptions.DuplicateArticleException:
+                    # this means the article did not have any ids that could be used for deduplication
+                    owner = self._lookup_owner(article)
+                    noids_report.writerow([article.id, article.created_date, owner, ','.join(article.bibjson().issns()), article.is_in_doaj()])
+                    continue
+
+                dupcount = 0
                 if global_duplicates:
+
                     # Look up an article's owner
-                    journal = article.get_journal()
-                    owner = None
-                    if journal:
-                        owner = journal.owner
-                        for issn in journal.bibjson().issns():
-                            if issn not in self.owner_cache:
-                                self.owner_cache[issn] = owner
+                    owner = self._lookup_owner(article)
 
                     # Deduplicate the DOI and fulltext duplicate lists
                     s = set([article.id] + [d.id for d in global_duplicates.get('doi', []) + global_duplicates.get('fulltext', [])])
-                    gd_count += len(s) - 1
+                    dupcount = len(s) - 1
                     if s not in global_matches:
                         self._write_rows_from_duplicates(article, owner, global_duplicates, global_report)
                         global_matches.append(s)
 
-        job.add_audit_message('{0} articles processed for duplicates. {1} global duplicates found.'.format(a_count, gd_count))
+                app.logger.debug('{0}/{1} {2} {3} {4} {5}'.format(a_count, total, article.id, dupcount, len(global_matches), estimated_finish))
+
+        job.add_audit_message('{0} articles processed for duplicates. {1} global duplicate sets found.'.format(a_count, len(global_matches)))
         f.close()
+        g.close()
 
         # Delete the transient temporary files.
         shutil.rmtree(tmpdir)
@@ -106,6 +121,33 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
             job.add_audit_message("email alert sent")
         else:
             job.add_audit_message("no email alert sent")
+
+    @classmethod
+    def _make_csv_dump(self, tmpdir, filename):
+        # Connection to the ES index, rely on esprit sorting out the port from the host
+        conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None,
+                                          app.config["ELASTIC_SEARCH_DB"])
+
+        if not filename:
+            filename = 'tmp_articles_' + dates.today() + '.csv'
+        filename = os.path.join(tmpdir, filename)
+
+        with codecs.open(filename, 'wb', 'utf-8') as t:
+            count = self._create_article_csv(conn, t)
+
+        return filename, count
+
+    @classmethod
+    def _lookup_owner(self, article):
+        # Look up an article's owner
+        journal = article.get_journal()
+        owner = None
+        if journal:
+            owner = journal.owner
+            for issn in journal.bibjson().issns():
+                if issn not in self.owner_cache:
+                    self.owner_cache[issn] = owner
+        return owner
 
     @staticmethod
     def _create_article_csv(connection, file_object):
@@ -131,6 +173,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
             ]
         }
 
+        count = 0
         for a in esprit.tasks.scroll(connection, 'article', q=scroll_query, page_size=1000, keepalive='1m'):
             row = [
                 a['id'],
@@ -141,6 +184,9 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                 json.dumps(a.get('admin', {}).get('in_doaj', ''))
             ]
             csv_writer.writerow(row)
+            count += 1
+
+        return count
 
     def _summarise_article(self, article, owner=None):
         a_doi = article.bibjson().get_identifiers('doi')
@@ -226,6 +272,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         params = {}
         cls.set_param(params, "outdir", kwargs.get("outdir", "article_duplicates_" + dates.today()))
         cls.set_param(params, "email", kwargs.get("email", False))
+        cls.set_param(params, "tmpdir", kwargs.get("tmpdir", "tmp_article_duplicates_" + dates.today()))
+        cls.set_param(params, "article_csv", kwargs.get("article_csv", False))
         job.params = params
 
         return job

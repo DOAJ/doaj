@@ -16,12 +16,12 @@ from portality import constants
 
 def remove_doi(article_id):
     article = models.Article.pull(article_id)
-    article.bibjson().remove_identifiers(idtype=constants.DOI)
+    article.bibjson().remove_identifiers(idtype=constants.IDENT_TYPE_DOI)
     article.save()
 
 def remove_fulltext(article_id):
     article = models.Article.pull(article_id)
-    article.bibjson().remove_urls(urltype=constants.FULLTEXT)
+    article.bibjson().remove_urls(urltype=constants.IDENT_TYPE_FULLTEXT)
     article.save()
 
 if __name__ == "__main__":
