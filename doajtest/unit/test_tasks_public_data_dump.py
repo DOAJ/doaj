@@ -75,6 +75,37 @@ class TestPublicDataDumpTask(DoajTestCase):
         prune = True if prune_arg == "yes" else False if prune_arg == "no" else None
         types = types_arg if types_arg != "-" else None
 
+        journal_count = int(journals_arg)
+        article_count = int(articles_arg)
+        batch_size = int(batch_size_arg)
+        journal_file_count = 0 if journal_count == 0 else (journal_count / batch_size) + 1
+        article_file_count = 0 if article_count == 0 else (article_count / batch_size) + 1
+        first_article_file_records = 0 if article_count == 0 else batch_size if article_count > batch_size else article_count
+        first_journal_file_records = 0 if journal_count == 0 else batch_size if journal_count > batch_size else journal_count
+
+        # add the data to the index first, to maximise the time it has to become available for search
+        sources = JournalFixtureFactory.make_many_journal_sources(journal_count, in_doaj=True)
+        jids = []
+        for i in range(len(sources)):
+            source = sources[i]
+            journal = models.Journal(**source)
+            journal.save()
+            jids.append((journal.id, journal.last_updated))
+
+        aids = []
+        for i in range(article_count):
+            source = ArticleFixtureFactory.make_article_source(
+                eissn="{x}000-0000".format(x=i),
+                pissn="0000-{x}000".format(x=i),
+                with_id=False,
+                doi="10.123/{x}".format(x=i),
+                fulltext="http://example.com/{x}".format(x=i)
+            )
+            article = models.Article(**source)
+            article.save()
+            aids.append((article.id, article.last_updated))
+
+        # construct some test data in the local store
         container_id = app.config["STORE_PUBLIC_DATA_DUMP_CONTAINER"]
         localStore = store.StoreLocal(None)
         localStoreFiles = []
@@ -86,38 +117,20 @@ class TestPublicDataDumpTask(DoajTestCase):
                                  source_stream=StringIO("test"))
             localStoreFiles = localStore.list(container_id)
 
-        journal_count = int(journals_arg)
-        article_count = int(articles_arg)
-        batch_size = int(batch_size_arg)
-        journal_file_count = 0 if journal_count == 0 else (journal_count / batch_size) + 1
-        article_file_count = 0 if article_count == 0 else (article_count / batch_size) + 1
-        first_article_file_records = 0 if article_count == 0 else batch_size if article_count > batch_size else article_count
-        first_journal_file_records = 0 if journal_count == 0 else batch_size if journal_count > batch_size else journal_count
-
-        sources = JournalFixtureFactory.make_many_journal_sources(journal_count, in_doaj=True)
-        for i in range(len(sources)):
-            source = sources[i]
-            journal = models.Journal(**source)
-            journal.save(blocking=i == len(sources) - 1)
-
-        for i in range(article_count):
-            source = ArticleFixtureFactory.make_article_source(
-                eissn="{x}000-0000".format(x=i),
-                pissn="0000-{x}000".format(x=i),
-                with_id=False,
-                doi="10.123/{x}".format(x=i),
-                fulltext="http://example.com/{x}".format(x=i)
-            )
-            article = models.Article(**source)
-            article.save(blocking=i == article_count - 1)
-
         app.config["DISCOVERY_RECORDS_PER_FILE"] = batch_size
 
+        # set the mocks for store write failures
         if tmp_write_arg == "fail":
             app.config["STORE_TMP_IMPL"] = StoreMockFactory.no_writes_classpath()
 
         if store_write_arg == "fail":
             app.config["STORE_IMPL"] = StoreMockFactory.no_writes_classpath()
+
+        # block until all the records are saved
+        for jid, lu in jids:
+            models.Journal.block(jid, lu, sleep=0.05)
+        for aid, lu in aids:
+            models.Article.block(aid, lu, sleep=0.05)
 
         ###########################################################
         # Execution

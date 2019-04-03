@@ -1098,7 +1098,7 @@ class TestClient(DoajTestCase):
         assert models.Cache.get_public_data_dump().get("article").get("url") == "http://example.com/article"
         assert models.Cache.get_public_data_dump().get("article").get("size") == 100
         assert models.Cache.get_public_data_dump().get("journal").get("url") == "http://example.com/journal"
-        assert models.Cache.get_public_data_dump().get("article").get("size") == 200
+        assert models.Cache.get_public_data_dump().get("journal").get("size") == 200
 
 
 # TODO: reinstate this test when author emails have been disallowed again

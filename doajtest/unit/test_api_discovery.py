@@ -403,6 +403,7 @@ class TestArticleMatch(DoajTestCase):
 
     def test_06_deep_paging_limit(self):
         # populate the index with some journals
+        jids = []
         for i in range(10):
             j = models.Journal()
             j.set_in_doaj(True)
@@ -411,9 +412,14 @@ class TestArticleMatch(DoajTestCase):
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
             bj.publisher = "Test Publisher {x}".format(x=i)
             bj.add_url("http://homepage.com/{x}".format(x=i), "homepage")
-            j.save(blocking=i == 9)
+            j.save()
+            jids.append((j.id, j.last_updated))
 
         self.app_test.config["DISCOVERY_MAX_RECORDS_SIZE"] = 5
+
+        # block until all the records are saved
+        for jid, lu in jids:
+            models.Journal.block(jid, lu, sleep=0.05)
 
         # now run some queries
         with self.app_test.test_request_context():
