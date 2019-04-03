@@ -21,7 +21,7 @@ def remove_doi(article_id):
 
 def remove_fulltext(article_id):
     article = models.Article.pull(article_id)
-    article.bibjson().remove_urls(urltype=constants.IDENT_TYPE_FULLTEXT)
+    article.bibjson().remove_urls(urltype=constants.LINK_TYPE_FULLTEXT)
     article.save()
 
 if __name__ == "__main__":
