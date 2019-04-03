@@ -27,19 +27,6 @@
     <!-- get bootstrap js -->
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/js/bootstrap.min.js"></script>
 
-    {# AddThis (as it is configured right now) uses the anchor part of
-    the URL (after the # sign) to track some more stuff. This interferes
-    with pages using anchors for their own needs (e.g. the user wants to
-    scroll immediately to a section of the page. AddThis is only used on
-    the search page right now and the search page has no use for anchors
-    at the moment, so only load its scripts when the search page is
-    displayed. #}
-    {% if request.path == '/search' %}
-    <!-- get addthis social sharing button scripts -->
-    <script type="text/javascript">var addthis_config = {"data_track_addressbar":true, data_ga_property: '{{ config.get('GOOGLE_ANALYTICS_ID') }}', "ui_click": true};</script>
-    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52ae52c34c6f0a3e"></script>
-    {% endif %}
-
     <!-- Global Site Tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ config.get('GOOGLE_ANALYTICS_ID') }}"></script>
     <script>
