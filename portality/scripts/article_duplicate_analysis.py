@@ -2,6 +2,13 @@ import codecs
 from copy import deepcopy
 from datetime import datetime
 from portality import clcsv
+from portality.lib import normalise
+
+
+#duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/duplicate_articles_global_2019-02-27.csv"
+#noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/noids_2019-02-27.csv"
+#log =  "/home/richard/tmp/doaj/article_duplicates_2019-02-27/log-2019-04-02.txt"
+#out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/actions-2019-04-02.csv"
 
 #duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/duplicate_articles_global_2019-03-29.csv"
 #noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/noids_2019-03-29.csv"
@@ -13,7 +20,7 @@ noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/noids_2019-
 log =  "/home/richard/tmp/doaj/article_duplicates_test_sheet_log.txt"
 out = "/home/richard/tmp/doaj/article_duplicates_test_sheet_actions.csv"
 
-INVALID_DOIS = ["undefined", "-", "http://dx.doi.org/"]
+INVALID_DOIS = ["undefined", "-", "http://dx.doi.org/", "http://www.gaworkshop.org/"]
 
 class MatchSet(object):
     def __init__(self, typ=None):
@@ -211,12 +218,12 @@ def _remove_old(match_set, actions):
     dois = [a["doi"] for a in match_set.matches]
     doiset = set(dois)
     doi_match = len(doiset) == 1 and "" not in dois
-    no_doi = len(doiset) == 0
+    no_doi = len(doiset) == 0 or (len(doiset) == 1 and "" in doiset)
 
     fts = [a["fulltext"] for a in match_set.matches]
     ftset = set(fts)
     ft_match = len(ftset) == 1 and "" not in fts
-    no_ft = len(ftset) == 0
+    no_ft = len(ftset) == 0 or (len(ftset) == 1 and "" in ftset)
 
     if (doi_match and ft_match) or (doi_match and no_ft) or (no_doi and ft_match):
         dateset = []
@@ -458,8 +465,14 @@ def _read_match_set(reader, next_row):
             return match_set, row
 
         a_created = row[1]
-        a_doi = row[2]
-        a_ft = row[3]
+        try:
+            a_doi = normalise.normalise_doi(row[2])
+        except:
+            a_doi = row[2]
+        try:
+            a_ft = normalise.normalise_url(row[3])
+        except:
+            a_ft = row[3]
         a_owner = row[4]
         a_issns = row[5]
         a_in_doaj = row[6] == "True"
@@ -471,8 +484,14 @@ def _read_match_set(reader, next_row):
 
         b_id = row[9]
         b_created = row[10]
-        b_doi = row[11]
-        b_ft = row[12]
+        try:
+            b_doi = normalise.normalise_doi(row[11])
+        except:
+            b_doi = row[11]
+        try:
+            b_ft = normalise.normalise_url(row[12])
+        except:
+            b_ft = row[12]
         b_owner = row[13]
         b_issns = row[14]
         b_in_doaj = row[15] == "True"
@@ -490,4 +509,45 @@ def _read_match_set(reader, next_row):
     # a catch to make sure that everything is ok with the match set detection
     assert n_matches + 1 == len(match_set.matches)
 
+def compare_outputs(duplicate_report):
+    original = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/out.csv"
+    compare = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/actions-2019-04-02.csv"
+    missing_out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/missing.csv"
+    extra_out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/extra.csv"
+    reference = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/reference.csv"
+
+    with codecs.open(original, "rb", "utf-8") as f1:
+        r1 = clcsv.UnicodeReader(f1)
+        r1.next()
+        id1 = [x[0] for x in r1]
+
+    with codecs.open(compare, "rb", "utf-8") as f2:
+        r2 = clcsv.UnicodeReader(f2)
+        r2.next()
+        id2 = [x[0] for x in r2]
+
+    missing = [x for x in id1 if x not in id2]
+    print("missing {x}".format(x=len(missing)))
+    with codecs.open(missing_out, "wb", "utf-8") as f3:
+        f3.write("\n".join(missing))
+
+    extra = [x for x in id2 if x not in id1]
+    print("extra {x}".format(x=len(extra)))
+    with codecs.open(extra_out, "wb", "utf-8") as f4:
+        f4.write("\n".join(extra))
+
+    refs = []
+    with codecs.open(duplicate_report, "rb", "utf-8") as f5:
+        r5 = clcsv.UnicodeReader(f5)
+        headers = r5.next()
+        next_row = None
+        while True:
+            match_set, next_row = _read_match_set(r5, next_row)
+            for m in missing:
+                if match_set.contains_id(m):
+                    #append to refs
+                    pass
+
+
 analyse(duplicate_report, noids_report, out)
+compare_outputs(duplicate_report)
