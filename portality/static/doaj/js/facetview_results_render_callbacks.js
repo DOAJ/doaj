@@ -118,26 +118,6 @@ fv_abstract = (function (resultobj) {
 })();
 
 
-fv_addthis = (function (resultobj) {
-    var that = function(resultobj) {
-        var prefix = '';
-        if (resultobj.bibjson && resultobj.bibjson.journal) {
-            prefix = '[OA Article]'
-        }
-        else {
-            prefix = '[OA Journal]'
-        }
-        var result = '<a class="addthis_button"';
-        result += ' addthis:title="' + prefix + ' ' + resultobj['bibjson']['title'] + '"';
-        var query = '{"query":{"query_string":{"query":"' + resultobj['id'] + '"}}}';
-        // the http: or https: scheme comes from the es_scheme global var
-        result += ' addthis:url="' + es_scheme + '//' + document.domain + '/search?source=' + escape(query) + '"';
-        result += ' href="' + es_scheme + '//www.addthis.com/bookmark.php?v=300&amp;pubid=ra-52ae52c34c6f0a3e"><img src="' + es_scheme + '//s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a>';
-        return result;
-    };
-    return that;
-})();
-
 fv_journal_license = (function (resultobj) {
     var that = function(resultobj) {
         var title = undefined;

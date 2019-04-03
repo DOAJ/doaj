@@ -62,7 +62,6 @@ jQuery(document).ready(function($) {
             'created_date': fv_created_date,
             'last_manual_update': fv_last_manual_update,
             'bibjson.abstract': fv_abstract,
-            'addthis-social-share-button': fv_addthis,
             'journal_license' : fv_journal_license,
             "title_field" : fv_title_field,
             "doi_link" : fv_doi_link,
