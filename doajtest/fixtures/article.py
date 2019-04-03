@@ -79,22 +79,36 @@ class ArticleFixtureFactory(object):
             del source["bibjson"]["identifier"][idx]
 
         if doi is not None:
-            set_doi = False
-            for ident in source["bibjson"]["identifier"]:
-                if ident.get("type") == "doi":
-                    ident["id"] = doi
-                    set_doi = True
-            if not set_doi:
-                source["bibjson"]["identifier"].append({"type" : "doi", "id" : doi})
+            if doi is False:
+                for i in range(len(source["bibjson"]["identifier"])):
+                    ident = source["bibjson"]["identifier"][i]
+                    if ident.get("type") == "doi":
+                        del source["bibjson"]["identifier"][i]
+                        break
+            else:
+                set_doi = False
+                for ident in source["bibjson"]["identifier"]:
+                    if ident.get("type") == "doi":
+                        ident["id"] = doi
+                        set_doi = True
+                if not set_doi:
+                    source["bibjson"]["identifier"].append({"type" : "doi", "id" : doi})
 
         if fulltext is not None:
-            set_fulltext = False
-            for ident in source["bibjson"]["link"]:
-                if ident.get("type") == "fulltext":
-                    ident["url"] = fulltext
-                    set_fulltext = True
-            if not set_fulltext:
-                source["bibjson"]["link"].append({"type" : "fulltext", "url" : fulltext})
+            if fulltext is False:
+                for i in range(len(source["bibjson"]["link"])):
+                    ident = source["bibjson"]["link"][i]
+                    if ident.get("type") == "fulltext":
+                        del source["bibjson"]["link"][i]
+                        break
+            else:
+                set_fulltext = False
+                for ident in source["bibjson"]["link"]:
+                    if ident.get("type") == "fulltext":
+                        ident["url"] = fulltext
+                        set_fulltext = True
+                if not set_fulltext:
+                    source["bibjson"]["link"].append({"type" : "fulltext", "url" : fulltext})
 
         return source
     

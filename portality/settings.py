@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.15.0"
+DOAJ_VERSION = "2.15.1"
 
 OFFLINE_MODE = False
 
@@ -62,6 +62,8 @@ SERVICE_NAME = "Directory of Open Access Journals"
 SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
 HOST = "0.0.0.0"
 DEBUG = False
+DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
+DEBUG_TB_INTERCEPT_REDIRECTS = False
 PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
@@ -860,3 +862,9 @@ ELASTIC_APM = {
   # Set custom APM Server URL (default: http://localhost:8200)
   'SERVER_URL': '',
 }
+
+########################################
+## Consent Cookie
+
+CONSENT_COOKIE_KEY = "doaj-cookie-consent"
+

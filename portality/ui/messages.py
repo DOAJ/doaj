@@ -45,6 +45,9 @@ class Messages(object):
     If you would like to see more results, you can download all of our data from
     {data_dump_url}. You can also harvest from our OAI-PMH endpoints; articles: {oai_article_url}, journals: {oai_journal_url}"""
 
+    CONSENT_COOKIE_VALUE = u"""By using the DOAJ website you have agreed to our cookie policy."""
+
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):
