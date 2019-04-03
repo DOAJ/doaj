@@ -5,26 +5,25 @@ from portality import clcsv
 from portality.lib import normalise
 
 
-#duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/duplicate_articles_global_2019-02-27.csv"
-#noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/noids_2019-02-27.csv"
-#log =  "/home/richard/tmp/doaj/article_duplicates_2019-02-27/log-2019-04-02.txt"
-#out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/actions-2019-04-02.csv"
+duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/duplicate_articles_global_2019-02-27.csv"
+noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/noids_2019-02-27.csv"
+log =  "/home/richard/tmp/doaj/article_duplicates_2019-02-27/log-2019-04-03.txt"
+out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/actions-2019-04-03.csv"
 
 #duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/duplicate_articles_global_2019-03-29.csv"
 #noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/noids_2019-03-29.csv"
 #log =  "/home/richard/tmp/doaj/article_duplicates_2019-03-29/log.txt"
 #out = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/actions.csv"
 
-duplicate_report = "/home/richard/tmp/doaj/article_duplicates_test_sheet.csv"
-noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/noids_2019-03-29.csv"
-log =  "/home/richard/tmp/doaj/article_duplicates_test_sheet_log.txt"
-out = "/home/richard/tmp/doaj/article_duplicates_test_sheet_actions.csv"
+#duplicate_report = "/home/richard/tmp/doaj/article_duplicates_test_sheet.csv"
+#noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/noids_2019-03-29.csv"
+#log =  "/home/richard/tmp/doaj/article_duplicates_test_sheet_log.txt"
+#out = "/home/richard/tmp/doaj/article_duplicates_test_sheet_actions.csv"
 
 INVALID_DOIS = ["undefined", "-", "http://dx.doi.org/", "http://www.gaworkshop.org/"]
 
 class MatchSet(object):
     def __init__(self, typ=None):
-        self._type = typ
         self._root = None
         self._matches = []
 
@@ -37,11 +36,12 @@ class MatchSet(object):
             "owner" : owner,
             "issns" : issns,
             "in_doaj" : in_doaj,
-            "title_match" : title_match
+            "title_match" : title_match,
+            "match_type" : "self"
         }
         self._matches.append(self._root)
 
-    def add_match(self, id, created, doi, fulltext, owner, issns, in_doaj, title_match):
+    def add_match(self, id, created, doi, fulltext, owner, issns, in_doaj, title_match, match_type):
         match = {
             "id" : id,
             "created": created,
@@ -50,7 +50,8 @@ class MatchSet(object):
             "owner" : owner,
             "issns" : issns,
             "in_doaj" : in_doaj,
-            "title_match" : title_match
+            "title_match" : title_match,
+            "match_type" : match_type
         }
         self._matches.append(match)
 
@@ -64,13 +65,38 @@ class MatchSet(object):
         for r in removes:
             del self._matches[r]
 
-    @property
-    def type(self):
-        return self._type
+    def contains_id(self, id):
+        for m in self.matches:
+            if m["id"] == id:
+                return True
+        return False
 
-    @type.setter
-    def type(self, typ):
-        self._type = typ
+    def ids(self):
+        return [m["id"] for m in self.matches]
+
+    def to_rows(self):
+        rows = []
+        root = self.root
+        matches = self.matches
+
+        for m in matches:
+            if m["id"] == root["id"]:
+                continue
+
+            # root metadata
+            row = [root["id"], root["created"], root["doi"], root["fulltext"], root["owner"], root["issns"], root["in_doaj"]]
+            # number of matches
+            row.append(len(matches) - 1)
+            # match type (currently blank)
+            row.append(m["match_type"])
+            # match metadata
+            row += [m["id"], m["created"], m["doi"], m["fulltext"], m["owner"], m["issns"], m["in_doaj"]]
+            # owner and title match
+            row += ["", m["title_match"]]
+
+            rows.append(row)
+
+        return rows
 
     @property
     def matches(self):
@@ -246,6 +272,7 @@ def _remove_old(match_set, actions):
             actions.set_action(id, "delete", msg)
 
 
+"""
 def _remove_old_when_no_doi_and_ft_title_match(match_set, actions):
     if match_set.type != "fulltext":
         return
@@ -274,8 +301,9 @@ def _remove_old_when_no_doi_and_ft_title_match(match_set, actions):
 
     for id in ids:
         actions.set_action(id, "delete", "no doi; fulltext and title match, and newer article available")
+"""
 
-
+"""
 def _remove_old_when_no_ft_and_doi_title_match(match_set, actions):
     if match_set.type != "doi":
         return
@@ -304,7 +332,9 @@ def _remove_old_when_no_ft_and_doi_title_match(match_set, actions):
 
     for id in ids:
         actions.set_action(id, "delete", "no fulltext; doi and title match, and newer article available")
+"""
 
+"""
 def _remove_old_when_all_match(match_set, actions):
     if match_set.type != "doi+fulltext":
         return
@@ -326,8 +356,9 @@ def _remove_old_when_all_match(match_set, actions):
 
     for id in ids:
         actions.set_action(id, "delete", "doi, fulltext and title match, and newer article available")
+"""
 
-
+"""
 def _clean_fulltext_match_type(match_set, actions):
     if match_set.type != "fulltext":
         return
@@ -344,7 +375,7 @@ def _clean_fulltext_match_type(match_set, actions):
     # all the dois are different
     for a in match_set.matches:
         actions.set_action(a["id"], "remove_fulltext", "duplicated fulltext, different dois")
-
+"""
 
 def _clean_matching_fulltexts(match_set, actions):
     # first find out if the match set has a complete set of dois.  If not all the records
@@ -375,7 +406,7 @@ def _clean_matching_fulltexts(match_set, actions):
     for id in has_ft:
         actions.set_action(id, "remove_fulltext", "duplicated fulltext, different doi")
 
-
+"""
 def _clean_doi_match_type(match_set, actions):
     if match_set.type != "doi":
         return
@@ -392,6 +423,7 @@ def _clean_doi_match_type(match_set, actions):
     # all the fulltext are different
     for a in match_set.matches:
         actions.set_action(a["id"], "remove_doi", "duplicated doi, different fulltexts")
+"""
 
 def _clean_matching_dois(match_set, actions):
     # first find out if the match set has a complete set of fulltexts.  If not all the records
@@ -498,13 +530,10 @@ def _read_match_set(reader, next_row):
 
         title_match = row[17] == "True"
 
-        if match_set.type is None:
-            match_set.type = match_type
-
         if root is None:
             match_set.add_root(a_id, a_created, a_doi, a_ft, a_owner, a_issns, a_in_doaj, title_match)
 
-        match_set.add_match(b_id, b_created, b_doi, b_ft, b_owner, b_issns, b_in_doaj, title_match)
+        match_set.add_match(b_id, b_created, b_doi, b_ft, b_owner, b_issns, b_in_doaj, title_match, match_type)
 
     # a catch to make sure that everything is ok with the match set detection
     assert n_matches + 1 == len(match_set.matches)
@@ -531,23 +560,39 @@ def compare_outputs(duplicate_report):
     with codecs.open(missing_out, "wb", "utf-8") as f3:
         f3.write("\n".join(missing))
 
-    extra = [x for x in id2 if x not in id1]
-    print("extra {x}".format(x=len(extra)))
-    with codecs.open(extra_out, "wb", "utf-8") as f4:
-        f4.write("\n".join(extra))
+    #extra = [x for x in id2 if x not in id1]
+    #print("extra {x}".format(x=len(extra)))
+    #with codecs.open(extra_out, "wb", "utf-8") as f4:
+    #    f4.write("\n".join(extra))
 
-    refs = []
-    with codecs.open(duplicate_report, "rb", "utf-8") as f5:
+    with codecs.open(duplicate_report, "rb", "utf-8") as f5, \
+            codecs.open(reference, "wb", "utf-8") as f6:
         r5 = clcsv.UnicodeReader(f5)
+        w6 = clcsv.UnicodeWriter(f6)
         headers = r5.next()
+        w6.writerow(headers)
+        w6.writerow([])
+
+        seen_roots = []
         next_row = None
         while True:
             match_set, next_row = _read_match_set(r5, next_row)
             for m in missing:
                 if match_set.contains_id(m):
-                    #append to refs
-                    pass
+                    root_id = match_set.root["id"]
+                    if root_id in seen_roots:
+                        continue
+                    seen_roots.append(root_id)
+
+                    print("Reference set for root id {x}".format(x=root_id))
+                    rows = match_set.to_rows()
+                    for row in rows:
+                        w6.writerow(row)
+                    w6.writerow([])
+
+            if next_row is None:
+                break
 
 
 analyse(duplicate_report, noids_report, out)
-compare_outputs(duplicate_report)
+# compare_outputs(duplicate_report)
