@@ -71,7 +71,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
         # Scroll for article and/or journal
         for typ in types:
-            job.add_audit_message(dates.now() + u": Starting download of " + typ)
+            job.add_audit_message(dates.now() + u": Starting export of " + typ)
 
             out_dir = tmpStore.path(container, "doaj_" + typ + "_data_" + day_at_start, create_container=True, must_exist=False)
             out_name = os.path.basename(out_dir)
