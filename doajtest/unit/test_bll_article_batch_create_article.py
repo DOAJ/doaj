@@ -142,6 +142,11 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         else:
             report = self.svc.batch_create_articles(articles, account, duplicate_check, merge_duplicate, limit_to_account)
 
+            # make sure all the articles are saved before running the asserts
+            aids = [(a.id, a.last_updated) for a in articles]
+            for aid, lu in aids:
+                Article.block(aid, lu, sleep=0.05)
+
             assert report["success"] == success
             assert report["fail"] == fail
             assert report["update"] == update

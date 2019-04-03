@@ -86,7 +86,7 @@ class Cache(DomainObject):
             lu = self.last_updated
 
         lu = datetime.strptime(lu, "%Y-%m-%dT%H:%M:%SZ")
-        now = datetime.now()
+        now = datetime.utcnow()
         dt = now - lu
 
         # compatibility with Python 2.6
