@@ -201,6 +201,15 @@ def set_current_context():
         }
 
 
+@app.template_filter("bytesToFilesize")
+def bytes_to_filesize(size):
+    units = ["bytes", "Kb", "Mb", "Gb"]
+    scale = 0
+    while size > 1000 and scale < len(units):
+        size = float(size) / 1000.0     # note that it is no longer 1024
+        scale += 1
+    return "{size:.1f}{unit}".format(size=size, unit=units[scale])
+
 @app.template_filter('utc_timestamp')
 def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
     """
