@@ -3,15 +3,17 @@ from portality import models
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1.common import generate_link_headers
 import time
-from doajtest.fixtures import AccountFixtureFactory
+from flask import url_for
 
 class TestArticleMatch(DoajTestCase):
 
     def setUp(self):
         super(TestArticleMatch, self).setUp()
+        self.max = self.app_test.config.get("DISCOVERY_MAX_RECORDS_SIZE")
 
     def tearDown(self):
         super(TestArticleMatch, self).tearDown()
+        self.app_test.config["DISCOVERY_MAX_RECORDS_SIZE"] = self.max
 
     def test_01_journals(self):
         # populate the index with some journals
@@ -398,3 +400,45 @@ class TestArticleMatch(DoajTestCase):
         }
 
         assert generate_link_headers(metadata) == '<https://example.org/api/v1/search/articles/%2A?page=1&pageSize=10>; rel=prev, <https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10>; rel=last, <https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10>; rel=next', generate_link_headers(metadata)
+
+    def test_06_deep_paging_limit(self):
+        # populate the index with some journals
+        jids = []
+        for i in range(10):
+            j = models.Journal()
+            j.set_in_doaj(True)
+            bj = j.bibjson()
+            bj.title = "Test Journal {x}".format(x=i)
+            bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
+            bj.publisher = "Test Publisher {x}".format(x=i)
+            bj.add_url("http://homepage.com/{x}".format(x=i), "homepage")
+            j.save()
+            jids.append((j.id, j.last_updated))
+
+        self.app_test.config["DISCOVERY_MAX_RECORDS_SIZE"] = 5
+
+        # block until all the records are saved
+        for jid, lu in jids:
+            models.Journal.block(jid, lu, sleep=0.05)
+
+        # now run some queries
+        with self.app_test.test_request_context():
+            # check that the first page still works
+            res = DiscoveryApi.search("journal", None, "*", 1, 5)
+            assert res.data.get("total") == 10
+            assert len(res.data.get("results")) == 5
+            assert res.data.get("page") == 1
+            assert res.data.get("pageSize") == 5
+
+            # but that the second page fails
+            with self.assertRaises(DiscoveryException):
+                try:
+                    res = DiscoveryApi.search("journal", None, "*", 2, 5)
+                except DiscoveryException as e:
+                    data_dump_url = url_for("doaj.public_data_dump")
+                    oai_article_url = url_for("oaipmh.oaipmh", specified="article")
+                    oai_journal_url = url_for("oaipmh.oaipmh")
+                    assert data_dump_url in e.message
+                    assert oai_article_url in e.message
+                    assert oai_journal_url in e.message
+                    raise

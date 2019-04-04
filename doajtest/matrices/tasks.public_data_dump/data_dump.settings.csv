@@ -1,0 +1,19 @@
+field,test_id,clean,prune,types,journals,articles,batch_size,tmp_write,store_write,status
+type,index,generated,generated,generated,generated,generated,generated,generated,generated,conditional
+default,,,,,,,,,,complete
+,,,,,,,,,,
+values,,yes,yes,all,0,0,3,success,success,complete
+values,,no,no,journal,2,2,,fail,fail,error
+values,,-,-,article,4,4,,,,
+,,,,-,,,,,,
+,,,,,,,,,,
+constraint clean,,-,,,0,0,,success,success,
+constraint prune,,,-,,0,0,,success,success,
+constraint types,,,,journal,,0,,,,
+constraint types,,,,article,0,,,,,
+constraint types,,,,-,0,0,,success,success,
+constraint tmp_write,,,,,,,,fail,success,
+constraint store_write,,,,,,,,success,fail,
+,,,,,,,,,,
+conditional status,,,,,,,,fail,,error
+conditional status,,,,,,,,,fail,error

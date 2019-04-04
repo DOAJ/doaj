@@ -7,6 +7,7 @@ import esprit
 import re, json, uuid, os
 from copy import deepcopy
 from flask import url_for
+from portality.ui.messages import Messages
 from portality.bll.doaj import DOAJ
 
 class DiscoveryException(Exception):
@@ -110,29 +111,40 @@ class DiscoveryApi(Api):
         return deepcopy(DISCOVERY_API_SWAG['article'])
 
     @classmethod
-    def _sanitise(cls, q, page, page_size, sort, search_subs, sort_subs):
-        if not allowed(q):
-            raise DiscoveryException("Query contains disallowed Lucene features")
+    def _sanitise(cls, q, page, page_size, sort, search_subs, sort_subs, bulk):
+        if q is not None:
+            if not allowed(q):
+                raise DiscoveryException("Query contains disallowed Lucene features")
 
-        # FIXME: replace this with Anusha's proper solution as soon as possible
-        if page > 100:
-            raise DiscoveryException("You cannot request more than 100 pages of search results at this time. A full data-dump of the DOAJ data is due soon.  If you require access to a larger dataset in the mean time, please either use the OAI-PMH endpoint or contact us via https://doaj.org/contact")
-
-        q = query_substitute(q, search_subs)
-        q = escape(q)
-        # print q
+            q = query_substitute(q, search_subs)
+            q = escape(q)
 
         # sanitise the page size information
         if page < 1:
             page = 1
 
-        if page_size > app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100):
-            page_size = app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100)
+        if bulk :
+            max_page_size = app.config.get("DISCOVERY_BULK_PAGE_SIZE", 1000)
+        else:
+            max_page_size = app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100)
+        if page_size > max_page_size:
+            page_size = max_page_size
         elif page_size < 1:
             page_size = 10
 
         # calculate the position of the from cursor in the document set
         fro = (page - 1) * page_size
+        # If fro is greater than the max allowed, throw error
+        # using bulk to provide an override when needed
+        max_records = app.config.get("DISCOVERY_MAX_RECORDS_SIZE", 1000)
+        if fro >= max_records:
+            message = Messages.PREVENT_DEEP_PAGING_IN_API.format(
+                max_records=max_records,
+                data_dump_url=app.config.get("BASE_URL") + url_for("doaj.public_data_dump"),
+                oai_journal_url=app.config.get("BASE_URL") + url_for("oaipmh.oaipmh"),
+                oai_article_url=app.config.get("BASE_URL") + url_for("oaipmh.oaipmh", specified="article")
+            )
+            raise DiscoveryException(message)
 
         # interpret the sort field into the form required by the query
         sortby = None
@@ -159,9 +171,19 @@ class DiscoveryApi(Api):
         return q, page, fro, page_size, sortby, sortdir
 
     @classmethod
-    def _make_query(cls, q, page, page_size, sort, search_subs, sort_subs):
+    def _make_query(cls, q, page, page_size, sort, index_type, bulk):
+        if index_type == 'article':
+            search_subs = app.config.get("DISCOVERY_ARTICLE_SEARCH_SUBS", {})
+            sort_subs = app.config.get("DISCOVERY_ARTICLE_SORT_SUBS", {})
+        elif index_type == 'journal':
+            search_subs = app.config.get("DISCOVERY_JOURNAL_SEARCH_SUBS", {})
+            sort_subs = app.config.get("DISCOVERY_JOURNAL_SORT_SUBS", {})
+        else:
+            search_subs = app.config.get("DISCOVERY_APPLICATION_SEARCH_SUBS", {})
+            sort_subs = app.config.get("DISCOVERY_APPLICATION_SORT_SUBS", {})
+
         # sanitise and prep the inputs
-        q, page, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs)
+        q, page, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs, bulk)
 
         search_query = SearchQuery(q, fro, page_size, sortby, sortdir)
         raw_query = search_query.query()
@@ -233,22 +255,16 @@ class DiscoveryApi(Api):
             raise DiscoveryException("There was an error executing your query for {0}. Unknown type.)".format(index_type))
 
         if index_type == 'article':
-            search_subs = app.config.get("DISCOVERY_ARTICLE_SEARCH_SUBS", {})
-            sort_subs = app.config.get("DISCOVERY_ARTICLE_SORT_SUBS", {})
             endpoint = 'search_articles'
             klass = models.Article
         elif index_type == 'journal':
-            search_subs = app.config.get("DISCOVERY_JOURNAL_SEARCH_SUBS", {})
-            sort_subs = app.config.get("DISCOVERY_JOURNAL_SORT_SUBS", {})
             endpoint = 'search_journals'
             klass = models.Journal
         else:
-            search_subs = app.config.get("DISCOVERY_APPLICATION_SEARCH_SUBS", {})
-            sort_subs = app.config.get("DISCOVERY_APPLICATION_SORT_SUBS", {})
             endpoint = 'search_applications'
             klass = models.Suggestion
 
-        raw_query, page, page_size = cls._make_query(q, page, page_size, sort, search_subs, sort_subs)
+        raw_query, page, page_size = cls._make_query(q, page, page_size, sort, index_type, False)
 
         # execute the query against the articles
         query_service = DOAJ.queryService()
@@ -263,6 +279,18 @@ class DiscoveryApi(Api):
         obs = [klass(**raw) for raw in esprit.raw.unpack_json_result(res)]
         return cls._make_response(endpoint, res, q, page, page_size, sort, obs)
 
+    @classmethod
+    def scroll(cls, index_type, account, q, page_size, sort=None, scan=False):
+        if not index_type in ['article', 'journal', 'application']:
+            raise DiscoveryException("There was an error executing your query for {0}. Unknown type.)".format(index_type))
+
+        page = 1 # Not used in scroll
+        raw_query, page, page_size = cls._make_query(q, page, page_size, sort, index_type, True)
+
+        # execute the query against the articles
+        query_service = DOAJ.queryService()
+        for result in query_service.scroll('api_query', index_type, raw_query, account, page_size, scan=scan):
+            yield result
 
 class SearchQuery(object):
     def __init__(self, qs, fro, psize, sortby=None, sortdir=None):
@@ -274,15 +302,18 @@ class SearchQuery(object):
 
     def query(self):
         q = {
-            "query" : {
+            "from" : self.fro,
+            "size" : self.psize
+        }
+        if self.qs is not None:
+            q["query"] = {
                 "query_string" : {
                     "query" : self.qs,
                     "default_operator": "AND"
                 }
-            },
-            "from" : self.fro,
-            "size" : self.psize
-        }
+            }
+        else:
+            q["query"] = {"match_all" : {}}
 
         if self.sortby is not None:
             q["sort"] = [{self.sortby : {"order" : self.sortdir, "mode" : "min"}}]

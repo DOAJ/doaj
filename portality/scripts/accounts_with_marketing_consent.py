@@ -19,17 +19,24 @@ WITH_CONSENT = {
 
 HEADERS = ["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?"]
 
+
 def output_map(acc):
     updated_since_create = acc.created_timestamp < acc.last_updated_timestamp
 
     return {
-        "ID" : acc.id,
-        "Name" : acc.name,
-        "Email" : acc.email,
-        "Created" : acc.created_date,
-        "Last Updated" : acc.last_updated,
-        "Updated Since Create?" : str(updated_since_create)
+        "ID": acc.id,
+        "Name": acc.name,
+        "Email": acc.email,
+        "Created": acc.created_date,
+        "Last Updated": acc.last_updated,
+        "Updated Since Create?": str(updated_since_create)
     }
+
+
+def publishers_with_consent(outfile):
+    gen = report_to_csv.query_result_generator(WITH_CONSENT, "account", wrap=lambda x: models.Account(**x))
+    report_to_csv.report_to_csv(gen, HEADERS, output_map, outfile)
+
 
 if __name__ == "__main__":
 
@@ -43,6 +50,4 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    gen = report_to_csv.query_result_generator(WITH_CONSENT, "account", wrap=lambda x: models.Account(**x))
-    report_to_csv.report_to_csv(gen, HEADERS, output_map, args.out)
-
+    publishers_with_consent(args.out)

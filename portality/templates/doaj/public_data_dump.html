@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>DOAJ Data Dumps</h1>
+
+    <p>You can access full data-dumps of the entire DOAJ public metadata below.  Data dumps are generated weekly.
+        The following files provide you complete sets of articles and journals as JSON, in the form that they would also be
+        retrieved via the API.</p>
+
+    <ul>
+        {% if show_journal %}
+            <li><a href="{{ url_for("doaj.public_data_dump_redirect", record_type="journal") }}">Download all Journals</a>
+            {% if journal_size %}
+            ({{ journal_size|bytesToFilesize }})
+            {% endif %}
+            </li>
+        {% else %}
+            <li>Journal data dump is not currently available; please check back later</li>
+        {% endif %}
+
+        {% if show_article %}
+            <li><a href="{{ url_for("doaj.public_data_dump_redirect", record_type="article") }}">Download all Articles</a>
+            {% if article_size %}
+            ({{ article_size|bytesToFilesize }})
+            {% endif %}
+            </li>
+        {% else %}
+            <li>Article data dump is not currently available; please check back later</li>
+        {% endif %}
+    </ul>
+
+    <p>Each file is a <code>tar.gz</code>. The data dumps are structured as follows:</p>
+
+    <p>When you unzip/untar the file, you will have a single directory of the form <code>doaj_[type]_data_[date generated]</code>.</p>
+
+    <p>Inside that directory, you will find a list of files with names of the form <code>[type]_batch_[number].json</code>.  For example
+    <code>journal_batch_3.json</code> or <code>article_batch_27.json</code>.</p>
+
+    <p>Each file contains up to {{ config.get("DISCOVERY_RECORDS_PER_FILE") }} records, and is UTF-8 encoded.  All files
+        should contain the same number of records, apart from the last one, which may have fewer.</p>
+
+    <p>The structure of each file is as a JSON list:</p>
+
+    <pre>
+    [
+        { ... first record ... },
+        { ... second record ... },
+        { ... third record ...},
+        ... etc ...
+    ]
+    </pre>
+
+    <p>Records are not explicitly ordered and the order is not guaranteed to remain consistent across data dumps
+    produced on different days.</p>
+
+    <p>The data structures are formatted as per the <a href="{{ url_for("api_v1.docs") }}">API</a>.</p>
+
+{% endblock %}
