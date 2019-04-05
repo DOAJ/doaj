@@ -508,8 +508,10 @@ can obtain records from DOAJ. The OAI data is always up to date. OAI is well-est
 
 <p>A <a href="{{ url_for('api_v1.docs') }}">search API</a> is available.</p>
 
+<p>You can also download all of our metadata, either the journal metadata only or the article metadata only using <a href="/public-data-dump">our Full Data Dump service</a>.</p>
+
 <a name="metadata_csv"></a>
-<p>You can also <b>Download a list of journals in CSV (comma-separated) format</b> which can then be
+<p>You can <b>download a list of journals in CSV (comma-separated) format</b> which can then be
 imported into Excel or any equivalent analysis tool. The CSV file is updated every 30 minutes. To retrieve the data:</p>
 <ol>
 <li><a href="{{ url_for('doaj.csv_data') }}">Download the file to your computer</a></li>
@@ -540,7 +542,8 @@ Read a full description of this service here</a>.</p>
 <br><br>
 
 <h3><b><a name="alldata"></a>Can I download all of the DOAJ metadata?</b></h3>
-<p>Yes. The simplest way is to <a href="{{ url_for('doaj.csv_data') }}">download the CSV file</a> but if you are an advanced user you can collect the JSON data.</p>
+<p>Yes. The simplest way is to <a href="{{ url_for('doaj.csv_data') }}">download the CSV file</a> which contains all the journal metadata.</p>
+<p>You can also download all of our metadata, either the journal metadata only or the article metadata only using <a href="/public-data-dump">our Full Data Dump service</a>.</p>
 <a href="#top">Back to top</a>
 <br><br>
 
