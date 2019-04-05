@@ -5,27 +5,33 @@ from portality import clcsv
 from portality.lib import normalise
 
 
-duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/duplicate_articles_global_2019-02-27.csv"
-noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/noids_2019-02-27.csv"
-log =  "/home/richard/tmp/doaj/article_duplicates_2019-02-27/log-2019-04-03.txt"
-out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/actions-2019-04-03.csv"
+## 02-27
+#duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/duplicate_articles_global_2019-02-27.csv"
+#noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/noids_2019-02-27.csv"
+#log =  "/home/richard/tmp/doaj/article_duplicates_2019-02-27/log-2019-04-04.txt"
+#out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/actions-2019-04-04.csv"
+#noaction = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/noaction-2019-04-04.csv"
 
-#duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/duplicate_articles_global_2019-03-29.csv"
-#noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/noids_2019-03-29.csv"
-#log =  "/home/richard/tmp/doaj/article_duplicates_2019-03-29/log.txt"
-#out = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/actions.csv"
+## 04-03
+duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/duplicate_articles_global_2019-04-03.csv"
+noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/noids_2019-04-03.csv"
+log =  "/home/richard/tmp/doaj/article_duplicates_2019-04-03/log-2019-04-04.txt"
+out = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/actions-2019-04-04.csv"
+noaction = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/noaction-2019-04-04.csv"
 
+## testing
 #duplicate_report = "/home/richard/tmp/doaj/article_duplicates_test_sheet.csv"
 #noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-03-29/noids_2019-03-29.csv"
 #log =  "/home/richard/tmp/doaj/article_duplicates_test_sheet_log.txt"
 #out = "/home/richard/tmp/doaj/article_duplicates_test_sheet_actions.csv"
 
-INVALID_DOIS = ["undefined", "-", "http://dx.doi.org/", "http://www.gaworkshop.org/"]
+INVALID_DOIS = ["undefined", "-", "http://dx.doi.org/", "http://www.gaworkshop.org/", "0", "None"]
 
 class MatchSet(object):
     def __init__(self, typ=None):
         self._root = None
         self._matches = []
+        self._notes = []
 
     def add_root(self, id, created, doi, fulltext, owner, issns, in_doaj, title_match):
         self._root = {
@@ -54,6 +60,9 @@ class MatchSet(object):
             "match_type" : match_type
         }
         self._matches.append(match)
+
+    def add_note(self, note):
+        self._notes.append(note)
 
     def remove(self, ids):
         removes = []
@@ -105,6 +114,10 @@ class MatchSet(object):
     @property
     def root(self):
         return self._root
+
+    @property
+    def notes(self):
+        return self._notes
 
 
 class ActionRegister(object):
@@ -160,59 +173,53 @@ class ActionRegister(object):
         return resolved_actions
 
 
-def analyse(duplicate_report, noids_report, out):
+def analyse(duplicate_report, noids_report, out, noaction):
 
     with codecs.open(out, "wb", "utf-8") as o, \
             codecs.open(log, "wb", "utf-8") as l, \
-            codecs.open(duplicate_report, "rb", "utf-8") as f:
+            codecs.open(duplicate_report, "rb", "utf-8") as f, \
+            codecs.open(noaction, "wb", "utf-8") as g:
+
+        reader = clcsv.UnicodeReader(f)
+        noaction_writer = clcsv.UnicodeWriter(g)
+        headers = reader.next()
+        noaction_writer.writerow(headers)
+        noaction_writer.writerow([])
 
         final_instructions = {}
-        reader = clcsv.UnicodeReader(f)
-        headers = reader.next()
         next_row = None
         while True:
             match_set, next_row = _read_match_set(reader, next_row)
             ids = [m["id"] for m in match_set.matches]
             l.write("--" + str(len(ids)) + "-- " + ",".join(ids) + "\n\n")
+            actions = ActionRegister()
 
             # get rid of any articles from the match set that are not in doaj
-            actions = ActionRegister()
             _eliminate_not_in_doaj(match_set, actions)
 
-            cont = True
-            if len(match_set.matches) == 1:
-                _sanitise(match_set, actions)
-                cont = False
+            set_size = len(match_set.matches)
+            while True:
+                cont = True
+                if len(match_set.matches) == 1:
+                    _sanitise(match_set, actions)
+                    cont = False
 
-            if cont:
-                #_clean_doi_match_type(match_set, actions)
-                #_clean_fulltext_match_type(match_set, actions)
-                _clean_matching_dois(match_set, actions)
-                _clean_matching_fulltexts(match_set, actions)
-                _sanitise(match_set, actions)
+                if cont:
+                    #_clean_doi_match_type(match_set, actions)
+                    #_clean_fulltext_match_type(match_set, actions)
+                    _clean_matching_dois(match_set, actions)
+                    _clean_matching_fulltexts(match_set, actions)
+                    _sanitise(match_set, actions)
 
-            if len(match_set.matches) == 1:
-                cont = False
+                if len(match_set.matches) == 1:
+                    cont = False
 
-            if cont:
-                _remove_old(match_set, actions)
+                if cont:
+                    _remove_old(match_set, actions)
 
-            """
-            if cont:
-                _remove_old_when_all_match(match_set, actions)
-
-            if len(match_set.matches) == 1:
-                cont = False
-
-            if cont:
-                _remove_old_when_no_ft_and_doi_title_match(match_set, actions)
-
-            if len(match_set.matches) == 1:
-                cont = False
-
-            if cont:
-                _remove_old_when_no_doi_and_ft_title_match(match_set, actions)
-            """
+                if len(match_set.matches) == set_size or len(match_set.matches) == 0:
+                    break
+                set_size = len(match_set.matches)
 
             # report on the actions on this match set
             if actions.has_actions():
@@ -220,6 +227,14 @@ def analyse(duplicate_report, noids_report, out):
                 l.write("\n\n")
 
             actions.export_to(final_instructions)
+
+            if len(match_set.matches) > 1:
+                rows = match_set.to_rows()
+                for row in rows:
+                    noaction_writer.writerow(row)
+                for note in match_set.notes:
+                    noaction_writer.writerow([note])
+                noaction_writer.writerow([])
 
             if next_row is None:
                 break
@@ -239,6 +254,7 @@ def analyse(duplicate_report, noids_report, out):
 def _remove_old(match_set, actions):
     titles = [a["title_match"] for a in match_set.matches]
     if False in titles:
+        match_set.add_note("Titles do not all match")
         return
 
     dois = [a["doi"] for a in match_set.matches]
@@ -251,142 +267,57 @@ def _remove_old(match_set, actions):
     ft_match = len(ftset) == 1 and "" not in fts
     no_ft = len(ftset) == 0 or (len(ftset) == 1 and "" in ftset)
 
-    if (doi_match and ft_match) or (doi_match and no_ft) or (no_doi and ft_match):
+    # if (doi_match and ft_match) or (doi_match and no_ft) or (no_doi and ft_match):
+    if doi_match or ft_match:
         dateset = []
         for a in match_set.matches:
             created = datetime.strptime(a["created"], "%Y-%m-%dT%H:%M:%SZ")
             dateset.append({"created" : created, "id" : a["id"]})
 
         dateset.sort(key=lambda x : x["created"])
-        dateset.pop()
-        ids = [a["id"] for a in dateset]
+        latest = dateset.pop()
+        ids = [a["id"] for a in dateset if a["created"] != latest]
+        keeping = [a["id"] for a in dateset if a["created"] == latest]
+        if len(keeping) > 0:
+            match_set.add_note("Some IDs have the same last updated date, can't disambiguate to remove oldest")
+
         match_set.remove(ids)
 
         for id in ids:
+            if doi_match and ft_match:
+                msg = "doi, fulltext and title match, and newer article available"
+            elif doi_match:
+                msg = "doi and title match, and newer article available"
+            elif ft_match:
+                msg = "fulltext and title match, and newer article available"
+            else:
+                msg = "error, you shouldn't be seeing this message"
+            """
             if no_doi:
                 msg = "no doi; fulltext and title match, and newer article available"
             elif no_ft:
                 msg = "no fulltext; doi and title match, and newer article available"
             else:
                 msg = "doi, fulltext and title match, and newer article available"
+            """
+
             actions.set_action(id, "delete", msg)
+    else:
+        match_set.add_note("No full set of matching DOIs or Fulltexts, can't delete old versions reliably")
 
-
-"""
-def _remove_old_when_no_doi_and_ft_title_match(match_set, actions):
-    if match_set.type != "fulltext":
-        return
-
-    dois = [a["doi"] for a in match_set.matches]
-    dois = set(dois)
-    if len(dois) > 1:
-        return
-    if "" not in dois:
-        return
-
-    titles = [a["title_match"] for a in match_set.matches]
-    if False in titles:
-        return
-
-    # no doi and fulltext and titles all match, so we can throw away all the old stuff
-    dateset = []
-    for a in match_set.matches:
-        created = datetime.strptime(a["created"], "%Y-%m-%dT%H:%M:%SZ")
-        dateset.append({"created" : created, "id" : a["id"]})
-
-    dateset.sort(key=lambda x : x["created"])
-    dateset.pop()
-    ids = [a["id"] for a in dateset]
-    match_set.remove(ids)
-
-    for id in ids:
-        actions.set_action(id, "delete", "no doi; fulltext and title match, and newer article available")
-"""
-
-"""
-def _remove_old_when_no_ft_and_doi_title_match(match_set, actions):
-    if match_set.type != "doi":
-        return
-
-    fulltexts = [a["fulltext"] for a in match_set.matches]
-    fulltexts = set(fulltexts)
-    if len(fulltexts) > 1:
-        return
-    if "" not in fulltexts:
-        return
-
-    titles = [a["title_match"] for a in match_set.matches]
-    if False in titles:
-        return
-
-    # no fulltext and doi and titles all match, so we can throw away all the old stuff
-    dateset = []
-    for a in match_set.matches:
-        created = datetime.strptime(a["created"], "%Y-%m-%dT%H:%M:%SZ")
-        dateset.append({"created" : created, "id" : a["id"]})
-
-    dateset.sort(key=lambda x : x["created"])
-    dateset.pop()
-    ids = [a["id"] for a in dateset]
-    match_set.remove(ids)
-
-    for id in ids:
-        actions.set_action(id, "delete", "no fulltext; doi and title match, and newer article available")
-"""
-
-"""
-def _remove_old_when_all_match(match_set, actions):
-    if match_set.type != "doi+fulltext":
-        return
-
-    titles = [a["title_match"] for a in match_set.matches]
-    if False in titles:
-        return
-
-    # doi, fulltext and titles all match, so we can throw away all the old stuff
-    dateset = []
-    for a in match_set.matches:
-        created = datetime.strptime(a["created"], "%Y-%m-%dT%H:%M:%SZ")
-        dateset.append({"created" : created, "id" : a["id"]})
-
-    dateset.sort(key=lambda x : x["created"])
-    dateset.pop()
-    ids = [a["id"] for a in dateset]
-    match_set.remove(ids)
-
-    for id in ids:
-        actions.set_action(id, "delete", "doi, fulltext and title match, and newer article available")
-"""
-
-"""
-def _clean_fulltext_match_type(match_set, actions):
-    if match_set.type != "fulltext":
-        return
-
-    # this is a doi match
-    dois = [a["doi"] for a in match_set.matches]
-    if "" in dois:
-        return
-
-    doiset = set(dois)
-    if len(dois) != len(doiset):
-        return
-
-    # all the dois are different
-    for a in match_set.matches:
-        actions.set_action(a["id"], "remove_fulltext", "duplicated fulltext, different dois")
-"""
 
 def _clean_matching_fulltexts(match_set, actions):
     # first find out if the match set has a complete set of dois.  If not all the records
     # have dois we can't clean the Fulltexts out.
     dois = [a["doi"] for a in match_set.matches]
     if "" in dois:
+        match_set.add_note("Can't remove fulltext URLs, at least one empty string in DOI set")
         return
 
     # check that all the dois are unique.  If they are not, we can't remove the fulltexts
     doiset = set(dois)
     if len(dois) != len(doiset):
+        match_set.add_note("Can't remove fulltext URLs, not all DOIs are unique")
         return
 
     # get all the Fulltexts that exist, and remember which IDs have Fulltextss
@@ -400,41 +331,26 @@ def _clean_matching_fulltexts(match_set, actions):
     # check that all the fulltexts we found are the same.  If they are not, we can't remove them
     ftset = set(fts)
     if len(ftset) != 1:
+        match_set.add_note("Can't remove fulltext URLs, they are not all matching")
         return
 
     # all the fulltext are different, and the records all have the same doi, or do not have a DOI
     for id in has_ft:
         actions.set_action(id, "remove_fulltext", "duplicated fulltext, different doi")
 
-"""
-def _clean_doi_match_type(match_set, actions):
-    if match_set.type != "doi":
-        return
-
-    # this is a doi match
-    fts = [a["fulltext"] for a in match_set.matches]
-    if "" in fts:
-        return
-
-    ftset = set(fts)
-    if len(fts) != len(ftset):
-        return
-
-    # all the fulltext are different
-    for a in match_set.matches:
-        actions.set_action(a["id"], "remove_doi", "duplicated doi, different fulltexts")
-"""
 
 def _clean_matching_dois(match_set, actions):
     # first find out if the match set has a complete set of fulltexts.  If not all the records
     # have fulltexts we can't clean the DOIs out.
     fts = [a["fulltext"] for a in match_set.matches]
     if "" in fts:
+        match_set.add_note("Can't remove DOIs, at least one empty string in Fulltext set")
         return
 
     # check that all the fulltexts are unique.  If they are not, we can't remove the DOIs
     ftset = set(fts)
     if len(fts) != len(ftset):
+        match_set.add_note("Can't remove DOIs, not all Fulltexts are unique")
         return
 
     # get all the DOIs that exist, and remember which IDs have DOIs
@@ -448,19 +364,26 @@ def _clean_matching_dois(match_set, actions):
     # check that all the dois we found are the same.  If they are not, we can't remove them
     doiset = set(dois)
     if len(doiset) != 1:
+        match_set.add_note("Can't remove DOIs, they are not all matching")
         return
 
     # all the fulltext are different, and the records all have the same doi, or do not have a DOI
     for id in has_doi:
         actions.set_action(id, "remove_doi", "duplicated doi, different fulltexts")
 
+
 def _sanitise(match_set, actions):
+    removes = []
     for article in match_set.matches:
         if article["doi"] in INVALID_DOIS:
             if article["fulltext"] == "":
+                removes.append(article["id"])
                 actions.set_action(article["id"], "delete", "invalid doi, and no fulltext")
             else:
                 actions.set_action(article["id"], "remove_doi", "invalid doi")
+
+    if len(removes) > 0:
+        match_set.remove(removes)
 
 
 def _eliminate_not_in_doaj(match_set, actions):
@@ -470,9 +393,13 @@ def _eliminate_not_in_doaj(match_set, actions):
         if not article["in_doaj"]:
             removes.append(article["id"])
 
-    match_set.remove(removes)
-    for r in removes:
-        actions.set_action(r, "delete", "not in doaj")
+    if len(removes) > 0:
+        match_set.remove(removes)
+        match_set.add_note("not in DOAJ: " + ", ".join(removes))
+        for r in removes:
+            actions.set_action(r, "delete", "not in doaj")
+    else:
+        match_set.add_note("All matches in DOAJ")
 
 
 def _read_match_set(reader, next_row):
@@ -539,8 +466,8 @@ def _read_match_set(reader, next_row):
     assert n_matches + 1 == len(match_set.matches)
 
 def compare_outputs(duplicate_report):
-    original = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/out.csv"
-    compare = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/actions-2019-04-02.csv"
+    original = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/actions-2019-04-02.csv"
+    compare = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/actions-2019-04-04.csv"
     missing_out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/missing.csv"
     extra_out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/extra.csv"
     reference = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/reference.csv"
@@ -560,10 +487,10 @@ def compare_outputs(duplicate_report):
     with codecs.open(missing_out, "wb", "utf-8") as f3:
         f3.write("\n".join(missing))
 
-    #extra = [x for x in id2 if x not in id1]
-    #print("extra {x}".format(x=len(extra)))
-    #with codecs.open(extra_out, "wb", "utf-8") as f4:
-    #    f4.write("\n".join(extra))
+    extra = [x for x in id2 if x not in id1]
+    print("extra {x}".format(x=len(extra)))
+    with codecs.open(extra_out, "wb", "utf-8") as f4:
+        f4.write("\n".join(extra))
 
     with codecs.open(duplicate_report, "rb", "utf-8") as f5, \
             codecs.open(reference, "wb", "utf-8") as f6:
@@ -594,5 +521,5 @@ def compare_outputs(duplicate_report):
                 break
 
 
-analyse(duplicate_report, noids_report, out)
-# compare_outputs(duplicate_report)
+analyse(duplicate_report, noids_report, out, noaction)
+#compare_outputs(duplicate_report)
