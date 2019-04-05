@@ -180,6 +180,38 @@ def sitemap():
     sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
 
+@blueprint.route("/public-data-dump")
+def public_data_dump():
+    data_dump = models.Cache.get_public_data_dump()
+    show_article = data_dump.get("article", {}).get("url") is not None
+    article_size = data_dump.get("article", {}).get("size")
+    show_journal = data_dump.get("journal", {}).get("url") is not None
+    journal_size = data_dump.get("journal", {}).get("size")
+    return render_template("doaj/public_data_dump.html",
+                           show_article=show_article,
+                           article_size=article_size,
+                           show_journal=show_journal,
+                           journal_size=journal_size)
+
+@blueprint.route("/public-data-dump/<record_type>")
+def public_data_dump_redirect(record_type):
+    store_url = models.Cache.get_public_data_dump().get(record_type, {}).get("url")
+    if store_url is None:
+        abort(404)
+    if store_url.startswith("/"):
+        store_url = "/store" + store_url
+    return redirect(store_url, code=307)
+
+@blueprint.route("/store/<container>/<filename>")
+def get_from_local_store(container, filename):
+    if not app.config.get("STORE_LOCAL_EXPOSE", False):
+        abort(404)
+
+    from portality import store
+    localStore = store.StoreFactory.get(None)
+    file_handle = localStore.get(container, filename)
+    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
+
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
@@ -204,13 +236,6 @@ def autocomplete(doc_type, field_name):
     return jsonify({'suggestions': suggs})
     # you shouldn't return lists top-level in a JSON response:
     # http://flask.pocoo.org/docs/security/#json-security
-
-
-@blueprint.route("/toc")
-def list_journals():
-    js = models.Journal.all_in_doaj(page_size=1000)
-    return render_template("doaj/journals.html", journals=js)
-
 
 @blueprint.route("/toc/<identifier>")
 @blueprint.route("/toc/<identifier>/<volume>")

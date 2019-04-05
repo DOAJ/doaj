@@ -10,6 +10,7 @@ build/*
 dist/*
 tmp/*
 *.zip
+.env
 
 # PyCharm and other IntelliJ-based IDE-s and editors' folder:
 .idea
@@ -79,3 +80,12 @@ docker/docker-compose.override.yml
 Network Trash Folder
 Temporary Items
 .apdisk
+
+
+## Local storage
+local_store/main/*
+!local_store/main/README.md
+local_store/tmp/*
+!local_store/tmp/README.md
+
+

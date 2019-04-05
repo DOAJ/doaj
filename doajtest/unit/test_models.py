@@ -1108,6 +1108,38 @@ class TestClient(DoajTestCase):
         assert stats.get("total") == 2
         assert stats.get("latest") == "2019-01-02T00:00:00Z"
 
+    def test_34_cache(self):
+        models.Cache.cache_site_statistics({
+            "articles" : 10,
+            "journals" : 20,
+            "countries" : 30,
+            "searchable" : 40
+        })
+
+        models.Cache.cache_csv("/csv/filename.csv")
+
+        models.Cache.cache_sitemap("sitemap.xml")
+
+        models.Cache.cache_public_data_dump("http://example.com/article", 100, "http://example.com/journal", 200)
+
+        time.sleep(1)
+
+        stats = models.Cache.get_site_statistics()
+        assert stats["articles"] == 10
+        assert stats["journals"] == 20
+        assert stats["countries"] == 30
+        assert stats["searchable"] == 40
+
+        assert models.Cache.get_latest_csv() == "/csv/filename.csv"
+
+        assert models.Cache.get_latest_sitemap() == "sitemap.xml"
+
+        assert models.Cache.get_public_data_dump().get("article").get("url") == "http://example.com/article"
+        assert models.Cache.get_public_data_dump().get("article").get("size") == 100
+        assert models.Cache.get_public_data_dump().get("journal").get("url") == "http://example.com/journal"
+        assert models.Cache.get_public_data_dump().get("journal").get("size") == 200
+
+
 # TODO: reinstate this test when author emails have been disallowed again
 '''
     def test_33_article_with_author_email(self):
@@ -1128,3 +1160,4 @@ class TestClient(DoajTestCase):
         with self.assertRaises(TypeError):
             a.bibjson().add_author(name='Ms Test', affiliation='School of Rock', email='author@example.com')
 '''
+

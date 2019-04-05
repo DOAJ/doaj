@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.15.1"
+DOAJ_VERSION = "2.15.3"
 
 OFFLINE_MODE = False
 
@@ -62,6 +62,8 @@ SERVICE_NAME = "Directory of Open Access Journals"
 SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
 HOST = "0.0.0.0"
 DEBUG = False
+DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
+DEBUG_TB_INTERCEPT_REDIRECTS = False
 PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
@@ -91,7 +93,8 @@ HUEY_SCHEDULE = {
     "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
-    "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"}
+    "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
+    "public_data_dump" : {"month" : "*", "day" : "*", "day_of_week" : "1", "hour" : "10", "minute" : "0"}
 }
 
 HUEY_TASKS = {
@@ -133,9 +136,12 @@ STORE_TMP_IMPL = "portality.store.TempStore"
 from portality.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
+STORE_LOCAL_EXPOSE = False  # if you want to allow files in the local store to be exposed under /store/<path> urls.  For dev only.
 
 STORE_ANON_DATA_CONTAINER = "doaj-anon-data"
 STORE_CACHE_CONTAINER = "doaj-data-cache"
+STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump"
+
 
 # S3 credentials for relevant scopes
 STORE_S3_SCOPES = {
@@ -144,6 +150,12 @@ STORE_S3_SCOPES = {
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     },
     "cache" : {
+        "aws_access_key_id" : "put this in your dev/test/production.cfg",
+        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    },
+    # Used by the api_export script to dump data from the api
+    "public_data_dump" : {
+
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }
@@ -420,7 +432,8 @@ QUERY_ROUTE = {
             "role" : None,
             "query_filters" : ["only_in_doaj", "public_source"],
             "dao" : "portality.models.Article",
-            "required_parameters" : None
+            "required_parameters" : None,
+            "keepalive" : "10m"
         },
         "journal" : {
             "auth" : False,
@@ -709,7 +722,11 @@ DEFAULT_TIMESTAMP = "1970-01-01T00:00:00Z"
 # ========================================
 # API configuration
 
+# maximum number of records to return per page
 DISCOVERY_MAX_PAGE_SIZE = 100
+
+# maximum number of records to return in total (a request for a page starting beyond this number will fail)
+DISCOVERY_MAX_RECORDS_SIZE = 1000
 
 DISCOVERY_ARTICLE_SEARCH_SUBS = {
     "title" : "bibjson.title",
@@ -748,6 +765,10 @@ DISCOVERY_APPLICATION_SORT_SUBS = {
     "title" : "index.unpunctitle.exact",
     "issn" :  "index.issn.exact"
 }
+
+# API data dump settings
+DISCOVERY_BULK_PAGE_SIZE = 1000
+DISCOVERY_RECORDS_PER_FILE = 100000
 
 # =========================================
 # scheduled reports configuration

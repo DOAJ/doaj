@@ -110,7 +110,7 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, out
         out_applications.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Last Updated", "Application Status", "Published Diff", "Latest Edit Recorded", "Latest Accepted Recorded"])
 
         out_accounts = csv.writer(g)
-        out_accounts.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Missing Account ID"])
+        out_accounts.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "In DOAJ", "Missing Account ID"])
 
         out_reapps = csv.writer(h)
         out_reapps.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Created", "Application Last Updated", "Application Last Manual Update", "Application Status", "Published Diff"])
@@ -177,11 +177,11 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, out
             # now figure out if the account is missing
             owner = journal.owner
             if owner is None:
-                out_accounts.writerow([journal.id, journal.created_date, journal.last_update_request, "NO OWNER"])
+                out_accounts.writerow([journal.id, journal.created_date, journal.last_update_request, str(journal.is_in_doaj()), "NO OWNER"])
             else:
                 acc = Account.pull(owner)
                 if acc is None:
-                    out_accounts.writerow([journal.id, journal.created_date, journal.last_update_request, owner])
+                    out_accounts.writerow([journal.id, journal.created_date, journal.last_update_request, str(journal.is_in_doaj()), owner])
 
         print "processed", counter, "journals"
 

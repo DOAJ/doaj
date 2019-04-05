@@ -150,7 +150,19 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     @property
     def ordered_notes(self):
         notes = self.notes
-        return sorted(notes, key=lambda x: x["date"], reverse=True)
+        clusters = {}
+        for note in notes:
+            if note["date"] not in clusters:
+                clusters[note["date"]] = [note]
+            else:
+                clusters[note["date"]].append(note)
+        ordered_keys = sorted(clusters.keys(), reverse=True)
+        ordered = []
+        for key in ordered_keys:
+            clusters[key].reverse()
+            ordered += clusters[key]
+        return ordered
+        # return sorted(notes, key=lambda x: x["date"], reverse=True)
 
     @property
     def owner(self):
