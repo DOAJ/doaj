@@ -1130,7 +1130,7 @@ class TestClient(DoajTestCase):
         assert stats["countries"] == 30
         assert stats["searchable"] == 40
 
-        assert models.Cache.get_latest_csv() == "/csv/filename.csv"
+        assert models.Cache.get_latest_csv().get("url") == "/csv/filename.csv"
 
         assert models.Cache.get_latest_sitemap() == "sitemap.xml"
 

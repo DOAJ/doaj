@@ -14,7 +14,7 @@ class NoWriteStore(store.Store):
     def list(self, container_id):
         return None
 
-    def get(self, container_id, target_name):
+    def get(self, container_id, target_name, encoding=None):
         return None
 
     def url(self, container_id, target_name):
