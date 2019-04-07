@@ -138,9 +138,12 @@ STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
 STORE_LOCAL_EXPOSE = False  # if you want to allow files in the local store to be exposed under /store/<path> urls.  For dev only.
 
-STORE_ANON_DATA_CONTAINER = "doaj-anon-data"
-STORE_CACHE_CONTAINER = "doaj-data-cache"
-STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump"
+# containers (buckets in AWS) where various content will be stored
+# These values are placeholders, and must be overridden in live deployment
+# this prevents test environments from accidentally writing to the production buckets
+STORE_ANON_DATA_CONTAINER = "doaj-anon-data-placeholder"
+STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
+STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
 
 
 # S3 credentials for relevant scopes
