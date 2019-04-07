@@ -163,22 +163,12 @@ def csv_data():
     return redirect(store_url, code=307)
 
 
-@blueprint.route("/store/<container>/<filename>")
-def get_from_local_store(container, filename):
-    if not app.config.get("STORE_LOCAL_EXPOSE", False):
-        abort(404)
-
-    from portality import store
-    localStore = store.StoreFactory.get(None)
-    file_handle = localStore.get(container, filename)
-    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
-
-
 @blueprint.route("/sitemap.xml")
 def sitemap():
     sitemap_file = models.Cache.get_latest_sitemap()
     sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
+
 
 @blueprint.route("/public-data-dump")
 def public_data_dump():
@@ -193,6 +183,7 @@ def public_data_dump():
                            show_journal=show_journal,
                            journal_size=journal_size)
 
+
 @blueprint.route("/public-data-dump/<record_type>")
 def public_data_dump_redirect(record_type):
     store_url = models.Cache.get_public_data_dump().get(record_type, {}).get("url")
@@ -201,6 +192,7 @@ def public_data_dump_redirect(record_type):
     if store_url.startswith("/"):
         store_url = "/store" + store_url
     return redirect(store_url, code=307)
+
 
 @blueprint.route("/store/<container>/<filename>")
 def get_from_local_store(container, filename):
