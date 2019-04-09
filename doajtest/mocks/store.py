@@ -2,6 +2,9 @@ from portality import store
 
 class NoWriteStore(store.Store):
 
+    def __init__(self, scope=None):
+        pass
+
     def store(self, container_id, target_name, source_path=None, source_stream=None):
         raise IOError("No writes")
 
@@ -11,7 +14,7 @@ class NoWriteStore(store.Store):
     def list(self, container_id):
         return None
 
-    def get(self, container_id, target_name):
+    def get(self, container_id, target_name, encoding=None):
         return None
 
     def url(self, container_id, target_name):

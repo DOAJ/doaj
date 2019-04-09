@@ -1,11 +1,9 @@
 from flask_login import login_user
 
 from unittest import TestCase
-from functools import wraps
 from portality import core, dao
 from portality.app import app
 from doajtest.bootstrap import prepare_for_test
-import time
 import dictdiffer
 from datetime import datetime
 from glob import glob
@@ -26,6 +24,10 @@ class DoajTestCase(TestCase):
 
     def setUp(self):
         self.init_index()
+
+        app.config["STORE_IMPL"] = "portality.store.StoreLocal"
+        app.config["STORE_LOCAL_DIR"] = paths.rel2abs(__file__, "..", "tmp", "store", "main")
+        app.config["STORE_TMP_DIR"] = paths.rel2abs(__file__, "..", "tmp", "store", "tmp")
 
     def tearDown(self):
         self.destroy_index()

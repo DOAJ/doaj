@@ -1,5 +1,5 @@
+# -*- coding: UTF-8 -*-
 from copy import deepcopy
-from datetime import datetime
 import rstr
 
 from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
@@ -58,6 +58,14 @@ class JournalFixtureFactory(object):
     @staticmethod
     def make_bulk_edit_data():
         return deepcopy(JOURNAL_BULK_EDIT)
+
+    @staticmethod
+    def csv_headers():
+        return deepcopy(CSV_HEADERS)
+
+    @staticmethod
+    def question_answers():
+        return deepcopy(JOURNAL_QUESTION_ANSWERS)
 
 JOURNAL_SOURCE = {
     "id": "abcdefghijk_journal",
@@ -486,3 +494,122 @@ JOURNAL_BULK_EDIT =  {
     "owner": "testuser",
     "contact_name": "Test User"
 }
+
+
+CSV_HEADERS = [
+    'Journal title',
+    'Journal URL',
+    'Alternative title',
+    'Journal ISSN (print version)',
+    'Journal EISSN (online version)',
+    'Publisher',
+    'Society or institution',
+    'Platform, host or aggregator',
+    'Country of publisher',
+    'Journal article processing charges (APCs)',
+    'APC information URL',
+    'APC amount',
+    'Currency',
+    'Journal article submission fee',
+    'Submission fee URL',
+    'Submission fee amount',
+    'Submission fee currency',
+    'Number of articles published in the last calendar year',
+    'Number of articles information URL',
+    'Journal waiver policy (for developing country authors etc)',
+    'Waiver policy information URL',
+    'Digital archiving policy or program(s)',
+    'Archiving: national library',
+    'Archiving: other',
+    'Archiving infomation URL',
+    'Journal full-text crawl permission',
+    'Permanent article identifiers',
+    'Journal provides download statistics',
+    'Download statistics information URL',
+    'First calendar year journal provided online Open Access content',
+    'Full text formats',
+    'Keywords',
+    'Full text language',
+    'URL for the Editorial Board page',
+    'Review process',
+    'Review process information URL',
+    "URL for journal's aims & scope",
+    "URL for journal's instructions for authors",
+    'Journal plagiarism screening policy',
+    'Plagiarism information URL',
+    'Average number of weeks between submission and publication',
+    "URL for journal's Open Access statement",
+    'Machine-readable CC licensing information embedded or displayed in articles',
+    'URL to an example page with embedded licensing information',
+    'Journal license',
+    'License attributes',
+    'URL for license terms',
+    'Does this journal allow unrestricted reuse in compliance with BOAI?',
+    'Deposit policy directory',
+    'Author holds copyright without restrictions',
+    'Copyright information URL',
+    'Author holds publishing rights without restrictions',
+    'Publishing rights information URL',
+    'DOAJ Seal',
+    'Tick: Accepted after March 2014',
+    'Added on Date',
+    'Subjects',
+    "Number of Article Records",
+    "Most Recent Article Added"
+]
+
+JOURNAL_QUESTION_ANSWERS = [
+    'The Title',
+    'http://journal.url',
+    'Alternative Title',
+    '1234-5678',
+    '9876-5432',
+    'The Publisher',
+    'Society Institution',
+    'Platform Host Aggregator',
+    'United States',
+    'Yes',
+    'http://apc.com',
+    '2',
+    'GBP - Pound Sterling',
+    'Yes',
+    'http://submission.com',
+    '4',
+    'USD - US Dollar',
+    '',
+    '',
+    'Yes',
+    'http://waiver.policy',
+    'LOCKSS, CLOCKSS',
+    'Trinity',
+    'A safe place',
+    'http://digital.archiving.policy',
+    'Yes',
+    'DOI, ARK, PURL',
+    'Yes',
+    'http://download.stats',
+    '1980',
+    'HTML, XML, Wordperfect',
+    'word, key',
+    'English, French',
+    'http://editorial.board',
+    'Open peer review',
+    'http://review.process',
+    'http://aims.scope',
+    'http://author.instructions.com',
+    'Yes',
+    'http://plagiarism.screening',
+    '8',
+    'http://oa.statement',
+    'Yes',
+    'http://licence.embedded',
+    'CC MY',
+    'Attribution, No Commercial Usage',
+    'http://licence.url',
+    'Yes',
+    'Sherpa/Romeo, Store it',
+    'True',
+    'http://copyright.com',
+    'True',
+    'http://publishing.rights'
+]

@@ -5,12 +5,7 @@ from portality.tasks.redis_huey import main_queue, schedule
 from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
-from portality.journalcsv import make_journals_csv
-
-import os, codecs
-from datetime import datetime
-from operator import itemgetter
-
+from portality.bll.doaj import DOAJ
 
 class JournalCSVBackgroundTask(BackgroundTask):
 
@@ -23,32 +18,9 @@ class JournalCSVBackgroundTask(BackgroundTask):
         """
         job = self.background_job
 
-        cdir = app.config.get("CACHE_DIR")
-        if cdir is None:
-            raise BackgroundException("You must set CACHE_DIR in the config")
-        csvdir = os.path.join(cdir, "csv")
-
-        if not os.path.exists(csvdir):
-            os.makedirs(csvdir)
-
-        # save it into the cache directory
-        attachment_name = 'doaj_' + datetime.strftime(datetime.now(), '%Y%m%d_%H%M') + '_utf8.csv'
-        out = os.path.join(csvdir, attachment_name)
-
-        # write the csv file
-        with codecs.open(out, 'wb', encoding='utf-8') as csvfile:
-            make_journals_csv(csvfile)
-
-        # update the ES record to point to the new file
-        models.Cache.cache_csv(attachment_name)
-
-        # remove all but the two latest csvs
-        csvs = [(c, os.path.getmtime(os.path.join(csvdir, c))) for c in os.listdir(csvdir) if c.endswith(".csv")]
-        sorted_csvs = sorted(csvs, key=itemgetter(1), reverse=True)
-
-        if len(sorted_csvs) > 2:
-            for c, lm in sorted_csvs[2:]:
-                os.remove(os.path.join(csvdir, c))
+        journalService = DOAJ.journalService()
+        url = journalService.csv()
+        job.add_audit_message(u"CSV generated; will be served from {y}".format(y=url))
 
     def cleanup(self):
         """

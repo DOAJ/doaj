@@ -1,0 +1,165 @@
+{
+  "parameters": [
+    {
+      "type": "index", 
+      "name": "test_id"
+    }, 
+    {
+      "values": {
+        "False": {}, 
+        "None": {
+          "constraints": {
+            "main_write": {
+              "or": [
+                "success"
+              ]
+            }, 
+            "journals_no_issn": {
+              "or": [
+                "0"
+              ]
+            }, 
+            "journals": {
+              "or": [
+                "0"
+              ]
+            }, 
+            "tmp_write": {
+              "or": [
+                "success"
+              ]
+            }, 
+            "journals_with_articles": {
+              "or": [
+                "0"
+              ]
+            }
+          }
+        }, 
+        "True": {}
+      }, 
+      "type": "generated", 
+      "name": "prune"
+    }, 
+    {
+      "values": {
+        "fail": {
+          "constraints": {
+            "main_write": {
+              "or": [
+                "success"
+              ]
+            }
+          }
+        }, 
+        "success": {}
+      }, 
+      "type": "generated", 
+      "name": "tmp_write"
+    }, 
+    {
+      "values": {
+        "fail": {}, 
+        "success": {}
+      }, 
+      "type": "generated", 
+      "name": "main_write"
+    }, 
+    {
+      "values": {
+        "0": {
+          "constraints": {
+            "journals_with_articles": {
+              "or": [
+                "0"
+              ]
+            }
+          }
+        }, 
+        "3": {}
+      }, 
+      "type": "generated", 
+      "name": "journals"
+    }, 
+    {
+      "values": {
+        "1": {}, 
+        "0": {}
+      }, 
+      "type": "generated", 
+      "name": "journals_no_issn"
+    }, 
+    {
+      "values": {
+        "1": {}
+      }, 
+      "type": "generated", 
+      "name": "not_in_doaj"
+    }, 
+    {
+      "values": {
+        "1": {
+          "constraints": {
+            "journals": {
+              "or": [
+                "3"
+              ]
+            }
+          }
+        }, 
+        "0": {}, 
+        "3": {
+          "constraints": {
+            "journals": {
+              "or": [
+                "3"
+              ]
+            }
+          }
+        }
+      }, 
+      "type": "generated", 
+      "name": "journals_with_articles"
+    }, 
+    {
+      "default": "", 
+      "values": {
+        "ArgumentException": {
+          "conditions": [
+            {
+              "prune": {
+                "or": [
+                  "None"
+                ]
+              }
+            }
+          ]
+        }, 
+        "IOError": {
+          "conditions": [
+            {
+              "tmp_write": {
+                "or": [
+                  "fail"
+                ]
+              }
+            }, 
+            {
+              "main_write": {
+                "or": [
+                  "fail"
+                ]
+              }
+            }
+          ]
+        }
+      }, 
+      "type": "conditional", 
+      "name": "raises"
+    }, 
+    {
+      "type": "", 
+      "name": "comment"
+    }
+  ]
+}

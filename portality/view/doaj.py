@@ -152,14 +152,15 @@ def suggestion_thanks():
 @blueprint.route("/csv")
 @analytics.sends_ga_event(event_category=app.config.get('GA_CATEGORY_JOURNALCSV', 'JournalCSV'), event_action=app.config.get('GA_ACTION_JOURNALCSV', 'Download'))
 def csv_data():
-    """
-    with futures.ProcessPoolExecutor(max_workers=1) as executor:
-        result = executor.submit(get_csv_data).result()
-    return result
-    """
-    csv_file = models.Cache.get_latest_csv()
-    csv_path = os.path.join(app.config.get("CACHE_DIR"), "csv", csv_file)
-    return send_file(csv_path, mimetype="text/csv", as_attachment=True, attachment_filename=csv_file)
+    csv_info = models.Cache.get_latest_csv()
+    if csv_info is None:
+        abort(404)
+    store_url = csv_info.get("url")
+    if store_url is None:
+        abort(404)
+    if store_url.startswith("/"):
+        store_url = "/store" + store_url
+    return redirect(store_url, code=307)
 
 
 @blueprint.route("/sitemap.xml")
@@ -167,6 +168,7 @@ def sitemap():
     sitemap_file = models.Cache.get_latest_sitemap()
     sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
+
 
 @blueprint.route("/public-data-dump")
 def public_data_dump():
@@ -181,6 +183,7 @@ def public_data_dump():
                            show_journal=show_journal,
                            journal_size=journal_size)
 
+
 @blueprint.route("/public-data-dump/<record_type>")
 def public_data_dump_redirect(record_type):
     store_url = models.Cache.get_public_data_dump().get(record_type, {}).get("url")
@@ -189,6 +192,7 @@ def public_data_dump_redirect(record_type):
     if store_url.startswith("/"):
         store_url = "/store" + store_url
     return redirect(store_url, code=307)
+
 
 @blueprint.route("/store/<container>/<filename>")
 def get_from_local_store(container, filename):
