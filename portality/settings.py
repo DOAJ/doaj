@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.15.3"
+DOAJ_VERSION = "2.15.4"
 
 OFFLINE_MODE = False
 
@@ -138,8 +138,13 @@ STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
 STORE_LOCAL_EXPOSE = False  # if you want to allow files in the local store to be exposed under /store/<path> urls.  For dev only.
 
-STORE_ANON_DATA_CONTAINER = "doaj-anon-data"
-STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump"
+# containers (buckets in AWS) where various content will be stored
+# These values are placeholders, and must be overridden in live deployment
+# this prevents test environments from accidentally writing to the production buckets
+STORE_ANON_DATA_CONTAINER = "doaj-anon-data-placeholder"
+STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
+STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
+
 
 # S3 credentials for relevant scopes
 STORE_S3_SCOPES = {
@@ -147,8 +152,13 @@ STORE_S3_SCOPES = {
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     },
+    "cache" : {
+        "aws_access_key_id" : "put this in your dev/test/production.cfg",
+        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    },
     # Used by the api_export script to dump data from the api
     "public_data_dump" : {
+
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }

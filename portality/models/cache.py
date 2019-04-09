@@ -34,19 +34,16 @@ class Cache(DomainObject):
         cobj.save()
 
     @classmethod
-    def cache_csv(cls, filename):
+    def cache_csv(cls, url):
         cobj = cls(**{
-            "filename" : filename
+            "url": url
         })
         cobj.set_id("csv")
         cobj.save()
 
     @classmethod
     def get_latest_csv(cls):
-        rec = cls.pull("csv")
-        if rec is None:
-            return None
-        return rec.get("filename")
+        return cls.pull("csv")
 
     @classmethod
     def cache_sitemap(cls, filename):

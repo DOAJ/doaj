@@ -215,8 +215,20 @@ class TestPublicDataDumpTask(DoajTestCase):
 
             # in the case of an error, we expect the main store not to have been touched
             # (for the errors that we are checking for)
-            if prune or clean:
+            if prune and not clean:
+                # no matter what the error, if we didn't specify clean then we expect everything
+                # to survive
                 survived = localStore.list(container_id)
                 assert localStoreFiles == survived
+            elif clean:
+                # if we specified clean, then it's possible the main store was cleaned before the
+                # error occurred, in which case it depends on the error.  This reminds us that
+                # clean shouldn't be used in production
+                if tmp_write_arg == "fail":
+                    assert not localStore.exists(container_id)
+                else:
+                    survived = localStore.list(container_id)
+                    assert localStoreFiles == survived
             else:
+                # otherwise, we expect the main store to have survived
                 assert not localStore.exists(container_id)

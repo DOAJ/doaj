@@ -1,0 +1,17 @@
+field,test_id,prune,tmp_write,main_write,journals,journals_no_issn,not_in_doaj,journals_with_articles,raises,comment
+type,index,generated,generated,generated,generated,generated,generated,generated,conditional,
+default,,,,,,,,,,
+,,,,,,,,,,
+values,,True,success,success,0,0,1,0,ArgumentException,
+values,,False,fail,fail,3,1,,1,IOError,
+values,,None,,,,,,3,,
+,,,,,,,,,,
+constraint prune,,None,success,success,0,0,,0,,When prune is None we don't need to try out any other variations as we expect an ArgumentException
+constraint tmp_write,,,fail,success,,,,,,"When the tmp write fails, there's no need to test if the main store fails, as the error will be generated before that"
+constraint journals,,,,,0,,,0,,"When there are no journals, makes no sense to have any articles"
+constraint journals_with_articles,,,,,3,,,1,,
+constraint journals_with_articles,,,,,3,,,3,,
+,,,,,,,,,,
+conditional raises,,None,,,,,,,ArgumentException,"When prune is None, ArgumentException should be raised"
+conditional raises,,,fail,,,,,,IOError,IOError when write to the store fails
+conditional raises,,,,fail,,,,,IOError,IOError when write to the store fails
