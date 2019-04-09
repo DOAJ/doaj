@@ -117,8 +117,8 @@ SPONSORS = {
         'rsc': {'name': 'Royal Society of Chemistry', 'logo': 'rsc.svg', 'url': 'https://www.rsc.org'},
     },
     'patron': {
-        'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
-        'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.svg', 'url': 'https://www.karger.com/OpenAccess'},
+        #'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
+        #'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.svg', 'url': 'https://www.karger.com/OpenAccess'},
         #'enago': {'name': 'ENAGO', 'url': 'https://www.enago.com/'},
     }
 }
