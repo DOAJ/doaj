@@ -6,14 +6,12 @@
 <p>Here are some resources to help you with the main Publisher features of DOAJ.</p>
 
 <h3>Application Form</h3>
-<p>Guides to filling in the <a href="{{ url_for('doaj.suggestion') }}">Application Form</a> are available in at least 12 other 
+<p>Guides to filling in the <a href="{{ url_for('doaj.suggestion') }}">Application Form</a> are available in at least 15 other 
 languages. <a href="{{ url_for('doaj.translated') }}">Download the language of your choice</a> and refer to it when 
 filling in the form.</p>
 
 <h3>The API</h3>
-<p>The API is the fastest and most automated way for you to upload content to us. It is also the ONLY way for you to update or 
-    delete content that is part of your content holding with us. For more information, <a href="https://doaj.org/api/v1/docs">
-    see our API page</a>. We recommend that you sign up to our API groups.</p>
+<p>The API is the fastest and most automated way for you to upload content to us. You will need the API key from your account page. If you do not see an API key there, contact us. The API is also the only way for you to update or delete content that is part of your content holding with us. For more information, <a href="https://doaj.org/api/v1/docs">see our API page</a>. We recommend that you sign up to our API groups.</p>
 
 <h3>Creating DOAJ XML</h3>
 <p>For help with creating DOAJ XML and details on XML tags, read the 
@@ -27,9 +25,7 @@ What to do if your XML upload fails</a> and <a href="{{ url_for('doaj.publishers
 Troubleshooting your XML upload</a> sections on our 'For Publishers' page.
 
 <h3>Correcting articles on DOAJ</h3>
-<p>If you need to correct an article on DOAJ, upload it to us again. You can do this either by uploading XML, entering the metadata
-    manually, or by using our API. Read <a href="{{ url_for('doaj.publishers', _anchor='correct') }}">
-How do I correct an error in Article Metadata?</a> on our 'For Publishers' page.
+<p>If you need to correct an article on DOAJ, upload it to us again. Note however that the title and/or DOI of the article must match exactly otherwise overwriting will not occur and you will create a duplicate. Read <a href="{{ url_for('doaj.publishers', _anchor='correct') }}">How do I correct an error in Article Metadata?</a> on our 'For Publishers' page. If you create a duplicate, contact us to delete it.
 
 <h3>Deleting articles from DOAJ</h3>
 <p>If an article or a range of articles needs to be deleted, please <a href="{{ url_for('doaj.contact') }}">Contact Us</a>. 
@@ -45,6 +41,24 @@ Please email us ALL of the following information:</p>
   2011.</li>
   <li>Send a screenshot if it will help.</li>
 </ol>
+
+<h3>How to report a bug or error to us, or to ask for technical help</h3>
+<p>When reporting a suspected bug to us, or another kind of error, or if you need technical help with something, here is the information you need to provide to us. You may not be able to provide the details for all of these but fill in as many as you can. Thanks!</p>
+<ul>
+    <li>The contact details for the person reporting the bug (or at least a proxy for them, so that we can request more details). That might be you or someone working on your behalf.</li>
+<li>The user account you are logged in to when the problem occurred.</li>
+<li>At what time the incident occurred. Both date and time ideally. If it happened several times, then all dates/times that were recorded, or a range.</li>
+<li>What were you trying to do? As much detail and context as possible. Send a screenshot! An image helps.</li>
+<li>What happened, what error message was received? Provide the exact error message, don't paraphrase. A screenshot could be provided here.</li>
+<li>Which area of the system did this happen in. Generally, in the UI/API/OAI, and ideally specifically: which URL were you on when it happened, or which URL were you trying to access?</li>
+<li>Send copies of any data you sent to the system. For example, article XML files uploaded, or payloads send to the API, if available.
+<li>What had you expected to happen?</li>
+<li>Was the problem repeatable? Did you try several times with the same result?</li>
+<li>What environment are you in? Specifically browser, or if not in the browser then any useful information about your API client such as the user agent.</li>
+<li>DO NOT send us your passwords or API keys.</li>
+</ul>
+
+<p>Send these details to feedback@doaj.org</p>
 
 <p></p>
 
