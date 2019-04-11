@@ -34,19 +34,16 @@ class Cache(DomainObject):
         cobj.save()
 
     @classmethod
-    def cache_csv(cls, filename):
+    def cache_csv(cls, url):
         cobj = cls(**{
-            "filename" : filename
+            "url": url
         })
         cobj.set_id("csv")
         cobj.save()
 
     @classmethod
     def get_latest_csv(cls):
-        rec = cls.pull("csv")
-        if rec is None:
-            return None
-        return rec.get("filename")
+        return cls.pull("csv")
 
     @classmethod
     def cache_sitemap(cls, filename):
@@ -63,6 +60,19 @@ class Cache(DomainObject):
             return None
         return rec.get("filename")
 
+    @classmethod
+    def cache_public_data_dump(cls, article_url, article_size, journal_url, journal_size):
+        cobj = cls(**{
+            "article": { "url" : article_url, "size" : article_size },
+            "journal": { "url" : journal_url, "size" : journal_size }
+        })
+        cobj.set_id("public_data_dump")
+        cobj.save()
+
+    @classmethod
+    def get_public_data_dump(cls):
+        return cls.pull("public_data_dump")
+
     def mark_for_regen(self):
         self.update({"regen" : True})
 
@@ -73,7 +83,7 @@ class Cache(DomainObject):
             lu = self.last_updated
 
         lu = datetime.strptime(lu, "%Y-%m-%dT%H:%M:%SZ")
-        now = datetime.now()
+        now = datetime.utcnow()
         dt = now - lu
 
         # compatibility with Python 2.6

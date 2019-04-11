@@ -3,7 +3,7 @@ import sys
 
 setup(
     name = 'doaj',
-    version = '2.15.0',
+    version = '2.15.4',
     packages = find_packages(),
     install_requires = [
         "werkzeug==0.14.1",
@@ -39,7 +39,8 @@ setup(
         "elastic-apm[flask]",
         "parameterized==0.6.1",
         "awscli",
-        "boto3==1.9.10"
+        "boto3==1.9.10",
+        "flask-debugtoolbar"
     ] + (["setproctitle"] if "linux" in sys.platform else []),
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',

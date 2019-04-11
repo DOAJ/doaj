@@ -1069,6 +1069,76 @@ class TestClient(DoajTestCase):
         assert all[0].id == app1.id
         assert all[1].id == app2.id
 
+    def test_33_article_stats(self):
+        articles = []
+
+        # make a bunch of articles variably in doaj/not in doaj, for/not for the issn we'll search
+        for i in range(1, 3):
+            article = models.Article(
+                **ArticleFixtureFactory.make_article_source(eissn="1111-1111", pissn="1111-1111", with_id=False, in_doaj=True)
+            )
+            article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
+            articles.append(article)
+        for i in range(3, 5):
+            article = models.Article(
+                **ArticleFixtureFactory.make_article_source(eissn="1111-1111", pissn="1111-1111", with_id=False, in_doaj=False)
+            )
+            article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
+            articles.append(article)
+        for i in range(5, 7):
+            article = models.Article(
+                **ArticleFixtureFactory.make_article_source(eissn="2222-2222", pissn="2222-2222", with_id=False, in_doaj=True)
+            )
+            article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
+            articles.append(article)
+        for i in range(7, 9):
+            article = models.Article(
+                **ArticleFixtureFactory.make_article_source(eissn="2222-2222", pissn="2222-2222", with_id=False, in_doaj=False)
+            )
+            article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
+            articles.append(article)
+
+        for i in range(len(articles)):
+            articles[i].save(blocking=i == len(articles) - 1)
+
+        journal = models.Journal()
+        bj = journal.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1111-1111")
+        stats = journal.article_stats()
+        assert stats.get("total") == 2
+        assert stats.get("latest") == "2019-01-02T00:00:00Z"
+
+    def test_34_cache(self):
+        models.Cache.cache_site_statistics({
+            "articles" : 10,
+            "journals" : 20,
+            "countries" : 30,
+            "searchable" : 40
+        })
+
+        models.Cache.cache_csv("/csv/filename.csv")
+
+        models.Cache.cache_sitemap("sitemap.xml")
+
+        models.Cache.cache_public_data_dump("http://example.com/article", 100, "http://example.com/journal", 200)
+
+        time.sleep(1)
+
+        stats = models.Cache.get_site_statistics()
+        assert stats["articles"] == 10
+        assert stats["journals"] == 20
+        assert stats["countries"] == 30
+        assert stats["searchable"] == 40
+
+        assert models.Cache.get_latest_csv().get("url") == "/csv/filename.csv"
+
+        assert models.Cache.get_latest_sitemap() == "sitemap.xml"
+
+        assert models.Cache.get_public_data_dump().get("article").get("url") == "http://example.com/article"
+        assert models.Cache.get_public_data_dump().get("article").get("size") == 100
+        assert models.Cache.get_public_data_dump().get("journal").get("url") == "http://example.com/journal"
+        assert models.Cache.get_public_data_dump().get("journal").get("size") == 200
+
 
 # TODO: reinstate this test when author emails have been disallowed again
 '''
@@ -1090,3 +1160,4 @@ class TestClient(DoajTestCase):
         with self.assertRaises(TypeError):
             a.bibjson().add_author(name='Ms Test', affiliation='School of Rock', email='author@example.com')
 '''
+

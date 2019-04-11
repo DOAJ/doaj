@@ -1,74 +1,7 @@
 from copy import deepcopy
-from portality import models, datasets, clcsv
+from portality import datasets
 from portality.formcontext import choices
 from portality.formcontext.xwalk import JournalFormXWalk
-
-# OLD CSV HEADER
-"""
-CSV_HEADER = ["Title", "Title Alternative", "Identifier", "Publisher", "Language",
-                    "ISSN", "EISSN", "Keyword", "Start Year", "End Year", "Added on date",
-                    "Subjects", "Country", "Publication fee", "Further Information",
-                    "CC License", "Content in DOAJ"]
-"""
-
-YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
-
-#################################################################
-# code for creating CSVs of all Journals
-#################################################################
-
-
-def make_journals_csv(file_object):
-    """
-    Make a CSV file of information for all journals.
-    :param file_object: a utf8 encoded file object.
-    """
-
-    cols = {}
-    for j in models.Journal.all_in_doaj(page_size=100000):                     # 10x how many journals we have right now
-        assert isinstance(j, models.Journal)                                               # for pycharm type inspection
-        bj = j.bibjson()
-        issn = bj.get_one_identifier(idtype=bj.P_ISSN)
-        if issn is None:
-            issn = bj.get_one_identifier(idtype=bj.E_ISSN)
-        if issn is None:
-            continue
-
-        kvs = Journal2QuestionXwalk.journal2question(j)
-        meta_kvs = get_doaj_meta_kvs(j)
-        cols[issn] = kvs + meta_kvs
-
-    issns = cols.keys()
-    issns.sort()
-
-    csvwriter = clcsv.UnicodeWriter(file_object)
-    qs = None
-    for i in issns:
-        if qs is None:
-            qs = [q for q, _ in cols[i]]
-            csvwriter.writerow(qs)
-        vs = [v for _, v in cols[i]]
-        csvwriter.writerow(vs)
-
-
-def get_doaj_meta_kvs(journal):
-    """
-    Get key, value pairs for some meta information we want from the journal object
-    :param journal: a models.Journal
-    :return: a list of (key, value) tuples for our metadata
-    """
-    kvs = [
-        ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
-        ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
-        ("Added on Date", journal.created_date),
-        ("Subjects", ' | '.join(journal.bibjson().lcc_paths()))
-    ]
-    return kvs
-
-#################################################################
-# Crosswalk between Journals and spreadsheet rows
-#################################################################
-
 
 class JournalXwalkException(Exception):
     pass
@@ -94,7 +27,7 @@ class Journal2QuestionXwalk(object):
         ("submission_charges_url",              "Submission fee URL"),
         ("submission_charges_amount",           "Submission fee amount"),
         ("submission_charges_currency",         "Submission fee currency"),
-        ("articles_last_year",                  "Number of articles publish in the last calendar year"),
+        ("articles_last_year",                  "Number of articles published in the last calendar year"),
         ("articles_last_year_url",              "Number of articles information URL"),
         ("waiver_policy",                       "Journal waiver policy (for developing country authors etc)"),
         ("waiver_policy_url",                   "Waiver policy information URL"),
@@ -254,8 +187,8 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("submission_charges_url"), forminfo.get("submission_charges_url")))
         kvs.append((cls.q("submission_charges_amount"), forminfo.get("submission_charges_amount")))
         kvs.append((cls.q("submission_charges_currency"), datasets.get_currency_name(forminfo.get("submission_charges_currency"))))
-        kvs.append((cls.q("articles_last_year"), forminfo.get("articles_last_year")))
-        kvs.append((cls.q("articles_last_year_url"), forminfo.get("articles_last_year_url")))
+        kvs.append((cls.q("articles_last_year"), forminfo.get("articles_last_year", "")))
+        kvs.append((cls.q("articles_last_year_url"), forminfo.get("articles_last_year_url", "")))
         kvs.append((cls.q("waiver_policy"), yes_or_blank(forminfo.get("waiver_policy"))))
         kvs.append((cls.q("waiver_policy_url"), forminfo.get("waiver_policy_url")))
 

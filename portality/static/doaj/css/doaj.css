@@ -412,6 +412,33 @@ label[for='doaj_seal'] {
 
 /* Custom responsive bits - elements, classes and id-s in that order */
 
+#cookie-consent-banner {
+    padding: 15px;
+    background: #eeeeee;
+    border-bottom: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    margin-bottom: 1em;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#cookie-consent-banner a {
+    text-decoration: underline;
+}
+
+#cookie-consent-banner a:hover {
+    text-decoration: none;
+}
+
+#cookie-consent-banner a:focus {
+    text-decoration: none;
+}
+
 @media (min-width: 768px) {
     /* Apply the following only to desktops and high-res tablets */
     body {
@@ -430,4 +457,11 @@ label[for='doaj_seal'] {
         position: relative;
         left: -2px;
     }
+
+    #cookie-consent-banner {
+        margin-top: -1em;
+        margin-left: 100px;
+        margin-right: 100px;
+    }
 }
+

@@ -5,9 +5,8 @@ with their name, email address and date account was created and last updated
 python accounts_with_marketing_consent.py -o accounts.csv
 ```
 """
-import esprit, codecs
-from portality.core import app
-from portality.clcsv import UnicodeWriter
+
+from portality.lib import report_to_csv
 from portality import models
 
 WITH_CONSENT = {
@@ -18,28 +17,25 @@ WITH_CONSENT = {
     }
 }
 
+HEADERS = ["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?"]
 
-def publishers_with_consent(output_file):
-    """ Get accounts for all publishers with journals in the DOAJ """
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+def output_map(acc):
+    updated_since_create = acc.created_timestamp < acc.last_updated_timestamp
 
-    with codecs.open(output_file, "wb", "utf-8") as f:
-        writer = UnicodeWriter(f)
-        writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?"])
+    return {
+        "ID": acc.id,
+        "Name": acc.name,
+        "Email": acc.email,
+        "Created": acc.created_date,
+        "Last Updated": acc.last_updated,
+        "Updated Since Create?": str(updated_since_create)
+    }
 
-        for acc in esprit.tasks.scroll(conn, 'account', q=WITH_CONSENT, page_size=100, keepalive='1m'):
-            account = models.Account(**acc)
-            updated_since_create = account.created_timestamp < account.last_updated_timestamp
 
-            writer.writerow([
-                account.id,
-                account.name,
-                account.email,
-                account.created_date,
-                account.last_updated,
-                updated_since_create
-            ])
+def publishers_with_consent(outfile):
+    gen = report_to_csv.query_result_generator(WITH_CONSENT, "account", wrap=lambda x: models.Account(**x))
+    report_to_csv.report_to_csv(gen, HEADERS, output_map, outfile)
 
 
 if __name__ == "__main__":
@@ -55,4 +51,3 @@ if __name__ == "__main__":
         exit()
 
     publishers_with_consent(args.out)
-

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, flash
+from flask import Blueprint, request, flash, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 import urllib
@@ -14,6 +14,7 @@ from portality.lcc import lcc_jstree
 from portality.view.forms import ContactUs
 from portality.app_email import send_contact_form
 from portality.lib import analytics
+from portality.ui.messages import Messages
 
 import json
 import os
@@ -37,6 +38,16 @@ blueprint = Blueprint('doaj', __name__)
 def home():
     news = blog.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     return render_template('doaj/index.html', news=news)
+
+@blueprint.route("/cookie_consent")
+def cookie_consent():
+    cont = request.values.get("continue")
+    if cont is not None:
+        resp = redirect(cont)
+    else:
+        resp = make_response()
+    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"), Messages.CONSENT_COOKIE_VALUE)
+    return resp
 
 
 @blueprint.route("/news")
@@ -142,14 +153,15 @@ def suggestion_thanks():
 @blueprint.route("/csv")
 @analytics.sends_ga_event(event_category=app.config.get('GA_CATEGORY_JOURNALCSV', 'JournalCSV'), event_action=app.config.get('GA_ACTION_JOURNALCSV', 'Download'))
 def csv_data():
-    """
-    with futures.ProcessPoolExecutor(max_workers=1) as executor:
-        result = executor.submit(get_csv_data).result()
-    return result
-    """
-    csv_file = models.Cache.get_latest_csv()
-    csv_path = os.path.join(app.config.get("CACHE_DIR"), "csv", csv_file)
-    return send_file(csv_path, mimetype="text/csv", as_attachment=True, attachment_filename=csv_file)
+    csv_info = models.Cache.get_latest_csv()
+    if csv_info is None:
+        abort(404)
+    store_url = csv_info.get("url")
+    if store_url is None:
+        abort(404)
+    if store_url.startswith("/"):
+        store_url = "/store" + store_url
+    return redirect(store_url, code=307)
 
 
 @blueprint.route("/sitemap.xml")
@@ -157,6 +169,41 @@ def sitemap():
     sitemap_file = models.Cache.get_latest_sitemap()
     sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
+
+
+@blueprint.route("/public-data-dump")
+def public_data_dump():
+    data_dump = models.Cache.get_public_data_dump()
+    show_article = data_dump.get("article", {}).get("url") is not None
+    article_size = data_dump.get("article", {}).get("size")
+    show_journal = data_dump.get("journal", {}).get("url") is not None
+    journal_size = data_dump.get("journal", {}).get("size")
+    return render_template("doaj/public_data_dump.html",
+                           show_article=show_article,
+                           article_size=article_size,
+                           show_journal=show_journal,
+                           journal_size=journal_size)
+
+
+@blueprint.route("/public-data-dump/<record_type>")
+def public_data_dump_redirect(record_type):
+    store_url = models.Cache.get_public_data_dump().get(record_type, {}).get("url")
+    if store_url is None:
+        abort(404)
+    if store_url.startswith("/"):
+        store_url = "/store" + store_url
+    return redirect(store_url, code=307)
+
+
+@blueprint.route("/store/<container>/<filename>")
+def get_from_local_store(container, filename):
+    if not app.config.get("STORE_LOCAL_EXPOSE", False):
+        abort(404)
+
+    from portality import store
+    localStore = store.StoreFactory.get(None)
+    file_handle = localStore.get(container, filename)
+    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
 
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
@@ -182,13 +229,6 @@ def autocomplete(doc_type, field_name):
     return jsonify({'suggestions': suggs})
     # you shouldn't return lists top-level in a JSON response:
     # http://flask.pocoo.org/docs/security/#json-security
-
-
-@blueprint.route("/toc")
-def list_journals():
-    js = models.Journal.all_in_doaj(page_size=1000)
-    return render_template("doaj/journals.html", journals=js)
-
 
 @blueprint.route("/toc/<identifier>")
 @blueprint.route("/toc/<identifier>/<volume>")

@@ -150,7 +150,19 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     @property
     def ordered_notes(self):
         notes = self.notes
-        return sorted(notes, key=lambda x: x["date"], reverse=True)
+        clusters = {}
+        for note in notes:
+            if note["date"] not in clusters:
+                clusters[note["date"]] = [note]
+            else:
+                clusters[note["date"]].append(note)
+        ordered_keys = sorted(clusters.keys(), reverse=True)
+        ordered = []
+        for key in ordered_keys:
+            clusters[key].reverse()
+            ordered += clusters[key]
+        return ordered
+        # return sorted(notes, key=lambda x: x["date"], reverse=True)
 
     @property
     def owner(self):
@@ -408,6 +420,20 @@ class Journal(JournalLikeObject):
     def all_articles(self):
         from portality.models import Article
         return Article.find_by_issns(self.known_issns())
+
+    def article_stats(self):
+        from portality.models import Article
+        q = ArticleStatsQuery(self.known_issns())
+        data = Article.query(q=q.query())
+        hits = data.get("hits", {})
+        total = hits.get("total", 0)
+        latest = None
+        if total > 0:
+            latest = hits.get("hits", [])[0].get("_source").get("created_date")
+        return {
+            "total" : total,
+            "latest" : latest
+        }
 
     def mappings(self):
         return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
@@ -1399,4 +1425,25 @@ class ContinuationQuery(object):
                 }
             },
             "size" : 10000
+        }
+
+class ArticleStatsQuery(object):
+    def __init__(self, issns):
+        self.issns = issns
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"terms" : {"index.issn.exact" : self.issns}},
+                        {"term" : {"admin.in_doaj" : True}}
+                    ]
+                }
+            },
+            "size" : 1,
+            "_source" : {
+                "include" : ["created_date"]
+            },
+            "sort" : [{"created_date" : {"order" : "desc"}}]
         }

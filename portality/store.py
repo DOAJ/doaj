@@ -2,6 +2,7 @@ from portality.core import app
 from portality.lib import plugin
 
 import os, shutil, codecs, boto3
+from urllib import quote_plus
 
 class StoreException(Exception):
     pass
@@ -43,8 +44,11 @@ class Store(object):
     def list(self, container_id):
         pass
 
-    def get(self, container_id, target_name):
+    def get(self, container_id, target_name, encoding=None):
         return None
+
+    def url(self, container_id, target_name):
+        pass
 
     def delete(self, container_id, target_name=None):
         pass
@@ -89,7 +93,7 @@ class StoreS3(Store):
                 break
         return all_keys
 
-    def get(self, container_id, target_name):
+    def get(self, container_id, target_name, encoding=None):
         try:
             obj = self.client.get_object(Bucket=container_id, Key=target_name)
         except self.client.exceptions.NoSuchKey:
@@ -98,6 +102,11 @@ class StoreS3(Store):
             return None
         body = obj["Body"]
         return body
+
+    def url(self, container_id, target_name):
+        bucket_location = self.client.get_bucket_location(Bucket=container_id)
+        location = bucket_location['LocationConstraint']
+        return "https://s3.{0}.amazonaws.com/{1}/{2}".format(location, container_id, quote_plus(target_name))
 
     def delete(self, container_id, target_name=None):
         # we are not allowed to delete the bucket, so we just delete the contents
@@ -140,11 +149,17 @@ class StoreLocal(Store):
         cpath = os.path.join(self.dir, container_id)
         return os.listdir(cpath)
 
-    def get(self, container_id, target_name):
+    def get(self, container_id, target_name, encoding=None):
         cpath = os.path.join(self.dir, container_id, target_name)
         if os.path.exists(cpath) and os.path.isfile(cpath):
-            f = codecs.open(cpath, "r")
+            kwargs = {}
+            if encoding is not None:
+                kwargs = {"encoding" : encoding}
+            f = codecs.open(cpath, "rb", **kwargs)
             return f
+
+    def url(self, container_id, target_name):
+        return "/" + container_id + "/" + target_name
 
     def delete(self, container_id, target_name=None):
         cpath = os.path.join(self.dir, container_id)
@@ -174,3 +189,25 @@ class TempStore(StoreLocal):
 
     def list_container_ids(self):
         return [x for x in os.listdir(self.dir) if os.path.isdir(os.path.join(self.dir, x))]
+
+
+def prune_container(storage, container_id, sort, filter=None, keep=1):
+    filelist = storage.list(container_id)
+
+    # filter for the files we care about
+    filtered = []
+    if filter is not None:
+        for fn in filelist:
+            if filter(fn):
+                filtered.append(fn)
+    else:
+        filtered = filelist
+
+    if len(filtered) <= keep:
+        return
+
+    filtered_sorted = sort(filtered)
+
+    remove = filtered_sorted[keep:]
+    for fn in remove:
+        storage.delete(container_id, fn)
