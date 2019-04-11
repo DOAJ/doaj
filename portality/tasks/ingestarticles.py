@@ -290,8 +290,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 job.add_audit_message(u"Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
                 return
         except Exception as e:
-            job.add_audit_message(u"File system error while reading file: {x}".format(x=traceback.format_exc()))
-            file_upload.failed("File system error when reading file")
+            job.add_audit_message(u"Unanticipated error: {x}".format(x=traceback.format_exc()))
+            file_upload.failed("Unanticipated error when importing articles")
             try:
                 file_failed(path)
             except:
