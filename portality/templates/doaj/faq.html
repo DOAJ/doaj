@@ -529,7 +529,7 @@ can obtain records from DOAJ. The OAI data is always up to date. OAI is well-est
 
 <p>A <a href="{{ url_for('api_v1.docs') }}">search API</a> is available.</p>
 
-<p>You can also download all of our metadata, either the journal metadata only or the article metadata only using <a href="/public-data-dump">our Full Data Dump service</a>.</p>
+<p>You can also download all of our metadata, either the journal metadata only or the article metadata only using <a href="{{ url_for('doaj.public_data_dump') }}">our Full Data Dump service</a>.</p>
 
 <a name="metadata_csv"></a>
 <p>You can <b>download a list of journals in CSV (comma-separated) format</b> which can then be
