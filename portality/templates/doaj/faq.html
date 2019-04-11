@@ -43,6 +43,7 @@
 <li><a href="#volunteer">Can I volunteer for DOAJ?</a></li>
 <!-- <li><a href="#associate">How do I become an Associate Editor?</a></li> -->
 <li><a href="#broken">I have found a broken link. What should I do?</a></li>
+<li><a href="#bug">How do I report a bug or error, or ask for technical help?</a></li>
 <li><a href="#questionable">I have found a questionable journal in DOAJ. Why? What should I do?</a></li>
 <li><a href="#indexing">How can I suggest a journal for indexing?</a></li>
 <li><a href="#notin">The journal I am looking for isn't in DOAJ. Why? What should I do?</a></li>
@@ -319,6 +320,26 @@ Your client may drop the connection sooner, however. Again, keeping the batch si
 <a href="#top">Back to top</a>
 <br><br>
 
+<h3><b><a name="bug"></a>How do I report a bug or error, or ask for technical help?</b></h3>
+<p>When reporting a suspected bug to us, or another kind of error, or if you need technical help with something, here is the information you need to provide to us. You may not be able to provide the details for all of these but fill in as many as you can. Thanks!</p>
+<ul>
+    <li>The contact details for the person reporting the bug (or at least a proxy for them, so that we can request more details). That might be you or someone working on your behalf.</li>
+<li>The user account you are logged in to when the problem occurred.</li>
+<li>At what time the incident occurred. Both date and time ideally. If it happened several times, then all dates/times that were recorded, or a range.</li>
+<li>What were you trying to do? As much detail and context as possible. Send a screenshot! An image helps.</li>
+<li>What happened, what error message was received? Provide the exact error message, don't paraphrase. A screenshot could be provided here.</li>
+<li>Which area of the system did this happen in. Generally, in the UI/API/OAI, and ideally specifically: which URL were you on when it happened, or which URL were you trying to access?</li>
+<li>Send copies of any data you sent to the system. For example, article XML files uploaded, or payloads send to the API, if available.
+<li>What had you expected to happen?</li>
+<li>Was the problem repeatable? Did you try several times with the same result?</li>
+<li>What environment are you in? Specifically browser, or if not in the browser then any useful information about your API client such as the user agent.</li>
+<li>DO NOT send us your passwords or API keys.</li>
+</ul>
+
+<p>Send these details to feedback [at] doaj [dot] org</p>
+<a href="#top">Back to top</a>
+<br><br>
+
 <h3><b><a name="questionable"></a>I believe that a questionable journal is indexed in DOAJ. What should I do?</b></h3>
 <p>If you find a journal that you believe to be questionable, please send an email to feedback[at]doaj[.]org with 
 the details and we will be very happy to investigate. All information shared with DOAJ is done so in the strictest 
@@ -508,8 +529,10 @@ can obtain records from DOAJ. The OAI data is always up to date. OAI is well-est
 
 <p>A <a href="{{ url_for('api_v1.docs') }}">search API</a> is available.</p>
 
+<p>You can also download all of our metadata, either the journal metadata only or the article metadata only using <a href="{{ url_for('doaj.public_data_dump') }}">our Full Data Dump service</a>.</p>
+
 <a name="metadata_csv"></a>
-<p>You can also <b>Download a list of journals in CSV (comma-separated) format</b> which can then be
+<p>You can <b>download a list of journals in CSV (comma-separated) format</b> which can then be
 imported into Excel or any equivalent analysis tool. The CSV file is updated every 30 minutes. To retrieve the data:</p>
 <ol>
 <li><a href="{{ url_for('doaj.csv_data') }}">Download the file to your computer</a></li>
@@ -540,7 +563,8 @@ Read a full description of this service here</a>.</p>
 <br><br>
 
 <h3><b><a name="alldata"></a>Can I download all of the DOAJ metadata?</b></h3>
-<p>Yes. The simplest way is to <a href="{{ url_for('doaj.csv_data') }}">download the CSV file</a> but if you are an advanced user you can collect the JSON data.</p>
+<p>Yes. The simplest way is to <a href="{{ url_for('doaj.csv_data') }}">download the CSV file</a> which contains all the journal metadata.</p>
+<p>You can also download all of our metadata, either the journal metadata only or the article metadata only using <a href="/public-data-dump">our Full Data Dump service</a>.</p>
 <a href="#top">Back to top</a>
 <br><br>
 
