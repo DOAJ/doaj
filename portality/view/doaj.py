@@ -46,7 +46,8 @@ def cookie_consent():
         resp = redirect(cont)
     else:
         resp = make_response()
-    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"), Messages.CONSENT_COOKIE_VALUE)
+    # set a cookie that lasts for one year
+    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"), Messages.CONSENT_COOKIE_VALUE, max_age=31536000)
     return resp
 
 
