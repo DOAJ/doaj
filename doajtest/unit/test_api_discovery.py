@@ -17,6 +17,7 @@ class TestArticleMatch(DoajTestCase):
 
     def test_01_journals(self):
         # populate the index with some journals
+        saved_journals = []
         for i in range(5):
             j = models.Journal()
             j.set_in_doaj(True)
@@ -26,6 +27,7 @@ class TestArticleMatch(DoajTestCase):
             bj.publisher = "Test Publisher {x}".format(x=i)
             bj.add_url("http://homepage.com/{x}".format(x=i), "homepage")
             j.save()
+            saved_journals.append((j.id, j.last_updated))
 
             # make sure the last updated dates are suitably different
             time.sleep(1)
@@ -39,8 +41,9 @@ class TestArticleMatch(DoajTestCase):
         bj.publisher = "Test Publisher {x}".format(x=6)
         bj.add_url("http://homepage.com/{x}".format(x=6), "homepage")
         j.save()
+        saved_journals.append((j.id, j.last_updated))
 
-        time.sleep(1)
+        models.Journal.blockall(saved_journals)
 
         # now run some queries
         with self.app_test.test_request_context():
