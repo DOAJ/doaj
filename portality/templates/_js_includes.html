@@ -1,32 +1,21 @@
+<!-- get jquery js -->
+<script type="text/javascript" src="/static/vendor/jquery-3.4.0/jquery-3.4.0.min.js"></script>
 
-{% if config.get("OFFLINE_MODE", False) %}
+<!-- get bootstrap js -->
+<script type="text/javascript" src="/static/vendor/bootstrap-3.3.7/js/bootstrap.min.js"></script>
 
-    <!-- get jquery js -->
-    <script type="text/javascript" src="/static/doaj/js/offline/jquery.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+{% if edit_suggestion_page or edit_journal_page or subject_page %}
 
-    <!-- get bootstrap js -->
-    <script type="text/javascript" src="/static/doaj/js/offline/bootstrap.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
+    <script type="text/javascript" src="/static/vendor/jstree-3.0.0-beta10/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
-    {# No AddThis or Google Analytics #}
-
-    {% if edit_suggestion_page or edit_journal_page or subject_page %}
-
-        <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
-        <script type="text/javascript" src="/static/doaj/js/offline/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
-        {% if not subject_page %}
-            <script type="text/javascript" src="/static/doaj/js/suggestions_and_journals.js?v={{config.get('DOAJ_VERSION')}}"></script>
-        {% endif %}
-
+    {% if not subject_page %}
+        <script type="text/javascript" src="/static/js/suggestions_and_journals.js?v={{config.get('DOAJ_VERSION')}}"></script>
     {% endif %}
 
-{% else %}
-    <!-- get jquery js -->
-    <script type="text/javascript" src="/static/doaj/js/vendor/jquery-1.9.1.min.js"></script>
+{% endif %}
 
-    <!-- get bootstrap js -->
-    <script type="text/javascript" src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/js/bootstrap.min.js"></script>
-
+{% if not config.get("DEBUG", True) %}
     <!-- Global Site Tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ config.get('GOOGLE_ANALYTICS_ID') }}"></script>
     <script>
@@ -38,36 +27,22 @@
           'custom_map': {'dimension1': 'OAI:Action'}
       });
     </script>
-
-    {% if edit_suggestion_page or edit_journal_page or subject_page %}
-
-        <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
-        <script type="text/javascript" src="/static/portality/vendor/jstree-3.0.0-beta10/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
-        {% if not subject_page %}
-            <script type="text/javascript" src="/static/doaj/js/suggestions_and_journals.js?v={{config.get('DOAJ_VERSION')}}"></script>
-        {% endif %}
-
-    {% endif %}
 {% endif %}
 
-<!-- get our js -->
-<script type="text/javascript" src="/static/portality/js/portality.js?v={{config.get('DOAJ_VERSION')}}"></script>
-            
 <!-- get linkify -->
 <script type="text/javascript" src="/static/portality/vendor/facetview/vendor/linkify/1.0/jquery.linkify-1.0-min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <!-- get tablesorter -->
-<script type="text/javascript" src="/static/portality/vendor/tablesorter/js/jquery.tablesorter.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/vendor/tablesorter-2.3.10/js/jquery.tablesorter.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <!-- get our autocomplete function for select2 -->
-<script type="text/javascript" src="/static/doaj/js/autocomplete.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/js/autocomplete.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <!-- get our functions for handling form fields fixme: should there be a form_page flag?-->
-<script type="text/javascript" src="/static/doaj/js/formutils.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/js/formutils.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <!-- get select2 -->
-<script type="text/javascript" src="/static/portality/vendor/select2-release-3.2/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/vendor/select2-release-3.2/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% if search_page or subject_page %}
     <!-- fv2 and the doaj theme - replaces the above -->
@@ -98,7 +73,7 @@
 {% endif %}
 
 <!-- get the app's js -->
-<script type="text/javascript" src="/static/doaj/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/doaj/js/facetview_results_render_callbacks.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 

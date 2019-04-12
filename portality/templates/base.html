@@ -25,40 +25,29 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    {% if config.get("OFFLINE_MODE", False) %}
-        <!-- get bootstrap css -->
-        <link rel="stylesheet" href="/static/doaj/css/offline/bootstrap-combined.min.css?v={{config.get('DOAJ_VERSION')}}">
+    <!-- bootstrap 3 -->
+    <link rel="stylesheet" href="/static/vendor/bootstrap-3.3.7/css/bootstrap.min.css?v={{config.get('DOAJ_VERSION')}}">
 
-        <!-- get fontawesome css -->
-        <link href="/static/doaj/css/offline/font-awesome.css?v={{config.get('DOAJ_VERSION')}}" rel="stylesheet">
-    {% else %}
-        <!-- get bootstrap css -->
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/css/bootstrap-combined.min.css">
-
-        <!-- get fontawesome css -->
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    {% endif %}
-
+    <!-- get fontawesome css -->
+    {# FIXME: we can probably replace this with bootstrap icons? #}
+    <link href="/static/doaj/css/offline/font-awesome.css?v={{config.get('DOAJ_VERSION')}}" rel="stylesheet">
 
     <!-- get facetview css -->
     <!-- <link rel="stylesheet" href="/static/portality/vendor/facetview/css/facetview.css"> -->
     <link rel="stylesheet" href="/static/portality/vendor/facetview2/css/facetview.css?v={{config.get('DOAJ_VERSION')}}">
 
-    <!-- get portality css -->
-    <link rel="stylesheet" type="text/css" href="/static/portality/css/portality.css?v={{config.get('DOAJ_VERSION')}}">
-
     <!-- get the table sorter css -->
-    <link rel="stylesheet" type="text/css" href="/static/portality/vendor/tablesorter/css/blue/style.css?v={{config.get('DOAJ_VERSION')}}">
+    <link rel="stylesheet" type="text/css" href="/static/vendor/tablesorter-2.3.10/css/blue/style.css?v={{config.get('DOAJ_VERSION')}}">
 
     <!-- get the select2 css -->
-    <link rel="stylesheet" type="text/css" href="/static/portality/vendor/select2-release-3.2/select2.css?v={{config.get('DOAJ_VERSION')}}">
+    <link rel="stylesheet" type="text/css" href="/static/vendor/select2-release-3.2/select2.css?v={{config.get('DOAJ_VERSION')}}">
 
     <!-- get jstree css -->
-    <link rel="stylesheet" type="text/css" href="/static/portality/vendor/jstree-3.0.0-beta10/themes/default/style.min.css?v={{config.get('DOAJ_VERSION')}}">
+    <link rel="stylesheet" type="text/css" href="/static/vendor/jstree-3.0.0-beta10/themes/default/style.min.css?v={{config.get('DOAJ_VERSION')}}">
 
     <!-- get the app's css -->
-    <link rel="stylesheet" type="text/css" href="/static/doaj/css/doaj.css?v={{config.get('DOAJ_VERSION')}}">
-    <link rel="stylesheet" type="text/css" href="/static/doaj/css/social-media-icons.css?v={{config.get('DOAJ_VERSION')}}">
+    <link rel="stylesheet" type="text/css" href="/static/css/doaj.css?v={{config.get('DOAJ_VERSION')}}">
+    <link rel="stylesheet" type="text/css" href="/static/css/social-media-icons.css?v={{config.get('DOAJ_VERSION')}}">
     <link rel="stylesheet" type="text/css" href="/static/doaj/css/facetview-customisations.css?v={{config.get('DOAJ_VERSION')}}">
 
     {% block extra_stylesheets %}{% endblock %}
