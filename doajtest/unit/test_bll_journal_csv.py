@@ -132,15 +132,22 @@ class TestBLLJournalCSV(DoajTestCase):
                 n.set_id("not_in_doaj_{i}".format(i=i))
             journals += nots
 
+        jids = []
         for i in range(len(journals)):
-            journals[i].save(blocking=i == len(journals) - 1)
+            journals[i].save()
+            jids.append((journals[i].id, journals[i].last_updated))
 
+        aids = []
         for i in range(len(articles)):
-            articles[i].save(blocking=i == len(articles) - 1)
+            articles[i].save()
+            aids.append((articles[i].id, articles[i].last_updated))
 
         if prune:
             self.localStore.store(self.container_id, "journalcsv__doaj_20180101_0000_utf8.csv", source_stream=StringIO("test1"))
             self.localStore.store(self.container_id, "journalcsv__doaj_20180601_0000_utf8.csv", source_stream=StringIO("test2"))
+
+        models.Journal.blockall(jids)
+        models.Article.blockall(aids)
 
         ###########################################################
         # Execution
