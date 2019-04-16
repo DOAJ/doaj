@@ -2,5 +2,5 @@
 	path = portality/static/portality/vendor/facetview2
 	url = https://github.com/CottageLabs/facetview2.git
 [submodule "portality/static/portality/vendor/swagger-ui"]
-	path = portality/static/portality/vendor/swagger-ui
+	path = portality/static/vendor/swagger-ui
 	url = https://github.com/swagger-api/swagger-ui.git
