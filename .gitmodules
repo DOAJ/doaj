@@ -1,6 +1,3 @@
-[submodule "portality/static/portality/vendor/jtedit"]
-	path = portality/static/portality/vendor/jtedit
-	url = https://github.com/CottageLabs/jtedit.git
 [submodule "portality/static/portality/vendor/facetview"]
 	path = portality/static/portality/vendor/facetview
 	url = https://github.com/DOAJ/facetview.git
