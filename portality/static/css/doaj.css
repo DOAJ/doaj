@@ -1,13 +1,72 @@
 /* Changing the styles of whole elements */
 
 body {
-    padding-top: inherit;
+    padding-top: 1em;
 }
 
 footer {
     margin-top: 2em;
     margin-bottom: 1em;
 }
+
+/****************************************
+ * Page header styles
+ */
+
+#page_header {
+    
+}
+
+#logo-container {
+    padding-bottom: 1em;
+}
+
+/************************************/
+
+
+/****************************************
+ * Navigation styles
+ */
+
+.navbar-orange {
+    background-color: #F68B1F;
+    background-image: none;
+    border-radius: 0;
+    filter: none;
+    -ms-filter: none;
+    min-height: 40px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25), inset 0 -1px 0 rgba(0,0,0,0.1);
+    border-top: 0px;
+}
+
+.navbar .nav > li > a, .navbar .navbar-header a {
+    color: #ffffff;
+    text-shadow: none;
+}
+
+.navbar .nav .active > a,
+.navbar .nav .active > a:hover,
+.navbar .nav > li:hover,
+.navbar .nav > li > a:hover,
+.navbar .navbar-header a.active,
+.navbar .navbar-header a:hover {
+    color: #F68B1F;
+    background-color: white;
+}
+
+.navbar .btn-navbar {
+    background-color: #ffffff;
+    background-image: none;
+    border-color: #ffffff;
+    box-shadow: none
+}
+
+.navbar .btn-navbar .icon-bar {
+    background-color: #F68B1F;
+    box-shadow: none
+}
+
+/************************************/
 
 .btn-doaj {
     background-color: #F68B1F;
@@ -32,13 +91,6 @@ select {
 }
 
 /* Classes */
-.pull-left {
-    float: left !important;
-}
-
-.pull-right {
-    float: right !important;
-}
 
 .orange {
     color: #F68B1F;
@@ -101,51 +153,7 @@ a.readonly_journal_link {
     padding-bottom: 2em;
 }
 
-.navbar-inner {
-    background-color: #F68B1F;
-    background-image: none;
-    border-radius: 0;
-    filter: none;
-    -ms-filter: none;
-    /*
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F68B1F',endColorstr='#F68B1F',GradientType=0);
-    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#333333',endColorstr='#222222',GradientType=0)";
-    */
-}
 
-.navbar .container {
-    width: 90%;
-}
-
-.navbar .btn-navbar {
-    background-color: white;
-    background-image: none;
-    border-color: white;
-    box-shadow: none
-}
-
-.navbar .btn-navbar .icon-bar {
-    background-color: #F68B1F;
-    box-shadow: none
-}
-
-.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
-    font-weight: inherit;
-}
-
-.navbar .btn-navbar:hover, .navbar .btn-navbar:active, .navbar .btn-navbar.active, .navbar .btn-navbar.disabled, .navbar .btn-navbar[disabled] {
-    background-color: white;
-}
-
-.navbar .nav > li > a {
-    color: #FFF;
-    text-shadow: none;
-}
-
-.navbar .nav .active > a, .navbar .nav .active > a:hover, .navbar .nav > li:hover, .navbar .nav > li > a:hover {
-    color: #F68B1F;
-    background-color: white;
-}
 
 .sidebar-nav {
     margin-top: 1em;
@@ -310,10 +318,6 @@ footer > .box + .box {
     -ms-filter: none;
 }
 
-#main-nav.more-padding {
-    margin-top: 1em;
-}
-
 #header-right-container {
     padding-bottom: 1em;
 }
@@ -441,10 +445,6 @@ label[for='doaj_seal'] {
 
 @media (min-width: 768px) {
     /* Apply the following only to desktops and high-res tablets */
-    body {
-        padding-top: 1em;
-    }
-
     .more-heading-padding {
         padding-top: 3em;
     }

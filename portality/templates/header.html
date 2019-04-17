@@ -1,72 +1,124 @@
     <div class="container" id="page_header">
-        <div class="row-fluid">
-            <div class="span4{% if heading_title %} more-heading-padding{% endif %}" id="logo-container"><a href="{{ url_for('doaj.home') }}"><img src="{{ url_for('static', filename='doaj/images/logo_cropped.jpg') }}" alt="Directory of Open Access Journals" title="Directory of Open Access Journals" /></a></div>
-            <div class="span6">
-                {% if not heading_title %}&nbsp;
-                {% else %}
-                <span class="centre-text-container"><h1 id="header-announcement-title">{{ heading_title }}</h1></span>
-                <div id="header-announcement-text">
-                    <p>{{ heading_text }}</p>
-                </div>
-                {% endif %}
+        <div class="row">
+            <div class="col-md-10" id="logo-container">
+                <a href="{{ url_for('doaj.home') }}"><img src="{{ url_for('static', filename='doaj/images/logo_cropped.jpg') }}" alt="Directory of Open Access Journals" title="Directory of Open Access Journals" /></a>
             </div>
-            <div class="span2 centre-text-container{% if heading_title %} more-heading-padding{% endif %}" id="header-right-container">
+            <div class="col-md-2 centre-text-container" id="header-right-container">
                 <a class="btn" id="btn-support-doaj" href="/membership" alt="Support DOAJ Become a member" title="Support DOAJ Become a member">SUPPORT DOAJ</a>
             </div>
         </div>
     </div>
-    <div class="navbar{% if not heading_title %} more-padding{% endif %}" id="main-nav">
-      <div class="navbar-inner">
-        <div class="container">
-          <ul class="nav" id="main-nav-first-menu">
-            <li{% if request.path == '/' %} class="active"{% endif %}><a href="{{ url_for('doaj.home') }}">Home</a></li>
-            <li{% if request.path == '/search' %} class="active"{% endif %}><a href="{{ url_for('doaj.search') }}" alt="Search or browse DOAJ" title="Search or browse DOAJ">Search</a></li>
-            <li{% if request.path == '/subjects' %} class="active"{% endif %}><a href="{{ url_for('doaj.subjects') }}" alt="Browse Subjects" title="Browse Subjects">Browse Subjects</a></li>
-          </ul>
-          <a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          </a>
-          <div class="nav-collapse">
-            <ul class="nav" id="main-nav-second-menu">
-              <li{% if request.path == url_for('doaj.suggestion') %} class="active"{% endif %}><a href="{{url_for('doaj.suggestion')}}">Apply</a></li>
-                <li{% if request.path == url_for('doaj.news') %} class="active"{% endif %}><a href="{{url_for('doaj.news')}}">News</a></li>
-              <li{% if request.path == '/about' %} class="active"{% endif %}><a href="{{ url_for('doaj.about') }}" alt="About DOAJ" title="About DOAJ">About</a></li>
-              <li{% if request.path == '/publishers' %} class="active"{% endif %}><a href="{{url_for('doaj.publishers')}}" alt="Publishers info and metadata upload" title="Publishers info and metadata upload">For Publishers</a></li>
-              <li{% if request.path.startswith('/api') %} class="active"{% endif %}><a href="{{url_for('api_v1.docs')}}" alt="API Documentation" title="API Documentation">API</a></li>
-            </ul>
-            <ul class="nav pull-right">
-              
-              {% if not current_user.is_anonymous %}
-              
-                <li{% if request.path.startswith('/account') %} class="active"{% endif %}><a alt="view your account" title="view your account" href="{{ url_for('account.index') }}{{current_user.id}}"><strong>{{current_user.id}}</strong></a></li>
-                
-                  {% if current_user.has_role("admin_area") %}
-                    <li{% if request.path.startswith('/admin') %} class="active"{% endif %}><a alt="go to the admin area" title="go to the admin area" href="{{ url_for('admin.index') }}">Admin</a></li>
-                  {% endif %}
 
-                  {% if current_user.has_role("editor_area") %}
-                    <li{% if request.path.startswith('/editor') %} class="active"{% endif %}><a alt="go to the editor area" title="go to the editor area" href="{{ url_for('editor.index') }}">Editor</a></li>
-                  {% endif %}
-                  
-                  {% if current_user.has_role("publisher") %}
-                    <li{% if request.path.startswith('/publisher') and not request.path.startswith("/publishers") %} class="active"{% endif %}><a alt="go to the publisher area" title="go to the publisher area" href="{{ url_for('publisher.index') }}">Publisher Area</a></li>
-                  {% endif %}
-              
-                <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
-              
-              {% else %}
-              
-                <li><a alt="login to the DOAJ" title="login to the DOAJ" href="{{ url_for('account.login') }}">Login</a></li>
-              
-              {% endif %}
-              
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+    <nav class="navbar navbar-orange" id="main-nav">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed btn-navbar" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand {% if request.path == url_for("doaj.home") %}active{% endif %}" href="{{ url_for('doaj.home') }}"><strong>DOAJ</strong>{% if request.path == '/' %} <span class="sr-only">(current)</span>{% endif %}</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li {% if request.path == url_for('doaj.search') %}class="active"{% endif %}>
+                        <a href="{{ url_for('doaj.search') }}" alt="Search or browse DOAJ" title="Search or browse DOAJ">
+                            Search
+                            {% if request.path == url_for('doaj.search') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+                    <li {% if request.path == url_for('doaj.subjects') %}class="active"{% endif %}>
+                        <a href="{{ url_for('doaj.subjects') }}" alt="Browse Subjects" title="Browse Subjects">
+                            Browse Subjects
+                            {% if request.path == url_for('doaj.subjects') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+
+                    <li{% if request.path == url_for('doaj.suggestion') %} class="active"{% endif %}>
+                        <a href="{{url_for('doaj.suggestion')}}">
+                            Apply
+                            {% if request.path == url_for('doaj.suggestion') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+
+                    <li{% if request.path == url_for('doaj.news') %} class="active"{% endif %}>
+                        <a href="{{url_for('doaj.news')}}">
+                            News
+                            {% if request.path == url_for('doaj.news') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+
+                    <li{% if request.path == url_for('doaj.about') %} class="active"{% endif %}>
+                        <a href="{{ url_for('doaj.about') }}" alt="About DOAJ" title="About DOAJ">
+                            About
+                            {% if request.path == url_for('doaj.about') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+
+                    <li{% if request.path == url_for('doaj.publishers') %} class="active"{% endif %}>
+                        <a href="{{url_for('doaj.publishers')}}" alt="Publishers info and metadata upload" title="Publishers info and metadata upload">
+                            For Publishers
+                            {% if request.path == url_for('doaj.publishers') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+
+                    <li{% if request.path.startswith('/api') %} class="active"{% endif %}>
+                        <a href="{{url_for('api_v1.docs')}}" alt="API Documentation" title="API Documentation">
+                            API
+                            {% if request.path.startswith('/api') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    {% if not current_user.is_anonymous %}
+
+                        <li{% if request.path.startswith('/account') %} class="active"{% endif %}>
+                            <a alt="view your account" title="view your account" href="{{ url_for('account.index') }}{{current_user.id}}">
+                                <strong>{{current_user.id}}</strong>
+                            </a>
+                        </li>
+
+                        {% if current_user.has_role("admin_area") %}
+                            <li{% if request.path.startswith('/admin') %} class="active"{% endif %}>
+                                <a alt="go to the admin area" title="go to the admin area" href="{{ url_for('admin.index') }}">
+                                    Admin
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if current_user.has_role("editor_area") %}
+                            <li{% if request.path.startswith('/editor') %} class="active"{% endif %}>
+                                <a alt="go to the editor area" title="go to the editor area" href="{{ url_for('editor.index') }}">
+                                    Editor
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if current_user.has_role("publisher") %}
+                            <li{% if request.path.startswith('/publisher') and not request.path.startswith("/publishers") %} class="active"{% endif %}>
+                                <a alt="go to the publisher area" title="go to the publisher area" href="{{ url_for('publisher.index') }}">
+                                    Publisher Area
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
+
+                    {% else %}
+
+                        <li><a alt="login to the DOAJ" title="login to the DOAJ" href="{{ url_for('account.login') }}">Login</a></li>
+
+                    {% endif %}
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
 
     <div class="container">
 

@@ -190,8 +190,6 @@ def set_current_context():
     information.
     '''
     return {
-        'heading_title': '',
-        'heading_text': '',
         'sponsors': SPONSORS,
         'settings': settings,
         'statistics': models.JournalArticle.site_statistics(),
