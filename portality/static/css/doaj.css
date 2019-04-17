@@ -13,10 +13,6 @@ footer {
  * Page header styles
  */
 
-#page_header {
-    
-}
-
 #logo-container {
     padding-bottom: 1em;
 }
@@ -64,6 +60,45 @@ footer {
 .navbar .btn-navbar .icon-bar {
     background-color: #F68B1F;
     box-shadow: none
+}
+
+/************************************/
+
+
+/****************************************
+ * Home page search form
+ */
+
+#homepage-search-form .form-group {
+    width: 100%;
+}
+
+#homepage-search-form .input-group {
+    width: 100%;
+}
+
+#homepage-search-form .input-group-btn {
+    width: 1%;
+}
+
+/************************************/
+
+/****************************************
+ * Orange boxes
+ */
+
+.with-borders {
+    border: 1px solid #F68B1F;
+    border-radius: 6px;
+}
+
+.bordered-text-box {
+    margin-top: 1em;
+    padding: 0.5em 1.5em 0.5em 1.5em;
+}
+
+.bordered-text-box h2 {
+    margin-top: 0px;
 }
 
 /************************************/
@@ -127,12 +162,6 @@ a.readonly_journal_link {
 .centre-text-container,
 .big.box {
     text-align: center;
-}
-
-.with-borders {
-    border: 1px solid #F68B1F;
-    /*box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(246, 139, 31, 0.6);*/
-    border-radius: 6px;
 }
 
 .box {
@@ -444,20 +473,6 @@ label[for='doaj_seal'] {
 }
 
 @media (min-width: 768px) {
-    /* Apply the following only to desktops and high-res tablets */
-    .more-heading-padding {
-        padding-top: 3em;
-    }
-
-    #homepage-search-input {
-        width: 97%;
-    }
-
-    #homepage-search-button {
-        position: relative;
-        left: -2px;
-    }
-
     #cookie-consent-banner {
         margin-top: -1em;
         margin-left: 100px;

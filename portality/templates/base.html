@@ -63,16 +63,11 @@
 
     <div class="content">
         <div class="row">
-                {# Let facetview fill the whole screen on the search
-                page, but keep space for the sidebar on other pages #}
-            <div class="col-md-{%- if search_page or admin_page or edit_suggestion_page or edit_journal_page or no_sidebar -%}
-                    12
-                {%- else -%}
-                    9
-                {%- endif -%}">
-            {% block content %}{% endblock %}
+            {% set show_sidebar = not search_page and not admin_page and not edit_suggestion_page and not edit_journal_page and not no_sidebar %}
+            <div class="col-xs-12 col-md-{% if show_sidebar %}9{% else %}12{% endif %}">
+                {% block content %}{% endblock %}
             </div>
-            {% if not search_page and not admin_page and not edit_suggestion_page and not edit_journal_page and not no_sidebar%}
+            {% if show_sidebar %}
                 {% include 'sidebar.html' %}
             {% endif %}
         </div>
