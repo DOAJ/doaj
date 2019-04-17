@@ -79,6 +79,7 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
 
         # determine what we need to load into the index
         article_ids = []
+        aids_block = []
         if owner_arg not in ["none", "no_articles"]:
             for i, ident in enumerate(IDENTS):
                 the_doi = ident["doi"]
@@ -101,9 +102,9 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
                 source = ArticleFixtureFactory.make_article_source(eissn="1234-5678", pissn="9876-5432", doi=the_doi, fulltext=the_fulltext)
                 article = Article(**source)
                 article.set_id()
-                block = i == len(IDENTS) - 1
-                article.save(blocking=block)
+                article.save()
                 article_ids.append(article.id)
+                aids_block.append((article.id, article.last_updated))
 
         # generate our incoming article
         article = None
@@ -146,6 +147,8 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
                 article.bibjson().remove_urls("fulltext")
 
             article.set_id()
+
+        Article.blockall(aids_block)
 
         ###########################################################
         # Execution

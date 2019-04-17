@@ -725,6 +725,11 @@ class DomainObject(UserDict.IterableUserDict, object):
 
             time.sleep(sleep)
 
+    @classmethod
+    def blockall(cls, ids_and_last_updateds, sleep=0.05, individual_max_retry_seconds=30):
+        for id, lu in ids_and_last_updateds:
+            cls.block(id, lu, sleep=sleep, max_retry_seconds=individual_max_retry_seconds)
+
 
 class BlockTimeOutException(Exception):
     pass

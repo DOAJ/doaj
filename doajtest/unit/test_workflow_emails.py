@@ -110,7 +110,13 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         APPLICATION_SOURCE_3['last_manual_update'] = datetime.utcnow()
         APPLICATION_SOURCE_3['admin']['application_status'] = constants.APPLICATION_STATUS_READY
         application3 = models.Suggestion(**APPLICATION_SOURCE_3)
-        application3.save(blocking=True)
+        application3.save()
+
+        models.Suggestion.blockall([
+            (application1.id, application1.last_updated),
+            (application2.id, application2.last_updated),
+            (application3.id, application3.last_updated)
+        ])
 
         async_workflow_notifications.managing_editor_notifications(emails)
         assert len(emails) > 0
@@ -146,7 +152,13 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         APPLICATION_SOURCE_3['last_manual_update'] = datetime.utcnow() - timedelta(days=extremely_idle)
         APPLICATION_SOURCE_3['admin']['editor'] = None
         application3 = models.Suggestion(**APPLICATION_SOURCE_3)
-        application3.save(blocking=True)
+        application3.save()
+
+        models.Suggestion.blockall([
+            (application1.id, application1.last_updated),
+            (application2.id, application2.last_updated),
+            (application3.id, application3.last_updated)
+        ])
 
         async_workflow_notifications.editor_notifications(emails)
 
@@ -181,7 +193,13 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         extremely_idle = app.config['ASSOC_ED_IDLE_WEEKS'] + 1
         APPLICATION_SOURCE_3['last_manual_update'] = datetime.utcnow() - timedelta(weeks=extremely_idle)
         application3 = models.Suggestion(**APPLICATION_SOURCE_3)
-        application3.save(blocking=True)
+        application3.save()
+
+        models.Suggestion.blockall([
+            (application.id, application.last_updated),
+            (application2.id, application2.last_updated),
+            (application3.id, application3.last_updated)
+        ])
 
         async_workflow_notifications.associate_editor_notifications(emails)
         assert len(emails) > 0
