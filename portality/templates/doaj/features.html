@@ -572,7 +572,8 @@ Keywords - fully optional<br>
     <<b>authors></b>
       <<b>author></b>
         <<b>name></b>Fritz Haber <<b>/name></b>
-        <<b>email></b>fritz.haber@some.university.org<<b>/email></b>
+        <!--
+<<b>email></b>fritz.haber@some.university.org<<b>/email></b> -->
         <<b>affiliationId></b>1<<b>/affiliationId></b>
         <<b>affiliationId></b>2<<b>/affiliationId></b>
         <<b>affiliationId></b>3<<b>/affiliationId></b>
@@ -675,11 +676,10 @@ This file specifies what may or may not be uploaded to the database.
 <<b>?xml version="1.0" encoding="UTF-8"?></b>
  <<b>xs:schema 
   xmlns:xs ="http://www.w3.org/2001/XMLSchema"
-  xmlns:iso_639-2b="http://www.it.ojp.gov/jxdm/iso_639-2b/1.0"></b>
+  xmlns:iso_639-2b="https://doaj.org/schemas/iso_639-2b/1.0"></b>
 
- <<b>xs:import namespace="http://www.it.ojp.gov/jxdm/iso_639-2b/1.0" 
-    schemaLocation="http://www.it.ojp.gov/jxdm/iso_639-2b/1.0/
-                    iso_639-2b.xsd"></b>
+ <<b>xs:import namespace="https://doaj.org/schemas/iso_639-2b/1.0" 
+    schemaLocation="https://doaj.org/static/doaj/iso_639-2b.xsd"></b>
 
   <<b>xs:annotation></b>
     <<b>xs:documentation></b>
