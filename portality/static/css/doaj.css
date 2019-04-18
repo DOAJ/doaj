@@ -84,7 +84,7 @@ footer {
 /************************************/
 
 /****************************************
- * Orange boxes
+ * Orange borders, colours, boxes
  */
 
 .with-borders {
@@ -99,6 +99,82 @@ footer {
 
 .bordered-text-box h2 {
     margin-top: 0px;
+}
+
+.orange {
+    color: #F68B1F;
+}
+
+/************************************/
+
+/****************************************
+ * Sidebar
+ */
+
+.side {
+    margin-top: 1em;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+@media (min-width: 996px) {
+    .side {
+        margin-top: 0;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+.side > div:first-child {
+    margin-top: 0;
+}
+
+.side .nav > li > a:hover {
+    background-color: rgba(246, 139, 31, 1);
+    color: white;
+    text-shadow: none;
+}
+
+#sidebar-support {
+    margin-top: 15px;
+    text-align: center;
+}
+
+#sidebar-support a {
+    width: 85%;
+}
+
+/************************************/
+
+/****************************************
+ * Social media icons
+ */
+
+#social-bar {
+    text-align: center;
+    font-size: 2em;
+}
+
+#social-bar a {
+    margin-right: 5px;
+    padding: 5px; /* Increase hit rectangle for touch devices */
+    text-decoration: none;
+}
+
+#social-bar .fa-facebook-square {
+    color: #3B5998;
+}
+
+#social-bar .fa-twitter-square {
+    color: #00ACED;
+}
+
+#social-bar .fa-linkedin {
+    color: #1E88BD;
+}
+
+#social-bar .fa-slideshare {
+    color: #0077b5;
 }
 
 /************************************/
@@ -127,9 +203,7 @@ select {
 
 /* Classes */
 
-.orange {
-    color: #F68B1F;
-}
+
 
 .red {
     color: #C2020C;
@@ -184,25 +258,7 @@ a.readonly_journal_link {
 
 
 
-.sidebar-nav {
-    margin-top: 1em;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-}
 
-.side > .sidebar-nav:first-child {
-    margin-top: 0;
-}
-
-.side > [class*="span"] {
-    margin-left: 0;
-}
-
-.sidebar-nav .nav > li > a:hover {
-    background-color: rgba(246, 139, 31, 1); /*inherit;*/
-    color: white;
-    text-shadow: none;
-}
 
 .input-append button.add-on {
     height: inherit !important;
