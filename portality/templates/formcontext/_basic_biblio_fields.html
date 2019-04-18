@@ -1,18 +1,18 @@
-<div class="span6 with-borders form-section">
+<div class="col-md-6 with-borders form-section">
     <h3 class="heading-aligned-with-fields">Basic Journal Information</h3>
     {% autoescape off %}
     {{ form_context.render_field_group("basic_info") }}
     {% endautoescape %}
 </div>
 
-<div class="span6 with-borders form-section">
+<div class="col-md-6 with-borders form-section">
     <h3>Quality and Transparency of the Editorial Process</h3>
     {% autoescape off %}
     {{ form_context.render_field_group("editorial_process") }}
     {% endautoescape %}
 </div>
 
-<div class="span6 with-borders form-section">
+<div class="col-md-6 with-borders form-section">
     <h3>How Open is the Journal?</h3>
     <p>Please remember that <strong>all</strong> the content of the journal you are applying about <strong>must</strong> be available <strong>immediately</strong> upon publication.</p>
     {% autoescape off %}
@@ -20,7 +20,7 @@
     {% endautoescape %}
 </div>
 
-<div class="span6 with-borders form-section">
+<div class="col-md-6 with-borders form-section">
     <h3 class="heading-no-margin-bottom">Content Licensing</h3>
     <p style="margin-bottom: 1em">
         <a href="{{ url_for('doaj.rights') }}" target="_blank">Copyright &amp; Licensing help</a>
@@ -31,7 +31,7 @@
     {% endautoescape %}
 </div>
 
-<div class="span6 with-borders form-section">
+<div class="col-md-6 with-borders form-section">
     <h3 class="heading-no-margin-bottom">Copyright and Permissions</h3>
     <p style="margin-bottom: 1em">
         <a href="{{ url_for('doaj.rights') }}" target="_blank">Copyright &amp; Licensing help</a>

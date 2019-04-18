@@ -14,8 +14,8 @@
 
 {% if current_user.id == account.id or current_user.is_super %}
 
-    <div class="row-fluid">
-        <div class="span12">
+    <div class="row">
+        <div class="col-md-12">
             {% if current_user.id != account.id %}
                 <div class="alert alert-danger"><strong>NOTE</strong> you are editing a user account that is not your own.  Be careful!</div>
             {% endif %}
@@ -30,8 +30,8 @@
     </div>
 
     <h3>Edit your details</h3>
-    <div class="row-fluid">
-        <div class="span6">
+    <div class="row">
+        <div class="col-md-6">
             <div class="grey_bordered_div">
                 <h4>Update your account name</h4>
                 <form action="" method="POST">
@@ -91,10 +91,10 @@
                 <h4>Delete this account</h4>
                 <p>(This <strong>irrevocably</strong> deletes the account)</p>
                 <form action="" method="POST">
-                    <span class="span8">
+                    <span class="col-md-8">
                         <input type="radio" name="confirm" value="confirm">&nbsp;&nbsp;yes, I'm sure
                     </span>
-                    <span class="span4">
+                    <span class="col-md-4">
                         <input type="submit" name="submit" value="Delete" class="btn btn-danger" style="float: right">
                     </span>
                 </form>
@@ -103,7 +103,7 @@
 
         </div>
 
-        <div class="span6">
+        <div class="col-md-6">
             <div class="grey_bordered_div">
                 <h4>Marketing Consent</h4>
                 <form action="" method="POST">
@@ -121,13 +121,13 @@
 
 {% else %}
 
-    <div class="row-fluid">
-        <div class="span6">
+    <div class="row">
+        <div class="col-md-6">
             <div class="hero-unit">
                 <h2>{{ account.id }}</h2>
             </div>
         </div>
-        <div class="span6">
+        <div class="col-md-6">
             <p>You are not logged in as this user. Use the <a href="/account/login">login page</a> if you want to change this</p>
         </div>
     </div>

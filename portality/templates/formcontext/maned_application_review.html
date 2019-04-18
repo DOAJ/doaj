@@ -17,11 +17,11 @@
     and form_context.source.current_journal == None
     %}
 
-<div class="row-fluid">
-  <div class="span12 with-borders form-section centre-text-container" style="margin-left: 0; padding: 0.5em 1.5em;">
+<div class="row">
+  <div class="col-md-12 with-borders form-section centre-text-container" style="margin-left: 0; padding: 0.5em 1.5em;">
 
-    <div class="row-fluid">
-        <div class="span12">
+    <div class="row">
+        <div class="col-md-12">
             <p class="centre-text-container">This button will not save any other changes on this page!</p>
             <form method="post" action="{{ url_for('admin.application_quick_reject', application_id=form_context.source.id) }}" class="form-horizontal" id="application_quick_reject_form">
                 Select a reason for rejection:
@@ -48,12 +48,12 @@
 
     <fieldset>
 
-        <div class="row-fluid">
+        <div class="row">
 
-            <div class="span6">
-                <div class="row-fluid">
+            <div class="col-md-6">
+                <div class="row">
 
-                    <div class="span12 with-borders form-section" style="margin-left: 0;">
+                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
                         <h3 class="heading-aligned-with-fields">Editorial</h3>
                         {% autoescape off %}
                         {{ form_context.render_field_group("editorial") }}
@@ -61,7 +61,7 @@
                     </div>
 
 
-                    <div class="span12 with-borders form-section" style="margin-left: 0;">
+                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
                         <div class="control-group">
                             <div class="controls">
                                 <button class="btn btn-success save-record" type="submit">SAVE</button>
@@ -69,21 +69,21 @@
                         </div>
                     </div>
 
-                    <div class="span12 with-borders form-section" style="margin-left: 0;">
+                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
                         <h3 class="heading-aligned-with-fields">Application status</h3>
                         {% autoescape off %}
                         {{ form_context.render_field_group("status") }}
                         {% endautoescape %}
                     </div>
 
-                    <div class="span12 with-borders form-section" style="margin-left: 0;">
+                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
                         <h3 class="heading-aligned-with-fields">Assign to account</h3>
                         {% autoescape off %}
                         {{ form_context.render_field_group("account") }}
                         {% endautoescape %}
                     </div>
 
-                    <div class="span12 with-borders form-section" style="margin-left: 0;">
+                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
                         <h3 class="heading-aligned-with-fields">Continuation information</h3>
                         {% autoescape off %}
                         {{ form_context.render_field_group("continuations") }}
@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-            <div class="span6 with-borders form-section" id="subjects_outer_container">
+            <div class="col-md-6 with-borders form-section" id="subjects_outer_container">
                 {# This will be hidden - placed here to get first_problem anchor in approximately the right place #}
                 {% autoescape off %}
                     {{ form_context.render_field_group("subject") }}
@@ -119,9 +119,9 @@
         {% include 'formcontext/_base_application_form.html' %}
 
 
-        <div class="row-fluid">
-            <div class="span3">&nbsp;</div>
-            <div class="span6 with-borders form-section">
+        <div class="row">
+            <div class="col-md-3">&nbsp;</div>
+            <div class="col-md-6 with-borders form-section">
                 <h3 class="heading-aligned-with-fields">Details of person making this application</h3>
                 {% autoescape off %}
                 {{ form_context.render_field_group("submitter_info") }}
@@ -138,9 +138,9 @@
         </div>
 
 
-        <div class="row-fluid">
+        <div class="row">
 
-            <div class="span12 with-borders form-section">
+            <div class="col-md-12 with-borders form-section">
                 <h3>Notes</h3>
                 <p><strong>Notes are presented in descending date order: the most recent notes appear at the top.</strong></p>
                 <div class="addable-field-container" id="notes-outer-container">

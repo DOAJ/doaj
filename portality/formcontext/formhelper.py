@@ -32,7 +32,7 @@ class FormHelper(object):
         if field.errors:
             frag += " error"
         if render_subfields_horizontal:
-            frag += " row-fluid"
+            frag += " row"
         if container_class is not None:
             frag += " " + container_class
         #if complete_me and (field.flags.required or field.flags.display_required_star) and (field.data is None or field.data == "" or field.data == "None") and not disabled:

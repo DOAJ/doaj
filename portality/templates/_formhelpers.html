@@ -14,7 +14,7 @@
     {% if field.type == 'FormField' %}
         <div class="control-group
         {% if field.errors %} error{% endif %}
-        {% if render_subfields_horizontal %} row-fluid{% endif %}
+        {% if render_subfields_horizontal %} row{% endif %}
         {% if container_class %} {{container_class}} {% endif %}
         " id="{{field.short_name}}-container"
         {% if hidden %} style="display: none;" {% endif %} 
@@ -36,7 +36,7 @@
                       {% do vars.update({'subfield_width': '3'}) %}
                     {% endif %}
 
-                    <div class="span{{vars.subfield_width}} nested-field-container">
+                    <div class="col-xs-{{vars.subfield_width}} nested-field-container">
                         {{ __render_field(subfield, maximise_width=True, **kwargs) }}
                     </div>
                 {% else %}
@@ -134,7 +134,7 @@
 
                 {% set class = kwargs.pop('class', '') %}
                 {% if maximise_width %}
-                  {% set class = 'span11 ' + class %}
+                  {% set class = 'col-xs-11 ' + class %}
                 {% endif %}
           
                 {{ field(class=class, **kwargs) }}
