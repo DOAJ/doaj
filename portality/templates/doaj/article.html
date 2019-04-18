@@ -69,8 +69,8 @@ hosted on DOAJ.org) #}
 {% set issns = bibjson.issns() %}
 {% set doi = bibjson.get_one_identifier("doi") %}
 
-<div class="row-fluid">
-    <div class="span12">
+<div class="row">
+    <div class="col-md-12">
         {%  if bibjson.title %}
             <h1>{{bibjson.title}}</h1>
         {% else %}
@@ -95,9 +95,9 @@ hosted on DOAJ.org) #}
 
 </div>
 
-<div class="row-fluid" style="margin-bottom: 30px; margin-top: 30px">
-    <div class="span1">&nbsp;</div>
-    <div class="span5">
+<div class="row" style="margin-bottom: 30px; margin-top: 30px">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-5">
         <div class="box with-borders" style="min-height: 140px">
             {% if jbib.get_single_url("homepage") %}
                 <p><a href="{{jbib.get_single_url('homepage')}}">Journal Homepage</a></p>
@@ -123,7 +123,7 @@ hosted on DOAJ.org) #}
         </div>
     </div>
 
-    <div class="span5">
+    <div class="col-md-5">
         <div class="box with-borders" style="min-height: 140px">
 
             {% for path in bibjson.lcc_paths() %}
@@ -149,9 +149,9 @@ hosted on DOAJ.org) #}
     </div>
 </div>
 
-<div class="row-fluid" style="margin-top: 30px">
-    <div class="span1">&nbsp;</div>
-    <div class="span5">
+<div class="row" style="margin-top: 30px">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-5">
         <div class="box slim">
             <p><strong>AUTHORS</strong></p>
 
@@ -167,7 +167,7 @@ hosted on DOAJ.org) #}
         </div>
     </div>
 
-    <div class="span5">
+    <div class="col-md-5">
         <div class="box slim">
             <p><strong>EDITORIAL INFORMATION</strong></p>
 
@@ -200,9 +200,9 @@ hosted on DOAJ.org) #}
 
 </div>
 
-<div class="row-fluid" style="margin-top: 30px">
-    <div class="span1">&nbsp;</div>
-    <div class="span10">
+<div class="row" style="margin-top: 30px">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-10">
         <div style="padding: 0.5em">
 
         <p>

@@ -313,21 +313,21 @@ function setup_add_button_handlers() {
             delclass = " deletable "
         }
         var thefield = [
-            '<div class="control-group row-fluid' + delclass + '" id="notes-' + cur_number_of_notes + '-container">',
-            '    <div class="span8 nested-field-container">',
+            '<div class="control-group row' + delclass + '" id="notes-' + cur_number_of_notes + '-container">',
+            '    <div class="col-md-8 nested-field-container">',
             '        <label class="control-label" for="note">',
             '          Note',
             '        </label>',
             '        <div class="controls ">',
-            '                <textarea class="span11" id="notes-' + cur_number_of_notes + '-note" name="notes-' + cur_number_of_notes + '-note"></textarea>',
+            '                <textarea class="col-md-11" id="notes-' + cur_number_of_notes + '-note" name="notes-' + cur_number_of_notes + '-note"></textarea>',
             '        </div>',
             '    </div>',
-            '    <div class="span3 nested-field-container">',
+            '    <div class="col-md-3 nested-field-container">',
             '        <label class="control-label" for="date">',
             '          Date',
             '        </label>',
             '        <div class="controls ">',
-            '                <input class="span11" disabled="" id="notes-' + cur_number_of_notes + '-date" name="notes-' + cur_number_of_notes + '-date" type="text" value="">',
+            '                <input class="col-md-11" disabled="" id="notes-' + cur_number_of_notes + '-date" name="notes-' + cur_number_of_notes + '-date" type="text" value="">',
             '        </div>',
             '    </div>',
             '</div>'
