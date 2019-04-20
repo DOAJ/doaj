@@ -4,3 +4,6 @@
 [submodule "portality/static/portality/vendor/swagger-ui"]
 	path = portality/static/vendor/swagger-ui
 	url = https://github.com/swagger-api/swagger-ui.git
+[submodule "portality/static/vendor/edges"]
+	path = portality/static/vendor/edges
+	url = https://github.com/CottageLabs/edges.git
