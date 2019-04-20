@@ -2,8 +2,10 @@
 <html dir="ltr" lang="en">
 <head>
     <meta charset="utf-8">
+
     {% block page_title %}<title>{{ app.config['SERVICE_NAME'] }}</title>{% endblock %}
     {% block page_desc %}<meta name="description" content="{{ app.config['SERVICE_TAGLINE'] }}">{% endblock %}
+
     <meta name="author" content="{{ app.config['ADMIN_NAME'] }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -60,24 +62,20 @@
 
 <div class="container">
 
+    {% block main_panel %}
     <div class="content">
         <div class="row">
-            {% set show_sidebar = not search_page and not admin_page and not edit_suggestion_page and not edit_journal_page and not no_sidebar %}
-            <div class="col-xs-12 col-md-{% if show_sidebar %}9{% else %}12{% endif %}">
+            <div class="col-xs-12">
                 {% block content %}{% endblock %}
             </div>
-            {% if show_sidebar %}
-                {% include 'sidebar.html' %}
-            {% endif %}
         </div>
-    </div> <!-- /content -->
-
+    </div>
+    {% endblock %}
 
     {% include 'footer.html' %}
     {% include '_js_includes.html' %}
-    {% block extra_js_bottom %}
-      
-    {% endblock extra_js_bottom %}
+
+    {% block extra_js_bottom %}{% endblock extra_js_bottom %}
 
 </div> <!-- /container -->
 
