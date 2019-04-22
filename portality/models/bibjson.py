@@ -150,6 +150,19 @@ class GenericBibJSON(dataobj.DataObj):
             return urls[0]
         return None
 
+    def remove_urls(self, urltype=None, url=None):
+        # if we are to remove all urls, this is easy
+        if urltype is None and url is None:
+            self._delete("link")
+            return
+
+        match = {}
+        if urltype is not None:
+            match["type"] = urltype
+        if url is not None:
+            match["url"] = id
+        self._delete_from_list("link", matchsub=match)
+
     ## work with subjects
 
     def add_subject(self, scheme, term, code=None):

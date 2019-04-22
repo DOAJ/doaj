@@ -1,6 +1,28 @@
+"""
+This script allows you to delete articles in bulk from a query or from a csv.
+
+If you provide a csv, you may also provide a second column containing the delete action, which may be one of:
+
+* delete - actually delete the article
+* remove_doi - keep the article, but remove its DOI
+* remove_fulltext - keep the article, but remove its Fulltext URLs
+
+"""
+
 from portality import models
 import json, codecs, csv
 from portality.core import app
+from portality import constants
+
+def remove_doi(article_id):
+    article = models.Article.pull(article_id)
+    article.bibjson().remove_identifiers(idtype=constants.IDENT_TYPE_DOI)
+    article.save()
+
+def remove_fulltext(article_id):
+    article = models.Article.pull(article_id)
+    article.bibjson().remove_urls(urltype=constants.LINK_TYPE_FULLTEXT)
+    article.save()
 
 if __name__ == "__main__":
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
@@ -69,7 +91,15 @@ if __name__ == "__main__":
             reader = csv.reader(f)
             for row in reader:
                 article_id = row[0]
-                models.Article.remove_by_id(article_id)
+                action = "delete"
+                if len(row) > 1:
+                    action = row[1]
+                if action == "delete":
+                    models.Article.remove_by_id(article_id)
+                elif action == "remove_doi":
+                    remove_doi(article_id)
+                elif action == "remove_fulltext":
+                    remove_fulltext(article_id)
 
 
 
