@@ -14,20 +14,29 @@ import json, codecs, csv
 from portality.core import app
 from portality import constants
 
+
 def remove_doi(article_id):
     article = models.Article.pull(article_id)
-    article.bibjson().remove_identifiers(idtype=constants.IDENT_TYPE_DOI)
+    try:
+        article.bibjson().remove_identifiers(idtype=constants.IDENT_TYPE_DOI)
+    except AttributeError as e:
+        print("ERROR: could not remove DOI from {0}: {1}".format(article_id, e.message))
     article.save()
+
 
 def remove_fulltext(article_id):
     article = models.Article.pull(article_id)
-    article.bibjson().remove_urls(urltype=constants.LINK_TYPE_FULLTEXT)
+    try:
+        article.bibjson().remove_urls(urltype=constants.LINK_TYPE_FULLTEXT)
+    except AttributeError as e:
+        print("ERROR: could not remove fulltext from {0}: {1}".format(article_id, e.message))
     article.save()
+
 
 if __name__ == "__main__":
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-        print "System is in READ-ONLY mode, script cannot run"
-        exit()
+        print("System is in READ-ONLY mode, script cannot run")
+        exit(1)
 
     import argparse
     parser = argparse.ArgumentParser()
@@ -41,8 +50,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.username and not args.query and not args.csv:
-        print "Please specify a username with the -u option, or a query file with the -q option, or a csv with the -c option"
-        exit()
+        print("Please specify a username with the -u option, or a query file with the -q option, or a csv with the -c option")
+        exit(1)
 
     exclusives = 0
     if args.username: exclusives += 1
@@ -50,8 +59,8 @@ if __name__ == "__main__":
     if args.csv: exclusives += 1
 
     if exclusives > 1:
-        print "You may only specify a username, a query or a csv alone, not combinations."
-        exit()
+        print("You may only specify a username, a query or a csv alone, not combinations.")
+        exit(1)
 
     snapshot = not args.ghost
 
@@ -70,7 +79,7 @@ if __name__ == "__main__":
                 pass
 
         if 'sort' in query:
-            print 'You can\'t have "sort" in the query, it breaks ES delete by query. Removing your sort.'
+            print('You can\'t have "sort" in the query, it breaks ES delete by query. Removing your sort.')
             del query['sort']
 
         res = models.Article.query(q=query)
@@ -83,9 +92,9 @@ if __name__ == "__main__":
         go_on = raw_input("This will delete " + str(total) + " articles.  Are you sure? [Y/N]:")
         if go_on.lower() == "y":
             models.Article.delete_selected(query=query, snapshot=snapshot)
-            print "Articles deleted"
+            print("Articles deleted")
         else:
-            print "Aborted"
+            print("Aborted")
     elif args.csv is not None:
         with codecs.open(args.csv) as f:
             reader = csv.reader(f)
@@ -100,6 +109,3 @@ if __name__ == "__main__":
                     remove_doi(article_id)
                 elif action == "remove_fulltext":
                     remove_fulltext(article_id)
-
-
-
