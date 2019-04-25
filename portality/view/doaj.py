@@ -82,7 +82,7 @@ def fqw_hit():
 
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return render_template('doaj/search.html', search_page=True, facetviews=['public.journalarticle.facetview'])
+    return render_template('doaj/search.html')
 
 
 @blueprint.route("/search", methods=['POST'])
