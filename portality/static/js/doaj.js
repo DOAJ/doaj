@@ -22,6 +22,53 @@ var doaj = {
             success: callbackWrapper,
             error: errorHandler
         });
+    },
+
+    journal_toc_id : function(journal) {
+        // if e-issn is available, use that
+        // if not, but a p-issn is available, use that
+        // if neither ISSN is available, use the internal ID
+        var ids = journal.bibjson.identifier;
+        var pissns = [];
+        var eissns = [];
+        if (ids) {
+            for (var i = 0; i < ids.length; i++) {
+                if (ids[i].type === "pissn") {
+                    pissns.push(ids[i].id)
+                } else if (ids[i].type === "eissn") {
+                    eissns.push(ids[i].id)
+                }
+            }
+        }
+
+        var toc_id = undefined;
+        if (eissns.length > 0) { toc_id = eissns[0]; }
+        if (!toc_id && pissns.length > 0) { toc_id = pissns[0]; }
+        if (!toc_id) { toc_id = journal.id; }
+
+        return toc_id;
+    },
+
+    monthmap : [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"
+    ],
+
+    licenceMap : {
+        "CC BY" : ["/static/doaj/images/cc/by.png", "https://creativecommons.org/licenses/by/4.0/"],
+        "CC BY-NC" : ["/static/doaj/images/cc/by-nc.png", "https://creativecommons.org/licenses/by-nc/4.0/"],
+        "CC BY-NC-ND" : ["/static/doaj/images/cc/by-nc-nd.png", "https://creativecommons.org/licenses/by-nc-nd/4.0/"],
+        "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "https://creativecommons.org/licenses/by-nc-sa/4.0/"],
+        "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "https://creativecommons.org/licenses/by-nd/4.0/"],
+        "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "https://creativecommons.org/licenses/by-sa/4.0/"]
+},
+
+    humanDate : function(datestr) {
+        var date = new Date(datestr);
+        var dom = date.getUTCDate();
+        var monthnum = date.getUTCMonth();
+        var year = date.getUTCFullYear();
+
+        return String(dom) + " " + doaj.monthmap[monthnum] + " " + String(year);
     }
 };
 
@@ -45,30 +92,7 @@ function iso_datetime2date_and_time(isodate_str) {
     return isodate_str.replace('T',' ').replace('Z','')
 }
 
-function journal_toc_id(journal) {
-    // if e-issn is available, use that
-    // if not, but a p-issn is available, use that
-    // if neither ISSN is available, use the internal ID
-    var ids = journal.bibjson.identifier;
-    var pissns = [];
-    var eissns = [];
-    if (ids) {
-        for (var i = 0; i < ids.length; i++) {
-            if (ids[i].type === "pissn") {
-                pissns.push(ids[i].id)
-            } else if (ids[i].type === "eissn") {
-                eissns.push(ids[i].id)
-            }
-        }
-    }
 
-    var toc_id = undefined;
-    if (eissns.length > 0) { toc_id = eissns[0]; }
-    if (!toc_id && pissns.length > 0) { toc_id = pissns[0]; }
-    if (!toc_id) { toc_id = journal.id; }
-
-    return toc_id;
-}
 
 function setCookieConsent(event) {
     event.preventDefault();
