@@ -19,18 +19,18 @@ def remove_doi(article_id):
     article = models.Article.pull(article_id)
     try:
         article.bibjson().remove_identifiers(idtype=constants.IDENT_TYPE_DOI)
+        article.save()
     except AttributeError as e:
         print("ERROR: could not remove DOI from {0}: {1}".format(article_id, e.message))
-    article.save()
-
+    
 
 def remove_fulltext(article_id):
     article = models.Article.pull(article_id)
     try:
         article.bibjson().remove_urls(urltype=constants.LINK_TYPE_FULLTEXT)
+        article.save()
     except AttributeError as e:
         print("ERROR: could not remove fulltext from {0}: {1}".format(article_id, e.message))
-    article.save()
 
 
 if __name__ == "__main__":
