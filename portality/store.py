@@ -218,6 +218,8 @@ def prune_container(storage, container_id, sort, filter=None, keep=1):
     action_register.append("Removed files: " + ", ".join(remove))
 
     for fn in remove:
-        storage.delete(container_id, fn)
+        # storage.delete(container_id, fn)
+        # don't actually prune for the time being, due to unknown issue
+        pass
 
     return action_register
