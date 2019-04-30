@@ -19,7 +19,7 @@ class JournalCSVBackgroundTask(BackgroundTask):
         job = self.background_job
 
         journalService = DOAJ.journalService()
-        url = journalService.csv()
+        url = journalService.csv(prune=False)
         job.add_audit_message(u"CSV generated; will be served from {y}".format(y=url))
 
     def cleanup(self):
