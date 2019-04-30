@@ -145,9 +145,9 @@ class ArticleService(object):
         """
         Determine if the owner id is the owner of the article
 
-        :param article:
-        :param owner:
-        :return:
+        :param article: an article model
+        :param owner: string account ID
+        :return: True or False
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("is_legitimate_owner", [
