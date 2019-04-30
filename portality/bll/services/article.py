@@ -5,6 +5,7 @@ from portality.ui.messages import Messages
 
 from datetime import datetime
 
+
 class ArticleService(object):
 
     def batch_create_articles(self, articles, account, duplicate_check=True, merge_duplicate=True,
@@ -78,7 +79,6 @@ class ArticleService(object):
         else:
             raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_FAIL, result=report)
 
-
     def _batch_contains_duplicates(self, articles):
         dois = []
         fulltexts = []
@@ -97,7 +97,6 @@ class ArticleService(object):
                 fulltexts.append(ft)
 
         return False
-
 
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False):
@@ -154,7 +153,6 @@ class ArticleService(object):
 
         return {"success" : 1, "fail" : 0, "update" : is_update, "new" : 1 - is_update, "shared" : set(), "unowned" : set(), "unmatched" : set()}
 
-
     def is_legitimate_owner(self, article, owner):
         """
         Determine if the owner id is the owner of the article
@@ -203,13 +201,12 @@ class ArticleService(object):
             return False
 
         # single owner must still know of all supplied issns
-        journal_issns = set(seen_journal_issns[owners[0]])
+        journal_issns = set(seen_journal_issns[owner])
         for issn in article_issns:
             if issn not in journal_issns:
                 return False
 
         return True
-
 
     def issn_ownership_status(self, article, owner):
         """
@@ -274,7 +271,6 @@ class ArticleService(object):
 
         return owned, shared, unowned, unmatched
 
-
     def get_duplicate(self, article, owner=None):
         """
         Get at most one one, most recent, duplicate article for the supplied article.
@@ -296,7 +292,6 @@ class ArticleService(object):
             return dup.pop()
         else:
             return None
-
 
     def get_duplicates(self, article, owner=None, max_results=10):
         """
@@ -333,7 +328,6 @@ class ArticleService(object):
         possible_articles.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
 
         return possible_articles[:max_results]
-
 
     def discover_duplicates(self, article, owner=None, results_per_match_type=10):
         """
