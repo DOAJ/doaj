@@ -1,11 +1,11 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory
+from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.models import Article, Account
+from portality.models import Article, Account, Journal
 from portality.lib.paths import rel2abs
 from doajtest.mocks.bll_article import BLLArticleMockFactory
 
@@ -42,6 +42,7 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         duplicate_check_arg = kwargs.get("duplicate_check")
         merge_duplicate_arg = kwargs.get("merge_duplicate")
         limit_to_account_arg = kwargs.get("limit_to_account")
+        add_journal_info_arg = kwargs.get("add_journal_info")
         dry_run_arg = kwargs.get("dry_run")
 
         raises_arg = kwargs.get("raises")
@@ -66,16 +67,34 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         if limit_to_account_arg != "none":
             limit_to_account = True if limit_to_account_arg == "true" else False
 
+        add_journal_info = None
+        if add_journal_info_arg != "none":
+            add_journal_info = True if add_journal_info_arg == "true" else False
+
         dry_run = None
         if dry_run_arg != "none":
             dry_run = True if dry_run_arg == "true" else False
 
         raises = EXCEPTIONS.get(raises_arg)
 
+        eissn = "1234-5678"
+        pissn = "9876-5432"
+
+        if add_journal_info:
+            jsource = JournalFixtureFactory.make_journal_source(in_doaj=True)
+            j = Journal(**jsource)
+            bj = j.bibjson()
+            bj.title = "Add Journal Info Title"
+            bj.remove_identifiers()
+            bj.add_identifier(bj.P_ISSN, pissn)
+            bj.add_identifier(bj.E_ISSN, eissn)
+            j.save(blocking=True)
+
         article = None
         original_id = None
         if article_arg == "exists":
-            source = ArticleFixtureFactory.make_article_source(eissn="1234-5678", pissn="9876-5432", doi="10.123/abc/1", fulltext="http://example.com/1")
+            source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi="10.123/abc/1", fulltext="http://example.com/1")
+            del source["bibjson"]["journal"]
             article = Article(**source)
             article.set_id()
             original_id = article.id
@@ -89,16 +108,16 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         ilo_mock = BLLArticleMockFactory.is_legitimate_owner(legit=legit)
         self.svc.is_legitimate_owner = ilo_mock
 
-        owned = ["1234-5678", "9876-5432"] if account_arg == "owner" else []
+        owned = [eissn, pissn] if account_arg == "owner" else []
         shared = []
-        unowned = ["1234-5678"] if account_arg == "not_owner" else []
-        unmatched = ["9876-5432"] if account_arg == "not_owner" else []
+        unowned = [eissn] if account_arg == "not_owner" else []
+        unmatched = [pissn] if account_arg == "not_owner" else []
         ios_mock = BLLArticleMockFactory.issn_ownership_status(owned, shared, unowned, unmatched)
         self.svc.issn_ownership_status = ios_mock
 
         gd_mock = None
         if article_duplicate_arg == "yes":
-            gd_mock = BLLArticleMockFactory.get_duplicate(eissn="1234-5678", pissn="9876-5432", doi="10.123/abc/1", fulltext="http://example.com/1")
+            gd_mock = BLLArticleMockFactory.get_duplicate(eissn=eissn, pissn=pissn, doi="10.123/abc/1", fulltext="http://example.com/1")
         else:
             gd_mock = BLLArticleMockFactory.get_duplicate(return_none=True)
         self.svc.get_duplicate = gd_mock
@@ -110,9 +129,11 @@ class TestBLLArticleCreateArticle(DoajTestCase):
 
         if raises is not None:
             with self.assertRaises(raises):
-                self.svc.create_article(article, account, duplicate_check, merge_duplicate, limit_to_account, dry_run)
+                self.svc.create_article(article, account, duplicate_check, merge_duplicate,
+                                        limit_to_account, add_journal_info, dry_run)
         else:
-            report = self.svc.create_article(article, account, duplicate_check, merge_duplicate, limit_to_account, dry_run)
+            report = self.svc.create_article(article, account, duplicate_check, merge_duplicate,
+                                             limit_to_account, add_journal_info, dry_run)
 
             assert report["success"] == success
 
@@ -132,4 +153,7 @@ class TestBLLArticleCreateArticle(DoajTestCase):
             elif mock_article is not None:
                 merged = Article.pull(mock_article.id)
                 assert merged is None
+
+            if add_journal_info:
+                assert article.bibjson().journal_title == "Add Journal Info Title"
 

@@ -13,6 +13,11 @@
                 "false"
               ]
             }, 
+            "duplicate_check": {
+              "or": [
+                "false"
+              ]
+            }, 
             "limit_to_account": {
               "or": [
                 "false"
@@ -23,14 +28,14 @@
                 "no"
               ]
             }, 
+            "add_journal_info": {
+              "or": [
+                "false"
+              ]
+            }, 
             "duplicate_in_batch": {
               "or": [
                 "no"
-              ]
-            }, 
-            "duplicate_check": {
-              "or": [
-                "false"
               ]
             }
           }
@@ -42,6 +47,11 @@
                 "false"
               ]
             }, 
+            "duplicate_check": {
+              "or": [
+                "false"
+              ]
+            }, 
             "limit_to_account": {
               "or": [
                 "false"
@@ -52,14 +62,14 @@
                 "no"
               ]
             }, 
+            "add_journal_info": {
+              "or": [
+                "false"
+              ]
+            }, 
             "duplicate_in_batch": {
               "or": [
                 "no"
-              ]
-            }, 
-            "duplicate_check": {
-              "or": [
-                "false"
               ]
             }
           }
@@ -138,6 +148,86 @@
       "name": "limit_to_account"
     }, 
     {
+      "values": {
+        "false": {}, 
+        "none": {
+          "constraints": {
+            "duplicate_check": {
+              "or": [
+                "false"
+              ]
+            }, 
+            "account": {
+              "or": [
+                "owner"
+              ]
+            }, 
+            "merge_duplicate": {
+              "or": [
+                "false"
+              ]
+            }, 
+            "limit_to_account": {
+              "or": [
+                "false"
+              ]
+            }, 
+            "duplicate_in_index": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "articles": {
+              "or": [
+                "yes"
+              ]
+            }, 
+            "duplicate_in_batch": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        }, 
+        "true": {
+          "constraints": {
+            "duplicate_check": {
+              "or": [
+                "true"
+              ]
+            }, 
+            "account": {
+              "or": [
+                "owner"
+              ]
+            }, 
+            "articles": {
+              "or": [
+                "yes"
+              ]
+            }, 
+            "merge_duplicate": {
+              "or": [
+                "true"
+              ]
+            }, 
+            "limit_to_account": {
+              "or": [
+                "true"
+              ]
+            }, 
+            "duplicate_in_batch": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        }
+      }, 
+      "type": "generated", 
+      "name": "add_journal_info"
+    }, 
+    {
       "default": "", 
       "values": {
         "ArgumentException": {
@@ -172,6 +262,13 @@
             }, 
             {
               "limit_to_account": {
+                "or": [
+                  "none"
+                ]
+              }
+            }, 
+            {
+              "add_journal_info": {
                 "or": [
                   "none"
                 ]

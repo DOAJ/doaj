@@ -74,14 +74,15 @@ class TestBLLArticleIsLegitimateOwner(DoajTestCase):
                 eissn = "9876-5432"
                 article.bibjson().add_identifier("eissn", eissn)
 
-        issns = []
+        # assemble the issns that will appear to be in the index.  One that is irrelevant, and just
+        # serves to be "noise" in the database, and the other that matches the spec required by
+        # the test
+        issns = [("1111-1111", "2222-2222")]
         if eissn is not None and pissn is not None and seen_eissn_arg == "yes" and seen_pissn_arg == "yes":
             issns.append((eissn, pissn))
         if eissn is not None and seen_eissn_arg == "yes":
-            issns.append((eissn, "4321-9876"))
             issns.append((eissn, None))
         if pissn is not None and seen_pissn_arg == "yes":
-            issns.append(("6789-4321", pissn))
             issns.append((None, pissn))
 
         owners = []
