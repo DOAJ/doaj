@@ -268,10 +268,10 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         result = {}
         try:
             with open(path) as handle:
-                articles = xwalk.crosswalk_file(handle)
+                articles = xwalk.crosswalk_file(handle, add_journal_info=False) # don't import the journal info, as we haven't validated ownership of the ISSNs in the article yet
                 for article in articles:
                     article.set_upload_id(file_upload.id)
-                result = articleService.batch_create_articles(articles, account)
+                result = articleService.batch_create_articles(articles, account, add_journal_info=True)
         except IngestException as e:
             job.add_audit_message(u"IngestException: {msg}. Inner message: {inner}.  Stack: {x}".format(msg=e.message, inner=e.inner_message, x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
@@ -290,8 +290,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 job.add_audit_message(u"Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
                 return
         except Exception as e:
-            job.add_audit_message(u"File system error while reading file: {x}".format(x=traceback.format_exc()))
-            file_upload.failed("File system error when reading file")
+            job.add_audit_message(u"Unanticipated error: {x}".format(x=traceback.format_exc()))
+            file_upload.failed("Unanticipated error when importing articles")
             try:
                 file_failed(path)
             except:

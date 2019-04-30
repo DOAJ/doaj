@@ -1134,6 +1134,10 @@ class TestIngestArticles(DoajTestCase):
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1
 
+    """
+Removing this test - it is no longer true.  Left here for reference for the time being.
+We should parameterise this test set
+
     def test_36_journal_1_article_2_success(self):
         # Create a journal with 1 issn, which is one of the 2 issns on the article
         # we expect a successful article ingest
@@ -1179,6 +1183,7 @@ class TestIngestArticles(DoajTestCase):
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 1
+    """
 
     def test_37_journal_1_article_1_success(self):
         # Create a journal with 1 issn, which is the same 1 issn on the article
@@ -1739,6 +1744,49 @@ class TestIngestArticles(DoajTestCase):
         cpaths = found[0].data["index"]["classification_paths"]
         assert len(cpaths) == 1
         assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling"
+
+    def test_48_unknown_journal_issn(self):
+        # create a journal with one of the ISSNs specified
+        j1 = models.Journal()
+        j1.set_owner("testowner1")
+        bj1 = j1.bibjson()
+        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner1")
+        account.save(blocking=True)
+
+        # take an article with 2 issns, but one of which is not in the index
+        handle = ArticleFixtureFactory.upload_2_issns_correct()
+        f = MockFileUpload(stream=handle)
+
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
+        id = job.params.get("ingest_articles__file_upload_id")
+        self.cleanup_ids.append(id)
+
+        # because file upload gets created and saved by prepare
+        time.sleep(2)
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task.run()
+
+        # because file upload needs to be re-saved
+        time.sleep(2)
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
+
+        fr = fu.failure_reasons
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 1
+
 
 # TODO: reinstate this test when author emails have been disallowed again
 '''

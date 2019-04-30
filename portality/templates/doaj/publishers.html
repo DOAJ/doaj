@@ -567,11 +567,19 @@ please <a href="{{ url_for('doaj.contact') }}">contact us</a> with the following
 <p><strong>Resolution</strong>: Please <a href="{{ url_for('doaj.contact') }}">contact us</a> immediately with the relevant details.</p>
 
 
-<h4><a name="File system error when reading file"></a>File system error when reading file</h4>
+<h4><a name="Unanticipated error when importing articles"></a>Unanticipated error when importing articles</h4>
 
-<p><strong>Reason</strong>: The file got corrupted and couldn't be read for some reason - you may have found a bug!</p>
+<p><strong>Reason</strong>: Something unexpected happened when we tried to import your articles - you may have found a bug!</p>
 
-<p><strong>Resolution</strong>: Please <a href="{{ url_for('doaj.contact') }}">contact us</a> immediately with the relevant details.</p>
+<p><strong>Resolution</strong>: Please <a href="{{ url_for('doaj.contact') }}">contact us</a> immediately with the details:</p>
+
+<ol>
+    <li>Your user account</li>
+    <li>When the incident occurred</li>
+    <li>Information about your environment, such as which browser you were using</li>
+</ol>
+
+<p>We may also ask you to supply the file that you tried to upload, so please keep a copy of it until the issue is resolved.</p>
 
 <h4><a name="The file at the URL was too large"></a>The file at the URL was too large</h4>
 
