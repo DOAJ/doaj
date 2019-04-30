@@ -1,42 +1,44 @@
 {% extends "admin/admin_base.html" %}
 
 {% block admin_content %}
-    <div class="row box-row">
-        <div class="col-md-4">
-            <div class="big box with-borders">
-                <a href="{{ url_for('admin.journals') }}">Journals</a>
+    <div class="admin-index">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="big box with-borders">
+                    <a href="{{ url_for('admin.journals') }}">Journals</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="big box with-borders">
+                    <a href="{{ url_for('admin.suggestions') }}" class="long-label">Applications/Update Requests</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="big box with-borders">
+                    <a href="{{ url_for('account.index') }}">Users</a>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="big box with-borders">
-                <a href="{{ url_for('admin.suggestions') }}" class="long-label">Applications/Update Requests</a>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="big box with-borders">
+                    <a href="{{ url_for('admin.admin_site_search') }}" class="long-label">Journals and Articles (admin)</a>
+                </div>
             </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="big box with-borders">
-                <a href="{{ url_for('account.index') }}">Users</a>
+            <div class="col-md-4">
+                <div class="big box with-borders">
+                    <a href="{{ url_for('admin.editor_group_search') }}" class="long-label">Editor Groups</a>
+                </div>
             </div>
-        </div>
-    </div>
 
-    <div class="row box-row">
-        <div class="col-md-4">
-            <div class="big box with-borders">
-                <a href="{{ url_for('admin.admin_site_search') }}" class="long-label">Administrative site search</a>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="big box with-borders">
-                <a href="{{ url_for('admin.editor_group_search') }}" class="long-label">Editor Groups</a>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="big box with-borders">
-                <a href="{{ url_for('admin.background_jobs_search') }}" class="long-label">Background Jobs</a>
+            <div class="col-md-4">
+                <div class="big box with-borders">
+                    <a href="{{ url_for('admin.background_jobs_search') }}" class="long-label">Background Jobs</a>
+                </div>
             </div>
         </div>
     </div>

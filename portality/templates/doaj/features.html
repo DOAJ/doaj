@@ -2,45 +2,45 @@
 
 {% block content %}
 
-<a href="#xml_upload">Jump straight to the section about DOAJ XML</a>
+    <a href="#xml_upload">Jump straight to the section about DOAJ XML</a>
 
-<a name="widgets" id="oaipmh"></a>
-<h2>DOAJ Widgets</h2>
-<p>You can embed tools on your own site which interact with the DOAJ. There are two available:
-<ul>
-    <li><b>Simple Search</b> - a search box which opens the DOAJ with your search text</li>
-    <li><b>Fixed Query</b> - embed a specific set of results from a pre-defined query to the DOAJ</li>
-</ul>
-</p>
+    <a name="widgets" id="oaipmh"></a>
+    <h2>DOAJ Widgets</h2>
+    <p>You can embed tools on your own site which interact with the DOAJ. There are two available:
+    <ul>
+        <li><b>Simple Search</b> - a search box which opens the DOAJ with your search text</li>
+        <li><b>Fixed Query</b> - embed a specific set of results from a pre-defined query to the DOAJ</li>
+    </ul>
+    </p>
 
-<p>More information about this feature can be found on the <a href="{{ url_for('doaj.widgets') }}">widgets page</a>.</p>
+    <p>More information about this feature can be found on the <a href="{{ url_for('doaj.widgets') }}">widgets page</a>.</p>
 
-<a name="oaipmh" id="oaipmh"></a>
-<h2>OAI-PMH</h2>
+    <a name="oaipmh" id="oaipmh"></a>
+    <h2>OAI-PMH</h2>
 
-<p><strong>Our OAI-PMH service was updated in April 2015. In that update we reinstated the doajarticle metadata tag and provided more granularity to the data. The notes below have been updated to reflect this change.</strong></p>
+    <p><strong>Our OAI-PMH service was updated in April 2015. In that update we reinstated the doajarticle metadata tag and provided more granularity to the data. The notes below have been updated to reflect this change.</strong></p>
 
-<p>DOAJ supports OAI-PMH feeds for both Journals and Articles, at different URL-s.</p>
+    <p>DOAJ supports OAI-PMH feeds for both Journals and Articles, at different URL-s.</p>
 
-<a name="journal_feed" id="journal_feed"></a>
-<h3>Journal Feed</h3>
+    <a name="journal_feed" id="journal_feed"></a>
+    <h3>Journal Feed</h3>
 
-<p><strong>Identify</strong> - you can get to the base Identify endpoint here: <a href="http://www.doaj.org/oai?verb=Identify">http://www.doaj.org/oai?verb=Identify</a>.</p>
+    <p><strong>Identify</strong> - you can get to the base Identify endpoint here: <a href="http://www.doaj.org/oai?verb=Identify">http://www.doaj.org/oai?verb=Identify</a>.</p>
 
-<p><strong>ListSets</strong> - DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in.  A full list of the sets can be found at <a href="http://www.doaj.org/oai?verb=ListSets">http://www.doaj.org/oai?verb=ListSets</a>.</p>
+    <p><strong>ListSets</strong> - DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in.  A full list of the sets can be found at <a href="http://www.doaj.org/oai?verb=ListSets">http://www.doaj.org/oai?verb=ListSets</a>.</p>
 
-<p><strong>ListMetadataFormats</strong> - DOAJ currently supports only <code>oai_dc</code>, which can be seen here: <a href="http://www.doaj.org/oai?verb=ListMetadataFormats">http://www.doaj.org/oai?verb=ListMetadataFormats</a>.</p>
+    <p><strong>ListMetadataFormats</strong> - DOAJ currently supports only <code>oai_dc</code>, which can be seen here: <a href="http://www.doaj.org/oai?verb=ListMetadataFormats">http://www.doaj.org/oai?verb=ListMetadataFormats</a>.</p>
 
-<p>The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Journal field:</p>
+    <p>The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Journal field:</p>
 
-<table border="1" cellpadding="5">
-    <thead>
+    <table border="1" cellpadding="5">
+        <thead>
         <tr>
             <th>Dublin Core</th>
             <th>Meaning within DOAJ</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         <tr>
             <td>title</td>
             <td>The title of the journal</td>
@@ -73,13 +73,13 @@
             <td>type</td>
             <td>The type of the object; always contains "journal"</td>
         </tr>
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
-<br><br>
-<p>This is an example record of how a journal record might appear:</p>
+    <br><br>
+    <p>This is an example record of how a journal record might appear:</p>
 
-<pre>
+    <pre>
 &lt;record&gt;
     &lt;header xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
         &lt;identifier&gt;
@@ -130,15 +130,15 @@
 &lt;/record&gt;
 </pre>
 
-<h5 style="margin-top: 1em;">Revision history - Journal OAI-PMH DC</h5>
-<table border="1" cellpadding="5" style="margin-top: 0.5em; margin-bottom: 1.5em;">
-    <thead>
+    <h5 style="margin-top: 1em;">Revision history - Journal OAI-PMH DC</h5>
+    <table border="1" cellpadding="5" style="margin-top: 0.5em; margin-bottom: 1.5em;">
+        <thead>
         <tr>
             <th>Date changes were made live</th>
             <th>Changes</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         <tr>
             <td>20 April 2015</td>
             <td>
@@ -151,32 +151,32 @@
             <td>13 December 2013</td>
             <td>Initial release</td>
         </tr>
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
 
-<a name="article_feed" id="article_feed"></a>
-<h3>Article Feed</h3>
+    <a name="article_feed" id="article_feed"></a>
+    <h3>Article Feed</h3>
 
-<p><strong>Identify</strong> - you can get to the base Identify endpoint here: <a href="http://www.doaj.org/oai.article?verb=Identify">http://www.doaj.org/oai.article?verb=Identify</a>.</p>
+    <p><strong>Identify</strong> - you can get to the base Identify endpoint here: <a href="http://www.doaj.org/oai.article?verb=Identify">http://www.doaj.org/oai.article?verb=Identify</a>.</p>
 
-<p><strong>ListSets</strong> - DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in.  A full list of the sets can be found at <a href="http://www.doaj.org/oai.article?verb=ListSets">http://www.doaj.org/oai.article?verb=ListSets</a>.</p>
+    <p><strong>ListSets</strong> - DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in.  A full list of the sets can be found at <a href="http://www.doaj.org/oai.article?verb=ListSets">http://www.doaj.org/oai.article?verb=ListSets</a>.</p>
 
-<p><strong>ListMetadataFormats</strong> - DOAJ currently supports the <code>oai_dc</code> and <code>oai_doaj</code> formats, which can be seen here: <a href="http://www.doaj.org/oai.article?verb=ListMetadataFormats">http://www.doaj.org/oai.article?verb=ListMetadataFormats</a>.</p>
+    <p><strong>ListMetadataFormats</strong> - DOAJ currently supports the <code>oai_dc</code> and <code>oai_doaj</code> formats, which can be seen here: <a href="http://www.doaj.org/oai.article?verb=ListMetadataFormats">http://www.doaj.org/oai.article?verb=ListMetadataFormats</a>.</p>
 
-<a name="article_oai_dc" id="article_oai_dc"></a>
-<h4>Dublin Core OAI Article format (OAI_DC)</h4>
+    <a name="article_oai_dc" id="article_oai_dc"></a>
+    <h4>Dublin Core OAI Article format (OAI_DC)</h4>
 
-<p>The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Article field:</p>
+    <p>The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Article field:</p>
 
-<table border="1" cellpadding="5">
-    <thead>
+    <table border="1" cellpadding="5">
+        <thead>
         <tr>
             <th>Dublin Core</th>
             <th>Meaning within DOAJ</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         <tr>
             <td>title</td>
             <td>The title of the article</td>
@@ -221,13 +221,13 @@
             <td>creator</td>
             <td>The article's authors</td>
         </tr>
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
-<br><br>
-<p>This is an example record of how an article record might appear:</p>
+    <br><br>
+    <p>This is an example record of how an article record might appear:</p>
 
-<pre>
+    <pre>
 
 &lt;record&gt;
     &lt;header xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
@@ -290,15 +290,15 @@
 
 </pre>
 
-<h5 style="margin-top: 1em;">Revision history - Article OAI-PMH DC</h5>
-<table border="1" cellpadding="5" style="margin-top: 0.5em; margin-bottom: 1.5em;">
-    <thead>
+    <h5 style="margin-top: 1em;">Revision history - Article OAI-PMH DC</h5>
+    <table border="1" cellpadding="5" style="margin-top: 0.5em; margin-bottom: 1.5em;">
+        <thead>
         <tr>
             <th>Date changes were made live</th>
             <th>Changes</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         <tr>
             <td>22 August 2016</td>
             <td>
@@ -321,23 +321,23 @@
             <td>13 December 2013</td>
             <td>Initial release</td>
         </tr>
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
 
-<a name="article_oai_doaj" id="article_oai_doaj"></a>
-<h4>DOAJ OAI Article format (OAI_DOAJ)</h4>
+    <a name="article_oai_doaj" id="article_oai_doaj"></a>
+    <h4>DOAJ OAI Article format (OAI_DOAJ)</h4>
 
-<p>The following fields are available (not every article will have all the information):</p>
+    <p>The following fields are available (not every article will have all the information):</p>
 
-<table border="1" cellpadding="5">
-    <thead>
+    <table border="1" cellpadding="5">
+        <thead>
         <tr>
             <th>DOAJ OAI field</th>
             <th>Meaning</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         <tr>
             <td>language</td>
             <td>The languages that the journal publishing this article publishes in. Does not necessarily strictly denote the language of this article. Only the first language the journal publishes in is provided, even when multiple are recorded on the journal record.</td>
@@ -402,13 +402,13 @@
             <td>affiliationsList</td>
             <td>A list of &lt;affiliationName&gt; elements. The content of the element will be the name of an organisation one or more <code>authors</code> is associated with. The <code>affiliationId</code> attribute identifies the affiliation, and will be referred to by &lt;author&gt;&lt;affiliationId&gt;&lt;/affiliationId&gt;&lt;/author&gt; elements.</td>
         </tr>
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
-<br><br>
-<p>This is an example record of how an article record might appear:</p>
+    <br><br>
+    <p>This is an example record of how an article record might appear:</p>
 
-<pre>
+    <pre>
 &lt;record&gt;
     &lt;header xmlns:oai_doaj=&quot;http://doaj.org/features/oai_doaj/1.0/&quot;&gt;
         &lt;identifier&gt;oai:doaj.org/article:2a48ccce13c546ceab0c6bc5b74d433d&lt;/identifier&gt;
@@ -470,84 +470,74 @@
 &lt;/record&gt;
 </pre>
 
-<h5 style="margin-top: 1em;">Revision history - Article OAI-PMH DOAJ format</h5>
-<table border="1" cellpadding="5" style="margin-top: 0.5em; margin-bottom: 1.5em;">
-    <thead>
+    <h5 style="margin-top: 1em;">Revision history - Article OAI-PMH DOAJ format</h5>
+    <table border="1" cellpadding="5" style="margin-top: 0.5em; margin-bottom: 1.5em;">
+        <thead>
         <tr>
             <th>Date changes were made live</th>
             <th>Changes</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         <tr>
             <td>20 April 2015</td>
             <td>Initial release</td>
         </tr>
-    </tbody>
-</table>
-
-<div class="row"><div class="col-md-11">
-<table border=0 width=100% bgcolor=white cellspacing=0 cellpadding=0>
-   <tr valign=top>
-     <td>
-     </td>
-     <td width=100%>
-
-<br><br>
-<a name="xml_upload"></a>
-
-       <table width=100%><a name="xml"></a>
-          <tr>
-             <td width=100%><h2>File upload info</h2></td>
-          </tr>
-          <tr>
-             <td class="text">
+        </tbody>
+    </table>
 
 
-             <br>
 
-You need to convert your data to the DOAJ XML file format before you can add them to the DOAJ database.
-<br>
-If you are new to the world of file formats then please be assured that the XML file format is a simple and transparent form of data
-storage. Unlike some other data formats this one can be read and edited using an ordinary text editor.
-<br>
-You need to first run a script or a program that converts your database into the accepted XML format.
-<br>
-However, for our receiving database to be able to accept your input it is important that it is well written. That is its format must
-strictly adhere to <a href="https://doaj.org/static/doaj/doajArticles.xsd">a set of rules encoded in an XML schema file</a>
-that we supply.
-<br>
-There are XML checkers/validators that can be found for free on the internet or may already be on your machine. These accepts as input 
-your XML file as well as a description of the format that your XML file must adhere to. There is also help on our <a href="https://doaj.org/publishers">'For Publishers' page</a>. 
-<br>
-<br>
+    <div class="row"><div class="col-md-11">
+        <a name="xml_upload"></a>
+        <a name="xml"></a>
+        <h2>File upload info</h2>
 
-<h3>Example XML File</h3>
-The example file below contains only one record. Here is a list of each element in the XML file and whether or not it is required information. In reality very little is required by the DTD. However, providing the information to us ensures a more complete bibliographic record at DOAJ and across the web.
-<p>
-Language, ISO code - optional, but max. 1<br>
-Publisher - optional, but max. 1<br>
-Journal title - required, only 1<br>
-ISSN - optional, but max. 1 (Either an ISSN or EISSN must be present though)<br>
-EISSN - optional, but max. 1 (Either an ISSN or EISSN must be present though)<br>
-Publication Date - required, only 1<br>
-Volume number - optional, but max. 1<br>
-Issue number - optional, but max. 1<br>
-Start page - optional, but max. 1<br>
-End page - optional, but max. 1<br>
-DOI - optional, but max. 1<br>
-Document Type - optional, but max. 1<br>
-Title - required and there may be more than 1<br>
-Authors - fully optional<br>
-Affiliations - fully optional<br>
-Abstracts - fully optional<br>
-Fulltext url - required, only 1<br>
-Keywords - fully optional<br>
-</p>
-<p>PLEASE NOTE that DOAJ does not display or have any need for author email addresses. Publishers should not send email addresses to us in the XML. Recent restrictions on <a href="/privacy">the use of personal data</a>, as laid out by the GDPR, mean that it is your responsibility to ask authors' consent before you distribute their email addresses. DOAJ kindly requests that you DO NOT send any email addresses to us at all. Thank you.</p>
-<table cellspacing=0 cellpadding=0 width=100% border=0>
-<tr>
-  <td bgcolor=white valign=top width=50%>
+
+
+        You need to convert your data to the DOAJ XML file format before you can add them to the DOAJ database.
+        <br>
+        If you are new to the world of file formats then please be assured that the XML file format is a simple and transparent form of data
+        storage. Unlike some other data formats this one can be read and edited using an ordinary text editor.
+        <br>
+        You need to first run a script or a program that converts your database into the accepted XML format.
+        <br>
+        However, for our receiving database to be able to accept your input it is important that it is well written. That is its format must
+        strictly adhere to <a href="https://doaj.org/static/doaj/doajArticles.xsd">a set of rules encoded in an XML schema file</a>
+        that we supply.
+        <br>
+        There are XML checkers/validators that can be found for free on the internet or may already be on your machine. These accepts as input
+        your XML file as well as a description of the format that your XML file must adhere to. There is also help on our <a href="https://doaj.org/publishers">'For Publishers' page</a>.
+        <br>
+        <br>
+
+        <h3>Example XML File</h3>
+        The example file below contains only one record. Here is a list of each element in the XML file and whether or not it is required information. In reality very little is required by the DTD. However, providing the information to us ensures a more complete bibliographic record at DOAJ and across the web.
+        <p>
+            Language, ISO code - optional, but max. 1<br>
+            Publisher - optional, but max. 1<br>
+            Journal title - required, only 1<br>
+            ISSN - optional, but max. 1 (Either an ISSN or EISSN must be present though)<br>
+            EISSN - optional, but max. 1 (Either an ISSN or EISSN must be present though)<br>
+            Publication Date - required, only 1<br>
+            Volume number - optional, but max. 1<br>
+            Issue number - optional, but max. 1<br>
+            Start page - optional, but max. 1<br>
+            End page - optional, but max. 1<br>
+            DOI - optional, but max. 1<br>
+            Document Type - optional, but max. 1<br>
+            Title - required and there may be more than 1<br>
+            Authors - fully optional<br>
+            Affiliations - fully optional<br>
+            Abstracts - fully optional<br>
+            Fulltext url - required, only 1<br>
+            Keywords - fully optional<br>
+        </p>
+        <p>PLEASE NOTE that DOAJ does not display or have any need for author email addresses. Publishers should not send email addresses to us in the XML. Recent restrictions on <a href="/privacy">the use of personal data</a>, as laid out by the GDPR, mean that it is your responsibility to ask authors' consent before you distribute their email addresses. DOAJ kindly requests that you DO NOT send any email addresses to us at all. Thank you.</p>
+
+        <table cellspacing=0 cellpadding=0 width=100% border=0>
+            <tr>
+                <td bgcolor=white valign=top width=50%>
 <pre>
 
 <<b>?xml version="1.0" encoding="UTF-8"?></b>
@@ -591,85 +581,87 @@ Keywords - fully optional<br>
       <<b>/affiliationName></b>
     <<b>/affiliationsList></b>
 </pre>
-</td>
-<td valign=top bgcolor=#eeeeee>
+                </td>
+                <td valign=top bgcolor=#eeeeee>
 <pre>
 
 
 
 
- <= The language tag content must conform to the
-    iso 639-2b standard. <a href="http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes">
-    Find the correct language code.</a>
+<= The language tag content must conform to the
+iso 639-2b standard. <a href="http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes">
+Find the correct language code.</a>
 
- <= Here is the issn number of the journal in which
-    the article has been published. If you have an eissn
-    number instead then this line should be replaced by
-    <eissn>17497221</eissn>. If you have both issn
-    and eissn numbers then the eissn tag should occur
-    after the issn tag. 
+<= Here is the issn number of the journal in which
+the article has been published. If you have an eissn
+number instead then this line should be replaced by
+<eissn>17497221</eissn>. If you have both issn
+and eissn numbers then the eissn tag should occur
+after the issn tag.
 
 
 
- <= If the title occurs in more than one language
-    then you may include those in your XML. However we can only display one language. The title tag
-    has got the attribute language that must be set
-    according to the ISO 639-2b standard.
+<= If the title occurs in more than one language
+then you may include those in your XML. However
+we can only display one language. The title tag
+has got the attribute language that must be set
+according to the ISO 639-2b standard.
 
-<= The author name should be formatted First Name, Middle Name, Last Name
+<= The author name should be formatted First Name,
+Middle Name, Last Name
 
- <= Note that the affilitationId numbers denote the
-    affilitations in the affiliationslist below. 
+<= Note that the affilitationId numbers denote the
+affilitations in the affiliationslist below.
 </pre>
-</td> </tr>
-<tr> <td bgcolor=white>
+                </td> </tr>
+            <tr> <td bgcolor=white>
 <pre>
-    <<b>abstract language="eng"></b>
-      The catalytic formation of ammonia from hydrogen
-      and atmospheric nitrogen under conditions of high
-      temperature and high pressure.
-    <<b>/abstract></b>
-    <<b>fullTextUrl format="pdf"></b>
-      http://www.science.org/articles/HaberBosch.pdf
-    <<b>/fullTextUrl></b>
-    <<b>keywords language="eng"></b>    
-      <<b>keyword></b>garden<<b>/keyword></b>
-      <<b>keyword></b>rose<<b>/keyword></b>
-    <<b>/keywords></b>
-  <<b>/record></b>
+<<b>abstract language="eng"></b>
+The catalytic formation of ammonia from hydrogen
+and atmospheric nitrogen under conditions of high
+temperature and high pressure.
+<<b>/abstract></b>
+<<b>fullTextUrl format="pdf"></b>
+http://www.science.org/articles/HaberBosch.pdf
+<<b>/fullTextUrl></b>
+<<b>keywords language="eng"></b>
+<<b>keyword></b>garden<<b>/keyword></b>
+<<b>keyword></b>rose<<b>/keyword></b>
+<<b>/keywords></b>
+<<b>/record></b>
 
-  <<b>record></b>
-   ...
-  <<b>/record></b>
-   ...
+<<b>record></b>
+...
+<<b>/record></b>
+...
 
 <<b>/records></b>
 
 </pre>
-  </td>
-  <td valign=bottom bgcolor=#eeeeee>
-   <pre>
- <= Here is where your first record ends. You may
-    add as many more as you want of similar kind below.
- 
+            </td>
+                <td valign=bottom bgcolor=#eeeeee>
+<pre>
+<= Here is where your first record ends. You may
+add as many more as you want of similar kind below.
+
 
 </pre>
-</td></tr>
-</table>
+                </td></tr>
+        </table>
 
 
-<br>
-<table cellspacing=0 cellpadding=0 width=100% border=0>
-<tr>
-<td colspan=2 class="text">
-<a name="doajArticles_OAI_schema" id="doajArticles_OAI_schema"></a>
-<h3>The <a href=/static/doaj/doajArticles.xsd>doajArticles.xsd</a> schema file</h3>
-This file specifies what may or may not be uploaded to the database. 
-<br> 
-</td>
-</tr>
-<tr>
-<td bgcolor="white"  width="50%">
+        <br>
+        <table cellspacing=0 cellpadding=0 width=100% border=0>
+            <tr>
+                <td colspan=2 class="text">
+                    <a name="doajArticles_OAI_schema" id="doajArticles_OAI_schema"></a>
+                    <h3>The <a href=/static/doaj/doajArticles.xsd>doajArticles.xsd</a> schema file</h3>
+                    This file specifies what may or may not be uploaded to the database.
+                    <br> 
+                </td>
+            </tr>
+            <tr>
+                <td bgcolor="white"  width="50%">
 
 <pre>
 
@@ -846,27 +838,27 @@ This file specifies what may or may not be uploaded to the database.
 
 </pre>
 
-</td>
-<td valign=top bgcolor=#eeeeee>
+                </td>
+                <td valign=top bgcolor=#eeeeee>
 <pre style='margin-top:130px'>
 
 
 <= Here we specify the root 'records' element that
-   contains elements of type record.
+contains elements of type record.
 
 <= Here we specify the record element. This section
-   gives an overview of the elements contained. Some
-   elements are specified further below in the
-   grey section.
+gives an overview of the elements contained. Some
+elements are specified further below in the
+grey section.
 </pre>
 
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-</td>
-</tr>
-</table>
-</td></tr></table>
-</td></tr></table>
-</div></div>
+                    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                </td>
+            </tr>
+        </table>
+
+
+    </div></div>
 
 {% endblock %}
