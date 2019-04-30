@@ -121,31 +121,32 @@
     </nav>
 
     <div class="container">
+        <div class="row"><div class="col-xs-12">
+            <div class="alert-messages">
 
-        <div class="alert-messages">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+              {% set category_url_indicator = '+contains-url' %}
 
-        {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-          {% set category_url_indicator = '+contains-url' %}
+              {% for category, message in messages %}
+                {% set message_has_url = False %}
+                {% if category.endswith(category_url_indicator) %}
+                  {% set category = category[:category.rfind(category_url_indicator)] %}
+                  {% set message_has_url = True %}
+                {% endif %}
 
-          {% for category, message in messages %}
-            {% set message_has_url = False %}
-            {% if category.endswith(category_url_indicator) %}
-              {% set category = category[:category.rfind(category_url_indicator)] %}
-              {% set message_has_url = True %}
+                <div class="alert alert-{{category}} fade in" data-alert="alert">
+                  <a class="close" data-dismiss="alert" href="#">&times;</a>
+                  {% if message_has_url %}
+                    {{ message | safe }}
+                  {% else %}
+                    {{ message }}
+                  {% endif %}
+                </div>
+              {% endfor %}
             {% endif %}
-
-            <div class="alert alert-{{category}} fade in" data-alert="alert">
-              <a class="close" data-dismiss="alert" href="#">&times;</a>
-              {% if message_has_url %}
-                {{ message | safe }}
-              {% else %}
-                {{ message }}
-              {% endif %}
+            {% endwith %}
             </div>
-          {% endfor %}
-        {% endif %}
-        {% endwith %}
-        </div>
+        </div></div>
     
     </div>

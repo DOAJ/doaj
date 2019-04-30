@@ -9,12 +9,24 @@ footer {
     margin-bottom: 1em;
 }
 
+th {
+    padding: 5px;
+}
+
+td {
+    padding: 5px;
+}
+
 /****************************************
  * Page header styles
  */
 
 #logo-container {
     padding-bottom: 1em;
+}
+
+.alert-messages {
+    margin-left: -15px;
 }
 
 /************************************/
@@ -240,10 +252,51 @@ footer {
     background-color: #eeeeee;
 }
 
+/************************************/
 
+/****************************************
+ * Admin styles
+ */
+
+.admin-index {
+
+}
+
+.admin-index .row {
+    margin-top: 40px;
+}
+
+.editor-index {
+    margin-top: 10px;
+}
 
 /************************************/
 
+/****************************************
+ * API Docs Styles
+ */
+
+.swagger-section .swagger-ui-wrap {
+    max-width: none !important;
+}
+
+/************************************/
+
+/****************************************
+ * Sponsors styles
+ */
+
+.sponsors > a > img {
+    max-width: 170px;
+    max-height: 100px;
+    margin: 0.5em 20px 20px 20px;
+}
+
+.sponsors-spacious {
+    padding-bottom: 2em;
+}
+
+/************************************/
 
 .btn-doaj {
     background-color: #F68B1F;
@@ -478,16 +531,7 @@ footer > .box + .box {
     text-decoration: none;
 }
 
-.sponsors > a > img {
-    max-width: 170px;
-    max-height: 100px;
-    margin-top: 0.5em;
-    padding: 20px;
-}
 
-.sponsors-spacious {
-    padding-bottom: 2em;
-}
 
 /* From suggestion form */
 #digital_archiving_policy_library {
