@@ -277,7 +277,7 @@ def bulk_application_create():
         raise Api400Error("Supplied data was not valid JSON")
 
     # delegate to the API implementation
-    ids = ApplicationsBulkApi.create(data, current_user)
+    ids = ApplicationsBulkApi.create(data, current_user._get_current_object())
 
     # get all the locations for the ids
     inl = []
@@ -299,7 +299,7 @@ def bulk_application_delete():
     except:
         raise Api400Error("Supplied data was not valid JSON")
 
-    ApplicationsBulkApi.delete(data, current_user)
+    ApplicationsBulkApi.delete(data, current_user._get_current_object())
 
     return no_content()
 
@@ -319,7 +319,7 @@ def bulk_article_create():
         raise Api400Error("Supplied data was not valid JSON")
 
     # delegate to the API implementation
-    ids = ArticlesBulkApi.create(data, current_user)
+    ids = ArticlesBulkApi.create(data, current_user._get_current_object())
 
     # get all the locations for the ids
     inl = []
@@ -341,6 +341,6 @@ def bulk_article_delete():
     except:
         raise Api400Error("Supplied data was not valid JSON")
 
-    ArticlesBulkApi.delete(data, current_user)
+    ArticlesBulkApi.delete(data, current_user._get_current_object())
 
     return no_content()
