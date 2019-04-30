@@ -192,7 +192,10 @@ class TempStore(StoreLocal):
 
 
 def prune_container(storage, container_id, sort, filter=None, keep=1):
+    action_register = []
+
     filelist = storage.list(container_id)
+    action_register.append("Current cached files (before prune): " + ", ".join(filelist))
 
     # filter for the files we care about
     filtered = []
@@ -202,12 +205,19 @@ def prune_container(storage, container_id, sort, filter=None, keep=1):
                 filtered.append(fn)
     else:
         filtered = filelist
+    action_register.append("Filtered cached files (before prune): " + ", ".join(filelist))
 
     if len(filtered) <= keep:
+        action_register.append("Fewer than {x} files in cache, no further action".format(x=keep))
         return
 
     filtered_sorted = sort(filtered)
+    action_register.append("Considering files for retention in the following order: " + ", ".join(filtered_sorted))
 
     remove = filtered_sorted[keep:]
+    action_register.append("Removed files: " + ", ".join(remove))
+
     for fn in remove:
         storage.delete(container_id, fn)
+
+    return action_register

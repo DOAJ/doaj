@@ -145,6 +145,7 @@ class TestBLLJournalCSV(DoajTestCase):
         if prune:
             self.localStore.store(self.container_id, "journalcsv__doaj_20180101_0000_utf8.csv", source_stream=StringIO("test1"))
             self.localStore.store(self.container_id, "journalcsv__doaj_20180601_0000_utf8.csv", source_stream=StringIO("test2"))
+            self.localStore.store(self.container_id, "journalcsv__doaj_20190101_0000_utf8.csv", source_stream=StringIO("test3"))
 
         models.Journal.blockall(jids)
         models.Article.blockall(aids)
@@ -159,7 +160,7 @@ class TestBLLJournalCSV(DoajTestCase):
                 tempFiles = self.tmpStore.list(self.container_id)
                 assert len(tempFiles) == 0
         else:
-            url = self.svc.csv(prune)
+            url, action_register = self.svc.csv(prune)
             assert url is not None
 
             csv_info = models.cache.Cache.get_latest_csv()
@@ -169,10 +170,14 @@ class TestBLLJournalCSV(DoajTestCase):
             if prune:
                 assert len(filenames) == 2
                 assert "journalcsv__doaj_20180101_0000_utf8.csv" not in filenames
+                assert "journalcsv__doaj_20180601_0000_utf8.csv" not in filenames
+                assert "journalcsv__doaj_20190101_0000_utf8.csv" in filenames
+            else:
+                assert len(filenames) == 1
 
             latest = None
             for fn in filenames:
-                if fn != "journalcsv__doaj_20180601_0000_utf8.csv":
+                if fn != "journalcsv__doaj_20190101_0000_utf8.csv":
                     latest = fn
                     break
 
