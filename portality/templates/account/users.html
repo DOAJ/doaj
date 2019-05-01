@@ -1,13 +1,29 @@
 {% extends "admin/admin_base.html" %}
 
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
 {% block admin_content %}
 
 {% if current_user.has_role("create_user") %}<p><a href="/account/register">create new user</a></p>{% endif %}
 
-<div class="facetview users"></div>
+<div id="users"></div>
 
 {% endblock %}
 
 {% block extra_js_bottom %}
-<script type="text/javascript">var user_edit_url = "{{ url_for('account.username', username="") }}";</script>
+
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        userSearchConfig : {
+            userEditUrl : "{{ url_for('account.username', username='') }}",
+            userSearchPath : '/admin_query/account/_search'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/admin.users.edge.js"></script>
+
 {% endblock %}

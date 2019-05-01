@@ -435,7 +435,7 @@ $.extend(true, doaj, {
             var selector = params.selector || "#public-search";
             var search_url = current_scheme + "//" + current_domain + doaj.publicSearchConfig.publicSearchPath;
 
-            countFormat = edges.numFormat({
+            var countFormat = edges.numFormat({
                 thousandsSeparator: ","
             });
 
@@ -789,4 +789,6 @@ $.extend(true, doaj, {
 
 });
 
-doaj.publicSearch.init();
+jQuery(document).ready(function($) {
+    doaj.publicSearch.init();
+});

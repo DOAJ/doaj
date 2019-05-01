@@ -343,6 +343,16 @@ input[type=password]:not(.form-control) {
 
 /************************************/
 
+/****************************************
+ * Search interfaces custom styles
+ */
+
+#users .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+/************************************/
+
 
 .btn-doaj {
     background-color: #F68B1F;

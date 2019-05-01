@@ -355,18 +355,6 @@ fv_make_continuation = (function (resultobj) {
     return that;
 })();
 
-fv_edit_user = (function (resultobj) {
-    var that = function(resultobj) {
-        var result = '<a class="edit_user_link pull-right" href="';
-        result += user_edit_url;
-        result += resultobj['id'];
-        result += '" target="_blank"';
-        result += '>Edit this user</a>';
-        return result;
-    };
-    return that;
-})();
-
 
 fv_in_doaj = (function(resultobj) {
     var that = function(resultobj) {

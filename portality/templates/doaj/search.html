@@ -2,14 +2,6 @@
 
 {% block extra_stylesheets %}
     {% include "_edges_common_css.html" %}
-    <link rel="stylesheet" href="/static/vendor/edges/css/bs3.Facetview.css?v={{config.get('DOAJ_VERSION')}}">
-    <link rel="stylesheet" href="/static/vendor/edges/css/bs3.RefiningANDTermSelectorRenderer.css?v={{config.get('DOAJ_VERSION')}}">
-    <link rel="stylesheet" href="/static/vendor/edges/css/bs3.FullSearchControllerRenderer.css?v={{config.get('DOAJ_VERSION')}}">
-    <link rel="stylesheet" href="/static/vendor/edges/css/bs3.ResultsDisplayRenderer.css?v={{config.get('DOAJ_VERSION')}}">
-    <link rel="stylesheet" href="/static/vendor/edges/css/bs3.PagerRenderer.css?v={{config.get('DOAJ_VERSION')}}">
-    <link rel="stylesheet" href="/static/vendor/edges/css/bs3.SelectedFiltersRenderer.css?v={{config.get('DOAJ_VERSION')}}">
-    <link rel="stylesheet" href="/static/vendor/edges/css/bs3.SearchingNotificationRenderer.css?v={{config.get('DOAJ_VERSION')}}">
-    <link rel="stylesheet" href="/static/vendor/edges/css/bs3.DateHistogramSelectorRenderer.css?v={{config.get('DOAJ_VERSION')}}">
 {% endblock %}
 
 {% block content %}
@@ -35,15 +27,5 @@
     </script>
 
     {% include "_edges_common_js.html" %}
-    <script type="text/javascript" src="/static/vendor/edges/src/templates/bs3.Facetview.js"></script>
-    <script type="text/javascript" src="/static/vendor/edges/src/components/selectors.js"></script>
-    <script type="text/javascript" src="/static/vendor/edges/src/components/search.js"></script>
-    <script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.RefiningANDTermSelectorRenderer.js"></script>
-    <script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.FullSearchControllerRenderer.js"></script>
-    <script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.ResultsDisplayRenderer.js"></script>
-    <script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.PagerRenderer.js"></script>
-    <script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.SelectedFiltersRenderer.js"></script>
-    <script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.SearchingNotificationRenderer.js"></script>
-    <script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.DateHistogramSelectorRenderer.js"></script>
     <script type="text/javascript" src="/static/js/edges/public.journalarticle.edge.js"></script>
 {% endblock extra_js_bottom %}
