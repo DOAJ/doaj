@@ -112,6 +112,11 @@ class StoreS3(Store):
         # we are not allowed to delete the bucket, so we just delete the contents
         keys = self.list(container_id)
 
+        if target_name is not None:
+            if target_name not in keys:
+                return
+            keys = [target_name]
+
         # FIXME: this has a limit of 1000 keys, which will need to be dealt with at some point soon
         delete_info = {
             "Objects" : [{"Key" : key} for key in keys]
@@ -195,7 +200,7 @@ def prune_container(storage, container_id, sort, filter=None, keep=1):
     action_register = []
 
     filelist = storage.list(container_id)
-    action_register.append("Current cached files (before prune): " + ", ".join(filelist))
+    #action_register.append("Current cached files (before prune): " + ", ".join(filelist))
 
     # filter for the files we care about
     filtered = []
@@ -205,21 +210,19 @@ def prune_container(storage, container_id, sort, filter=None, keep=1):
                 filtered.append(fn)
     else:
         filtered = filelist
-    action_register.append("Filtered cached files (before prune): " + ", ".join(filelist))
+    #action_register.append("Filtered cached files (before prune): " + ", ".join(filelist))
 
     if len(filtered) <= keep:
-        action_register.append("Fewer than {x} files in cache, no further action".format(x=keep))
+        # action_register.append("Fewer than {x} files in cache, no further action".format(x=keep))
         return
 
     filtered_sorted = sort(filtered)
-    action_register.append("Considering files for retention in the following order: " + ", ".join(filtered_sorted))
+    #action_register.append("Considering files for retention in the following order: " + ", ".join(filtered_sorted))
 
     remove = filtered_sorted[keep:]
-    action_register.append("Removed files: " + ", ".join(remove))
+    action_register.append("Removed old files: " + ", ".join(remove))
 
     for fn in remove:
-        # storage.delete(container_id, fn)
-        # don't actually prune for the time being, due to unknown issue
-        pass
+        storage.delete(container_id, fn)
 
     return action_register
