@@ -1121,7 +1121,7 @@ class TestClient(DoajTestCase):
         models.Cache.cache_sitemap("sitemap.xml")
 
         models.Cache.cache_public_data_dump("http://example.com/article", 100, "http://example.com/journal", 200)
-
+        
         time.sleep(1)
 
         stats = models.Cache.get_site_statistics()

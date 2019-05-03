@@ -52,7 +52,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         container = app.config.get("STORE_PUBLIC_DATA_DUMP_CONTAINER")
 
         if clean:
-            mainStore.delete(container)
+            mainStore.delete_container(container)
 
         # create dir with today's date
         day_at_start = dates.today()
@@ -109,7 +109,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             try:
                 filesize = self._copy_on_complete(mainStore, tmpStore, container, zipped_path)
             except Exception as e:
-                tmpStore.delete(container)
+                tmpStore.delete_container(container)
                 raise BackgroundException("Error copying {0} data on complete {1}\n".format(typ, e.message))
 
             store_url = mainStore.url(container, zipped_name)
@@ -120,7 +120,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             self._prune_container(mainStore, container, day_at_start, types)
 
         self.background_job.add_audit_message(u"Removing temp store container {x}".format(x=container))
-        tmpStore.delete(container)
+        tmpStore.delete_container(container)
 
         # finally update the cache
         cache.Cache.cache_public_data_dump(urls["article"], sizes["article"], urls["journal"], sizes["journal"])
@@ -134,7 +134,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
         self.background_job.add_audit_message(u"Adding file {filename} to compressed tar".format(filename=filename))
         tarball.add(path, arcname=filename)
-        storage.delete(container, filename)
+        storage.delete_file(container, filename)
 
     def _start_new_file(self, storage, container, typ, day_at_start, file_num):
         filename = self._filename(typ, day_at_start, file_num)
@@ -164,7 +164,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
         self.background_job.add_audit_message(u"Adding file {filename} to compressed tar".format(filename=filename))
         tarball.add(output_file, arcname=filename)
-        storage.delete(container, filename)
+        storage.delete_file(container, filename)
 
     def _filename(self, typ, day_at_start, file_num):
         return os.path.join("doaj_" + typ + "_data_" + day_at_start, "{typ}_batch_{file_num}.json".format(typ=typ, file_num=file_num))
@@ -177,7 +177,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         zipped_name = os.path.basename(zipped_path)
         self.background_job.add_audit_message(u"Storing from temporary file {0} ({1} bytes) to container {2}".format(zipped_name, zipped_size, container))
         mainStore.store(container, zipped_name, source_path=zipped_path)
-        tmpStore.delete(container, zipped_name)
+        tmpStore.delete_file(container, zipped_name)
         return zipped_size
 
     def _prune_container(self, mainStore, container, day_at_start, types):
@@ -204,7 +204,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         for container_file in container_files:
             if container_file not in files_for_today:
                 self.background_job.add_audit_message(u"Pruning old file {x} from storage container {y}".format(x=container_file, y=container))
-                mainStore.delete(container, target_name=container_file)
+                mainStore.delete_file(container, container_file)
 
     def cleanup(self):
         """

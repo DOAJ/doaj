@@ -50,8 +50,8 @@ class TestBLLJournalCSV(DoajTestCase):
         app.config["STORE_IMPL"] = self.store_impl
         if os.path.exists("test_store"):
             shutil.rmtree("test_store")
-        self.localStore.delete(self.container_id)
-        self.tmpStore.delete(self.container_id)
+        self.localStore.delete_container(self.container_id)
+        self.tmpStore.delete_container(self.container_id)
 
         models.cache.Cache = self.cache
         models.Cache = self.cache

@@ -50,8 +50,12 @@ class Store(object):
     def url(self, container_id, target_name):
         pass
 
-    def delete(self, container_id, target_name=None):
+    def delete_container(self, container_id):
         pass
+
+    def delete_file(self, container_id, target_name):
+        pass
+
 
 class StoreS3(Store):
     """
@@ -108,18 +112,46 @@ class StoreS3(Store):
         location = bucket_location['LocationConstraint']
         return "https://s3.{0}.amazonaws.com/{1}/{2}".format(location, container_id, quote_plus(target_name))
 
-    def delete(self, container_id, target_name=None):
+    def delete_container(self, container_id):
+        """
+        This method will delete the entire container (actually, it can't, it will
+        just empty the bucket)
+
+        :param container_id: the container (in this case an S3 bucket)
+        :return:
+        """
         # we are not allowed to delete the bucket, so we just delete the contents
         keys = self.list(container_id)
-
-        if target_name is not None:
-            if target_name not in keys:
-                return
-            keys = [target_name]
 
         # FIXME: this has a limit of 1000 keys, which will need to be dealt with at some point soon
         delete_info = {
             "Objects" : [{"Key" : key} for key in keys]
+        }
+
+        self.client.delete_objects(
+            Bucket=container_id,
+            Delete=delete_info
+        )
+
+    def delete_file(self, container_id, target_name):
+        """
+        This method will delete the the target_name file within
+        the container
+
+        :param container_id: the container (in this case an S3 bucket)
+        :param target_name: the file in the container
+        :return:
+        """
+
+        if target_name is None:
+            return
+
+        on_remote = self.list(container_id)
+        if target_name not in on_remote:
+            return
+
+        delete_info = {
+            "Objects" : [{"Key" : target_name}]
         }
 
         self.client.delete_objects(
@@ -166,10 +198,17 @@ class StoreLocal(Store):
     def url(self, container_id, target_name):
         return "/" + container_id + "/" + target_name
 
-    def delete(self, container_id, target_name=None):
+    def delete_container(self, container_id):
+        if container_id is None:
+            return
         cpath = os.path.join(self.dir, container_id)
-        if target_name is not None:
-            cpath = os.path.join(cpath, target_name)
+        if os.path.exists(cpath):
+            shutil.rmtree(cpath)
+
+    def delete_file(self, container_id, target_name):
+        if target_name is None:
+            return
+        cpath = os.path.join(self.dir, container_id, target_name)
         if os.path.exists(cpath):
             if os.path.isfile(cpath):
                 os.remove(cpath)
@@ -223,6 +262,6 @@ def prune_container(storage, container_id, sort, filter=None, keep=1):
     action_register.append("Removed old files: " + ", ".join(remove))
 
     for fn in remove:
-        storage.delete(container_id, fn)
+        storage.delete_file(container_id, fn)
 
     return action_register
