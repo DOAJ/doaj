@@ -14,7 +14,7 @@ def stats():
     try:
         st = os.statvfs('/')
         res['inode_used_pc'] = int((float(st.f_files-st.f_ffree)/st.f_files)*100)
-        # could comlete this by installing and using psutil but as disk and memory can currently 
+        # could complete this by installing and using psutil but as disk and memory can currently 
         # be monitored directly by DO, no current need - can change if we move from DO
         #res['disk_used_pc'] = int((float(st.f_blocks-st.f_bavail)/st.f_blocks)*100)
         #res['memory_used_pc'] = 0
@@ -62,9 +62,9 @@ def status():
     indexable_note = 'index accepts index/delete operations'
     cluster_note = 'cluster stable'
 
-    app_addrs = ['127.0.0.1:3000'] # TODO this list should be readable from config file, and should be detailed to port level - ask SE about this
-    for addr in app_addrs:
-        if not addr.startswith('http'): addr = 'http://' + addr + '/status/stats'
+    for addr in app.config.get('APP_MACHINES_INTERNAL_IPS',[]):
+        if not addr.startswith('http'): addr = 'http://' + addr
+        addr += '/status/stats'
         r = requests.get(addr)
         res['ping']['apps'][addr] = r.status_code if r.status_code != 200 else r.json()
         try:

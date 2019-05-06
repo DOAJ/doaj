@@ -32,6 +32,7 @@ from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
 if 'api' in app.config['FEATURES']:
     from portality.view.api_v1 import blueprint as api_v1
+from portality.view.status import blueprint as status
 
 app.register_blueprint(account, url_prefix='/account')
 app.register_blueprint(admin, url_prefix='/admin')
@@ -45,6 +46,7 @@ app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
 if 'api' in app.config['FEATURES']:
     app.register_blueprint(api_v1, url_prefix='/api/v1')
+app.register_blueprint(status, url_prefix='/status')
 
 app.register_blueprint(oaipmh)
 app.register_blueprint(openurl)

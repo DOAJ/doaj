@@ -79,6 +79,8 @@ ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
 
+APP_MACHINES_INTERNAL_IPS = [] # This should be set in production.cfg (or dev.cfg etc)
+
 # huey/redis settings
 HUEY_REDIS_HOST = '127.0.0.1'
 HUEY_REDIS_PORT = 6379
