@@ -85,7 +85,7 @@ def status():
         if r.status_code != 200:
             res['stable'] = False
             app_unreachable += 1
-            app_note = app_unreachable + ' APPS UNREACHABLE'
+            app_note = str(app_unreachable) + ' APPS UNREACHABLE'
     res['notes'].append(app_note)
     res['notes'].append(inodes_note)
     res['notes'].append(writable_note)
@@ -102,7 +102,7 @@ def status():
         if r.status_code != 200:
             res['stable'] = False
             es_unreachable += 1
-            es_note = es_unreachable + ' INDEXES UNREACHABLE'
+            es_note = str(es_unreachable) + ' INDEXES UNREACHABLE'
     res['notes'].append(es_note)
         
     # query ES for cluster health and nodes up
