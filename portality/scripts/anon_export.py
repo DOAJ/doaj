@@ -109,7 +109,7 @@ if __name__ == '__main__':
     container = app.config.get("STORE_ANON_DATA_CONTAINER")
 
     if args.clean:
-        mainStore.delete(container)
+        mainStore.delete_container(container)
 
     for type_ in esprit.raw.list_types(connection=conn):
         filename = type_ + ".bulk"
@@ -127,5 +127,5 @@ if __name__ == '__main__':
 
         print(dates.now() + " done\n")
 
-    tmpStore.delete(container)
+    tmpStore.delete_container(container)
 
