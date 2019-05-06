@@ -11,7 +11,7 @@ from portality.bll import exceptions
 from portality.models import Journal, Account, Suggestion, Provenance
 
 
-def load_test_cases():
+def load_parameter_sets():
     return load_from_matrix("accept_application.csv", test_ids=[])
 
 
@@ -34,7 +34,7 @@ class TestBLLAcceptApplication(DoajTestCase):
         super(TestBLLAcceptApplication, self).tearDown()
         Journal.save = self.old_journal_save
 
-    @parameterized.expand(load_test_cases)
+    @parameterized.expand(load_parameter_sets)
     def test_01_accept_application(self, name, application_type, account_type, manual_update, provenance, raises, result_provenance, result_manual_update):
 
         ###############################################
