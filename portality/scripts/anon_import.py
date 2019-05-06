@@ -71,12 +71,12 @@ def do_import(config):
             uncompressed_file = tempStore.path(container, filename, must_exist=False)
             with gzip.open(compressed_file, "rb") as f_in, open(uncompressed_file, "wb") as f_out:
                 shutil.copyfileobj(f_in, f_out)
-            tempStore.delete(container, filename + ".gz")
+            tempStore.delete_file(container, filename + ".gz")
 
             print("Importing from {x}".format(x=filename))
             imported_count = esprit.tasks.bulk_load(conn, import_type, uncompressed_file,
                                                     limit=limit, max_content_length=config.get("max_content_length", 100000000))
-            tempStore.delete(container, filename)
+            tempStore.delete_file(container, filename)
 
             if limit is not None and imported_count != -1:
                 limit -= imported_count
@@ -85,7 +85,7 @@ def do_import(config):
 
             n += 1
 
-    tempStore.delete(container)
+    tempStore.delete_file(container)
 
 if __name__ == '__main__':
 

@@ -195,7 +195,7 @@ class JournalService(object):
             mainStore.store(container_id, filename, source_path=out)
             url = mainStore.url(container_id, filename)
         finally:
-            tmpStore.delete(container_id, filename) # don't delete the container, just in case someone else is writing to it
+            tmpStore.delete_file(container_id, filename) # don't delete the container, just in case someone else is writing to it
 
         action_register = []
         if prune:
