@@ -6,11 +6,12 @@ import json, requests, math, os, time
 blueprint = Blueprint('status', __name__)
 
 
-
 @blueprint.route('/stats')
 @util.jsonp
 def stats():
     res = {}
+
+    # Get inode use
     try:
         st = os.statvfs('/')
         res['inode_used_pc'] = int((float(st.f_files-st.f_ffree)/st.f_files)*100)
@@ -21,6 +22,7 @@ def stats():
     except:
         pass
 
+    # Test writing to filesystem
     ts = int(time.time())
     fn = '/tmp/status_test_write_' + str(ts) + '.txt'
     try:
@@ -34,10 +36,19 @@ def stats():
         os.remove(fn)
     except:
         pass
+
+    # Retrieve the hostname
+    try:
+        hn = os.uname()[1]
+        res['host'] = hn
+    except:
+        pass
     
+    # Return a JSON response
     resp = make_response(json.dumps(res))
     resp.mimetype = "application/json"
     return resp
+
 
 @blueprint.route('/')
 @util.jsonp
@@ -70,10 +81,10 @@ def status():
         try:
             if res['ping']['apps'][addr].get('inode_used_pc',0) >= 95:
                 inodes_high += 1
-                inodes_note = 'INODE GREATER THAN 95% ON ' + inodes_high + ' APP MACHINES'
+                inodes_note = 'INODE GREATER THAN 95% ON ' + str(inodes_high) + ' APP MACHINES'
             if res['ping']['apps'][addr].get('writable',False) != True:
                 not_writable += 1
-                writable_note = 'WRITE FAILURE ON ' + not_writable + ' APP MACHINES'
+                writable_note = 'WRITE FAILURE ON ' + str(not_writable) + ' APP MACHINES'
             #if res['ping']['apps'][addr].get('disk_used_pc',0) >= 95:
             #    disk_high += 1
             #    disk_note = 'DISK USE GREATER THAN 95% ON ' + disk_high + ' APP MACHINES'
@@ -108,7 +119,7 @@ def status():
     # query ES for cluster health and nodes up
     es_addr = str(app.config['ELASTIC_SEARCH_HOST'][0] if not isinstance(app.config['ELASTIC_SEARCH_HOST'], basestring) else app.config['ELASTIC_SEARCH_HOST']).rstrip('/')
     if not es_addr.startswith('http'): es_addr = 'http://' + es_addr
-    if not es_addr.endswith(':9200'): eddr += ':9200'
+    if not es_addr.endswith(':9200'): es_addr += ':9200'
     try:
         es = requests.get(es_addr + '/_status').json()
         res['index'] = { 'cluster': {}, 'shards': { 'total': es['_shards']['total'], 'successful': es['_shards']['successful'] }, 'indices': {} }
@@ -130,13 +141,13 @@ def status():
     if False: # remove this False if happy to test write to the index (could be a setting)
         if res['stable'] and False:
             try:
-                ts = int(time.time())
+                ts = str(int(time.time()))
                 test_index = 'status_test_writable_' + ts
                 test_type = 'test_' + ts
                 test_id = ts
                 rp = requests.put(es_addr + '/' + test_index + '/' + test_type + '/' + test_id, json={'hello': 'world'})
                 if rp.status_code != 201:
-                    indexable_note = 'NEW INDEX WRITE OPERATION FAILED TO WRITE, RETURNED ' + rp.status_code
+                    indexable_note = 'NEW INDEX WRITE OPERATION FAILED TO WRITE, RETURNED ' + str(rp.status_code)
                 else:
                     try:
                         rr = requests.get(es_addr + '/' + test_index + '/' + test_type + '/' + test_id).json()
@@ -145,11 +156,11 @@ def status():
                         try:
                             rd = requests.delete(es_addr + '/' + test_index)
                             if rd.status_code != 200:
-                                indexable_note = 'INDEX DELETE OF TEST INDEX DID NOT RETURNED UNEXPECTED STATUS CODE OF ' + rd.status_code
+                                indexable_note = 'INDEX DELETE OF TEST INDEX DID NOT RETURNED UNEXPECTED STATUS CODE OF ' + str(rd.status_code)
                             try:
                                 rg = requests.get(es_addr + '/' + test_index)
                                 if rg.status_code != 404:
-                                    indexable_note = 'INDEX READ AFTER DELETE TEST RETURNED UNEXPECTED STATUS CODE OF ' + rg.status_code
+                                    indexable_note = 'INDEX READ AFTER DELETE TEST RETURNED UNEXPECTED STATUS CODE OF ' + str(rg.status_code)
                             except:
                                 pass
                         except:
