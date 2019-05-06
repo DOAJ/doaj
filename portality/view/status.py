@@ -22,10 +22,10 @@ def stats():
         pass
 
     ts = int(time.time())
-    fn = '/tmp/status_test_write_' + ts + '.txt'
+    fn = '/tmp/status_test_write_' + str(ts) + '.txt'
     try:
         f = open(fn, "w")
-        f.write("I am a test at " + ts)
+        f.write("I am a test at " + str(ts))
         f.close()
         res.writable = True
     except:
