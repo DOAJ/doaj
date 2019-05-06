@@ -27,9 +27,9 @@ def stats():
         f = open(fn, "w")
         f.write("I am a test at " + str(ts))
         f.close()
-        res.writable = True
+        res['writable'] = True
     except:
-        res.writable = False
+        res['writable'] = False
     try:
         os.remove(fn)
     except:
