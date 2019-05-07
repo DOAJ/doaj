@@ -49,6 +49,10 @@ class ArticleFixtureFactory(object):
     def invalid_schema_xml(cls):
         return StringIO("<this><isnot my='schema'></isnot></this>")
 
+    @classmethod
+    def noids(cls):
+        return cls._response_from_xpath("//record[journalTitle='NOIDS']")
+
     @staticmethod
     def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True, with_journal_info=True, doi=None, fulltext=None):
         source = deepcopy(ARTICLE_SOURCE)

@@ -13,11 +13,18 @@ from portality.lib import normalise
 #noaction = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/noaction-2019-04-04.csv"
 
 ## 04-03
-duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/duplicate_articles_global_2019-04-03.csv"
-noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/noids_2019-04-03.csv"
-log =  "/home/richard/tmp/doaj/article_duplicates_2019-04-03/log-2019-04-04.txt"
-out = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/actions-2019-04-04.csv"
-noaction = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/noaction-2019-04-04.csv"
+#duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/duplicate_articles_global_2019-04-03.csv"
+#noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/noids_2019-04-03.csv"
+#log =  "/home/richard/tmp/doaj/article_duplicates_2019-04-03/log-2019-04-04.txt"
+#out = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/actions-2019-04-04.csv"
+#noaction = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/noaction-2019-04-04.csv"
+
+## 05-03
+duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/duplicate_articles_global_2019-05-03.csv"
+noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/noids_2019-05-03.csv"
+log =  "/home/richard/tmp/doaj/article_duplicates_2019-05-03/log-2019-05-07.txt"
+out = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/actions-2019-05-07.csv"
+noaction = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/noaction-2019-05-07.csv"
 
 ## testing
 #duplicate_report = "/home/richard/tmp/doaj/article_duplicates_test_sheet.csv"
