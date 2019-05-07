@@ -1,11 +1,11 @@
-from portality.formcontext.formhelper import FormHelper
+from portality.formcontext.formhelper import FormHelperBS3
 from portality.formcontext.choices import Choices
 from copy import deepcopy
 
 class Renderer(object):
     def __init__(self):
         self.FIELD_GROUPS = {}
-        self.fh = FormHelper()
+        self.fh = FormHelperBS3()
         self._error_fields = []
         self._disabled_fields = []
         self._disable_all_fields = False

@@ -60,7 +60,7 @@ var doaj = {
         "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "https://creativecommons.org/licenses/by-nc-sa/4.0/"],
         "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "https://creativecommons.org/licenses/by-nd/4.0/"],
         "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "https://creativecommons.org/licenses/by-sa/4.0/"]
-},
+    },
 
     humanDate : function(datestr) {
         var date = new Date(datestr);
@@ -69,29 +69,27 @@ var doaj = {
         var year = date.getUTCFullYear();
 
         return String(dom) + " " + doaj.monthmap[monthnum] + " " + String(year);
+    },
+
+    iso_datetime2date : function(isodate_str) {
+        /* >>> '2003-04-03T00:00:00Z'.substring(0,10)
+         * "2003-04-03"
+         */
+        return isodate_str.substring(0,10);
+    },
+
+    iso_datetime2date_and_time : function(isodate_str) {
+        /* >>> "2013-12-13T22:35:42Z".replace('T',' ').replace('Z','')
+         * "2013-12-13 22:35:42"
+         */
+        if (!isodate_str) { return "" }
+        return isodate_str.replace('T',' ').replace('Z','')
     }
 };
 
 jQuery(document).ready(function() {
     $.noop(); // just a placeholder, delete when adding code here
 });
-
-
-function iso_datetime2date(isodate_str) {
-    /* >>> '2003-04-03T00:00:00Z'.substring(0,10)
-     * "2003-04-03"
-     */
-    return isodate_str.substring(0,10);
-}
-
-function iso_datetime2date_and_time(isodate_str) {
-    /* >>> "2013-12-13T22:35:42Z".replace('T',' ').replace('Z','')
-     * "2013-12-13 22:35:42"
-     */
-    if (!isodate_str) { return "" }
-    return isodate_str.replace('T',' ').replace('Z','')
-}
-
 
 
 function setCookieConsent(event) {

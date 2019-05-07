@@ -1,10 +1,14 @@
 {% extends "admin/admin_base.html" %}
 
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
 {% block admin_content %}
 
 <div class="bulk-action-feedback alert alert-success" style="display: none"></div>
 
-<div style="padding-bottom: 20px">
+<div style="padding-bottom: 20px; margin-top: 20px">
     <div class="row">
         <div class="col-md-12">
             <div id="admin-bulk-box" class="pull-right">
@@ -13,7 +17,7 @@
                     <fieldset>
                         <div class="control-group" id="bulk_action-container">
                             <div class="controls ">
-                                <select class="multiformbox-selector" id="bulk_action" name="bulk_action" style="width: 250px;">
+                                <select class="multiformbox-selector form-control" id="bulk_action" name="bulk_action" style="width: 250px;">
                                     <option selected value="">Select action...</option>
                                     <option value="withdraw">Withdraw from DOAJ</option>
                                     <option value="reinstate">Reinstate into DOAJ</option>
@@ -29,12 +33,12 @@
                         </div>
                         <div class="control-group multiformbox-container" style="display: none" id="editor_group-container">
                             <div class="controls">
-                                <input id="editor_group" name="editor_group" style="width: 250px;" type="text" value="">
+                                <input id="editor_group form-control" name="editor_group" style="width: 250px;" type="text" value="" placeholder="Enter new editor group">
                             </div>
                         </div>
                         <div class="control-group multiformbox-container" style="display: none" id="note-container">
                             <div class="controls">
-                                <textarea id="note" name="note" style="width: 240px;" placeholder="Type note here..."></textarea>
+                                <textarea class="form-control" id="note" name="note" style="width: 240px;" placeholder="Type note here..."></textarea>
                             </div>
                         </div>
                         <div class="multiformbox-container" style="display: none" id="edit_metadata-container">
@@ -65,14 +69,22 @@
     </div>
 </div>
 
-<div class="facetview admin_journals_and_articles"></div>
+<div id="admin_journals_and_articles"></div>
 
 {% endblock %}
 
 {% block extra_js_bottom %}
 
-<script type="text/javascript">
-    var journal_edit_url = "{{ url_for('admin.journal_page', journal_id='') }}";
-</script>
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        adminJournalArticleSearchConfig : {
+            journalEditUrl : "{{ url_for('admin.journal_page', journal_id='') }}",
+            searchPath : '/admin_query/journal,article/_search'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/admin.journalarticle.edge.js"></script>
 
 {% endblock %}

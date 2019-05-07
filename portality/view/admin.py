@@ -392,8 +392,7 @@ def admin_site_search():
     edit_form = edit_formcontext.render_template()
 
     return render_template("admin/admin_site_search.html",
-                           admin_page=True, search_page=True,
-                           facetviews=['admin.journalarticle.facetview'],
+                           admin_page=True,
                            edit_form=edit_form)
 
 
