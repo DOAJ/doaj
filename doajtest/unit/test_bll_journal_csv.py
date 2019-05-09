@@ -200,8 +200,8 @@ class TestBLLJournalCSV(DoajTestCase):
                     alt_title = row[2]
                     issn = row[3]
                     eissn = row[4]
-                    article_count = int(row[57])
-                    article_latest = row[58]
+                    article_count = int(row[55])
+                    article_latest = row[56]
 
                     assert alt_title == u"Заглавие на журнала"
                     assert issn in comparisons[issn]["issns"]

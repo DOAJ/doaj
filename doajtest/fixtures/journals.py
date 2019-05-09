@@ -514,8 +514,9 @@ CSV_HEADERS = [
     'Submission fee URL',
     'Submission fee amount',
     'Submission fee currency',
-    'Number of articles published in the last calendar year',
-    'Number of articles information URL',
+    # these are not in the journal model, only in the suggestion model
+    #'Number of articles published in the last calendar year',
+    #'Number of articles information URL',
     'Journal waiver policy (for developing country authors etc)',
     'Waiver policy information URL',
     'Digital archiving policy or program(s)',
@@ -576,8 +577,9 @@ JOURNAL_QUESTION_ANSWERS = [
     'http://submission.com',
     '4',
     'USD - US Dollar',
-    '',
-    '',
+    # these were the articles_last_year and associated URL which are not in the journal model
+    #'',
+    #'',
     'Yes',
     'http://waiver.policy',
     'LOCKSS, CLOCKSS',
