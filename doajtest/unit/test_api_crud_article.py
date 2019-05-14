@@ -357,7 +357,7 @@ class TestCrudArticle(DoajTestCase):
         assert updated.bibjson().title == "An updated title"
         assert updated.created_date == created.created_date
         assert updated.last_updated != created.last_updated
-        assert updated.data['admin']['upload_id'] == created.data['admin']['upload_id']
+
         # allowed to overwrite these
         assert updated.bibjson().start_page == '4'
         assert updated.bibjson().end_page == '22'

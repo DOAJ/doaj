@@ -132,12 +132,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     descriptions = {}
-    with codecs.open(args.fields) as f:
-        fds = f.read()
-    lines = fds.split("\n")
-    for line in lines:
-        sep = line.find(":")
-        descriptions[line[:sep]] = line[sep + 1:].strip()
+    if args.fields:
+        with codecs.open(args.fields) as f:
+            fds = f.read()
+        lines = fds.split("\n")
+        for line in lines:
+            sep = line.find(":")
+            descriptions[line[:sep]] = line[sep + 1:].strip()
 
     k = plugin.load_class_raw(args.klazz)
     example, fields = document(k, descriptions)
