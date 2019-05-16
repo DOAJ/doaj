@@ -1,9 +1,9 @@
 import codecs, os, shutil
 from portality import clcsv
 
-ID = "758ee777890a4e2986466d5d3ddd53df"
+ID = "de6c84892dac44508c06c86f3a1b12fa"
 
-JOURNAL_CSV = "/home/richard/tmp/doaj/history/journals.csv"
+JOURNAL_CSV = "/home/richard/tmp/doaj/history/articles.csv"
 
 OUT_DIR = "/home/richard/tmp/doaj/history/workspace/"
 
