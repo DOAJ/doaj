@@ -47,7 +47,7 @@ class ArticlesBulkApi(Api):
 
         articleService = DOAJ.articleService()
         try:
-            result = articleService.batch_create_articles(articles, account)
+            result = articleService.batch_create_articles(articles, account, add_journal_info=True)
             return [a.id for a in articles]
         except exceptions.IngestException as e:
             raise Api400Error(e.message)

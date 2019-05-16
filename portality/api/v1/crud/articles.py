@@ -20,7 +20,11 @@ class ArticlesCrudApi(CrudApi):
         "in": "path"
     }
     SWAG_ARTICLE_BODY_PARAM = {
-        "description": "<div class=\"search-query-docs\">Article JSON that you would like to create or update. The contents should comply with the schema displayed in the <a href=\"/api/v1/docs#CRUD_Articles_get_api_v1_articles_article_id\"> GET (Retrieve) an article route</a>. Partial updates are not allowed, you have to supply the full JSON.</div>",
+        "description": """<div class=\"search-query-docs\">
+            Article JSON that you would like to create or update. The contents should comply with the schema displayed
+            in the <a href=\"/api/v1/docs#CRUD_Articles_get_api_v1_articles_article_id\"> GET (Retrieve) an article route</a>.
+            Explicit documentation for the structure of this data is also <a href="https://github.com/DOAJ/doaj/blob/master/docs/system/IncomingAPIArticle.md">provided here</a>.
+            Partial updates are not allowed, you have to supply the full JSON.</div>""",
         "required": True,
         "type": "string",
         "name": "article_json",
@@ -69,7 +73,7 @@ class ArticlesCrudApi(CrudApi):
         am = cls.prep_article(data)
 
         articleService = DOAJ.articleService()
-        result = articleService.create_article(am, account)
+        result = articleService.create_article(am, account, add_journal_info=True)
 
         # Check we are allowed to create an article for this journal
         if result.get("fail", 0) == 1:
