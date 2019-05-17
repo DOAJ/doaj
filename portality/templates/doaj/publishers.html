@@ -692,6 +692,12 @@ update the record accordingly.</p>
 
 <p><strong>Resolution</strong>: Ensure that there are no duplicated articles in the file.  Ensure that you are using the correct DOIs and URLs for all the articles.</p>
 
+<h4><a name="One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted"></a>One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted</h4>
+
+<p><strong>Reason</strong>: At least one of your articles matched two or more other articles already in DOAJ, and as a result we don't know which one to update.</p>
+
+<p><strong>Resolution</strong>: Ensure that all your articles have the correct DOI and Fulltext links.  If you still don't have any luck, please <a href="{{ url_for('doaj.contact') }}">contact us</a> with the details; we may need to clean up your existing articles manually.</p>
+
 <br><br>
 
 <!-- =============================================================== -->
