@@ -16,8 +16,9 @@ server {
 #ssl_ciphers 'HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES';
 #ssl_stapling on;
 
-limit_req_zone $binary_remote_addr zone=general:100m rate=2r/s;
-limit_req_zone $binary_remote_addr zone=api:100m rate=2r/s;
+# NOTE: change back to $binary_remote_addr if the app is no longer being served through cloudflare.
+limit_req_zone $http_cf_connecting_ip zone=general:100m rate=2r/s;
+limit_req_zone $http_cf_connecting_ip zone=api:100m rate=4r/s;
 limit_req_status 429;
 
 map $http_user_agent $block_ua {
