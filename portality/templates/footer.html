@@ -1,25 +1,4 @@
 <footer>
-    {% if request.path == '/' %}
-        {%- if sponsors['gold'] -%}
-        <div class="box with-borders">
-            <div class="row-fluid">
-            {%- if sponsors['gold'] | length == 1 -%}
-                    <div class="span2" style="margin-left: 1.0rem"><strong>Gold Sponsor</strong></div>
-                {% else %}
-                    <div class="span2" style="margin-left: 1.0rem"><strong>Gold Sponsors</strong></div>
-                {% endif %}
-                <div class="span8 centre-text-container sponsors" id="footer-sponsors">
-                    {% for s in sponsors['gold'].values() %}
-                        <a href="{{ s['url'] }}" target="_blank" title="{{ s['name'] }}">
-                            <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}"/>
-                        </a>
-                    {% endfor %}
-                </div>
-                <div class="span2 pull-right" style="text-align: right"><a href="/sponsors">Our other sponsors</a></div>
-            </div>
-        </div>
-        {%- endif -%}
-    {% endif %}
     <div class="box with-borders">
         <div class="row-fluid">
             <div class="span12 centre-text-container"><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="{{ url_for('static', filename='doaj/images/cc-by-sa.png') }}" alt="Creative Commons Attribution ShareAlike license icon"/></a></div>
