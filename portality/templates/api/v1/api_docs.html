@@ -114,7 +114,13 @@ sort=bibjson.title:desc
 
     <h2 id="crud_api">CRUD API</h2>
     <h3 id="creating_articles">Creating articles</h3>
-    <p>If you try to create an article with a DOI or a full-text URL as another one of the articles associated with your account, then system will detect this as a duplicate. It will overwrite the old article we have with the new data you're supplying via the CRUD Article Create endpoint. It works in the same way as submitting article metadata to DOAJ via XML upload or manual entry with your publisher user account.</p>
+    <p>Documentation for the structure of the JSON documents that you can send to our API
+        is <a href="https://github.com/DOAJ/doaj/blob/master/docs/system/IncomingAPIArticle.md">hosted on our github</a>.</p>
+
+    <p>If you try to create an article with a DOI or a full-text URL as another one of the articles associated with your account,
+        then the system will detect this as a duplicate. It will overwrite the old article we have with the new data you're supplying
+        via the CRUD Article Create endpoint. It works in the same way as submitting article metadata to DOAJ via XML upload or
+        manual entry with your publisher user account.</p>
 
     <h3 id="update_requests">Applications - Update Requests</h3>
     <p>If you wish to submit an application which is intended to provide updated information for an existing Journal you

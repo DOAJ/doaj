@@ -42,7 +42,7 @@ SECRET_KEY = "default-key"
 # contact info
 ADMIN_NAME = "DOAJ"
 ADMIN_EMAIL = "sysadmin@cottagelabs.com"
-ADMINS = ["emanuil@cottagelabs.com", "mark@cottagelabs.com"]
+ADMINS = ["steve@cottagelabs.com", "mark@cottagelabs.com"]
 SYSTEM_EMAIL_FROM = 'feedback@doaj.org'
 CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the future
 ENABLE_EMAIL = True
@@ -60,7 +60,7 @@ ERROR_MAIL_PASSWORD = None
 # service info
 SERVICE_NAME = "Directory of Open Access Journals"
 SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
-HOST = "0.0.0.0"
+HOST = '0.0.0.0'
 DEBUG = False
 DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
 DEBUG_TB_INTERCEPT_REDIRECTS = False
@@ -79,6 +79,9 @@ ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
 
+# /status endpoint connection to all app machines
+APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in production.cfg (or dev.cfg etc)
+
 # huey/redis settings
 HUEY_REDIS_HOST = '127.0.0.1'
 HUEY_REDIS_PORT = 6379
@@ -94,7 +97,7 @@ HUEY_SCHEDULE = {
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
-    "public_data_dump" : {"month" : "*", "day" : "*", "day_of_week" : "1", "hour" : "10", "minute" : "0"}
+    "public_data_dump" : {"month" : "*", "day" : "*/6", "day_of_week" : "*", "hour" : "10", "minute" : "0"}
 }
 
 HUEY_TASKS = {

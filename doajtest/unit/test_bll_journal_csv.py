@@ -50,8 +50,8 @@ class TestBLLJournalCSV(DoajTestCase):
         app.config["STORE_IMPL"] = self.store_impl
         if os.path.exists("test_store"):
             shutil.rmtree("test_store")
-        self.localStore.delete(self.container_id)
-        self.tmpStore.delete(self.container_id)
+        self.localStore.delete_container(self.container_id)
+        self.tmpStore.delete_container(self.container_id)
 
         models.cache.Cache = self.cache
         models.Cache = self.cache
@@ -200,8 +200,8 @@ class TestBLLJournalCSV(DoajTestCase):
                     alt_title = row[2]
                     issn = row[3]
                     eissn = row[4]
-                    article_count = int(row[57])
-                    article_latest = row[58]
+                    article_count = int(row[55])
+                    article_latest = row[56]
 
                     assert alt_title == u"Заглавие на журнала"
                     assert issn in comparisons[issn]["issns"]
