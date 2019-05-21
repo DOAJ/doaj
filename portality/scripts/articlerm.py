@@ -18,8 +18,13 @@ from portality import constants
 def remove_doi(article_id):
     article = models.Article.pull(article_id)
     try:
-        article.bibjson().remove_identifiers(idtype=constants.IDENT_TYPE_DOI)
-        article.save()
+        # first ensure that it has a fulltext
+        fts = article.bibjson().get_urls(urltype=constants.LINK_TYPE_FULLTEXT)
+        if len(fts) > 0:
+            article.bibjson().remove_identifiers(idtype=constants.IDENT_TYPE_DOI)
+            article.save()
+        else:
+            print("WARN: could not remove DOI from {0} as it has no fulltext URL".format(article_id))
     except AttributeError as e:
         print("ERROR: could not remove DOI from {0}: {1}".format(article_id, e.message))
     
@@ -27,8 +32,13 @@ def remove_doi(article_id):
 def remove_fulltext(article_id):
     article = models.Article.pull(article_id)
     try:
-        article.bibjson().remove_urls(urltype=constants.LINK_TYPE_FULLTEXT)
-        article.save()
+        # first ensure it has a DOI
+        dois = article.bibjson().get_identifiers(idtype=constants.IDENT_TYPE_DOI)
+        if len(dois) > 0:
+            article.bibjson().remove_urls(urltype=constants.LINK_TYPE_FULLTEXT)
+            article.save()
+        else:
+            print("WARN: could not remove Fulltext from {0} as it has no DOI".format(article_id))
     except AttributeError as e:
         print("ERROR: could not remove fulltext from {0}: {1}".format(article_id, e.message))
 
