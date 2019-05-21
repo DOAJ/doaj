@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from portality.core import app
 from portality import models
 from portality.bll import DOAJ
-from portality.bll.exceptions import AuthoriseException
+from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.formcontext import formcontext
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
@@ -227,10 +227,14 @@ def metadata():
                 xwalk = ArticleFormXWalk()
                 art = xwalk.crosswalk_form(form)
                 articleService = DOAJ.articleService()
-                articleService.create_article(art, current_user._get_current_object(), add_journal_info=True)
-                flash("Article created/updated", "success")
-                form = ArticleForm()
-                return render_template('publisher/metadata.html', form=form)
+                try:
+                    articleService.create_article(art, current_user._get_current_object(), add_journal_info=True)
+                    Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
+                    form = ArticleForm()
+                    return render_template('publisher/metadata.html', form=form)
+                except ArticleMergeConflict:
+                    Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
+                    return render_template('publisher/metadata.html', form=form)
         else:
             return render_template('publisher/metadata.html', form=form, author_error=not enough_authors)
 

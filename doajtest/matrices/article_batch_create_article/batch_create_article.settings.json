@@ -25,7 +25,7 @@
             }, 
             "duplicate_in_index": {
               "or": [
-                "no"
+                "0"
               ]
             }, 
             "add_journal_info": {
@@ -59,7 +59,7 @@
             }, 
             "duplicate_in_index": {
               "or": [
-                "no"
+                "0"
               ]
             }, 
             "add_journal_info": {
@@ -97,7 +97,7 @@
     }, 
     {
       "values": {
-        "yes": {
+        "1": {
           "constraints": {
             "articles": {
               "or": [
@@ -106,7 +106,31 @@
             }
           }
         }, 
-        "no": {}
+        "0": {}, 
+        "2": {
+          "constraints": {
+            "duplicate_check": {
+              "or": [
+                "true"
+              ]
+            }, 
+            "articles": {
+              "or": [
+                "yes"
+              ]
+            }, 
+            "duplicate_in_batch": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "merge_duplicate": {
+              "or": [
+                "true"
+              ]
+            }
+          }
+        }
       }, 
       "type": "generated", 
       "name": "duplicate_in_index"
@@ -174,7 +198,7 @@
             }, 
             "duplicate_in_index": {
               "or": [
-                "no"
+                "0"
               ]
             }, 
             "articles": {
@@ -372,7 +396,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "yes"
+                  "1"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -409,7 +433,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "yes"
+                  "1"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -446,12 +470,49 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "no"
+                  "0"
                 ]
               }, 
               "duplicate_in_batch": {
                 "or": [
                   "no"
+                ]
+              }
+            }, 
+            {
+              "articles": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "account": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "merge_duplicate": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "add_journal_info": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "limit_to_account": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "duplicate_in_index": {
+                "or": [
+                  "2"
+                ]
+              }, 
+              "duplicate_check": {
+                "or": [
+                  "true"
                 ]
               }
             }
@@ -488,7 +549,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "yes"
+                  "1"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -568,7 +629,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "yes"
+                  "1"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -605,7 +666,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "yes"
+                  "1"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -642,7 +703,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "no"
+                  "0"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -684,7 +745,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "no"
+                  "0"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -721,7 +782,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "yes"
+                  "1"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -758,7 +819,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "yes"
+                  "1"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -907,7 +968,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "yes"
+                  "1"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -944,7 +1005,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "yes"
+                  "1"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -981,7 +1042,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "no"
+                  "0"
                 ]
               }, 
               "duplicate_in_batch": {
@@ -1104,7 +1165,7 @@
               }, 
               "duplicate_in_index": {
                 "or": [
-                  "yes"
+                  "1"
                 ]
               }, 
               "duplicate_in_batch": {

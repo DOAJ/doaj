@@ -50,12 +50,16 @@ class ArticleService(object):
         all_unmatched = set()
 
         for article in articles:
-            result = self.create_article(article, account,
-                                         duplicate_check=duplicate_check,
-                                         merge_duplicate=merge_duplicate,
-                                         limit_to_account=limit_to_account,
-                                         add_journal_info=add_journal_info,
-                                         dry_run=True)
+            try:
+                result = self.create_article(article, account,
+                                             duplicate_check=duplicate_check,
+                                             merge_duplicate=merge_duplicate,
+                                             limit_to_account=limit_to_account,
+                                             add_journal_info=add_journal_info,
+                                             dry_run=True)
+            except exceptions.ArticleMergeConflict:
+                raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
+
             success += result.get("success", 0)
             fail += result.get("fail", 0)
             update += result.get("update", 0)
@@ -287,7 +291,9 @@ class ArticleService(object):
             {"arg" : owner, "instance" : unicode, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
-        dup = self.get_duplicates(article, owner, max_results=1)
+        dup = self.get_duplicates(article, owner, max_results=2)
+        if len(dup) > 1:
+            raise exceptions.ArticleMergeConflict(Messages.EXCEPTION_ARTICLE_MERGE_CONFLICT)
         if dup:
             return dup.pop()
         else:

@@ -7,6 +7,10 @@ class Messages(object):
         for review. Click 'Edit this update request' to make further changes.
         """, 'success')
 
+    ARTICLE_METADATA_SUBMITTED_FLASH = (u"Article created/updated", u"success")
+    ARTICLE_METADATA_MERGE_CONFLICT = (u"""Article could not be submitted, as it matches more than one existing article.
+    Please check your metadata, and contact us if you cannot resolve the issue yourself.""", u"error")
+
     SENT_ACCEPTED_APPLICATION_EMAIL = u"""Sent email to '{email}' to tell them that their journal was accepted."""
     SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER = u"""Sent email to user '{user}' ({name}, {email}) to tell them that their journal application was rejected."""
     SENT_REJECTED_APPLICATION_EMAIL_TO_SUGGESTER = u"""Sent email to suggester {name} ({email}) to tell them that their journal application was rejected."""
@@ -39,7 +43,9 @@ class Messages(object):
 
     EXCEPTION_ARTICLE_BATCH_DUPLICATE = u"One or more articles in this batch have duplicate identifiers"
     EXCEPTION_ARTICLE_BATCH_FAIL = u"One or more articles failed to ingest; entire batch ingest halted"
+    EXCEPTION_ARTICLE_BATCH_CONFLICT = u"One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted"
     EXCEPTION_DETECT_DUPLICATE_NO_ID = u"The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated"
+    EXCEPTION_ARTICLE_MERGE_CONFLICT = u"The article matched multiple existing articles as duplicates, and we cannot tell which one to update"
 
     PREVENT_DEEP_PAGING_IN_API = u"""You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from

@@ -11,7 +11,7 @@ from portality.bll import exceptions
 from portality.models import Journal, Account, Suggestion
 
 
-def load_test_cases():
+def load_parameter_sets():
     return load_from_matrix("delete_application.csv", test_ids=[])
 
 EXCEPTIONS = {
@@ -49,7 +49,7 @@ class TestBLLDeleteApplication(DoajTestCase):
         super(TestBLLDeleteApplication, self).tearDown()
         Journal.save = self.old_journal_save
 
-    @parameterized.expand(load_test_cases)
+    @parameterized.expand(load_parameter_sets)
     def test_01_delete_application(self, name, application_type, account_type, current_journal, related_journal, raises):
 
         ###############################################
@@ -101,7 +101,9 @@ class TestBLLDeleteApplication(DoajTestCase):
             if account_type == "not_permitted":
                 acc.remove_role("publisher")
             if application_type == "locked":
-                lock.lock(constants.LOCK_APPLICATION, application.id, "otheruser")
+                thelock = lock.lock(constants.LOCK_APPLICATION, application.id, "otheruser")
+                # we can't explicitly block on the lock, but we can halt until we confirm it is saved
+                thelock.blockall([(thelock.id, thelock.last_updated)])
 
         application_id = None
         if application is not None:

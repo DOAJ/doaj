@@ -52,6 +52,12 @@ class DuplicateArticleException(Exception):
     """
     pass
 
+class ArticleMergeConflict(Exception):
+    """
+    Exception to raise when it's not clear which article to merge an update with
+    """
+    pass
+
 class IngestException(Exception):
     def __init__(self, *args, **kwargs):
         self.stack = None
