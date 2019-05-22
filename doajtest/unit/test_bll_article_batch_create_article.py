@@ -66,7 +66,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         update = int(update_arg)
 
         duplicate_in_batch = duplicate_in_batch_arg == "yes"
-        duplicate_in_index = duplicate_in_index_arg == "yes"
+        duplicate_in_index = int(duplicate_in_index_arg)
 
         raises = EXCEPTIONS.get(raises_arg)
 
@@ -200,8 +200,10 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         self.svc.is_legitimate_owner = ilo_mock
 
         gd_mock = None
-        if duplicate_in_index:
+        if duplicate_in_index == 1:
             gd_mock = BLLArticleMockFactory.get_duplicate(given_article_id=last_id, eissn=last_issn, pissn=last_issn, doi=last_doi, fulltext=last_ft)
+        elif duplicate_in_index == 2:
+            gd_mock = BLLArticleMockFactory.get_duplicate(merge_conflict=True)
         else:
             gd_mock = BLLArticleMockFactory.get_duplicate(return_none=True)
         self.svc.get_duplicate = gd_mock
@@ -222,11 +224,12 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                     self.svc.batch_create_articles(articles, account, duplicate_check, merge_duplicate,
                                                    limit_to_account, add_journal_info)
                 except exceptions.IngestException as e:
-                    report = e.result
-                    assert report["success"] == success
-                    assert report["fail"] == fail
-                    assert report["update"] == update
-                    assert report["new"] == success - update
+                    if duplicate_in_index != 2:
+                        report = e.result
+                        assert report["success"] == success
+                        assert report["fail"] == fail
+                        assert report["update"] == update
+                        assert report["new"] == success - update
                     raise
         else:
             report = self.svc.batch_create_articles(articles, account, duplicate_check, merge_duplicate,

@@ -11,7 +11,8 @@ from doajtest.mocks.bll_article import BLLArticleMockFactory
 from datetime import datetime
 
 def load_cases():
-    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_get_duplicates"), "get_duplicates", "test_id", {"test_id" : []})
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_get_duplicates"), "get_duplicates", "test_id",
+                               {"test_id" : []})
 
 
 EXCEPTIONS = {
@@ -76,6 +77,12 @@ class TestBLLArticleGetDuplicates(DoajTestCase):
         mock = BLLArticleMockFactory.discover_duplicates(doi_duplicates, fulltext_duplicates, overlap)
         self.svc.discover_duplicates = mock
 
+        # determine if we expect a merge conflict
+        dds = 0 if doi_duplicates < 0 else doi_duplicates
+        fds = 0 if fulltext_duplicates < 0 else fulltext_duplicates
+        ol = 0 if overlap < 0 else overlap
+        expect_merge_conflict = dds + fds - ol > 1
+
         ###########################################################
         # Execution
 
@@ -109,6 +116,9 @@ class TestBLLArticleGetDuplicates(DoajTestCase):
         # then the same again on the singular get_duplicate
         if raises is not None:
             with self.assertRaises(raises):
+                self.svc.get_duplicate(article, owner_id)
+        elif expect_merge_conflict:
+            with self.assertRaises(exceptions.ArticleMergeConflict):
                 self.svc.get_duplicate(article, owner_id)
         else:
             duplicate = self.svc.get_duplicate(article, owner_id)
