@@ -85,8 +85,8 @@ def _copy_on_complete(path):
     zipped_size = os.path.getsize(zipped_path)
     print("Storing from temporary file {x} ({y} bytes)".format(x=zipped_name, y=zipped_size))
     mainStore.store(container, name, source_path=zipped_path)
-    tmpStore.delete(container, name)
-    tmpStore.delete(container, zipped_name)
+    tmpStore.delete_file(container, name)
+    tmpStore.delete_file(container, zipped_name)
 
 if __name__ == '__main__':
 
