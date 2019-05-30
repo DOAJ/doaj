@@ -280,6 +280,10 @@ td {
     margin-top: 10px;
 }
 
+.bulk-action-feedback {
+    margin-top: 20px;
+}
+
 /************************************/
 
 /****************************************
@@ -339,6 +343,14 @@ input[type=password]:not(.form-control) {
 
 .select2-container-multi {
     margin-bottom: 9px;
+}
+
+.input-large {
+    width: 210px;
+}
+
+.input-xlarge {
+    width: 270px;
 }
 
 /************************************/

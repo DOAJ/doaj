@@ -547,10 +547,10 @@ class ManEdJournalBulkEditRenderer(Renderer):
                 {"country" : {"class": "input-large"}},
 
                 {"owner" : {"class" : "input-large"}},
-                {"contact_name" : {}},
-                {"contact_email" : {}},
+                {"contact_name" : {"class" : "input-large"}},
+                {"contact_email" : {"class" : "input-large"}},
 
-                {"doaj_seal" : {}},
+                {"doaj_seal" : {"class" : "form-control input-large"}}
             ]
         }
 
