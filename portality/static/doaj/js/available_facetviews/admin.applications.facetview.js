@@ -1,25 +1,14 @@
 jQuery(document).ready(function($) {
 
-    /*
-    function adminButtons(options, context) {
-        // Disable the bulk action submit button if there is an empty query in the facetview
-        if ($.isEmptyObject(options.active_filters) && options.q == "") {
-            $("#bulk-submit").attr("disabled", "disabled");
-        } else {
-            $("#bulk-submit").removeAttr("disabled");
-        }
-    }
-    */
-
     ////////////////////////////////////////////////////////////
     // functions for handling the bulk form
 
-    autocomplete('#editor_group', 'name', 'editor_group', 1, false);
 
+    /*
     toggle_optional_field('bulk_action', ['#editor_group'], ['assign_editor_group']);
     toggle_optional_field('bulk_action', ['#application_status'], ['change_status']);
     toggle_optional_field('bulk_action', ['#note'], ['add_note']);
-
+    */
     function disable_bulk_submit() {
         $('#bulk-submit').attr('disabled', 'disabled').html("Submit");
     }
@@ -338,26 +327,15 @@ jQuery(document).ready(function($) {
         ],
 
         search_sortby: [
-            {'display':'Date applied','field':'suggestion.suggested_on'},
-            {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
-            {'display':'Title','field':'index.unpunctitle.exact'}
+
         ],
 
         sort : [
-            {"suggestion.suggested_on" : {"order" : "asc"}}
+
         ],
 
         searchbox_fieldselect: [
-            {'display':'Title','field':'index.title'},
-            {'display':'Keywords','field':'bibjson.keywords'},
-            {'display':'Subject','field':'index.classification'},
-            {'display':'ISSN', 'field':'index.issn.exact'},
-            {'display':'Country of publisher','field':'index.country'},
-            {'display':'Journal Language','field':'index.language'},
-            {'display':'Publisher','field':'index.publisher'},
 
-            {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
-            {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'}
         ],
 
         page_size : 10,

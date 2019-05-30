@@ -1,352 +1,5 @@
 $.extend(true, doaj, {
 
-    adminJournalArticleBulkEdit: {
-
-        active: false,
-
-        newMultiFormBox: function (params) {
-            params = params === undefined ? {} : params;
-            return new doaj.adminJournalArticleBulkEdit.MultiFormBox(params);
-        },
-        MultiFormBox: function (params) {
-            this.selector = params.selector;
-            this.slideTime = params.slideTime !== undefined ? params.slideTime : 400;
-            this.widths = params.widths !== undefined ? params.widths : {};
-            this.bindings = params.bindings !== undefined ? params.bindings : {};
-            this.validators = params.validators !== undefined ? params.validators : {};
-            this.submitCfg = params.submit !== undefined ? params.submit : {};
-            this.urls = params.urls !== undefined ? params.urls : {};
-
-            this.context = false;
-            this.initialContent = {};
-            this.currentField = false;
-            this.defaultWidth = false;
-            this.currentWidth = false;
-            this.currentError = false;
-
-            this.init = function () {
-                this.context = $(this.selector);
-                this.defaultWidth = this.context.outerWidth() + "px";
-                this.currentWidth = this.defaultWidth;
-                this.context.css("width", this.defaultWidth);
-
-                var that = this;
-                var containers = this.context.find(".multiformbox-container");
-                containers.each(function (i) {
-                    var content = $(this).html();
-                    var id = $(this).attr("id");
-                    that.initialContent[id] = content;
-                    $(this).html("");
-                });
-
-                var selectBox = this.context.find(".multiformbox-selector");
-                var selectHandler = edges.eventClosure(this, "selectChanged");
-                selectBox.unbind("change.multiformbox").bind("change.multiformbox", selectHandler);
-
-                var submit = this.context.find(".multiformbox-submit");
-                var submitHandler = edges.eventClosure(this, "submit");
-                submit.unbind("click.multiformbox").bind("click.multiformbox", submitHandler);
-
-                this.validate();
-            };
-
-            this.reset = function () {
-                this.transitionPart1({
-                    target: false
-                });
-                this._disableSubmit();
-            };
-
-            this.submit = function (element) {
-                this._submitting();
-
-                var cfg = this.submitCfg[this.currentField];
-                if (!cfg) {
-                    cfg = {}
-                }
-
-                var sure = false;
-                if (cfg.sure) {
-                    sure = confirm(cfg.sure);
-                } else {
-                    sure = true;
-                }
-
-                if (!sure) {
-                    this._enableSubmit();
-                    return;
-                }
-
-                var successHandler = edges.objClosure(this, "confirmSubmit");
-                var errorHandler = edges.objClosure(this, "submitError");
-
-                this._doSubmit({
-                    cfg: cfg,
-                    dryRun: true,
-                    success: successHandler,
-                    error: errorHandler
-                });
-            };
-
-            this.confirmSubmit = function (data) {
-                if (data.error) {
-                    alert("There was a problem processing your request.  " + data.error);
-                    this.validate();
-                    return;
-                }
-
-                var sure = confirm('This operation will affect ' + this._affectedMessage(data) + '.');
-
-                if (!sure) {
-                    this._enableSubmit();
-                    return;
-                }
-
-                var cfg = this.submitCfg[this.currentField];
-                if (!cfg) {
-                    cfg = {}
-                }
-
-                var successHandler = edges.objClosure(this, "submissionComplete");
-                var errorHandler = edges.objClosure(this, "submitError");
-
-                this._doSubmit({
-                    cfg: cfg,
-                    dryRun: false,
-                    success: successHandler,
-                    error: errorHandler
-                });
-            };
-
-            this.submissionComplete = function (data) {
-                var msg = "Your bulk edit request has been submitted and queued for execution.<br>";
-                msg += this._affectedMessage(data) + " have been queued for edit.<br>";
-                msg += 'You can see your request <a href="' + this._bulkJobUrl(data) + '" target="_blank">here</a> in the background jobs interface (opens new tab).<br>';
-                msg += "You will get an email when your request has been processed; this could take anything from a few minutes to a few hours.<br>";
-                msg += '<a href="#" id="bulk-action-feedback-dismiss">dismiss</a>';
-
-                $(".bulk-action-feedback").html(msg).show();
-                $("#bulk-action-feedback-dismiss").unbind("click").bind("click", function (event) {
-                    event.preventDefault();
-                    $(".bulk-action-feedback").html("").hide();
-                });
-
-                this.reset();
-            };
-
-            this._bulkJobUrl = function (data) {
-                var url = "/admin/background_jobs?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22" + data.job_id + "%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%2C%22from%22%3A0%2C%22size%22%3A25%7D";
-                return url;
-            };
-
-            this._doSubmit = function (params) {
-                var cfg = params.cfg;
-                var dryRun = params.dryRun;
-                var success = params.success;
-                var error = params.error;
-
-                var query = doaj.adminJournalArticleSearch.activeEdges["#admin_journals_and_articles"].currentQuery.objectify({
-                    include_paging: false,
-                    include_sort: false,
-                    include_aggregations: false,
-                    include_source_filters: false
-                });
-
-                /*
-                var query = elasticSearchQuery({
-                    options: doaj.currentFVOptions,
-                    include_facets: false,
-                    include_fields: false
-                });*/
-
-                var data = {};
-                if (cfg.data) {
-                    data = cfg.data(this.context);
-                }
-                data["selection_query"] = query;
-                data["dry_run"] = dryRun;
-
-                var url = this.urls[this.currentField];
-                if (typeof(url) === "function") {
-                    url = url();
-                }
-
-
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    success: success,
-                    error: error
-                });
-            };
-
-            this._affectedMessage = function (data) {
-                var mfrg = "";
-                if (data.affected) {
-                    if ("journals" in data.affected && "articles" in data.affected) {
-                        mfrg += data.affected.journals + " journals and " + data.affected.articles + " articles";
-                    } else if ("journals" in data.affected) {
-                        mfrg = data.affected.journals + " journals";
-                    } else if ("articles" in data.affected) {
-                        mfrg = data.affected.articles + " articles";
-                    } else {
-                        mfrg = "an unknown number of records";
-                    }
-                }
-                return mfrg;
-            };
-
-            this.submitError = function (jqXHR, textStatus, errorThrown) {
-                alert('There was an error with your request.');
-                this._enableSubmit();
-            };
-
-            this.selectChanged = function (element) {
-                var val = $(element).val();
-                if (val === this.currentField) {
-                    return;
-                }
-
-                this.transitionPart1({
-                    target: val
-                });
-            };
-
-            this.validate = function () {
-                var valid = false;
-                var error_id = false;
-                if (this.currentField === false || this.currentField === "") {
-                    valid = false;
-                } else if (!(this.currentField in this.validators)) {
-                    valid = true;
-                } else {
-                    var result = this.validators[this.currentField](this.context);
-                    valid = result.valid;
-                    if ("error_id" in result) {
-                        error_id = result.error_id;
-                    }
-                }
-
-                if (valid) {
-                    this._enableSubmit();
-                } else {
-                    this._disableSubmit();
-                }
-                this._showError(error_id);
-            };
-
-            this._enableSubmit = function () {
-                this.context.find(".multiformbox-submit").removeAttr('disabled').html("Submit");
-            };
-
-            this._disableSubmit = function () {
-                this.context.find(".multiformbox-submit").attr('disabled', 'disabled').html("Submit");
-            };
-
-            this._submitting = function () {
-                this.context.find(".multiformbox-submit").attr('disabled', 'disabled').html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Submitting...");
-            };
-
-            this._showError = function (error_id) {
-                if (error_id === false && this.currentError !== false) {
-                    this.context.find(".multiformbox-error").hide();
-                } else if (error_id !== false && this.currentError !== error_id) {
-                    this.context.find(".multiformbox-error").hide();
-                    this.context.find("#" + error_id).show();
-                }
-                this.currentError = error_id;
-            };
-
-            this.transitionPart1 = function (params) {
-                // first part of the transition is to slide the form up to cover whatever is there right now
-                if (this.currentField === false) {
-                    this.transitionPart2(params);
-                    return;
-                }
-                var currentContainerId = this.currentField + "-container";
-                var current = this.context.find("#" + currentContainerId);
-                if (current.length > 0) {
-                    params["current"] = current;
-                    var clos = edges.objClosure(this, "transitionPart2", false, params);
-                    current.slideUp(this.slideTime, clos);
-                } else {
-                    this.transitionPart2(params);
-                    return;
-                }
-            };
-
-            this.transitionPart2 = function (params) {
-                // get rid of the old form, now it is hidden
-                if (params.current) {
-                    params.current.html("");
-                }
-
-                // second part is to adjust the width of the container
-                var val = params.target;
-                var width = this.defaultWidth;
-                if (val in this.widths) {
-                    width = this.widths[val];
-                }
-                if (width === this.currentWidth) {
-                    this.transitionPart3(params);
-                    return;
-                }
-                this.currentWidth = width;
-
-                var clos = edges.objClosure(this, "transitionPart3", false, params);
-                var that = this;
-                this.context.animate({width: width},
-                    {
-                        duration: this.slideTime,
-                        step: function () {
-                            that.context.css("overflow", "");
-                        },
-                        complete: clos
-                    }
-                );
-            };
-
-            this.transitionPart3 = function (params) {
-                this.currentField = params.target;
-                if (this.currentField === "") {
-                    this.currentField = false;
-                }
-                if (this.currentField === false) {
-                    var selectBox = this.context.find(".multiformbox-selector");
-                    selectBox.val("");
-                    return;
-                }
-
-                // final part is to slide out the new form
-                var containerId = params.target + "-container";
-                var target = this.context.find("#" + containerId);
-                if (target.length > 0) {
-                    if (containerId in this.initialContent) {
-                        target.html(this.initialContent[containerId]);
-                    } else {
-                        target.html("");
-                    }
-                }
-
-                if (params.target in this.bindings) {
-                    this.bindings[params.target](this.context);
-                }
-
-                var validateHandler = edges.eventClosure(this, "validate");
-                var inputs = target.find(":input");
-                inputs.unbind("keyup.multiformbox").bind("keyup.multiformbox", validateHandler);
-                inputs.unbind("change.multiformbox").bind("change.multiformbox", validateHandler);
-
-                target.slideDown(this.slideTime);
-                this.validate();
-            };
-
-            this.init();
-        }
-    },
-
     adminJournalArticleSearch : {
         activeEdges : {},
 
@@ -390,39 +43,6 @@ $.extend(true, doaj, {
             }
         },
 
-        titleField : function (val, resultobj, renderer) {
-            var field = '<span class="title">';
-            var isjournal = false;
-            if (resultobj.bibjson && resultobj.bibjson.journal) {
-                // this is an article
-                field += "<i class='far fa-file-alt'></i>";
-            }
-            else if (resultobj.suggestion) {
-                // this is a suggestion
-                field += "<i class='fa fa-sign-in' style=\"margin-right: 0.5em;\"></i>";
-            } else {
-                // this is a journal
-                field += "<i class='fas fa-book-open'></i>";
-                isjournal = true;
-            }
-            if (resultobj.bibjson.title) {
-                if (isjournal) {
-                    field += "&nbsp<a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + edges.escapeHtml(resultobj.bibjson.title) + "</a>";
-                } else {
-                    field += "&nbsp" + edges.escapeHtml(resultobj.bibjson.title);
-                }
-                if (resultobj.admin && resultobj.admin.ticked) {
-                    field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​";
-                }
-                if (resultobj.admin && resultobj.admin.seal) {
-                    field += "&nbsp<img src='/static/doaj/images/seal_short.png' width='16px' height='16px' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal' style='padding-bottom: 3px'>​​";
-                }
-                return field + "</span>"
-            } else {
-                return false;
-            }
-        },
-
         inDoaj : function(val, resultobj, renderer) {
             var mapping = {
                 "false": {"text": "No", "class": "red"},
@@ -446,138 +66,12 @@ $.extend(true, doaj, {
             return false;
         },
 
-        authorPays : function(val, resultobj, renderer) {
-            var mapping = {
-                "Y": {"text": "Has charges", "class": "red"},
-                "N": {"text": "No charges", "class": "green"},
-                "CON": {"text": "Conditional charges", "class": "blue"},
-                "NY": {"text": "No info available", "class": ""}
-            };
-            var field = "";
-            if (resultobj.bibjson && resultobj.bibjson.author_pays) {
-                if(mapping[resultobj['bibjson']['author_pays']]) {
-                    var result = '<span class=' + mapping[resultobj['bibjson']['author_pays']]['class'] + '>';
-                    result += mapping[resultobj['bibjson']['author_pays']]['text'];
-                    result += '</span>';
-                    field += result;
-                } else {
-                    field += resultobj['bibjson']['author_pays'];
-                }
-                if (resultobj.bibjson && resultobj.bibjson.author_pays_url) {
-                    var url = resultobj.bibjson.author_pays_url;
-                    field += " (see <a href='" + url + "'>" + url + "</a>)"
-                }
-                if (field === "") {
-                    return false
-                }
-                return field
-            }
-            return false;
-        },
-
         createdDateWithTime : function (val, resultobj, renderer) {
             return doaj.iso_datetime2date_and_time(resultobj['created_date']);
         },
 
         lastUpdated : function (val, resultobj, renderer) {
             return doaj.iso_datetime2date_and_time(resultobj['last_updated']);
-        },
-
-        doiLink : function (val, resultobj, renderer) {
-            if (resultobj.bibjson && resultobj.bibjson.identifier) {
-                var ids = resultobj.bibjson.identifier;
-                for (var i = 0; i < ids.length; i++) {
-                    if (ids[i].type === "doi") {
-                        var doi = ids[i].id;
-                        var tendot = doi.indexOf("10.");
-                        var url = "https://doi.org/" + doi.substring(tendot);
-                        return "<a href='" + url + "'>" + edges.escapeHtml(doi.substring(tendot)) + "</a>"
-                    }
-                }
-            }
-            return false
-        },
-
-        links : function (val, resultobj, renderer) {
-            if (resultobj.bibjson && resultobj.bibjson.link) {
-                var ls = resultobj.bibjson.link;
-                for (var i = 0; i < ls.length; i++) {
-                    var t = ls[i].type;
-                    var label = '';
-                    if (t == 'fulltext') {
-                        label = 'Full text'
-                    } else if (t == 'homepage') {
-                        label = 'Home page'
-                    } else {
-                        label = t.substring(0, 1).toUpperCase() + t.substring(1)
-                    }
-                    return "<strong>" + label + "</strong>: <a href='" + ls[i].url + "'>" + edges.escapeHtml(ls[i].url) + "</a>"
-                }
-            }
-            return false;
-        },
-
-        journalLicense : function (val, resultobj, renderer) {
-            var title = undefined;
-            if (resultobj.bibjson && resultobj.bibjson.journal && resultobj.bibjson.journal.license) {
-                var lics = resultobj["bibjson"]["journal"]["license"];
-                if (lics.length > 0) {
-                    title = lics[0].title
-                }
-            }
-            else if (resultobj.bibjson && resultobj.bibjson.license) {
-                var lics = resultobj["bibjson"]["license"];
-                if (lics.length > 0) {
-                    title = lics[0].title
-                }
-            }
-
-            if (title) {
-                if (doaj.licenceMap[title]) {
-                    var urls = doaj.licenceMap[title];
-                    // i know i know, i'm not using styles.  the attrs still work and are easier.
-                    return "<a href='" + urls[1] + "' title='" + title + "' target='blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + title + "'></a>"
-                } else {
-                    return title
-                }
-            }
-
-            return false;
-        },
-
-        countryName : function (val, resultobj, renderer) {
-            if (resultobj.index && resultobj.index.country) {
-                return edges.escapeHtml(resultobj.index.country);
-            }
-            return false
-        },
-
-        abstract : function (val, resultobj, renderer) {
-            if (resultobj['bibjson']['abstract']) {
-                var result = '<a class="abstract_action" href="#" rel="';
-                result += resultobj['id'];
-                result += '">(show/hide)</a> <span class="abstract_text" style="display:none" rel="';
-                result += resultobj['id'];
-                result += '">' + '<br>';
-                result += edges.escapeHtml(resultobj['bibjson']['abstract']);
-                result += '</span>';
-                return result;
-            }
-            return false;
-        },
-
-        issns : function (val, resultobj, renderer) {
-            if (resultobj.bibjson && resultobj.bibjson.identifier) {
-                var ids = resultobj.bibjson.identifier;
-                var issns = [];
-                for (var i = 0; i < ids.length; i++) {
-                    if (ids[i].type === "pissn" || ids[i].type === "eissn") {
-                        issns.push(edges.escapeHtml(ids[i].id))
-                    }
-                }
-                return issns.join(", ")
-            }
-            return false
         },
 
         deleteArticle : function (val, resultobj, renderer) {
@@ -622,7 +116,8 @@ $.extend(true, doaj, {
             var anySelected = doaj.adminJournalArticleSearch.anySelected(selector);
             var typeSelected = doaj.adminJournalArticleSearch.typeSelected(selector);
 
-            var mfb = doaj.adminJournalArticleBulkEdit.newMultiFormBox({
+            var mfb = doaj.multiFormBox.newMultiFormBox({
+                edgeSelector : selector,
                 selector: "#admin-bulk-box",
                 widths: {
                     edit_metadata: "600px"
@@ -755,7 +250,7 @@ $.extend(true, doaj, {
                     edit_metadata : "/admin/journals/bulk/edit_metadata"
                 }
             });
-            doaj.adminJournalArticleBulkEdit.active = mfb;
+            doaj.multiFormBox.active = mfb;
 
             var countFormat = edges.numFormat({
                 thousandsSeparator: ","
@@ -995,7 +490,7 @@ $.extend(true, doaj, {
                             // Journals
                             [
                                 {
-                                    valueFunction: doaj.adminJournalArticleSearch.titleField
+                                    valueFunction: doaj.fieldRender.titleField
                                 }
                             ],
                             [
@@ -1032,7 +527,7 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre": "<strong>Publication charges?</strong>: ",
-                                    "valueFunction": doaj.adminJournalArticleSearch.authorPays
+                                    "valueFunction": doaj.fieldRender.authorPays
                                 }
                             ],
                             [
@@ -1111,7 +606,7 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre" : "<strong>ISSN(s)</strong>: ",
-                                    "valueFunction" : doaj.adminJournalArticleSearch.issns
+                                    "valueFunction" : doaj.fieldRender.issns
                                 }
                             ],
                             [
@@ -1141,12 +636,12 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre": "<strong>DOI</strong>: ",
-                                    "valueFunction": doaj.adminJournalArticleSearch.doiLink
+                                    "valueFunction": doaj.fieldRender.doiLink
                                 }
                             ],
                             [
                                 {
-                                    "valueFunction" : doaj.adminJournalArticleSearch.links
+                                    "valueFunction" : doaj.fieldRender.links
                                 }
                             ],
                             [
@@ -1158,19 +653,19 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre": "<strong>Journal License</strong>: ",
-                                    "valueFunction": doaj.adminJournalArticleSearch.journalLicense
+                                    "valueFunction": doaj.fieldRender.journalLicense
                                 }
                             ],
                             [
                                 {
                                     "pre": "<strong>Country of publisher</strong>: ",
-                                    "valueFunction": doaj.adminJournalArticleSearch.countryName
+                                    "valueFunction": doaj.fieldRender.countryName
                                 }
                             ],
                             [
                                 {
                                     "pre": '<strong>Abstract</strong>: ',
-                                    "valueFunction": doaj.adminJournalArticleSearch.abstract
+                                    "valueFunction": doaj.fieldRender.abstract
                                 }
                             ],
                             [
@@ -1238,7 +733,7 @@ $.extend(true, doaj, {
             doaj.adminJournalArticleSearch.activeEdges[selector] = e;
 
             $(selector).on("edges:pre-render", function() {
-                doaj.adminJournalArticleBulkEdit.active.validate();
+                doaj.multiFormBox.active.validate();
             });
 
             // now bind the abstract expander

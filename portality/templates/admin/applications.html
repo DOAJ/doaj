@@ -1,19 +1,23 @@
 {% extends "admin/admin_base.html" %}
 
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
 {% block admin_content %}
 
 <div class="bulk-action-feedback alert alert-success" style="display: none"></div>
 
-<div style="padding-bottom: 20px">
+<div style="padding-bottom: 20px; margin-top: 20px">
     <div class="row">
         <div class="col-md-12">
             <div id="admin-bulk-box" class="pull-right">
                 <label id="admin-bulk-label">Bulk Edit Records</label>
-                <form class="form-horizontal wide" id="suggestion_bulk_form">
+                <form class="form-horizontal" id="suggestion_bulk_form">
                     <fieldset>
-                        <div class="control-group" id="bulk_action-container">
-                            <div class="controls ">
-                                <select id="bulk_action" name="bulk_action" style="width: 250px;">
+                        <div class="form-group" id="bulk_action-container">
+                            <div class="col-md-12">
+                                <select class="multiformbox-selector" id="bulk_action" name="bulk_action" style="width: 250px;">
                                     <option selected value="">Select action...</option>
                                     <option value="change_status">Change status...</option>
                                     <option value="assign_editor_group">Assign to editor group...</option>
@@ -21,8 +25,8 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="control-group" style="display: none" id="application_status-container">
-                            <div class="controls ">
+                        <div class="form-group" style="display: none" id="application_status-container">
+                            <div class="col-md-12">
                                 <select class="" id="application_status" name="application_status" style="width: 250px">
                                     <option value=""></option>
                                     {% for choice in application_status_choices %}
@@ -31,18 +35,18 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="control-group" style="display: none" id="editor_group-container">
-                            <div class="controls">
+                        <div class="form-group multiformbox-container" style="display: none" id="editor_group-container">
+                            <div class="col-md-12">
                                 <input id="editor_group" name="editor_group" style="width: 250px;" type="text" value="">
                             </div>
                         </div>
-                        <div class="control-group" style="display: none" id="note-container">
-                            <div class="controls">
+                        <div class="form-group multiformbox-container" style="display: none" id="note-container">
+                            <div class="col-md-12">
                                 <textarea id="note" name="note" style="width: 240px;" placeholder="Type note here..."></textarea>
                             </div>
                         </div>
-                        <div class="control-group">
-                            <div class="controls">
+                        <div class="form-group multiformbox-container">
+                            <div class="col-md-12">
                                 <button id="bulk-submit" class="btn btn-danger pull-right" disabled="disabled">Submit
                                 </button>
                             </div>
@@ -54,12 +58,24 @@
     </div>
 </div>
 
-<div class="facetview suggestions"></div>
+<div id="admin_applications"></div>
+
 {% endblock %}
 
 {% block extra_js_bottom %}
-<script type="text/javascript">
-    var suggestion_edit_url = "{{ url_for('admin.suggestion_page', suggestion_id="") }}";
-    var journals_fv_url = "{{ url_for('admin.journals') }}";
-</script>
+
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        adminApplicationsSearchConfig : {
+            applicationEditUrl : "{{ url_for('admin.suggestion_page', suggestion_id='') }}",
+            journalsUrl : "{{ url_for('admin.journals') }}",
+            searchPath : '/admin_query/suggestion/_search'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+        <script type="text/javascript" src="/static/js/multiformbox.js"></script>
+    <script type="text/javascript" src="/static/js/edges/admin.applications.edge.js"></script>
+
 {% endblock %}
