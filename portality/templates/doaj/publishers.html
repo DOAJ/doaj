@@ -509,7 +509,7 @@ file. The location can be http or ftp.<br>
 Before you upload the file to us, <a href="http://www.freeformatter.com/xml-formatter.html">format it</a> and 
 <a href="http://www.freeformatter.com/xml-validator-xsd.html">validate it</a>. 
 (<a href="https://doaj.org/static/doaj/doajArticles.xsd">The xsd file for DOAJ is here</a>.) These two steps identify most 
-upload problems.<br>
+upload problems. Español:(<a href="https://doaj.org/static/doaj/doajArticles.xsd">El archivo xsd de DOAJ está aquí</a>.) Estos dos pasos identifican la mayoría de problemas. <br>
 You will see a message 'File uploaded and waiting to be processed. Check back here for updates.'. Processing takes place every 30 minutes.
 All XML files are checked for errors and, if a problem is found, an error message will be displayed, 'processing failed', in the
 'History of uploads' section. If the upload has been successful, you will see a 'Successfully processed' message in the 
@@ -518,7 +518,7 @@ the XML has processed successfully, the articles are published to the site. The 
 overnight.</li>
 
 <li><b>Use <a href="{{ url_for('api_v1.docs')  }}">the DOAJ API</a></b>. This is highly automated and 
-the least labour intensive. You will need the API key from your account page. If you do not see an API key there, please contact us. You should also <a href="https://doaj.org/api/v1/docs#intro_help">sign up to our 
+the least labour intensive. You will need to request that we enable your API key on your account page. <a href="/contact">Contact us</a> to do that. You should also <a href="https://doaj.org/api/v1/docs#intro_help">sign up to our 
 API groups</a> for API support.</li>
 </ul>
 </p>
@@ -567,11 +567,19 @@ please <a href="{{ url_for('doaj.contact') }}">contact us</a> with the following
 <p><strong>Resolution</strong>: Please <a href="{{ url_for('doaj.contact') }}">contact us</a> immediately with the relevant details.</p>
 
 
-<h4><a name="File system error when reading file"></a>File system error when reading file</h4>
+<h4><a name="Unanticipated error when importing articles"></a>Unanticipated error when importing articles</h4>
 
-<p><strong>Reason</strong>: The file got corrupted and couldn't be read for some reason - you may have found a bug!</p>
+<p><strong>Reason</strong>: Something unexpected happened when we tried to import your articles - you may have found a bug!</p>
 
-<p><strong>Resolution</strong>: Please <a href="{{ url_for('doaj.contact') }}">contact us</a> immediately with the relevant details.</p>
+<p><strong>Resolution</strong>: Please <a href="{{ url_for('doaj.contact') }}">contact us</a> immediately with the details:</p>
+
+<ol>
+    <li>Your user account</li>
+    <li>When the incident occurred</li>
+    <li>Information about your environment, such as which browser you were using</li>
+</ol>
+
+<p>We may also ask you to supply the file that you tried to upload, so please keep a copy of it until the issue is resolved.</p>
 
 <h4><a name="The file at the URL was too large"></a>The file at the URL was too large</h4>
 
@@ -600,7 +608,7 @@ please <a href="{{ url_for('doaj.contact') }}">contact us</a> with the following
 
 <h4><a name="Unable to parse file"></a>Unable to parse file</h4>
 
-<p></p><strong>Reason</strong>: The XML file you provided (either downloaded from a URL or uploaded via the web form) could not be read as an XML file</p>
+<p><strong>Reason</strong>: The XML file you provided (either downloaded from a URL or uploaded via the web form) could not be read as an XML file</p>
 
 <p><strong>Resolution</strong>: Check that the file really is valid XML.</p>
 
@@ -683,6 +691,12 @@ update the record accordingly.</p>
 <p><strong>Reason</strong>: At least two of the articles in the uploaded file contain the same DOI and/or the same fulltext url</p>
 
 <p><strong>Resolution</strong>: Ensure that there are no duplicated articles in the file.  Ensure that you are using the correct DOIs and URLs for all the articles.</p>
+
+<h4><a name="One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted"></a>One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted</h4>
+
+<p><strong>Reason</strong>: At least one of your articles matched two or more other articles already in DOAJ, and as a result we don't know which one to update.</p>
+
+<p><strong>Resolution</strong>: Ensure that all your articles have the correct DOI and Fulltext links.  If you still don't have any luck, please <a href="{{ url_for('doaj.contact') }}">contact us</a> with the details; we may need to clean up your existing articles manually.</p>
 
 <br><br>
 

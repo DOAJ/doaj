@@ -72,7 +72,7 @@ class TestTOC(DoajTestCase):
         pissn = j.bibjson().first_pissn
         eissn = j.bibjson().first_eissn
         j.set_last_manual_update()
-        j.save()
+        j.save(blocking=True)
         a = models.Article(**ArticleFixtureFactory.make_article_source(pissn=pissn, eissn=eissn, in_doaj=True))
         a.save(blocking=True)
         with self.app_test.test_client() as t_client:
@@ -87,7 +87,7 @@ class TestTOC(DoajTestCase):
         j.bibjson().remove_identifiers(idtype=j.bibjson().E_ISSN, id=j.bibjson().first_eissn)
 
         j.set_last_manual_update()
-        j.save()
+        j.save(blocking=True)
         a = models.Article(**ArticleFixtureFactory.make_article_source(pissn=pissn, in_doaj=True))
         a.save(blocking=True)
         with self.app_test.test_client() as t_client:
@@ -102,7 +102,7 @@ class TestTOC(DoajTestCase):
         j.bibjson().remove_identifiers(idtype=j.bibjson().P_ISSN, id=j.bibjson().first_pissn)
 
         j.set_last_manual_update()
-        j.save()
+        j.save(blocking=True)
         a = models.Article(**ArticleFixtureFactory.make_article_source(pissn=eissn, in_doaj=True))
         a.save(blocking=True)
         with self.app_test.test_client() as t_client:

@@ -110,7 +110,7 @@ INCOMING_ARTICLE_REQUIRED = {
         "bibjson": {
             "required": [
                 "title",
-                "author",                   # One author required
+                # "author",                   # author no longer required
                 "identifier"                # One type of identifier is required
             ],
             "structs": {
@@ -125,7 +125,7 @@ INCOMING_ARTICLE_REQUIRED = {
 
                 "author": {
                     "required": ["name"]
-                },
+                }
             }
         }
     }
@@ -196,6 +196,14 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         if "journal" in dat["bibjson"] and "end_page" in dat["bibjson"].get("journal", {}):
             dat["bibjson"]["end_page"] = dat["bibjson"]["journal"]["end_page"]
             del dat["bibjson"]["journal"]["end_page"]
+
+        # clear out fields that we don't accept via the API
+        if "admin" in dat and "in_doaj" in dat["admin"]:
+            del dat["admin"]["in_doaj"]
+        if "admin" in dat and "seal" in dat["admin"]:
+            del dat["admin"]["seal"]
+        if "admin" in dat and "upload_id" in dat["admin"]:
+            del dat["admin"]["upload_id"]
 
         if existing is None:
             return models.Article(**dat)

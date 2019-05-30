@@ -5,9 +5,11 @@ from portality.ui.messages import Messages
 
 from datetime import datetime
 
+
 class ArticleService(object):
 
-    def batch_create_articles(self, articles, account, duplicate_check=True, merge_duplicate=True, limit_to_account=True):
+    def batch_create_articles(self, articles, account, duplicate_check=True, merge_duplicate=True,
+                              limit_to_account=True, add_journal_info=False):
         """
         Create a batch of articles in a single operation.  Articles are either all created/updated or none of them are
 
@@ -18,6 +20,7 @@ class ArticleService(object):
         :param duplicate_check:     Whether to check for duplicates in the batch and in the index
         :param merge_duplicate:     Should duplicates be merged.  If set to False, this may raise a DuplicateArticleException
         :param limit_to_account:    Should the ingest be limited only to articles for journals owned by the account.  If set to True, may result in an IngestException
+        :param add_journal_info:    Should we fetch the journal info and attach it to the article before save?
         :return: a report on the state of the import: {success: x, fail: x, update: x, new: x, shared: [], unowned: [], unmatched: []}
         """
         # first validate the incoming arguments to ensure that we've got the right thing
@@ -26,7 +29,8 @@ class ArticleService(object):
             {"arg": account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
             {"arg" : duplicate_check, "instance" : bool, "allow_none" : False, "arg_name" : "duplicate_check"},
             {"arg" : merge_duplicate, "instance" : bool, "allow_none" : False, "arg_name" : "merge_duplicate"},
-            {"arg" : limit_to_account, "instance" : bool, "allow_none" : False, "arg_name" : "limit_to_account"}
+            {"arg" : limit_to_account, "instance" : bool, "allow_none" : False, "arg_name" : "limit_to_account"},
+            {"arg" : add_journal_info, "instance" : bool, "allow_none" : False, "arg_name" : "add_journal_info"}
         ], exceptions.ArgumentException)
 
         # 1. dedupe the batch
@@ -46,7 +50,16 @@ class ArticleService(object):
         all_unmatched = set()
 
         for article in articles:
-            result = self.create_article(article, account, duplicate_check=duplicate_check, merge_duplicate=merge_duplicate, limit_to_account=limit_to_account, dry_run=True)
+            try:
+                result = self.create_article(article, account,
+                                             duplicate_check=duplicate_check,
+                                             merge_duplicate=merge_duplicate,
+                                             limit_to_account=limit_to_account,
+                                             add_journal_info=add_journal_info,
+                                             dry_run=True)
+            except exceptions.ArticleMergeConflict:
+                raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
+
             success += result.get("success", 0)
             fail += result.get("fail", 0)
             update += result.get("update", 0)
@@ -70,7 +83,6 @@ class ArticleService(object):
         else:
             raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_FAIL, result=report)
 
-
     def _batch_contains_duplicates(self, articles):
         dois = []
         fulltexts = []
@@ -90,8 +102,8 @@ class ArticleService(object):
 
         return False
 
-
-    def create_article(self, article, account, duplicate_check=True, merge_duplicate=True, limit_to_account=True, dry_run=False):
+    def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
+                       limit_to_account=True, add_journal_info=False, dry_run=False):
         """
         Create an individual article in the database
 
@@ -103,6 +115,7 @@ class ArticleService(object):
         :param duplicate_check:     Whether to check for duplicates in the database
         :param merge_duplicate:     Whether to merge duplicate if found.  If set to False, may result in a DuplicateArticleException
         :param limit_to_account:    Whether to limit create to when the account owns the journal to which the article belongs
+        :param add_journal_info:    Should we fetch the journal info and attach it to the article before save?
         :param dry_run:     Whether to actuall save, or if this is just to either see if it would work, or to prep for a batch ingest
         :return:
         """
@@ -113,6 +126,7 @@ class ArticleService(object):
             {"arg" : duplicate_check, "instance" : bool, "allow_none" : False, "arg_name" : "duplicate_check"},
             {"arg" : merge_duplicate, "instance" : bool, "allow_none" : False, "arg_name" : "merge_duplicate"},
             {"arg" : limit_to_account, "instance" : bool, "allow_none" : False, "arg_name" : "limit_to_account"},
+            {"arg" : add_journal_info, "instance" : bool, "allow_none" : False, "arg_name" : "add_journal_info"},
             {"arg" : dry_run, "instance" : bool, "allow_none" : False, "arg_name" : "dry_run"}
         ], exceptions.ArgumentException)
 
@@ -134,20 +148,22 @@ class ArticleService(object):
                 else:
                     raise exceptions.DuplicateArticleException()
 
+        if add_journal_info:
+            article.add_journal_metadata()
+
         # finally, save the new article
         if not dry_run:
             article.save()
 
         return {"success" : 1, "fail" : 0, "update" : is_update, "new" : 1 - is_update, "shared" : set(), "unowned" : set(), "unmatched" : set()}
 
-
     def is_legitimate_owner(self, article, owner):
         """
         Determine if the owner id is the owner of the article
 
-        :param article:
-        :param owner:
-        :return:
+        :param article: an article model
+        :param owner: string account ID
+        :return: True or False
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("is_legitimate_owner", [
@@ -157,21 +173,21 @@ class ArticleService(object):
 
         # get all the issns for the article
         b = article.bibjson()
-        issns = b.get_identifiers(b.P_ISSN)
-        issns += b.get_identifiers(b.E_ISSN)
+        article_issns = b.get_identifiers(b.P_ISSN)
+        article_issns += b.get_identifiers(b.E_ISSN)
 
         # check each issn against the index, and if a related journal is found
         # record the owner of that journal
         owners = []
-        seen_issns = {}
-        for issn in issns:
+        seen_journal_issns = {}
+        for issn in article_issns:
             journals = models.Journal.find_by_issn(issn)
             if journals is not None and len(journals) > 0:
                 for j in journals:
                     owners.append(j.owner)
-                    if j.owner not in seen_issns:
-                        seen_issns[j.owner] = []
-                    seen_issns[j.owner] += j.bibjson().issns()
+                    if j.owner not in seen_journal_issns:
+                        seen_journal_issns[j.owner] = []
+                    seen_journal_issns[j.owner] += j.bibjson().issns()
 
         # deduplicate the list of owners
         owners = list(set(owners))
@@ -184,16 +200,17 @@ class ArticleService(object):
         if len(owners) > 1:
             return False
 
+        # if the found owner is not the same as the desired owner, return false
+        if owners[0] != owner:
+            return False
+
         # single owner must still know of all supplied issns
-        compare = list(set(seen_issns[owners[0]]))
-        if len(compare) == 2:   # we only want to check issn parity for journals where there is more than one issn available.
-            for issn in issns:
-                if issn not in compare:
-                    return False
+        journal_issns = set(seen_journal_issns[owner])
+        for issn in article_issns:
+            if issn not in journal_issns:
+                return False
 
-        # true if the found owner is the same as the desired owner, otherwise false
-        return owners[0] == owner
-
+        return True
 
     def issn_ownership_status(self, article, owner):
         """
@@ -258,7 +275,6 @@ class ArticleService(object):
 
         return owned, shared, unowned, unmatched
 
-
     def get_duplicate(self, article, owner=None):
         """
         Get at most one one, most recent, duplicate article for the supplied article.
@@ -275,12 +291,13 @@ class ArticleService(object):
             {"arg" : owner, "instance" : unicode, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
-        dup = self.get_duplicates(article, owner, max_results=1)
+        dup = self.get_duplicates(article, owner, max_results=2)
+        if len(dup) > 1:
+            raise exceptions.ArticleMergeConflict(Messages.EXCEPTION_ARTICLE_MERGE_CONFLICT)
         if dup:
             return dup.pop()
         else:
             return None
-
 
     def get_duplicates(self, article, owner=None, max_results=10):
         """
@@ -317,7 +334,6 @@ class ArticleService(object):
         possible_articles.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
 
         return possible_articles[:max_results]
-
 
     def discover_duplicates(self, article, owner=None, results_per_match_type=10):
         """

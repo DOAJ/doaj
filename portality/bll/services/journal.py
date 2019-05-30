@@ -195,16 +195,17 @@ class JournalService(object):
             mainStore.store(container_id, filename, source_path=out)
             url = mainStore.url(container_id, filename)
         finally:
-            tmpStore.delete(container_id, filename) # don't delete the container, just in case someone else is writing to it
+            tmpStore.delete_file(container_id, filename) # don't delete the container, just in case someone else is writing to it
 
+        action_register = []
         if prune:
             def sort(filelist):
                 rx = "journalcsv__doaj_(.+?)_utf8.csv"
                 return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], '%Y%m%d_%H%M'), reverse=True)
             def filter(filename):
                 return filename.startswith("journalcsv__")
-            prune_container(mainStore, container_id, sort, filter=filter, keep=2)
+            action_register = prune_container(mainStore, container_id, sort, filter=filter, keep=2)
 
         # update the ES record to point to the new file
         models.Cache.cache_csv(url)
-        return url
+        return url, action_register

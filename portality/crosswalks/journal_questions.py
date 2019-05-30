@@ -27,8 +27,9 @@ class Journal2QuestionXwalk(object):
         ("submission_charges_url",              "Submission fee URL"),
         ("submission_charges_amount",           "Submission fee amount"),
         ("submission_charges_currency",         "Submission fee currency"),
-        ("articles_last_year",                  "Number of articles published in the last calendar year"),
-        ("articles_last_year_url",              "Number of articles information URL"),
+        # these fields are available on the application but not the journal
+        #("articles_last_year",                  "Number of articles published in the last calendar year"),
+        #("articles_last_year_url",              "Number of articles information URL"),
         ("waiver_policy",                       "Journal waiver policy (for developing country authors etc)"),
         ("waiver_policy_url",                   "Waiver policy information URL"),
         ("digital_archiving_policy",            "Digital archiving policy or program(s)"),
@@ -187,8 +188,9 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("submission_charges_url"), forminfo.get("submission_charges_url")))
         kvs.append((cls.q("submission_charges_amount"), forminfo.get("submission_charges_amount")))
         kvs.append((cls.q("submission_charges_currency"), datasets.get_currency_name(forminfo.get("submission_charges_currency"))))
-        kvs.append((cls.q("articles_last_year"), forminfo.get("articles_last_year", "")))
-        kvs.append((cls.q("articles_last_year_url"), forminfo.get("articles_last_year_url", "")))
+        # these fields are present in the application but not the journal
+        #kvs.append((cls.q("articles_last_year"), forminfo.get("articles_last_year", "")))
+        #kvs.append((cls.q("articles_last_year_url"), forminfo.get("articles_last_year_url", "")))
         kvs.append((cls.q("waiver_policy"), yes_or_blank(forminfo.get("waiver_policy"))))
         kvs.append((cls.q("waiver_policy_url"), forminfo.get("waiver_policy_url")))
 

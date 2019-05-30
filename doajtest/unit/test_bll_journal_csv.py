@@ -50,8 +50,8 @@ class TestBLLJournalCSV(DoajTestCase):
         app.config["STORE_IMPL"] = self.store_impl
         if os.path.exists("test_store"):
             shutil.rmtree("test_store")
-        self.localStore.delete(self.container_id)
-        self.tmpStore.delete(self.container_id)
+        self.localStore.delete_container(self.container_id)
+        self.tmpStore.delete_container(self.container_id)
 
         models.cache.Cache = self.cache
         models.Cache = self.cache
@@ -145,6 +145,7 @@ class TestBLLJournalCSV(DoajTestCase):
         if prune:
             self.localStore.store(self.container_id, "journalcsv__doaj_20180101_0000_utf8.csv", source_stream=StringIO("test1"))
             self.localStore.store(self.container_id, "journalcsv__doaj_20180601_0000_utf8.csv", source_stream=StringIO("test2"))
+            self.localStore.store(self.container_id, "journalcsv__doaj_20190101_0000_utf8.csv", source_stream=StringIO("test3"))
 
         models.Journal.blockall(jids)
         models.Article.blockall(aids)
@@ -159,7 +160,7 @@ class TestBLLJournalCSV(DoajTestCase):
                 tempFiles = self.tmpStore.list(self.container_id)
                 assert len(tempFiles) == 0
         else:
-            url = self.svc.csv(prune)
+            url, action_register = self.svc.csv(prune)
             assert url is not None
 
             csv_info = models.cache.Cache.get_latest_csv()
@@ -169,10 +170,14 @@ class TestBLLJournalCSV(DoajTestCase):
             if prune:
                 assert len(filenames) == 2
                 assert "journalcsv__doaj_20180101_0000_utf8.csv" not in filenames
+                assert "journalcsv__doaj_20180601_0000_utf8.csv" not in filenames
+                assert "journalcsv__doaj_20190101_0000_utf8.csv" in filenames
+            else:
+                assert len(filenames) == 1
 
             latest = None
             for fn in filenames:
-                if fn != "journalcsv__doaj_20180601_0000_utf8.csv":
+                if fn != "journalcsv__doaj_20190101_0000_utf8.csv":
                     latest = fn
                     break
 
@@ -195,8 +200,8 @@ class TestBLLJournalCSV(DoajTestCase):
                     alt_title = row[2]
                     issn = row[3]
                     eissn = row[4]
-                    article_count = int(row[57])
-                    article_latest = row[58]
+                    article_count = int(row[55])
+                    article_latest = row[56]
 
                     assert alt_title == u"Заглавие на журнала"
                     assert issn in comparisons[issn]["issns"]

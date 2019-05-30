@@ -1,0 +1,35 @@
+admin.in_doaj: Whether the article is in DOAJ, or withdrawn from public view.  You can retrieve this value from DOAJ, but if you provide it back it will be **ignored**.
+admin.publisher_record_id: **Deprecated** Your own ID for the record.
+admin.seal: Whether the article is in a journal with the DOAJ Seal.  You can retrieve this value from DOAJ, but if you provide it back it will be **ignored**.
+admin.upload_id: An ID for a batch upload.  You can retrieve this value from DOAJ, but if you provide it back it will be **ignored**.
+bibjson.abstract: Article abstract
+bibjson.author.affiliation: An author's affiliation
+bibjson.author.name: An author's name.  If there is an author record then name is **required**
+bibjson.identifier.id: An identifier for the article.
+bibjson.identifier.type: The type of the associated identifier.  Should contain "doi" if available.  An "eissn" or a "pissn" is **required**.
+bibjson.journal.country: The country of the publisher using the ISO-3166 2-letter country codes.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.journal.end_page: End page of the article in the journal
+bibjson.journal.language: The language of the Journal using the ISO-639-1 2-letter language codes.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.journal.license.open_access: Is the parent journal Open Access? You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.journal.license.title: The name of the licence of the parent journal. You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.journal.license.type: The type of the licence of the parent journal.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.journal.license.url: The URL for the licence terms of the parent journal.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.journal.license.version: The version of the licence terms of the parent journal.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.journal.number: The issue number of the journal within which this article appears
+bibjson.journal.publisher: The name of the publisher of the journal.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.journal.start_page: The start page of the article in the journal
+bibjson.journal.title: The journal title. You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.journal.volume: The volume of the journal within which this article appears
+bibjson.keywords: Up to 6 free-text keywords describing this article
+bibjson.link.content_type: The content type of page referenced by the link (for example, text/html)
+bibjson.link.type: The link type.  Should contain "fulltext" and point to the article fulltext URL in bibjson.link.url
+bibjson.link.url: The url
+bibjson.month: Month of publication for this article
+bibjson.subject.code: Library of Congress Subject Code.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.subject.scheme: Library of Congress Subject Scheme.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.subject.term: Library of Congress Subject Term.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+bibjson.title: Article title **required**
+bibjson.year: Year of publication for this article
+created_date: Date the record was created in DOAJ. You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+id: DOAJ ID for this article.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
+last_updated: Date this article was last modified in DOAJ.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created
