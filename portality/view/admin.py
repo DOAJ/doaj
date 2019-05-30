@@ -276,9 +276,8 @@ def journal_continue(journal_id):
 @login_required
 @ssl_required
 def suggestions():
-    return render_template("admin/suggestions.html",
-                           admin_page=True, search_page=True,
-                           facetviews=['admin.applications.facetview'],
+    return render_template("admin/applications.html",
+                           admin_page=True,
                            application_status_choices=choices.Choices.application_status("admin"))
 
 

@@ -2,101 +2,6 @@
 // the function, a bit cleaner
 
 
-fv_application_status = (function(resultobj) {
-    var that = function(resultobj) {
-        return that.mapping[resultobj['admin']['application_status']];
-    };
-    return that;
-})();
-
-// This must be updated in line with the list in formcontext/choices.py
-// FIXME: eventually, JS config needs to come through from the python back-end
-fv_application_status.mapping = {
-    'update_request' : 'Update Request',
-    'revisions_required' : 'Revisions Required',
-    'pending' : 'Pending',
-    'in progress' : 'In Progress',
-    'completed' : 'Completed',
-    'on hold' : 'On Hold',
-    'ready' : 'Ready',
-    'rejected' : 'Rejected',
-    'accepted' : 'Accepted'
-};
-
-fv_created_date = (function (resultobj) {
-    var that = function(resultobj) {
-        return iso_datetime2date(resultobj['created_date']);
-    };
-    return that;
-})();
-
-
-
-fv_last_manual_update = (function (resultobj) {
-    var that = function(resultobj) {
-        var man_update = resultobj['last_manual_update'];
-        if (man_update === '1970-01-01T00:00:00Z')
-        {
-            return 'Never'
-        } else {
-            return iso_datetime2date_and_time(man_update);
-        }
-    };
-    return that;
-})();
-
-fv_suggested_on = (function (resultobj) {
-    var that = function(resultobj) {
-        if (resultobj && resultobj['suggestion'] && resultobj['suggestion']['suggested_on']) {
-            return iso_datetime2date_and_time(resultobj['suggestion']['suggested_on']);
-        } else {
-            return false;
-        }
-    };
-    return that;
-})();
-
-
-fv_edit_suggestion = (function (resultobj) {
-    var that = function(resultobj) {
-        if (resultobj['suggestion']) {
-            // determine the link name
-            var linkName = "Review application";
-            if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
-                linkName = "View finished application";
-                if (resultobj.admin.related_journal) {
-                    linkName = "View finished update";
-                }
-            } else if (resultobj.admin.current_journal) {
-                linkName = "Review update";
-            }
-
-            var result = '<a class="edit_suggestion_link pull-right" href="';
-            result += suggestion_edit_url;
-            result += resultobj['id'];
-            result += '" target="_blank"';
-            result += '>' + linkName + '</a>';
-            return result;
-        }
-        return false;
-    };
-    return that;
-})();
-
-fv_readonly_journal = (function (resultobj) {
-    var that = function(resultobj) {
-        if (resultobj.admin && resultobj.admin.current_journal) {
-            var result = '<a class="readonly_journal_link pull-right" href="';
-            result += readonly_journal_url;
-            result += resultobj.admin.current_journal;
-            result += '" target="_blank"';
-            result += '>View journal being updated</a>';
-            return result;
-        }
-        return false;
-    };
-    return that;
-})();
 
 
 
@@ -129,16 +34,7 @@ fv_make_continuation = (function (resultobj) {
 })();
 
 
-fv_owner = (function (resultobj) {
-    var that = function(resultobj) {
-        if (resultobj.admin && resultobj.admin.owner !== undefined && resultobj.admin.owner !== "") {
-            var own = resultobj.admin.owner;
-            return '<a href="/account/' + own + '">' + escapeHtml(own) + '</a>'
-        }
-        return false
-    };
-    return that;
-})();
+
 
 fv_user_journals = (function (resultobj) {
     var that = function(resultobj) {
@@ -290,23 +186,4 @@ fv_related_applications = (function (resultobj) {
     return that;
 })();
 
-fv_related_journal = (function (resultobj) {
-    var that = function(resultobj) {
-        var result = "";
-        if (resultobj.admin) {
-            if (resultobj.admin.current_journal) {
-                var fvurl = journals_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.current_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
-                result += "<strong>Update Request For</strong>: <a href='" + fvurl + "'>" + resultobj.admin.current_journal + '</a>';
-            }
-            if (resultobj.admin.related_journal) {
-                 var fvurl = journals_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.related_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
-                if (result != "") {
-                    result += "<br>";
-                }
-                result += "<strong>Produced Journal</strong>: <a href='" + fvurl + "'>" + resultobj.admin.related_journal + '</a>';
-            }
-        }
-        return result;
-    };
-    return that;
-})();
+

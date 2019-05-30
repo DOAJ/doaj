@@ -88,18 +88,6 @@ function publisherUpdateRequestNotFound() {
 // value functions for facet displays
 /////////////////////////////////////////////////////
 
-var authorPaysMapping = {
-    "N" : "No Charges",
-    "Y" : "Has Charges",
-    "CON" : "Conditional charges",
-    "NY" : "No info available"
-};
-function authorPaysMap(value) {
-    if (authorPaysMapping.hasOwnProperty(value)) {
-        return authorPaysMapping[value];
-    }
-    return value;
-}
 
 function publisherStatusMap(value) {
     if (applicationStatusMapping.hasOwnProperty(value)) {
@@ -108,24 +96,6 @@ function publisherStatusMap(value) {
     return value;
 }
 
-// This must be updated in line with the list in formcontext/choices.py
-var applicationStatusMapping = {
-    'update_request' : 'Update Request',
-    'revisions_required' : 'Revisions Required',
-    'pending' : 'Pending',
-    'in progress' : 'In Progress',
-    'completed' : 'Completed',
-    'on hold' : 'On Hold',
-    'ready' : 'Ready',
-    'rejected' : 'Rejected',
-    'accepted' : 'Accepted'
-};
-function adminStatusMap(value) {
-    if (applicationStatusMapping.hasOwnProperty(value)) {
-        return applicationStatusMapping[value];
-    }
-    return value;
-}
 
 //////////////////////////////////////////////////////
 // date formatting function
