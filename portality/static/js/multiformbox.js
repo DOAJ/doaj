@@ -16,7 +16,7 @@ $.extend(true, doaj, {
             this.validators = params.validators !== undefined ? params.validators : {};
             this.submitCfg = params.submit !== undefined ? params.submit : {};
             this.urls = params.urls !== undefined ? params.urls : {};
-            this.edgeSelector = params.edgeSelector;
+            this.edge = params.edge;
 
             this.context = false;
             this.initialContent = {};
@@ -146,7 +146,7 @@ $.extend(true, doaj, {
                 var success = params.success;
                 var error = params.error;
 
-                var query = doaj.adminJournalArticleSearch.activeEdges[this.edgeSelector].currentQuery.objectify({
+                var query = this.edge.currentQuery.objectify({
                     include_paging: false,
                     include_sort: false,
                     include_aggregations: false,
@@ -185,6 +185,8 @@ $.extend(true, doaj, {
                         mfrg = data.affected.journals + " journals";
                     } else if ("articles" in data.affected) {
                         mfrg = data.affected.articles + " articles";
+                    } else if ("applications" in data.affected) {
+                        mfrg = data.affected.applications + " applications";
                     } else {
                         mfrg = "an unknown number of records";
                     }

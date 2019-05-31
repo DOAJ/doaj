@@ -116,68 +116,6 @@ $.extend(true, doaj, {
             var selector = params.selector || "#admin_applications";
             var search_url = current_scheme + "//" + current_domain + doaj.adminApplicationsSearchConfig.searchPath;
 
-            var mfb = doaj.multiFormBox.newMultiFormBox({
-                edgeSelector : selector,
-                selector: "#admin-bulk-box",
-                bindings : {
-                    editor_group : function(context) {
-                        autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
-                    }
-                },
-                validators : {
-                    application_status : function(context) {
-                        var val = context.find("#application_status").val();
-                        if (val === "") {
-                            return {valid: false};
-                        }
-                        return {valid: true};
-                    },
-                    editor_group : function(context) {
-                        var val = context.find("#editor_group").val();
-                        if (val === "") {
-                            return {valid: false};
-                        }
-                        return {valid: true};
-                    },
-                    note : function(context) {
-                        var val = context.find("#note").val();
-                        if (val === "") {
-                            return {valid: false};
-                        }
-                        return {valid: true};
-                    }
-                },
-                submit : {
-                    note : {
-                        data: function(context) {
-                            return {
-                                note: $('#note', context).val()
-                            };
-                        }
-                    },
-                    editor_group : {
-                        data : function(context) {
-                            return {
-                                editor_group: $('#editor_group', context).val()
-                            };
-                        }
-                    },
-                    application_status : {
-                        data : function(context) {
-                            return {
-                                editor_group: $('#application_status', context).val()
-                            };
-                        }
-                    }
-                },
-                urls : {
-                    note : "/admin/applications/bulk/add_note",
-                    editor_group : "/admin/applications/bulk/assign_editor_group",
-                    edit_metadata : "/admin/applications/bulk/edit_metadata"
-                }
-            });
-            doaj.multiFormBox.active = mfb;
-
             var countFormat = edges.numFormat({
                 thousandsSeparator: ","
             });
@@ -601,6 +539,68 @@ $.extend(true, doaj, {
                 components: components
             });
             doaj.adminApplicationsSearch.activeEdges[selector] = e;
+
+            var mfb = doaj.multiFormBox.newMultiFormBox({
+                edge : e,
+                selector: "#admin-bulk-box",
+                bindings : {
+                    editor_group : function(context) {
+                        autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
+                    }
+                },
+                validators : {
+                    application_status : function(context) {
+                        var val = context.find("#application_status").val();
+                        if (val === "") {
+                            return {valid: false};
+                        }
+                        return {valid: true};
+                    },
+                    editor_group : function(context) {
+                        var val = context.find("#editor_group").val();
+                        if (val === "") {
+                            return {valid: false};
+                        }
+                        return {valid: true};
+                    },
+                    note : function(context) {
+                        var val = context.find("#note").val();
+                        if (val === "") {
+                            return {valid: false};
+                        }
+                        return {valid: true};
+                    }
+                },
+                submit : {
+                    note : {
+                        data: function(context) {
+                            return {
+                                note: $('#note', context).val()
+                            };
+                        }
+                    },
+                    editor_group : {
+                        data : function(context) {
+                            return {
+                                editor_group: $('#editor_group', context).val()
+                            };
+                        }
+                    },
+                    application_status : {
+                        data : function(context) {
+                            return {
+                                application_status: $('#application_status', context).val()
+                            };
+                        }
+                    }
+                },
+                urls : {
+                    note : "/admin/applications/bulk/add_note",
+                    editor_group : "/admin/applications/bulk/assign_editor_group",
+                    application_status : "/admin/applications/bulk/change_status"
+                }
+            });
+            doaj.multiFormBox.active = mfb;
 
             $(selector).on("edges:pre-render", function() {
                 doaj.multiFormBox.active.validate();
