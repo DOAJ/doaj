@@ -34,7 +34,7 @@ $.extend(true, doaj, {
                     linkName = "Review update";
                 }
 
-                var result = '<a class="edit_suggestion_link pull-right" href="';
+                var result = '<a class="edit_suggestion_link" href="';
                 result += doaj.adminApplicationsSearchConfig.applicationEditUrl;
                 result += resultobj['id'];
                 result += '" target="_blank"';
@@ -46,8 +46,8 @@ $.extend(true, doaj, {
 
         readOnlyJournal : function (val, resultobj, renderer) {
             if (resultobj.admin && resultobj.admin.current_journal) {
-                var result = '<a class="readonly_journal_link pull-right" href="';
-                result += doaj.adminApplicationsSearchConfig.journalsUrl;
+                var result = '<a style="margin-left: 10px; margin-right: 10px" class="readonly_journal_link" href="';
+                result += doaj.adminApplicationsSearchConfig.readOnlyJournalUrl;
                 result += resultobj.admin.current_journal;
                 result += '" target="_blank"';
                 result += '>View journal being updated</a>';
@@ -67,12 +67,13 @@ $.extend(true, doaj, {
         relatedJournal : function (val, resultobj, renderer) {
             var result = "";
             if (resultobj.admin) {
+                var journals_url = doaj.adminApplicationsSearchConfig.journalsUrl;
                 if (resultobj.admin.current_journal) {
-                    var fvurl = journals_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.current_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
+                    var fvurl = journals_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.current_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
                     result += "<strong>Update Request For</strong>: <a href='" + fvurl + "'>" + resultobj.admin.current_journal + '</a>';
                 }
                 if (resultobj.admin.related_journal) {
-                     var fvurl = journals_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.related_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
+                     var fvurl = journals_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.related_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
                     if (result != "") {
                         result += "<br>";
                     }
@@ -329,24 +330,6 @@ $.extend(true, doaj, {
                     })
                 }),
                 edges.newRefiningANDTermSelector({
-                    id: "author_pays",
-                    category: "facet",
-                    field: "bibjson.author_pays.exact",
-                    display: "Publication charges?",
-                    valueMap : {
-                        "N" : "No",
-                        "Y" : "Yes",
-                        "NY" : "No Information",
-                        "CON" : "Conditional"
-                    },
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
                     id: "journal_license",
                     category: "facet",
                     field: "index.license.exact",
@@ -480,7 +463,8 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre": "<strong>Application by</strong>: ",
-                                    "field": "suggestion.suggester.name"
+                                    "field": "suggestion.suggester.name",
+                                    "post" : " "
                                 },
                                 {
                                     "pre" : "<strong>Applicant email</strong>: ",
@@ -519,6 +503,18 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
+                                    "pre": "<strong>Started publishing Open Access content in</strong>: ",
+                                    "field": "bibjson.oa_start.year"
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": "<strong>Stopped publishing Open Access content in</strong>: ",
+                                    "field": "bibjson.oa_end.year"
+                                }
+                            ],
+                            [
+                                {
                                     "pre": "<strong>Country of publisher</strong>: ",
                                     valueFunction: doaj.fieldRender.countryName
                                 }
@@ -547,10 +543,10 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    valueFunction: doaj.adminApplicationsSearch.editSuggestion
+                                    valueFunction: doaj.adminApplicationsSearch.readOnlyJournal
                                 },
                                 {
-                                    valueFunction: doaj.adminApplicationsSearch.readOnlyJournal
+                                    valueFunction: doaj.adminApplicationsSearch.editSuggestion
                                 }
                             ]
                         ]

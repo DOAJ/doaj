@@ -69,13 +69,14 @@
         adminApplicationsSearchConfig : {
             applicationEditUrl : "{{ url_for('admin.suggestion_page', suggestion_id='') }}",
             journalsUrl : "{{ url_for('admin.journals') }}",
+            readOnlyJournalUrl: "{{ url_for('doaj.journal_readonly', journal_id="") }}",
             searchPath : '/admin_query/suggestion/_search'
         }
     });
     </script>
 
     {% include "_edges_common_js.html" %}
-        <script type="text/javascript" src="/static/js/multiformbox.js"></script>
+    <script type="text/javascript" src="/static/js/multiformbox.js"></script>
     <script type="text/javascript" src="/static/js/edges/admin.applications.edge.js"></script>
 
 {% endblock %}
