@@ -10,7 +10,7 @@ $.extend(true, doaj, {
             }
             else if (resultobj.suggestion) {
                 // this is a suggestion
-                field += "<i class='fa fa-sign-in' style=\"margin-right: 0.5em;\"></i>";
+                field += "<i class='fas fa-sign-in-alt'></i>";
             } else {
                 // this is a journal
                 field += "<i class='fas fa-book-open'></i>";

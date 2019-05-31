@@ -367,6 +367,18 @@ input[type=password]:not(.form-control) {
     text-align: right;
 }
 
+.edges-bs3-results-fields-by-row-row .title {
+    font-size: 120%;
+}
+
+.edges-bs3-results-fields-by-row-row .alt_title {
+    font-style: italic;
+}
+
+#admin_applications .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
 /************************************/
 
 
