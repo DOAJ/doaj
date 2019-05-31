@@ -116,142 +116,6 @@ $.extend(true, doaj, {
             var anySelected = doaj.adminJournalArticleSearch.anySelected(selector);
             var typeSelected = doaj.adminJournalArticleSearch.typeSelected(selector);
 
-            var mfb = doaj.multiFormBox.newMultiFormBox({
-                edgeSelector : selector,
-                selector: "#admin-bulk-box",
-                widths: {
-                    edit_metadata: "600px"
-                },
-                bindings : {
-                    editor_group : function(context) {
-                        autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
-                    },
-                    edit_metadata : function(context) {
-                        autocomplete($('#publisher', context), 'bibjson.publisher');
-                        autocomplete($('#platform', context), 'bibjson.provider');
-                        $('#country', context).select2();
-                        autocomplete($('#owner', context), 'id', 'account');
-                    }
-                },
-                validators : {
-                    withdraw : journalSelected,
-                    reinstate: journalSelected,
-                    delete: anySelected,
-                    note : function(context) {
-                        var valid = journalSelected();
-                        if (!valid.valid) {
-                            return valid;
-                        }
-                        var val = context.find("#note").val();
-                        if (val === "") {
-                            return {valid: false};
-                        }
-                        return {valid: true};
-                    },
-                    editor_group : function(context) {
-                        var valid = journalSelected();
-                        if (!valid.valid) {
-                            return valid;
-                        }
-                        var val = context.find("#editor_group").val();
-                        if (val === "") {
-                            return {valid: false};
-                        }
-                        return {valid: true};
-                    },
-                    edit_metadata : function(context) {
-                        // first check that the journal has been selected
-                        var valid = journalSelected();
-                        if (!valid.valid) {
-                            return valid;
-                        }
-
-                        // now check that at least one field has been completed
-                        var found = false;
-                        var fields = ["#publisher", "#platform", "#country", "#owner", "#contact_name", "#contact_email", "#doaj_seal"];
-                        for (var i = 0; i < fields.length; i++) {
-                            var val = context.find(fields[i]).val();
-                            if (val !== "") {
-                                found = true;
-                            }
-                        }
-                        if (!found) {
-                            return {valid: false};
-                        }
-
-                        // now check for valid field contents
-                        // quick and dirty email check - this will be done properly server-side
-                        var email = context.find("#contact_email").val();
-                        if (email !== "") {
-                            var match = email.match(/.+\@.+\..+/);
-                            if (match === null) {
-                                return {valid: false, error_id: "invalid_email"};
-                            }
-                        }
-
-                        return {valid: true};
-                    }
-                },
-                submit : {
-                    delete : {
-                        sure : 'Are you sure?  This operation cannot be undone!'
-                    },
-                    note : {
-                        data: function(context) {
-                            return {
-                                note: $('#note', context).val()
-                            };
-                        }
-                    },
-                    editor_group : {
-                        data : function(context) {
-                            return {
-                                editor_group: $('#editor_group', context).val()
-                            };
-                        }
-                    },
-                    edit_metadata : {
-                        data : function(context) {
-                            var seal = $('#doaj_seal', context).val();
-                            if (seal === "True") {
-                                seal = true;
-                            } else if (seal === "False") {
-                                seal = false;
-                            }
-                            var data = {
-                                metadata : {
-                                    publisher: $('#publisher', context).select2("val"),
-                                    platform: $('#platform', context).select2("val"),
-                                    country: $('#country', context).select2("val"),
-                                    owner: $('#owner', context).select2("val"),
-                                    contact_name: $('#contact_name', context).val(),
-                                    contact_email: $('#contact_email', context).val(),
-                                    doaj_seal: seal
-                                }
-                            };
-                            return data;
-                        }
-                    }
-                },
-                urls : {
-                    withdraw: "/admin/journals/bulk/withdraw",
-                    reinstate: "/admin/journals/bulk/reinstate",
-                    delete : function() {
-                        var type = typeSelected();
-                        if (type === "journal") {
-                            return "/admin/journals/bulk/delete"
-                        } else if (type === "article") {
-                            return "/admin/articles/bulk/delete"
-                        }
-                        return null;
-                    },
-                    note : "/admin/journals/bulk/add_note",
-                    editor_group : "/admin/journals/bulk/assign_editor_group",
-                    edit_metadata : "/admin/journals/bulk/edit_metadata"
-                }
-            });
-            doaj.multiFormBox.active = mfb;
-
             var countFormat = edges.numFormat({
                 thousandsSeparator: ","
             });
@@ -731,6 +595,142 @@ $.extend(true, doaj, {
                 components: components
             });
             doaj.adminJournalArticleSearch.activeEdges[selector] = e;
+
+            var mfb = doaj.multiFormBox.newMultiFormBox({
+                edge : e,
+                selector: "#admin-bulk-box",
+                widths: {
+                    edit_metadata: "600px"
+                },
+                bindings : {
+                    editor_group : function(context) {
+                        autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
+                    },
+                    edit_metadata : function(context) {
+                        autocomplete($('#publisher', context), 'bibjson.publisher');
+                        autocomplete($('#platform', context), 'bibjson.provider');
+                        $('#country', context).select2();
+                        autocomplete($('#owner', context), 'id', 'account');
+                    }
+                },
+                validators : {
+                    withdraw : journalSelected,
+                    reinstate: journalSelected,
+                    delete: anySelected,
+                    note : function(context) {
+                        var valid = journalSelected();
+                        if (!valid.valid) {
+                            return valid;
+                        }
+                        var val = context.find("#note").val();
+                        if (val === "") {
+                            return {valid: false};
+                        }
+                        return {valid: true};
+                    },
+                    editor_group : function(context) {
+                        var valid = journalSelected();
+                        if (!valid.valid) {
+                            return valid;
+                        }
+                        var val = context.find("#editor_group").val();
+                        if (val === "") {
+                            return {valid: false};
+                        }
+                        return {valid: true};
+                    },
+                    edit_metadata : function(context) {
+                        // first check that the journal has been selected
+                        var valid = journalSelected();
+                        if (!valid.valid) {
+                            return valid;
+                        }
+
+                        // now check that at least one field has been completed
+                        var found = false;
+                        var fields = ["#publisher", "#platform", "#country", "#owner", "#contact_name", "#contact_email", "#doaj_seal"];
+                        for (var i = 0; i < fields.length; i++) {
+                            var val = context.find(fields[i]).val();
+                            if (val !== "") {
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            return {valid: false};
+                        }
+
+                        // now check for valid field contents
+                        // quick and dirty email check - this will be done properly server-side
+                        var email = context.find("#contact_email").val();
+                        if (email !== "") {
+                            var match = email.match(/.+\@.+\..+/);
+                            if (match === null) {
+                                return {valid: false, error_id: "invalid_email"};
+                            }
+                        }
+
+                        return {valid: true};
+                    }
+                },
+                submit : {
+                    delete : {
+                        sure : 'Are you sure?  This operation cannot be undone!'
+                    },
+                    note : {
+                        data: function(context) {
+                            return {
+                                note: $('#note', context).val()
+                            };
+                        }
+                    },
+                    editor_group : {
+                        data : function(context) {
+                            return {
+                                editor_group: $('#editor_group', context).val()
+                            };
+                        }
+                    },
+                    edit_metadata : {
+                        data : function(context) {
+                            var seal = $('#doaj_seal', context).val();
+                            if (seal === "True") {
+                                seal = true;
+                            } else if (seal === "False") {
+                                seal = false;
+                            }
+                            var data = {
+                                metadata : {
+                                    publisher: $('#publisher', context).select2("val"),
+                                    platform: $('#platform', context).select2("val"),
+                                    country: $('#country', context).select2("val"),
+                                    owner: $('#owner', context).select2("val"),
+                                    contact_name: $('#contact_name', context).val(),
+                                    contact_email: $('#contact_email', context).val(),
+                                    doaj_seal: seal
+                                }
+                            };
+                            return data;
+                        }
+                    }
+                },
+                urls : {
+                    withdraw: "/admin/journals/bulk/withdraw",
+                    reinstate: "/admin/journals/bulk/reinstate",
+                    delete : function() {
+                        var type = typeSelected();
+                        if (type === "journal") {
+                            return "/admin/journals/bulk/delete"
+                        } else if (type === "article") {
+                            return "/admin/articles/bulk/delete"
+                        }
+                        return null;
+                    },
+                    note : "/admin/journals/bulk/add_note",
+                    editor_group : "/admin/journals/bulk/assign_editor_group",
+                    edit_metadata : "/admin/journals/bulk/edit_metadata"
+                }
+            });
+            doaj.multiFormBox.active = mfb;
 
             $(selector).on("edges:pre-render", function() {
                 doaj.multiFormBox.active.validate();
