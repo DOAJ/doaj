@@ -71,6 +71,25 @@ var doaj = {
         return String(dom) + " " + doaj.monthmap[monthnum] + " " + String(year);
     },
 
+    humanDateTime : function(datestr) {
+        var date = new Date(datestr);
+        var dom = date.getUTCDate();
+        var monthnum = date.getUTCMonth();
+        var year = date.getUTCFullYear();
+        var hour = date.getUTCHours();
+        var minute = date.getUTCMinutes();
+
+        if (String(hour).length === 1) {
+            hour = "0" + String(hour);
+        }
+
+        if (String(minute).length === 1) {
+            minute = "0" + String(minute);
+        }
+
+        return String(dom) + " " + doaj.monthmap[monthnum] + " " + String(year) + " at " + String(hour) + ":" + String(minute);
+    },
+
     iso_datetime2date : function(isodate_str) {
         /* >>> '2003-04-03T00:00:00Z'.substring(0,10)
          * "2003-04-03"

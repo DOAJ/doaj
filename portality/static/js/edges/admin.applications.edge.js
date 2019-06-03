@@ -305,7 +305,7 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
-                        searchPlaceholder: "Search All Journals and Articles"
+                        searchPlaceholder: "Search All Applications"
                     })
                 }),
 

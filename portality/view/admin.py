@@ -405,7 +405,7 @@ def editor_group_search():
 @login_required
 @ssl_required
 def background_jobs_search():
-    return render_template("admin/background_jobs_search.html", admin_page=True, search_page=True, facetviews=['admin.background_jobs.facetview'])
+    return render_template("admin/background_jobs_search.html", admin_page=True)
 
 @blueprint.route("/editor_group", methods=["GET", "POST"])
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
