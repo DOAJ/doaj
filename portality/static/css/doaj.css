@@ -316,6 +316,7 @@ td {
  * Forms styles
  */
 
+
 /* This is almost the form-control class, and saves us having to migrate all forms to bootstrap3 just for the
 display styles */
 input[type=text]:not(.form-control),
@@ -343,6 +344,16 @@ input[type=password]:not(.form-control) {
 
 .select2-container-multi {
     margin-bottom: 9px;
+}
+
+.select2-container-multi .select2-choices {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.select2-container-multi .select2-choices .select2-search-field {
+    margin-top: 3px;
+    margin-left: 6px;
 }
 
 .input-large {
