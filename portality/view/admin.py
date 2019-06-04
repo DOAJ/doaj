@@ -399,7 +399,7 @@ def admin_site_search():
 @login_required
 @ssl_required
 def editor_group_search():
-    return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['admin.editorgroups.facetview'])
+    return render_template("admin/editor_group_search.html", admin_page=True)
 
 @blueprint.route("/background_jobs")
 @login_required
