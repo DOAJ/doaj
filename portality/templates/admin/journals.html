@@ -1,12 +1,29 @@
 {% extends "admin/admin_base.html" %}
 
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
 {% block admin_content %}
-<div class="facetview journals"></div>
+
+    <div id="admin_journals"></div>
+
 {% endblock %}
 
 {% block extra_js_bottom %}
-<script type="text/javascript">
-    var journal_edit_url = "{{ url_for('admin.journal_page', journal_id="") }}";
-    var applications_fv_url = "{{ url_for('admin.suggestions') }}";
-</script>
+
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        adminJournalsSearchConfig : {
+            journalEditUrl : "{{ url_for('admin.journal_page', journal_id='') }}",
+            applicationsUrl : "{{ url_for('admin.journals') }}",
+            searchPath : '/admin_query/journal/_search'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/admin.journals.edge.js"></script>
+
 {% endblock %}
+

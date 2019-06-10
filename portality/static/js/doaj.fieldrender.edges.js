@@ -159,6 +159,51 @@ $.extend(true, doaj, {
             }
             return false
         },
+
+        inDoaj : function(val, resultobj, renderer) {
+            var mapping = {
+                "false": {"text": "No", "class": "red"},
+                "true": {"text": "Yes", "class": "green"}
+            };
+            var field = "";
+            if (resultobj.admin && resultobj.admin.in_doaj !== undefined) {
+                if(mapping[resultobj['admin']['in_doaj']]) {
+                    var result = '<span class=' + mapping[resultobj['admin']['in_doaj']]['class'] + '>';
+                    result += mapping[resultobj['admin']['in_doaj']]['text'];
+                    result += '</span>';
+                    field += result;
+                } else {
+                    field += resultobj['admin']['in_doaj'];
+                }
+                if (field === "") {
+                    return false
+                }
+                return field
+            }
+            return false;
+        },
+
+        owner : function (val, resultobj, renderer) {
+            if (resultobj.admin && resultobj.admin.owner !== undefined && resultobj.admin.owner !== "") {
+                var own = resultobj.admin.owner;
+                return '<a href="/account/' + own + '">' + edges.escapeHtml(own) + '</a>'
+            }
+            return false
+        },
+
+        createdDateWithTime : function (val, resultobj, renderer) {
+            return doaj.iso_datetime2date_and_time(resultobj['created_date']);
+        },
+
+        lastManualUpdate : function (val, resultobj, renderer) {
+            var man_update = resultobj['last_manual_update'];
+            if (man_update === '1970-01-01T00:00:00Z')
+            {
+                return 'Never'
+            } else {
+                return doaj.iso_datetime2date_and_time(man_update);
+            }
+        }
     }
 
 });

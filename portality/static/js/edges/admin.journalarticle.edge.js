@@ -43,33 +43,6 @@ $.extend(true, doaj, {
             }
         },
 
-        inDoaj : function(val, resultobj, renderer) {
-            var mapping = {
-                "false": {"text": "No", "class": "red"},
-                "true": {"text": "Yes", "class": "green"}
-            };
-            var field = "";
-            if (resultobj.admin && resultobj.admin.in_doaj !== undefined) {
-                if(mapping[resultobj['admin']['in_doaj']]) {
-                    var result = '<span class=' + mapping[resultobj['admin']['in_doaj']]['class'] + '>';
-                    result += mapping[resultobj['admin']['in_doaj']]['text'];
-                    result += '</span>';
-                    field += result;
-                } else {
-                    field += resultobj['admin']['in_doaj'];
-                }
-                if (field === "") {
-                    return false
-                }
-                return field
-            }
-            return false;
-        },
-
-        createdDateWithTime : function (val, resultobj, renderer) {
-            return doaj.iso_datetime2date_and_time(resultobj['created_date']);
-        },
-
         lastUpdated : function (val, resultobj, renderer) {
             return doaj.iso_datetime2date_and_time(resultobj['last_updated']);
         },
@@ -367,7 +340,7 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre" : "<strong>In DOAJ?</strong>: ",
-                                    "valueFunction" : doaj.adminJournalArticleSearch.inDoaj
+                                    "valueFunction" : doaj.fieldRender.inDoaj
                                 }
                             ],
                             [
@@ -488,7 +461,7 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre": "<strong>Date added to DOAJ</strong>: ",
-                                    "valueFunction": doaj.adminJournalArticleSearch.createdDateWithTime
+                                    "valueFunction": doaj.fieldRender.createdDateWithTime
                                 }
                             ],
                             [
