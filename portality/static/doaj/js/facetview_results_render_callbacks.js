@@ -2,61 +2,6 @@
 // the function, a bit cleaner
 
 
-
-
-
-
-fv_make_continuation = (function (resultobj) {
-    var that = function(resultobj) {
-        if (!resultobj.suggestion && !resultobj.bibjson.journal) {
-            // if it's not a suggestion or an article .. (it's a
-            // journal!)
-            // we really need to expose _type ...
-            var result = '<a class="edit_journal_link pull-right" href="';
-            result += journal_edit_url;
-            result += resultobj['id'];
-            result += '/continue?type=is_replaced_by" target="_blank"';
-            result += '>Make a succeeding continuation</a>';
-
-            result += "<span class='pull-right'>&nbsp;|&nbsp;</span>";
-
-            result += '<a class="edit_journal_link pull-right" href="';
-            result += journal_edit_url;
-            result += resultobj['id'];
-            result += '/continue?type=replaces" target="_blank"';
-            result += '>Make a preceding continuation</a>';
-
-            return result;
-        }
-        return false;
-    };
-    return that;
-})();
-
-
-
-
-fv_user_journals = (function (resultobj) {
-    var that = function(resultobj) {
-        var q = {
-            "query":{
-                "filtered":{
-                    "filter":{
-                        "bool":{
-                            "must":[{"term":{"admin.owner.exact":resultobj.id}}]
-                        }
-                    },
-                    "query":{"match_all":{}}
-                }
-            }
-        };
-        // var q = {"query" : {"bool" : {"must" : [{"term" : {"admin.owner.exact" : resultobj.id}}]}}};
-        return '<a class="pull-right" style="margin-left: 10px; margin-right: 10px" href="/admin/journals?source=' + encodeURIComponent(JSON.stringify(q)) + '">View Journals</a>'
-    };
-    return that;
-})();
-
-
 fv_edit_update_request = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj['suggestion']) {
