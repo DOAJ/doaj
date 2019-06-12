@@ -1,5 +1,6 @@
 import time
-
+import json
+from flask import url_for
 from portality import constants
 from doajtest.fixtures import ApplicationFixtureFactory
 from doajtest.helpers import DoajTestCase
@@ -142,5 +143,62 @@ class TestCrudApplication(DoajTestCase):
 
         with self.assertRaises(Api400Error):
             ApplicationsBulkApi.delete(ids, account)
+
+    def test_05_test_via_endpoint(self):
+        """ Use a request context to test the API via the route """
+
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
+        dataset = [data] * 10
+
+        # create the main account we're going to work as
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        account.generate_api_key()
+        account.add_role('publisher')
+        account.add_role('api')
+        account.save(blocking=True)
+
+        # Add another user who doesn't own these articles
+        somebody_else = models.Account()
+        somebody_else.set_id("somebody_else")
+        somebody_else.set_name("Somebody Else")
+        somebody_else.set_email("somebodyelse@test.com")
+        somebody_else.generate_api_key()
+        somebody_else.add_role('publisher')
+        somebody_else.add_role('api')
+        somebody_else.save(blocking=True)
+
+        assert account.api_key != somebody_else.api_key
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                # Create some new applications
+                resp = t_client.post(url_for('api_v1.bulk_application_create', api_key=account.api_key),
+                                     data=json.dumps(dataset))
+                assert resp.status_code == 201
+                reply = json.loads(resp.data)
+                assert len(reply) == len(dataset)
+                first_apl = reply.pop()
+                assert first_apl['status'] == 'created'
+                # Check we actually created new records
+                time.sleep(1)
+                assert len(models.Suggestion.all()) == len(dataset)
+
+                # Bulk delete
+                all_but_one = [new_art['id'] for new_art in reply]
+                resp = t_client.delete(url_for('api_v1.bulk_application_delete', api_key=account.api_key),
+                                       data=json.dumps(all_but_one))
+                assert resp.status_code == 204
+                time.sleep(1)
+                # we should have deleted all but one of the applications.
+                assert len(models.Suggestion.all()) == 1
+                # And our other user isn't allowed to delete the remaining one.
+                resp = t_client.delete(url_for('api_v1.bulk_application_delete', api_key=somebody_else.api_key),
+                                       data=json.dumps([first_apl['id']]))
+                assert resp.status_code == 400
 
 

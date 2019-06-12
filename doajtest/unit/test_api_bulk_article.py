@@ -254,7 +254,7 @@ class TestCrudArticle(DoajTestCase):
                                      data=json.dumps(dataset))
                 assert resp.status_code == 400
 
-                # Bur the correct owner can create articles
+                # But the correct owner can create articles
                 resp = t_client.post(url_for('api_v1.bulk_article_create', api_key=article_owner.api_key),
                                      data=json.dumps(dataset))
                 assert resp.status_code == 201
