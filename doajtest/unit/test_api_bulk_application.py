@@ -38,8 +38,8 @@ class TestCrudApplication(DoajTestCase):
         time.sleep(2)
 
         # check that each id was actually created
-        for id in ids:
-            s = models.Suggestion.pull(id)
+        for _id in ids:
+            s = models.Suggestion.pull(_id)
             assert s is not None
 
     def test_02_create_applications_fail(self):
@@ -51,8 +51,8 @@ class TestCrudApplication(DoajTestCase):
             ids = ApplicationsBulkApi.create(dataset, None)
 
         # check that the index is empty, as none of them should have been made
-        all = [x for x in models.Suggestion.iterall()]
-        assert len(all) == 0
+        _all = [x for x in models.Suggestion.iterall()]
+        assert len(_all) == 0
 
         # if the data is bust
         with self.assertRaises(Api400Error):
@@ -60,12 +60,12 @@ class TestCrudApplication(DoajTestCase):
             account.set_id("test")
             account.set_name("Tester")
             account.set_email("test@test.com")
-            dataset = dataset[:5] + [{"some" : {"junk" : "data"}}] + dataset[5:]
+            dataset = dataset[:5] + [{"some": {"junk": "data"}}] + dataset[5:]
             ids = ApplicationsBulkApi.create(dataset, account)
 
         # check that the index is empty, as none of them should have been made
-        all = [x for x in models.Suggestion.iterall()]
-        assert len(all) == 0
+        _all = [x for x in models.Suggestion.iterall()]
+        assert len(_all) == 0
 
     def test_03_delete_application_success(self):
         # set up all the bits we need
@@ -93,11 +93,11 @@ class TestCrudApplication(DoajTestCase):
         # let the index catch up
         time.sleep(2)
 
-        for id in dels:
-            ap = models.Suggestion.pull(id)
+        for _id in dels:
+            ap = models.Suggestion.pull(_id)
             assert ap is None
-        for id in ids[5:]:
-            ap = models.Suggestion.pull(id)
+        for _id in ids[5:]:
+            ap = models.Suggestion.pull(_id)
             assert ap is not None
 
     def test_04_delete_applications_fail(self):
@@ -200,5 +200,3 @@ class TestCrudApplication(DoajTestCase):
                 resp = t_client.delete(url_for('api_v1.bulk_application_delete', api_key=somebody_else.api_key),
                                        data=json.dumps([first_apl['id']]))
                 assert resp.status_code == 400
-
-

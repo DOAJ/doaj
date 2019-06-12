@@ -32,12 +32,12 @@ class TestCrudArticle(DoajTestCase):
             # and try with multiple articles
             doi_ix = find_dict_in_list(data['bibjson']['identifier'], 'type', 'doi')
             if doi_ix == -1:
-                data['bibjson']['identifier'].append({"type" : "doi"})
+                data['bibjson']['identifier'].append({"type": "doi"})
             data['bibjson']['identifier'][doi_ix]['id'] = '10.0000/SOME.IDENTIFIER.{0}'.format(i)
             
             fulltext_url_ix = find_dict_in_list(data['bibjson']['link'], 'type', 'fulltext')
             if fulltext_url_ix == -1:
-                data['bibjson']['link'].append({"type" : "fulltext"})
+                data['bibjson']['link'].append({"type": "fulltext"})
             data['bibjson']['link'][fulltext_url_ix]['url'] = 'http://www.example.com/article_{0}'.format(i)
 
             dataset.append(deepcopy(data))
@@ -114,12 +114,12 @@ class TestCrudArticle(DoajTestCase):
             journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
             journal.set_owner(account.id)
             journal.save(blocking=True)
-            dataset = dataset[:5] + [{"some" : {"junk" : "data"}}] + dataset[5:]
+            dataset = dataset[:5] + [{"some": {"junk": "data"}}] + dataset[5:]
             ids = ArticlesBulkApi.create(dataset, account)
 
         # check that the index is empty, as none of them should have been made
-        all = [x for x in models.Article.iterall()]
-        assert len(all) == 0
+        _all = [x for x in models.Article.iterall()]
+        assert len(_all) == 0
 
     def test_04_delete_article_success(self):
         # set up all the bits we need
@@ -151,11 +151,11 @@ class TestCrudArticle(DoajTestCase):
         # let the index catch up
         time.sleep(0.6)
 
-        for id in dels:
-            ap = models.Article.pull(id)
+        for _id in dels:
+            ap = models.Article.pull(_id)
             assert ap is None
-        for id in ids[5:]:
-            ap = models.Article.pull(id)
+        for _id in ids[5:]:
+            ap = models.Article.pull(_id)
             assert ap is not None
 
     def test_05_delete_articles_fail(self):
@@ -278,4 +278,3 @@ class TestCrudArticle(DoajTestCase):
                 resp = t_client.delete(url_for('api_v1.bulk_article_delete', api_key=somebody_else.api_key),
                                        data=json.dumps([first_art['id']]))
                 assert resp.status_code == 400
-
