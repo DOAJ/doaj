@@ -90,6 +90,10 @@ class FormHelperBS3(object):
         q_num = kwargs.pop("q_num", None)
         maximise_width = kwargs.pop("maximise_width", False)
         clazz = kwargs.get("class", "")
+        label_width = kwargs.get("label_width", 3)
+        field_width = 12 - label_width
+        field_width = str(kwargs.get("field_width", field_width))
+        label_width = str(label_width)
 
         if field.type == 'CSRFTokenField' and not field.value:
             return ""
@@ -100,7 +104,7 @@ class FormHelperBS3(object):
         if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField']:
             if q_num is not None:
                 frag += '<a class="animated" name="' + q_num + '"></a>'
-            frag += '<label class="control-label col-xs-3" for="' + field.short_name + '">'
+            frag += '<label class="control-label col-xs-' + label_width + '" for="' + field.short_name + '">'
             if q_num is not None:
                 frag += '<a class="animated orange" href="#' + field.short_name + '-container" title="Link to this question" tabindex="-1">' + q_num + ')</a>&nbsp;'
             frag += field.label.text
@@ -119,7 +123,7 @@ class FormHelperBS3(object):
         if is_checkbox:
             extra_class += " checkboxes"
 
-        frag += '<div class="col-xs-9' + extra_class + '">'
+        frag += '<div class="col-xs-' + field_width + ' ' + extra_class + '">'
         if field.type == "RadioField":
             for subfield in field:
                 frag += self._render_radio(subfield, **kwargs)
@@ -152,8 +156,10 @@ class FormHelperBS3(object):
 
     def _render_radio(self, field, **kwargs):
         extra_input_fields = kwargs.pop("extra_input_fields", {})
+        # label_width = str(kwargs.get("label_width", 3))
+        label_width = "12"
 
-        frag = '<label class="radio control-label col-xs-3" for="' + field.short_name + '">'
+        frag = '<label class="radio control-label col-xs-' + label_width + '" for="' + field.short_name + '">'
         frag += field(**kwargs)
         frag += '<span class="label-text">' + field.label.text + '</span>'
 
@@ -166,10 +172,11 @@ class FormHelperBS3(object):
 
     def _render_checkbox(self, field, **kwargs):
         extra_input_fields = kwargs.pop("extra_input_fields", {})
+        # label_width = str(kwargs.get("label_width", 3))
 
         frag = "<li>"
         frag += field(**kwargs)
-        frag += '<label class="control-label col-xs-3" for="' + field.short_name + '">' + field.label.text + '</label>'
+        frag += '<label class="control-label" for="' + field.short_name + '">' + field.label.text + '</label>'
 
         if field.label.text in extra_input_fields.keys():
             eif = extra_input_fields[field.label.text]

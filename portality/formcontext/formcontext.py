@@ -204,8 +204,8 @@ class FormContext(object):
     def render_template(self, **kwargs):
         return render_template(self.template, form_context=self, **kwargs)
 
-    def render_field_group(self, field_group_name=None):
-        return self.renderer.render_field_group(self, field_group_name)
+    def render_field_group(self, field_group_name=None, **kwargs):
+        return self.renderer.render_field_group(self, field_group_name, **kwargs)
 
     def check_field_group_exists(self, field_group_name):
         return self.renderer.check_field_group_exists(field_group_name)
