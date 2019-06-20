@@ -25,14 +25,25 @@ MODE = "finalise"
 #noaction = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/noaction-2019-04-04.csv"
 
 ## 05-03
-DUPLICATE_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/duplicate_articles_global_2019-05-03.csv"
-NOIDS_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/noids_2019-05-03.csv"
-LOG =  "/home/richard/tmp/doaj/article_duplicates_2019-05-03/log-2019-05-21.txt"
-OUT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/actions-2019-05-21.csv"
-NOACTION = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/noaction-2019-05-21.csv"
-NOCLEANUP = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/nocleanup-2019-05-21.csv"
-ACCOUNT_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/account-report-2019-05-21.csv"
-ARTICLES_DIR = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/delete-summaries-2019-05-21/"
+#DUPLICATE_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/duplicate_articles_global_2019-05-03.csv"
+#NOIDS_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/noids_2019-05-03.csv"
+#LOG =  "/home/richard/tmp/doaj/article_duplicates_2019-05-03/log-2019-05-21.txt"
+#OUT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/actions-2019-05-21.csv"
+#NOACTION = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/noaction-2019-05-21.csv"
+#NOCLEANUP = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/nocleanup-2019-05-21.csv"
+#ACCOUNT_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/account-report-2019-05-21.csv"
+#ARTICLES_DIR = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/delete-summaries-2019-05-21/"
+
+## 06-19
+DUPLICATE_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/duplicate_articles_global_2019-06-19.csv"
+NOIDS_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/noids_2019-06-19.csv"
+LOG =  "/home/richard/tmp/doaj/article_duplicates_2019-06-19/log-2019-06-20.txt"
+OUT = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/actions-2019-06-20.csv"
+NOACTION = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/noaction-2019-06-20.csv"
+NOCLEANUP = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/nocleanup-2019-06-20.csv"
+ACCOUNT_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/account-report-2019-06-20.csv"
+ARTICLES_DIR = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/delete-summaries-2019-06-20/"
+FINAL_ACTIONS = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/final-actions-2019-06-20.csv"
 
 ## testing
 #duplicate_report = "/home/richard/tmp/doaj/article_duplicates_test_sheet.csv"
@@ -149,7 +160,8 @@ class ActionRegister(object):
             act[action] = [reason]
             return
 
-        act[action].append(reason)
+        if reason not in act[action]:
+            act[action].append(reason)
 
     def has_actions(self):
         return len(self._actions) > 0
@@ -484,22 +496,29 @@ def _read_match_set(reader, next_row):
     assert n_matches + 1 == len(match_set.matches)
 
 
-def finalise(source, report_out, articles_dir):
+def finalise(source, report_out, articles_dir, final_actions):
     if not os.path.exists(articles_dir):
         os.makedirs(articles_dir)
+
+    actions = ActionRegister()
     with codecs.open(source, "rb", "utf-8") as s:
         reader = clcsv.UnicodeReader(s)
         headers = reader.next()
 
         accounts = {}
         for row in reader:
+            article_id = row[0]
             article_doi = row[2]
             article_ft = row[3]
             article_owner = row[4]
             match_type = row[8]
+            match_id = row[9]
             match_doi = row[11]
             match_ft = row[12]
             match_owner = row[13]
+
+            actions.set_action(article_id, "delete", "could not be automatically cleaned up")
+            actions.set_action(match_id, "delete", "could not be automatically cleaned up")
 
             if article_owner not in accounts:
                 accounts[article_owner] = []
@@ -522,6 +541,15 @@ def finalise(source, report_out, articles_dir):
             else:
                 reason = "Fulltext URL and DOI both appear in multiple articles"
             accounts[article_owner].append([match_doi, match_ft, reason])
+
+    final_instructions = {}
+    actions.export_to(final_instructions)
+
+    with codecs.open(final_actions, "wb", "utf-8") as fa:
+        fawriter = clcsv.UnicodeWriter(fa)
+        fawriter.writerow(["id", "action", "reason"])
+        for k, v in final_instructions.iteritems():
+            fawriter.writerow([k, v["action"], v["reason"]])
 
     with codecs.open(report_out, "wb", "utf-8") as ro:
         writer = clcsv.UnicodeWriter(ro)
@@ -609,4 +637,4 @@ if __name__ == "__main__":
     elif MODE == "compare":
         compare_outputs(DUPLICATE_REPORT)
     elif MODE == "finalise":
-        finalise(NOCLEANUP, ACCOUNT_REPORT, ARTICLES_DIR)
+        finalise(NOCLEANUP, ACCOUNT_REPORT, ARTICLES_DIR, FINAL_ACTIONS)
