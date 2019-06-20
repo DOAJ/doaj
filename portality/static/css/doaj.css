@@ -127,6 +127,10 @@ td {
     color: #F68B1F;
 }
 
+.big.box {
+    text-align: center;
+}
+
 /************************************/
 
 /****************************************
@@ -356,12 +360,72 @@ input[type=password]:not(.form-control) {
     margin-left: 6px;
 }
 
+.input-tiny {
+    width: 60px;
+}
+
 .input-large {
     width: 210px;
 }
 
 .input-xlarge {
     width: 270px;
+}
+
+.centre-text-container {
+    text-align: center;
+}
+
+.form-panel {
+    margin-left: -15px;
+    margin-right: -15px;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.form-panel-left {
+    margin-left: -15px;
+    margin-right: 0;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.form-panel-right {
+    margin-left: 0;
+    margin-right: -15px;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+#subject_tree .jstree-node {
+    overflow-x: auto;
+}
+
+.application_journal_form label {
+    font-weight: normal;
+}
+
+.application_journal_form label.radio {
+    text-align: left;
+}
+
+.application_journal_form .control-label {
+    padding-top: 0px;
+}
+
+.checkboxes ul {
+    list-style: none outside none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.checkboxes ul.errors {
+    list-style: disc;
+    margin-left: 25px;
+}
+
+.checkboxes label {
+    display: inline;
 }
 
 /************************************/
@@ -477,10 +541,6 @@ select {
 
 a.readonly_journal_link {
     margin-right: 10px;
-}
-
-.input-tiny {
-    width: 20px;
 }
 
 .box .long-label {

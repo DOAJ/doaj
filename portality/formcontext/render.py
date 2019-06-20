@@ -19,7 +19,7 @@ class Renderer(object):
         else:
             return True
 
-    def render_field_group(self, form_context, field_group_name=None):
+    def render_field_group(self, form_context, field_group_name=None, group_cfg=None):
         if field_group_name is None:
             return self._render_all(form_context)
 
@@ -44,6 +44,9 @@ class Renderer(object):
             if self._highlight_completable_fields is True:
                 valid = field.validate(form_context.form)
                 config["complete_me"] = not valid
+
+            if group_cfg is not None:
+                config.update(group_cfg)
 
             frag += self.fh.render_field(field, **config)
 
@@ -159,7 +162,7 @@ class BasicJournalInformationRenderer(Renderer):
 
             "editorial_process" : [
                 {"editorial_board_url" : {"class": "input-xlarge"}},
-                {"review_process" : {}},
+                {"review_process" : {"class" : "form-control input-xlarge"}},
                 {"review_process_url" : {"class": "input-xlarge"}},
                 {"aims_scope_url" : {"class": "input-xlarge"}},
                 {"instructions_authors_url" : {"class": "input-xlarge"}},
@@ -475,7 +478,7 @@ class JournalRenderer(BasicJournalInformationRenderer):
             {"oa_end_year": {"class": "input-mini"}},
         ]
 
-    def render_field_group(self, form_context, field_group_name=None):
+    def render_field_group(self, form_context, field_group_name=None, **kwargs):
         if field_group_name == "old_journal_fields":
             display_old_journal_fields = False
             for old_field_def in self.FIELD_GROUPS["old_journal_fields"]:
@@ -489,7 +492,7 @@ class JournalRenderer(BasicJournalInformationRenderer):
                 return ""
             # otherwise let it fall through and render the old journal fields
 
-        return super(JournalRenderer, self).render_field_group(form_context, field_group_name)
+        return super(JournalRenderer, self).render_field_group(form_context, field_group_name, **kwargs)
 
 
 class ManEdJournalReviewRenderer(JournalRenderer):

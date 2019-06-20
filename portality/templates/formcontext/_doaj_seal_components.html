@@ -1,32 +1,29 @@
-<div class="col-md-6 with-borders form-section">
-    <h3>
-        <a name="seal"></a>
-        The qualifiers for the DOAJ Seal
-    </h3>
-    <p>DOAJ promotes best practice in Open Access publishing. To highlight journals that adhere to best practices, we have created the 'DOAJ Seal for
-    Open Access Journals'.</p>
+<h3>
+    <a name="seal"></a>
+    The qualifiers for the DOAJ Seal
+</h3>
+<p>DOAJ promotes best practice in Open Access publishing. To highlight journals that adhere to best practices, we have created the 'DOAJ Seal for
+Open Access Journals'.</p>
 
-    <p>The qualifiers for the Seal highlight features related to accessibility, openness, discoverability, reuse and author rights
-    and have nothing to do with <strong>the scholarly quality of the papers published</strong>.</p>
+<p>The qualifiers for the Seal highlight features related to accessibility, openness, discoverability, reuse and author rights
+and have nothing to do with <strong>the scholarly quality of the papers published</strong>.</p>
 
-    <p>To qualify for the Seal the journal must:</p>
-    <ol>
-        <li>have <a class="animated" href="#digital_archiving_policy-container">an archival arrangement in place</a> with an external party (Question 25). 'No policy in place' does not qualify for the Seal.</li>
-        <li>provide <a class="animated" href="#article_identifiers-container">permanent identifiers</a> in the papers published (Question 28). 'None' does not qualify for the Seal.</li>
-        <li>provide <a class="animated" href="#metadata_provision-container">article level metadata</a> to DOAJ (Question 29). 'No' or failure to provide metadata within 3 months do not qualify for the Seal.</li>
-        <li>embed <a class="animated" href="#license_embedded-container">machine-readable CC licensing information</a> in article level metadata (Question 45). 'No' does not qualify for the Seal.</li>
-        <li>allow <a class="animated" href="#license-container">reuse and remixing of content</a> in accordance with a CC BY, CC BY-SA or CC BY-NC license (Question 47). If CC BY-ND, CC BY-NC-ND, 'No' or 'Other' is selected the journal will not qualify for the Seal.</li>
-        <li>have <a class="animated" href="#deposit_policy-container">a deposit policy registered</a> in a deposit policy directory. (Question 51) 'No' does not qualify for the Seal.</li>
-        <li>allow <a class="animated" href="#copyright-container">the author to hold the copyright without restrictions</a>. (Question 52) 'No' does not qualify for the Seal.</li>
-    </ol>
+<p>To qualify for the Seal the journal must:</p>
+<ol>
+    <li>have <a class="animated" href="#digital_archiving_policy-container">an archival arrangement in place</a> with an external party (Question 25). 'No policy in place' does not qualify for the Seal.</li>
+    <li>provide <a class="animated" href="#article_identifiers-container">permanent identifiers</a> in the papers published (Question 28). 'None' does not qualify for the Seal.</li>
+    <li>provide <a class="animated" href="#metadata_provision-container">article level metadata</a> to DOAJ (Question 29). 'No' or failure to provide metadata within 3 months do not qualify for the Seal.</li>
+    <li>embed <a class="animated" href="#license_embedded-container">machine-readable CC licensing information</a> in article level metadata (Question 45). 'No' does not qualify for the Seal.</li>
+    <li>allow <a class="animated" href="#license-container">reuse and remixing of content</a> in accordance with a CC BY, CC BY-SA or CC BY-NC license (Question 47). If CC BY-ND, CC BY-NC-ND, 'No' or 'Other' is selected the journal will not qualify for the Seal.</li>
+    <li>have <a class="animated" href="#deposit_policy-container">a deposit policy registered</a> in a deposit policy directory. (Question 51) 'No' does not qualify for the Seal.</li>
+    <li>allow <a class="animated" href="#copyright-container">the author to hold the copyright without restrictions</a>. (Question 52) 'No' does not qualify for the Seal.</li>
+</ol>
 
-    {# If the form contains the seal checkbox show that, else show informative text #}
-    {%  if form_context.check_field_group_exists("seal") %}
-        {% autoescape off %}
-        {{ form_context.render_field_group("seal") }}
-        {% endautoescape %}
-    {%  else %}
-        <p>One cannot apply for the Seal. The Seal is awarded based on the information provided in the application. If you have any questions about any of the qualifiers, contact us.</p>
-    {% endif %}
-
-</div>
+{# If the form contains the seal checkbox show that, else show informative text #}
+{%  if form_context.check_field_group_exists("seal") %}
+    {% autoescape off %}
+    {{ form_context.render_field_group("seal", group_cfg={"label_width" : 4}) }}
+    {% endautoescape %}
+{%  else %}
+    <p>One cannot apply for the Seal. The Seal is awarded based on the information provided in the application. If you have any questions about any of the qualifiers, contact us.</p>
+{% endif %}
