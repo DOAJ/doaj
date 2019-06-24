@@ -590,7 +590,9 @@ main_license_options = []
 for lic_type, lic_info in license_dict.iteritems():
     main_license_options.append((lic_type, lic_info['form_label']))
 
+
 def language_for(rep):
+    """ Get the entire language entry for a given representation """
     r = rep.lower().strip()
     for l in languages_iso639_2:
         for variant in l:
@@ -598,14 +600,18 @@ def language_for(rep):
                 return l
     return None
 
+
 def name_for_lang(rep):
+    """ Get the language name from a representation of the language"""
     lang = language_for(rep)
     if lang is not None:
         return lang[3]
     else:
         return rep
 
+
 def get_country_code(current_country, fail_if_not_found=False):
+    """ Get the two-character country code for a given country name """
     new_country = current_country
     if new_country:
         if new_country in country_options_two_char_code_index:
@@ -625,13 +631,19 @@ def get_country_code(current_country, fail_if_not_found=False):
         return None
     return new_country
 
+
 def get_country_name(code):
+    """ Get the name of a country from its two-character code """
     return countries_dict.get(code, {}).get('name', code)  # return what was passed in if not found
 
+
 def get_currency_name(code):
+    """ get the name of a currency from its code """
     return currencies_dict.get(code, code)  # return what was passed in if not found
 
+
 def get_currency_code(name):
+    """ Retrieve a currency code by the currency name """
     if name in currency_name_map.keys():
         return name
     for k, v in currency_name_map.iteritems():
