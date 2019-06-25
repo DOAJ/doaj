@@ -506,7 +506,7 @@ class ManEdJournalReviewRenderer(JournalRenderer):
 
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
-            {"editor" : {"class" : "input-large"}},
+            {"editor" : {"class" : "form-control input-large"}},
         ]
         self.FIELD_GROUPS["notes"] = [
             {

@@ -4,7 +4,7 @@ function toggle_optional_field(field_name, optional_field_selectors, values_to_s
 
     // hide all optional fields first
     for (var i = 0; i < optional_field_selectors.length; i++) {
-        $(optional_field_selectors[i]).parents('.control-group').hide();
+        $(optional_field_selectors[i]).parents('.form-group').hide();
     }
 
     // show them again if the correct radio button is chosen
@@ -15,11 +15,11 @@ function toggle_optional_field(field_name, optional_field_selectors, values_to_s
     $(main_field_selector).change( function () {
         if ($.inArray(this.value, values_to_show_for) >= 0) {
             for (var i = 0; i < optional_field_selectors.length; i++) {
-                $(optional_field_selectors[i]).parents('.control-group').show();
+                $(optional_field_selectors[i]).parents('.form-group').show();
             }
         } else {
             for (var i = 0; i < optional_field_selectors.length; i++) {
-                $(optional_field_selectors[i]).parents('.control-group').hide();
+                $(optional_field_selectors[i]).parents('.form-group').hide();
                 $(optional_field_selectors[i]).val(undefined);
             }
         }
@@ -33,7 +33,7 @@ function __init_optional_field(elem, optional_field_selectors, values_to_show_fo
     // For radio buttons, the checked attribute must be present. For other fields, the just the value must be correct
     if ((main_field.is(':checked')  || main_field.is('select') ) && $.inArray(main_field.val(), values_to_show_for) >= 0) {
         for (var i = 0; i < optional_field_selectors.length; i++) {
-            $(optional_field_selectors[i]).parents('.control-group').show();
+            $(optional_field_selectors[i]).parents('.form-group').show();
         }
     }
 }

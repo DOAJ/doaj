@@ -230,7 +230,13 @@ function setup_subject_tree() {
         });
 
     
-    $('#subject_tree_container').prepend('<div class="control-group" id="subject_tree_search-container"><label class="control-label" for="subject_tree_search">Search through the subjects</label><div class="controls"><input class="input-large" id="subject_tree_search" type="text" placeholder="start typing..."><p class="help-block">Selecting a subject will <strong>not automatically select its sub-categories</strong>.</p></div></div>')
+    $('#subject_tree_container').prepend('<div class="form-group" id="subject_tree_search-container">\
+        <label class="control-label col-xs-3" for="subject_tree_search">Search through the subjects</label>\
+        <div class="col-xs-9">\
+            <input class="input-large" id="subject_tree_search" type="text" placeholder="start typing...">\
+            <p class="help-block">Selecting a subject will <strong>not automatically select its sub-categories</strong>.</p>\
+        </div>\
+    </div>');
 
     var to = false;
     $('#subject_tree_search').keyup(function () {
@@ -312,27 +318,26 @@ function setup_add_button_handlers() {
         if (notes_deletable) { // global variable set by template
             delclass = " deletable "
         }
-        var thefield = [
-            '<div class="control-group row' + delclass + '" id="notes-' + cur_number_of_notes + '-container">',
-            '    <div class="col-md-8 nested-field-container">',
-            '        <label class="control-label" for="note">',
-            '          Note',
-            '        </label>',
-            '        <div class="controls ">',
-            '                <textarea class="col-md-11" id="notes-' + cur_number_of_notes + '-note" name="notes-' + cur_number_of_notes + '-note"></textarea>',
-            '        </div>',
-            '    </div>',
-            '    <div class="col-md-3 nested-field-container">',
-            '        <label class="control-label" for="date">',
-            '          Date',
-            '        </label>',
-            '        <div class="controls ">',
-            '                <input class="col-md-11" disabled="" id="notes-' + cur_number_of_notes + '-date" name="notes-' + cur_number_of_notes + '-date" type="text" value="">',
-            '        </div>',
-            '    </div>',
-            '</div>'
-        ].join('\n');
-
+        var thefield = '<div class="form-group ' + delclass + '" id="notes-' + cur_number_of_notes + '-container">\
+            <div class="col-xs-8 nested-field-container">\
+                <label class="control-label col-xs-1" for="note">Note</label>\
+                <div class="col-xs-11 ">\
+                    <textarea class=" col-xs-12" id="notes-' + cur_number_of_notes + '-note" name="notes-' + cur_number_of_notes + '-note"></textarea>\
+                </div>\
+            </div>\
+            <div class="col-xs-3 nested-field-container">\
+                <label class="control-label col-xs-1" for="date">Date</label>\
+                <div class="col-xs-11 ">\
+                    <input class=" col-xs-12" disabled="" id="notes-' + cur_number_of_notes + '-date" name="notes-' + cur_number_of_notes + '-date" type="text" value="">\
+                </div>\
+            </div>\
+            <div class="col-xs-1">\
+                <button id="remove_notes-' + cur_number_of_notes + '-container" target="notes-' + cur_number_of_notes + '-container" class="btn btn-danger remove_button">\
+                    <i class="glyphicon glyphicon-remove"></i>\
+                </button>\
+            </div>\
+        </div>';
+        
         cur_number_of_notes += 1;  // this doesn't get decremented in the remove button because there's no point, WTForms will understand it
             // even if the ID-s go 0, 2, 7, 13 etc.
         $(this).after(thefield);
