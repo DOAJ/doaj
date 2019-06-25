@@ -1,4 +1,18 @@
 $.extend(true, doaj, {
+    valueMaps : {
+        // This must be updated in line with the list in formcontext/choices.py
+        applicationStatus : {
+            'update_request' : 'Update Request',
+            'revisions_required' : 'Revisions Required',
+            'pending' : 'Pending',
+            'in progress' : 'In Progress',
+            'completed' : 'Completed',
+            'on hold' : 'On Hold',
+            'ready' : 'Ready',
+            'rejected' : 'Rejected',
+            'accepted' : 'Accepted'
+        }
+    },
 
     fieldRender: {
         titleField : function (val, resultobj, renderer) {
@@ -202,6 +216,57 @@ $.extend(true, doaj, {
                 return 'Never'
             } else {
                 return doaj.iso_datetime2date_and_time(man_update);
+            }
+        },
+
+        suggestedOn : function (val, resultobj, renderer) {
+            if (resultobj && resultobj['suggestion'] && resultobj['suggestion']['suggested_on']) {
+                return doaj.iso_datetime2date_and_time(resultobj['suggestion']['suggested_on']);
+            } else {
+                return false;
+            }
+        },
+
+        applicationStatus : function(val, resultobj, renderer) {
+            return doaj.valueMaps.applicationStatus[resultobj['admin']['application_status']];
+        },
+
+        editSuggestion : function(params) {
+            return function (val, resultobj, renderer) {
+                if (resultobj['suggestion']) {
+                    // determine the link name
+                    var linkName = "Review application";
+                    if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
+                        linkName = "View finished application";
+                        if (resultobj.admin.related_journal) {
+                            linkName = "View finished update";
+                        }
+                    } else if (resultobj.admin.current_journal) {
+                        linkName = "Review update";
+                    }
+
+                    var result = '<a class="edit_suggestion_link" href="';
+                    result += params.editUrl;
+                    result += resultobj['id'];
+                    result += '" target="_blank"';
+                    result += '>' + linkName + '</a>';
+                    return result;
+                }
+                return false;
+            }
+        },
+
+        readOnlyJournal : function(params) {
+            return function (val, resultobj, renderer) {
+                if (resultobj.admin && resultobj.admin.current_journal) {
+                    var result = '<a style="margin-left: 10px; margin-right: 10px" class="readonly_journal_link" href="';
+                    result += params.readOnlyJournalUrl;
+                    result += resultobj.admin.current_journal;
+                    result += '" target="_blank"';
+                    result += '>View journal being updated</a>';
+                    return result;
+                }
+                return false;
             }
         }
     }

@@ -1,63 +1,9 @@
 $.extend(true, doaj, {
 
-    adminApplicationsSearch : {
+    editorGroupApplicationsSearch : {
         activeEdges : {},
 
-        editSuggestion : function (val, resultobj, renderer) {
-            if (resultobj['suggestion']) {
-                // determine the link name
-                var linkName = "Review application";
-                if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
-                    linkName = "View finished application";
-                    if (resultobj.admin.related_journal) {
-                        linkName = "View finished update";
-                    }
-                } else if (resultobj.admin.current_journal) {
-                    linkName = "Review update";
-                }
-
-                var result = '<a class="edit_suggestion_link" href="';
-                result += doaj.adminApplicationsSearchConfig.applicationEditUrl;
-                result += resultobj['id'];
-                result += '" target="_blank"';
-                result += '>' + linkName + '</a>';
-                return result;
-            }
-            return false;
-        },
-
-        readOnlyJournal : function (val, resultobj, renderer) {
-            if (resultobj.admin && resultobj.admin.current_journal) {
-                var result = '<a style="margin-left: 10px; margin-right: 10px" class="readonly_journal_link" href="';
-                result += doaj.adminApplicationsSearchConfig.readOnlyJournalUrl;
-                result += resultobj.admin.current_journal;
-                result += '" target="_blank"';
-                result += '>View journal being updated</a>';
-                return result;
-            }
-            return false;
-        },
-
-        relatedJournal : function (val, resultobj, renderer) {
-            var result = "";
-            if (resultobj.admin) {
-                var journals_url = doaj.adminApplicationsSearchConfig.journalsUrl;
-                if (resultobj.admin.current_journal) {
-                    var fvurl = journals_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.current_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
-                    result += "<strong>Update Request For</strong>: <a href='" + fvurl + "'>" + resultobj.admin.current_journal + '</a>';
-                }
-                if (resultobj.admin.related_journal) {
-                     var fvurl = journals_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.related_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
-                    if (result != "") {
-                        result += "<br>";
-                    }
-                    result += "<strong>Produced Journal</strong>: <a href='" + fvurl + "'>" + resultobj.admin.related_journal + '</a>';
-                }
-            }
-            return result;
-        },
-
-        adminStatusMap: function(value) {
+        editorStatusMap: function(value) {
             if (doaj.valueMaps.applicationStatus.hasOwnProperty(value)) {
                 return doaj.valueMaps.applicationStatus[value];
             }
@@ -70,8 +16,8 @@ $.extend(true, doaj, {
             var current_domain = document.location.host;
             var current_scheme = window.location.protocol;
 
-            var selector = params.selector || "#admin_applications";
-            var search_url = current_scheme + "//" + current_domain + doaj.adminApplicationsSearchConfig.searchPath;
+            var selector = params.selector || "#group_applications";
+            var search_url = current_scheme + "//" + current_domain + doaj.editorGroupApplicationsSearchConfig.searchPath;
 
             var countFormat = edges.numFormat({
                 thousandsSeparator: ","
@@ -84,12 +30,14 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "admin.application_status.exact",
                     display: "Application Status",
-                    valueFunction : doaj.adminApplicationsSearch.adminStatusMap,
+                    deactivateThreshold: 1,
+                    valueFunction : doaj.editorGroupApplicationsSearch.editorStatusMap,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -97,23 +45,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.application_type.exact",
                     display: "Record type",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "has_editor_group",
-                    category: "facet",
-                    field: "index.has_editor_group.exact",
-                    display: "Has Editor Group?",
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -121,11 +59,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.has_editor.exact",
                     display: "Has Associate Editor?",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -133,11 +73,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "admin.editor_group.exact",
                     display: "Editor Group",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -145,11 +87,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "admin.editor.exact",
                     display: "Editor",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -157,11 +101,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.classification.exact",
                     display: "Classification",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -169,11 +115,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.language.exact",
                     display: "Journal Language",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -181,11 +129,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.country.exact",
                     display: "Country of publisher",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -193,11 +143,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.subject.exact",
                     display: "Subject",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -205,11 +157,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.publisher.exact",
                     display: "Publisher",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -217,11 +171,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "bibjson.provider.exact",
                     display: "Platform, Host, Aggregator",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -229,11 +185,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.license.exact",
                     display: "Journal License",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
 
@@ -262,7 +220,7 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
-                        searchPlaceholder: "Search All Applications"
+                        searchPlaceholder: "Search Applications in your Group(s)"
                     })
                 }),
 
@@ -318,12 +276,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>Owner</strong>: ",
-                                    valueFunction: doaj.fieldRender.owner
-                                }
-                            ],
-                            [
-                                {
                                     "pre" : "<strong>ISSN(s)</strong>: ",
                                     valueFunction: doaj.fieldRender.issns
                                 }
@@ -338,6 +290,12 @@ $.extend(true, doaj, {
                                 {
                                     "pre" : "<strong>Editor Group</strong>: ",
                                     "field" : "admin.editor_group"
+                                }
+                            ],
+                            [
+                                {
+                                    "pre" : "<strong>Editor</strong>: ",
+                                    "field" : "admin.editor"
                                 }
                             ],
                             [
@@ -433,18 +391,13 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    valueFunction: doaj.adminApplicationsSearch.relatedJournal
-                                }
-                            ],
-                            [
-                                {
                                     valueFunction: doaj.fieldRender.readOnlyJournal({
-                                        readOnlyJournalURL : doaj.adminApplicationsSearchConfig.readOnlyJournalUrl
+                                        readOnlyJournalURL : doaj.editorGroupApplicationsSearchConfig.readOnlyJournalUrl
                                     })
                                 },
                                 {
                                     valueFunction: doaj.fieldRender.editSuggestion({
-                                        editUrl : doaj.adminApplicationsSearchConfig.applicationEditUrl
+                                        editUrl : doaj.editorGroupApplicationsSearchConfig.applicationEditUrl
                                     })
                                 }
                             ]
@@ -459,7 +412,6 @@ $.extend(true, doaj, {
                     fieldDisplays: {
                         'admin.application_status.exact': 'Application Status',
                         'index.application_type.exact' : 'Record type',
-                        'index.has_editor_group.exact' : 'Has Editor Group?',
                         'index.has_editor.exact' : 'Has Associate Editor?',
                         'admin.editor_group.exact' : 'Editor Group',
                         'admin.editor.exact' : 'Editor',
@@ -469,7 +421,6 @@ $.extend(true, doaj, {
                         'index.subject.exact' : 'Subject',
                         'index.publisher.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
-                        'bibjson.author_pays.exact' : 'Publication charges?',
                         'index.license.exact' : 'Journal License'
                     },
                     valueMaps : {
@@ -499,78 +450,12 @@ $.extend(true, doaj, {
                 }),
                 components: components
             });
-            doaj.adminApplicationsSearch.activeEdges[selector] = e;
-
-            var mfb = doaj.multiFormBox.newMultiFormBox({
-                edge : e,
-                selector: "#admin-bulk-box",
-                bindings : {
-                    editor_group : function(context) {
-                        autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
-                    }
-                },
-                validators : {
-                    application_status : function(context) {
-                        var val = context.find("#application_status").val();
-                        if (val === "") {
-                            return {valid: false};
-                        }
-                        return {valid: true};
-                    },
-                    editor_group : function(context) {
-                        var val = context.find("#editor_group").val();
-                        if (val === "") {
-                            return {valid: false};
-                        }
-                        return {valid: true};
-                    },
-                    note : function(context) {
-                        var val = context.find("#note").val();
-                        if (val === "") {
-                            return {valid: false};
-                        }
-                        return {valid: true};
-                    }
-                },
-                submit : {
-                    note : {
-                        data: function(context) {
-                            return {
-                                note: $('#note', context).val()
-                            };
-                        }
-                    },
-                    editor_group : {
-                        data : function(context) {
-                            return {
-                                editor_group: $('#editor_group', context).val()
-                            };
-                        }
-                    },
-                    application_status : {
-                        data : function(context) {
-                            return {
-                                application_status: $('#application_status', context).val()
-                            };
-                        }
-                    }
-                },
-                urls : {
-                    note : "/admin/applications/bulk/add_note",
-                    editor_group : "/admin/applications/bulk/assign_editor_group",
-                    application_status : "/admin/applications/bulk/change_status"
-                }
-            });
-            doaj.multiFormBox.active = mfb;
-
-            $(selector).on("edges:pre-render", function() {
-                doaj.multiFormBox.active.validate();
-            });
+            doaj.editorGroupApplicationsSearch.activeEdges[selector] = e;
         }
     }
 });
 
 
 jQuery(document).ready(function($) {
-    doaj.adminApplicationsSearch.init();
+    doaj.editorGroupApplicationsSearch.init();
 });

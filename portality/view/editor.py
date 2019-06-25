@@ -36,7 +36,7 @@ def group_journals():
 @login_required
 @ssl_required
 def group_suggestions():
-    return render_template("editor/group_suggestions.html", search_page=True, facetviews=["editor.groupapplications.facetview"])
+    return render_template("editor/group_applications.html")
 
 @blueprint.route('/your_journals')
 @login_required
