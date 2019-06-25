@@ -337,7 +337,7 @@ function setup_add_button_handlers() {
                 </button>\
             </div>\
         </div>';
-        
+
         cur_number_of_notes += 1;  // this doesn't get decremented in the remove button because there's no point, WTForms will understand it
             // even if the ID-s go 0, 2, 7, 13 etc.
         $(this).after(thefield);

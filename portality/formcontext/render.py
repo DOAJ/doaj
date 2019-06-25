@@ -292,9 +292,9 @@ class ApplicationRenderer(BasicJournalInformationRenderer):
         self.ERROR_CHECK_ORDER = deepcopy(self.NUMBERING_ORDER)  # in this case these can be the same
 
         self.FIELD_GROUPS["submitter_info"] = [
-            {"suggester_name" : {}},
-            {"suggester_email" : {"class": "input-xlarge"}},
-            {"suggester_email_confirm" : {"class": "input-xlarge"}},
+            {"suggester_name" : {"label_width" : 5}},
+            {"suggester_email" : {"label_width" : 5, "class": "input-xlarge"}},
+            {"suggester_email_confirm" : {"label_width" : 5, "class": "input-xlarge"}},
         ]
 
         self.insert_field_after(
@@ -359,7 +359,7 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
 
         # extend the list of field groups
         self.FIELD_GROUPS["status"] = [
-            {"application_status" : {"class" : "input-large"}}
+            {"application_status" : {"class" : "form-control input-large"}}
         ]
         self.FIELD_GROUPS["account"] = [
             {"owner" : {"class" : "input-large"}}
@@ -369,7 +369,7 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
         ]
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
-            {"editor" : {"class" : "input-large"}}
+            {"editor" : {"class" : "form-control input-large"}},
         ]
         self.FIELD_GROUPS["notes"] = [
             {
@@ -377,7 +377,8 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
                     "render_subfields_horizontal" : True,
                     "container_class" : "deletable",
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 1
                 }
             }
         ]
@@ -405,21 +406,22 @@ class EditorApplicationReviewRenderer(ApplicationRenderer):
 
         # extend the list of field groups
         self.FIELD_GROUPS["status"] = [
-            {"application_status" : {"class" : "input-large"}}
+            {"application_status" : {"class" : "form-control input-large"}}
         ]
         self.FIELD_GROUPS["subject"] = [
             {"subject" : {}}
         ]
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
-            {"editor" : {"class" : "input-large"}}
+            {"editor" : {"class" : "form-control input-large"}},
         ]
         self.FIELD_GROUPS["notes"] = [
             {
                 "notes" : {
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 1
                 }
             }
         ]
@@ -440,7 +442,7 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
 
         # extend the list of field groups
         self.FIELD_GROUPS["status"] = [
-            {"application_status" : {"class" : "input-large"}}
+            {"application_status" : {"class" : "form-control input-large"}}
         ]
         self.FIELD_GROUPS["subject"] = [
             {"subject" : {}}
@@ -450,7 +452,8 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
                 "notes" : {
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 1
                 }
             }
         ]
@@ -567,14 +570,15 @@ class EditorJournalReviewRenderer(JournalRenderer):
 
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
-            {"editor" : {"class" : "input-large"}}
+            {"editor" : {"class" : "form-control input-large"}},
         ]
         self.FIELD_GROUPS["notes"] = [
             {
                 "notes" : {
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 1
                 }
             }
         ]
@@ -600,7 +604,8 @@ class AssEdJournalReviewRenderer(JournalRenderer):
                 "notes" : {
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 1
                 }
             }
         ]
@@ -624,7 +629,8 @@ class ReadOnlyJournalRenderer(JournalRenderer):
                 "notes" : {
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 1
                 }
             }
         ]

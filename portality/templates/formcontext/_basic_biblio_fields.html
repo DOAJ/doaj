@@ -67,6 +67,16 @@
                     </section>
                 </div>
             </div>
+
+            {% if include_doaj_seal %}
+            <div class="row">
+                <div class="col-xs-12">
+                    <section class="form-panel-right with-borders">
+                        {% include 'formcontext/_doaj_seal_components.html' %}
+                    </section>
+                </div>
+            </div>
+            {% endif %}
         </section>
     </div>
 </div>
