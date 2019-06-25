@@ -128,4 +128,3 @@ class TestBLLArticleGetDuplicates(DoajTestCase):
                 assert duplicate.id == first_article.id
             else:
                 assert duplicate is None
-

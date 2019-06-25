@@ -1,9 +1,14 @@
-import codecs
+"""
+Script that takes the output of article_duplicate_report.py and produces a list of actions that can be taken
+to automatically clean the data
+"""
+import codecs, os
 from copy import deepcopy
 from datetime import datetime
 from portality import clcsv
 from portality.lib import normalise
 
+MODE = "finalise"
 
 ## 02-27
 #duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/duplicate_articles_global_2019-02-27.csv"
@@ -13,11 +18,32 @@ from portality.lib import normalise
 #noaction = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/noaction-2019-04-04.csv"
 
 ## 04-03
-duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/duplicate_articles_global_2019-04-03.csv"
-noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/noids_2019-04-03.csv"
-log =  "/home/richard/tmp/doaj/article_duplicates_2019-04-03/log-2019-04-04.txt"
-out = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/actions-2019-04-04.csv"
-noaction = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/noaction-2019-04-04.csv"
+#duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/duplicate_articles_global_2019-04-03.csv"
+#noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/noids_2019-04-03.csv"
+#log =  "/home/richard/tmp/doaj/article_duplicates_2019-04-03/log-2019-04-04.txt"
+#out = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/actions-2019-04-04.csv"
+#noaction = "/home/richard/tmp/doaj/article_duplicates_2019-04-03/noaction-2019-04-04.csv"
+
+## 05-03
+#DUPLICATE_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/duplicate_articles_global_2019-05-03.csv"
+#NOIDS_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/noids_2019-05-03.csv"
+#LOG =  "/home/richard/tmp/doaj/article_duplicates_2019-05-03/log-2019-05-21.txt"
+#OUT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/actions-2019-05-21.csv"
+#NOACTION = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/noaction-2019-05-21.csv"
+#NOCLEANUP = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/nocleanup-2019-05-21.csv"
+#ACCOUNT_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/account-report-2019-05-21.csv"
+#ARTICLES_DIR = "/home/richard/tmp/doaj/article_duplicates_2019-05-03/delete-summaries-2019-05-21/"
+
+## 06-19
+DUPLICATE_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/duplicate_articles_global_2019-06-19.csv"
+NOIDS_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/noids_2019-06-19.csv"
+LOG =  "/home/richard/tmp/doaj/article_duplicates_2019-06-19/log-2019-06-20.txt"
+OUT = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/actions-2019-06-20.csv"
+NOACTION = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/noaction-2019-06-20.csv"
+NOCLEANUP = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/nocleanup-2019-06-20.csv"
+ACCOUNT_REPORT = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/account-report-2019-06-20.csv"
+ARTICLES_DIR = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/delete-summaries-2019-06-20/"
+FINAL_ACTIONS = "/home/richard/tmp/doaj/article_duplicates_2019-06-19/final-actions-2019-06-20.csv"
 
 ## testing
 #duplicate_report = "/home/richard/tmp/doaj/article_duplicates_test_sheet.csv"
@@ -134,7 +160,8 @@ class ActionRegister(object):
             act[action] = [reason]
             return
 
-        act[action].append(reason)
+        if reason not in act[action]:
+            act[action].append(reason)
 
     def has_actions(self):
         return len(self._actions) > 0
@@ -173,18 +200,21 @@ class ActionRegister(object):
         return resolved_actions
 
 
-def analyse(duplicate_report, noids_report, out, noaction):
+def analyse(duplicate_report, noids_report, out, noaction, nocleanup, log):
 
     with codecs.open(out, "wb", "utf-8") as o, \
             codecs.open(log, "wb", "utf-8") as l, \
             codecs.open(duplicate_report, "rb", "utf-8") as f, \
-            codecs.open(noaction, "wb", "utf-8") as g:
+            codecs.open(noaction, "wb", "utf-8") as g, \
+            codecs.open(nocleanup, "wb", "utf-8") as h:
 
         reader = clcsv.UnicodeReader(f)
         noaction_writer = clcsv.UnicodeWriter(g)
+        nocleanup_writer = clcsv.UnicodeWriter(h)
         headers = reader.next()
         noaction_writer.writerow(headers)
         noaction_writer.writerow([])
+        nocleanup_writer.writerow(headers)
 
         final_instructions = {}
         next_row = None
@@ -205,8 +235,6 @@ def analyse(duplicate_report, noids_report, out, noaction):
                     cont = False
 
                 if cont:
-                    #_clean_doi_match_type(match_set, actions)
-                    #_clean_fulltext_match_type(match_set, actions)
                     _clean_matching_dois(match_set, actions)
                     _clean_matching_fulltexts(match_set, actions)
                     _sanitise(match_set, actions)
@@ -228,10 +256,12 @@ def analyse(duplicate_report, noids_report, out, noaction):
 
             actions.export_to(final_instructions)
 
+            # write the noaction report file and the almost identical nocleanup file (which can be actioned by another part of this script)
             if len(match_set.matches) > 1:
                 rows = match_set.to_rows()
                 for row in rows:
                     noaction_writer.writerow(row)
+                    nocleanup_writer.writerow(row)
                 for note in match_set.notes:
                     noaction_writer.writerow([note])
                 noaction_writer.writerow([])
@@ -465,6 +495,87 @@ def _read_match_set(reader, next_row):
     # a catch to make sure that everything is ok with the match set detection
     assert n_matches + 1 == len(match_set.matches)
 
+
+def finalise(source, report_out, articles_dir, final_actions):
+    if not os.path.exists(articles_dir):
+        os.makedirs(articles_dir)
+
+    actions = ActionRegister()
+    with codecs.open(source, "rb", "utf-8") as s:
+        reader = clcsv.UnicodeReader(s)
+        headers = reader.next()
+
+        accounts = {}
+        for row in reader:
+            article_id = row[0]
+            article_doi = row[2]
+            article_ft = row[3]
+            article_owner = row[4]
+            match_type = row[8]
+            match_id = row[9]
+            match_doi = row[11]
+            match_ft = row[12]
+            match_owner = row[13]
+
+            actions.set_action(article_id, "delete", "could not be automatically cleaned up")
+            actions.set_action(match_id, "delete", "could not be automatically cleaned up")
+
+            if article_owner not in accounts:
+                accounts[article_owner] = []
+            reason = ""
+            if match_type == "doi":
+                reason = "DOI appears in multiple articles"
+            elif match_type == "fulltext":
+                reason = "Fulltext URL appears in multiple articles"
+            else:
+                reason = "Fulltext URL and DOI both appear in multiple articles"
+            accounts[article_owner].append([article_doi, article_ft, reason])
+
+            if match_owner not in accounts:
+                accounts[match_owner] = []
+            reason = ""
+            if match_type == "doi":
+                reason = "DOI appears in multiple articles"
+            elif match_type == "fulltext":
+                reason = "Fulltext URL appears in multiple articles"
+            else:
+                reason = "Fulltext URL and DOI both appear in multiple articles"
+            accounts[article_owner].append([match_doi, match_ft, reason])
+
+    final_instructions = {}
+    actions.export_to(final_instructions)
+
+    with codecs.open(final_actions, "wb", "utf-8") as fa:
+        fawriter = clcsv.UnicodeWriter(fa)
+        fawriter.writerow(["id", "action", "reason"])
+        for k, v in final_instructions.iteritems():
+            fawriter.writerow([k, v["action"], v["reason"]])
+
+    with codecs.open(report_out, "wb", "utf-8") as ro:
+        writer = clcsv.UnicodeWriter(ro)
+        writer.writerow(["account", "articles to delete", "article_details"])
+        for k, v in accounts.iteritems():
+            fn = k + "_articles.csv"
+            with codecs.open(os.path.join(articles_dir, fn), "wb", "utf-8") as a:
+                awriter = clcsv.UnicodeWriter(a)
+                awriter.writerow(["DOI", "Fulltext", "Reason for removal", "Number of duplicated articles"])
+                dedupe = []
+                for article in v:
+                    found = -1
+                    for i in range(len(dedupe)):
+                        d = dedupe[i]
+                        if d[0] == article[0] and d[1] == article[1]:
+                            found = i
+                            break
+                    if found > -1:
+                        dedupe[found][3] += 1
+                    else:
+                        dedupe.append(article + [1])
+                for d in dedupe:
+                    awriter.writerow(d)
+            writer.writerow([k, len(v), fn])
+
+
 def compare_outputs(duplicate_report):
     original = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/actions-2019-04-02.csv"
     compare = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/actions-2019-04-04.csv"
@@ -520,6 +631,10 @@ def compare_outputs(duplicate_report):
             if next_row is None:
                 break
 
-
-analyse(duplicate_report, noids_report, out, noaction)
-#compare_outputs(duplicate_report)
+if __name__ == "__main__":
+    if MODE == "analyse":
+        analyse(DUPLICATE_REPORT, NOIDS_REPORT, OUT, NOACTION, NOCLEANUP, LOG)
+    elif MODE == "compare":
+        compare_outputs(DUPLICATE_REPORT)
+    elif MODE == "finalise":
+        finalise(NOCLEANUP, ACCOUNT_REPORT, ARTICLES_DIR, FINAL_ACTIONS)
