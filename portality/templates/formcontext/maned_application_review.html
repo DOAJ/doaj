@@ -1,6 +1,6 @@
-{% extends "admin/admin_base.html" %}
+{% extends "base.html" %}
 
-{% block admin_content %}
+{% block content %}
 
 {# NOTE: requires suggestions_and_journals.js to be enabled (see _js_includes.html) #}
 
@@ -17,143 +17,185 @@
     and form_context.source.current_journal == None
     %}
 
-<div class="row">
-  <div class="col-md-12 with-borders form-section centre-text-container" style="margin-left: 0; padding: 0.5em 1.5em;">
-
+<section class="form-area">
     <div class="row">
-        <div class="col-md-12">
-            <p class="centre-text-container">This button will not save any other changes on this page!</p>
-            <form method="post" action="{{ url_for('admin.application_quick_reject', application_id=form_context.source.id) }}" class="form-horizontal" id="application_quick_reject_form">
-                Select a reason for rejection:
-                <select name="reject_reason" id="reject_reason">
-                    <option value="">Other</option>
-                    {% for reason in config.get("QUICK_REJECT_REASONS", []) %}
-                        <option value="{{ reason }}">{{ reason }}</option>
-                    {% endfor %}
-                </select>
-                <textarea name="additional_reject_information" id="additional_reject_information" placeholder="Enter any additional information here"></textarea>
-                <button class="btn btn-danger" type="submit" id="submit_quick_reject">Quick Reject</button>
-                <p><strong>Remember that the selected reject reason and any additional information will be sent to the publisher.</strong></p>
-            </form>
+        <div class="col-xs-12">
+            <section class="form-panel with-borders centre-text-container">
+                <p>This button will not save any other changes on this page!</p>
+                <form method="post" action="{{ url_for('admin.application_quick_reject', application_id=form_context.source.id) }}" class="form-horizontal" id="application_quick_reject_form">
+                    <div class="row">
+                        <div class="col-xs-5">
+                            <div class="form-group">
+                                <label class="control-label col-xs-4" for="reject_reason">Select a reason for rejection:</label>
+                                <div class="col-xs-8">
+                                    <select class="form-control" name="reject_reason" id="reject_reason">
+                                        <option value="">Other</option>
+                                        {% for reason in config.get("QUICK_REJECT_REASONS", []) %}
+                                            <option value="{{ reason }}">{{ reason }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-5">
+                            <textarea class="form-control" name="additional_reject_information" id="additional_reject_information" placeholder="Enter any additional information here" style="width: 100%"></textarea>
+                        </div>
+
+                        <div class="col-xs-2">
+                            <button class="btn btn-danger" type="submit" id="submit_quick_reject">Quick Reject</button>
+                        </div>
+                    </div>
+                    <p><strong>Remember that the selected reject reason and any additional information will be sent to the publisher.</strong></p>
+                </form>
+            </section>
         </div>
     </div>
-  </div>
-</div>
+</section>
 {% endif %}
 
-<form method="post" action="#first_problem" class="form-horizontal wide application_journal_form" id="suggest_form">
+<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
     {% if form_context.errors %}
     <h4 class="red form-status">There is a problem with the submitted form.</h4>
     {% endif %}
 
-    <fieldset>
+    <div class="row">
+        <div class="col-md-6">
 
-        <div class="row">
-
-            <div class="col-md-6">
+            <section class="form-area">
                 <div class="row">
-
-                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
-                        <h3 class="heading-aligned-with-fields">Editorial</h3>
-                        {% autoescape off %}
-                        {{ form_context.render_field_group("editorial") }}
-                        {% endautoescape %}
+                    <div class="col-xs-12">
+                        <section class="form-panel-left with-borders">
+                            <h3 class="heading-aligned-with-fields">Editorial</h3>
+                            {% autoescape off %}
+                            {{ form_context.render_field_group("editorial") }}
+                            {% endautoescape %}
+                        </section>
                     </div>
+                </div>
 
 
-                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
-                        <div class="control-group">
-                            <div class="controls">
-                                <button class="btn btn-success save-record" type="submit">SAVE</button>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel-left with-borders centre-text-container">
+                            <button class="btn btn-success save-record" type="submit">SAVE</button>
+                        </section>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel-left with-borders">
+                            <h3>Application status</h3>
+                            {% autoescape off %}
+                            {{ form_context.render_field_group("status") }}
+                            {% endautoescape %}
+                        </section>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel-left with-borders">
+                            <h3>Assign to account</h3>
+                            {% autoescape off %}
+                            {{ form_context.render_field_group("account") }}
+                            {% endautoescape %}
+                        </section>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel-left with-borders">
+                            <h3>Continuation information</h3>
+                            {% autoescape off %}
+                            {{ form_context.render_field_group("continuations") }}
+                            {% endautoescape %}
+                        </section>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-xs-6">
+            <section class="form-area">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel-right with-borders" id="subjects_outer_container">
+
+                            {# This will be hidden - placed here to get first_problem anchor in approximately the right place #}
+                            {% autoescape off %}
+                                {{ form_context.render_field_group("subject") }}
+                            {% endautoescape %}
+
+                            <h3>Subject classification</h3>
+
+                            <div class="form-group">
+                                <label class="control-label col-xs-3">Current subjects:</label>
+                                <div class="col-xs-9">
+                                    <p>{{ subjectstr }}</p>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
-                        <h3 class="heading-aligned-with-fields">Application status</h3>
-                        {% autoescape off %}
-                        {{ form_context.render_field_group("status") }}
-                        {% endautoescape %}
-                    </div>
-
-                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
-                        <h3 class="heading-aligned-with-fields">Assign to account</h3>
-                        {% autoescape off %}
-                        {{ form_context.render_field_group("account") }}
-                        {% endautoescape %}
-                    </div>
-
-                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
-                        <h3 class="heading-aligned-with-fields">Continuation information</h3>
-                        {% autoescape off %}
-                        {{ form_context.render_field_group("continuations") }}
-                        {% endautoescape %}
+                            <div id="subject_tree_container">
+                                <div id="subject_tree"></div>
+                            </div>
+                        </section>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-md-6 with-borders form-section" id="subjects_outer_container">
-                {# This will be hidden - placed here to get first_problem anchor in approximately the right place #}
-                {% autoescape off %}
-                    {{ form_context.render_field_group("subject") }}
-                {% endautoescape %}
-
-                <h3>Subject classification</h3>
-
-                <div class="control-group left-aligned">
-                    <label class="control-label">Current subjects:</label>
-                    <div class="controls" style="margin-top: 5px">
-                        <p>{{ subjectstr }}</p>
-                    </div>
-                </div>
-
-                <div id="subject_tree_container">
-                    <div id="subject_tree"></div>
-                </div>
-
-            </div>
-
+            </section>
         </div>
 
-        {# include the base application form which contains all the biblio data #}
-        {% include 'formcontext/_base_application_form.html' %}
+    </div>
+
+    {# include the base application form which contains all the biblio data #}
+    {% set include_doaj_seal = True %}
+    {% include 'formcontext/_base_application_form.html' %}
 
 
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <section class="form-area">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel with-borders">
+                            <h3>Details of person making this application</h3>
+                            {% autoescape off %}
+                            {{ form_context.render_field_group("submitter_info") }}
+                            {% endautoescape %}
+                            <div class="form-group">
+                                <div class="col-xs-12 centre-text-container">
+                                    <button class="btn btn-success save-record" type="submit">
+                                        SAVE
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+
+    <section class="form-area">
         <div class="row">
-            <div class="col-md-3">&nbsp;</div>
-            <div class="col-md-6 with-borders form-section">
-                <h3 class="heading-aligned-with-fields">Details of person making this application</h3>
-                {% autoescape off %}
-                {{ form_context.render_field_group("submitter_info") }}
-                {% endautoescape %}
-                <div class="control-group">
-                    <div class="controls">
-                        <button class="btn btn-success save-record" type="submit">
-                            SAVE
-                        </button>
+            <div class="col-xs-12">
+                <section class="form-panel with-borders">
+                    <h3>Notes</h3>
+                    <p><strong>Notes are presented in descending date order: the most recent notes appear at the top.</strong></p>
+                    <div class="addable-field-container" id="notes-outer-container">
+                        {% autoescape off %}
+                        {{ form_context.render_field_group("notes") }}
+                        {% endautoescape %}
                     </div>
-                </div>
-
+                </section>
             </div>
         </div>
+    </section>
 
 
-        <div class="row">
-
-            <div class="col-md-12 with-borders form-section">
-                <h3>Notes</h3>
-                <p><strong>Notes are presented in descending date order: the most recent notes appear at the top.</strong></p>
-                <div class="addable-field-container" id="notes-outer-container">
-                    {% autoescape off %}
-                    {{ form_context.render_field_group("notes") }}
-                    {% endautoescape %}
-                </div>
-            </div>
-
-        </div>
-
-
-    </fieldset>
 </form>
 
 {% endblock %}
