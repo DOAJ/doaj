@@ -274,8 +274,8 @@ function setup_add_buttons() {
     };
 
     $('.addable-field-container').each(function() {
-        e = $(this);
-        id = e.attr('id');
+        var e = $(this);
+        var id = e.attr('id');
         var value = customisations[id]['value'] || 'Add';
 
         var thebtn = '<button class="btn btn-info add_button"';
@@ -353,10 +353,10 @@ function setup_add_button_handlers() {
 
 function setup_remove_buttons() {
     $('.deletable').each(function() {
-        e = $(this);
-        id = e.attr('id');
+        var e = $(this);
+        var id = e.attr('id');
         if(e.find('button[id="remove_'+id+'"]').length == 0) {
-            e.append('<button id="remove_'+id+'" target="'+id+'" class="btn btn-danger remove_button"><i class="icon-white icon-remove-sign"></i></button>');
+            e.append('<div class="col-xs-1"><button id="remove_'+id+'" target="'+id+'" class="btn btn-danger remove_button"><i class="glyphicon glyphicon-remove"></i></button></div>');
         }
         setup_remove_button_handler();
     });

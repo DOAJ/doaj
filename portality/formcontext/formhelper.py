@@ -134,9 +134,14 @@ class FormHelperBS3(object):
             frag += "</ul>"
         else:
             if maximise_width:
-                clazz += " col-xs-11"
+                clazz += " col-xs-12"
                 kwargs["class"] = clazz
-            frag += field(**kwargs) # FIXME: this is probably going to do some weird stuff
+            render_args = {}
+            # filter anything that shouldn't go in as a field attribute
+            for k, v in kwargs.iteritems():
+                if k in ["class", "style"] or k.startswith("data-"):
+                    render_args[k] = v
+            frag += field(**render_args) # FIXME: this is probably going to do some weird stuff
 
             # FIXME: field.value isn't always set
             #if field.value in extra_input_fields.keys():

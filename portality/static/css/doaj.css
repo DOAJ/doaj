@@ -597,15 +597,6 @@ a.readonly_journal_link {
     margin-bottom: 0;
 }
 
-.form-horizontal .nested-field-container .control-label {
-    width: auto;
-    margin-right: 1em;
-}
-
-.form-horizontal .nested-field-container .controls {
-    margin-left: 0;
-}
-
 .form-horizontal.wide h1,
 .form-horizontal.wide h2,
 .form-horizontal.wide h3,
