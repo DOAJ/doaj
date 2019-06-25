@@ -21,36 +21,38 @@ tips to help you. Guides are also <a href="{{ url_for('doaj.translated') }}">
 available in other languages (العربية, 中文, فارسی, français, Bahasa Indonesia, Italiano, 日本語, Polski, Português, Română, Русский,
 Español, Türkçe, Українська)</a>.</p>
 
-<form method="post" action="#first_problem" class="form-horizontal wide application_journal_form" id="suggest_form">
+<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
     {% if form_context.errors %}
         <h4 class="red form-status">There is a problem with the submitted form.</h4>
     {% endif %}
 
-    <fieldset>
+    {# include the base application form which contains all the biblio data #}
+    {% include 'formcontext/_base_application_form.html' %}
 
-        {# include the base application form which contains all the biblio data #}
-        {% include 'formcontext/_base_application_form.html' %}
-
-        <div class="row">
-            <div class="col-md-3">&nbsp;</div>
-            <div class="col-md-6 with-borders form-section">
-                <h3 class="heading-aligned-with-fields">Your details</h3>
-                {% autoescape off %}
-                {{ form_context.render_field_group("submitter_info") }}
-                {% endautoescape %}
-
-                <div class="control-group">
-                    <div class="controls">
-                        <button class="btn btn-success save-record" type="submit">
-                            SUBMIT
-                        </button>
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <section class="form-area">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel with-borders">
+                            <h3>Your details</h3>
+                            {% autoescape off %}
+                            {{ form_context.render_field_group("submitter_info") }}
+                            {% endautoescape %}
+                            <div class="form-group">
+                                <div class="col-xs-12 centre-text-container">
+                                    <button class="btn btn-success save-record" type="submit">
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </div>
-
-            </div>
+            </section>
         </div>
+    </div>
 
-    </fieldset>
 </form>
 
 {% endblock %}
