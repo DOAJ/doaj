@@ -514,7 +514,8 @@ class ManEdJournalReviewRenderer(JournalRenderer):
                     "render_subfields_horizontal" : True,
                     "container_class" : "deletable",
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 1
                 }
             }
         ]
