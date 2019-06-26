@@ -1,59 +1,13 @@
 $.extend(true, doaj, {
 
-    adminJournalsSearch : {
+    editorGroupJournalsSearch : {
         activeEdges : {},
 
-        makeContinuation : function (val, resultobj, renderer) {
-            if (!resultobj.suggestion && !resultobj.bibjson.journal) {
-                // if it's not a suggestion or an article .. (it's a
-                // journal!)
-                // we really need to expose _type ...
-                var result = '<a class="edit_journal_link" href="';
-                result += doaj.adminJournalsSearchConfig.journalEditUrl;
-                result += resultobj['id'];
-                result += '/continue?type=replaces" target="_blank"';
-                result += '>Make a preceding continuation</a>';
-
-                result += "<span>&nbsp;|&nbsp;</span>";
-
-                result += '<a class="edit_journal_link" href="';
-                result += doaj.adminJournalsSearchConfig.journalEditUrl;
-                result += resultobj['id'];
-                result += '/continue?type=is_replaced_by" target="_blank"';
-                result += '>Make a succeeding continuation</a>';
-
-                return result;
+        editorStatusMap: function(value) {
+            if (doaj.valueMaps.applicationStatus.hasOwnProperty(value)) {
+                return doaj.valueMaps.applicationStatus[value];
             }
-            return false;
-        },
-
-        relatedApplications : function (val, resultobj, renderer) {
-            var result = "";
-            if (resultobj.admin) {
-                if (resultobj.admin.current_application) {
-                    var fvurl = doaj.adminJournalsSearchConfig.applicationsUrl + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.current_application + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
-                    result += "<strong>Current Update Request</strong>: <a href='" + fvurl + "'>" + resultobj.admin.current_application + "</a>";
-                }
-                if (resultobj.admin.related_applications && resultobj.admin.related_applications.length > 0) {
-                    if (result != "") {
-                        result += "<br>";
-                    }
-                    result += "<strong>Related Records</strong>: ";
-                    for (var i = 0; i < resultobj.admin.related_applications.length; i++) {
-                        if (i > 0) {
-                            result += ", ";
-                        }
-                        var ra = resultobj.admin.related_applications[i];
-                        var fvurl = doaj.adminJournalsSearchConfig.applicationsUrl + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + ra.application_id + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
-                        var linkName = ra.date_accepted;
-                        if (!linkName) {
-                            linkName = ra.application_id;
-                        }
-                        result += "<a href='" + fvurl + "'>" + linkName + "</a>";
-                    }
-                }
-            }
-            return result;
+            return value;
         },
 
         init : function(params) {
@@ -62,8 +16,8 @@ $.extend(true, doaj, {
             var current_domain = document.location.host;
             var current_scheme = window.location.protocol;
 
-            var selector = params.selector || "#admin_journals";
-            var search_url = current_scheme + "//" + current_domain + doaj.adminJournalsSearchConfig.searchPath;
+            var selector = params.selector || "#group_journals";
+            var search_url = current_scheme + "//" + current_domain + doaj.editorGroupJournalsSearchConfig.searchPath;
 
             var countFormat = edges.numFormat({
                 thousandsSeparator: ","
@@ -88,34 +42,10 @@ $.extend(true, doaj, {
                     })
                 }),
                 edges.newRefiningANDTermSelector({
-                    id: "has_seal",
-                    category: "facet",
-                    field: "index.has_seal.exact",
-                    display: "DOAJ Seal",
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
                     id: "owner",
                     category: "facet",
                     field: "admin.owner.exact",
                     display: "Owner",
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "has_editor_group",
-                    category: "facet",
-                    field: "index.has_editor_group.exact",
-                    display: "Has Editor Group?",
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
@@ -262,10 +192,10 @@ $.extend(true, doaj, {
                     })
                 }),
                 edges.newRefiningANDTermSelector({
-                    id: "continued",
+                    id: "journal_title",
                     category: "facet",
-                    field: "index.continued.exact",
-                    display: "Continued",
+                    field: "index.title.exact",
+                    display: "Journal Title",
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
@@ -273,31 +203,15 @@ $.extend(true, doaj, {
                         countFormat: countFormat
                     })
                 }),
-                edges.newDateHistogramSelector({
-                    id: "discontinued_date",
-                    category: "facet",
-                    field : "bibjson.discontinued_date",
-                    interval: "year",
-                    display: "Discontinued Year",
-                    displayFormatter : function(val) {
-                        return (new Date(parseInt(val))).getUTCFullYear();
-                    },
-                    sortFunction : function(values) {
-                        values.reverse();
-                        return values;
-                    },
-                    renderer: edges.bs3.newDateHistogramSelectorRenderer({
-                        countFormat: countFormat
-                    })
-                }),
+
 
                 // configure the search controller
                 edges.newFullSearchController({
                     id: "search-controller",
                     category: "controller",
                     sortOptions: [
-                        {'display':'Date added to DOAJ','field':'created_date'},
-                        {'display':'Last updated','field':'last_manual_update'}, // Note: last updated on UI points to when last updated by a person (via form)
+                        {'display':'Date applied','field':'suggestion.suggested_on'},
+                        {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
                         {'display':'Title','field':'index.unpunctitle.exact'}
                     ],
                     fieldOptions: [
@@ -316,7 +230,7 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
-                        searchPlaceholder: "Search All Journals"
+                        searchPlaceholder: "Search Applications in your Group(s)"
                     })
                 }),
 
@@ -378,14 +292,14 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>ISSN(s)</strong>: ",
-                                    valueFunction : doaj.fieldRender.issns
+                                    "pre" : "<strong>Editor</strong>: ",
+                                    "field" : "admin.editor"
                                 }
                             ],
                             [
                                 {
-                                    "pre": "<strong>Discontinued Date</strong>: ",
-                                    "field": "bibjson.discontinued_date"
+                                    "pre" : "<strong>ISSN(s)</strong>: ",
+                                    valueFunction : doaj.fieldRender.issns
                                 }
                             ],
                             [
@@ -467,17 +381,7 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    valueFunction: doaj.adminJournalsSearch.relatedApplications
-                                }
-                            ],
-                            [
-                                {
-                                    valueFunction: doaj.adminJournalsSearch.makeContinuation
-                                }
-                            ],
-                            [
-                                {
-                                   valueFunction: doaj.fieldRender.editJournal({editUrl: doaj.adminJournalsSearchConfig.journalEditUrl})
+                                    valueFunction: doaj.fieldRender.editJournal({editUrl: doaj.editorGroupJournalsSearchConfig.journalEditUrl})
                                 }
                             ]
                         ]
@@ -490,9 +394,7 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays: {
                         "admin.in_doaj" : "In DOAJ?",
-                        "index.has_seal.exact" : "DOAJ Seal",
                         "admin.owner.exact" : "Owner",
-                        "index.has_editor_group.exact" : "Has Editor Group?",
                         "index.has_editor.exact" : "Has Associate Editor?",
                         "admin.editor_group.exact" : "Editor Group",
                         "admin.editor.exact" : "Associate Editor",
@@ -504,7 +406,7 @@ $.extend(true, doaj, {
                         "index.subject.exact" : "Subject",
                         "index.language.exact" : "Journal Language",
                         "index.country.exact" : "Country of publisher",
-                        "index.continued.exact" : "Continued"
+                        "index.title.exact" : "Journal Title"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
@@ -534,12 +436,12 @@ $.extend(true, doaj, {
                 manageUrl: true,
                 components: components
             });
-            doaj.adminJournalsSearch.activeEdges[selector] = e;
+            doaj.editorGroupJournalsSearch.activeEdges[selector] = e;
         }
     }
 });
 
 
 jQuery(document).ready(function($) {
-    doaj.adminJournalsSearch.init();
+    doaj.editorGroupJournalsSearch.init();
 });
