@@ -268,7 +268,24 @@ $.extend(true, doaj, {
                 }
                 return false;
             }
-        }
+        },
+
+        editJournal : function(params) {
+            return function (val, resultobj, renderer) {
+                if (!resultobj.suggestion && !resultobj.bibjson.journal) {
+                    // if it's not a suggestion or an article .. (it's a
+                    // journal!)
+                    // we really need to expose _type ...
+                    var result = '<a class="edit_journal_link" href="';
+                    result += params.editUrl;
+                    result += resultobj['id'];
+                    result += '" target="_blank"';
+                    result += '>Edit this journal</a>';
+                    return result;
+                }
+                return false;
+            }
+        },
     }
 
 });
