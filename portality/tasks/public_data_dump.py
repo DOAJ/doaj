@@ -254,7 +254,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 @write_required(script=True)
 def scheduled_public_data_dump():
     user = app.config.get("SYSTEM_USERNAME")
-    job = PublicDataDumpBackgroundTask.prepare(user, clean=True, prune=True, types="all")
+    job = PublicDataDumpBackgroundTask.prepare(user, clean=False, prune=True, types="all")
     PublicDataDumpBackgroundTask.submit(job)
 
 
