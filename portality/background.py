@@ -42,6 +42,7 @@ class BackgroundApi(object):
 
         job.start()
         job.add_audit_message("Job Started")
+        job.save()
 
         try:
             background_task.run()

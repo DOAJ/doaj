@@ -53,6 +53,8 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
         if clean:
             mainStore.delete_container(container)
+            job.add_audit_message("Deleted existing data dump files")
+            job.save()
 
         # create dir with today's date
         day_at_start = dates.today()
@@ -72,6 +74,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         # Scroll for article and/or journal
         for typ in types:
             job.add_audit_message(dates.now() + u": Starting export of " + typ)
+            job.save()
 
             out_dir = tmpStore.path(container, "doaj_" + typ + "_data_" + day_at_start, create_container=True, must_exist=False)
             out_name = os.path.basename(out_dir)
@@ -96,18 +99,21 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
                 if count >= records_per_file:
                     file_num += 1
                     self._finish_file(tmpStore, container, filename, path, out_file, tarball)
+                    job.save()
                     out_file, path, filename = self._start_new_file(tmpStore, container, typ, day_at_start, file_num)
                     first_in_file = True
                     count = 0
 
             if count > 0:
                 self._finish_file(tmpStore, container, filename, path, out_file, tarball)
+                job.save()
 
             tarball.close()
 
             # Copy the source directory to main store
             try:
                 filesize = self._copy_on_complete(mainStore, tmpStore, container, zipped_path)
+                job.save()
             except Exception as e:
                 tmpStore.delete_container(container)
                 raise BackgroundException("Error copying {0} data on complete {1}\n".format(typ, e.message))
@@ -118,6 +124,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
         if prune:
             self._prune_container(mainStore, container, day_at_start, types)
+            job.save()
 
         self.background_job.add_audit_message(u"Removing temp store container {x}".format(x=container))
         tmpStore.delete_container(container)
@@ -126,7 +133,6 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         cache.Cache.cache_public_data_dump(urls["article"], sizes["article"], urls["journal"], sizes["journal"])
 
         job.add_audit_message(dates.now() + u": done")
-
 
     def _finish_file(self, storage, container, filename, path, out_file, tarball):
         out_file.write("]")
@@ -147,24 +153,6 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         out_file = codecs.open(output_file, "wb", "utf-8")
         out_file.write("[")
         return out_file, output_file, filename
-
-    def _save_file(self, storage, container, typ, day_at_start, results, file_num, tarball):
-        # Create a dir for today and save all files in there
-        data = json.dumps(results, cls=ModelJsonEncoder)
-
-        filename = self._filename(typ, day_at_start, file_num)
-        output_file = storage.path(container, filename, create_container=True, must_exist=False)
-        dn = os.path.dirname(output_file)
-        if not os.path.exists(dn):
-            os.makedirs(dn)
-
-        self.background_job.add_audit_message(u"Saving file {filename}".format(filename=filename))
-        with codecs.open(output_file, "wb", "utf-8") as out_file:
-            out_file.write(data)
-
-        self.background_job.add_audit_message(u"Adding file {filename} to compressed tar".format(filename=filename))
-        tarball.add(output_file, arcname=filename)
-        storage.delete_file(container, filename)
 
     def _filename(self, typ, day_at_start, file_num):
         return os.path.join("doaj_" + typ + "_data_" + day_at_start, "{typ}_batch_{file_num}.json".format(typ=typ, file_num=file_num))
@@ -254,7 +242,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 @write_required(script=True)
 def scheduled_public_data_dump():
     user = app.config.get("SYSTEM_USERNAME")
-    job = PublicDataDumpBackgroundTask.prepare(user, clean=True, prune=True, types="all")
+    job = PublicDataDumpBackgroundTask.prepare(user, clean=False, prune=True, types="all")
     PublicDataDumpBackgroundTask.submit(job)
 
 
