@@ -3,10 +3,10 @@
     The qualifiers for the DOAJ Seal
 </h3>
 <p>DOAJ promotes best practice in Open Access publishing. To highlight journals that adhere to best practices, we have created the 'DOAJ Seal for
-Open Access Journals'.</p>
+    Open Access Journals'.</p>
 
 <p>The qualifiers for the Seal highlight features related to accessibility, openness, discoverability, reuse and author rights
-and have nothing to do with <strong>the scholarly quality of the papers published</strong>.</p>
+    and have nothing to do with <strong>the scholarly quality of the papers published</strong>.</p>
 
 <p>To qualify for the Seal the journal must:</p>
 <ol>
@@ -21,9 +21,9 @@ and have nothing to do with <strong>the scholarly quality of the papers publishe
 
 {# If the form contains the seal checkbox show that, else show informative text #}
 {%  if form_context.check_field_group_exists("seal") %}
-    {% autoescape off %}
-    {{ form_context.render_field_group("seal", group_cfg={"label_width" : 4}) }}
-    {% endautoescape %}
+{% autoescape off %}
+{{ form_context.render_field_group("seal", group_cfg={"label_width" : 4}) }}
+{% endautoescape %}
 {%  else %}
-    <p>One cannot apply for the Seal. The Seal is awarded based on the information provided in the application. If you have any questions about any of the qualifiers, contact us.</p>
+<p>One cannot apply for the Seal. The Seal is awarded based on the information provided in the application. If you have any questions about any of the qualifiers, contact us.</p>
 {% endif %}
