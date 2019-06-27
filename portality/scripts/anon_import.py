@@ -85,7 +85,8 @@ def do_import(config):
 
             n += 1
 
-    tempStore.delete_file(container)
+    # once we've finished importing, clean up by deleting the entire temporary container
+    tempStore.delete_container(container)
 
 if __name__ == '__main__':
 
