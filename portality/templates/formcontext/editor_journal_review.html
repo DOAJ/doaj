@@ -16,28 +16,8 @@
         <div class="col-xs-6">
 
             <section class="form-area">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <section class="form-panel-left with-borders">
-                            <h3 class="heading-aligned-with-fields">Editorial</h3>
-                            {% autoescape off %}
-                            {{ form_context.render_field_group("editorial") }}
-                            {% endautoescape %}
-                        </section>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-12">
-                        <section class="form-panel-left with-borders">
-                            <div class="control-group">
-                                <div class="controls" style="text-align: center">
-                                    <button class="btn btn-success save-record" type="submit">SAVE</button>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                </div>
+                {% include 'formcontext/_editorial_panel.html' %}
+                {% include 'formcontext/_save_panel.html' %}
 
                 {% set old_journal_field_html = form_context.render_field_group("old_journal_fields") %}
                 {% if old_journal_field_html %}
@@ -56,29 +36,7 @@
         </div>
 
         <div class="col-xs-6">
-            <section class="form-area">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <section class="form-panel-right with-borders">
-                            <h3>Subject classification</h3>
-
-                            <div class="form-group">
-                                <label class="control-label col-xs-3">Current subjects:</label>
-                                <div class="col-xs-9">
-                                    <p>{{ subjectstr }}</p>
-                                </div>
-                            </div>
-
-                            <div id="subject_tree_container">
-                                <div id="subject_tree"></div>
-                                {% autoescape off %}
-                                {{ form_context.render_field_group("subject") }}
-                                {% endautoescape %}
-                            </div>
-                        </section>
-                    </div>
-                </div>
-            </section>
+            {% include 'formcontext/_subject_area.html' %}
         </div>
     </div>
 
@@ -88,39 +46,12 @@
     <div class="row">
         <div class="col-md-offset-3 col-md-6">
             <section class="form-area">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <section class="form-panel with-borders">
-                            <div class="form-group">
-                                <div class="col-xs-12 centre-text-container">
-                                    <button class="btn btn-success save-record" type="submit">
-                                        SAVE
-                                    </button>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                </div>
+                {% include 'formcontext/_save_panel.html' %}
             </section>
         </div>
     </div>
 
-    <section class="form-area">
-        <div class="row">
-            <div class="col-xs-12">
-                <section class="form-panel with-borders">
-                    <h3>Notes</h3>
-                    <p><strong>Notes are presented in descending date order: the most recent notes appear at the top.</strong></p>
-                    <div class="addable-field-container" id="notes-outer-container">
-                        {% autoescape off %}
-                        {{ form_context.render_field_group("notes") }}
-                        {% endautoescape %}
-                    </div>
-                </section>
-            </div>
-        </div>
-    </section>
-
+    {% include 'formcontext/_notes_area.html' %}
 
 </form>
 {% endblock %}

@@ -63,47 +63,10 @@
         <div class="col-md-6">
 
             <section class="form-area">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <section class="form-panel-left with-borders">
-                            <h3 class="heading-aligned-with-fields">Editorial</h3>
-                            {% autoescape off %}
-                            {{ form_context.render_field_group("editorial") }}
-                            {% endautoescape %}
-                        </section>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="col-xs-12">
-                        <section class="form-panel-left with-borders centre-text-container">
-                            <button class="btn btn-success save-record" type="submit">SAVE</button>
-                        </section>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-12">
-                        <section class="form-panel-left with-borders">
-                            <h3>Application status</h3>
-                            {% autoescape off %}
-                            {{ form_context.render_field_group("status") }}
-                            {% endautoescape %}
-                        </section>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-12">
-                        <section class="form-panel-left with-borders">
-                            <h3>Assign to account</h3>
-                            {% autoescape off %}
-                            {{ form_context.render_field_group("account") }}
-                            {% endautoescape %}
-                        </section>
-                    </div>
-                </div>
+                {% include 'formcontext/_editorial_panel.html' %}
+                {% include 'formcontext/_save_panel.html' %}
+                {% include 'formcontext/_application_status_panel.html' %}
+                {% include 'formcontext/_account_panel.html' %}
 
                 <div class="row">
                     <div class="col-xs-12">
@@ -119,32 +82,7 @@
         </div>
 
         <div class="col-xs-6">
-            <section class="form-area">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <section class="form-panel-right with-borders" id="subjects_outer_container">
-
-                            {# This will be hidden - placed here to get first_problem anchor in approximately the right place #}
-                            {% autoescape off %}
-                                {{ form_context.render_field_group("subject") }}
-                            {% endautoescape %}
-
-                            <h3>Subject classification</h3>
-
-                            <div class="form-group">
-                                <label class="control-label col-xs-3">Current subjects:</label>
-                                <div class="col-xs-9">
-                                    <p>{{ subjectstr }}</p>
-                                </div>
-                            </div>
-
-                            <div id="subject_tree_container">
-                                <div id="subject_tree"></div>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-            </section>
+            {% include 'formcontext/_subject_area.html' %}
         </div>
 
     </div>
@@ -156,45 +94,11 @@
 
     <div class="row">
         <div class="col-md-offset-3 col-md-6">
-            <section class="form-area">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <section class="form-panel with-borders">
-                            <h3>Details of person making this application</h3>
-                            {% autoescape off %}
-                            {{ form_context.render_field_group("submitter_info") }}
-                            {% endautoescape %}
-                            <div class="form-group">
-                                <div class="col-xs-12 centre-text-container">
-                                    <button class="btn btn-success save-record" type="submit">
-                                        SAVE
-                                    </button>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-            </section>
+            {% include 'formcontext/_applicant_area.html' %}
         </div>
     </div>
 
-
-    <section class="form-area">
-        <div class="row">
-            <div class="col-xs-12">
-                <section class="form-panel with-borders">
-                    <h3>Notes</h3>
-                    <p><strong>Notes are presented in descending date order: the most recent notes appear at the top.</strong></p>
-                    <div class="addable-field-container" id="notes-outer-container">
-                        {% autoescape off %}
-                        {{ form_context.render_field_group("notes") }}
-                        {% endautoescape %}
-                    </div>
-                </section>
-            </div>
-        </div>
-    </section>
-
+    {% include 'formcontext/_notes_area.html' %}
 
 </form>
 
