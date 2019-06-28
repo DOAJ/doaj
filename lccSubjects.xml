@@ -1514,11 +1514,6 @@
     <parent>Chemical technology</parent>
   </subject>
   <subject>
-    <name>Materials of engineering and construction. Mechanics of materials</name>
-    <code>TA401-492</code>
-    <parent>Engineering (General). Civil engineering (General)</parent>
-  </subject>
-  <subject>
     <name>Railroad engineering and operation</name>
     <code>TF1-1620</code>
     <parent>Technology</parent>
