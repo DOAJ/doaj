@@ -1064,7 +1064,7 @@ class JournalBibJSON(GenericBibJSON):
             if k.lower() == "other":
                 self._set_with_struct("archiving_policy.other", v)
             elif k.lower() == "a national library":
-                self._set_with_struct("nat_lib", v)
+                self._set_with_struct("archiving_policy.nat_lib", v)
         else:
             self._add_to_list_with_struct("archiving_policy.known", policy_name)
 
