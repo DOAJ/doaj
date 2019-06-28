@@ -114,6 +114,9 @@ class TestCrudApplication(DoajTestCase):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
         del data["admin"]["current_journal"]
+        data["admin"]["application_status"] = "on_hold"
+        data["admin"]["owner"] = "someaccount"
+
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
@@ -132,6 +135,10 @@ class TestCrudApplication(DoajTestCase):
         assert a.owner == "test"
         assert a.suggested_on is not None
         assert len(a.bibjson().keywords) > 1
+
+        # check the stuff that should default
+        assert a.application_status == "pending"
+        assert a.owner == "test"
 
         # also, because it's a special case, check the archiving_policy
         archiving_policy = a.bibjson().archiving_policy
