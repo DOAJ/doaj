@@ -1,4 +1,4 @@
-import esprit, os, shutil, gzip
+import esprit, os, shutil, gzip, uuid
 from portality import models
 from portality.core import app
 from portality.lib.anon import basic_hash, anon_name, anon_email
@@ -23,6 +23,16 @@ def _anonymise_admin(record):
     return record
 
 
+def _reset_api_key(record):
+    if record.api_key is not None:
+        record.generate_api_key()
+    return record
+
+
+def _reset_password(record):
+    record.set_password(uuid.uuid4().hex)
+    return record
+
 # transform functions - return the JSON data source since
 # esprit doesn't understand our model classes
 
@@ -32,7 +42,11 @@ def anonymise_account(record):
     except DataStructureException:
         return record
 
-    return _anonymise_email(a).data
+    a = _anonymise_email(a)
+    a = _reset_api_key(a)
+    a = _reset_password(a)
+
+    return a.data
 
 
 def anonymise_journal(record):
