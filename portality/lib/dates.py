@@ -2,7 +2,7 @@ from portality.core import app
 
 from datetime import datetime, timedelta
 from random import randint
-
+import math
 
 def parse(s, format=None, guess=True):
     s = s.strip()
@@ -66,3 +66,11 @@ def before(timestamp, seconds):
 
 def after(timestamp, seconds):
     return timestamp + timedelta(seconds=seconds)
+
+def eta(since, sofar, total):
+    now = datetime.utcnow()
+    td = (now - since).total_seconds()
+    spr = float(td) / float(sofar)
+    alltime = int(math.ceil(total * spr))
+    fin = after(since, alltime)
+    return format(fin)
