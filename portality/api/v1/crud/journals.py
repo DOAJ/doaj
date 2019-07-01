@@ -24,6 +24,7 @@ class JournalsCrudApi(CrudApi):
         template["parameters"].append(cls.SWAG_ID_PARAM)
         template['responses']['200'] = cls.R200
         template['responses']['200']['schema'] = OutgoingJournal().struct_to_swag(schema_title='Journal schema')
+        template['responses']['200']['description'] = 'Detailed documentation on the response format is available <a href="https://github.com/DOAJ/doaj/blob/develop/docs/system/OutgoingAPIJournal.md">here</a>'
         template['responses']['401'] = cls.R401
         template['responses']['404'] = cls.R404
         return cls._build_swag_response(template)
