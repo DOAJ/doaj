@@ -6,7 +6,7 @@
 
 {% block editor_content %}
 
-<div id="group_applications"></div>
+<div id="associate_applications"></div>
 
 {% endblock %}
 
@@ -14,15 +14,15 @@
 
     <script type="text/javascript">
     $.extend(true, doaj, {
-        editorGroupApplicationsSearchConfig : {
+        associateApplicationsSearchConfig : {
             applicationEditUrl : "{{ url_for('editor.suggestion_page', suggestion_id='') }}",
             readOnlyJournalUrl: "{{ url_for('doaj.journal_readonly', journal_id="") }}",
-            searchPath : '/editor_query/suggestion/_search'
+            searchPath : '/associate_query/suggestion/_search'
         }
     });
     </script>
 
     {% include "_edges_common_js.html" %}
-    <script type="text/javascript" src="/static/js/edges/editor.groupapplications.edge.js"></script>
+    <script type="text/javascript" src="/static/js/edges/associate.applications.edge.js"></script>
 
 {% endblock %}

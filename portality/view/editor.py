@@ -48,7 +48,7 @@ def associate_journals():
 @login_required
 @ssl_required
 def associate_suggestions():
-    return render_template("editor/associate_suggestions.html", search_page=True, facetviews=["associate.applications.facetview"])
+    return render_template("editor/associate_applications.html")
 
 @blueprint.route('/journal/<journal_id>', methods=["GET", "POST"])
 @login_required

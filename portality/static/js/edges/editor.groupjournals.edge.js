@@ -3,13 +3,6 @@ $.extend(true, doaj, {
     editorGroupJournalsSearch : {
         activeEdges : {},
 
-        editorStatusMap: function(value) {
-            if (doaj.valueMaps.applicationStatus.hasOwnProperty(value)) {
-                return doaj.valueMaps.applicationStatus[value];
-            }
-            return value;
-        },
-
         init : function(params) {
             if (!params) { params = {} }
 
@@ -230,7 +223,7 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
-                        searchPlaceholder: "Search Applications in your Group(s)"
+                        searchPlaceholder: "Search Journals in your Group(s)"
                     })
                 }),
 
