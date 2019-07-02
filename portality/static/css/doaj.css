@@ -454,7 +454,7 @@ input[type=password]:not(.form-control) {
     text-align: right;
 }
 
-#background_jobs, #editor_groups, #admin_journals, #group_applications, #group_journals {
+#background_jobs, #editor_groups, #admin_journals, #group_applications, #group_journals, #associate_journals {
     margin-top: 20px;
 }
 
@@ -474,6 +474,18 @@ input[type=password]:not(.form-control) {
     text-align: right;
 }
 
+#group_journals #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#group_applications #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#associate_journals #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
 #admin_journals .edges-bs3-results-fields-by-row-row:nth-last-child(2) {
     text-align: right;
 }
@@ -487,6 +499,10 @@ input[type=password]:not(.form-control) {
 }
 
 #group_journals .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#associate_journals .edges-bs3-results-fields-by-row-row:last-child {
     text-align: right;
 }
 
