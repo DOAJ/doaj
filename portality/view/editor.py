@@ -42,7 +42,7 @@ def group_suggestions():
 @login_required
 @ssl_required
 def associate_journals():
-    return render_template("editor/associate_journals.html", search_page=True, facetviews=["associate.journals.facetview"])
+    return render_template("editor/associate_journals.html")
 
 @blueprint.route('/your_applications')
 @login_required

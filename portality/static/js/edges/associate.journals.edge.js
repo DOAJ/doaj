@@ -1,6 +1,6 @@
 $.extend(true, doaj, {
 
-    editorGroupJournalsSearch : {
+    associateJournalsSearch : {
         activeEdges : {},
 
         editorStatusMap: function(value) {
@@ -16,8 +16,8 @@ $.extend(true, doaj, {
             var current_domain = document.location.host;
             var current_scheme = window.location.protocol;
 
-            var selector = params.selector || "#group_journals";
-            var search_url = current_scheme + "//" + current_domain + doaj.editorGroupJournalsSearchConfig.searchPath;
+            var selector = params.selector || "#associate_journals";
+            var search_url = current_scheme + "//" + current_domain + doaj.associateJournalsSearchConfig.searchPath;
 
             var countFormat = edges.numFormat({
                 thousandsSeparator: ","
@@ -46,42 +46,6 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "admin.owner.exact",
                     display: "Owner",
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "has_associate_editor",
-                    category: "facet",
-                    field: "index.has_editor.exact",
-                    display: "Has Associate Editor?",
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "editor_group",
-                    category: "facet",
-                    field: "admin.editor_group.exact",
-                    display: "Editor Group",
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "associate_editor",
-                    category: "facet",
-                    field: "admin.editor.exact",
-                    display: "Associate Editor",
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
@@ -230,7 +194,7 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
-                        searchPlaceholder: "Search Applications in your Group(s)"
+                        searchPlaceholder: "Search Applications assigned to you"
                     })
                 }),
 
@@ -282,18 +246,6 @@ $.extend(true, doaj, {
                                 {
                                     "pre" : "<strong>Owner</strong>: ",
                                     valueFunction: doaj.fieldRender.owner
-                                }
-                            ],
-                            [
-                                {
-                                    "pre" : "<strong>Editor Group</strong>: ",
-                                    "field" : "admin.editor_group"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre" : "<strong>Editor</strong>: ",
-                                    "field" : "admin.editor"
                                 }
                             ],
                             [
@@ -381,7 +333,7 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    valueFunction: doaj.fieldRender.editJournal({editUrl: doaj.editorGroupJournalsSearchConfig.journalEditUrl})
+                                    valueFunction: doaj.fieldRender.editJournal({editUrl: doaj.associateJournalsSearchConfig.journalEditUrl})
                                 }
                             ]
                         ]
@@ -395,9 +347,6 @@ $.extend(true, doaj, {
                     fieldDisplays: {
                         "admin.in_doaj" : "In DOAJ?",
                         "admin.owner.exact" : "Owner",
-                        "index.has_editor.exact" : "Has Associate Editor?",
-                        "admin.editor_group.exact" : "Editor Group",
-                        "admin.editor.exact" : "Associate Editor",
                         "bibjson.author_pays.exact" : "Publication charges?",
                         "index.license.exact" : "Journal License",
                         "index.publisher.exact" : "Publisher",
@@ -436,12 +385,12 @@ $.extend(true, doaj, {
                 manageUrl: true,
                 components: components
             });
-            doaj.editorGroupJournalsSearch.activeEdges[selector] = e;
+            doaj.associateJournalsSearch.activeEdges[selector] = e;
         }
     }
 });
 
 
 jQuery(document).ready(function($) {
-    doaj.editorGroupJournalsSearch.init();
+    doaj.associateJournalsSearch.init();
 });
