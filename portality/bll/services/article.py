@@ -130,6 +130,10 @@ class ArticleService(object):
             {"arg" : dry_run, "instance" : bool, "allow_none" : False, "arg_name" : "dry_run"}
         ], exceptions.ArgumentException)
 
+        # quickly validate that the article is acceptable - it must have a DOI and/or a fulltext
+        # this raises an exception if the article is not acceptable, containing all the relevant validation details
+        self.is_acceptable(article)
+
         if limit_to_account:
             legit = self.is_legitimate_owner(article, account.id)
             if not legit:
@@ -156,6 +160,24 @@ class ArticleService(object):
             article.save()
 
         return {"success" : 1, "fail" : 0, "update" : is_update, "new" : 1 - is_update, "shared" : set(), "unowned" : set(), "unmatched" : set()}
+
+    def is_acceptable(self, article):
+        """
+        conduct some deep validation on the article to make sure we will accept it
+        or the moment, this just means making sure it has a DOI and a fulltext
+        """
+        bj = article.bibjson()
+
+        # do we have a DOI.  If so, no need to go further
+        doi = bj.get_one_identifier(bj.DOI)
+        if doi is not None:
+            return
+
+        ft = bj.get_single_url(bj.FULLTEXT)
+        if ft is not None:
+            return
+
+        raise exceptions.ArticleNotAcceptable(errors=[Messages.EXCEPTION_NO_DOI_NO_FULLTEXT])
 
     def is_legitimate_owner(self, article, owner):
         """

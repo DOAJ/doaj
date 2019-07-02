@@ -52,6 +52,14 @@ class DuplicateArticleException(Exception):
     """
     pass
 
+class ArticleNotAcceptable(Exception):
+    """
+    Exception to raise when an article does not have suitable data to be ingested into DOAJ
+    """
+    def __init__(self, *args, **kwargs):
+        self.errors = kwargs.get("errors", [])
+        super(ArticleNotAcceptable, self).__init__(*args)
+
 class ArticleMergeConflict(Exception):
     """
     Exception to raise when it's not clear which article to merge an update with
