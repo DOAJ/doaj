@@ -428,6 +428,12 @@ input[type=password]:not(.form-control) {
     display: inline;
 }
 
+.application_journal_form #author_pays-container ul {
+    list-style: none outside none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
 /************************************/
 
 /****************************************
@@ -669,20 +675,6 @@ a.readonly_journal_link {
 .control-group.error input.extra_input_field {
     border-color: #ccc;
     color: #555;
-}
-
-.checkboxes ul {
-    list-style: none outside none;
-    margin-left: 0;
-}
-
-.checkboxes ul.errors {
-    list-style: disc;
-    margin-left: 25px;
-}
-
-.checkboxes label {
-    display: inline;
 }
 
 label > .label-text,

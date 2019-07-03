@@ -1,78 +1,38 @@
-{% extends "editor/editor_base.html" %}
+{% extends "base.html" %}
 
-{% block editor_content %}
-
-{# NOTE: requires suggestions_and_journals.js to be enabled (see _js_includes.html) #}
+{% block content %}
 
 {# include the title and the "unlock and close" feature #}
 {% set heading_object_type = 'Journal' %}
-{% include 'formcontext/_lockable_header.html' %}
 
-<form method="post" action="#first_problem" class="form-horizontal wide application_journal_form" id="suggest_form">
-    {% if form_context.errors %}
-    <h4 class="red form-status">There is a problem with the submitted form.</h4>
-    {% endif %}
+<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
 
     <h4 class="red form-status">Please note this form is read-only, you cannot save any changes you make here.</h4>
 
-    <fieldset>
+    <div class="row">
+        <div class="col-xs-6">
 
-        <div class="row">
-
-            <div class="col-md-6">
+            <section class="form-area">
                 <div class="row">
-                    {% set old_journal_field_html = form_context.render_field_group("old_journal_fields") %}
-                    {% if old_journal_field_html %}
-                        <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
-                            <h3 class="heading-aligned-with-fields">Old journal information</h3>
-                            {% autoescape off %}
-                            {{ old_journal_field_html }}
-                            {% endautoescape %}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-
-            <div class="col-md-6 with-borders form-section" id="subjects_outer_container">
-                <h3>Subject classification</h3>
-
-                <div class="control-group left-aligned">
-                    <label class="control-label">Current subjects:</label>
-                    <div class="controls" style="margin-top: 5px">
-                        <p>{{ subjectstr }}</p>
+                    <div class="col-xs-12">
+                        {% include 'formcontext/_old_journal_fields_panel.html' %}
                     </div>
                 </div>
-
-                <div id="subject_tree_container">
-                    <div id="subject_tree"></div>
-                    {% autoescape off %}
-                    {{ form_context.render_field_group("subject") }}
-                    {% endautoescape %}
-                </div>
-
-            </div>
-
+            </section>
         </div>
 
-
-        {# include the base application form which contains all the biblio data #}
-        {% include 'formcontext/_base_journal_form.html' %}
-
-        <div class="row">
-
-            <div class="col-md-12 with-borders form-section">
-                <h3>Notes</h3>
-                <div class="addable-field-container" id="notes-outer-container">
-                    {% autoescape off %}
-                    {{ form_context.render_field_group("notes") }}
-                    {% endautoescape %}
-                </div>
-            </div>
-
+        <div class="col-xs-6">
+            {% include 'formcontext/_subject_area.html' %}
         </div>
 
-    </fieldset>
+    </div>
+
+
+    {# include the base application form which contains all the biblio data #}
+    {% include 'formcontext/_base_journal_form.html' %}
+
+    {% include 'formcontext/_notes_area.html' %}
+
 </form>
 {% endblock %}
 
