@@ -31,7 +31,7 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template("publisher/index.html", search_page=True, facetviews=["publisher.journals.facetview"])
+    return render_template("publisher/index.html")
 
 
 @blueprint.route("/update_request/<journal_id>", methods=["GET", "POST", "DELETE"])
