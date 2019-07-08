@@ -467,7 +467,7 @@ input[type=password]:not(.form-control),
 }
 
 #background_jobs, #editor_groups, #admin_journals, #group_applications, #group_journals, #associate_journals, #associate_applications,
-#publisher_journals {
+#publisher_journals, #publisher_update_requests {
     margin-top: 20px;
 }
 
@@ -532,6 +532,14 @@ input[type=password]:not(.form-control),
 }
 
 #publisher_journals #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#publisher_update_requests .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#publisher_update_requests #search-controller .col-md-8 .form-inline {
     text-align: right;
 }
 

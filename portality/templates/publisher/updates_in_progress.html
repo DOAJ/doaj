@@ -1,12 +1,26 @@
 {% extends "publisher/publisher_base.html" %}
 
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
 {% block publisher_content %}
-<div class="facetview update_requests"></div>
+<div id="publisher_update_requests"></div>
 {% endblock %}
 
 {% block extra_js_bottom %}
-<script type="text/javascript">
-    var update_request_edit_url = "{{ url_for('publisher.update_request', journal_id="") }}";
-    var update_request_readonly_url = "{{ url_for('publisher.update_request_readonly', application_id="") }}";
-</script>
+
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        publisherUpdatesSearchConfig : {
+            journalUpdateUrl : "{{ url_for('publisher.update_request', journal_id="") }}",
+            journalReadOnlyUrl : "{{ url_for('publisher.update_request_readonly', application_id="") }}",
+            searchPath : '/publisher_query/suggestion/_search'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/publisher.update_requests.edge.js"></script>
+
 {% endblock %}
