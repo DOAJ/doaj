@@ -15,7 +15,8 @@ def load_cases():
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,
-    "DuplicateArticleException" : exceptions.DuplicateArticleException
+    "DuplicateArticleException" : exceptions.DuplicateArticleException,
+    "ArticleNotAcceptable" : exceptions.ArticleNotAcceptable
 }
 
 class TestBLLArticleCreateArticle(DoajTestCase):
@@ -37,6 +38,7 @@ class TestBLLArticleCreateArticle(DoajTestCase):
     def test_01_create_article(self, name, kwargs):
 
         article_arg = kwargs.get("article")
+        has_ids_arg = kwargs.get("has_ids")
         article_duplicate_arg = kwargs.get("article_duplicate")
         account_arg = kwargs.get("account")
         duplicate_check_arg = kwargs.get("duplicate_check")
@@ -53,6 +55,8 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         ###############################################
         ## set up
 
+        has_doi = has_ids_arg == "doi+ft"
+        has_ft = has_ids_arg == "doi+ft"
         success = int(success_arg)
 
         duplicate_check = None
@@ -79,6 +83,8 @@ class TestBLLArticleCreateArticle(DoajTestCase):
 
         eissn = "1234-5678"
         pissn = "9876-5432"
+        doi = "10.123/abc/1"
+        fulltext = "http://example.com/1"
 
         if add_journal_info:
             jsource = JournalFixtureFactory.make_journal_source(in_doaj=True)
@@ -93,7 +99,9 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         article = None
         original_id = None
         if article_arg == "exists":
-            source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi="10.123/abc/1", fulltext="http://example.com/1")
+            this_doi = doi if has_doi else False
+            this_fulltext = fulltext if has_ft else False
+            source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=this_doi, fulltext=this_fulltext)
             del source["bibjson"]["journal"]
             article = Article(**source)
             article.set_id()

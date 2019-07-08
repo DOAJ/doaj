@@ -46,6 +46,7 @@ class Messages(object):
     EXCEPTION_ARTICLE_BATCH_CONFLICT = u"One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted"
     EXCEPTION_DETECT_DUPLICATE_NO_ID = u"The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated"
     EXCEPTION_ARTICLE_MERGE_CONFLICT = u"The article matched multiple existing articles as duplicates, and we cannot tell which one to update"
+    EXCEPTION_NO_DOI_NO_FULLTEXT = u"The article must have a DOI and/or a Full-Text URL"
 
     PREVENT_DEEP_PAGING_IN_API = u"""You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
