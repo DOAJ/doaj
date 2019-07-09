@@ -9,7 +9,11 @@ You can check whether its running by pointing your browser to [http://localhost:
 
 ## Redis
 
-For background tasks, we use `redis`. Run this however you like, just make sure the correct port is configured in app settings and is accessible to the app.
+For background tasks, we use `redis`. Run this however you like, just make sure the correct port is configured in app settings and is accessible to the app. E.g. to install in Ubuntu:
+
+    sudo apt install redis
+    # Check redis is running and enabled
+    systemctl status redis
 
 ## The DOAJ Python app
 

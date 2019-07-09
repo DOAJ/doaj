@@ -1,19 +1,53 @@
 from portality.models import Account
 from portality.core import app
+from portality import clcsv
 
-def input_password():
+import codecs
+
+
+def create_users(source):
+    with codecs.open(source, "rb", "utf-8") as f:
+        reader = clcsv.UnicodeReader(f)
+        for row in reader:
+            username = row[0]
+            email = row[1]
+            password = row[2] if row[2] != "" else None
+            roles = [r.strip() for r in row[3].split(",")]
+            create_user(username, email, password, roles)
+
+
+def create_user(username, email, password, roles):
+    if password is None:
+        password = input_password(username)
+
+    prefix = "Modified existing user: "
+    acc = Account.pull(username)
+    if not acc:
+        prefix = "Created new user: "
+        acc = Account(id=username, email=email)
+    acc.set_email(email)
+    acc.set_role(roles)
+    acc.set_password(password)
+    acc.save()
+
+    print(prefix + username)
+
+
+def input_password(username):
     password = None
     while password is None:
-        password = request_password()
+        password = request_password(username)
     return password
 
-def request_password():
+
+def request_password(username):
     password = getpass.getpass()
-    confirm = getpass.getpass("Confirm Password:")
+    confirm = getpass.getpass("Confirm Password for " + username + ":")
     if password != confirm:
         print "passwords do not match - try again!"
         return None
     return password
+
 
 if __name__ == "__main__":
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
@@ -27,32 +61,29 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--email", help="email address of user")
     parser.add_argument("-p", "--password", help="password for the new or existing user.  If omitted, you will be prompted for one on the next line")
     parser.add_argument("-r", "--role", help="comma separated list of roles to be held by this account")
+    parser.add_argument("-c", "--csv", help="csv of users, emails, roles and passwords to be created/updated")
     
     args = parser.parse_args()
     
-    if not args.username:
-        print "Please specify a username with the -u option"
+    if not args.username and not args.csv:
+        print "Please specify a username with the -u option or a CSV of users with the -c option"
         exit()
     
-    if not args.role:
+    if not args.role and not args.csv:
         print "WARNING: no role specified, so this user won't be able to do anything"
-    
-    username = args.username
-    email = args.email
-    password = None
-    roles = [r.strip() for r in args.role.split(",")] if args.role is not None else []
 
-    if 'api' not in roles:
-        print 'WARNING: \'api\' role omitted. New users are generally given an API Key'
-    
-    if args.password:
-        password = args.password
-    else:
-        password = input_password()
-    
-    acc = Account.pull(username)
-    if not acc:
-        acc = Account(id=username, email=email)
-    acc.set_role(roles)
-    acc.set_password(password)
-    acc.save()
+    if args.username:
+        username = args.username
+        email = args.email
+        roles = [r.strip() for r in args.role.split(",")] if args.role is not None else []
+
+        password = None
+        if args.password:
+            password = args.password
+
+        create_user(username, email, password, roles)
+
+    elif args.csv:
+        create_users(args.csv)
+
+

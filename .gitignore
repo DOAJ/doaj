@@ -1,5 +1,6 @@
 # Local env file
 .env
+env/
 
 .brackets.json
 *.pyc
@@ -87,5 +88,3 @@ local_store/main/*
 !local_store/main/README.md
 local_store/tmp/*
 !local_store/tmp/README.md
-
-
