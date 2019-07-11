@@ -694,7 +694,7 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays : {
                         "_type" : "Showing",
-                        "index.classification.exact" : "Medicine",
+                        "index.classification.exact" : "Subject",
                         "index.has_apc.exact" : "Article processing charges (APCs)",
                         "index.has_seal.exact" : "DOAJ Seal",
                         "index.license.exact" : "Journal license",

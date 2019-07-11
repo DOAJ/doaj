@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "sidebar-page.html" %}
 
 
 {% block content %}
@@ -12,8 +12,8 @@
 <div class="row">
     <div class="col-md-8">
         <div id="subject_tree_container">
-            <div class="control-group" id="subject_tree_search-container">
-                <div class="controls">
+            <div class="form-group" id="subject_tree_search-container">
+                <div class="col-md-12">
                     <input class="input-large" id="subject_tree_search" type="text" placeholder="search subjects ...">
                 </div>
             </div>
@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div id="selection-container" class="with-borders" style="width: 200px; padding: 10px">
+        <div id="selection-container" class="with-borders" style="width: 240px; padding: 10px">
             <div id="selection-header" style="display:none; margin-bottom: 20px">You have selected the subject</div>
             <div id="selected-subject">Select a subject from the tree.</div>
         </div>
@@ -72,7 +72,7 @@ jQuery(document).ready(function($) {
         doElasticSearchQuery({
             success: subjectFound,
             queryobj: count_query,
-            search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?ref=please-stop-using-this-endpoint-directly-use-the-api',
+            search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?ref=subject_page',
             datatype: "jsonp"
         });
     }
@@ -126,12 +126,13 @@ jQuery(document).ready(function($) {
 
     setup_subject_tree();
 
+    /*
     $(document).scroll(function(){
         $('#selection-container').css('position','');
         var top = $('#selection-container').offset().top;
         $('#selection-container').css('position','absolute');
         $('#selection-container').css('top',Math.max(top,$(document).scrollTop()) + 10);
-    });
+    });*/
 
 });
 </script>
