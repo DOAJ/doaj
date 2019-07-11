@@ -2,13 +2,12 @@
 
 {% block publisher_content %}
 
-<div class="row">
+<div class="row" style="margin-top: 20px">
     <div class="col-md-12">
         <div class="well">
             <p>Uploaded files must conform to one of the approved XML formats:</p>
             <ul>
                 <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
-                {# <li><a href="/static/doaj/ojs_native.dtd">OJS Native XML</a></li> #}
             </ul>
             
             <p>Uploaded files must be &lt; 50Mb. Remote files must be &lt; 250Mb. If you need to upload more data, you should provide multiple files.</p>
@@ -17,36 +16,35 @@
 </div>
 
 
-<form id="upload_form" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
+<form id="upload_form" class="form-horizontal" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
 
     <div class="row">
-        <div class="col-md-4"><strong>Select a file to upload</strong></div>
-        <div class="col-md-8"><input type="file" name="file"></div>
+        <label for="file" class="col-md-3 control-label">Select a file to upload</label>
+        <div class="col-md-9"><input type="file" name="file"></div>
+    </div>
+    
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-3" style="text-align: right"><strong>OR</strong></div>
+        <div class="col-md-9">&nbsp;</div>
     </div>
     
     <div class="row">
-        <div class="col-md-4">&nbsp;&nbsp;&nbsp;&nbsp;<strong>OR</strong></div>
-        <div class="col-md-8">&nbsp;</div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-4"><strong>Provide a URL where we can download the XML</strong></div>
-        <div class="col-md-8"><input type="text" name="url" placeholder="URL for XML file (250Mb maximum size)" style="width: 80%"></div>
+        <label for="url" class="col-md-3 control-label">Provide a URL where we can download the XML</label>
+        <div class="col-md-9"><input type="text" name="url" placeholder="URL for XML file (250Mb maximum size)" style="width: 80%"></div>
     </div>
 
-    <div class="row" style="margin-top: 40px">
-        <div class="col-md-4"><strong>Format of the file*</strong></div>
-        <div class="col-md-8">
-            <select name="schema">
+    <div class="row" style="margin-top: 20px">
+        <label for="url" class="col-md-3 control-label">Format of the file</label>
+        <div class="col-md-9">
+            <select name="schema" class="form-control" style="width: 200px">
                 <option value="doaj">DOAJ Native XML</option>
-                {# <option value="mathml">OJS Native XML</option> #}
             </select>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-4">&nbsp;</div>
-        <div class="col-md-8"><button class="btn btn-success" id="upload">Upload</button></div>
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-3">&nbsp;</div>
+        <div class="col-md-9"><button class="btn btn-success" id="upload">Upload</button></div>
     </div>
 
 </form>
