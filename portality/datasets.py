@@ -2,6 +2,7 @@
 # the comment above is for the Python interpreter, there are Unicode
 # characters written straight into this source file
 
+import pycountry
 import json
 import sys
 import os
@@ -591,62 +592,42 @@ for lic_type, lic_info in license_dict.iteritems():
     main_license_options.append((lic_type, lic_info['form_label']))
 
 
-def language_for(rep):
-    """ Get the entire language entry for a given representation """
-    r = rep.lower().strip()
-    for l in languages_iso639_2:
-        for variant in l:
-            if variant.lower() == r:
-                return l
-    return None
-
-
 def name_for_lang(rep):
     """ Get the language name from a representation of the language"""
-    lang = language_for(rep)
-    if lang is not None:
-        return lang[3]
-    else:
+    try:
+        return pycountry.languages.lookup(rep).name
+    except LookupError:
         return rep
 
 
 def get_country_code(current_country, fail_if_not_found=False):
     """ Get the two-character country code for a given country name """
-    new_country = current_country
-    if new_country:
-        if new_country in country_options_two_char_code_index:
-            return new_country
-        else:
-            for two_char_code, info in countries:
-                if new_country.lower() == info['name'].lower():
-                    return two_char_code
-
-                if new_country.lower() == info['ISO3166-1-Alpha-3'].lower():
-                    return two_char_code
-
-                if info['name'].lower().startswith(new_country.lower()):
-                    return two_char_code
-
-    if fail_if_not_found:
-        return None
-    return new_country
+    try:
+        return pycountry.countries.lookup(current_country).alpha_2
+    except LookupError:
+        return None if fail_if_not_found else current_country
 
 
 def get_country_name(code):
     """ Get the name of a country from its two-character code """
-    return countries_dict.get(code, {}).get('name', code)  # return what was passed in if not found
+    try:
+        return pycountry.countries.lookup(code).name
+    except LookupError:
+        return code  # return what was passed in if not found
 
 
 def get_currency_name(code):
     """ get the name of a currency from its code """
-    return currencies_dict.get(code, code)  # return what was passed in if not found
+    try:
+        cur = pycountry.currencies.lookup(code)
+        return '{code} - {name}'.format(code=cur.alpha_3, name=cur.name)
+    except LookupError:
+        return code  # return what was passed in if not found
 
 
 def get_currency_code(name):
     """ Retrieve a currency code by the currency name """
-    if name in currency_name_map.keys():
-        return name
-    for k, v in currency_name_map.iteritems():
-        if v.lower() == name.lower():
-            return k
-    return None
+    try:
+        return pycountry.currencies.lookup(name).alpha_3
+    except LookupError:
+        return None
