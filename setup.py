@@ -19,7 +19,7 @@ setup(
         "feedparser",
         "tzlocal",
         "pytz",
-        "pycountry",
+        "pycountry==18.12.8",
         "futures==2.1.6",
         "esprit==0.0.3",
         "nose",
