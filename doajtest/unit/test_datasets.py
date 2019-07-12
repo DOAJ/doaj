@@ -18,11 +18,10 @@ class TestDatasets(DoajTestCase):
         assert datasets.get_country_code('mordor') == 'mordor'
         assert datasets.get_country_name('mordor') == 'mordor'
 
-        # Unless fail_if_not_found is set
+        # Unless fail_if_not_found is set in get_country_code()
         assert datasets.get_country_code('united states') == 'US'
         assert datasets.get_country_code('the shire', fail_if_not_found=True) is None
         assert datasets.get_country_code('the shire', fail_if_not_found=False) is 'the shire'
-
 
         # When we have more than one option, the first alphabetically is returned
         #assert datasets.get_country_code('united') == 'AE' # doesn't work with pycountry - has to be full text match

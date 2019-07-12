@@ -3,12 +3,13 @@ from portality.models import Journal, shared_structs
 from portality.models.bibjson import GenericBibJSON
 from copy import deepcopy
 from datetime import datetime
-from portality import xwalk, regex, constants
+from portality import datasets, constants
 from portality.core import app
 from portality.lib import normalise
 
 import string
 from unidecode import unidecode
+
 
 class NoJournalException(Exception):
     pass
@@ -470,7 +471,6 @@ class Article(DomainObject):
                 schema_codes.append(scheme + ":" + subs.get("code"))
 
         # copy the languages
-        from portality import datasets  # delayed import, as it loads some stuff from file
         if len(cbib.journal_language) > 0:
             langs = [datasets.name_for_lang(l) for l in cbib.journal_language]
 
@@ -478,7 +478,7 @@ class Article(DomainObject):
         if jindex.get('country'):
             country = jindex.get('country')
         elif cbib.journal_country:
-            country = xwalk.get_country_name(cbib.journal_country)
+            country = datasets.get_country_name(cbib.journal_country)
 
         # get the title of the license
         lic = cbib.get_journal_license()
