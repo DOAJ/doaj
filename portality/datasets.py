@@ -561,11 +561,16 @@ for l in languages_iso639_2:
 
 languages_dict = OrderedDict(sorted(languages.items(), key=lambda x: x[1]['name']))
 languages = languages_dict.items()
+
+# Gather the languages with 2-character codes (ISO639-1)
 language_options = []
 language_options_two_char_code_index = []
-for code, language_info in languages:
-    language_options.append((code, language_info['name']))
-    language_options_two_char_code_index.append(code)
+for l in sorted(pycountry.languages, key=lambda x: x.name):
+    try:
+        language_options.append((l.alpha_2.upper(), l.name))
+        language_options_two_char_code_index.append(l.alpha_2.upper())
+    except AttributeError:
+        continue
 
 # license rights by license type
 licenses = {
