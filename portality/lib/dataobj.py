@@ -131,6 +131,7 @@ def to_isolang(output_format=None):
         * name
         * fr
     Can be a list in order of preference, too
+    fixme: we could make these pycountry's keys, removing the need for so many transformations and intermediate steps
     :return:
     """
     # delayed import, since we may not always want to load the whole dataset for a dataobj
