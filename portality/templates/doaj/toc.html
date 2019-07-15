@@ -10,6 +10,10 @@
 
 {% block page_desc %}<meta name="description" content="Information about the open-access journal {{ bibjson.title }} in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">{% endblock %}
 
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
 {% block content %}
 
 {%- set CC_MAP = {
@@ -387,7 +391,7 @@
 </div>
 
 
-<div class="facetview journal_toc_articles"></div>
+<div id="journal_toc_articles"></div>
 
 <noscript>
 
@@ -402,29 +406,35 @@
 
 {% block extra_js_bottom %}
 
-<script type="text/javascript">
-    {% set toc_issns_js_str = '"' + toc_issns | join('","') + '"' %}
-    var toc_issns = [{{ toc_issns_js_str | safe }}];
-</script>
+    <script type="text/javascript">
+        {% set toc_issns_js_str = '"' + toc_issns | join('","') + '"' %}
+        $.extend(true, doaj, {
+            publicToCConfig : {
+                publicSearchPath : '{{ url_for("query.query", path="article/_search") }}?ref=toc',
+                tocIssns : [{{ toc_issns_js_str | safe }}]
+            }
+        });
 
-<script type="text/javascript">
-$(document).ready(function() {
+        $(document).ready(function() {
+            $("#journal_details").hide();
+            $("#journal_details_toggle").click(function (event) {
+                event.preventDefault();
+                $("#journal_details").toggle();
+                var jd = $("#journal_details_toggle");
+                if (jd.html() == "More") {
+                    jd.html("Less")
+                } else {
+                    jd.html("More")
+                }
+            });
+        });
+    </script>
 
-    $("#journal_details").hide();
-    $("#journal_details_toggle").click(function (event) {
-        event.preventDefault();
-        $("#journal_details").toggle();
-        var jd = $("#journal_details_toggle");
-        if (jd.html() == "More") {
-            jd.html("Less")
-        } else {
-            jd.html("More")
-        }
-    });
-});
-</script>
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/public.toc.edge.js"></script>
 
-{% endblock %}
+{% endblock extra_js_bottom %}
+
 
 
 
