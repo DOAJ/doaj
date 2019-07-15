@@ -1240,15 +1240,10 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         language = None
         if jlangs:
             if isinstance(jlangs, list):
-                jlangs = jlangs[0]
-            if jlangs in datasets.languages_3char_code_index:
-                language = jlangs.lower()
-            else:
-                char3 = datasets.languages_fullname_to_3char_code.get(jlangs)
-                if char3 is None:
-                    char3 = datasets.languages_dict.get(jlangs, {}).get("iso639-3_code")
-                if char3 is not None:
-                    language = char3.lower()
+                jlang = jlangs[0]
+            lang = datasets.language_for(jlang)
+            if lang is not None:
+                language = lang.alpha_3
 
         # if the language code lookup was successful, add it to the
         # result

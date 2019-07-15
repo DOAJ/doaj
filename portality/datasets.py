@@ -70,6 +70,14 @@ for lic_type, lic_info in license_dict.iteritems():
     main_license_options.append((lic_type, lic_info['form_label']))
 
 
+def language_for(rep):
+    """ Get the entire language entry for a given representation """
+    try:
+        return pycountry.languages.lookup(rep)
+    except LookupError:
+        return None
+
+
 def name_for_lang(rep):
     """ Get the language name from a representation of the language"""
     try:
