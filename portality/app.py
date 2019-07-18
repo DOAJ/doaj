@@ -237,7 +237,7 @@ def doi_url(doi):
     :return: the HTML link
     """
     tendot = doi[doi.find('10.'):]
-    return "<a href='https://doi.org/{0}'>{0}</a>".format(tendot)
+    return "https://doi.org/{0}".format(tendot)
 
 
 @app.template_filter('form_diff_table_comparison_value')

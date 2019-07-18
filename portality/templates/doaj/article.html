@@ -87,7 +87,7 @@ hosted on DOAJ.org) #}
 
         {# doi #}
         {% if doi %}
-            DOI {{ doi | doi_url | safe}}
+            DOI <a href="{{ doi | doi_url | safe }}"> {{ doi }}</a>
         {% endif %}
 
         </p>
@@ -208,9 +208,17 @@ hosted on DOAJ.org) #}
         <p>
             <strong>
                 Abstract
-                {% for url in bibjson.get_urls("fulltext") %}
-                    | <a href="{{url}}">Full Text</a>
-                {% endfor %}
+                {% if bibjson.get_urls("fulltext") %}
+                    {% for url in bibjson.get_urls("fulltext") %}
+                        | <a href="{{url}}">Full Text</a>
+                    {% endfor %}
+                {% else %}
+                    {% if doi %}
+                        {% set tendot = doi[doi.find('10.'):] %}
+                        {% set href = "https://doi.org/{0}".format(tendot) %}
+                        <a href="{{ href }}"> Full Text </a>
+                    {% endif %}
+                {% endif %}
             </strong>
         </p>
         <p>{{bibjson.abstract}}</p>
