@@ -100,14 +100,19 @@ class DiscoveryApi(Api):
 
     @staticmethod
     def get_application_swag():
+
+        DISCOVERY_API_SWAG['application']["parameters"][3]["description"] = DISCOVERY_API_SWAG['application']["parameters"][3]["description"] + str(app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100))
+
         return deepcopy(DISCOVERY_API_SWAG['application'])
 
     @staticmethod
     def get_journal_swag():
+        DISCOVERY_API_SWAG['journal']["parameters"][2]["description"] = DISCOVERY_API_SWAG['journal']["parameters"][2]["description"] + str(app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100))
         return deepcopy(DISCOVERY_API_SWAG['journal'])
 
     @staticmethod
     def get_article_swag():
+        DISCOVERY_API_SWAG['article']["parameters"][2]["description"] = DISCOVERY_API_SWAG['article']["parameters"][2]["description"] + str(app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100))
         return deepcopy(DISCOVERY_API_SWAG['article'])
 
     @classmethod
