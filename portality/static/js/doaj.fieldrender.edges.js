@@ -333,14 +333,15 @@ $.extend(true, doaj, {
                 }
 
                 // set the doi
+                var doi_url = false;
                 if (resultobj.bibjson && resultobj.bibjson.identifier) {
                     var ids = resultobj.bibjson.identifier;
                     for (var i = 0; i < ids.length; i++) {
                         if (ids[i].type === "doi") {
                             var doi = ids[i].id;
                             var tendot = doi.indexOf("10.");
-                            var url = "https://doi.org/" + edges.escapeHtml(doi.substring(tendot));
-                            result += " DOI <a href='" + url + "'>" + edges.escapeHtml(doi.substring(tendot)) + "</a>";
+                            doi_url = "https://doi.org/" + edges.escapeHtml(doi.substring(tendot));
+                            result += " DOI <a href='" + doi_url + "'>" + edges.escapeHtml(doi.substring(tendot)) + "</a>";
                         }
                     }
                 }
@@ -349,14 +350,16 @@ $.extend(true, doaj, {
 
                 // extract the fulltext link if there is one
                 var ftl = false;
-                if (resultobj.bibjson && resultobj.bibjson.link) {
+                if (resultobj.bibjson && resultobj.bibjson.link && resultobj.bibjson.link.length !== 0) {
                     var ls = resultobj.bibjson.link;
                     for (var i = 0; i < ls.length; i++) {
                         var t = ls[i].type;
-                        if (t == 'fulltext') {
+                        if (t === 'fulltext') {
                             ftl = ls[i].url;
                         }
                     }
+                } else if (doi_url) {
+                    ftl = doi_url;
                 }
 
                 // create the abstract section if desired
