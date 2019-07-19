@@ -237,7 +237,14 @@ def doi_url(doi):
     :param doi: the string DOI
     :return: the HTML link
     """
-    return "https://doi.org/" + normalise_doi(doi)
+
+    try:
+        return "https://doi.org/" + normalise_doi(doi)
+    except ValueError:
+        return ""
+
+
+
 
 @app.template_filter('form_diff_table_comparison_value')
 def form_diff_table_comparison_value(val):

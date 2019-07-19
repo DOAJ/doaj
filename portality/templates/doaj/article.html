@@ -214,7 +214,10 @@ hosted on DOAJ.org) #}
                     {% endfor %}
                 {% else %}
                     {% if doi %}
-                        <a href="{{ doi | doi_url | safe }}"> Full Text</a>
+                        {% set url_text = doi | doi_url | safe %}
+                        {% if url_text != "" %}
+                            <a href="{{ doi | doi_url | safe }}"> Full Text</a>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             </strong>
