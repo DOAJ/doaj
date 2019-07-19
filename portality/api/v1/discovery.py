@@ -95,24 +95,32 @@ DISCOVERY_API_SWAG = {}
 DISCOVERY_API_SWAG['application'] = json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_application_swag.json')))
 DISCOVERY_API_SWAG['journal'] = json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_journal_swag.json')))
 DISCOVERY_API_SWAG['article'] = json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_article_swag.json')))
+max_page_size = str(app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100))
 
 class DiscoveryApi(Api):
 
     @staticmethod
     def get_application_swag():
 
-        DISCOVERY_API_SWAG['application']["parameters"][3]["description"] = DISCOVERY_API_SWAG['application']["parameters"][3]["description"] + str(app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100))
-
+        description = DISCOVERY_API_SWAG['application']["parameters"][3]["description"]
+        DISCOVERY_API_SWAG['application']["parameters"][3]["description"] = \
+            ''.join([description, " The page size limit is ", max_page_size])
         return deepcopy(DISCOVERY_API_SWAG['application'])
 
     @staticmethod
     def get_journal_swag():
-        DISCOVERY_API_SWAG['journal']["parameters"][2]["description"] = DISCOVERY_API_SWAG['journal']["parameters"][2]["description"] + str(app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100))
+
+        description = DISCOVERY_API_SWAG['journal']["parameters"][2]["description"]
+        DISCOVERY_API_SWAG['journal']["parameters"][2]["description"] = \
+            ''.join([description, " The page size limit is ", max_page_size])
         return deepcopy(DISCOVERY_API_SWAG['journal'])
 
     @staticmethod
     def get_article_swag():
-        DISCOVERY_API_SWAG['article']["parameters"][2]["description"] = DISCOVERY_API_SWAG['article']["parameters"][2]["description"] + str(app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100))
+
+        description = DISCOVERY_API_SWAG['article']["parameters"][2]["description"]
+        DISCOVERY_API_SWAG['article']["parameters"][2]["description"] = \
+            ''.join([description, " The page size limit is ", max_page_size])
         return deepcopy(DISCOVERY_API_SWAG['article'])
 
     @classmethod

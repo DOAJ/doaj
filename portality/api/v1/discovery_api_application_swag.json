@@ -383,7 +383,7 @@
             "in": "query"
         },
         {
-            "description": "How many results per page you wish to see, the default is 10, the max is ",
+            "description": "How many results per page you wish to see, the default is 10.",
             "required": false,
             "type": "integer",
             "name": "pageSize",
