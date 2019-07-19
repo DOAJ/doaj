@@ -214,9 +214,7 @@ hosted on DOAJ.org) #}
                     {% endfor %}
                 {% else %}
                     {% if doi %}
-                        {% set tendot = doi[doi.find('10.'):] %}
-                        {% set href = "https://doi.org/{0}".format(tendot) %}
-                        <a href="{{ href }}"> Full Text </a>
+                        <a href="{{ doi | doi_url | safe }}"> Full Text</a>
                     {% endif %}
                 {% endif %}
             </strong>
