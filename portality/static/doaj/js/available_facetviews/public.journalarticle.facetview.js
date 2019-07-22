@@ -474,7 +474,7 @@ jQuery(document).ready(function($) {
 
         // extract the fulltext link if there is one
         var ftl = false;
-        if (resultobj.bibjson && resultobj.bibjson.link.length != 0) {
+        if (resultobj.bibjson && resultobj.bibjson.link && resultobj.bibjson.link.length !== 0) {
             var ls = resultobj.bibjson.link;
             for (var i = 0; i < ls.length; i++) {
                 var t = ls[i].type;
