@@ -68,6 +68,7 @@ hosted on DOAJ.org) #}
 {% set jtitle, cite = bibjson.vancouver_citation() %}
 {% set issns = bibjson.issns() %}
 {% set doi = bibjson.get_one_identifier("doi") %}
+{% set normalised_doi = article.get_normalised_doi() %}
 
 <div class="row-fluid">
     <div class="span12">
@@ -87,7 +88,10 @@ hosted on DOAJ.org) #}
 
         {# doi #}
         {% if doi %}
-            DOI <a href="{{ doi | doi_url | safe }}"> {{ doi }}</a>
+            {% set url_text = normalised_doi | doi_url | safe %}
+            {% if url_text != "" %}
+                DOI <a href="{{ url_text }}"> {{ normalised_doi }}</a>
+            {% endif %}
         {% endif %}
 
         </p>
