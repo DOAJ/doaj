@@ -218,9 +218,9 @@ hosted on DOAJ.org) #}
                     {% endfor %}
                 {% else %}
                     {% if doi %}
-                        {% set url_text = doi | doi_url | safe %}
+                        {% set url_text = normalised_doi | doi_url | safe %}
                         {% if url_text != "" %}
-                            <a href="{{ doi | doi_url | safe }}"> Full Text</a>
+                            <a href="{{ normalised_doi | doi_url | safe }}"> Full Text</a>
                         {% endif %}
                     {% endif %}
                 {% endif %}
