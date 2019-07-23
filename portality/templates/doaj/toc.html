@@ -164,24 +164,30 @@
 
             {% if tick %}
 
-            <p>Article Processing Charges (APCs):
-                {% if bibjson.apc %}
+                {% if bibjson.apc_url %}
                     {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
-                        {% if bibjson.apc_url %}
-                            <a href="{{ bibjson.apc_url }}">Yes.</a>
-                        {% else %}
-                            Yes.
-                        {% endif %}
-                        {{bibjson.apc.get("average_price", "price unknown")}}{{bibjson.apc.get("currency", " currency unknown")}}
+                        <p>
+                            <a href="{{ bibjson.apc_url }}">Article Processing Charges (APCs):</a>
+                            {{bibjson.apc.get("average_price", "price unknown")}}{{bibjson.apc.get("currency", " currency unknown")}}
+                        </p>
+                    {% else %}
+                        <p>
+                            <a href="{{ bibjson.apc_url }}">Article Processing Charges (APCs):</a> No
+                        </p>
                     {% endif %}
                 {% else %}
-                    {% if bibjson.apc_url %}
-                        <a href="{{ bibjson.apc_url }}">No.</a>
+                    {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
+                        <p>
+                            Article Processing Charges (APCs):
+                            {{bibjson.apc.get("average_price", "price unknown")}}{{bibjson.apc.get("currency", " currency unknown")}}
+                        </p>
                     {% else %}
-                        No.
+                        <p>
+                            Article Processing Charges (APCs): No
+                        </p>
                     {% endif %}
                 {% endif %}
-            </p>
+
 
             <p>Submission Charges:
                 {% if bibjson.submission_charges %}
