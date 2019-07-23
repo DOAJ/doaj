@@ -202,13 +202,11 @@
                 {% endif %}
             </p>
 
-            <p>Waiver policy for charges?
                 {% if bibjson.get_single_url("waiver_policy") %}
-                    <a href="{{bibjson.get_single_url('waiver_policy')}}">Yes.</a>
-                {% else %}
-                    No.
+                    <p>
+                        <a href="{{bibjson.get_single_url('waiver_policy')}}">Waiver policy for charges</a>
+                    </p>
                 {% endif %}
-            </p>
 
             {% else %}
 
