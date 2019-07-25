@@ -8,7 +8,8 @@
             <p>Uploaded files must conform to one of the approved XML formats:</p>
             <ul>
                 <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
-                {# <li><a href="/static/doaj/ojs_native.dtd">OJS Native XML</a></li> #}
+                <li><a href="/static/doaj/crossref4.4.2.xsd">Crossref XML</a></li>
+                {#<li><a href="/static/doaj/ojs_native.dtd">OJS Native XML</a></li> #}
             </ul>
             
             <p>Uploaded files must be &lt; 50Mb. Remote files must be &lt; 250Mb. If you need to upload more data, you should provide multiple files.</p>
@@ -39,6 +40,7 @@
         <div class="span8">
             <select name="schema">
                 <option value="doaj">DOAJ Native XML</option>
+                <option value="crossref">Crossref XML</option>
                 {# <option value="mathml">OJS Native XML</option> #}
             </select>
         </div>
@@ -82,6 +84,8 @@
                     <td>
                         {% if file.schema == "doaj" %}
                             DOAJ Native XML
+                        {%  elif file.schema == "crossref" %}
+                            Crossref XML
                         {% elif file.schema == "mathml" %}
                             OJS MathML
                         {% endif %}
