@@ -75,7 +75,7 @@ def write_lang_schema(out_file, schema_version):
     schema_tree.write(out_file, pretty_print=True, encoding='utf-8')
 
 
-def compare_lang_schemas(schema_a, schema_b):
+def compare_lang_schemas(schema_a, schema_b, ofile):
     """ Generate a simplified view of the new and old schema, then diff their contents """
     # Parse the XML Schemata for comparison
     a_tree = etree.parse(schema_a).getroot()
@@ -91,14 +91,18 @@ def compare_lang_schemas(schema_a, schema_b):
                                            namespaces=b_tree.nsmap)]
 
     # List the simplified language entries
-    a_strlist = ['{0}\t{1}'.format(t[0], t[1]) for t in zip(a_lc, a_ln)]
-    b_strlist = ['{0}\t{1}'.format(t[0], t[1]) for t in zip(b_lc, b_ln)]
+    a_strlist = [u'{0}\t{1}'.format(t[0], t[1]) for t in zip(a_lc, a_ln)]
+    b_strlist = [u'{0}\t{1}'.format(t[0], t[1]) for t in zip(b_lc, b_ln)]
 
-    a_filename = '/'.split(schema_a).pop()
-    b_filename = '/'.split(schema_b).pop()
+    a_filename = schema_a.split('/').pop()
+    b_filename = schema_b.split('/').pop()
 
-    for line in difflib.context_diff(a_strlist, b_strlist, fromfile=a_filename, tofile=b_filename):
-        print(line)
+    diff = difflib.HtmlDiff().make_file(a_strlist, b_strlist, fromdesc=a_filename, todesc=b_filename, context=True)
+
+    with open(ofile, 'w') as o:
+        o.writelines(diff)
+
+    print("Diff saved to " + ofile)
 
 
 if __name__ == '__main__':
@@ -107,8 +111,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--version', help='Schema version for the target XSD, e.g. 2.1', required=True)
     parser.add_argument('-f', '--filename', help='filename for schema, including extension', default='iso_639-2b.xsd')
-    parser.add_argument('-c', '--compare', help='run comparison on new and old schemas', action='store_true')
+    parser.add_argument('-c', '--compare', help='Filename to write a comparison of new and old schemas')
+
     args = parser.parse_args()
+
+    diff_file = 'diff.html'
+    if args.compare is not None:
+        diff_file = args.compare
 
     dest_path = paths.rel2abs(__file__, '..', 'static', 'doaj', args.filename)
 
@@ -122,4 +131,4 @@ if __name__ == '__main__':
                 write_lang_schema(f, args.version)
 
         if args.compare and os.path.exists(dest_path + '.old'):
-            compare_lang_schemas(dest_path, dest_path + '.old')
+            compare_lang_schemas(dest_path, dest_path + '.old', diff_file)
