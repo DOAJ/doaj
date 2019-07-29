@@ -111,7 +111,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--version', help='Schema version for the target XSD, e.g. 2.1', required=True)
     parser.add_argument('-f', '--filename', help='filename for schema, including extension', default='iso_639-2b.xsd')
-    parser.add_argument('-c', '--compare', help='Filename to write a comparison of new and old schemas')
+    parser.add_argument('-c', '--compare', help='Write a comparison of new and old schemas (optional: filename)',
+                        nargs='?', const='diff.html', default=None)
 
     args = parser.parse_args()
 
