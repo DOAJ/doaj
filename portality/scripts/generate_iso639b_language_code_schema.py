@@ -117,4 +117,5 @@ if __name__ == '__main__':
 
     with open(dest_path, 'w') as f:
         write_lang_schema(f, args.version)
-        compare_lang_schemas(dest_path, dest_path + '.old')
+
+    compare_lang_schemas(dest_path, dest_path + '.old')
