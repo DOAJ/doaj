@@ -75,32 +75,32 @@ def write_lang_schema(out_file, schema_version):
     schema_tree.write(out_file, pretty_print=True, encoding='utf-8')
 
 
-def compare_lang_schemas(schema_a, schema_b, ofile):
-    """ Generate a simplified view of the new and old schema, then diff their contents """
+def compare_lang_schemas(schema_old, schema_new, ofile):
+    """ Generate a simplified view of the old and new schema, then diff their contents """
     # Parse the XML Schemata for comparison
-    a_tree = etree.parse(schema_a).getroot()
-    b_tree = etree.parse(schema_b).getroot()
+    old_tree = etree.parse(schema_old).getroot()
+    new_tree = etree.parse(schema_new).getroot()
 
     # Extract the language information from both trees
-    a_lc = [a.attrib['value'] for a in a_tree.findall('.//xsd:restriction/xsd:enumeration', namespaces=a_tree.nsmap)]
-    a_ln = [a.text for a in a_tree.findall('.//xsd:restriction/xsd:enumeration/xsd:annotation/xsd:documentation',
-                                           namespaces=a_tree.nsmap)]
+    old_lc = [a.attrib['value'] for a in old_tree.findall('.//xsd:restriction/xsd:enumeration', namespaces=old_tree.nsmap)]
+    old_ln = [a.text for a in old_tree.findall('.//xsd:restriction/xsd:enumeration/xsd:annotation/xsd:documentation',
+                                           namespaces=old_tree.nsmap)]
 
-    b_lc = [b.attrib['value'] for b in b_tree.findall('.//xsd:restriction/xsd:enumeration', namespaces=a_tree.nsmap)]
-    b_ln = [b.text for b in b_tree.findall('.//xsd:restriction/xsd:enumeration/xsd:annotation/xsd:documentation',
-                                           namespaces=b_tree.nsmap)]
+    new_lc = [b.attrib['value'] for b in new_tree.findall('.//xsd:restriction/xsd:enumeration', namespaces=old_tree.nsmap)]
+    new_ln = [b.text for b in new_tree.findall('.//xsd:restriction/xsd:enumeration/xsd:annotation/xsd:documentation',
+                                           namespaces=new_tree.nsmap)]
 
     # List the simplified language entries
-    a_strlist = [u'{0}\t{1}'.format(t[0], t[1]) for t in zip(a_lc, a_ln)]
-    b_strlist = [u'{0}\t{1}'.format(t[0], t[1]) for t in zip(b_lc, b_ln)]
+    old_strlist = [u'{0}\t{1}'.format(t[0], t[1]) for t in zip(old_lc, old_ln)]
+    new_strlist = [u'{0}\t{1}'.format(t[0], t[1]) for t in zip(new_lc, new_ln)]
 
-    a_filename = schema_a.split('/').pop()
-    b_filename = schema_b.split('/').pop()
+    old_file = schema_old.split('/').pop()
+    new_file = schema_new.split('/').pop()
 
-    diff = difflib.HtmlDiff().make_file(a_strlist, b_strlist, fromdesc=a_filename, todesc=b_filename, context=True)
+    diff = difflib.HtmlDiff().make_file(old_strlist, new_strlist, fromdesc=old_file, todesc=new_file, context=True)
 
     with open(ofile, 'w') as o:
-        o.writelines(diff)
+        o.writelines(l.encode('utf8') for l in diff)
 
     print("Diff saved to " + ofile)
 
@@ -132,4 +132,4 @@ if __name__ == '__main__':
                 write_lang_schema(f, args.version)
 
         if args.compare and os.path.exists(dest_path + '.old'):
-            compare_lang_schemas(dest_path, dest_path + '.old', diff_file)
+            compare_lang_schemas(dest_path + '.old', dest_path, diff_file)
