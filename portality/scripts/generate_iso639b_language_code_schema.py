@@ -77,15 +77,9 @@ def write_lang_schema(out_file, schema_version):
 
 def compare_lang_schemas(schema_a, schema_b):
     """ Generate a simplified view of the new and old schema, then diff their contents """
-    with open(schema_a, 'r') as s_a:
-        schema_a_text = s_a.read()
-
-    with open(schema_b, 'r') as s_b:
-        schema_b_text = s_b.read()
-
     # Parse the XML Schemata for comparison
-    a_tree = etree.XML(schema_a_text)
-    b_tree = etree.XML(schema_b_text)
+    a_tree = etree.parse(schema_a).getroot()
+    b_tree = etree.parse(schema_b).getroot()
 
     # Extract the language information from both trees
     a_lc = [a.attrib['value'] for a in a_tree.findall('.//xsd:restriction/xsd:enumeration', namespaces=a_tree.nsmap)]
