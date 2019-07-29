@@ -92,7 +92,7 @@
           <xsd:documentation>Bislama</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="bod">
+      <xsd:enumeration value="tib">
         <xsd:annotation>
           <xsd:documentation>Tibetan</xsd:documentation>
         </xsd:annotation>
@@ -117,7 +117,7 @@
           <xsd:documentation>Catalan</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="ces">
+      <xsd:enumeration value="cze">
         <xsd:annotation>
           <xsd:documentation>Czech</xsd:documentation>
         </xsd:annotation>
@@ -157,7 +157,7 @@
           <xsd:documentation>Cree</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="cym">
+      <xsd:enumeration value="wel">
         <xsd:annotation>
           <xsd:documentation>Welsh</xsd:documentation>
         </xsd:annotation>
@@ -167,7 +167,7 @@
           <xsd:documentation>Danish</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="deu">
+      <xsd:enumeration value="ger">
         <xsd:annotation>
           <xsd:documentation>German</xsd:documentation>
         </xsd:annotation>
@@ -182,7 +182,7 @@
           <xsd:documentation>Dzongkha</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="ell">
+      <xsd:enumeration value="gre">
         <xsd:annotation>
           <xsd:documentation>Modern Greek (1453-)</xsd:documentation>
         </xsd:annotation>
@@ -202,7 +202,7 @@
           <xsd:documentation>Estonian</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="eus">
+      <xsd:enumeration value="baq">
         <xsd:annotation>
           <xsd:documentation>Basque</xsd:documentation>
         </xsd:annotation>
@@ -217,7 +217,7 @@
           <xsd:documentation>Faroese</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="fas">
+      <xsd:enumeration value="per">
         <xsd:annotation>
           <xsd:documentation>Persian</xsd:documentation>
         </xsd:annotation>
@@ -232,7 +232,7 @@
           <xsd:documentation>Finnish</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="fra">
+      <xsd:enumeration value="fre">
         <xsd:annotation>
           <xsd:documentation>French</xsd:documentation>
         </xsd:annotation>
@@ -322,7 +322,7 @@
           <xsd:documentation>Hungarian</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="hye">
+      <xsd:enumeration value="arm">
         <xsd:annotation>
           <xsd:documentation>Armenian</xsd:documentation>
         </xsd:annotation>
@@ -367,7 +367,7 @@
           <xsd:documentation>Inupiaq</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="isl">
+      <xsd:enumeration value="ice">
         <xsd:annotation>
           <xsd:documentation>Icelandic</xsd:documentation>
         </xsd:annotation>
@@ -402,7 +402,7 @@
           <xsd:documentation>Kashmiri</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="kat">
+      <xsd:enumeration value="geo">
         <xsd:annotation>
           <xsd:documentation>Georgian</xsd:documentation>
         </xsd:annotation>
@@ -522,7 +522,7 @@
           <xsd:documentation>Marathi</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="mkd">
+      <xsd:enumeration value="mac">
         <xsd:annotation>
           <xsd:documentation>Macedonian</xsd:documentation>
         </xsd:annotation>
@@ -542,17 +542,17 @@
           <xsd:documentation>Mongolian</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="mri">
+      <xsd:enumeration value="mao">
         <xsd:annotation>
           <xsd:documentation>Maori</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="msa">
+      <xsd:enumeration value="may">
         <xsd:annotation>
           <xsd:documentation>Malay (macrolanguage)</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="mya">
+      <xsd:enumeration value="bur">
         <xsd:annotation>
           <xsd:documentation>Burmese</xsd:documentation>
         </xsd:annotation>
@@ -587,7 +587,7 @@
           <xsd:documentation>Nepali (macrolanguage)</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="nld">
+      <xsd:enumeration value="dut">
         <xsd:annotation>
           <xsd:documentation>Dutch</xsd:documentation>
         </xsd:annotation>
@@ -672,7 +672,7 @@
           <xsd:documentation>Romansh</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="ron">
+      <xsd:enumeration value="rum">
         <xsd:annotation>
           <xsd:documentation>Romanian</xsd:documentation>
         </xsd:annotation>
@@ -702,7 +702,7 @@
           <xsd:documentation>Sinhala</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="slk">
+      <xsd:enumeration value="slo">
         <xsd:annotation>
           <xsd:documentation>Slovak</xsd:documentation>
         </xsd:annotation>
@@ -747,7 +747,7 @@
           <xsd:documentation>Spanish</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="sqi">
+      <xsd:enumeration value="alb">
         <xsd:annotation>
           <xsd:documentation>Albanian</xsd:documentation>
         </xsd:annotation>
@@ -917,7 +917,7 @@
           <xsd:documentation>Zhuang</xsd:documentation>
         </xsd:annotation>
       </xsd:enumeration>
-      <xsd:enumeration value="zho">
+      <xsd:enumeration value="chi">
         <xsd:annotation>
           <xsd:documentation>Chinese</xsd:documentation>
         </xsd:annotation>

@@ -54,22 +54,28 @@ def write_lang_schema(out_file, schema_version):
     ANNOT = E.annotation
     DOCU = E.documentation
 
-    # Gather the names and 3-char codes for only the languages with 2-character codes (ISO639-1)
+    # Gather names and 3-char codes (bibliographic preferred) for only the languages with 2-character codes (ISO639-1)
     for l in pycountry.languages:
         try:
             _ = l.alpha_2
-            # See docstring above for what this looks like
-            language_entry = ENUM(
-                                  {'value': l.alpha_3},
-                                  ANNOT(
-                                      DOCU(l.name)
-                                       )
-                                 )
-
-            # Add the language to our document
-            language_list_element.append(language_entry)
         except AttributeError:
-            continue
+            continue                                                               # Skip languages without 2-char codes
+
+        try:
+            code = l.bibliographic
+        except AttributeError:
+            code = l.alpha_3                                            # Fallback to alpha_3 when no bibliographic code
+
+        # See docstring above for what the XML for this looks like
+        language_entry = ENUM(
+            {'value': code},
+            ANNOT(
+                DOCU(l.name)
+            )
+        )
+
+        # Add the language to our document
+        language_list_element.append(language_entry)
 
     # Write the new XML Schema file
     schema_tree.write(out_file, pretty_print=True, encoding='utf-8')
