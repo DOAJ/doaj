@@ -2,6 +2,7 @@
 
 import os
 import pycountry
+import difflib
 from lxml import etree
 from lxml.builder import ElementMaker
 from portality.lib import paths
@@ -75,8 +76,33 @@ def write_lang_schema(out_file, schema_version):
 
 
 def compare_lang_schemas(schema_a, schema_b):
-    pass
-# todo: compare with existing language list
+    """ Generate a simplified view of the new and old schema, then diff their contents """
+    with open(schema_a, 'r') as s_a:
+        schema_a_text = s_a.read()
+
+    with open(schema_b, 'r') as s_b:
+        schema_b_text = s_b.read()
+
+    # Parse the XML Schemata for comparison
+    a_tree = etree.XML(schema_a_text)
+    b_tree = etree.XML(schema_b_text)
+
+    # Extract the language information from both trees
+    a_lc = [a.attrib['value'] for a in a_tree.findall('.//xsd:restriction/xsd:enumeration', namespaces=a_tree.nsmap)]
+    a_ln = [a.text for a in a_tree.findall('.//xsd:restriction/xsd:enumeration/xsd:annotation/xsd:documentation',
+                                           namespaces=a_tree.nsmap)]
+
+    b_lc = [b.attrib['value'] for b in b_tree.findall('.//xsd:restriction/xsd:enumeration', namespaces=a_tree.nsmap)]
+    b_ln = [b.text for b in b_tree.findall('.//xsd:restriction/xsd:enumeration/xsd:annotation/xsd:documentation',
+                                           namespaces=b_tree.nsmap)]
+
+    a_tuplist = zip(a_lc, a_ln)
+    b_tuplist = zip(b_lc, b_ln)
+
+    a_filename = '/'.split(schema_a).pop()
+    b_filename = '/'.split(schema_b).pop()
+
+    print(difflib.context_diff(a_tuplist, b_tuplist, fromfile=a_filename, tofile=b_filename))
 
 
 if __name__ == '__main__':
