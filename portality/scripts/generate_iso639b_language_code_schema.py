@@ -97,6 +97,7 @@ def compare_lang_schemas(schema_old, schema_new, ofile):
     old_file = schema_old.split('/').pop()
     new_file = schema_new.split('/').pop()
 
+    # fixme: hilariously, this won't handle utf-8 correctly until Python 3.5 (upgrade required)
     diff = difflib.HtmlDiff().make_file(old_strlist, new_strlist, fromdesc=old_file, todesc=new_file, context=True)
 
     with open(ofile, 'w') as o:
@@ -112,13 +113,9 @@ if __name__ == '__main__':
     parser.add_argument('-v', '--version', help='Schema version for the target XSD, e.g. 2.1', required=True)
     parser.add_argument('-f', '--filename', help='filename for schema, including extension', default='iso_639-2b.xsd')
     parser.add_argument('-c', '--compare', help='Write a comparison of new and old schemas (optional: filename)',
-                        nargs='?', const='diff.html', default=None)
+                        nargs='?', const='isolang_diff.html', default=None)
 
     args = parser.parse_args()
-
-    diff_file = 'diff.html'
-    if args.compare is not None:
-        diff_file = args.compare
 
     dest_path = paths.rel2abs(__file__, '..', 'static', 'doaj', args.filename)
 
@@ -132,4 +129,5 @@ if __name__ == '__main__':
                 write_lang_schema(f, args.version)
 
         if args.compare and os.path.exists(dest_path + '.old'):
-            compare_lang_schemas(dest_path + '.old', dest_path, diff_file)
+            compare_path = paths.rel2abs(__file__, '..', 'static', 'doaj', args.compare)
+            compare_lang_schemas(dest_path + '.old', dest_path, compare_path)
