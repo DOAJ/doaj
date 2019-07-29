@@ -90,13 +90,15 @@ def compare_lang_schemas(schema_a, schema_b):
     b_ln = [b.text for b in b_tree.findall('.//xsd:restriction/xsd:enumeration/xsd:annotation/xsd:documentation',
                                            namespaces=b_tree.nsmap)]
 
-    a_tuplist = zip(a_lc, a_ln)
-    b_tuplist = zip(b_lc, b_ln)
+    # List the simplified language entries
+    a_strlist = ['{0}\t{1}'.format(t[0], t[1]) for t in zip(a_lc, a_ln)]
+    b_strlist = ['{0}\t{1}'.format(t[0], t[1]) for t in zip(b_lc, b_ln)]
 
     a_filename = '/'.split(schema_a).pop()
     b_filename = '/'.split(schema_b).pop()
 
-    print(difflib.context_diff(a_tuplist, b_tuplist, fromfile=a_filename, tofile=b_filename))
+    for line in difflib.context_diff(a_strlist, b_strlist, fromfile=a_filename, tofile=b_filename):
+        print(line)
 
 
 if __name__ == '__main__':
@@ -105,6 +107,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--version', help='Schema version for the target XSD, e.g. 2.1', required=True)
     parser.add_argument('-f', '--filename', help='filename for schema, including extension', default='iso_639-2b.xsd')
+    parser.add_argument('-c', '--compare', help='run comparison on new and old schemas', action='store_true')
     args = parser.parse_args()
 
     dest_path = paths.rel2abs(__file__, '..', 'static', 'doaj', args.filename)
@@ -115,7 +118,8 @@ if __name__ == '__main__':
         if resp.lower() == 'y':
             os.rename(dest_path, dest_path + '.old')
 
-    with open(dest_path, 'w') as f:
-        write_lang_schema(f, args.version)
+            with open(dest_path, 'w') as f:
+                write_lang_schema(f, args.version)
 
-    compare_lang_schemas(dest_path, dest_path + '.old')
+        if args.compare and os.path.exists(dest_path + '.old'):
+            compare_lang_schemas(dest_path, dest_path + '.old')
