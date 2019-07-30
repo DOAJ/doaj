@@ -22,9 +22,11 @@
 {% set jtitle, cite = bibjson.vancouver_citation() %}
 {% set issns = bibjson.issns() %}
 {% set doi = bibjson.get_one_identifier("doi") %}
+{% set normalised_doi = article.get_normalised_doi() %}
 
-{% if jtitle %}<meta name="citation_journal_title" content="{{ jtitle }}">{% endif %}
-{% if jbib.publisher %}<meta name="citation_publisher" content="{{ jbib.publisher }}">{% endif %}
+{% if jtitle %} <meta name="citation_journal_title" content="{{ jtitle }}"> {% endif %}
+{% if jbib.publisher %} <meta name="citation_publisher" content="{{ jbib.publisher }}"> {% endif %}
+{% if doi %} <meta name="citation_doi" content="{{ normalised_doi }}"> {% endif %}
 
 {% for author in bibjson.author %}
 <meta name="citation_author" content="{{author.name}}">
