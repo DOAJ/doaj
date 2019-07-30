@@ -209,6 +209,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         job.add_audit_message(u"Downloaded {x} as {y}".format(x=file_upload.filename, y=file_upload.local_filename))
 
         xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(file_upload.schema)
+        job.add_audit_message(u"Identified xwalk {x}".format(x=xwalk_name))
+
         xwalk = plugin.load_class(xwalk_name)()
 
         # now we have the record in the index and on disk, we can attempt to
