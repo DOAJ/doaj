@@ -33,6 +33,7 @@
 {% endblock %}
 
 {% block extra_js_bottom %}
+<script type="text/javascript" src="/static/vendor/edges/src/es.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript">
 jQuery(document).ready(function($) {
 
@@ -55,8 +56,8 @@ jQuery(document).ready(function($) {
             }
         };
 
-        function subjectFound(rawdata, result) {
-            var count = rawdata.hits.total;
+        function subjectFound(result) {
+            var count = result.total();
             var url = "/search?source=" + encodeURIComponent(JSON.stringify(query));
 
             var frag = "<div style='font-weight: bold; font-size: 150%; margin-bottom: 20px'>" + subject + "</div>";
@@ -69,7 +70,7 @@ jQuery(document).ready(function($) {
         var count_query = $.extend({}, query);
         count_query["size"] = 0;
 
-        doElasticSearchQuery({
+        es.doQuery({
             success: subjectFound,
             queryobj: count_query,
             search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?ref=subject_page',

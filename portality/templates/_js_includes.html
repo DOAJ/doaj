@@ -41,35 +41,11 @@
 <!-- get select2 -->
 <script type="text/javascript" src="/static/vendor/select2-release-3.2/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
-{% if search_page or subject_page %}
-    <!-- fv2 and the doaj theme - replaces the above -->
-    <script type="text/javascript" src="/static/portality/vendor/facetview2/es.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
-    {% if not subject_page %}
-        <script type="text/javascript" src="/static/portality/vendor/facetview2/bootstrap2.facetview.theme.js?v={{config.get('DOAJ_VERSION')}}"></script>
-        <script type="text/javascript" src="/static/doaj/js/doaj.facetview.theme.js?v={{config.get('DOAJ_VERSION')}}"></script>
-        <script type="text/javascript" src="/static/portality/vendor/facetview2/jquery.facetview2.js?v={{config.get('DOAJ_VERSION')}}"></script>
-    {% endif %}
-
-{% endif %}
-
-
-
 <script type="text/javascript">var current_domain = document.location.host;</script>
 <script type="text/javascript">var current_scheme = window.location.protocol;</script>
-
-{% if search_page or subject_page %}
-  <script type="text/javascript">var es_domain = current_domain;</script>
-  <script type="text/javascript">var es_scheme = current_scheme;</script>
-  {% if facetviews %}
-  {% for facetview in facetviews %}
-    <script type="text/javascript" src="/static/doaj/js/available_facetviews/{{facetview}}.js?v={{config.get('DOAJ_VERSION')}}"></script>
-  {% endfor %}
-  {% endif %}
-{% endif %}
+<script type="text/javascript">var es_domain = current_domain;</script>
+<script type="text/javascript">var es_scheme = current_scheme;</script>
 
 <!-- get the app's js -->
 <script type="text/javascript" src="/static/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/doaj/js/facetview_results_render_callbacks.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
 
