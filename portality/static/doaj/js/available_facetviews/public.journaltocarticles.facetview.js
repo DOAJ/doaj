@@ -207,14 +207,15 @@ jQuery(document).ready(function($) {
         }
 
         // set the doi
+        var doi_url = false;
         if (resultobj.bibjson && resultobj.bibjson.identifier) {
             var ids = resultobj.bibjson.identifier;
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].type === "doi") {
                     var doi = ids[i].id;
                     var tendot = doi.indexOf("10.");
-                    var url = "https://doi.org/" + escapeHtml(doi.substring(tendot));
-                    result += " DOI <a href='" + url + "'>" + escapeHtml(doi.substring(tendot)) + "</a>";
+                    doi_url = "https://doi.org/" + escapeHtml(doi.substring(tendot));
+                    result += " DOI <a href='" + doi_url + "'>" + escapeHtml(doi.substring(tendot)) + "</a>";
                 }
             }
         }
@@ -223,7 +224,7 @@ jQuery(document).ready(function($) {
 
         // extract the fulltext link if there is one
         var ftl = false;
-        if (resultobj.bibjson && resultobj.bibjson.link) {
+        if (resultobj.bibjson && resultobj.bibjson.link && resultobj.bibjson.link.length !== 0) {
             var ls = resultobj.bibjson.link;
             for (var i = 0; i < ls.length; i++) {
                 var t = ls[i].type;
@@ -232,6 +233,10 @@ jQuery(document).ready(function($) {
                 }
             }
         }
+        else if (doi_url) {
+           ftl = doi_url;
+        }
+
 
         // create the abstract section if desired
         if (resultobj.bibjson.abstract || ftl) {
