@@ -5,14 +5,25 @@
 <h1 style="margin-bottom: 40px">Hi {{account.id}}: Reset Your Password</h1>
 
 <div class="row">
-    <div class="col-md-4">
-        &nbsp;
-    </div>
-    <div class="col-md-5">
-        <form action="" method="POST">
-            <input type="password" name="password" placeholder="new password"><br>
-            <input type="password" name="confirm" placeholder="confirm your new password"><br>
-            <input type="submit" class="btn btn-success" name="submit" value="Update">
+    <div class="col-md-8 col-md-offset-2">
+        <form action="" method="POST" class="form-horizontal">
+            <div class="form-group">
+                <label for="password" class="col-md-3">New Password</label>
+                <div class="col-md-9">
+                    <input type="password" name="password" placeholder="New password">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-md-3">Confirm your new password</label>
+                <div class="col-md-9">
+                    <input type="password" name="confirm" placeholder="Confirm password">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-3">
+                    <input type="submit" class="btn btn-success" name="submit" value="Update">
+                </div>
+            </div>
         </form>
     </div>
     
