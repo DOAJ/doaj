@@ -5,6 +5,7 @@ from portality.bll import exceptions
 from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
 from datetime import datetime
+from urlparse import urlparse
 
 class DOAJXWalk(object):
     format_name = "doaj"
@@ -215,7 +216,16 @@ class DOAJXWalk(object):
         if ftel is not None and ftel.text is not None and ftel.text != "":
             ct = ftel.get("format")
             url = ftel.text
-            bibjson.add_url(url, "fulltext", ct)
+
+            try:
+                # url validation
+                result = urlparse(ftel.text)
+                if all([result.scheme, result.netloc, result.path]):
+                    bibjson.add_url(url, "fulltext", ct)
+                else:
+                    raise CrosswalkException(message="Invalid URL: {}".format(ftel.text), inner=e)
+            except Exception as e:
+                raise CrosswalkException(message="Invalid URL: {}".format(ftel.text), inner=e)
 
         # keywords
         keyel = record.find("keywords")
