@@ -140,7 +140,7 @@ class ArticlesCrudApi(CrudApi):
 
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
-        if account is None:
+        if account is None or account.is_anonymous:
             raise Api401Error()
 
         # Check we're allowed to retrieve this article
