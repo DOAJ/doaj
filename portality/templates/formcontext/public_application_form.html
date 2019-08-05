@@ -2,22 +2,24 @@
 
 {% block content %}
 
-<h2>Journal Application Form</h2>
+<div class="form-preamble">
+    <h2>Journal Application Form</h2>
 
-<p><b>Before you start</b><br>
-Read our <a href="{{ url_for('doaj.publishers') }}">information for publishers</a>, review your website and make sure
-that your journal fulfills all the criteria.</p>
+    <p><b>Before you start</b><br>
+    Read our <a href="{{ url_for('doaj.publishers') }}">information for publishers</a>, review your website and make sure
+    that your journal fulfills all the criteria.</p>
 
-<p>If you know of a peer-reviewed journal that should be included in DOAJ, please ask its publisher or editor to complete this form.</p>
+    <p>If you know of a peer-reviewed journal that should be included in DOAJ, please ask its publisher or editor to complete this form.</p>
 
-<p>We provide some <a href="/publishers#advice">guidance on the information we are looking for</a> but
-that list is by no means exhaustive. Applicants are encouraged to complete the form clearly and honestly. If you
-do not understand a question, you can ask for help by contacting us.</p>
+    <p>We provide some <a href="/publishers#advice">guidance on the information we are looking for</a> but
+    that list is by no means exhaustive. Applicants are encouraged to complete the form clearly and honestly. If you
+    do not understand a question, you can ask for help by contacting us.</p>
 
-<p>It is not possible to save your progress on this form so we recommend that you gather the information you need first. Use
-<a href="http://bit.ly/1MLszb4">this guide</a> to store you answers in. Guides are also <a href="{{ url_for('doaj.translated') }}">
-available in other languages (العربية, 中文, فارسی, français, Bahasa Indonesia, Italiano, 日本語, Polski, Português, Română, Русский,
-Español, Türkçe, Українська)</a>.</p>
+    <p>It is not possible to save your progress on this form so we recommend that you gather the information you need first. Use
+    <a href="http://bit.ly/1MLszb4">this guide</a> to store you answers in. Guides are also <a href="{{ url_for('doaj.translated') }}">
+    available in other languages (العربية, 中文, فارسی, français, Bahasa Indonesia, Italiano, 日本語, Polski, Português, Română, Русский,
+    Español, Türkçe, Українська)</a>.</p>
+</div>
 
 <form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
     {% if form_context.errors %}

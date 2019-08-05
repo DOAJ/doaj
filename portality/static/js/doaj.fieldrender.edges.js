@@ -427,10 +427,10 @@ $.extend(true, doaj, {
                     field += "&nbsp" + edges.escapeHtml(resultobj.bibjson.title);
                 }
                 if (resultobj.admin && resultobj.admin.ticked) {
-                    field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​";
+                    field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​";
                 }
                 if (resultobj.admin && resultobj.admin.seal) {
-                    field += "&nbsp<img src='/static/doaj/images/seal_short.png' width='16px' height='16px' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal' style='padding-bottom: 3px'>​​";
+                    field += "&nbsp<img src='/static/doaj/images/seal_short.png' width='16px' height='16px' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal'>​​";
                 }
                 return field + "</span>"
             } else {

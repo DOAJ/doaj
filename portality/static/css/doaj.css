@@ -17,6 +17,10 @@ td {
     padding: 5px;
 }
 
+blockquote {
+    font-size: 15px;
+}
+
 /****************************************
  * Page header styles
  */
@@ -294,8 +298,9 @@ td {
  * API Docs Styles
  */
 
-.swagger-section .swagger-ui-wrap {
+.swagger-section #swagger-ui-container.swagger-ui-wrap {
     max-width: none !important;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
 }
 
 /************************************/
@@ -320,6 +325,10 @@ td {
  * Forms styles
  */
 
+.form-preamble {
+    margin-left: -15px;
+    margin-right: -15px;
+}
 
 /* This is almost the form-control class, and saves us having to migrate all forms to bootstrap3 just for the
 display styles */
@@ -438,6 +447,11 @@ input[type=password]:not(.form-control),
 
 #article_metadata_form {
     margin-top: 20px;
+}
+
+#add_note_btn {
+    width: 20em;
+    margin-bottom: 20px;
 }
 
 /************************************/
@@ -777,11 +791,6 @@ footer > .box + .box {
 /* From suggestion form */
 #digital_archiving_policy_library {
     width: 150px;
-}
-
-#add_note_btn {
-    width: 20em;
-    margin-left: 40px; // width of Note field label + its margin
 }
 
 button[target^="notes-"][target$="-container"] {
