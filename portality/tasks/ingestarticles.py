@@ -5,7 +5,7 @@ from portality.tasks.redis_huey import main_queue, configure
 from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
-from portality.bll.exceptions import IngestException, DuplicateArticleException
+from portality.bll.exceptions import IngestException, DuplicateArticleException, ArticleNotAcceptable
 from portality.bll import DOAJ
 
 from portality.lib import plugin
@@ -281,7 +281,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 ingest_exception = True
             except:
                 job.add_audit_message(u"Error cleaning up file which caused IngestException: {x}".format(x=traceback.format_exc()))
-        except DuplicateArticleException as e:
+        except (DuplicateArticleException, ArticleNotAcceptable) as e:
             job.add_audit_message(u"One or more articles did not contain either a DOI or a Fulltext URL")
             file_upload.failed(u"One or more articles did not contain either a DOI or a Fulltext URL")
             try:

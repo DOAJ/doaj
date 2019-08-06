@@ -22,9 +22,11 @@
 {% set jtitle, cite = bibjson.vancouver_citation() %}
 {% set issns = bibjson.issns() %}
 {% set doi = bibjson.get_one_identifier("doi") %}
+{% set normalised_doi = article.get_normalised_doi() %}
 
-{% if jtitle %}<meta name="citation_journal_title" content="{{ jtitle }}">{% endif %}
-{% if jbib.publisher %}<meta name="citation_publisher" content="{{ jbib.publisher }}">{% endif %}
+{% if jtitle %} <meta name="citation_journal_title" content="{{ jtitle }}"> {% endif %}
+{% if jbib.publisher %} <meta name="citation_publisher" content="{{ jbib.publisher }}"> {% endif %}
+{% if doi %} <meta name="citation_doi" content="{{ normalised_doi }}"> {% endif %}
 
 {% for author in bibjson.author %}
 <meta name="citation_author" content="{{author.name}}">
@@ -68,6 +70,7 @@ hosted on DOAJ.org) #}
 {% set jtitle, cite = bibjson.vancouver_citation() %}
 {% set issns = bibjson.issns() %}
 {% set doi = bibjson.get_one_identifier("doi") %}
+{% set normalised_doi = article.get_normalised_doi() %}
 
 <div class="row">
     <div class="col-md-12">
@@ -87,7 +90,10 @@ hosted on DOAJ.org) #}
 
         {# doi #}
         {% if doi %}
-            DOI {{ doi | doi_url | safe}}
+            {% set url_text = normalised_doi | doi_url | safe %}
+            {% if url_text != "" %}
+                DOI <a href="{{ url_text }}"> {{ normalised_doi }}</a>
+            {% endif %}
         {% endif %}
 
         </p>
@@ -208,9 +214,18 @@ hosted on DOAJ.org) #}
         <p>
             <strong>
                 Abstract
-                {% for url in bibjson.get_urls("fulltext") %}
-                    | <a href="{{url}}">Full Text</a>
-                {% endfor %}
+                {% if bibjson.get_urls("fulltext") %}
+                    {% for url in bibjson.get_urls("fulltext") %}
+                        | <a href="{{url}}">Full Text</a>
+                    {% endfor %}
+                {% else %}
+                    {% if doi %}
+                        {% set url_text = normalised_doi | doi_url | safe %}
+                        {% if url_text != "" %}
+                            <a href="{{ url_text }}"> Full Text</a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
             </strong>
         </p>
         <p>{{bibjson.abstract}}</p>

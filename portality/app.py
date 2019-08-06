@@ -33,6 +33,7 @@ from portality.view.doajservices import blueprint as services
 if 'api' in app.config['FEATURES']:
     from portality.view.api_v1 import blueprint as api_v1
 from portality.view.status import blueprint as status
+from portality.lib.normalise import normalise_doi
 
 app.register_blueprint(account, url_prefix='/account')
 app.register_blueprint(admin, url_prefix='/admin')
@@ -208,8 +209,13 @@ def doi_url(doi):
     :param doi: the string DOI
     :return: the HTML link
     """
-    tendot = doi[doi.find('10.'):]
-    return "<a href='https://doi.org/{0}'>{0}</a>".format(tendot)
+
+    try:
+        return "https://doi.org/" + normalise_doi(doi)
+    except ValueError:
+        return ""
+
+
 
 
 @app.template_filter('form_diff_table_comparison_value')
