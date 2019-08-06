@@ -92,6 +92,21 @@ blockquote {
 
 
 /****************************************
+ * Sidebar styles
+ */
+
+.side .nav>li>a {
+    padding-bottom: 3px;
+    padding-top: 3px;
+}
+
+.side .bordered-text-box {
+    margin-right: -15px;
+}
+
+/************************************/
+
+/****************************************
  * Home page search form
  */
 
