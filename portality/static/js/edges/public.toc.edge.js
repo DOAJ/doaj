@@ -63,11 +63,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "bibjson.journal.volume.exact",
                     display: "Volume",
+                    deactivateThreshold: 1,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -75,6 +77,7 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "bibjson.journal.number.exact",
                     display: "Issue",
+                    deactivateThreshold: 1,
                     active: false,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -90,6 +93,7 @@ $.extend(true, doaj, {
                     field: "index.date",
                     interval: "year",
                     display: "Year",
+                    deactivateThreshold: 1,
                     displayFormatter : function(val) {
                         return (new Date(parseInt(val))).getUTCFullYear();
                     },
@@ -111,6 +115,7 @@ $.extend(true, doaj, {
                     field: "index.date_toc_fv_month",
                     interval: "month",
                     display: "Month",
+                    deactivateThreshold: 1,
                     active: false,
                     displayFormatter : function(val) {
                         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

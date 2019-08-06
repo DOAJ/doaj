@@ -50,11 +50,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "role",
                     display: "Role",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: true,
                         togglable: false,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
 

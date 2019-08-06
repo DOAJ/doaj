@@ -56,11 +56,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "name",
                     display: "Name Keywords",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: true,
                         togglable: false,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
 

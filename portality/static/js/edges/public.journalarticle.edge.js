@@ -59,6 +59,7 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "_type",
                     display: "Journals vs. Articles",
+                    deactivateThreshold: 1,
                     size: 2,
                     orderBy: "term",
                     orderDir: "desc",
@@ -70,7 +71,8 @@ $.extend(true, doaj, {
                         controls: false,
                         open: true,
                         togglable: false,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -78,11 +80,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.classification.exact",
                     display: "Subject",
+                    deactivateThreshold: 1,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -90,6 +94,7 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.has_apc.exact",
                     display: "Article processing charges (APCs)",
+                    deactivateThreshold: 1,
                     active: false,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -106,6 +111,7 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "bibjson.journal.title.exact",
                     display: "Journal title",
+                    deactivateThreshold: 1,
                     active: false,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -120,11 +126,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.has_seal.exact",
                     display: "DOAJ Seal",
+                    deactivateThreshold: 1,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -132,11 +140,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.license.exact",
                     display: "Journal License",
+                    deactivateThreshold: 1,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -144,11 +154,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.publisher.exact",
                     display: "Publisher",
+                    deactivateThreshold: 1,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -156,6 +168,7 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.country.exact",
                     display: "Country of Publisher",
+                    deactivateThreshold: 1,
                     active: false,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -170,11 +183,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.language.exact",
                     display: "Fulltext Language",
+                    deactivateThreshold: 1,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -183,6 +198,7 @@ $.extend(true, doaj, {
                     field: "bibjson.editorial_review.process.exact",
                     display: "Peer review",
                     ignoreEmptyString: true,
+                    deactivateThreshold: 1,
                     active: false,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,

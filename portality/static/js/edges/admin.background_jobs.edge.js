@@ -146,11 +146,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "action.exact",
                     display: "Action",
+                    deactivateThreshold : 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -158,11 +160,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "user.exact",
                     display: "Submitted By",
+                    deactivateThreshold : 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -170,11 +174,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "status.exact",
                     display: "Status",
+                    deactivateThreshold : 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
 

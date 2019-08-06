@@ -23,6 +23,7 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "admin.in_doaj",
                     display: "In DOAJ?",
+                    deactivateThreshold: 1,
                     valueMap : {
                         "T" : "True",
                         "F" : "False"
@@ -31,7 +32,8 @@ $.extend(true, doaj, {
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -39,11 +41,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "admin.owner.exact",
                     display: "Owner",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -51,11 +55,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.has_editor.exact",
                     display: "Has Associate Editor?",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -63,11 +69,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "admin.editor_group.exact",
                     display: "Editor Group",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -75,11 +83,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "admin.editor.exact",
                     display: "Associate Editor",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -87,6 +97,7 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "bibjson.author_pays.exact",
                     display: "Publication charges?",
+                    deactivateThreshold: 1,
                     valueMap : {
                         "N" : "No",
                         "Y" : "Yes",
@@ -97,7 +108,8 @@ $.extend(true, doaj, {
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -105,11 +117,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.license.exact",
                     display: "Journal License",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -117,11 +131,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.publisher.exact",
                     display: "Publisher",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -129,11 +145,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "bibjson.provider.exact",
                     display: "Platform, Host, Aggregator",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -141,11 +159,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.classification.exact",
                     display: "Classification",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -153,11 +173,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.subject.exact",
                     display: "Subject",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -165,11 +187,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.language.exact",
                     display: "Journal Language",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -177,11 +201,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.country.exact",
                     display: "Country of publisher",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -189,11 +215,13 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.title.exact",
                     display: "Journal Title",
+                    deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
-                        countFormat: countFormat
+                        countFormat: countFormat,
+                        hideInactive: true
                     })
                 }),
 
