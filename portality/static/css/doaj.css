@@ -31,6 +31,7 @@ blockquote {
 
 .alert-messages {
     margin-left: -15px;
+    margin-right: -15px;
 }
 
 .alert-message {
@@ -100,8 +101,10 @@ blockquote {
     padding-top: 3px;
 }
 
-.side .bordered-text-box {
-    margin-right: -15px;
+@media (min-width:996px) {
+    .side .bordered-text-box {
+        margin-right: -15px;
+    }
 }
 
 /************************************/
