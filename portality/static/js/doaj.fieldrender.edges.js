@@ -422,7 +422,11 @@ $.extend(true, doaj, {
             }
             if (resultobj.bibjson.title) {
                 if (isjournal) {
-                    field += "&nbsp<a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + edges.escapeHtml(resultobj.bibjson.title) + "</a>";
+                    var display = edges.escapeHtml(resultobj.bibjson.title);
+                    if (resultobj.admin.in_doaj) {
+                        display =  "<a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + display + "</a>";
+                    }
+                    field += "&nbsp;" + display;
                 } else {
                     field += "&nbsp" + edges.escapeHtml(resultobj.bibjson.title);
                 }
