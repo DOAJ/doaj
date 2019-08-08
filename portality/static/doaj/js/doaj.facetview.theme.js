@@ -8,50 +8,6 @@ function doajFixedQueryWidgetPostRender(options, context) {
 }
 
 
-
-
-function editorGroupJournalNotFound() {
-    return "<tr class='facetview_not_found'>" +
-        "<td><p>There are no journals for your editor group(s) that meet the search criteria</p>" +
-        "<p>If you have not set any search criteria, this means there are no journals currently allocated to your group</p>" +
-        "</tr>";
-}
-
-function editorGroupApplicationNotFound() {
-    return "<tr class='facetview_not_found'>" +
-        "<td><p>There are no applications for your editor group(s) that meet the search criteria</p>" +
-        "<p>If you have not set any search criteria, this means there are no applications currently allocated to your group</p>" +
-        "</tr>";
-}
-
-function associateJournalNotFound() {
-    return "<tr class='facetview_not_found'>" +
-        "<td><p>There are no journals assigned to you that meet the search criteria</p>" +
-        "<p>If you have not set any search criteria, this means there are no journals currently assigned to you</p>" +
-        "</tr>";
-}
-
-function associateApplicationNotFound() {
-    return "<tr class='facetview_not_found'>" +
-        "<td><p>There are no applications assigned to you that meet the search criteria</p>" +
-        "<p>If you have not set any search criteria, this means there are no applications currently assigned to you</p>" +
-        "</tr>";
-}
-
-function publisherJournalNotFound() {
-    return "<tr class='facetview_not_found'>" +
-        "<td><p>This tab normally shows the journals which are indexed in DOAJ and in your account. It doesn't look like that you have any journals in DOAJ currently. " +
-        "Please <a href=" + document.location.origin + "/application/new>submit an application</a> for any open access, peer-reviewed journals which you would like to see in DOAJ.</p>" +
-        "</tr>";
-}
-
-function publisherUpdateRequestNotFound() {
-    return "<tr class='facetview_not_found'>" +
-        "<td><p>You do not have any active update requests that meet your search criteria</p>" +
-        "<p>If you have not set any search criteria, you do not have any update requests at this time.</p>" +
-        "</tr>";
-}
-
 //////////////////////////////////////////////////////
 // value functions for facet displays
 /////////////////////////////////////////////////////

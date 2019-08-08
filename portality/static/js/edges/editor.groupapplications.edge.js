@@ -248,6 +248,8 @@ $.extend(true, doaj, {
                     id: "results",
                     category: "results",
                     renderer: edges.bs3.newResultsFieldsByRowRenderer({
+                        noResultsText: "<p>There are no applications for your editor group(s) that meet the search criteria</p>" +
+                                        "<p>If you have not set any search criteria, this means there are no applications currently allocated to your group</p>",
                         rowDisplay : [
                             [
                                 {

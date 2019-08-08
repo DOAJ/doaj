@@ -118,6 +118,8 @@ $.extend(true, doaj, {
                     id: "results",
                     category: "results",
                     renderer: edges.bs3.newResultsFieldsByRowRenderer({
+                        noResultsText: "<p>You do not have any active update requests that meet your search criteria</p>" +
+                                        "<p>If you have not set any search criteria, you do not have any update requests at this time.</p>",
                         rowDisplay : [
                             [
                                 {

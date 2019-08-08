@@ -238,6 +238,8 @@ $.extend(true, doaj, {
                     id: "results",
                     category: "results",
                     renderer: edges.bs3.newResultsFieldsByRowRenderer({
+                        noResultsText: "<p>There are no journals assigned to you that meet the search criteria</p>" +
+                                        "<p>If you have not set any search criteria, this means there are no journals currently assigned to you</p>",
                         rowDisplay : [
                             [
                                 {

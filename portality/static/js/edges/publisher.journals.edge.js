@@ -152,6 +152,8 @@ $.extend(true, doaj, {
                     id: "results",
                     category: "results",
                     renderer: edges.bs3.newResultsFieldsByRowRenderer({
+                        noResultsText: "<p>This tab normally shows the journals which are indexed in DOAJ and in your account. It doesn't look like that you have any journals in DOAJ, or none that match your current search criteria. " +
+                                        "Please <a href=" + document.location.origin + "/application/new>submit an application</a> for any open access, peer-reviewed journals which you would like to see in DOAJ.</p>",
                         rowDisplay : [
                             [
                                 {
