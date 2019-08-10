@@ -261,16 +261,21 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         job.add_audit_message(u"Importing from {x}".format(x=path))
 
         articleService = DOAJ.articleService()
+        job.add_audit_message("articleService")
         account = models.Account.pull(file_upload.owner)
-
+        job.add_audit_message("account")
         xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(file_upload.schema)
+        job.add_audit_message("xwalk name")
         xwalk = plugin.load_class(xwalk_name)()
+        job.add_audit_message("xwalk")
 
         ingest_exception = False
         result = {}
         try:
             with open(path) as handle:
+                job.add_audit_message("with(path)")
                 articles = xwalk.crosswalk_file(handle, add_journal_info=False) # don't import the journal info, as we haven't validated ownership of the ISSNs in the article yet
+                job.add_audit_message("xwalk.crosswalk_file")
                 for article in articles:
                     article.set_upload_id(file_upload.id)
                 result = articleService.batch_create_articles(articles, account, add_journal_info=True)
@@ -308,10 +313,13 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         unowned = result.get("unowned", [])
         unmatched = result.get("unmatched", [])
 
+        job.add_audit_message(u"success {x}, fail {y}".format(x=success,y=fail))
+
         if success == 0 and fail > 0 and not ingest_exception:
             file_upload.failed("All articles in file failed to import")
             job.add_audit_message("All articles in file failed to import")
         if success > 0 and fail == 0:
+            job.add_audit_message("file upload success > 0 fail == 0")
             file_upload.processed(success, update, new)
         if success > 0 and fail > 0:
             file_upload.partial(success, fail, update, new)
@@ -324,6 +332,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         if not ingest_exception:
             try:
+                job.add_audit_message("removing file here")
                 os.remove(path) # just remove the file, no need to keep it
             except Exception as e:
                 job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=e.message))
