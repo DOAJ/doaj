@@ -70,16 +70,19 @@ class CrossrefXWalk(object):
         # go through the records in the doc and crosswalk each one individually
         articles = []
         root = doc.getroot()
-        head = root.findall("head")
-        body = root.findall("body")
-        journal = body.findall("journal")
-        for record in journal.findall("journal_article"):
-            article = self.crosswalk_article(record, head, body, journal)
-            articles.append(article)
+        head = root.find("{http://www.crossref.org/schema/4.4.2}head")
+        body = root.find("{http://www.crossref.org/schema/4.4.2}body")
+        journals = body.find("{http://www.crossref.org/schema/4.4.2}journal")    #
+        if journals is not None:
+            for journal in journals:
+                articles = journal.findall("{http://www.crossref.org/schema/4.4.2}journal_article")
+                for record in articles:
+                    article = self.crosswalk_article(record, journal)
+                    articles.append(article)
 
         return articles
 
-    def crosswalk_article(self, record, head, body, journal):
+    def crosswalk_article(self, record, journal):
         """
 Example record:
 <doi_batch version="4.4.2" xmlns="http://www.crossref.org/schema/4.4.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.crossref.org/schema/4.3.7 http://www.crossref.org/schema/deposit/crossref4.3.7.xsd">
@@ -174,54 +177,67 @@ Example record:
         '''
 
         # journal title
-        jt = _element(_element(journal, "journal_metadata"), "full_title")
-        if jt is not None:
-            bibjson.journal_title = jt
+        jm = journal.find("{http://www.crossref.org/schema/4.4.2}journal_metadata")
+        if jm is not None:
+            jt = _element(jm, "{http://www.crossref.org/schema/4.4.2}full_title")
+            if jt is not None:
+                bibjson.journal_title = jt
 
-        # p-issn
-        issn = _element(_element(journal, "issn"), "issn")
-        if issn is not None:
-            if issn.attrib["mediatype"] == 'print':
-                bibjson.add_identifier(bibjson.P_ISSN, issn.upper())
-
-        '''
-        # e-issn
-        eissn = _element(record, "eissn")
-        if eissn is not None:
-            bibjson.add_identifier(bibjson.E_ISSN, eissn.upper())
-        '''
+        # p-issn and e-issn
+        md = journal.find("{http://www.crossref.org/schema/4.4.2}journal_metadata")
+        if md is not None:
+            issn = md.find("{http://www.crossref.org/schema/4.4.2}issn")
+            if issn is not None:
+                if issn.attrib["media_type"] is None or issn.attrib["media_type"] == 'print':
+                    bibjson.add_identifier(bibjson.P_ISSN, _element(md, "{http://www.crossref.org/schema/4.4.2}issn").upper())
+                elif issn.attrib["media_type"] == 'electronic':
+                    bibjson.add_identifier(bibjson.E_ISSN, issn.upper())
 
 
         # publication date
-        pd = _element(record, "publicationDate")
+        pd = record.find("{http://www.crossref.org/schema/4.4.2}publication_date")
         if pd is not None:
-            bibjson.year = _element(pd, "year")
-            bibjson.month = _element(pd, "month")
+            bibjson.year = _element(pd, "{http://www.crossref.org/schema/4.4.2}year")
+            bibjson.month = _element(pd, "{http://www.crossref.org/schema/4.4.2}month")
 
         # volume
-        vol = _element(_element(journal, "journal_volume"), "volume")
+
+        issue = journal.find("{http://www.crossref.org/schema/4.4.2}journal_issue")
+
+        vol = issue.find("{http://www.crossref.org/schema/4.4.2}journal_volume")
         if vol is not None:
-            bibjson.volume = vol
+            volume = _element(vol, "{http://www.crossref.org/schema/4.4.2}volume")
+            if volume is not None:
+                bibjson.volume = volume
 
         # issue
-        iss = _element(_element(journal, "journal_issue"), "issue")
-        if iss is not None:
-            bibjson.number = iss
+        number = _element(issue, "{http://www.crossref.org/schema/4.4.2}issue")
+        if number is not None:
+            bibjson.number = number
 
+        pages = record.find('{http://www.crossref.org/schema/4.4.2}pages')
         # start page
-        sp = _element(record, "first_page")
+        sp = _element(pages, "{http://www.crossref.org/schema/4.4.2}first_page")
         if sp is not None:
             bibjson.start_page = sp
 
         # end page
-        ep = _element(record, "last_page")
+        ep = _element(pages, "{http://www.crossref.org/schema/4.4.2}last_page")
         if ep is not None:
             bibjson.end_page = ep
 
         # doi
-        doi = _element(_element(record, "doi_data"), "doi")
-        if doi is not None:
-            bibjson.add_identifier(bibjson.DOI, doi)
+        d = record.find("{http://www.crossref.org/schema/4.4.2}doi_data")
+        if d is not None:
+            doi = _element(d, "{http://www.crossref.org/schema/4.4.2}doi")
+            if doi is not None:
+                bibjson.add_identifier(bibjson.DOI, doi)
+
+        # fulltext
+
+        ftel = _element(d, "{http://www.crossref.org/schema/4.4.2}resource")
+        if ftel is not None and ftel.text is not None and ftel.text != "":
+            bibjson.add_url(ftel, "fulltext")
 
         ''''
         # publisher record id
@@ -237,50 +253,37 @@ Example record:
         '''
 
         # title
-        title = _element(_element(record, "titles"), "title")
-        if title is not None:
-            bibjson.title = title
+        titles = record.find('{http://www.crossref.org/schema/4.4.2}titles')
+        if titles is not None:
+            title = _element(titles, "{http://www.crossref.org/schema/4.4.2}title")
+            if title is not None:
+                bibjson.title = title
 
         # authors
-        ## first we need to extract the affiliations
-        contributors = {}
-        contribs = record.find("contributors")
+        contributors = record.find("{http://www.crossref.org/schema/4.4.2}contributors")
+        contribs = contributors.findall("{http://www.crossref.org/schema/4.4.2}person_name")
         if contribs is not None:
             for ctb in contribs:
-                ctb["contributor_role"]
-        ## now crosswalk each author and dereference their affiliation from the table
-        authorsel = record.find("authors")
-        if authorsel is not None:
-            for ael in authorsel:
-                name = _element(ael, "name")
-                affid = _element(ael, "affiliationId")
-                aff = affiliations.get(affid)
-                bibjson.add_author(name, affiliation=aff)
+                if ctb.attrib["contributor_role"] == 'author':
+                    name = _element(ctb, "{http://www.crossref.org/schema/4.4.2}given_name")
+                    name = name + ' ' + _element(ctb, "{http://www.crossref.org/schema/4.4.2}surname")
+                    bibjson.add_author(name, affiliation=None)
 
         # abstract
-        abstract = _element(record, "abstract")
+        abstract = _element(record, "{http://www.crossref.org/schema/4.4.2}abstract")
         if abstract is not None:
             bibjson.abstract = abstract[:30000]  # avoids Elasticsearch
             # exceptions about .exact analyser not being able to handle
             # more than 32766 UTF8 characters
 
-        # fulltext
-        ftel = record.find("fullTextUrl")
-        if ftel is not None and ftel.text is not None and ftel.text != "":
-            ct = ftel.get("format")
-            url = ftel.text
-            bibjson.add_url(url, "fulltext", ct)
-
+        '''
         # keywords
         keyel = record.find("keywords")
         if keyel is not None:
             for kel in keyel:
                 if kel.text != "":
                     bibjson.add_keyword(kel.text)
-
-        # add the journal info if requested
-        if add_journal_info:
-            article.add_journal_metadata()
+        '''
 
         return article
 
