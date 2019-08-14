@@ -62,7 +62,7 @@ class CrossrefXWalk(object):
             self.validation_log = el
         return valid
 
-    def crosswalk_file(self, file_handle, import_journal_info):
+    def crosswalk_file(self, file_handle, add_journal_info=True):
         doc = self.validate_file(file_handle)
         return self.crosswalk_doc(doc)
 
@@ -184,45 +184,46 @@ Example record:
             if issn.attrib["mediatype"] == 'print':
                 bibjson.add_identifier(bibjson.P_ISSN, issn.upper())
 
+        '''
         # e-issn
         eissn = _element(record, "eissn")
         if eissn is not None:
             bibjson.add_identifier(bibjson.E_ISSN, eissn.upper())
+        '''
+
 
         # publication date
         pd = _element(record, "publicationDate")
         if pd is not None:
-            y, m = _year_month(pd)
-            if y is not None:
-                bibjson.year = y
-            if m is not None:
-                bibjson.month = m
+            bibjson.year = _element(pd, "year")
+            bibjson.month = _element(pd, "month")
 
         # volume
-        vol = _element(record, "volume")
+        vol = _element(_element(journal, "journal_volume"), "volume")
         if vol is not None:
             bibjson.volume = vol
 
         # issue
-        iss = _element(record, "issue")
+        iss = _element(_element(journal, "journal_issue"), "issue")
         if iss is not None:
             bibjson.number = iss
 
         # start page
-        sp = _element(record, "startPage")
+        sp = _element(record, "first_page")
         if sp is not None:
             bibjson.start_page = sp
 
         # end page
-        ep = _element(record, "endPage")
+        ep = _element(record, "last_page")
         if ep is not None:
             bibjson.end_page = ep
 
         # doi
-        doi = _element(record, "doi")
+        doi = _element(_element(record, "doi_data"), "doi")
         if doi is not None:
             bibjson.add_identifier(bibjson.DOI, doi)
 
+        ''''
         # publisher record id
         pri = _element(record, "publisherRecordId")
         if pri is not None:
@@ -233,21 +234,20 @@ Example record:
         if dt is not None:
             # FIXME: outstanding question as to what to do with this
             pass
+        '''
 
         # title
-        title = _element(record, "title")
+        title = _element(_element(record, "titles"), "title")
         if title is not None:
             bibjson.title = title
 
         # authors
         ## first we need to extract the affiliations
-        affiliations = {}
-        affel = record.find("affiliationsList")
-        if affel is not None:
-            for ael in affel:
-                affid = ael.get("affiliationId")
-                aff = ael.text
-                affiliations[affid] = aff
+        contributors = {}
+        contribs = record.find("contributors")
+        if contribs is not None:
+            for ctb in contribs:
+                ctb["contributor_role"]
         ## now crosswalk each author and dereference their affiliation from the table
         authorsel = record.find("authors")
         if authorsel is not None:
@@ -288,24 +288,6 @@ Example record:
 ###############################################################################
 ## some convenient utilities
 ###############################################################################
-
-def _year_month(date):
-    try:
-        stamp = datetime.strptime(date, "%Y-%m-%d")
-        return stamp.year, stamp.month
-    except:
-        pass
-    try:
-        stamp = datetime.strptime(date, "%Y-%m")
-        return stamp.year, stamp.month
-    except:
-        pass
-    try:
-        stamp = datetime.strptime(date, "%Y")
-        return stamp.year, None
-    except:
-        pass
-    return None, None
 
 
 def _element(xml, field):
