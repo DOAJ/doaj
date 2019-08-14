@@ -1890,6 +1890,30 @@ We should parameterise this test set
         assert fu.status == "failed"
         assert fu.error == u'Unable to validate document with identified schema'
 
+    def test_55_valid_url_with_http_anchor(self):
+        handle = ArticleFixtureFactory.valid_url_http_anchor()
+        f = MockFileUpload(stream=handle)
+
+        previous = []
+        id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+        assert fu.status == "validated"
+
+    def test_56_valid_url_with_parameters(self):
+        handle = ArticleFixtureFactory.valid_url_parameters()
+        f = MockFileUpload(stream=handle)
+
+        previous = []
+        id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+        assert fu.status == "validated"
+
+
+
 
 # TODO: reinstate this test when author emails have been disallowed again
 '''

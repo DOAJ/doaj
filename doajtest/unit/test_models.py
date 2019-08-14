@@ -1098,8 +1098,7 @@ class TestClient(DoajTestCase):
             article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
             articles.append(article)
 
-        for i in range(len(articles)):
-            articles[i].save(blocking=True)
+        models.Article.blockall([(a.id, a.last_updated) for a in articles])
 
         journal = models.Journal()
         bj = journal.bibjson()
