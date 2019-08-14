@@ -1099,7 +1099,7 @@ class TestClient(DoajTestCase):
             articles.append(article)
 
         for i in range(len(articles)):
-            articles[i].save(blocking=i == len(articles) - 1)
+            articles[i].save(blocking=True)
 
         journal = models.Journal()
         bj = journal.bibjson()
