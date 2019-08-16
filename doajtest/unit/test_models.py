@@ -1098,7 +1098,7 @@ class TestClient(DoajTestCase):
             article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
             articles.append(article)
 
-        models.Article.blockall([(a.id, a.last_updated) for a in articles])
+        models.Article.blockall([(a.id, datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')) for a in articles])
 
         journal = models.Journal()
         bj = journal.bibjson()
