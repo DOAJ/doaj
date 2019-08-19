@@ -4,7 +4,7 @@ from StringIO import StringIO
 from copy import deepcopy
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "doajxml_article_uploads.xml")
+ARTICLES = os.path.join(RESOURCES, "crossref_article_uploads.xml")
 
 
 class CrossrefArticleFixtureFactory(object):
@@ -15,7 +15,7 @@ class CrossrefArticleFixtureFactory(object):
             doc = etree.parse(f)
         records = doc.getroot()
         articles = records.xpath(xpath)
-        nr = etree.Element("records")
+        nr = etree.Element("{http://www.crossref.org/schema/4.4.2}doi_batch")
         for a in articles:
             nr.append(a)
         out = etree.tostring(nr, encoding="UTF-8", xml_declaration=True)
@@ -23,7 +23,7 @@ class CrossrefArticleFixtureFactory(object):
 
     @classmethod
     def upload_2_issns_correct(cls):
-        return cls._response_from_xpath("//record[journalTitle='2 ISSNs Correct']")
+        return cls._response_from_xpath("//body[journal][journal_metadata][full_title='2 ISSNs Correct']")
 
     @classmethod
     def upload_2_issns_ambiguous(cls):

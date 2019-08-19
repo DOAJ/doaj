@@ -2,6 +2,7 @@ from doajtest.helpers import DoajTestCase
 
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
+from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
 from portality import models
 from portality.core import app
@@ -963,6 +964,8 @@ class TestIngestArticles(DoajTestCase):
         account.set_id("testowner1")
         account.save(blocking=True)
 
+        #doaj test
+
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         f = MockFileUpload(stream=handle)
 
@@ -980,15 +983,44 @@ class TestIngestArticles(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is None
+        assert fu is not None, "doaj xml upload failed"
+        assert fu.status == "failed", "doaj xml upload failed"
+        assert fu.error is not None and fu.error != "", "doaj xml upload failed"
+        assert fu.error_details is None, "doaj xml upload failed"
 
         fr = fu.failure_reasons
-        assert "shared" in fr
-        assert "1234-5678" in fr["shared"]
-        assert "9876-5432" in fr["shared"]
+        assert "shared" in fr, "doaj xml upload failed"
+        assert "1234-5678" in fr["shared"], "doaj xml upload failed"
+        assert "9876-5432" in fr["shared"], "doaj xml upload failed"
+
+        #crossref
+
+        handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
+        f = MockFileUpload(stream=handle)
+
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="crossref", upload_file=f)
+        id = job.params.get("ingest_articles__file_upload_id")
+        self.cleanup_ids.append(id)
+
+        # because file upload gets created and saved by prepare
+        time.sleep(2)
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task.run()
+
+        # because file upload needs to be re-saved
+        time.sleep(2)
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None, "crossref upload failed"
+        assert fu.status == "failed", "crossref upload failed"
+        assert fu.error is not None and fu.error != "", "crossref upload failed"
+        assert fu.error_details is None, "crossref upload failed"
+
+        fr = fu.failure_reasons
+        assert "shared" in fr, "crossref upload failed"
+        assert "1234-5678" in fr["shared"], "crossref upload failed"
+        assert "9876-5432" in fr["shared"], "crossref upload failed"
 
     def test_33_run_fail_unowned_issn(self):
         # Create 2 journals with different owners and one different issn each.  The two issns in the

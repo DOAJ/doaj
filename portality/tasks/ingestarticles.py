@@ -446,7 +446,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 pass
             record.save()
             previous.insert(0, record)
-            raise BackgroundException("Failed to upload file: " + e.message + "; " + str(e.inner_message))
+            raise BackgroundException("Failed to upload file: " + e.message + "; " + str(e.inner_message) + "; " + str(record.schema) + "; " + str(schema))
         except Exception as e:
             record.failed("File system error when reading file")
             try:
