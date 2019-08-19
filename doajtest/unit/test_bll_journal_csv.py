@@ -2,7 +2,7 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import DoajXmlArticleFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
@@ -98,16 +98,16 @@ class TestBLLJournalCSV(DoajTestCase):
             bj = journal.bibjson()
             bj.alternative_title = u"Заглавие на журнала"   # checking mixed unicode
             issns = journal.bibjson().issns()
-            source1 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=False)
+            source1 = DoajXmlArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=False)
             articles.append(models.Article(**source1))
             comparisons[issns[0]] = {"issns" : issns, "article_count": 0, "article_latest" : ""}
             if i < journals_with_articles_count:
-                source2 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
+                source2 = DoajXmlArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
                 article2 = models.Article(**source2)
                 article2.set_created("2019-0{i}-01T00:00:00Z".format(i=i + 1))
                 articles.append(article2)
 
-                source3 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
+                source3 = DoajXmlArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
                 article3 = models.Article(**source3)
                 article3.set_created("2019-0{i}-02T00:00:00Z".format(i=i + 1))
                 articles.append(article3)

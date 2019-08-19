@@ -1,7 +1,7 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import DoajXmlArticleFixtureFactory, AccountFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
@@ -101,7 +101,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
             articles = []
             if articles_arg == "yes":
                 # one with a DOI and no fulltext
-                source = ArticleFixtureFactory.make_article_source(
+                source = DoajXmlArticleFixtureFactory.make_article_source(
                     eissn="0000-0000",
                     pissn="0000-0000",
                     doi="10.123/abc/0",
@@ -115,7 +115,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                     journal_specs.append({"title" : "0", "pissn" : "0000-0000", "eissn" : "0000-0000"})
 
                 # another with a DOI and no fulltext
-                source = ArticleFixtureFactory.make_article_source(
+                source = DoajXmlArticleFixtureFactory.make_article_source(
                     eissn="1111-1111",
                     pissn="1111-1111",
                     doi="10.123/abc/1",
@@ -129,7 +129,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                     journal_specs.append({"title" : "1", "pissn" : "1111-1111", "eissn" : "1111-1111"})
 
                 # one with a fulltext and no DOI
-                source = ArticleFixtureFactory.make_article_source(
+                source = DoajXmlArticleFixtureFactory.make_article_source(
                     eissn="2222-2222",
                     pissn="2222-2222",
                     fulltext="http://example.com/2",
@@ -143,7 +143,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                     journal_specs.append({"title" : "2", "pissn" : "2222-2222", "eissn" : "2222-2222"})
 
                 # another one with a fulltext and no DOI
-                source = ArticleFixtureFactory.make_article_source(
+                source = DoajXmlArticleFixtureFactory.make_article_source(
                     eissn="3333-3333",
                     pissn="3333-3333",
                     fulltext="http://example.com/3",
@@ -163,7 +163,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
 
                 if duplicate_in_batch:
                     # one with a duplicated DOI
-                    source = ArticleFixtureFactory.make_article_source(
+                    source = DoajXmlArticleFixtureFactory.make_article_source(
                         eissn="4444-4444",
                         pissn="4444-4444",
                         doi="10.123/abc/0",
@@ -177,7 +177,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                         journal_specs.append({"title" : "4", "pissn" : "4444-4444", "eissn" : "4444-4444"})
 
                     # one with a duplicated Fulltext
-                    source = ArticleFixtureFactory.make_article_source(
+                    source = DoajXmlArticleFixtureFactory.make_article_source(
                         eissn="5555-5555",
                         pissn="5555-5555",
                         doi="10.123/abc/5",

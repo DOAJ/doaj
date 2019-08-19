@@ -1,6 +1,6 @@
 from portality import models
 
-from doajtest.fixtures import AccountFixtureFactory, ArticleFixtureFactory
+from doajtest.fixtures import AccountFixtureFactory, DoajXmlArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, deep_sort
 
 from portality.bll.services.query import QueryService, Query
@@ -292,10 +292,10 @@ class TestQuery(DoajTestCase):
 
         articles = []
         for i in range(0, 3):
-            articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False)))
+            articles.append(models.Article(**DoajXmlArticleFixtureFactory.make_article_source(with_id=False)))
             assert articles[-1].publisher_record_id() == 'some_identifier'
             articles[-1].save(blocking=True)
-        articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False, in_doaj=False)))
+        articles.append(models.Article(**DoajXmlArticleFixtureFactory.make_article_source(with_id=False, in_doaj=False)))
         articles[-1].save(blocking=True)
 
         res = qsvc.search('query', 'article', {"query": {"match_all": {}}}, account=None, additional_parameters={})
@@ -314,10 +314,10 @@ class TestQuery(DoajTestCase):
 
         articles = []
         for i in range(0, 3):
-            articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False)))
+            articles.append(models.Article(**DoajXmlArticleFixtureFactory.make_article_source(with_id=False)))
             assert articles[-1].publisher_record_id() == 'some_identifier'
             articles[-1].save(blocking=True)
-        articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False, in_doaj=False)))
+        articles.append(models.Article(**DoajXmlArticleFixtureFactory.make_article_source(with_id=False, in_doaj=False)))
         articles[-1].save(blocking=True)
         q = {"query": {"match_all": {}}}
         for res in qsvc.scroll('api_query', 'article', q, None, None):

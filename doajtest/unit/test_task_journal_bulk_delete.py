@@ -5,7 +5,7 @@ from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.tasks.journal_bulk_delete import journal_bulk_delete_manage
 
-from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ArticleFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, DoajXmlArticleFixtureFactory
 
 TEST_JOURNAL_COUNT = 25
 TEST_ARTICLES_PER_JOURNAL = 2
@@ -22,7 +22,7 @@ class TestTaskJournalBulkDelete(DoajTestCase):
             self.journals.append(j)
             j.save()
             for i in range(0, TEST_ARTICLES_PER_JOURNAL):
-                a = models.Article(**ArticleFixtureFactory.make_article_source(with_id=False, eissn=j.bibjson().first_eissn, pissn=j.bibjson().first_pissn))
+                a = models.Article(**DoajXmlArticleFixtureFactory.make_article_source(with_id=False, eissn=j.bibjson().first_eissn, pissn=j.bibjson().first_pissn))
                 a.save()
                 self.articles.append(a)
 

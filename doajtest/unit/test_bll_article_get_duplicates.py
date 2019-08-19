@@ -1,7 +1,7 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory, AccountFixtureFactory
+from doajtest.fixtures import DoajXmlArticleFixtureFactory, JournalFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
@@ -70,7 +70,7 @@ class TestBLLArticleGetDuplicates(DoajTestCase):
         # generate our incoming article
         article = None
         if article_arg == "yes":
-            source = ArticleFixtureFactory.make_article_source()
+            source = DoajXmlArticleFixtureFactory.make_article_source()
             article = Article(**source)
             article.set_id()
 

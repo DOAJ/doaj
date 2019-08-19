@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from portality.api.v1 import ArticlesBulkApi, Api401Error, Api400Error
 from portality import models
-from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import DoajXmlArticleFixtureFactory, JournalFixtureFactory
 from copy import deepcopy
 from portality.dao import ESMappingMissingError
 from flask import url_for
@@ -27,7 +27,7 @@ class TestCrudArticle(DoajTestCase):
         # set up all the bits we need - 10 articles
         dataset = []
         for i in range(1, 11):
-            data = ArticleFixtureFactory.make_incoming_api_article()
+            data = DoajXmlArticleFixtureFactory.make_incoming_api_article()
             # change the DOI and fulltext URLs to escape duplicate detection
             # and try with multiple articles
             doi_ix = find_dict_in_list(data['bibjson']['identifier'], 'type', 'doi')
@@ -70,7 +70,7 @@ class TestCrudArticle(DoajTestCase):
 
     def test_02_create_duplicate_articles(self):
         # set up all the bits we need - 10 articles
-        data = ArticleFixtureFactory.make_incoming_api_article()
+        data = DoajXmlArticleFixtureFactory.make_incoming_api_article()
         dataset = [data] * 10
 
         # create an account that we'll do the create as
@@ -96,7 +96,7 @@ class TestCrudArticle(DoajTestCase):
     def test_03_create_articles_fail(self):
         # if the account is dud
         with self.assertRaises(Api401Error):
-            data = ArticleFixtureFactory.make_incoming_api_article()
+            data = DoajXmlArticleFixtureFactory.make_incoming_api_article()
             dataset = [data] * 10
             ids = ArticlesBulkApi.create(dataset, None)
 
@@ -125,7 +125,7 @@ class TestCrudArticle(DoajTestCase):
         # set up all the bits we need
         dataset = []
         for i in range(10):
-            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i), fulltext="http://example.com/" + str(i))
+            data = DoajXmlArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i), fulltext="http://example.com/" + str(i))
             dataset.append(data)
 
         # create the account we're going to work as
@@ -162,7 +162,7 @@ class TestCrudArticle(DoajTestCase):
         # set up all the bits we need
         dataset = []
         for i in range(10):
-            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i), fulltext="http://example.com/" + str(i))
+            data = DoajXmlArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i), fulltext="http://example.com/" + str(i))
             dataset.append(data)
 
         # create the main account we're going to work as
@@ -214,8 +214,8 @@ class TestCrudArticle(DoajTestCase):
         # set up all the bits we need
         dataset = []
         for i in range(10):
-            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i),
-                                                                   fulltext="http://example.com/" + str(i))
+            data = DoajXmlArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i),
+                                                                          fulltext="http://example.com/" + str(i))
             dataset.append(data)
 
         # create the main account we're going to work as

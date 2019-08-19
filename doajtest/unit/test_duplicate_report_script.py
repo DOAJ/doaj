@@ -2,7 +2,7 @@
 
 from portality.core import app
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import ArticleFixtureFactory
+from doajtest.fixtures import DoajXmlArticleFixtureFactory
 from portality.tasks import article_duplicate_report
 from portality.lib import paths
 from portality import models
@@ -34,7 +34,7 @@ class TestArticleMatch(DoajTestCase):
         """Check duplication reporting across all articles in the index"""
 
         # Create 2 identical articles, a duplicate pair
-        article1 = models.Article(**ArticleFixtureFactory.make_article_source(
+        article1 = models.Article(**DoajXmlArticleFixtureFactory.make_article_source(
             eissn='1111-1111',
             pissn='2222-2222',
             with_id=False,
@@ -47,7 +47,7 @@ class TestArticleMatch(DoajTestCase):
 
         time.sleep(1)
 
-        article2 = models.Article(**ArticleFixtureFactory.make_article_source(
+        article2 = models.Article(**DoajXmlArticleFixtureFactory.make_article_source(
             eissn='1111-1111',
             pissn='2222-2222',
             with_id=False,
@@ -92,7 +92,7 @@ class TestArticleMatch(DoajTestCase):
 
         # Create 6 duplicate articles with varying creation times and duplication criteria
         for i in range(1, 7):
-            src_minus_identifiers = ArticleFixtureFactory.make_article_source(
+            src_minus_identifiers = DoajXmlArticleFixtureFactory.make_article_source(
                 with_id=False,
                 in_doaj=True,
                 with_journal_info=True

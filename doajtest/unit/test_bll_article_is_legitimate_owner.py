@@ -1,7 +1,7 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory
+from doajtest.fixtures import DoajXmlArticleFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
@@ -60,7 +60,7 @@ class TestBLLArticleIsLegitimateOwner(DoajTestCase):
         eissn = None
         pissn = None
         if article_arg == "exists":
-            source = ArticleFixtureFactory.make_article_source()
+            source = DoajXmlArticleFixtureFactory.make_article_source()
             article = Article(**source)
             article.set_id()
 

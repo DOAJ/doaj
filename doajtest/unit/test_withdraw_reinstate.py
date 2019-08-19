@@ -1,5 +1,5 @@
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory, DoajXmlArticleFixtureFactory
 
 from portality import models
 from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask, change_in_doaj
@@ -25,7 +25,7 @@ class TestWithdrawReinstate(DoajTestCase):
 
             pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
             eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
-            asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False)
+            asource = DoajXmlArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False)
             a = models.Article(**asource)
             a.save()
             articles.append(a.id)
@@ -56,7 +56,7 @@ class TestWithdrawReinstate(DoajTestCase):
 
             pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
             eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
-            asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False, in_doaj=False)
+            asource = DoajXmlArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False, in_doaj=False)
             a = models.Article(**asource)
             a.save()
             articles.append(a.id)
@@ -91,7 +91,7 @@ class TestWithdrawReinstate(DoajTestCase):
 
             pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
             eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
-            asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False)
+            asource = DoajXmlArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False)
             a = models.Article(**asource)
             a.save()
             articles.append(a.id)
@@ -127,7 +127,7 @@ class TestWithdrawReinstate(DoajTestCase):
 
             pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
             eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
-            asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False, in_doaj=False)
+            asource = DoajXmlArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False, in_doaj=False)
             a = models.Article(**asource)
             a.save()
             articles.append(a.id)

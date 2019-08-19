@@ -4,7 +4,7 @@ from StringIO import StringIO
 from copy import deepcopy
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "article_uploads.xml")
+ARTICLES = os.path.join(RESOURCES, "doajxml_article_uploads.xml")
 
 
 class CrossrefArticleFixtureFactory(object):

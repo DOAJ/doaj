@@ -3,7 +3,7 @@ from portality.lib.dataobj import DataStructureException
 from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
 from portality.api.v1 import ArticlesCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
 from portality import models
-from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import DoajXmlArticleFixtureFactory, JournalFixtureFactory
 import time
 from datetime import datetime
 
@@ -21,17 +21,17 @@ class TestCrudArticle(DoajTestCase):
         ia = IncomingArticleDO()
 
         # make one from an incoming article model fixture
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         ia = IncomingArticleDO(data)
 
         # and one with an author email, which we have removed from the allowed fields recently. It should silently prune
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         data["bibjson"]["author"][0]["email"] = "author@example.com"
         ia = IncomingArticleDO(data)
         assert "author@example.com" not in ia.json()
 
         # make another one that's broken
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         del data["bibjson"]["title"]
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
@@ -39,7 +39,7 @@ class TestCrudArticle(DoajTestCase):
         # now progressively remove the conditionally required/advanced validation stuff
         #
         # missing identifiers
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         data["bibjson"]["identifier"] = []
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
@@ -55,14 +55,14 @@ class TestCrudArticle(DoajTestCase):
             ia = IncomingArticleDO(data)
 
         # too many keywords
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         data["bibjson"]["keywords"] = ["one", "two", "three", "four", "five", "six", "seven"]
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
     def test_02_create_article_success(self):
         # set up all the bits we need
-        data = ArticleFixtureFactory.make_incoming_api_article()
+        data = DoajXmlArticleFixtureFactory.make_incoming_api_article()
         data['bibjson']['journal']['publisher'] = 'Wrong Publisher'
         data['bibjson']['journal']['title'] = 'Wrong Journal Title'
         data['bibjson']['journal']['license'] = [
@@ -137,7 +137,7 @@ class TestCrudArticle(DoajTestCase):
     def test_03_create_article_fail(self):
         # if the account is dud
         with self.assertRaises(Api401Error):
-            data = ArticleFixtureFactory.make_article_source()
+            data = DoajXmlArticleFixtureFactory.make_article_source()
             a = ArticlesCrudApi.create(data, None)
 
         # if the data is bust
@@ -152,7 +152,7 @@ class TestCrudArticle(DoajTestCase):
         # TODO add test for when you're trying to create an article for a journal not owned by you
 
     def test_04_coerce(self):
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
 
         # first some successes
         data["bibjson"]["link"][0]["url"] = "http://www.example.com/this_location/here"     # protocol required
@@ -165,7 +165,7 @@ class TestCrudArticle(DoajTestCase):
         # now test some failures
 
         # an invalid urls
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         data["bibjson"]["link"][0]["url"] = "Two streets down on the left"
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
@@ -174,19 +174,19 @@ class TestCrudArticle(DoajTestCase):
             ia = IncomingArticleDO(data)
 
         # an invalid link type
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         data["bibjson"]["link"][0]["type"] = "cheddar"
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
         # invalid bool
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         data["admin"]["in_doaj"] = "Yes"
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
         # invalid date
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         data["created_date"] = "Just yesterday"
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
@@ -196,7 +196,7 @@ class TestCrudArticle(DoajTestCase):
         oa = OutgoingArticleDO()
 
         # make one from an incoming article model fixture
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         ap = models.Article(**data)
 
         # add some history to the article (it doesn't matter what it looks like since it shouldn't be there at the other end)
@@ -221,7 +221,7 @@ class TestCrudArticle(DoajTestCase):
         journal.save()
         time.sleep(1)
 
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         ap = models.Article(**data)
         ap.save()
         time.sleep(1)
@@ -261,7 +261,7 @@ class TestCrudArticle(DoajTestCase):
         journal.save()
         time.sleep(1)
 
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         data['admin']['in_doaj'] = False
         ap = models.Article(**data)
         ap.save()
@@ -308,7 +308,7 @@ class TestCrudArticle(DoajTestCase):
         journal.save()
         time.sleep(1)
 
-        data = ArticleFixtureFactory.make_incoming_api_article()
+        data = DoajXmlArticleFixtureFactory.make_incoming_api_article()
 
         # call create on the object (which will save it to the index)
         a = ArticlesCrudApi.create(data, account)
@@ -320,7 +320,7 @@ class TestCrudArticle(DoajTestCase):
         created = models.Article.pull(a.id)
 
         # now make an updated version of the object
-        data = ArticleFixtureFactory.make_incoming_api_article()
+        data = DoajXmlArticleFixtureFactory.make_incoming_api_article()
         data["bibjson"]["title"] = "An updated title"
         # change things we are allowed to change
         data['bibjson']['journal']['start_page'] = 4
@@ -387,7 +387,7 @@ class TestCrudArticle(DoajTestCase):
         journal.save()
         time.sleep(1)
 
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
 
         # call create on the object (which will save it to the index)
         a = ArticlesCrudApi.create(data, account)
@@ -399,7 +399,7 @@ class TestCrudArticle(DoajTestCase):
         created = models.Article.pull(a.id)
 
         # now make an updated version of the object
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
         data["bibjson"]["title"] = "An updated title"
 
         # call update on the object in various context that will fail
@@ -429,7 +429,7 @@ class TestCrudArticle(DoajTestCase):
         journal.save()
         time.sleep(1)
 
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
 
         # call create on the object (which will save it to the index)
         a = ArticlesCrudApi.create(data, account)
@@ -457,7 +457,7 @@ class TestCrudArticle(DoajTestCase):
         journal.save()
         time.sleep(1)
 
-        data = ArticleFixtureFactory.make_article_source()
+        data = DoajXmlArticleFixtureFactory.make_article_source()
 
         # call create on the object (which will save it to the index)
         a = ArticlesCrudApi.create(data, account)

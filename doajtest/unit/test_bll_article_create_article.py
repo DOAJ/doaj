@@ -1,7 +1,7 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import DoajXmlArticleFixtureFactory, AccountFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
@@ -101,7 +101,7 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         if article_arg == "exists":
             this_doi = doi if has_doi else False
             this_fulltext = fulltext if has_ft else False
-            source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=this_doi, fulltext=this_fulltext)
+            source = DoajXmlArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=this_doi, fulltext=this_fulltext)
             del source["bibjson"]["journal"]
             article = Article(**source)
             article.set_id()
