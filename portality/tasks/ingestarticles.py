@@ -261,26 +261,20 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         job.add_audit_message(u"Importing from {x}".format(x=path))
 
         articleService = DOAJ.articleService()
-        job.add_audit_message("articleService")
         account = models.Account.pull(file_upload.owner)
-        job.add_audit_message("account")
         xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(file_upload.schema)
-        job.add_audit_message("xwalk name")
         xwalk = plugin.load_class(xwalk_name)()
-        job.add_audit_message("xwalk")
 
         ingest_exception = False
         result = {}
         try:
             with open(path) as handle:
-                job.add_audit_message("with(path)")
                 articles = xwalk.crosswalk_file(handle, add_journal_info=False) # don't import the journal info, as we haven't validated ownership of the ISSNs in the article yet
-                job.add_audit_message("xwalk.crosswalk_file")
                 for article in articles:
                     article.set_upload_id(file_upload.id)
                 result = articleService.batch_create_articles(articles, account, add_journal_info=True)
         except IngestException as e:
-            job.add_audit_message(u"IngestException: {msg}. Inner message: {inner}.  Stack: {x}".format(msg=e.message, inner=e.inner_message, x=e.trace()))
+            job.add_audit_message(u"IngestException: {smsg}. Inner message: {inner}.  Stack: {x}".format(msg=e.message, inner=e.inner_message, x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
             result = e.result
             try:

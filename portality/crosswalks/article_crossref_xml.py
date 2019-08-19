@@ -62,7 +62,7 @@ class CrossrefXWalk(object):
             self.validation_log = el
         return valid
 
-    def crosswalk_file(self, file_handle, add_journal_info=True):
+    def crosswalk_file(self, file_handle, add_journal_info):
         doc = self.validate_file(file_handle)
         return self.crosswalk_doc(doc)
 
@@ -70,13 +70,12 @@ class CrossrefXWalk(object):
         # go through the records in the doc and crosswalk each one individually
         articles = []
         root = doc.getroot()
-        head = root.find("{http://www.crossref.org/schema/4.4.2}head")
         body = root.find("{http://www.crossref.org/schema/4.4.2}body")
-        journals = body.find("{http://www.crossref.org/schema/4.4.2}journal")    #
+        journals = body.findall("{http://www.crossref.org/schema/4.4.2}journal")
         if journals is not None:
             for journal in journals:
-                articles = journal.findall("{http://www.crossref.org/schema/4.4.2}journal_article")
-                for record in articles:
+                arts = journal.findall("{http://www.crossref.org/schema/4.4.2}journal_article")
+                for record in arts:
                     article = self.crosswalk_article(record, journal)
                     articles.append(article)
 
@@ -116,7 +115,7 @@ Example record:
             <!-- ====== This is the article's metadata ======== -->
             <journal_article publication_type="full_text">
                 <titles>
-                    <title>Article 12292005 9:32</title>
+                    <title>First Article</title>
                 </titles>
                 <contributors>
                     <person_name sequence="first" contributor_role="author">
@@ -196,6 +195,7 @@ Example record:
 
         # publication date
         pd = record.find("{http://www.crossref.org/schema/4.4.2}publication_date")
+
         if pd is not None:
             bibjson.year = _element(pd, "{http://www.crossref.org/schema/4.4.2}year")
             bibjson.month = _element(pd, "{http://www.crossref.org/schema/4.4.2}month")
@@ -226,18 +226,17 @@ Example record:
         if ep is not None:
             bibjson.end_page = ep
 
-        # doi
         d = record.find("{http://www.crossref.org/schema/4.4.2}doi_data")
         if d is not None:
+            # doi
             doi = _element(d, "{http://www.crossref.org/schema/4.4.2}doi")
             if doi is not None:
                 bibjson.add_identifier(bibjson.DOI, doi)
 
-        # fulltext
-
-        ftel = _element(d, "{http://www.crossref.org/schema/4.4.2}resource")
-        if ftel is not None and ftel.text is not None and ftel.text != "":
-            bibjson.add_url(ftel, "fulltext")
+            # fulltext
+            ftel = _element(d, "{http://www.crossref.org/schema/4.4.2}resource")
+            if ftel is not None:
+                bibjson.add_url(ftel, "fulltext")
 
         ''''
         # publisher record id
