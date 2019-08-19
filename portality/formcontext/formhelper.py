@@ -139,7 +139,7 @@ class FormHelperBS3(object):
             render_args = {}
             # filter anything that shouldn't go in as a field attribute
             for k, v in kwargs.iteritems():
-                if k in ["class", "style"] or k.startswith("data-"):
+                if k in ["class", "style", "disabled"] or k.startswith("data-"):
                     render_args[k] = v
             frag += field(**render_args) # FIXME: this is probably going to do some weird stuff
 
