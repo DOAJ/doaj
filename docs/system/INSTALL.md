@@ -1,9 +1,21 @@
 # Setting up the software
 
+This installation instruction is for Ubuntu 16.04 and Ubuntu 18.04 users. We recommend running our application on Ubuntu OS.
+
+## Java 8
+
+Java 8 is required to install correct version of Elasticsearch. On ubuntu it can be download from apt:
+
+    sudo apt-get install openjdk-8-jre
+
 ## Elasticsearch
 Elasticsearch is the datastore we use. Currently we require version 1.7.
 
-Install elasticsearch as per [its documentation](https://www.elastic.co/guide/en/elasticsearch/reference/1.7/setup.html#setup-installation).
+You can download .deb package from [here](https://www.elastic.co/downloads/past-releases/elasticsearch-1-7-0https://www.elastic.co/downloads/past-releases/elasticsearch-1-7-0) and install it by:
+
+    sudo apt install ./path-to-es-deb-package
+
+Elasticsearch documentation can be found [here](https://www.elastic.co/guide/en/elasticsearch/reference/1.7/setup.html#setup-installation).
 
 You can check whether its running by pointing your browser to [http://localhost:9200](http://localhost:9200) - you should see a basic JSON response telling you what version you're running.
 
@@ -11,18 +23,27 @@ You can check whether its running by pointing your browser to [http://localhost:
 
 For background tasks, we use `redis`. Run this however you like, just make sure the correct port is configured in app settings and is accessible to the app. E.g. to install in Ubuntu:
 
-    sudo apt install redis
+    sudo apt install redis-server
+    # Start redis service
+    service redis start
     # Check redis is running and enabled
     systemctl status redis
 
-## The DOAJ Python app
+#Python and Pip
 
-Install Python 2.6.6 or more recent . Not tested with Python 3.x .
+Install Python 2.7 or more recent . Not tested with Python 3.x. You can verify if correct version of python is in use by typing:
+     
+    python --version
 
-Install pip using [pip's very robust instructions](http://www.pip-installer.org/en/latest/installing.html).
+Install pip using:
+
+    sudo apt install python-pip
+  
+## The DOAJ app
+  
     
     sudo pip install virtualenv  # won't upgrade it if you already have it. pip install -- upgrade virtualenv for that.
-    virtualenv -p <path/to/python 2.7 executable> doajenv
+    virtualenv -p python2.7 doajenv
     cd doajenv
     . bin/activate
     mkdir src
