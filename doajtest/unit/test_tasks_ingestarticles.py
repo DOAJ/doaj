@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 
 from portality.tasks import ingestarticles
-from doajtest.fixtures.article import ArticleFixtureFactory
+from doajtest.fixtures.article_xml import ArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
 from portality import models
 from portality.core import app

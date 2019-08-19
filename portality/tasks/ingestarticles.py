@@ -274,7 +274,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                     article.set_upload_id(file_upload.id)
                 result = articleService.batch_create_articles(articles, account, add_journal_info=True)
         except IngestException as e:
-            job.add_audit_message(u"IngestException: {smsg}. Inner message: {inner}.  Stack: {x}".format(msg=e.message, inner=e.inner_message, x=e.trace()))
+            job.add_audit_message(u"IngestException: {msg}. Inner message: {inner}.  Stack: {x}".format(msg=e.message, inner=e.inner_message, x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
             result = e.result
             try:
