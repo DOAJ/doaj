@@ -145,6 +145,32 @@ except (KeyError, analytics.GAException):
         app.logger.debug(err)
 
 
+# Redirects from previous DOAJ app.
+# RJ: I have decided to put these here so that they can be managed
+# alongside the DOAJ codebase.  I know they could also go into the
+# nginx config, but there is a chance that they will get lost or forgotten
+# some day, whereas this approach doesn't have that risk.
+@app.route("/doaj")
+def legacy():
+    func = request.values.get("func")
+    if func == "csv":
+        return redirect(url_for('doaj.csv_data')), 301
+    elif func == "rss":
+        return redirect(url_for('atom.feed')), 301
+    elif func == "browse" or func == 'byPublicationFee  ':
+        return redirect(url_for('doaj.search')), 301
+    elif func == "openurl":
+        vals = request.values.to_dict(flat=True)
+        del vals["func"]
+        return redirect(url_for('openurl.openurl', **vals), 301)
+    abort(404)
+
+
+@app.route("/doaj2csv")
+def another_legacy_csv_route():
+    return redirect("/csv"), 301
+
+
 @app.route("/schemas/doajArticles.xsd")
 def legacy_doaj_XML_schema():
     schema_fn = 'doajArticles.xsd'
