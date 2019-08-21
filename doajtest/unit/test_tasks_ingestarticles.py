@@ -358,18 +358,20 @@ class TestIngestArticles(DoajTestCase):
         url = "http://fail"
         previous = []
 
+        #DOAJ xml
+
         with self.assertRaises(BackgroundException):
             id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "doaj", previous)
 
-        assert len(previous) == 1
+        assert len(previous) == 1, "Fail caused by DOAJ xml file"
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is None
-        assert fu.failure_reasons.keys() == []
+        assert fu is not None, "Fail caused by DOAJ xml file"
+        assert fu.status == "failed", "Fail caused by DOAJ xml file"
+        assert fu.error is not None and fu.error != "", "Fail caused by DOAJ xml file"
+        assert fu.error_details is None, "Fail caused by DOAJ xml file"
+        assert fu.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
         # now try again with an invalid url
         requests.head = mock_head_success
@@ -380,68 +382,165 @@ class TestIngestArticles(DoajTestCase):
         with self.assertRaises(BackgroundException):
             id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "doaj", previous)
 
-        assert len(previous) == 1
+        assert len(previous) == 1, "Fail caused by DOAJ xml file"
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is None
-        assert fu.failure_reasons.keys() == []
+        assert fu is not None, "Fail caused by DOAJ xml file"
+        assert fu.status == "failed", "Fail caused by DOAJ xml file"
+        assert fu.error is not None and fu.error != "", "Fail caused by DOAJ xml file"
+        assert fu.error_details is None, "Fail caused by DOAJ xml file"
+        assert fu.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+
+        # Crossref xml
+
+        previous = []
+
+        with self.assertRaises(BackgroundException):
+            id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "crossref", previous)
+
+        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        id = previous[0].id
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None, "Fail caused by Crossref xml file"
+        assert fu.status == "failed", "Fail caused by Crossref xml file"
+        assert fu.error is not None and fu.error != "", "Fail caused by Crossref xml file"
+        assert fu.error_details is None, "Fail caused by Crossref xml file"
+        assert fu.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+
+        # now try again with an invalid url
+        requests.head = mock_head_success
+
+        url = "other://url"
+        previous = []
+
+        with self.assertRaises(BackgroundException):
+            id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "Crossref", previous)
+
+        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        id = previous[0].id
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None, "Fail caused by Crossref xml file"
+        assert fu.status == "failed", "Fail caused by Crossref xml file"
+        assert fu.error is not None and fu.error != "", "Fail caused by Crossref xml file"
+        assert fu.error_details is None, "Fail caused by Crossref xml file"
+        assert fu.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
     def test_06_url_upload_ftp_success(self):
         ftplib.FTP = MockFTP
 
         url = "ftp://success"
+
+        #DOAJ xml
+
         previous = []
 
         id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "doaj", previous)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.schema == "doaj"
-        assert fu.status == "exists"
+        assert fu is not None, "Fail caused by DOAJ xml file"
+        assert fu.schema == "doaj", "Fail caused by DOAJ xml file"
+        assert fu.status == "exists", "Fail caused by DOAJ xml file"
 
-        assert len(previous) == 1
+        assert len(previous) == 1, "Fail caused by DOAJ xml file"
+
+        # Crossref xml
+
+        previous = []
+
+        id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "crossref", previous)
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None, "Fail caused by Crossref xml file"
+        assert fu.schema == "crossref", "Fail caused by Crossref xml file"
+        assert fu.status == "exists", "Fail caused by Crossref xml file"
+
+        assert len(previous) == 1, "Fail caused by Crossref xml file"
 
     def test_07_url_upload_ftp_fail(self):
         ftplib.FTP = MockFTP
 
         url = "ftp://fail"
+
+        #DOAJ xml
+
         previous = []
 
         with self.assertRaises(BackgroundException):
             id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "doaj", previous)
 
-        assert len(previous) == 1
+        assert len(previous) == 1, "Fail caused by DOAJ xml file"
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is None
-        assert fu.failure_reasons.keys() == []
+        assert fu is not None, "Fail caused by DOAJ xml file"
+        assert fu.status == "failed", "Fail caused by DOAJ xml file"
+        assert fu.error is not None and fu.error != "", "Fail caused by DOAJ xml file"
+        assert fu.error_details is None, "Fail caused by DOAJ xml file"
+        assert fu.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+
+        # Crossref xml
+
+        previous = []
+
+        with self.assertRaises(BackgroundException):
+            id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "crossref", previous)
+
+        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        id = previous[0].id
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None, "Fail caused by Crossref xml file"
+        assert fu.status == "failed", "Fail caused by Crossref xml file"
+        assert fu.error is not None and fu.error != "", "Fail caused by Crossref xml file"
+        assert fu.error_details is None, "Fail caused by Crossref xml file"
+        assert fu.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
     def test_08_prepare_file_upload_success(self):
+
+        #DOAJ xml
+
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         f = MockFileUpload(stream=handle)
 
         previous = []
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="doaj", previous=previous)
 
-        assert job is not None
-        assert "ingest_articles__file_upload_id" in job.params
+        assert job is not None, "Fail caused by DOAJ xml file"
+        assert "ingest_articles__file_upload_id" in job.params, "Fail caused by DOAJ xml file"
         id = job.params.get("ingest_articles__file_upload_id")
         self.cleanup_ids.append(id)
 
-        assert len(previous) == 1
+        assert len(previous) == 1, "Fail caused by DOAJ xml file"
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
+        assert fu is not None, "Fail caused by DOAJ xml file"
+
+        # Crossref xml
+
+        handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
+        f = MockFileUpload(stream=handle)
+
+        previous = []
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="crossref",
+                                                                  previous=previous)
+
+        assert job is not None, "Fail caused by Crossref xml file"
+        assert "ingest_articles__file_upload_id" in job.params, "Fail caused by Crossref xml file"
+        id = job.params.get("ingest_articles__file_upload_id")
+        self.cleanup_ids.append(id)
+
+        assert len(previous) == 1, "Fail caused by Crossref xml file"
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None, "Fail caused by Crossref xml file"
 
     def test_09_prepare_file_upload_fail(self):
+
+        #DOAJ xml
+
         article_doaj_xml.DOAJXWalk.validate = mock_validate
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
@@ -451,31 +550,69 @@ class TestIngestArticles(DoajTestCase):
         with self.assertRaises(BackgroundException):
             job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="doaj", previous=previous)
 
-        assert len(previous) == 1
+        assert len(previous) == 1, "Fail caused by DOAJ xml file"
         id = previous[0].id
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
+        assert fu is not None, "Fail caused by DOAJ xml file"
+
+        # Crossref xml
+
+        article_crossref_xml.CrossrefXWalk.validate = mock_validate
+
+        handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
+        f = MockFileUpload(stream=handle)
+
+        previous = []
+        with self.assertRaises(BackgroundException):
+            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="crossref",
+                                                                      previous=previous)
+
+        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        id = previous[0].id
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None, "Fail caused by Crossref xml file"
 
     def test_10_prepare_url_upload_success(self):
         requests.head = mock_head_success
         requests.get = mock_get_success
 
         url = "http://success"
+
+        #DOAJ xml
+
         previous = []
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="doaj", previous=previous)
 
-        assert job is not None
-        assert "ingest_articles__file_upload_id" in job.params
+        assert job is not None, "Fail caused by DOAJ xml file"
+        assert "ingest_articles__file_upload_id" in job.params, "Fail caused by DOAJ xml file"
         id = job.params.get("ingest_articles__file_upload_id")
         self.cleanup_ids.append(id)
 
-        assert len(previous) == 1
+        assert len(previous) == 1, "Fail caused by DOAJ xml file"
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
+        assert fu is not None, "Fail caused by DOAJ xml file"
+
+        # Crossref xml
+
+        previous = []
+
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="crossref", previous=previous)
+
+        assert job is not None, "Fail caused by Crossref xml file"
+        assert "ingest_articles__file_upload_id" in job.params, "Fail caused by Crossref xml file"
+        id = job.params.get("ingest_articles__file_upload_id")
+        self.cleanup_ids.append(id)
+
+        assert len(previous) == 1, "Fail caused by Crossref xml file"
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None, "Fail caused by Crossref xml file"
 
     def test_11_prepare_url_upload_fail(self):
         # try with failing http requests
