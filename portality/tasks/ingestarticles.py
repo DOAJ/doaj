@@ -106,7 +106,7 @@ def http_upload(job, path, file_upload):
         r = requests.get(file_upload.filename, stream=True)
         if r.status_code != requests.codes.ok:
             job.add_audit_message("The URL could not be accessed")
-            file_upload.failed("The URL could not be accessed")
+            file_upload.failed("The URLreques could not be accessed")
             return False
 
         # check the content length
