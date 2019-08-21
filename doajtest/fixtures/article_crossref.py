@@ -61,6 +61,7 @@ class CrossrefArticleFixtureFactory(object):
     def noids(cls):
         return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='NOIDS']]")
 
+'''
     @staticmethod
     def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True, with_journal_info=True, doi=None,
                             fulltext=None):
@@ -304,3 +305,4 @@ ARTICLE_STRUCT = {
         }
     }
 }
+'''
