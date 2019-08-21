@@ -216,16 +216,7 @@ class DOAJXWalk(object):
         if ftel is not None and ftel.text is not None and ftel.text != "":
             ct = ftel.get("format")
             url = ftel.text
-
-            try:
-                # url validation
-                result = urlparse(ftel.text)
-                if all([result.scheme, result.netloc, result.path]):
-                    bibjson.add_url(url, "fulltext", ct)
-                else:
-                    raise CrosswalkException(message="Invalid URL: {}".format(ftel.text), inner=e)
-            except Exception as e:
-                raise CrosswalkException(message="Invalid URL: {}".format(ftel.text), inner=e)
+            bibjson.add_url(url, "fulltext", ct)
 
         # keywords
         keyel = record.find("keywords")
