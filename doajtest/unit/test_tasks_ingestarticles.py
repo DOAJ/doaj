@@ -498,7 +498,7 @@ class TestIngestArticles(DoajTestCase):
         assert fu.error_details is None, "Fail caused by Crossref xml file"
         assert fu.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
-    def test_08_prepare_file_upload_success(self):
+    def test_08_doajxml_prepare_file_upload_success(self):
 
         #DOAJ xml
 
@@ -517,6 +517,8 @@ class TestIngestArticles(DoajTestCase):
 
         fu = models.FileUpload.pull(id)
         assert fu is not None, "Fail caused by DOAJ xml file"
+
+    def test_08_crossref_prepare_file_upload_success(self):
 
         # Crossref xml
 
