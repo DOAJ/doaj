@@ -113,12 +113,10 @@ INCOMING_ARTICLE_REQUIRED = {
 
                 "link": {
                     "required": ["type", "url"],
-                    "link": {
-                        "fields": {
-                            "type": {"coerce": "link_type"},
-                            "url": {"coerce": "url"},
-                            "content_type": {"coerce": "link_content_type"}
-                        }
+                    "fields": {
+                        "type": {"coerce": "link_type"},
+                        "url": {"coerce": "url"},
+                        "content_type": {"coerce": "link_content_type"}
                     }
                 },
 
