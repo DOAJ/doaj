@@ -47,14 +47,7 @@ BASE_ARTICLE_STRUCT = {
                         "id": {"coerce": "unicode"}
                     }
                 },
-
-                "link": {
-                    "fields": {
-                        "type": {"coerce": "link_type"},
-                        "url": {"coerce": "url"},
-                        "content_type": {"coerce": "link_content_type"}
-                    }
-                },
+''''''
 
                 "author": {
                     "fields": {
@@ -120,11 +113,34 @@ INCOMING_ARTICLE_REQUIRED = {
                 },
 
                 "link": {
-                    "required": ["type", "url"]
+                    "required": ["type", "url"],
+                    "link": {
+                        "fields": {
+                            "type": {"coerce": "link_type"},
+                            "url": {"coerce": "url"},
+                            "content_type": {"coerce": "link_content_type"}
+                        }
+                    }
                 },
 
                 "author": {
                     "required": ["name"]
+                }
+            }
+        }
+    }
+}
+
+OUTGOING_ARTICLE_REQUIRED = {
+    "structs": {
+        "bibjson": {
+            "structs": {
+                "link": {
+                    "fields": {
+                        "type": {"coerce": "link_type"},
+                        "url": {"coerce": "url"},
+                        "content_type": {"coerce": "link_content_type"}
+                    }
                 }
             }
         }
