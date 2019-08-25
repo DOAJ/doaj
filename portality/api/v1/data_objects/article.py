@@ -47,7 +47,6 @@ BASE_ARTICLE_STRUCT = {
                         "id": {"coerce": "unicode"}
                     }
                 },
-''''''
 
                 "author": {
                     "fields": {
