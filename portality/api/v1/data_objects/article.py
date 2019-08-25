@@ -131,22 +131,6 @@ INCOMING_ARTICLE_REQUIRED = {
     }
 }
 
-OUTGOING_ARTICLE_REQUIRED = {
-    "structs": {
-        "bibjson": {
-            "structs": {
-                "link": {
-                    "fields": {
-                        "type": {"coerce": "link_type"},
-                        "url": {"coerce": "url"},
-                        "content_type": {"coerce": "link_content_type"}
-                    }
-                }
-            }
-        }
-    }
-}
-
 BASE_ARTICLE_COERCE = deepcopy(dataobj.DataObj.DEFAULT_COERCE)
 BASE_ARTICLE_COERCE["link_type"] = dataobj.string_canonicalise(["fulltext"], allow_fail=False)
 BASE_ARTICLE_COERCE["link_type_optional"] = dataobj.string_canonicalise(["fulltext"], allow_fail=True)
