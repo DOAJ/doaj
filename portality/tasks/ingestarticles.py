@@ -105,9 +105,10 @@ def http_upload(job, path, file_upload):
     try:
         r = requests.get(file_upload.filename, stream=True)
         if r.status_code != requests.codes.ok:
-            job.add_audit_message("The URL could not be accessed")
+            '''job.add_audit_message("The URL could not be accessed")
             file_upload.failed("The URLreques could not be accessed")
-            return False
+            return False'''
+            raise Exception('spam', 'eggs')
 
         # check the content length
         size_limit = app.config.get("MAX_REMOTE_SIZE", DEFAULT_MAX_REMOTE_SIZE)
@@ -137,15 +138,18 @@ def http_upload(job, path, file_upload):
                     f.write(chunk)
                     f.flush()
     except:
-        job.add_audit_message("The URL could not be accessed")
+        '''job.add_audit_message("The URL could not be accessed")
         file_upload.failed("The URL could not be accessed")
-        return False
+        return False'''
+
+        raise
 
     if too_large:
         try:
             os.remove(path) # don't keep this file around
         except:
-            pass
+            #pass
+            raise Exception('spam', 'mayo')
         return False
 
     file_upload.downloaded()

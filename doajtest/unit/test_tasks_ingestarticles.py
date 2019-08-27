@@ -13,6 +13,24 @@ from portality.crosswalks import article_doaj_xml
 from portality.crosswalks import article_crossref_xml
 from portality.bll.services import article as articleSvc
 
+from portality import models
+from portality.core import app
+
+from portality.tasks.redis_huey import main_queue, configure
+from portality.decorators import write_required
+
+from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
+from portality.bll.exceptions import IngestException, DuplicateArticleException, ArticleNotAcceptable
+from portality.bll import DOAJ
+
+from portality.lib import plugin
+
+import ftplib, os, requests, traceback, shutil
+from urlparse import urlparse
+
+DEFAULT_MAX_REMOTE_SIZE=262144000
+CHUNK_SIZE=1048576
+
 GET = requests.get
 
 class MockFileUpload(object):
@@ -768,11 +786,12 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.error_details is None
         assert file_upload.failure_reasons.keys() == []
 
-    def test_17_download_http_valid(self):
+    def test_17_doaj_download_http_valid(self):
         requests.head = mock_head_fail
         requests.get = mock_get_success
 
         job = models.BackgroundJob()
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
 
         url = "http://valid"
 
@@ -786,12 +805,21 @@ class TestIngestArticles(DoajTestCase):
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
+        print(file_upload)
 
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
         assert result is True, "Fail caused by DOAJ xml file"
         assert file_upload.status == "validated", "Fail caused by DOAJ xml file"
+
+    def test_17_crossref_download_http_valid(self):
+        requests.head = mock_head_fail
+        requests.get = mock_get_success
+
+        job = models.BackgroundJob()
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+
+        url = "http://valid"
 
         # Crossref xml
 
@@ -803,8 +831,10 @@ class TestIngestArticles(DoajTestCase):
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
+        print(file_upload)
 
         result = task._download(file_upload)
+        print(result)
 
         assert result is True, "Fail caused by Crossref xml file"
         assert file_upload.status == "validated", "Fail caused by Crossref xml file"
