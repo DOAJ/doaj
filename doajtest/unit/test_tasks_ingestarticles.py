@@ -4,10 +4,8 @@ from portality.tasks import ingestarticles
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
-from portality import models
-from portality.core import app
-import os, requests, ftplib, urlparse
-from portality.background import BackgroundException, RetryException
+
+import urlparse
 import time
 from portality.crosswalks import article_doaj_xml
 from portality.crosswalks import article_crossref_xml
@@ -16,14 +14,7 @@ from portality.bll.services import article as articleSvc
 from portality import models
 from portality.core import app
 
-from portality.tasks.redis_huey import main_queue, configure
-from portality.decorators import write_required
-
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
-from portality.bll.exceptions import IngestException, DuplicateArticleException, ArticleNotAcceptable
-from portality.bll import DOAJ
-
-from portality.lib import plugin
+from portality.background import BackgroundException, RetryException
 
 import ftplib, os, requests, traceback, shutil
 from urlparse import urlparse
@@ -59,13 +50,39 @@ class MockResponse(object):
             yield self.content
 
 
-class MockFTP(object):
+class MockDOAJFTP(object):
     def __init__(self, hostname, *args, **kwargs):
         if hostname in ["fail"]:
             raise RuntimeError("oops")
         self.content = None
         if hostname in ["valid"]:
             self.content = DoajXmlArticleFixtureFactory.upload_1_issn_correct().read()
+
+    def sendcmd(self, *args, **kwargs):
+        return "200"
+
+    def size(self, *args, **kwargs):
+        return 100
+
+    def close(self):
+        pass
+
+    def retrbinary(self, cmd, callback, chunk_size):
+        if self.content is None:
+            for i in range(9):
+                data = str(i) * chunk_size
+                callback(data)
+        else:
+            callback(self.content)
+        return "226"
+
+class MockCrossrefFTP(object):
+    def __init__(self, hostname, *args, **kwargs):
+        if hostname in ["fail"]:
+            raise RuntimeError("oops")
+        self.content = None
+        if hostname in ["valid"]:
+            self.content = CrossrefArticleFixtureFactory.upload_1_issn_correct().read()
 
     def sendcmd(self, *args, **kwargs):
         return "200"
@@ -97,11 +114,18 @@ def mock_head_success(url, *args, **kwargs):
 def mock_head_fail(url, *args, **kwargs):
     return MockResponse(405)
 
-def mock_get_success(url, *args, **kwargs):
+def mock_doaj_get_success(url, *args, **kwargs):
     if url in ["http://success", "http://upload"]:
         return MockResponse(200)
     elif url in ["http://valid"]:
         return MockResponse(200, DoajXmlArticleFixtureFactory.upload_1_issn_correct().read())
+    return GET(url, **kwargs)
+
+def mock_crossref_get_success(url, *args, **kwargs):
+    if url in ["http://success", "http://upload"]:
+        return MockResponse(200)
+    elif url in ["http://valid"]:
+            return MockResponse(200, CrossrefArticleFixtureFactory.upload_1_issn_correct().read())
     return GET(url, **kwargs)
 
 def mock_get_fail(url, *args, **kwargs):
@@ -311,7 +335,7 @@ class TestIngestArticles(DoajTestCase):
     def test_04_url_upload_http_success(self):
         # first try with a successful HEAD request
         requests.head = mock_head_success
-        requests.get = mock_get_success
+        requests.get = mock_doaj_get_success
 
         url = "http://success"
         previous = []
@@ -342,6 +366,8 @@ class TestIngestArticles(DoajTestCase):
         assert len(previous) == 1
 
         # Crossref xml
+
+        requests.get = mock_crossref_get_success
 
         previous = []
 
@@ -788,7 +814,7 @@ class TestIngestArticles(DoajTestCase):
 
     def test_17_doaj_download_http_valid(self):
         requests.head = mock_head_fail
-        requests.get = mock_get_success
+        requests.get = mock_doaj_get_success
 
         job = models.BackgroundJob()
         task = ingestarticles.IngestArticlesBackgroundTask(job)
@@ -814,7 +840,7 @@ class TestIngestArticles(DoajTestCase):
 
     def test_17_crossref_download_http_valid(self):
         requests.head = mock_head_fail
-        requests.get = mock_get_success
+        requests.get = mock_crossref_get_success
 
         job = models.BackgroundJob()
         task = ingestarticles.IngestArticlesBackgroundTask(job)
@@ -841,7 +867,7 @@ class TestIngestArticles(DoajTestCase):
 
     def test_18_download_http_invalid(self):
         requests.head = mock_head_fail
-        requests.get = mock_get_success
+        requests.get = mock_doaj_get_success
 
         job = models.BackgroundJob()
 
@@ -868,6 +894,8 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
         # Crossref xml
+
+        requests.get = mock_crossref_get_success
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -936,11 +964,11 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
     def test_20_download_ftp_valid(self):
-        ftplib.FTP = MockFTP
+        ftplib.FTP = MockDOAJFTP
 
         job = models.BackgroundJob()
 
-        url= "ftp://valid"
+        url = "ftp://valid"
 
         #DOAJ xml
 
@@ -961,6 +989,8 @@ class TestIngestArticles(DoajTestCase):
 
         # Crossref xml
 
+        ftplib.FTP = MockCrossrefFTP
+
         file_upload = models.FileUpload()
         file_upload.set_id()
         file_upload.upload("testuser", url, status="exists")
@@ -977,11 +1007,11 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.status == "validated", "Fail caused by Crossref xml file"
 
     def test_21_download_ftp_invalid(self):
-        ftplib.FTP = MockFTP
+        ftplib.FTP = MockDOAJFTP
 
         job = models.BackgroundJob()
 
-        url= "ftp://upload"
+        url = "ftp://upload"
 
         #DOAJ xml
 
@@ -1005,6 +1035,8 @@ class TestIngestArticles(DoajTestCase):
 
         # Crossref xml
 
+        ftplib.FTP = MockCrossrefFTP
+
         file_upload = models.FileUpload()
         file_upload.set_id()
         file_upload.upload("testuser", url, status="exists")
@@ -1024,11 +1056,11 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
     def test_22_download_ftp_error(self):
-        ftplib.FTP = MockFTP
+        ftplib.FTP = MockDOAJFTP
 
         job = models.BackgroundJob()
 
-        url= "ftp://fail"
+        url = "ftp://fail"
 
         #DOAJ xml
 
@@ -1051,6 +1083,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
         # Crossref xml
+        ftplib.FTP = MockCrossrefFTP
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -1070,7 +1103,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.error_details is None, "Fail caused by Crossref xml file"
         assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
-    def test_23_process_success(self):
+    def test_23_process_success(self):      #Finish here!
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
