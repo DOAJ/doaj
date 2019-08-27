@@ -1,8 +1,8 @@
 from portality.api.v1.common import Api
 from portality import util
 from portality.core import app
+from portality.lib import dates
 from portality import models
-from datetime import datetime
 import esprit
 import re, json, uuid, os
 from copy import deepcopy
@@ -10,12 +10,15 @@ from flask import url_for
 from portality.ui.messages import Messages
 from portality.bll.doaj import DOAJ
 
+
 class DiscoveryException(Exception):
     pass
+
 
 class SearchResult(object):
     def __init__(self, raw=None):
         self.data = raw if raw is not None else {}
+
 
 def query_substitute(query, substitutions):
     if len(substitutions.keys()) == 0:
@@ -56,6 +59,7 @@ def query_substitute(query, substitutions):
 
     return ":".join(subs)
 
+
 def allowed(query, wildcards=False, fuzzy=False):
     if not wildcards:
         rx = "(.+[^\\\\][\?\*]+.*)"
@@ -70,13 +74,13 @@ def allowed(query, wildcards=False, fuzzy=False):
 
     return True
 
+
 def escape(query):
     # just escapes all instances of "/" in the query with "\\/"
 
     # Function which does the replacement
     def slasher(m):
         return m.group(0)[0] + "\\/"
-
 
     # the regular expression which looks for an unescaped /
     slash_rx = "[^\\\\]/"
@@ -91,11 +95,14 @@ def escape(query):
 
     return query
 
-DISCOVERY_API_SWAG = {}
-DISCOVERY_API_SWAG['application'] = json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_application_swag.json')))
-DISCOVERY_API_SWAG['journal'] = json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_journal_swag.json')))
-DISCOVERY_API_SWAG['article'] = json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_article_swag.json')))
+
+DISCOVERY_API_SWAG = {
+    'application': json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_application_swag.json'))),
+    'journal': json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_journal_swag.json'))),
+    'article': json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_article_swag.json')))
+}
 max_page_size = str(app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100))
+
 
 class DiscoveryApi(Api):
 
@@ -136,7 +143,7 @@ class DiscoveryApi(Api):
         if page < 1:
             page = 1
 
-        if bulk :
+        if bulk:
             max_page_size = app.config.get("DISCOVERY_BULK_PAGE_SIZE", 1000)
         else:
             max_page_size = app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100)
@@ -202,7 +209,6 @@ class DiscoveryApi(Api):
         raw_query = search_query.query()
         return raw_query, page, page_size
 
-
     @staticmethod
     def _calc_pagination(total, page_size, requested_page):
         """
@@ -211,16 +217,16 @@ class DiscoveryApi(Api):
         Modified from https://github.com/Pylons/paginate/blob/master/paginate/__init__.py#L260 ,
         a pagination library. (__init__.py, Page.__init__)
         """
-        FISRT_PAGE = 1
+        FIRST_PAGE = 1
 
         if total == 0:
             return 1, None, None, 1
 
         page_count = ((total - 1) // page_size) + 1
-        last_page = FISRT_PAGE + page_count - 1
+        last_page = FIRST_PAGE + page_count - 1
 
         # Links to previous and next page
-        if requested_page > FISRT_PAGE:
+        if requested_page > FIRST_PAGE:
             previous_page = requested_page - 1
         else:
             previous_page = None
@@ -240,12 +246,12 @@ class DiscoveryApi(Api):
 
         # build the response object
         result = {
-            "total" : total,
-            "page" : page,
-            "pageSize" : page_size,
-            "timestamp" : datetime.utcnow().strftime("%Y-%m%dT%H:%M:%SZ"),
-            "query" : q,
-            "results" : obs
+            "total": total,
+            "page": page,
+            "pageSize": page_size,
+            "timestamp": dates.now_with_microseconds(),
+            "query": q,
+            "results": obs
         }
 
         if previous_page is not None:
@@ -264,7 +270,7 @@ class DiscoveryApi(Api):
 
     @classmethod
     def search(cls, index_type, account, q, page, page_size, sort=None):
-        if not index_type in ['article', 'journal', 'application']:
+        if index_type not in ['article', 'journal', 'application']:
             raise DiscoveryException("There was an error executing your query for {0}. Unknown type.)".format(index_type))
 
         if index_type == 'article':
@@ -294,16 +300,17 @@ class DiscoveryApi(Api):
 
     @classmethod
     def scroll(cls, index_type, account, q, page_size, sort=None, scan=False):
-        if not index_type in ['article', 'journal', 'application']:
+        if index_type not in ['article', 'journal', 'application']:
             raise DiscoveryException("There was an error executing your query for {0}. Unknown type.)".format(index_type))
 
-        page = 1 # Not used in scroll
+        page = 1  # Not used in scroll
         raw_query, page, page_size = cls._make_query(q, page, page_size, sort, index_type, True)
 
         # execute the query against the articles
         query_service = DOAJ.queryService()
         for result in query_service.scroll('api_query', index_type, raw_query, account, page_size, scan=scan):
             yield result
+
 
 class SearchQuery(object):
     def __init__(self, qs, fro, psize, sortby=None, sortdir=None):
@@ -315,20 +322,20 @@ class SearchQuery(object):
 
     def query(self):
         q = {
-            "from" : self.fro,
-            "size" : self.psize
+            "from": self.fro,
+            "size": self.psize
         }
         if self.qs is not None:
             q["query"] = {
-                "query_string" : {
-                    "query" : self.qs,
+                "query_string": {
+                    "query": self.qs,
                     "default_operator": "AND"
                 }
             }
         else:
-            q["query"] = {"match_all" : {}}
+            q["query"] = {"match_all": {}}
 
         if self.sortby is not None:
-            q["sort"] = [{self.sortby : {"order" : self.sortdir, "mode" : "min"}}]
+            q["sort"] = [{self.sortby: {"order": self.sortdir, "mode": "min"}}]
 
         return q
