@@ -186,12 +186,13 @@ Example record:
         # p-issn and e-issn
         md = journal.find("x:journal_metadata", NS)
         if md is not None:
-            issn = md.find("x:issn", NS)
-            if issn is not None:
-                if issn.attrib["media_type"] is None or issn.attrib["media_type"] == 'print':
-                    bibjson.add_identifier(bibjson.P_ISSN, _element(md, "x:issn", NS).upper())
-                elif issn.attrib["media_type"] == 'electronic':
-                    bibjson.add_identifier(bibjson.E_ISSN, issn.upper())
+            issns = md.findall("x:issn", NS)
+            if issns is not None:
+                for issn in issns:
+                    if issn.attrib["media_type"] is None or issn.attrib["media_type"] == 'print':
+                        bibjson.add_identifier(bibjson.P_ISSN, issn.text.upper())
+                    elif issn.attrib["media_type"] == 'electronic':
+                        bibjson.add_identifier(bibjson.E_ISSN, issn.text.upper())
 
 
         # publication date

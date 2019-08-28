@@ -1222,7 +1222,7 @@ class TestIngestArticles(DoajTestCase):
         self.cleanup_paths.append(path)
         self.cleanup_ids.append(file_upload.id)
 
-        stream = DoajXmlArticleFixtureFactory.invalid_schema_xml()
+        stream = CrossrefArticleFixtureFactory.invalid_schema_xml()
         with open(path, "wb") as f:
             f.write(stream.read())
 
@@ -1281,7 +1281,7 @@ class TestIngestArticles(DoajTestCase):
         self.cleanup_paths.append(path)
         self.cleanup_ids.append(file_upload.id)
 
-        stream = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
+        stream = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         with open(path, "wb") as f:
             f.write(stream.read())
 
@@ -1357,7 +1357,7 @@ class TestIngestArticles(DoajTestCase):
 
     def test_27_run_exists(self):
         requests.head = mock_head_fail
-        requests.get = mock_get_success
+        requests.get = mock_doaj_get_success
 
         j = models.Journal()
         j.set_owner("testowner")
@@ -1394,6 +1394,8 @@ class TestIngestArticles(DoajTestCase):
         assert fu.status == "processed", "Fail caused by DOAJ xml file"
 
         # Crossref xml
+
+        requests.get = mock_crossref_get_success
 
         previous = []
 
@@ -1520,7 +1522,7 @@ class TestIngestArticles(DoajTestCase):
         assert job.params.get("ingest_articles__attempts") == 2
         assert job.status == "error"
 
-    def test_31_run_fail_unmatched_issn(self):
+    def test_31_doaj_run_fail_unmatched_issn(self):
         # Create a journal with 2 issns, one of which is the same as an issn on the
         # article, but the article also contains an issn which doesn't match the journal
         # We expect a failed ingest
@@ -1564,6 +1566,19 @@ class TestIngestArticles(DoajTestCase):
         fr = fu.failure_reasons
         assert "unmatched" in fr, "Fail caused by DOAJ xml file"
         assert fr["unmatched"] == ["2345-6789"], "Fail caused by DOAJ xml file"
+
+    def test_31_crossref_run_fail_unmatched_issn(self):
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
 
         # Crossref xml
 
