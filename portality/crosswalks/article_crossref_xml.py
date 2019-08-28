@@ -189,7 +189,7 @@ Example record:
             issn = md.find("x:issn", NS)
             if issn is not None:
                 if issn.attrib["media_type"] is None or issn.attrib["media_type"] == 'print':
-                    bibjson.add_identifier(bibjson.P_ISSN, _element(md, "x:issn").upper())
+                    bibjson.add_identifier(bibjson.P_ISSN, _element(md, "x:issn", NS).upper())
                 elif issn.attrib["media_type"] == 'electronic':
                     bibjson.add_identifier(bibjson.E_ISSN, issn.upper())
 
@@ -216,7 +216,7 @@ Example record:
         if number is not None:
             bibjson.number = number
 
-        pages = record.find('x:pages')
+        pages = record.find('x:pages', NS)
         # start page
         sp = _element(pages, "x:first_page", NS)
         if sp is not None:
@@ -253,7 +253,7 @@ Example record:
         '''
 
         # title
-        titles = record.find('x:titles')
+        titles = record.find('x:titles', NS)
         if titles is not None:
             title = _element(titles, "x:title", NS)
             if title is not None:
@@ -293,8 +293,8 @@ Example record:
 ###############################################################################
 
 
-def _element(xml, field):
-    el = xml.find(field)
+def _element(xml, field, namepsace):
+    el = xml.find(field, namepsace)
     if el is not None and el.text is not None and el.text != "":
         return el.text.strip()
     return None

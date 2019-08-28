@@ -1103,7 +1103,8 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.error_details is None, "Fail caused by Crossref xml file"
         assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
-    def test_23_process_success(self):      #Finish here!
+    def test_23_doaj_process_success(self):
+
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1141,7 +1142,19 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.imported == 1, "Fail caused by DOAJ xml file"
         assert file_upload.new == 1, "Fail caused by DOAJ xml file"
 
-        # Crossref xml
+    def test_23_crossref_process_success(self):
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        job = models.BackgroundJob()
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -1152,7 +1165,7 @@ class TestIngestArticles(DoajTestCase):
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
 
-        stream = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
+        stream = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         with open(path, "wb") as f:
             f.write(stream.read())
 
