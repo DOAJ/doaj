@@ -11,11 +11,11 @@ import esprit
 import codecs
 
 
-NOT_IN_DOAJ = {
+IN_DOAJ = {
     "query" : {
         "bool" : {
             "must" : [
-                {"term" : {"admin.in_doaj" : False}}
+                {"term" : {"admin.in_doaj" : True}}
             ]
         }
     }
@@ -38,12 +38,12 @@ if __name__ == "__main__":
 
     with codecs.open(args.out, "wb", "utf-8") as f:
         writer = UnicodeWriter(f)
-        writer.writerow(["Count", "Article ID", "Article ISSNs", "Match On", "Journal ID", "Journal ISSNs"])
+        writer.writerow(["Count", "Article ID", "Article ISSNs", "Match On", "Journal ID", "Journal ISSNs", "Journal In DOAJ?"])
 
         counter = 1
         sofar = 0
         start = datetime.utcnow()
-        for a in esprit.tasks.scroll(conn, models.Article.__type__, page_size=1000, keepalive='5m'):
+        for a in esprit.tasks.scroll(conn, models.Article.__type__, IN_DOAJ, page_size=1000, keepalive='5m'):
             sofar += 1
             if sofar % 1000 == 0:
                 eta = dates.eta(start, sofar, total)
@@ -63,7 +63,7 @@ if __name__ == "__main__":
             for j in js:
                 jissns = j.bibjson().issns()
                 match_on = list(set(issns) & set(jissns))
-                row = [counter, article.id, ", ".join(issns), ", ".join(match_on), j.id, ", ".join(jissns)]
+                row = [counter, article.id, ", ".join(issns), ", ".join(match_on), j.id, ", ".join(jissns), j.is_in_doaj()]
                 writer.writerow(row)
                 print(row)
 
