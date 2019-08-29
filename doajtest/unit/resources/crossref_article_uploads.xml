@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<doi_batch version="4.4.2" xmlns="http://www.crossref.org/schema/4.4.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.crossref.org/schema/4.4.2">
+<doi_batch version="4.4.2" xmlns="http://www.crossref.org/schema/4.4.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.crossref.org/schema/4.4.2" xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1">
     <head>
         <doi_batch_id>1dbb27d1030c6c9d9d-7ff0</doi_batch_id>
         <timestamp>200504260247</timestamp>
@@ -13,7 +13,7 @@
     <body>
 
         <!-- a record with two correct issns -->
-        <journal>
+       <journal>
             <journal_metadata>
                 <full_title>2 ISSNs Correct</full_title>
                 <abbrev_title>TP</abbrev_title>
@@ -232,20 +232,8 @@
                         <ORCID>http://orcid.org/0000-0002-4011-3590</ORCID>
                     </person_name>
                 </contributors>
-                <publication_date media_type="print">
-                    <month>12</month>
-                    <day>1</day>
-                    <year>2004</year>
-                </publication_date>
-                <pages>
-                    <first_page>100</first_page>
-                    <last_page>200</last_page>
-                </pages>
-                <doi_data>
-                    <doi>10.50505/test_20051229930</doi>
-                    <resource>http://www.crossref.org/</resource>
-                </doi_data>
-                <abstract>
+                <jats:abstract>
+                    <jats:p>
                     &lt;p class="JnlBody"&gt;Since the turn of the century there has been a steady decline in enrolments of students in senior secondary computing classes in Australia. A flow on effect has seen reduced enrolments in tertiary computing courses and the subsequent predictions of shortages in skilled computing professionals. This paper investigates the relationship between students’ computing literacy levels, their use and access to computing tools, and students’ interest in and attitudes to formal computing study. Through the use of secondary data obtained from Australian and international reports, a reverse effect was discovered indicating that the more students used computing tools, the less interested they become in computing studies.&lt;/p&gt;&lt;br /&gt;&lt;!--[if gte mso 9]&gt;&lt;xml&gt;&#13;
  &lt;w:WordDocument&gt;&#13;
   &lt;w:View&gt;Normal&lt;/w:View&gt;&#13;
@@ -701,7 +689,21 @@
   &lt;w:LsdException Locked="false" Priority="72" Name="Colorful List Accent 6"/&gt;&#13;
   &lt;w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 6"/&gt;&#13;
   &lt;w:LsdException Locked="false" Priority="19" QFormat="tr"&#13;
-                </abstract>
+                    </jats:p>
+                </jats:abstract>
+                <publication_date media_type="print">
+                    <month>12</month>
+                    <day>1</day>
+                    <year>2004</year>
+                </publication_date>
+                <pages>
+                    <first_page>100</first_page>
+                    <last_page>200</last_page>
+                </pages>
+                <doi_data>
+                    <doi>10.50505/test_20051229930</doi>
+                    <resource>http://www.crossref.org/</resource>
+                </doi_data>
             </journal_article>
         </journal>
 
@@ -736,20 +738,8 @@
                         <ORCID>http://orcid.org/0000-0002-4011-3590</ORCID>
                     </person_name>
                 </contributors>
-                <publication_date media_type="print">
-                    <month>12</month>
-                    <day>1</day>
-                    <year>2004</year>
-                </publication_date>
-                <pages>
-                    <first_page>100</first_page>
-                    <last_page>200</last_page>
-                </pages>
-                <doi_data>
-                    <doi>10.50505/test_20051229930</doi>
-                    <resource>http://www.crossref.org/</resource>
-                </doi_data>
-                <abstract>
+                <jats:abstract>
+                    <jats:p>
                    p class="JnlBody"&gt;Since the turn of the century there has been a steady decline in enrolments of students in senior secondary computing classes in Australia. A flow on effect has seen reduced enrolments in tertiary computing courses and the subsequent predictions of shortages in skilled computing professionals. This paper investigates the relationship between students’ computing literacy levels, their use and access to computing tools, and students’ interest in and attitudes to formal computing study. Through the use of secondary data obtained from Australian and international reports, a reverse effect was discovered indicating that the more students used computing tools, the less interested they become in computing studies.&lt;/p&gt;&lt;br /&gt;&lt;!--[if gte mso 9]&gt;&lt;xml&gt;&#13;
  &lt;w:WordDocument&gt;&#13;
   &lt;w:View&gt;Normal&lt;/w:View&gt;&#13;
@@ -1359,7 +1349,21 @@
    Name="List Table 7 Colorful Accent 6"/&gt;&#13;
  &lt;/w:LatentStyles&gt;&#13;
 &lt;/xml&gt;&lt;![endif]--&gt;
-                </abstract>
+                    </jats:p>
+                </jats:abstract>
+                <publication_date media_type="print">
+                    <month>12</month>
+                    <day>1</day>
+                    <year>2004</year>
+                </publication_date>
+                <pages>
+                    <first_page>100</first_page>
+                    <last_page>200</last_page>
+                </pages>
+                <doi_data>
+                    <doi>10.50505/test_20051229930</doi>
+                    <resource>http://www.crossref.org/</resource>
+                </doi_data>
             </journal_article>
         </journal>
 
@@ -1367,7 +1371,7 @@
 
         <journal>
             <journal_metadata>
-                <full_title>2 ISSNs Correct</full_title>
+                <full_title>NOIDS</full_title>
                 <abbrev_title>TP</abbrev_title>
                 <issn media_type="print">1234-5678</issn>
             </journal_metadata>

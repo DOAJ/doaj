@@ -160,7 +160,7 @@ Example record:
         """
         article = models.Article()
         bibjson = article.bibjson()
-        NS = {'x': 'http://www.crossref.org/schema/4.4.2'}
+        NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih.gov/JATS1'}
 
         '''
         # language
@@ -271,9 +271,14 @@ Example record:
                     bibjson.add_author(name, affiliation=None)
 
         # abstract
-        abstract = _element(record, "x:abstract", NS)
-        if abstract is not None:
-            bibjson.abstract = abstract[:30000]  # avoids Elasticsearch
+        abstract_par = record.find("j:abstract", NS)
+        if abstract_par is not None:
+            text_elems = list(abstract_par.iter())
+            text = ""
+            if text_elems is not None:
+                for elems in text_elems:
+                    text = text + elems.text
+            bibjson.abstract = text[:30000]  # avoids Elasticsearch
             # exceptions about .exact analyser not being able to handle
             # more than 32766 UTF8 characters
 

@@ -473,7 +473,7 @@ class TestIngestArticles(DoajTestCase):
         assert fu.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
     def test_06_url_upload_ftp_success(self):
-        ftplib.FTP = MockFTP
+        ftplib.FTP = MockDOAJFTP
 
         url = "ftp://success"
 
@@ -492,6 +492,8 @@ class TestIngestArticles(DoajTestCase):
 
         # Crossref xml
 
+        ftplib.FTP = MockCrossrefFTP
+
         previous = []
 
         id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "crossref", previous)
@@ -504,7 +506,7 @@ class TestIngestArticles(DoajTestCase):
         assert len(previous) == 1, "Fail caused by Crossref xml file"
 
     def test_07_url_upload_ftp_fail(self):
-        ftplib.FTP = MockFTP
+        ftplib.FTP = MockDOAJFTP
 
         url = "ftp://fail"
 
@@ -526,7 +528,7 @@ class TestIngestArticles(DoajTestCase):
         assert fu.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
         # Crossref xml
-
+        ftplib.FTP = MockCrossrefFTP
         previous = []
 
         with self.assertRaises(BackgroundException):
@@ -624,7 +626,7 @@ class TestIngestArticles(DoajTestCase):
 
     def test_10_prepare_url_upload_success(self):
         requests.head = mock_head_success
-        requests.get = mock_get_success
+        requests.get = mock_doaj_get_success
 
         url = "http://success"
 
@@ -645,6 +647,8 @@ class TestIngestArticles(DoajTestCase):
         assert fu is not None, "Fail caused by DOAJ xml file"
 
         # Crossref xml
+
+        requests.get = mock_crossref_get_success
 
         previous = []
 
@@ -709,7 +713,7 @@ class TestIngestArticles(DoajTestCase):
             job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url="http://whatever", schema="doaj", previous=[])
 
     def test_13_ftp_upload_success(self):
-        ftplib.FTP = MockFTP
+        ftplib.FTP = MockDOAJFTP
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -719,7 +723,7 @@ class TestIngestArticles(DoajTestCase):
         self.cleanup_paths.append(path)
 
         url= "ftp://upload"
-        parsed_url = urlparse.urlparse(url)
+        parsed_url = urlparse(url)
 
         job = models.BackgroundJob()
 
@@ -731,7 +735,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.status == "downloaded"
 
     def test_14_ftp_upload_fail(self):
-        ftplib.FTP = MockFTP
+        ftplib.FTP = MockDOAJFTP
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -740,8 +744,8 @@ class TestIngestArticles(DoajTestCase):
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
 
-        url= "ftp://fail"
-        parsed_url = urlparse.urlparse(url)
+        url = "ftp://fail"
+        parsed_url = urlparse(url)
 
         job = models.BackgroundJob()
 
@@ -755,7 +759,7 @@ class TestIngestArticles(DoajTestCase):
 
     def test_15_http_upload_success(self):
         requests.head = mock_head_fail
-        requests.get = mock_get_success
+        requests.get = mock_doaj_get_success
 
         url= "http://upload"
 
@@ -1608,7 +1612,7 @@ class TestIngestArticles(DoajTestCase):
         assert "unmatched" in fr, "Fail caused by Crossref xml file"
         assert fr["unmatched"] == ["2345-6789"], "Fail caused by Crossref xml file"
 
-    def test_32_run_fail_shared_issn(self):
+    def test_32_run_doaj_fail_shared_issn(self):
         # Create 2 journals with the same issns but different owners, which match the issns on the article
         # We expect an ingest failure
 
@@ -1661,7 +1665,29 @@ class TestIngestArticles(DoajTestCase):
         assert "1234-5678" in fr["shared"], "Fail caused by DOAJ xml file"
         assert "9876-5432" in fr["shared"], "Fail caused by DOAJ xml file"
 
-        #crossref
+    def test_32_run_crossref_fail_shared_issn(self):
+
+        j1 = models.Journal()
+        j1.set_owner("testowner1")
+        bj1 = j1.bibjson()
+        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        bj1.add_identifier(bj1.E_ISSN, "9876-5432")
+        j1.save()
+
+        j2 = models.Journal()
+        j2.set_owner("testowner2")
+        j2.set_in_doaj(False)
+        bj2 = j2.bibjson()
+        bj2.add_identifier(bj2.P_ISSN, "1234-5678")
+        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
+        j2.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner1")
+        account.save(blocking=True)
+
+        # crossref
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
         f = MockFileUpload(stream=handle)
@@ -1769,7 +1795,7 @@ class TestIngestArticles(DoajTestCase):
         assert "unowned" in fr, "Fail caused by Crossref xml file"
         assert "9876-5432" in fr["unowned"], "Fail caused by Crossref xml file"
 
-    def test_34_journal_2_article_2_success(self):
+    def test_34_doaj_journal_2_article_2_success(self):
         # Create a journal with two issns both of which match the 2 issns in the article
         # we expect a successful article ingest
 
@@ -1818,6 +1844,20 @@ class TestIngestArticles(DoajTestCase):
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 1, "Fail caused by DOAJ xml file"
 
+    def test_34_crossref_journal_2_article_2_success(self):
+
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
         # Crossref xml
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
@@ -1851,7 +1891,7 @@ class TestIngestArticles(DoajTestCase):
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 1, "Fail caused by Crossref xml file"
 
-    def test_35_journal_2_article_1_success(self):
+    def test_35_doaj_journal_2_article_1_success(self):
         # Create a journal with 2 issns, one of which is present in the article as the
         # only issn
         # We expect a successful article ingest
@@ -1901,8 +1941,20 @@ class TestIngestArticles(DoajTestCase):
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1, "Fail caused by DOAJ xml file"
 
+    def test_35_crossref_journal_2_article_1_success(self):
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save()
 
-        #Crossref xml
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        # Crossref xml
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         f = MockFileUpload(stream=handle)
@@ -1986,7 +2038,7 @@ We should parameterise this test set
         assert len(found) == 1
     """
 
-    def test_37_journal_1_article_1_success(self):
+    def test_37_doaj_journal_1_article_1_success(self):
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
 
@@ -2034,9 +2086,22 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1, "Fail caused by DOAJ xml file"
 
-        #Crossref xml
+    def test_37_crossref_journal_1_article_1_success(self):
 
-        handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        # Crossref xml
+
+        handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         f = MockFileUpload(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
@@ -2067,7 +2132,7 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1, "Fail caused by Crossref xml file"
 
-    def test_38_journal_2_article_2_1_different_success(self):
+    def test_38_doaj_journal_2_article_2_1_different_success(self):
         # Create a journal with 2 issns, one of which is the same as an issn on the
         # article, but the article also contains an issn which doesn't match the journal
         # We expect a failed ingest
@@ -2117,6 +2182,20 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "2345-6789"])]
         assert len(found) == 0, "Fail caused by DOAJ xml file"
 
+    def test_38_crossref_journal_2_article_2_1_different_success(self):
+
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
         # Crossref xml
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_ambiguous()
@@ -2150,7 +2229,7 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "2345-6789"])]
         assert len(found) == 0, "Fail caused by Crossref xml file"
 
-    def test_39_2_journals_different_owners_both_issns_fail(self):
+    def test_39_doaj_2_journals_different_owners_both_issns_fail(self):
         # Create 2 journals with the same issns but different owners, which match the issns on the article
         # We expect an ingest failure
         j1 = models.Journal()
@@ -2208,6 +2287,27 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0, "Fail caused by DOAJ xml file"
 
+    def test_39_crossref_2_journals_different_owners_both_issns_fail(self):
+        j1 = models.Journal()
+        j1.set_owner("testowner1")
+        bj1 = j1.bibjson()
+        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        bj1.add_identifier(bj1.E_ISSN, "9876-5432")
+        j1.save()
+
+        j2 = models.Journal()
+        j2.set_owner("testowner2")
+        j2.set_in_doaj(False)
+        bj2 = j2.bibjson()
+        bj2.add_identifier(bj2.P_ISSN, "1234-5678")
+        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
+        j2.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner1")
+        account.save(blocking=True)
+
         # Crossref xml
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
@@ -2243,7 +2343,7 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0, "Fail caused by Crossref xml file"
 
-    def test_40_2_journals_different_owners_issn_each_fail(self):
+    def test_40_doaj_2_journals_different_owners_issn_each_fail(self):
         # Create 2 journals with different owners and one different issn each.  The two issns in the
         # article match each of the journals respectively
         # We expect an ingest failure
@@ -2299,6 +2399,28 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0, "Fail caused by DOAJ xml file"
 
+    def test_40_crossref_2_journals_different_owners_issn_each_fail(self):
+        # Create 2 journals with different owners and one different issn each.  The two issns in the
+        # article match each of the journals respectively
+        # We expect an ingest failure
+        j1 = models.Journal()
+        j1.set_owner("testowner1")
+        bj1 = j1.bibjson()
+        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.save()
+
+        j2 = models.Journal()
+        j2.set_owner("testowner2")
+        j2.set_in_doaj(False)
+        bj2 = j2.bibjson()
+        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
+        j2.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner1")
+        account.save(blocking=True)
+
         # Crossref xml
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
@@ -2333,7 +2455,7 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0, "Fail caused by Crossref xml file"
 
-    def test_41_2_journals_same_owner_issn_each_success(self):
+    def test_41_doaj_2_journals_same_owner_issn_each_success(self):
         # Create 2 journals with the same owner, each with one different issn.  The article's 2 issns
         # match each of these issns
         # We expect a successful article ingest
@@ -2389,6 +2511,29 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 1, "Fail caused by DOAJ xml file"
 
+    def test_41_crossref_2_journals_same_owner_issn_each_success(self):
+        # Create 2 journals with the same owner, each with one different issn.  The article's 2 issns
+        # match each of these issns
+        # We expect a successful article ingest
+
+        j1 = models.Journal()
+        j1.set_owner("testowner")
+        bj1 = j1.bibjson()
+        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.save()
+
+        j2 = models.Journal()
+        j2.set_owner("testowner")
+        j2.set_in_doaj(False)
+        bj2 = j2.bibjson()
+        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
+        j2.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
         # Crossref xml
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
@@ -2422,7 +2567,7 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 1, "Fail caused by Crossref xml file"
 
-    def test_42_2_journals_different_owners_different_issns_mixed_article_fail(self):
+    def test_42_doaj_2_journals_different_owners_different_issns_mixed_article_fail(self):
         # Create 2 different journals with different owners and different issns (2 each).
         # The article's issns match one issn in each journal
         # We expect an ingest failure
@@ -2480,12 +2625,36 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0, "Fail caused by DOAJ xml file"
 
+    def test_42_crossref_2_journals_different_owners_different_issns_mixed_article_fail(self):
+        # Create 2 different journals with different owners and different issns (2 each).
+        # The article's issns match one issn in each journal
+        # We expect an ingest failure
+        j1 = models.Journal()
+        j1.set_owner("testowner1")
+        bj1 = j1.bibjson()
+        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        bj1.add_identifier(bj1.E_ISSN, "2345-6789")
+        j1.save()
+
+        j2 = models.Journal()
+        j2.set_owner("testowner2")
+        j2.set_in_doaj(False)
+        bj2 = j2.bibjson()
+        bj2.add_identifier(bj2.P_ISSN, "8765-4321")
+        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
+        j2.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner1")
+        account.save(blocking=True)
+
         # Crossref xml
 
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
+        handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
         f = MockFileUpload(stream=handle)
 
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="Crossref", upload_file=f)
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
         self.cleanup_ids.append(id)
 
@@ -2514,7 +2683,7 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0, "Fail caused by Crossref xml file"
 
-    def test_43_duplication(self):
+    def test_43_doaj_duplication(self):
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -2566,6 +2735,19 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 1, "Fail caused by DOAJ xml file"
 
+    def test_crossref_43_duplication(self):
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
         # Crossref xml
 
         # make both handles, as we want as little gap as possible between requests in a moment
@@ -2605,7 +2787,7 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 1, "Fail caused by Crossref xml file"
 
-    def test_44_journal_1_article_1_superlong_noclip(self):
+    def test_44_doaj_journal_1_article_1_superlong_noclip(self):
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
         # But it's just shy of 30000 unicode characters long!
@@ -2655,6 +2837,22 @@ We should parameterise this test set
         assert len(found) == 1, "Fail caused by DOAJ xml file"
         assert len(found[0].bibjson().abstract) == 26264, "Fail caused by DOAJ xml file"
 
+    def test_crossref_44_journal_1_article_1_superlong_noclip(self):
+        # Create a journal with 1 issn, which is the same 1 issn on the article
+        # we expect a successful article ingest
+        # But it's just shy of 30000 unicode characters long!
+
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
         # Crossref xml
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_superlong_should_not_clip()
@@ -2674,6 +2872,8 @@ We should parameterise this test set
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
+
+
         assert fu is not None, "Fail caused by Crossref xml file"
         assert fu.status == "processed", "Fail caused by Crossref xml file"
         assert fu.imported == 1, "Fail caused by Crossref xml file"
@@ -2687,9 +2887,9 @@ We should parameterise this test set
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1, "Fail caused by Crossref xml file"
-        assert len(found[0].bibjson().abstract) == 26264, "Fail caused by Crossref xml file"
+        assert len(found[0].bibjson().abstract) == 26328, "Fail caused by Crossref xml file"
 
-    def test_45_journal_1_article_1_superlong_clip(self):
+    def test_doaj_45_journal_1_article_1_superlong_clip(self):
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
         # But it's over 40k unicode characters long!
@@ -2739,6 +2939,22 @@ We should parameterise this test set
         assert len(found) == 1, "Fail caused by DOAJ xml file"
         assert len(found[0].bibjson().abstract) == 30000, "Fail caused by DOAJ xml file"
 
+    def test_45_crossref_journal_1_article_1_superlong_clip(self):
+        # Create a journal with 1 issn, which is the same 1 issn on the article
+        # we expect a successful article ingest
+        # But it's over 40k unicode characters long!
+
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
         # Crossref xml
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_superlong_should_clip()
@@ -2773,7 +2989,7 @@ We should parameterise this test set
         assert len(found) == 1, "Fail caused by Crossref xml file"
         assert len(found[0].bibjson().abstract) == 30000, "Fail caused by Crossref xml file"
 
-    def test_46_one_journal_one_article_2_issns_one_unknown(self):
+    def test_46_doaj_one_journal_one_article_2_issns_one_unknown(self):
         # Create one journal and ingest one article.  The Journal has two issns, and the article
         # has two issns, but one of the journal's issns is unknown
         # We expect an ingest failure
@@ -2824,6 +3040,23 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0, "Fail caused by DOAJ xml file"
 
+    def test_46_one_journal_one_article_2_issns_one_unknown(self):
+        # Create one journal and ingest one article.  The Journal has two issns, and the article
+        # has two issns, but one of the journal's issns is unknown
+        # We expect an ingest failure
+
+        j1 = models.Journal()
+        j1.set_owner("testowner1")
+        bj1 = j1.bibjson()
+        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        bj1.add_identifier(bj1.P_ISSN, "2222-2222")
+        j1.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner1")
+        account.save(blocking=True)
+
         # Crossref xml
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
@@ -2858,7 +3091,7 @@ We should parameterise this test set
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0, "Fail caused by Crossref xml file"
 
-    def test_47_lcc_spelling_error(self):
+    def test_47_doaj_lcc_spelling_error(self):
         # create a journal with a broken subject classification
         j1 = models.Journal()
         j1.set_owner("testowner1")
@@ -2911,6 +3144,22 @@ We should parameterise this test set
         assert len(cpaths) == 1, "Fail caused by DOAJ xml file"
         assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling", "Fail caused by DOAJ xml file"
 
+    def test_47_crossref_lcc_spelling_error(self):
+        # create a journal with a broken subject classification
+        j1 = models.Journal()
+        j1.set_owner("testowner1")
+        bj1 = j1.bibjson()
+        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        bj1.add_identifier(bj1.P_ISSN, "9876-5432")
+        bj1.add_subject("LCC", "Whatever", "WHATEVA")
+        bj1.add_subject("LCC", "Aquaculture. Fisheries. Angling", "SH1-691")
+        j1.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner1")
+        account.save(blocking=True)
+
         # Crossref xml
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
@@ -2948,7 +3197,7 @@ We should parameterise this test set
         assert len(cpaths) == 1, "Fail caused by Crossref xml file"
         assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling", "Fail caused by Crossref xml file"
 
-    def test_48_unknown_journal_issn(self):
+    def test_48_doaj_unknown_journal_issn(self):
         # create a journal with one of the ISSNs specified
         j1 = models.Journal()
         j1.set_owner("testowner1")
@@ -2992,6 +3241,19 @@ We should parameterise this test set
         assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
         assert len(fr.get("unmatched", [])) == 1, "Fail caused by DOAJ xml file"
 
+    def test_48_crossref_unknown_journal_issn(self):
+        # create a journal with one of the ISSNs specified
+        j1 = models.Journal()
+        j1.set_owner("testowner1")
+        bj1 = j1.bibjson()
+        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner1")
+        account.save(blocking=True)
+
         # Crossref xml
 
         # take an article with 2 issns, but one of which is not in the index
@@ -3023,7 +3285,7 @@ We should parameterise this test set
         assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
         assert len(fr.get("unmatched", [])) == 1, "Fail caused by Crossref xml file"
 
-    def test_49_noids(self):
+    def test_49_doaj_noids(self):
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -3058,6 +3320,29 @@ We should parameterise this test set
         assert not os.path.exists(path), "Fail caused by DOAJ xml file"
 
         assert file_upload.status == "failed", "Fail caused by DOAJ xml file"
+
+    def test_49_crossref_noids(self):
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("doaj")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
 
         # Crossref xml
 
