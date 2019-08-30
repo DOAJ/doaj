@@ -428,6 +428,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(schema)
         xwalk = plugin.load_class(xwalk_name)()
 
+
         # now we have the record in the index and on disk, we can attempt to
         # validate it
         try:

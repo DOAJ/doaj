@@ -13,11 +13,13 @@ from portality.bll.services import article as articleSvc
 
 from portality import models
 from portality.core import app
+from portality.lib import plugin
 
 from portality.background import BackgroundException, RetryException
 
 import ftplib, os, requests, traceback, shutil
 from urlparse import urlparse
+from lxml import etree
 
 DEFAULT_MAX_REMOTE_SIZE=262144000
 CHUNK_SIZE=1048576
@@ -144,7 +146,6 @@ class TestIngestArticles_SchemaIndependent(DoajTestCase):
         self.cleanup_ids = []
         self.cleanup_paths = []
 
-        self.xwalk_validate = article_crossref_xml.CrossrefXWalk.validate
         self.batch_create_articles = articleSvc.ArticleService.batch_create_articles
 
         self.head = requests.head
@@ -270,8 +271,8 @@ class TestIngestArticles_SchemaIndependent(DoajTestCase):
 class TestIngestArticlesCrossrefXML(DoajTestCase):
 
     def setUp(self):
-        super(TestIngestArticlesCrossrefXML, self).setUp()
 
+        super(TestIngestArticlesCrossrefXML, self).setUp()
         self.cleanup_ids = []
         self.cleanup_paths = []
 
@@ -285,15 +286,21 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         self.upload_dir = app.config["UPLOAD_DIR"]
         self.ingest_articles_retries = app.config['HUEY_TASKS']['ingest_articles']['retries']
 
+        schema_file = open('/home/agnieszka/doajenv/src/doaj/portality/static/doaj/crossref4.4.2.xsd')
+        schema_doc = etree.parse(schema_file)
+        self.schema = etree.XMLSchema(schema_doc)
+
+        etree.XMLSchema = self.mock_load_schema
+
     def tearDown(self):
         super(TestIngestArticlesCrossrefXML, self).tearDown()
-
-        article_crossref_xml.CrossrefXWalk.validate = self.xwalk_validate
-        articleSvc.ArticleService.batch_create_articles = self.batch_create_articles
-
         requests.head = self.head
         requests.get = self.get
         ftplib.FTP = self.ftp
+
+        article_crossref_xml.CrossrefXWalk.validate = self.xwalk_validate
+        articleSvc.ArticleService.batch_create_articles = self.batch_create_articles
+        etree.XMLSchema = self.mock_load_schema
 
         app.config["UPLOAD_DIR"] = self.upload_dir
         app.config["HUEY_TASKS"]["ingest_articles"]["retries"] = self.ingest_articles_retries
@@ -312,9 +319,10 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
             if os.path.exists(path):
                 os.remove(path)
 
-    def test_01_crossref_file_upload_success(self):
+    def mock_load_schema(self, doc):
+        return self.schema
 
-        # Crossref xml
+    def test_01_crossref_file_upload_success(self):
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         f = MockFileUpload(stream=handle)
@@ -334,6 +342,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(previous) == 1, "Fail caused by Crossref xml file"
 
     def test_02_crossref_file_upload_invalid(self):
+
         handle = CrossrefArticleFixtureFactory.invalid_schema_xml()
         f = MockFileUpload(stream=handle)
 
@@ -362,8 +371,6 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
     def test_03_crossref_file_upload_fail(self):
 
-        # Crossref xml
-
         article_crossref_xml.CrossrefXWalk.validate = mock_validate
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
@@ -389,9 +396,11 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert not os.path.exists(path), "Fail caused by Crossref xml file"
 
     def test_04_crossref_url_upload_http_success(self):
+
         # first try with a successful HEAD request
         requests.head = mock_head_success
         requests.get = mock_doaj_get_success
+#        article_crossref_xml.CrossrefXWalk = self.mock_load_class
 
         url = "http://success"
         previous = []
@@ -426,9 +435,11 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(previous) == 1
 
     def test_05_crossref_url_upload_http_fail(self):
+
         # try with failing http requests
         requests.head = mock_head_fail
         requests.get = mock_get_fail
+ #       article_crossref_xml.CrossrefXWalk = self.mock_load_class
 
         url = "http://fail"
         previous = []
@@ -468,7 +479,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
     def test_06_crossref_url_upload_ftp_success(self):
 
         ftplib.FTP = MockCrossrefFTP
-
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         previous = []
         url = "ftp://success"
 
@@ -482,10 +493,11 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(previous) == 1, "Fail caused by Crossref xml file"
 
     def test_07_url_upload_ftp_fail(self):
+
         ftplib.FTP = MockCrossrefFTP
         previous = []
         url = "ftp://fail"
-
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         with self.assertRaises(BackgroundException):
             id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "crossref", previous)
 
@@ -501,7 +513,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
     def test_08_crossref_prepare_file_upload_success(self):
 
-        # Crossref xml
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         f = MockFileUpload(stream=handle)
@@ -523,7 +535,6 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
     def test_09_prepare_file_upload_fail(self):
 
         article_crossref_xml.CrossrefXWalk.validate = mock_validate
-
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         f = MockFileUpload(stream=handle)
 
@@ -540,9 +551,10 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert fu is not None, "Fail caused by Crossref xml file"
 
     def test_10_prepare_url_upload_success(self):
+
         requests.head = mock_head_success
         url = "http://success"
-
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         requests.get = mock_crossref_get_success
 
         previous = []
@@ -560,10 +572,11 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert fu is not None, "Fail caused by Crossref xml file"
 
     def test_11_prepare_url_upload_fail(self):
+
         # try with failing http requests
         requests.head = mock_head_fail
         requests.get = mock_get_fail
-
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         url = "http://fail"
         previous = []
 
@@ -579,6 +592,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert fu is not None, "Fail caused by Crossref xml file"
 
     def test_12_prepare_parameter_errors(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         # no url or file upload
         with self.assertRaises(BackgroundException):
             job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", schema="crossref", previous=[])
@@ -593,6 +607,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
             job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url="http://whatever", schema="doaj", previous=[])
 
     def test_13_ftp_upload_success(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         ftplib.FTP = MockCrossrefFTP
 
         file_upload = models.FileUpload()
@@ -615,6 +630,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.status == "downloaded"
 
     def test_14_ftp_upload_fail(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         ftplib.FTP = MockCrossrefFTP
 
         file_upload = models.FileUpload()
@@ -638,6 +654,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == []
 
     def test_15_http_upload_success(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         requests.head = mock_head_fail
         requests.get = mock_crossref_get_success
 
@@ -661,6 +678,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.status == "downloaded"
 
     def test_17_crossref_download_http_valid(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         requests.head = mock_head_fail
         requests.get = mock_crossref_get_success
 
@@ -688,6 +706,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.status == "validated", "Fail caused by Crossref xml file"
 
     def test_18_download_http_invalid(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         requests.head = mock_head_fail
         requests.get = mock_crossref_get_success
 
@@ -716,6 +735,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
     def test_19_download_http_error(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         requests.head = mock_head_fail
         requests.get = mock_get_fail
 
@@ -742,6 +762,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
     def test_20_download_ftp_valid(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         job = models.BackgroundJob()
 
         url = "ftp://valid"
@@ -764,6 +785,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.status == "validated", "Fail caused by Crossref xml file"
 
     def test_21_download_ftp_invalid(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         job = models.BackgroundJob()
 
         url = "ftp://upload"
@@ -789,6 +811,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
     def test_22_download_ftp_error(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         job = models.BackgroundJob()
 
         url = "ftp://fail"
@@ -813,6 +836,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
     def test_23_crossref_process_success(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -849,36 +873,39 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.new == 1, "Fail caused by Crossref xml file"
 
     def test_24_process_invalid_file(self):
-       j = models.Journal()
-       j.set_owner("testowner")
-       bj = j.bibjson()
-       bj.add_identifier(bj.P_ISSN, "1234-5678")
-       j.save(blocking=True)
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save(blocking=True)
 
-       job = models.BackgroundJob()
-       file_upload = models.FileUpload()
-       file_upload.set_id()
-       file_upload.set_schema("crossref")
+        job = models.BackgroundJob()
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("crossref")
 
-       upload_dir = app.config.get("UPLOAD_DIR")
-       path = os.path.join(upload_dir, file_upload.local_filename)
-       self.cleanup_paths.append(path)
-       self.cleanup_ids.append(file_upload.id)
 
-       stream = CrossrefArticleFixtureFactory.invalid_schema_xml()
-       with open(path, "wb") as f:
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+        self.cleanup_ids.append(file_upload.id)
+
+        stream = CrossrefArticleFixtureFactory.invalid_schema_xml()
+        with open(path, "wb") as f:
            f.write(stream.read())
 
-       task = ingestarticles.IngestArticlesBackgroundTask(job)
-       task._process(file_upload)
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
 
-       assert not os.path.exists(path), "Fail caused by Crossref xml file"
-       assert file_upload.status == "failed", "Fail caused by Crossref xml file"
-       assert file_upload.error is not None and file_upload.error != "", "Fail caused by Crossref xml file"
-       assert file_upload.error_details is not None and file_upload.error_details != "", "Fail caused by Crossref xml file"
-       assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert not os.path.exists(path), "Fail caused by Crossref xml file"
+        assert file_upload.status == "failed", "Fail caused by Crossref xml file"
+        assert file_upload.error is not None and file_upload.error != "", "Fail caused by Crossref xml file"
+        assert file_upload.error_details is not None and file_upload.error_details != "", "Fail caused by Crossref xml file"
+        assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
 
     def test_26_run_validated(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -914,6 +941,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert fu.status == "processed", "Fail caused by Crossref xml file"
 
     def test_27_run_exists(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         requests.head = mock_head_fail
         requests.get = mock_crossref_get_success
 
@@ -951,6 +979,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert fu.status == "processed", "Fail caused by Crossref xml file"
 
     def test_29_submit_success(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -984,6 +1013,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert fu.status == "processed", "Fail caused by Crossref xml file"
 
     def test_31_crossref_run_fail_unmatched_issn(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1025,7 +1055,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert fr["unmatched"] == ["2345-6789"], "Fail caused by Crossref xml file"
 
     def test_32_run_crossref_fail_shared_issn(self):
-
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j1 = models.Journal()
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
@@ -1080,7 +1110,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         # Create 2 journals with different owners and one different issn each.  The two issns in the
         # article match each of the journals respectively
         # We expect an ingest failure
-
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j1 = models.Journal()
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
@@ -1126,7 +1156,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert "9876-5432" in fr["unowned"], "Fail caused by Crossref xml file"
 
     def test_34_crossref_journal_2_article_2_success(self):
-
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1138,6 +1168,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account = models.Account(**asource)
         account.set_id("testowner")
         account.save(blocking=True)
+
 
         # Crossref xml
 
@@ -1174,12 +1205,14 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
 
     def test_35_crossref_journal_2_article_1_success(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
         j.save()
+
 
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
@@ -1220,7 +1253,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(found) == 1, "Fail caused by Crossref xml file"
 
     def test_37_crossref_journal_1_article_1_success(self):
-
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1266,7 +1299,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(found) == 1, "Fail caused by Crossref xml file"
 
     def test_38_crossref_journal_2_article_2_1_different_success(self):
-
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1313,6 +1346,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(found) == 0, "Fail caused by Crossref xml file"
 
     def test_39_crossref_2_journals_different_owners_both_issns_fail(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j1 = models.Journal()
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
@@ -1369,6 +1403,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(found) == 0, "Fail caused by Crossref xml file"
 
     def test_40_crossref_2_journals_different_owners_issn_each_fail(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         # Create 2 journals with different owners and one different issn each.  The two issns in the
         # article match each of the journals respectively
         # We expect an ingest failure
@@ -1425,6 +1460,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(found) == 0, "Fail caused by Crossref xml file"
 
     def test_41_crossref_2_journals_same_owner_issn_each_success(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         # Create 2 journals with the same owner, each with one different issn.  The article's 2 issns
         # match each of these issns
         # We expect a successful article ingest
@@ -1482,6 +1518,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
 
     def test_42_crossref_2_journals_different_owners_different_issns_mixed_article_fail(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         # Create 2 different journals with different owners and different issns (2 each).
         # The article's issns match one issn in each journal
         # We expect an ingest failure
@@ -1540,6 +1577,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(found) == 0, "Fail caused by Crossref xml file"
 
     def test_crossref_43_duplication(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1592,6 +1630,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(found) == 1, "Fail caused by Crossref xml file"
 
     def test_crossref_44_journal_1_article_1_superlong_noclip(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
         # But it's just shy of 30000 unicode characters long!
@@ -1644,6 +1683,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(found[0].bibjson().abstract) == 26328, "Fail caused by Crossref xml file"
 
     def test_45_crossref_journal_1_article_1_superlong_clip(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
         # But it's over 40k unicode characters long!
@@ -1694,6 +1734,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(found[0].bibjson().abstract) == 30000, "Fail caused by Crossref xml file"
 
     def test_46_one_journal_one_article_2_issns_one_unknown(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         # Create one journal and ingest one article.  The Journal has two issns, and the article
         # has two issns, but one of the journal's issns is unknown
         # We expect an ingest failure
@@ -1745,6 +1786,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(found) == 0, "Fail caused by Crossref xml file"
 
     def test_47_crossref_lcc_spelling_error(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         # create a journal with a broken subject classification
         j1 = models.Journal()
         j1.set_owner("testowner1")
@@ -1798,6 +1840,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling", "Fail caused by Crossref xml file"
 
     def test_48_crossref_unknown_journal_issn(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         # create a journal with one of the ISSNs specified
         j1 = models.Journal()
         j1.set_owner("testowner1")
@@ -1842,6 +1885,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(fr.get("unmatched", [])) == 1, "Fail caused by Crossref xml file"
 
     def test_49_crossref_noids(self):
+        #article_crossref_xml.CrossrefXWalk = self.mock_load_class
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1877,7 +1921,6 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         assert file_upload.status == "failed", "Fail caused by Crossref xml file"
 
-
 class TestIngestArticlesDoajXML(DoajTestCase):
 
     def setUp(self):
@@ -1900,7 +1943,6 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         super(TestIngestArticlesDoajXML, self).tearDown()
 
         article_doaj_xml.DOAJXWalk.validate = self.xwalk_validate
-        article_crossref_xml.CrossrefXWalk.validate = self.xwalk_validate
         articleSvc.ArticleService.batch_create_articles = self.batch_create_articles
 
         requests.head = self.head
