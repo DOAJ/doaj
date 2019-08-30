@@ -147,6 +147,7 @@ class TestIngestArticles_SchemaIndependent(DoajTestCase):
         self.cleanup_paths = []
 
         self.batch_create_articles = articleSvc.ArticleService.batch_create_articles
+        self.xwalk_validate = article_crossref_xml.CrossrefXWalk.validate
 
         self.head = requests.head
         self.get = requests.get
@@ -286,7 +287,8 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         self.upload_dir = app.config["UPLOAD_DIR"]
         self.ingest_articles_retries = app.config['HUEY_TASKS']['ingest_articles']['retries']
 
-        schema_file = open('/home/agnieszka/doajenv/src/doaj/portality/static/doaj/crossref4.4.2.xsd')
+        schema_path = app.config.get("SCHEMAS", {}).get("crossref")
+        schema_file = open(schema_path)
         schema_doc = etree.parse(schema_file)
         self.schema = etree.XMLSchema(schema_doc)
 
