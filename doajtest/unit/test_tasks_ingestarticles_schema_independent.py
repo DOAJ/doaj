@@ -1,10 +1,7 @@
 from doajtest.helpers import DoajTestCase
 
 from portality.tasks import ingestarticles
-from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
-from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 
-from portality.crosswalks import article_crossref_xml
 from portality.bll.services import article as articleSvc
 
 from portality import models
