@@ -105,8 +105,8 @@ def http_upload(job, path, file_upload):
     try:
         r = requests.get(file_upload.filename, stream=True)
         if r.status_code != requests.codes.ok:
-            job.add_audit_message("The URL could not be accessed error 1")
-            file_upload.failed("The URLreques could not be accessed error 1")
+            job.add_audit_message("The URL could not be accessed")
+            file_upload.failed("The URL could not be accessed")
             return False
 
         # check the content length
@@ -137,8 +137,8 @@ def http_upload(job, path, file_upload):
                     f.write(chunk)
                     f.flush()
     except:
-        job.add_audit_message("The URL could not be accessed error 2")
-        file_upload.failed("The URL could not be accessed error 2")
+        job.add_audit_message("The URL could not be accessed")
+        file_upload.failed("The URL could not be accessed")
         return False
 
     if too_large:
@@ -326,7 +326,6 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         if not ingest_exception:
             try:
-                job.add_audit_message("removing file here")
                 os.remove(path) # just remove the file, no need to keep it
             except Exception as e:
                 job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=e.message))
@@ -427,7 +426,6 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(schema)
         xwalk = plugin.load_class(xwalk_name)()
-
 
         # now we have the record in the index and on disk, we can attempt to
         # validate it

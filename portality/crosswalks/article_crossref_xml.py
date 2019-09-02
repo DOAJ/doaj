@@ -6,9 +6,8 @@ import re
 from portality.bll import exceptions
 from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
-from datetime import datetime
 
-from portality.settings import BASE_FILE_PATH
+NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih.gov/JATS1'}
 
 
 class CrossrefXWalk(object):
@@ -70,11 +69,11 @@ class CrossrefXWalk(object):
         # go through the records in the doc and crosswalk each one individually
         articles = []
         root = doc.getroot()
-        body = root.find("{http://www.crossref.org/schema/4.4.2}body")
-        journals = body.findall("{http://www.crossref.org/schema/4.4.2}journal")
+        body = root.find("x:body", NS)
+        journals = body.findall("x:journal", NS)
         if journals is not None:
             for journal in journals:
-                arts = journal.findall("{http://www.crossref.org/schema/4.4.2}journal_article")
+                arts = journal.findall("x:journal_article", NS)
                 for record in arts:
                     article = self.crosswalk_article(record, journal)
                     articles.append(article)
@@ -160,7 +159,6 @@ Example record:
         """
         article = models.Article()
         bibjson = article.bibjson()
-        NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih.gov/JATS1'}
 
         '''
         # language
