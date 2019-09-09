@@ -118,6 +118,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.upload_dir = app.config["UPLOAD_DIR"]
         self.ingest_articles_retries = app.config['HUEY_TASKS']['ingest_articles']['retries']
 
+
+
     def tearDown(self):
         super(TestIngestArticlesDoajXML, self).tearDown()
 
