@@ -164,6 +164,7 @@ class TestCrudArticle(DoajTestCase):
 
         # now test some failures
 
+        # an invalid urls
         data = ArticleFixtureFactory.make_article_source()
         data["bibjson"]["link"][0]["url"] = "Two streets down on the left"
         with self.assertRaises(DataStructureException):
