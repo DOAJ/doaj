@@ -50,7 +50,7 @@ BASE_ARTICLE_STRUCT = {
                 "link": {
                     "fields": {
                         "type": {"coerce": "link_type"},
-                        "url": {"coerce": "url"},
+                        "url": {"coerce": "unicode"},
                         "content_type": {"coerce": "link_content_type"}
                     }
                 },

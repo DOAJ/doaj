@@ -123,7 +123,7 @@ class ArticlesCrudApi(CrudApi):
         template['responses']['200']['schema'] = IncomingArticleDO().struct_to_swag(schema_title='Article schema')
         template['responses']['401'] = cls.R401
         template['responses']['404'] = cls.R404
-        template['responses']['500'] = cls.R500
+        #template['responses']['500'] = cls.R500
         return cls._build_swag_response(template, api_key_optional_override=True)
 
     @classmethod

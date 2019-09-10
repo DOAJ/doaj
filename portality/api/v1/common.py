@@ -236,6 +236,6 @@ def bad_request(error):
     magic = uuid.uuid1()
     app.logger.info("Sending 500 Bad Request from client: {x} (ref: {y})".format(x=error.message, y=magic))
     t = deepcopy(ERROR_TEMPLATE)
-    t['status'] = 'Unable to retrieve the recource. This record contains bad data.'
+    t['status'] = 'Unable to retrieve the recource.'
     t['error'] = error.message + " (ref: {y})".format(y=magic)
     return respond(json.dumps(t), 500)
