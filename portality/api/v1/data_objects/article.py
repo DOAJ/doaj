@@ -47,22 +47,19 @@ BASE_ARTICLE_STRUCT = {
                         "id": {"coerce": "unicode"}
                     }
                 },
-
                 "link": {
                     "fields": {
                         "type": {"coerce": "link_type"},
-                        "url": {"coerce": "url"},
+                        "url": {"coerce": "unicode"},
                         "content_type": {"coerce": "link_content_type"}
                     }
                 },
-
                 "author": {
                     "fields": {
                         "name": {"coerce": "unicode"},
                         "affiliation": {"coerce": "unicode"}
                     }
                 },
-
                 "journal": {
                     "fields": {
                         "start_page": {"coerce": "unicode"},
@@ -120,7 +117,12 @@ INCOMING_ARTICLE_REQUIRED = {
                 },
 
                 "link": {
-                    "required": ["type", "url"]
+                    "required": ["type", "url"],
+                    "fields": {
+                        "type": {"coerce": "link_type"},
+                        "url": {"coerce": "url"},
+                        "content_type": {"coerce": "link_content_type"}
+                    }
                 },
 
                 "author": {

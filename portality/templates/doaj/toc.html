@@ -166,59 +166,67 @@
         <div class="box slim">
             <p><strong>PUBLICATION CHARGES</strong></p>
 
-            {% if tick %}
+            {% if not bibjson.apc_url and not bibjson.submission_charges_url and not bibjson.get_single_url("waiver_policy") %}
 
-            <p>Article Processing Charges (APCs):
-                {% if bibjson.apc %}
-                    {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
-                        {% if bibjson.apc_url %}
-                            <a href="{{ bibjson.apc_url }}">Yes.</a>
-                        {% else %}
-                            Yes.
-                        {% endif %}
-                        {{bibjson.apc.get("average_price", "price unknown")}}{{bibjson.apc.get("currency", " currency unknown")}}
-                    {% endif %}
-                {% else %}
-                    {% if bibjson.apc_url %}
-                        <a href="{{ bibjson.apc_url }}">No.</a>
-                    {% else %}
-                        No.
-                    {% endif %}
-                {% endif %}
-            </p>
-
-            <p>Submission Charges:
-                {% if bibjson.submission_charges %}
-                    {% if bibjson.submission_charges.get("currency") or bibjson.submission_charges.get("average_price") %}
-                        {% if bibjson.submission_charges_url %}
-                            <a href="{{ bibjson.submission_charges_url }}">Yes</a>
-                        {% else %}
-                            Yes.
-                        {% endif %}
-                        {{bibjson.submission_charges.get("average_price", "price unknown")}}{{bibjson.submission_charges.get("currency", " currency unknown")}}
-                    {% endif %}
-                {% else %}
-                    {% if bibjson.submission_charges_url %}
-                        <a href="{{ bibjson.submission_charges_url }}">No.</a>
-                    {% else %}
-                        No.
-                    {% endif %}
-                {% endif %}
-            </p>
-
-            <p>Waiver policy for charges?
-                {% if bibjson.get_single_url("waiver_policy") %}
-                    <a href="{{bibjson.get_single_url('waiver_policy')}}">Yes.</a>
-                {% else %}
-                    No.
-                {% endif %}
-            </p>
+                <p>Information on publication charges not available for this journal</p>
 
             {% else %}
 
-            <p>Information on publication charges not yet available for this journal</p>
+                {% if bibjson.apc_url %}
+                    {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
+                        <p>
+                            <a href="{{ bibjson.apc_url }}">Article Processing Charges (APCs):</a>
+                            {{bibjson.apc.get("average_price", "price unknown")}} {{bibjson.apc.get("currency", " currency unknown")}}
+                        </p>
+                    {% else %}
+                        <p>
+                            <a href="{{ bibjson.apc_url }}">Article Processing Charges (APCs):</a> No
+                        </p>
+                    {% endif %}
+                {% else %}
+                    {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
+                        <p>
+                            Article Processing Charges (APCs):
+                            {{bibjson.apc.get("average_price", "price unknown")}} {{bibjson.apc.get("currency", " currency unknown")}}
+                        </p>
+                    {% else %}
+                        <p>
+                            Article Processing Charges (APCs): No
+                        </p>
+                    {% endif %}
+                {% endif %}
 
+                {% if bibjson.submission_charges_url %}
+                    {% if bibjson.submission_charges.get("currency") or bibjson.submission_charges.get("average_price") %}
+                        <p>
+                            <a href="{{ bibjson.submission_charges_url }}">Submission Charges:</a>
+                            {{bibjson.submission_charges.get("average_price", "price unknown")}} {{bibjson.submission_charges.get("currency", " currency unknown")}}
+                        </p>
+                    {% else %}
+                        <p>
+                            <a href="{{ bibjson.submission_charges_url }}">Submission Charges:</a> No
+                        </p>
+                    {% endif %}
+                {% else %}
+                    {% if bibjson.submission_charges.get("currency") or bibjson.submission_charges.get("average_price") %}
+                        <p>
+                            Submission Charges:
+                            {{bibjson.submission_charges.get("average_price", "price unknown")}} {{bibjson.submission_charges.get("currency", " currency unknown")}}
+                        </p>
+                    {% else %}
+                        <p>
+                            Submission Charges: No
+                        </p>
+                    {% endif %}
+                {% endif %}
+
+                {% if bibjson.get_single_url("waiver_policy") %}
+                    <p>
+                        <a href="{{bibjson.get_single_url('waiver_policy')}}">Waiver policy for charges</a>
+                    </p>
+                {% endif %}
             {% endif %}
+
         </div>
     </div>
 
