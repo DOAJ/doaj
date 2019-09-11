@@ -126,6 +126,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         schema_doc = etree.parse(schema_file)
         self.schema = etree.XMLSchema(schema_doc)
 
+        etree.XMLSchema = self.mock_load_schema
+
     def tearDown(self):
         super(TestIngestArticlesDoajXML, self).tearDown()
 
@@ -161,7 +163,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_01_doaj_file_upload_success(self):
 
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         f = MockFileUpload(stream=handle)
@@ -183,7 +185,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_02_doaj_file_upload_invalid(self):
 
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
 
         handle = DoajXmlArticleFixtureFactory.invalid_schema_xml()
         f = MockFileUpload(stream=handle)
@@ -213,7 +215,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_03_doaj_file_upload_fail(self):
 
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         article_doaj_xml.DOAJXWalk.validate = mock_validate
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
@@ -240,7 +242,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_04_doaj_url_upload_http_success(self):
         # first try with a successful HEAD request
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         requests.head = mock_head_success
         requests.get = mock_doaj_get_success
 
@@ -272,7 +274,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_05_doaj_url_upload_http_fail(self):
         # try with failing http requests
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         requests.head = mock_head_fail
         requests.get = mock_get_fail
 
@@ -313,7 +315,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_06_doaj_url_upload_ftp_success(self):
         ftplib.FTP = MockDOAJFTP
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
 
         url = "ftp://success"
 
@@ -330,7 +332,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_07_url_upload_ftp_fail(self):
         ftplib.FTP = MockDOAJFTP
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
 
         url = "ftp://fail"
 
@@ -351,7 +353,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_08_doajxml_prepare_file_upload_success(self):
 
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         f = MockFileUpload(stream=handle)
 
@@ -370,7 +372,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_09_prepare_file_upload_fail(self):
 
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         article_doaj_xml.DOAJXWalk.validate = mock_validate
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
@@ -393,7 +395,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         url = "http://success"
 
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         previous = []
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="doaj", previous=previous)
@@ -415,7 +417,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         url = "http://fail"
 
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         previous = []
 
         with self.assertRaises(BackgroundException):
@@ -430,7 +432,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_12_prepare_parameter_errors(self):
         # no url or file upload
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
 
         with self.assertRaises(BackgroundException):
             job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", schema="doaj", previous=[])
@@ -446,7 +448,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_13_ftp_upload_success(self):
         ftplib.FTP = MockDOAJFTP
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -469,7 +471,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_14_ftp_upload_fail(self):
         ftplib.FTP = MockDOAJFTP
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -492,7 +494,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == []
 
     def test_15_http_upload_success(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         requests.head = mock_head_fail
         requests.get = mock_doaj_get_success
 
@@ -516,7 +518,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.status == "downloaded"
 
     def test_17_doaj_download_http_valid(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         requests.head = mock_head_fail
         requests.get = mock_doaj_get_success
 
@@ -525,7 +527,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         url = "http://valid"
 
-        
+
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -543,7 +545,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.status == "validated", "Fail caused by DOAJ xml file"
 
     def test_18_download_http_invalid(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         requests.head = mock_head_fail
         requests.get = mock_doaj_get_success
 
@@ -551,7 +553,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         url = "http://upload"
 
-        
+
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -572,7 +574,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
     def test_19_download_http_error(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         requests.head = mock_head_fail
         requests.get = mock_get_fail
 
@@ -580,7 +582,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         url = "http://fail"
 
-        
+
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -601,14 +603,14 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
     def test_20_download_ftp_valid(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         ftplib.FTP = MockDOAJFTP
 
         job = models.BackgroundJob()
 
         url = "ftp://valid"
 
-        
+
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -626,14 +628,14 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.status == "validated", "Fail caused by DOAJ xml file"
 
     def test_21_download_ftp_invalid(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         ftplib.FTP = MockDOAJFTP
 
         job = models.BackgroundJob()
 
         url = "ftp://upload"
 
-        
+
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -654,14 +656,14 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
     def test_22_download_ftp_error(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         ftplib.FTP = MockDOAJFTP
 
         job = models.BackgroundJob()
 
         url = "ftp://fail"
 
-        
+
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -682,7 +684,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
     def test_23_doaj_process_success(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
 
         j = models.Journal()
         j.set_owner("testowner")
@@ -697,7 +699,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         job = models.BackgroundJob()
 
-        
+
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -722,7 +724,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.new == 1, "Fail caused by DOAJ xml file"
 
     def test_24_process_invalid_file(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -731,7 +733,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         job = models.BackgroundJob()
 
-        
+
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -756,7 +758,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
     def test_25_process_filesystem_error(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         articleSvc.ArticleService.batch_create_articles = mock_batch_create
 
         j = models.Journal()
@@ -790,7 +792,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
     def test_26_run_validated(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -825,7 +827,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "processed", "Fail caused by DOAJ xml file"
 
     def test_27_run_exists(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         requests.head = mock_head_fail
         requests.get = mock_doaj_get_success
 
@@ -863,7 +865,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
 
     def test_29_submit_success(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -899,7 +901,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create a journal with 2 issns, one of which is the same as an issn on the
         # article, but the article also contains an issn which doesn't match the journal
         # We expect a failed ingest
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -942,7 +944,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create 2 journals with the same issns but different owners, which match the issns on the article
         # We expect an ingest failure
 
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j1 = models.Journal()
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
@@ -995,7 +997,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # article match each of the journals respectively
         # We expect an ingest failure
 
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j1 = models.Journal()
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
@@ -1043,7 +1045,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_34_doaj_journal_2_article_2_success(self):
         # Create a journal with two issns both of which match the 2 issns in the article
         # we expect a successful article ingest
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1091,7 +1093,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create a journal with 2 issns, one of which is present in the article as the
         # only issn
         # We expect a successful article ingest
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1189,7 +1191,7 @@ We should parameterise this test set
     def test_37_doaj_journal_1_article_1_success(self):
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1236,7 +1238,7 @@ We should parameterise this test set
         # Create a journal with 2 issns, one of which is the same as an issn on the
         # article, but the article also contains an issn which doesn't match the journal
         # We expect a failed ingest
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1283,7 +1285,7 @@ We should parameterise this test set
     def test_39_doaj_2_journals_different_owners_both_issns_fail(self):
         # Create 2 journals with the same issns but different owners, which match the issns on the article
         # We expect an ingest failure
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j1 = models.Journal()
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
@@ -1341,7 +1343,7 @@ We should parameterise this test set
         # Create 2 journals with different owners and one different issn each.  The two issns in the
         # article match each of the journals respectively
         # We expect an ingest failure
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j1 = models.Journal()
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
@@ -1396,7 +1398,7 @@ We should parameterise this test set
         # Create 2 journals with the same owner, each with one different issn.  The article's 2 issns
         # match each of these issns
         # We expect a successful article ingest
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j1 = models.Journal()
         j1.set_owner("testowner")
         bj1 = j1.bibjson()
@@ -1450,7 +1452,7 @@ We should parameterise this test set
         # Create 2 different journals with different owners and different issns (2 each).
         # The article's issns match one issn in each journal
         # We expect an ingest failure
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j1 = models.Journal()
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
@@ -1504,7 +1506,7 @@ We should parameterise this test set
         assert len(found) == 0, "Fail caused by DOAJ xml file"
 
     def test_43_doaj_duplication(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1558,7 +1560,7 @@ We should parameterise this test set
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
         # But it's just shy of 30000 unicode characters long!
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1606,7 +1608,7 @@ We should parameterise this test set
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
         # But it's over 40k unicode characters long!
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1654,7 +1656,7 @@ We should parameterise this test set
         # Create one journal and ingest one article.  The Journal has two issns, and the article
         # has two issns, but one of the journal's issns is unknown
         # We expect an ingest failure
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j1 = models.Journal()
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
@@ -1701,7 +1703,7 @@ We should parameterise this test set
 
     def test_47_doaj_lcc_spelling_error(self):
         # create a journal with a broken subject classification
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j1 = models.Journal()
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
@@ -1753,7 +1755,7 @@ We should parameterise this test set
 
     def test_48_doaj_unknown_journal_issn(self):
         # create a journal with one of the ISSNs specified
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j1 = models.Journal()
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
@@ -1796,7 +1798,7 @@ We should parameterise this test set
 
 
     def test_49_doaj_noids(self):
-        etree.XMLSchema = self.mock_load_schema
+        #etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
