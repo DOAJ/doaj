@@ -116,6 +116,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.get = requests.get
         self.ftp = ftplib.FTP
 
+        self.schema_old = etree.XMLSchema
+
         self.upload_dir = app.config["UPLOAD_DIR"]
         self.ingest_articles_retries = app.config['HUEY_TASKS']['ingest_articles']['retries']
 
@@ -129,6 +131,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         article_doaj_xml.DOAJXWalk.validate = self.xwalk_validate
         articleSvc.ArticleService.batch_create_articles = self.batch_create_articles
+
+        etree.XMLSchema = self.schema_old
 
         requests.head = self.head
         requests.get = self.get

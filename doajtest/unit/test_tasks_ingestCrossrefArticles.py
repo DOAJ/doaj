@@ -122,6 +122,8 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         self.upload_dir = app.config["UPLOAD_DIR"]
         self.ingest_articles_retries = app.config['HUEY_TASKS']['ingest_articles']['retries']
 
+        self.schema_old = etree.XMLSchema
+
         schema_path = app.config.get("SCHEMAS", {}).get("crossref")
         schema_file = open(schema_path)
         schema_doc = etree.parse(schema_file)
@@ -135,6 +137,9 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         article_crossref_xml.CrossrefXWalk.validate = self.xwalk_validate
         articleSvc.ArticleService.batch_create_articles = self.batch_create_articles
+
+        etree.XMLSchema = self.schema_old
+
 
         app.config["UPLOAD_DIR"] = self.upload_dir
         app.config["HUEY_TASKS"]["ingest_articles"]["retries"] = self.ingest_articles_retries
