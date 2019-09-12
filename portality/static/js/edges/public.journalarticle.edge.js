@@ -8,7 +8,8 @@ $.extend(true, doaj, {
                 "country_publisher",
                 "apc",
                 "peer_review",
-                "year_added"
+                "year_added",
+                "language"
             ],
             article : [
                 "archiving_policy",
@@ -184,6 +185,7 @@ $.extend(true, doaj, {
                     field: "index.language.exact",
                     display: "Fulltext Language",
                     deactivateThreshold: 1,
+                    active: false,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
