@@ -97,6 +97,7 @@ SPONSORS = {
         'swedish-research': {'name': 'Swedish Research Council', 'logo': 'swedish-research.svg', 'url': 'https://vr.se/english.html'},
         'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://publications.copernicus.org/'},
+        'elsevier': {'name': 'Elsevier', 'logo': 'elsevier.svg', 'url': 'https://www.elsevier.com/'}
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
