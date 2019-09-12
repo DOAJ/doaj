@@ -2,6 +2,7 @@ from portality.dao import DomainObject
 from portality.core import app
 from portality.models import GenericBibJSON, shared_structs
 from portality.lib import dataobj, es_data_mapping, dates
+from portality import datasets
 
 from copy import deepcopy
 from datetime import datetime
@@ -268,7 +269,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         # add the keywords to the non-schema subjects (but not the classification)
         subjects += cbib.keywords
 
-        # get the bibjson object to conver the language to the english form
+        # get the bibjson object to convert the languages to the english form
         langs = cbib.language_name()
 
         # get the english name of the country
@@ -803,7 +804,6 @@ class JournalBibJSON(GenericBibJSON):
 
     def country_name(self):
         if self.country is not None:
-            from portality import datasets  # delayed import because of files to be loaded
             return datasets.get_country_name(self.country)
         return None
 
@@ -894,10 +894,7 @@ class JournalBibJSON(GenericBibJSON):
 
     def language_name(self):
         # copy the languages and convert them to their english forms
-        from portality import datasets  # delayed import, as it loads some stuff from file
-        if self.language is not None:
-            langs = self.language
-        langs = [datasets.name_for_lang(l) for l in langs]
+        langs = [datasets.name_for_lang(l) for l in self.language]
         uc = dataobj.to_unicode()
         langs = [uc(l) for l in langs]
         return list(set(langs))
