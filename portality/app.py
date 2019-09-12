@@ -33,6 +33,7 @@ from portality.view.doajservices import blueprint as services
 if 'api' in app.config['FEATURES']:
     from portality.view.api_v1 import blueprint as api_v1
 from portality.view.status import blueprint as status
+from portality.lib.normalise import normalise_doi
 
 app.register_blueprint(account, url_prefix='/account')
 app.register_blueprint(admin, url_prefix='/admin')
@@ -96,6 +97,7 @@ SPONSORS = {
         'swedish-research': {'name': 'Swedish Research Council', 'logo': 'swedish-research.svg', 'url': 'https://vr.se/english.html'},
         'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://publications.copernicus.org/'},
+        'elsevier': {'name': 'Elsevier', 'logo': 'elsevier.svg', 'url': 'https://www.elsevier.com/'}
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
@@ -236,8 +238,13 @@ def doi_url(doi):
     :param doi: the string DOI
     :return: the HTML link
     """
-    tendot = doi[doi.find('10.'):]
-    return "<a href='https://doi.org/{0}'>{0}</a>".format(tendot)
+
+    try:
+        return "https://doi.org/" + normalise_doi(doi)
+    except ValueError:
+        return ""
+
+
 
 
 @app.template_filter('form_diff_table_comparison_value')
