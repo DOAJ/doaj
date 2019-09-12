@@ -1,6 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
-from doajtest.fixtures import ApplicationFixtureFactory, DoajXmlArticleFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, ArticleFixtureFactory, JournalFixtureFactory
 from copy import deepcopy
 import json
 import time
@@ -112,7 +112,7 @@ class TestCrudReturnValues(DoajTestCase):
 
     def test_03_articles_crud(self):
         # add some data to the index with a Create
-        user_data = DoajXmlArticleFixtureFactory.make_article_source()
+        user_data = ArticleFixtureFactory.make_article_source()
 
         with self.app_test.test_client() as t_client:
             # log into the app as our user

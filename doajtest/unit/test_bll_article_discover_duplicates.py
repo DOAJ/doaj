@@ -1,7 +1,7 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import DoajXmlArticleFixtureFactory, JournalFixtureFactory, AccountFixtureFactory
+from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
@@ -99,7 +99,7 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
                     else:
                         the_fulltext = "http:" + the_fulltext
 
-                source = DoajXmlArticleFixtureFactory.make_article_source(eissn="1234-5678", pissn="9876-5432", doi=the_doi, fulltext=the_fulltext)
+                source = ArticleFixtureFactory.make_article_source(eissn="1234-5678", pissn="9876-5432", doi=the_doi, fulltext=the_fulltext)
                 article = Article(**source)
                 article.set_id()
                 article.save()
@@ -136,7 +136,7 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
             elif article_fulltext_arg == "invalid":
                 fulltext = IDENTS[-1]["fulltext"]
 
-            source = DoajXmlArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
+            source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
             article = Article(**source)
 
             # we need to do this if doi or fulltext are none, because the factory will set a default if we don't

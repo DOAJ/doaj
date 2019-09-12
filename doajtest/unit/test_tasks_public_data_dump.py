@@ -2,7 +2,7 @@ from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import JournalFixtureFactory, DoajXmlArticleFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
 from doajtest.mocks.store import StoreMockFactory
 from doajtest.mocks.model_Cache import ModelCacheMockFactory
 
@@ -94,7 +94,7 @@ class TestPublicDataDumpTask(DoajTestCase):
 
         aids = []
         for i in range(article_count):
-            source = DoajXmlArticleFixtureFactory.make_article_source(
+            source = ArticleFixtureFactory.make_article_source(
                 eissn="{x}000-0000".format(x=i),
                 pissn="0000-{x}000".format(x=i),
                 with_id=False,

@@ -1,4 +1,4 @@
-from doajtest.fixtures import DoajXmlArticleFixtureFactory
+from doajtest.fixtures import ArticleFixtureFactory
 from portality.models import Article
 from portality.bll.exceptions import ArticleMergeConflict
 from datetime import datetime
@@ -26,7 +26,7 @@ class BLLArticleMockFactory(object):
 
         possible_duplicates = {"doi" : [], "fulltext" : []}
         for i, ident in enumerate(idents):
-            source = DoajXmlArticleFixtureFactory.make_article_source(eissn="1234-5678", pissn="9876-5432", doi=ident["doi"], fulltext=["fulltext"])
+            source = ArticleFixtureFactory.make_article_source(eissn="1234-5678", pissn="9876-5432", doi=ident["doi"], fulltext=["fulltext"])
             article = Article(**source)
             article.set_id()
             article.data["last_updated"] = datetime.fromtimestamp(i * 100000).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -75,7 +75,7 @@ class BLLArticleMockFactory(object):
     def get_duplicate(cls, return_none=False, given_article_id=None, eissn=None, pissn=None, doi=None, fulltext=None, merge_conflict=False):
         article = None
         if not return_none and not merge_conflict:
-            source = DoajXmlArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
+            source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
             article = Article(**source)
             article.set_id()
 

@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 
 from portality import constants
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, DoajXmlArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.lib import dataobj
@@ -421,7 +421,7 @@ class TestClient(DoajTestCase):
 
     def test_14_article_model_index(self):
         """Check article indexes generate"""
-        a = models.Article(**DoajXmlArticleFixtureFactory.make_article_source())
+        a = models.Article(**ArticleFixtureFactory.make_article_source())
         assert a.data.get('index', None) is None
 
         # Generate the index
@@ -1002,7 +1002,7 @@ class TestClient(DoajTestCase):
 
     def test_30_article_journal_sync(self):
         j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        a = models.Article(**DoajXmlArticleFixtureFactory.make_article_source(in_doaj=False, with_journal_info=False))
+        a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=False, with_journal_info=False))
 
         assert a.has_seal() is False
         assert a.bibjson().journal_issns != j.bibjson().issns()
@@ -1075,25 +1075,25 @@ class TestClient(DoajTestCase):
         # make a bunch of articles variably in doaj/not in doaj, for/not for the issn we'll search
         for i in range(1, 3):
             article = models.Article(
-                **DoajXmlArticleFixtureFactory.make_article_source(eissn="1111-1111", pissn="1111-1111", with_id=False, in_doaj=True)
+                **ArticleFixtureFactory.make_article_source(eissn="1111-1111", pissn="1111-1111", with_id=False, in_doaj=True)
             )
             article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
             articles.append(article)
         for i in range(3, 5):
             article = models.Article(
-                **DoajXmlArticleFixtureFactory.make_article_source(eissn="1111-1111", pissn="1111-1111", with_id=False, in_doaj=False)
+                **ArticleFixtureFactory.make_article_source(eissn="1111-1111", pissn="1111-1111", with_id=False, in_doaj=False)
             )
             article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
             articles.append(article)
         for i in range(5, 7):
             article = models.Article(
-                **DoajXmlArticleFixtureFactory.make_article_source(eissn="2222-2222", pissn="2222-2222", with_id=False, in_doaj=True)
+                **ArticleFixtureFactory.make_article_source(eissn="2222-2222", pissn="2222-2222", with_id=False, in_doaj=True)
             )
             article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
             articles.append(article)
         for i in range(7, 9):
             article = models.Article(
-                **DoajXmlArticleFixtureFactory.make_article_source(eissn="2222-2222", pissn="2222-2222", with_id=False, in_doaj=False)
+                **ArticleFixtureFactory.make_article_source(eissn="2222-2222", pissn="2222-2222", with_id=False, in_doaj=False)
             )
             article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
             articles.append(article)

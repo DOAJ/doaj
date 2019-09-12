@@ -1,5 +1,5 @@
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import DoajXmlArticleFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 from portality import models
 
 
@@ -13,7 +13,7 @@ class TestTOC(DoajTestCase):
 
     def test_01_article_index_date_parsing(self):
         """ The ToC date histogram needs an accurate datestamp in the article's index """
-        a = models.Article(**DoajXmlArticleFixtureFactory.make_article_source())
+        a = models.Article(**ArticleFixtureFactory.make_article_source())
 
         # Check we can handle shortened years
         a.bibjson().year = '12'
@@ -58,7 +58,7 @@ class TestTOC(DoajTestCase):
 
     def test_02_toc_requirements(self):
         """ Check what we need for ToCs are in the article models """
-        a = models.Article(**DoajXmlArticleFixtureFactory.make_article_source())
+        a = models.Article(**ArticleFixtureFactory.make_article_source())
         a.prep()
 
         # To build ToCs we need a volume, an issue, a year and a month.
@@ -73,7 +73,7 @@ class TestTOC(DoajTestCase):
         eissn = j.bibjson().first_eissn
         j.set_last_manual_update()
         j.save(blocking=True)
-        a = models.Article(**DoajXmlArticleFixtureFactory.make_article_source(pissn=pissn, eissn=eissn, in_doaj=True))
+        a = models.Article(**ArticleFixtureFactory.make_article_source(pissn=pissn, eissn=eissn, in_doaj=True))
         a.save(blocking=True)
         with self.app_test.test_client() as t_client:
             response = t_client.get('/toc/{}'.format(j.bibjson().get_preferred_issn()))
@@ -88,7 +88,7 @@ class TestTOC(DoajTestCase):
 
         j.set_last_manual_update()
         j.save(blocking=True)
-        a = models.Article(**DoajXmlArticleFixtureFactory.make_article_source(pissn=pissn, in_doaj=True))
+        a = models.Article(**ArticleFixtureFactory.make_article_source(pissn=pissn, in_doaj=True))
         a.save(blocking=True)
         with self.app_test.test_client() as t_client:
             response = t_client.get('/toc/{}'.format(j.bibjson().get_preferred_issn()))
@@ -103,7 +103,7 @@ class TestTOC(DoajTestCase):
 
         j.set_last_manual_update()
         j.save(blocking=True)
-        a = models.Article(**DoajXmlArticleFixtureFactory.make_article_source(pissn=eissn, in_doaj=True))
+        a = models.Article(**ArticleFixtureFactory.make_article_source(pissn=eissn, in_doaj=True))
         a.save(blocking=True)
         with self.app_test.test_client() as t_client:
             response = t_client.get('/toc/{}'.format(j.bibjson().get_preferred_issn()))
