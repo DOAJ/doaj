@@ -596,7 +596,7 @@ FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "
 
 SCHEMAS = {
     "doaj": os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd"),
-    "crossref": os.path.join(BASE_FILE_PATH, "static", "doaj", "crossref4.4.2.xsd")
+    "crossref": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd")
 }
 
 # mapping of format names to modules which implement the crosswalks
