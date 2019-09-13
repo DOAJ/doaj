@@ -34,13 +34,6 @@ class ModelArticleMockFactory(object):
         return mock
 
     @classmethod
-    def save(self, filename="filename.xml", stream=None):
+    def batch_create(cls, *args, **kwargs):
+        raise RuntimeError("oops")
 
-        self.filename = filename
-        self.stream = stream
-
-        def mock(self, path):
-            with open(path, "wb") as f:
-                f.write(self.stream.read())
-
-        return mock

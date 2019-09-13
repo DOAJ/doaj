@@ -1,4 +1,5 @@
 from doajtest.helpers import DoajTestCase
+from doajtest.mocks.model_Article import ModelArticleMockFactory
 
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
@@ -6,6 +7,8 @@ from doajtest.fixtures.accounts import AccountFixtureFactory
 from doajtest.mocks.model_File import ModelFileMockFactory
 from doajtest.mocks.response import ResponseMockFactory
 from doajtest.mocks.ftp import FTPMockFactory
+from doajtest.mocks.model_Article import ModelArticleMockFactory
+from doajtest.mocks.xwalk import XwalkMockFactory
 
 import urlparse
 import time
@@ -21,11 +24,6 @@ import ftplib, os, requests
 from urlparse import urlparse
 from lxml import etree
 
-def mock_validate(handle, schema):
-    raise RuntimeError("oops")
-
-def mock_batch_create(*args, **kwargs):
-    raise RuntimeError("oops")
 
 class TestIngestArticlesCrossrefXML(DoajTestCase):
 
@@ -141,7 +139,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
     def test_03_crossref_file_upload_fail(self):
 
-        article_crossref_xml.CrossrefXWalk.validate = mock_validate
+        article_crossref_xml.CrossrefXWalk.validate = XwalkMockFactory.validate
         etree.XMLSchema = self.mock_load_schema
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
@@ -298,7 +296,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
     def test_09_prepare_file_upload_fail(self):
 
-        article_crossref_xml.CrossrefXWalk.validate = mock_validate
+        article_crossref_xml.CrossrefXWalk.validate = XwalkMockFactory.validate
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         f = ModelFileMockFactory(stream=handle)
         etree.XMLSchema = self.mock_load_schema
@@ -679,8 +677,9 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == []
 
     def test_25_process_filesystem_error(self):
+
         etree.XMLSchema = self.mock_load_schema
-        articleSvc.ArticleService.batch_create_articles = mock_batch_create
+        articleSvc.ArticleService.batch_create_articles = ModelArticleMockFactory.batch_create
 
         j = models.Journal()
         j.set_owner("testowner")

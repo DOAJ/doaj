@@ -7,6 +7,8 @@ from doajtest.fixtures.accounts import AccountFixtureFactory
 from doajtest.mocks.model_File import ModelFileMockFactory
 from doajtest.mocks.response import ResponseMockFactory
 from doajtest.mocks.ftp import FTPMockFactory
+from doajtest.mocks.model_Article import ModelArticleMockFactory
+from doajtest.mocks.xwalk import XwalkMockFactory
 
 import urlparse
 import time
@@ -20,12 +22,6 @@ from portality.background import BackgroundException
 
 import ftplib, os, requests
 from urlparse import urlparse
-
-def mock_validate(handle, schema):
-    raise RuntimeError("oops")
-
-def mock_batch_create(*args, **kwargs):
-    raise RuntimeError("oops")
 
 class TestIngestArticlesDoajXML(DoajTestCase):
 
@@ -144,7 +140,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_03_doaj_file_upload_fail(self):
 
-        article_doaj_xml.DOAJXWalk.validate = mock_validate
+        article_doaj_xml.DOAJXWalk.validate = XwalkMockFactory.validate
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         f = ModelFileMockFactory(stream=handle)
@@ -295,7 +291,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_09_prepare_file_upload_fail(self):
 
-        article_doaj_xml.DOAJXWalk.validate = mock_validate
+        article_doaj_xml.DOAJXWalk.validate = XwalkMockFactory.validate
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         f = ModelFileMockFactory(stream=handle)
@@ -650,7 +646,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == []
 
     def test_25_process_filesystem_error(self):
-        articleSvc.ArticleService.batch_create_articles = mock_batch_create
+        articleSvc.ArticleService.batch_create_articles = ModelArticleMockFactory.batch_create
 
         j = models.Journal()
         j.set_owner("testowner")
