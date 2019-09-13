@@ -126,7 +126,7 @@ $.extend(true, doaj, {
                     id : "seal",
                     category: "facet",
                     field: "index.has_seal.exact",
-                    display: "DOAJ Seal",
+                    display: "Journal has DOAJ Seal",
                     deactivateThreshold: 1,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -283,7 +283,7 @@ $.extend(true, doaj, {
                     defaultOperator : "AND",
                     urlShortener : doaj.bitlyShortener,
                     embedSnippet : doaj.publicSearch.embedSnippet,
-                    renderer : edges.bs3.newFullSearchControllerRenderer({
+                    renderer : doaj.renderers.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
                         searchPlaceholder: "Search DOAJ",
