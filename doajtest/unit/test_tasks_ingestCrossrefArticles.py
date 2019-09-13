@@ -5,6 +5,7 @@ from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
 from doajtest.mocks.model_File import ModelFileMockFactory
 from doajtest.mocks.response import ResponseMockFactory
+from doajtest.mocks.ftp import FTPMockFactory
 
 import urlparse
 import time
@@ -19,37 +20,6 @@ from portality.background import BackgroundException
 import ftplib, os, requests
 from urlparse import urlparse
 from lxml import etree
-
-DEFAULT_MAX_REMOTE_SIZE=262144000
-CHUNK_SIZE=1048576
-
-GET = requests.get
-
-class MockCrossrefFTP(object):
-    def __init__(self, hostname, *args, **kwargs):
-        if hostname in ["fail"]:
-            raise RuntimeError("oops")
-        self.content = None
-        if hostname in ["valid"]:
-            self.content = CrossrefArticleFixtureFactory.upload_1_issn_correct().read()
-
-    def sendcmd(self, *args, **kwargs):
-        return "200"
-
-    def size(self, *args, **kwargs):
-        return 100
-
-    def close(self):
-        pass
-
-    def retrbinary(self, cmd, callback, chunk_size):
-        if self.content is None:
-            for i in range(9):
-                data = str(i) * chunk_size
-                callback(data)
-        else:
-            callback(self.content)
-        return "226"
 
 def mock_validate(handle, schema):
     raise RuntimeError("oops")
@@ -131,14 +101,14 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.schema == "crossref", "Fail caused by Crossref xml file"
-        assert fu.status == "validated", "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.schema == "crossref"
+        assert fu.status == "validated"
 
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
-        assert os.path.exists(path), "Fail caused by Crossref xml file"
+        assert os.path.exists(path)
 
-        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        assert len(previous) == 1
 
     def test_02_crossref_file_upload_invalid(self):
 
@@ -155,19 +125,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by Crossref xml file"
-        assert fu.error_details is not None and fu.error != "", "Fail caused by Crossref xml file"
-        assert fu.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is not None and fu.error != ""
+        assert fu.failure_reasons.keys() == []
 
         # file should have been removed from upload dir
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
-        assert not os.path.exists(path), "Fail caused by Crossref xml file"
+        assert not os.path.exists(path)
 
         # and placed into the failed dir
         fad = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
-        assert os.path.exists(fad), "Fail caused by Crossref xml file"
+        assert os.path.exists(fad)
 
     def test_03_crossref_file_upload_fail(self):
 
@@ -186,15 +156,15 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by Crossref xml file"
-        assert fu.error_details is None, "Fail caused by Crossref xml file"
-        assert fu.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
+        assert fu.failure_reasons.keys() == []
 
         # file should have been removed from disk
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
-        assert not os.path.exists(path), "Fail caused by Crossref xml file"
+        assert not os.path.exists(path)
 
     def test_04_crossref_url_upload_http_success(self):
 
@@ -210,11 +180,11 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "crossref", previous)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.schema == "crossref", "Fail caused by Crossref xml file"
-        assert fu.status == "exists", "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.schema == "crossref"
+        assert fu.status == "exists"
 
-        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        assert len(previous) == 1
 
         # try that again, but with an unsuccessful HEAD request
         requests.head = ResponseMockFactory.head_fail
@@ -224,9 +194,9 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "crossref", previous)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.schema == "crossref", "Fail caused by Crossref xml file"
-        assert fu.status == "exists", "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.schema == "crossref"
+        assert fu.status == "exists"
 
         assert len(previous) == 1
 
@@ -243,15 +213,15 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         with self.assertRaises(BackgroundException):
             id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "crossref", previous)
 
-        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        assert len(previous) == 1
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by Crossref xml file"
-        assert fu.error_details is None, "Fail caused by Crossref xml file"
-        assert fu.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
+        assert fu.failure_reasons.keys() == []
 
         # now try again with an invalid url
         requests.head = ResponseMockFactory.head_success
@@ -262,19 +232,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         with self.assertRaises(BackgroundException):
             id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "Crossref", previous)
 
-        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        assert len(previous) == 1
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by Crossref xml file"
-        assert fu.error_details is None, "Fail caused by Crossref xml file"
-        assert fu.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
+        assert fu.failure_reasons.keys() == []
 
     def test_06_crossref_url_upload_ftp_success(self):
 
-        ftplib.FTP = MockCrossrefFTP
+        ftplib.FTP = FTPMockFactory.create(schema="crossref")
         previous = []
         url = "ftp://success"
         etree.XMLSchema = self.mock_load_schema
@@ -282,29 +252,29 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "crossref", previous)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.schema == "crossref", "Fail caused by Crossref xml file"
-        assert fu.status == "exists", "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.schema == "crossref"
+        assert fu.status == "exists"
 
-        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        assert len(previous) == 1
 
     def test_07_url_upload_ftp_fail(self):
 
-        ftplib.FTP = MockCrossrefFTP
+        ftplib.FTP = FTPMockFactory.create(schema="crossref")
         previous = []
         url = "ftp://fail"
         with self.assertRaises(BackgroundException):
             id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "crossref", previous)
 
-        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        assert len(previous) == 1
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by Crossref xml file"
-        assert fu.error_details is None, "Fail caused by Crossref xml file"
-        assert fu.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
+        assert fu.failure_reasons.keys() == []
 
     def test_08_crossref_prepare_file_upload_success(self):
 
@@ -316,15 +286,15 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="crossref",
                                                                   previous=previous)
 
-        assert job is not None, "Fail caused by Crossref xml file"
-        assert "ingest_articles__file_upload_id" in job.params, "Fail caused by Crossref xml file"
+        assert job is not None
+        assert "ingest_articles__file_upload_id" in job.params
         id = job.params.get("ingest_articles__file_upload_id")
         self.cleanup_ids.append(id)
 
-        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        assert len(previous) == 1
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
+        assert fu is not None
 
     def test_09_prepare_file_upload_fail(self):
 
@@ -338,12 +308,12 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
             job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="crossref",
                                                                       previous=previous)
 
-        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        assert len(previous) == 1
         id = previous[0].id
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
+        assert fu is not None
 
     def test_10_prepare_url_upload_success(self):
 
@@ -356,15 +326,15 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="crossref", previous=previous)
 
-        assert job is not None, "Fail caused by Crossref xml file"
-        assert "ingest_articles__file_upload_id" in job.params, "Fail caused by Crossref xml file"
+        assert job is not None
+        assert "ingest_articles__file_upload_id" in job.params
         id = job.params.get("ingest_articles__file_upload_id")
         self.cleanup_ids.append(id)
 
-        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        assert len(previous) == 1
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
+        assert fu is not None
 
     def test_11_prepare_url_upload_fail(self):
 
@@ -379,12 +349,12 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
             job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="crossref",
                                                                       previous=previous)
 
-        assert len(previous) == 1, "Fail caused by Crossref xml file"
+        assert len(previous) == 1
         id = previous[0].id
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
+        assert fu is not None
 
     def test_12_prepare_parameter_errors(self):
 
@@ -405,7 +375,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
     def test_13_ftp_upload_success(self):
 
         etree.XMLSchema = self.mock_load_schema
-        ftplib.FTP = MockCrossrefFTP
+        ftplib.FTP = FTPMockFactory.create(schema="crossref")
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -429,7 +399,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
     def test_14_ftp_upload_fail(self):
 
         etree.XMLSchema = self.mock_load_schema
-        ftplib.FTP = MockCrossrefFTP
+        ftplib.FTP = FTPMockFactory.create(schema="crossref")
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -500,8 +470,8 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         result = task._download(file_upload)
         print(result)
 
-        assert result is True, "Fail caused by Crossref xml file"
-        assert file_upload.status == "validated", "Fail caused by Crossref xml file"
+        assert result is True
+        assert file_upload.status == "validated"
 
     def test_18_download_http_invalid(self):
 
@@ -528,10 +498,10 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert file_upload.status == "failed", "Fail caused by Crossref xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by Crossref xml file"
-        assert file_upload.error_details is not None and file_upload.error_details != "", "Fail caused by Crossref xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is not None and file_upload.error_details != ""
+        assert file_upload.failure_reasons.keys() == []
 
     def test_19_download_http_error(self):
 
@@ -555,11 +525,11 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert result is False, "Fail caused by Crossref xml file"
-        assert file_upload.status == "failed", "Fail caused by Crossref xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by Crossref xml file"
-        assert file_upload.error_details is None, "Fail caused by Crossref xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert result is False
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is None
+        assert file_upload.failure_reasons.keys() == []
 
     def test_20_download_ftp_valid(self):
 
@@ -568,7 +538,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         url = "ftp://valid"
 
-        ftplib.FTP = MockCrossrefFTP
+        ftplib.FTP = FTPMockFactory.create(schema="crossref")
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -582,8 +552,8 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert result is True, "Fail caused by Crossref xml file"
-        assert file_upload.status == "validated", "Fail caused by Crossref xml file"
+        assert result is True
+        assert file_upload.status == "validated"
 
     def test_21_download_ftp_invalid(self):
 
@@ -592,7 +562,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         url = "ftp://upload"
 
-        ftplib.FTP = MockCrossrefFTP
+        ftplib.FTP = FTPMockFactory.create(schema="crossref")
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -607,10 +577,10 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert file_upload.status == "failed", "Fail caused by Crossref xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by Crossref xml file"
-        assert file_upload.error_details is not None and file_upload.error_details != "", "Fail caused by Crossref xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is not None and file_upload.error_details != ""
+        assert file_upload.failure_reasons.keys() == []
 
     def test_22_download_ftp_error(self):
 
@@ -618,7 +588,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         job = models.BackgroundJob()
 
         url = "ftp://fail"
-        ftplib.FTP = MockCrossrefFTP
+        ftplib.FTP = FTPMockFactory.create(schema="crossref")
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -632,11 +602,11 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert result is False, "Fail caused by Crossref xml file"
-        assert file_upload.status == "failed", "Fail caused by Crossref xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by Crossref xml file"
-        assert file_upload.error_details is None, "Fail caused by Crossref xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert result is False
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is None
+        assert file_upload.failure_reasons.keys() == []
 
     def test_23_crossref_process_success(self):
 
@@ -670,11 +640,11 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
 
-        assert not os.path.exists(path), "Fail caused by Crossref xml file"
+        assert not os.path.exists(path)
 
-        assert file_upload.status == "processed", "Fail caused by Crossref xml file"
-        assert file_upload.imported == 1, "Fail caused by Crossref xml file"
-        assert file_upload.new == 1, "Fail caused by Crossref xml file"
+        assert file_upload.status == "processed"
+        assert file_upload.imported == 1
+        assert file_upload.new == 1
 
     def test_24_process_invalid_file(self):
 
@@ -702,11 +672,11 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
 
-        assert not os.path.exists(path), "Fail caused by Crossref xml file"
-        assert file_upload.status == "failed", "Fail caused by Crossref xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by Crossref xml file"
-        assert file_upload.error_details is not None and file_upload.error_details != "", "Fail caused by Crossref xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert not os.path.exists(path)
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is not None and file_upload.error_details != ""
+        assert file_upload.failure_reasons.keys() == []
 
     def test_25_process_filesystem_error(self):
         etree.XMLSchema = self.mock_load_schema
@@ -736,11 +706,11 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
 
-        assert not os.path.exists(path), "Fail caused by Crossref xml file"
-        assert file_upload.status == "failed", "Fail caused by Crossref xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by Crossref xml file"
-        assert file_upload.error_details is None, "Fail caused by Crossref xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by Crossref xml file"
+        assert not os.path.exists(path)
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is None
+        assert file_upload.failure_reasons.keys() == []
 
     def test_26_run_validated(self):
         etree.XMLSchema = self.mock_load_schema
@@ -775,8 +745,8 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "processed", "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "processed"
 
     def test_27_run_exists(self):
         etree.XMLSchema = self.mock_load_schema
@@ -813,8 +783,8 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "processed", "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "processed"
 
     def test_29_submit_success(self):
         etree.XMLSchema = self.mock_load_schema
@@ -847,8 +817,8 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         ingestarticles.IngestArticlesBackgroundTask.submit(job)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "processed", "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "processed"
 
     def test_31_crossref_run_fail_unmatched_issn(self):
         etree.XMLSchema = self.mock_load_schema
@@ -881,14 +851,14 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
         assert fu.error_details is None
 
         fr = fu.failure_reasons
-        assert "unmatched" in fr, "Fail caused by Crossref xml file"
-        assert fr["unmatched"] == ["2345-6789"], "Fail caused by Crossref xml file"
+        assert "unmatched" in fr
+        assert fr["unmatched"] == ["2345-6789"]
 
     def test_32_run_crossref_fail_shared_issn(self):
         etree.XMLSchema = self.mock_load_schema
@@ -931,15 +901,15 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by Crossref xml file"
-        assert fu.error_details is None, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
 
         fr = fu.failure_reasons
-        assert "shared" in fr, "Fail caused by Crossref xml file"
-        assert "1234-5678" in fr["shared"], "Fail caused by Crossref xml file"
-        assert "9876-5432" in fr["shared"], "Fail caused by Crossref xml file"
+        assert "shared" in fr
+        assert "1234-5678" in fr["shared"]
+        assert "9876-5432" in fr["shared"]
 
 
     def test_33_run_fail_unowned_issn(self):
@@ -982,14 +952,14 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by Crossref xml file"
-        assert fu.error_details is None, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
 
         fr = fu.failure_reasons
-        assert "unowned" in fr, "Fail caused by Crossref xml file"
-        assert "9876-5432" in fr["unowned"], "Fail caused by Crossref xml file"
+        assert "unowned" in fr
+        assert "9876-5432" in fr["unowned"]
 
     def test_34_crossref_journal_2_article_2_success(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1022,19 +992,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "processed", "Fail caused by Crossref xml file"
-        assert fu.imported == 1, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 1, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1, "Fail caused by Crossref xml file"
+        assert len(found) == 1
 
 
     def test_35_crossref_journal_2_article_1_success(self):
@@ -1069,19 +1039,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "processed", "Fail caused by Crossref xml file"
-        assert fu.imported == 1, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 1, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1, "Fail caused by Crossref xml file"
+        assert len(found) == 1
 
     def test_37_crossref_journal_1_article_1_success(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1113,19 +1083,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "processed", "Fail caused by Crossref xml file"
-        assert fu.imported == 1, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 1, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1, "Fail caused by Crossref xml file"
+        assert len(found) == 1
 
     def test_38_crossref_journal_2_article_2_1_different_success(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1158,19 +1128,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.imported == 0, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 0, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 1, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 1
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "2345-6789"])]
-        assert len(found) == 0, "Fail caused by Crossref xml file"
+        assert len(found) == 0
 
     def test_39_crossref_2_journals_different_owners_both_issns_fail(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1211,21 +1181,21 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.imported == 0, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 0, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 2, "Fail caused by Crossref xml file"
-        assert "1234-5678" in fr["shared"], "Fail caused by Crossref xml file"
-        assert "9876-5432" in fr["shared"], "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 2
+        assert "1234-5678" in fr["shared"]
+        assert "9876-5432" in fr["shared"]
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0, "Fail caused by Crossref xml file"
+        assert len(found) == 0
 
     def test_40_crossref_2_journals_different_owners_issn_each_fail(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1267,20 +1237,20 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.imported == 0, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 0, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 1, "Fail caused by Crossref xml file"
-        assert "9876-5432" in fr["unowned"], "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 1
+        assert "9876-5432" in fr["unowned"]
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0, "Fail caused by Crossref xml file"
+        assert len(found) == 0
 
     def test_41_crossref_2_journals_same_owner_issn_each_success(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1323,19 +1293,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "processed", "Fail caused by Crossref xml file"
-        assert fu.imported == 1, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 1, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1, "Fail caused by Crossref xml file"
+        assert len(found) == 1
 
 
     def test_42_crossref_2_journals_different_owners_different_issns_mixed_article_fail(self):
@@ -1380,20 +1350,20 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.imported == 0, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 0, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 1, "Fail caused by Crossref xml file"
-        assert "9876-5432" in fr["unowned"], "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 1
+        assert "9876-5432" in fr["unowned"]
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0, "Fail caused by Crossref xml file"
+        assert len(found) == 0
 
     def test_crossref_43_duplication(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1439,12 +1409,12 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         fu1 = models.FileUpload.pull(id1)
         fu2 = models.FileUpload.pull(id2)
 
-        assert fu1.status == "processed", "Fail caused by Crossref xml file"
-        assert fu2.status == "processed", "Fail caused by Crossref xml file"
+        assert fu1.status == "processed"
+        assert fu2.status == "processed"
 
         # now let's check that only one article got created
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1, "Fail caused by Crossref xml file"
+        assert len(found) == 1
 
     def test_crossref_44_journal_1_article_1_superlong_noclip(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1482,20 +1452,20 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         fu = models.FileUpload.pull(id)
 
 
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "processed", "Fail caused by Crossref xml file"
-        assert fu.imported == 1, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 1, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1, "Fail caused by Crossref xml file"
-        assert len(found[0].bibjson().abstract) == 26328, "Fail caused by Crossref xml file"
+        assert len(found) == 1
+        assert len(found[0].bibjson().abstract) == 26328
 
     def test_45_crossref_journal_1_article_1_superlong_clip(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1531,20 +1501,20 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "processed", "Fail caused by Crossref xml file"
-        assert fu.imported == 1, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 1, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1, "Fail caused by Crossref xml file"
-        assert len(found[0].bibjson().abstract) == 30000, "Fail caused by Crossref xml file"
+        assert len(found) == 1
+        assert len(found[0].bibjson().abstract) == 30000
 
     def test_46_one_journal_one_article_2_issns_one_unknown(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1581,20 +1551,20 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.imported == 0, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 0, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 1, "Fail caused by Crossref xml file"
-        assert "9876-5432" in fr["unmatched"], "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 1
+        assert "9876-5432" in fr["unmatched"]
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0, "Fail caused by Crossref xml file"
+        assert len(found) == 0
 
     def test_47_crossref_lcc_spelling_error(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1630,23 +1600,23 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "processed", "Fail caused by Crossref xml file"
-        assert fu.imported == 1, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 1, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1, "Fail caused by Crossref xml file"
+        assert len(found) == 1
 
         cpaths = found[0].data["index"]["classification_paths"]
-        assert len(cpaths) == 1, "Fail caused by Crossref xml file"
-        assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling", "Fail caused by Crossref xml file"
+        assert len(cpaths) == 1
+        assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling"
 
     def test_48_crossref_unknown_journal_issn(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1680,16 +1650,16 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by Crossref xml file"
-        assert fu.status == "failed", "Fail caused by Crossref xml file"
-        assert fu.imported == 0, "Fail caused by Crossref xml file"
-        assert fu.updates == 0, "Fail caused by Crossref xml file"
-        assert fu.new == 0, "Fail caused by Crossref xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by Crossref xml file"
-        assert len(fr.get("unmatched", [])) == 1, "Fail caused by Crossref xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 1
 
     def test_49_crossref_noids(self):
         etree.XMLSchema = self.mock_load_schema
@@ -1722,6 +1692,6 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
 
-        assert not os.path.exists(path), "Fail caused by Crossref xml file"
+        assert not os.path.exists(path)
 
-        assert file_upload.status == "failed", "Fail caused by Crossref xml file"
+        assert file_upload.status == "failed"

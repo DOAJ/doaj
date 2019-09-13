@@ -6,6 +6,7 @@ from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
 from doajtest.mocks.model_File import ModelFileMockFactory
 from doajtest.mocks.response import ResponseMockFactory
+from doajtest.mocks.ftp import FTPMockFactory
 
 import urlparse
 import time
@@ -19,38 +20,6 @@ from portality.background import BackgroundException
 
 import ftplib, os, requests
 from urlparse import urlparse
-
-DEFAULT_MAX_REMOTE_SIZE=262144000
-CHUNK_SIZE=1048576
-
-GET = requests.get
-
-
-class MockDOAJFTP(object):
-    def __init__(self, hostname, *args, **kwargs):
-        if hostname in ["fail"]:
-            raise RuntimeError("oops")
-        self.content = None
-        if hostname in ["valid"]:
-            self.content = DoajXmlArticleFixtureFactory.upload_1_issn_correct().read()
-
-    def sendcmd(self, *args, **kwargs):
-        return "200"
-
-    def size(self, *args, **kwargs):
-        return 100
-
-    def close(self):
-        pass
-
-    def retrbinary(self, cmd, callback, chunk_size):
-        if self.content is None:
-            for i in range(9):
-                data = str(i) * chunk_size
-                callback(data)
-        else:
-            callback(self.content)
-        return "226"
 
 def mock_validate(handle, schema):
     raise RuntimeError("oops")
@@ -135,14 +104,14 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.schema == "doaj", "Fail caused by DOAJ xml file"
-        assert fu.status == "validated", "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.schema == "doaj"
+        assert fu.status == "validated"
 
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
-        assert os.path.exists(path), "Fail caused by DOAJ xml file"
+        assert os.path.exists(path)
 
-        assert len(previous) == 1, "Fail caused by DOAJ xml file"
+        assert len(previous) == 1
 
 
     def test_02_doaj_file_upload_invalid(self):
@@ -159,19 +128,19 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by DOAJ xml file"
-        assert fu.error_details is not None and fu.error != "", "Fail caused by DOAJ xml file"
-        assert fu.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is not None and fu.error != ""
+        assert fu.failure_reasons.keys() == []
 
         # file should have been removed from upload dir
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
-        assert not os.path.exists(path), "Fail caused by DOAJ xml file"
+        assert not os.path.exists(path)
 
         # and placed into the failed dir
         fad = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
-        assert os.path.exists(fad), "Fail caused by DOAJ xml file"
+        assert os.path.exists(fad)
 
     def test_03_doaj_file_upload_fail(self):
 
@@ -189,15 +158,15 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by DOAJ xml file"
-        assert fu.error_details is None, "Fail caused by DOAJ xml file"
-        assert fu.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
+        assert fu.failure_reasons.keys() == []
 
         # file should have been removed from disk
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
-        assert not os.path.exists(path), "Fail caused by DOAJ xml file"
+        assert not os.path.exists(path)
 
     def test_04_doaj_url_upload_http_success(self):
         # first try with a successful HEAD request
@@ -210,9 +179,9 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "doaj", previous)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.schema == "doaj", "Fail caused by DOAJ xml file"
-        assert fu.status == "exists", "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.schema == "doaj"
+        assert fu.status == "exists"
 
         assert len(previous) == 1
 
@@ -224,9 +193,9 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "doaj", previous)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.schema == "doaj", "Fail caused by DOAJ xml file"
-        assert fu.status == "exists", "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.schema == "doaj"
+        assert fu.status == "exists"
 
         assert len(previous) == 1
 
@@ -241,15 +210,15 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         with self.assertRaises(BackgroundException):
             id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "doaj", previous)
 
-        assert len(previous) == 1, "Fail caused by DOAJ xml file"
+        assert len(previous) == 1
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by DOAJ xml file"
-        assert fu.error_details is None, "Fail caused by DOAJ xml file"
-        assert fu.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
+        assert fu.failure_reasons.keys() == []
 
         # now try again with an invalid url
         requests.head = ResponseMockFactory.head_success
@@ -260,18 +229,18 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         with self.assertRaises(BackgroundException):
             id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "doaj", previous)
 
-        assert len(previous) == 1, "Fail caused by DOAJ xml file"
+        assert len(previous) == 1
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by DOAJ xml file"
-        assert fu.error_details is None, "Fail caused by DOAJ xml file"
-        assert fu.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
+        assert fu.failure_reasons.keys() == []
 
     def test_06_doaj_url_upload_ftp_success(self):
-        ftplib.FTP = MockDOAJFTP
+        ftplib.FTP = FTPMockFactory.create("doaj")
 
         url = "ftp://success"
 
@@ -280,14 +249,14 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "doaj", previous)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.schema == "doaj", "Fail caused by DOAJ xml file"
-        assert fu.status == "exists", "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.schema == "doaj"
+        assert fu.status == "exists"
 
-        assert len(previous) == 1, "Fail caused by DOAJ xml file"
+        assert len(previous) == 1
 
     def test_07_url_upload_ftp_fail(self):
-        ftplib.FTP = MockDOAJFTP
+        ftplib.FTP = FTPMockFactory.create("doaj")
 
         url = "ftp://fail"
 
@@ -296,15 +265,15 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         with self.assertRaises(BackgroundException):
             id = ingestarticles.IngestArticlesBackgroundTask._url_upload("testuser", url, "doaj", previous)
 
-        assert len(previous) == 1, "Fail caused by DOAJ xml file"
+        assert len(previous) == 1
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by DOAJ xml file"
-        assert fu.error_details is None, "Fail caused by DOAJ xml file"
-        assert fu.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
+        assert fu.failure_reasons.keys() == []
 
     def test_08_doajxml_prepare_file_upload_success(self):
 
@@ -314,15 +283,15 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         previous = []
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="doaj", previous=previous)
 
-        assert job is not None, "Fail caused by DOAJ xml file"
-        assert "ingest_articles__file_upload_id" in job.params, "Fail caused by DOAJ xml file"
+        assert job is not None
+        assert "ingest_articles__file_upload_id" in job.params
         id = job.params.get("ingest_articles__file_upload_id")
         self.cleanup_ids.append(id)
 
-        assert len(previous) == 1, "Fail caused by DOAJ xml file"
+        assert len(previous) == 1
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
+        assert fu is not None
 
     def test_09_prepare_file_upload_fail(self):
 
@@ -335,12 +304,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         with self.assertRaises(BackgroundException):
             job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="doaj", previous=previous)
 
-        assert len(previous) == 1, "Fail caused by DOAJ xml file"
+        assert len(previous) == 1
         id = previous[0].id
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
+        assert fu is not None
 
     def test_10_prepare_url_upload_success(self):
         requests.head = ResponseMockFactory.head_success
@@ -352,15 +321,15 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="doaj", previous=previous)
 
-        assert job is not None, "Fail caused by DOAJ xml file"
-        assert "ingest_articles__file_upload_id" in job.params, "Fail caused by DOAJ xml file"
+        assert job is not None
+        assert "ingest_articles__file_upload_id" in job.params
         id = job.params.get("ingest_articles__file_upload_id")
         self.cleanup_ids.append(id)
 
-        assert len(previous) == 1, "Fail caused by DOAJ xml file"
+        assert len(previous) == 1
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
+        assert fu is not None
 
     def test_11_prepare_url_upload_fail(self):
         # try with failing http requests
@@ -374,12 +343,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         with self.assertRaises(BackgroundException):
             job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="doaj", previous=previous)
 
-        assert len(previous) == 1, "Fail caused by DOAJ xml file"
+        assert len(previous) == 1
         id = previous[0].id
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
+        assert fu is not None
 
     def test_12_prepare_parameter_errors(self):
         # no url or file upload
@@ -397,7 +366,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
             job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url="http://whatever", schema="doaj", previous=[])
 
     def test_13_ftp_upload_success(self):
-        ftplib.FTP = MockDOAJFTP
+        ftplib.FTP = FTPMockFactory.create("doaj")
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -419,7 +388,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.status == "downloaded"
 
     def test_14_ftp_upload_fail(self):
-        ftplib.FTP = MockDOAJFTP
+        ftplib.FTP = FTPMockFactory.create("doaj")
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -485,8 +454,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         result = task._download(file_upload)
 
-        assert result is True, "Fail caused by DOAJ xml file"
-        assert file_upload.status == "validated", "Fail caused by DOAJ xml file"
+        assert result is True
+        assert file_upload.status == "validated"
 
     def test_18_download_http_invalid(self):
         requests.head = ResponseMockFactory.head_fail
@@ -509,10 +478,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert file_upload.status == "failed", "Fail caused by DOAJ xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by DOAJ xml file"
-        assert file_upload.error_details is not None and file_upload.error_details != "", "Fail caused by DOAJ xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is not None and file_upload.error_details != ""
+        assert file_upload.failure_reasons.keys() == []
 
     def test_19_download_http_error(self):
         requests.head = ResponseMockFactory.head_fail
@@ -534,14 +503,14 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert result is False, "Fail caused by DOAJ xml file"
-        assert file_upload.status == "failed", "Fail caused by DOAJ xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by DOAJ xml file"
-        assert file_upload.error_details is None, "Fail caused by DOAJ xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+        assert result is False
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is None
+        assert file_upload.failure_reasons.keys() == []
 
     def test_20_download_ftp_valid(self):
-        ftplib.FTP = MockDOAJFTP
+        ftplib.FTP = FTPMockFactory.create("doaj")
 
         job = models.BackgroundJob()
 
@@ -559,11 +528,11 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert result is True, "Fail caused by DOAJ xml file"
-        assert file_upload.status == "validated", "Fail caused by DOAJ xml file"
+        assert result is True
+        assert file_upload.status == "validated"
 
     def test_21_download_ftp_invalid(self):
-        ftplib.FTP = MockDOAJFTP
+        ftplib.FTP = FTPMockFactory.create("doaj")
 
         job = models.BackgroundJob()
 
@@ -582,13 +551,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert file_upload.status == "failed", "Fail caused by DOAJ xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by DOAJ xml file"
-        assert file_upload.error_details is not None and file_upload.error_details != "", "Fail caused by DOAJ xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is not None and file_upload.error_details != ""
+        assert file_upload.failure_reasons.keys() == []
 
     def test_22_download_ftp_error(self):
-        ftplib.FTP = MockDOAJFTP
+        ftplib.FTP = FTPMockFactory.create("doaj")
 
         job = models.BackgroundJob()
 
@@ -606,11 +575,11 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert result is False, "Fail caused by DOAJ xml file"
-        assert file_upload.status == "failed", "Fail caused by DOAJ xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by DOAJ xml file"
-        assert file_upload.error_details is None, "Fail caused by DOAJ xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+        assert result is False
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is None
+        assert file_upload.failure_reasons.keys() == []
 
     def test_23_doaj_process_success(self):
 
@@ -643,11 +612,11 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
 
-        assert not os.path.exists(path), "Fail caused by DOAJ xml file"
+        assert not os.path.exists(path)
 
-        assert file_upload.status == "processed", "Fail caused by DOAJ xml file"
-        assert file_upload.imported == 1, "Fail caused by DOAJ xml file"
-        assert file_upload.new == 1, "Fail caused by DOAJ xml file"
+        assert file_upload.status == "processed"
+        assert file_upload.imported == 1
+        assert file_upload.new == 1
 
     def test_24_process_invalid_file(self):
         j = models.Journal()
@@ -674,11 +643,11 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
 
-        assert not os.path.exists(path), "Fail caused by DOAJ xml file"
-        assert file_upload.status == "failed", "Fail caused by DOAJ xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by DOAJ xml file"
-        assert file_upload.error_details is not None and file_upload.error_details != "", "Fail caused by DOAJ xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+        assert not os.path.exists(path)
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is not None and file_upload.error_details != ""
+        assert file_upload.failure_reasons.keys() == []
 
     def test_25_process_filesystem_error(self):
         articleSvc.ArticleService.batch_create_articles = mock_batch_create
@@ -707,11 +676,11 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
 
-        assert not os.path.exists(path), "Fail caused by DOAJ xml file"
-        assert file_upload.status == "failed", "Fail caused by DOAJ xml file"
-        assert file_upload.error is not None and file_upload.error != "", "Fail caused by DOAJ xml file"
-        assert file_upload.error_details is None, "Fail caused by DOAJ xml file"
-        assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
+        assert not os.path.exists(path)
+        assert file_upload.status == "failed"
+        assert file_upload.error is not None and file_upload.error != ""
+        assert file_upload.error_details is None
+        assert file_upload.failure_reasons.keys() == []
 
     def test_26_run_validated(self):
         j = models.Journal()
@@ -744,8 +713,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "processed", "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "processed"
 
     def test_27_run_exists(self):
         requests.head = ResponseMockFactory.head_fail
@@ -780,8 +749,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "processed", "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "processed"
 
 
     def test_29_submit_success(self):
@@ -813,8 +782,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         ingestarticles.IngestArticlesBackgroundTask.submit(job)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "processed", "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "processed"
 
     def test_31_doaj_run_fail_unmatched_issn(self):
         # Create a journal with 2 issns, one of which is the same as an issn on the
@@ -849,14 +818,14 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
         assert fu.error_details is None
 
         fr = fu.failure_reasons
-        assert "unmatched" in fr, "Fail caused by DOAJ xml file"
-        assert fr["unmatched"] == ["2345-6789"], "Fail caused by DOAJ xml file"
+        assert "unmatched" in fr
+        assert fr["unmatched"] == ["2345-6789"]
 
     def test_32_run_doaj_fail_shared_issn(self):
         # Create 2 journals with the same issns but different owners, which match the issns on the article
@@ -899,15 +868,15 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by DOAJ xml file"
-        assert fu.error_details is None, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
 
         fr = fu.failure_reasons
-        assert "shared" in fr, "Fail caused by DOAJ xml file"
-        assert "1234-5678" in fr["shared"], "Fail caused by DOAJ xml file"
-        assert "9876-5432" in fr["shared"], "Fail caused by DOAJ xml file"
+        assert "shared" in fr
+        assert "1234-5678" in fr["shared"]
+        assert "9876-5432" in fr["shared"]
 
     def test_33_run_fail_unowned_issn(self):
         # Create 2 journals with different owners and one different issn each.  The two issns in the
@@ -949,14 +918,14 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.error is not None and fu.error != "", "Fail caused by DOAJ xml file"
-        assert fu.error_details is None, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is None
 
         fr = fu.failure_reasons
-        assert "unowned" in fr, "Fail caused by DOAJ xml file"
-        assert "9876-5432" in fr["unowned"], "Fail caused by DOAJ xml file"
+        assert "unowned" in fr
+        assert "9876-5432" in fr["unowned"]
 
     def test_34_doaj_journal_2_article_2_success(self):
         # Create a journal with two issns both of which match the 2 issns in the article
@@ -990,19 +959,19 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "processed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 1, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 1, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1, "Fail caused by DOAJ xml file"
+        assert len(found) == 1
 
     def test_35_doaj_journal_2_article_1_success(self):
         # Create a journal with 2 issns, one of which is present in the article as the
@@ -1037,19 +1006,19 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "processed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 1, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 1, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1, "Fail caused by DOAJ xml file"
+        assert len(found) == 1
 
     def test_37_doaj_journal_1_article_1_success(self):
         # Create a journal with 1 issn, which is the same 1 issn on the article
@@ -1082,19 +1051,19 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "processed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 1, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 1, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1, "Fail caused by DOAJ xml file"
+        assert len(found) == 1
 
     def test_38_doaj_journal_2_article_2_1_different_success(self):
         # Create a journal with 2 issns, one of which is the same as an issn on the
@@ -1129,19 +1098,19 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 0, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 0, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 1, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 1
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "2345-6789"])]
-        assert len(found) == 0, "Fail caused by DOAJ xml file"
+        assert len(found) == 0
 
     def test_39_doaj_2_journals_different_owners_both_issns_fail(self):
         # Create 2 journals with the same issns but different owners, which match the issns on the article
@@ -1183,21 +1152,21 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 0, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 0, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 2, "Fail caused by DOAJ xml file"
-        assert "1234-5678" in fr["shared"], "Fail caused by DOAJ xml file"
-        assert "9876-5432" in fr["shared"], "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 2
+        assert "1234-5678" in fr["shared"]
+        assert "9876-5432" in fr["shared"]
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0, "Fail caused by DOAJ xml file"
+        assert len(found) == 0
 
     def test_40_doaj_2_journals_different_owners_issn_each_fail(self):
         # Create 2 journals with different owners and one different issn each.  The two issns in the
@@ -1238,20 +1207,20 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 0, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 0, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 1, "Fail caused by DOAJ xml file"
-        assert "9876-5432" in fr["unowned"], "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 1
+        assert "9876-5432" in fr["unowned"]
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0, "Fail caused by DOAJ xml file"
+        assert len(found) == 0
 
     def test_41_doaj_2_journals_same_owner_issn_each_success(self):
         # Create 2 journals with the same owner, each with one different issn.  The article's 2 issns
@@ -1292,19 +1261,19 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "processed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 1, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 1, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1, "Fail caused by DOAJ xml file"
+        assert len(found) == 1
 
     def test_42_doaj_2_journals_different_owners_different_issns_mixed_article_fail(self):
         # Create 2 different journals with different owners and different issns (2 each).
@@ -1347,20 +1316,20 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 0, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 0, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 1, "Fail caused by DOAJ xml file"
-        assert "9876-5432" in fr["unowned"], "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 1
+        assert "9876-5432" in fr["unowned"]
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0, "Fail caused by DOAJ xml file"
+        assert len(found) == 0
 
     def test_43_doaj_duplication(self):
         j = models.Journal()
@@ -1405,12 +1374,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         fu1 = models.FileUpload.pull(id1)
         fu2 = models.FileUpload.pull(id2)
 
-        assert fu1.status == "processed", "Fail caused by DOAJ xml file"
-        assert fu2.status == "processed", "Fail caused by DOAJ xml file"
+        assert fu1.status == "processed"
+        assert fu2.status == "processed"
 
         # now let's check that only one article got created
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1, "Fail caused by DOAJ xml file"
+        assert len(found) == 1
 
     def test_44_doaj_journal_1_article_1_superlong_noclip(self):
         # Create a journal with 1 issn, which is the same 1 issn on the article
@@ -1444,20 +1413,20 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "processed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 1, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 1, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1, "Fail caused by DOAJ xml file"
-        assert len(found[0].bibjson().abstract) == 26264, "Fail caused by DOAJ xml file"
+        assert len(found) == 1
+        assert len(found[0].bibjson().abstract) == 26264
 
     def test_doaj_45_journal_1_article_1_superlong_clip(self):
         # Create a journal with 1 issn, which is the same 1 issn on the article
@@ -1491,20 +1460,20 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "processed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 1, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 1, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1, "Fail caused by DOAJ xml file"
-        assert len(found[0].bibjson().abstract) == 30000, "Fail caused by DOAJ xml file"
+        assert len(found) == 1
+        assert len(found[0].bibjson().abstract) == 30000
 
     def test_46_doaj_one_journal_one_article_2_issns_one_unknown(self):
         # Create one journal and ingest one article.  The Journal has two issns, and the article
@@ -1539,20 +1508,20 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 0, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 0, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 1, "Fail caused by DOAJ xml file"
-        assert "9876-5432" in fr["unmatched"], "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 1
+        assert "9876-5432" in fr["unmatched"]
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0, "Fail caused by DOAJ xml file"
+        assert len(found) == 0
 
     def test_47_doaj_lcc_spelling_error(self):
         # create a journal with a broken subject classification
@@ -1587,23 +1556,23 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "processed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 1, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 1, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 0, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 0
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1, "Fail caused by DOAJ xml file"
+        assert len(found) == 1
 
         cpaths = found[0].data["index"]["classification_paths"]
-        assert len(cpaths) == 1, "Fail caused by DOAJ xml file"
-        assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling", "Fail caused by DOAJ xml file"
+        assert len(cpaths) == 1
+        assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling"
 
     def test_48_doaj_unknown_journal_issn(self):
         # create a journal with one of the ISSNs specified
@@ -1636,16 +1605,16 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, "Fail caused by DOAJ xml file"
-        assert fu.status == "failed", "Fail caused by DOAJ xml file"
-        assert fu.imported == 0, "Fail caused by DOAJ xml file"
-        assert fu.updates == 0, "Fail caused by DOAJ xml file"
-        assert fu.new == 0, "Fail caused by DOAJ xml file"
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.imported == 0
+        assert fu.updates == 0
+        assert fu.new == 0
 
         fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unowned", [])) == 0, "Fail caused by DOAJ xml file"
-        assert len(fr.get("unmatched", [])) == 1, "Fail caused by DOAJ xml file"
+        assert len(fr.get("shared", [])) == 0
+        assert len(fr.get("unowned", [])) == 0
+        assert len(fr.get("unmatched", [])) == 1
 
 
     def test_49_doaj_noids(self):
@@ -1678,6 +1647,6 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
 
-        assert not os.path.exists(path), "Fail caused by DOAJ xml file"
+        assert not os.path.exists(path)
 
-        assert file_upload.status == "failed", "Fail caused by DOAJ xml file"
+        assert file_upload.status == "failed"

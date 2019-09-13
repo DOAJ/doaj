@@ -1,4 +1,5 @@
 from doajtest.helpers import DoajTestCase
+from doajtest.mocks.response import ResponseMockFactory
 
 from portality.tasks import ingestarticles
 
@@ -12,51 +13,10 @@ from portality.background import BackgroundException, RetryException
 import ftplib, os, requests
 
 
-DEFAULT_MAX_REMOTE_SIZE=262144000
-CHUNK_SIZE=1048576
-
-GET = requests.get
-
-class MockResponse(object):
-    def __init__(self, code, content=None):
-        self.status_code = code
-        self.headers = {"content-length" : 100}
-        self.content = content
-
-    def close(self):
-        pass
-
-    def iter_content(self, chunk_size=100):
-        if self.content is None:
-            for i in range(9):
-                yield str(i) * chunk_size
-        else:
-            yield self.content
-
-def mock_validate(handle, schema):
-    raise RuntimeError("oops")
-
-def mock_batch_create(*args, **kwargs):
-    raise RuntimeError("oops")
-
-def mock_head_success(url, *args, **kwargs):
-    return MockResponse(200)
-
-def mock_head_fail(url, *args, **kwargs):
-    return MockResponse(405)
-
-def mock_get_fail(url, *args, **kwargs):
-    if url in ["http://fail"]:
-        return MockResponse(405)
-    if url in ["http://except"]:
-        raise RuntimeError("oops")
-    return GET(url, **kwargs)
-
-
-class TestIngestArticles_SchemaIndependent(DoajTestCase):
+class TestIngestArticlesSchemaIndependent(DoajTestCase):
 
     def setUp(self):
-        super(TestIngestArticles_SchemaIndependent, self).setUp()
+        super(TestIngestArticlesSchemaIndependent, self).setUp()
 
         self.cleanup_ids = []
         self.cleanup_paths = []
@@ -71,7 +31,7 @@ class TestIngestArticles_SchemaIndependent(DoajTestCase):
         self.ingest_articles_retries = app.config['HUEY_TASKS']['ingest_articles']['retries']
 
     def tearDown(self):
-        super(TestIngestArticles_SchemaIndependent, self).tearDown()
+        super(TestIngestArticlesSchemaIndependent, self).tearDown()
 
         articleSvc.ArticleService.batch_create_articles = self.batch_create_articles
 
@@ -97,8 +57,8 @@ class TestIngestArticles_SchemaIndependent(DoajTestCase):
                 os.remove(path)
 
     def test_16_http_upload_fail(self):
-        requests.head = mock_head_fail
-        requests.get = mock_get_fail
+        requests.head = ResponseMockFactory.head_fail
+        requests.get = ResponseMockFactory.get_fail
 
         url= "http://fail"
 
