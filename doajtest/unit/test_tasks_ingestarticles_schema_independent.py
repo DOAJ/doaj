@@ -17,15 +17,6 @@ CHUNK_SIZE=1048576
 
 GET = requests.get
 
-class MockFileUpload(object):
-    def __init__(self, filename="filename.xml", stream=None):
-        self.filename = filename
-        self.stream = stream
-
-    def save(self, path):
-        with open(path, "wb") as f:
-            f.write(self.stream.read())
-
 class MockResponse(object):
     def __init__(self, code, content=None):
         self.status_code = code

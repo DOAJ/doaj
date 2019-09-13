@@ -32,3 +32,15 @@ class ModelArticleMockFactory(object):
                     return j["instance"]
 
         return mock
+
+    @classmethod
+    def save(self, filename="filename.xml", stream=None):
+
+        self.filename = filename
+        self.stream = stream
+
+        def mock(self, path):
+            with open(path, "wb") as f:
+                f.write(self.stream.read())
+
+        return mock

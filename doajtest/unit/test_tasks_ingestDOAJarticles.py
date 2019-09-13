@@ -4,6 +4,8 @@ from lxml import etree
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
+from doajtest.mocks.model_File import ModelFileMockFactory
+from doajtest.mocks.response import ResponseMockFactory
 
 import urlparse
 import time
@@ -22,31 +24,6 @@ DEFAULT_MAX_REMOTE_SIZE=262144000
 CHUNK_SIZE=1048576
 
 GET = requests.get
-
-class MockFileUpload(object):
-    def __init__(self, filename="filename.xml", stream=None):
-        self.filename = filename
-        self.stream = stream
-
-    def save(self, path):
-        with open(path, "wb") as f:
-            f.write(self.stream.read())
-
-class MockResponse(object):
-    def __init__(self, code, content=None):
-        self.status_code = code
-        self.headers = {"content-length" : 100}
-        self.content = content
-
-    def close(self):
-        pass
-
-    def iter_content(self, chunk_size=100):
-        if self.content is None:
-            for i in range(9):
-                yield str(i) * chunk_size
-        else:
-            yield self.content
 
 
 class MockDOAJFTP(object):
@@ -80,26 +57,6 @@ def mock_validate(handle, schema):
 
 def mock_batch_create(*args, **kwargs):
     raise RuntimeError("oops")
-
-def mock_head_success(url, *args, **kwargs):
-    return MockResponse(200)
-
-def mock_head_fail(url, *args, **kwargs):
-    return MockResponse(405)
-
-def mock_doaj_get_success(url, *args, **kwargs):
-    if url in ["http://success", "http://upload"]:
-        return MockResponse(200)
-    elif url in ["http://valid"]:
-        return MockResponse(200, DoajXmlArticleFixtureFactory.upload_1_issn_correct().read())
-    return GET(url, **kwargs)
-
-def mock_get_fail(url, *args, **kwargs):
-    if url in ["http://fail"]:
-        return MockResponse(405)
-    if url in ["http://except"]:
-        raise RuntimeError("oops")
-    return GET(url, **kwargs)
 
 class TestIngestArticlesDoajXML(DoajTestCase):
 
@@ -171,7 +128,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_01_doaj_file_upload_success(self):
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         previous = []
         id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
@@ -191,7 +148,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_02_doaj_file_upload_invalid(self):
 
         handle = DoajXmlArticleFixtureFactory.invalid_schema_xml()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         previous = []
         with self.assertRaises(BackgroundException):
@@ -221,7 +178,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         article_doaj_xml.DOAJXWalk.validate = mock_validate
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         previous = []
         with self.assertRaises(BackgroundException):
@@ -244,8 +201,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_04_doaj_url_upload_http_success(self):
         # first try with a successful HEAD request
-        requests.head = mock_head_success
-        requests.get = mock_doaj_get_success
+        requests.head = ResponseMockFactory.head_success
+        requests.get = ResponseMockFactory.doaj_get_success
 
         url = "http://success"
         previous = []
@@ -260,7 +217,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert len(previous) == 1
 
         # try that again, but with an unsuccessful HEAD request
-        requests.head = mock_head_fail
+        requests.head = ResponseMockFactory.head_fail
 
         previous = []
 
@@ -275,8 +232,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_05_doaj_url_upload_http_fail(self):
         # try with failing http requests
-        requests.head = mock_head_fail
-        requests.get = mock_get_fail
+        requests.head = ResponseMockFactory.head_fail
+        requests.get = ResponseMockFactory.get_fail
 
         url = "http://fail"
         previous = []
@@ -295,7 +252,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
         # now try again with an invalid url
-        requests.head = mock_head_success
+        requests.head = ResponseMockFactory.head_success
 
         url = "other://url"
         previous = []
@@ -352,7 +309,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_08_doajxml_prepare_file_upload_success(self):
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         previous = []
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="doaj", previous=previous)
@@ -372,7 +329,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         article_doaj_xml.DOAJXWalk.validate = mock_validate
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         previous = []
         with self.assertRaises(BackgroundException):
@@ -386,8 +343,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu is not None, "Fail caused by DOAJ xml file"
 
     def test_10_prepare_url_upload_success(self):
-        requests.head = mock_head_success
-        requests.get = mock_doaj_get_success
+        requests.head = ResponseMockFactory.head_success
+        requests.get = ResponseMockFactory.doaj_get_success
 
         url = "http://success"
 
@@ -407,8 +364,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_11_prepare_url_upload_fail(self):
         # try with failing http requests
-        requests.head = mock_head_fail
-        requests.get = mock_get_fail
+        requests.head = ResponseMockFactory.head_fail
+        requests.get = ResponseMockFactory.get_fail
 
         url = "http://fail"
 
@@ -485,8 +442,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == []
 
     def test_15_http_upload_success(self):
-        requests.head = mock_head_fail
-        requests.get = mock_doaj_get_success
+        requests.head = ResponseMockFactory.head_fail
+        requests.get = ResponseMockFactory.doaj_get_success
 
         url= "http://upload"
 
@@ -508,15 +465,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.status == "downloaded"
 
     def test_17_doaj_download_http_valid(self):
-        requests.head = mock_head_fail
-        requests.get = mock_doaj_get_success
+        requests.head = ResponseMockFactory.head_fail
+        requests.get = ResponseMockFactory.doaj_get_success
 
         job = models.BackgroundJob()
         task = ingestarticles.IngestArticlesBackgroundTask(job)
 
         url = "http://valid"
-
-
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -534,14 +489,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.status == "validated", "Fail caused by DOAJ xml file"
 
     def test_18_download_http_invalid(self):
-        requests.head = mock_head_fail
-        requests.get = mock_doaj_get_success
+        requests.head = ResponseMockFactory.head_fail
+        requests.get = ResponseMockFactory.doaj_get_success
 
         job = models.BackgroundJob()
 
         url = "http://upload"
-
-
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -562,14 +515,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.failure_reasons.keys() == [], "Fail caused by DOAJ xml file"
 
     def test_19_download_http_error(self):
-        requests.head = mock_head_fail
-        requests.get = mock_get_fail
+        requests.head = ResponseMockFactory.head_fail
+        requests.get = ResponseMockFactory.get_fail
 
         job = models.BackgroundJob()
 
         url = "http://fail"
-
-
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -596,8 +547,6 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         url = "ftp://valid"
 
-
-
         file_upload = models.FileUpload()
         file_upload.set_id()
         file_upload.upload("testuser", url, status="exists")
@@ -619,8 +568,6 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         job = models.BackgroundJob()
 
         url = "ftp://upload"
-
-
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -779,7 +726,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         previous = []
 
@@ -801,8 +748,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "processed", "Fail caused by DOAJ xml file"
 
     def test_27_run_exists(self):
-        requests.head = mock_head_fail
-        requests.get = mock_doaj_get_success
+        requests.head = ResponseMockFactory.head_fail
+        requests.get = ResponseMockFactory.doaj_get_success
 
         j = models.Journal()
         j.set_owner("testowner")
@@ -850,7 +797,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         previous = []
 
@@ -886,7 +833,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_ambiguous()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -936,7 +883,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -986,7 +933,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1027,7 +974,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1074,7 +1021,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1104,57 +1051,6 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1, "Fail caused by DOAJ xml file"
 
-    """
-Removing this test - it is no longer true.  Left here for reference for the time being.
-We should parameterise this test set
-
-    def test_36_journal_1_article_2_success(self):
-        # Create a journal with 1 issn, which is one of the 2 issns on the article
-        # we expect a successful article ingest
-
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.E_ISSN, "9876-5432")
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = ArticleFixtureFactory.upload_2_issns_correct()
-        f = MockFileUpload(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(2)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(2)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "processed"
-        assert fu.imported == 1
-        assert fu.updates == 0
-        assert fu.new == 1
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 0
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1
-    """
-
     def test_37_doaj_journal_1_article_1_success(self):
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
@@ -1170,7 +1066,7 @@ We should parameterise this test set
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1217,7 +1113,7 @@ We should parameterise this test set
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_ambiguous()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1271,7 +1167,7 @@ We should parameterise this test set
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1326,7 +1222,7 @@ We should parameterise this test set
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1380,7 +1276,7 @@ We should parameterise this test set
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1435,7 +1331,7 @@ We should parameterise this test set
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1483,8 +1379,8 @@ We should parameterise this test set
         handle1 = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         handle2 = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
 
-        f1 = MockFileUpload(stream=handle1)
-        f2 = MockFileUpload(stream=handle2)
+        f1 = ModelFileMockFactory(stream=handle1)
+        f2 = ModelFileMockFactory(stream=handle2)
 
         job1 = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f1)
         id1 = job1.params.get("ingest_articles__file_upload_id")
@@ -1532,7 +1428,7 @@ We should parameterise this test set
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_superlong_should_not_clip()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1579,7 +1475,7 @@ We should parameterise this test set
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_superlong_should_clip()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1627,7 +1523,7 @@ We should parameterise this test set
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1675,7 +1571,7 @@ We should parameterise this test set
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1724,7 +1620,7 @@ We should parameterise this test set
 
         # take an article with 2 issns, but one of which is not in the index
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = MockFileUpload(stream=handle)
+        f = ModelFileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1785,34 +1681,3 @@ We should parameterise this test set
         assert not os.path.exists(path), "Fail caused by DOAJ xml file"
 
         assert file_upload.status == "failed", "Fail caused by DOAJ xml file"
-
-
-# TODO: reinstate this test when author emails have been disallowed again
-'''
-    def test_34_file_upload_author_email(self):
-        handle = ArticleFixtureFactory.upload_author_email_address()
-        f = MockFileUpload(stream=handle)
-
-        previous = []
-        with self.assertRaises(BackgroundException):
-            id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
-
-        assert len(previous) == 1
-        id = previous[0].id
-        self.cleanup_ids.append(id)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is not None and fu.error != ""
-        assert fu.failure_reasons.keys() == []
-
-        # file should have been removed from upload dir
-        path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
-        assert not os.path.exists(path)
-
-        # and placed into the failed dir
-        fad = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
-        assert os.path.exists(fad)
-'''
