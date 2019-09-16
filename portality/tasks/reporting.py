@@ -74,12 +74,12 @@ def content_reports(fr, to, outdir):
 
 
 def _tabulate_time_entity_group(group, entityKey):
-    date_keys = group.keys()
+    date_keys = list(group.keys())
     date_keys.sort()
     table = []
     padding = []
     for db in date_keys:
-        users_active_this_period = group[db].keys()
+        users_active_this_period = list(group[db].keys())
         for u in users_active_this_period:
             c = group[db][u]["count"]
             existing = False
@@ -94,7 +94,7 @@ def _tabulate_time_entity_group(group, entityKey):
         # have any actions in the current time period we're looping over. E.g.
         # if we're counting edits by month, this would be "users who were active
         # in a previous month but haven't made any edits this month".
-        users_in_table = set(map(lambda each_row: each_row[0], table))
+        users_in_table = set([each_row[0] for each_row in table])
         previously_active_users = users_in_table - set(users_active_this_period)
         for row in table:
             if row[0] in previously_active_users:
@@ -174,7 +174,7 @@ class ActionCounter(ReportCounter):
     def _count_down(self, p):
         if p is None:
             return
-        for k in self.report[p].keys():
+        for k in list(self.report[p].keys()):
             self.report[p][k]["count"] = len(self.report[p][k]["ids"])
             del self.report[p][k]["ids"]
 
@@ -252,7 +252,7 @@ class StatusCounter(ReportCounter):
     def _count_down(self, p):
         if p is None:
             return
-        for k in self.report[p].keys():
+        for k in list(self.report[p].keys()):
             self.report[p][k]["count"] = len(self.report[p][k]["ids"])
             del self.report[p][k]["ids"]
 
@@ -339,7 +339,7 @@ class ReportingBackgroundTask(BackgroundTask):
         self.set_reference(refs, "content_outfiles", cont_outfiles)
         job.reference = refs
 
-        msg = u"Generated reports for period {x} to {y}".format(x=fr, y=to)
+        msg = "Generated reports for period {x} to {y}".format(x=fr, y=to)
         job.add_audit_message(msg)
 
         send_email = self.get_param(params, "email", False)
@@ -367,7 +367,7 @@ class ReportingBackgroundTask(BackgroundTask):
         if outdir is not None and os.path.exists(outdir):
             shutil.rmtree(outdir)
 
-        self.background_job.add_audit_message(u"Deleted directory {x} due to job failure".format(x=outdir))
+        self.background_job.add_audit_message("Deleted directory {x} due to job failure".format(x=outdir))
 
     @classmethod
     def prepare(cls, username, **kwargs):

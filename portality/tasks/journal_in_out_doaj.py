@@ -49,19 +49,19 @@ class SetInDOAJBackgroundTask(BackgroundTask):
         in_doaj = self.get_param(params, "in_doaj")
 
         if journal_ids is None or len(journal_ids) == 0 or in_doaj is None:
-            raise RuntimeError(u"SetInDOAJBackgroundTask.run run without sufficient parameters")
+            raise RuntimeError("SetInDOAJBackgroundTask.run run without sufficient parameters")
 
         for journal_id in journal_ids:
-            job.add_audit_message(u"Setting in_doaj to {x} for journal {y}".format(x=str(in_doaj), y=journal_id))
+            job.add_audit_message("Setting in_doaj to {x} for journal {y}".format(x=str(in_doaj), y=journal_id))
 
             j = models.Journal.pull(journal_id)
             if j is None:
-                raise RuntimeError(u"Journal with id {} does not exist".format(journal_id))
+                raise RuntimeError("Journal with id {} does not exist".format(journal_id))
             j.bibjson().active = in_doaj
             j.set_in_doaj(in_doaj)
             j.save()
             j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
-            job.add_audit_message(u"Journal {x} set in_doaj to {y}, and all associated articles".format(x=journal_id, y=str(in_doaj)))
+            job.add_audit_message("Journal {x} set in_doaj to {y}, and all associated articles".format(x=journal_id, y=str(in_doaj)))
 
     def cleanup(self):
         """
@@ -98,7 +98,7 @@ class SetInDOAJBackgroundTask(BackgroundTask):
         cls.set_param(params, "in_doaj", kwargs.get("in_doaj"))
 
         if journal_ids is None or len(journal_ids) == 0 or kwargs.get("in_doaj") is None:
-            raise RuntimeError(u"SetInDOAJBackgroundTask.prepare run without sufficient parameters")
+            raise RuntimeError("SetInDOAJBackgroundTask.prepare run without sufficient parameters")
 
         job.params = params
 

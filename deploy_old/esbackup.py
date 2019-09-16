@@ -64,12 +64,12 @@ if location:
     done.append('performing backups via index query')
     try:
         rs = requests.get(location + '/' + '_status')
-        indices = rs.json['indices'].keys()
+        indices = list(rs.json['indices'].keys())
         for index in indices:
             if index not in ignore:
                 try:
                     ts = requests.get(location + '/' + index + '/_mapping')
-                    types = ts.json[index].keys()
+                    types = list(ts.json[index].keys())
                     for t in types:
                         try:
                             rh = requests.get(location + '/' + index + '/' + t + '/_search?q=*&size=0')
@@ -110,6 +110,6 @@ if mailto:
     pass
 
 # uncomment to print when done    
-print done
+print(done)
 
 

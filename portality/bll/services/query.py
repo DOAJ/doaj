@@ -109,7 +109,7 @@ class QueryService(object):
         # check that the request values permit a query to this endpoint
         required_parameters = cfg.get("required_parameters")
         if required_parameters is not None:
-            for k, vs in required_parameters.iteritems():
+            for k, vs in required_parameters.items():
                 val = additional_parameters.get(k)
                 if val is None or val not in vs:
                     raise exceptions.AuthoriseException()
@@ -166,7 +166,7 @@ class Query(object):
         if "query" in self.q:
             current_query = deepcopy(self.q["query"])
             del self.q["query"]
-            if len(current_query.keys()) == 0:
+            if len(list(current_query.keys())) == 0:
                 current_query = None
 
         self.filtered = True

@@ -15,15 +15,15 @@ for j in journal_iterator:
     
     if len(batch) >= batch_size:
         total += len(batch)
-        print "writing", len(batch), "; total so far", total
+        print("writing", len(batch), "; total so far", total)
         models.Journal.bulk(batch)
         batch = []
 
 if len(batch) > 0:
     total += len(batch)
-    print "writing", len(batch), "; total so far", total
+    print("writing", len(batch), "; total so far", total)
     models.Journal.bulk(batch)
 
 end = datetime.now()
 
-print start, "-", end
+print(start, "-", end)

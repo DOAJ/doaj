@@ -14,7 +14,7 @@ from portality import models, store
 from portality.core import app
 
 import os, shutil, tarfile, json
-from StringIO import StringIO
+from io import StringIO
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "tasks.public_data_dump"), "data_dump", "test_id",
@@ -181,10 +181,10 @@ class TestPublicDataDumpTask(DoajTestCase):
                     assert len(data) == first_article_file_records
 
                     record = data[0]
-                    for key in record.keys():
+                    for key in list(record.keys()):
                         assert key in ["admin", "bibjson", "id", "last_updated", "created_date"]
                     if "admin" in record:
-                        for key in record["admin"].keys():
+                        for key in list(record["admin"].keys()):
                             assert key in ["ticked", "seal"]
 
             if types_arg in ["-", "all", "journal"]:
@@ -202,10 +202,10 @@ class TestPublicDataDumpTask(DoajTestCase):
                     assert len(data) == first_journal_file_records
 
                     record = data[0]
-                    for key in record.keys():
+                    for key in list(record.keys()):
                         assert key in ["admin", "bibjson", "id", "last_updated", "created_date"]
                     if "admin" in record:
-                        for key in record["admin"].keys():
+                        for key in list(record["admin"].keys()):
                             assert key in ["ticked", "seal"]
 
         else:

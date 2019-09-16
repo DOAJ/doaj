@@ -60,17 +60,17 @@ def manage_jobs(verb, action, status, from_date, to_date):
 
     jobs = models.BackgroundJob.q2obj(q=q.query())
 
-    print('You are about to {verb} {count} job(s)'.format(verb=verb, count=len(jobs)))
-    doit = raw_input('Proceed? [y\\N] ')
+    print(('You are about to {verb} {count} job(s)'.format(verb=verb, count=len(jobs))))
+    doit = input('Proceed? [y\\N] ')
 
     if doit.lower() == 'y':
         print('Please wait...')
         for job in jobs:
             if job.action not in HANDLERS:
-                print('This script is not set up to {0} task type {1}. Skipping.'.format(verb, job.action))
+                print(('This script is not set up to {0} task type {1}. Skipping.'.format(verb, job.action)))
                 continue
 
-            job.add_audit_message(u"Job {pp} from job management script.".format(
+            job.add_audit_message("Job {pp} from job management script.".format(
                 pp={'requeue': 'requeued', 'cancel': 'cancelled'}[verb]))
 
             if verb == 'requeue':                                                     # Re-queue and execute immediately

@@ -100,7 +100,7 @@ def articles_list():
         try:
             query = json.loads(request.values.get("q"))
         except:
-            print request.values.get("q")
+            print(request.values.get("q"))
             abort(400)
         total = models.Article.hit_count(query, consistent_order=False)
         resp = make_response(json.dumps({"total" : total}))

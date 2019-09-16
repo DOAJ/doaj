@@ -83,7 +83,7 @@ def migrate_journals(source):
     xml = etree.parse(f)
     f.close()
     journals = xml.getroot()
-    print "migrating", str(len(journals)), "journal records"
+    print("migrating", str(len(journals)), "journal records")
     
     clusters = _get_journal_clusters(journals)
     
@@ -193,14 +193,14 @@ def _get_journal_clusters(journals):
                 reltable[issn] = [id]
         id += 1
     
-    print len(journals), "journal records; ", len(idtable.keys()), "join identifiers; ", len(reltable.keys()), "unique issns"
+    print(len(journals), "journal records; ", len(list(idtable.keys())), "join identifiers; ", len(list(reltable.keys())), "unique issns")
     
     # now calculate the equivalence table.  This groups all of the journals
     # which share issns of any kind into a single batch
     equiv_table = {}
     processed = []
     i = 0
-    for id in idtable.keys():
+    for id in list(idtable.keys()):
         if id in processed:
             continue
         
@@ -213,7 +213,7 @@ def _get_journal_clusters(journals):
     # Next go through each equivalence, and build a table of the next/previous
     # links in each of the journals
     ordertables = {}
-    for e, jids in equiv_table.iteritems():
+    for e, jids in equiv_table.items():
         ordertable = {}
         for jid in jids:
             ordertable[jid] = {"n" : [], "p": []}
@@ -242,11 +242,11 @@ def _get_journal_clusters(journals):
     # Now analyse the previous/next status of each cluster, and organise
     # them in an array in descending order (head of the chain first)
     sorttable = {}
-    for e, ot in ordertables.iteritems():
+    for e, ot in ordertables.items():
         first = []
         last = []
         middle = []
-        for k, r in ot.iteritems():
+        for k, r in ot.items():
             if len(r.get("n")) == 0:
                 first.append(k)
             elif len(r.get("p")) == 0:
@@ -258,7 +258,7 @@ def _get_journal_clusters(journals):
     # finally (for the clustering algorithm), select the canonical record
     # and the older historical records
     canontable = {}
-    for e, sort in sorttable.iteritems():
+    for e, sort in sorttable.items():
         canon = None
         i = 0
         found = False
@@ -280,7 +280,7 @@ def _get_journal_clusters(journals):
     # now, in preparation for returning to the caller, substitute everything in the canon table
     # for the xml elements they represent
     clusters = []
-    for e, data in canontable.iteritems():
+    for e, data in canontable.items():
         canon, rest = data
         celement = journaltable.get(canon)
         relements = [journaltable.get(r) for r in rest]
@@ -439,7 +439,7 @@ def migrate_suggestions(source):
     xml = etree.parse(f)
     f.close()
     suggestions = xml.getroot()
-    print "migrating", str(len(suggestions)), "suggestion records"
+    print("migrating", str(len(suggestions)), "suggestion records")
 
     for element in suggestions:
         s = Suggestion()
@@ -531,7 +531,7 @@ def migrate_articles(source, batch_size=5000):
     xml = etree.parse(f)
     f.close()
     articles = xml.getroot()
-    print "migrating", str(len(articles)), "article records from", source
+    print("migrating", str(len(articles)), "article records from", source)
     
     counter = 0
     omissions = 0
@@ -543,7 +543,7 @@ def migrate_articles(source, batch_size=5000):
         hasjournal = _add_journal_info(a)
         
         if not hasjournal:
-            print "INFO: omitting article"
+            print("INFO: omitting article")
             omissions += 1
             continue
         
@@ -554,18 +554,18 @@ def migrate_articles(source, batch_size=5000):
         
         if len(batch) >= batch_size:
             counter += len(batch)
-            print "Writing batch, size", len(batch)
+            print("Writing batch, size", len(batch))
             Article.bulk(batch, refresh=True)
-            print "batch written, total so far", counter
+            print("batch written, total so far", counter)
             del batch[:]
     
     if len(batch) > 0:
         counter += len(batch)
-        print "Writing final batch, size", len(batch)
+        print("Writing final batch, size", len(batch))
         Article.bulk(batch, refresh=True)
-        print "batch written, total written", counter
+        print("batch written, total written", counter)
     
-    print "wrote", counter, "articles, omitted", omissions
+    print("wrote", counter, "articles, omitted", omissions)
 
 def _created_date(element):
     cd = element.find("addedOn")
@@ -577,7 +577,7 @@ def _created_date(element):
             return fudge
         except:
             # do nothing, we'll just fall back to "created now"
-            print "failed on", cd.text
+            print("failed on", cd.text)
             pass
         
     return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -673,7 +673,7 @@ def _add_journal_info(article):
                 journal = issnmap.get(issn)
     
     if journal is None:
-        print "WARN: no journal for ", pissns, eissns
+        print("WARN: no journal for ", pissns, eissns)
         return False
     
     # if we get to here, we have a journal record we want to pull data from
@@ -708,7 +708,7 @@ def migrate_contacts(source, batch_size=1000):
     xml = etree.parse(f)
     f.close()
     contacts = xml.getroot()
-    print "migrating", str(len(contacts)), "contact records from", source
+    print("migrating", str(len(contacts)), "contact records from", source)
     
     # first thing to do is locate all the duplicates in the logins
     record = []
@@ -730,7 +730,7 @@ def migrate_contacts(source, batch_size=1000):
         issns = element.findall("issn")
         
         if login is None or login.text is None or login.text == "":
-            print "ERROR: contact without login - providing login"
+            print("ERROR: contact without login - providing login")
             if len(issns) == 0:
                 # make a random 8 character login name
                 login = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(8))
@@ -741,7 +741,7 @@ def migrate_contacts(source, batch_size=1000):
             login = login.text
         
         if password is None or password.text is None or password.text == "":
-            print "ERROR: contact without password", login, "- providing one"
+            print("ERROR: contact without password", login, "- providing one")
             # make a random 8 character password
             password = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(8))
         else:
@@ -750,10 +750,10 @@ def migrate_contacts(source, batch_size=1000):
         # check to see if this is a duplicate
         if login in duplicates:
             if len(issns) == 0:
-                print "INFO: duplicate detected, has no ISSNs, so skipping", login
+                print("INFO: duplicate detected, has no ISSNs, so skipping", login)
                 continue
             else:
-                print "INFO: duplicate detected, with ISSNs, so keeping", login
+                print("INFO: duplicate detected, with ISSNs, so keeping", login)
                 
         a = Account()
         a.set_id(login)
@@ -785,9 +785,9 @@ def _get_journal_id_from_issn(issn):
     issn = _normalise_issn(issn)
     journals = Journal.find_by_issn(issn)
     if len(journals) > 1:
-        print "WARN: issn", issn, "maps to multiple journals:", ", ".join([j.id for j in journals])
+        print("WARN: issn", issn, "maps to multiple journals:", ", ".join([j.id for j in journals]))
     if len(journals) == 0:
-        print "WARN: issn", issn, "does not map to any journals"
+        print("WARN: issn", issn, "does not map to any journals")
     if len(journals) > 0:
         return journals[0].id
 
@@ -799,7 +799,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         IN_DIR = sys.argv[1]
     else:
-        print "you must specify a data directory to migrate from"
+        print("you must specify a data directory to migrate from")
         exit()
 
     JOURNALS = os.path.join(IN_DIR, "journals")

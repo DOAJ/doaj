@@ -2,7 +2,7 @@ from portality.core import app
 from portality.lib import plugin
 
 import os, shutil, codecs, boto3
-from urllib import quote_plus
+from urllib.parse import quote_plus
 
 class StoreException(Exception):
     pass
@@ -245,7 +245,7 @@ def prune_container(storage, container_id, sort, filter=None, keep=1):
     filtered = []
     if filter is not None:
         for fn in filelist:
-            if filter(fn):
+            if list(filter(fn)):
                 filtered.append(fn)
     else:
         filtered = filelist

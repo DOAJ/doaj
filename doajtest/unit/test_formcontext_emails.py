@@ -1,6 +1,6 @@
 import logging
 import re
-from StringIO import StringIO
+from io import StringIO
 from copy import deepcopy
 
 from portality import constants

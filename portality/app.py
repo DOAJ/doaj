@@ -129,7 +129,7 @@ SPONSORS = {
 }
 
 # In each tier, create an ordered dictionary sorted alphabetically by sponsor name
-SPONSORS = {k: OrderedDict(sorted(v.items(), key=lambda t: t[0])) for k, v in SPONSORS.items()}
+SPONSORS = {k: OrderedDict(sorted(list(v.items()), key=lambda t: t[0])) for k, v in list(SPONSORS.items())}
 
 
 # Configure the Google Analytics tracker
@@ -264,9 +264,9 @@ def form_diff_table_comparison_value(val):
             dvals.append(form_diff_table_comparison_value(v))
         return ", ".join(dvals)
     else:
-        if val is True or (isinstance(val, basestring) and val.lower() == "true"):
+        if val is True or (isinstance(val, str) and val.lower() == "true"):
             return "Yes"
-        elif val is False or (isinstance(val, basestring) and val.lower() == "false"):
+        elif val is False or (isinstance(val, str) and val.lower() == "false"):
             return "No"
         return val
 

@@ -43,7 +43,7 @@ def loadLCC(source=None):
         else:
             cpmap[name] = parent
 
-    for child, parent in cpmap.iteritems():
+    for child, parent in cpmap.items():
         cn = nodes.get(child)
         pn = nodes.get(parent)
         if cn is None or pn is None:

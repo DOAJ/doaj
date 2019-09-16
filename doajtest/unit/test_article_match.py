@@ -247,7 +247,7 @@ class TestArticleMatch(DoajTestCase):
         d = articleService.get_duplicates(z)
 
         assert len(d) == 1
-        print len(d)
+        print(len(d))
         assert d[0].bibjson().title == "Example article with a fulltext url and a DOI"
 
     def test_08_many_issns(self):

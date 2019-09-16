@@ -169,9 +169,9 @@ class ActionRegister(object):
     def report(self):
         return "\n".join(
             [k + " - " + "; ".join(
-                [a + " (" + "|".join(b) + ")" for a, b in v.iteritems()]
+                [a + " (" + "|".join(b) + ")" for a, b in v.items()]
             )
-            for k, v in self._actions.iteritems()]
+            for k, v in self._actions.items()]
         )
 
     def export_to(self, final_instructions):
@@ -185,7 +185,7 @@ class ActionRegister(object):
 
     def resolve(self):
         resolved_actions = []
-        for k, v in self._actions.iteritems():
+        for k, v in self._actions.items():
             resolved = {"id" : k, "action" : None, "reason" : None}
             if "delete" in v:
                 resolved["action"] = "delete"
@@ -194,7 +194,7 @@ class ActionRegister(object):
                 resolved["action"] = "delete"
                 resolved["reason"] = "; ".join(v["remove_doi"]) + "|" + "; ".join("remove_fulltext")
             else:
-                resolved["action"] = v.keys()[0]
+                resolved["action"] = list(v.keys())[0]
                 resolved["reason"] = "; ".join(v[resolved["action"]])
             resolved_actions.append(resolved)
         return resolved_actions
@@ -211,7 +211,7 @@ def analyse(duplicate_report, noids_report, out, noaction, nocleanup, log):
         reader = clcsv.UnicodeReader(f)
         noaction_writer = clcsv.UnicodeWriter(g)
         nocleanup_writer = clcsv.UnicodeWriter(h)
-        headers = reader.next()
+        headers = next(reader)
         noaction_writer.writerow(headers)
         noaction_writer.writerow([])
         nocleanup_writer.writerow(headers)
@@ -271,13 +271,13 @@ def analyse(duplicate_report, noids_report, out, noaction, nocleanup, log):
 
         with codecs.open(noids_report, "rb", "utf-8") as n:
             nreader = clcsv.UnicodeReader(n)
-            headers = nreader.next()
+            headers = next(nreader)
             for row in nreader:
                 final_instructions[row[0]] = {"action" : "delete", "reason" : "no doi or fulltext"}
 
         writer = clcsv.UnicodeWriter(o)
         writer.writerow(["id", "action", "reason"])
-        for k, v in final_instructions.iteritems():
+        for k, v in final_instructions.items():
             writer.writerow([k, v["action"], v["reason"]])
 
 
@@ -441,7 +441,7 @@ def _read_match_set(reader, next_row):
             next_row = None
         else:
             try:
-                row = reader.next()
+                row = next(reader)
             except StopIteration:
                 return match_set, None
 
@@ -503,7 +503,7 @@ def finalise(source, report_out, articles_dir, final_actions):
     actions = ActionRegister()
     with codecs.open(source, "rb", "utf-8") as s:
         reader = clcsv.UnicodeReader(s)
-        headers = reader.next()
+        headers = next(reader)
 
         accounts = {}
         for row in reader:
@@ -548,13 +548,13 @@ def finalise(source, report_out, articles_dir, final_actions):
     with codecs.open(final_actions, "wb", "utf-8") as fa:
         fawriter = clcsv.UnicodeWriter(fa)
         fawriter.writerow(["id", "action", "reason"])
-        for k, v in final_instructions.iteritems():
+        for k, v in final_instructions.items():
             fawriter.writerow([k, v["action"], v["reason"]])
 
     with codecs.open(report_out, "wb", "utf-8") as ro:
         writer = clcsv.UnicodeWriter(ro)
         writer.writerow(["account", "articles to delete", "article_details"])
-        for k, v in accounts.iteritems():
+        for k, v in accounts.items():
             fn = k + "_articles.csv"
             with codecs.open(os.path.join(articles_dir, fn), "wb", "utf-8") as a:
                 awriter = clcsv.UnicodeWriter(a)
@@ -585,21 +585,21 @@ def compare_outputs(duplicate_report):
 
     with codecs.open(original, "rb", "utf-8") as f1:
         r1 = clcsv.UnicodeReader(f1)
-        r1.next()
+        next(r1)
         id1 = [x[0] for x in r1]
 
     with codecs.open(compare, "rb", "utf-8") as f2:
         r2 = clcsv.UnicodeReader(f2)
-        r2.next()
+        next(r2)
         id2 = [x[0] for x in r2]
 
     missing = [x for x in id1 if x not in id2]
-    print("missing {x}".format(x=len(missing)))
+    print(("missing {x}".format(x=len(missing))))
     with codecs.open(missing_out, "wb", "utf-8") as f3:
         f3.write("\n".join(missing))
 
     extra = [x for x in id2 if x not in id1]
-    print("extra {x}".format(x=len(extra)))
+    print(("extra {x}".format(x=len(extra))))
     with codecs.open(extra_out, "wb", "utf-8") as f4:
         f4.write("\n".join(extra))
 
@@ -607,7 +607,7 @@ def compare_outputs(duplicate_report):
             codecs.open(reference, "wb", "utf-8") as f6:
         r5 = clcsv.UnicodeReader(f5)
         w6 = clcsv.UnicodeWriter(f6)
-        headers = r5.next()
+        headers = next(r5)
         w6.writerow(headers)
         w6.writerow([])
 
@@ -622,7 +622,7 @@ def compare_outputs(duplicate_report):
                         continue
                     seen_roots.append(root_id)
 
-                    print("Reference set for root id {x}".format(x=root_id))
+                    print(("Reference set for root id {x}".format(x=root_id)))
                     rows = match_set.to_rows()
                     for row in rows:
                         w6.writerow(row)

@@ -28,7 +28,7 @@ class TestCsvWrapper(DoajTestCase):
 
         self.gold_csv_unicode = codecs.open(os.path.join(self.PRFX, 'rescsv_gold_standard_unicode'), 'wb')
 
-        self.gold_csv_unicode.write("\r\n".join([u',иссн1'.encode('utf-8'), u'в1,ила1'.encode('utf-8'), u'в2,ила2'.encode('utf-8'), u'в3,ила3'.encode('utf-8'), u'в4,ила4'.encode('utf-8')]) + "\r\n")
+        self.gold_csv_unicode.write("\r\n".join([',иссн1'.encode('utf-8'), 'в1,ила1'.encode('utf-8'), 'в2,ила2'.encode('utf-8'), 'в3,ила3'.encode('utf-8'), 'в4,ила4'.encode('utf-8')]) + "\r\n")
         self.gold_csv_unicode.close()
 
     def tearDown(self):
@@ -70,9 +70,9 @@ class TestCsvWrapper(DoajTestCase):
     def test_08_read_unicode(self):
         # Check that reading the gold standard file gives the right object
         clcsv = ClCsv(self.gold_csv_unicode.name)
-        assert clcsv.get_column(1) == (u'иссн1', [u'ила1', u'ила2', u'ила3', u'ила4'])
-        assert clcsv.get_column(u'иссн1') == (u'иссн1', [u'ила1', u'ила2', u'ила3', u'ила4'])
-        assert clcsv.get_column(0) == (u'', [u'в1', u'в2', u'в3', u'в4'])
+        assert clcsv.get_column(1) == ('иссн1', ['ила1', 'ила2', 'ила3', 'ила4'])
+        assert clcsv.get_column('иссн1') == ('иссн1', ['ила1', 'ила2', 'ила3', 'ила4'])
+        assert clcsv.get_column(0) == ('', ['в1', 'в2', 'в3', 'в4'])
 
     def test_04_write_01(self):
         # write an object to a file, and check against pre-bult one
@@ -121,8 +121,8 @@ class TestCsvWrapper(DoajTestCase):
     def test_07_write_unicode(self):
         # write an object to a file, and check against pre-bult one
         wr_csv = ClCsv(self.PRFX + 'test_write_csv')
-        wr_csv.set_column(u'', [u'в1', u'в2', u'в3', u'в4'])
-        wr_csv.set_column(u'иссн1', [u'ила1', u'ила2', u'ила3', u'ила4'])
+        wr_csv.set_column('', ['в1', 'в2', 'в3', 'в4'])
+        wr_csv.set_column('иссн1', ['ила1', 'ила2', 'ила3', 'ила4'])
         wr_csv.save()
 
         wr_lines = open(wr_csv.file_object.name, 'rb').readlines()

@@ -553,7 +553,7 @@ class ApplicationContext(PrivateContext):
 
     def _form_diff(self, journal_form, application_form):
         diff = []
-        for k, v in application_form.iteritems():
+        for k, v in application_form.items():
             try:
                 q = self.form[k].label
             except KeyError:

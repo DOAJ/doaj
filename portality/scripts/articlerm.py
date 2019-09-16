@@ -24,9 +24,9 @@ def remove_doi(article_id):
             article.bibjson().remove_identifiers(idtype=constants.IDENT_TYPE_DOI)
             article.save()
         else:
-            print("WARN: could not remove DOI from {0} as it has no fulltext URL".format(article_id))
+            print(("WARN: could not remove DOI from {0} as it has no fulltext URL".format(article_id)))
     except AttributeError as e:
-        print("ERROR: could not remove DOI from {0}: {1}".format(article_id, e.message))
+        print(("ERROR: could not remove DOI from {0}: {1}".format(article_id, e.message)))
     
 
 def remove_fulltext(article_id):
@@ -38,9 +38,9 @@ def remove_fulltext(article_id):
             article.bibjson().remove_urls(urltype=constants.LINK_TYPE_FULLTEXT)
             article.save()
         else:
-            print("WARN: could not remove Fulltext from {0} as it has no DOI".format(article_id))
+            print(("WARN: could not remove Fulltext from {0} as it has no DOI".format(article_id)))
     except AttributeError as e:
-        print("ERROR: could not remove fulltext from {0}: {1}".format(article_id, e.message))
+        print(("ERROR: could not remove fulltext from {0}: {1}".format(article_id, e.message)))
 
 
 if __name__ == "__main__":
@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
     if args.username is not None:
         models.Article.delete_selected(owner=args.username, snapshot=snapshot)
-        print "Articles deleted"
+        print("Articles deleted")
     elif args.query is not None:
         f = open(args.query)
         query = json.loads(f.read())
@@ -99,7 +99,7 @@ if __name__ == "__main__":
         # hits['total'] will show you all results that match the query,
         # not just the articles that will actually be deleted (which
         # will be just the page of results specified by from: and size:).
-        go_on = raw_input("This will delete " + str(total) + " articles.  Are you sure? [Y/N]:")
+        go_on = input("This will delete " + str(total) + " articles.  Are you sure? [Y/N]:")
         if go_on.lower() == "y":
             models.Article.delete_selected(query=query, snapshot=snapshot)
             print("Articles deleted")

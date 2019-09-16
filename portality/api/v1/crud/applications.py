@@ -323,7 +323,7 @@ class ApplicationsCrudApi(CrudApi):
     def _validation_message(cls, fc):
         errors = fc.errors
         msg = "The following validation errors were received:\n"
-        for fieldName, errorMessages in errors.iteritems():
+        for fieldName, errorMessages in errors.items():
             fieldName = xwalk.SuggestionFormXWalk.formField2objectField(fieldName)
             msg += fieldName + " : " + "; ".join(errorMessages) + "\n"
         return msg

@@ -54,4 +54,4 @@ if __name__ == '__main__':
         'applications': traverse_applications(),
         'journals': traverse_journals()
     }
-    print(json.dumps(full_report, indent=2))
+    print((json.dumps(full_report, indent=2)))

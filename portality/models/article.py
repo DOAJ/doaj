@@ -9,6 +9,7 @@ from portality.lib import normalise
 
 import string
 from unidecode import unidecode
+from functools import reduce
 
 
 class NoJournalException(Exception):
@@ -22,7 +23,7 @@ class Article(DomainObject):
     def duplicates(cls, issns=None, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
         # some input sanitisation
         issns = issns if isinstance(issns, list) else []
-        urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, unicode) else []
+        urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, str) else []
 
         # make sure that we're dealing with the normal form of the identifiers
         norm_urls = []
@@ -1076,7 +1077,7 @@ class DuplicateArticleQuery(object):
         self.issns = issns if isinstance(issns, list) else []
         self.publisher_record_id = publisher_record_id
         self.doi = doi
-        self.urls = urls if isinstance(urls, list) else [urls] if isinstance(urls, str) or isinstance(urls, unicode) else []
+        self.urls = urls if isinstance(urls, list) else [urls] if isinstance(urls, str) or isinstance(urls, str) else []
         self.title = title
         self.volume = volume
         self.number = number
