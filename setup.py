@@ -27,7 +27,7 @@ setup(
         "Flask-Swagger",
         "flask-cors",
         "LinkHeader",
-        "universal-analytics-python",
+        #"universal-analytics-python",                                                             # No Python 3 support
         "huey==1.10.5",                                                          # upgrading to 1.11 / 2.x requires work
         "redis",
         "rstr",
