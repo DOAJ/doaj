@@ -390,19 +390,38 @@ input[type=password]:not(.form-control),
 }
 
 .input-tiny {
-    width: 60px;
+    width: 100%;
 }
 
 .input-large {
-    width: 210px;
+    width: 100%;
 }
 
 .input-xlarge {
-    width: 270px;
+    width: 100%;
 }
+
+@media (min-width: 992px) {
+    .input-tiny {
+        width: 60px;
+    }
+
+    .input-large {
+        width: 210px;
+    }
+
+    .input-xlarge {
+        width: 270px;
+    }
+}
+
 
 .centre-text-container {
     text-align: center;
+}
+
+.form-area {
+    overflow-wrap: break-word;
 }
 
 .form-panel {
