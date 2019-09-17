@@ -8,12 +8,11 @@ import codecs
 LAST_MANUAL_UPDATE_NEVER = {
      "query": {
         "filtered": {
+        	"query": { "term": {"last_manual_update": "1970-01-01T00:00:00Z"}},
             "filter": {
-                "query": {
-                    "term": {
-                        "last_manual_update": "1970-01-01T00:00:00Z"
-                    }
-                }
+            	"bool": {
+	                "must": { "term": {"in_doaj": "true"}}
+	            }
             }
         }
     },
