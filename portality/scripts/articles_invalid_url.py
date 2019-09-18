@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     with codecs.open(args.out, "wb", "utf-8") as f:
         writer = UnicodeWriter(f)
-        writer.writerow(["ID", "Journal Name", "URL", "In Doaj", "Created Date"])
+        writer.writerow(["ID", "Article Title", "URL", "In Doaj", "Created Date"])
 
         for j in esprit.tasks.scroll(conn, models.Article.__type__, q=INVALID_URLS, page_size=100, keepalive='5m'):
             article = models.Article(_source=j)
