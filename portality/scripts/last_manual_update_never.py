@@ -35,13 +35,14 @@ if __name__ == "__main__":
 
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
+
     with codecs.open(args.out, "wb", "utf-8") as f:
         writer = UnicodeWriter(f)
-        writer.writerow(["ID", "Journal Name", "E-ISSN", "P-ISSN", "Created Date"])
+        writer.writerow(["ID", "Journal Name", "Journal URL" "E-ISSN", "P-ISSN", "Created Date", "Owner", "Country", "Publisher",  "Owner's email address"])
 
         for j in esprit.tasks.scroll(conn, models.Journal.__type__, q=LAST_MANUAL_UPDATE_NEVER, limit=800, keepalive='5m'):
             journal = models.Journal(_source=j)
             bibjson = journal.bibjson()
-            issns = bibjson.issns()
 
-            writer.writerow([journal.id, bibjson.title, bibjson.get_one_identifier(bibjson.E_ISSN), bibjson.get_one_identifier(bibjson.P_ISSN), journal.created_date])
+
+            #writer.writerow([journal.id, bibjson.title, bibjson.get_single_url(urltype="homepage"), bibjson.get_one_identifier(bibjson.E_ISSN), bibjson.get_one_identifier(bibjson.P_ISSN), journal.created_date, journal.owner, journal.Country, bibjson.get_one_identifier(bibjson.Publisher())])
