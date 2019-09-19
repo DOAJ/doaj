@@ -118,7 +118,7 @@ SPONSORS = {
         #'openedition': {'name': 'Open Edition', 'logo': 'open_edition.svg', 'url': 'https://www.openedition.org'},
         'iop': {"name": "IOP Publishing", "logo": "iop.jpg", "url": "http://ioppublishing.org/"},
         'degruyter': {'name': 'De Gruyter', 'logo': 'degruyter.jpg', 'url': 'https://www.degruyter.com/dg/page/open-access'},
-        'rsc': {'name': 'Royal Society of Chemistry', 'logo': 'rsc.svg', 'url': 'https://www.rsc.org'},
+        'rsc': {'name': 'Royal Society of Chemistry', 'logo': 'rsc.jpg', 'url': 'https://www.rsc.org'},
         'edp': {'name': 'EDP Sciences', 'logo': 'edp.gif', 'url': 'https://www.edpsciences.org'},
         'elife': {'name': 'eLife', 'logo': 'elife.png', 'url': 'https://elifesciences.org/'},
     },
