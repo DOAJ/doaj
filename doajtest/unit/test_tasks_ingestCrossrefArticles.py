@@ -1,5 +1,4 @@
 from doajtest.helpers import DoajTestCase
-from doajtest.mocks.model_Article import ModelArticleMockFactory
 
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
@@ -10,6 +9,9 @@ from doajtest.mocks.ftp import FTPMockFactory
 from doajtest.mocks.model_Article import ModelArticleMockFactory
 from doajtest.mocks.xwalk import XwalkMockFactory
 
+from portality.bll.exceptions import IngestException
+
+
 import urlparse
 import time
 from portality.crosswalks import article_crossref_xml
@@ -18,7 +20,9 @@ from portality.bll.services import article as articleSvc
 from portality import models
 from portality.core import app
 
-from portality.background import BackgroundException
+from portality.background import BackgroundException, RetryException
+
+from nose.tools import *
 
 import ftplib, os, requests
 from urlparse import urlparse
@@ -87,6 +91,10 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
     def mock_load_schema(self, doc):
         return self.schema
+
+    @classmethod
+    def mock_unable_to_upload_schema(cls, doc):
+        raise IngestException(u"Unable to load schema")
 
     def test_01_crossref_file_upload_success(self):
 
@@ -1694,3 +1702,16 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert not os.path.exists(path)
 
         assert file_upload.status == "failed"
+
+    @raises(RetryException)
+    def test_50_unable_to_load_schema(self):
+        etree.XMLSchema = self.mock_unable_to_upload_schema
+
+        handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
+        f = ModelFileMockFactory(stream=handle)
+
+        previous = []
+        id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "crossref", previous)
+
+
+
