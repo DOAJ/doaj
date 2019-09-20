@@ -33,20 +33,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
     @classmethod
     def setUpClass(self):
-
         super(TestIngestArticlesCrossrefXML, self).setUpClass()
-        self.schema_old = etree.XMLSchema
-
-    @classmethod
-    def tearDownClass(self):
-        super(TestIngestArticlesCrossrefXML, self).tearDownClass()
-        etree.XMLSchema = self.schema_old
+        schema_path = app.config.get("SCHEMAS", {}).get("crossref")
+        schema_file = open(schema_path)
+        schema_doc = etree.parse(schema_file)
+        self.schema = etree.XMLSchema(schema_doc)
 
     def setUp(self):
 
         super(TestIngestArticlesCrossrefXML, self).setUp()
         self.cleanup_ids = []
         self.cleanup_paths = []
+
+        self.schema_old = etree.XMLSchema
 
         self.xwalk_validate = article_crossref_xml.CrossrefXWalk.validate
         self.batch_create_articles = articleSvc.ArticleService.batch_create_articles
@@ -58,16 +57,13 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         self.upload_dir = app.config["UPLOAD_DIR"]
         self.ingest_articles_retries = app.config['HUEY_TASKS']['ingest_articles']['retries']
 
-        schema_path = app.config.get("SCHEMAS", {}).get("crossref")
-        schema_file = open(schema_path)
-        schema_doc = etree.parse(schema_file)
-        self.schema = etree.XMLSchema(schema_doc)
-
     def tearDown(self):
         super(TestIngestArticlesCrossrefXML, self).tearDown()
         requests.head = self.head
         requests.get = self.get
         ftplib.FTP = self.ftp
+
+        etree.XMLSchema = self.schema_old
 
         article_crossref_xml.CrossrefXWalk.validate = self.xwalk_validate
         articleSvc.ArticleService.batch_create_articles = self.batch_create_articles
