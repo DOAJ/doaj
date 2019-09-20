@@ -160,20 +160,6 @@ Example record:
         article = models.Article()
         bibjson = article.bibjson()
 
-        '''
-        # language
-        lang = _element(record, "language")
-        if lang is not None:
-            bibjson.journal_language = lang
-        '''
-
-        '''
-        # publisher
-        pub = _element(record, "publisher")
-        if pub is not None:
-            bibjson.publisher = pub
-        '''
-
         # journal title
         jm = journal.find("x:journal_metadata", NS)
         if jm is not None:
@@ -238,19 +224,6 @@ Example record:
             if ftel is not None:
                 bibjson.add_url(ftel, "fulltext", NS)
 
-        ''''
-        # publisher record id
-        pri = _element(record, "publisherRecordId")
-        if pri is not None:
-            article.set_publisher_record_id(pri)
-
-        # document type
-        dt = _element(record, "documentType")
-        if dt is not None:
-            # FIXME: outstanding question as to what to do with this
-            pass
-        '''
-
         # title
         titles = record.find('x:titles', NS)
         if titles is not None:
@@ -280,14 +253,6 @@ Example record:
             # exceptions about .exact analyser not being able to handle
             # more than 32766 UTF8 characters
 
-        '''
-        # keywords
-        keyel = record.find("keywords")
-        if keyel is not None:
-            for kel in keyel:
-                if kel.text != "":
-                    bibjson.add_keyword(kel.text)
-        '''
 
         return article
 
