@@ -121,6 +121,7 @@ SPONSORS = {
         'rsc': {'name': 'Royal Society of Chemistry', 'logo': 'rsc.jpg', 'url': 'https://www.rsc.org'},
         'edp': {'name': 'EDP Sciences', 'logo': 'edp.gif', 'url': 'https://www.edpsciences.org'},
         'elife': {'name': 'eLife', 'logo': 'elife.png', 'url': 'https://elifesciences.org/'},
+        'karger': {'name': 'Karger', 'logo': 'karger.png', 'url': 'https://www.karger.com/'},
     },
     'patron': {
         #'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
