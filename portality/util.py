@@ -1,5 +1,6 @@
-from urllib import urlopen, urlencode
-import md5
+from urllib.parse import urlencode
+from urllib.request import urlopen
+import hashlib
 import re, string
 from unicodedata import normalize
 from functools import wraps
@@ -7,7 +8,7 @@ from flask import request, current_app, flash, make_response
 from random import choice
 import json
 
-from urlparse import urlparse, urljoin
+from urllib.parse import urlparse, urljoin
 
 
 def is_safe_url(target):
@@ -61,7 +62,7 @@ def slugify(text, delim=u'_'):
 # get gravatar for email address
 def get_gravatar(email, size=None, default=None, border=None):
     email = email.lower().strip()
-    hash = md5.md5(email).hexdigest()
+    hash = hashlib.md5.md5(email).hexdigest()
     args = {'gravatar_id':hash}
     if size and 1 <= int(size) <= 512:
         args['size'] = size

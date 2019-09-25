@@ -3,7 +3,8 @@
 from portality.lib import dates
 from portality.datasets import get_country_code, get_currency_code
 from copy import deepcopy
-import locale, json, urlparse, warnings
+import locale, json, warnings
+from urllib.parse import urlparse
 from datetime import date, datetime
 
 #########################################################

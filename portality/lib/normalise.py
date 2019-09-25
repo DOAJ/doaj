@@ -1,4 +1,4 @@
-import urlparse
+from urllib.parse import urlparse
 from portality import regex
 
 def normalise_url(url):

@@ -59,14 +59,14 @@ licenses = {
 }
 
 # do not change this - the top-level keys in the licenses dict should always be == to the "type" of each license object
-for lic_type, lic_info in licenses.iteritems():
+for lic_type, lic_info in iter(licenses.items()):
     lic_info['type'] = lic_type
     lic_info['title'] = lic_type
 
 license_dict = OrderedDict(sorted(licenses.items(), key=lambda x: x[1]['type']))
 
 main_license_options = []
-for lic_type, lic_info in license_dict.iteritems():
+for lic_type, lic_info in iter(license_dict.items()):
     main_license_options.append((lic_type, lic_info['form_label']))
 
 
