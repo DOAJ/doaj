@@ -182,7 +182,7 @@ def status():
         qcsv = {"query": {"bool": {"must": [
             {"term":{"status":"complete"}},
             {"term":{"action":"journal_csv"}},
-            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 7200))}}} # , "lte": dates.now()}}}
+            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 7200))}}}
         ]}}, "size": 1, "sort": {"created_date": {"order": "desc"}}}
         rcsv = models.BackgroundJob.send_query(qcsv)['hits']['hits'][0]['_source']
         res['background']['info'].append('journal_csv has run in the last 2 hours, confirming main queue is running')
@@ -195,7 +195,7 @@ def status():
         qprune = {"query": {"bool": {"must": [
             {"term":{"status":"complete"}},
             {"term":{"action":"prune_es_backups"}},
-            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 86400))}}} # , "lte": dates.now()}}}
+            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 86400))}}}
         ]}}, "size": 1, "sort": {"created_date": {"order": "desc"}}}
         rprune = models.BackgroundJob.send_query(qprune)['hits']['hits'][0]['_source']
         res['background']['info'].append('prune_es_backups has run in the last 24 hours, confirming long running queue is running')
@@ -207,7 +207,7 @@ def status():
         # remove old jobs if there are too many - remove anything over six months and complete
         qbg = {"query": {"bool": {"must": [
             {"term":{"status":"complete"}},
-            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 86400))}}} # , "lte": dates.now()}}}
+            {"range": {"created_date": {"lte": dates.format(dates.before(datetime.utcnow(), 86400))}}}
         ]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
         rbg = models.BackgroundJob.send_query(qbg)
         for job in rbg.get('hits',{}).get('hits',[]):
