@@ -70,11 +70,12 @@ class Choices(object):
         ('SA', 'Share Alike'),
     ]
 
+    #beginning with Python 3 all strings are unicode so no need to decode
     _deposit_policy = [
         (NONE, NONE),
         ('Sherpa/Romeo', 'Sherpa/Romeo'),
         ('Dulcinea', 'Dulcinea'),
-        ('H\xc3\xa9lo\xc3\xafse'.decode('utf-8'), 'H\xc3\xa9lo\xc3\xafse'.decode('utf-8')),
+        ('H\xc3\xa9lo\xc3\xafse', 'H\xc3\xa9lo\xc3\xafse'),
         ('Diadorim', 'Diadorim'),
         (OTHER, OTHER)
     ]

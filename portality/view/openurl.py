@@ -3,7 +3,7 @@ from flask import Blueprint, request, redirect, url_for, render_template, abort
 from portality.models import OpenURLRequest
 from portality.lib import analytics
 from portality.core import app
-from urllib import unquote
+from urllib.parse import unquote
 
 blueprint = Blueprint('openurl', __name__)
 

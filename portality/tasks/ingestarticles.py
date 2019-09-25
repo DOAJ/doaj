@@ -11,7 +11,7 @@ from portality.bll import DOAJ
 from portality.lib import plugin
 
 import ftplib, os, requests, traceback, shutil
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 DEFAULT_MAX_REMOTE_SIZE=262144000
 CHUNK_SIZE=1048576

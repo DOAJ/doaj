@@ -1,4 +1,5 @@
-import UniversalAnalytics
+#import UniversalAnalytics
+from pyga.requests import Tracker
 import logging
 import os
 from functools import wraps
@@ -18,7 +19,8 @@ class GAException(Exception):
 def create_tracker(ga_id, domain):
     global tracker
     if ga_id:
-        tracker = UniversalAnalytics.Tracker.create(ga_id, client_id=domain)
+        #tracker = UniversalAnalytics.Tracker.create(ga_id, client_id=domain)
+        tracker = Tracker(ga_id, domain)
     else:
         raise GAException("Invalid GA ID supplied, no tracker created.")
 

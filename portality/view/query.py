@@ -1,4 +1,4 @@
-import json, urllib2
+import json, urllib3
 
 from flask import Blueprint, request, abort, make_response
 from flask_login import current_user
@@ -31,7 +31,7 @@ def query(path=None):
         q = request.json
     # if there is a source param, load the json from it
     elif 'source' in request.values:
-        q = json.loads(urllib2.unquote(request.values['source']))
+        q = json.loads(urllib3.unquote(request.values['source']))
 
     try:
         account = None
