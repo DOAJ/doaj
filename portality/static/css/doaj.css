@@ -561,7 +561,7 @@ input[type=password]:not(.form-control),
 
 @media (max-width: 992px) {
     .doaj-bs3-search-controller-reset::before {
-        content: "Clear search filters";
+        content: "Clear search filters ";
     }
 
     .doaj-bs3-search-controller-searchcombo .form-group {
