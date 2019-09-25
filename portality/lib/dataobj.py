@@ -30,15 +30,15 @@ def to_country_code(val):
 
 def to_unicode():
     def to_utf8_unicode(val):
-        if isinstance(val, unicode):
+        if isinstance(val, str):
             return val
-        elif isinstance(val, basestring):
+        elif isinstance(val, str):
             try:
                 return val.decode("utf8", "strict")
             except UnicodeDecodeError:
                 raise ValueError(u"Could not decode string")
         else:
-            return unicode(val)
+            return str(val)
 
     return to_utf8_unicode
 
@@ -52,7 +52,7 @@ def to_int():
     def intify(val):
         # strip any characters that are outside the ascii range - they won't make up the int anyway
         # and this will get rid of things like strange currency marks
-        if isinstance(val, unicode):
+        if isinstance(val, str):
             val = val.encode("ascii", errors="ignore")
 
         # try the straight cast
@@ -645,7 +645,7 @@ class DataObj(object):
                         pass
 
                 matches = 0
-                for k, v in matchsub.iteritems():
+                for k, v in iter(matchsub.items()):
                     if entry.get(k) == v:
                         matches += 1
                 if matches == len(matchsub.keys()):
@@ -1079,7 +1079,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
     constructed = DataObj()
 
     # now check all the fields
-    for field_name, instructions in struct.get("lists", {}).items():
+    for field_name, instructions in iter(struct.get("fields", {}).items()):
         val = obj.get(field_name)
         if val is None:
             continue
@@ -1122,7 +1122,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
                 raise DataStructureException(e.message)
 
     # now check all the lists
-    for field_name, instructions in list(struct.get("lists", {})):
+    for field_name, instructions in list(struct.get("lists", {}).items()):
         vals = obj.get(field_name)
         if vals is None:
             continue
@@ -1139,7 +1139,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
             if coerce_fn is None:
                 raise DataStructureException("No coersion function defined for type '{x}' at '{c}'".format(x=instructions.get("coerce", "unicode"), c=context + field_name))
 
-            for i in xrange(len(vals)):
+            for i in range(len(vals)):
                 val = vals[i]
                 try:
                     constructed._add_to_list(field_name, val, coerce=coerce_fn, **kwargs)
@@ -1270,7 +1270,7 @@ def construct_kwargs(type, dir, instructions):
 
     nk = {}
     if dir == "set":
-        for k, v in kwargs.iteritems():
+        for k, v in iter(kwargs.items()):
             # basically everything is a "set" argument unless explicitly stated to be a "get" argument
             if not k.startswith("get__"):
                 if k.startswith("set__"):    # if it starts with the set__ prefix, remove it

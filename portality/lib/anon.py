@@ -10,7 +10,7 @@ def anon_email(email):
     if not email:
         return email
 
-    return hashlib.sha256(app.config['ANON_SALT'] + email.encode('utf-8')).hexdigest() + '@example.com'
+    return hashlib.sha256(app.config['ANON_SALT'].encode('utf-8') + email.encode('utf-8')).hexdigest() + '@example.com'
 
 
 def basic_hash(content):

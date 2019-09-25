@@ -26,7 +26,7 @@ def parse(s, format=None, guess=True):
 def format(d, format=None):
     if format is None:
         format = app.config.get("DEFAULT_DATE_FORMAT")
-    return unicode(d.strftime(format))
+    return str(d.strftime(format))
 
 
 def reformat(s, in_format=None, out_format=None):
