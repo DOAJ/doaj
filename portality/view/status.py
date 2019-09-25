@@ -207,7 +207,7 @@ def status():
         # remove old jobs if there are too many - remove anything over six months and complete
         qbg = {"query": {"bool": {"must": [
             {"term":{"status":"complete"}},
-            {"range": {"created_date": {"lte": dates.format(dates.before(datetime.utcnow(), 86400))}}}
+            {"range": {"created_date": {"lte": dates.format(dates.before(datetime.utcnow(), 15552000))}}}
         ]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
         rbg = models.BackgroundJob.send_query(qbg)
         for job in rbg.get('hits',{}).get('hits',[]):
