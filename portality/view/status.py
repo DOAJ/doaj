@@ -211,7 +211,7 @@ def status():
         ]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
         rbg = models.BackgroundJob.send_query(qbg)
         for job in rbg.get('hits',{}).get('hits',[]):
-            models.BackgroundJob.remove_by_id(job['fields']['id'])
+            models.BackgroundJob.remove_by_id(job['fields']['id'][0])
         res['background']['info'].append('Removed ' + rbg['hits']['total'] + ' old complete background jobs')
     except:
         res['background']['status'] = 'Unstable'
@@ -222,4 +222,7 @@ def status():
     resp = make_response(json.dumps(res))
     resp.mimetype = "application/json"
     return resp
+
+
+{"query": {"bool": {"must": [{"term":{"status":"complete"}}]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
 
