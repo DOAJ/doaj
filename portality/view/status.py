@@ -1,7 +1,10 @@
 from flask import Blueprint, make_response
 from portality import util
 from portality.core import app
+from portality import models
+from portality.lib import dates
 import json, requests, math, os, time
+from datetime import datetime
 
 blueprint = Blueprint('status', __name__)
 
@@ -53,7 +56,7 @@ def stats():
 @blueprint.route('/')
 @util.jsonp
 def status():
-    res = {'stable': True, 'ping': {'apps': {}, 'indices': {}}, 'notes': []}
+    res = {'stable': True, 'ping': {'apps': {}, 'indices': {}}, 'background': {'status': 'Background jobs are stable', 'info': []}, 'notes': []}
     
     # to get monitoring on this, use uptime robot or similar to check that the status page 
     # contains the 'stable': True string and the following note strings
@@ -172,6 +175,49 @@ def status():
         else:
             indexable_note = 'INDEX/DELETE OPERATIONS NOT TESTED DUE TO SYSTEM ALREADY UNSTABLE'
         res['notes'].append(indexable_note)
+
+    # check background jobs
+    try:
+        # check if journal_csv, which should run at half past every hour on the main queue, has completed in the last 2 hours (which confirms main queue)
+        qcsv = {"query": {"bool": {"must": [
+            {"term":{"status":"complete"}},
+            {"term":{"action":"journal_csv"}},
+            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 7200))}}} # , "lte": dates.now()}}}
+        ]}}, "size": 1, "sort": {"created_date": {"order": "desc"}}}
+        rcsv = models.BackgroundJob.send_query(qcsv)['hits']['hits'][0]['_source']
+        res['background']['info'].append('journal_csv has run in the last 2 hours, confirming main queue is running')
+    except:
+        res['background']['status'] = 'Unstable'
+        res['background']['info'].append('Error when trying to check background job journal_csv in the last 2 hours - could be a problem with this job or with main queue')
+        res['stable'] = False
+    try:
+        # check if prune_es_backups, which should run at 9.30am every day, has completed in the last 24 hours (which confirms long running queue)
+        qprune = {"query": {"bool": {"must": [
+            {"term":{"status":"complete"}},
+            {"term":{"action":"prune_es_backups"}},
+            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 86400))}}} # , "lte": dates.now()}}}
+        ]}}, "size": 1, "sort": {"created_date": {"order": "desc"}}}
+        rprune = models.BackgroundJob.send_query(qprune)['hits']['hits'][0]['_source']
+        res['background']['info'].append('prune_es_backups has run in the last 24 hours, confirming long running queue is running')
+    except:
+        res['background']['status'] = 'Unstable'
+        res['background']['info'].append('Error when trying to check background job prune_es_backups in the last 24 hours - could be a problem with this job or with long running queue')
+        res['stable'] = False
+    try:
+        # remove old jobs if there are too many - remove anything over six months and complete
+        qbg = {"query": {"bool": {"must": [
+            {"term":{"status":"complete"}},
+            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 86400))}}} # , "lte": dates.now()}}}
+        ]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
+        rbg = models.BackgroundJob.send_query(qbg)
+        for job in rbg.get('hits',{}).get('hits',[]):
+            models.BackgroundJob.remove_by_id(job['fields']['id'])
+        res['background']['info'].append('Removed ' + rbg['hits']['total'] + ' old complete background jobs')
+    except:
+        res['background']['status'] = 'Unstable'
+        res['background']['info'].append('Error when trying to remove old background jobs')
+        res['stable'] = False
+
 
     resp = make_response(json.dumps(res))
     resp.mimetype = "application/json"
