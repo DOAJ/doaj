@@ -1068,7 +1068,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
     # Note that since the construct mechanism copies fields explicitly, silent_prune literally just turns off this
     # check
     if not silent_prune:
-        allowed = struct.get("fields", {}).keys() + struct.get("objects", []) + struct.get("lists", {}).keys()
+        allowed = list(struct.get("fields", {})) + list(struct.get("objects", [])) + list(struct.get("lists", {}))  #python 3: iterating over dict yields its keys
         for k in keys:
             if k not in allowed:
                 c = context if context != "" else "root"
@@ -1079,7 +1079,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
     constructed = DataObj()
 
     # now check all the fields
-    for field_name, instructions in struct.get("fields", {}).iteritems():
+    for field_name, instructions in struct.get("lists", {}).items():
         val = obj.get(field_name)
         if val is None:
             continue
@@ -1122,7 +1122,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
                 raise DataStructureException(e.message)
 
     # now check all the lists
-    for field_name, instructions in struct.get("lists", {}).iteritems():
+    for field_name, instructions in list(struct.get("lists", {})):
         vals = obj.get(field_name)
         if vals is None:
             continue
@@ -1184,7 +1184,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
 def construct_merge(target, source):
     merged = deepcopy(target)
 
-    for field, instructions in source.get("fields", {}).iteritems():
+    for field, instructions in source.get("fields", {}).items():
         if "fields" not in merged:
             merged["fields"] = {}
         if field not in merged["fields"]:
@@ -1196,7 +1196,7 @@ def construct_merge(target, source):
         if obj not in merged["objects"]:
             merged["objects"].append(obj)
 
-    for field, instructions in source.get("lists", {}).iteritems():
+    for field, instructions in source.get("lists", {}).items():
         if "lists" not in merged:
             merged["lists"] = {}
         if field not in merged["lists"]:
@@ -1208,7 +1208,7 @@ def construct_merge(target, source):
         if r not in merged["required"]:
             merged["required"].append(r)
 
-    for field, struct in source.get("structs", {}).iteritems():
+    for field, struct in source.get("structs", {}).items():
         if "structs" not in merged:
             merged["structs"] = {}
         if field not in merged["structs"]:
@@ -1277,7 +1277,7 @@ def construct_kwargs(type, dir, instructions):
                     k = k[5:]
                 nk[k] = v
     elif dir == "get":
-        for k, v in kwargs.iteritems():
+        for k, v in iter(kwargs.items()):
             # must start with "get" argument
             if k.startswith("get__"):
                 nk[k[5:]] = v
@@ -1285,7 +1285,7 @@ def construct_kwargs(type, dir, instructions):
     return nk
 
 def construct_data_keys(struct):
-    return struct.get("fields", {}).keys() + struct.get("objects", []) + struct.get("lists", {}).keys()
+    return list(struct.get("fields", {})) + list(struct.get("objects", [])) + list(struct.get("lists", {}))
 
 def merge_outside_construct(struct, target, source):
     merged = deepcopy(target)
