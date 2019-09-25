@@ -760,7 +760,11 @@ class ManEdApplicationReview(ApplicationContext):
         # If this is the first time this application has been assigned to an editor, notify the publisher.
         old_ed = self.source.editor
         if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            alerts = emails.send_publisher_editor_assigned_email(self.target)
+            is_update_request = self.target.current_journal is not None
+            if is_update_request:
+                alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
+            else:
+                alerts = emails.send_publisher_application_editor_assigned_email(self.target)
             for alert in alerts:
                 self.add_alert(alert)
 
@@ -908,7 +912,11 @@ class EditorApplicationReview(ApplicationContext):
         # If this is the first time this application has been assigned to an editor, notify the publisher.
         old_ed = self.source.editor
         if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            alerts = emails.send_publisher_editor_assigned_email(self.target)
+            is_update_request = self.target.current_journal is not None
+            if is_update_request:
+                alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
+            else:
+                alerts = emails.send_publisher_application_editor_assigned_email(self.target)
             for alert in alerts:
                 self.add_alert(alert)
 
