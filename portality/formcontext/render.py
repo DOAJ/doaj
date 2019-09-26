@@ -273,7 +273,7 @@ class BasicJournalInformationRenderer(Renderer):
             # it for errors - there are no fields to check.
             if cfg:
                 for obj in cfg:
-                    field = obj.keys()[0]
+                    field = list(obj.keys())[0]
                     if field in self.error_fields:
                         obj[field]["first_error"] = True
                         found = True

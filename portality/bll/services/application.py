@@ -29,7 +29,7 @@ class ApplicationService(object):
             {"arg": application, "instance" : models.Suggestion, "allow_none" : False, "arg_name" : "application"},
             {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
             {"arg" : provenance, "instance" : bool, "allow_none" : False, "arg_name" : "provenance"},
-            {"arg" : note, "instance" : basestring, "allow_none" : True, "arg_name" : "note"},
+            {"arg" : note, "instance" : str, "allow_none" : True, "arg_name" : "note"},
             {"arg" : manual_update, "instance" : bool, "allow_none" : False, "arg_name" : "manual_update"}
         ], exceptions.ArgumentException)
 
@@ -173,7 +173,7 @@ class ApplicationService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("update_request_for_journal", [
-            {"arg": journal_id, "instance" : basestring, "allow_none" : False, "arg_name" : "journal_id"},
+            {"arg": journal_id, "instance" : str, "allow_none" : False, "arg_name" : "journal_id"},
             {"arg" : account, "instance" : models.Account, "allow_none" : True, "arg_name" : "account"},
             {"arg" : lock_timeout, "instance" : int, "allow_none" : True, "arg_name" : "lock_timeout"}
         ], exceptions.ArgumentException)
