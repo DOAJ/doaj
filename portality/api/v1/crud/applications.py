@@ -105,7 +105,7 @@ class ApplicationsCrudApi(CrudApi):
                     fc.finalise(save_target=save_target, email_alert=False)
                     return fc.target
                 except formcontext.FormContextException as e:
-                    raise Api400Error(e.message)
+                    raise Api400Error(str(e))
                 finally:
                     if jlock is not None: jlock.delete()
                     if alock is not None: alock.delete()

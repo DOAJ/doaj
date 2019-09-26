@@ -1,3 +1,5 @@
+import logging
+
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
 from portality import models
@@ -33,7 +35,7 @@ class ApplicationService(object):
             {"arg" : manual_update, "instance" : bool, "allow_none" : False, "arg_name" : "manual_update"}
         ], exceptions.ArgumentException)
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering reject_application")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering reject_application")
 
         journalService = DOAJ.journalService()
 
@@ -81,7 +83,7 @@ class ApplicationService(object):
         if provenance:
             models.Provenance.make(account, constants.PROVENANCE_STATUS_REJECTED, application)
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Completed reject_application")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed reject_application")
 
     def accept_application(self, application, account, manual_update=True, provenance=True, save_journal=True, save_application=True):
         """
@@ -107,7 +109,7 @@ class ApplicationService(object):
             {"arg" : save_application, "instance" : bool, "allow_none" : False, "arg_name" : "save_application"}
         ], exceptions.ArgumentException)
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering accept_application")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering accept_application")
 
         # ensure that the account holder has a suitable role
         if not account.has_role("accept_application"):
@@ -149,7 +151,7 @@ class ApplicationService(object):
         if save_application is True:
             application.save()
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Completed accept_application")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed accept_application")
 
         return j
 
@@ -178,7 +180,7 @@ class ApplicationService(object):
             {"arg" : lock_timeout, "instance" : int, "allow_none" : True, "arg_name" : "lock_timeout"}
         ], exceptions.ArgumentException)
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering update_request_for_journal")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering update_request_for_journal")
 
         journalService = DOAJ.journalService()
         authService = DOAJ.authorisationService()
@@ -234,7 +236,7 @@ class ApplicationService(object):
 
             app.logger.info("Using existing application {y} as update request for journal {x}".format(y=application.id, x=journal.id))
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Completed update_request_for_journal; return application object")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed update_request_for_journal; return application object")
 
         return application, journal_lock, application_lock
 
@@ -245,7 +247,7 @@ class ApplicationService(object):
             {"arg" : source, "instance" : models.Suggestion, "allow_none" : False, "arg_name" : "source"}
         ], exceptions.ArgumentException)
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering patch_application")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering patch_application")
 
         if target.article_metadata is None:
             target.article_metadata = source.article_metadata
@@ -260,7 +262,7 @@ class ApplicationService(object):
             taly["url"] = saly.get("url")
         target.set_articles_last_year(taly.get("count"), taly.get("url"))
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Completed patch_application")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed patch_application")
 
     def application_2_journal(self, application, manual_update=True):
         # first validate the incoming arguments to ensure that we've got the right thing
@@ -269,7 +271,7 @@ class ApplicationService(object):
             {"arg" : manual_update, "instance" : bool, "allow_none" : False, "arg_name" : "manual_update"}
         ], exceptions.ArgumentException)
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering application_2_journal")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering application_2_journal")
 
         # create a new blank journal record, which we can build up
         journal = models.Journal()
@@ -345,7 +347,7 @@ class ApplicationService(object):
                 if journal.owner is None:
                     journal.set_owner(cj.owner)
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Completing application_2_journal")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completing application_2_journal")
 
         return journal
 

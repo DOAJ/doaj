@@ -350,7 +350,7 @@ class TestCrudApplication(DoajTestCase):
         assert ia.bibjson.country == "BD"
         assert ia.bibjson.apc.currency == "BDT"
         assert ia.bibjson.allows_fulltext_indexing is True
-        assert isinstance(ia.bibjson.title, unicode)
+        assert isinstance(ia.bibjson.title, str)
         assert ia.bibjson.publication_time == 15
         assert "fr" in ia.bibjson.language
         assert "en" in ia.bibjson.language

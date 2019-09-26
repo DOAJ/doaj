@@ -184,7 +184,7 @@ def to_bool(val):
     if val is True or val is False:
         return val
 
-    if isinstance(val, basestring):
+    if isinstance(val, str):
         if val.lower() == 'true':
             return True
         elif val.lower() == 'false':
@@ -418,7 +418,7 @@ class DataObj(object):
         pass
 
     def populate(self, fields_and_values):
-        for k, v in fields_and_values.iteritems():
+        for k, v in fields_and_values.items():
             setattr(self, k, v)
 
     def clone(self):
@@ -506,7 +506,7 @@ class DataObj(object):
                         d = wrap(val, substruct)
                         return d.data
                     except DataStructureException as e:
-                        raise AttributeError(e.message)
+                        raise AttributeError(str(e))
 
         # pull the object from the structure, to find out what kind of retrieve it needs
         # (if there is a struct)
@@ -680,7 +680,7 @@ class DataObj(object):
         while len(stack) > 0:
             context = stack.pop()
             todelete = []
-            for k, v in context.iteritems():
+            for k, v in context.items():
                 if isinstance(v, dict) and len(v.keys()) == 0:
                     todelete.append(k)
             for d in todelete:
@@ -884,7 +884,7 @@ def validate(obj, schema):
     # all fields
     allowed = schema.get("bools", []) + schema.get("fields", []) + schema.get("lists", []) + schema.get("objects", [])
 
-    for k, v in obj.iteritems():
+    for k, v in obj.items():
         # is k allowed at all
         if k not in allowed:
             raise ObjectSchemaValidationError("object contains key " + k + " which is not permitted by schema")
@@ -896,7 +896,7 @@ def validate(obj, schema):
 
         # check that the fields are plain old strings
         if k in schema.get("fields", []):
-            if type(v) != str and type(v) != unicode and type(v) != int and type(v) != float:
+            if type(v) != str and type(v) != str and type(v) != int and type(v) != float:
                 raise ObjectSchemaValidationError("object contains " + k + " = " + str(v) + " but expected string, unicode or a number")
 
         # check that the lists are really lists
@@ -908,7 +908,7 @@ def validate(obj, schema):
             if entry_schema is None:
                 # validate the entries as fields
                 for e in v:
-                    if type(e) != str and type(e) != unicode and type(e) != int and type(e) != float:
+                    if type(e) != str and type(e) != str and type(e) != int and type(e) != float:
                         raise ObjectSchemaValidationError("list in object contains " + str(type(e)) + " but expected string, unicode or a number in " + k)
             else:
                 # validate each entry against the schema
@@ -966,23 +966,23 @@ def construct_validate(struct, context=""):
             raise ConstructException(u"Key '{x}' present in struct at '{y}', but is not permitted".format(x=k, y=c))
 
     # now go through and make sure the fields are the right shape:
-    for field_name, instructions in struct.get("fields", {}).iteritems():
+    for field_name, instructions in struct.get("fields", {}).items():
         if "coerce" not in instructions:
             c = context if context != "" else "root"
             raise ConstructException(u"Coerce function not listed in field '{x}' at '{y}'".format(x=field_name, y=c))
-        for k,v in instructions.iteritems():
-            if not isinstance(v, list) and not isinstance(v, basestring):
+        for k,v in instructions.items():
+            if not isinstance(v, list) and not isinstance(v, str):
                 c = context if context != "" else "root"
                 raise ConstructException(u"Argument '{a}' in field '{b}' at '{c}' is not a string or list".format(a=k, b=field_name, c=c))
 
     # then make sure the objects are ok
     for o in struct.get("objects", []):
-        if not isinstance(o, basestring):
+        if not isinstance(o, str):
             c = context if context != "" else "root"
             raise ConstructException(u"There is a non-string value in the object list at '{y}'".format(y=c))
 
     # make sure the lists are correct
-    for field_name, instructions in struct.get("lists", {}).iteritems():
+    for field_name, instructions in struct.get("lists", {}).items():
         contains = instructions.get("contains")
         if contains is None:
             c = context if context != "" else "root"
@@ -990,14 +990,14 @@ def construct_validate(struct, context=""):
         if contains not in ["object", "field"]:
             c = context if context != "" else "root"
             raise ConstructException(u"'contains' argument in list '{x}' at '{y}' contains illegal value '{z}'".format(x=field_name, y=c, z=contains))
-        for k,v in instructions.iteritems():
-            if not isinstance(v, list) and not isinstance(v, basestring):
+        for k,v in instructions.items():
+            if not isinstance(v, list) and not isinstance(v, str):
                 c = context if context != "" else "root"
                 raise ConstructException(u"Argument '{a}' in list '{b}' at '{c}' is not a string or list".format(a=k, b=field_name, c=c))
 
     # make sure the requireds are correct
     for o in struct.get("required", []):
-        if not isinstance(o, basestring):
+        if not isinstance(o, str):
             c = context if context != "" else "root"
             raise ConstructException(u"There is a non-string value in the required list at '{y}'".format(y=c))
 
@@ -1012,7 +1012,7 @@ def construct_validate(struct, context=""):
             raise ConstructException(u"struct contains key '{a}' which is not listed in object or list definitions at '{x}'".format(a=s, x=c))
 
     # now recurse into each struct
-    for k,v in substructs.iteritems():
+    for k,v in substructs.items():
         nc = context
         if nc == "":
             nc = k
@@ -1092,7 +1092,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
         try:
             constructed._set_single(field_name, val, coerce=coerce_fn, **kwargs)
         except DataSchemaException as e:
-            raise DataStructureException(u"Schema exception at '{a}', {b}".format(a=context + field_name, b=e.message))
+            raise DataStructureException(u"Schema exception at '{a}', {b}".format(a=context + field_name, b=str(e)))
 
     # next check all the objetcs (which will involve a recursive call to this function)
     for field_name in struct.get("objects", []):
@@ -1110,7 +1110,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
             try:
                 constructed._set_single(field_name, deepcopy(val))
             except DataSchemaException as e:
-                raise DataStructureException(e.message)
+                raise DataStructureException(str(e))
         else:
             # we need to recurse further down
             beneath = construct(val, instructions, coerce=coerce, context=context + field_name + ".", silent_prune=silent_prune)
@@ -1119,7 +1119,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
             try:
                 constructed._set_single(field_name, beneath)
             except DataSchemaException as e:
-                raise DataStructureException(e.message)
+                raise DataStructureException(str(e))
 
     # now check all the lists
     for field_name, instructions in list(struct.get("lists", {}).items()):
@@ -1144,7 +1144,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
                 try:
                     constructed._add_to_list(field_name, val, coerce=coerce_fn, **kwargs)
                 except DataSchemaException as e:
-                    raise DataStructureException(e.message)
+                    raise DataStructureException(str(e))
 
         elif contains == "object":
             # for each object in the list, send it for construction
@@ -1159,7 +1159,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
                     try:
                         constructed._add_to_list(field_name, deepcopy(val))
                     except DataSchemaException as e:
-                        raise DataStructureException(e.message)
+                        raise DataStructureException(str(e))
                 else:
                     # we need to recurse further down
                     beneath = construct(val, subinst, coerce=coerce, context=context + field_name + "[" + str(i) + "].", silent_prune=silent_prune)
@@ -1168,7 +1168,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
                     try:
                         constructed._add_to_list(field_name, beneath)
                     except DataSchemaException as e:
-                        raise DataStructureException(e.message)
+                        raise DataStructureException(str(e))
 
         else:
             raise DataStructureException("Cannot understand structure where list '{x}' elements contain '{y}'".format(x=context + field_name, y=contains))
@@ -1338,7 +1338,7 @@ def test_dataobj(obj, fields_and_values):
     :param fields_and_values:
     :return:
     """
-    for k, valtup in fields_and_values.iteritems():
+    for k, valtup in fields_and_values.items():
         if not isinstance(valtup, tuple):
             valtup = (valtup,)
         set_val = valtup[0]
@@ -1347,7 +1347,7 @@ def test_dataobj(obj, fields_and_values):
         except AttributeError:
             assert False, u"Unable to set attribute {x} with value {y}".format(x=k, y=set_val)
 
-    for k, valtup in fields_and_values.iteritems():
+    for k, valtup in fields_and_values.items():
         if not isinstance(valtup, tuple):
             valtup = (valtup,)
         get_val = valtup[0]
