@@ -393,7 +393,7 @@ class ApplicationService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("delete_application", [
-            {"arg": application_id, "instance" : unicode, "allow_none" : False, "arg_name" : "application_id"},
+            {"arg": application_id, "instance" : str, "allow_none" : False, "arg_name" : "application_id"},
             {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"}
         ], exceptions.ArgumentException)
 

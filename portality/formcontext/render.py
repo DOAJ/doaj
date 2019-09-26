@@ -248,7 +248,7 @@ class BasicJournalInformationRenderer(Renderer):
         for g in self.NUMBERING_ORDER:
             cfg = self.FIELD_GROUPS.get(g)
             for obj in cfg:
-                field = obj.keys()[0]
+                field = list(obj.keys())[0]
                 obj[field]["q_num"] = str(q)
                 q += 1
 
@@ -256,7 +256,7 @@ class BasicJournalInformationRenderer(Renderer):
         for g in self.FIELD_GROUPS:
             cfg = self.FIELD_GROUPS.get(g)
             for obj in cfg:
-                f = obj.keys()[0]
+                f = list(obj.keys())[0]
                 if f == field and "q_num" in obj[f]:
                     return obj[f]["q_num"]
         return ""

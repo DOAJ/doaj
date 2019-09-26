@@ -57,7 +57,7 @@ class ApplicationsCrudApi(CrudApi):
         try:
             ia = IncomingApplication(data)
         except dataobj.DataStructureException as e:
-            raise Api400Error(e.message)
+            raise Api400Error(str(e))
 
         # if that works, convert it to a Suggestion object
         ap = ia.to_application_model()

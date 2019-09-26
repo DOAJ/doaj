@@ -81,7 +81,7 @@ def to_float():
     def floatify(val):
         # strip any characters that are outside the ascii range - they won't make up the float anyway
         # and this will get rid of things like strange currency marks
-        if isinstance(val, unicode):
+        if isinstance(val, str):
             val = val.encode("ascii", errors="ignore")
 
         # try the straight cast
@@ -159,7 +159,7 @@ def to_isolang(output_format=None):
     return isolang
 
 def to_url(val):
-    if not isinstance(val, basestring):
+    if not isinstance(val, str):
         raise ValueError(u"Argument passed to to_url was not a string, but type '{t}': '{val}'".format(t=type(val),val=val))
 
     val = val.strip()
@@ -168,7 +168,7 @@ def to_url(val):
         return val
 
     # parse with urlparse
-    url = urlparse.urlparse(val)
+    url = urlparse(val)
 
     # now check the url has the minimum properties that we require
     if url.scheme and url.scheme.startswith("http"):

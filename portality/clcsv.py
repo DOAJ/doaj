@@ -1,5 +1,5 @@
 import csv, codecs
-import cStringIO
+import io
 
 
 class ClCsv():
@@ -70,7 +70,7 @@ class ClCsv():
             if type(col_identifier) == int:
                 # get column by index
                 return self.data[col_identifier]
-            elif isinstance(col_identifier, basestring):
+            elif isinstance(col_identifier, str):
                 # get column by title
                 for col in self.data:
                     if col[0] == col_identifier:
@@ -87,7 +87,7 @@ class ClCsv():
         try:
             if type(col_identifier) == int:
                 self.data[col_identifier] = col_contents
-            elif isinstance(col_identifier, basestring):
+            elif isinstance(col_identifier, str):
                 # set column by title.
                 num = self.get_colnumber(col_identifier)
                 if num is not None and type(col_contents) == list:
@@ -99,7 +99,7 @@ class ClCsv():
             # The column isn't there already; append a new one
             if type(col_identifier) == int:
                 self.data.append(col_contents)
-            elif isinstance(col_identifier, basestring):
+            elif isinstance(col_identifier, str):
                 self.data.append((col_identifier, col_contents))
 
     def get_colnumber(self, header):
@@ -201,7 +201,7 @@ class UnicodeReader:
 
     def next(self):
         row = self.reader.next()
-        return [unicode(s, "utf-8") for s in row]
+        return [str(s, "utf-8") for s in row]
 
     def __iter__(self):
         return self
@@ -214,7 +214,7 @@ class UnicodeWriter:
 
     def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
         # Redirect output to a queue
-        self.queue = cStringIO.StringIO()
+        self.queue = io.StringIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
         self.stream = f
         self.encoder = codecs.getincrementalencoder(encoding)()
@@ -224,7 +224,7 @@ class UnicodeWriter:
         for s in row:
             if s is None:
                 s = ''
-            if not isinstance(s, basestring):
+            if not isinstance(s, str):
                 s = str(s)
             encoded_row.append(s.encode("utf-8"))
         self.writer.writerow(encoded_row)
