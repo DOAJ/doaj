@@ -108,7 +108,7 @@ def send_publisher_update_request_editor_assigned_email(application):
             app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/publisher_application_editor_assigned.txt",
+                            template_name="email/publisher_update_request_editor_assigned.txt",
                             application_title=application.bibjson().title,
                             publisher_name=instructions["name"])
             alerts.append(instructions["sent_alert"])
