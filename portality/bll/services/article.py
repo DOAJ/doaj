@@ -190,7 +190,7 @@ class ArticleService(object):
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("is_legitimate_owner", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : unicode, "allow_none" : False, "arg_name" : "owner"}
+            {"arg" : owner, "instance" : str, "allow_none" : False, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
         # get all the issns for the article
@@ -252,7 +252,7 @@ class ArticleService(object):
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("issn_ownership_status", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : unicode, "allow_none" : False, "arg_name" : "owner"}
+            {"arg" : owner, "instance" : str, "allow_none" : False, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
         # get all the issns for the article
@@ -281,7 +281,7 @@ class ArticleService(object):
             if issn not in seen_issns.keys():
                 unmatched.append(issn)
 
-        for issn, owners in seen_issns.iteritems():
+        for issn, owners in seen_issns.items():
             owners = list(owners)
             if len(owners) == 0:
                 unowned.append(issn)
@@ -310,7 +310,7 @@ class ArticleService(object):
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("get_duplicate", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : unicode, "allow_none" : True, "arg_name" : "owner"}
+            {"arg" : owner, "instance" : str, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
         dup = self.get_duplicates(article, owner, max_results=2)
@@ -334,7 +334,7 @@ class ArticleService(object):
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("get_duplicates", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : unicode, "allow_none" : True, "arg_name" : "owner"}
+            {"arg" : owner, "instance" : str, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
         possible_articles_dict = self.discover_duplicates(article, owner, max_results)
@@ -370,7 +370,7 @@ class ArticleService(object):
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("discover_duplicates", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : unicode, "allow_none" : True, "arg_name" : "owner"}
+            {"arg" : owner, "instance" : str, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
         # Get the owner's ISSNs
@@ -393,7 +393,7 @@ class ArticleService(object):
         # dois = b.get_identifiers(b.DOI)
         doi = article.get_normalised_doi()
         if doi is not None:
-            if isinstance(doi, basestring) and doi != '':
+            if isinstance(doi, str) and doi != '':
                 articles = models.Article.duplicates(issns=issns, doi=doi, size=results_per_match_type)
                 if len(articles) > 0:
                     possible_articles['doi'] = [a for a in articles if a.id != article.id]

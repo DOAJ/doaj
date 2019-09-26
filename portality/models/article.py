@@ -22,7 +22,7 @@ class Article(DomainObject):
     def duplicates(cls, issns=None, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
         # some input sanitisation
         issns = issns if isinstance(issns, list) else []
-        urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, unicode) else []
+        urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, str) else []
 
         # make sure that we're dealing with the normal form of the identifiers
         norm_urls = []
@@ -567,7 +567,7 @@ class Article(DomainObject):
             self.data["index"]["language"] = langs
         if country is not None:
             self.data["index"]["country"] = country
-        if schema_codes > 0:
+        if len(schema_codes) > 0:
             self.data["index"]["schema_code"] = schema_codes
         if len(classification_paths) > 0:
             self.data["index"]["classification_paths"] = classification_paths
