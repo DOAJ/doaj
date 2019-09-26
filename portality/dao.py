@@ -56,19 +56,19 @@ class DomainObject(UserDict, object):
     @classmethod
     def makeid(cls):
         """Create a new id for data object overwrite this in specific model types if required"""
-        return unicode(uuid.uuid4().hex)
+        return str(uuid.uuid4().hex)
 
     @property
     def id(self):
         rawid = self.data.get("id", None)
         if rawid is not None:
-            return unicode(rawid)
+            return str(rawid)
         return None
     
     def set_id(self, id=None):
         if id is None:
             id = self.makeid()
-        self.data["id"] = unicode(id)
+        self.data["id"] = str(id)
     
     @property
     def version(self):
