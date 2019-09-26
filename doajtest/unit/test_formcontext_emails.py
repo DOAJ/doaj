@@ -278,7 +278,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         re.DOTALL)
         assert bool(assEd_email_matched)
 
-        publisher_template = 'publisher_application_editor_assigned.txt'
+        publisher_template = 'publisher_update_request_editor_assigned.txt'
         publisher_to = re.escape(owner.email)
         publisher_subject = 'your application has been assigned an editor for review'
 
@@ -464,7 +464,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         re.DOTALL)
         assert bool(assEd_email_matched)
 
-        publisher_template = 'publisher_application_editor_assigned.txt'
+        publisher_template = 'publisher_update_request_editor_assigned.txt'
         publisher_to = re.escape(owner.email)
         publisher_subject = 'your application has been assigned an editor for review'
 

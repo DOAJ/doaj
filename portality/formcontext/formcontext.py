@@ -1060,7 +1060,7 @@ class AssEdApplicationReview(ApplicationContext):
         # inform publisher if this was set to 'in progress' from 'pending'
         if self.source.application_status == constants.APPLICATION_STATUS_PENDING and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                alerts = emails.send_publisher_inprogress_email(self.target)
+                alerts = emails.send_publisher_update_request_inprogress_email(self.target)
                 for alert in alerts:
                     self.add_alert(alert)
             else:
