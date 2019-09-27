@@ -57,8 +57,12 @@ def do_upgrade(definition, verbose):
         max = first_page.json().get("hits", {}).get("total", 0)
         type_start = datetime.now()
 
+        default_query={
+            "query": {"match_all": {}}
+        }
+
         try:
-            for result in esprit.tasks.scroll(sconn, tdef.get("type"), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), scan=True):
+            for result in esprit.tasks.scroll(sconn, tdef.get("type"), q=tdef.get("query",default_query), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), scan=True):
                 # learn what kind of model we've got
                 model_class = MODELS.get(tdef.get("type"))
 

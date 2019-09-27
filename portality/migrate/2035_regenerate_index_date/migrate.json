@@ -4,7 +4,26 @@
 		{
 			"type" : "article",
 			"scroll_size" : 1000,
-			"keepalive" : "20m"
+			"keepalive" : "20m",
+			"query" : {
+				"query": {
+					"filtered": {
+						"query": {"match_all": {}},
+						"filter": {
+							"bool": {
+								"must": [
+									{"missing": {
+										"field": "index.date"
+									}},
+									{"exists": {
+										"field": "bibjson.year.exact"
+									}}
+								]
+							}
+						}
+					}
+				}
+			}
 		}
 	]
 }
