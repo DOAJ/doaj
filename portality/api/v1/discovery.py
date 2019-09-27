@@ -27,13 +27,13 @@ def query_substitute(query, substitutions):
     # apply the regex escapes to the substitutions, so we know they
     # are ready to be matched
     escsubs = {}
-    for k, v in substitutions.iteritems():
+    for k, v in substitutions.items():
         escsubs[k.replace(":", "\\:")] = v
 
     # define a function which takes the match group and returns the
     # substitution if there is one
     def rep(match):
-        for k, v in escsubs.iteritems():
+        for k, v in escsubs.items():
             if k == match.group(1):
                 return v
         return match.group(1)
