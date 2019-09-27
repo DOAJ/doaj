@@ -52,7 +52,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
                 # for debugging, just print out the progress
                 i += 1
-                print i, article_model.id, len(journal_cache.keys()), len(write_batch), len(delete_batch)
+                print (i, article_model.id, len(journal_cache.keys()), len(write_batch), len(delete_batch))
 
                 # Try to find journal in our cache
                 bibjson = article_model.bibjson()
