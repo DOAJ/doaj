@@ -142,7 +142,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
     def _get_best_journal(self, journals):
         if len(journals) == 1:
-            return journals[0]
+            return list(journals)[0]
 
         # in_doaj
         # most recently updated (manual, then automatic)
@@ -172,12 +172,12 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
             context = result["not_in_doaj"]
 
         lmus = context.keys()
-        lmus.sort()
-        context = context[lmus.pop()]
+        list(lmus).sort()
+        context = context[list(lmus)[0]]
 
         lus = context.keys()
-        lus.sort()
-        best = context[lus.pop()]
+        list(lus).sort()
+        best = context[list(lus)[0]]
         return best
 
     def cleanup(self):

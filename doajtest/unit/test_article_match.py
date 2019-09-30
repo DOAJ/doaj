@@ -4,6 +4,7 @@ import uuid, time
 from random import randint
 from portality.bll.doaj import DOAJ
 from portality.bll.exceptions import ArticleMergeConflict
+from datetime import datetime
 
 class TestArticleMatch(DoajTestCase):
 
@@ -106,12 +107,13 @@ class TestArticleMatch(DoajTestCase):
         # get the xwalk to determine all duplicates
         # sort both results and expectations here to avoid false alarm
         # we don't care about the order of duplicates
-        expected = sorted([a, a2])
+        expected = [a, a2]
+        expected.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
         # determine if there's a duplicate
         l = articleService.get_duplicates(z)
         assert isinstance(l, list), l
         assert l is not None
-        l.sort()
+        l.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
         assert expected == l
 
     def test_04_with_doi_instead(self):
@@ -247,7 +249,7 @@ class TestArticleMatch(DoajTestCase):
         d = articleService.get_duplicates(z)
 
         assert len(d) == 1
-        print len(d)
+        print (len(d))
         assert d[0].bibjson().title == "Example article with a fulltext url and a DOI"
 
     def test_08_many_issns(self):
