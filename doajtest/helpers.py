@@ -92,9 +92,9 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
 def load_from_matrix(filename, test_ids):
     if test_ids is None:
         test_ids = []
-    with open(paths.rel2abs(__file__, "matrices", filename)) as f:
+    with open(paths.rel2abs(__file__, "matrices", filename), 'r') as f:
         reader = csv.reader(f)
-        reader.next()   # pop the header row
+        next(reader)   # pop the header row
         cases = []
         for row in reader:
             if row[0] in test_ids or len(test_ids) == 0:
