@@ -781,6 +781,14 @@ DISCOVERY_RECORDS_PER_FILE = 100000
 REPORTS_BASE_DIR = "/home/cloo/reports/"
 REPORTS_EMAIL_TO = ["feedback@doaj.org"]
 
+
+# ========================================
+# Hotjar configuration
+
+# hotjar id - only activate this in production
+HOTJAR_ID = ""
+
+
 # ========================================
 # Google Analytics configuration
 # specify in environment .cfg file - avoids sending live analytics
