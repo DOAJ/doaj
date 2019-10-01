@@ -60,7 +60,7 @@ class FormHelperBS3(object):
             if render_subfields_horizontal and not (subfield.type == 'CSRFTokenField' and not subfield.value):
                 subfield_width = "3"
                 remove = []
-                for kwarg, val in kwargs.iteritems():
+                for kwarg, val in kwargs.items():
                     if kwarg == 'subfield_display-' + subfield.short_name:
                         subfield_width = val
                         remove.append(kwarg)
@@ -138,7 +138,7 @@ class FormHelperBS3(object):
                 kwargs["class"] = clazz
             render_args = {}
             # filter anything that shouldn't go in as a field attribute
-            for k, v in kwargs.iteritems():
+            for k, v in kwargs.items():
                 if k in ["class", "style", "disabled"] or k.startswith("data-"):
                     render_args[k] = v
             frag += field(**render_args) # FIXME: this is probably going to do some weird stuff
@@ -252,7 +252,7 @@ class FormHelper(object):
             if render_subfields_horizontal and not (subfield.type == 'CSRFTokenField' and not subfield.value):
                 subfield_width = "3"
                 remove = []
-                for kwarg, val in kwargs.iteritems():
+                for kwarg, val in kwargs.items():
                     if kwarg == 'subfield_display-' + subfield.short_name:
                         subfield_width = val
                         remove.append(kwarg)

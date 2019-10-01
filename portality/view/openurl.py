@@ -57,7 +57,7 @@ def parse_query(query, req):
     rem_ns = lambda x: re.sub('rft.', '', x)
 
     # Pack the list of parameters into a dictionary, while un-escaping the string.
-    dict_params = {rem_ns(key): value for (key, value) in req.values.iteritems()}
+    dict_params = {rem_ns(key): value for (key, value) in req.values.items()}
 
     # Create an object to represent this OpenURL request.
     try:
@@ -83,7 +83,7 @@ def old_to_new(req):
     sub_title = lambda x: re.sub('^title', 'jtitle', x)
 
     # Add referent tags to each parameter, and change title tag using above function
-    rewritten_params = {"rft." + sub_title(key): value for (key, value) in req.values.iteritems()}
+    rewritten_params = {"rft." + sub_title(key): value for (key, value) in req.values.items()}
 
     # Add the rewritten parameters to the meta params
     params.update(rewritten_params)

@@ -104,7 +104,7 @@ def status():
     #res['notes'].append(memory_note)
     
     # check that all necessary ES nodes can actually be pinged from this machine
-    for eddr in [app.config['ELASTIC_SEARCH_HOST']] if isinstance(app.config['ELASTIC_SEARCH_HOST'], basestring) else app.config['ELASTIC_SEARCH_HOST']:
+    for eddr in [app.config['ELASTIC_SEARCH_HOST']] if isinstance(app.config['ELASTIC_SEARCH_HOST'], str) else app.config['ELASTIC_SEARCH_HOST']:
         if not eddr.startswith('http'): eddr = 'http://' + eddr
         if not eddr.endswith(':9200'): eddr += ':9200'
         r = requests.get(eddr)
@@ -117,13 +117,13 @@ def status():
     res['notes'].append(es_note)
         
     # query ES for cluster health and nodes up
-    es_addr = str(app.config['ELASTIC_SEARCH_HOST'][0] if not isinstance(app.config['ELASTIC_SEARCH_HOST'], basestring) else app.config['ELASTIC_SEARCH_HOST']).rstrip('/')
+    es_addr = str(app.config['ELASTIC_SEARCH_HOST'][0] if not isinstance(app.config['ELASTIC_SEARCH_HOST'], str) else app.config['ELASTIC_SEARCH_HOST']).rstrip('/')
     if not es_addr.startswith('http'): es_addr = 'http://' + es_addr
     if not es_addr.endswith(':9200'): es_addr += ':9200'
     try:
         es = requests.get(es_addr + '/_status').json()
         res['index'] = { 'cluster': {}, 'shards': { 'total': es['_shards']['total'], 'successful': es['_shards']['successful'] }, 'indices': {} }
-        for k, v in es['indices'].iteritems():
+        for k, v in es['indices'].items():
             res['index']['indices'][k] = { 'docs': v['docs']['num_docs'], 'size': int(math.ceil(v['index']['primary_size_in_bytes']) / 1024 / 1024) }
         try:
             ces = requests.get(es_addr + '/_cluster/health')

@@ -12,7 +12,7 @@ from portality.core import app
 from doajtest.mocks.store import StoreMockFactory
 from doajtest.mocks.models_Cache import ModelCacheMockFactory
 from portality import store, clcsv
-from StringIO import StringIO
+from io import StringIO
 import os, shutil
 
 def load_cases():

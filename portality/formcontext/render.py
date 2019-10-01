@@ -31,7 +31,7 @@ class Renderer(object):
         # build the frag
         frag = ""
         for entry in group_def:
-            field_name = entry.keys()[0]
+            field_name = list(entry.keys())[0]
             config = entry.get(field_name)
             config = deepcopy(config)
 
@@ -72,7 +72,7 @@ class Renderer(object):
     def _rewrite_extra_fields(self, form_context, config):
         if "extra_input_fields" in config:
             config = deepcopy(config)
-            for opt, field_ref in config.get("extra_input_fields").iteritems():
+            for opt, field_ref in config.get("extra_input_fields").items():
                 extra_field = form_context.form[field_ref]
                 config["extra_input_fields"][opt] = extra_field
         return config

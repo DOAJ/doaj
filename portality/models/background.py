@@ -97,13 +97,13 @@ class StdOutBackgroundJob(BackgroundJob):
 
 BACKGROUND_STRUCT = {
     "fields" : {
-        "id" :{"coerce" : "unicode"},
+        "id" :{"coerce" : "str"},
         "created_date" : {"coerce" : "utcdatetime"},
         "last_updated" : {"coerce" : "utcdatetime"},
-        "status" : {"coerce" : "unicode", "allowed_values" : [u"queued", u"processing", u"complete", u"error", u"cancelled"]},
-        "user" : {"coerce" : "unicode"},
-        "action" : {"coerce" : "unicode"},
-        "queue_id" : {"coerce" : "unicode"}
+        "status" : {"coerce" : "str", "allowed_values" : [u"queued", u"processing", u"complete", u"error", u"cancelled"]},
+        "user" : {"coerce" : "str"},
+        "action" : {"coerce" : "str"},
+        "queue_id" : {"coerce" : "str"}
     },
     "lists" : {
         "audit" : {"contains" : "object"}
@@ -115,7 +115,7 @@ BACKGROUND_STRUCT = {
     "structs" : {
         "audit" : {
             "fields" : {
-                "message" : {"coerce" : "unicode"},
+                "message" : {"coerce" : "str"},
                 "timestamp" : {"coerce" : "utcdatetimemicros"}
             }
         }

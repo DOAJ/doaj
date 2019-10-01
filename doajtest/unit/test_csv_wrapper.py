@@ -16,7 +16,7 @@ class TestCsvWrapper(DoajTestCase):
 
     def setUp(self):
         # Create a CSV file to read, and objects to write
-        self.gold_csv = open(os.path.join(self.PRFX, 'rescsv_gold_standard'), 'wb')
+        self.gold_csv = open(os.path.join(self.PRFX, 'rescsv_gold_standard'), 'w')
 
         writer = csv.writer(self.gold_csv)
         writer.writerow(['', 'issn1', 'issn2', 'issn3', 'issn4'])
@@ -26,9 +26,9 @@ class TestCsvWrapper(DoajTestCase):
         writer.writerow(['q4', 'i1a4', 'i2a4', 'i3a4', 'i4a4'])
         self.gold_csv.close()
 
-        self.gold_csv_unicode = codecs.open(os.path.join(self.PRFX, 'rescsv_gold_standard_unicode'), 'wb')
+        self.gold_csv_unicode = codecs.open(os.path.join(self.PRFX, 'rescsv_gold_standard_unicode'), 'w')
 
-        self.gold_csv_unicode.write("\r\n".join([u',иссн1'.encode('utf-8'), u'в1,ила1'.encode('utf-8'), u'в2,ила2'.encode('utf-8'), u'в3,ила3'.encode('utf-8'), u'в4,ила4'.encode('utf-8')]) + "\r\n")
+        self.gold_csv_unicode.write("\r\n".join([u',иссн1', u'в1,ила1', u'в2,ила2', u'в3,ила3', u'в4,ила4']) + "\r\n")
         self.gold_csv_unicode.close()
 
     def tearDown(self):

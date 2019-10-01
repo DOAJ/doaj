@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.view import atom
@@ -46,10 +48,10 @@ class TestFeed(DoajTestCase):
 
         # now go through the entries in order, and check they are as expected
         entry_dates = f.entries.keys()
-        entry_dates.sort()
 
         for i in range(5):
-            e = f.entries.get(entry_dates[i])[0]
+            e = f.entries.get(sorted(entry_dates)[i])[0]
+            author = e["author"]
             assert e["author"] == "Test Publisher {x}".format(x=i)
             assert len(e["categories"]) == 1
             assert e["categories"][0] == "LCC:Agriculture"

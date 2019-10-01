@@ -13,7 +13,7 @@ class SwaggerSupport(object):
     DEFAULT_SWAGGER_TRANS = {
         # The default translation from our coerce to swagger is {"type": "string"}
         # if there is no matching entry in the trans dict here.
-        "unicode": {"type": "string"},
+        "str": {"type": "string"},
         "utcdatetime": {"type": "string", "format": "date-time"},
         "integer": {"type": "integer"},
         "bool": {"type": "boolean"},

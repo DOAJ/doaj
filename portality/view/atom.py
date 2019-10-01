@@ -187,7 +187,7 @@ class AtomFeed(object):
         updated.text = dr
         
         entry_dates = self.entries.keys()
-        entry_dates.sort(reverse=True)
+        list(entry_dates).sort(reverse=True)
         for ed in entry_dates:
             es = self.entries.get(ed)
             for e in es:

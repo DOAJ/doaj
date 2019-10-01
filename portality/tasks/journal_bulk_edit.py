@@ -122,7 +122,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
             if "contact_email" in metadata:
                 fc.form.confirm_contact_email.data = metadata["contact_email"]
 
-            for k, v in metadata.iteritems():
+            for k, v in metadata.items():
                 job.add_audit_message(u"Setting {f} to {x} for journal {y}".format(f=k, x=v, y=journal_id))
                 fc.form[k].data = v
                 updated = True
@@ -145,7 +145,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                     for affected_field_name in fc.form.errors.keys():
                         affected_field = getattr(fc.form, affected_field_name,
                                                  ' Field {} does not exist on form. '.format(affected_field_name))
-                        if isinstance(affected_field, basestring):  # ideally this should never happen, an error should not be reported on a field that is not present on the form
+                        if isinstance(affected_field, str):  # ideally this should never happen, an error should not be reported on a field that is not present on the form
                             data_submitted[affected_field_name] = affected_field
                             continue
 
@@ -208,7 +208,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         # get the metadata overwrites
         if "replacement_metadata" in kwargs:
             metadata = {}
-            for k, v in kwargs["replacement_metadata"].iteritems():
+            for k, v in kwargs["replacement_metadata"].items():
                 if v is not None and v != "":
                     metadata[k] = v
             if len(metadata.keys()) > 0:

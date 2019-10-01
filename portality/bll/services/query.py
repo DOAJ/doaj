@@ -109,7 +109,7 @@ class QueryService(object):
         # check that the request values permit a query to this endpoint
         required_parameters = cfg.get("required_parameters")
         if required_parameters is not None:
-            for k, vs in required_parameters.iteritems():
+            for k, vs in required_parameters.items():
                 val = additional_parameters.get(k)
                 if val is None or val not in vs:
                     raise exceptions.AuthoriseException()

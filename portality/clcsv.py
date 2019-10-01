@@ -2,7 +2,7 @@ import csv, codecs
 import io
 
 
-class ClCsv():
+class ClCsv:
 
     def __init__(self, file_path):
         """
@@ -14,7 +14,7 @@ class ClCsv():
         self.data = []
 
         # Get an open file object from the given file_path or file object
-        if type(file_path) == file:
+        if type(file_path) == open:
             self.file_object = file_path
             if self.file_object.closed:
                 self.file_object = codecs.open(self.file_object.name, 'r+b', encoding='utf-8')

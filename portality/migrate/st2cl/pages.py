@@ -24,7 +24,7 @@ if not os.path.exists(OUT):
     os.mkdir(OUT)
     
 for lang in languages:
-    for name, page in pages.iteritems():
+    for name, page in pages.items():
         url = None
         if "?" not in page:
             url = page + "?uiLanguage=" + lang

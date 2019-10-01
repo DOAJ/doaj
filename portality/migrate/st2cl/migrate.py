@@ -213,7 +213,7 @@ def _get_journal_clusters(journals):
     # Next go through each equivalence, and build a table of the next/previous
     # links in each of the journals
     ordertables = {}
-    for e, jids in equiv_table.iteritems():
+    for e, jids in equiv_table.items():
         ordertable = {}
         for jid in jids:
             ordertable[jid] = {"n" : [], "p": []}
@@ -242,11 +242,11 @@ def _get_journal_clusters(journals):
     # Now analyse the previous/next status of each cluster, and organise
     # them in an array in descending order (head of the chain first)
     sorttable = {}
-    for e, ot in ordertables.iteritems():
+    for e, ot in ordertables.items():
         first = []
         last = []
         middle = []
-        for k, r in ot.iteritems():
+        for k, r in ot.items():
             if len(r.get("n")) == 0:
                 first.append(k)
             elif len(r.get("p")) == 0:
@@ -258,7 +258,7 @@ def _get_journal_clusters(journals):
     # finally (for the clustering algorithm), select the canonical record
     # and the older historical records
     canontable = {}
-    for e, sort in sorttable.iteritems():
+    for e, sort in sorttable.items():
         canon = None
         i = 0
         found = False
@@ -280,7 +280,7 @@ def _get_journal_clusters(journals):
     # now, in preparation for returning to the caller, substitute everything in the canon table
     # for the xml elements they represent
     clusters = []
-    for e, data in canontable.iteritems():
+    for e, data in canontable.items():
         canon, rest = data
         celement = journaltable.get(canon)
         relements = [journaltable.get(r) for r in rest]

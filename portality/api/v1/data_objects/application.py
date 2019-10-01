@@ -9,7 +9,7 @@ from portality.api.v1.data_objects.common_journal_application import OutgoingCom
 # "required" fields are only put on incoming applications
 BASE_APPLICATION_STRUCT = {
     "fields": {
-        "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
+        "id": {"coerce": "str"},                # Note that we'll leave these in for ease of use by the
         "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
         "last_updated": {"coerce": "utcdatetime"}   # to the real object
     },
@@ -18,9 +18,9 @@ BASE_APPLICATION_STRUCT = {
     "structs": {
         "admin" : {
             "fields" : {
-                "application_status" : {"coerce" : "unicode"},   # note we don't limit this to the allowed values, as this just gives us maintenance requirements
-                "owner" : {"coerce" : "unicode"},
-                "current_journal" : {"coerce" : "unicode"}
+                "application_status" : {"coerce" : "str"},   # note we don't limit this to the allowed values, as this just gives us maintenance requirements
+                "owner" : {"coerce" : "str"},
+                "current_journal" : {"coerce" : "str"}
             },
 
             "lists" : {
@@ -30,8 +30,8 @@ BASE_APPLICATION_STRUCT = {
             "structs" : {
                 "contact": {
                     "fields" : {
-                        "email" : {"coerce" : "unicode"},
-                        "name" : {"coerce" : "unicode"}
+                        "email" : {"coerce" : "str"},
+                        "name" : {"coerce" : "str"}
                     }
                 }
             }
@@ -40,21 +40,21 @@ BASE_APPLICATION_STRUCT = {
         "bibjson": {
             "fields": {
                 "allows_fulltext_indexing": {"coerce": "bool"},
-                "alternative_title": {"coerce": "unicode"},
+                "alternative_title": {"coerce": "str"},
                 "apc_url": {"coerce": "url"},
                 "country": {"coerce": "country_code"},
-                "institution": {"coerce": "unicode"},
-                "provider": {"coerce": "unicode"},
+                "institution": {"coerce": "str"},
+                "provider": {"coerce": "str"},
                 "publication_time": {"coerce": "integer"},
-                "publisher": {"coerce": "unicode"},
+                "publisher": {"coerce": "str"},
                 "submission_charges_url": {"coerce": "url"},
-                "title": {"coerce": "unicode"},
+                "title": {"coerce": "str"},
             },
             "lists": {
                 "deposit_policy": {"coerce": "deposit_policy", "contains": "field"},
                 "format": {"coerce": "format", "contains": "field"},
                 "identifier": {"contains": "object"},
-                "keywords": {"coerce": "unicode", "contains": "field"},
+                "keywords": {"coerce": "str", "contains": "field"},
                 "language": {"coerce": "isolang_2letter", "contains": "field"},
                 "license": {"contains": "object"},
                 "link": {"contains": "object"},
@@ -92,8 +92,8 @@ BASE_APPLICATION_STRUCT = {
                     "structs" : {
                         "policy" : {
                             "fields" : {
-                                "name" : {"coerce": "unicode"},
-                                "domain" : {"coerce" : "unicode"}
+                                "name" : {"coerce": "str"},
+                                "domain" : {"coerce" : "str"}
                             }
                         }
                     }
@@ -108,29 +108,29 @@ BASE_APPLICATION_STRUCT = {
 
                 "author_copyright": {
                     "fields": {
-                        "copyright": {"coerce": "unicode"},
+                        "copyright": {"coerce": "str"},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "author_publishing_rights": {
                     "fields": {
-                        "publishing_rights": {"coerce": "unicode"},
+                        "publishing_rights": {"coerce": "str"},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "editorial_review": {
                     "fields": {
-                        "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
+                        "process": {"coerce": "str", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "identifier": {
                     "fields": {
-                        "type": {"coerce": "unicode"},
-                        "id": {"coerce": "unicode"},
+                        "type": {"coerce": "str"},
+                        "id": {"coerce": "str"},
                     }
                 },
 
@@ -139,7 +139,7 @@ BASE_APPLICATION_STRUCT = {
                         "title": {"coerce": "license"},
                         "type": {"coerce": "license"},
                         "url": {"coerce": "url"},
-                        "version": {"coerce": "unicode"},
+                        "version": {"coerce": "str"},
                         "open_access": {"coerce": "bool"},
                         "BY": {"coerce": "bool"},
                         "NC": {"coerce": "bool"},
@@ -152,7 +152,7 @@ BASE_APPLICATION_STRUCT = {
 
                 "link": {
                     "fields": {
-                        "type": {"coerce": "unicode"},
+                        "type": {"coerce": "str"},
                         "url": {"coerce": "url"},
                     }
                 },
@@ -178,9 +178,9 @@ BASE_APPLICATION_STRUCT = {
                 },
                 "subject": {
                     "fields": {
-                        "scheme": {"coerce": "unicode"},
-                        "term": {"coerce": "unicode"},
-                        "code": {"coerce": "unicode"},
+                        "scheme": {"coerce": "str"},
+                        "term": {"coerce": "str"},
+                        "code": {"coerce": "str"},
                     }
                 }
             }
@@ -205,8 +205,8 @@ BASE_APPLICATION_STRUCT = {
                 },
                 "suggester" : {
                     "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "email" : {"coerce" : "unicode"}
+                        "name" : {"coerce" : "str"},
+                        "email" : {"coerce" : "str"}
                     }
                 }
             }

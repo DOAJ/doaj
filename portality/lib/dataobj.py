@@ -242,7 +242,7 @@ class DataObj(object):
         # custom stuff to the coerce, you will likely need to add an entry
         # to the swagger translation table as well, in the same way you
         # extend the coerce map.
-        "unicode": to_unicode(),
+        "str": to_unicode(),
         "unicode_upper" : to_unicode_upper,
         "utcdatetime": date_str(),
         "utcdatetimemicros" : date_str(out_format="%Y-%m-%dT%H:%M:%S.%fZ"),
@@ -814,7 +814,7 @@ class DataObj(object):
         type, struct, instructions = construct_lookup(path, self._struct)
         if type == "field":
             kwargs = construct_kwargs(type, "set", instructions)
-            coerce_fn = self._coerce_map.get(instructions.get("coerce", "unicode"))
+            coerce_fn = self._coerce_map.get(instructions.get("coerce", "str"))
             self._set_single(path, val, coerce=coerce_fn, **kwargs)
         elif type == "list":
             if not isinstance(val, list):
@@ -1005,7 +1005,7 @@ def construct_validate(struct, context=""):
     substructs = struct.get("structs", {})
 
     # first check that there are no previously unknown keys in there
-    possibles = struct.get("objects", []) + struct.get("lists", {}).keys()
+    possibles = struct.get("objects", []) + list(struct.get("lists", {}).keys())
     for s in substructs:
         if s not in possibles:
             c = context if context != "" else "root"
@@ -1083,9 +1083,9 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
         val = obj.get(field_name)
         if val is None:
             continue
-        coerce_fn = coerce.get(instructions.get("coerce", "unicode"))
+        coerce_fn = coerce.get(instructions.get("coerce", "str"))
         if coerce_fn is None:
-            raise DataStructureException("No coersion function defined for type '{x}' at '{c}'".format(x=instructions.get("coerce", "unicode"), c=context + field_name))
+            raise DataStructureException("No coersion function defined for type '{x}' at '{c}'".format(x=instructions.get("coerce", "str"), c=context + field_name))
 
         kwargs = construct_kwargs("field", "set", instructions)
 
@@ -1135,9 +1135,9 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
         contains = instructions.get("contains")
         if contains == "field":
             # coerce all the values in the list
-            coerce_fn = coerce.get(instructions.get("coerce", "unicode"))
+            coerce_fn = coerce.get(instructions.get("coerce", "str"))
             if coerce_fn is None:
-                raise DataStructureException("No coersion function defined for type '{x}' at '{c}'".format(x=instructions.get("coerce", "unicode"), c=context + field_name))
+                raise DataStructureException("No coersion function defined for type '{x}' at '{c}'".format(x=instructions.get("coerce", "str"), c=context + field_name))
 
             for i in range(len(vals)):
                 val = vals[i]

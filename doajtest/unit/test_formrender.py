@@ -153,7 +153,7 @@ class TestRender(DoajTestCase):
         for g in r.NUMBERING_ORDER:
             cfg = r.FIELD_GROUPS.get(g)
             for obj in cfg:
-                field = obj.keys()[0]
+                field = list(obj.keys())[0]
                 assert obj[field].get("q_num") == str(q), (field, obj[field].get("q_num"), q)
                 q += 1
         assert q == 59, q # checks that we checked everything (58 questions, plus an extra 1 from the end of the loop)
@@ -169,7 +169,7 @@ class TestRender(DoajTestCase):
         for g in r.ERROR_CHECK_ORDER:
             cfg = r.FIELD_GROUPS.get(g)
             for obj in cfg:
-                field = obj.keys()[0]
+                field = list(obj.keys())[0]
                 if field == "publisher":
                     assert obj[field].get("first_error", False)
                 else:
@@ -190,7 +190,7 @@ class TestRender(DoajTestCase):
             field_group='test'
         )
         assert len(r.FIELD_GROUPS['test']) == 4
-        assert r.FIELD_GROUPS['test'][0].keys()[0] == 'one'
-        assert r.FIELD_GROUPS['test'][1].keys()[0] == 'inserted_in_middle'
-        assert r.FIELD_GROUPS['test'][2].keys()[0] == 'two'
-        assert r.FIELD_GROUPS['test'][3].keys()[0] == 'inserted_last'
+        assert list(r.FIELD_GROUPS['test'][0].keys())[0] == 'one'
+        assert list(r.FIELD_GROUPS['test'][1].keys())[0] == 'inserted_in_middle'
+        assert list(r.FIELD_GROUPS['test'][2].keys())[0] == 'two'
+        assert list(r.FIELD_GROUPS['test'][3].keys())[0] == 'inserted_last'

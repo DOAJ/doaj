@@ -153,8 +153,8 @@ for t in txt_files:
 # files were uploaded
 lastmods = []
 lookup = {}
-for publisher, files in imports.iteritems():
-    for filename, details in files.iteritems():
+for publisher, files in imports.items():
+    for filename, details in files.items():
         lm = details.keys()[0]
         id = details[lm]
         

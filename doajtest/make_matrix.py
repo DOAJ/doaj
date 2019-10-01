@@ -41,7 +41,7 @@ def _filter(filters, combo):
         cval = combo[filter["field"]]
         if cval != filter["value"]:
             continue
-        for cfield, values in filter["constraints"].iteritems():
+        for cfield, values in filter["constraints"].items():
             if combo[cfield] not in values:
                 return False
     return True
@@ -50,11 +50,11 @@ def _filter(filters, combo):
 def _add_results(results, combo):
     for result in results:
         trips = 0
-        for field, values in result["conditions"].iteritems():
+        for field, values in result["conditions"].items():
             if combo[field] in values:
                 trips += 1
         if trips == len(result["conditions"].keys()):
-            for field, value in result["results"].iteritems():
+            for field, value in result["results"].items():
                 combo[field] = value
             return
 

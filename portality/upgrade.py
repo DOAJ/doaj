@@ -81,7 +81,7 @@ def do_upgrade(definition, verbose):
                     # run the tasks specified with this object type
                     tasks = tdef.get("tasks", None)
                     if tasks:
-                        for func_call, kwargs in tasks.iteritems():
+                        for func_call, kwargs in tasks.items():
                             getattr(result, func_call)(**kwargs)
 
                     # run the prep routine for the record

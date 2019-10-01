@@ -51,7 +51,7 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
 
     # ensure everything is unicode
     unicode_params = {}
-    for k, v in template_params.iteritems():
+    for k, v in template_params.items():
         unicode_params[k] = to_unicode(v)
 
     # Get the body text from the msg_body parameter (for a contact form),
@@ -93,7 +93,7 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
 def to_unicode(val):
     if isinstance(val, unicode):
         return val
-    elif isinstance(val, basestring):
+    elif isinstance(val, str):
         try:
             return val.decode("utf8", "replace")
         except UnicodeDecodeError:

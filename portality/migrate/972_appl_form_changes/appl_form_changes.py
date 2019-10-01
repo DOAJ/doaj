@@ -60,7 +60,7 @@ def migrate(model):
     # set it to "No"/False.
     if isinstance(
             interpret_special(model.bibjson().author_copyright.get('copyright')),
-            basestring
+            str
     ):
         model.bibjson().set_author_copyright(url='', holds_copyright='False')  # it's a string on live at the moment
         edited = True
@@ -72,7 +72,7 @@ def migrate(model):
             interpret_special(
                 model.bibjson().author_publishing_rights.get('publishing_rights')
             ),
-            basestring
+            str
     ):
         model.bibjson().set_author_publishing_rights(url='', holds_rights='False')  # it's a string on live at the moment
         edited = True
@@ -90,25 +90,25 @@ for j in esprit.tasks.scroll(conn, 'journal'):
             journal_edited_count += 1
             write_batch.append(journal_model.data)
     except ValueError:
-        print "Failed to create a model"
-        print "no model\t{0}".format(journal_model.id)
+        print ("Failed to create a model")
+        print ("no model\t{0}".format(journal_model.id))
         journal_failed_count += 1
         fa.append(journal_model.id)
     except KeyError:
         # No license present
-        print "no license information present, unchanged\t{0}".format(journal_model.id)
+        print ("no license information present, unchanged\t{0}".format(journal_model.id))
         journal_unchanged_count += 1
         un.append(journal_model.id)
 
     # When we have enough, do some writing
     if len(write_batch) >= batch_size:
-        print "writing ", len(write_batch)
+        print ("writing ", len(write_batch))
         models.Journal.bulk(write_batch)
         write_batch = []
 
 # Write the last part-batch to index
 if len(write_batch) > 0:
-    print "writing ", len(write_batch)
+    print ("writing ", len(write_batch))
     models.Journal.bulk(write_batch)
 
 
@@ -134,27 +134,27 @@ for s in esprit.tasks.scroll(conn, 'suggestion'):
             suggestion_edited_count += 1
             write_batch.append(suggestion_model.data)
     except ValueError:
-        print "Failed to create a model"
-        print "no model\t{0}".format(suggestion_model.id)
+        print ("Failed to create a model")
+        print ("no model\t{0}".format(suggestion_model.id))
         suggestion_failed_count += 1
         fa_sug.append(suggestion_model.id)
     except KeyError:
         # No license present, pass
-        print "no license information present, unchanged\t{0}".format(suggestion_model.id)
+        print ("no license information present, unchanged\t{0}".format(suggestion_model.id))
         suggestion_unchanged_count += 1
         un_sug.append(suggestion_model.id)
 
     # When we have enough, do some writing
     if len(write_batch) >= batch_size:
-        print "writing ", len(write_batch)
+        print ("writing ", len(write_batch))
         models.Suggestion.bulk(write_batch)
         write_batch = []
 
 # Write the last part-batch to index
 if len(write_batch) > 0:
-    print "writing ", len(write_batch)
+    print ("writing ", len(write_batch))
     models.Suggestion.bulk(write_batch)
 
-print "\nCompleted. Run scripts/journalinfo.py to update the articles with the new license data, and missed_journals.py for the missing journals."
-print "{0} journals were updated, {1} were left unchanged, and {2} failed.".format(journal_edited_count, journal_unchanged_count, journal_failed_count)
-print "{0} suggestions were updated, {1} were left unchanged, {2} failed.".format(suggestion_edited_count, suggestion_unchanged_count, suggestion_failed_count)
+print ("\nCompleted. Run scripts/journalinfo.py to update the articles with the new license data, and missed_journals.py for the missing journals.")
+print ("{0} journals were updated, {1} were left unchanged, and {2} failed.".format(journal_edited_count, journal_unchanged_count, journal_failed_count))
+print ("{0} suggestions were updated, {1} were left unchanged, {2} failed.".format(suggestion_edited_count, suggestion_unchanged_count, suggestion_failed_count))

@@ -169,9 +169,9 @@ class ActionRegister(object):
     def report(self):
         return "\n".join(
             [k + " - " + "; ".join(
-                [a + " (" + "|".join(b) + ")" for a, b in v.iteritems()]
+                [a + " (" + "|".join(b) + ")" for a, b in v.items()]
             )
-            for k, v in self._actions.iteritems()]
+            for k, v in self._actions.items()]
         )
 
     def export_to(self, final_instructions):
@@ -185,7 +185,7 @@ class ActionRegister(object):
 
     def resolve(self):
         resolved_actions = []
-        for k, v in self._actions.iteritems():
+        for k, v in self._actions.items():
             resolved = {"id" : k, "action" : None, "reason" : None}
             if "delete" in v:
                 resolved["action"] = "delete"
@@ -277,7 +277,7 @@ def analyse(duplicate_report, noids_report, out, noaction, nocleanup, log):
 
         writer = clcsv.UnicodeWriter(o)
         writer.writerow(["id", "action", "reason"])
-        for k, v in final_instructions.iteritems():
+        for k, v in final_instructions.items():
             writer.writerow([k, v["action"], v["reason"]])
 
 
@@ -548,13 +548,13 @@ def finalise(source, report_out, articles_dir, final_actions):
     with codecs.open(final_actions, "wb", "utf-8") as fa:
         fawriter = clcsv.UnicodeWriter(fa)
         fawriter.writerow(["id", "action", "reason"])
-        for k, v in final_instructions.iteritems():
+        for k, v in final_instructions.items():
             fawriter.writerow([k, v["action"], v["reason"]])
 
     with codecs.open(report_out, "wb", "utf-8") as ro:
         writer = clcsv.UnicodeWriter(ro)
         writer.writerow(["account", "articles to delete", "article_details"])
-        for k, v in accounts.iteritems():
+        for k, v in accounts.items():
             fn = k + "_articles.csv"
             with codecs.open(os.path.join(articles_dir, fn), "wb", "utf-8") as a:
                 awriter = clcsv.UnicodeWriter(a)

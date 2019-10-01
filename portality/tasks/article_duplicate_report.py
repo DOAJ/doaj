@@ -224,7 +224,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
         # write rows to report
         a_summary = self._summarise_article(article, owner)
-        for k, v in dups.iteritems():
+        for k, v in dups.items():
             row = [article.id,
                    a_summary['created'],
                    a_summary['doi'],

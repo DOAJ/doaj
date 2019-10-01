@@ -57,7 +57,7 @@ for j in journals:
 print len(journals), "journal records; ", len(idtable.keys()), "join identifiers; ", len(reltable.keys()), "unique issns"
 
 count_register = {}
-for id, issns in idtable.iteritems():
+for id, issns in idtable.items():
     size = len(issns)
     if size in count_register:
         count_register[size] += 1
@@ -67,7 +67,7 @@ for id, issns in idtable.iteritems():
 print "journal record to issn count statistics: ", count_register
 
 mapregister = {}
-for issn, ids in reltable.iteritems():
+for issn, ids in reltable.items():
     size = len(ids)
     if size in mapregister:
         mapregister[size] += 1
@@ -130,7 +130,7 @@ equivregister = {}
 idregister = {}
 multiequiv = {}
 counter = 0
-for i, ids in equiv_table.iteritems():
+for i, ids in equiv_table.items():
     # count the size of the equivalences
     size = len(ids)
     if size in equivregister:
@@ -157,13 +157,13 @@ print "equivalence register statistics: ", equivregister
 print "join ids which appear in more than one equivalence", multiids
 print counter, "total issns in equivalence table"
 
-for k, v in multiequiv.iteritems():
+for k, v in multiequiv.items():
     print k, "->", v
     for jid in v:
         print "    ", jid, "->", idtable.get(jid)
 
 ordertables = {}
-for e, jids in multiequiv.iteritems():
+for e, jids in multiequiv.items():
     ordertable = {}
     for jid in jids:
         ordertable[jid] = {"n" : [], "p": []}
@@ -191,16 +191,16 @@ for e, jids in multiequiv.iteritems():
 
 """
 print "equivalences and their ordered relations of join identifiers"
-for e, o in ordertables.iteritems():
+for e, o in ordertables.items():
     print e, "->", o
 """
 
 sorttable = {}
-for e, ot in ordertables.iteritems():
+for e, ot in ordertables.items():
     first = []
     last = []
     middle = []
-    for k, r in ot.iteritems():
+    for k, r in ot.items():
         if len(r.get("n")) == 0:
             first.append(k)
         elif len(r.get("p")) == 0:
@@ -210,7 +210,7 @@ for e, ot in ordertables.iteritems():
     sorttable[e] = first + middle + last
 
 canontable = {}
-for e, sort in sorttable.iteritems():
+for e, sort in sorttable.items():
     canon = None
     i = 0
     found = False
@@ -254,7 +254,7 @@ def get_title_cell(jid):
 f = open(OUT, "wb")    
 writer = csv.writer(f)
 writer.writerow(["Equivalence Number", "Proposed Current Title", "Proposed Current ISSNs", "Proposed History: Title/ISSNs"])
-for e, data in canontable.iteritems():
+for e, data in canontable.items():
     canon, rest = data
     cells = [e]
     canon_issn_cell = get_issn_cell(canon)

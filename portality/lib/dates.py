@@ -48,11 +48,11 @@ def today():
 def random_date(fro=None, to=None):
     if fro is None:
         fro = parse("1970-01-01T00:00:00Z")
-    if isinstance(fro, basestring):
+    if isinstance(fro, str):
         fro = parse(fro)
     if to is None:
         to = datetime.utcnow()
-    if isinstance(to, basestring):
+    if isinstance(to, str):
         to = parse(to)
 
     span = int((to - fro).total_seconds())

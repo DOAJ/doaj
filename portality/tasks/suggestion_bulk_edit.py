@@ -119,7 +119,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
                     for affected_field_name in fc.form.errors.keys():
                         affected_field = getattr(fc.form, affected_field_name,
                                                  ' Field {} does not exist on form. '.format(affected_field_name))
-                        if isinstance(affected_field, basestring):  # ideally this should never happen, an error should not be reported on a field that is not present on the form
+                        if isinstance(affected_field, str):  # ideally this should never happen, an error should not be reported on a field that is not present on the form
                             data_submitted[affected_field_name] = affected_field
                             continue
 

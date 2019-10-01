@@ -121,7 +121,7 @@ class DateFormat(object):
 
 
 def make_set_spec(setspec):
-    return base64.urlsafe_b64encode(setspec).replace("=", "~")
+    return base64.urlsafe_b64encode(setspec).replace('=', '~')
 
 
 def decode_set_spec(setspec):

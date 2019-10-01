@@ -256,7 +256,7 @@ ELASTIC_SEARCH_MAPPINGS = [
 
 # Map from dataobj coercion declarations to ES mappings
 DATAOBJ_TO_MAPPING_DEFAULTS = {
-    "unicode": {
+    "str": {
         "type": "string",
         "fields": {
             "exact": {

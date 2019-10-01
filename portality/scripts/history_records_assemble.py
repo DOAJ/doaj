@@ -90,7 +90,7 @@ def _fix_symbols(data):
         if not isinstance(d, dict):
             return d
         newData = {}
-        for k, v in d.iteritems():
+        for k, v in d.items():
             if isinstance(k, symbols.Symbol):
                 newData[repr(k)] = v
             else:

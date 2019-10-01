@@ -13,7 +13,7 @@ for s in suggestion_iterator:
     }
 
     changed = False
-    for old, new in update_deposit_policies.iteritems():
+    for old, new in update_deposit_policies.items():
         try:
             replace_index = s.bibjson().deposit_policy.index(old)
             s.bibjson().deposit_policy[replace_index] = new
@@ -48,7 +48,7 @@ for j in journal_iterator:
     }
 
     changed = False
-    for old, new in update_deposit_policies.iteritems():
+    for old, new in update_deposit_policies.items():
         try:
             replace_index = j.bibjson().deposit_policy.index(old)
             j.bibjson().deposit_policy[replace_index] = new
