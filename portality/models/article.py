@@ -765,12 +765,15 @@ class ArticleBibJSON(GenericBibJSON):
             if self.month is not None:
                 try:
                     if type(self.month) is int:
-                        if 1 <= self.month <= 12:
+                        if 1 <= int(self.month) <= 12:
                             month_number = self.month
                         else:
                             month_number = 1
                     elif len(self.month) <= 2:
-                        month_number = self.month
+                        if 1 <= int(self.month) <= 12:
+                            month_number = self.month
+                        else:
+                            month_number = '1'
                     elif len(self.month) == 3:  # 'May' works with either case, obvz.
                         month_number = datetime.strptime(self.month, '%b').month
                     else:
