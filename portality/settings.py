@@ -783,7 +783,6 @@ REPORTS_EMAIL_TO = ["feedback@doaj.org"]
 
 
 # ========================================
-# Google Analytics configuration
 # Hotjar configuration
 
 # hotjar id - only activate this in production
