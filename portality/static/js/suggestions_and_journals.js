@@ -153,9 +153,9 @@ jQuery(document).ready(function($) {
     toggle_optional_field('submission_charges', ['#submission_charges_amount', '#submission_charges_currency']);
     toggle_optional_field('license', ['#license_checkbox'], ["Other"]);
     
-    $('#country').select2();
-    $('#processing_charges_currency').select2();
-    $('#submission_charges_currency').select2();
+    $('#country').select2({allowClear: true});
+    $('#processing_charges_currency').select2({allowClear: true});
+    $('#submission_charges_currency').select2({allowClear: true});
     
     $("#keywords").select2({
         minimumInputLength: 1,
@@ -164,7 +164,7 @@ jQuery(document).ready(function($) {
         maximumSelectionSize: 6
     });
     
-    $("#languages").select2();
+    $("#languages").select2({allowClear: true});
 
     autocomplete('#publisher', 'bibjson.publisher');
     autocomplete('#society_institution', 'bibjson.institution');
