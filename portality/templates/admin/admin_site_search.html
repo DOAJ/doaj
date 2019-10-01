@@ -1,19 +1,23 @@
 {% extends "admin/admin_base.html" %}
 
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
 {% block admin_content %}
 
 <div class="bulk-action-feedback alert alert-success" style="display: none"></div>
 
-<div style="padding-bottom: 20px">
-    <div class="row-fluid">
-        <div class="span12">
+<div style="padding-bottom: 20px; margin-top: 20px">
+    <div class="row">
+        <div class="col-md-12">
             <div id="admin-bulk-box" class="pull-right">
                 <label id="admin-bulk-label">Bulk Edit Records</label>
-                <form class="form-horizontal wide" id="journal_bulk_form">
+                <form class="form-horizontal" id="journal_bulk_form">
                     <fieldset>
-                        <div class="control-group" id="bulk_action-container">
-                            <div class="controls ">
-                                <select class="multiformbox-selector" id="bulk_action" name="bulk_action" style="width: 250px;">
+                        <div class="form-group" id="bulk_action-container">
+                            <div class="col-md-12">
+                                <select class="multiformbox-selector form-control" id="bulk_action" name="bulk_action">
                                     <option selected value="">Select action...</option>
                                     <option value="withdraw">Withdraw from DOAJ</option>
                                     <option value="reinstate">Reinstate into DOAJ</option>
@@ -27,17 +31,17 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="control-group multiformbox-container" style="display: none" id="editor_group-container">
-                            <div class="controls">
-                                <input id="editor_group" name="editor_group" style="width: 250px;" type="text" value="">
+                        <div class="form-group multiformbox-container" style="display: none" id="editor_group-container">
+                            <div class="col-md-12">
+                                <input id="editor_group" name="editor_group" style="width: 250px;" type="text" value="" placeholder="Enter new editor group">
                             </div>
                         </div>
-                        <div class="control-group multiformbox-container" style="display: none" id="note-container">
-                            <div class="controls">
-                                <textarea id="note" name="note" style="width: 240px;" placeholder="Type note here..."></textarea>
+                        <div class="form-group multiformbox-container" style="display: none" id="note-container">
+                            <div class="col-md-12">
+                                <textarea class="form-control" id="note" name="note" style="width: 240px;" placeholder="Type note here..."></textarea>
                             </div>
                         </div>
-                        <div class="multiformbox-container" style="display: none" id="edit_metadata-container">
+                        <div class="multiformbox-container col-md-12" style="display: none" id="edit_metadata-container">
                             <p style="margin-top: 15px; font-style: italic">Note that bulk editing journals via this form behaves as if you have used the individual Journal edit form
                             for each selected record and selected the "Allow incomplete form" checkbox.  You will NOT receive validation
                             errors for records which are missing required fields.</p>
@@ -45,17 +49,16 @@
                             {{ edit_form }}
                             {% endautoescape %}
                         </div>
-                        <div class="control-group">
-                            <div class="controls">
+                        <div class="form-group">
+                            <div class="col-md-12">
                                 <button id="bulk-submit" class="btn btn-danger pull-right multiformbox-submit" disabled="disabled">Submit</button>
                             </div>
                         </div>
-                        <div class="control-group" id="bulk_help-container">
-                            <div class="controls">
+                        <div class="form-group" id="bulk_help-container">
+                            <div class="col-md-12">
                                 <p id="any_type_error" class="red multiformbox-error" style="display: none">You need to select an option in the "Journals vs. Articles facet" to use this option</p>
                                 <p id="journal_type_error" class="red multiformbox-error" style="display:none">You need to select "Journal" from the "Journals vs. Articles facet" to use this option</p>
                                 <p id="invalid_email" class="red multiformbox-error" style="display:none">Please enter a valid email address for the contact</p>
-
                             </div>
                         </div>
                     </fieldset>
@@ -65,14 +68,23 @@
     </div>
 </div>
 
-<div class="facetview admin_journals_and_articles"></div>
+<div id="admin_journals_and_articles"></div>
 
 {% endblock %}
 
 {% block extra_js_bottom %}
 
-<script type="text/javascript">
-    var journal_edit_url = "{{ url_for('admin.journal_page', journal_id='') }}";
-</script>
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        adminJournalArticleSearchConfig : {
+            journalEditUrl : "{{ url_for('admin.journal_page', journal_id='') }}",
+            searchPath : '/admin_query/journal,article/_search'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/multiformbox.js"></script>
+    <script type="text/javascript" src="/static/js/edges/admin.journalarticle.edge.js"></script>
 
 {% endblock %}

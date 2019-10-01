@@ -148,7 +148,7 @@ except (KeyError, analytics.GAException):
 
 
 # Redirects from previous DOAJ app.
-# RJ: I have decided to put these here so that they can be managed 
+# RJ: I have decided to put these here so that they can be managed
 # alongside the DOAJ codebase.  I know they could also go into the
 # nginx config, but there is a chance that they will get lost or forgotten
 # some day, whereas this approach doesn't have that risk.
@@ -197,8 +197,6 @@ def set_current_context():
     information.
     '''
     return {
-        'heading_title': '',
-        'heading_text': '',
         'sponsors': SPONSORS,
         'settings': settings,
         'statistics': models.JournalArticle.site_statistics(),

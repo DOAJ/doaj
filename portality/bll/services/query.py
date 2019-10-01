@@ -195,7 +195,7 @@ class Query(object):
             del self.q["query"]["match_all"]
 
     def has_facets(self):
-        return "facets" in self.q
+        return "facets" in self.q or "aggregations" in self.q or "aggs" in self.q
 
     def size(self):
         if "size" in self.q:

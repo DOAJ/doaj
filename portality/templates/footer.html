@@ -1,19 +1,23 @@
 <footer>
-    <div class="box with-borders">
-        <div class="row-fluid">
-            <div class="span12 centre-text-container"><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="{{ url_for('static', filename='doaj/images/cc-by-sa.png') }}" alt="Creative Commons Attribution ShareAlike license icon"/></a></div>
-        </div>
+    <div class="row">
+        <div class="col-xs-12 with-borders bordered-text-box">
+            <div class="row">
+                <div class="col-xs-12 centre-text-container">
+                    <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="{{ url_for('static', filename='doaj/images/cc-by-sa.png') }}" alt="Creative Commons Attribution ShareAlike license icon"/></a>
+                </div>
+            </div>
 
-        <div class="row-fluid">
-            <div class="span4">
-                &copy; {{ current_year }} DOAJ.
-            </div>
-            <div class="span4 centre-text-container">
-                The DOAJ site and its metadata are licensed under CC BY-SA
-            </div>
-            <div class="span4 pull-right">
-                <div class="pull-right">
-                <a href="{{ url_for('doaj.privacy') }}">Privacy</a> / <a href="/contact">Contact us</a> / <a href="http://is4oa.org/">IS4OA</a> / <a href="https://cottagelabs.com">Cottage Labs LLP</a>
+            <div class="row">
+                <div class="col-xs-12 col-sm-4">
+                    &copy; {{ current_year }} DOAJ.
+                </div>
+                <div class="col-xs-12 col-sm-4 centre-text-container">
+                    The DOAJ site and its metadata are licensed under CC BY-SA
+                </div>
+                <div class="col-xs-12 col-sm-4 pull-right">
+                    <div class="pull-right">
+                    <a href="{{ url_for('doaj.privacy') }}">Privacy</a> / <a href="/contact">Contact us</a> / <a href="http://is4oa.org/">IS4OA</a> / <a href="https://cottagelabs.com">Cottage Labs LLP</a>
+                    </div>
                 </div>
             </div>
         </div>

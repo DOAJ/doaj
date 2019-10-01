@@ -1,14 +1,14 @@
-<div class="span3 side pull-right">
-    <div class="with-borders sidebar-nav">
-        <ul class="nav nav-list">
+<div class="col-xs-12 col-md-3 side">
+    <div class="with-borders bordered-text-box">
+        <ul class="nav">
             <li><strong>{{statistics.journals}}</strong> Journals</li>
             <li><strong>{{statistics.searchable}}</strong> searchable at Article level</li>
             <li><strong>{{statistics.countries}}</strong> Countries</li>
             <li><strong>{{statistics.articles}}</strong> Articles</li>
         </ul>
     </div>
-    <div class="with-borders sidebar-nav">
-        <div class="nav nav-list" style="margin-top: 5px; margin-bottom: 5px">
+    <nav class="with-borders bordered-text-box">
+        <div class="nav" style="margin-top: 5px; margin-bottom: 5px">
             <div id="google_translate_element"></div>
             <script type="text/javascript">
             function googleTranslateElementInit() {
@@ -16,7 +16,7 @@
             }
             </script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
         </div>
-        <ul class="nav nav-list">
+        <ul class="nav nav-pills nav-stacked">
             <!-- <li><a href="">News</a></li> -->
             <li><a href="/faq">FAQs</a></li>
             <li><a href="/features">OAI-PMH, XML, Widgets</a></li>
@@ -26,42 +26,37 @@
             <li><a href="http://bit.ly/1KYgq1Q">Journals Added/Removed</a></li>
             <li><a href="/feed"><img style="display: inline" src="/static/doaj/images/feed.png"/>&nbsp;New Journals Feed</a></li>
         </ul>
-    </div>
-    <div class="with-borders sidebar-nav">
-        <ul class="nav nav-list">
+    </nav>
+    <nav class="with-borders bordered-text-box">
+        <ul class="nav nav-pills nav-stacked">
             <li><a href="/scoss">Funding for sustainable Open Access (incl. SCOSS)</a></li>
         </ul>
-    </div>
-    <div class="with-borders sidebar-nav">
-        <ul class="nav nav-list">
+    </nav>
+    <nav class="with-borders bordered-text-box">
+        <ul class="nav nav-pills nav-stacked">
             <li><a href="/members">Our members</a></li>
             <li><a href="/publishermembers">Our publisher members</a></li>
             <li><a href="/sponsors">Our sponsors</a></li>
             <li><a href="/volunteers">Our volunteers</a></li>
         </ul>
-    </div>
-    <div class="with-borders sidebar-nav">
+    </nav>
+    <div class="with-borders bordered-text-box">
         <div id="social-bar">
-            <!-- Based on http://opensourcehacker.com/2013/04/22/charming-social-media-icons-with-font-awesome-and-css3/
-                    with the related code hosted at: https://github.com/miohtama/FontAwesome-and-Bootstrap-social-icons-example/ -->
             <a href="http://www.facebook.com/DirectoryofOpenAccessJournals" target="_blank" title="DOAJ Facebook page">
-                <i class="fa fa-facebook"></i>
+                <i class="fab fa-facebook-square"></i>
             </a>
             <a href="http://twitter.com/doajplus" target="_blank" title="DOAJ Twitter account">
-                <i class="fa fa-twitter"></i>
+                <i class="fab fa-twitter-square"></i>
             </a>
             <a href="http://www.linkedin.com/company/directory-of-open-access-journals-doaj-" target="_blank" title="DOAJ LinkedIn profile">
-                <i class="fa fa-linkedin"></i>
-            </a>
-            <a href="https://plus.google.com/114982932758789726160/posts" target="_blank" title="DOAJ on Google+">
-                <i class="fa fa-google-plus"></i>
+                <i class="fab fa-linkedin"></i>
             </a>
             <a href="http://www.slideshare.net/doaj/" target="_blank" title="DOAJ on SlideShare">
-                <i class="fa fa-slideshare"></i>
+                <i class="fab fa-slideshare"></i>
             </a>
         </div>
-        <div class="sidebar-nav nav nav-list">
-            <a class="btn" style="width:85%" id="btn-support-doaj" href="/membership" alt="Support DOAJ Become a member" title="Support DOAJ Become a member">SUPPORT DOAJ</a>
+        <div id="sidebar-support">
+            <a class="btn" id="btn-support-doaj" href="/membership" alt="Support DOAJ Become a member" title="Support DOAJ Become a member">SUPPORT DOAJ</a>
         </div>
     </div>
 </div>
