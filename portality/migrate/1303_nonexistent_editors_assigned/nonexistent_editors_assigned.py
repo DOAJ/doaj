@@ -1,4 +1,4 @@
-import esprit
+ import esprit
 
 from portality.core import app
 from portality import models
