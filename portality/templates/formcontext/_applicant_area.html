@@ -1,0 +1,19 @@
+<section class="form-area">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="form-panel with-borders">
+                <h3>Details of person making this application</h3>
+                {% autoescape off %}
+                {{ form_context.render_field_group("submitter_info") }}
+                {% endautoescape %}
+                <div class="form-group">
+                    <div class="col-xs-12 centre-text-container">
+                        <button class="btn btn-success save-record" type="submit">
+                            SAVE
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>

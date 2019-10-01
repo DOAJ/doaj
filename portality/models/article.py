@@ -740,7 +740,7 @@ class ArticleBibJSON(GenericBibJSON):
         # work out what the date of publication is
         date = ""
         if self.year is not None:
-            if type(self.year.encode('ascii','ignore')) is str:          # It should be, if the mappings are correct. but len() needs a sequence.
+            if type(self.year.encode('ascii','ignore')) is str:  # It should be, if the mappings are correct. but len() needs a sequence.
                 # fix 2 digit years
                 if len(self.year) == 2:
                     try:
