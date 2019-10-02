@@ -15,7 +15,7 @@ def change_status(ids, new_status):
         a.save()
 
 if __name__ == "__main__":
-    print 'Starting {0}.'.format(datetime.now())
+    print ('Starting {0}.'.format(datetime.now()))
 
     import argparse
     parser = argparse.ArgumentParser()
@@ -24,11 +24,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-        print "System is in READ-ONLY mode, enforcing read-only for this script"
+        print ("System is in READ-ONLY mode, enforcing read-only for this script")
         args.write = False
 
     if not args.csv or not args.status:
-        print "You must provide both the -c and -s options. Exiting."
+        print ("You must provide both the -c and -s options. Exiting.")
         exit(1)
 
     with open(args.csv, "r") as f:
@@ -36,4 +36,4 @@ if __name__ == "__main__":
         ids = [row[0] for row in reader]
         change_status(ids, args.status)
 
-    print 'Finished {0}.'.format(datetime.now())
+    print ('Finished {0}.'.format(datetime.now()))

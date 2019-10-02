@@ -47,17 +47,17 @@ for article_issn in missed_articles:
             article_model.data.get('index')['license'] = [license_correct_dict[a_license[0]]]
             write_batch.append(article_model.data)
         except ValueError:
-            print "Failed to create a model"
+            print ("Failed to create a model")
         except KeyError:
-            print "No license to change"
+            print ("No license to change")
 
     # When we have enough, do some writing
     if len(write_batch) >= batch_size:
-        print "writing ", len(write_batch)
+        print ("writing ", len(write_batch))
         models.Article.bulk(write_batch)
         write_batch = []
 
 # Write all remaining files to index
 if len(write_batch) > 0:
-    print "writing ", len(write_batch)
+    print ("writing ", len(write_batch))
     models.Article.bulk(write_batch)

@@ -54,7 +54,7 @@ for j in journals:
     
     id += 1
 
-print len(journals), "journal records; ", len(idtable.keys()), "join identifiers; ", len(reltable.keys()), "unique issns"
+print (len(journals), "journal records; ", len(idtable.keys()), "join identifiers; ", len(reltable.keys()), "unique issns")
 
 count_register = {}
 for id, issns in idtable.items():
@@ -64,7 +64,7 @@ for id, issns in idtable.items():
     else:
         count_register[size] = 1
 
-print "journal record to issn count statistics: ", count_register
+print ("journal record to issn count statistics: ", count_register)
 
 mapregister = {}
 for issn, ids in reltable.items():
@@ -74,7 +74,7 @@ for issn, ids in reltable.items():
     else:
         mapregister[size] = 1
 
-print "issn to journal record count statistics: ", mapregister
+print ("issn to journal record count statistics: ", mapregister)
 
 def process(id, register):
     if id in register:
@@ -103,7 +103,7 @@ for id in idtable.keys():
     equiv_table[i] = deepcopy(register)
     i += 1
 
-print len(processed), "join ids considered"
+print (len(processed), "join ids considered")
 
 process_register = {}
 for p in processed:
@@ -112,19 +112,19 @@ for p in processed:
     else:
         process_register[p] = 1
 multiples = [(k, v) for k, v in process_register.items() if v > 1]
-print "join ids considered more than once:", multiples
+print ("join ids considered more than once:", multiples)
 
 if len(multiples) > 0:
-    print "issns associated with join ids considered more than once:"
+    print ("issns associated with join ids considered more than once:")
 for k, v in multiples:
     issns = idtable.get(k)
-    print k, "->", issns
+    print (k, "->", issns)
     for issn in issns:
-        print "    ", issn, "->", reltable.get(issn, [])
+        print ("    ", issn, "->", reltable.get(issn, []))
         for rel in reltable.get(issn, []):
-            print "        ", rel, "->", idtable.get(rel)
+            print ("        ", rel, "->", idtable.get(rel))
 
-print len(equiv_table.keys()), "equivalences identified"
+print (len(equiv_table.keys()), "equivalences identified")
 
 equivregister = {}
 idregister = {}
@@ -153,14 +153,14 @@ for i, ids in equiv_table.items():
     
 multiids = [(k, v) for k, v in idregister.items() if v > 1] 
 
-print "equivalence register statistics: ", equivregister
-print "join ids which appear in more than one equivalence", multiids
-print counter, "total issns in equivalence table"
+print ("equivalence register statistics: ", equivregister)
+print ("join ids which appear in more than one equivalence", multiids)
+print (counter, "total issns in equivalence table")
 
 for k, v in multiequiv.items():
-    print k, "->", v
+    print (k, "->", v)
     for jid in v:
-        print "    ", jid, "->", idtable.get(jid)
+        print ("    ", jid, "->", idtable.get(jid))
 
 ordertables = {}
 for e, jids in multiequiv.items():
@@ -229,11 +229,11 @@ for e, sort in sorttable.items():
     del rest[i]
     canontable[e] = (canon, rest)
 
-print "canonicalised, ordered equivalences and the relations they are derived from"
+print ("canonicalised, ordered equivalences and the relations they are derived from")
 for k in ordertables.keys():
-    print k, "->", ordertables.get(k)
-    print "    ->", sorttable.get(k)
-    print "    ->", canontable.get(k)
+    print (k, "->", ordertables.get(k))
+    print ("    ->", sorttable.get(k))
+    print ("    ->", canontable.get(k))
 
 
 def get_issn_cell(jid):

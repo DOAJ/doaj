@@ -4,7 +4,7 @@ from portality.core import app
 if __name__ == "__main__":
 
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-        print "System is in READ-ONLY mode, script cannot run"
+        print ("System is in READ-ONLY mode, script cannot run")
         exit()
 
     import argparse
@@ -16,7 +16,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.email:
-        print "Please specify an username with the -e option"
+        print ("Please specify an username with the -e option")
         exit()
 
     statuses = []

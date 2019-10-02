@@ -51,7 +51,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.out:
-        print "Please specify an output file path with -o"
+        print ("Please specify an output file path with -o")
         exit()
 
     do_report(args.out)

@@ -26,4 +26,4 @@ if __name__ == "__main__":
     esprit.tasks.reindex(old, new, args.alias, new_mappings.keys(), new_mappings, new_version="1.7.5")
 
     eq = esprit.tasks.compare_index_counts([old, new], new_mappings.keys())
-    print "all equal: ", eq
+    print ("all equal: ", eq)

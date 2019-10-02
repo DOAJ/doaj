@@ -22,10 +22,10 @@ new.add_note("Journal separated from erroneous continuation by CL")
 new.add_contact(name, email)
 new.set_owner(owner)
 new.save()
-print "Created new record with id", new.id
+print ("Created new record with id", new.id)
 
 # remove the erroneous journal from the history, add a note, and re-save the original journal
 para.remove_history(issn)
 para.add_note("CL removed journal " + issn + " from continuations history; was there erroneously")
 para.save()
-print "Removed erroneous record from", id
+print ("Removed erroneous record from", id)

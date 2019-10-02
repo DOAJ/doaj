@@ -48,13 +48,13 @@ def rem_dup_sub(conn, write_changes=False):
 
         # When we have reached the batch limit, do some writing or deleting
         if len(write_batch) >= batch_size:
-            print "writing ", len(write_batch)
+            print ("writing ", len(write_batch))
             models.Article.bulk(write_batch)
             write_batch = []
 
     # Finish the last part-batches of writes
     if len(write_batch) > 0:
-        print "writing ", len(write_batch)
+        print ("writing ", len(write_batch))
         models.Article.bulk(write_batch)
 
     return updated_count, same_count
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-        print "System is in READ-ONLY mode, enforcing read-only for this script"
+        print ("System is in READ-ONLY mode, enforcing read-only for this script")
         args.write = False
 
     # Connection to the ES index, rely on esprit sorting out the port from the host
@@ -82,14 +82,14 @@ if __name__ == "__main__":
     (u, s) = rem_dup_sub(conn, args.write)
 
     if args.write:
-        print "Done. {0} articles updated, {1} remain unchanged.".format(u, s)
+        print ("Done. {0} articles updated, {1} remain unchanged.".format(u, s))
     else:
-        print "Not written. {0} articles to be updated, {1} to remain unchanged. Set -w to write changes.".format(u, s)
+        print ("Not written. {0} articles to be updated, {1} to remain unchanged. Set -w to write changes.".format(u, s))
 
     if len(failed_articles) > 0:
-        print "Failed to create models for some articles in the index. Something is quite wrong."
+        print ("Failed to create models for some articles in the index. Something is quite wrong.")
         for f in failed_articles:
-            print f
+            print (f)
 
     end = datetime.now()
-    print start, "-", end
+    print (start, "-", end)

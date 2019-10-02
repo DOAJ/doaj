@@ -61,7 +61,7 @@ def manage_jobs(verb, action, status, from_date, to_date):
     jobs = models.BackgroundJob.q2obj(q=q.query())
 
     print('You are about to {verb} {count} job(s)'.format(verb=verb, count=len(jobs)))
-    doit = raw_input('Proceed? [y\\N] ')
+    doit = input('Proceed? [y\\N] ')
 
     if doit.lower() == 'y':
         print('Please wait...')

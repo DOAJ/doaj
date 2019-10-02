@@ -43,7 +43,7 @@ for row in malformed_reader:
         publisher = corrections[id]
     acc = models.Account.pull(publisher)
     if acc is None:
-        print publisher, "fail - shouldn't happen"
+        print (publisher, "fail - shouldn't happen")
         continue
     
     new_row = row[:4] + [acc.email]
@@ -64,7 +64,7 @@ for row in invalid_reader:
         publisher = corrections[id]
     acc = models.Account.pull(publisher)
     if acc is None:
-        print publisher, "fail - shouldn't happen"
+        print (publisher, "fail - shouldn't happen")
         continue
     
     new_row = row[:4] + [acc.email]

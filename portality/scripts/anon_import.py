@@ -31,7 +31,7 @@ def do_import(config):
     print("\n")
 
     if config.get("confirm", True):
-        text = raw_input("Continue? [y/N] ")
+        text = input("Continue? [y/N] ")
         if text.lower() != "y":
             exit()
 

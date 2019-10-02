@@ -127,7 +127,7 @@ if __name__ == '__main__':
 
     if os.path.exists(dest_path):
         print('Schema already exists with name {n} - replace? [y/N]'.format(n=args.filename))
-        resp = raw_input('Your existing file will be retained as {fn}.old : '.format(fn=args.filename))
+        resp = input('Your existing file will be retained as {fn}.old : '.format(fn=args.filename))
         if resp.lower() == 'y':
             os.rename(dest_path, dest_path + '.old')
 

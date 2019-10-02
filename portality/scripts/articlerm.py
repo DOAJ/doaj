@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
     if args.username is not None:
         models.Article.delete_selected(owner=args.username, snapshot=snapshot)
-        print "Articles deleted"
+        print ("Articles deleted")
     elif args.query is not None:
         f = open(args.query)
         query = json.loads(f.read())
@@ -99,7 +99,7 @@ if __name__ == "__main__":
         # hits['total'] will show you all results that match the query,
         # not just the articles that will actually be deleted (which
         # will be just the page of results specified by from: and size:).
-        go_on = raw_input("This will delete " + str(total) + " articles.  Are you sure? [Y/N]:")
+        go_on = input("This will delete " + str(total) + " articles.  Are you sure? [Y/N]:")
         if go_on.lower() == "y":
             models.Article.delete_selected(query=query, snapshot=snapshot)
             print("Articles deleted")

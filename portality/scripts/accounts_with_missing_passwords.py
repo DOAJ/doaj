@@ -46,7 +46,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.out:
-        print "Please specify an output file path with the -o option"
+        print ("Please specify an output file path with the -o option")
         parser.print_help()
         exit()
 

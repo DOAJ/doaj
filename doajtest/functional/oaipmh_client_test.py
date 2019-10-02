@@ -36,7 +36,7 @@ def harvest(base_url, res_token=None):
     if now - last_req < req_period:
         time.sleep((req_period - (now - last_req)).total_seconds())
 
-    print "harvesting " + url
+    print ("harvesting " + url)
     last_req = now
     resp = requests.get(url)
     assert resp.status_code == 200, resp.text
@@ -47,20 +47,20 @@ def harvest(base_url, res_token=None):
     for record in records:
         oai_id = record.find(".//" + NS + "identifier").text
         if oai_id in IDENTS:
-            print "DUPLICATE ID: " + oai_id
+            print ("DUPLICATE ID: " + oai_id)
             return None
         IDENTS.append(oai_id)
 
     rtel = xml.find(".//" + NS + "resumptionToken")
     if rtel is not None:
         if rtel.text is not None and rtel.text != "":
-            print "\tresumption token", rtel.text, "cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize")
-            print "\tresults received: ", len(IDENTS)
+            print ("\tresumption token", rtel.text, "cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize"))
+            print ("\tresults received: ", len(IDENTS))
             return rtel.text
         else:
-            print "\tno resumption token, complete. cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize")
+            print ("\tno resumption token, complete. cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize"))
     else:
-        print "no results"
+        print ("no results")
         return None
 
 

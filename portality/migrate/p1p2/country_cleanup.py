@@ -17,7 +17,7 @@ def main(argv=sys.argv):
         elif argv[1] == '--dry-run':
             migrate(test=True)
         else:
-            print 'I only understand -t (to test the migration you\'ve run already) or --dry-run (to write out a CSV of what would happen but not change the index) as arguments, .'
+            print ('I only understand -t (to test the migration you\'ve run already) or --dry-run (to write out a CSV of what would happen but not change the index) as arguments, .')
     else:
         migrate()
 
@@ -29,15 +29,15 @@ def test_migration():
         for row in reader:
             data.append(row)
 
-    print 'Problems:'
+    print ('Problems:')
     problems = False
     for row in data:
         if row[0] != row[1]:
             problems = True
-            print row[0], ',', row[1]
+            print (row[0], ',', row[1])
 
     if not problems:
-        print 'No problems'
+        print ('No problems')
 
 
 def migrate(test=False):
@@ -65,10 +65,10 @@ def migrate(test=False):
     
     end = datetime.now()
     
-    print "Updated Journals", counter
-    print start, end
-    print 'Time taken:', end-start
-    print 'You can pass -t to test the migration you just ran.'
+    print ("Updated Journals", counter)
+    print (start, end)
+    print ('Time taken:', end-start)
+    print ('You can pass -t to test the migration you just ran.')
 
 
 if __name__ == '__main__':

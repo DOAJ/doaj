@@ -43,14 +43,14 @@ def do_upgrade(definition, verbose):
     tconn = esprit.raw.Connection(target.get("host"), target.get("index"))
 
     if verbose:
-        print "Source", source
-        print "Target", target
+        print ("Source", source)
+        print ("Target", target)
 
     # get the defined batch size
     batch_size = definition.get("batch", 500)
 
     for tdef in definition.get("types", []):
-        print "Upgrading", tdef.get("type")
+        print ("Upgrading", tdef.get("type"))
         batch = []
         total = 0
         first_page = esprit.raw.search(sconn, tdef.get("type"))
@@ -68,7 +68,7 @@ def do_upgrade(definition, verbose):
                     try:
                         result = model_class(**result)
                     except DataStructureException as e:
-                        print "Could not create model for {0}, Error: {1}".format(result['id'], e.message)
+                        print ("Could not create model for {0}, Error: {1}".format(result['id'], e.message))
                         continue
 
                 for function_path in tdef.get("functions", []):
@@ -89,7 +89,7 @@ def do_upgrade(definition, verbose):
                         result.prep()
                     except AttributeError:
                         if verbose:
-                            print tdef.get("type"), result.id, "has no prep method - no, pre-save preparation being done"
+                            print (tdef.get("type"), result.id, "has no prep method - no, pre-save preparation being done")
                         pass
 
                     data = result.data
@@ -103,12 +103,12 @@ def do_upgrade(definition, verbose):
 
                 batch.append(data)
                 if verbose:
-                    print "added", tdef.get("type"), _id, "to batch update"
+                    print ("added", tdef.get("type"), _id, "to batch update")
 
                 # When we have enough, do some writing
                 if len(batch) >= batch_size:
                     total += len(batch)
-                    print datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
+                    print (datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
                     esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
                     batch = []
                     # do some timing predictions
@@ -117,19 +117,19 @@ def do_upgrade(definition, verbose):
                     seconds_so_far = time_so_far.total_seconds()
                     estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
                     estimated_finish = batch_tick + timedelta(seconds=estimated_seconds_remaining)
-                    print 'Estimated finish time for this type {0}.'.format(estimated_finish)
+                    print ('Estimated finish time for this type {0}.'.format(estimated_finish))
         except esprit.tasks.ScrollTimeoutException:
             # Try to write the part-batch to index
             if len(batch) > 0:
                 total += len(batch)
-                print datetime.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
+                print (datetime.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
                 esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
                 batch = []
 
         # Write the last part-batch to index
         if len(batch) > 0:
             total += len(batch)
-            print datetime.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
+            print (datetime.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
             esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
 
 
@@ -165,22 +165,22 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.upgrade:
-        print "Please specify an upgrade package with the -u option"
+        print ("Please specify an upgrade package with the -u option")
         exit()
 
     if not (os.path.exists(args.upgrade) and os.path.isfile(args.upgrade)):
-        print args.upgrade, "does not exist or is not a file"
+        print (args.upgrade, "does not exist or is not a file")
         exit()
 
-    print 'Starting {0}.'.format(datetime.now())
+    print ('Starting {0}.'.format(datetime.now()))
 
     with open(args.upgrade) as f:
         try:
             instructions = json.loads(f.read(), object_pairs_hook=OrderedDict)
         except:
-            print args.upgrade, "does not parse as JSON"
+            print (args.upgrade, "does not parse as JSON")
             exit()
 
         do_upgrade(instructions, args.verbose)
 
-    print 'Finished {0}.'.format(datetime.now())
+    print ('Finished {0}.'.format(datetime.now()))
