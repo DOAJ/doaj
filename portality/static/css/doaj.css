@@ -401,21 +401,6 @@ input[type=password]:not(.form-control),
     width: 100%;
 }
 
-@media (min-width: 992px) {
-    .input-tiny {
-        width: 60px;
-    }
-
-    .input-large {
-        width: 210px;
-    }
-
-    .input-xlarge {
-        width: 270px;
-    }
-}
-
-
 .centre-text-container {
     text-align: center;
 }

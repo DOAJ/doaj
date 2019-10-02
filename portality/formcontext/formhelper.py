@@ -93,7 +93,8 @@ class FormHelperBS3(object):
         label_width = kwargs.get("label_width", 3)
         field_width = 12 - label_width
         field_width = str(kwargs.get("field_width", field_width))
-        label_width = str(label_width)
+        if label_width > 0:
+            label_width = str(label_width)
 
         if field.type == 'CSRFTokenField' and not field.value:
             return ""
@@ -104,13 +105,14 @@ class FormHelperBS3(object):
         if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField']:
             if q_num is not None:
                 frag += '<a class="animated" name="' + q_num + '"></a>'
-            frag += '<label class="control-label col-md-' + label_width + '" for="' + field.short_name + '">'
-            if q_num is not None:
-                frag += '<a class="animated orange" href="#' + field.short_name + '-container" title="Link to this question" tabindex="-1">' + q_num + ')</a>&nbsp;'
-            frag += field.label.text
-            if field.flags.required or field.flags.display_required_star:
-                frag += '&nbsp;<span class="red">*</span>'
-            frag += "</label>"
+            if label_width != 0:
+                frag += '<label class="control-label col-md-' + label_width + '" for="' + field.short_name + '">'
+                if q_num is not None:
+                    frag += '<a class="animated orange" href="#' + field.short_name + '-container" title="Link to this question" tabindex="-1">' + q_num + ')</a>&nbsp;'
+                frag += field.label.text
+                if field.flags.required or field.flags.display_required_star:
+                    frag += '&nbsp;<span class="red">*</span>'
+                frag += "</label>"
 
         # determine if this is a checkbox
         is_checkbox = False
