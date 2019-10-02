@@ -6,7 +6,7 @@ import time
 import re
 
 from portality.core import app
-import urllib3
+import urllib.parse
 import json
 
 import esprit
@@ -810,4 +810,4 @@ class Facetview2(object):
 
     @staticmethod
     def url_encode_query(query):
-        return urllib2.quote(json.dumps(query).replace(' ', ''))
+        return urllib.parse.quote(json.dumps(query).replace(' ', ''))

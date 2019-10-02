@@ -11,10 +11,10 @@ from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, Arti
 TEST_JOURNAL_COUNT = 2
 TEST_ARTICLES_PER_JOURNAL = 25
 
-class TestTaskJournalBulkDelete(DoajTestCase):
+class TestTaskArticleBulkDelete(DoajTestCase):
 
     def setUp(self):
-        super(TestTaskJournalBulkDelete, self).setUp()
+        super(TestTaskArticleBulkDelete, self).setUp()
 
         ArticleBulkDeleteBackgroundTask.BATCH_SIZE = 13
 

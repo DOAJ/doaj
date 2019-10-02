@@ -54,12 +54,12 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
             else:
                 pubaccount.save()
             expected_data.append([
-              unicode(pubaccount.id),
-              unicode(pubaccount.name),
-              unicode(pubaccount.email),
-              unicode(pubaccount.created_date),
-              unicode(pubaccount.last_updated),
-              unicode('False')
+              str(pubaccount.id),
+              str(pubaccount.name),
+              str(pubaccount.email),
+              str(pubaccount.created_date),
+              str(pubaccount.last_updated),
+              str('False')
             ])
 
         publishers_with_consent(output_file)

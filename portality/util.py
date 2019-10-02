@@ -1,3 +1,4 @@
+from datetime import datetime
 from urllib.parse import urlencode
 from urllib.request import urlopen
 import hashlib
@@ -56,7 +57,7 @@ def slugify(text, delim=u'_'):
         word = normalize('NFKD', word).encode('ascii', 'ignore')
         if word:
             result.append(word)
-    return unicode(delim.join(result))
+    return str(delim.join(result))
 
 
 # get gravatar for email address
@@ -136,7 +137,7 @@ def load_file(filename):
 def unicode_dict(d):
     """ Recursively convert dictionary keys to unicode """
     if isinstance(d, dict):
-        return dict((unicode(k), unicode_dict(v)) for k, v in d.items())
+        return dict((str(k), unicode_dict(v)) for k, v in d.items())
     elif isinstance(d, list):
         return [unicode_dict(e) for e in d]
     else:
@@ -195,5 +196,5 @@ def validate_json(payload, fields_must_be_present=None, fields_must_not_be_prese
 def batch_up(long_list, batch_size):
     """Yield successive n-sized chunks from l (a list)."""
     # http://stackoverflow.com/a/312464/1154882
-    for i in xrange(0, len(long_list), batch_size):
+    for i in range(0, len(long_list), batch_size):
         yield long_list[i:i + batch_size]

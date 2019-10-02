@@ -5,7 +5,8 @@ from doajtest.fixtures.article import ArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
 from portality import models
 from portality.core import app
-import os, requests, ftplib, urlparse
+import os, requests, ftplib
+from urllib.parse import urlparse
 from portality.background import BackgroundException, RetryException
 import time
 from portality.crosswalks import article_doaj_xml

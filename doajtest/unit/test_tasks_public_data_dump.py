@@ -14,7 +14,7 @@ from portality import models, store
 from portality.core import app
 
 import os, shutil, tarfile, json
-from StringIO import StringIO
+from io import StringIO
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "tasks.public_data_dump"), "data_dump", "test_id",
