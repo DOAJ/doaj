@@ -45,6 +45,8 @@ $.extend(true, doaj, {
 
             this.showShortened = false;
 
+            this.focusSearchBox = false;
+
             this.namespace = "doaj-bs3-search-controller";
 
             this.draw = function () {
@@ -199,23 +201,8 @@ $.extend(true, doaj, {
                 // caclulate all the div widths
                 var shareMd = "2";
                 var sortMd = "4";
-                var searchMd = this.shareLink ? "6" : sortOptions !== "" ? "8" : "12";
                 var shareXs = "6";
                 var sortXs = "6";
-                var searchXs = "12";
-
-                // assemble the final fragment and render it into the component's context
-                var lhs = "";
-                if (this.shareLink) {
-                    lhs = '<div class="col-xs-' + shareXs + ' col-md-' + shareMd + '">' + shareButtonFrag + '</div>'
-                }
-                if (sortOptions !== "") {
-                    lhs += '<div class="col-xs-' + sortXs + ' col-md-' + sortMd + '">' + sortOptions + '</div>';
-                }
-
-//                var frag = shareFrag + '<div class="row">' + clearFrag + lhs + '<div class="col-xs-' + searchXs + ' col-md-' + searchMd + '">{{SEARCH}}</div></div>';
-
-//                frag = frag.replace(/{{SEARCH}}/g, searchBox);
 
                 var frag = shareFrag + '<div class="row">' + shareButtonFrag + clearFrag + sortOptions + searchBox + '</div>';
 
@@ -271,6 +258,12 @@ $.extend(true, doaj, {
                         var shortenSelector = edges.css_class_selector(this.namespace, "shorten", this);
                         edges.on(shortenSelector, "click", this, "toggleShorten");
                     }
+                }
+
+                // if we've been asked to focus the text box, do that
+                if (this.focusSearchBox) {
+                    $(textSelector).focus();
+                    this.focusSearchBox = false;
                 }
             };
 
@@ -338,6 +331,7 @@ $.extend(true, doaj, {
             };
 
             this.setSearchText = function (element) {
+                this.focusSearchBox = true;
                 var val = this.component.jq(element).val();
                 this.component.setSearchText(val);
             };
