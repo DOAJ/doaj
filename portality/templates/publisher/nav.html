@@ -1,5 +1,5 @@
-<div class="row-fluid">
-    <div class="span12">
+<div class="row">
+    <div class="col-md-12">
         <ul class="nav nav-tabs">
             <li{% if request.path == url_for('publisher.index') %} class="active"{% endif %}><a href="{{ url_for('publisher.index') }}">Your Journals</a></li>
             <li{% if request.path == url_for('publisher.updates_in_progress') %} class="active"{% endif %}><a href="{{ url_for('publisher.updates_in_progress') }}">Update Requests</a></li>

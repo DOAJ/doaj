@@ -64,6 +64,21 @@ def widgets():
                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
                            )
 
+@blueprint.route("/ssw_demo")
+def ssw_demo():
+    return render_template('doaj/ssw_demo.html',
+                           env=app.config.get("DOAJENV"),
+                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+                           )
+
+@blueprint.route("/fqw_demo")
+def fqw_demo():
+    return render_template('doaj/fqw_demo.html',
+                           env=app.config.get("DOAJENV"),
+                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+                           )
+
+
 
 @blueprint.route("/fqw_hit", methods=['POST'])
 def fqw_hit():
@@ -82,7 +97,7 @@ def fqw_hit():
 
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return render_template('doaj/search.html', search_page=True, facetviews=['public.journalarticle.facetview'])
+    return render_template('doaj/search.html')
 
 
 @blueprint.route("/search", methods=['POST'])
@@ -312,7 +327,7 @@ def toc(identifier=None, volume=None, issue=None):
 
     # now render all that information
     return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future_journals, past=past_journals,
-                           search_page=True, toc_issns=journal.bibjson().issns(), facetviews=['public.journaltocarticles.facetview'])
+                           toc_issns=journal.bibjson().issns())
 
 
 @blueprint.route("/article/<identifier>")

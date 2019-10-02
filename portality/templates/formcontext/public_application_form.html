@@ -2,53 +2,57 @@
 
 {% block content %}
 
-<h2>Journal Application Form</h2>
+<div class="form-preamble">
+    <h2>Journal Application Form</h2>
 
-<p><b>Before you start</b><br>
-Read our <a href="{{ url_for('doaj.publishers') }}">information for publishers</a>, review your website and make sure
-that your journal fulfills all the criteria.</p>
+    <p><b>Before you start</b><br>
+    Read our <a href="{{ url_for('doaj.publishers') }}">information for publishers</a>, review your website and make sure
+    that your journal fulfills all the criteria.</p>
 
-<p>If you know of a peer-reviewed journal that should be included in DOAJ, please ask its publisher or editor to complete this form.</p>
+    <p>If you know of a peer-reviewed journal that should be included in DOAJ, please ask its publisher or editor to complete this form.</p>
 
-<p>We provide some <a href="/publishers#advice">guidance on the information we are looking for</a> but
-that list is by no means exhaustive. Applicants are encouraged to complete the form clearly and honestly. If you
-do not understand a question, you can ask for help by contacting us.</p>
+    <p>We provide some <a href="/publishers#advice">guidance on the information we are looking for</a> but
+    that list is by no means exhaustive. Applicants are encouraged to complete the form clearly and honestly. If you
+    do not understand a question, you can ask for help by contacting us.</p>
 
-<p>It is not possible to save your progress on this form so we recommend that you gather the information you need first. Use
-<a href="http://bit.ly/1MLszb4">this guide</a> to store you answers in. Guides are also <a href="{{ url_for('doaj.translated') }}">
-available in other languages (العربية, 中文, فارسی, français, Bahasa Indonesia, Italiano, 日本語, Polski, Português, Română, Русский,
-Español, Türkçe, Українська)</a>.</p>
+    <p>It is not possible to save your progress on this form so we recommend that you gather the information you need first. Use
+    <a href="http://bit.ly/1MLszb4">this guide</a> to store you answers in. Guides are also <a href="{{ url_for('doaj.translated') }}">
+    available in other languages (العربية, 中文, فارسی, Español,français, Bahasa Indonesia, Italiano, 日本語, Polski, Português, Română, Русский,
+    suomeksi, Türkçe, Українська)</a>.</p>
+</div>
 
-<form method="post" action="#first_problem" class="form-horizontal wide application_journal_form" id="suggest_form">
+<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
     {% if form_context.errors %}
         <h4 class="red form-status">There is a problem with the submitted form.</h4>
     {% endif %}
 
-    <fieldset>
+    {# include the base application form which contains all the biblio data #}
+    {% include 'formcontext/_base_application_form.html' %}
 
-        {# include the base application form which contains all the biblio data #}
-        {% include 'formcontext/_base_application_form.html' %}
-
-        <div class="row-fluid">
-            <div class="span3">&nbsp;</div>
-            <div class="span6 with-borders form-section">
-                <h3 class="heading-aligned-with-fields">Your details</h3>
-                {% autoescape off %}
-                {{ form_context.render_field_group("submitter_info") }}
-                {% endautoescape %}
-
-                <div class="control-group">
-                    <div class="controls">
-                        <button class="btn btn-success save-record" type="submit">
-                            SUBMIT
-                        </button>
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <section class="form-area">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel with-borders">
+                            <h3>Your details</h3>
+                            {% autoescape off %}
+                            {{ form_context.render_field_group("submitter_info") }}
+                            {% endautoescape %}
+                            <div class="form-group">
+                                <div class="col-xs-12 centre-text-container">
+                                    <button class="btn btn-success save-record" type="submit">
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </div>
-
-            </div>
+            </section>
         </div>
+    </div>
 
-    </fieldset>
 </form>
 
 {% endblock %}

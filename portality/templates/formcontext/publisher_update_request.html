@@ -14,30 +14,21 @@
  (العربية, 中文, فارسی, français, Bahasa Indonesia, Italiano, Polski, Português, Română, Русский, Español, Türkçe, Українська)
     </p>
 
-<form method="post" action="#first_problem" class="form-horizontal wide application_journal_form" id="suggest_form">
+<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
     {% if form_context.errors %}
         <h4 class="red form-status">There is a problem with the submitted form.</h4>
     {% endif %}
 
-    <fieldset>
+    {# include the base application form which contains all the biblio data #}
+    {% include 'formcontext/_base_application_form.html' %}
 
-        {# include the base application form which contains all the biblio data #}
-        {% include 'formcontext/_base_application_form.html' %}
-
-        <div class="row-fluid">
-            <div class="span3">&nbsp;</div>
-            <div class="span6 with-borders form-section">
-                <div class="control-group">
-                    <div class="controls">
-                        <button class="btn btn-success save-record" type="submit">Submit</button>
-                        <input type="submit" value="Cancel" name="cancel" class="btn btn-danger cancel">
-                    </div>
-                </div>
-
-            </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <section class="form-area">
+                {% include 'formcontext/_save_panel.html' %}
+            </section>
         </div>
-
-    </fieldset>
+    </div>
 </form>
 
 {% endblock %}

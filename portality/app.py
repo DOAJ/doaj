@@ -97,6 +97,7 @@ SPONSORS = {
         'swedish-research': {'name': 'Swedish Research Council', 'logo': 'swedish-research.svg', 'url': 'https://vr.se/english.html'},
         'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://publications.copernicus.org/'},
+        'elsevier': {'name': 'Elsevier', 'logo': 'elsevier.svg', 'url': 'https://www.elsevier.com/'}
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
@@ -117,9 +118,10 @@ SPONSORS = {
         #'openedition': {'name': 'Open Edition', 'logo': 'open_edition.svg', 'url': 'https://www.openedition.org'},
         'iop': {"name": "IOP Publishing", "logo": "iop.jpg", "url": "http://ioppublishing.org/"},
         'degruyter': {'name': 'De Gruyter', 'logo': 'degruyter.jpg', 'url': 'https://www.degruyter.com/dg/page/open-access'},
-        'rsc': {'name': 'Royal Society of Chemistry', 'logo': 'rsc.svg', 'url': 'https://www.rsc.org'},
+        'rsc': {'name': 'Royal Society of Chemistry', 'logo': 'rsc.jpg', 'url': 'https://www.rsc.org'},
         'edp': {'name': 'EDP Sciences', 'logo': 'edp.gif', 'url': 'https://www.edpsciences.org'},
         'elife': {'name': 'eLife', 'logo': 'elife.png', 'url': 'https://elifesciences.org/'},
+        'karger': {'name': 'Karger', 'logo': 'karger.png', 'url': 'https://www.karger.com/'},
     },
     'patron': {
         #'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
@@ -146,7 +148,7 @@ except (KeyError, analytics.GAException):
 
 
 # Redirects from previous DOAJ app.
-# RJ: I have decided to put these here so that they can be managed 
+# RJ: I have decided to put these here so that they can be managed
 # alongside the DOAJ codebase.  I know they could also go into the
 # nginx config, but there is a chance that they will get lost or forgotten
 # some day, whereas this approach doesn't have that risk.
@@ -195,8 +197,6 @@ def set_current_context():
     information.
     '''
     return {
-        'heading_title': '',
-        'heading_text': '',
         'sponsors': SPONSORS,
         'settings': settings,
         'statistics': models.JournalArticle.site_statistics(),

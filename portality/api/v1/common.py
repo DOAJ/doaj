@@ -26,6 +26,7 @@ class Api(object):
     R403 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Access to this route/resource requires authentication, and you provided the wrong credentials. This includes situations where you are authenticated successfully via your API key, but you are not the owner of a specific resource and are therefore barred from updating/deleting it."}
     R404 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Resource not found"}
     R409 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "This resource or one it depends on is currently locked for editing by another user, and you may not submit changes to it at this time"}
+    R500 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Unable to retrieve the recource. This record contains bad data"}
 
     SWAG_API_KEY_REQ_PARAM = {
         "description": "<div class=\"search-query-docs\"> Go to the top right of the page and click your username. If you have generated an API key already, it will appear under your name. If not, click the Generate API Key button. Accounts are not available to the public. <a href=\"#intro_auth\">More details</a></div>",
@@ -86,10 +87,15 @@ class Api403Error(Exception):
 class Api404Error(Exception):
     pass
 
+
 class Api409Error(Exception):
     """
     API error to throw if a resource being edited is locked
     """
+    pass
+
+
+class Api500Error(Exception):
     pass
 
 
@@ -224,3 +230,12 @@ def forbidden(error):
     t['status'] = 'forbidden'
     t['error'] = error.message + " (ref: {y})".format(y=magic)
     return respond(json.dumps(t), 403)
+
+@app.errorhandler(Api500Error)
+def bad_request(error):
+    magic = uuid.uuid1()
+    app.logger.info("Sending 500 Bad Request from client: {x} (ref: {y})".format(x=error.message, y=magic))
+    t = deepcopy(ERROR_TEMPLATE)
+    t['status'] = 'Unable to retrieve the recource.'
+    t['error'] = error.message + " (ref: {y})".format(y=magic)
+    return respond(json.dumps(t), 500)

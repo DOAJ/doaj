@@ -21,7 +21,7 @@ blueprint = Blueprint('account', __name__)
 def index():
     if not current_user.has_role("list_users"):
         abort(401)
-    return render_template("account/users.html", search_page=True, facetviews=["users.facetview"])
+    return render_template("account/users.html")
 
 
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
