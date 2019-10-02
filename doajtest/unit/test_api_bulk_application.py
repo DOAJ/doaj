@@ -185,7 +185,7 @@ class TestCrudApplication(DoajTestCase):
                 first_apl = reply.pop()
                 assert first_apl['status'] == 'created'
                 # Check we actually created new records
-                time.sleep(1.5)
+                time.sleep(1)
                 assert len(models.Suggestion.all()) == len(dataset)
 
                 # Bulk delete
