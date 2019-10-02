@@ -74,8 +74,8 @@ def content_reports(fr, to, outdir):
 
 
 def _tabulate_time_entity_group(group, entityKey):
-    date_keys = group.keys()
-    date_keys.sort()
+    date_keys_unsorted = group.keys()
+    date_keys = sorted(date_keys_unsorted)
     table = []
     padding = []
     for db in date_keys:

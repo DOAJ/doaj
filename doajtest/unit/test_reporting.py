@@ -67,7 +67,7 @@ class TestReporting(DoajTestCase):
         table = deepcopy(table)
         for row in table:
             for i in range(len(row)):
-                row[i] = unicode(row[i])
+                row[i] = str(row[i])
         return table
 
     def test_01_edits(self):
@@ -90,7 +90,7 @@ class TestReporting(DoajTestCase):
                 yearfile = o
 
         table_month = []
-        with codecs.open(monthfile) as f:
+        with codecs.open(x.replace('\0', '') for x in monthfile) as f:
             reader = csv.reader(f)
             for row in reader:
                 table_month.append(row)
@@ -99,7 +99,7 @@ class TestReporting(DoajTestCase):
         assert table_month == expected_month
 
         table_year = []
-        with codecs.open(yearfile) as f:
+        with codecs.open(x.replace('\0', '') for x in yearfile) as f:
             reader = csv.reader(f)
             for row in reader:
                 table_year.append(row)

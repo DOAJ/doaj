@@ -47,7 +47,8 @@ class ArticleFixtureFactory(object):
 
     @classmethod
     def invalid_schema_xml(cls):
-        return StringIO("<this><isnot my='schema'></isnot></this>")
+        file = StringIO("<this><isnot my='schema'></isnot></this>")
+        return BytesIO("<this><isnot my='schema'></isnot></this>".encode("UTF-8"))
 
     @classmethod
     def noids(cls):

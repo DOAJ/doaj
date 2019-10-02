@@ -172,7 +172,7 @@ class TestIngestArticles(DoajTestCase):
         assert fu.status == "failed"
         assert fu.error is not None and fu.error != ""
         assert fu.error_details is not None and fu.error != ""
-        assert fu.failure_reasons.keys() == []
+        assert list(fu.failure_reasons.keys()) == []
 
         # file should have been removed from upload dir
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
@@ -201,7 +201,7 @@ class TestIngestArticles(DoajTestCase):
         assert fu.status == "failed"
         assert fu.error is not None and fu.error != ""
         assert fu.error_details is None
-        assert fu.failure_reasons.keys() == []
+        assert list(fu.failure_reasons.keys()) == []
 
         # file should have been removed from disk
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
@@ -257,7 +257,7 @@ class TestIngestArticles(DoajTestCase):
         assert fu.status == "failed"
         assert fu.error is not None and fu.error != ""
         assert fu.error_details is None
-        assert fu.failure_reasons.keys() == []
+        assert list(fu.failure_reasons.keys()) == []
 
         # now try again with an invalid url
         requests.head = mock_head_success
@@ -276,7 +276,7 @@ class TestIngestArticles(DoajTestCase):
         assert fu.status == "failed"
         assert fu.error is not None and fu.error != ""
         assert fu.error_details is None
-        assert fu.failure_reasons.keys() == []
+        assert list(fu.failure_reasons.keys()) == []
 
     def test_06_url_upload_ftp_success(self):
         ftplib.FTP = MockFTP
@@ -310,7 +310,7 @@ class TestIngestArticles(DoajTestCase):
         assert fu.status == "failed"
         assert fu.error is not None and fu.error != ""
         assert fu.error_details is None
-        assert fu.failure_reasons.keys() == []
+        assert list(fu.failure_reasons.keys()) == []
 
     def test_08_prepare_file_upload_success(self):
         handle = ArticleFixtureFactory.upload_1_issn_correct()
@@ -408,7 +408,7 @@ class TestIngestArticles(DoajTestCase):
         self.cleanup_paths.append(path)
 
         url= "ftp://upload"
-        parsed_url = urlparse.urlparse(url)
+        parsed_url = urlparse(url)
 
         job = models.BackgroundJob()
 
@@ -430,7 +430,7 @@ class TestIngestArticles(DoajTestCase):
         self.cleanup_paths.append(path)
 
         url= "ftp://fail"
-        parsed_url = urlparse.urlparse(url)
+        parsed_url = urlparse(url)
 
         job = models.BackgroundJob()
 
@@ -440,7 +440,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.status == "failed"
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is None
-        assert file_upload.failure_reasons.keys() == []
+        assert list(file_upload.failure_reasons.keys()) == []
 
     def test_15_http_upload_success(self):
         requests.head = mock_head_fail
@@ -487,7 +487,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.status == "failed"
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is None
-        assert file_upload.failure_reasons.keys() == []
+        assert list(file_upload.failure_reasons.keys()) == []
 
         # now try it with an actual exception
         url= "http://except"
@@ -499,7 +499,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.status == "failed"
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is None
-        assert file_upload.failure_reasons.keys() == []
+        assert list(file_upload.failure_reasons.keys()) == []
 
     def test_17_download_http_valid(self):
         requests.head = mock_head_fail
@@ -548,7 +548,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.status == "failed"
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is not None and file_upload.error_details != ""
-        assert file_upload.failure_reasons.keys() == []
+        assert list(file_upload.failure_reasons.keys()) == []
 
     def test_19_download_http_error(self):
         requests.head = mock_head_fail
@@ -574,7 +574,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.status == "failed"
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is None
-        assert file_upload.failure_reasons.keys() == []
+        assert list(file_upload.failure_reasons.keys()) == []
 
     def test_20_download_ftp_valid(self):
         ftplib.FTP = MockFTP
@@ -621,7 +621,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.status == "failed"
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is not None and file_upload.error_details != ""
-        assert file_upload.failure_reasons.keys() == []
+        assert list(file_upload.failure_reasons.keys()) == []
 
     def test_22_download_ftp_error(self):
         ftplib.FTP = MockFTP
@@ -646,7 +646,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.status == "failed"
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is None
-        assert file_upload.failure_reasons.keys() == []
+        assert list(file_upload.failure_reasons.keys()) == []
 
     def test_23_process_success(self):
         j = models.Journal()
@@ -713,7 +713,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.status == "failed"
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is not None and file_upload.error_details != ""
-        assert file_upload.failure_reasons.keys() == []
+        assert list(file_upload.failure_reasons.keys()) == []
 
     def test_25_process_filesystem_error(self):
         articleSvc.ArticleService.batch_create_articles = mock_batch_create
@@ -746,7 +746,7 @@ class TestIngestArticles(DoajTestCase):
         assert file_upload.status == "failed"
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is None
-        assert file_upload.failure_reasons.keys() == []
+        assert list(file_upload.failure_reasons.keys()) == []
 
     def test_26_run_validated(self):
         j = models.Journal()

@@ -39,15 +39,21 @@ def ftp_upload(job, path, parsed_url, file_upload):
         '''Callback for processing downloaded chunks of the FTP file'''
         if too_large[0]:
             return
-
-        downloaded[0] += len(bytes(chunk))
+        if type(chunk) == bytes:
+            l = len(chunk)
+        else:
+            l = len(bytes(chunk, "utf-8"))
+        downloaded[0] += l
         if downloaded[0] > size_limit:
             too_large[0] = True
             return
 
         if chunk:
-            with open(path, 'ab') as o:
-                o.write(chunk)
+            with open(path, 'a') as o:
+                if type(chunk) == bytes:    #TODO: why chunk are different types? check test #20
+                    o.write(chunk.decode("utf-8"))
+                else:
+                    o.write(chunk)
                 o.flush()
 
 
@@ -123,10 +129,12 @@ def http_upload(job, path, file_upload):
             return False
 
         too_large = False
-        with open(path, 'wb') as f:
+        with open(path, 'w') as f:
             downloaded = 0
             for chunk in r.iter_content(chunk_size=CHUNK_SIZE): # 1Mb chunks
-                downloaded += len(bytes(chunk))
+                if type(chunk) == bytes:        #TODO: chunk here always should be the same type, ,refer to ingestarticle tests #15 and 17
+                    downloaded += len(chunk)
+                else: downloaded += len(bytes(chunk, "utf-8"))
                 # check the size limit again
                 if downloaded > size_limit:
                     file_upload.failed("The file at the URL was too large")
@@ -134,7 +142,10 @@ def http_upload(job, path, file_upload):
                     too_large = True
                     break
                 if chunk: # filter out keep-alive new chunks
-                    f.write(chunk)
+                    if type(chunk) == bytes:
+                        f.write(chunk.decode("utf-8"))
+                    else:
+                        f.write(chunk)
                     f.flush()
     except:
         job.add_audit_message("The URL could not be accessed")
@@ -324,7 +335,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             try:
                 os.remove(path) # just remove the file, no need to keep it
             except Exception as e:
-                job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=e.message))
+                job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=str(e)))
 
     def cleanup(self):
         """

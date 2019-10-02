@@ -34,7 +34,7 @@ class TestTaskArticleBulkDelete(DoajTestCase):
         self._make_and_push_test_context(acc=models.Account(**AccountFixtureFactory.make_managing_editor_source()))
 
     def tearDown(self):
-        super(TestTaskJournalBulkDelete, self).tearDown()
+        super(TestTaskArticleBulkDelete, self).tearDown()
 
     def test_01_bulk_delete(self):
         """Bulk delete journals as an admin, but leave some around to test queries in bulk delete job"""
