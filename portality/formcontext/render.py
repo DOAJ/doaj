@@ -378,7 +378,7 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
                     "container_class" : "deletable",
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 4
+                    "label_width" : 0
                 }
             }
         ]
@@ -421,7 +421,7 @@ class EditorApplicationReviewRenderer(ApplicationRenderer):
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 4
+                    "label_width" : 0
                 }
             }
         ]
@@ -453,7 +453,7 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 4
+                    "label_width" : 0
                 }
             }
         ]
@@ -518,7 +518,7 @@ class ManEdJournalReviewRenderer(JournalRenderer):
                     "container_class" : "deletable",
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 4
+                    "label_width" : 0
                 }
             }
         ]
@@ -578,7 +578,7 @@ class EditorJournalReviewRenderer(JournalRenderer):
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 4
+                    "label_width" : 0
                 }
             }
         ]
@@ -605,7 +605,7 @@ class AssEdJournalReviewRenderer(JournalRenderer):
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 4
+                    "label_width" : 0
                 }
             }
         ]
@@ -630,7 +630,7 @@ class ReadOnlyJournalRenderer(JournalRenderer):
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 4
+                    "label_width" : 0
                 }
             }
         ]
