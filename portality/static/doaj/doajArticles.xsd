@@ -5,7 +5,7 @@
   xmlns:iso_639-2b="http://www.doaj.org/schemas/iso_639-2b/2.0">
 
  <xs:import namespace="http://www.doaj.org/schemas/iso_639-2b/2.0"
-       schemaLocation="http://www.doaj.org/static/doaj/iso_639-2b.xsd">
+       schemaLocation="iso_639-2b.xsd">
 
   <xs:annotation>
     <xs:documentation>

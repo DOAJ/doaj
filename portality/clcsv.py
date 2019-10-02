@@ -1,5 +1,6 @@
 import csv, codecs
 import io
+from io import IOBase
 
 
 class ClCsv:
@@ -14,18 +15,18 @@ class ClCsv:
         self.data = []
 
         # Get an open file object from the given file_path or file object
-        if type(file_path) == open:
+        if isinstance(file_path, IOBase):
             self.file_object = file_path
             if self.file_object.closed:
-                self.file_object = codecs.open(self.file_object.name, 'r+b', encoding='utf-8')
+                self.file_object = codecs.open(self.file_object.name, encoding="UTF-8")
             self.read_file()
         else:
             try:
-                self.file_object = codecs.open(file_path, 'r+b', encoding='utf-8')
+                self.file_object = codecs.open(file_path, encoding="UTF-8")
                 self.read_file()
             except IOError:
                 # If the file doesn't exist, create it.
-                self.file_object = codecs.open(file_path, 'w+b', encoding='utf-8')
+                self.file_object = codecs.open(file_path, encoding="UTF-8")
 
     def read_file(self):
         """
@@ -33,7 +34,7 @@ class ClCsv:
         :return: Entire CSV contents, a list of rows (like the standard csv lib)
         """
         if self.file_object.closed:
-            codecs.open(self.file_object.name, 'r+b', encoding='utf-8')
+            codecs.open(self.file_object.name, encoding="UTF-8")
 
         reader = UnicodeReader(self.file_object)
         rows = []
@@ -204,7 +205,7 @@ class UnicodeReader:
 
     def next(self):
         row = self.reader.__next__()
-        return [str(s, "utf-8") for s in row]
+        return [s.decode("utf-8") for s in row]
 
     def __next__(self):
         return self.next()

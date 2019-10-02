@@ -192,7 +192,7 @@ class StoreLocal(Store):
             kwargs = {}
             if encoding is not None:
                 kwargs = {"encoding" : encoding}
-            f = codecs.open(cpath, "rb", **kwargs)
+            f = codecs.open(cpath, "r", **kwargs)
             return f
 
     def url(self, container_id, target_name):
