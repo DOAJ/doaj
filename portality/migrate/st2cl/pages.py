@@ -30,11 +30,11 @@ for lang in languages:
             url = page + "?uiLanguage=" + lang
         else:
             url = page + "&uiLanguage=" + lang
-        print url,
+        print (url),
         sys.stdout.flush()
         resp = requests.get(url)
         if resp.status_code >= 400:
-            print resp.status_code
+            print (resp.status_code)
             continue
         directory = os.path.join(OUT, lang)
         if not os.path.exists(directory):
@@ -42,4 +42,4 @@ for lang in languages:
         f = os.path.join(directory, name + ".html")
         with codecs.open(f, "wb", "utf8") as fh:
             fh.write(resp.text)
-        print "done"
+        print ("done")

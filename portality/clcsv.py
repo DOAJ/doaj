@@ -183,11 +183,14 @@ class UTF8Recoder:
         return self
 
     def next(self):
-        val = self.reader.next()
+        val = self.reader.__next__()
         raw = val.encode("utf-8")
         if raw.startswith(codecs.BOM_UTF8):
             raw = raw.replace(codecs.BOM_UTF8, '', 1)
         return raw
+
+    def __next__(self):
+        return self.next()
 
 class UnicodeReader:
     """
@@ -200,8 +203,11 @@ class UnicodeReader:
         self.reader = csv.reader(f, dialect=dialect, **kwds)
 
     def next(self):
-        row = self.reader.next()
+        row = self.reader.__next__()
         return [str(s, "utf-8") for s in row]
+
+    def __next__(self):
+        return self.next()
 
     def __iter__(self):
         return self

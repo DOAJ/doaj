@@ -156,11 +156,10 @@ class JournalService(object):
                 cols[issn] = kvs + meta_kvs + article_kvs
 
             issns = cols.keys()
-            issns.sort()
 
             csvwriter = clcsv.UnicodeWriter(file_object)
             qs = None
-            for i in issns:
+            for i in sorted(issns):
                 if qs is None:
                     qs = [q for q, _ in cols[i]]
                     csvwriter.writerow(qs)

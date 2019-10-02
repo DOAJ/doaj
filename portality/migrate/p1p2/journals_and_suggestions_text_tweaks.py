@@ -27,13 +27,13 @@ for s in suggestion_iterator:
     
     if len(batch) >= batch_size:
         total += len(batch)
-        print "writing suggestions", len(batch), "; total so far", total
+        print ("writing suggestions", len(batch), "; total so far", total)
         models.Suggestion.bulk(batch)
         batch = []
 
 if len(batch) > 0:
     total += len(batch)
-    print "writing suggestions", len(batch), "; total so far", total
+    print ("writing suggestions", len(batch), "; total so far", total)
     models.Suggestion.bulk(batch)
 
 
@@ -62,11 +62,11 @@ for j in journal_iterator:
     
     if len(batch) >= batch_size:
         total += len(batch)
-        print "writing journals", len(batch), "; total so far", total
+        print ("writing journals", len(batch), "; total so far", total)
         models.Journal.bulk(batch)
         batch = []
 
 if len(batch) > 0:
     total += len(batch)
-    print "writing journals", len(batch), "; total so far", total
+    print ("writing journals", len(batch), "; total so far", total)
     models.Journal.bulk(batch)
