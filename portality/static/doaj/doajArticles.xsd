@@ -136,7 +136,7 @@
     <xs:complexType>
         <xs:simpleContent>
             <xs:extension base="fullUrl">
-                <xs:attribute name="format"/>
+                <xs:attribute name="format" use="optional"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
