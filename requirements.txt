@@ -4,10 +4,10 @@
 
 # first get esprit, specifically the version we know will work (+ it's
 # not on PyPI)
--e git+https://github.com/CottageLabs/esprit.git@43757fbe1ebc9a8e974528836fa744a4320a21ed#egg=esprit
+-e git+https://github.com/CottageLabs/esprit.git@53573377be49e8f29d3819fc4618084cddfdef7d#egg=esprit
 -e git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer
 -e git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger
--e git+https://github.com/CottageLabs/combinatrix.git@a056925cd3490b04ed21136d12fcbe9236c6823e#egg=combinatrix
+-e git+https://github.com/CottageLabs/combinatrix.git@aa04de8e89876eec0a49ea08d7f47b0773efd9e2#egg=combinatrix
 
 # now run the normal setup.py and get all the normal PyPI dependencies from there
 -e .

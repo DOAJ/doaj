@@ -27,7 +27,7 @@ setup(
         "Flask-Swagger",
         "flask-cors",
         "LinkHeader",
-        "universal-analytics-python",
+        #"universal-analytics-python",
         "huey",
         "redis",
         "rstr",

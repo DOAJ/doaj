@@ -90,10 +90,9 @@ class TestReporting(DoajTestCase):
                 yearfile = o
 
         table_month = []
-        with codecs.open(x.replace('\0', '') for x in monthfile) as f:
-            reader = csv.reader(f)
-            for row in reader:
-                table_month.append(row)
+        reader = csv.reader(open(monthfile, "rb"))
+        for row in reader:
+            table_month.append(row)
 
         expected_month = self._as_output(MONTH_EDIT_OUTPUT)
         assert table_month == expected_month

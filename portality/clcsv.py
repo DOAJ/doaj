@@ -18,15 +18,15 @@ class ClCsv:
         if isinstance(file_path, IOBase):
             self.file_object = file_path
             if self.file_object.closed:
-                self.file_object = open(self.file_object.name, 'r+')
+                self.file_object = open(self.file_object.name, 'r')
             self.read_file()
         else:
             try:
-                self.file_object = open(file_path, 'r+')
+                self.file_object = open(file_path, 'r')
                 self.read_file()
             except IOError:
                 # If the file doesn't exist, create it.
-                self.file_object = open(file_path,'w+')
+                self.file_object = open(file_path,'w')
 
     def read_file(self):
         """
