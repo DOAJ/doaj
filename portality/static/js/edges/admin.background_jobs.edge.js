@@ -199,7 +199,7 @@ $.extend(true, doaj, {
                         {'display':'Status','field':'status.exact'}
                     ],
                     defaultOperator: "AND",
-                    renderer: edges.bs3.newFullSearchControllerRenderer({
+                    renderer: doaj.renderers.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
                         searchPlaceholder: "Search Background Jobs"

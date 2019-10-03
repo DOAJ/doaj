@@ -82,7 +82,7 @@ $.extend(true, doaj, {
                         {'display':'Associate Editor ID','field':'associate'}
                     ],
                     defaultOperator: "AND",
-                    renderer: edges.bs3.newFullSearchControllerRenderer({
+                    renderer: doaj.renderers.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
                         searchPlaceholder: "Search Editor Groups"

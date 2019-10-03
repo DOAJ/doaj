@@ -5,7 +5,7 @@ from portality.bll import exceptions
 from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
 from datetime import datetime
-from urllib.parse import urlparse
+
 
 class DOAJXWalk(object):
     format_name = "doaj"
@@ -55,11 +55,9 @@ class DOAJXWalk(object):
             self.validation_log = el
         return valid
 
-
     def crosswalk_file(self, file_handle, add_journal_info=True):
         doc = self.validate_file(file_handle)
         return self.crosswalk_doc(doc, add_journal_info=add_journal_info)
-
 
     def crosswalk_doc(self, doc, add_journal_info=True):
         # go through the records in the doc and crosswalk each one individually
@@ -70,7 +68,6 @@ class DOAJXWalk(object):
             articles.append(article)
 
         return articles
-
 
     def crosswalk_article(self, record, add_journal_info=True):
         """
@@ -232,8 +229,9 @@ class DOAJXWalk(object):
         return article
 
 ###############################################################################
-## some convenient utilities
+# some convenient utilities
 ###############################################################################
+
 
 def _year_month(date):
     try:

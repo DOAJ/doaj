@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 import sys
 
 setup(
-    name = 'doaj',
-    version = '3.0.0',
-    packages = find_packages(),
-    install_requires = [
+    name='doaj',
+    version='3.0.3',
+    packages=find_packages(),
+    install_requires=[
         "werkzeug",
         "Flask",
         "Flask-Login",
@@ -43,12 +43,12 @@ setup(
         "boto3",
         "flask-debugtoolbar"
     ] + (["setproctitle"] if "linux" in sys.platform else []),
-    url = 'http://cottagelabs.com/',
-    author = 'Cottage Labs',
-    author_email = 'us@cottagelabs.com',
-    description = 'Directory of Open Access Journals website and software',
-    license = 'Copyheart',
-    classifiers = [
+    url='http://cottagelabs.com/',
+    author='Cottage Labs',
+    author_email='us@cottagelabs.com',
+    description='Directory of Open Access Journals website and software',
+    license='Copyheart',
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: Developers',

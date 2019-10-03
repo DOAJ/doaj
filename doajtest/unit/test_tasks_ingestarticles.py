@@ -13,8 +13,6 @@ from portality.bll.services import article as articleSvc
 
 GET = requests.get
 
-#fixme: these will fail until we merge the crossref xml feature branch, which has code for correctly loading the local schema
-'''
 class MockFileUpload(object):
     def __init__(self, filename="filename.xml", stream=None):
         self.filename = filename
@@ -1914,7 +1912,7 @@ We should parameterise this test set
         fu = models.FileUpload.pull(id)
         assert fu.status == "validated"
 
-'''
+
 
 
 # TODO: reinstate this test when author emails have been disallowed again

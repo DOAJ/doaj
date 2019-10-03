@@ -292,7 +292,7 @@ class DiscoveryApi(Api):
         # check to see if there was a search error
         if res.get("error") is not None:
             magic = uuid.uuid1()
-            app.logger.error("Error executing discovery query search for {i}: {x} (ref: {y})".format(i=index_type, x=res.get("error"), y=magic))
+            app.logger.error(u"Error executing discovery query search for {i}: {x} (ref: {y})".format(i=index_type, x=res.get("error"), y=magic))
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
         obs = [klass(**raw) for raw in esprit.raw.unpack_json_result(res)]

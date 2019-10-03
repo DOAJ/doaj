@@ -75,7 +75,7 @@ $.extend(true, doaj, {
                         {'display':'Email Address','field':'email'}
                     ],
                     defaultOperator: "AND",
-                    renderer: edges.bs3.newFullSearchControllerRenderer({
+                    renderer: doaj.renderers.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
                         searchPlaceholder: "Search Users"
