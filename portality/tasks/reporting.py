@@ -30,7 +30,7 @@ def provenance_reports(fr, to, outdir):
         table = p.tabulate()
         outfile = os.path.join(outdir, p.filename(fr, to))
         outfiles.append(outfile)
-        with codecs.open(outfile, "wb", "utf-8") as f:
+        with open(outfile, "w") as f:
             writer = UnicodeWriter(f)
             for row in table:
                 writer.writerow(row)
@@ -65,7 +65,7 @@ def content_reports(fr, to, outdir):
     outfiles = []
     outfile = os.path.join(outdir, filename)
     outfiles.append(outfile)
-    with codecs.open(outfile, "wb", "utf-8") as f:
+    with codecs.open(outfile, "w", "utf-8") as f:
         writer = UnicodeWriter(f)
         for row in table:
             writer.writerow(row)
