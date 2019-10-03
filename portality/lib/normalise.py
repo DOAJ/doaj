@@ -33,7 +33,7 @@ def normalise_url(url):
     if u.scheme not in schemes:
         raise ValueError("URL must be at http(s) or ftp(s), found '{x}'".format(x=u.netloc))
 
-    n = ParseResult(netloc=u.netloc, path=u.path, params=u.params, query=u.query, fragment=u.fragment, scheme=u.scheme)
+    n = ParseResult(netloc=u.netloc, path=u.path, params=u.params, query=u.query, fragment=u.fragment, scheme='')
     return urlunparse(n)
 
 
