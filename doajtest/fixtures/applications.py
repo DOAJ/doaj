@@ -13,6 +13,12 @@ from portality.models import Suggestion
 
 class ApplicationFixtureFactory(object):
     @staticmethod
+    def make_update_request_source():
+        template = deepcopy(APPLICATION_SOURCE)
+        template["admin"]["current_journal"] = '123456789'
+        return template
+
+    @staticmethod
     def make_application_source():
         return deepcopy(APPLICATION_SOURCE)
     
@@ -35,6 +41,7 @@ class ApplicationFixtureFactory(object):
             ]
             template['bibjson']['title'] = 'Test Title {}'.format(i)
             application_sources.append(deepcopy(template))
+            template["admin"]["current_journal"] = '123456789'
         return application_sources
 
     @staticmethod
@@ -137,7 +144,6 @@ APPLICATION_SOURCE = {
         "editor_group" : "editorgroup",
         "editor" : "associate",
         "seal" : True,
-        "current_journal" : "123456789987654321",
         "related_journal" : "987654321123456789"
     }
 }
