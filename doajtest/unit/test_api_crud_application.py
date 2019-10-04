@@ -408,7 +408,7 @@ class TestCrudApplication(DoajTestCase):
         oa = OutgoingApplication()
 
         # make one from an incoming application model fixture
-        data = ApplicationFixtureFactory.make_application_source()
+        data = ApplicationFixtureFactory.make_update_request_source()
         ap = models.Suggestion(**data)
         oa = OutgoingApplication.from_model(ap)
 
@@ -426,7 +426,7 @@ class TestCrudApplication(DoajTestCase):
 
     def test_06_retrieve_application_success(self):
         # set up all the bits we need
-        data = ApplicationFixtureFactory.make_application_source()
+        data = ApplicationFixtureFactory.make_update_request_source()
         ap = models.Suggestion(**data)
         ap.save()
         time.sleep(2)
@@ -445,7 +445,7 @@ class TestCrudApplication(DoajTestCase):
 
     def test_07_retrieve_application_fail(self):
         # set up all the bits we need
-        data = ApplicationFixtureFactory.make_application_source()
+        data = ApplicationFixtureFactory.make_update_request_source()
         ap = models.Suggestion(**data)
         ap.save()
         time.sleep(2)

@@ -15,7 +15,7 @@ class ApplicationFixtureFactory(object):
     @staticmethod
     def make_update_request_source():
         template = deepcopy(APPLICATION_SOURCE)
-        template["admin"]["current_journal"] = '123456789'
+        template["admin"]["current_journal"] = '123456789987654321'
         return template
 
     @staticmethod

@@ -13,9 +13,9 @@ JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source_with_legacy_info()
 
 APPLICATION_FORM = ApplicationFixtureFactory.make_application_form()
 APPLICATION_FORMINFO = ApplicationFixtureFactory.make_application_form_info()
-APPLICATION_SOURCE = ApplicationFixtureFactory.make_application_source()
+APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
 
-OLD_STYLE_APP = ApplicationFixtureFactory.make_application_source()
+OLD_STYLE_APP = ApplicationFixtureFactory.make_update_request_source()
 del OLD_STYLE_APP["bibjson"]["persistent_identifier_scheme"]
 del OLD_STYLE_APP["bibjson"]["deposit_policy"]
 del OLD_STYLE_APP["bibjson"]["author_copyright"]
