@@ -278,7 +278,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         re.DOTALL)
         assert bool(assEd_email_matched)
 
-        publisher_template = 'publisher_application_editor_assigned.txt'
+        publisher_template = 'publisher_update_request_editor_assigned.txt'
         publisher_to = re.escape(owner.email)
         publisher_subject = 'your application has been assigned an editor for review'
 
@@ -286,7 +286,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 3
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -464,7 +464,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         re.DOTALL)
         assert bool(assEd_email_matched)
 
-        publisher_template = 'publisher_application_editor_assigned.txt'
+        publisher_template = 'publisher_update_request_editor_assigned.txt'
         publisher_to = re.escape(owner.email)
         publisher_subject = 'your application has been assigned an editor for review'
 
@@ -472,7 +472,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 3
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -573,8 +573,8 @@ class TestApplicationReviewEmails(DoajTestCase):
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
-        #   * to the publisher, notifying that an editor is viewing their application
-        publisher_template = re.escape('publisher_application_inprogress.txt')
+        #   * to the account owner, notifying that an editor is viewing their application
+        publisher_template = re.escape('publisher_update_request_inprogress.txt')
         publisher_to = re.escape(owner.email)
         publisher_subject = 'your application is under review'
 
@@ -582,7 +582,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
