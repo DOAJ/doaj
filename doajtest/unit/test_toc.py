@@ -15,6 +15,27 @@ class TestTOC(DoajTestCase):
         """ The ToC date histogram needs an accurate datestamp in the article's index """
         a = models.Article(**ArticleFixtureFactory.make_article_source())
 
+        # Check we can handle invalid month
+        a.bibjson().year = '12'
+        a.bibjson().month = '0'
+        d = a.bibjson().get_publication_date()
+        assert d == '2012-01-01T00:00:00Z'
+
+        a.bibjson().year = '12'
+        a.bibjson().month = '30'
+        d = a.bibjson().get_publication_date()
+        assert d == '2012-01-01T00:00:00Z'
+
+        a.bibjson().year = '12'
+        a.bibjson().month = 30
+        d = a.bibjson().get_publication_date()
+        assert d == '2012-01-01T00:00:00Z'
+
+        a.bibjson().year = '12'
+        a.bibjson().month = ''
+        d = a.bibjson().get_publication_date()
+        assert d == '2012-01-01T00:00:00Z'
+
         # Check we can handle shortened years
         a.bibjson().year = '12'
         a.bibjson().month = '03'

@@ -112,7 +112,7 @@ class TestBLLDeleteApplication(DoajTestCase):
             application.save(blocking=True)
             application_id = application.id
         elif application_type == "not_found":
-            application_id = u"sdjfasofwefkwflkajdfasjd"
+            application_id = "sdjfasofwefkwflkajdfasjd"
 
         ###########################################################
         # Execution

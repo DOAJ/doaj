@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "3.0.0"
+DOAJ_VERSION = "3.0.3"
 
 OFFLINE_MODE = False
 
@@ -780,6 +780,14 @@ DISCOVERY_RECORDS_PER_FILE = 100000
 # scheduled reports configuration
 REPORTS_BASE_DIR = "/home/cloo/reports/"
 REPORTS_EMAIL_TO = ["feedback@doaj.org"]
+
+
+# ========================================
+# Hotjar configuration
+
+# hotjar id - only activate this in production
+HOTJAR_ID = ""
+
 
 # ========================================
 # Google Analytics configuration

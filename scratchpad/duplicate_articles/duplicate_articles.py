@@ -30,7 +30,7 @@ with codecs.open(GENUINE, "wb", "utf-8") as a:
         with codecs.open(IN, "rb", "utf-8") as f:
             reader = clcsv.UnicodeReader(f)
 
-            headers = reader.next()
+            headers = next(reader)
             awriter.writerow(headers)
             bwriter.writerow(headers)
 
@@ -76,14 +76,14 @@ with codecs.open(GENUINE, "wb", "utf-8") as a:
 
 
 
-print("Total articles engaged in duplication: " + str(len(unique_ids)))
-print("Total articles that would remain after de-duplication: " + str(len(unique_deduplicated)))
+print(("Total articles engaged in duplication: " + str(len(unique_ids))))
+print(("Total articles that would remain after de-duplication: " + str(len(unique_deduplicated))))
 
-print("Total estimated genuine duplication pairs: " + str(genuine_count))
-print("Total estimated articles engaged in genuine duplication: " + str(len(genuine_unique_ids)))
-print("Total estimated articles that would remain from genuine duplication after de-duplication: " + str(len(genuine_unique_deduplicated)))
+print(("Total estimated genuine duplication pairs: " + str(genuine_count)))
+print(("Total estimated articles engaged in genuine duplication: " + str(len(genuine_unique_ids))))
+print(("Total estimated articles that would remain from genuine duplication after de-duplication: " + str(len(genuine_unique_deduplicated))))
 
-print("Total estimated bad data duplication pairs: " + str(bad_data_count))
-print("Total estimated articles engaged in 'bad data' duplication: " + str(len(bad_data_unique_ids)))
-print("Total estimated articles that would remain from 'bad data' duplication after de-duplication: " + str(len(bad_data_unique_deduplicated)))
+print(("Total estimated bad data duplication pairs: " + str(bad_data_count)))
+print(("Total estimated articles engaged in 'bad data' duplication: " + str(len(bad_data_unique_ids))))
+print(("Total estimated articles that would remain from 'bad data' duplication after de-duplication: " + str(len(bad_data_unique_deduplicated))))
 

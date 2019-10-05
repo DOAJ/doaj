@@ -39,9 +39,9 @@ class TagListField(Field):
 
     def _value(self):
         if self.data:
-            return u', '.join(self.data)
+            return ', '.join(self.data)
         else:
-            return u''
+            return ''
 
     def get_list(self):
         return self.data
@@ -66,7 +66,7 @@ class URLField(TextField):
             self.data = assumed_scheme + val
         else:
             if val == assumed_scheme:  # just to prevent http:// from showing up on its own in all the URL fields when you make a mistake elsewhere
-                self.data = u''
+                self.data = ''
             else:
                 self.data = val
 

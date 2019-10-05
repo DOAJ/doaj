@@ -14,10 +14,10 @@ assert resp.status_code == 201
 j = resp.json()
 assert len(j) == 10
 
-print j
+print(j)
 
 ids = [r.get("id") for r in j]
-print ids
+print(ids)
 
 time.sleep(2)
 
@@ -53,10 +53,10 @@ assert resp.status_code == 201
 j = resp.json()
 assert len(j) == 10
 
-print j
+print(j)
 
 ids = [r.get("id") for r in j]
-print ids
+print(ids)
 
 time.sleep(2)
 

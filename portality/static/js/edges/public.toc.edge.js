@@ -150,7 +150,7 @@ $.extend(true, doaj, {
                     defaultOperator : "AND",
                     urlShortener : doaj.bitlyShortener,
                     embedSnippet : doaj.publicToC.embedSnippet,
-                    renderer : edges.bs3.newFullSearchControllerRenderer({
+                    renderer : doaj.renderers.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
                         searchPlaceholder: "Search this Journal's Articles",

@@ -12,11 +12,11 @@ from portality.formcontext import formcontext, render
 
 JOURNAL_SOURCE = {
     "index": {
-        "publisher": ["Centro Centroamericano de Poblaci\u00f3n"],
+        "publisher": ["Centro Centroamericano de Poblaci\\u00f3n"],
         "schema_subject": ["LCC:Social Sciences", "LCC:Economic theory. Demography"],
         "license": ["CC by-nc-sa"],
         "classification": ["Social Sciences", "Economic theory. Demography"],
-        "title": ["Poblaci\u00f3n y Salud en Mesoam\u00e9rica"],
+        "title": ["Poblaci\\u00f3n y Salud en Mesoam\\u00e9rica"],
         "country": "Costa Rica",
         "issn": ["1659-0201"],
         "language": ["Spanish"],
@@ -32,11 +32,11 @@ JOURNAL_SOURCE = {
     "created_date": "2008-05-19T16:45:03Z",
     "id": "3f3d352f32364065ab9051b1a4b2d715",
     "bibjson": {
-        "publisher": "Centro Centroamericano de Poblaci\u00f3n",
+        "publisher": "Centro Centroamericano de Poblaci\\u00f3n",
         "author_pays": "N",
         "license": [{"type": "CC by-nc-sa", "title": "CC by-nc-sa"}],
         "language": ["Spanish"],
-        "title": "Poblaci\u00f3n y Salud en Mesoam\u00e9rica",
+        "title": "Poblaci\\u00f3n y Salud en Mesoam\\u00e9rica",
         "author_pays_url": "http://revistas.ucr.ac.cr/index.php/psm/about/submissions",
         "country": "CR",
         "alternative_title": "",

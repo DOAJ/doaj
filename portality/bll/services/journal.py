@@ -153,7 +153,7 @@ class JournalService(object):
                 article_kvs = _get_article_kvs(j)
                 cols[issn] = kvs + meta_kvs + article_kvs
 
-            issns = cols.keys()
+            issns = list(cols.keys())
             issns.sort()
 
             csvwriter = clcsv.UnicodeWriter(file_object)

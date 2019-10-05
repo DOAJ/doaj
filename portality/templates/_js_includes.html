@@ -27,6 +27,22 @@
           'custom_map': {'dimension1': 'OAI:Action'}
       });
     </script>
+
+    {% if config.get("HOTJAR_ID") %}
+        <!-- hotjar -->
+        <script> (function(h,o,t,j,a,r){ h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)}; h._hjSettings={hjid:{{ config.get("HOTJAR_ID") }},hjsv:6}; a=o.getElementsByTagName('head')[0]; r=o.createElement('script');r.async=1; r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv; a.appendChild(r); })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv='); </script>
+    {% endif %}
+
+    {% if edit_suggestion_page or edit_journal_page or subject_page %}
+
+        <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
+        <script type="text/javascript" src="/static/portality/vendor/jstree-3.0.0-beta10/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+        {% if not subject_page %}
+            <script type="text/javascript" src="/static/doaj/js/suggestions_and_journals.js?v={{config.get('DOAJ_VERSION')}}"></script>
+        {% endif %}
+
+    {% endif %}
 {% endif %}
 
 <!-- get tablesorter -->
@@ -39,7 +55,8 @@
 <script type="text/javascript" src="/static/js/formutils.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <!-- get select2 -->
-<script type="text/javascript" src="/static/vendor/select2-release-3.2/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/vendor/select2-3.5.4/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
 
 <script type="text/javascript">var current_domain = document.location.host;</script>
 <script type="text/javascript">var current_scheme = window.location.protocol;</script>

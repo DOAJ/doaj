@@ -46,7 +46,7 @@ APPLICATION_YEAR_OUTPUT = [
     ["Country", "2010", "2011", "2012", "2013", "2014", "2015"],
     ["Angola", 0, 1, 2, 3, 4, 5],
     ["Belarus", 6, 7, 8 , 9, 10, 0],
-    [u"Cambôdia", 11, 12, 13, 14, 15, 16]
+    ["Cambôdia", 11, 12, 13, 14, 15, 16]
 ]
 
 TMP_DIR = paths.rel2abs(__file__, "resources/reports")
@@ -67,7 +67,7 @@ class TestReporting(DoajTestCase):
         table = deepcopy(table)
         for row in table:
             for i in range(len(row)):
-                row[i] = unicode(row[i])
+                row[i] = str(row[i])
         return table
 
     def test_01_edits(self):

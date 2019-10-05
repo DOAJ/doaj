@@ -161,10 +161,10 @@ def generate_link_headers(metadata):
     keys 'next', 'prev' and 'last' defined. The values are the
     corresponding pre-generated links.
     """
-    link_metadata = {k: v for k, v in metadata.iteritems() if k in LINK_HEADERS}
+    link_metadata = {k: v for k, v in metadata.items() if k in LINK_HEADERS}
 
     links = []
-    for k, v in link_metadata.iteritems():
+    for k, v in link_metadata.items():
         links.append(Link(v, rel=k))  # e.g. Link("http://example.com/foo", rel="next")
 
     return str(LinkHeader(links))  # RFC compliant headers e.g.

@@ -25,7 +25,7 @@ currency_name_opts = []
 
 for cu in sorted(pycountry.currencies, key=lambda x: x.alpha_3):
     try:
-        currency_options.append((cu.alpha_3, u'{code} - {name}'.format(code=cu.alpha_3, name=cu.name)))
+        currency_options.append((cu.alpha_3, '{code} - {name}'.format(code=cu.alpha_3, name=cu.name)))
         currency_name_opts.append((cu.alpha_3, cu.name))
         currency_options_code_index.append(cu.alpha_3)
     except AttributeError:
@@ -59,14 +59,14 @@ licenses = {
 }
 
 # do not change this - the top-level keys in the licenses dict should always be == to the "type" of each license object
-for lic_type, lic_info in licenses.iteritems():
+for lic_type, lic_info in licenses.items():
     lic_info['type'] = lic_type
     lic_info['title'] = lic_type
 
-license_dict = OrderedDict(sorted(licenses.items(), key=lambda x: x[1]['type']))
+license_dict = OrderedDict(sorted(list(licenses.items()), key=lambda x: x[1]['type']))
 
 main_license_options = []
-for lic_type, lic_info in license_dict.iteritems():
+for lic_type, lic_info in license_dict.items():
     main_license_options.append((lic_type, lic_info['form_label']))
 
 
@@ -106,7 +106,7 @@ def get_currency_name(code):
     """ get the name of a currency from its code """
     try:
         cur = pycountry.currencies.lookup(code)
-        return u'{code} - {name}'.format(code=cur.alpha_3, name=cur.name)
+        return '{code} - {name}'.format(code=cur.alpha_3, name=cur.name)
     except LookupError:
         return code  # return what was passed in if not found
 

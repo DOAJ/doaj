@@ -49,7 +49,7 @@ class OpenURLRequest(object):
 
         # Save any attributes specified at creation time
         if kwargs:
-            for key, value in kwargs.iteritems():
+            for key, value in kwargs.items():
                 setattr(self, key, value)
 
     def __str__(self):

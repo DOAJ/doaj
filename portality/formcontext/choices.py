@@ -402,7 +402,7 @@ class Choices(object):
         role_choices = cls.application_status(role)
 
         # Get the full tuple of application status for the current source
-        [full_current_status] = filter(lambda x: status in x, role_choices)
+        [full_current_status] = [x for x in role_choices if status in x]
 
         # Admins can set any role at any time
         if role == 'admin':

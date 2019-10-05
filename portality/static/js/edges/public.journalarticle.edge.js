@@ -8,7 +8,8 @@ $.extend(true, doaj, {
                 "country_publisher",
                 "apc",
                 "peer_review",
-                "year_added"
+                "year_added",
+                "language"
             ],
             article : [
                 "archiving_policy",
@@ -125,7 +126,7 @@ $.extend(true, doaj, {
                     id : "seal",
                     category: "facet",
                     field: "index.has_seal.exact",
-                    display: "DOAJ Seal",
+                    display: "Journal has DOAJ Seal",
                     deactivateThreshold: 1,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -184,6 +185,7 @@ $.extend(true, doaj, {
                     field: "index.language.exact",
                     display: "Fulltext Language",
                     deactivateThreshold: 1,
+                    active: false,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
@@ -281,7 +283,7 @@ $.extend(true, doaj, {
                     defaultOperator : "AND",
                     urlShortener : doaj.bitlyShortener,
                     embedSnippet : doaj.publicSearch.embedSnippet,
-                    renderer : edges.bs3.newFullSearchControllerRenderer({
+                    renderer : doaj.renderers.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
                         searchPlaceholder: "Search DOAJ",

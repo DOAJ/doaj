@@ -23,7 +23,7 @@ for d in deletable:
     id = d.get("id")
     if id is not None:
         models.Suggestion.remove_by_id(id)
-        print "removing", id
+        print("removing", id)
 
 models.Suggestion.refresh()
 time.sleep(10)
@@ -62,11 +62,11 @@ for s in suggestion_iterator:
     
     if len(batch) >= batch_size:
         total += len(batch)
-        print "writing", len(batch), "; total so far", total
+        print("writing", len(batch), "; total so far", total)
         models.Suggestion.bulk(batch)
         batch = []
 
 if len(batch) > 0:
     total += len(batch)
-    print "writing", len(batch), "; total so far", total
+    print("writing", len(batch), "; total so far", total)
     models.Suggestion.bulk(batch)

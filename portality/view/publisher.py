@@ -193,7 +193,7 @@ def metadata():
         # the user might request by pressing the add/remove authors buttons
         more_authors = request.values.get("more_authors")
         remove_author = None
-        for v in request.values.keys():
+        for v in list(request.values.keys()):
             if v.startswith("remove_authors"):
                 remove_author = v.split("-")[1]
         

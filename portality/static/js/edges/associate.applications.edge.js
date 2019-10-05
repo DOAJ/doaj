@@ -160,7 +160,7 @@ $.extend(true, doaj, {
                         {'display':'Platform, Host, Aggregator','field':'bibjson.provider'}
                     ],
                     defaultOperator: "AND",
-                    renderer: edges.bs3.newFullSearchControllerRenderer({
+                    renderer: doaj.renderers.newFullSearchControllerRenderer({
                         freetextSubmitDelay: 1000,
                         searchButton: true,
                         searchPlaceholder: "Search Applications assigned to you"

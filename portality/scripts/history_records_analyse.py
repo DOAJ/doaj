@@ -22,7 +22,7 @@ def history_records_analyse(source, out_dir, reverted_only=False, date=None):
     records = {}
     with codecs.open(source, "rb", "utf-8") as f:
         reader = clcsv.UnicodeReader(f)
-        reader.next()
+        next(reader)
         for row in reader:
             if date is None or row[0] in ids:
                 if row[0] not in records:
@@ -36,7 +36,7 @@ def history_records_analyse(source, out_dir, reverted_only=False, date=None):
         writer.writerow(["count", "id", "reverted", "change history"])
         writer.writerow([])
 
-        for id, rows in records.iteritems():
+        for id, rows in records.items():
             rows = sorted(rows, key=lambda x: x[1])
             owners = []
             lastOwner = False

@@ -23,6 +23,7 @@
             <section class="form-panel with-borders centre-text-container">
                 <p>This button will not save any other changes on this page!</p>
                 <form method="post" action="{{ url_for('admin.application_quick_reject', application_id=form_context.source.id) }}" class="form-horizontal" id="application_quick_reject_form">
+
                     <div class="row">
                         <div class="col-xs-5">
                             <div class="form-group">
@@ -81,7 +82,7 @@
             </section>
         </div>
 
-        <div class="col-xs-6">
+        <div class="col-md-6">
             {% include 'formcontext/_subject_area.html' %}
         </div>
 

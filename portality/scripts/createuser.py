@@ -30,7 +30,7 @@ def create_user(username, email, password, roles):
     acc.set_password(password)
     acc.save()
 
-    print(prefix + username)
+    print((prefix + username))
 
 
 def input_password(username):
@@ -44,14 +44,14 @@ def request_password(username):
     password = getpass.getpass()
     confirm = getpass.getpass("Confirm Password for " + username + ":")
     if password != confirm:
-        print "passwords do not match - try again!"
+        print("passwords do not match - try again!")
         return None
     return password
 
 
 if __name__ == "__main__":
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-        print "System is in READ-ONLY mode, script cannot run"
+        print("System is in READ-ONLY mode, script cannot run")
         exit()
 
     import argparse, getpass
@@ -66,11 +66,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     if not args.username and not args.csv:
-        print "Please specify a username with the -u option or a CSV of users with the -c option"
+        print("Please specify a username with the -u option or a CSV of users with the -c option")
         exit()
     
     if not args.role and not args.csv:
-        print "WARNING: no role specified, so this user won't be able to do anything"
+        print("WARNING: no role specified, so this user won't be able to do anything")
 
     if args.username:
         username = args.username

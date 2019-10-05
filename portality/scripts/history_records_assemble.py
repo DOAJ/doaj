@@ -90,7 +90,7 @@ def _fix_symbols(data):
         if not isinstance(d, dict):
             return d
         newData = {}
-        for k, v in d.iteritems():
+        for k, v in d.items():
             if isinstance(k, symbols.Symbol):
                 newData[repr(k)] = v
             else:
@@ -101,7 +101,7 @@ def _fix_symbols(data):
         if not isinstance(d, dict):
             return d
         d = fix_layer(d)
-        for k, v in d.items():
+        for k, v in list(d.items()):
             d[k] = recurse(d[k])
         return d
 

@@ -17,11 +17,11 @@ class TestCrosswalksJournal2Questions(DoajTestCase):
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.prep()
         q_and_a = Journal2QuestionXwalk.journal2question(journal)
-        answers = [unicode(x[1]) for x in q_and_a]
+        answers = [str(x[1]) for x in q_and_a]
         expected = JournalFixtureFactory.question_answers()
         for i in range(len(answers)):
             a = answers[i]
             if a != expected[i]:
-                print("{c} = {a} | {b}".format(a=a, b=expected[i], c=q_and_a[i]))
+                print(("{c} = {a} | {b}".format(a=a, b=expected[i], c=q_and_a[i])))
 
         assert answers == expected

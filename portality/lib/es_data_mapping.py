@@ -36,14 +36,14 @@ def apply_mapping_opts(field_name, path, spec, mapping_opts):
 def create_mapping(struct, mapping_opts, path=()):
     result = {"properties": {}}
 
-    for field, spec in struct.get("fields", {}).iteritems():
+    for field, spec in struct.get("fields", {}).items():
         result["properties"][field] = apply_mapping_opts(field, path, spec, mapping_opts)
 
-    for field, spec in struct.get("lists", {}).iteritems():
+    for field, spec in struct.get("lists", {}).items():
         if "coerce" in spec:
             result["properties"][field] = apply_mapping_opts(field, path, spec, mapping_opts)
 
-    for struct_name, struct_body in struct.get("structs", {}).iteritems():
+    for struct_name, struct_body in struct.get("structs", {}).items():
         result["properties"][struct_name] = create_mapping(struct_body, mapping_opts, path + (struct_name,))
 
     return result

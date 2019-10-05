@@ -153,9 +153,9 @@ jQuery(document).ready(function($) {
     toggle_optional_field('submission_charges', ['#submission_charges_amount', '#submission_charges_currency']);
     toggle_optional_field('license', ['#license_checkbox'], ["Other"]);
     
-    $('#country').select2();
-    $('#processing_charges_currency').select2();
-    $('#submission_charges_currency').select2();
+    $('#country').select2({allowClear: true});
+    $('#processing_charges_currency').select2({allowClear: true});
+    $('#submission_charges_currency').select2({allowClear: true});
     
     $("#keywords").select2({
         minimumInputLength: 1,
@@ -164,7 +164,7 @@ jQuery(document).ready(function($) {
         maximumSelectionSize: 6
     });
     
-    $("#languages").select2();
+    $("#languages").select2({allowClear: true});
 
     autocomplete('#publisher', 'bibjson.publisher');
     autocomplete('#society_institution', 'bibjson.institution');
@@ -320,14 +320,12 @@ function setup_add_button_handlers() {
         }
         var thefield = '<div class="form-group ' + delclass + '" id="notes-' + cur_number_of_notes + '-container">\
             <div class="col-xs-8 nested-field-container">\
-                <label class="control-label col-xs-1" for="note">Note</label>\
-                <div class="col-xs-11 ">\
+                <div class="col-xs-12 ">\
                     <textarea class=" col-xs-12" id="notes-' + cur_number_of_notes + '-note" name="notes-' + cur_number_of_notes + '-note"></textarea>\
                 </div>\
             </div>\
             <div class="col-xs-3 nested-field-container">\
-                <label class="control-label col-xs-1" for="date">Date</label>\
-                <div class="col-xs-11 ">\
+                <div class="col-xs-12 ">\
                     <input class=" col-xs-12" disabled="" id="notes-' + cur_number_of_notes + '-date" name="notes-' + cur_number_of_notes + '-date" type="text" value="">\
                 </div>\
             </div>\

@@ -31,7 +31,7 @@ class Renderer(object):
         # build the frag
         frag = ""
         for entry in group_def:
-            field_name = entry.keys()[0]
+            field_name = list(entry.keys())[0]
             config = entry.get(field_name)
             config = deepcopy(config)
 
@@ -72,7 +72,7 @@ class Renderer(object):
     def _rewrite_extra_fields(self, form_context, config):
         if "extra_input_fields" in config:
             config = deepcopy(config)
-            for opt, field_ref in config.get("extra_input_fields").iteritems():
+            for opt, field_ref in config.get("extra_input_fields").items():
                 extra_field = form_context.form[field_ref]
                 config["extra_input_fields"][opt] = extra_field
         return config
@@ -248,7 +248,7 @@ class BasicJournalInformationRenderer(Renderer):
         for g in self.NUMBERING_ORDER:
             cfg = self.FIELD_GROUPS.get(g)
             for obj in cfg:
-                field = obj.keys()[0]
+                field = list(obj.keys())[0]
                 obj[field]["q_num"] = str(q)
                 q += 1
 
@@ -256,7 +256,7 @@ class BasicJournalInformationRenderer(Renderer):
         for g in self.FIELD_GROUPS:
             cfg = self.FIELD_GROUPS.get(g)
             for obj in cfg:
-                f = obj.keys()[0]
+                f = list(obj.keys())[0]
                 if f == field and "q_num" in obj[f]:
                     return obj[f]["q_num"]
         return ""
@@ -273,7 +273,7 @@ class BasicJournalInformationRenderer(Renderer):
             # it for errors - there are no fields to check.
             if cfg:
                 for obj in cfg:
-                    field = obj.keys()[0]
+                    field = list(obj.keys())[0]
                     if field in self.error_fields:
                         obj[field]["first_error"] = True
                         found = True
@@ -378,7 +378,7 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
                     "container_class" : "deletable",
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 1
+                    "label_width" : 0
                 }
             }
         ]
@@ -421,7 +421,7 @@ class EditorApplicationReviewRenderer(ApplicationRenderer):
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 1
+                    "label_width" : 0
                 }
             }
         ]
@@ -453,7 +453,7 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 1
+                    "label_width" : 0
                 }
             }
         ]
@@ -485,7 +485,7 @@ class JournalRenderer(BasicJournalInformationRenderer):
         if field_group_name == "old_journal_fields":
             display_old_journal_fields = False
             for old_field_def in self.FIELD_GROUPS["old_journal_fields"]:
-                old_field_name = old_field_def.keys()[0]
+                old_field_name = list(old_field_def.keys())[0]
                 old_field = getattr(form_context.form, old_field_name)
                 if old_field:
                     if old_field.data and old_field.data != 'None':
@@ -518,7 +518,7 @@ class ManEdJournalReviewRenderer(JournalRenderer):
                     "container_class" : "deletable",
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 1
+                    "label_width" : 0
                 }
             }
         ]
@@ -578,7 +578,7 @@ class EditorJournalReviewRenderer(JournalRenderer):
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 1
+                    "label_width" : 0
                 }
             }
         ]
@@ -605,7 +605,7 @@ class AssEdJournalReviewRenderer(JournalRenderer):
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 1
+                    "label_width" : 0
                 }
             }
         ]
@@ -630,7 +630,7 @@ class ReadOnlyJournalRenderer(JournalRenderer):
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3",
-                    "label_width" : 1
+                    "label_width" : 0
                 }
             }
         ]

@@ -4,7 +4,7 @@ from portality.core import app
 
 if __name__ == "__main__":
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-        print "System is in READ-ONLY mode, script cannot run"
+        print("System is in READ-ONLY mode, script cannot run")
         exit()
 
     import argparse
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.source:
-        print "Please specify a source file with the -s option"
+        print("Please specify a source file with the -s option")
         exit()
 
     f = codecs.open(args.source)

@@ -11,7 +11,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
 
         self._add_struct(BACKGROUND_STRUCT)
         if "status" not in kwargs:
-            kwargs["status"] = u"queued"
+            kwargs["status"] = "queued"
 
         super(BackgroundJob, self).__init__(raw=kwargs)
 
@@ -61,22 +61,22 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         return self._get_single("status")
 
     def start(self):
-        self._set_with_struct("status", u"processing")
+        self._set_with_struct("status", "processing")
 
     def success(self):
-        self._set_with_struct("status", u"complete")
+        self._set_with_struct("status", "complete")
 
     def fail(self):
-        self._set_with_struct("status", u"error")
+        self._set_with_struct("status", "error")
 
     def cancel(self):
-        self._set_with_struct("status", u"cancelled")
+        self._set_with_struct("status", "cancelled")
 
     def is_failed(self):
-        return self._get_single("status") == u"error"
+        return self._get_single("status") == "error"
 
     def queue(self):
-        self._set_with_struct("status", u"queued")
+        self._set_with_struct("status", "queued")
 
     def add_audit_message(self, msg, timestamp=None):
         if timestamp is None:
@@ -100,7 +100,7 @@ BACKGROUND_STRUCT = {
         "id" :{"coerce" : "unicode"},
         "created_date" : {"coerce" : "utcdatetime"},
         "last_updated" : {"coerce" : "utcdatetime"},
-        "status" : {"coerce" : "unicode", "allowed_values" : [u"queued", u"processing", u"complete", u"error", u"cancelled"]},
+        "status" : {"coerce" : "unicode", "allowed_values" : ["queued", "processing", "complete", "error", "cancelled"]},
         "user" : {"coerce" : "unicode"},
         "action" : {"coerce" : "unicode"},
         "queue_id" : {"coerce" : "unicode"}

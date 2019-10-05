@@ -11,11 +11,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.username:
-        print "Please specify a username with the -u option"
+        print("Please specify a username with the -u option")
         exit()
 
     if not args.out:
-        print "Please specify and output file with the -o option"
+        print("Please specify and output file with the -o option")
         exit()
 
     issns = models.Journal.issns_by_owner(args.username)

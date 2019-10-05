@@ -390,19 +390,23 @@ input[type=password]:not(.form-control),
 }
 
 .input-tiny {
-    width: 60px;
+    width: 100%;
 }
 
 .input-large {
-    width: 210px;
+    width: 100%;
 }
 
 .input-xlarge {
-    width: 270px;
+    width: 100%;
 }
 
 .centre-text-container {
     text-align: center;
+}
+
+.form-area {
+    overflow-wrap: break-word;
 }
 
 .form-panel {
@@ -414,16 +418,38 @@ input[type=password]:not(.form-control),
 
 .form-panel-left {
     margin-left: -15px;
-    margin-right: 0;
+    margin-right: -15px;
     margin-bottom: 15px;
     padding: 15px;
 }
 
 .form-panel-right {
-    margin-left: 0;
+    margin-left: -15px;
     margin-right: -15px;
     margin-bottom: 15px;
     padding: 15px;
+}
+
+.well {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+@media (min-width:996px) {
+    .well {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .form-panel-left {
+        margin-right: 0;
+        margin-left: -15px;
+    }
+
+    .form-panel-right {
+        margin-left: 0;
+        margin-right: -15px;
+    }
 }
 
 #subject_tree .jstree-node {
@@ -477,6 +503,125 @@ input[type=password]:not(.form-control),
 /****************************************
  * Search interfaces custom styles
  */
+
+
+/* Search Controller styles for handling all the scaling up and down to mobile */
+
+.doaj-bs3-search-controller-toggle-share {
+    width: 100%;
+    padding: 5px 0;
+    margin-bottom: 10px;
+}
+
+.doaj-bs3-search-controller-reset {
+    width: 100%;
+    padding: 5px 0;
+    margin-bottom: 10px;
+}
+
+.doaj-bs3-search-controller-sort {
+    margin-bottom: 10px;
+}
+
+.doaj-bs3-search-controller-sort .form-group {
+    width: 100%;
+}
+
+.doaj-bs3-search-controller-sort .form-group .input-group {
+    width: 100%;
+}
+
+.doaj-bs3-search-controller-sort .form-group .input-group .input-group-btn {
+    width: 25%;
+}
+
+.doaj-bs3-search-controller-direction {
+    width: 100%;
+}
+
+
+.doaj-bs3-search-controller-search {
+    margin-bottom: 10px;
+}
+
+@media (max-width: 992px) {
+    .doaj-bs3-search-controller-reset::before {
+        content: "Clear search filters ";
+    }
+
+    .doaj-bs3-search-controller-searchcombo .form-group {
+        width: 100%;
+    }
+
+    .doaj-bs3-search-controller-searchcombo .form-group .input-group {
+        width: 100%;
+    }
+
+    .doaj-bs3-search-controller-searchcombo .form-group .input-group .input-group-btn {
+        width: 10%;
+    }
+
+    .form-inline .input-group>.form-control.doaj-bs3-search-controller-field {
+        width: 25%;
+    }
+
+    .form-inline .input-group>.form-control.doaj-bs3-search-controller-text {
+        width: 75%;
+    }
+
+    .doaj-bs3-search-controller-search {
+        width: 100%;
+    }
+}
+
+@media (min-width: 992px) {
+
+    .edges-bs3-facetview-search-controller .form-inline .input-group .doaj-bs3-search-controller-field {
+        width: 140px;
+    }
+
+    .edges-bs3-facetview-search-controller .form-inline .input-group .doaj-bs3-search-controller-text {
+        width: 158px;
+    }
+}
+
+@media (min-width: 1200px) {
+
+    .edges-bs3-facetview-search-controller .form-inline .input-group .doaj-bs3-search-controller-field {
+        width: 170px;
+    }
+
+    .edges-bs3-facetview-search-controller .form-inline .input-group .doaj-bs3-search-controller-text {
+        width: 200px;
+    }
+}
+
+.doaj-bs3-search-controller-share {
+    border: 1px solid #bce8f1;
+    color: #3a87ad;
+    background-color: #d9edf7;
+    padding: 10px;
+    margin: 10px 0px 10px 0px;
+    border-radius: 5px;
+}
+
+.doaj-bs3-search-controller-share-url {
+    width: 100%;
+    max-width: 100%;
+    color: #000000;
+    height: 5em;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.doaj-bs3-search-controller-embed {
+    width: 100%;
+    max-width: 100%;
+    color: #000000;
+    height: 5em;
+}
+
+/* ******end Search controller styles******* */
 
 #users .edges-bs3-results-fields-by-row-row:last-child {
     text-align: right;
@@ -809,10 +954,6 @@ footer > .box + .box {
 /* From suggestion form */
 #digital_archiving_policy_library {
     width: 150px;
-}
-
-button[target^="notes-"][target$="-container"] {
-    margin-left: 2em;
 }
 
 .form-horizontal.wide #subject-container .control-label,

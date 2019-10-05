@@ -56,17 +56,17 @@ class ArticleBulkDeleteBackgroundTask(AdminBackgroundTask):
         ids = self.get_param(params, 'ids')
 
         if not self._job_parameter_check(params):
-            raise BackgroundException(u"{}.run run without sufficient parameters".format(self.__class__.__name__))
+            raise BackgroundException("{}.run run without sufficient parameters".format(self.__class__.__name__))
 
         batches_count = len(ids) / self.BATCH_SIZE + (0 if len(ids) % self.BATCH_SIZE == 0 else 1)
-        job.add_audit_message(u"About to delete {} articles in {} batches".format(len(ids), batches_count))
+        job.add_audit_message("About to delete {} articles in {} batches".format(len(ids), batches_count))
 
         for batch_num, batch in enumerate(batch_up(ids, self.BATCH_SIZE), start=1):
             article_delete_q_by_ids = models.Article.make_query(should_terms={'_id': batch}, consistent_order=False)
             models.Article.delete_selected(query=article_delete_q_by_ids, snapshot=True)
-            job.add_audit_message(u"Deleted {} articles in batch {} of {}".format(len(batch), batch_num, batches_count))
+            job.add_audit_message("Deleted {} articles in batch {} of {}".format(len(batch), batch_num, batches_count))
 
-        job.add_audit_message(u"Deleted {} articles".format(len(ids)))
+        job.add_audit_message("Deleted {} articles".format(len(ids)))
 
     def cleanup(self):
         """
@@ -112,7 +112,7 @@ class ArticleBulkDeleteBackgroundTask(AdminBackgroundTask):
         cls.set_param(params, 'ids', kwargs['ids'])
 
         if not cls._job_parameter_check(params):
-            raise BackgroundException(u"{}.prepare run without sufficient parameters".format(cls.__name__))
+            raise BackgroundException("{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
 

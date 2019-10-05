@@ -54,7 +54,7 @@ def username(username):
                 acc = models.Account.pull(newdata['id'])
         if request.values.get('submit', False) == 'Generate':
             acc.generate_api_key()
-        for k, v in newdata.items():
+        for k, v in list(newdata.items()):
             if k not in ['marketing_consent', 'submit','password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
                 acc.data[k] = v
         if 'password' in newdata and not newdata['password'].startswith('sha1'):

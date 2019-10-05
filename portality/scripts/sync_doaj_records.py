@@ -40,7 +40,7 @@ def sync_type(es_type, source_server, destination_server, testing):
         s_total = s['hits']['total']
         s = s['hits']['hits']
     except KeyError:
-        print 'Skipping', es_type, 'does not have created_date in its mapping. Probably 0 documents, so no mapping beyond the dynamic template has been created, so no point in syncing this type anyway.'
+        print('Skipping', es_type, 'does not have created_date in its mapping. Probably 0 documents, so no mapping beyond the dynamic template has been created, so no point in syncing this type anyway.')
         return
 
     d_total = d['hits']['total']
@@ -56,21 +56,21 @@ def sync_type(es_type, source_server, destination_server, testing):
                 removed += 1
                 s.remove(s_hit)
 
-    print 'Putting', len(s), 'newest records into ES.'
+    print('Putting', len(s), 'newest records into ES.')
     # print 'You have 5 seconds to terminate this script with Ctrl+C if the number seems off.'
     # time.sleep(5)
 
     for diff in s:
         if testing:
-            print 'TESTING - would PUT', diff['_id']
+            print('TESTING - would PUT', diff['_id'])
         else:
             r = requests.put(
                 '{es_host}/{es_index}/{es_type}/{rec_id}'.format(es_host=config['ELASTIC_SEARCH_HOST'], es_index=config['ELASTIC_SEARCH_DB'], es_type=es_type, rec_id=diff['_id']),
                 data=json.dumps(diff['_source'])
             )
-            print diff['_id'], r.status_code
+            print(diff['_id'], r.status_code)
             if r.status_code not in [200, 201]:
-                print 'ES error for record', diff['_id'], 'HTTP status code:', r.status_code
+                print('ES error for record', diff['_id'], 'HTTP status code:', r.status_code)
 
     #print 'PUT', len(s), 'newest records into ES.'
 
