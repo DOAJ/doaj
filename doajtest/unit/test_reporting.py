@@ -134,6 +134,13 @@ class TestReporting(DoajTestCase):
         fo.write(data.replace('\0', ''))
         fo.close()
 
+        fi = open(yearfile, 'r')
+        data = fi.read()
+        fi.close()
+        fo = open(yearfile, 'w')
+        fo.write(data.replace('\0', ''))
+        fo.close()
+
         f = open(monthfile, "r")
         reader = csv.reader(f)
         for row in reader:
