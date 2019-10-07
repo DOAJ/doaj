@@ -8,13 +8,14 @@ also be backed up by models, so have a look at the example models and use them /
 new ones as required too.
 """
 import os, sys
+import tzlocal
+import pytz
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
 from flask_login import login_user, current_user
 
 from datetime import datetime
-import tzlocal
-import pytz
+from collections import OrderedDict
 
 import portality.models as models
 from portality.core import app, initialise_index
@@ -59,21 +60,6 @@ app.register_blueprint(doaj)
 # to the app being run directly by python portality/app.py
 # putting it here ensures it will run under any web server
 initialise_index(app)
-
-"""
-FIXME: this needs to be sorted out - they shouldn't be in here and in doaj.py, but there is an issue
-with the 404 pages which requires them
-"""
-try:
-    if sys.version_info.major == 2 and sys.version_info.minor < 7:
-        from portality.ordereddict import OrderedDict
-except AttributeError:
-    if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-        from portality.ordereddict import OrderedDict
-    else:
-        from collections import OrderedDict
-else:
-    from collections import OrderedDict
 
 # The key should correspond to the sponsor logo name in /static/doaj/images/sponsors without the extension for
 # consistency - no code should rely on this though. Sponsors are in tiers: gold, silver, bronze, and patron.
