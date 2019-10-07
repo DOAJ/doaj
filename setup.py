@@ -43,7 +43,7 @@ setup(
         "awscli",
         "boto3",
         "flask-debugtoolbar"
-    ] + (["setproctitle"] if "linux" in sys.platform else []),
+    ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     url='http://cottagelabs.com/',
     author='Cottage Labs',
     author_email='us@cottagelabs.com',
