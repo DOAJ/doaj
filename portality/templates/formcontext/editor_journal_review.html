@@ -41,6 +41,7 @@
     </div>
 
     {# include the base application form which contains all the biblio data #}
+    {% set include_doaj_seal = False %}
     {% include 'formcontext/_base_journal_form.html' %}
 
     <div class="row">
