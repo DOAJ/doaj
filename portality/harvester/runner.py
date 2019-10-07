@@ -1,6 +1,6 @@
 from portality.harvester import workflow
 from portality.core import app, initialise_index
-from models import HarvesterProgressReport as Report
+from portality.models.harvester import HarvesterProgressReport as Report
 import flask.logging
 
 from setproctitle import setproctitle

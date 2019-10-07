@@ -1,4 +1,4 @@
-import json
+import json, signal, datetime
 from functools import wraps
 from flask import request, abort, redirect, flash, url_for, render_template, make_response
 from flask_login import login_user, current_user
@@ -7,6 +7,7 @@ from portality.api.v1.common import Api401Error
 
 from portality.core import app
 from portality.models import Account
+from portality.models.harvester import HarvesterProgressReport as Report
 
 
 def swag(swag_summary, swag_spec):
@@ -99,3 +100,43 @@ def write_required(script=False, api=False):
 
         return decorated_view
     return decorator
+
+
+class CaughtTermException(Exception):
+    pass
+
+
+def _term_handler(signum, frame):
+    app.logger.warning("Harvester terminated with signal " + str(signum))
+    raise CaughtTermException
+
+
+def capture_sigterm(fn):
+    # Register the SIGTERM handler to raise an exception, allowing graceful exit.
+    signal.signal(signal.SIGTERM, _term_handler)
+
+    """ Decorator which allows graceful exit on SIGTERM """
+    @wraps(fn)
+    def decorated_fn(*args, **kwargs):
+        try:
+            fn(*args, **kwargs)
+        except (CaughtTermException, KeyboardInterrupt):
+            app.logger.warning(u"Harvester caught SIGTERM. Exiting.")
+            report = Report.write_report()
+            if app.config.get("EMAIL_ON_EVENT", False):
+                to = app.config.get("EMAIL_RECIPIENTS", None)
+                fro = app.config.get("SYSTEM_EMAIL_FROM")
+
+                if to is not None:
+                    from portality import app_email as mail
+                    mail.send_mail(
+                        to=app.config["EMAIL_RECIPIENTS"],
+                        fro=fro,
+                        subject="DOAJ Harvester caught SIGTERM at {0}".format(
+                            datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")),
+                        msg_body=report
+                    )
+            app.logger.info(report)
+            exit(1)
+
+    return decorated_fn
