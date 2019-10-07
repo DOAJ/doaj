@@ -1,6 +1,6 @@
 from builtins import object
 from portality.lib import dataobj
-from service import dao
+from portality.dao import DomainObject
 from portality.lib import dates
 
 
@@ -23,7 +23,9 @@ class HarvesterPlugin(object):
         raise NotImplementedError()
 
 
-class HarvestState(dataobj.DataObj, dao.HarvestStateDAO):
+class HarvestState(dataobj.DataObj, DomainObject):
+    __type__ = 'harvester_state'
+
     def __init__(self, raw=None):
         struct = {
             "fields" : {
@@ -49,6 +51,19 @@ class HarvestState(dataobj.DataObj, dao.HarvestStateDAO):
         }
 
         super(HarvestState, self).__init__(raw, struct)
+
+    @classmethod
+    def find_by_issn(cls, account, issn):
+        q = ISSNQuery(account, issn)
+        obs = cls.object_query(q.query())
+        if len(obs) > 0:
+            return obs[0]
+        return None
+
+    @classmethod
+    def find_by_account(cls, account):
+        q = AccountQuery(account)
+        return cls.scroll(q=q.query())
 
     def _coerce_and_kwargs(self, path, dir):
         type, struct, instructions = dataobj.construct_lookup(path, self._struct)
@@ -175,3 +190,36 @@ class HarvesterProgressReport(object):
         report.append("Error messages/import failures:")
         report += cls.error_messages
         return "\n".join(report)
+
+
+class ISSNQuery(object):
+    def __init__(self, account, issn):
+        self.issn = issn
+        self.account = account
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"issn.exact" : self.issn}},
+                        {"term" : {"account.exact" : self.account}}
+                    ]
+                }
+            }
+        }
+
+class AccountQuery(object):
+    def __init__(self, account):
+        self.account = account
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"account.exact" : self.account}}
+                    ]
+                }
+            }
+        }

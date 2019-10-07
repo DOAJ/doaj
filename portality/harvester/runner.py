@@ -6,9 +6,9 @@ import flask.logging
 from setproctitle import setproctitle
 import psutil, time, datetime
 
-STARTING_PROCTITLE = app.config.get('STARTING_PROCTITLE', 'harvester: starting')
-RUNNING_PROCTITLE = app.config.get('RUNNING_PROCTITLE', 'harvester: running')
-MAX_WAIT = app.config.get('MAX_WAIT', 10)
+STARTING_PROCTITLE = app.config.get('HARVESTER_STARTING_PROCTITLE', 'harvester: starting')
+RUNNING_PROCTITLE = app.config.get('HARVESTER_RUNNING_PROCTITLE', 'harvester: running')
+MAX_WAIT = app.config.get('HARVESTER_MAX_WAIT', 10)
 
 
 def run_only_once():
@@ -57,8 +57,8 @@ if __name__ == "__main__":
     # Send an email when the harvester starts.
     mail_prereqs = False
     fro = app.config.get("SYSTEM_EMAIL_FROM")
-    if app.config.get("EMAIL_ON_EVENT", False):
-        to = app.config.get("EMAIL_RECIPIENTS", None)
+    if app.config.get("HARVESTER_EMAIL_ON_EVENT", False):
+        to = app.config.get("HARVESTER_EMAIL_RECIPIENTS", None)
 
         if to is not None:
             mail_prereqs = True
@@ -81,7 +81,7 @@ if __name__ == "__main__":
         )
         flask.logging.create_logger(app)
 
-    accs = list(app.config.get("API_KEYS", {}).keys())
+    accs = list(app.config.get("HARVESTER_API_KEYS", {}).keys())
     for account_id in accs:
         workflow.HarvesterWorkflow.process_account(account_id)
 
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     # If the harvester finishes normally, we can email the report.
     if mail_prereqs:
         mail.send_mail(
-            to=app.config["EMAIL_RECIPIENTS"],
+            to=app.config["HARVESTER_EMAIL_RECIPIENTS"],
             fro=fro,
             subject="DOAJ Harvester finished at {0}".format(datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")),
             msg_body=report

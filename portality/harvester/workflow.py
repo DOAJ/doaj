@@ -128,4 +128,4 @@ class HarvesterWorkflow(object):
 
     @classmethod
     def get_api_key(cls, account_id):
-        return app.config.get("API_KEYS", {}).get(account_id)
+        return app.config.get("HARVESTER_API_KEYS", {}).get(account_id)

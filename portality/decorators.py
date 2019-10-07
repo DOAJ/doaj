@@ -123,14 +123,14 @@ def capture_sigterm(fn):
         except (CaughtTermException, KeyboardInterrupt):
             app.logger.warning(u"Harvester caught SIGTERM. Exiting.")
             report = Report.write_report()
-            if app.config.get("EMAIL_ON_EVENT", False):
-                to = app.config.get("EMAIL_RECIPIENTS", None)
+            if app.config.get("HARVESTER_EMAIL_ON_EVENT", False):
+                to = app.config.get("HARVESTER_EMAIL_RECIPIENTS", None)
                 fro = app.config.get("SYSTEM_EMAIL_FROM")
 
                 if to is not None:
                     from portality import app_email as mail
                     mail.send_mail(
-                        to=app.config["EMAIL_RECIPIENTS"],
+                        to=to,
                         fro=fro,
                         subject="DOAJ Harvester caught SIGTERM at {0}".format(
                             datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")),

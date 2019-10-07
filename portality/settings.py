@@ -903,3 +903,38 @@ DOAJ_SEARCH_PORT = 80
 DOAJ_QUERY_ENDPOINT = "query"
 
 DOAJ_SEARCH_TYPE = "journal,article"
+
+DOAJ_API_BASE_URL = "https://doaj.org/api/v1/"
+
+
+## EPMC Client configuration
+
+EPMC_REST_API = "http://www.ebi.ac.uk/europepmc/webservices/rest/"
+EPMC_TARGET_VERSION = "6.1"
+
+# General harvester configuraiton
+
+HARVESTERS = [
+    "portality.harvester.epmc.epmc_harvester.EPMCHarvester"
+]
+
+INITIAL_HARVEST_DATE = "2015-12-01T00:00:00Z"
+
+# The mapping from account ids to API keys.  MUST NOT be checked into the repo, put these
+# in the local.cfg instead
+HARVESTER_API_KEYS = {
+
+}
+
+EPMC_HARVESTER_THROTTLE = 0.2
+
+# Process name while harvester is starting, running
+HARVESTER_STARTING_PROCTITLE = 'harvester: starting'
+HARVESTER_RUNNING_PROCTITLE = 'harvester: running'
+
+# Minutes we wait between terminate and kill
+HARVESTER_MAX_WAIT = 10
+
+# Email notifications
+HARVESTER_EMAIL_ON_EVENT = False
+HARVESTER_EMAIL_RECIPIENTS = None
