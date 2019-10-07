@@ -49,11 +49,6 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
     if app.config.get('CC_ALL_EMAILS_TO', None) is not None:
         bcc.append(app.config.get('CC_ALL_EMAILS_TO'))
 
-    # ensure everything is unicode
-    unicode_params = {}
-    for k, v in template_params.items():
-        unicode_params[k] = to_unicode(v)
-
     # Get the body text from the msg_body parameter (for a contact form),
     # or render from a template.
     # TODO: This could also find and render an HTML template if present
@@ -61,10 +56,10 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
         plaintext_body = msg_body
     else:
         try:
-            plaintext_body = render_template(template_name, **unicode_params)
+            plaintext_body = render_template(template_name, **template_params)
         except:
             with app.test_request_context():
-                plaintext_body = render_template(template_name, **unicode_params)
+                plaintext_body = render_template(template_name, **template_params)
 
     # create a message
     msg = Message(subject=subject,
@@ -88,18 +83,6 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
             app.logger.info("Email template {0} sent.\nto:{1}\tsubject:{2}".format(template_name, to, subject))
     except Exception as e:
         raise EmailException(e)
-
-
-def to_unicode(val):
-    if isinstance(val, str):
-        return val
-    elif isinstance(val, str):
-        try:
-            return val.decode("utf8", "replace")
-        except UnicodeDecodeError:
-            raise ValueError("Could not decode string")
-    else:
-        return val
 
 
 def make_attachment(filename, content_type, data, disposition=None, headers=None):

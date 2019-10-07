@@ -3,7 +3,7 @@ from flask import url_for
 from portality.models import Journal, Article
 from portality.core import app
 from copy import deepcopy
-from portality.util import parse_date
+from portality.lib import dates
 from portality.lib import analytics
 
 JOURNAL_SCHEMA_KEYS = ['doi', 'aulast', 'aufirst', 'auinit', 'auinit1', 'auinitm', 'ausuffix', 'au', 'aucorp', 'atitle',
@@ -312,7 +312,7 @@ class OpenURLRequest(object):
     def date(self, val):
         if val:
             try:
-                parsed_date = parse_date(val)
+                parsed_date = dates.parse(val)
                 val = parsed_date.year
             except ValueError:
                 val = None
