@@ -126,10 +126,26 @@ class TestReporting(DoajTestCase):
                 yearfile = o
 
         table_month = []
-        with codecs.open(monthfile) as f:
-            reader = csv.reader(f)
-            for row in reader:
-                table_month.append(row)
+
+        fi = open(monthfile, 'r')
+        data = fi.read()
+        fi.close()
+        fo = open(monthfile, 'w')
+        fo.write(data.replace('\0', ''))
+        fo.close()
+
+        fi = open(yearfile, 'r')
+        data = fi.read()
+        fi.close()
+        fo = open(yearfile, 'w')
+        fo.write(data.replace('\0', ''))
+        fo.close()
+
+        f = open(monthfile, "r")
+        reader = csv.reader(f)
+        for row in reader:
+            r = row
+            table_month.append(r)
 
         expected_month = self._as_output(MONTH_COMPLETE_OUTPUT)
         assert table_month == expected_month
