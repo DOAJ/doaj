@@ -224,8 +224,15 @@ def string_canonicalise(canon, allow_fail=False):
 ## The core data object which manages all the interactions
 ## with the underlying data member variable
 
-class DataSchemaException(Exception):
+class DataObjException(Exception):
+    def __init__(self, msg, *args, **kwargs):
+        self.message = msg
+        super(DataObjException, self).__init__(*args, **kwargs)
+
+
+class DataSchemaException(DataObjException):
     pass
+
 
 class DataObj(object):
     """
@@ -866,7 +873,7 @@ class DataObj(object):
 ############################################################
 ## Primitive object schema validation
 
-class ObjectSchemaValidationError(Exception):
+class ObjectSchemaValidationError(DataObjException):
     pass
 
 
@@ -930,11 +937,12 @@ def validate(obj, schema):
 ############################################################
 ## Data structure coercion
 
-class DataStructureException(Exception):
+class DataStructureException(DataObjException):
     pass
 
-class ConstructException(Exception):
+class ConstructException(DataObjException):
     pass
+
 
 def construct_validate(struct, context=""):
     """
