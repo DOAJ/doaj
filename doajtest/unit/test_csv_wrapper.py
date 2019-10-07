@@ -84,8 +84,8 @@ class TestCsvWrapper(DoajTestCase):
         wr_csv.set_column('issn4', [19, None, 'i4a3', 'i4a4'])
         wr_csv.save()
 
-        wr_lines = open(wr_csv.file_object.name, 'rb').readlines()
-        gold_lines = open(self.gold_csv.name, 'rb').readlines()
+        wr_lines = open(wr_csv.file_object.name, 'r').readlines()
+        gold_lines = open(self.gold_csv.name, 'r').readlines()
         assert gold_lines == wr_lines
 
     def test_05_write_02(self):
@@ -125,6 +125,6 @@ class TestCsvWrapper(DoajTestCase):
         wr_csv.set_column(u'иссн1', [u'ила1', u'ила2', u'ила3', u'ила4'])
         wr_csv.save()
 
-        wr_lines = open(wr_csv.file_object.name, 'rb').readlines()
-        gold_lines_unicode = open(self.gold_csv_unicode.name, 'rb').readlines()
+        wr_lines = open(wr_csv.file_object.name, 'r').readlines()
+        gold_lines_unicode = open(self.gold_csv_unicode.name, 'r').readlines()
         assert gold_lines_unicode == wr_lines
