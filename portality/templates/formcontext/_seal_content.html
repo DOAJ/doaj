@@ -21,9 +21,9 @@
 
 {# If the form contains the seal checkbox show that, else show informative text #}
 {%  if form_context.check_field_group_exists("seal") %}
-{% autoescape off %}
-{{ form_context.render_field_group("seal", group_cfg={"label_width" : 4}) }}
-{% endautoescape %}
+    {% autoescape off %}
+    {{ form_context.render_field_group("seal", group_cfg={"label_width" : 4}) }}
+    {% endautoescape %}
 {%  else %}
-<p>One cannot apply for the Seal. The Seal is awarded based on the information provided in the application. If you have any questions about any of the qualifiers, contact us.</p>
+    <p>One cannot apply for the Seal. The Seal is awarded based on the information provided in the application. If you have any questions about any of the qualifiers, contact us.</p>
 {% endif %}
