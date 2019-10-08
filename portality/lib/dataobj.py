@@ -1,5 +1,8 @@
 # -*- coding: UTF-8 -*-
 
+from builtins import str
+from builtins import range
+from builtins import object
 from portality.lib import dates
 from portality.datasets import get_country_code, get_currency_code
 from copy import deepcopy
@@ -572,7 +575,7 @@ class DataObj(object):
         props = []
         try:
             # props = og(self, 'properties').keys()
-            props = self._properties.keys()
+            props = list(self._properties.keys())
         except AttributeError:
             pass
 
@@ -582,7 +585,7 @@ class DataObj(object):
                 if self._struct:
                     data_attrs = construct_data_keys(self._struct)
                 else:
-                    data_attrs = self.data.keys()
+                    data_attrs = list(self.data.keys())
         except AttributeError:
             pass
 
@@ -655,7 +658,7 @@ class DataObj(object):
                 for k, v in matchsub.items():
                     if entry.get(k) == v:
                         matches += 1
-                if matches == len(matchsub.keys()):
+                if matches == len(list(matchsub.keys())):
                     removes.append(i)
             i += 1
 
@@ -688,7 +691,7 @@ class DataObj(object):
             context = stack.pop()
             todelete = []
             for k, v in context.items():
-                if isinstance(v, dict) and len(v.keys()) == 0:
+                if isinstance(v, dict) and len(list(v.keys())) == 0:
                     todelete.append(k)
             for d in todelete:
                 del context[d]
@@ -967,7 +970,7 @@ def construct_validate(struct, context=""):
     }
     """
     # check that only the allowed keys are present
-    keys = struct.keys()
+    keys = list(struct.keys())
     for k in keys:
         if k not in ["fields", "objects", "lists", "required", "structs"]:
             c = context if context != "" else "root"
@@ -1062,7 +1065,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
 
     # check that all the required fields are there
     try:
-        keys = obj.keys()
+        keys = list(obj.keys())
     except:
         c = context if context != "" else "root"
         raise DataStructureException("Expected an object at {c} but found something else instead".format(c=c))
@@ -1076,7 +1079,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
     # Note that since the construct mechanism copies fields explicitly, silent_prune literally just turns off this
     # check
     if not silent_prune:
-        allowed = struct.get("fields", {}).keys() + struct.get("objects", []) + struct.get("lists", {}).keys()
+        allowed = list(struct.get("fields", {}).keys()) + struct.get("objects", []) + list(struct.get("lists", {}).keys())
         for k in keys:
             if k not in allowed:
                 c = context if context != "" else "root"
@@ -1300,11 +1303,11 @@ def merge_outside_construct(struct, target, source):
 
     for source_key in source.keys():
         # if the source_key is one of the struct's fields, ignore it
-        if source_key in struct.get("fields", {}).keys():
+        if source_key in list(struct.get("fields", {}).keys()):
             continue
 
         # if the source_key is one of the struct's lists, ignore it
-        if source_key in struct.get("lists", {}).keys():
+        if source_key in list(struct.get("lists", {}).keys()):
             continue
 
         # if the source_key is one of the struct's object, we will need to go deeper

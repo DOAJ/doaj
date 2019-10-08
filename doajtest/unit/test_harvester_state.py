@@ -48,7 +48,7 @@ class TestState(DoajTestCase):
 
         # make one from source
         source = HarvestStateFactory.harvest_state()
-        hs3 = models.HarvestState(source)
+        hs3 = models.HarvestState(**source)
         hs3.save()
 
     def test_02_harvest_state_dao(self):

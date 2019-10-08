@@ -266,6 +266,16 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
+    "str": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
     "unicode_upper": {
         "type": "string",
         "fields": {
@@ -332,6 +342,7 @@ MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['journal_history'] = {'journal_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['harvester_state'] = {'harvester_state': DEFAULT_DYNAMIC_MAPPING}
 
 # ========================
 # QUERY SETTINGS

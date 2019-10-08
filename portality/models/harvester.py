@@ -26,7 +26,7 @@ class HarvesterPlugin(object):
 class HarvestState(dataobj.DataObj, DomainObject):
     __type__ = 'harvester_state'
 
-    def __init__(self, raw=None):
+    def __init__(self, **raw):
         struct = {
             "fields" : {
                 "id" : {"coerce" : "unicode"},
@@ -50,6 +50,8 @@ class HarvestState(dataobj.DataObj, DomainObject):
             }
         }
 
+        if "_source" in raw:
+            raw = raw["_source"]
         super(HarvestState, self).__init__(raw, struct)
 
     @classmethod
