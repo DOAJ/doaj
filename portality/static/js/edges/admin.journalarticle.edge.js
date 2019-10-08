@@ -285,7 +285,7 @@ $.extend(true, doaj, {
                         {'display':'Date added to DOAJ','field':'created_date'},
                         {'display':'Last updated','field':'last_updated'},
                         {'display':'Title','field':'index.unpunctitle.exact'},
-                        {'display':'Article: Publication date','field':['bibjson.year.exact', 'bibjson.month.exact']}
+                        {'display':'Article: Publication date','field':"index.date"}
                     ],
                     fieldOptions: [
                         {'display':'Title','field':'index.title'},
