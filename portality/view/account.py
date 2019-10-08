@@ -158,8 +158,6 @@ def forgot():
             return render_template('account/forgot.html')
 
         # if we get to here, we have a user account to reset
-        #newpass = util.generate_password()
-        #account.set_password(newpass)
         reset_token = uuid.uuid4().hex
         account.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
         account.save()

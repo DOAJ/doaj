@@ -1,10 +1,5 @@
 import pycountry
-import sys
-
-if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-    from portality.ordereddict import OrderedDict
-else:
-    from collections import OrderedDict
+from collections import OrderedDict
 
 # Gather the countries with 2-character codes
 country_options = [('', '')]

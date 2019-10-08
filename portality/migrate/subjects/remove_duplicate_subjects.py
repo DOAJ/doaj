@@ -5,7 +5,6 @@ import json
 from portality import models
 from datetime import datetime
 from portality.core import app
-from portality.util import unicode_dict
 
 batch_size = 1000
 
@@ -25,7 +24,7 @@ def rem_dup_sub(conn, write_changes=False):
             article_model = models.Article(_source=a)
 
             # Remove the duplicates
-            subjects = unicode_dict(article_model.bibjson().subjects())
+            subjects = article_model.bibjson().subjects()
             newsub = []
 
             for sub in subjects:

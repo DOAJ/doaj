@@ -8,7 +8,7 @@ suggestion_iterator = models.Suggestion.iterall(page_size=10000)
 for s in suggestion_iterator:
 
     update_deposit_policies = {
-        'H\xc3\xa9loise'.decode('utf-8'): 'H\xc3\xa9lo\xc3\xafse'.decode('utf-8'),
+        'Héloïse': 'Héloïse',
         'Diadorum': 'Diadorim'
     }
 

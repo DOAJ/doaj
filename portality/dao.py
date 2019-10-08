@@ -1,4 +1,5 @@
-import UserDict, requests, uuid
+import requests, uuid
+from collections import UserDict
 from copy import deepcopy
 from datetime import datetime, timedelta
 import time
@@ -22,7 +23,7 @@ class ElasticSearchWriteException(Exception):
     pass
 
 
-class DomainObject(UserDict.IterableUserDict, object):
+class DomainObject(UserDict, object):
     __type__ = None                                                       # set the type on the model that inherits this
 
     def __init__(self, **kwargs):
