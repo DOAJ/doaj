@@ -14,7 +14,7 @@ from portality.ui.messages import Messages
 from portality import lock
 from portality.crosswalks.article_form import ArticleFormXWalk
 
-from huey.exceptions import QueueWriteException
+from huey.exceptions import TaskException
 
 import os, uuid
 from time import sleep
@@ -156,7 +156,7 @@ def upload_file():
     try:
         job = IngestArticlesBackgroundTask.prepare(current_user.id, upload_file=f, schema=schema, url=url, previous=previous)
         IngestArticlesBackgroundTask.submit(job)
-    except (BackgroundException, QueueWriteException) as e:
+    except (BackgroundException, TaskException) as e:
         magic = str(uuid.uuid1())
         flash("An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the ID " + magic)
         app.logger.exception('File upload error. ' + magic)

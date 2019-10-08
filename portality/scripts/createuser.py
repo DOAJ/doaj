@@ -30,7 +30,7 @@ def create_user(username, email, password, roles):
     acc.set_password(password)
     acc.save()
 
-    print((prefix + username))
+    print(prefix + username)
 
 
 def input_password(username):

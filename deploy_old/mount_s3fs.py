@@ -80,7 +80,7 @@ Please use an empty directory as the mount target.
 
     if args.permanent:
         if permanently_mounted:
-            print("S3FS permanent mount for bucket {} already exists, not doing anything.\n" \
+            print ("S3FS permanent mount for bucket {} already exists, not doing anything.\n" \
                   'If you think the /etc/fstab entry is wrong, remove it manually and rerun this script with --permanent.')
             sys.exit(0)
 
@@ -92,7 +92,7 @@ Please use an empty directory as the mount target.
         print()
         subprocess.check_call('echo "{}" | sudo tee -a /etc/fstab'.format(fstab_entry), shell=True)
         print()
-        print('^ the above entry has been appended to your /etc/fstab')
+        print ('^ the above entry has been appended to your /etc/fstab')
         permanently_mounted = check_permanent_mount(bucket)
 
     if args.unmount:
@@ -100,24 +100,24 @@ Please use an empty directory as the mount target.
             subprocess.check_call(["sudo", 'umount', app.config['S3FS_MOUNT_DIR']])
         except subprocess.CalledProcessError:
             print()
-            print('Unmounting failed. This can happen if you try to unmount too soon after you mounted. If the error is something like "device busy", wait for 5-10 seconds and rerun the unmount.')
+            print ('Unmounting failed. This can happen if you try to unmount too soon after you mounted. If the error is something like "device busy", wait for 5-10 seconds and rerun the unmount.')
             print()
             raise
 
-        print('S3FS UNmounted bucket {} from directory {} succesfully'.format(bucket, app.config['S3FS_MOUNT_DIR']))
+        print ()
         sys.exit(0)
 
     # let's mount then
     if permanently_mounted:
         print()
-        print("Mounting using the permanent mount in /etc/fstab.\n" \
+        print ("Mounting using the permanent mount in /etc/fstab.\n" \
               "If this script completes successfully but you can't use the mountpoint as an S3 file system, " \
               "check your /etc/fstab and compare against your local S3FS_* DOAJ config vars, then report a bug.")
 
         subprocess.check_call(['sudo', 'mount', app.config['S3FS_MOUNT_DIR']])
     else:
         print()
-        print('Mounting with temporary mount.')
+        print ('Mounting with temporary mount.')
         subprocess.check_call(["s3fs", bucket, app.config['S3FS_MOUNT_DIR'], '-o', credentials_arg, '-o', 'url=https://s3.amazonaws.com'])
 
-    print('S3FS mounted bucket {} at directory {} succesfully'.format(bucket, app.config['S3FS_MOUNT_DIR']))
+    print ('S3FS mounted bucket {} at directory {} succesfully'.format(bucket, app.config['S3FS_MOUNT_DIR']))

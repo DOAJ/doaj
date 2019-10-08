@@ -109,7 +109,7 @@ def compare_lang_schemas(schema_old, schema_new, ofile):
     with open(ofile, 'w') as o:
         o.writelines(l.encode('utf8') for l in diff)
 
-    print(("Diff saved to " + ofile))
+    print("Diff saved to " + ofile)
 
 
 if __name__ == '__main__':
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     dest_path = paths.rel2abs(__file__, '..', 'static', 'doaj', args.filename)
 
     if os.path.exists(dest_path):
-        print(('Schema already exists with name {n} - replace? [y/N]'.format(n=args.filename)))
+        print('Schema already exists with name {n} - replace? [y/N]'.format(n=args.filename))
         resp = input('Your existing file will be retained as {fn}.old : '.format(fn=args.filename))
         if resp.lower() == 'y':
             os.rename(dest_path, dest_path + '.old')

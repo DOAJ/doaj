@@ -1,6 +1,7 @@
 import os, csv
 from lxml import etree
-from portality import article, models, settings
+from portality import models, settings
+from portality.models import article
 from datetime import datetime
 
 start = datetime.now()

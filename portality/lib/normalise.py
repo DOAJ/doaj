@@ -1,4 +1,4 @@
-import urllib.parse
+from urllib.parse import urlparse, urlunparse, ParseResult
 from portality import regex
 
 def normalise_url(url):
@@ -25,7 +25,7 @@ def normalise_url(url):
     if "://" not in url:
         url = "http://" + url
 
-    u = urllib.parse.urlparse(url)
+    u = urlparse(url)
 
     if u.netloc is None or u.netloc == "":
         raise ValueError("Could not extract a normalised URL from '{x}'".format(x=url))
@@ -33,8 +33,8 @@ def normalise_url(url):
     if u.scheme not in schemes:
         raise ValueError("URL must be at http(s) or ftp(s), found '{x}'".format(x=u.netloc))
 
-    n = urllib.parse.ParseResult(None, u.netloc, u.path, u.params, u.query, u.fragment)
-    return urllib.parse.urlunparse(n)
+    n = ParseResult(netloc=u.netloc, path=u.path, params=u.params, query=u.query, fragment=u.fragment, scheme='')
+    return urlunparse(n)
 
 
 def normalise_doi(doi):

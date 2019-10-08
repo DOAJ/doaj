@@ -78,7 +78,7 @@ def search_applications(search_query):
     try:
         results = DiscoveryApi.search('application', current_user, search_query, page, psize, sort)
     except DiscoveryException as e:
-        raise Api400Error(e.message)
+        raise Api400Error(str(e))
 
     return jsonify_models(results)
 
@@ -106,7 +106,7 @@ def search_journals(search_query):
     try:
         results = DiscoveryApi.search('journal', None, search_query, page, psize, sort)
     except DiscoveryException as e:
-        raise Api400Error(e.message)
+        raise Api400Error(str(e))
 
     return jsonify_models(results)
 
@@ -135,7 +135,7 @@ def search_articles(search_query):
     try:
         results = DiscoveryApi.search('article', None, search_query, page, psize, sort)
     except DiscoveryException as e:
-        raise Api400Error(e.message)
+        raise Api400Error(str(e))
 
     return jsonify_models(results)
 

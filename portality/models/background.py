@@ -1,6 +1,7 @@
 from portality.lib import dataobj, dates
 from portality import dao
 
+
 class BackgroundJob(dataobj.DataObj, dao.DomainObject):
     __type__ = "background_job"
 
@@ -81,7 +82,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
     def add_audit_message(self, msg, timestamp=None):
         if timestamp is None:
             timestamp = dates.now_with_microseconds()
-        obj = {"message" : msg, "timestamp": timestamp}
+        obj = {"message": msg, "timestamp": timestamp}
         self._add_to_list_with_struct("audit", obj)
 
 
@@ -96,27 +97,27 @@ class StdOutBackgroundJob(BackgroundJob):
 
 
 BACKGROUND_STRUCT = {
-    "fields" : {
-        "id" :{"coerce" : "unicode"},
-        "created_date" : {"coerce" : "utcdatetime"},
-        "last_updated" : {"coerce" : "utcdatetime"},
-        "status" : {"coerce" : "unicode", "allowed_values" : ["queued", "processing", "complete", "error", "cancelled"]},
-        "user" : {"coerce" : "unicode"},
-        "action" : {"coerce" : "unicode"},
-        "queue_id" : {"coerce" : "unicode"}
+    "fields": {
+        "id": {"coerce": "unicode"},
+        "created_date": {"coerce": "utcdatetime"},
+        "last_updated": {"coerce": "utcdatetime"},
+        "status": {"coerce": "unicode", "allowed_values": ["queued", "processing", "complete", "error", "cancelled"]},
+        "user": {"coerce": "unicode"},
+        "action": {"coerce": "unicode"},
+        "queue_id": {"coerce": "unicode"}
     },
-    "lists" : {
-        "audit" : {"contains" : "object"}
+    "lists": {
+        "audit": {"contains": "object"}
     },
-    "objects" : [
+    "objects": [
         "params",           # Note that these do not have structs specified, which allows them to have arbitrary content
         "reference"
     ],
-    "structs" : {
-        "audit" : {
-            "fields" : {
-                "message" : {"coerce" : "unicode"},
-                "timestamp" : {"coerce" : "utcdatetimemicros"}
+    "structs": {
+        "audit": {
+            "fields": {
+                "message": {"coerce": "unicode"},
+                "timestamp": {"coerce": "utcdatetimemicros"}
             }
         }
     }

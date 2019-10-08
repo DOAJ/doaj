@@ -57,7 +57,7 @@ class ApplicationsCrudApi(CrudApi):
         try:
             ia = IncomingApplication(data)
         except dataobj.DataStructureException as e:
-            raise Api400Error(e.message)
+            raise Api400Error(str(e))
 
         # if that works, convert it to a Suggestion object
         ap = ia.to_application_model()
@@ -105,7 +105,7 @@ class ApplicationsCrudApi(CrudApi):
                     fc.finalise(save_target=save_target, email_alert=False)
                     return fc.target
                 except formcontext.FormContextException as e:
-                    raise Api400Error(e.message)
+                    raise Api400Error(str(e))
                 finally:
                     if jlock is not None: jlock.delete()
                     if alock is not None: alock.delete()
@@ -130,7 +130,7 @@ class ApplicationsCrudApi(CrudApi):
                     fc.finalise(save_target=save_target, email_alert=False)
                     return fc.target
                 except formcontext.FormContextException as e:
-                    raise Api400Error(e.message)
+                    raise Api400Error(str(e))
             else:
                 raise Api400Error(cls._validation_message(fc))
 
@@ -190,7 +190,7 @@ class ApplicationsCrudApi(CrudApi):
         try:
             ia = IncomingApplication(data)
         except dataobj.DataStructureException as e:
-            raise Api400Error(e.message)
+            raise Api400Error(str(e))
 
         # now see if there's something for us to update
         ap = models.Suggestion.pull(id)
@@ -247,7 +247,7 @@ class ApplicationsCrudApi(CrudApi):
                     fc.finalise(email_alert=False)
                     return fc.target
                 except formcontext.FormContextException as e:
-                    raise Api400Error(e.message)
+                    raise Api400Error(str(e))
                 finally:
                     if jlock is not None: jlock.delete()
                     if alock is not None: alock.delete()
@@ -273,7 +273,7 @@ class ApplicationsCrudApi(CrudApi):
                     fc.finalise(email_alert=False)
                     return fc.target
                 except formcontext.FormContextException as e:
-                    raise Api400Error(e.message)
+                    raise Api400Error(str(e))
             else:
                 raise Api400Error(cls._validation_message(fc))
 

@@ -121,7 +121,10 @@ class DateFormat(object):
 
 
 def make_set_spec(setspec):
-    return base64.urlsafe_b64encode(setspec).replace("=", "~")
+    s = setspec.replace('=', '~')
+    setspec_utf8 = s.encode("utf-8")
+    b = base64.urlsafe_b64encode(setspec_utf8)
+    return b
 
 
 def decode_set_spec(setspec):
@@ -173,7 +176,7 @@ def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None,
     if start_after is not None:
         d["a"] = start_after
     j = json.dumps(d)
-    b = base64.urlsafe_b64encode(j)
+    b = base64.urlsafe_b64encode(j.encode('utf-8'))
     return b
 
 
@@ -316,7 +319,10 @@ def valid_XML_char_ordinal(i):
 
 def clean_unreadable(input_string):
     try:
-        return _illegal_xml_chars_RE.sub("", input_string)
+        if type(input_string) == str:
+            return _illegal_xml_chars_RE.sub("", input_string)
+        else:
+            return _illegal_xml_chars_RE.sub("", input_string.decode("utf-8"))
     except TypeError as e:
         app.logger.error("Unable to strip illegal XML chars from: {x}, {y}".format(x=input_string, y=type(input_string)))
         return None

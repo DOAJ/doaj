@@ -215,7 +215,7 @@ class TestCrudApplication(DoajTestCase):
             try:
                 a = ApplicationsCrudApi.create(data, publisher)
             except Api400Error as e:
-                assert e.message == "test exception"
+                assert str(e) == "test exception"
                 raise
         formcontext.FormContext.finalise = self.old_finalise
 
@@ -277,7 +277,7 @@ class TestCrudApplication(DoajTestCase):
             try:
                 a = ApplicationsCrudApi.create(data, publisher)
             except Api400Error as e:
-                assert e.message == "test exception"
+                assert str(e) == "test exception"
                 raise
         formcontext.FormContext.finalise = self.old_finalise
 

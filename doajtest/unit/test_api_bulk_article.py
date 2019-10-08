@@ -8,7 +8,6 @@ from flask import url_for
 import json
 import time
 
-
 class TestCrudArticle(DoajTestCase):
 
     def setUp(self):

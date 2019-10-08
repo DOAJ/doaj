@@ -78,8 +78,8 @@ class TestPublicDataDumpTask(DoajTestCase):
         journal_count = int(journals_arg)
         article_count = int(articles_arg)
         batch_size = int(batch_size_arg)
-        journal_file_count = 0 if journal_count == 0 else (journal_count / batch_size) + 1
-        article_file_count = 0 if article_count == 0 else (article_count / batch_size) + 1
+        journal_file_count = 0 if journal_count == 0 else (journal_count // batch_size) + 1
+        article_file_count = 0 if article_count == 0 else (article_count // batch_size) + 1
         first_article_file_records = 0 if article_count == 0 else batch_size if article_count > batch_size else article_count
         first_journal_file_records = 0 if journal_count == 0 else batch_size if journal_count > batch_size else journal_count
 

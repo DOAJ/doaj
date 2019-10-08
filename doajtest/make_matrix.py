@@ -53,7 +53,7 @@ def _add_results(results, combo):
         for field, values in result["conditions"].items():
             if combo[field] in values:
                 trips += 1
-        if trips == len(list(result["conditions"].keys())):
+        if trips == len(result["conditions"].keys()):
             for field, value in result["results"].items():
                 combo[field] = value
             return

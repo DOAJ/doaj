@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.view import atom
@@ -18,7 +20,7 @@ class TestFeed(DoajTestCase):
     def test_01_object(self):
         # first try requesting a feed over the empty test index
         f = atom.get_feed("http://my.test.com")
-        assert len(list(f.entries.keys())) == 0
+        assert len(f.entries.keys()) == 0
         assert f.url == "http://my.test.com"
 
         # now populate the index and then re-get the feed
@@ -42,14 +44,13 @@ class TestFeed(DoajTestCase):
 
         with self.app_test.test_request_context('/feed'):
             f = atom.get_feed("http://my.test.com")
-        assert len(list(f.entries.keys())) == 5
+        assert len(f.entries.keys()) == 5
 
         # now go through the entries in order, and check they are as expected
-        entry_dates = list(f.entries.keys())
-        entry_dates.sort()
+        entry_dates = f.entries.keys()
 
         for i in range(5):
-            e = f.entries.get(entry_dates[i])[0]
+            e = f.entries.get(sorted(entry_dates)[i])[0]
             assert e["author"] == "Test Publisher {x}".format(x=i)
             assert len(e["categories"]) == 1
             assert e["categories"][0] == "LCC:Agriculture"
@@ -100,9 +101,3 @@ class TestFeed(DoajTestCase):
             assert e.xpath("atom:category", namespaces={'atom': 'http://www.w3.org/2005/Atom'})[0].get("term") == "LCC:Agriculture"
             assert e.xpath("atom:summary", namespaces={'atom': 'http://www.w3.org/2005/Atom'})[0].text.startswith("Published by Test Publisher {x}".format(x=inv))
             assert e.xpath("atom:title", namespaces={'atom': 'http://www.w3.org/2005/Atom'})[0].text == "Test Journal {x} ({x}000-0000)".format(x=inv)
-
-
-
-
-
-
