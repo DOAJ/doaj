@@ -3,7 +3,8 @@
 from portality.lib import dates
 from portality.datasets import get_country_code, get_currency_code
 from copy import deepcopy
-import locale, json, urllib.parse, warnings
+import locale, json, warnings
+from urllib.parse import urlparse
 from datetime import date, datetime
 
 #########################################################
@@ -167,7 +168,7 @@ def to_url(val):
         return val
 
     # parse with urlparse
-    url = urllib.parse.urlparse(val)
+    url = urlparse(val)
 
     # now check the url has the minimum properties that we require
     if url.scheme and url.scheme.startswith("http"):
@@ -512,7 +513,7 @@ class DataObj(object):
                         d = wrap(val, substruct)
                         return d.data
                     except DataStructureException as e:
-                        raise AttributeError(e.message)
+                        raise AttributeError(str(e))
 
         # pull the object from the structure, to find out what kind of retrieve it needs
         # (if there is a struct)
@@ -571,7 +572,7 @@ class DataObj(object):
         props = []
         try:
             # props = og(self, 'properties').keys()
-            props = list(self._properties.keys())
+            props = self._properties.keys()
         except AttributeError:
             pass
 
@@ -581,7 +582,7 @@ class DataObj(object):
                 if self._struct:
                     data_attrs = construct_data_keys(self._struct)
                 else:
-                    data_attrs = list(self.data.keys())
+                    data_attrs = self.data.keys()
         except AttributeError:
             pass
 
@@ -654,7 +655,7 @@ class DataObj(object):
                 for k, v in matchsub.items():
                     if entry.get(k) == v:
                         matches += 1
-                if matches == len(list(matchsub.keys())):
+                if matches == len(matchsub.keys()):
                     removes.append(i)
             i += 1
 
@@ -687,7 +688,7 @@ class DataObj(object):
             context = stack.pop()
             todelete = []
             for k, v in context.items():
-                if isinstance(v, dict) and len(list(v.keys())) == 0:
+                if isinstance(v, dict) and len(v.keys()) == 0:
                     todelete.append(k)
             for d in todelete:
                 del context[d]
@@ -902,7 +903,7 @@ def validate(obj, schema):
 
         # check that the fields are plain old strings
         if k in schema.get("fields", []):
-            if type(v) != str and type(v) != str and type(v) != int and type(v) != float:
+            if type(v) != str and type(v) != int and type(v) != float:
                 raise ObjectSchemaValidationError("object contains " + k + " = " + str(v) + " but expected string, unicode or a number")
 
         # check that the lists are really lists
@@ -914,7 +915,7 @@ def validate(obj, schema):
             if entry_schema is None:
                 # validate the entries as fields
                 for e in v:
-                    if type(e) != str and type(e) != str and type(e) != int and type(e) != float:
+                    if type(e) != str and type(e) != int and type(e) != float:
                         raise ObjectSchemaValidationError("list in object contains " + str(type(e)) + " but expected string, unicode or a number in " + k)
             else:
                 # validate each entry against the schema
@@ -966,7 +967,7 @@ def construct_validate(struct, context=""):
     }
     """
     # check that only the allowed keys are present
-    keys = list(struct.keys())
+    keys = struct.keys()
     for k in keys:
         if k not in ["fields", "objects", "lists", "required", "structs"]:
             c = context if context != "" else "root"
@@ -1061,7 +1062,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
 
     # check that all the required fields are there
     try:
-        keys = list(obj.keys())
+        keys = obj.keys()
     except:
         c = context if context != "" else "root"
         raise DataStructureException("Expected an object at {c} but found something else instead".format(c=c))
@@ -1075,7 +1076,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
     # Note that since the construct mechanism copies fields explicitly, silent_prune literally just turns off this
     # check
     if not silent_prune:
-        allowed = list(struct.get("fields", {}).keys()) + struct.get("objects", []) + list(struct.get("lists", {}).keys())
+        allowed = struct.get("fields", {}).keys() + struct.get("objects", []) + struct.get("lists", {}).keys()
         for k in keys:
             if k not in allowed:
                 c = context if context != "" else "root"
@@ -1117,7 +1118,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
             try:
                 constructed._set_single(field_name, deepcopy(val))
             except DataSchemaException as e:
-                raise DataStructureException(e.message)
+                raise DataStructureException(str(e))
         else:
             # we need to recurse further down
             beneath = construct(val, instructions, coerce=coerce, context=context + field_name + ".", silent_prune=silent_prune)
@@ -1126,7 +1127,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
             try:
                 constructed._set_single(field_name, beneath)
             except DataSchemaException as e:
-                raise DataStructureException(e.message)
+                raise DataStructureException(str(e))
 
     # now check all the lists
     for field_name, instructions in struct.get("lists", {}).items():
@@ -1151,7 +1152,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
                 try:
                     constructed._add_to_list(field_name, val, coerce=coerce_fn, **kwargs)
                 except DataSchemaException as e:
-                    raise DataStructureException(e.message)
+                    raise DataStructureException(str(e))
 
         elif contains == "object":
             # for each object in the list, send it for construction
@@ -1166,7 +1167,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
                     try:
                         constructed._add_to_list(field_name, deepcopy(val))
                     except DataSchemaException as e:
-                        raise DataStructureException(e.message)
+                        raise DataStructureException(str(e))
                 else:
                     # we need to recurse further down
                     beneath = construct(val, subinst, coerce=coerce, context=context + field_name + "[" + str(i) + "].", silent_prune=silent_prune)
@@ -1175,7 +1176,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
                     try:
                         constructed._add_to_list(field_name, beneath)
                     except DataSchemaException as e:
-                        raise DataStructureException(e.message)
+                        raise DataStructureException(str(e))
 
         else:
             raise DataStructureException("Cannot understand structure where list '{x}' elements contain '{y}'".format(x=context + field_name, y=contains))
@@ -1292,18 +1293,18 @@ def construct_kwargs(type, dir, instructions):
     return nk
 
 def construct_data_keys(struct):
-    return list(struct.get("fields", {}).keys()) + struct.get("objects", []) + list(struct.get("lists", {}).keys())
+    return list(struct.get("fields", {})) + list(struct.get("objects", [])) + list(struct.get("lists", {}))
 
 def merge_outside_construct(struct, target, source):
     merged = deepcopy(target)
 
-    for source_key in list(source.keys()):
+    for source_key in source.keys():
         # if the source_key is one of the struct's fields, ignore it
-        if source_key in list(struct.get("fields", {}).keys()):
+        if source_key in struct.get("fields", {}).keys():
             continue
 
         # if the source_key is one of the struct's lists, ignore it
-        if source_key in list(struct.get("lists", {}).keys()):
+        if source_key in struct.get("lists", {}).keys():
             continue
 
         # if the source_key is one of the struct's object, we will need to go deeper

@@ -5,6 +5,7 @@ import csv
 IN = "/home/richard/Dropbox/Documents/DOAJ/data/journals"
 OUT = "/home/richard/tmp/doaj/equiv.csv"
 
+
 def extract_issns(element):
     issn = j.find("issn").text
     nissn = j.find("nextIssn").text
@@ -29,6 +30,7 @@ def extract_issns(element):
         issns.append(peissn)
     
     return issns
+
 
 f = open(IN)
 xml = etree.parse(f)
@@ -93,7 +95,7 @@ def process(id, register):
 equiv_table = {}
 processed = []
 i = 0
-for id in list(idtable.keys()):
+for id in idtable.keys():
     if id in processed:
         continue
     
@@ -111,7 +113,7 @@ for p in processed:
         process_register[p] += 1
     else:
         process_register[p] = 1
-multiples = [(k, v) for k, v in list(process_register.items()) if v > 1]
+multiples = [(k, v) for k, v in process_register.items() if v > 1]
 print("join ids considered more than once:", multiples)
 
 if len(multiples) > 0:
@@ -124,7 +126,7 @@ for k, v in multiples:
         for rel in reltable.get(issn, []):
             print("        ", rel, "->", idtable.get(rel))
 
-print(len(list(equiv_table.keys())), "equivalences identified")
+print(len(equiv_table.keys()), "equivalences identified")
 
 equivregister = {}
 idregister = {}
@@ -151,7 +153,7 @@ for i, ids in equiv_table.items():
     
     counter += size
     
-multiids = [(k, v) for k, v in list(idregister.items()) if v > 1] 
+multiids = [(k, v) for k, v in idregister.items() if v > 1] 
 
 print("equivalence register statistics: ", equivregister)
 print("join ids which appear in more than one equivalence", multiids)
@@ -191,7 +193,7 @@ for e, jids in multiequiv.items():
 
 """
 print "equivalences and their ordered relations of join identifiers"
-for e, o in ordertables.iteritems():
+for e, o in ordertables.items():
     print e, "->", o
 """
 
@@ -265,30 +267,3 @@ for e, data in canontable.items():
         cells.append(get_title_cell(r))
         cells.append(r_issn_cell)
     writer.writerow(cells)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -77,7 +77,7 @@ def public_result_filter(results, unpacked=False):
     # Dealing with single unpacked result
     if unpacked:
         if "admin" in results:
-            for k in list(results["admin"].keys()):
+            for k in results["admin"].keys():
                 if k not in ["ticked", "seal"]:
                     del results["admin"][k]
         return results
@@ -91,7 +91,7 @@ def public_result_filter(results, unpacked=False):
     for hit in results["hits"]["hits"]:
         if "_source" in hit:
             if "admin" in hit["_source"]:
-                for k in list(hit["_source"]["admin"].keys()):
+                for k in hit["_source"]["admin"].keys():
                     if k not in ["ticked", "seal"]:
                         del hit["_source"]["admin"][k]
 
@@ -129,7 +129,7 @@ def publisher_result_filter(results, unpacked=False):
     # Dealing with single unpacked ES result
     if unpacked:
         if "admin" in results:
-            for k in list(results["admin"].keys()):
+            for k in results["admin"].keys():
                 if k not in ["ticked", "seal", "in_doaj", "related_applications", "current_application", "current_journal", "application_status"]:
                     del results["admin"][k]
         return results
@@ -143,7 +143,7 @@ def publisher_result_filter(results, unpacked=False):
     for hit in results["hits"]["hits"]:
         if "_source" in hit:
             if "admin" in hit["_source"]:
-                for k in list(hit["_source"]["admin"].keys()):
+                for k in hit["_source"]["admin"].keys():
                     if k not in ["ticked", "seal", "in_doaj", "related_applications", "current_application", "current_journal", "application_status"]:
                         del hit["_source"]["admin"][k]
 

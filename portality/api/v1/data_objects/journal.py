@@ -7,7 +7,7 @@ from portality.api.v1.data_objects.common_journal_application import OutgoingCom
 JOURNAL_STRUCT = {
     "objects": ["bibjson", "admin"],
     "fields": {
-        "id": {"coerce": "unicode"},
+        "id": {"coerce": "str"},
         "created_date": {"coerce": "utcdatetime"},
         "last_updated": {"coerce": "utcdatetime"}
     },
@@ -17,7 +17,7 @@ JOURNAL_STRUCT = {
                 "in_doaj": {"coerce": "bool", "get__default": False},
                 "ticked": {"coerce": "bool", "get__default": False},
                 "seal": {"coerce": "bool", "get__default": False},
-                "owner": {"coerce": "unicode"},
+                "owner": {"coerce": "str"},
             },
             "lists": {
                 "contact": {"contains": "object"}
@@ -25,8 +25,8 @@ JOURNAL_STRUCT = {
             "structs": {
                 "contact": {
                     "fields": {
-                        "email": {"coerce": "unicode"},
-                        "name": {"coerce": "unicode"},
+                        "email": {"coerce": "str"},
+                        "name": {"coerce": "str"},
                     }
                 }
             }
@@ -34,21 +34,21 @@ JOURNAL_STRUCT = {
         "bibjson": {
             "fields": {
                 "allows_fulltext_indexing": {"coerce": "bool"},
-                "alternative_title": {"coerce": "unicode"},
+                "alternative_title": {"coerce": "str"},
                 "apc_url": {"coerce": "url"},
                 "country": {"coerce": "country_code"},
-                "institution": {"coerce": "unicode"},
-                "provider": {"coerce": "unicode"},
+                "institution": {"coerce": "str"},
+                "provider": {"coerce": "str"},
                 "publication_time": {"coerce": "integer"},
-                "publisher": {"coerce": "unicode"},
+                "publisher": {"coerce": "str"},
                 "submission_charges_url": {"coerce": "url"},
-                "title": {"coerce": "unicode"},
+                "title": {"coerce": "str"},
             },
             "lists": {
                 "deposit_policy": {"coerce": "deposit_policy", "contains": "field"},
                 "format": {"coerce": "format", "contains": "field"},
                 "identifier": {"contains": "object"},
-                "keywords": {"coerce": "unicode", "contains": "field"},
+                "keywords": {"coerce": "str", "contains": "field"},
                 "language": {"coerce": "isolang_2letter", "contains": "field"},
                 "license": {"contains": "object"},
                 "link": {"contains": "object"},
@@ -81,14 +81,14 @@ JOURNAL_STRUCT = {
                         "url": {"coerce": "url"},
                     },
                     "lists": {
-                        "policy": {"coerce": "unicode", "contains": "object"},
+                        "policy": {"coerce": "str", "contains": "object"},
                     },
 
                     "structs" : {
                         "policy" : {
                             "fields" : {
-                                "name" : {"coerce": "unicode"},
-                                "domain" : {"coerce" : "unicode"}
+                                "name" : {"coerce": "str"},
+                                "domain" : {"coerce" : "str"}
                             }
                         }
                     }
@@ -103,29 +103,29 @@ JOURNAL_STRUCT = {
 
                 "author_copyright": {
                     "fields": {
-                        "copyright": {"coerce": "unicode"},
+                        "copyright": {"coerce": "str"},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "author_publishing_rights": {
                     "fields": {
-                        "publishing_rights": {"coerce": "unicode"},
+                        "publishing_rights": {"coerce": "str"},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "editorial_review": {
                     "fields": {
-                        "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
+                        "process": {"coerce": "str", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "identifier": {
                     "fields": {
-                        "type": {"coerce": "unicode"},
-                        "id": {"coerce": "unicode"},
+                        "type": {"coerce": "str"},
+                        "id": {"coerce": "str"},
                     }
                 },
 
@@ -134,7 +134,7 @@ JOURNAL_STRUCT = {
                         "title": {"coerce": "license"},
                         "type": {"coerce": "license"},
                         "url": {"coerce": "url"},
-                        "version": {"coerce": "unicode"},
+                        "version": {"coerce": "str"},
                         "open_access": {"coerce": "bool"},
                         "BY": {"coerce": "bool"},
                         "NC": {"coerce": "bool"},
@@ -147,7 +147,7 @@ JOURNAL_STRUCT = {
 
                 "link": {
                     "fields": {
-                        "type": {"coerce": "unicode"},
+                        "type": {"coerce": "str"},
                         "url": {"coerce": "url"},
                     }
                 },
@@ -183,9 +183,9 @@ JOURNAL_STRUCT = {
                 },
                 "subject": {
                     "fields": {
-                        "scheme": {"coerce": "unicode"},
-                        "term": {"coerce": "unicode"},
-                        "code": {"coerce": "unicode"},
+                        "scheme": {"coerce": "str"},
+                        "term": {"coerce": "str"},
+                        "code": {"coerce": "str"},
                     }
                 }
             }

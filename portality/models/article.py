@@ -568,7 +568,7 @@ class Article(DomainObject):
             self.data["index"]["language"] = langs
         if country is not None:
             self.data["index"]["country"] = country
-        if schema_codes > 0:
+        if len(schema_codes) > 0:
             self.data["index"]["schema_code"] = schema_codes
         if len(classification_paths) > 0:
             self.data["index"]["classification_paths"] = classification_paths
@@ -837,11 +837,11 @@ ARTICLE_BIBJSON_EXTENSION = {
     "structs" : {
         "bibjson" : {
             "fields" : {
-                "year" : {"coerce" : "unicode"},
-                "month" : {"coerce" : "unicode"},
-                "start_page" : {"coerce" : "unicode"},
-                "end_page" : {"coerce" : "unicode"},
-                "abstract" : {"coerce" : "unicode"}
+                "year" : {"coerce" : "str"},
+                "month" : {"coerce" : "str"},
+                "start_page" : {"coerce" : "str"},
+                "end_page" : {"coerce" : "str"},
+                "abstract" : {"coerce" : "str"}
             },
             "lists" : {
                 "author" : {"contains" : "object"}
@@ -853,32 +853,32 @@ ARTICLE_BIBJSON_EXTENSION = {
             "structs" : {
                 "author" : {
                     "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "affiliation" : {"coerce" : "unicode"},
-                        "email" : {"coerce": "unicode"}
+                        "name" : {"coerce" : "str"},
+                        "affiliation" : {"coerce" : "str"},
+                        "email" : {"coerce": "str"}
                     }
                 },
 
                 "journal" : {
                     "fields" : {
-                        "volume" : {"coerce" : "unicode"},
-                        "number" : {"coerce" : "unicode"},
-                        "publisher" : {"coerce" : "unicode"},
-                        "title" : {"coerce" : "unicode"},
-                        "country" : {"coerce" : "unicode"}
+                        "volume" : {"coerce" : "str"},
+                        "number" : {"coerce" : "str"},
+                        "publisher" : {"coerce" : "str"},
+                        "title" : {"coerce" : "str"},
+                        "country" : {"coerce" : "str"}
                     },
                     "lists" : {
                         "license" : {"contains" : "object"},
-                        "language" : {"contains" : "field", "coerce" : "unicode"},
-                        "issns" : {"contains" : "field", "coerce" : "unicode"}
+                        "language" : {"contains" : "field", "coerce" : "str"},
+                        "issns" : {"contains" : "field", "coerce" : "str"}
                     },
                     "structs" : {
                         "license" : {
                             "fields" : {
-                                "title" : {"coerce" : "unicode"},
-                                "type" : {"coerce" : "unicode"},
-                                "url" : {"coerce" : "unicode"},
-                                "version" : {"coerce" : "unicode"},
+                                "title" : {"coerce" : "str"},
+                                "type" : {"coerce" : "str"},
+                                "url" : {"coerce" : "str"},
+                                "version" : {"coerce" : "str"},
                                 "open_access" : {"coerce" : "bool"}
                             }
                         }

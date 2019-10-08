@@ -144,7 +144,7 @@ class TestQuery(DoajTestCase):
 
         q = Query()
         q.add_include(["last_updated", "id"])
-        assert q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["last_updated", "id"]}}, q.as_dict()
+        assert q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["id", "last_updated"]}} or q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["last_updated", "id"]}}, q.as_dict()
 
 
     def test_03_query_svc_get_config(self):

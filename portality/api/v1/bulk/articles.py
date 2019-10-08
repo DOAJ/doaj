@@ -50,7 +50,7 @@ class ArticlesBulkApi(Api):
             result = articleService.batch_create_articles(articles, account, add_journal_info=True)
             return [a.id for a in articles]
         except exceptions.IngestException as e:
-            raise Api400Error(e.message)
+            raise Api400Error(str(e))
 
 
     @classmethod

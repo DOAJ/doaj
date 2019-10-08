@@ -67,7 +67,7 @@ class SwaggerSupport(object):
         swag_properties = {}
 
         # convert simple fields
-        for simple_field, instructions in struct.get('fields', {}).items():
+        for simple_field, instructions in iter(struct.get('fields', {}).items()):
             # no point adding to the path here, it's not gonna recurse any further from this field
             swag_properties[simple_field] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
 
@@ -83,7 +83,7 @@ class SwaggerSupport(object):
             swag_properties[obj]['required'] = deepcopy(instructions.get('required', []))
 
         # convert lists
-        for l, instructions in struct.get('lists', {}).items():
+        for l, instructions in iter(struct.get('lists', {}).items()):
             newpath = l if not path else path + '.' + l
 
             swag_properties[l] = {}

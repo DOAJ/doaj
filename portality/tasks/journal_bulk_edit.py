@@ -59,7 +59,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
 
         metadata = cls.get_param(params, "replacement_metadata", "{}")
         metadata = json.loads(metadata)
-        metadata_valid = len(list(metadata.keys())) > 0
+        metadata_valid = len(metadata.keys()) > 0
 
         return ids_valid and (note_valid or metadata_valid)
 
@@ -80,7 +80,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         metadata = json.loads(self.get_param(params, 'replacement_metadata', "{}"))
 
         # if there is metadata, validate it
-        if (len(list(metadata.keys())) > 0):
+        if len(metadata.keys()) > 0:
             formdata = MultiDict(metadata)
             fc = formcontext.JournalFormFactory.get_form_context(
                 role="bulk_edit",
@@ -142,7 +142,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                         job.add_audit_message("Form context exception while bulk editing journal {} :\n{}".format(journal_id, e.message))
                 else:
                     data_submitted = {}
-                    for affected_field_name in list(fc.form.errors.keys()):
+                    for affected_field_name in fc.form.errors.keys():
                         affected_field = getattr(fc.form, affected_field_name,
                                                  ' Field {} does not exist on form. '.format(affected_field_name))
                         if isinstance(affected_field, str):  # ideally this should never happen, an error should not be reported on a field that is not present on the form
@@ -211,7 +211,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
             for k, v in kwargs["replacement_metadata"].items():
                 if v is not None and v != "":
                     metadata[k] = v
-            if len(list(metadata.keys())) > 0:
+            if len(metadata.keys()) > 0:
                 cls.set_param(params, 'replacement_metadata', json.dumps(metadata))
 
         if not cls._job_parameter_check(params):

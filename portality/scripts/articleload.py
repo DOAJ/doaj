@@ -1,4 +1,4 @@
-from portality import models, article
+from portality import models
 import json, codecs
 from portality.core import app
 
@@ -26,7 +26,3 @@ if __name__ == "__main__":
         a.bibjson().remove_subjects()
         a.add_journal_metadata()
         a.save()
-
-
-
-

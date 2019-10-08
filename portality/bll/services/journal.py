@@ -1,3 +1,5 @@
+import logging
+
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
 from portality import models, constants, clcsv
@@ -35,7 +37,7 @@ class JournalService(object):
             {"arg" : account, "instance" : models.Account, "arg_name" : "account"}
         ], exceptions.ArgumentException)
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering journal_2_application")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering journal_2_application")
 
         authService = DOAJ.authorisationService()
 
@@ -76,7 +78,7 @@ class JournalService(object):
             application.set_suggester(first_contact.get("name"), first_contact.get("email"))
         application.suggested_on = dates.now()
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Completed journal_2_application; return application object")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed journal_2_application; return application object")
         return application
 
     def journal(self, journal_id, lock_journal=False, lock_account=None, lock_timeout=None):
@@ -153,12 +155,11 @@ class JournalService(object):
                 article_kvs = _get_article_kvs(j)
                 cols[issn] = kvs + meta_kvs + article_kvs
 
-            issns = list(cols.keys())
-            issns.sort()
+            issns = cols.keys()
 
             csvwriter = clcsv.UnicodeWriter(file_object)
             qs = None
-            for i in issns:
+            for i in sorted(issns):
                 if qs is None:
                     qs = [q for q, _ in cols[i]]
                     csvwriter.writerow(qs)

@@ -5,7 +5,7 @@ from copy import deepcopy
 
 BASE_ARTICLE_STRUCT = {
     "fields": {
-        "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
+        "id": {"coerce": "str"},                # Note that we'll leave these in for ease of use by the
         "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
         "last_updated": {"coerce": "utcdatetime"}   # to the real object
     },
@@ -17,23 +17,23 @@ BASE_ARTICLE_STRUCT = {
             "fields": {
                 "in_doaj": {"coerce": "bool", "get__default": False},
                 "seal": {"coerce": "bool", "get__default": False},
-                "publisher_record_id": {"coerce": "unicode"},
-                "upload_id": {"coerce": "unicode"}
+                "publisher_record_id": {"coerce": "str"},
+                "upload_id": {"coerce": "str"}
             }
         },
 
         "bibjson": {
             "fields": {
-                "title": {"coerce": "unicode"},
-                "year": {"coerce": "unicode"},
-                "month": {"coerce": "unicode"},
-                "abstract": {"coerce": "unicode"}
+                "title": {"coerce": "str"},
+                "year": {"coerce": "str"},
+                "month": {"coerce": "str"},
+                "abstract": {"coerce": "str"}
             },
             "lists": {
                 "identifier": {"contains": "object"},
                 "link": {"contains": "object"},
                 "author": {"contains": "object"},
-                "keywords": {"coerce": "unicode", "contains": "field"},
+                "keywords": {"coerce": "str", "contains": "field"},
                 "subject": {"contains": "object"},
             },
             "objects": [
@@ -43,8 +43,8 @@ BASE_ARTICLE_STRUCT = {
 
                 "identifier": {
                     "fields": {
-                        "type": {"coerce": "unicode"},
-                        "id": {"coerce": "unicode"}
+                        "type": {"coerce": "str"},
+                        "id": {"coerce": "str"}
                     }
                 },
                 # The base struct can't coerce url because we have bad data https://github.com/DOAJ/doajPM/issues/2038
@@ -57,23 +57,23 @@ BASE_ARTICLE_STRUCT = {
 #                },
                 "author": {
                     "fields": {
-                        "name": {"coerce": "unicode"},
-                        "affiliation": {"coerce": "unicode"}
+                        "name": {"coerce": "str"},
+                        "affiliation": {"coerce": "str"}
                     }
                 },
                 "journal": {
                     "fields": {
-                        "start_page": {"coerce": "unicode"},
-                        "end_page": {"coerce": "unicode"},
-                        "volume": {"coerce": "unicode"},
-                        "number": {"coerce": "unicode"},
-                        "publisher": {"coerce": "unicode"},
-                        "title": {"coerce": "unicode"},
-                        "country": {"coerce": "unicode"}
+                        "start_page": {"coerce": "str"},
+                        "end_page": {"coerce": "str"},
+                        "volume": {"coerce": "str"},
+                        "number": {"coerce": "str"},
+                        "publisher": {"coerce": "str"},
+                        "title": {"coerce": "str"},
+                        "country": {"coerce": "str"}
                     },
                     "lists": {
                         "license": {"contains": "object"},
-                        "language": {"coerce": "unicode", "contains": "field"}
+                        "language": {"coerce": "str", "contains": "field"}
                     },
                     "structs": {
 
@@ -81,8 +81,8 @@ BASE_ARTICLE_STRUCT = {
                             "fields": {
                                 "title": {"coerce": "license"},
                                 "type": {"coerce": "license"},
-                                "url": {"coerce": "unicode"},
-                                "version": {"coerce": "unicode"},
+                                "url": {"coerce": "str"},
+                                "version": {"coerce": "str"},
                                 "open_access": {"coerce": "bool"},
                             }
                         }
@@ -91,9 +91,9 @@ BASE_ARTICLE_STRUCT = {
 
                 "subject": {
                     "fields": {
-                        "scheme": {"coerce": "unicode"},
-                        "term": {"coerce": "unicode"},
-                        "code": {"coerce": "unicode"}
+                        "scheme": {"coerce": "str"},
+                        "term": {"coerce": "str"},
+                        "code": {"coerce": "str"}
                     }
                 },
             }
@@ -142,7 +142,7 @@ OUTGOING_ARTICLE_PATCH = {
                     "required": ["type", "url"],
                     "fields": {
                         "type": {"coerce": "link_type"},
-                        "url": {"coerce": "unicode"},
+                        "url": {"coerce": "str"},
                         "content_type": {"coerce": "link_content_type"}
                     }
                 }

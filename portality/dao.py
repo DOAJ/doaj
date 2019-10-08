@@ -6,7 +6,7 @@ import time
 import re
 
 from portality.core import app
-import urllib.request, urllib.error, urllib.parse
+import urllib.parse
 import json
 
 import esprit
@@ -250,7 +250,7 @@ class DomainObject(UserDict, object):
         keys = []
         for item in mapping:
             if 'fields' in mapping[item]:
-                for itm in list(mapping[item]['fields'].keys()):
+                for itm in mapping[item]['fields'].keys():
                     if itm != 'exact' and not itm.startswith('_'):
                         keys.append(prefix + itm + app.config['FACET_FIELD'])
             else:
@@ -301,7 +301,7 @@ class DomainObject(UserDict, object):
         if facets:
             if 'facets' not in query:
                 query['facets'] = {}
-            for k, v in list(facets.items()):
+            for k, v in facets.items():
                 query['facets'][k] = {"terms": v}
 
         if terms:
@@ -327,7 +327,7 @@ class DomainObject(UserDict, object):
                 query["query"]["bool"]["must"].append({"terms": {s: should_terms[s]}})
 
         sort_specified = False
-        for k, v in list(kwargs.items()):
+        for k, v in kwargs.items():
             if k == '_from':
                 query['from'] = v
             elif k == 'sort':

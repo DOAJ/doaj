@@ -193,14 +193,14 @@ def _get_journal_clusters(journals):
                 reltable[issn] = [id]
         id += 1
     
-    print(len(journals), "journal records; ", len(list(idtable.keys())), "join identifiers; ", len(list(reltable.keys())), "unique issns")
+    print(len(journals), "journal records; ", len(idtable.keys()), "join identifiers; ", len(reltable.keys()), "unique issns")
     
     # now calculate the equivalence table.  This groups all of the journals
     # which share issns of any kind into a single batch
     equiv_table = {}
     processed = []
     i = 0
-    for id in list(idtable.keys()):
+    for id in idtable.keys():
         if id in processed:
             continue
         
@@ -821,20 +821,3 @@ if __name__ == "__main__":
     load_issn_journal_map()
     for a in ARTICLES:
         migrate_articles(a)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

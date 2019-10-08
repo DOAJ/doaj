@@ -41,7 +41,8 @@ APPLICATION_FORM = ApplicationFixtureFactory.make_application_form(role="assed")
 
 ######################################################
 # Main test class
-######################################################
+######################################################        data = data.decode("utf-8")
+
 
 class TestAssedAppReview(DoajTestCase):
 

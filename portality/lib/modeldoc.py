@@ -3,7 +3,7 @@ from datetime import datetime
 import json, codecs
 
 DO_TYPE_TO_JSON_TYPE = {
-    "unicode": "string",
+    "str": "string",
     "utcdatetime": "timestamp",
     "integer": 0,
     "bool": True,
@@ -15,19 +15,19 @@ DO_TYPE_TO_JSON_TYPE = {
 }
 
 DO_TYPE_TO_DATATYPE = {
-    "unicode": "unicode",
-    "utcdatetime": "unicode",
+    "str": "str",
+    "utcdatetime": "str",
     "integer": "int",
     "bool": "bool",
     "float": "float",
-    "isolang": "unicode",
-    "url": "unicode",
-    "isolang_2letter": "unicode",
-    "bigenddate" : "unicode"
+    "isolang": "str",
+    "url": "str",
+    "isolang_2letter": "str",
+    "bigenddate" : "str"
 }
 
 DO_TYPE_TO_FORMAT = {
-    "unicode": "",
+    "str": "",
     "utcdatetime": "UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ",
     "integer": "",
     "bool": "",
@@ -105,7 +105,7 @@ def type_map(t):
     return type
 
 def datatype(t):
-    return DO_TYPE_TO_DATATYPE.get(t, "unicode")
+    return DO_TYPE_TO_DATATYPE.get(t, "str")
 
 def form(t):
     return DO_TYPE_TO_FORMAT.get(t, "")

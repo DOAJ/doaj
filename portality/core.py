@@ -103,7 +103,7 @@ def put_mappings(app, mappings):
     es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
 
     # for each mapping (a class may supply multiple), create them in the index
-    for key, mapping in mappings.items():
+    for key, mapping in iter(mappings.items()):
         if not esprit.raw.type_exists(conn, key, es_version=es_version):
             r = esprit.raw.put_mapping(conn, key, mapping, es_version=es_version)
             print("Creating ES Type + Mapping for", key, "; status:", r.status_code)
