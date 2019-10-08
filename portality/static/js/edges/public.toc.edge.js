@@ -140,7 +140,7 @@ $.extend(true, doaj, {
                     category: "controller",
                     sortOptions : [
                         {'display':'Title','field':'index.unpunctitle.exact'},
-                        {'display':'Publication date','field':['bibjson.year.exact', 'bibjson.month.exact']}
+                        {'display':'Publication date','field':"index.date"}
                     ],
                     fieldOptions : [
                         {'display':'Title','field':'bibjson.title'},
