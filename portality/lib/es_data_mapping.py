@@ -24,7 +24,7 @@ def get_mappings(app):
 
 def apply_mapping_opts(field_name, path, spec, mapping_opts):
     dot_path = '.'.join(path + (field_name,))
-    if dot_path in mapping_opts['exceptions']:
+    if dot_path in mapping_opts.get('exceptions', {}):
         return mapping_opts['exceptions'][dot_path]
     elif spec['coerce'] in mapping_opts['coerces']:
         return mapping_opts['coerces'][spec['coerce']]
