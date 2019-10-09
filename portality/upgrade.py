@@ -72,7 +72,7 @@ def do_upgrade(definition, verbose):
                     try:
                         result = model_class(**result)
                     except DataStructureException as e:
-                        print("Could not create model for {0}, Error: {1}".format(result['id'], e.message))
+                        print("Could not create model for {0}, Error: {1}".format(result['id'], str(e)))
                         continue
 
                 for function_path in tdef.get("functions", []):
