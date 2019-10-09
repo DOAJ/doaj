@@ -1,12 +1,30 @@
 {% extends "admin/admin_base.html" %}
 
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
 {% block admin_content %}
 
-<a href="{{url_for('admin.editor_group')}}"><button class="btn btn-info">New Editor Group</button></a>
+<a href="{{url_for('admin.editor_group')}}"><button class="btn btn-info" style="margin-top: 20px">New Editor Group</button></a>
 
-<div class="facetview editor_group"></div>
+<div id="editor_groups"></div>
+
 {% endblock %}
 
 {% block extra_js_bottom %}
-    <script type="text/javascript">var editor_group_edit_url = "{{ url_for('admin.editor_group', group_id='') }}";</script>
+
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        adminEditorGroupSearchConfig : {
+            editorGroupEditUrl : "{{ url_for('admin.editor_group', group_id='') }}",
+            searchPath : '/admin_query/editor,group/_search'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/admin.editor_groups.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
 {% endblock %}
+

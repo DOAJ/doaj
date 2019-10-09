@@ -1,5 +1,5 @@
 from portality.api.v1.crud.common import CrudApi
-from portality.api.v1 import Api400Error, Api401Error, Api403Error, Api404Error
+from portality.api.v1 import Api400Error, Api401Error, Api403Error, Api404Error, Api500Error
 from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
 from portality.lib import dataobj
 from portality import models
@@ -123,6 +123,7 @@ class ArticlesCrudApi(CrudApi):
         template['responses']['200']['schema'] = IncomingArticleDO().struct_to_swag(schema_title='Article schema')
         template['responses']['401'] = cls.R401
         template['responses']['404'] = cls.R404
+        template['responses']['500'] = cls.R500
         return cls._build_swag_response(template, api_key_optional_override=True)
 
     @classmethod
@@ -136,7 +137,10 @@ class ArticlesCrudApi(CrudApi):
         # at this point we're happy to return the article if it's
         # meant to be seen by the public
         if ar.is_in_doaj():
-            return OutgoingArticleDO.from_model(ar)
+            try:
+                return OutgoingArticleDO.from_model(ar)
+            except:
+                raise Api500Error()
 
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed

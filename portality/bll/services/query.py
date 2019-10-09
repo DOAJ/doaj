@@ -195,16 +195,16 @@ class Query(object):
             del self.q["query"]["match_all"]
 
     def has_facets(self):
-        return "facets" in self.q
+        return "facets" in self.q or "aggregations" in self.q or "aggs" in self.q
 
     def size(self):
         if "size" in self.q:
-            return self.q["size"]
+            return int(self.q["size"])
         return 10
 
     def from_result(self):
         if "from" in self.q:
-            return self.q["from"]
+            return int(self.q["from"])
         return 0
 
     def as_dict(self):

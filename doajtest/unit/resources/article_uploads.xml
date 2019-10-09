@@ -70,7 +70,7 @@
         <affiliationsList>
             <affiliationName affiliationId="1"/>
         </affiliationsList>
-        <fullTextUrl>http://doaj.org/testing/url2.pdf</fullTextUrl>
+        <fullTextUrl format="PDF">http://doaj.org/testing/url2.pdf</fullTextUrl>
         <keywords>
             <keyword>Introduction</keyword>
             <keyword>Littérature amérindienne</keyword>
@@ -1361,5 +1361,301 @@
             <keyword>Imaginary</keyword>
         </keywords>
     </record>
+
+    <!-- a record with correct url starting with http -->
+    <record>
+        <language>fre</language>
+        <publisher>Codicille éditeur et CRILCQ</publisher>
+
+        <journalTitle>Url starting with http</journalTitle>
+        <issn>1234-5678</issn>
+        <eissn>9876-5432</eissn>
+
+        <publicationDate>2013</publicationDate>
+        <volume/>
+        <issue>7</issue>
+        <startPage/>
+        <endPage/>
+        <documentType>article</documentType>
+        <title language="fre">Imaginaires autochtones contemporains. Introduction</title>
+        <authors>
+            <author>
+                <name>Papillon, Joëlle</name>
+                <email/>
+                <affiliationId>1</affiliationId>
+            </author>
+        </authors>
+        <affiliationsList>
+            <affiliationName affiliationId="1"/>
+        </affiliationsList>
+        <fullTextUrl>http://doaj.org/testing/url.pdf</fullTextUrl>
+        <keywords>
+            <keyword>Introduction</keyword>
+            <keyword>Littérature amérindienne</keyword>
+            <keyword>Histoire</keyword>
+            <keyword>Identité</keyword>
+            <keyword>Amerindian Literature</keyword>
+            <keyword>History</keyword>
+            <keyword>Identity</keyword>
+            <keyword>Littérature contemporaine</keyword>
+            <keyword>Imaginaire</keyword>
+            <keyword>Contemporary Literature</keyword>
+            <keyword>Imaginary</keyword>
+        </keywords>
+    </record>
+
+    <!-- a record with correct url starting with https -->
+    <record>
+        <language>fre</language>
+        <publisher>Codicille éditeur et CRILCQ</publisher>
+
+        <journalTitle>Url starting with https</journalTitle>
+        <issn>1234-5678</issn>
+        <eissn>9876-5432</eissn>
+
+        <publicationDate>2013</publicationDate>
+        <volume/>
+        <issue>7</issue>
+        <startPage/>
+        <endPage/>
+        <documentType>article</documentType>
+        <title language="fre">Imaginaires autochtones contemporains. Introduction</title>
+        <authors>
+            <author>
+                <name>Papillon, Joëlle</name>
+                <email/>
+                <affiliationId>1</affiliationId>
+            </author>
+        </authors>
+        <affiliationsList>
+            <affiliationName affiliationId="1"/>
+        </affiliationsList>
+        <fullTextUrl>https://doaj.org/testing/url.pdf</fullTextUrl>
+        <keywords>
+            <keyword>Introduction</keyword>
+            <keyword>Littérature amérindienne</keyword>
+            <keyword>Histoire</keyword>
+            <keyword>Identité</keyword>
+            <keyword>Amerindian Literature</keyword>
+            <keyword>History</keyword>
+            <keyword>Identity</keyword>
+            <keyword>Littérature contemporaine</keyword>
+            <keyword>Imaginaire</keyword>
+            <keyword>Contemporary Literature</keyword>
+            <keyword>Imaginary</keyword>
+        </keywords>
+    </record>
+
+    <!-- a record with correct url including non-ascii characters -->
+    <record>
+        <language>fre</language>
+        <publisher>Codicille éditeur et CRILCQ</publisher>
+
+        <journalTitle>Url containing non-ascii characters</journalTitle>
+        <issn>1234-5678</issn>
+        <eissn>9876-5432</eissn>
+
+        <publicationDate>2013</publicationDate>
+        <volume/>
+        <issue>7</issue>
+        <startPage/>
+        <endPage/>
+        <documentType>article</documentType>
+        <title language="fre">Imaginaires autochtones contemporains. Introduction</title>
+        <authors>
+            <author>
+                <name>Papillon, Joëlle</name>
+                <email/>
+                <affiliationId>1</affiliationId>
+            </author>
+        </authors>
+        <affiliationsList>
+            <affiliationName affiliationId="1"/>
+        </affiliationsList>
+        <fullTextUrl>http://doaj.org/testing/关ńßฅش.pdf</fullTextUrl>
+        <keywords>
+            <keyword>Introduction</keyword>
+            <keyword>Littérature amérindienne</keyword>
+            <keyword>Histoire</keyword>
+            <keyword>Identité</keyword>
+            <keyword>Amerindian Literature</keyword>
+            <keyword>History</keyword>
+            <keyword>Identity</keyword>
+            <keyword>Littérature contemporaine</keyword>
+            <keyword>Imaginaire</keyword>
+            <keyword>Contemporary Literature</keyword>
+            <keyword>Imaginary</keyword>
+        </keywords>
+    </record>
+
+         <!-- a record with invalid url -->
+    <record>
+        <language>fre</language>
+        <publisher>Codicille éditeur et CRILCQ</publisher>
+
+        <journalTitle>Invalid urls</journalTitle>
+        <issn>1234-5678</issn>
+        <eissn>9876-5432</eissn>
+
+        <publicationDate>2013</publicationDate>
+        <volume/>
+        <issue>7</issue>
+        <startPage/>
+        <endPage/>
+        <documentType>article</documentType>
+        <title language="fre">Imaginaires autochtones contemporains. Introduction</title>
+        <authors>
+            <author>
+                <name>Papillon, Joëlle</name>
+                <email/>
+                <affiliationId>1</affiliationId>
+            </author>
+        </authors>
+        <affiliationsList>
+            <affiliationName affiliationId="1"/>
+        </affiliationsList>
+        <fullTextUrl>//doaj.org/testing/url.pdf</fullTextUrl>
+        <keywords>
+            <keyword>Introduction</keyword>
+            <keyword>Littérature amérindienne</keyword>
+            <keyword>Histoire</keyword>
+            <keyword>Identité</keyword>
+            <keyword>Amerindian Literature</keyword>
+            <keyword>History</keyword>
+            <keyword>Identity</keyword>
+            <keyword>Littérature contemporaine</keyword>
+            <keyword>Imaginaire</keyword>
+            <keyword>Contemporary Literature</keyword>
+            <keyword>Imaginary</keyword>
+        </keywords>
+    </record>
+
+    <!-- a record with url with http anchor -->
+
+    <record>
+        <language>fre</language>
+        <publisher>Codicille éditeur et CRILCQ</publisher>
+
+        <journalTitle>Url with http anchor</journalTitle>
+        <issn>1234-5678</issn>
+        <eissn>9876-5432</eissn>
+
+        <publicationDate>2013</publicationDate>
+        <volume/>
+        <issue>7</issue>
+        <startPage/>
+        <endPage/>
+        <documentType>article</documentType>
+        <title language="fre">Imaginaires autochtones contemporains. Introduction</title>
+        <authors>
+            <author>
+                <name>Papillon, Joëlle</name>
+                <email/>
+                <affiliationId>1</affiliationId>
+            </author>
+        </authors>
+        <affiliationsList>
+            <affiliationName affiliationId="1"/>
+        </affiliationsList>
+        <fullTextUrl>http://example.com#this</fullTextUrl>
+        <keywords>
+            <keyword>Introduction</keyword>
+            <keyword>Littérature amérindienne</keyword>
+            <keyword>Histoire</keyword>
+            <keyword>Identité</keyword>
+            <keyword>Amerindian Literature</keyword>
+            <keyword>History</keyword>
+            <keyword>Identity</keyword>
+            <keyword>Littérature contemporaine</keyword>
+            <keyword>Imaginaire</keyword>
+            <keyword>Contemporary Literature</keyword>
+            <keyword>Imaginary</keyword>
+        </keywords>
+    </record>
+
+    <!-- a record with url with parameters -->
+    <record>
+        <language>fre</language>
+        <publisher>Codicille éditeur et CRILCQ</publisher>
+
+        <journalTitle>Url with parameters</journalTitle>
+        <issn>1234-5678</issn>
+        <eissn>9876-5432</eissn>
+
+        <publicationDate>2013</publicationDate>
+        <volume/>
+        <issue>7</issue>
+        <startPage/>
+        <endPage/>
+        <documentType>article</documentType>
+        <title language="fre">Imaginaires autochtones contemporains. Introduction</title>
+        <authors>
+            <author>
+                <name>Papillon, Joëlle</name>
+                <email/>
+                <affiliationId>1</affiliationId>
+            </author>
+        </authors>
+        <affiliationsList>
+            <affiliationName affiliationId="1"/>
+        </affiliationsList>
+        <fullTextUrl>http://example.com?q=500&amp;whatever=true</fullTextUrl>
+        <keywords>
+            <keyword>Introduction</keyword>
+            <keyword>Littérature amérindienne</keyword>
+            <keyword>Histoire</keyword>
+            <keyword>Identité</keyword>
+            <keyword>Amerindian Literature</keyword>
+            <keyword>History</keyword>
+            <keyword>Identity</keyword>
+            <keyword>Littérature contemporaine</keyword>
+            <keyword>Imaginaire</keyword>
+            <keyword>Contemporary Literature</keyword>
+            <keyword>Imaginary</keyword>
+        </keywords>
+    </record>
+
+    <!-- a record with url with http missing -->
+        <record>
+        <language>fre</language>
+        <publisher>Codicille éditeur et CRILCQ</publisher>
+
+        <journalTitle>Url with http missing</journalTitle>
+        <issn>1234-5678</issn>
+        <eissn>9876-5432</eissn>
+
+        <publicationDate>2013</publicationDate>
+        <volume/>
+        <issue>7</issue>
+        <startPage/>
+        <endPage/>
+        <documentType>article</documentType>
+        <title language="fre">Imaginaires autochtones contemporains. Introduction</title>
+        <authors>
+            <author>
+                <name>Papillon, Joëlle</name>
+                <email/>
+                <affiliationId>1</affiliationId>
+            </author>
+        </authors>
+        <affiliationsList>
+            <affiliationName affiliationId="1"/>
+        </affiliationsList>
+        <fullTextUrl>doaj.org/testing/url.pdf</fullTextUrl>
+        <keywords>
+            <keyword>Introduction</keyword>
+            <keyword>Littérature amérindienne</keyword>
+            <keyword>Histoire</keyword>
+            <keyword>Identité</keyword>
+            <keyword>Amerindian Literature</keyword>
+            <keyword>History</keyword>
+            <keyword>Identity</keyword>
+            <keyword>Littérature contemporaine</keyword>
+            <keyword>Imaginaire</keyword>
+            <keyword>Contemporary Literature</keyword>
+            <keyword>Imaginary</keyword>
+        </keywords>
+    </record>
+
 
 </records>

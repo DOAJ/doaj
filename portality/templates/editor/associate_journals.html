@@ -1,11 +1,27 @@
 {% extends "editor/editor_base.html" %}
 
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
 {% block editor_content %}
 
-<div class="facetview associate_journals"></div>
+<div id="associate_journals"></div>
 
 {% endblock %}
 
 {% block extra_js_bottom %}
-<script type="text/javascript">var journal_edit_url = "{{ url_for('editor.journal_page', journal_id="") }}";</script>
+
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        associateJournalsSearchConfig : {
+            journalEditUrl : "{{ url_for('editor.journal_page', journal_id='') }}",
+            searchPath : '/associate_query/journal/_search'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/associate.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
 {% endblock %}

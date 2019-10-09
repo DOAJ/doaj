@@ -1,12 +1,26 @@
 {% extends "publisher/publisher_base.html" %}
 
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
 {% block publisher_content %}
-<div class="facetview publisher"></div>
+<div id="publisher_journals"></div>
 {% endblock %}
 
 {% block extra_js_bottom %}
-<script type="text/javascript">
-    var journal_update_url = "{{ url_for('publisher.update_request', journal_id="") }}";
-    var journal_update_requests_url = "{{ url_for('publisher.updates_in_progress') }}";
-</script>
+
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        publisherJournalsSearchConfig : {
+            journalUpdateUrl : "{{ url_for('publisher.update_request', journal_id="") }}",
+            journalUpdateRequestsUrl : "{{ url_for('publisher.updates_in_progress') }}",
+            searchPath : '/publisher_query/journal/_search'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/publisher.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
 {% endblock %}
