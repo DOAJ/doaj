@@ -251,7 +251,8 @@ FACET_FIELD = ".exact"
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal",
-    "portality.models.Suggestion"
+    "portality.models.Suggestion",
+    "portality.models.harvester.HarvestState"
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -342,7 +343,6 @@ MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['journal_history'] = {'journal_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['harvester_state'] = {'harvester_state': DEFAULT_DYNAMIC_MAPPING}
 
 # ========================
 # QUERY SETTINGS

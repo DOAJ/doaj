@@ -1,7 +1,8 @@
 from builtins import object
 from portality.lib import dataobj
 from portality.dao import DomainObject
-from portality.lib import dates
+from portality.lib import dates, es_data_mapping
+from portality.core import app
 
 
 class HarvesterPlugin(object):
@@ -54,10 +55,13 @@ class HarvestState(dataobj.DataObj, DomainObject):
             raw = raw["_source"]
         super(HarvestState, self).__init__(raw, struct)
 
+    def mappings(self):
+        return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
+
     @classmethod
     def find_by_issn(cls, account, issn):
         q = ISSNQuery(account, issn)
-        obs = cls.object_query(q.query())
+        obs = cls.q2obj(q=q.query())
         if len(obs) > 0:
             return obs[0]
         return None
@@ -65,7 +69,9 @@ class HarvestState(dataobj.DataObj, DomainObject):
     @classmethod
     def find_by_account(cls, account):
         q = AccountQuery(account)
-        return cls.scroll(q=q.query())
+        # FIXME: in time we need to put scroll on the base DAO
+        return cls.all(q=q.query())
+        # return cls.scroll(q=q.query())
 
     def _coerce_and_kwargs(self, path, dir):
         type, struct, instructions = dataobj.construct_lookup(path, self._struct)
@@ -133,6 +139,10 @@ class HarvestState(dataobj.DataObj, DomainObject):
         if self.status is None:
             self.status = "active"
 
+    def save(self, *args, **kwargs):
+        self.prep()
+        super(HarvestState, self).save(*args, **kwargs)
+
 
 class HarvesterProgressReport(object):
     current_states = {}
@@ -192,6 +202,12 @@ class HarvesterProgressReport(object):
         report.append("Error messages/import failures:")
         report += cls.error_messages
         return "\n".join(report)
+
+
+MAPPING_OPTS = {
+    "dynamic": None,
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"]
+}
 
 
 class ISSNQuery(object):

@@ -79,7 +79,7 @@ class TestState(DoajTestCase):
         assert hs3 is None
 
         gen2 = models.HarvestState.find_by_account("123456789")
-        hss2 = [x for x in gen]
+        hss2 = [x for x in gen2]
         assert len(hss2) == 0
 
     def test_03_state_changes(self):

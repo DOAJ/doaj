@@ -2,7 +2,7 @@ from builtins import object
 from portality.api.v1.client import client as doajclient
 from portality.core import app
 from portality.lib import plugin
-from decorators import capture_sigterm
+from portality.decorators import capture_sigterm
 from portality.models.harvester import HarvesterProgressReport as Report
 from portality.models.harvester import HarvestState
 from portality.lib.dataobj import DataObjException
