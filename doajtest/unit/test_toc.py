@@ -18,7 +18,8 @@ class TestTOC(DoajTestCase):
         # Check we can handle invalid month
         a.bibjson().year = '12'
         a.bibjson().month = '0'
-        d = a.bibjson().get_publication_date()
+        bib = a.bibjson()
+        d = bib.get_publication_date()
         assert d == '2012-01-01T00:00:00Z'
 
         a.bibjson().year = '12'
