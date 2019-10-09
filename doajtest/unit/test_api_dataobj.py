@@ -92,10 +92,10 @@ class TestAPIDataObj(DoajTestCase):
             "structs" : {
                 "three" : {
                     "fields" : {
-                        "alpha" : {"coerce" : "str"}
+                        "alpha" : {"coerce" : "unicode"}
                     },
                     "lists" : {
-                        "beta" : {"contains" : "field", "coerce" : "str"}
+                        "beta" : {"contains" : "field", "coerce" : "unicode"}
                     },
                     "objects" : ["gamma"]
                 }
