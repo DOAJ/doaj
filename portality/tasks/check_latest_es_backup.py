@@ -30,7 +30,7 @@ class CheckLatestESBackupBackgroundTask(BackgroundTask):
                 to=[app.config.get('ADMIN_EMAIL', 'sysadmin@cottagelabs.com')],
                 fro=app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org'),
                 subject='Alert: DOAJ ElasticSearch backup failure',
-                msg_body="Today's ES snapshot has not been found by the checking task. Error: \n" + str(e)
+                msg_body="Today's ES snapshot has not been found by the checking task. Error: \n" + e.message
             )
             raise e
 
