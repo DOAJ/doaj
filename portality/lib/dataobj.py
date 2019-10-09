@@ -1103,7 +1103,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
         try:
             constructed._set_single(field_name, val, coerce=coerce_fn, **kwargs)
         except DataSchemaException as e:
-            raise DataStructureException("Schema exception at '{a}', {b}".format(a=context + field_name, b=e.message))
+            raise DataStructureException("Schema exception at '{a}', {b}".format(a=context + field_name, b=str(e)))
 
     # next check all the objetcs (which will involve a recursive call to this function)
     for field_name in struct.get("objects", []):

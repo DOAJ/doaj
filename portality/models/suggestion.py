@@ -145,7 +145,7 @@ class Suggestion(JournalLikeObject):
 
 APPLICATION_STRUCT = {
     "fields" : {
-        "id" : {"coerce" : "str"},
+        "id" : {"coerce" : "unicode"},
         "created_date" : {"coerce" : "utcdatetime"},
         "last_updated" : {"coerce" : "utcdatetime"},
         "last_manual_update" : {"coerce" : "utcdatetime"}
@@ -158,13 +158,13 @@ APPLICATION_STRUCT = {
         "admin" : {
             "fields" : {
                 "seal" : {"coerce" : "bool"},
-                "bulk_upload" : {"coerce" : "str"},
-                "owner" : {"coerce" : "str"},
-                "editor_group" : {"coerce" : "str"},
-                "editor" : {"coerce" : "str"},
-                "current_journal" : {"coerce" : "str"},
-                "related_journal" : {"coerce" : "str"},
-                "application_status" : {"coerce" : "str"}
+                "bulk_upload" : {"coerce" : "unicode"},
+                "owner" : {"coerce" : "unicode"},
+                "editor_group" : {"coerce" : "unicode"},
+                "editor" : {"coerce" : "unicode"},
+                "current_journal" : {"coerce" : "unicode"},
+                "related_journal" : {"coerce" : "unicode"},
+                "application_status" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "contact" : {"contains" : "object"},
@@ -173,13 +173,13 @@ APPLICATION_STRUCT = {
             "structs" : {
                 "contact" : {
                     "fields" : {
-                        "email" : {"coerce" : "str"},
-                        "name" : {"coerce" : "str"}
+                        "email" : {"coerce" : "unicode"},
+                        "name" : {"coerce" : "unicode"}
                     }
                 },
                 "notes" : {
                     "fields" : {
-                        "note" : {"coerce" : "str"},
+                        "note" : {"coerce" : "unicode"},
                         "date" : {"coerce" : "utcdatetime"}
                     }
                 }
@@ -187,33 +187,33 @@ APPLICATION_STRUCT = {
         },
         "index" : {
             "fields" : {
-                "country" : {"coerce" : "str"},
-                "homepage_url" : {"coerce" : "str"},
-                "waiver_policy_url" : {"coerce" : "str"},
-                "editorial_board_url" : {"coerce" : "str"},
-                "aims_scope_url" : {"coerce" : "str"},
-                "author_instructions_url" : {"coerce" : "str"},
-                "oa_statement_url" : {"coerce" : "str"},
-                "has_apc" : {"coerce" : "str"},
-                "has_seal" : {"coerce" : "str"},
-                "unpunctitle" : {"coerce" : "str"},
-                "asciiunpunctitle" : {"coerce" : "str"},
-                "continued" : {"coerce" : "str"},
-                "application_type": {"coerce": "str"},
-                "has_editor_group" : {"coerce" : "str"},
-                "has_editor" : {"coerce" : "str"}
+                "country" : {"coerce" : "unicode"},
+                "homepage_url" : {"coerce" : "unicode"},
+                "waiver_policy_url" : {"coerce" : "unicode"},
+                "editorial_board_url" : {"coerce" : "unicode"},
+                "aims_scope_url" : {"coerce" : "unicode"},
+                "author_instructions_url" : {"coerce" : "unicode"},
+                "oa_statement_url" : {"coerce" : "unicode"},
+                "has_apc" : {"coerce" : "unicode"},
+                "has_seal" : {"coerce" : "unicode"},
+                "unpunctitle" : {"coerce" : "unicode"},
+                "asciiunpunctitle" : {"coerce" : "unicode"},
+                "continued" : {"coerce" : "unicode"},
+                "application_type": {"coerce": "unicode"},
+                "has_editor_group" : {"coerce" : "unicode"},
+                "has_editor" : {"coerce" : "unicode"}
             },
             "lists" : {
-                "issn" : {"contains" : "field", "coerce" : "str"},
-                "title" : {"contains" : "field", "coerce" : "str"},
-                "subject" : {"contains" : "field", "coerce" : "str"},
-                "schema_subject" : {"contains" : "field", "coerce" : "str"},
-                "classification" : {"contains" : "field", "coerce" : "str"},
-                "language" : {"contains" : "field", "coerce" : "str"},
-                "license" : {"contains" : "field", "coerce" : "str"},
-                "classification_paths" : {"contains" : "field", "coerce" : "str"},
-                "schema_code" : {"contains" : "field", "coerce" : "str"},
-                "publisher" : {"contains" : "field", "coerce" : "str"}
+                "issn" : {"contains" : "field", "coerce" : "unicode"},
+                "title" : {"contains" : "field", "coerce" : "unicode"},
+                "subject" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_subject" : {"contains" : "field", "coerce" : "unicode"},
+                "classification" : {"contains" : "field", "coerce" : "unicode"},
+                "language" : {"contains" : "field", "coerce" : "unicode"},
+                "license" : {"contains" : "field", "coerce" : "unicode"},
+                "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_code" : {"contains" : "field", "coerce" : "unicode"},
+                "publisher" : {"contains" : "field", "coerce" : "unicode"}
             }
         },
         "suggestion" : {
@@ -228,14 +228,14 @@ APPLICATION_STRUCT = {
             "structs" : {
                 "suggester" : {
                     "fields" : {
-                        "name" : {"coerce" : "str"},
-                        "email" : {"coerce" : "str"}
+                        "name" : {"coerce" : "unicode"},
+                        "email" : {"coerce" : "unicode"}
                     }
                 },
                 "articles_last_year" : {
                     "fields" : {
                         "count" : {"coerce" : "integer"},
-                        "url" : {"coerce" : "str"}
+                        "url" : {"coerce" : "unicode"}
                     }
                 }
             }

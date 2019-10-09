@@ -229,7 +229,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 xwalk.validate_file(handle)
         except IngestException as e:
             job.add_audit_message("IngestException: {x}".format(x=e.trace()))
-            file_upload.failed(e.message, e.inner_message)
+            file_upload.failed(str(e), e.inner_message)
             try:
                 file_failed(path)
             except:
@@ -284,8 +284,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                     article.set_upload_id(file_upload.id)
                 result = articleService.batch_create_articles(articles, account, add_journal_info=True)
         except IngestException as e:
-            job.add_audit_message("IngestException: {msg}. Inner message: {inner}.  Stack: {x}".format(msg=e.message, inner=e.inner_message, x=e.trace()))
-            file_upload.failed(e.message, e.inner_message)
+            job.add_audit_message("IngestException: {msg}. Inner message: {inner}.  Stack: {x}".format(msg=str(e), inner=e.inner_message, x=e.trace()))
+            file_upload.failed(str(e), e.inner_message)
             result = e.result
             try:
                 file_failed(path)
@@ -445,14 +445,14 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             return record.id
 
         except IngestException as e:
-            record.failed(e.message, e.inner_message)
+            record.failed(str(e), e.inner_message)
             try:
                 file_failed(xml)
             except:
                 pass
             record.save()
             previous.insert(0, record)
-            raise BackgroundException("Failed to upload file: " + e.message + "; " + str(e.inner_message))
+            raise BackgroundException("Failed to upload file: " + str(e) + "; " + str(e.inner_message))
         except Exception as e:
             record.failed("File system error when reading file")
             try:
@@ -544,7 +544,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except BackgroundException as e:
             raise
         except Exception as e:
-            return __fail(record, previous, error="please check it before submitting again; " + e.message)
+            return __fail(record, previous, error="please check it before submitting again; " + str(e))
 
 @main_queue.task(**configure("ingest_articles"))
 @write_required(script=True)

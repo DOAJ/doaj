@@ -58,7 +58,7 @@ class ArticleBulkDeleteBackgroundTask(AdminBackgroundTask):
         if not self._job_parameter_check(params):
             raise BackgroundException("{}.run run without sufficient parameters".format(self.__class__.__name__))
 
-        batches_count = len(ids) / self.BATCH_SIZE + (0 if len(ids) % self.BATCH_SIZE == 0 else 1)
+        batches_count = len(ids) // self.BATCH_SIZE + (0 if len(ids) % self.BATCH_SIZE == 0 else 1)
         job.add_audit_message("About to delete {} articles in {} batches".format(len(ids), batches_count))
 
         for batch_num, batch in enumerate(batch_up(ids, self.BATCH_SIZE), start=1):

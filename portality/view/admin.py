@@ -179,7 +179,7 @@ def journal_page(journal_id):
                     flash_with_url(a, "success")
                 return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='done'))
             except formcontext.FormContextException as e:
-                flash(e.message)
+                flash(str(e))
                 return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_journal_page=True, lock=lockinfo)
@@ -307,7 +307,7 @@ def suggestion_page(suggestion_id):
                     flash_with_url(a, "success")
                 return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='done'))
             except formcontext.FormContextException as e:
-                flash(e.message)
+                flash(str(e))
                 return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True, lock=lockinfo)

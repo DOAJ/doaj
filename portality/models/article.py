@@ -837,11 +837,11 @@ ARTICLE_BIBJSON_EXTENSION = {
     "structs" : {
         "bibjson" : {
             "fields" : {
-                "year" : {"coerce" : "str"},
-                "month" : {"coerce" : "str"},
-                "start_page" : {"coerce" : "str"},
-                "end_page" : {"coerce" : "str"},
-                "abstract" : {"coerce" : "str"}
+                "year" : {"coerce" : "unicode"},
+                "month" : {"coerce" : "unicode"},
+                "start_page" : {"coerce" : "unicode"},
+                "end_page" : {"coerce" : "unicode"},
+                "abstract" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "author" : {"contains" : "object"}
@@ -853,32 +853,32 @@ ARTICLE_BIBJSON_EXTENSION = {
             "structs" : {
                 "author" : {
                     "fields" : {
-                        "name" : {"coerce" : "str"},
-                        "affiliation" : {"coerce" : "str"},
-                        "email" : {"coerce": "str"}
+                        "name" : {"coerce" : "unicode"},
+                        "affiliation" : {"coerce" : "unicode"},
+                        "email" : {"coerce": "unicode"}
                     }
                 },
 
                 "journal" : {
                     "fields" : {
-                        "volume" : {"coerce" : "str"},
-                        "number" : {"coerce" : "str"},
-                        "publisher" : {"coerce" : "str"},
-                        "title" : {"coerce" : "str"},
-                        "country" : {"coerce" : "str"}
+                        "volume" : {"coerce" : "unicode"},
+                        "number" : {"coerce" : "unicode"},
+                        "publisher" : {"coerce" : "unicode"},
+                        "title" : {"coerce" : "unicode"},
+                        "country" : {"coerce" : "unicode"}
                     },
                     "lists" : {
                         "license" : {"contains" : "object"},
-                        "language" : {"contains" : "field", "coerce" : "str"},
-                        "issns" : {"contains" : "field", "coerce" : "str"}
+                        "language" : {"contains" : "field", "coerce" : "unicode"},
+                        "issns" : {"contains" : "field", "coerce" : "unicode"}
                     },
                     "structs" : {
                         "license" : {
                             "fields" : {
-                                "title" : {"coerce" : "str"},
-                                "type" : {"coerce" : "str"},
-                                "url" : {"coerce" : "str"},
-                                "version" : {"coerce" : "str"},
+                                "title" : {"coerce" : "unicode"},
+                                "type" : {"coerce" : "unicode"},
+                                "url" : {"coerce" : "unicode"},
+                                "version" : {"coerce" : "unicode"},
                                 "open_access" : {"coerce" : "bool"}
                             }
                         }

@@ -26,7 +26,7 @@ def remove_doi(article_id):
         else:
             print("WARN: could not remove DOI from {0} as it has no fulltext URL".format(article_id))
     except AttributeError as e:
-        print("ERROR: could not remove DOI from {0}: {1}".format(article_id, e.message))
+        print("ERROR: could not remove DOI from {0}: {1}".format(article_id, str(e)))
     
 
 def remove_fulltext(article_id):
@@ -40,7 +40,7 @@ def remove_fulltext(article_id):
         else:
             print("WARN: could not remove Fulltext from {0} as it has no DOI".format(article_id))
     except AttributeError as e:
-        print("ERROR: could not remove fulltext from {0}: {1}".format(article_id, e.message))
+        print("ERROR: could not remove fulltext from {0}: {1}".format(article_id, str(e)))
 
 
 if __name__ == "__main__":

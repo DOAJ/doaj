@@ -1191,7 +1191,7 @@ class JournalBibJSON(GenericBibJSON):
 
 JOURNAL_STRUCT = {
     "fields" : {
-        "id" : {"coerce" : "str"},
+        "id" : {"coerce" : "unicode"},
         "created_date" : {"coerce" : "utcdatetime"},
         "last_updated" : {"coerce" : "utcdatetime"},
         "last_reapplication" : {"coerce" : "utcdatetime"},
@@ -1207,11 +1207,11 @@ JOURNAL_STRUCT = {
                 "in_doaj" : {"coerce" : "bool"},
                 "ticked" : {"coerce" : "bool"},
                 "seal" : {"coerce" : "bool"},
-                "bulk_upload" : {"coerce" : "str"},
-                "owner" : {"coerce" : "str"},
-                "editor_group" : {"coerce" : "str"},
-                "editor" : {"coerce" : "str"},
-                "current_application" : {"coerce" : "str"}
+                "bulk_upload" : {"coerce" : "unicode"},
+                "owner" : {"coerce" : "unicode"},
+                "editor_group" : {"coerce" : "unicode"},
+                "editor" : {"coerce" : "unicode"},
+                "current_application" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "contact" : {"contains" : "object"},
@@ -1221,56 +1221,56 @@ JOURNAL_STRUCT = {
             "structs" : {
                 "contact" : {
                     "fields" : {
-                        "email" : {"coerce" : "str"},
-                        "name" : {"coerce" : "str"}
+                        "email" : {"coerce" : "unicode"},
+                        "name" : {"coerce" : "unicode"}
                     }
                 },
                 "notes" : {
                     "fields" : {
-                        "note" : {"coerce" : "str"},
+                        "note" : {"coerce" : "unicode"},
                         "date" : {"coerce" : "utcdatetime"}
                     }
                 },
                 "related_applications" : {
                     "fields" : {
-                        "application_id" : {"coerce" : "str"},
+                        "application_id" : {"coerce" : "unicode"},
                         "date_accepted" : {"coerce" : "utcdatetime"},
-                        "status" : {"coerce" : "str"}
+                        "status" : {"coerce" : "unicode"}
                     }
                 }
             }
         },
         "index" : {
             "fields" : {
-                "country" : {"coerce" : "str"},
-                "homepage_url" : {"coerce" : "str"},
-                "waiver_policy_url" : {"coerce" : "str"},
-                "editorial_board_url" : {"coerce" : "str"},
-                "aims_scope_url" : {"coerce" : "str"},
-                "author_instructions_url" : {"coerce" : "str"},
-                "oa_statement_url" : {"coerce" : "str"},
-                "has_apc" : {"coerce" : "str"},
-                "has_seal" : {"coerce" : "str"},
-                "unpunctitle" : {"coerce" : "str"},
-                "asciiunpunctitle" : {"coerce" : "str"},
-                "continued" : {"coerce" : "str"},
-                "has_editor_group" : {"coerce" : "str"},
-                "has_editor" : {"coerce" : "str"},
-                "publisher_ac" : {"coerce" : "str"},
-                "institution_ac" : {"coerce" : "str"},
-                "provider_ac" : {"coerce" : "str"}
+                "country" : {"coerce" : "unicode"},
+                "homepage_url" : {"coerce" : "unicode"},
+                "waiver_policy_url" : {"coerce" : "unicode"},
+                "editorial_board_url" : {"coerce" : "unicode"},
+                "aims_scope_url" : {"coerce" : "unicode"},
+                "author_instructions_url" : {"coerce" : "unicode"},
+                "oa_statement_url" : {"coerce" : "unicode"},
+                "has_apc" : {"coerce" : "unicode"},
+                "has_seal" : {"coerce" : "unicode"},
+                "unpunctitle" : {"coerce" : "unicode"},
+                "asciiunpunctitle" : {"coerce" : "unicode"},
+                "continued" : {"coerce" : "unicode"},
+                "has_editor_group" : {"coerce" : "unicode"},
+                "has_editor" : {"coerce" : "unicode"},
+                "publisher_ac" : {"coerce" : "unicode"},
+                "institution_ac" : {"coerce" : "unicode"},
+                "provider_ac" : {"coerce" : "unicode"}
             },
             "lists" : {
-                "issn" : {"contains" : "field", "coerce" : "str"},
-                "title" : {"contains" : "field", "coerce" : "str"},
-                "subject" : {"contains" : "field", "coerce" : "str"},
-                "schema_subject" : {"contains" : "field", "coerce" : "str"},
-                "classification" : {"contains" : "field", "coerce" : "str"},
-                "language" : {"contains" : "field", "coerce" : "str"},
-                "license" : {"contains" : "field", "coerce" : "str"},
-                "classification_paths" : {"contains" : "field", "coerce" : "str"},
-                "schema_code" : {"contains" : "field", "coerce" : "str"},
-                "publisher" : {"contains" : "field", "coerce" : "str"}
+                "issn" : {"contains" : "field", "coerce" : "unicode"},
+                "title" : {"contains" : "field", "coerce" : "unicode"},
+                "subject" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_subject" : {"contains" : "field", "coerce" : "unicode"},
+                "classification" : {"contains" : "field", "coerce" : "unicode"},
+                "language" : {"contains" : "field", "coerce" : "unicode"},
+                "license" : {"contains" : "field", "coerce" : "unicode"},
+                "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_code" : {"contains" : "field", "coerce" : "unicode"},
+                "publisher" : {"contains" : "field", "coerce" : "unicode"}
             }
         }
     }

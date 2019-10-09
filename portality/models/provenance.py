@@ -122,18 +122,18 @@ class Provenance(dataobj.DataObj, DomainObject):
 
 PROVENANCE_STRUCT = {
     "fields" : {
-        "id" : {"coerce" : "str"},
+        "id" : {"coerce" : "unicode"},
         "created_date" : {"coerce" : "utcdatetime"},
         "last_updated" : {"coerce" : "utcdatetime"},
-        "user" : {"coerce" : "str"},
-        "type" : {"coerce" : "str"},
-        "subtype" : {"coerce" : "str"},
-        "action" : {"coerce" : "str"},
-        "resource_id" : {"coerce" : "str"}
+        "user" : {"coerce" : "unicode"},
+        "type" : {"coerce" : "unicode"},
+        "subtype" : {"coerce" : "unicode"},
+        "action" : {"coerce" : "unicode"},
+        "resource_id" : {"coerce" : "unicode"}
     },
     "lists" : {
-        "roles" : {"contains" : "field", "coerce" : "str"},
-        "editor_group" : {"contains" : "field", "coerce" : "str"}
+        "roles" : {"contains" : "field", "coerce" : "unicode"},
+        "editor_group" : {"contains" : "field", "coerce" : "unicode"}
     }
 }
 

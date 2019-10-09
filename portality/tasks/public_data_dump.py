@@ -116,7 +116,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
                 job.save()
             except Exception as e:
                 tmpStore.delete_container(container)
-                raise BackgroundException("Error copying {0} data on complete {1}\n".format(typ, e.message))
+                raise BackgroundException("Error copying {0} data on complete {1}\n".format(typ, str(e)))
 
             store_url = mainStore.url(container, zipped_name)
             urls[typ] = store_url
