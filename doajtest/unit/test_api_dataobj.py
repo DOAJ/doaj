@@ -82,7 +82,7 @@ class TestAPIDataObj(DoajTestCase):
     def test_03_merge_outside_construct(self):
         struct = {
             "fields" : {
-                "one" : {"coerce" : "str"}
+                "one" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "two" : {"contains" : "field", "coerce" : "str"}
@@ -92,7 +92,7 @@ class TestAPIDataObj(DoajTestCase):
             "structs" : {
                 "three" : {
                     "fields" : {
-                        "alpha" : {"coerce" : "str"}
+                        "alpha" : {"coerce" : "unicode"}
                     },
                     "lists" : {
                         "beta" : {"contains" : "field", "coerce" : "str"}
