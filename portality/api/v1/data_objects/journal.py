@@ -7,7 +7,7 @@ from portality.api.v1.data_objects.common_journal_application import OutgoingCom
 JOURNAL_STRUCT = {
     "objects": ["bibjson", "admin"],
     "fields": {
-        "id": {"coerce": "str"},
+        "id": {"coerce": "unicode"},
         "created_date": {"coerce": "utcdatetime"},
         "last_updated": {"coerce": "utcdatetime"}
     },
@@ -17,7 +17,7 @@ JOURNAL_STRUCT = {
                 "in_doaj": {"coerce": "bool", "get__default": False},
                 "ticked": {"coerce": "bool", "get__default": False},
                 "seal": {"coerce": "bool", "get__default": False},
-                "owner": {"coerce": "str"},
+                "owner": {"coerce": "unicode"},
             },
             "lists": {
                 "contact": {"contains": "object"}
@@ -25,8 +25,8 @@ JOURNAL_STRUCT = {
             "structs": {
                 "contact": {
                     "fields": {
-                        "email": {"coerce": "str"},
-                        "name": {"coerce": "str"},
+                        "email": {"coerce": "unicode"},
+                        "name": {"coerce": "unicode"},
                     }
                 }
             }
@@ -34,21 +34,21 @@ JOURNAL_STRUCT = {
         "bibjson": {
             "fields": {
                 "allows_fulltext_indexing": {"coerce": "bool"},
-                "alternative_title": {"coerce": "str"},
+                "alternative_title": {"coerce": "unicode"},
                 "apc_url": {"coerce": "url"},
                 "country": {"coerce": "country_code"},
-                "institution": {"coerce": "str"},
-                "provider": {"coerce": "str"},
+                "institution": {"coerce": "unicode"},
+                "provider": {"coerce": "unicode"},
                 "publication_time": {"coerce": "integer"},
-                "publisher": {"coerce": "str"},
+                "publisher": {"coerce": "unicode"},
                 "submission_charges_url": {"coerce": "url"},
-                "title": {"coerce": "str"},
+                "title": {"coerce": "unicode"},
             },
             "lists": {
                 "deposit_policy": {"coerce": "deposit_policy", "contains": "field"},
                 "format": {"coerce": "format", "contains": "field"},
                 "identifier": {"contains": "object"},
-                "keywords": {"coerce": "str", "contains": "field"},
+                "keywords": {"coerce": "unicode", "contains": "field"},
                 "language": {"coerce": "isolang_2letter", "contains": "field"},
                 "license": {"contains": "object"},
                 "link": {"contains": "object"},
@@ -81,13 +81,13 @@ JOURNAL_STRUCT = {
                         "url": {"coerce": "url"},
                     },
                     "lists": {
-                        "policy": {"coerce": "str", "contains": "object"},
+                        "policy": {"coerce": "unicode", "contains": "object"},
                     },
 
                     "structs" : {
                         "policy" : {
                             "fields" : {
-                                "name" : {"coerce": "str"},
+                                "name" : {"coerce": "unicode"},
                                 "domain" : {"coerce" : "unicode"}
                             }
                         }
@@ -103,29 +103,29 @@ JOURNAL_STRUCT = {
 
                 "author_copyright": {
                     "fields": {
-                        "copyright": {"coerce": "str"},
+                        "copyright": {"coerce": "unicode"},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "author_publishing_rights": {
                     "fields": {
-                        "publishing_rights": {"coerce": "str"},
+                        "publishing_rights": {"coerce": "unicode"},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "editorial_review": {
                     "fields": {
-                        "process": {"coerce": "str", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
+                        "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "identifier": {
                     "fields": {
-                        "type": {"coerce": "str"},
-                        "id": {"coerce": "str"},
+                        "type": {"coerce": "unicode"},
+                        "id": {"coerce": "unicode"},
                     }
                 },
 
@@ -134,7 +134,7 @@ JOURNAL_STRUCT = {
                         "title": {"coerce": "license"},
                         "type": {"coerce": "license"},
                         "url": {"coerce": "url"},
-                        "version": {"coerce": "str"},
+                        "version": {"coerce": "unicode"},
                         "open_access": {"coerce": "bool"},
                         "BY": {"coerce": "bool"},
                         "NC": {"coerce": "bool"},
@@ -147,7 +147,7 @@ JOURNAL_STRUCT = {
 
                 "link": {
                     "fields": {
-                        "type": {"coerce": "str"},
+                        "type": {"coerce": "unicode"},
                         "url": {"coerce": "url"},
                     }
                 },
@@ -183,9 +183,9 @@ JOURNAL_STRUCT = {
                 },
                 "subject": {
                     "fields": {
-                        "scheme": {"coerce": "str"},
-                        "term": {"coerce": "str"},
-                        "code": {"coerce": "str"},
+                        "scheme": {"coerce": "unicode"},
+                        "term": {"coerce": "unicode"},
+                        "code": {"coerce": "unicode"},
                     }
                 }
             }

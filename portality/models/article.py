@@ -855,7 +855,7 @@ ARTICLE_BIBJSON_EXTENSION = {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
                         "affiliation" : {"coerce" : "unicode"},
-                        "email" : {"coerce": "str"}
+                        "email" : {"coerce": "unicode"}
                     }
                 },
 
@@ -869,8 +869,8 @@ ARTICLE_BIBJSON_EXTENSION = {
                     },
                     "lists" : {
                         "license" : {"contains" : "object"},
-                        "language" : {"contains" : "field", "coerce" : "str"},
-                        "issns" : {"contains" : "field", "coerce" : "str"}
+                        "language" : {"contains" : "field", "coerce" : "unicode"},
+                        "issns" : {"contains" : "field", "coerce" : "unicode"}
                     },
                     "structs" : {
                         "license" : {

@@ -9,7 +9,7 @@ SHARED_BIBJSON = {
             },
             "lists" : {
                 "identifier" : {"contains" : "object"},
-                "keywords" : {"contains" : "field", "coerce" : "str"},
+                "keywords" : {"contains" : "field", "coerce" : "unicode"},
                 "link" : {"contains" : "object"},
                 "subject" : {"contains" : "object"},
             },
@@ -62,12 +62,12 @@ JOURNAL_BIBJSON_EXTENSION = {
             },
             "lists" : {
                 "language" : {"contains" : "field", "coerce" : "unicode_upper"},
-                "deposit_policy" : {"contains" : "field", "coerce" : "str"},
-                "persistent_identifier_scheme" : {"contains" : "field", "coerce" : "str"},
-                "format" : {"contains" : "field", "coerce" : "str"},
+                "deposit_policy" : {"contains" : "field", "coerce" : "unicode"},
+                "persistent_identifier_scheme" : {"contains" : "field", "coerce" : "unicode"},
+                "format" : {"contains" : "field", "coerce" : "unicode"},
                 "license" : {"contains" : "object"},
-                "is_replaced_by" : {"contains" : "field", "coerce" : "str"},
-                "replaces" : {"contains" : "field", "coerce" : "str"}
+                "is_replaced_by" : {"contains" : "field", "coerce" : "unicode"},
+                "replaces" : {"contains" : "field", "coerce" : "unicode"}
             },
             "objects" : [
                 "oa_start",
@@ -116,7 +116,7 @@ JOURNAL_BIBJSON_EXTENSION = {
                         "url" : {"coerce" : "unicode"}
                     },
                     "lists" : {
-                        "known" : {"contains" : "field", "coerce" : "str"}
+                        "known" : {"contains" : "field", "coerce" : "unicode"}
                     }
                 },
                 "editorial_review" : {

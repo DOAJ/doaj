@@ -132,8 +132,8 @@ PROVENANCE_STRUCT = {
         "resource_id" : {"coerce" : "unicode"}
     },
     "lists" : {
-        "roles" : {"contains" : "field", "coerce" : "str"},
-        "editor_group" : {"contains" : "field", "coerce" : "str"}
+        "roles" : {"contains" : "field", "coerce" : "unicode"},
+        "editor_group" : {"contains" : "field", "coerce" : "unicode"}
     }
 }
 

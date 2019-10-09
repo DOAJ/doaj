@@ -9,7 +9,7 @@ from portality.api.v1.data_objects.common_journal_application import OutgoingCom
 # "required" fields are only put on incoming applications
 BASE_APPLICATION_STRUCT = {
     "fields": {
-        "id": {"coerce": "str"},                # Note that we'll leave these in for ease of use by the
+        "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
         "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
         "last_updated": {"coerce": "utcdatetime"}   # to the real object
     },
@@ -40,21 +40,21 @@ BASE_APPLICATION_STRUCT = {
         "bibjson": {
             "fields": {
                 "allows_fulltext_indexing": {"coerce": "bool"},
-                "alternative_title": {"coerce": "str"},
+                "alternative_title": {"coerce": "unicode"},
                 "apc_url": {"coerce": "url"},
                 "country": {"coerce": "country_code"},
-                "institution": {"coerce": "str"},
-                "provider": {"coerce": "str"},
+                "institution": {"coerce": "unicode"},
+                "provider": {"coerce": "unicode"},
                 "publication_time": {"coerce": "integer"},
-                "publisher": {"coerce": "str"},
+                "publisher": {"coerce": "unicode"},
                 "submission_charges_url": {"coerce": "url"},
-                "title": {"coerce": "str"},
+                "title": {"coerce": "unicode"},
             },
             "lists": {
                 "deposit_policy": {"coerce": "deposit_policy", "contains": "field"},
                 "format": {"coerce": "format", "contains": "field"},
                 "identifier": {"contains": "object"},
-                "keywords": {"coerce": "str", "contains": "field"},
+                "keywords": {"coerce": "unicode", "contains": "field"},
                 "language": {"coerce": "isolang_2letter", "contains": "field"},
                 "license": {"contains": "object"},
                 "link": {"contains": "object"},
@@ -92,7 +92,7 @@ BASE_APPLICATION_STRUCT = {
                     "structs" : {
                         "policy" : {
                             "fields" : {
-                                "name" : {"coerce": "str"},
+                                "name" : {"coerce": "unicode"},
                                 "domain" : {"coerce" : "unicode"}
                             }
                         }
@@ -108,29 +108,29 @@ BASE_APPLICATION_STRUCT = {
 
                 "author_copyright": {
                     "fields": {
-                        "copyright": {"coerce": "str"},
+                        "copyright": {"coerce": "unicode"},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "author_publishing_rights": {
                     "fields": {
-                        "publishing_rights": {"coerce": "str"},
+                        "publishing_rights": {"coerce": "unicode"},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "editorial_review": {
                     "fields": {
-                        "process": {"coerce": "str", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
+                        "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
                         "url": {"coerce": "url"},
                     }
                 },
 
                 "identifier": {
                     "fields": {
-                        "type": {"coerce": "str"},
-                        "id": {"coerce": "str"},
+                        "type": {"coerce": "unicode"},
+                        "id": {"coerce": "unicode"},
                     }
                 },
 
@@ -139,7 +139,7 @@ BASE_APPLICATION_STRUCT = {
                         "title": {"coerce": "license"},
                         "type": {"coerce": "license"},
                         "url": {"coerce": "url"},
-                        "version": {"coerce": "str"},
+                        "version": {"coerce": "unicode"},
                         "open_access": {"coerce": "bool"},
                         "BY": {"coerce": "bool"},
                         "NC": {"coerce": "bool"},
@@ -152,7 +152,7 @@ BASE_APPLICATION_STRUCT = {
 
                 "link": {
                     "fields": {
-                        "type": {"coerce": "str"},
+                        "type": {"coerce": "unicode"},
                         "url": {"coerce": "url"},
                     }
                 },
@@ -178,9 +178,9 @@ BASE_APPLICATION_STRUCT = {
                 },
                 "subject": {
                     "fields": {
-                        "scheme": {"coerce": "str"},
-                        "term": {"coerce": "str"},
-                        "code": {"coerce": "str"},
+                        "scheme": {"coerce": "unicode"},
+                        "term": {"coerce": "unicode"},
+                        "code": {"coerce": "unicode"},
                     }
                 }
             }

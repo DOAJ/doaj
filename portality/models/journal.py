@@ -1261,16 +1261,16 @@ JOURNAL_STRUCT = {
                 "provider_ac" : {"coerce" : "unicode"}
             },
             "lists" : {
-                "issn" : {"contains" : "field", "coerce" : "str"},
-                "title" : {"contains" : "field", "coerce" : "str"},
-                "subject" : {"contains" : "field", "coerce" : "str"},
-                "schema_subject" : {"contains" : "field", "coerce" : "str"},
-                "classification" : {"contains" : "field", "coerce" : "str"},
-                "language" : {"contains" : "field", "coerce" : "str"},
-                "license" : {"contains" : "field", "coerce" : "str"},
-                "classification_paths" : {"contains" : "field", "coerce" : "str"},
-                "schema_code" : {"contains" : "field", "coerce" : "str"},
-                "publisher" : {"contains" : "field", "coerce" : "str"}
+                "issn" : {"contains" : "field", "coerce" : "unicode"},
+                "title" : {"contains" : "field", "coerce" : "unicode"},
+                "subject" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_subject" : {"contains" : "field", "coerce" : "unicode"},
+                "classification" : {"contains" : "field", "coerce" : "unicode"},
+                "language" : {"contains" : "field", "coerce" : "unicode"},
+                "license" : {"contains" : "field", "coerce" : "unicode"},
+                "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_code" : {"contains" : "field", "coerce" : "unicode"},
+                "publisher" : {"contains" : "field", "coerce" : "unicode"}
             }
         }
     }
