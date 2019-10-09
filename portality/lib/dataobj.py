@@ -1068,7 +1068,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
     # Note that since the construct mechanism copies fields explicitly, silent_prune literally just turns off this
     # check
     if not silent_prune:
-        allowed = struct.get("fields", {}).keys() + struct.get("objects", []) + struct.get("lists", {}).keys()
+        allowed = list(struct.get("fields", {})) + list(struct.get("objects", [])) + list(struct.get("lists", {}))
         for k in keys:
             if k not in allowed:
                 c = context if context != "" else "root"
