@@ -245,7 +245,7 @@ def prune_container(storage, container_id, sort, filter=None, keep=1):
     filtered = []
     if filter is not None:
         for fn in filelist:
-            if list(filter(fn)):
+            if filter(fn):
                 filtered.append(fn)
     else:
         filtered = filelist
