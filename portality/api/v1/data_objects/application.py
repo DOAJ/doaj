@@ -18,9 +18,9 @@ BASE_APPLICATION_STRUCT = {
     "structs": {
         "admin" : {
             "fields" : {
-                "application_status" : {"coerce" : "str"},   # note we don't limit this to the allowed values, as this just gives us maintenance requirements
-                "owner" : {"coerce" : "str"},
-                "current_journal" : {"coerce" : "str"}
+                "application_status" : {"coerce" : "unicode"},   # note we don't limit this to the allowed values, as this just gives us maintenance requirements
+                "owner" : {"coerce" : "unicode"},
+                "current_journal" : {"coerce" : "unicode"}
             },
 
             "lists" : {
@@ -30,8 +30,8 @@ BASE_APPLICATION_STRUCT = {
             "structs" : {
                 "contact": {
                     "fields" : {
-                        "email" : {"coerce" : "str"},
-                        "name" : {"coerce" : "str"}
+                        "email" : {"coerce" : "unicode"},
+                        "name" : {"coerce" : "unicode"}
                     }
                 }
             }
@@ -93,7 +93,7 @@ BASE_APPLICATION_STRUCT = {
                         "policy" : {
                             "fields" : {
                                 "name" : {"coerce": "str"},
-                                "domain" : {"coerce" : "str"}
+                                "domain" : {"coerce" : "unicode"}
                             }
                         }
                     }
@@ -205,8 +205,8 @@ BASE_APPLICATION_STRUCT = {
                 },
                 "suggester" : {
                     "fields" : {
-                        "name" : {"coerce" : "str"},
-                        "email" : {"coerce" : "str"}
+                        "name" : {"coerce" : "unicode"},
+                        "email" : {"coerce" : "unicode"}
                     }
                 }
             }

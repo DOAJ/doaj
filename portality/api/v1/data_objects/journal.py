@@ -88,7 +88,7 @@ JOURNAL_STRUCT = {
                         "policy" : {
                             "fields" : {
                                 "name" : {"coerce": "str"},
-                                "domain" : {"coerce" : "str"}
+                                "domain" : {"coerce" : "unicode"}
                             }
                         }
                     }
