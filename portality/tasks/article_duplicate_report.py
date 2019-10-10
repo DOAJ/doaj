@@ -14,7 +14,6 @@ from datetime import datetime
 from portality import models
 from portality.lib import dates
 from portality.core import app
-from portality.clcsv import UnicodeWriter, UnicodeReader
 import csv
 from portality.bll.doaj import DOAJ
 from portality.bll import exceptions
@@ -48,14 +47,14 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         global_reportfile = 'duplicate_articles_global_' + dates.today() + '.csv'
         global_reportpath = os.path.join(outdir, global_reportfile)
         f = codecs.open(global_reportpath, "wb", "utf-8")
-        global_report = UnicodeWriter(f)
+        global_report = csv.writer(f)
         header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "article_in_doaj", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns", "match_in_doaj", "owners_match", "titles_match", "article_title", "match_title"]
         global_report.writerow(header)
 
         noids_reportfile = 'noids_' + dates.today() + '.csv'
         noids_reportpath = os.path.join(outdir, noids_reportfile)
         g = codecs.open(noids_reportpath, "wb", "utf-8")
-        noids_report = UnicodeWriter(g)
+        noids_report = csv.writer(g)
         header = ["article_id", "article_created", "article_owner", "article_issns", "article_in_doaj"]
         noids_report.writerow(header)
 
@@ -68,7 +67,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
         # Read back in the article csv file we created earlier
         with codecs.open(tmp_csvpath, 'rb', 'utf-8') as t:
-            article_reader = UnicodeReader(t)
+            article_reader = csv.reader(t)
 
             start = datetime.now()
             estimated_finish = ""
@@ -153,7 +152,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
     def _create_article_csv(connection, file_object):
         """ Create a CSV file with the minimum information we require to find and report duplicates. """
 
-        csv_writer = UnicodeWriter(file_object, quoting=csv.QUOTE_ALL)
+        csv_writer = csv.writer(file_object, quoting=csv.QUOTE_ALL)
 
         # Scroll through all articles, newest to oldest
         scroll_query = {

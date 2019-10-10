@@ -1,4 +1,3 @@
-# coding=utf-8
 import codecs
 
 __author__ = 'steve'
@@ -7,6 +6,7 @@ from doajtest.helpers import DoajTestCase
 from portality.clcsv import ClCsv
 import csv
 import os
+
 
 class TestCsvWrapper(DoajTestCase):
 
@@ -57,7 +57,7 @@ class TestCsvWrapper(DoajTestCase):
 
     def test_02_read_02(self):
         # Create an open file object first and pass it in (a different form of CSV creation)
-        f = open(self.gold_csv.name, 'rb')
+        f = open(self.gold_csv.name, 'r')
         clcsv = ClCsv(f)
         assert clcsv.get_column(3) == ('issn3', ['i3a1', 'i3a2', 'i3a3', 'i3a4'])
 
@@ -84,8 +84,8 @@ class TestCsvWrapper(DoajTestCase):
         wr_csv.set_column('issn4', [19, None, 'i4a3', 'i4a4'])
         wr_csv.save()
 
-        wr_lines = open(wr_csv.file_object.name, 'rb').readlines()
-        gold_lines = open(self.gold_csv.name, 'rb').readlines()
+        wr_lines = open(wr_csv.file_object.name, 'r').readlines()
+        gold_lines = open(self.gold_csv.name, 'r').readlines()
         assert gold_lines == wr_lines
 
     def test_05_write_02(self):
@@ -104,8 +104,8 @@ class TestCsvWrapper(DoajTestCase):
         ow_csv.save()
 
         # The changes above should make the file the same as our gold standard
-        ow_lines = open(ow_csv.file_object.name, 'rb').readlines()
-        gold_lines = open(self.gold_csv.name, 'rb').readlines()
+        ow_lines = open(ow_csv.file_object.name, 'r').readlines()
+        gold_lines = open(self.gold_csv.name, 'r').readlines()
         assert gold_lines == ow_lines
 
     def test_06_gets(self):
@@ -126,6 +126,6 @@ class TestCsvWrapper(DoajTestCase):
         wr_csv.set_column('иссн1', ['ила1', 'ила2', 'ила3', 'ила4'])
         wr_csv.save()
 
-        wr_lines = open(wr_csv.file_object.name, 'rb').readlines()
-        gold_lines_unicode = open(self.gold_csv_unicode.name, 'rb').readlines()
+        wr_lines = open(wr_csv.file_object.name, 'r').readlines()
+        gold_lines_unicode = open(self.gold_csv_unicode.name, 'r').readlines()
         assert gold_lines_unicode == wr_lines
