@@ -1,9 +1,9 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures.accounts import AccountFixtureFactory
-from portality import clcsv, models
+from portality import models
 from portality.lib import paths
 from portality.scripts.accounts_with_marketing_consent import publishers_with_consent
-import os, shutil, codecs
+import os, shutil, codecs, csv
 
 class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
 
@@ -67,8 +67,8 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
         assert os.path.exists(output_file)
 
         table = []
-        with codecs.open(output_file, "rb", "utf-8") as f:
-            reader = clcsv.UnicodeReader(f)
+        with open(output_file, "r", encoding="utf-8") as f:
+            reader = csv.reader(f)
             for row in reader:
                 table.append(row)
         assert len(table) == 21
