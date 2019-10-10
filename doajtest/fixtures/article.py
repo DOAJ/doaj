@@ -47,7 +47,6 @@ class ArticleFixtureFactory(object):
 
     @classmethod
     def invalid_schema_xml(cls):
-        file = StringIO("<this><isnot my='schema'></isnot></this>")
         return BytesIO("<this><isnot my='schema'></isnot></this>".encode("UTF-8"))
 
     @classmethod
