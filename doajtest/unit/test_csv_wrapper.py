@@ -84,8 +84,8 @@ class TestCsvWrapper(DoajTestCase):
         wr_csv.set_column('issn4', [19, None, 'i4a3', 'i4a4'])
         wr_csv.save()
 
-        wr_lines = open(wr_csv.file_object.name, 'r').readlines()
-        gold_lines = open(self.gold_csv.name, 'r').readlines()
+        wr_lines = open(wr_csv.file_object.name, 'rb').readlines()
+        gold_lines = open(self.gold_csv.name, 'rb').readlines()
         assert gold_lines == wr_lines
 
     def test_05_write_02(self):
@@ -120,11 +120,12 @@ class TestCsvWrapper(DoajTestCase):
 
     def test_07_write_unicode(self):
         # write an object to a file, and check against pre-bult one
+
         wr_csv = ClCsv(self.PRFX + 'test_write_csv')
         wr_csv.set_column('', ['в1', 'в2', 'в3', 'в4'])
         wr_csv.set_column('иссн1', ['ила1', 'ила2', 'ила3', 'ила4'])
         wr_csv.save()
 
-        wr_lines = open(wr_csv.file_object.name, 'r').readlines()
-        gold_lines_unicode = open(self.gold_csv_unicode.name, 'r').readlines()
+        wr_lines = open(wr_csv.file_object.name, 'rb').readlines()
+        gold_lines_unicode = open(self.gold_csv_unicode.name, 'rb').readlines()
         assert gold_lines_unicode == wr_lines
