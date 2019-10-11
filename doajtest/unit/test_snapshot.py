@@ -2,7 +2,6 @@ from doajtest.helpers import DoajTestCase
 from portality import models
 import time
 import json
-import codecs
 
 class TestSnapshot(DoajTestCase):
 
@@ -27,7 +26,7 @@ class TestSnapshot(DoajTestCase):
         a.snapshot()
 
         assert len(self.list_today_article_history_files()) == 1
-        with codecs.open(self.list_today_article_history_files()[0], 'rb', "utf-8") as i:
+        with open(self.list_today_article_history_files()[0], 'r', encoding="utf-8") as i:
             hist = json.loads(i.read())
         assert hist
         assert hist.get("bibjson", {}).get("title") == "Example article with a fulltext url"
@@ -52,7 +51,7 @@ class TestSnapshot(DoajTestCase):
         history_files = self.list_today_article_history_files()
         assert len(history_files) == 1
 
-        with codecs.open(history_files[0], 'rb', "utf-8") as i:
+        with open(history_files[0], 'r', encoding="utf-8") as i:
             hist = json.loads(i.read())
         assert hist
         assert hist.get("bibjson", {}).get("title") == "Example 2 article with a fulltext url"
@@ -72,6 +71,6 @@ class TestSnapshot(DoajTestCase):
 
         history_files = self.list_today_journal_history_files()
         assert len(history_files) == 1
-        with codecs.open(history_files[0], 'rb', "utf-8") as i:
+        with open(history_files[0], 'r', encoding="utf-8") as i:
             hist = json.loads(i.read())
         assert hist.get("bibjson", {}).get("title") == "Example journal"

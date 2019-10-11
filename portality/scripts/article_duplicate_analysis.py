@@ -2,7 +2,7 @@
 Script that takes the output of article_duplicate_report.py and produces a list of actions that can be taken
 to automatically clean the data
 """
-import codecs, os, csv
+import os, csv
 from copy import deepcopy
 from datetime import datetime
 from portality.lib import normalise
@@ -201,11 +201,11 @@ class ActionRegister(object):
 
 def analyse(duplicate_report, noids_report, out, noaction, nocleanup, log):
 
-    with codecs.open(out, "wb", "utf-8") as o, \
-            codecs.open(log, "wb", "utf-8") as l, \
-            codecs.open(duplicate_report, "rb", "utf-8") as f, \
-            codecs.open(noaction, "wb", "utf-8") as g, \
-            codecs.open(nocleanup, "wb", "utf-8") as h:
+    with open(out, "w", encoding="utf-8") as o, \
+            open(log, "w", encoding="utf-8") as l, \
+            open(duplicate_report, "r", encoding="utf-8") as f, \
+            open(noaction, "w", encoding="utf-8") as g, \
+            open(nocleanup, "w", encoding="utf-8") as h:
 
         reader = csv.writer(f)
         noaction_writer = csv.writer(g)
@@ -268,7 +268,7 @@ def analyse(duplicate_report, noids_report, out, noaction, nocleanup, log):
             if next_row is None:
                 break
 
-        with codecs.open(noids_report, "rb", "utf-8") as n:
+        with open(noids_report, "r", encoding="utf-8") as n:
             nreader = csv.writer(n)
             headers = next(nreader)
             for row in nreader:
@@ -500,7 +500,7 @@ def finalise(source, report_out, articles_dir, final_actions):
         os.makedirs(articles_dir)
 
     actions = ActionRegister()
-    with codecs.open(source, "rb", "utf-8") as s:
+    with open(source, "r", encoding="utf-8") as s:
         reader = csv.reader(s)
         headers = next(reader)
 
@@ -544,18 +544,18 @@ def finalise(source, report_out, articles_dir, final_actions):
     final_instructions = {}
     actions.export_to(final_instructions)
 
-    with codecs.open(final_actions, "wb", "utf-8") as fa:
+    with open(final_actions, "w", encoding="utf-8") as fa:
         fawriter = csv.writer(fa)
         fawriter.writerow(["id", "action", "reason"])
         for k, v in final_instructions.items():
             fawriter.writerow([k, v["action"], v["reason"]])
 
-    with codecs.open(report_out, "wb", "utf-8") as ro:
+    with open(report_out, "w", encoding="utf-8") as ro:
         writer = csv.writer(ro)
         writer.writerow(["account", "articles to delete", "article_details"])
         for k, v in accounts.items():
             fn = k + "_articles.csv"
-            with codecs.open(os.path.join(articles_dir, fn), "wb", "utf-8") as a:
+            with open(os.path.join(articles_dir, fn), "w", encoding="utf-8") as a:
                 awriter = csv.writer(a)
                 awriter.writerow(["DOI", "Fulltext", "Reason for removal", "Number of duplicated articles"])
                 dedupe = []
@@ -582,28 +582,28 @@ def compare_outputs(duplicate_report):
     extra_out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/extra.csv"
     reference = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/reference.csv"
 
-    with codecs.open(original, "rb", "utf-8") as f1:
+    with open(original, "r", encoding="utf-8") as f1:
         r1 = csv.reader(f1)
         next(r1)
         id1 = [x[0] for x in r1]
 
-    with codecs.open(compare, "rb", "utf-8") as f2:
+    with open(compare, "r", encoding="utf-8") as f2:
         r2 = csv.reader(f2)
         next(r2)
         id2 = [x[0] for x in r2]
 
     missing = [x for x in id1 if x not in id2]
     print(("missing {x}".format(x=len(missing))))
-    with codecs.open(missing_out, "wb", "utf-8") as f3:
+    with open(missing_out, "w", encoding="utf-8") as f3:
         f3.write("\n".join(missing))
 
     extra = [x for x in id2 if x not in id1]
     print(("extra {x}".format(x=len(extra))))
-    with codecs.open(extra_out, "wb", "utf-8") as f4:
+    with open(extra_out, "w", encoding="utf-8") as f4:
         f4.write("\n".join(extra))
 
-    with codecs.open(duplicate_report, "rb", "utf-8") as f5, \
-            codecs.open(reference, "wb", "utf-8") as f6:
+    with open(duplicate_report, "r", encoding="utf-8") as f5, \
+            open(reference, "w", encoding="utf-8") as f6:
         r5 = csv.writer(f5)
         w6 = csv.writer(f6)
         headers = next(r5)

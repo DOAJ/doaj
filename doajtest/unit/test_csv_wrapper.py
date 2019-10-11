@@ -1,5 +1,3 @@
-import codecs
-
 __author__ = 'steve'
 
 from doajtest.helpers import DoajTestCase
@@ -26,7 +24,7 @@ class TestCsvWrapper(DoajTestCase):
         writer.writerow(['q4', 'i1a4', 'i2a4', 'i3a4', 'i4a4'])
         self.gold_csv.close()
 
-        self.gold_csv_unicode = codecs.open(os.path.join(self.PRFX, 'rescsv_gold_standard_unicode'), 'w')
+        self.gold_csv_unicode = open(os.path.join(self.PRFX, 'rescsv_gold_standard_unicode'), 'w')
 
         self.gold_csv_unicode.write("\r\n".join([u',иссн1', u'в1,ила1', u'в2,ила2', u'в3,ила3', u'в4,ила4']) + "\r\n")
         self.gold_csv_unicode.close()

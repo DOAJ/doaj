@@ -10,7 +10,7 @@ If you provide a csv, you may also provide a second column containing the delete
 """
 
 from portality import models
-import json, codecs, csv
+import json, csv
 from portality.core import app
 from portality import constants
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
         else:
             print("Aborted")
     elif args.csv is not None:
-        with codecs.open(args.csv) as f:
+        with open(args.csv) as f:
             reader = csv.reader(f)
             for row in reader:
                 article_id = row[0]

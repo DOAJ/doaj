@@ -3,7 +3,7 @@ from doajtest.fixtures.accounts import AccountFixtureFactory
 from portality import models
 from portality.lib import paths
 from portality.scripts.accounts_with_marketing_consent import publishers_with_consent
-import os, shutil, codecs, csv
+import os, shutil, csv
 
 class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
 

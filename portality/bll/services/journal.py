@@ -11,7 +11,7 @@ from portality.store import StoreFactory, prune_container
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
 
 from datetime import datetime
-import codecs, re, csv
+import re, csv
 
 
 class JournalService(object):
@@ -188,7 +188,7 @@ class JournalService(object):
             ]
             return kvs
 
-        with codecs.open(out, 'wb', encoding='utf-8') as csvfile:
+        with open(out, 'w', encoding='utf-8') as csvfile:
             _make_journals_csv(csvfile)
 
         mainStore = StoreFactory.get("cache")

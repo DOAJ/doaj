@@ -1,5 +1,5 @@
 import csv
-import esprit, codecs
+import esprit
 
 from portality import models
 from portality.core import app
@@ -18,7 +18,7 @@ def make_csv(start, end, out):
 
     conn = esprit.raw.Connection(app.config.get("ELASTIC_SEARCH_HOST"), app.config.get("ELASTIC_SEARCH_DB"))
 
-    with codecs.open(out, "wb", "utf-8") as f:
+    with open(out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID", "Last Updated", "Is Quick Reject?", "Suggester Name", "Suggester Email", "Owner ID", "Owner Name", "Owner Email",
                          "Title", "ISSNS", "Quick Reject Note Date", "All Notes"])

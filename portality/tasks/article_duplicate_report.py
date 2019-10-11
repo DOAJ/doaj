@@ -6,7 +6,6 @@ from portality.app_email import email_archive
 from portality.background import BackgroundTask, BackgroundApi
 
 import esprit
-import codecs
 import os
 import shutil
 import json
@@ -46,14 +45,14 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         # Initialise our reports
         global_reportfile = 'duplicate_articles_global_' + dates.today() + '.csv'
         global_reportpath = os.path.join(outdir, global_reportfile)
-        f = codecs.open(global_reportpath, "wb", "utf-8")
+        f = open(global_reportpath, "w", encoding="utf-8")
         global_report = csv.writer(f)
         header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "article_in_doaj", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns", "match_in_doaj", "owners_match", "titles_match", "article_title", "match_title"]
         global_report.writerow(header)
 
         noids_reportfile = 'noids_' + dates.today() + '.csv'
         noids_reportpath = os.path.join(outdir, noids_reportfile)
-        g = codecs.open(noids_reportpath, "wb", "utf-8")
+        g = open(noids_reportpath, "w", encoding="utf-8")
         noids_report = csv.writer(g)
         header = ["article_id", "article_created", "article_owner", "article_issns", "article_in_doaj"]
         noids_report.writerow(header)
@@ -66,7 +65,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         articleService = DOAJ.articleService()
 
         # Read back in the article csv file we created earlier
-        with codecs.open(tmp_csvpath, 'rb', 'utf-8') as t:
+        with open(tmp_csvpath, 'r', encoding='utf-8') as t:
             article_reader = csv.reader(t)
 
             start = datetime.now()
@@ -131,7 +130,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
             filename = 'tmp_articles_' + dates.today() + '.csv'
         filename = os.path.join(tmpdir, filename)
 
-        with codecs.open(filename, 'wb', 'utf-8') as t:
+        with open(filename, 'w', encoding='utf-8') as t:
             count = self._create_article_csv(conn, t)
 
         return filename, count

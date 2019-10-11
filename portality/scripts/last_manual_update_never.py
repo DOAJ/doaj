@@ -1,7 +1,6 @@
 from portality import models
 from portality.core import app
 import esprit
-import codecs
 import csv
 
 
@@ -35,7 +34,7 @@ if __name__ == "__main__":
 
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
-    with codecs.open(args.out, "wb", "utf-8") as f:
+    with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID",
                          "Journal Name",
