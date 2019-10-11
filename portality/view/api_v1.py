@@ -337,7 +337,7 @@ def bulk_article_create():
 def bulk_article_delete():
     # get the data from the request
     try:
-        data = json.loads(request.data.deocde("utf-8"))
+        data = json.loads(request.data.decode("utf-8"))
     except:
         raise Api400Error("Supplied data was not valid JSON")
 
