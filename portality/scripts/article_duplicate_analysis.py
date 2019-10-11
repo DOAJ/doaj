@@ -2,10 +2,9 @@
 Script that takes the output of article_duplicate_report.py and produces a list of actions that can be taken
 to automatically clean the data
 """
-import codecs, os
+import codecs, os, csv
 from copy import deepcopy
 from datetime import datetime
-from portality import clcsv
 from portality.lib import normalise
 
 MODE = "finalise"
@@ -208,9 +207,9 @@ def analyse(duplicate_report, noids_report, out, noaction, nocleanup, log):
             codecs.open(noaction, "wb", "utf-8") as g, \
             codecs.open(nocleanup, "wb", "utf-8") as h:
 
-        reader = clcsv.UnicodeReader(f)
-        noaction_writer = clcsv.UnicodeWriter(g)
-        nocleanup_writer = clcsv.UnicodeWriter(h)
+        reader = csv.writer(f)
+        noaction_writer = csv.writer(g)
+        nocleanup_writer = csv.writer(h)
         headers = next(reader)
         noaction_writer.writerow(headers)
         noaction_writer.writerow([])
@@ -270,12 +269,12 @@ def analyse(duplicate_report, noids_report, out, noaction, nocleanup, log):
                 break
 
         with codecs.open(noids_report, "rb", "utf-8") as n:
-            nreader = clcsv.UnicodeReader(n)
+            nreader = csv.writer(n)
             headers = next(nreader)
             for row in nreader:
                 final_instructions[row[0]] = {"action" : "delete", "reason" : "no doi or fulltext"}
 
-        writer = clcsv.UnicodeWriter(o)
+        writer = csv.writer(o)
         writer.writerow(["id", "action", "reason"])
         for k, v in final_instructions.items():
             writer.writerow([k, v["action"], v["reason"]])
@@ -502,7 +501,7 @@ def finalise(source, report_out, articles_dir, final_actions):
 
     actions = ActionRegister()
     with codecs.open(source, "rb", "utf-8") as s:
-        reader = clcsv.UnicodeReader(s)
+        reader = csv.reader(s)
         headers = next(reader)
 
         accounts = {}
@@ -546,18 +545,18 @@ def finalise(source, report_out, articles_dir, final_actions):
     actions.export_to(final_instructions)
 
     with codecs.open(final_actions, "wb", "utf-8") as fa:
-        fawriter = clcsv.UnicodeWriter(fa)
+        fawriter = csv.writer(fa)
         fawriter.writerow(["id", "action", "reason"])
         for k, v in final_instructions.items():
             fawriter.writerow([k, v["action"], v["reason"]])
 
     with codecs.open(report_out, "wb", "utf-8") as ro:
-        writer = clcsv.UnicodeWriter(ro)
+        writer = csv.writer(ro)
         writer.writerow(["account", "articles to delete", "article_details"])
         for k, v in accounts.items():
             fn = k + "_articles.csv"
             with codecs.open(os.path.join(articles_dir, fn), "wb", "utf-8") as a:
-                awriter = clcsv.UnicodeWriter(a)
+                awriter = csv.writer(a)
                 awriter.writerow(["DOI", "Fulltext", "Reason for removal", "Number of duplicated articles"])
                 dedupe = []
                 for article in v:
@@ -584,12 +583,12 @@ def compare_outputs(duplicate_report):
     reference = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/reference.csv"
 
     with codecs.open(original, "rb", "utf-8") as f1:
-        r1 = clcsv.UnicodeReader(f1)
+        r1 = csv.reader(f1)
         next(r1)
         id1 = [x[0] for x in r1]
 
     with codecs.open(compare, "rb", "utf-8") as f2:
-        r2 = clcsv.UnicodeReader(f2)
+        r2 = csv.reader(f2)
         next(r2)
         id2 = [x[0] for x in r2]
 
@@ -605,8 +604,8 @@ def compare_outputs(duplicate_report):
 
     with codecs.open(duplicate_report, "rb", "utf-8") as f5, \
             codecs.open(reference, "wb", "utf-8") as f6:
-        r5 = clcsv.UnicodeReader(f5)
-        w6 = clcsv.UnicodeWriter(f6)
+        r5 = csv.writer(f5)
+        w6 = csv.writer(f6)
         headers = next(r5)
         w6.writerow(headers)
         w6.writerow([])

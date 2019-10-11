@@ -1,4 +1,4 @@
-import codecs
+import codecs, csv
 from portality import clcsv
 
 IN = "/home/richard/tmp/article_duplicates_2018-05-22/duplicate_articles_global_2018-05-22.csv"
@@ -22,13 +22,13 @@ genuine_count = 0
 bad_data_count = 0
 
 with codecs.open(GENUINE, "wb", "utf-8") as a:
-    awriter = clcsv.UnicodeWriter(a)
+    awriter = csv.writer(a)
 
     with codecs.open(BAD_DATA, "wb", "utf-8") as b:
-        bwriter = clcsv.UnicodeWriter(b)
+        bwriter = csv.writer(b)
 
         with codecs.open(IN, "rb", "utf-8") as f:
-            reader = clcsv.UnicodeReader(f)
+            reader = csv.writer(f)
 
             headers = next(reader)
             awriter.writerow(headers)

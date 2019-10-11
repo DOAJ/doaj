@@ -6,9 +6,10 @@ with some useful account information, and possible explanations for the lack of 
 python accounts_with_missing_passwords.py -o accounts.csv
 ```
 """
+import csv
+
 import esprit, codecs
 from portality.core import app
-from portality.clcsv import UnicodeWriter
 from portality import models
 
 MISSING_PASSWORD = {
@@ -53,7 +54,7 @@ if __name__ == "__main__":
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
     with codecs.open(args.out, "wb", "utf-8") as f:
-        writer = UnicodeWriter(f)
+        writer = csv.writer(f)
         writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?", "Has Reset Token", "Reset Token Expired?"])
 
         for account in publishers_with_journals():

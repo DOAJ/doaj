@@ -1,4 +1,4 @@
-import codecs, os, shutil, tarfile, json
+import codecs, os, shutil, tarfile, json, csv
 from portality import clcsv
 
 # I have not included jsondiff in the requiremets for the app, as I don't think that we'll stick
@@ -33,7 +33,7 @@ def history_records_assemble(id, csv_dir, tar_dir, out_dir, assemble, do_diff):
         for c in csvs:
             tarname = c.rsplit(".", 1)[0] + ".tar.gz"
             with codecs.open(os.path.join(csv_dir, c), "rb", "utf-8") as f:
-                reader = clcsv.UnicodeReader(f)
+                reader = csv.reader(f)
                 for row in reader:
                     if row[0] == id:
                         paths.append({
@@ -46,7 +46,7 @@ def history_records_assemble(id, csv_dir, tar_dir, out_dir, assemble, do_diff):
 
         # gather all the files in the target directory
         with codecs.open(os.path.join(out_dir, "_index." + id + ".csv"), "wb", "utf-8") as g:
-            writer = clcsv.UnicodeWriter(g)
+            writer = csv.writer(g)
             writer.writerow(["CSV", "Tar Name", "Tar Path", "Date", "File ID"])
             for p in paths:
                 tarball = tarfile.open(os.path.join(tar_dir, p["tarname"]), "r:gz")

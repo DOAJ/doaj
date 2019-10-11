@@ -1,10 +1,9 @@
 """ Creates a CSV of publisher email addresses """
 
-import os, codecs
+import os, codecs, csv
 import esprit
 from portality.core import app
 from portality.models import Account, Journal
-from portality.clcsv import UnicodeWriter
 from portality.lib import dates
 
 from portality.app_email import email_archive
@@ -58,7 +57,7 @@ if __name__ == "__main__":
     filename = "publisher_emails_in_doaj_" + dates.today() + ".csv"
     outfile = os.path.join(outdir, filename)
     with codecs.open(outfile, "wb", "utf-8") as f:
-        writer = UnicodeWriter(f)
+        writer = csv.writer(f)
         writer.writerow(["Account ID", "Email Address"])
         for p in publishers_with_journals():
             writer.writerow([p.id, p.email])

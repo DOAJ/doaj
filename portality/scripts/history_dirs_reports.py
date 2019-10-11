@@ -1,5 +1,4 @@
-import os, codecs, json
-from portality import clcsv
+import os, codecs, json, csv
 
 WORKING_DIR = "/home/richard/tmp/doaj/history/archive/"
 
@@ -30,7 +29,7 @@ def history_dirs_reports(working_dir, base_dirs, out_dir):
         out = os.path.join(out_dir, bd + ".csv")
 
         with codecs.open(out, "wb", "utf-8") as o:
-            writer = clcsv.UnicodeWriter(o)
+            writer = csv.writer(o)
             writer.writerow(["ID", "Date", "Path", "File ID"])
             dir = os.path.join(working_dir, bd)
             _walk_history_tree(dir, writer, working_dir)

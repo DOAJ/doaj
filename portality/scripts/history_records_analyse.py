@@ -1,4 +1,4 @@
-import codecs, json, os
+import codecs, json, os, csv
 from portality import clcsv
 
 # DATE = "2018-05-10"
@@ -14,14 +14,14 @@ def history_records_analyse(source, out_dir, reverted_only=False, date=None):
     ids = set()
     if date is not None:
         with codecs.open(source, "rb", "utf-8") as f:
-            reader = clcsv.UnicodeReader(f)
+            reader = csv.reader(f)
             for row in reader:
                 if row[1] == date:
                     ids.add(row[0])
 
     records = {}
     with codecs.open(source, "rb", "utf-8") as f:
-        reader = clcsv.UnicodeReader(f)
+        reader = csv.reader(f)
         next(reader)
         for row in reader:
             if date is None or row[0] in ids:
@@ -32,7 +32,7 @@ def history_records_analyse(source, out_dir, reverted_only=False, date=None):
     count = 1
     out = os.path.join(out_dir, "owners.csv")
     with codecs.open(out, "wb", "utf-8") as o:
-        writer = clcsv.UnicodeWriter(o)
+        writer = csv.writer(o)
         writer.writerow(["count", "id", "reverted", "change history"])
         writer.writerow([])
 

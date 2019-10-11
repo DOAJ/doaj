@@ -20,7 +20,6 @@ import csv
 import esprit
 
 from portality import constants
-from portality.clcsv import UnicodeWriter
 from portality.core import app
 from portality.models import Suggestion, Provenance, Journal, Account
 
@@ -51,7 +50,7 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
         out_later = csv.writer(f)
         out_later.writerow(["Application ID", "Application Last Updated", "Latest Provenance Recorded", "Difference"])
 
-        out_missing = UnicodeWriter(g)
+        out_missing = csv.writer(g)
         out_missing.writerow(["Application ID", "Application Last Manual Update", "Latest Provenance Record", "ISSNs", "Title"])
 
         counter = 0
