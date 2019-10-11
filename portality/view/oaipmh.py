@@ -195,7 +195,7 @@ def decode_resumption_token(resumption_token):
     except TypeError:
         raise ResumptionTokenException()
     try:
-        d = json.loads(j)
+        d = json.loads(j.decode("utf-8"))   # convert the bytes to str for pre 3.5 compat
     except ValueError:
         raise ResumptionTokenException()
 

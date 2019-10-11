@@ -177,7 +177,7 @@ class TestPublicDataDumpTask(DoajTestCase):
 
                 if len(members) > 0:
                     f = tarball.extractfile(members[0])
-                    data = json.loads(f.read())
+                    data = json.loads(f.read().decode("utf-8"))
                     assert len(data) == first_article_file_records
 
                     record = data[0]
@@ -198,7 +198,7 @@ class TestPublicDataDumpTask(DoajTestCase):
 
                 if len(members) > 0:
                     f = tarball.extractfile(members[0])
-                    data = json.loads(f.read())
+                    data = json.loads(f.read().decode("utf-8"))
                     assert len(data) == first_journal_file_records
 
                     record = data[0]

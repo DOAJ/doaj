@@ -150,7 +150,7 @@ def search_articles(search_query):
 def create_application():
     # get the data from the request
     try:
-        data = json.loads(request.data)
+        data = json.loads(request.data.decode("utf-8"))
     except:
         raise Api400Error("Supplied data was not valid JSON")
 
@@ -176,7 +176,7 @@ def retrieve_application(application_id):
 def update_application(application_id):
     # get the data from the request
     try:
-        data = json.loads(request.data)
+        data = json.loads(request.data.decode("utf-8"))
     except:
         raise Api400Error("Supplied data was not valid JSON")
 
@@ -206,7 +206,7 @@ def delete_application(application_id):
 def create_article():
     # get the data from the request
     try:
-        data = json.loads(request.data)
+        data = json.loads(request.data.decode("utf-8"))
     except:
         raise Api400Error("Supplied data was not valid JSON")
 
@@ -232,7 +232,7 @@ def retrieve_article(article_id):
 def update_article(article_id):
     # get the data from the request
     try:
-        data = json.loads(request.data)
+        data = json.loads(request.data.decode("utf-8"))
     except:
         raise Api400Error("Supplied data was not valid JSON")
 
@@ -272,7 +272,7 @@ def retrieve_journal(journal_id):
 def bulk_application_create():
     # get the data from the request
     try:
-        data = json.loads(request.data)
+        data = json.loads(request.data.decode("utf-8"))
     except:
         raise Api400Error("Supplied data was not valid JSON")
 
@@ -295,7 +295,7 @@ def bulk_application_create():
 def bulk_application_delete():
     # get the data from the request
     try:
-        data = json.loads(request.data)
+        data = json.loads(request.data.decode("utf-8"))
     except:
         raise Api400Error("Supplied data was not valid JSON")
 
@@ -314,7 +314,7 @@ def bulk_application_delete():
 def bulk_article_create():
     # get the data from the request
     try:
-        data = json.loads(request.data)
+        data = json.loads(request.data.decode("utf-8"))
     except:
         raise Api400Error("Supplied data was not valid JSON")
 
@@ -337,7 +337,7 @@ def bulk_article_create():
 def bulk_article_delete():
     # get the data from the request
     try:
-        data = json.loads(request.data)
+        data = json.loads(request.data.decode("utf-8"))
     except:
         raise Api400Error("Supplied data was not valid JSON")
 

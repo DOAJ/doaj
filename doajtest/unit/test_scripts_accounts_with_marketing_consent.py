@@ -72,4 +72,4 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
             for row in reader:
                 table.append(row)
         assert len(table) == 21
-        self.assertItemsEqual(table, expected_data)
+        self.assertCountEqual(table, expected_data)
