@@ -139,7 +139,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                     try:
                         fc.finalise()
                     except formcontext.FormContextException as e:
-                        job.add_audit_message("Form context exception while bulk editing journal {} :\n{}".format(journal_id, str(e)))
+                        job.add_audit_message("Form context exception while bulk editing journal {} :\n{}".format(journal_id, e.message))
                 else:
                     data_submitted = {}
                     for affected_field_name in fc.form.errors.keys():

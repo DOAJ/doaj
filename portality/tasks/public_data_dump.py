@@ -11,7 +11,7 @@ from portality.store import StoreFactory
 from portality.api.v1 import DiscoveryApi
 from portality.api.v1.common import ModelJsonEncoder
 
-import os, codecs, tarfile, json
+import os, tarfile, json
 
 
 class PublicDataDumpBackgroundTask(BackgroundTask):
@@ -116,7 +116,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
                 job.save()
             except Exception as e:
                 tmpStore.delete_container(container)
-                raise BackgroundException("Error copying {0} data on complete {1}\n".format(typ, str(e)))
+                raise BackgroundException("Error copying {0} data on complete {1}\n".format(typ, e.message))
 
             store_url = mainStore.url(container, zipped_name)
             urls[typ] = store_url
@@ -150,7 +150,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             os.makedirs(dn)
         self.background_job.add_audit_message("Saving to file {filename}".format(filename=filename))
 
-        out_file = codecs.open(output_file, "wb", "utf-8")
+        out_file = open(output_file, "w", encoding="utf-8")
         out_file.write("[")
         return out_file, output_file, filename
 

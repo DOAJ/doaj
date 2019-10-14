@@ -15,12 +15,10 @@ Script which attempts to identify journals, applications and provenance records 
 from copy import deepcopy
 from datetime import datetime, timedelta
 
-import codecs
 import csv
 import esprit
 
 from portality import constants
-from portality.clcsv import UnicodeWriter
 from portality.core import app
 from portality.models import Suggestion, Provenance, Journal, Account
 
@@ -46,12 +44,12 @@ def adjust_timestamp(stamp, cutoff):
 # looks for applications where the provenance dates are later than the last updated dates
 # also looks for applications where there is not a corresponding journal (in_doaj=True)
 def applications_inconsistencies(outfile_later, outfile_missing, conn):
-    with codecs.open(outfile_later, "wb", "utf-8") as f, codecs.open(outfile_missing, "wb", "utf-8") as g:
+    with open(outfile_later, "w", encoding="utf-8") as f, open(outfile_missing, "w", encoding="utf-8") as g:
 
         out_later = csv.writer(f)
         out_later.writerow(["Application ID", "Application Last Updated", "Latest Provenance Recorded", "Difference"])
 
-        out_missing = UnicodeWriter(g)
+        out_missing = csv.writer(g)
         out_missing.writerow(["Application ID", "Application Last Manual Update", "Latest Provenance Record", "ISSNs", "Title"])
 
         counter = 0
@@ -105,7 +103,7 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
 # also looks for missing accounts
 # also looks for journals created (or reapplied) significantly before the last manual update on an application
 def journals_applications_provenance(outfile_applications, outfile_accounts, outfile_reapps, conn):
-    with codecs.open(outfile_applications, "wb", "utf-8") as f, codecs.open(outfile_accounts, "wb", "utf-8") as g, codecs.open(outfile_reapps, "wb", "utf-8") as h:
+    with open(outfile_applications, "w", encoding="utf-8") as f, open(outfile_accounts, "w", encoding="utf-8") as g, open(outfile_reapps, "w", encoding="utf-8") as h:
         out_applications = csv.writer(f)
         out_applications.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Last Updated", "Application Status", "Published Diff", "Latest Edit Recorded", "Latest Accepted Recorded"])
 

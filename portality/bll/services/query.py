@@ -199,12 +199,12 @@ class Query(object):
 
     def size(self):
         if "size" in self.q:
-            return self.q["size"]
+            return int(self.q["size"])
         return 10
 
     def from_result(self):
         if "from" in self.q:
-            return self.q["from"]
+            return int(self.q["from"])
         return 0
 
     def as_dict(self):

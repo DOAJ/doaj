@@ -10,7 +10,7 @@ expanding and generalising before it is properly useful.  Could even be combined
 to generate the tests on the fly, though that may make review and fixing more difficult.
 """
 
-import csv, codecs
+import csv
 
 
 def _generate(fields, counters, params):
@@ -64,79 +64,79 @@ out = "matrix.csv"
 order = ["application", "application_status", "account", "prov", "current_journal", "note", "save"]
 
 params = {
-    "application" : ["none", "exists"],
-    "application_status" : ["-", "rejected", "accepted", "update_request"],
-    "account" : ["none", "publisher", "admin"],
-    "prov" : ["none", "true", "false"],
-    "current_journal" : ["-", "yes", "no"],
-    "note" : ["yes", "no"],
-    "save" : ["success", "fail"]
+    "application": ["none", "exists"],
+    "application_status": ["-", "rejected", "accepted", "update_request"],
+    "account": ["none", "publisher", "admin"],
+    "prov": ["none", "true", "false"],
+    "current_journal": ["-", "yes", "no"],
+    "note": ["yes", "no"],
+    "save": ["success", "fail"]
 }
 
 filters = [
     {
-        "field" : "application",
-        "value" : "none",
-        "constraints" : {
-            "application_status" : ["-"],
-            "current_journal" : ["-"],
-            "save" : "success"
+        "field": "application",
+        "value": "none",
+        "constraints": {
+            "application_status": ["-"],
+            "current_journal": ["-"],
+            "save": "success"
         }
     },
     {
-        "field" : "application_status",
-        "value" : "-",
-        "constraints" : {
-            "application" : ["none"]
+        "field": "application_status",
+        "value": "-",
+        "constraints": {
+            "application": ["none"]
         }
     },
     {
-        "field" : "application_status",
-        "value" : "rejected",
-        "constraints" : {
-            "application" : ["exists"]
+        "field": "application_status",
+        "value": "rejected",
+        "constraints": {
+            "application": ["exists"]
         }
     },
     {
-        "field" : "application_status",
-        "value" : "accepted",
-        "constraints" : {
-            "application" : ["exists"]
+        "field": "application_status",
+        "value": "accepted",
+        "constraints": {
+            "application": ["exists"]
         }
     },
     {
-        "field" : "application_status",
-        "value" : "update_request",
-        "constraints" : {
-            "application" : ["exists"]
+        "field": "application_status",
+        "value": "update_request",
+        "constraints": {
+            "application": ["exists"]
         }
     },
     {
-        "field" : "current_journal",
-        "value" : "-",
-        "constraints" : {
-            "application" : ["none"]
+        "field": "current_journal",
+        "value": "-",
+        "constraints": {
+            "application": ["none"]
         }
     },
     {
-        "field" : "current_journal",
-        "value" : "yes",
-        "constraints" : {
-            "application" : ["exists"]
+        "field": "current_journal",
+        "value": "yes",
+        "constraints": {
+            "application": ["exists"]
         }
     },
     {
-        "field" : "current_journal",
-        "value" : "no",
-        "constraints" : {
-            "application" : ["exists"]
+        "field": "current_journal",
+        "value": "no",
+        "constraints": {
+            "application": ["exists"]
         }
     },
     {
-        "field" : "save",
-        "value" : "fail",
-        "constraints" : {
-            "application" : ["exists"]
+        "field": "save",
+        "value": "fail",
+        "constraints": {
+            "application": ["exists"]
         }
     }
 ]
@@ -145,43 +145,43 @@ results_order = ["raises"]
 
 results = [
     {
-        "results" : {
-            "raises" : "ArgumentException"
+        "results": {
+            "raises": "ArgumentException"
         },
-        "conditions" : {
-            "application" : ["none"]
+        "conditions": {
+            "application": ["none"]
         }
     },
     {
-        "results" : {
-            "raises" : "ArgumentException"
+        "results": {
+            "raises": "ArgumentException"
         },
-        "conditions" : {
-            "account" : ["none"]
+        "conditions": {
+            "account": ["none"]
         }
     },
     {
-        "results" : {
-            "raises" : "ArgumentException"
+        "results": {
+            "raises": "ArgumentException"
         },
-        "conditions" : {
-            "prov" : ["none"]
+        "conditions": {
+            "prov": ["none"]
         }
     },
     {
-        "results" : {
-            "raises" : "AuthoriseException"
+        "results": {
+            "raises": "AuthoriseException"
         },
-        "conditions" : {
-            "account" : ["publisher"]
+        "conditions": {
+            "account": ["publisher"]
         }
     },
     {
-        "results" : {
-            "raises" : "SaveException"
+        "results": {
+            "raises": "SaveException"
         },
-        "conditions" : {
-            "save" : ["fail"]
+        "conditions": {
+            "save": ["fail"]
         }
     }
 ]
@@ -207,7 +207,7 @@ for combo in combinations:
 
 fields += results_order
 combinations = final
-with codecs.open(out, "wb", "utf-8") as f:
+with open(out, "w", encoding="utf-8") as f:
     writer = csv.writer(f)
     writer.writerow(["test_id"] + fields)
     counter = 0

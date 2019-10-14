@@ -180,12 +180,12 @@ class TestCrudApplication(DoajTestCase):
                 resp = t_client.post(url_for('api_v1.bulk_application_create', api_key=account.api_key),
                                      data=json.dumps(dataset))
                 assert resp.status_code == 201
-                reply = json.loads(resp.data)
+                reply = json.loads(resp.data.decode("utf-8"))
                 assert len(reply) == len(dataset)
                 first_apl = reply.pop()
                 assert first_apl['status'] == 'created'
                 # Check we actually created new records
-                time.sleep(1)
+                time.sleep(1.5)
                 assert len(models.Suggestion.all()) == len(dataset)
 
                 # Bulk delete

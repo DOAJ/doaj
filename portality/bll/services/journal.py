@@ -2,7 +2,7 @@ import logging
 
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
-from portality import models, constants, clcsv
+from portality import models, constants
 from portality.bll import exceptions
 from portality.core import app
 from portality import lock
@@ -11,7 +11,7 @@ from portality.store import StoreFactory, prune_container
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
 
 from datetime import datetime
-import codecs, os, re
+import re, csv
 
 
 class JournalService(object):
@@ -157,7 +157,7 @@ class JournalService(object):
 
             issns = cols.keys()
 
-            csvwriter = clcsv.UnicodeWriter(file_object)
+            csvwriter = csv.writer(file_object)
             qs = None
             for i in sorted(issns):
                 if qs is None:
@@ -188,7 +188,7 @@ class JournalService(object):
             ]
             return kvs
 
-        with codecs.open(out, 'wb', encoding='utf-8') as csvfile:
+        with open(out, 'w', encoding='utf-8') as csvfile:
             _make_journals_csv(csvfile)
 
         mainStore = StoreFactory.get("cache")

@@ -229,7 +229,7 @@ class BasicJournalInformationRenderer(Renderer):
                     'Can\'t number a group which does not exist. '
                     'Field group "{0}" is not defined in self.FIELD_GROUPS '
                     'but is present in self.NUMBERING_ORDER. '
-                    'This is in renderer {1}.'.format(str(e), self.__class__.__name__)
+                    'This is in renderer {1}.'.format(e.message, self.__class__.__name__)
                 )
 
         for group in self.ERROR_CHECK_ORDER:
@@ -240,7 +240,7 @@ class BasicJournalInformationRenderer(Renderer):
                     'Can\'t check a group which does not exist for errors. '
                     'Field group "{0}" is not defined in self.FIELD_GROUPS '
                     'but is present in self.ERROR_CHECK_ORDER. '
-                    'This is in renderer {1}.'.format(str(e), self.__class__.__name__)
+                    'This is in renderer {1}.'.format(e.message, self.__class__.__name__)
                 )
 
     def number_questions(self):

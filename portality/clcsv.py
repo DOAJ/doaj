@@ -1,5 +1,4 @@
-import csv, codecs
-import io
+import csv
 from io import IOBase
 
 
@@ -18,15 +17,15 @@ class ClCsv:
         if isinstance(file_path, IOBase):
             self.file_object = file_path
             if self.file_object.closed:
-                self.file_object = open(self.file_object.name, 'r')
+                self.file_object = open(self.file_object.name, 'r+')
             self.read_file()
         else:
             try:
-                self.file_object = open(file_path, 'r')
+                self.file_object = open(file_path, 'r+')
                 self.read_file()
             except IOError:
                 # If the file doesn't exist, create it.
-                self.file_object = open(file_path,'w')
+                self.file_object = open(file_path, 'w')
 
     def read_file(self):
         """
@@ -36,7 +35,7 @@ class ClCsv:
         if self.file_object.closed:
             open(self.file_object.name, 'r+')
 
-        reader = UnicodeReader(self.file_object)
+        reader = csv.reader(self.file_object)
         rows = []
         for row in reader:
             rows.append(row)
@@ -155,7 +154,7 @@ class ClCsv:
         self.file_object.truncate()
 
         # Write new CSV data
-        writer = UnicodeWriter(self.file_object)
+        writer = csv.writer(self.file_object)
         writer.writerows(rows)
         self.file_object.close()
 
@@ -171,80 +170,3 @@ class ClCsv:
             for row in csv_rows[1:]:
                 col_data.append(row[i])
             self.data.append((csv_rows[0][i], col_data))
-
-
-class UTF8Recoder:
-    """
-    Iterator that reads an encoded stream and reencodes the input to UTF-8
-    """
-    def __init__(self, f, encoding):
-        self.reader = f
-
-    def __iter__(self):
-        return self
-
-    def next(self):
-        val = self.reader.__next__()
-        raw = val.encode("utf-8")
-        if raw.startswith(codecs.BOM_UTF8):
-            raw = raw.replace(codecs.BOM_UTF8, '', 1)
-        return raw
-
-    def __next__(self):
-        return self.next()
-
-class UnicodeReader:
-    """
-    A CSV reader which will iterate over lines in the CSV file "f",
-    which is encoded in the given encoding.
-    """
-
-    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
-        f = UTF8Recoder(f, encoding)
-        self.reader = csv.reader(f, dialect=dialect, **kwds)
-        print(self.reader)
-
-    def next(self):
-        row = self.reader.__next__()
-        return [str(s, "utf-8") for s in row]
-
-    def __next__(self):
-        return self.next()
-
-    def __iter__(self):
-        return self
-
-class UnicodeWriter:
-    """
-    A CSV writer which will write rows to CSV file "f",
-    which is encoded in the given encoding.
-    """
-
-    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
-        # Redirect output to a queue
-        self.queue = io.StringIO()
-        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
-        self.stream = f
-        self.encoder = codecs.getincrementalencoder(encoding)()
-
-    def writerow(self, row):
-        encoded_row = []
-        for s in row:
-            if s is None:
-                s = ''
-            if not isinstance(s, str):
-                s = str(s)
-            encoded_row.append(s)
-        self.writer.writerow(encoded_row)
-        # Fetch UTF-8 output from the queue ...
-        data = self.queue.getvalue()
-        # no need to decode, it's already str
-        #data = data.decode("utf-8")
-        # write to the target stream
-        self.stream.write(data)
-        # empty queue
-        self.queue.truncate(0)
-
-    def writerows(self, rows):
-        for row in rows:
-            self.writerow(row)

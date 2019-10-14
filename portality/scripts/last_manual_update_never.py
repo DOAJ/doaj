@@ -1,8 +1,7 @@
 from portality import models
 from portality.core import app
-from portality.clcsv import UnicodeWriter
 import esprit
-import codecs
+import csv
 
 
 LAST_MANUAL_UPDATE_NEVER = {
@@ -29,14 +28,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.out:
-        print "Please specify an output file path with the -o option"
+        print("Please specify an output file path with the -o option")
         parser.print_help()
         exit()
 
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
-    with codecs.open(args.out, "wb", "utf-8") as f:
-        writer = UnicodeWriter(f)
+    with open(args.out, "w", encoding="utf-8") as f:
+        writer = csv.writer(f)
         writer.writerow(["ID",
                          "Journal Name",
                          "Journal URL",

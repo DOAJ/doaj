@@ -3,7 +3,7 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import ProvenanceFixtureFactory, ApplicationFixtureFactory
 
-import time, os, shutil, codecs, csv
+import time, os, shutil, csv
 from copy import deepcopy
 
 from portality import clcsv, models
@@ -90,7 +90,7 @@ class TestReporting(DoajTestCase):
                 yearfile = o
 
         table_month = []
-        reader = csv.reader(open(monthfile, "rb"))
+        reader = csv.reader(open(monthfile, "r"))
         for row in reader:
             table_month.append(row)
 
@@ -98,7 +98,7 @@ class TestReporting(DoajTestCase):
         assert table_month == expected_month
 
         table_year = []
-        with codecs.open(x.replace('\0', '') for x in yearfile) as f:
+        with open(yearfile, 'r') as f:
             reader = csv.reader(f)
             for row in reader:
                 table_year.append(row)
@@ -151,7 +151,7 @@ class TestReporting(DoajTestCase):
         assert table_month == expected_month
 
         table_year = []
-        with codecs.open(yearfile) as f:
+        with open(yearfile) as f:
             reader = csv.reader(f)
             for row in reader:
                 table_year.append(row)
@@ -171,8 +171,8 @@ class TestReporting(DoajTestCase):
         assert os.path.exists(outfiles[0])
 
         table = []
-        with codecs.open(outfiles[0], "rb", "utf-8") as f:
-            reader = clcsv.UnicodeReader(f)
+        with open(outfiles[0], "r", encoding="utf-8") as f:
+            reader = csv.reader(f)
             for row in reader:
                 table.append(row)
 

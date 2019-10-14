@@ -11,18 +11,21 @@ from portality.lib.paths import rel2abs
 from portality.core import app
 from doajtest.mocks.store import StoreMockFactory
 from doajtest.mocks.models_Cache import ModelCacheMockFactory
-from portality import store, clcsv
+from portality import store
 from io import StringIO
-import os, shutil
+import os, shutil, csv
+
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_journal_csv"), "journal_csv", "test_id",
                                {"test_id" : []})
 
+
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,
     "IOError" : IOError
 }
+
 
 class TestBLLJournalCSV(DoajTestCase):
 
@@ -182,7 +185,7 @@ class TestBLLJournalCSV(DoajTestCase):
                     break
 
             handle = self.localStore.get(self.container_id, latest, encoding="utf-8")
-            reader = clcsv.UnicodeReader(handle)
+            reader = csv.reader(handle)
             rows = [r for r in reader]
 
             if len(comparisons) > 0:

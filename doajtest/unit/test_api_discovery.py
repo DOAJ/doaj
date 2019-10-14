@@ -401,10 +401,11 @@ class TestArticleMatch(DoajTestCase):
             'next': 'https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10',
             'last': 'https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10'
         }
+        expected = '<https://example.org/api/v1/search/articles/%2A?page=1&pageSize=10>; rel=prev, <https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10>; rel=next, <https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10>; rel=last'
 
         # Changed ordered after Python 3 introduction, test adjusted - to confirm correctness
-        # assert generate_link_headers(metadata) == '<https://example.org/api/v1/search/articles/%2A?page=1&pageSize=10>; rel=prev, <https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10>; rel=last, <https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10>; rel=next', generate_link_headers(metadata)
-        assert generate_link_headers(metadata) == '<https://example.org/api/v1/search/articles/%2A?page=1&pageSize=10>; rel=prev, <https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10>; rel=next, <https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10>; rel=last', generate_link_headers(metadata)
+        headers = generate_link_headers(metadata)
+        assert headers == expected, headers
 
     def test_06_deep_paging_limit(self):
         # populate the index with some journals
