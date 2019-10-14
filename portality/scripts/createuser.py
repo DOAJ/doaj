@@ -1,5 +1,6 @@
 from portality.models import Account
 import csv
+from portality.core import app
 
 
 def create_users(source):
