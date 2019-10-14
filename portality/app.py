@@ -297,13 +297,14 @@ def standard_authentication():
         user = models.Account.pull(remote_user)
         if user:
             login_user(user, remember=False)
-    # add a check for provision of api key
     elif 'api_key' in request.values:
-        res = models.Account.query(q='api_key:"' + request.values['api_key'] + '"')['hits']['hits']
-        if len(res) == 1:
-            user = models.Account.pull(res[0]['_source']['id'])
-            if user:
-                login_user(user, remember=False)
+        q = models.Account.query(q='api_key:"' + request.values['api_key'] + '"')
+        if q.has_key('hits'):
+            res = q['hits']['hits']
+            if len(res) == 1:
+                user = models.Account.pull(res[0]['_source']['id'])
+                if user:
+                    login_user(user, remember=False)
 
 
 if 'api' in app.config['FEATURES']:

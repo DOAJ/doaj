@@ -25,10 +25,10 @@
                 <form method="post" action="{{ url_for('admin.application_quick_reject', application_id=form_context.source.id) }}" class="form-horizontal" id="application_quick_reject_form">
 
                     <div class="row">
-                        <div class="col-xs-5">
+                        <div class="col-md-5">
                             <div class="form-group">
-                                <label class="control-label col-xs-4" for="reject_reason">Select a reason for rejection:</label>
-                                <div class="col-xs-8">
+                                <label class="control-label col-sm-4" for="reject_reason">Select a reason for rejection:</label>
+                                <div class="col-sm-8">
                                     <select class="form-control" name="reject_reason" id="reject_reason">
                                         <option value="">Other</option>
                                         {% for reason in config.get("QUICK_REJECT_REASONS", []) %}
@@ -39,11 +39,11 @@
                             </div>
                         </div>
 
-                        <div class="col-xs-5">
+                        <div class="col-md-5">
                             <textarea class="form-control" name="additional_reject_information" id="additional_reject_information" placeholder="Enter any additional information here" style="width: 100%"></textarea>
                         </div>
 
-                        <div class="col-xs-2">
+                        <div class="col-md-2">
                             <button class="btn btn-danger" type="submit" id="submit_quick_reject">Quick Reject</button>
                         </div>
                     </div>

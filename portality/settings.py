@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "3.0.3"
+DOAJ_VERSION = "3.0.6"
 
 OFFLINE_MODE = False
 
