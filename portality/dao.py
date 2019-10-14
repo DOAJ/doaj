@@ -234,7 +234,14 @@ class DomainObject(UserDict.IterableUserDict, object):
             try:
                 return cls(**out.json())
             except Exception as e:
-                app.logger.exception("Cannot decode JSON. Object: {}, Exception message: {}".format(out,e.message))
+                app.logger.exception("Cannot decode JSON. Object: {}, "
+                                     "Status Code: {}, "
+                                     "Reason: {}, "
+                                     "Exception message: {}"
+                                     .format(out.text,
+                                             out.status_code,
+                                             out.reason,
+                                             e.message))
                 raise e
 
     @classmethod
