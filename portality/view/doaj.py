@@ -263,7 +263,10 @@ def toc(identifier=None, volume=None, issue=None):
 
         issn_ref = True     # just a flag so we can check if we were requested via issn
     else:
-        journal = models.Journal.pull(identifier)  # Returns None on fail
+        try:
+            journal = models.Journal.pull(identifier)  # Returns None on fail
+        except:
+            abort(404)
 
     if journal is None:
         abort(404)
