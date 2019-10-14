@@ -498,6 +498,13 @@ input[type=password]:not(.form-control),
     margin-bottom: 20px;
 }
 
+@media (max-width: 991px) {
+    #submit_quick_reject {
+        margin-top: 15px;
+    }
+}
+
+
 /************************************/
 
 /****************************************

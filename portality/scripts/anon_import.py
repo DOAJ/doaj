@@ -1,4 +1,4 @@
-import esprit, codecs, json, gzip, shutil
+import esprit, json, gzip, shutil
 from portality.core import app, initialise_index
 from portality.store import StoreFactory
 from botocore.exceptions import ClientError
@@ -96,7 +96,7 @@ if __name__ == '__main__':
     parser.add_argument("config", help="Config file for import run")
     args = parser.parse_args()
 
-    with codecs.open(args.config, "rb", "utf-8") as f:
+    with open(args.config, "r", encoding="utf-8") as f:
         config = json.loads(f.read())
 
     do_import(config)

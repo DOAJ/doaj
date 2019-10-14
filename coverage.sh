@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 ###############################################
-## Execute the test coverage analysis
+# Execute the test coverage analysis
+#
+# You will need to activate your virtualenv and have coverage installed: pip install coverage
 ###############################################
 
 # Specify the directory you want the output data and report to go to

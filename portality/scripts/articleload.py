@@ -1,5 +1,5 @@
 from portality import models
-import json, codecs
+import json
 from portality.core import app
 
 if __name__ == "__main__":
@@ -18,7 +18,7 @@ if __name__ == "__main__":
         print("Please specify a source file with the -s option")
         exit()
 
-    f = codecs.open(args.source)
+    f = open(args.source)
     j = json.loads(f.read())
 
     for data in j:

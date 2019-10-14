@@ -1,7 +1,7 @@
 from portality.core import app
 from portality.lib import plugin
 
-import os, shutil, codecs, boto3
+import os, shutil, boto3
 from urllib.parse import quote_plus
 
 class StoreException(Exception):
@@ -192,7 +192,7 @@ class StoreLocal(Store):
             kwargs = {}
             if encoding is not None:
                 kwargs = {"encoding" : encoding}
-            f = codecs.open(cpath, "rb", **kwargs)
+            f = open(cpath, "rb", **kwargs)
             return f
 
     def url(self, container_id, target_name):

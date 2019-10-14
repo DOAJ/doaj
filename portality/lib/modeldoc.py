@@ -1,6 +1,6 @@
 from portality.lib import dataobj, dates, plugin
 from datetime import datetime
-import json, codecs
+import json
 
 DO_TYPE_TO_JSON_TYPE = {
     "str": "string",
@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
     descriptions = {}
     if args.fields:
-        with codecs.open(args.fields) as f:
+        with open(args.fields) as f:
             fds = f.read()
         lines = fds.split("\n")
         for line in lines:
@@ -144,5 +144,5 @@ if __name__ == "__main__":
     example, fields = document(k, descriptions)
     doc = format(k, example, fields)
 
-    with codecs.open(args.out, "wb") as f:
+    with open(args.out, "w") as f:
         f.write(doc)

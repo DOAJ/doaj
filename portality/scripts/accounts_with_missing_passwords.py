@@ -7,8 +7,7 @@ python accounts_with_missing_passwords.py -o accounts.csv
 ```
 """
 import csv
-
-import esprit, codecs
+import esprit
 from portality.core import app
 from portality import models
 
@@ -53,7 +52,7 @@ if __name__ == "__main__":
 
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
-    with codecs.open(args.out, "wb", "utf-8") as f:
+    with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?", "Has Reset Token", "Reset Token Expired?"])
 

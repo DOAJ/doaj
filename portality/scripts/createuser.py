@@ -1,11 +1,9 @@
 from portality.models import Account
 import csv
 
-import codecs
-
 
 def create_users(source):
-    with codecs.open(source, "rb", "utf-8") as f:
+    with open(source, "r", encoding="utf-8") as f:
         reader = csv.reader(f)
         for row in reader:
             username = row[0]
