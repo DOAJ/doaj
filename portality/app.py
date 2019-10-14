@@ -299,7 +299,7 @@ def standard_authentication():
             login_user(user, remember=False)
     elif 'api_key' in request.values:
         q = models.Account.query(q='api_key:"' + request.values['api_key'] + '"')
-        if q.has_key('hits'):
+        if 'hits' in q:
             res = q['hits']['hits']
             if len(res) == 1:
                 user = models.Account.pull(res[0]['_source']['id'])
