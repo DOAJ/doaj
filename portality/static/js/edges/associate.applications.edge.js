@@ -325,7 +325,7 @@ $.extend(true, doaj, {
                             [
                                 {
                                     valueFunction: doaj.fieldRender.readOnlyJournal({
-                                        readOnlyJournalURL : doaj.associateApplicationsSearchConfig.readOnlyJournalUrl
+                                        readOnlyJournalUrl : doaj.associateApplicationsSearchConfig.readOnlyJournalUrl
                                     })
                                 },
                                 {

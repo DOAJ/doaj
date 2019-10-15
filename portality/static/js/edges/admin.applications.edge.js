@@ -26,18 +26,6 @@ $.extend(true, doaj, {
             return false;
         },
 
-        readOnlyJournal : function (val, resultobj, renderer) {
-            if (resultobj.admin && resultobj.admin.current_journal) {
-                var result = '<a style="margin-left: 10px; margin-right: 10px" class="readonly_journal_link" href="';
-                result += doaj.adminApplicationsSearchConfig.readOnlyJournalUrl;
-                result += resultobj.admin.current_journal;
-                result += '" target="_blank"';
-                result += '>View journal being updated</a>';
-                return result;
-            }
-            return false;
-        },
-
         relatedJournal : function (val, resultobj, renderer) {
             var result = "";
             if (resultobj.admin) {
@@ -465,7 +453,7 @@ $.extend(true, doaj, {
                             [
                                 {
                                     valueFunction: doaj.fieldRender.readOnlyJournal({
-                                        readOnlyJournalURL : doaj.adminApplicationsSearchConfig.readOnlyJournalUrl
+                                        readOnlyJournalUrl : doaj.adminApplicationsSearchConfig.readOnlyJournalUrl
                                     })
                                 },
                                 {
