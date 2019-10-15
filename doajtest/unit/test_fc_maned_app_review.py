@@ -38,7 +38,7 @@ def mock_lookup_code(code):
 # Source objects to be used for testing
 #####################################################################
 
-APPLICATION_SOURCE = ApplicationFixtureFactory.make_application_source()
+APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
 APPLICATION_FORM = ApplicationFixtureFactory.make_application_form(role="maned")
 
 ######################################################
