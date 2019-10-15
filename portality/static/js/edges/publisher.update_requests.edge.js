@@ -281,7 +281,12 @@ $.extend(true, doaj, {
                 openingQuery : es.newQuery({
                     sort: {"field" : "last_manual_update", "order" : "asc"}
                 }),
-                components: components
+                components: components,
+                callbacks : {
+                    "edges:query-fail" : function() {
+                        alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
+                    }
+                }
             });
             doaj.publisherUpdatesSearch.activeEdges[selector] = e;
         }
