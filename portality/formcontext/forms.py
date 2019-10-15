@@ -15,7 +15,6 @@ ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
 BIG_END_DATE_REGEX = "^\d{4}-\d{2}-\d{2}$"
 DATE_ERROR  = "Date must be supplied in the form YYYY-MM-DD"
-LOWERCASE_REGEX = re.compile(r'[a-z]')
 
 ###########################################################################
 # Definition of the form components
