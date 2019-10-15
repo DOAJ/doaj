@@ -15,6 +15,7 @@ ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
 BIG_END_DATE_REGEX = "^\d{4}-\d{2}-\d{2}$"
 DATE_ERROR  = "Date must be supplied in the form YYYY-MM-DD"
+LOWERCASE_REGEX = re.compile(r'[a-z]')
 
 ###########################################################################
 # Definition of the form components
@@ -155,7 +156,7 @@ class JournalInformation(Form):
     fulltext_format_other = StringField('Fulltext Format (Other)',
     )
     keywords = TagListField('Add keyword(s) that best describe the journal (comma delimited)',
-        [validators.DataRequired(), MaxLen(6, message='You can only enter up to {max_len} keywords.')],
+        [validators.DataRequired(), RegexpOnTagList(regex=LOWERCASE_REGEX, message="Keywords must be lowercase"), MaxLen(6, message='You can only enter up to {max_len} keywords.')],
         description='Maximum 6. Keywords must be in English and in lower case.'
     )
     languages = DOAJSelectMultipleField('Select the language(s) that the Full Text of the articles is published in',
