@@ -101,7 +101,10 @@ class GenericBibJSON(dataobj.DataObj):
         self._add_to_list_with_struct("keywords", keyword)
 
     def set_keywords(self, keywords):
-        self._set_with_struct("keywords", keywords)
+        lowercase_keywords = []
+        for k in keywords:
+            lowercase_keywords.append(k.lower())
+        self._set_with_struct("keywords", lowercase_keywords)
 
     ## work with urls
 

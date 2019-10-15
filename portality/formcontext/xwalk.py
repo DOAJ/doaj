@@ -289,7 +289,7 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             bibjson.format = fulltext_format
 
         if form.keywords.data:
-            bibjson.set_keywords(form.keywords.data.lower())  # tag list field
+            bibjson.set_keywords(form.keywords.data)  # tag list field
 
         if form.languages.data:
             bibjson.set_language(form.languages.data)  # select multiple field - gives a list back
