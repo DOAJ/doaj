@@ -327,6 +327,10 @@ blockquote {
  * Sponsors styles
  */
 
+.sponsors > a {
+    text-decoration: none;
+}
+
 .sponsors > a > img {
     max-width: 170px;
     max-height: 100px;
