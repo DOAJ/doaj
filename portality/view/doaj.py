@@ -253,21 +253,6 @@ def toc(identifier=None, volume=None, issue=None):
     # identifier may be the journal id or an issn
     journal = None
     issn_ref = False
-    # if len(identifier) == 9:
-    #     js = models.Journal.find_by_issn(identifier, in_doaj=True)
-    #     if len(js) > 1:
-    #         abort(400)                             # really this is a 500 - we have more than one journal with this issn
-    #     if len(js) == 0:
-    #         abort(404)
-    #     journal = js[0]
-    #
-    #     issn_ref = True     # just a flag so we can check if we were requested via issn
-    # else:
-    #     try:
-    #         journal = models.Journal.pull(identifier)  # Returns None on fail
-    #     except:
-    #         abort(404)
-
 
     if len(identifier) == 9:
         js = models.Journal.find_by_issn(identifier, in_doaj=True)
