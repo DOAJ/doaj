@@ -172,7 +172,12 @@ $.extend(true, doaj, {
                 search_url: search_url,
                 openingQuery : es.newQuery({size: 25}),
                 manageUrl: true,
-                components: components
+                components: components,
+                callbacks : {
+                    "edges:query-fail" : function() {
+                        alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
+                    }
+                }
             });
             doaj.adminEditorGroupSearch.activeEdges[selector] = e;
 

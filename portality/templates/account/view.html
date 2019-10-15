@@ -68,7 +68,7 @@
                 <h4>Edit your user roles</h4>
                 <form action="" method="POST">
                     {% if current_user.is_super %}
-                        <input id="editable_role" type="text" name="role" value="{{account.role|join(',')}}" style="width: 70%; display: inline">
+                        <input id="editable_role" type="text" name="role" value="{{account.role|join(',')}}" style="width: 70%">
                         <input type="submit" class="btn btn-success" name="submit" value="Update" style="display: inline; float: right">
                     {% else %}
                         <input type="text" name="role" value="{{account.role|join(',')}}" disabled="disabled">

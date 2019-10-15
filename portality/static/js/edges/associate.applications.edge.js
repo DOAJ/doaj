@@ -325,7 +325,7 @@ $.extend(true, doaj, {
                             [
                                 {
                                     valueFunction: doaj.fieldRender.readOnlyJournal({
-                                        readOnlyJournalURL : doaj.associateApplicationsSearchConfig.readOnlyJournalUrl
+                                        readOnlyJournalUrl : doaj.associateApplicationsSearchConfig.readOnlyJournalUrl
                                     })
                                 },
                                 {
@@ -369,7 +369,12 @@ $.extend(true, doaj, {
                 openingQuery : es.newQuery({
                     sort: {"field" : "suggestion.suggested_on", "order" : "asc"}
                 }),
-                components: components
+                components: components,
+                callbacks : {
+                    "edges:query-fail" : function() {
+                        alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
+                    }
+                }
             });
             doaj.associateApplicationsSearch.activeEdges[selector] = e;
         }
