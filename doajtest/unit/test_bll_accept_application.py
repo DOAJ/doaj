@@ -43,11 +43,11 @@ class TestBLLAcceptApplication(DoajTestCase):
         # create the application
         application = None
         if application_type == "save_fail":
-            application = Suggestion(**ApplicationFixtureFactory.make_application_source())
+            application = Suggestion(**ApplicationFixtureFactory.make_update_request_source())
             application.save = mock_save
             Journal.save = mock_save
         elif application_type == "with_current_journal":
-            application = Suggestion(**ApplicationFixtureFactory.make_application_source())
+            application = Suggestion(**ApplicationFixtureFactory.make_update_request_source())
             application.remove_notes()
             application.add_note("unique 1", "2002-01-01T00:00:00Z")
             application.add_note("duplicate", "2001-01-01T00:00:00Z")
@@ -59,7 +59,7 @@ class TestBLLAcceptApplication(DoajTestCase):
             journal.add_note("duplicate", "2001-01-01T00:00:00Z")
             journal.save(blocking=True)
         elif application_type == "no_current_journal":
-            application = Suggestion(**ApplicationFixtureFactory.make_application_source())
+            application = Suggestion(**ApplicationFixtureFactory.make_update_request_source())
             application.remove_current_journal()
 
 

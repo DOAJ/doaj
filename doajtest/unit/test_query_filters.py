@@ -82,7 +82,7 @@ class TestQueryFilters(DoajTestCase):
         assert newres == { "admin": { "seal": False }, "bibjson": {}}, newres
 
     def test_08_publisher_result_filter(self):
-        apsrc_admin = ApplicationFixtureFactory.make_application_source()['admin']
+        apsrc_admin = ApplicationFixtureFactory.make_update_request_source()['admin']
         # Not all of these properties are applicable to applications, but these test objects are not applications:
         # they are made-up admin sections designed solely to test whether the filter lets the right keys through.
         # We just use applications as a base to construct them.
@@ -116,7 +116,7 @@ class TestQueryFilters(DoajTestCase):
                     '{} key was found in result {}, but it is forbidden and should have been stripped out by the filter'.format(forbidden_k, n)
 
     def test_09_publisher_result_filter_unpacked(self):
-        apsrc_admin = ApplicationFixtureFactory.make_application_source()['admin']
+        apsrc_admin = ApplicationFixtureFactory.make_update_request_source()['admin']
         # Not all of these properties are applicable to applications, but these test objects are not applications:
         # they are made-up admin sections designed solely to test whether the filter lets the right keys through.
         # We just use applications as a base to construct them.
