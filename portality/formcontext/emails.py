@@ -99,7 +99,7 @@ def send_publisher_update_request_editor_assigned_email(application):
     ]
 
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-    subject = app.config.get("SERVICE_NAME","") + " - your application has been assigned an editor for review"
+    subject = app.config.get("SERVICE_NAME","") + " - your update request has been assigned an editor for review"
 
     alerts = []
     for instructions in send_list:
@@ -266,7 +266,7 @@ def send_publisher_update_request_inprogress_email(application):
     ]
 
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-    subject = app.config.get("SERVICE_NAME", "") + " - your application is under review"
+    subject = app.config.get("SERVICE_NAME", "") + " - your update request is under review"
 
     alerts = []
     for instructions in send_list:
