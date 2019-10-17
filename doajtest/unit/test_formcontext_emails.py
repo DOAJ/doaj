@@ -792,7 +792,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         publisher_template = 'publisher_update_request_editor_assigned.txt'
         publisher_to = re.escape(owner.email)
-        publisher_subject = 'your application has been assigned an editor for review'
+        publisher_subject = 'your update request has been assigned an editor for review'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -979,7 +979,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         publisher_template = 'publisher_update_request_editor_assigned.txt'
         publisher_to = re.escape(owner.email)
-        publisher_subject = 'your application has been assigned an editor for review'
+        publisher_subject = 'your update request has been assigned an editor for review'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -1089,7 +1089,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * to the publisher, notifying that an editor is viewing their application
         publisher_template = re.escape('publisher_update_request_inprogress.txt')
         publisher_to = re.escape(owner.email)
-        publisher_subject = 'your application is under review'
+        publisher_subject = 'your update request is under review'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
