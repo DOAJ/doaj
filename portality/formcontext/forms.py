@@ -156,7 +156,7 @@ class JournalInformation(Form):
     )
     keywords = TagListField('Add keyword(s) that best describe the journal (comma delimited)',
         [validators.DataRequired(), MaxLen(6, message='You can only enter up to {max_len} keywords.')],
-        description='Maximum 6. Keywords must be in English. All keywords are stored in lowercases.'
+        description='Maximum 6. Keywords must be in English. All keywords are stored in lowercase.'
     )
     languages = DOAJSelectMultipleField('Select the language(s) that the Full Text of the articles is published in',
         [validators.DataRequired()],

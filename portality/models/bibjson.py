@@ -102,10 +102,8 @@ class GenericBibJSON(dataobj.DataObj):
 
     def set_keywords(self, keywords):
         if type(keywords) is list:
-            lowercase_keywords = []
-            for k in keywords:
-                lowercase_keywords.append(k.lower())
-            self._set_with_struct("keywords", lowercase_keywords)
+            keywords = [w.lower() for w in keywords]
+            self._set_with_struct("keywords", keywords)
         else:
             self._set_with_struct("keywords", keywords.lower())
 
