@@ -11,8 +11,8 @@ sudo apt-get install -q -y libxml2-dev libxslt-dev python-dev lib32z1-dev awscli
 # Run from the doaj folder that's already checked out
 
 # activate the virtualenv that we expect to be at /home/cloo/doaj
-. /home/cloo/doaj/bin/activate
-cd /home/cloo/doaj/src/doaj
+. /home/cloo/doaj_python3/bin/activate
+cd /home/cloo/doaj_python3/src/doaj
 
 # Install DOAJ submodules and requirements
 git submodule update --init --recursive
