@@ -30,6 +30,7 @@ fi
 
 # Restart all supervisor tasks, which will cover the app, and huey on the background server. Then reload nginx.
 sudo supervisorctl reread
+sudo supervisorctl update
 sudo supervisorctl restart all || sudo supervisorctl start all
 
 # todo: we might want to move this to ansible so we don't run on the background server unnecessarily
