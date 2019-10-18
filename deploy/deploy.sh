@@ -6,7 +6,7 @@ ENV=$1
 
 # apt dependencies for the DOAJ app
 sudo apt-get update
-sudo apt-get install -q -y libxml2-dev libxslt-dev python-dev lib32z1-dev awscli
+sudo apt-get install -q -y libxml2-dev libxslt-dev python3.7-dev lib32z1-dev awscli
 
 # Run from the doaj folder that's already checked out
 
