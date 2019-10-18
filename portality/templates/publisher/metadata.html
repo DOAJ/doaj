@@ -129,13 +129,6 @@ $(document).ready(function() {
         event.preventDefault();
 
         var all_e = $('[id^=authors-][id$="container"]');
-        if (all_e.length === 1) {
-            console.log($('#remove_warning') == 0)
-            if ($('#remove_warning').length == 0) {
-                all_e.last().append('<div id="remove_warning"><ul class="red"><li>Please provide at least one author</li></ul><div>')
-            }
-            return
-        }
 
         var id = $(this).attr("id")
         var short_name = id.split("_")[1]
@@ -157,12 +150,10 @@ $(document).ready(function() {
     $('input[name=more_authors]').click( function (event) {
         event.preventDefault();
 
-        if ($('#remove_warning')){
-            ($('#remove_warning')).remove()
-        }
         // get the last author div in the list
         var all_e = $('[id^=authors-][id$="container"]');
         var e = all_e.last();
+
 
         // make a clone of the last author div
         var ne = e.clone()[0];
@@ -180,9 +171,12 @@ $(document).ready(function() {
         })
         
         e.after(ne);
-        
+
         $(".remove_button").unbind("click")
         $(".remove_button").click(removeAuthor)
+        if (all_e.length === 1){
+            $('#remove_authors-1').show()
+        }
 	});
 
     $(".remove_button").click(removeAuthor);
@@ -193,6 +187,7 @@ $(document).ready(function() {
         tokenSeparators: [","]
     })
 
+    $('#remove_authors-0').hide()
     $("#pissn").select2()
     $("#eissn").select2()
 
