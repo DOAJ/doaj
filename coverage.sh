@@ -14,5 +14,5 @@ COVERAGE_FILE=$OUTDIR/coverage.data
 export COVERAGE_FILE
 
 coverage run --source=portality,esprit,combinatrix,dictdiffer $(which nosetests) doajtest/unit/
-coverage html --include=portality*.py -d $OUTDIR/report
+coverage html --include=portality*.py --omit=*/migrate/*,*/scripts/* -d $OUTDIR/report
 
