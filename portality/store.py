@@ -190,9 +190,11 @@ class StoreLocal(Store):
         cpath = os.path.join(self.dir, container_id, target_name)
         if os.path.exists(cpath) and os.path.isfile(cpath):
             kwargs = {}
+            mode = "rb"
             if encoding is not None:
                 kwargs = {"encoding" : encoding}
-            f = open(cpath, "rb", **kwargs)
+                mode = "r"
+            f = open(cpath, mode, **kwargs)
             return f
 
     def url(self, container_id, target_name):
