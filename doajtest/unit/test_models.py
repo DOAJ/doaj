@@ -463,23 +463,24 @@ class TestClient(DoajTestCase):
         gbj.title = "Updated Title"
         gbj.add_identifier("doi", "10.1234/7")
         gbj.add_keyword("test")
+        gbj.add_keyword("ONE") # make sure keywords are stored in lowercase
         gbj.add_url("http://test", "test")
         gbj.add_subject("TEST", "first", "one")
 
         assert gbj.title == "Updated Title"
         assert len(gbj.get_identifiers()) == 3
         assert gbj.get_one_identifier("doi") == "10.1234/7"
-        assert gbj.keywords == ["word", "key", "test"]
+        assert gbj.keywords == ["word", "key", "test", "one"]
         assert gbj.get_single_url("test") == "http://test"
         assert gbj.subjects()[2] == {"scheme" : "TEST", "term" : "first", "code" : "one"}
 
         gbj.remove_identifiers("doi")
-        gbj.set_keywords("one")
+        gbj.set_keywords("TwO") # make sure keywords are stored in lowercase
         gbj.set_subjects({"scheme" : "TEST", "term" : "first", "code" : "one"})
 
         assert len(gbj.get_identifiers()) == 2
         assert gbj.get_one_identifier("doi") is None
-        assert gbj.keywords == ["one"]
+        assert gbj.keywords == ["two"]
         assert len(gbj.subjects()) == 1
 
         gbj.remove_identifiers()
