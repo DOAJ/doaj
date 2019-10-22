@@ -77,6 +77,14 @@ blockquote {
     background-color: white;
 }
 
+.navbar .nav .active > a:focus,             
+.navbar .nav > li:focus,
+.navbar .nav > li > a:focus,
+.navbar .navbar-header a:focus {
+    color: #F68B1F;
+    background-color: #eeeeee;
+}
+
 .navbar .btn-navbar {
     background-color: #ffffff;
     background-image: none;
