@@ -1,13 +1,13 @@
-from portality.view import oaipmh
-from portality.models import OAIPMHJournal, OAIPMHArticle
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory
+from doajtest.fixtures import ArticleFixtureFactory
 from portality import models
 from portality.app import app
 from lxml import etree
 from datetime import datetime, timedelta
 from freezegun import freeze_time
 from flask import url_for
+import time
 
 class TestClient(DoajTestCase):
     @classmethod
@@ -282,3 +282,51 @@ class TestClient(DoajTestCase):
             set1 = sets[1].getchildren()
             assert set0[1].text == 'LCC:Economic theory. Demography'
             assert set1[1].text == 'LCC:Social Sciences'
+
+    def test_09_article(self):
+        """test if the OAI-PMH journal feed returns records and only displays journals accepted in DOAJ"""
+        article_source = ArticleFixtureFactory.make_article_source(eissn='1234-1234', pissn='5678-5678,', in_doaj=False)
+        """test if the OAI-PMH article feed returns records and only displays articles accepted in DOAJ"""
+        a_private = models.Article(**article_source)
+        ba = a_private.bibjson()
+        ba.title = "Private Article"
+        a_private.save(blocking=True)
+
+        article_source = ArticleFixtureFactory.make_article_source(eissn='4321-4321', pissn='8765-8765,', in_doaj=True)
+        a_public = models.Article(**article_source)
+        ba = a_public.bibjson()
+        ba.title = "Public Article"
+        a_public.save(blocking=True)
+        public_id = a_public.id
+
+        time.sleep(1)
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh',  specified='article', verb='ListRecords', metadataPrefix='oai_dc'))
+                assert resp.status_code == 200
+
+                t = etree.fromstring(resp.data)
+                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+
+                # Check we only have one journal returned
+                r = records[0].xpath('//oai:record', namespaces=self.oai_ns)
+                assert len(r) == 1
+
+                # Check we have the correct journal
+                title = r[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text
+                assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == a_public.bibjson().title
+
+                resp = t_client.get(url_for('oaipmh.oaipmh',  specified='article', verb='GetRecord', metadataPrefix='oai_dc') + '&identifier=abcdefghijk_article')
+                assert resp.status_code == 200
+
+                t = etree.fromstring(resp.data)
+                records = t.xpath('/oai:OAI-PMH/oai:GetRecord', namespaces=self.oai_ns)
+
+                # Check we only have one journal returnedt
+                kids = records[0].getchildren()
+                r = records[0].xpath('//oai:record', namespaces=self.oai_ns)
+                assert len(r) == 1
+
+                # Check we have the correct journal
+                assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == a_public.bibjson().title
