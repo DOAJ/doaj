@@ -75,15 +75,9 @@ def do_upgrade(definition, verbose):
                         print("Could not create model for {0}, Error: {1}".format(result['id'], e.message))
                         continue
 
-
-                print(result)
-
                 for function_path in tdef.get("functions", []):
                     fn = plugin.load_function(function_path)
                     result = fn(result)
-                    print(result)
-
-                print(result)
 
                 data = result
                 _id = result.get("id", "id not specified")
