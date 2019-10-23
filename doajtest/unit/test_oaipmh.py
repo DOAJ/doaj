@@ -37,6 +37,7 @@ class TestClient(DoajTestCase):
         journal_sources = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
         j_public = models.Journal(**journal_sources[0])
         j_public.save(blocking=True)
+        public_id = j_public.id
 
         j_private = models.Journal(**journal_sources[1])
         j_private.set_in_doaj(False)
@@ -49,6 +50,18 @@ class TestClient(DoajTestCase):
 
                 t = etree.fromstring(resp.data)
                 records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+
+                # Check we only have one journal returned
+                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 1
+
+                # Check we have the correct journal
+                assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == j_public.bibjson().title
+
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='GetRecord', metadataPrefix='oai_dc') + '&identifier={0}'.format(public_id))
+                assert resp.status_code == 200
+
+                t = etree.fromstring(resp.data)
+                records = t.xpath('/oai:OAI-PMH/oai:GetRecord', namespaces=self.oai_ns)
 
                 # Check we only have one journal returned
                 assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 1
@@ -225,5 +238,29 @@ class TestClient(DoajTestCase):
                 t = etree.fromstring(resp.data)
                 records = t.xpath('/oai:OAI-PMH/oai:Identify', namespaces=self.oai_ns)
             assert len(records) == 1
+            assert records[0].xpath('//oai:repositoryName', namespaces=self.oai_ns)[0].text == 'Directory of Open Access Journals'
             assert records[0].xpath('//oai:adminEmail', namespaces=self.oai_ns)[0].text == 'sysadmin@cottagelabs.com'
             assert records[0].xpath('//oai:granularity', namespaces=self.oai_ns)[0].text == 'YYYY-MM-DDThh:mm:ssZ'
+
+    def test_07_bad_verb(self):
+        journal_source = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        j = models.Journal(**journal_source)
+        j.save(blocking=True)
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                # no verb
+                resp = t_client.get(url_for('oaipmh.oaipmh', metadataPrefix='oai_dc'))
+                assert resp.status_code == 200
+                t = etree.fromstring(resp.data)
+                records = t.xpath('/oai:OAI-PMH', namespaces=self.oai_ns)
+                assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[0].text == 'Value of the verb argument is not a legal OAI-PMH verb, the verb argument is missing, or the verb argument is repeated.'
+                assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[0].get("code") == 'badVerb'
+
+                #invalid verb
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='InvalidVerb', metadataPrefix='oai_dc'))
+                assert resp.status_code == 200
+                t = etree.fromstring(resp.data)
+                records = t.xpath('/oai:OAI-PMH', namespaces=self.oai_ns)
+                assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[0].text == 'Value of the verb argument is not a legal OAI-PMH verb, the verb argument is missing, or the verb argument is repeated.'
+                assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[0].get("code") == 'badVerb'
