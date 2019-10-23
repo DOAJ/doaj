@@ -211,3 +211,19 @@ class TestClient(DoajTestCase):
 
                 for title in t.xpath('//dc:title', namespaces=self.oai_ns):
                     assert title.text in [journals[0]['bibjson']['title'], journals[1]['bibjson']['title']]
+
+    def test_06_identify(self):
+
+        journal_source = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        j = models.Journal(**journal_source)
+        j.save(blocking=True)
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='Identify', metadataPrefix='oai_dc'))
+                assert resp.status_code == 200
+                t = etree.fromstring(resp.data)
+                records = t.xpath('/oai:OAI-PMH/oai:Identify', namespaces=self.oai_ns)
+            assert len(records) == 1
+            assert records[0].xpath('//oai:adminEmail', namespaces=self.oai_ns)[0].text == 'sysadmin@cottagelabs.com'
+            assert records[0].xpath('//oai:granularity', namespaces=self.oai_ns)[0].text == 'YYYY-MM-DDThh:mm:ssZ'
