@@ -264,3 +264,21 @@ class TestClient(DoajTestCase):
                 records = t.xpath('/oai:OAI-PMH', namespaces=self.oai_ns)
                 assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[0].text == 'Value of the verb argument is not a legal OAI-PMH verb, the verb argument is missing, or the verb argument is repeated.'
                 assert records[0].xpath('//oai:error', namespaces=self.oai_ns)[0].get("code") == 'badVerb'
+
+    def test_08_list_sets(self):
+        journal_source = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        j = models.Journal(**journal_source)
+        j.save(blocking=True)
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListSets', metadataPrefix='oai_dc'))
+                assert resp.status_code == 200
+                t = etree.fromstring(resp.data)
+                records = t.xpath('/oai:OAI-PMH/oai:ListSets', namespaces=self.oai_ns)
+                sets = records[0].getchildren()
+            assert len(sets) == 2
+            set0 = sets[0].getchildren()
+            set1 = sets[1].getchildren()
+            assert set0[1].text == 'LCC:Economic theory. Demography'
+            assert set1[1].text == 'LCC:Social Sciences'
