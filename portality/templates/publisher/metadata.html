@@ -86,14 +86,13 @@
 $(document).ready(function() {
 
     function prepAuthorContainer(params) {
-        var ne = params.element
-        var reset = params.reset_value
-        var number = params.number
+        var ne = params.element;
+        var reset = params.reset_value;
+        var number = params.number;
+
+        ne.id = 'authors-' + number + '-container';
         
-        var new_id = 'authors-' + number + '-container';
-        ne.id = new_id;
-        
-        ne = $(ne)
+        ne = $(ne);
         ne.find('[id^=authors-]').each( function () {
             var ce = $(this);
             
@@ -130,30 +129,29 @@ $(document).ready(function() {
 
         var all_e = $('[id^=authors-][id$="container"]');
 
-        var id = $(this).attr("id")
-        var short_name = id.split("_")[1]
-        var container = short_name + "-container"
+        var id = $(this).attr("id");
+        var short_name = id.split("_")[1];
+        var container = short_name + "-container";
 
-        $("#" + container).remove()
+        $("#" + container).remove();
 
-        var count = 0
-        $('[id^=authors-][id$="container"]').each(function() {
+        var count = 0;
+        $(all_e).each(function() {
             prepAuthorContainer({
                 element : this,
                 number: count,
                 reset_value: false
-            })
+            });
             count++;
         })
     }
 
-    $('input[name=more_authors]').click( function (event) {
+    $('input[name=more_authors]').click( function(event) {
         event.preventDefault();
 
         // get the last author div in the list
         var all_e = $('[id^=authors-][id$="container"]');
         var e = all_e.last();
-
 
         // make a clone of the last author div
         var ne = e.clone()[0];
@@ -168,12 +166,13 @@ $(document).ready(function() {
             element : ne,
             number : number,
             reset_value : true
-        })
+        });
 
         e.after(ne);
 
-        $(".remove_button").unbind("click")
-        $(".remove_button").click(removeAuthor)
+        var rem_b = $(".remove_button");
+        rem_b.unbind("click");
+        rem_b.click(removeAuthor);
         if (all_e.length === 1){
             $('#remove_authors-1').show()
         }
@@ -185,13 +184,11 @@ $(document).ready(function() {
         minimumInputLength: 1,
         tags: [],
         tokenSeparators: [","]
-    })
+    });
 
-    $('#remove_authors-0').hide()
-    $("#pissn").select2()
+    $('#remove_authors-0').hide();
+    $("#pissn").select2();
     $("#eissn").select2()
-
-
 
 })
 </script>
