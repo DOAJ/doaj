@@ -123,11 +123,18 @@ $(document).ready(function() {
             ce.attr('name', id);
         })
     }
+
+    function showHideFirstRemoveButton() {
+        // Hide delete button when there's just one author
+        if ($('[id^=authors-][id$="container"]').length === 1) {
+            $('#remove_authors-0').hide();
+        } else {
+            $('#remove_authors-0').show();
+        }
+    }
     
     function removeAuthor() {
         event.preventDefault();
-
-        var all_e = $('[id^=authors-][id$="container"]');
 
         var id = $(this).attr("id");
         var short_name = id.split("_")[1];
@@ -136,14 +143,16 @@ $(document).ready(function() {
         $("#" + container).remove();
 
         var count = 0;
-        $(all_e).each(function() {
+        $('[id^=authors-][id$="container"]').each(function() {
             prepAuthorContainer({
                 element : this,
                 number: count,
                 reset_value: false
             });
             count++;
-        })
+        });
+
+        showHideFirstRemoveButton()
     }
 
     $('input[name=more_authors]').click( function(event) {
@@ -176,6 +185,8 @@ $(document).ready(function() {
         if (all_e.length === 1){
             $('#remove_authors-1').show()
         }
+
+        showHideFirstRemoveButton()
 	});
 
     $(".remove_button").click(removeAuthor);
@@ -186,7 +197,6 @@ $(document).ready(function() {
         tokenSeparators: [","]
     });
 
-    $('#remove_authors-0').hide();
     $("#pissn").select2();
     $("#eissn").select2()
 
