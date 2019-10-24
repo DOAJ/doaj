@@ -127,9 +127,9 @@ $(document).ready(function() {
     function showHideFirstRemoveButton() {
         // Hide delete button when there's just one author
         if ($('[id^=authors-][id$="container"]').length === 1) {
-            $('#remove_authors-0').hide();
+            $('#remove_authors-0').css('visibility', 'hidden')
         } else {
-            $('#remove_authors-0').show();
+            $('#remove_authors-0').css('visibility', 'visible')
         }
     }
     
@@ -183,7 +183,7 @@ $(document).ready(function() {
         rem_b.unbind("click");
         rem_b.click(removeAuthor);
         if (all_e.length === 1){
-            $('#remove_authors-1').show()
+            $('#remove_authors-1').css('visibility', 'visible')
         }
 
         showHideFirstRemoveButton()
