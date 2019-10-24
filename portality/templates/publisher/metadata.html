@@ -99,7 +99,7 @@ $(document).ready(function() {
             
             // reset the value
             if (reset) {
-                ce.attr('value', '');
+                ce.val('')
             }
             
             // set the id as requestsed
@@ -162,14 +162,14 @@ $(document).ready(function() {
         var items = ne.id.split('-');
         var number = parseInt(items[1]);
         number = number + 1;
-        
+
         // increment all the numbers
         prepAuthorContainer({
             element : ne,
             number : number,
             reset_value : true
         })
-        
+
         e.after(ne);
 
         $(".remove_button").unbind("click")
