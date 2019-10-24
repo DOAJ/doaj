@@ -294,7 +294,6 @@ $.extend(true, doaj, {
 
             $(selector).on("edges:post-render", function () {
                 $(".delete_suggestion_link").unbind("click").click(function (event) {
-                    console.log("click registered")
                     event.preventDefault();
 
                     function success_callback(data) {
@@ -309,11 +308,9 @@ $.extend(true, doaj, {
                     var c = confirm("Are you really really sure?  You can't undo this operation!");
                     if (c) {
                         var href = $(this).attr("href");
-                        var obj = {"delete": "true"};
                         $.ajax({
                             type: "DELETE",
                             url: href,
-                            data: obj,
                             success: success_callback,
                             error: error_callback
                         })
