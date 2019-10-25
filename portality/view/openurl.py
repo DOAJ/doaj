@@ -54,7 +54,11 @@ def parse_query(query, req):
     """
     # Check if this is new or old syntax, translate if necessary
     if 'url_ver=Z39.88-2004' not in query:
-        app.logger.info("Legacy OpenURL 0.1 request: " + unquote(req.url.decode('utf-8')))
+        if isinstance(req.url, str):
+            app.logger.info("Legacy OpenURL 0.1 request: " + unquote(req.url))
+        else:
+            app.logger.info("Legacy OpenURL 0.1 request: " + unquote(req.url.decode('utf-8')))
+
         return old_to_new(req)
 
     print(type(req.url))
