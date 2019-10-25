@@ -7,7 +7,7 @@ from doajtest.helpers import DoajTestCase
 from portality import app, models
 from urllib.parse import urlparse
 
-QUERY='url_ver=Z39.88-2004&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.'
+QUERY='url_ver=Z39.88-2004&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal'
 
 class TestOpenURL(DoajTestCase):
     @classmethod
@@ -44,12 +44,19 @@ class TestOpenURL(DoajTestCase):
             with self.app_test.test_client() as t_client:
                 resp = t_client.get(url_for('openurl.openurl', issn=j_private1.bibjson().get_one_identifier('pissn')))
                 query = urlparse(resp.location).query
-                assert query == QUERY + 'issn=' + j_private1.bibjson().get_one_identifier('pissn')
+                assert query == QUERY + '&rft.issn=' + j_private1.bibjson().get_one_identifier('pissn')
                 resp = t_client.get(url_for('openurl.openurl')+ query)
                 assert resp.status_code == 404
 
                 resp = t_client.get(url_for('openurl.openurl', issn=j_public1.bibjson().get_one_identifier('pissn')))
                 query = urlparse(resp.location).query
-                assert query == QUERY + 'issn=' + j_public1.bibjson().get_one_identifier('pissn')
+                assert query == QUERY + '&rft.issn=' + j_public1.bibjson().get_one_identifier('pissn')
                 resp = t_client.get(url_for('openurl.openurl') + query)
                 assert resp.status_code == 404
+
+                """ Check for new format """
+
+                resp = t_client.get(url_for('openurl.openurl',
+                                            url_ver='url_ver=Z39.88-2004',
+                                            issn=j_private1.bibjson().get_one_identifier('pissn')))
+                print(resp)
