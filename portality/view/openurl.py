@@ -14,14 +14,11 @@ def openurl():
     if len(request.values) == 0:
         abort(404)
 
+    # Decode and unquote the query string, which comes in as bytes.
+    qs = unquote(request.query_string.decode('utf-8'))
+
     # Validate the query syntax version and build an object representing it
-
-    if isinstance(request.query_string,str):
-        parser_response = parse_query(query=unquote(request.query_string), req=request)
-    else:
-        r = unquote(request.query_string.decode('utf-8'))
-        parser_response = parse_query(query=unquote(r), req=request)
-
+    parser_response = parse_query(query=qs, req=request)
 
     # theoretically this can return None, so catch it
     if parser_response is None:
@@ -34,7 +31,7 @@ def openurl():
     # Log this request to analytics
     ga_event = analytics.GAEvent(category=app.config.get('GA_CATEGORY_OPENURL', 'OpenURL'),
                                  action=parser_response.genre,
-                                 label=unquote(request.query_string.decode('utf-8')))
+                                 label=qs)
     ga_event.submit()
 
     # Get the OpenURLRequest object to issue a query and supply a url for the result
@@ -44,7 +41,6 @@ def openurl():
     else:
         abort(404)
 
-
 def parse_query(query, req):
     """
     Create the model which holds the query
@@ -53,19 +49,11 @@ def parse_query(query, req):
     :return: an object representing the query, or a redirect to the reissued query, or None if failed.
     """
     # Check if this is new or old syntax, translate if necessary
-    if 'url_ver=Z39.88-2004' not in query:
-        if isinstance(req.url, str):
-            app.logger.info("Legacy OpenURL 0.1 request: " + unquote(req.url))
-        else:
-            app.logger.info("Legacy OpenURL 0.1 request: " + unquote(req.url.decode('utf-8')))
-
+    if "url_ver=Z39.88-2004" not in query:
+        app.logger.info("Legacy OpenURL 0.1 request: " + unquote(req.url))
         return old_to_new(req)
 
-    print(type(req.url))
-    if isinstance(req.url,str):
-        app.logger.info("OpenURL 1.0 request: " + unquote(req.url))
-    else:
-        app.logger.info("OpenURL 1.0 request: " + unquote(req.url.decode('utf-8')))
+    app.logger.info("OpenURL 1.0 request: " + unquote(req.url))
 
     # Wee function to strip of the referent namespace prefix from parameters
     rem_ns = lambda x: re.sub('rft.', '', x)

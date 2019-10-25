@@ -36,9 +36,6 @@ class TestOpenURL(DoajTestCase):
         j_private1.set_in_doaj(False)
         j_private1.save(blocking=True)
 
-
-        print(j_private1.bibjson().get_one_identifier('pissn'), j_public1.bibjson().get_one_identifier('pissn'))
-
         time.sleep(1)
 
         """ Check if we receive only journals in DOAJ """
