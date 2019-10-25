@@ -35,7 +35,9 @@ $.extend(true, doaj, {
         },
 
         init : function(params) {
-            if (!params) { params = {} }
+            if (!params) {
+                params = {}
+            }
 
             var current_domain = document.location.host;
             var current_scheme = window.location.protocol;
@@ -55,7 +57,7 @@ $.extend(true, doaj, {
                     field: "admin.application_status.exact",
                     display: "Application Status",
                     deactivateThreshold: 1,
-                    valueFunction : doaj.publisherUpdatesSearch.publisherStatusMap,
+                    valueFunction: doaj.publisherUpdatesSearch.publisherStatusMap,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: false,
                         open: true,
@@ -83,7 +85,7 @@ $.extend(true, doaj, {
                         {'display': 'Country of publisher', 'field': 'index.country'},
                         {'display': 'Journal Language', 'field': 'index.language'},
                         {'display': 'Publisher', 'field': 'index.publisher'},
-                        {'display':'Platform, Host, Aggregator','field':'bibjson.provider'}
+                        {'display': 'Platform, Host, Aggregator', 'field': 'bibjson.provider'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
@@ -119,8 +121,8 @@ $.extend(true, doaj, {
                     category: "results",
                     renderer: edges.bs3.newResultsFieldsByRowRenderer({
                         noResultsText: "<p>You do not have any active update requests that meet your search criteria</p>" +
-                                        "<p>If you have not set any search criteria, you do not have any update requests at this time.</p>",
-                        rowDisplay : [
+                            "<p>If you have not set any search criteria, you do not have any update requests at this time.</p>",
+                        rowDisplay: [
                             [
                                 {
                                     valueFunction: doaj.fieldRender.titleField
@@ -147,39 +149,39 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>ISSN(s)</strong>: ",
+                                    "pre": "<strong>ISSN(s)</strong>: ",
                                     valueFunction: doaj.fieldRender.issns
                                 }
                             ],
                             [
                                 {
-                                    "pre" : "<strong>Application status</strong>: ",
+                                    "pre": "<strong>Application status</strong>: ",
                                     valueFunction: doaj.fieldRender.applicationStatus
                                 }
                             ],
                             [
                                 {
-                                    "pre" : "<strong>Description</strong>: ",
-                                    "field" : "suggestion.description"
+                                    "pre": "<strong>Description</strong>: ",
+                                    "field": "suggestion.description"
                                 }
                             ],
                             [
                                 {
-                                    "pre" : "<strong>Contact</strong>: ",
-                                    "field" : "admin.contact.name"
+                                    "pre": "<strong>Contact</strong>: ",
+                                    "field": "admin.contact.name"
                                 },
                                 {
-                                    "field" : "admin.contact.email"
+                                    "field": "admin.contact.email"
                                 }
                             ],
                             [
                                 {
                                     "pre": "<strong>Application by</strong>: ",
                                     "field": "suggestion.suggester.name",
-                                    "post" : " "
+                                    "post": " "
                                 },
                                 {
-                                    "pre" : "<strong>Applicant email</strong>: ",
+                                    "pre": "<strong>Applicant email</strong>: ",
                                     "field": "suggestion.suggester.email"
                                 }
                             ],
@@ -278,17 +280,43 @@ $.extend(true, doaj, {
                 template: edges.bs3.newFacetview(),
                 search_url: search_url,
                 manageUrl: true,
-                openingQuery : es.newQuery({
-                    sort: {"field" : "last_manual_update", "order" : "asc"}
+                openingQuery: es.newQuery({
+                    sort: {"field": "last_manual_update", "order": "asc"}
                 }),
                 components: components,
-                callbacks : {
-                    "edges:query-fail" : function() {
+                callbacks: {
+                    "edges:query-fail": function () {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
                     }
                 }
             });
             doaj.publisherUpdatesSearch.activeEdges[selector] = e;
+
+            $(selector).on("edges:post-render", function () {
+                $(".delete_suggestion_link").unbind("click").click(function (event) {
+                    event.preventDefault();
+
+                    function success_callback(data) {
+                        alert("The update request was successfully deleted");
+                        doaj.publisherUpdatesSearch.activeEdges[selector].cycle();
+                    }
+
+                    function error_callback() {
+                        alert("There was an error deleting the update request")
+                    }
+
+                    var c = confirm("Are you really really sure?  You can't undo this operation!");
+                    if (c) {
+                        var href = $(this).attr("href");
+                        $.ajax({
+                            type: "DELETE",
+                            url: href,
+                            success: success_callback,
+                            error: error_callback
+                        })
+                    }
+                });
+            });
         }
     }
 });
