@@ -68,11 +68,34 @@ blockquote {
 }
 
 .navbar .nav .active > a,
-.navbar .nav .active > a:hover,
-.navbar .nav > li:hover,
 .navbar .nav > li > a:hover,
 .navbar .navbar-header a.active,
 .navbar .navbar-header a:hover {
+    color: #F68B1F;
+    background-color: white;
+}
+
+.navbar .nav > li > a:focus,
+.navbar .navbar-header a:focus  {
+    outline-style: dashed;
+    outline-color: white;
+    outline-width: 1px;
+    outline-offset: -2px;
+    background-color: #F68B1F;
+    color: white;
+}
+
+.navbar .nav .active > a:focus,
+.navbar .navbar-header a.active:focus {
+    outline-style: dashed;
+    outline-color: #F68B1F;
+    outline-width: 1px;
+    outline-offset: -2px;
+    background-color: white;
+    color: #F68B1F;
+}
+
+.navbar .nav a :active {
     color: #F68B1F;
     background-color: white;
 }
