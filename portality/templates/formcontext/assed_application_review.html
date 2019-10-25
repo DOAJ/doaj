@@ -1,6 +1,6 @@
-{% extends "editor/editor_base.html" %}
+{% extends "base.html" %}
 
-{% block editor_content %}
+{% block content %}
 
 {# NOTE: requires suggestions_and_journals.js to be enabled (see _js_includes.html) #}
 
@@ -12,98 +12,39 @@
 {# include the table for comparing applications with journals that have changed #}
 {% include 'formcontext/_application_diff.html' %}
 
-<form method="post" action="#first_problem" class="form-horizontal wide application_journal_form" id="suggest_form">
+<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
     {% if form_context.errors %}
     <h4 class="red form-status">There is a problem with the submitted form.</h4>
     {% endif %}
 
-    <fieldset>
+    <div class="row">
+        <div class="col-md-6">
 
-        <div class="row">
-
-            <div class="col-md-6">
-                <div class="row">
-
-                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
-                        <div class="control-group">
-                            <div class="controls">
-                                <button class="btn btn-success save-record" type="submit">SAVE</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-12 with-borders form-section" style="margin-left: 0;">
-                        <h3 class="heading-aligned-with-fields">Application status</h3>
-                        {% autoescape off %}
-                        {{ form_context.render_field_group("status") }}
-                        {% endautoescape %}
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="col-md-6 with-borders form-section" id="subjects_outer_container">
-                {# This will be hidden - placed here to get first_problem anchor in approximately the right place #}
-                {% autoescape off %}
-                    {{ form_context.render_field_group("subject") }}
-                {% endautoescape %}
-
-                <h3>Subject classification</h3>
-
-                <div class="control-group left-aligned">
-                    <label class="control-label">Current subjects:</label>
-                    <div class="controls" style="margin-top: 5px">
-                        <p>{{ subjectstr }}</p>
-                    </div>
-                </div>
-
-                <div id="subject_tree_container">
-                    <div id="subject_tree"></div>
-                </div>
-
-            </div>
-
+            <section class="form-area">
+                {% include 'formcontext/_save_panel.html' %}
+                {% include 'formcontext/_application_status_panel.html' %}
+            </section>
         </div>
+
+        <div class="col-md-6">
+            {% include 'formcontext/_subject_area.html' %}
+        </div>
+
+    </div>
 
 
         {# include the base application form which contains all the biblio data #}
         {% set include_doaj_seal = True %}
         {% include 'formcontext/_base_application_form.html' %}
 
-        <div class="row">
-            <div class="col-md-3">&nbsp;</div>
-            <div class="col-md-6 with-borders form-section">
-                <h3 class="heading-aligned-with-fields">Details of person making this application</h3>
-                {% autoescape off %}
-                {{ form_context.render_field_group("submitter_info") }}
-                {% endautoescape %}
-                <div class="control-group">
-                    <div class="controls">
-                        <button class="btn btn-success save-record" type="submit">
-                            SAVE
-                        </button>
-                    </div>
-                </div>
-
-            </div>
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            {% include 'formcontext/_applicant_area.html' %}
         </div>
+    </div>
 
+    {% include 'formcontext/_notes_area.html' %}
 
-        <div class="row">
-
-            <div class="col-md-12 with-borders form-section">
-                <h3>Notes</h3>
-                <p><strong>Notes are presented in descending date order: the most recent notes appear at the top.</strong></p>
-                <div class="addable-field-container" id="notes-outer-container">
-                    {% autoescape off %}
-                    {{ form_context.render_field_group("notes") }}
-                    {% endautoescape %}
-                </div>
-            </div>
-
-        </div>
-
-    </fieldset>
 </form>
 {% endblock %}
 
