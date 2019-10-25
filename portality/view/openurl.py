@@ -14,8 +14,11 @@ def openurl():
     if len(request.values) == 0:
         abort(404)
 
+    # Decode and unquote the query string, which comes in as bytes.
+    qs = unquote(request.query_string.decode('utf-8'))
+
     # Validate the query syntax version and build an object representing it
-    parser_response = parse_query(query=unquote(request.query_string), req=request)
+    parser_response = parse_query(query=qs, req=request)
 
     # theoretically this can return None, so catch it
     if parser_response is None:
@@ -28,7 +31,7 @@ def openurl():
     # Log this request to analytics
     ga_event = analytics.GAEvent(category=app.config.get('GA_CATEGORY_OPENURL', 'OpenURL'),
                                  action=parser_response.genre,
-                                 label=unquote(request.query_string))
+                                 label=qs)
     ga_event.submit()
 
     # Get the OpenURLRequest object to issue a query and supply a url for the result
