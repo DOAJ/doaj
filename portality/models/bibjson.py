@@ -98,10 +98,14 @@ class GenericBibJSON(dataobj.DataObj):
         return self._get_list("keywords")
 
     def add_keyword(self, keyword):
-        self._add_to_list_with_struct("keywords", keyword)
+        self._add_to_list_with_struct("keywords", keyword.lower())
 
     def set_keywords(self, keywords):
-        self._set_with_struct("keywords", keywords)
+        if type(keywords) is list:
+            keywords = [w.lower() for w in keywords]
+            self._set_with_struct("keywords", keywords)
+        else:
+            self._set_with_struct("keywords", keywords.lower())
 
     ## work with urls
 
