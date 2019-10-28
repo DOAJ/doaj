@@ -544,7 +544,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except BackgroundException as e:
             raise
         except Exception as e:
-            return __fail(record, previous, error="please check it before submitting again; " + e.message)
+            return __fail(record, previous, error="please check it before submitting again; " + str(e))
 
 @main_queue.task(**configure("ingest_articles"))
 @write_required(script=True)

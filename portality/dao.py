@@ -242,7 +242,7 @@ class DomainObject(UserDict, object):
                                      .format(out.text,
                                              out.status_code,
                                              out.reason,
-                                             e.message))
+                                             str(e)))
                 raise e
 
     @classmethod

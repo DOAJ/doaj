@@ -158,7 +158,7 @@ def suggestion_page(suggestion_id):
                     flash_with_url(a, "success")
                 return redirect(url_for("editor.suggestion_page", suggestion_id=s.id, _anchor='done'))
             except formcontext.FormContextException as e:
-                flash(e.message)
+                flash(str(e))
                 return redirect(url_for("editor.suggestion_page", suggestion_id=s.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True, lock=lockinfo)

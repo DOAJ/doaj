@@ -48,7 +48,7 @@ class JournalService(object):
             except exceptions.AuthoriseException as e:
                 msg = "Account {x} is not permitted to create an update request on journal {y}".format(x=account.id, y=journal.id)
                 app.logger.info(msg)
-                e.message = msg
+                e.args += (msg,)
                 raise
 
         # copy all the relevant information from the journal to the application

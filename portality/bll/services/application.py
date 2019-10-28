@@ -231,7 +231,7 @@ class ApplicationService(object):
             except exceptions.AuthoriseException as e:
                 msg = "Account {x} is not permitted to edit the current update request on journal {y}".format(x=account.id, y=journal.id)
                 app.logger.info(msg)
-                e.message = msg
+                e.args += (msg,)
                 raise
 
             app.logger.info("Using existing application {y} as update request for journal {x}".format(y=application.id, x=journal.id))
