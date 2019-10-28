@@ -3,6 +3,7 @@ from portality.lib import http
 import esprit, json
 from portality.api.v1.client import models
 
+
 DOAJ_RETRY_CODES = [
     408,    # request timeout
     429,    # rate limited
@@ -179,7 +180,7 @@ class ANDQueryBuilder(object):
 class DOAJSearchClient(object):
 
     def __init__(self, search_base=None, query_endpoint=None, search_type=None, search_port=None):
-        self.search_base = search_base if search_base else app.config.get("DOAJ_BASE_URL", "http://doaj.org")
+        self.search_base = search_base if search_base else app.config.get("DOAJ_BASE_URL", "https://doaj.org")
         self.query_endpoint = query_endpoint if query_endpoint else app.config.get("DOAJ_QUERY_ENDPOINT", "query")
         self.search_type = search_type if search_type else app.config.get("DOAJ_SEARCH_TYPE", "journal,article")
         self.search_port = search_port if search_port else app.config.get("DOAJ_SEARCH_PORT", 80)

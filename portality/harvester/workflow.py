@@ -98,14 +98,11 @@ class HarvesterWorkflow(object):
     def process_article(cls, account_id, article):
         app.logger.info("Processing Article for Account:{y}".format(y=account_id))
 
-        if not article.is_api_valid():
+        try:
+            article.is_api_valid()
+        except DataObjException as e:
             app.logger.info("Article for Account:{y} was not API valid ... skipping".format(y=account_id))
-
-            try:
-                doajclient.models.ArticleValidator(article.data)
-            except DataObjException as e:
-                Report.record_error(article.get_identifier("doi") + u" - " + e.message)
-
+            Report.record_error(article.get_identifier("doi") + " - " + e.message)
             return False
 
         # FIXME: in production, we will need a way to get the account_id's api_key
@@ -120,7 +117,7 @@ class HarvesterWorkflow(object):
             id, loc = doaj.create_article(article)
         except doajclient.DOAJException as e:
             app.logger.info("Article caused DOAJException: {m} ... skipping".format(m=e.message))
-            Report.record_error(article.get_identifier("doi") + u" - " + e.message)
+            Report.record_error(article.get_identifier("doi") + " - " + e.message)
             return False
         app.logger.info("Created article in DOAJ for Account:{x} with ID: {y}".format(x=account_id, y=id))
         return True

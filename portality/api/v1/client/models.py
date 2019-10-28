@@ -1,5 +1,8 @@
 from portality.lib import dataobj
+from portality.api.v1.data_objects.journal import OutgoingJournal
+from portality.api.v1.data_objects.article import IncomingArticleDO
 
+"""
 BASE_ARTICLE_STRUCT = {
     "fields": {
         "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
@@ -122,10 +125,9 @@ ARTICLE_REQUIRED = {
         }
     }
 }
+"""
 
-class Journal(dataobj.DataObj):
-    def __init__(self, raw=None):
-        super(Journal, self).__init__(raw, expose_data=True)
+class Journal(OutgoingJournal):
 
     def all_issns(self):
         issns = []
@@ -137,27 +139,10 @@ class Journal(dataobj.DataObj):
                 if ident.type in ["pissn", "eissn"]:
                     issns.append(ident.id)
 
-        # FIXME: this could be made better by having the Journal struct here too, but for
-        # the time being a catch on an AttributeError will suffice
-        try:
-            hist = self.bibjson.history
-        except AttributeError:
-            hist = None
-
-        if hist is not None:
-            for h in hist:
-                idents = h.bibjson.identifier
-                if idents is not None:
-                    for ident in idents:
-                        if ident.type in ["pissn", "eissn"]:
-                            issns.append(ident.id)
-
         return issns
 
-class Article(dataobj.DataObj):
-    def __init__(self, raw=None):
-        self._add_struct(BASE_ARTICLE_STRUCT)
-        super(Article, self).__init__(raw, expose_data=True)
+
+class Article(IncomingArticleDO):
 
     def add_identifier(self, type, id):
         if type is None or id is None:
@@ -187,14 +172,15 @@ class Article(dataobj.DataObj):
         self._add_to_list("bibjson.author", {"name" : name})
 
     def is_api_valid(self):
-        try:
-            a = ArticleValidator(self.data)
-        except Exception as e:
-            return False
-        return True
+        self.check_construct()
+        self.custom_validate()
 
+
+
+"""
 class ArticleValidator(dataobj.DataObj):
     def __init__(self, raw=None):
         self._add_struct(BASE_ARTICLE_STRUCT)
         self._add_struct(ARTICLE_REQUIRED)
         super(ArticleValidator, self).__init__(raw, expose_data=True)
+"""

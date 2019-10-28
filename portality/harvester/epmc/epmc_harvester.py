@@ -50,9 +50,13 @@ class EPMCHarvester(HarvesterPlugin):
 
     def crosswalk(self, record):
         article = doaj.Article()
-        article.bibjson = {}
-
+        article.bibjson = {"title" : "", "identifier" : []}
         bj = article.bibjson
+        # FIXME: this is a hack; to use DataObj in this way, we need to create article.bibjson with valid data (as we have set data
+        # requirements on the struct).  So above we create it with the requried data, and now we remove the field so that it isn't
+        # populated later when we do actual data validation.
+        # The longer term fix for this is a review of the DataObj code, but for the time being this is good.
+        bj._delete("title")
         bj.journal = {}
         journal = bj.journal
 

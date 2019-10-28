@@ -5,6 +5,7 @@ Unit tests for the EPMC plugin
 from unittest import TestCase
 from doajtest.fixtures.harvester import EPMCFixtureFactory
 from portality.harvester.epmc.epmc_harvester import EPMCHarvester
+from portality.lib.dataobj import DataObjException
 
 class TestEPMC(TestCase):
     def setUp(self):
@@ -34,7 +35,10 @@ class TestEPMC(TestCase):
         assert article.bibjson.abstract.startswith("The 1000 Genomes Project aims to provide")
         assert len(article.bibjson.author) == 6
 
-        assert article.is_api_valid()
+        article.is_api_valid()
+        article._delete("bibjson.identifier")
+        with self.assertRaises(DataObjException):
+            article.is_api_valid()
 
         # now just check that an empty document also works
         md = EPMCFixtureFactory.epmc_empty_metadata()
