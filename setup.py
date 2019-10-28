@@ -27,7 +27,8 @@ setup(
         "Flask-Swagger",
         "flask-cors",
         "LinkHeader",
-        #"universal-analytics-python",                                                             # No Python 3 support
+#        "universal-analytics-python",                                          # No Python 3 support
+        "psutil==5.6.3",
         "huey==1.10.5",                                                          # upgrading to 1.11 / 2.x requires work
         "redis",
         "rstr",
@@ -42,12 +43,12 @@ setup(
         "awscli",
         "boto3",
         "flask-debugtoolbar"
-    ] + (["setproctitle"] if "linux" in sys.platform else []),
+    ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     url='http://cottagelabs.com/',
     author='Cottage Labs',
     author_email='us@cottagelabs.com',
     description='Directory of Open Access Journals website and software',
-    license='Copyheart',
+    license='Apache 2.0',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
