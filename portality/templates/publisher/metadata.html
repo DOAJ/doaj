@@ -86,20 +86,19 @@
 $(document).ready(function() {
 
     function prepAuthorContainer(params) {
-        var ne = params.element
-        var reset = params.reset_value
-        var number = params.number
+        var ne = params.element;
+        var reset = params.reset_value;
+        var number = params.number;
+
+        ne.id = 'authors-' + number + '-container';
         
-        var new_id = 'authors-' + number + '-container';
-        ne.id = new_id;
-        
-        ne = $(ne)
+        ne = $(ne);
         ne.find('[id^=authors-]').each( function () {
             var ce = $(this);
             
             // reset the value
             if (reset) {
-                ce.attr('value', '');
+                ce.val('')
             }
             
             // set the id as requestsed
@@ -124,34 +123,45 @@ $(document).ready(function() {
             ce.attr('name', id);
         })
     }
+
+    function showHideFirstRemoveButton() {
+        // Hide delete button when there's just one author
+        if ($('[id^=authors-][id$="container"]').length === 1) {
+            $('#remove_authors-0').css('visibility', 'hidden')
+        } else {
+            $('#remove_authors-0').css('visibility', 'visible')
+        }
+    }
     
     function removeAuthor() {
         event.preventDefault();
-        
-        var id = $(this).attr("id")
-        var short_name = id.split("_")[1]
-        var container = short_name + "-container"
-        
-        $("#" + container).remove()
-        
-        var count = 0
+
+        var id = $(this).attr("id");
+        var short_name = id.split("_")[1];
+        var container = short_name + "-container";
+
+        $("#" + container).remove();
+
+        var count = 0;
         $('[id^=authors-][id$="container"]').each(function() {
             prepAuthorContainer({
                 element : this,
                 number: count,
                 reset_value: false
-            })
+            });
             count++;
-        })
+        });
+
+        showHideFirstRemoveButton()
     }
 
-    $('input[name=more_authors]').click( function (event) {
+    $('input[name=more_authors]').click( function(event) {
         event.preventDefault();
-        
+
         // get the last author div in the list
         var all_e = $('[id^=authors-][id$="container"]');
         var e = all_e.last();
-        
+
         // make a clone of the last author div
         var ne = e.clone()[0];
 
@@ -159,18 +169,24 @@ $(document).ready(function() {
         var items = ne.id.split('-');
         var number = parseInt(items[1]);
         number = number + 1;
-        
+
         // increment all the numbers
         prepAuthorContainer({
             element : ne,
             number : number,
             reset_value : true
-        })
-        
+        });
+
         e.after(ne);
-        
-        $(".remove_button").unbind("click")
-        $(".remove_button").click(removeAuthor)
+
+        var rem_b = $(".remove_button");
+        rem_b.unbind("click");
+        rem_b.click(removeAuthor);
+        if (all_e.length === 1){
+            $('#remove_authors-1').css('visibility', 'visible')
+        }
+
+        showHideFirstRemoveButton()
 	});
 
     $(".remove_button").click(removeAuthor);
@@ -179,12 +195,10 @@ $(document).ready(function() {
         minimumInputLength: 1,
         tags: [],
         tokenSeparators: [","]
-    })
+    });
 
-    $("#pissn").select2()
+    $("#pissn").select2();
     $("#eissn").select2()
-
-
 
 })
 </script>

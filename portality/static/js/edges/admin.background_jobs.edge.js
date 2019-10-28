@@ -259,7 +259,12 @@ $.extend(true, doaj, {
                 openingQuery : es.newQuery({
                     sort: {"field" : "created_date", "order" : "desc"}
                 }),
-                components: components
+                components: components,
+                callbacks : {
+                    "edges:query-fail" : function() {
+                        alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
+                    }
+                }
             });
             doaj.adminBackgroundJobsSearch.activeEdges[selector] = e;
         }

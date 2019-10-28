@@ -536,7 +536,8 @@ $.extend(true, doaj, {
                         "index.subject.exact" : "Subject",
                         "index.language.exact" : "Journal Language",
                         "index.country.exact" : "Country of publisher",
-                        "index.continued.exact" : "Continued"
+                        "index.continued.exact" : "Continued",
+                        "bibjson.discontinued_date" : "Discontinued Year"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
@@ -549,6 +550,9 @@ $.extend(true, doaj, {
                             "NY" : "No Information",
                             "CON" : "Conditional"
                         }
+                    },
+                    rangeFunctions : {
+                        "bibjson.discontinued_date" : doaj.valueMaps.displayYearPeriod
                     }
                 }),
 
@@ -564,7 +568,12 @@ $.extend(true, doaj, {
                 template: edges.bs3.newFacetview(),
                 search_url: search_url,
                 manageUrl: true,
-                components: components
+                components: components,
+                callbacks : {
+                    "edges:query-fail" : function() {
+                        alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
+                    }
+                }
             });
             doaj.adminJournalsSearch.activeEdges[selector] = e;
         }

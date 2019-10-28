@@ -11,6 +11,14 @@ $.extend(true, doaj, {
             'ready' : 'Ready',
             'rejected' : 'Rejected',
             'accepted' : 'Accepted'
+        },
+
+        displayYearPeriod : function(params) {
+            var from = params.from;
+            var to = params.to;
+            var field = params.field;
+            var display = (new Date(parseInt(from))).getUTCFullYear();
+            return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
         }
     },
 

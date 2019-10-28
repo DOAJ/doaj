@@ -32,14 +32,6 @@ $.extend(true, doaj, {
             return snip;
         },
 
-        displayYearPeriod : function(params) {
-            var from = params.from;
-            var to = params.to;
-            var field = params.field;
-            var display = (new Date(parseInt(from))).getUTCFullYear();
-            return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
-        },
-
         init : function(params) {
             if (!params) { params = {} }
 
@@ -344,7 +336,7 @@ $.extend(true, doaj, {
                         }
                     },
                     rangeFunctions : {
-                        "created_date" : doaj.publicSearch.displayYearPeriod
+                        "created_date" : doaj.valueMaps.displayYearPeriod
                     }
                 }),
 
@@ -360,7 +352,12 @@ $.extend(true, doaj, {
                 template: edges.bs3.newFacetview(),
                 search_url: search_url,
                 manageUrl : true,
-                components : components
+                components : components,
+                callbacks : {
+                    "edges:query-fail" : function() {
+                        alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
+                    }
+                }
             });
             doaj.publicSearch.activeEdges[selector] = e;
 

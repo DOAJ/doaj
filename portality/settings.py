@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "3.0.6"
+DOAJ_VERSION = "3.0.9"
 
 OFFLINE_MODE = False
 
@@ -861,22 +861,22 @@ ANON_SALT = 'changeme'
 # Quick Reject Feature Config
 QUICK_REJECT_REASONS = [
     "No research content has been published in the journal in the last calendar year",
-    "The ISSN is incorrect and is not recognised by issn.org",
+    "The ISSN is incorrect and/or is not recognised by issn.org",
     "The ISSN is listed as provisional by issn.org",
-    "The ISSN not yet registered at issn.org",
-    "The URL(s) or the web site does not work",
+    "The ISSN is not yet registered at issn.org",
+    "The URL(s) or the web site do/does not work",
     "The contact details provided are not real names of individuals",
     "The journal is already in DOAJ",
     "The journal is not Open Access",
     "The journal or publisher has been rejected or removed from DOAJ recently",
-    "The journal title in the application doesn't correspond with title at issn.org",
+    "The journal title in the application doesn't match the title at issn.org",
     "The journal title on the web site doesn't match what is registered at issn.org",
     "The license type selected was 'Other' but no further information was provided",
-    "The same URL has been provided for all the questions which required a URL answer",
+    "The same URL has been provided for all the questions which require a URL answer",
     "There are answers in the application which are incomplete or missing",
     "There is no mention of peer review or a review process being carried out",
     "This application is a duplicate",
-    "You already have another application for the same journal in progress"
+    "You already have another application in progress for this journal"
 ]
 
 # ========================================

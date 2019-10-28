@@ -340,6 +340,12 @@ class DataObj(object):
         self.data = remember_this
 
     def __getattr__(self, name):
+
+        # workaround to prevent debugger from disconnecting at the deepcopy method
+        # https://stackoverflow.com/questions/32831050/pycharms-debugger-gives-up-when-hitting-copy-deepcopy
+        # if name.startwith("__"):
+        #    raise AttributeError
+
         if hasattr(self.__class__, name):
             return object.__getattribute__(self, name)
 

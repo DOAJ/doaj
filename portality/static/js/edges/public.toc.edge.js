@@ -224,7 +224,12 @@ $.extend(true, doaj, {
                     size: 100
                 }),
                 manageUrl : true,
-                components : components
+                components : components,
+                callbacks : {
+                    "edges:query-fail" : function() {
+                        alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
+                    }
+                }
             });
             doaj.publicToC.activeEdges[selector] = e;
 
