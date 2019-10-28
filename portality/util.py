@@ -86,7 +86,7 @@ def get_web_json_payload():
     """
     r = {}
     try:
-        payload = json.loads(request.data)
+        payload = json.loads(request.data.decode("utf-8"))
     except ValueError:
         r['error'] = "Invalid JSON payload from request.data .\n{}".format(request.data)
         return make_json_resp(r, status_code=400)
