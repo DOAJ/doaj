@@ -967,7 +967,7 @@ def construct_validate(struct, context=""):
     }
     """
     # check that only the allowed keys are present
-    keys = list(struct.keys())
+    keys = struct.keys()
     for k in keys:
         if k not in ["fields", "objects", "lists", "required", "structs"]:
             c = context if context != "" else "root"

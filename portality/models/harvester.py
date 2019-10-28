@@ -27,32 +27,9 @@ class HarvestState(dataobj.DataObj, DomainObject):
     __type__ = 'harvester_state'
 
     def __init__(self, **raw):
-        struct = {
-            "fields" : {
-                "id" : {"coerce" : "unicode"},
-                "last_updated" : {"coerce" : "utcdatetime"},
-                "created_date" : {"coerce" : "utcdatetime"},
-                "issn" : {"coerce" : "unicode"},
-                "status" : {"coerce" : "unicode", "allowed_values" : [u"suspended", u"active"]},
-                "account" : {"coerce" : "unicode"},
-            },
-            "lists" : {
-                "last_harvest" : {"contains" : "object"}
-            },
-
-            "structs" : {
-                "last_harvest" : {
-                    "fields" : {
-                        "plugin" : {"coerce" : "unicode"},
-                        "date" : {"coerce" : "utcdatetime"}
-                    }
-                }
-            }
-        }
-
         if "_source" in raw:
             raw = raw["_source"]
-        super(HarvestState, self).__init__(raw, struct)
+        super(HarvestState, self).__init__(raw, HARVEST_STATE_STRUCT)
 
     def mappings(self):
         return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
@@ -183,7 +160,7 @@ class HarvesterProgressReport(object):
     @classmethod
     def write_report(cls):
         report = ["Harvester ran from {d1} to {d2}.".format(d1=cls.harvester_started, d2=dates.now())]
-        for p_name in list(cls.last_harvest_dates_at_start_of_harvester.keys()):
+        for p_name in cls.last_harvest_dates_at_start_of_harvester.keys():
             report.append("Plugin {p} harvested {n_total} articles. "
                           "{n_succ} saved successfully to DOAJ; {n_fail} failed.".format(
                 p=p_name,
@@ -192,7 +169,7 @@ class HarvesterProgressReport(object):
                 n_fail=cls.articles_processed.get(p_name, 0) - cls.articles_saved_successfully.get(p_name, 0)
             ))
 
-            for issn in list(cls.last_harvest_dates_at_start_of_harvester[p_name].keys()):
+            for issn in cls.last_harvest_dates_at_start_of_harvester[p_name].keys():
                 report.append("ISSN {i} processed period {d1} until {d2}.".format(
                     i=issn,
                     d1=cls.last_harvest_dates_at_start_of_harvester[p_name][issn],
@@ -240,3 +217,27 @@ class AccountQuery(object):
                 }
             }
         }
+
+
+HARVEST_STATE_STRUCT = {
+    "fields" : {
+        "id" : {"coerce" : "unicode"},
+        "last_updated" : {"coerce" : "utcdatetime"},
+        "created_date" : {"coerce" : "utcdatetime"},
+        "issn" : {"coerce" : "unicode"},
+        "status" : {"coerce" : "unicode", "allowed_values" : [u"suspended", u"active"]},
+        "account" : {"coerce" : "unicode"},
+    },
+    "lists" : {
+        "last_harvest" : {"contains" : "object"}
+    },
+
+    "structs" : {
+        "last_harvest" : {
+            "fields" : {
+                "plugin" : {"coerce" : "unicode"},
+                "date" : {"coerce" : "utcdatetime"}
+            }
+        }
+    }
+}

@@ -907,7 +907,7 @@ CONSENT_COOKIE_KEY = "doaj-cookie-consent"
 
 ## Configuration options for the DOAJ API Client
 
-DOAJ_SEARCH_BASE = "http://doaj.org"
+DOAJ_SEARCH_BASE = "https://doaj.org"
 
 DOAJ_SEARCH_PORT = 80
 
