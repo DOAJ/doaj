@@ -921,7 +921,7 @@ DOAJ_API_BASE_URL = "https://doaj.org/api/v1/"
 ## EPMC Client configuration
 
 EPMC_REST_API = "http://www.ebi.ac.uk/europepmc/webservices/rest/"
-EPMC_TARGET_VERSION = "6.1"
+EPMC_TARGET_VERSION = "6.2"
 
 # General harvester configuraiton
 
