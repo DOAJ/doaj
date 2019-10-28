@@ -1,4 +1,3 @@
-from builtins import str
 from portality.core import app
 
 from datetime import datetime, timedelta

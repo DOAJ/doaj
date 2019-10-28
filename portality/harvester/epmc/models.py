@@ -1,4 +1,3 @@
-from builtins import object
 from portality.lib import dataobj
 from portality.lib import xml as xutil
 from lxml import etree

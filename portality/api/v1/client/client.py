@@ -1,5 +1,3 @@
-from builtins import str
-from builtins import object
 from portality.core import app
 from portality.lib import http
 import esprit, json

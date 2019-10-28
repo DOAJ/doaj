@@ -1,4 +1,3 @@
-from builtins import object
 from portality.lib import dates
 
 class QueryBuilder(object):

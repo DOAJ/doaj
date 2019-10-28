@@ -1,7 +1,3 @@
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from builtins import object
 from portality.core import app
 from portality.lib import http
 import urllib.request, urllib.parse, urllib.error, string

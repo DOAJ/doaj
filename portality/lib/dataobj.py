@@ -1,8 +1,5 @@
 # -*- coding: UTF-8 -*-
 
-from builtins import str
-from builtins import range
-from builtins import object
 from portality.lib import dates
 from portality.datasets import get_country_code, get_currency_code
 from copy import deepcopy

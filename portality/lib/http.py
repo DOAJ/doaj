@@ -1,7 +1,3 @@
-from future import standard_library
-standard_library.install_aliases()
-from builtins import bytes
-from builtins import object
 from portality.core import app
 import requests, time, urllib.request, urllib.parse, urllib.error, json
 from io import StringIO

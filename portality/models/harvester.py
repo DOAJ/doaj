@@ -1,4 +1,3 @@
-from builtins import object
 from portality.lib import dataobj
 from portality.dao import DomainObject
 from portality.lib import dates, es_data_mapping
