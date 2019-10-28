@@ -13,6 +13,8 @@ tmp/*
 *.zip
 .env
 scratch.py
+.coverage
+htmlcov/
 
 # PyCharm and other IntelliJ-based IDE-s and editors' folder:
 .idea
