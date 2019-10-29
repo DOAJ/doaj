@@ -19,7 +19,7 @@ class TestUpgrade(DoajTestCase):
 
     def test_upgrade(self):
         # populate the index with some journals with title
-        saved_journals = []
+        saved_journals = {}
         for i in range(5):
             j = models.Journal()
             j.set_in_doaj(True)
@@ -29,9 +29,8 @@ class TestUpgrade(DoajTestCase):
             bj.publisher = "Test Publisher {x}".format(x=i)
             bj.add_url("http://homepage.com/{x}".format(x=i), "homepage")
             j.save()
-            saved_journals.append(j.id)
+            saved_journals[j.id] = j.last_updated
 
-        created_with_title = j.last_updated
 
         # and with some journals without title
         for i in range(5):
@@ -43,9 +42,7 @@ class TestUpgrade(DoajTestCase):
             bj.publisher = "Test Publisher {x}".format(x=i)
             bj.add_url("http://homepage.com/{x}".format(x=i), "homepage")
             j.save()
-            saved_journals.append(j.id)
-
-        created_no_title = j.last_updated
+            saved_journals[j.id] = j.last_updated
 
         # make sure the last updated dates will be suitably different after migration
         time.sleep(1.5)
@@ -63,11 +60,11 @@ class TestUpgrade(DoajTestCase):
 
             if not p.match(pissn):
                 assert bj.title == "Test Journal"
-                assert j.last_updated == created_with_title
+                assert j.last_updated == saved_journals[j.id]
 
             else:
                 assert bj.title == "Updated Title"
-                assert not j.last_updated == created_no_title
+                assert not j.last_updated == saved_journals[j.id]
 
 
 
