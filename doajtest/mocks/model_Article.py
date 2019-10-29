@@ -32,3 +32,8 @@ class ModelArticleMockFactory(object):
                     return j["instance"]
 
         return mock
+
+    @classmethod
+    def batch_create(cls, *args, **kwargs):
+        raise RuntimeError("oops")
+

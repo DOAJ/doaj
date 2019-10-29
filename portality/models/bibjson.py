@@ -114,7 +114,7 @@ class GenericBibJSON(dataobj.DataObj):
             # do not add empty URL-s
             return
 
-        urlobj = {"url" : url}
+        urlobj = {"url": url}
         if urltype is not None:
             urlobj["type"] = urltype
         if content_type is not None:
