@@ -453,7 +453,6 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_paths.append(path)
         print(file_upload)
 
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
         assert result is True
@@ -1671,7 +1670,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.status == "failed"
 
     def test_50_valid_url_starting_with_http(self):
-        handle = ArticleFixtureFactory.valid_url_http()
+        handle = DoajXmlArticleFixtureFactory.valid_url_http()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1683,7 +1682,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "validated"
 
     def test_51_valid_url_starting_with_https(self):
-        handle = ArticleFixtureFactory.valid_url_https()
+        handle = DoajXmlArticleFixtureFactory.valid_url_https()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1695,7 +1694,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "validated"
 
     def test_52_valid_url_with_non_ascii_chars(self):
-        handle = ArticleFixtureFactory.valid_url_non_ascii_chars()
+        handle = DoajXmlArticleFixtureFactory.valid_url_non_ascii_chars()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1706,7 +1705,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "validated"
 
     def test_53_invalid_url(self):
-        handle = ArticleFixtureFactory.invalid_url()
+        handle = DoajXmlArticleFixtureFactory.invalid_url()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1720,10 +1719,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         fu = models.FileUpload.pull(id)
 
         assert fu.status == "failed"
-        assert fu.error == u'Unable to validate document with identified schema'
+        assert fu.error == 'Unable to validate document with identified doaj xml schema'
 
     def test_54_invalid_url_http_missing(self):
-        handle = ArticleFixtureFactory.invalid_url_http_missing()
+        handle = DoajXmlArticleFixtureFactory.invalid_url_http_missing()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1737,10 +1736,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         fu = models.FileUpload.pull(id)
 
         assert fu.status == "failed"
-        assert fu.error == u'Unable to validate document with identified schema'
+        assert fu.error == 'Unable to validate document with identified doaj xml schema'
 
     def test_55_valid_url_with_http_anchor(self):
-        handle = ArticleFixtureFactory.valid_url_http_anchor()
+        handle = DoajXmlArticleFixtureFactory.valid_url_http_anchor()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1751,7 +1750,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "validated"
 
     def test_56_valid_url_with_parameters(self):
-        handle = ArticleFixtureFactory.valid_url_parameters()
+        handle = DoajXmlArticleFixtureFactory.valid_url_parameters()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []

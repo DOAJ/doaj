@@ -5,5 +5,8 @@ class ModelFileMockFactory(object):
         self.stream = stream
 
     def save(self, path):
-        with open(path, "w") as f:
-            f.write(self.stream.read())
+        with open(path, "wb") as f:
+            try:
+                f.write(self.stream.read())
+            except Exception as e:
+                print(str(e))

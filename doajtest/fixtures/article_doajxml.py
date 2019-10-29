@@ -52,3 +52,31 @@ class DoajXmlArticleFixtureFactory(object):
     @classmethod
     def noids(cls):
         return cls._response_from_xpath("//record[journalTitle='NOIDS']")
+
+    @classmethod
+    def valid_url_http(cls):
+        return cls._response_from_xpath("//record[journalTitle='Url starting with http']")
+
+    @classmethod
+    def valid_url_https(cls):
+        return cls._response_from_xpath("//record[journalTitle='Url starting with https']")
+
+    @classmethod
+    def valid_url_non_ascii_chars(cls):
+        return cls._response_from_xpath("//record[journalTitle='Url containing non-ascii characters']")
+
+    @classmethod
+    def invalid_url(cls):
+        return cls._response_from_xpath("//record[journalTitle='Invalid url']")
+
+    @classmethod
+    def invalid_url_http_missing(cls):
+        return cls._response_from_xpath("//record[journalTitle='Url with http missing']")
+
+    @classmethod
+    def valid_url_http_anchor(cls):
+        return cls._response_from_xpath("//record[journalTitle='Url with http anchor']")
+
+    @classmethod
+    def valid_url_parameters(cls):
+        return cls._response_from_xpath("//record[journalTitle='Url with parameters']")
