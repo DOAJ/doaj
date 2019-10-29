@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "sidebar-page.html" %}
 
 {% block page_title %}
     {% set bibjson = article.bibjson() %}
@@ -22,9 +22,11 @@
 {% set jtitle, cite = bibjson.vancouver_citation() %}
 {% set issns = bibjson.issns() %}
 {% set doi = bibjson.get_one_identifier("doi") %}
+{% set normalised_doi = article.get_normalised_doi() %}
 
-{% if jtitle %}<meta name="citation_journal_title" content="{{ jtitle }}">{% endif %}
-{% if jbib.publisher %}<meta name="citation_publisher" content="{{ jbib.publisher }}">{% endif %}
+{% if jtitle %} <meta name="citation_journal_title" content="{{ jtitle }}"> {% endif %}
+{% if jbib.publisher %} <meta name="citation_publisher" content="{{ jbib.publisher }}"> {% endif %}
+{% if doi %} <meta name="citation_doi" content="{{ normalised_doi }}"> {% endif %}
 
 {% for author in bibjson.author %}
 <meta name="citation_author" content="{{author.name}}">
@@ -68,9 +70,10 @@ hosted on DOAJ.org) #}
 {% set jtitle, cite = bibjson.vancouver_citation() %}
 {% set issns = bibjson.issns() %}
 {% set doi = bibjson.get_one_identifier("doi") %}
+{% set normalised_doi = article.get_normalised_doi() %}
 
-<div class="row-fluid">
-    <div class="span12">
+<div class="row">
+    <div class="col-md-12">
         {%  if bibjson.title %}
             <h1>{{bibjson.title}}</h1>
         {% else %}
@@ -87,7 +90,10 @@ hosted on DOAJ.org) #}
 
         {# doi #}
         {% if doi %}
-            DOI {{ doi | doi_url | safe}}
+            {% set url_text = normalised_doi | doi_url | safe %}
+            {% if url_text != "" %}
+                DOI <a href="{{ url_text }}"> {{ normalised_doi }}</a>
+            {% endif %}
         {% endif %}
 
         </p>
@@ -95,9 +101,9 @@ hosted on DOAJ.org) #}
 
 </div>
 
-<div class="row-fluid" style="margin-bottom: 30px; margin-top: 30px">
-    <div class="span1">&nbsp;</div>
-    <div class="span5">
+<div class="row" style="margin-bottom: 30px; margin-top: 30px">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-5">
         <div class="box with-borders" style="min-height: 140px">
             {% if jbib.get_single_url("homepage") %}
                 <p><a href="{{jbib.get_single_url('homepage')}}">Journal Homepage</a></p>
@@ -123,7 +129,7 @@ hosted on DOAJ.org) #}
         </div>
     </div>
 
-    <div class="span5">
+    <div class="col-md-5">
         <div class="box with-borders" style="min-height: 140px">
 
             {% for path in bibjson.lcc_paths() %}
@@ -149,9 +155,9 @@ hosted on DOAJ.org) #}
     </div>
 </div>
 
-<div class="row-fluid" style="margin-top: 30px">
-    <div class="span1">&nbsp;</div>
-    <div class="span5">
+<div class="row" style="margin-top: 30px">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-5">
         <div class="box slim">
             <p><strong>AUTHORS</strong></p>
 
@@ -167,7 +173,7 @@ hosted on DOAJ.org) #}
         </div>
     </div>
 
-    <div class="span5">
+    <div class="col-md-5">
         <div class="box slim">
             <p><strong>EDITORIAL INFORMATION</strong></p>
 
@@ -200,17 +206,26 @@ hosted on DOAJ.org) #}
 
 </div>
 
-<div class="row-fluid" style="margin-top: 30px">
-    <div class="span1">&nbsp;</div>
-    <div class="span10">
+<div class="row" style="margin-top: 30px">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-10">
         <div style="padding: 0.5em">
 
         <p>
             <strong>
                 Abstract
-                {% for url in bibjson.get_urls("fulltext") %}
-                    | <a href="{{url}}">Full Text</a>
-                {% endfor %}
+                {% if bibjson.get_urls("fulltext") %}
+                    {% for url in bibjson.get_urls("fulltext") %}
+                        | <a href="{{url}}">Full Text</a>
+                    {% endfor %}
+                {% else %}
+                    {% if doi %}
+                        {% set url_text = normalised_doi | doi_url | safe %}
+                        {% if url_text != "" %}
+                            <a href="{{ url_text }}"> Full Text</a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
             </strong>
         </p>
         <p>{{bibjson.abstract}}</p>

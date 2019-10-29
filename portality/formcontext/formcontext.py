@@ -204,8 +204,8 @@ class FormContext(object):
     def render_template(self, **kwargs):
         return render_template(self.template, form_context=self, **kwargs)
 
-    def render_field_group(self, field_group_name=None):
-        return self.renderer.render_field_group(self, field_group_name)
+    def render_field_group(self, field_group_name=None, **kwargs):
+        return self.renderer.render_field_group(self, field_group_name, **kwargs)
 
     def check_field_group_exists(self, field_group_name):
         return self.renderer.check_field_group_exists(field_group_name)
@@ -760,7 +760,11 @@ class ManEdApplicationReview(ApplicationContext):
         # If this is the first time this application has been assigned to an editor, notify the publisher.
         old_ed = self.source.editor
         if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            alerts = emails.send_publisher_editor_assigned_email(self.target)
+            is_update_request = self.target.current_journal is not None
+            if is_update_request:
+                alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
+            else:
+                alerts = emails.send_publisher_application_editor_assigned_email(self.target)
             for alert in alerts:
                 self.add_alert(alert)
 
@@ -908,7 +912,11 @@ class EditorApplicationReview(ApplicationContext):
         # If this is the first time this application has been assigned to an editor, notify the publisher.
         old_ed = self.source.editor
         if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            alerts = emails.send_publisher_editor_assigned_email(self.target)
+            is_update_request = self.target.current_journal is not None
+            if is_update_request:
+                alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
+            else:
+                alerts = emails.send_publisher_application_editor_assigned_email(self.target)
             for alert in alerts:
                 self.add_alert(alert)
 
@@ -1052,7 +1060,11 @@ class AssEdApplicationReview(ApplicationContext):
         # inform publisher if this was set to 'in progress' from 'pending'
         if self.source.application_status == constants.APPLICATION_STATUS_PENDING and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                alerts = emails.send_publisher_inprogress_email(self.target)
+                is_update_request = self.target.current_journal is not None
+                if is_update_request:
+                    alerts = emails.send_publisher_update_request_inprogress_email(self.target)
+                else:
+                    alerts = emails.send_publisher_application_inprogress_email(self.target)
                 for alert in alerts:
                     self.add_alert(alert)
             else:

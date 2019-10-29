@@ -1,61 +1,68 @@
-{% extends "base.html" %}
+{% extends "sidebar-page.html" %}
 
 {% block content %}
-<div class="row-fluid">
-    <div class="span12 with-borders main-content">
-        <div class="row-fluid">
-            <div class="span3">&nbsp;</div>
-            <div class="span8">
-                <form class="form-search form-horizontal" id="topsearch" name="topsearch" action="/search" method="POST">
+<div class="row">
+    <div class="col-xs-12 with-borders main-content">
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">
+                <form id="homepage-search-form" action="/search" method="POST">
                     <input type="hidden" name="ref" value="homepage-box">
-                    <div class="control-group" id="homepage-search-container">
-                        <div class="input-append span10">
-                            <div class="row-fluid">
-                                <div class="span10"><input type="text" name="q" placeholder="Search DOAJ" id="homepage-search-input"/></div><div class="span2" id="homepage-search-button-container"><button class="btn add-on" id="homepage-search-button"><i class="icon-search orange"></i></button></div>
+                    <input type="hidden" name="origin" value="ui"/>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label class="sr-only" for="homepage-search-input">Search DOAJ</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="homepage-search-input" name="q" placeholder="Search DOAJ">
+                                <span class="input-group-btn">
+                                    <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-search"></span></button>
+                                </span>
                             </div>
                         </div>
                     </div>
-                    <div class="control-group span8" id="homepage-search-options-container">
-                        <label class="checkbox"><input type="checkbox" name="include_journals" value="include_journals" checked="checked"/><span class="label-text">journals</span></label>
-                        <label class="checkbox"><input type="checkbox" name="include_articles" value="include_articles" checked="checked"/><span class="label-text">articles</span></label>
-                        <a href="{{ url_for('doaj.search') }}" class="pull-right">[Advanced Search]</a>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label class="checkbox">
+                                <input type="checkbox" name="include_journals" value="include_journals" checked="checked"/><span class="label-text">journals</span>
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" name="include_articles" value="include_articles" checked="checked"/><span class="label-text">articles</span>
+                            </label>
+                            <a href="{{ url_for('doaj.search') }}" class="pull-right">[Advanced Search]</a>
+                        </div>
                     </div>
-                    <input type="hidden" name="origin" value="ui"/>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<div class="row-fluid" style="margin-top: 1em;">
-    <div class="span12 with-borders">
-        <div style="margin: 0.5em 1.5em;">
-          <h2>DOAJ (Directory of Open Access Journals)</h2>
-          <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed 
-          journals. DOAJ is independent. All funding is via donations, 40% of which comes from 
-              <a href="{{ url_for('doaj.sponsors') }}">sponsors</a> and 60% from <a href="{{ url_for('doaj.members') }}">members and 
-              publisher members</a>. All DOAJ services are free of charge including being indexed in DOAJ. All data is freely available.</p>
-           </a>DOAJ operates an education and outreach program across the globe, focussing on improving the quality of applications submitted.</p>
-            <p><a href="https://drive.google.com/file/d/1yU9DrfItxwKOpfLoezOu9AvhnKU6Z6je/view">Why index your journal in DOAJ? </a></p>
-        </div>
+
+<div class="row">
+    <div class="col-xs-12 with-borders bordered-text-box">
+        <h2>DOAJ (Directory of Open Access Journals)</h2>
+        <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed
+            journals. DOAJ is independent. All funding is via donations, 40% of which comes from
+            <a href="{{ url_for('doaj.sponsors') }}">sponsors</a> and 60% from <a href="{{ url_for('doaj.members') }}">members and
+                publisher members</a>. All DOAJ services are free of charge including being indexed in DOAJ. All data is freely available.</p>
+        <p>DOAJ operates an education and outreach program across the globe, focussing on improving the quality of applications submitted.</p>
+        <p><a href="https://drive.google.com/file/d/1yU9DrfItxwKOpfLoezOu9AvhnKU6Z6je/view">Why index your journal in DOAJ? </a></p>
+
     </div>
 </div>
 
 <!-- news feed -->
-<div class="row-fluid" style="margin-top: 1em;">
-    <div class="span12 with-borders">
-        <div style="margin: 0.5em 1.5em;">
-            <h2>Latest News</h2>
-            {% for n in news %}
-                <div style="border-bottom: 1px dotted #cccccc; padding: 15px">
-                    <strong><a href="{{n.url}}" target="_blank">{% autoescape off%}{{n.title}}{% endautoescape %}</a></strong><br>
-                    <p>{% autoescape off%}{{n.summary}}{% endautoescape %}&nbsp;<a href="{{n.url}}" target="_blank">Read More...</a></p>
-                    <em>Published {{n.published_formatted()}}</em>
-                </div>
+<div class="row">
+    <div class="col-xs-12 with-borders bordered-text-box">
+        <h2>Latest News</h2>
+        {% for n in news %}
+            <div style="border-bottom: 1px dotted #cccccc; padding: 15px">
+                <strong><a href="{{n.url}}" target="_blank">{% autoescape off%}{{n.title}}{% endautoescape %}</a></strong><br>
+                <p>{% autoescape off%}{{n.summary}}{% endautoescape %}&nbsp;<a href="{{n.url}}" target="_blank">Read More...</a></p>
+                <em>Published {{n.published_formatted()}}</em>
+            </div>
 
-            {% endfor %}
-            <br>
-            <p>Read more DOAJ news on our <a href="{{url_for('doaj.news')}}">news page</a></p>
-        </div>
+        {% endfor %}
+        <br>
+        <p>Read more DOAJ news on our <a href="{{url_for('doaj.news')}}">news page</a></p>
     </div>
 </div>
 

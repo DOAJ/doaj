@@ -21,7 +21,7 @@ blueprint = Blueprint('account', __name__)
 def index():
     if not current_user.has_role("list_users"):
         abort(401)
-    return render_template("account/users.html", search_page=True, facetviews=["users.facetview"])
+    return render_template("account/users.html")
 
 
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
@@ -58,6 +58,12 @@ def username(username):
             if k not in ['marketing_consent', 'submit','password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
                 acc.data[k] = v
         if 'password' in newdata and not newdata['password'].startswith('sha1'):
+            if newdata.get("confirm", "") == "":
+                flash("You must enter your password in both the new password and confirmation box", "error")
+                return render_template('account/view.html', account=acc)
+            if newdata["confirm"] != newdata["password"]:
+                flash("Your password and confirmation do not match", "error")
+                return render_template('account/view.html', account=acc)
             acc.set_password(newdata['password'])
         # only super users can re-write roles
         if "role" in newdata and current_user.is_super:

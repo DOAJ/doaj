@@ -10,6 +10,10 @@
 
 {% block page_desc %}<meta name="description" content="Information about the open-access journal {{ bibjson.title }} in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">{% endblock %}
 
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
 {% block content %}
 
 {%- set CC_MAP = {
@@ -33,8 +37,8 @@
 
 {% set lic = bibjson.get_license() %}
 
-<div class="row-fluid">
-    <div class="span9">
+<div class="row">
+    <div class="col-md-9">
         <h1>{{bibjson.title}}</h1>
         {% if bibjson.alternative_title %}
             <strong><em>{{bibjson.alternative_title}}</em></strong>
@@ -81,7 +85,7 @@
         {% endif %}
 
     </div>
-    <div class="span2" align="right">
+    <div class="col-md-2" align="right" style="padding-top: 20px">
         {%- if lic -%}
             {%- set urls = CC_MAP.get(lic.get("type")) -%}
             {%- if urls -%}
@@ -99,9 +103,9 @@
     </div>
 </div>
 
-<div class="row-fluid" style="margin-bottom: 30px; margin-top: 30px">
-    <div class="span1">&nbsp;</div>
-    <div class="span5">
+<div class="row" style="margin-bottom: 30px; margin-top: 30px">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-5">
         <div class="box with-borders" style="min-height: 140px">
             {% if bibjson.get_single_url("homepage") %}
                 <p><a href="{{bibjson.get_single_url('homepage')}}">Homepage</a></p>
@@ -131,7 +135,7 @@
         </div>
     </div>
 
-    <div class="span5">
+    <div class="col-md-5">
         <div class="box with-borders" style="min-height: 140px">
             {% for path in bibjson.lcc_paths() %}
                 {% if loop.index0 == 0 %}<p><strong>LCC Subject Category</strong>: {% endif %}
@@ -156,69 +160,77 @@
 
 </div>
 
-<div class="row-fluid" style="margin-top: 30px">
-    <div class="span1">&nbsp;</div>
-    <div class="span5">
+<div class="row" style="margin-top: 30px">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-5">
         <div class="box slim">
             <p><strong>PUBLICATION CHARGES</strong></p>
 
-            {% if tick %}
+            {% if not bibjson.apc_url and not bibjson.submission_charges_url and not bibjson.get_single_url("waiver_policy") %}
 
-            <p>Article Processing Charges (APCs):
-                {% if bibjson.apc %}
-                    {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
-                        {% if bibjson.apc_url %}
-                            <a href="{{ bibjson.apc_url }}">Yes.</a>
-                        {% else %}
-                            Yes.
-                        {% endif %}
-                        {{bibjson.apc.get("average_price", "price unknown")}}{{bibjson.apc.get("currency", " currency unknown")}}
-                    {% endif %}
-                {% else %}
-                    {% if bibjson.apc_url %}
-                        <a href="{{ bibjson.apc_url }}">No.</a>
-                    {% else %}
-                        No.
-                    {% endif %}
-                {% endif %}
-            </p>
-
-            <p>Submission Charges:
-                {% if bibjson.submission_charges %}
-                    {% if bibjson.submission_charges.get("currency") or bibjson.submission_charges.get("average_price") %}
-                        {% if bibjson.submission_charges_url %}
-                            <a href="{{ bibjson.submission_charges_url }}">Yes</a>
-                        {% else %}
-                            Yes.
-                        {% endif %}
-                        {{bibjson.submission_charges.get("average_price", "price unknown")}}{{bibjson.submission_charges.get("currency", " currency unknown")}}
-                    {% endif %}
-                {% else %}
-                    {% if bibjson.submission_charges_url %}
-                        <a href="{{ bibjson.submission_charges_url }}">No.</a>
-                    {% else %}
-                        No.
-                    {% endif %}
-                {% endif %}
-            </p>
-
-            <p>Waiver policy for charges?
-                {% if bibjson.get_single_url("waiver_policy") %}
-                    <a href="{{bibjson.get_single_url('waiver_policy')}}">Yes.</a>
-                {% else %}
-                    No.
-                {% endif %}
-            </p>
+                <p>Information on publication charges not available for this journal</p>
 
             {% else %}
 
-            <p>Information on publication charges not yet available for this journal</p>
+                {% if bibjson.apc_url %}
+                    {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
+                        <p>
+                            <a href="{{ bibjson.apc_url }}">Article Processing Charges (APCs):</a>
+                            {{bibjson.apc.get("average_price", "price unknown")}} {{bibjson.apc.get("currency", " currency unknown")}}
+                        </p>
+                    {% else %}
+                        <p>
+                            <a href="{{ bibjson.apc_url }}">Article Processing Charges (APCs):</a> No
+                        </p>
+                    {% endif %}
+                {% else %}
+                    {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
+                        <p>
+                            Article Processing Charges (APCs):
+                            {{bibjson.apc.get("average_price", "price unknown")}} {{bibjson.apc.get("currency", " currency unknown")}}
+                        </p>
+                    {% else %}
+                        <p>
+                            Article Processing Charges (APCs): No
+                        </p>
+                    {% endif %}
+                {% endif %}
 
+                {% if bibjson.submission_charges_url %}
+                    {% if bibjson.submission_charges.get("currency") or bibjson.submission_charges.get("average_price") %}
+                        <p>
+                            <a href="{{ bibjson.submission_charges_url }}">Submission Charges:</a>
+                            {{bibjson.submission_charges.get("average_price", "price unknown")}} {{bibjson.submission_charges.get("currency", " currency unknown")}}
+                        </p>
+                    {% else %}
+                        <p>
+                            <a href="{{ bibjson.submission_charges_url }}">Submission Charges:</a> No
+                        </p>
+                    {% endif %}
+                {% else %}
+                    {% if bibjson.submission_charges.get("currency") or bibjson.submission_charges.get("average_price") %}
+                        <p>
+                            Submission Charges:
+                            {{bibjson.submission_charges.get("average_price", "price unknown")}} {{bibjson.submission_charges.get("currency", " currency unknown")}}
+                        </p>
+                    {% else %}
+                        <p>
+                            Submission Charges: No
+                        </p>
+                    {% endif %}
+                {% endif %}
+
+                {% if bibjson.get_single_url("waiver_policy") %}
+                    <p>
+                        <a href="{{bibjson.get_single_url('waiver_policy')}}">Waiver policy for charges</a>
+                    </p>
+                {% endif %}
             {% endif %}
+
         </div>
     </div>
 
-    <div class="span5">
+    <div class="col-md-5">
         <div class="box slim">
             <p><strong>EDITORIAL INFORMATION</strong></p>
 
@@ -255,18 +267,18 @@
 
 </div>
 
-<div class="row-fluid">
-    <div class="span1">&nbsp;</div>
-    <div class="span11">
+<div class="row">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-11">
         <div class="box slim"><a href="#" id="journal_details_toggle">More</a></div>
     </div>
 </div>
 
 <div id="journal_details">
 
-    <div class="row-fluid" style="margin-top: 30px">
-        <div class="span1">&nbsp;</div>
-        <div class="span5">
+    <div class="row" style="margin-top: 30px">
+        <div class="col-md-1">&nbsp;</div>
+        <div class="col-md-5">
             <div class="box slim">
                 <p><strong>OPEN ACCESS &amp; LICENSING</strong></p>
 
@@ -317,7 +329,7 @@
             </div>
         </div>
 
-        <div class="span5">
+        <div class="col-md-5">
             <div class="box slim">
                 <p><strong>BEST PRACTICE POLICIES</strong></p>
 
@@ -379,25 +391,15 @@
     </div>
 
 </div>
-<!--
-<div class="row-fluid">
-    <div class="span10">&nbsp;</div>
-    <div class="span2">
-        <form method="post" action="{{ url_for('doaj.contact') }}?ref=toc">
-            <input type="hidden" name="message" value="More information on journal '{{ bibjson.title }}' (ISSN: {{ bibjson.get_preferred_issn() }})"/>
-            <button class="btn btn-success">Tell us more about this Journal</button>
-        </form>
-    </div>
-</div>
--->
-<div class="row-fluid" style="margin-top: 50px; margin-bottom: 20px">
-    <div class="span12">
+
+<div class="row" style="margin-top: 50px; margin-bottom: 20px">
+    <div class="col-md-12">
         <h2>Tables of Contents</h2>
     </div>
 </div>
 
 
-<div class="facetview journal_toc_articles"></div>
+<div id="journal_toc_articles"></div>
 
 <noscript>
 
@@ -412,29 +414,35 @@
 
 {% block extra_js_bottom %}
 
-<script type="text/javascript">
-    {% set toc_issns_js_str = '"' + toc_issns | join('","') + '"' %}
-    var toc_issns = [{{ toc_issns_js_str | safe }}];
-</script>
+    <script type="text/javascript">
+        {% set toc_issns_js_str = '"' + toc_issns | join('","') + '"' %}
+        $.extend(true, doaj, {
+            publicToCConfig : {
+                publicSearchPath : '{{ url_for("query.query", path="article/_search") }}?ref=toc',
+                tocIssns : [{{ toc_issns_js_str | safe }}]
+            }
+        });
 
-<script type="text/javascript">
-$(document).ready(function() {
+        $(document).ready(function() {
+            $("#journal_details").hide();
+            $("#journal_details_toggle").click(function (event) {
+                event.preventDefault();
+                $("#journal_details").toggle();
+                var jd = $("#journal_details_toggle");
+                if (jd.html() == "More") {
+                    jd.html("Less")
+                } else {
+                    jd.html("More")
+                }
+            });
+        });
+    </script>
 
-    $("#journal_details").hide();
-    $("#journal_details_toggle").click(function (event) {
-        event.preventDefault();
-        $("#journal_details").toggle();
-        var jd = $("#journal_details_toggle");
-        if (jd.html() == "More") {
-            jd.html("Less")
-        } else {
-            jd.html("More")
-        }
-    });
-});
-</script>
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/public.toc.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
-{% endblock %}
+{% endblock extra_js_bottom %}
+
 
 
 

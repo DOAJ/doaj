@@ -5,6 +5,7 @@ from portality.bll import exceptions
 from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
 from datetime import datetime
+from urlparse import urlparse
 
 class DOAJXWalk(object):
     format_name = "doaj"

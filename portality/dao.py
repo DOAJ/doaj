@@ -231,7 +231,18 @@ class DomainObject(UserDict.IterableUserDict, object):
         if out.status_code == 404:
             return None
         else:
-            return cls(**out.json())
+            try:
+                return cls(**out.json())
+            except Exception as e:
+                app.logger.exception("Cannot decode JSON. Object: {}, "
+                                     "Status Code: {}, "
+                                     "Reason: {}, "
+                                     "Exception message: {}"
+                                     .format(out.text,
+                                             out.status_code,
+                                             out.reason,
+                                             e.message))
+                raise e
 
     @classmethod
     def pull_by_key(cls, key, value):

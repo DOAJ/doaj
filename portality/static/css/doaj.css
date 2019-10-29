@@ -1,0 +1,1035 @@
+/* Changing the styles of whole elements */
+
+body {
+    padding-top: 1em;
+}
+
+footer {
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+
+th {
+    padding: 5px;
+}
+
+td {
+    padding: 5px;
+}
+
+blockquote {
+    font-size: 15px;
+}
+
+/****************************************
+ * Page header styles
+ */
+
+#logo-container {
+    padding-bottom: 1em;
+}
+
+.alert-messages {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.alert-message {
+    color: #c09853;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    background-color: #fcf8e3;
+    border: 1px solid #fbeed5;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+/************************************/
+
+
+/****************************************
+ * Navigation styles
+ */
+
+.navbar-orange {
+    background-color: #F68B1F;
+    background-image: none;
+    border-radius: 0;
+    filter: none;
+    -ms-filter: none;
+    min-height: 40px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.25), inset 0 0 0 rgba(0,0,0,0.1);
+    border-top: 0px;
+}
+
+.navbar .nav > li > a, .navbar .navbar-header a {
+    color: #ffffff;
+    text-shadow: none;
+}
+
+.navbar .nav .active > a,
+.navbar .nav .active > a:hover,
+.navbar .nav > li:hover,
+.navbar .nav > li > a:hover,
+.navbar .navbar-header a.active,
+.navbar .navbar-header a:hover {
+    color: #F68B1F;
+    background-color: white;
+}
+
+.navbar .btn-navbar {
+    background-color: #ffffff;
+    background-image: none;
+    border-color: #ffffff;
+    box-shadow: none
+}
+
+.navbar .btn-navbar .icon-bar {
+    background-color: #F68B1F;
+    box-shadow: none
+}
+
+/************************************/
+
+
+/****************************************
+ * Sidebar styles
+ */
+
+.side .nav>li>a {
+    padding-bottom: 3px;
+    padding-top: 3px;
+}
+
+@media (min-width:996px) {
+    .side .bordered-text-box {
+        margin-right: -15px;
+    }
+}
+
+/************************************/
+
+/****************************************
+ * Home page search form
+ */
+
+#homepage-search-form .form-group {
+    width: 100%;
+}
+
+#homepage-search-form .input-group {
+    width: 100%;
+}
+
+#homepage-search-form .input-group-btn {
+    width: 1%;
+}
+
+/************************************/
+
+/****************************************
+ * Orange borders, colours, boxes
+ */
+
+.with-borders {
+    border: 1px solid #F68B1F;
+    border-radius: 6px;
+}
+
+.bordered-text-box {
+    margin-top: 1em;
+    padding: 0.5em 1.5em 0.5em 1.5em;
+}
+
+.bordered-text-box h2 {
+    margin-top: 0px;
+}
+
+.orange {
+    color: #F68B1F;
+}
+
+.big.box {
+    text-align: center;
+}
+
+/************************************/
+
+/****************************************
+ * Sidebar
+ */
+
+.side {
+    margin-top: 1em;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+@media (min-width: 996px) {
+    .side {
+        margin-top: 0;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+.side > div:first-child {
+    margin-top: 0;
+}
+
+.side .nav > li > a:hover {
+    background-color: rgba(246, 139, 31, 1);
+    color: white;
+    text-shadow: none;
+}
+
+#sidebar-support {
+    margin-top: 15px;
+    text-align: center;
+}
+
+#sidebar-support a {
+    width: 85%;
+}
+
+/************************************/
+
+/****************************************
+ * Social media icons
+ */
+
+#social-bar {
+    text-align: center;
+    font-size: 2em;
+}
+
+#social-bar a {
+    margin-right: 5px;
+    padding: 5px; /* Increase hit rectangle for touch devices */
+    text-decoration: none;
+}
+
+#social-bar .fa-facebook-square {
+    color: #3B5998;
+}
+
+#social-bar .fa-twitter-square {
+    color: #00ACED;
+}
+
+#social-bar .fa-linkedin {
+    color: #1E88BD;
+}
+
+#social-bar .fa-slideshare {
+    color: #0077b5;
+}
+
+/************************************/
+
+/****************************************
+ * Cookie consent banner
+ */
+
+#cookie-consent-banner {
+    padding: 15px;
+    background: #eeeeee;
+    border-bottom: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
+    margin-bottom: 1em;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -1em;
+}
+
+#cookie-consent-banner a {
+    text-decoration: underline;
+}
+
+#cookie-consent-banner a:hover {
+    text-decoration: none;
+}
+
+#cookie-consent-banner a:focus {
+    text-decoration: none;
+}
+
+@media (min-width: 768px) {
+    #cookie-consent-banner {
+        margin-left: 100px;
+        margin-right: 100px;
+    }
+}
+
+/************************************/
+
+/****************************************
+ * Search styles
+ */
+
+.doaj-public-search-container {
+
+}
+
+.doaj-public-search-record {
+    padding-bottom: 15px;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-bottom: 1px dashed #cccccc;
+}
+
+.doaj-public-search-record:hover {
+    background-color: #eeeeee;
+}
+
+/************************************/
+
+/****************************************
+ * Admin styles
+ */
+
+.admin-index {
+
+}
+
+.admin-index .row {
+    margin-top: 40px;
+}
+
+.editor-index {
+    margin-top: 10px;
+}
+
+.bulk-action-feedback {
+    margin-top: 20px;
+}
+
+/************************************/
+
+/****************************************
+ * API Docs Styles
+ */
+
+.swagger-section #swagger-ui-container.swagger-ui-wrap {
+    max-width: none !important;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
+}
+
+/************************************/
+
+/****************************************
+ * Sponsors styles
+ */
+
+.sponsors > a {
+    text-decoration: none;
+}
+
+.sponsors > a > img {
+    max-width: 170px;
+    max-height: 100px;
+    margin: 0.5em 20px 20px 20px;
+}
+
+.sponsors-spacious {
+    padding-bottom: 2em;
+}
+
+/************************************/
+
+/****************************************
+ * Forms styles
+ */
+
+.form-preamble {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+/* This is almost the form-control class, and saves us having to migrate all forms to bootstrap3 just for the
+display styles */
+input[type=text]:not(.form-control),
+input[type=password]:not(.form-control),
+#article_metadata_form textarea:not(.form-control),
+#article_metadata_form select {
+    /* display: block; */
+    /*width: 100%;*/
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+
+    /* from bootstrap2 */
+    margin-bottom: 9px;
+}
+
+.select2-container-multi {
+    margin-bottom: 9px;
+}
+
+.select2-container-multi .select2-choices {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.select2-container-multi .select2-choices .select2-search-field {
+    margin-top: 3px;
+    margin-left: 6px;
+}
+
+.input-tiny {
+    width: 100%;
+}
+
+.input-large {
+    width: 100%;
+}
+
+.input-xlarge {
+    width: 100%;
+}
+
+.centre-text-container {
+    text-align: center;
+}
+
+.form-area {
+    overflow-wrap: break-word;
+}
+
+.form-panel {
+    margin-left: -15px;
+    margin-right: -15px;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.form-panel-left {
+    margin-left: -15px;
+    margin-right: -15px;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.form-panel-right {
+    margin-left: -15px;
+    margin-right: -15px;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.well {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+@media (min-width:996px) {
+    .well {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .form-panel-left {
+        margin-right: 0;
+        margin-left: -15px;
+    }
+
+    .form-panel-right {
+        margin-left: 0;
+        margin-right: -15px;
+    }
+}
+
+#subject_tree .jstree-node {
+    overflow-x: auto;
+}
+
+.application_journal_form label {
+    font-weight: normal;
+}
+
+.application_journal_form label.radio {
+    text-align: left;
+}
+
+.application_journal_form .control-label {
+    padding-top: 0px;
+}
+
+.checkboxes ul {
+    list-style: none outside none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.checkboxes ul.errors {
+    list-style: disc;
+    margin-left: 25px;
+}
+
+.checkboxes label {
+    display: inline;
+}
+
+.application_journal_form #author_pays-container ul {
+    list-style: none outside none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+#article_metadata_form {
+    margin-top: 20px;
+}
+
+#add_note_btn {
+    width: 20em;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 991px) {
+    #submit_quick_reject {
+        margin-top: 15px;
+    }
+}
+
+
+/************************************/
+
+/****************************************
+ * Search interfaces custom styles
+ */
+
+
+/* Search Controller styles for handling all the scaling up and down to mobile */
+
+.doaj-bs3-search-controller-toggle-share {
+    width: 100%;
+    padding: 5px 0;
+    margin-bottom: 10px;
+}
+
+.doaj-bs3-search-controller-reset {
+    width: 100%;
+    padding: 5px 0;
+    margin-bottom: 10px;
+}
+
+.doaj-bs3-search-controller-sort {
+    margin-bottom: 10px;
+}
+
+.doaj-bs3-search-controller-sort .form-group {
+    width: 100%;
+}
+
+.doaj-bs3-search-controller-sort .form-group .input-group {
+    width: 100%;
+}
+
+.doaj-bs3-search-controller-sort .form-group .input-group .input-group-btn {
+    width: 25%;
+}
+
+.doaj-bs3-search-controller-direction {
+    width: 100%;
+}
+
+
+.doaj-bs3-search-controller-search {
+    margin-bottom: 10px;
+}
+
+@media (max-width: 992px) {
+    .doaj-bs3-search-controller-reset::before {
+        content: "Clear search filters ";
+    }
+
+    .doaj-bs3-search-controller-searchcombo .form-group {
+        width: 100%;
+    }
+
+    .doaj-bs3-search-controller-searchcombo .form-group .input-group {
+        width: 100%;
+    }
+
+    .doaj-bs3-search-controller-searchcombo .form-group .input-group .input-group-btn {
+        width: 10%;
+    }
+
+    .form-inline .input-group>.form-control.doaj-bs3-search-controller-field {
+        width: 25%;
+    }
+
+    .form-inline .input-group>.form-control.doaj-bs3-search-controller-text {
+        width: 75%;
+    }
+
+    .doaj-bs3-search-controller-search {
+        width: 100%;
+    }
+}
+
+@media (min-width: 992px) {
+
+    .edges-bs3-facetview-search-controller .form-inline .input-group .doaj-bs3-search-controller-field {
+        width: 140px;
+    }
+
+    .edges-bs3-facetview-search-controller .form-inline .input-group .doaj-bs3-search-controller-text {
+        width: 158px;
+    }
+}
+
+@media (min-width: 1200px) {
+
+    .edges-bs3-facetview-search-controller .form-inline .input-group .doaj-bs3-search-controller-field {
+        width: 170px;
+    }
+
+    .edges-bs3-facetview-search-controller .form-inline .input-group .doaj-bs3-search-controller-text {
+        width: 200px;
+    }
+}
+
+.doaj-bs3-search-controller-share {
+    border: 1px solid #bce8f1;
+    color: #3a87ad;
+    background-color: #d9edf7;
+    padding: 10px;
+    margin: 10px 0px 10px 0px;
+    border-radius: 5px;
+}
+
+.doaj-bs3-search-controller-share-url {
+    width: 100%;
+    max-width: 100%;
+    color: #000000;
+    height: 5em;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.doaj-bs3-search-controller-embed {
+    width: 100%;
+    max-width: 100%;
+    color: #000000;
+    height: 5em;
+}
+
+/* ******end Search controller styles******* */
+
+#users .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#admin_journals_and_articles .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+.edges-bs3-results-fields-by-row-row .title {
+    font-size: 120%;
+}
+
+.edges-bs3-results-fields-by-row-row .alt_title {
+    font-style: italic;
+}
+
+#admin_applications .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#background_jobs, #editor_groups, #admin_journals, #group_applications, #group_journals, #associate_journals, #associate_applications,
+#publisher_journals, #publisher_update_requests {
+    margin-top: 20px;
+}
+
+#editor_groups .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#users #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#editor_groups #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#admin_journals #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#group_journals #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#group_applications #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#associate_journals #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#associate_applications #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#admin_journals .edges-bs3-results-fields-by-row-row:nth-last-child(2) {
+    text-align: right;
+}
+
+#admin_journals .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#group_applications .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#group_journals .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#associate_journals .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#associate_applications .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#publisher_journals .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#publisher_journals #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#publisher_update_requests .edges-bs3-results-fields-by-row-row:last-child {
+    text-align: right;
+}
+
+#publisher_update_requests #search-controller .col-md-8 .form-inline {
+    text-align: right;
+}
+
+#journal_toc_articles #search-controller .col-md-6 .form-inline {
+    text-align: right;
+}
+
+/********************************************************
+* Default results display
+*/
+
+.doaj-bg-results-container {
+    padding-bottom: 15px;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-bottom: 1px dashed #cccccc;
+}
+
+.doaj-bg-results-container:hover {
+    background-color: #eeeeee;
+}
+
+/************************************/
+
+
+.btn-doaj {
+    background-color: #F68B1F;
+    background-image: -moz-linear-gradient(center top , #F6EDE5, #F6BC82);
+    background-image: -webkit-linear-gradient(top, #F6EDE5, #F6BC82);
+    /*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F68B1F',endColorstr='#F6BC82',GradientType=0);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#F68B1F',endColorstr='#F6BC82',GradientType=0)";*/
+    border-color: #F68B1F #F68B1F #F68411;
+}
+/*.btn-doaj:hover {
+    filter: none;
+    -ms-filter: none;
+}*/
+
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {
+    border-color: rgba(246, 139, 31, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(246, 139, 31, 0.6);
+}
+
+select {
+    background-color: white;
+}
+
+/* Classes */
+
+
+
+.red {
+    color: #C2020C;
+}
+
+.green {
+    color: #0C991F;
+}
+
+.blue {
+    color: #7073FF;
+}
+
+a.readonly_journal_link {
+    margin-right: 10px;
+}
+
+.box .long-label {
+    line-height: 32px;
+}
+
+.box-row + .box-row {
+    margin-top: 2em;
+}
+
+.centre-text-container,
+.big.box {
+    text-align: center;
+}
+
+.box {
+    padding: 0.5em;
+}
+
+.box.slim p {
+    line-height: 1;
+}
+
+.big.box {
+    padding: 1em;
+    font-size: 250%;
+}
+
+.main-content {
+    padding-top: 2em;
+    padding-bottom: 2em;
+}
+
+
+
+
+
+.input-append button.add-on {
+    height: inherit !important;
+}
+
+.form-horizontal.wide .control-label {
+    width: 200px;
+}
+
+.form-horizontal.wide .controls,
+.form-horizontal.wide .form-status,
+.form-horizontal.wide .heading-aligned-with-fields
+{
+    margin-left: 220px;
+}
+
+.form-horizontal.wide .heading-no-margin-bottom {
+    margin-bottom: 0;
+}
+
+.form-horizontal.wide h1,
+.form-horizontal.wide h2,
+.form-horizontal.wide h3,
+.form-horizontal.wide h4,
+.form-horizontal.wide h5,
+.form-horizontal.wide h6 {
+    margin-bottom: 1em;
+}
+
+.form-horizontal.wide .form-status {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.form-horizontal.wide .form-section {
+    margin-top: 1em;
+    padding: 0.5em 1.5em;  /* top/bottom, left/right */
+}
+
+.nested-field-container textarea {
+    height: 5em;
+}
+
+.control-group.error .help-block,
+.control-group.error .help-inline,
+.control-group.error .radio {
+    color: #333;
+}
+
+.error ul.errors {
+    color: #D60500;
+}
+
+.error .select2-choice {
+    border-color: #b94a48;
+}
+
+.control-group.error input.extra_input_field {
+    border-color: #ccc;
+    color: #555;
+}
+
+label > .label-text,
+.checkboxes label {
+    padding-left: 0.25em;
+}
+
+footer > .box + .box {
+    margin-top: 1em;
+}
+
+#main-nav-first-menu {
+    margin-right: 0;
+}
+
+#header-announcement-title {
+    font-size: 1.5em;
+}
+
+#header-announcement-text {
+    font-size: 110%;
+}
+
+#btn-support-doaj {
+    font-size: 120%;
+    font-weight: bold;
+    color: white;
+    background-color: #F68B1F;
+    background-image: -o-linear-gradient(#f6b574, #f68e26); /* For Opera 11.1 to 12.0 */ 
+    background-image: linear-gradient(top, #f6b574, #f68e26); /* Standard syntax */
+    background-image: linear-gradient(to bottom, #f6b574, #f68e26); /* IE ? */
+    background-image: -ms-linear-gradient(top, #f6b574, #f68e26); /* IE 11 */
+    background-image: -moz-linear-gradient(center top , #f6b574, #f68e26);
+    background-image: -webkit-linear-gradient(top, #f6b574, #f68e26);
+    border-color: #F68B1F #F68B1F #F68411;
+    text-shadow: none;
+}
+
+#homepage-search-container {
+    margin-bottom: 0.5em;
+}
+
+#homepage-search-button-container {
+    margin-left: 0;
+}
+
+#homepage-search-options-container {
+    margin-bottom: 0;
+}
+
+/* Internet Exploder fixes - do not affect other browsers */
+#homepage-search-button {
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF',endColorstr='#E6E6E6',GradientType=0);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF',endColorstr='#E6E6E6',GradientType=0)";
+}
+
+#homepage-search-button:hover {
+    filter: none;
+    -ms-filter: none;
+}
+
+#header-right-container {
+    padding-bottom: 1em;
+}
+
+#footer-sponsors > a {
+    margin-right: 1em;
+    text-decoration: none;
+}
+
+
+
+/* From suggestion form */
+#digital_archiving_policy_library {
+    width: 150px;
+}
+
+.form-horizontal.wide #subject-container .control-label,
+.form-horizontal.wide .left-aligned .control-label {
+    width: 5em;
+    text-align: left;
+}
+
+.form-horizontal.wide #subject-container .controls,
+.form-horizontal.wide .left-aligned .controls {
+    margin-left: 5em;
+}
+
+.form-horizontal.wide #subject {
+    height: 20.5em;
+    width: 34em;
+}
+
+.grey_bordered_div {
+    border: 1px solid #cccccc;
+    padding: 10px;
+    margin: 10px;
+    overflow: hidden;
+}
+
+.diff_table {
+    width: 100%;
+    border: 1px solid #cccccc;
+}
+
+.diff_table thead {
+    font-weight: bold;
+    background-color: #F68B1F;
+    color: #ffffff;
+    font-size: 1.2em;
+}
+
+.diff_table tbody tr:hover {
+    background: #eeeeee;
+}
+
+.diff_table td {
+    padding: 5px;
+    border: 1px solid #cccccc;
+}
+
+.diff_table .inner_comparison_table {
+    border: 0px;
+}
+
+.diff_table .inner_comparison_table td {
+    border: 0px
+}
+
+.complete-me {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #f2dbb0;
+}
+
+label[for='doaj_seal'] {
+    font-weight: bold;
+}
+
+/* Custom responsive bits - elements, classes and id-s in that order */
+
+
+

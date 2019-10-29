@@ -64,6 +64,21 @@ def widgets():
                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
                            )
 
+@blueprint.route("/ssw_demo")
+def ssw_demo():
+    return render_template('doaj/ssw_demo.html',
+                           env=app.config.get("DOAJENV"),
+                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+                           )
+
+@blueprint.route("/fqw_demo")
+def fqw_demo():
+    return render_template('doaj/fqw_demo.html',
+                           env=app.config.get("DOAJENV"),
+                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+                           )
+
+
 
 @blueprint.route("/fqw_hit", methods=['POST'])
 def fqw_hit():
@@ -82,7 +97,7 @@ def fqw_hit():
 
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return render_template('doaj/search.html', search_page=True, facetviews=['public.journalarticle.facetview'])
+    return render_template('doaj/search.html')
 
 
 @blueprint.route("/search", methods=['POST'])
@@ -238,20 +253,31 @@ def toc(identifier=None, volume=None, issue=None):
     # identifier may be the journal id or an issn
     journal = None
     issn_ref = False
+
+    if identifier is None:
+        abort(404)
+
     if len(identifier) == 9:
         js = models.Journal.find_by_issn(identifier, in_doaj=True)
+
         if len(js) > 1:
-            abort(400)                             # really this is a 500 - we have more than one journal with this issn
+            abort(400)  # really this is a 500 - we have more than one journal with this issn
         if len(js) == 0:
             abort(404)
         journal = js[0]
 
-        issn_ref = True     # just a flag so we can check if we were requested via issn
-    else:
-        journal = models.Journal.pull(identifier)  # Returns None on fail
+        if journal is None:
+            abort(400)
 
-    if journal is None:
-        abort(404)
+        issn_ref = True  # just a flag so we can check if we were requested via issn
+    elif len(identifier) == 32:
+        js = models.Journal.pull(identifier)  # Returns None on fail
+
+        if js is None or not js.is_in_doaj():
+            abort(404)
+        journal = js
+    else:
+        abort(400)
 
     # get the bibjson record that we're going to render
     bibjson = journal.bibjson()
@@ -312,7 +338,7 @@ def toc(identifier=None, volume=None, issue=None):
 
     # now render all that information
     return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future_journals, past=past_journals,
-                           search_page=True, toc_issns=journal.bibjson().issns(), facetviews=['public.journaltocarticles.facetview'])
+                           toc_issns=journal.bibjson().issns())
 
 
 @blueprint.route("/article/<identifier>")

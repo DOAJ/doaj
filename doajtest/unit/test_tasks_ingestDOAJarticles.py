@@ -448,6 +448,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_paths.append(path)
         print(file_upload)
 
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
         assert result is True
@@ -748,6 +749,22 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu is not None
         assert fu.status == "processed"
 
+    def test_28_run_errors(self):
+        job = models.BackgroundJob()
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+
+        with self.assertRaises(BackgroundException):
+            task.run()
+
+        job.params = {}
+
+        with self.assertRaises(BackgroundException):
+            task.run()
+
+        job.params = {"ingest_articles__file_upload_id" : "whatever"}
+
+        with self.assertRaises(BackgroundException):
+            task.run()
 
     def test_29_submit_success(self):
         j = models.Journal()
@@ -785,6 +802,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create a journal with 2 issns, one of which is the same as an issn on the
         # article, but the article also contains an issn which doesn't match the journal
         # We expect a failed ingest
+
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
@@ -1646,3 +1664,127 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert not os.path.exists(path)
 
         assert file_upload.status == "failed"
+
+    def test_50_valid_url_starting_with_http(self):
+        handle = DoajXmlArticleFixtureFactory.valid_url_http()
+        f = ModelFileMockFactory(stream=handle)
+
+        previous = []
+        id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+
+        assert fu.status == "validated"
+
+    def test_51_valid_url_starting_with_https(self):
+        handle = DoajXmlArticleFixtureFactory.valid_url_https()
+        f = ModelFileMockFactory(stream=handle)
+
+        previous = []
+        id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+
+        assert fu.status == "validated"
+
+    def test_52_valid_url_with_non_ascii_chars(self):
+        handle = DoajXmlArticleFixtureFactory.valid_url_non_ascii_chars()
+        f = ModelFileMockFactory(stream=handle)
+
+        previous = []
+        id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+        assert fu.status == "validated"
+
+    def test_53_invalid_url(self):
+        handle = DoajXmlArticleFixtureFactory.invalid_url()
+        f = ModelFileMockFactory(stream=handle)
+
+        previous = []
+        with self.assertRaises(BackgroundException):
+            id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+
+        assert len(previous) == 1
+        id = previous[0].id
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+
+        assert fu.status == "failed"
+        assert fu.error == u'Unable to validate document with identified schema'
+
+    def test_54_invalid_url_http_missing(self):
+        handle = DoajXmlArticleFixtureFactory.invalid_url_http_missing()
+        f = ModelFileMockFactory(stream=handle)
+
+        previous = []
+        with self.assertRaises(BackgroundException):
+            id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+
+        assert len(previous) == 1
+        id = previous[0].id
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+
+        assert fu.status == "failed"
+        assert fu.error == u'Unable to validate document with identified schema'
+
+    def test_55_valid_url_with_http_anchor(self):
+        handle = DoajXmlArticleFixtureFactory.valid_url_http_anchor()
+        f = ModelFileMockFactory(stream=handle)
+
+        previous = []
+        id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+        assert fu.status == "validated"
+
+    def test_56_valid_url_with_parameters(self):
+        handle = DoajXmlArticleFixtureFactory.valid_url_parameters()
+        f = ModelFileMockFactory(stream=handle)
+
+        previous = []
+        id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+        assert fu.status == "validated"
+
+
+
+
+# TODO: reinstate this test when author emails have been disallowed again
+'''
+    def test_34_file_upload_author_email(self):
+        handle = ArticleFixtureFactory.upload_author_email_address()
+        f = MockFileUpload(stream=handle)
+
+        previous = []
+        with self.assertRaises(BackgroundException):
+            id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+
+        assert len(previous) == 1
+        id = previous[0].id
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is not None and fu.error != ""
+        assert fu.failure_reasons.keys() == []
+
+        # file should have been removed from upload dir
+        path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
+        assert not os.path.exists(path)
+
+        # and placed into the failed dir
+        fad = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
+        assert os.path.exists(fad)
+'''

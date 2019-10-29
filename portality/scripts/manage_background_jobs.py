@@ -20,6 +20,7 @@ suggestion_bulk_edit
 sitemap
 read_news
 journal_csv
+public_data_dump
 
 If you need to re-queue any other kind of job, you need to add it here.
 
@@ -37,6 +38,7 @@ from portality.tasks.article_cleanup_sync import ArticleCleanupSyncBackgroundTas
 from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask
 from portality.tasks.check_latest_es_backup import CheckLatestESBackupBackgroundTask
 from portality.tasks.prune_es_backups import PruneESBackupsBackgroundTask
+from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
 
 
 HANDLERS = {
@@ -49,6 +51,7 @@ HANDLERS = {
     'set_in_doaj': SetInDOAJBackgroundTask,
     'check_latest_es_backup': CheckLatestESBackupBackgroundTask,
     'prune_es_backups': PruneESBackupsBackgroundTask,
+    'public_data_dump': PublicDataDumpBackgroundTask,
 }
 
 

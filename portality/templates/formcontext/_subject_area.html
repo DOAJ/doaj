@@ -1,0 +1,23 @@
+<section class="form-area">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="form-panel-right with-borders">
+                <h3>Subject classification</h3>
+
+                <div class="form-group">
+                    <label class="control-label col-xs-3">Current subjects:</label>
+                    <div class="col-xs-9">
+                        <p>{{ subjectstr }}</p>
+                    </div>
+                </div>
+
+                <div id="subject_tree_container">
+                    <div id="subject_tree"></div>
+                    {% autoescape off %}
+                    {{ form_context.render_field_group("subject") }}
+                    {% endautoescape %}
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
