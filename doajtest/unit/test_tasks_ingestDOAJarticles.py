@@ -1,6 +1,12 @@
+from doajtest.fixtures import ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from lxml import etree
 
+from doajtest.mocks.ftp import FTPMockFactory
+from doajtest.mocks.model_Article import ModelArticleMockFactory
+from doajtest.mocks.model_File import ModelFileMockFactory
+from doajtest.mocks.response import ResponseMockFactory
+from doajtest.mocks.xwalk import XwalkMockFactory
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
@@ -19,7 +25,7 @@ from portality.core import app
 from portality.background import BackgroundException
 
 import ftplib, os, requests
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 class TestIngestArticlesDoajXML(DoajTestCase):
 
@@ -139,6 +145,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_03_doaj_file_upload_fail(self):
 
         article_doaj_xml.DOAJXWalk.validate = XwalkMockFactory.validate
+        etree.XMLSchema = self.mock_load_schema
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         f = ModelFileMockFactory(stream=handle)
@@ -427,42 +434,6 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         assert file_upload.status == "downloaded"
 
-    def test_16_http_upload_fail(self):
-        requests.head = mock_head_fail
-        requests.get = mock_get_fail
-
-        url= "http://fail"
-
-        file_upload = models.FileUpload()
-        file_upload.set_id()
-        file_upload.upload("testuser", url, status="exists")
-
-        upload_dir = app.config.get("UPLOAD_DIR")
-        path = os.path.join(upload_dir, file_upload.local_filename)
-        self.cleanup_paths.append(path)
-
-        job = models.BackgroundJob()
-
-        result = ingestarticles.http_upload(job, path, file_upload)
-
-        assert result is False
-        assert file_upload.status == "failed"
-        assert file_upload.error is not None and file_upload.error != ""
-        assert file_upload.error_details is None
-        assert list(file_upload.failure_reasons.keys()) == []
-
-        # now try it with an actual exception
-        url= "http://except"
-        file_upload.upload("testuser", url, status="exists")
-
-        result = ingestarticles.http_upload(job, path, file_upload)
-
-        assert result is False
-        assert file_upload.status == "failed"
-        assert file_upload.error is not None and file_upload.error != ""
-        assert file_upload.error_details is None
-        assert list(file_upload.failure_reasons.keys()) == []
-
     def test_17_doaj_download_http_valid(self):
         requests.head = ResponseMockFactory.head_fail
         requests.get = ResponseMockFactory.doaj_get_success
@@ -668,7 +639,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(file_upload.id)
 
         stream = DoajXmlArticleFixtureFactory.invalid_schema_xml()
-        with open(path, "wb") as f:
+        with open(path, "w") as f:
             f.write(stream.read())
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
@@ -1700,7 +1671,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert file_upload.status == "failed"
 
     def test_50_valid_url_starting_with_http(self):
-        handle = DoajXmlArticleFixtureFactory.valid_url_http()
+        handle = ArticleFixtureFactory.valid_url_http()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1712,7 +1683,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "validated"
 
     def test_51_valid_url_starting_with_https(self):
-        handle = DoajXmlArticleFixtureFactory.valid_url_https()
+        handle = ArticleFixtureFactory.valid_url_https()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1724,7 +1695,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "validated"
 
     def test_52_valid_url_with_non_ascii_chars(self):
-        handle = DoajXmlArticleFixtureFactory.valid_url_non_ascii_chars()
+        handle = ArticleFixtureFactory.valid_url_non_ascii_chars()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1735,7 +1706,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "validated"
 
     def test_53_invalid_url(self):
-        handle = DoajXmlArticleFixtureFactory.invalid_url()
+        handle = ArticleFixtureFactory.invalid_url()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1752,7 +1723,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.error == u'Unable to validate document with identified schema'
 
     def test_54_invalid_url_http_missing(self):
-        handle = DoajXmlArticleFixtureFactory.invalid_url_http_missing()
+        handle = ArticleFixtureFactory.invalid_url_http_missing()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1769,7 +1740,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.error == u'Unable to validate document with identified schema'
 
     def test_55_valid_url_with_http_anchor(self):
-        handle = DoajXmlArticleFixtureFactory.valid_url_http_anchor()
+        handle = ArticleFixtureFactory.valid_url_http_anchor()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []
@@ -1780,7 +1751,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "validated"
 
     def test_56_valid_url_with_parameters(self):
-        handle = DoajXmlArticleFixtureFactory.valid_url_parameters()
+        handle = ArticleFixtureFactory.valid_url_parameters()
         f = ModelFileMockFactory(stream=handle)
 
         previous = []

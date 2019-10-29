@@ -78,7 +78,7 @@ class TestIngestArticlesSchemaIndependent(DoajTestCase):
         assert file_upload.status == "failed"
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is None
-        assert file_upload.failure_reasons.keys() == []
+        assert list(file_upload.failure_reasons.keys()) == []
 
         # now try it with an actual exception
         url= "http://except"
@@ -90,7 +90,7 @@ class TestIngestArticlesSchemaIndependent(DoajTestCase):
         assert file_upload.status == "failed"
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is None
-        assert file_upload.failure_reasons.keys() == []
+        assert list(file_upload.failure_reasons.keys()) == []
 
     def test_28_run_errors(self):
         job = models.BackgroundJob()
