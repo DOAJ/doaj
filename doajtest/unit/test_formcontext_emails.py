@@ -766,7 +766,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # When an application is assigned to an associate editor for the first time, email the assoc_ed and publisher.
 
         # Refresh the application form
-        no_ed = deepcopy(ready_application)
+        no_ed = models.Suggestion(**deepcopy(ready_application.data))
         del no_ed['admin']['editor']
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
 
@@ -954,7 +954,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # When an application is assigned to an associate editor for the first time, email the assoc_ed and publisher.
 
         # Refresh the application form
-        no_ed = deepcopy(pending_application)
+        no_ed = models.Suggestion(**deepcopy(pending_application.data))
         del no_ed['admin']['editor']
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
 
