@@ -1,6 +1,6 @@
 import os
 from lxml import etree
-from StringIO import StringIO
+from io import StringIO
 from copy import deepcopy
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")

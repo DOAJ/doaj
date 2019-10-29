@@ -5,5 +5,5 @@ class ModelFileMockFactory(object):
         self.stream = stream
 
     def save(self, path):
-        with open(path, "wb") as f:
+        with open(path, "w") as f:
             f.write(self.stream.read())
