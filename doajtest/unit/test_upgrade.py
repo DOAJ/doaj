@@ -31,6 +31,8 @@ class TestUpgrade(DoajTestCase):
             j.save()
             saved_journals.append(j.id)
 
+        created_with_title = j.last_updated
+
         # and with some journals without title
         for i in range(5):
             j = models.Journal()
@@ -43,7 +45,7 @@ class TestUpgrade(DoajTestCase):
             j.save()
             saved_journals.append(j.id)
 
-        created = j.last_updated
+        created_no_title = j.last_updated
 
         # make sure the last updated dates will be suitably different after migration
         time.sleep(1.5)
@@ -61,11 +63,11 @@ class TestUpgrade(DoajTestCase):
 
             if not p.match(pissn):
                 assert bj.title == "Test Journal"
-                assert j.last_updated == created
+                assert j.last_updated == created_with_title
 
             else:
                 assert bj.title == "Updated Title"
-                assert not j.last_updated == created
+                assert not j.last_updated == created_no_title
 
 
 
