@@ -477,7 +477,7 @@ class ApplicationContext(PrivateContext):
                                     fro=fro,
                                     subject=subject,
                                     template_name=template,
-                                    journal_title=jn,
+                                    title=jn,
                                     publisher_name=publisher_name,
                                     journal_contact=journal_contact,
                                     url_root=url_root
@@ -624,12 +624,15 @@ class ManEdApplicationReview(ApplicationContext):
     def data2form(self):
         self.form = forms.ManEdApplicationReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(["title", "alternative_title", "publisher", "society_institution", "platform", "url", "editorial_board_url", "processing_charges_url", "submission_charges_url", "articles_last_year_url", "digital_archiving_policy_url"])
 
     def source2form(self):
         self.form = forms.ManEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(
+            ["title", "alternative_title", "publisher", "society_institution", "platform", "url",
+             "editorial_board_url", "processing_charges_url", "submission_charges_url", "articles_last_year_url",
+             "digital_archiving_policy_url"])
         if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             self.info = ACC_MSG
 
@@ -846,12 +849,17 @@ class EditorApplicationReview(ApplicationContext):
     def data2form(self):
         self.form = forms.EditorApplicationReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
-
+        self._expand_descriptions(
+            ["title", "alternative_title", "publisher", "society_institution", "platform", "url",
+             "editorial_board_url", "processing_charges_url", "submission_charges_url", "articles_last_year_url",
+             "digital_archiving_policy_url"])
     def source2form(self):
         self.form = forms.EditorApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(
+            ["title", "alternative_title", "publisher", "society_institution", "platform", "url",
+             "editorial_board_url", "processing_charges_url", "submission_charges_url", "articles_last_year_url",
+             "digital_archiving_policy_url"])
         editor_choices = list(sum(choices.Choices.application_status('editor'), ()))       # flattens the list of tuples
         if self.source.application_status not in editor_choices:
             self.info = SCOPE_MSG.format(self.source.application_status)
@@ -1003,12 +1011,12 @@ class AssEdApplicationReview(ApplicationContext):
     def data2form(self):
         self.form = forms.AssEdApplicationReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(["title", "alternative_title", "publisher", "society_institution", "platform", "url", "editorial_board_url", "processing_charges_url", "submission_charges_url", "articles_last_year_url", "digital_archiving_policy_url"])
 
     def source2form(self):
         self.form = forms.AssEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(["title", "alternative_title", "publisher", "society_institution", "platform", "url", "editorial_board_url", "processing_charges_url", "submission_charges_url", "articles_last_year_url", "digital_archiving_policy_url"])
 
         associate_editor_choices = list(sum(choices.Choices.application_status(), ()))     # flattens the list of tuples
         if self.source.application_status not in associate_editor_choices:
