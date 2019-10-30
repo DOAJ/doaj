@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
-from portality.bll.exceptions import AccountException
+from flask import abort
 
 
 class Account(DomainObject, UserMixin):
@@ -97,7 +97,8 @@ class Account(DomainObject, UserMixin):
         try:
             return check_password_hash(self.data['password'], password)
         except:
-            raise AccountException("Problem with your account occured - please contact an administrator")
+            app.logger.error("Problem with user '{}' account: no password field".format(self.data['id']))
+            abort(404)
 
     @property
     def journal(self):

@@ -66,13 +66,6 @@ class ArticleMergeConflict(Exception):
     """
     pass
 
-class AccountException(Exception):
-    """
-    Exception to raise when invalid account data is detected
-    """
-    pass
-
-
 class IngestException(Exception):
     def __init__(self, *args, **kwargs):
         self.stack = None
