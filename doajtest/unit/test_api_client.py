@@ -4,7 +4,9 @@ Unit tests for the DOAJ client
 
 from unittest import TestCase
 from doajtest.fixtures.journals import JournalFixtureFactory
+from doajtest.fixtures.article import ArticleFixtureFactory
 from portality.api.v1.client import models
+from portality.lib import dataobj
 
 
 class TestDOAJ(TestCase):
@@ -25,6 +27,10 @@ class TestDOAJ(TestCase):
     def test_02_validate_article(self):
         invalid = {"bibjson": {}}
 
-        # then check that the api validation method works
-        a = models.Article(invalid)
-        assert not a.is_api_valid()
+        with self.assertRaises(dataobj.DataStructureException):
+            a = models.Article(invalid)
+
+        a = models.Article()
+
+        with self.assertRaises(dataobj.DataStructureException):
+            a.is_api_valid()
