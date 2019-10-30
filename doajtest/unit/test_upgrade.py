@@ -6,6 +6,7 @@ from collections import OrderedDict
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.upgrade import do_upgrade
+from portality.lib.paths import rel2abs
 
 def operation(journal):
     j = models.Journal.pull(journal.id)
@@ -47,7 +48,8 @@ class TestUpgrade(DoajTestCase):
         # make sure the last updated dates will be suitably different after migration
         time.sleep(1.5)
 
-        with open("./resources/migrate.json") as f:
+        path =rel2abs(__file__, ".", "resources", "migrate.json")
+        with open(path) as f:
             instructions = json.loads(f.read(), object_pairs_hook=OrderedDict)
         do_upgrade(instructions,None)
 
