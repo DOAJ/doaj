@@ -336,17 +336,6 @@ blockquote {
 /************************************/
 
 /****************************************
- * API Docs Styles
- */
-
-.swagger-section #swagger-ui-container.swagger-ui-wrap {
-    max-width: none !important;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
-}
-
-/************************************/
-
-/****************************************
  * Sponsors styles
  */
 
