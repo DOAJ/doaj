@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
+from portality.bll.exceptions import AccountException
+
 
 class Account(DomainObject, UserMixin):
     __type__ = 'account'
@@ -92,7 +94,10 @@ class Account(DomainObject, UserMixin):
         self.data['password'] = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.data['password'], password)
+        try:
+            return check_password_hash(self.data['password'], password)
+        except:
+            raise AccountException("Problem with your account occured - please contact an administrator")
 
     @property
     def journal(self):
