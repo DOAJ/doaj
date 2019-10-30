@@ -59,6 +59,9 @@ class URLField(TextField):
     widget = widgets.TextInput()
 
     def process_formdata(self, valuelist):
+        if valuelist is None or len(valuelist) == 0:
+             self.data = self.data = u''
+
         val = valuelist[0]
         assumed_scheme = 'http://'
 
