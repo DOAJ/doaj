@@ -17,6 +17,8 @@ SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this applicati
             'account permissions to edit applications which are {0}.'
 
 FIELDS_WITH_DESCRIPTION = ["publisher", "society_institution", "platform", "title", "alternative_title", "url", "processing_charges_url", "submission_charges_url", "articles_last_year_url", "digital_archiving_policy_url", "editorial_board_url", "review_process_url", "instructions_authors_url", "oa_statement_url", "license_url"]
+FIELDS_NO_ARTICLES_LAST_YEAR = ["publisher", "society_institution", "platform", "title", "alternative_title", "url", "processing_charges_url", "submission_charges_url", "digital_archiving_policy_url", "editorial_board_url", "review_process_url", "instructions_authors_url", "oa_statement_url", "license_url"]
+FIELDS_NO_SOCIETY_INSTITUTION  = ["publisher", "platform", "title", "alternative_title", "url", "processing_charges_url", "submission_charges_url", "digital_archiving_policy_url", "editorial_board_url", "review_process_url", "instructions_authors_url", "oa_statement_url", "license_url"]
 
 class FormContext(object):
     def __init__(self, form_data=None, source=None):
@@ -625,7 +627,7 @@ class ManEdApplicationReview(ApplicationContext):
     def data2form(self):
         self.form = forms.ManEdApplicationReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"]+FIELDS_WITH_DESCRIPTION)
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def source2form(self):
         self.form = forms.ManEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
@@ -1449,9 +1451,7 @@ class ManEdJournalReview(PrivateContext):
     def source2form(self):
         self.form = forms.ManEdJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        FIELDS_WITH_DESCRIPTION.remove("articles_last_year_url")
-        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
-        FIELDS_WITH_DESCRIPTION.append("articles_last_year_url")
+        self._expand_descriptions(FIELDS_NO_ARTICLES_LAST_YEAR)
 
     def pre_validate(self):
         # Editor field is populated in JS after page load - check the selected editor is actually in that editor group
@@ -1536,9 +1536,7 @@ class ManEdBulkEdit(PrivateContext):
 
     def data2form(self):
         self.form = forms.ManEdBulkEditJournalForm(formdata=self.form_data)
-        FIELDS_WITH_DESCRIPTION.remove("society_institution")
-        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
-        FIELDS_WITH_DESCRIPTION.append("society_institution")
+        self._expand_descriptions(FIELDS_NO_SOCIETY_INSTITUTION)
 
 
 class EditorJournalReview(PrivateContext):
@@ -1570,16 +1568,12 @@ class EditorJournalReview(PrivateContext):
     def data2form(self):
         self.form = forms.EditorJournalReviewForm(formdata=self.form_data)
         self._set_choices()
-        FIELDS_WITH_DESCRIPTION.remove("articles_last_year_url")
-        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
-        FIELDS_WITH_DESCRIPTION.append("articles_last_year_url")
+        self._expand_descriptions(FIELDS_NO_ARTICLES_LAST_YEAR)
 
     def source2form(self):
         self.form = forms.EditorJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        FIELDS_WITH_DESCRIPTION.remove("articles_last_year_url")
-        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
-        FIELDS_WITH_DESCRIPTION.append("articles_last_year_url")
+        self._expand_descriptions(FIELDS_NO_ARTICLES_LAST_YEAR)
 
     def form2target(self):
         self.target = xwalk.JournalFormXWalk.form2obj(self.form)
