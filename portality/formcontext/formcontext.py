@@ -1446,7 +1446,7 @@ class ManEdJournalReview(PrivateContext):
     def data2form(self):
         self.form = forms.ManEdJournalReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_descriptions(FIELDS_NO_ARTICLES_LAST_YEAR)
 
     def source2form(self):
         self.form = forms.ManEdJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
@@ -1644,12 +1644,12 @@ class AssEdJournalReview(PrivateContext):
     def data2form(self):
         self.form = forms.AssEdJournalReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_descriptions(FIELDS_NO_ARTICLES_LAST_YEAR)
 
     def source2form(self):
         self.form = forms.AssEdJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_descriptions(FIELDS_NO_ARTICLES_LAST_YEAR)
 
     def form2target(self):
         self.target = xwalk.JournalFormXWalk.form2obj(self.form)
@@ -1711,12 +1711,12 @@ class ReadOnlyJournal(PrivateContext):
     def data2form(self):
         self.form = forms.ReadOnlyJournalForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_descriptions(FIELDS_NO_ARTICLES_LAST_YEAR)
 
     def source2form(self):
         self.form = forms.ReadOnlyJournalForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_descriptions(FIELDS_NO_ARTICLES_LAST_YEAR)
 
     def form2target(self):
         pass  # you can't edit objects using this form
