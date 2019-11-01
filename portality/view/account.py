@@ -141,7 +141,7 @@ def login():
             else:
                 flash('Incorrect username/password', 'error')
         except KeyError:
-            abort(404)
+            abort(500)
     if request.method == 'POST' and not form.validate():
         flash('Invalid credentials', 'error')
     return render_template('account/login.html', form=form)
