@@ -16,6 +16,7 @@ ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
             'account permissions to edit applications which are {0}.'
 
+FIELDS_WITH_DESCRIPTION = ["publisher", "society_institution", "platform", "title", "alternative_title", "url", "processing_charges_url", "submission_charges_url", "articles_last_year_url", "digital_archiving_policy_url", "editorial_board_url", "review_process_url", "instructions_authors_url", "oa_statement_url", "license_url", "waiver_policy_url", "download_statistics_url", "copyright_url", "publishing_rights_url", "plagiarism_screening_url", "license_embedded_url"]
 
 class FormContext(object):
     def __init__(self, form_data=None, source=None):
@@ -216,11 +217,12 @@ class PrivateContext(FormContext):
         # add the contents of a few fields to their descriptions since select2 autocomplete
         # would otherwise obscure the full values
         for field in fields:
-            if self.form[field].data:
-                if not self.form[field].description:
-                    self.form[field].description = 'Full contents: ' + self.form[field].data
-                else:
-                    self.form[field].description += '<br><br>Full contents: ' + self.form[field].data
+            if field in self.form.data:
+                if self.form[field].data:
+                    if not self.form[field].description:
+                        self.form[field].description = 'Full contents: ' + self.form[field].data
+                    else:
+                        self.form[field].description += '<br><br>Full contents: ' + self.form[field].data
 
     def _carry_fixed_aspects(self):
         if self.source is None:
@@ -624,12 +626,12 @@ class ManEdApplicationReview(ApplicationContext):
     def data2form(self):
         self.form = forms.ManEdApplicationReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def source2form(self):
         self.form = forms.ManEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             self.info = ACC_MSG
 
@@ -846,12 +848,12 @@ class EditorApplicationReview(ApplicationContext):
     def data2form(self):
         self.form = forms.EditorApplicationReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def source2form(self):
         self.form = forms.EditorApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         editor_choices = list(sum(choices.Choices.application_status('editor'), ()))       # flattens the list of tuples
         if self.source.application_status not in editor_choices:
             self.info = SCOPE_MSG.format(self.source.application_status)
@@ -1003,12 +1005,12 @@ class AssEdApplicationReview(ApplicationContext):
     def data2form(self):
         self.form = forms.AssEdApplicationReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def source2form(self):
         self.form = forms.AssEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
         associate_editor_choices = list(sum(choices.Choices.application_status(), ()))     # flattens the list of tuples
         if self.source.application_status not in associate_editor_choices:
@@ -1118,12 +1120,12 @@ class PublisherUpdateRequest(ApplicationContext):
 
     def data2form(self):
         self.form = forms.PublisherUpdateRequestForm(formdata=self.form_data)
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._disable_fields()
 
     def source2form(self):
         self.form = forms.PublisherUpdateRequestForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._disable_fields()
 
     def pre_validate(self):
@@ -1378,13 +1380,13 @@ class PublisherUpdateRequestReadOnly(PrivateContext):
     def data2form(self):
         self.form = forms.PublisherUpdateRequestForm(formdata=self.form_data)
         # self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self.renderer.disable_all_fields(False)
 
     def source2form(self):
         self.form = forms.PublisherUpdateRequestForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
         # self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self.renderer.set_disabled_fields(["digital_archiving_policy"])
         # self.renderer.disable_all_fields(True)
 
@@ -1443,12 +1445,12 @@ class ManEdJournalReview(PrivateContext):
     def data2form(self):
         self.form = forms.ManEdJournalReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def source2form(self):
         self.form = forms.ManEdJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def pre_validate(self):
         # Editor field is populated in JS after page load - check the selected editor is actually in that editor group
@@ -1533,7 +1535,7 @@ class ManEdBulkEdit(PrivateContext):
 
     def data2form(self):
         self.form = forms.ManEdBulkEditJournalForm(formdata=self.form_data)
-        self._expand_descriptions(["publisher", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
 
 class EditorJournalReview(PrivateContext):
@@ -1565,12 +1567,12 @@ class EditorJournalReview(PrivateContext):
     def data2form(self):
         self.form = forms.EditorJournalReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def source2form(self):
         self.form = forms.EditorJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def form2target(self):
         self.target = xwalk.JournalFormXWalk.form2obj(self.form)
@@ -1641,12 +1643,12 @@ class AssEdJournalReview(PrivateContext):
     def data2form(self):
         self.form = forms.AssEdJournalReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def source2form(self):
         self.form = forms.AssEdJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def form2target(self):
         self.target = xwalk.JournalFormXWalk.form2obj(self.form)
@@ -1708,12 +1710,12 @@ class ReadOnlyJournal(PrivateContext):
     def data2form(self):
         self.form = forms.ReadOnlyJournalForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def source2form(self):
         self.form = forms.ReadOnlyJournalForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
 
     def form2target(self):
         pass  # you can't edit objects using this form
