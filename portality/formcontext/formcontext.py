@@ -16,7 +16,7 @@ ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
             'account permissions to edit applications which are {0}.'
 
-FIELDS_WITH_DESCRIPTION = ["publisher", "society_institution", "platform", "title", "alternative_title", "url", "processing_charges_url", "submission_charges_url", "articles_last_year_url", "digital_archiving_policy_url", "editorial_board_url", "review_process_url", "instructions_authors_url", "oa_statement_url", "license_url"]
+FIELDS_WITH_DESCRIPTION = ["publisher", "society_institution", "platform", "title", "alternative_title", "url", "processing_charges_url", "submission_charges_url", "articles_last_year_url", "digital_archiving_policy_url", "editorial_board_url", "review_process_url", "instructions_authors_url", "oa_statement_url", "license_url", "waiver_policy_url", "download_statistics_url", "copyright_url", "publishing_rights_url", "plagiarism_screening_url", "license_embedded_url"]
 
 class FormContext(object):
     def __init__(self, form_data=None, source=None):
