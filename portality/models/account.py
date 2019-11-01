@@ -98,7 +98,7 @@ class Account(DomainObject, UserMixin):
             return check_password_hash(self.data['password'], password)
         except:
             app.logger.error("Problem with user '{}' account: no password field".format(self.data['id']))
-            abort(404)
+            raise
 
     @property
     def journal(self):
