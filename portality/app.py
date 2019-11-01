@@ -338,14 +338,17 @@ if 'api' in app.config['FEATURES']:
         )
 
 
-@app.errorhandler(404)
+@app.errorhandler(400)
 def page_not_found(e):
-    return render_template('404.html'), 404
-
+    return render_template('400.html'), 400
 
 @app.errorhandler(401)
 def page_not_found(e):
     return render_template('401.html'), 401
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 @app.errorhandler(500)
 def page_not_found(e):
