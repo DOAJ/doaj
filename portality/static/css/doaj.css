@@ -1041,6 +1041,18 @@ label[for='doaj_seal'] {
     font-weight: bold;
 }
 
+select.ui-datepicker-year{
+    color: #555;
+    font-weight: normal;
+    margin: 1px 0;
+    font-size: 1em;
+    font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif
+}
+
+.ui-widget-header {
+	background: #F68B1F !important;
+}
+
 /* Custom responsive bits - elements, classes and id-s in that order */
 
 
