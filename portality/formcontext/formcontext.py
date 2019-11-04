@@ -232,9 +232,9 @@ class PrivateContext(FormContext):
             if field in self.form.data:
                 if self.form[field].data:
                     if not self.form[field].description:
-                        self.form[field].description = 'Full contents: <a href=' + self.form[field].data + ">" + self.form[field].data + "</a>"
+                        self.form[field].description = 'Full contents: <a href=' + self.form[field].data + " target='_blank'>" + self.form[field].data + "</a>"
                     else:
-                        self.form[field].description += '<br><br>Full contents: <a href=' + self.form[field].data + ">" + self.form[field].data + "</a>"
+                        self.form[field].description += '<br><br>Full contents: <a href=' + self.form[field].data + " target='_blank'>" + self.form[field].data + "</a>"
 
     def _carry_fixed_aspects(self):
         if self.source is None:
