@@ -6,8 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
-from flask import abort
-
 
 class Account(DomainObject, UserMixin):
     __type__ = 'account'

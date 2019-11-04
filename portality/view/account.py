@@ -135,8 +135,6 @@ def login():
             if user is not None and user.check_password(password):
                 login_user(user, remember=True)
                 flash('Welcome back.', 'success')
-                # return form.redirect('index')
-                # return redirect(url_for('doaj.home'))
                 return redirect(get_redirect_target(form=form))
             else:
                 flash('Incorrect username/password', 'error')
