@@ -131,14 +131,15 @@ def login():
         user = models.Account.pull(username)
         if user is None:
             user = models.Account.pull_by_email(username)
-        if user is not None and user.check_password(password):
-            login_user(user, remember=True)
-            flash('Welcome back.', 'success')
-            # return form.redirect('index')
-            # return redirect(url_for('doaj.home'))
-            return redirect(get_redirect_target(form=form))
-        else:
-            flash('Incorrect username/password', 'error')
+        try:
+            if user is not None and user.check_password(password):
+                login_user(user, remember=True)
+                flash('Welcome back.', 'success')
+                return redirect(get_redirect_target(form=form))
+            else:
+                flash('Incorrect username/password', 'error')
+        except KeyError:
+            abort(500)
     if request.method == 'POST' and not form.validate():
         flash('Invalid credentials', 'error')
     return render_template('account/login.html', form=form)
