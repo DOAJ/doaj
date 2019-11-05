@@ -199,7 +199,10 @@ class Query(object):
 
     def size(self):
         if "size" in self.q:
-            return int(self.q["size"])
+            try:
+                return int(self.q["size"])
+            except ValueError:
+                return 10
         return 10
 
     def from_result(self):
