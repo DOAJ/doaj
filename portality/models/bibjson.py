@@ -106,7 +106,8 @@ class GenericBibJSON(dataobj.DataObj):
             keywords = [w.lower() for w in keywords]
             self._set_with_struct("keywords", keywords)
         else:
-            self._set_with_struct("keywords", keywords.lower())
+            if keywords is not None:
+                self._set_with_struct("keywords", keywords.lower())
 
     ## work with urls
 
