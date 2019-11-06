@@ -478,15 +478,11 @@ class TestClient(DoajTestCase):
 
         gbj.remove_identifiers("doi")
         gbj.set_keywords("TwO") # make sure keywords are stored in lowercase
-        assert gbj.keywords == ["two"]
-        keywords = []
-        gbj.set_keywords(keywords)
-        keywords = None
-        gbj.set_keywords(keywords)
         gbj.set_subjects({"scheme" : "TEST", "term" : "first", "code" : "one"})
 
         assert len(gbj.get_identifiers()) == 2
         assert gbj.get_one_identifier("doi") is None
+        assert gbj.keywords == ["two"]
         assert len(gbj.subjects()) == 1
 
         gbj.remove_identifiers()
