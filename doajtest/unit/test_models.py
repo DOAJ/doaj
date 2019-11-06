@@ -464,6 +464,8 @@ class TestClient(DoajTestCase):
         gbj.add_identifier("doi", "10.1234/7")
         gbj.add_keyword("test")
         gbj.add_keyword("ONE") # make sure keywords are stored in lowercase
+        keyword = None  # make sure None keyword doesn't cause error
+        gbj.add_keyword(keyword)
         gbj.add_url("http://test", "test")
         gbj.add_subject("TEST", "first", "one")
 
