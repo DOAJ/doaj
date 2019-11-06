@@ -98,7 +98,8 @@ class GenericBibJSON(dataobj.DataObj):
         return self._get_list("keywords")
 
     def add_keyword(self, keyword):
-        self._add_to_list_with_struct("keywords", keyword.lower())
+        if keyword is not None:
+            self._add_to_list_with_struct("keywords", keyword.lower())
 
     def set_keywords(self, keywords):
         if type(keywords) is list:
