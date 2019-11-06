@@ -100,7 +100,10 @@ class OpenURLRequest(object):
         Get the URL for this OpenURLRequest's referent.
         :return: The url as a string, or None if not found.
         """
-        results = self.query_es()
+        try:
+            results = self.query_es()
+        except ValueError:
+            return None
 
         if results is None:
             return None
