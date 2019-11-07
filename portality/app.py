@@ -341,6 +341,10 @@ def verify_recaptcha(g_recaptcha_response):
         data = json.loads(url.read().decode())
         return data
 
+@app.route('/get_site_key')
+def get_site_key():
+    return app.config.get('RECAPTCHA_SITE_KEY')
+
 if __name__ == "__main__":
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)
     if len(sys.argv) > 1:

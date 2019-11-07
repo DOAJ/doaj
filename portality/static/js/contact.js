@@ -1,3 +1,6 @@
+/*jshint esversion: 6 */
+//import * as config from '/dev.cfg';
+
 jQuery(document).ready(function($) {
 
     function calculateRemaining() {
@@ -34,8 +37,18 @@ var onloadCallback = function() {
         });
   };
 
-  grecaptcha.render('html_element', {
-  'sitekey' : '6Lf78MAUAAAAAM9zDpMciaHzlNpsylpvF6DlAJgo',
-    'callback' : captchaCallback,
-    });
+    function ajax1() {
+         return $.get("get_site_key");
+    }
+
+    $.when(ajax1()).done(function(key) {
+        window.console.log("now");
+        grecaptcha.render('html_element', {
+                'sitekey' : key,
+                'callback' : captchaCallback,
+            });
+        }
+    );
+
+
 };
