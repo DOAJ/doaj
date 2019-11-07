@@ -43,7 +43,6 @@ if __name__ == "__main__":
             continue
         keywords = j['bibjson.keywords']
         id = j['id'][0]
-        print(id, keywords)
 
         if keywords is not None:
             for key in keywords:
