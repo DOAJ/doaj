@@ -45,8 +45,16 @@ We do not supply that service. You can either <a href="{{ url_for('doaj.subjects
     {{ render_field_horizontal(form.message, style="width: 100%; max-width: 400px; min-height: 200px", placeholder="Enter your message here") }}
 
     <div class="form-group">
-        <div class="col-md-9 col-md-offset-3">
-            <button class="btn btn-success" id="send">Send</button>
+        <div class="submit-with-recaptcha col-md-9 col-md-offset-2">
+            <form method="POST">
+              <div id="html_element"></div>
+            </form>
+            <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+                async defer>
+            </script>
+            <div>
+                <button id="submitBtn" class="btn btn-success" margin="2em" id="send" disabled="disabled">Send</button>
+            </div>
         </div>
     </div>
 
@@ -58,5 +66,6 @@ We do not supply that service. You can either <a href="{{ url_for('doaj.subjects
 {% block extra_js_bottom %}
      <script type="text/javascript" src="/static/js/contact.js?v={{config.get('DOAJ_VERSION')}}"></script>
 {% endblock extra_js_bottom %}
+
 
 

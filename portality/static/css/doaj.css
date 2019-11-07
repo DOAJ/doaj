@@ -1043,5 +1043,11 @@ label[for='doaj_seal'] {
 
 /* Custom responsive bits - elements, classes and id-s in that order */
 
-
+.submit-with-recaptcha {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-self: flex-start;
+}
 
