@@ -337,9 +337,8 @@ def page_not_found(e):
 
 @app.route('/gettoken/<g_recaptcha_response>')
 def verify_recaptcha(g_recaptcha_response):
-    with urllib.request.urlopen('https://www.google.com/recaptcha/api/siteverify?secret=6Lf78MAUAAAAAJM1eu1kd2OCKLF02_eauDveEkDg&response=' + g_recaptcha_response) as url:
+    with urllib.request.urlopen('https://www.google.com/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY", "") + '&response=' + g_recaptcha_response) as url:
         data = json.loads(url.read().decode())
-        print(data)
         return data
 
 if __name__ == "__main__":

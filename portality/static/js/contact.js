@@ -21,6 +21,8 @@ jQuery(document).ready(function($) {
 
 var onloadCallback = function() {
 
+    $("#submitBtn").prop("disabled", true);
+
     var captchaCallback = function(param) {
         $.get( "gettoken/" + param, function( data ) {
           if (!data.success) {
@@ -34,6 +36,6 @@ var onloadCallback = function() {
 
   grecaptcha.render('html_element', {
   'sitekey' : '6Lf78MAUAAAAAM9zDpMciaHzlNpsylpvF6DlAJgo',
-    'callback' : captchaCallback
+    'callback' : captchaCallback,
     });
 };

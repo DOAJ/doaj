@@ -1049,5 +1049,10 @@ label[for='doaj_seal'] {
     justify-content: space-between;
     align-items: flex-start;
     align-self: flex-start;
+    padding: 0;
+}
+
+#submitBtn {
+    margin-top: 2em;
 }
 
