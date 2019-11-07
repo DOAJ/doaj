@@ -21,7 +21,6 @@ KEYWORDS = {
 }
 
 def rewrite_keywords_art(id):
-    print("id ", id)
     article = models.Article.pull(id)
     bib = article.bibjson()
     kwords = [k.lower() for k in bib.keywords]
