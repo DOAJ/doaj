@@ -706,10 +706,12 @@ class ArticleBibJSON(GenericBibJSON):
     def publisher(self, value):
         self._set_with_struct("journal.publisher", value)
 
-    def add_author(self, name, affiliation=None):
+    def add_author(self, name, affiliation=None, orcid_id=None):
         aobj = {"name": name}
         if affiliation is not None:
             aobj["affiliation"] = affiliation
+        if orcid_id is not None:
+            aobj["orcid_id"] = orcid_id
         self._add_to_list_with_struct("author", aobj)
 
     @property
@@ -855,7 +857,8 @@ ARTICLE_BIBJSON_EXTENSION = {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
                         "affiliation" : {"coerce" : "unicode"},
-                        "email" : {"coerce": "unicode"}
+                        "email" : {"coerce": "unicode"},
+                        "orcid_id" : {"coerce" : "unicode"}
                     }
                 },
 
