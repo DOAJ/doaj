@@ -81,6 +81,14 @@ class ArticleFixtureFactory(object):
     def valid_url_parameters(cls):
         return cls._response_from_xpath("//record[journalTitle='Url with parameters']")
 
+    @classmethod
+    def valid_orcid_id(cls):
+        return cls._response_from_xpath("//record[journalTitle='With valid orcid_id']")
+
+    @classmethod
+    def invalid_orcid_id(cls):
+        return cls._response_from_xpath("//record[journalTitle='With invalid orcid_id']")
+
     @staticmethod
     def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True, with_journal_info=True, doi=None, fulltext=None):
         source = deepcopy(ARTICLE_SOURCE)
