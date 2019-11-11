@@ -111,6 +111,12 @@ class Article(DomainObject):
         return _sort_articles([i['fields'] for i in articles.get('hits', {}).get('hits', [])])
 
     @classmethod
+    def find_by_orcid_id(cls, orcid_id):
+        q = ArticleQuery(orcid_id=orcid_id)
+        articles = cls.iterate(q.query(), page_size=1000)
+        return articles
+
+    @classmethod
     def find_by_issns(cls, issns):
         q = ArticleQuery(issns=issns)
         articles = cls.iterate(q.query(), page_size=1000)
@@ -910,10 +916,12 @@ class ArticleQuery(object):
 
     _issn_terms = { "terms" : {"index.issn.exact" : ["<list of issns here>"]} }
     _volume_term = { "term" : {"bibjson.journal.volume.exact" : "<volume here>"} }
+    _orcid_id_term = { "term" : {"bibjson.author.orcid_id" : "<orcid_id here>"}}
 
-    def __init__(self, issns=None, volume=None):
+    def __init__(self, issns=None, volume=None, orcid_id=None):
         self.issns = issns
         self.volume = volume
+        self.orcid_id = orcid_id
 
     def query(self):
         q = deepcopy(self.base_query)
@@ -926,6 +934,11 @@ class ArticleQuery(object):
         if self.volume is not None:
             vq = deepcopy(self._volume_term)
             vq["term"]["bibjson.journal.volume.exact"] = self.volume
+            q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
+
+        if self.orcid_id is not None:
+            vq = deepcopy(self._orcid_id_term)
+            vq["term"]["bibjson.author.orcid.id"] = self.volume
             q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
 
         return q
@@ -950,6 +963,7 @@ class ArticleIssueQuery(object):
             "bibjson.journal.number",
             "bibjson.title",
             "bibjson.author.name",
+            "bibjson.author.orcid_id",
             "bibjson.link.url",
             "bibjson.start_page",
             "bibjson.end_page",
