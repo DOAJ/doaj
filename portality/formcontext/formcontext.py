@@ -606,6 +606,11 @@ class JournalFormFactory(object):
         elif role == "bulk_edit":
             return ManEdBulkEdit(source=source, form_data=form_data)
 
+class ArticleFormFactory(object):
+    @classmethod
+    def get_form_context(cls, role, source=None, form_data=None):
+        if role == "admin":
+            return ManEdArticleReview(source=source, form_data=form_data)
 
 class ManEdApplicationReview(ApplicationContext):
     """
@@ -1415,6 +1420,66 @@ class PublisherUpdateRequestReadOnly(PrivateContext):
         # no application status (this is a journal) or editorial info (it's not even in the form) to set
         pass
     """
+### Article form contextx ###
+
+class ManEdArticleReview(PrivateContext):
+    """
+    Managing Editor's Article Review form.  Should be used in a context where the form warrants full
+    admin privileges.  It will permit doing every action.
+    """
+    def make_renderer(self):
+        self.renderer = render.ManEdJournalReviewRenderer()
+
+    def set_template(self):
+        self.template = "formcontext/maned_article_review.html"
+
+    def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent journal")
+
+        return super(ManEdArticleReview, self).render_template(
+            lcc_jstree=json.dumps(lcc_jstree),
+            subjectstr=self._subjects2str(self.source.bibjson().subjects()),
+            **kwargs)
+
+    def blank_form(self):
+        self.form = forms.ManEdApplicationReviewForm()
+
+    def data2form(self):
+        self.form = forms.ManEdJournalReviewForm(formdata=self.form_data)
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+
+    def source2form(self):
+        self.form = forms.ManEdJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+
+    def form2target(self):
+        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
+
+    def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent article")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(ManEdArticleReview, self).finalise()
+
+        # Save the target
+        # self.target.set_last_manual_update() TODO: add last_manual_update to article model
+        self.target.save()
+
+
+    def validate(self):
+        # make use of the ability to disable validation, otherwise, let it run
+        if self.form is not None:
+            if self.form.make_all_fields_optional.data:
+                self.pre_validate()
+                return True
+
+        return super(ManEdJournalReview, self).validate()
+
 
 ### Journal form contexts ###
 

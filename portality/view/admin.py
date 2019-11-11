@@ -124,7 +124,7 @@ def articles_list():
         return resp
 
 
-@blueprint.route("/article/<article_id>", methods=["POST"])
+@blueprint.route("/delete/article/<article_id>", methods=["POST"])
 @login_required
 @ssl_required
 @write_required()
@@ -143,6 +143,45 @@ def article_endpoint(article_id):
     resp = make_response(json.dumps({"success" : True}))
     resp.mimetype = "application/json"
     return resp
+
+@blueprint.route("/article/<article_id>", methods=["GET", "POST"])
+@login_required
+@ssl_required
+@write_required()
+def article_page(article_id):
+    if not current_user.has_role("edit_article"):
+        abort(401)
+    ap = models.Journal.pull(article_id)
+    if ap is None:
+        abort(404)
+
+    # attempt to get a lock on the object
+    try:
+        lockinfo = lock.lock("article", article_id, current_user.id)
+    except lock.Locked as l:
+        return render_template("admin/article_locked.html", article=ap, lock=l.lock, edit_article_page=True)
+
+    if request.method == "GET":
+        job = None
+        job_id = request.values.get("job")
+        if job_id is not None and job_id != "":
+            job = models.BackgroundJob.pull(job_id)
+        fc = formcontext.ArticleFormFactory.get_form_context(role="admin", source=ap)
+        return fc.render_template(edit_article_page=True, lock=lockinfo, job=job)
+    elif request.method == "POST":
+        fc = formcontext.ArticleFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
+        if fc.validate():
+            try:
+                fc.finalise()
+                flash('Article updated.', 'success')
+                for a in fc.alert:
+                    flash_with_url(a, "success")
+                return redirect(url_for("admin.article_page", article_id=ap.id, _anchor='done'))
+            except formcontext.FormContextException as e:
+                flash(str(e))
+                return redirect(url_for("admin.journal_page", article_id=ap.id, _anchor='cannot_edit'))
+        else:
+            return fc.render_template(edit_article_page=True, lock=lockinfo)
 
 
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
