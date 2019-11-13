@@ -488,6 +488,7 @@ class PublisherUpdateRequestReadOnlyForm(JournalInformation, Suggestion):
     """
     pass
 
+
 class ManEdJournalReviewForm(Editorial, RequiredOwner, JournalSubject, JournalLegacy, JournalInformation, Notes, OptionalValidation, Seal, Continuations):
     """
     Managing Editor's Journal Review form.  It consists of:

@@ -1,4 +1,6 @@
 from portality import models
+from portality.view.forms import AuthorForm
+
 
 class ArticleFormXWalk(object):
     format_name = "form"
@@ -92,7 +94,50 @@ class ArticleFormXWalk(object):
         return article
 
     @classmethod
-    def obj2form(cls, id):
-
-        return
+    def obj2form(cls, form, bibjson):
+            if bibjson.title is not None:
+                form.title.data = bibjson.title
+            doi = bibjson.get_one_identifier("doi")
+            if doi is not None:
+                form.doi.data = doi
+            if bibjson.author is not None:
+                for a in bibjson.author:
+                    author = AuthorForm()
+                    if "name" in a:
+                        author.name = a["name"]
+                    else:
+                        author.name = ""
+                    if "affiliation" in a:
+                        author.affiliation = a["affiliation"]
+                    else:
+                        author.affiliation = ""
+                    form.authors.append_entry(author)
+            if bibjson.keywords is not None:
+                form.keywords.data = ""
+                for k in bibjson.keywords:
+                    if form.keywords.data == "":
+                        form.keywords.data = k
+                    else:
+                        form.keywords.data = form.keywords.data + "," + k
+            url = bibjson.get_single_url("fulltext")
+            if url is not None:
+                form.fulltext.data = url
+            if bibjson.month is not None:
+                form.publication_month.data = bibjson.month
+            if bibjson.year is not None:
+                form.publication_year.data = bibjson.year
+            pissn = bibjson.first_pissn
+            if pissn is not None:
+                form.pissn.data = pissn
+            eissn = bibjson.first_eissn
+            if eissn is not None:
+                form.eissn.data = eissn
+            if bibjson.volume is not None:
+                form.volume.data = bibjson.volume
+            if bibjson.number is not None:
+                form.number.data = bibjson.number
+            if bibjson.start_page is not None:
+                form.start.data = bibjson.start_page
+            if bibjson.end_page is not None:
+                form.end.data = bibjson.end_page
 

@@ -17,6 +17,7 @@ from portality import models
 from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen
 from portality.formcontext.fields import DOAJSelectField
 from portality import regex
+from portality.crosswalks import article_form
 
 ##########################################################################
 ## Forms and related features for Article metadata
@@ -58,7 +59,7 @@ class ArticleForm(Form):
         if "id" in kwargs:
             a = models.Article.pull(kwargs["id"])
             bibjson = a.bibjson()
-            self.populate_form_with_data(bibjson)
+            article_form.ArticleFormXWalk.obj2form(self, bibjson)
 
         try:
             if not current_user.is_anonymous:
@@ -75,52 +76,7 @@ class ArticleForm(Form):
             # probably you are loading the class from the command line
             pass
 
-    def populate_form_with_data(self, bibjson):
-        if bibjson.title is not None:
-            self.title.data = bibjson.title
-        doi = bibjson.get_one_identifier("doi")
-        if doi is not None:
-            self.doi.data = doi
-        if bibjson.author is not None:
-            for a in bibjson.author:
-                author = AuthorForm()
-                if "name" in a:
-                    author.name = a["name"]
-                else:
-                    author.name = ""
-                if "affiliation" in a:
-                    author.affiliation = a["affiliation"]
-                else:
-                    author.affiliation = ""
-                self.authors.append_entry(author)
-        if bibjson.keywords is not None:
-            self.keywords.data = ""
-            for k in bibjson.keywords:
-                if self.keywords.data == "":
-                    self.keywords.data = k
-                else:
-                    self.keywords.data = self.keywords.data + "," + k
-        url = bibjson.get_single_url("fulltext")
-        if url is not None:
-            self.fulltext.data = url
-        if bibjson.month is not None:
-            self.publication_month.data = bibjson.month
-        if bibjson.year is not None:
-            self.publication_year.data = bibjson.year
-        pissn = bibjson.first_pissn
-        if pissn is not None:
-            self.pissn.data = pissn
-        eissn = bibjson.first_eissn
-        if eissn is not None:
-            self.eissn.data = eissn
-        if bibjson.volume is not None:
-            self.volume.data = bibjson.volume
-        if bibjson.number is not None:
-            self.number.data = bibjson.number
-        if bibjson.start_page is not None:
-            self.start.data = bibjson.start_page
-        if bibjson.end_page is not None:
-            self.end.data = bibjson.end_page
+
 ##########################################################################
 ## Editor Group Forms
 ##########################################################################
