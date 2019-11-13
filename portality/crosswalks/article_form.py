@@ -93,32 +93,6 @@ class ArticleFormXWalk(object):
 
     @classmethod
     def obj2form(cls, id):
-        forminfo = {}
-        a = models.Article.pull(id)
-        bib = a.bibjson()
 
-        forminfo["title"] = bib.title if bib.title is not None else ""
-        doi = bib.get_one_identifier("doi")
-        forminfo["doi"] = doi if doi is not None else ""
-        forminfo["authors"] = []
-        for author in bib.author:
-            forminfo["authors"].append({"name": author["name"], "affiliation": author["affiliation"]})
-        forminfo["abstract"] = bib.abstract if bib.abstract is not None else ""
-        forminfo["keywords"] = []
-        for keyword in bib.keywords:
-            forminfo["keywords"].append(keyword)
-        fulltext = bib.get_single_url("fullurl")
-        forminfo["fulltext"] = fulltext if fulltext is not None else ""
-        forminfo["publication_month"] = "01"
-        forminfo["publication_year"] = "1111"
-        pissn = bib.get_one_identifier("pissn")
-        forminfo["pissn"] = pissn if pissn is not None else ""
-        eissn = bib.get_one_identifier("eissn")
-        forminfo["eissn"] = eissn if eissn is not None else ""
-        forminfo["volume"] = 1
-        forminfo["number"] = 1
-        forminfo["start"] = 10
-        forminfo["end"] = 15
-
-        return forminfo
+        return
 
