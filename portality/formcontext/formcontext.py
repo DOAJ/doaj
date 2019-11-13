@@ -9,7 +9,6 @@ from portality import constants
 from portality import models, app_email, util
 from portality.core import app
 from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
-from portality.crosswalks import article_form
 from portality.lcc import lcc_jstree
 from portality.ui.messages import Messages
 
@@ -606,6 +605,7 @@ class JournalFormFactory(object):
             return ReadOnlyJournal(source=source, form_data=form_data)
         elif role == "bulk_edit":
             return ManEdBulkEdit(source=source, form_data=form_data)
+
 
 class ManEdApplicationReview(ApplicationContext):
     """
@@ -1415,6 +1415,7 @@ class PublisherUpdateRequestReadOnly(PrivateContext):
         # no application status (this is a journal) or editorial info (it's not even in the form) to set
         pass
     """
+
 ### Journal form contexts ###
 
 class ManEdJournalReview(PrivateContext):
