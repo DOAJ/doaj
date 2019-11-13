@@ -168,7 +168,7 @@ def article_page(article_id):
         # if job_id is not None and job_id != "":
         #     job = models.BackgroundJob.pull(job_id)
         form = ArticleForm(id=article_id)
-        return render_template("formcontext/maned_article_review.html", form=form, source=ap)
+        return render_template("admin/edit_article_metadata.html", form=form, source=ap)
     elif request.method == "POST":
         fc = formcontext.ArticleFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
         if fc.validate():
