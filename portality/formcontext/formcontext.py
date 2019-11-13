@@ -9,6 +9,7 @@ from portality import constants
 from portality import models, app_email, util
 from portality.core import app
 from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
+from portality.crosswalks import article_form
 from portality.lcc import lcc_jstree
 from portality.ui.messages import Messages
 
@@ -1427,34 +1428,25 @@ class ManEdArticleReview(PrivateContext):
     Managing Editor's Article Review form.  Should be used in a context where the form warrants full
     admin privileges.  It will permit doing every action.
     """
-    def make_renderer(self):
-        self.renderer = render.ManEdJournalReviewRenderer()
 
     def set_template(self):
         self.template = "formcontext/maned_article_review.html"
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise FormContextException("You cannot edit a not-existent journal")
+            raise FormContextException("You cannot edit a not-existent article")
 
         return super(ManEdArticleReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
-            **kwargs)
-
-    def blank_form(self):
-        self.form = forms.ManEdApplicationReviewForm()
-
-    def data2form(self):
-        self.form = forms.ManEdJournalReviewForm(formdata=self.form_data)
-        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+            **kwargs,
+            form=self.source)
 
     def source2form(self):
-        self.form = forms.ManEdJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
-        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self.form = forms.ManEdArticleReviewForm(data=article_form.ArticleFormXWalk.obj2form(self.source))
 
     def form2target(self):
-        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
+        self.target = article_form.ArticleFormXWalk.crosswalk_form(self.form)
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this

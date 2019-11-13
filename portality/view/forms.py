@@ -31,7 +31,6 @@ start_year = app.config.get("METADATA_START_YEAR", datetime.now().year - 15)
 YEAR_CHOICES = [(str(y), str(y)) for y in range(datetime.now().year + 1, start_year - 1, -1)]
 MONTH_CHOICES = [("1", "01"), ("2", "02"), ("3", "03"), ("4", "04"), ("5", "05"), ("6", "06"), ("7", "07"), ("8", "08"), ("9", "09"), ("10", "10"), ("11", "11"), ("12", "12")]
 
-
 class AuthorForm(Form):
     name = StringField("Name", [validators.Optional()])
     affiliation = StringField("Affiliation", [validators.Optional()])
@@ -56,9 +55,18 @@ class ArticleForm(Form):
 
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)
+        if "id" in kwargs:
+            a = models.Article.pull(kwargs["id"])
+            bibjson = a.bibjson()
+            self.populate_form_with_data(bibjson)
+
         try:
             if not current_user.is_anonymous:
-                issns = models.Journal.issns_by_owner(current_user.id)
+                if "admin" in current_user.role:
+                    journal = models.Journal.find_by_issn(bibjson.first_eissn)[0]
+                    issns = models.Journal.issns_by_owner(journal.owner)
+                else:
+                    issns = models.Journal.issns_by_owner(current_user.id)
                 ic = [("", "Select an ISSN")] + [(i,i) for i in issns]
                 self.pissn.choices = ic
                 self.eissn.choices = ic
@@ -67,7 +75,52 @@ class ArticleForm(Form):
             # probably you are loading the class from the command line
             pass
 
-
+    def populate_form_with_data(self, bibjson):
+        if bibjson.title is not None:
+            self.title.data = bibjson.title
+        doi = bibjson.get_one_identifier("doi")
+        if doi is not None:
+            self.doi.data = doi
+        if bibjson.author is not None:
+            for a in bibjson.author:
+                author = AuthorForm()
+                if "name" in a:
+                    author.name = a["name"]
+                else:
+                    author.name = ""
+                if "affiliation" in a:
+                    author.affiliation = a["affiliation"]
+                else:
+                    author.affiliation = ""
+                self.authors.append_entry(author)
+        if bibjson.keywords is not None:
+            self.keywords.data = ""
+            for k in bibjson.keywords:
+                if self.keywords.data == "":
+                    self.keywords.data = k
+                else:
+                    self.keywords.data = self.keywords.data + "," + k
+        url = bibjson.get_single_url("fulltext")
+        if url is not None:
+            self.fulltext.data = url
+        if bibjson.month is not None:
+            self.publication_month.data = bibjson.month
+        if bibjson.year is not None:
+            self.publication_year.data = bibjson.year
+        pissn = bibjson.first_pissn
+        if pissn is not None:
+            self.pissn.data = pissn
+        eissn = bibjson.first_eissn
+        if eissn is not None:
+            self.eissn.data = eissn
+        if bibjson.volume is not None:
+            self.volume.data = bibjson.volume
+        if bibjson.number is not None:
+            self.number.data = bibjson.number
+        if bibjson.start_page is not None:
+            self.start.data = bibjson.start_page
+        if bibjson.end_page is not None:
+            self.end.data = bibjson.end_page
 ##########################################################################
 ## Editor Group Forms
 ##########################################################################

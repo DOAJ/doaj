@@ -18,8 +18,9 @@ from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_b
 from portality.bll.doaj import DOAJ
 from portality.formcontext import emails
 from portality.ui.messages import Messages
+from portality.crosswalks import article_form
 
-from portality.view.forms import EditorGroupForm, MakeContinuation
+from portality.view.forms import EditorGroupForm, MakeContinuation, ArticleForm
 from portality.background import BackgroundSummary
 
 blueprint = Blueprint('admin', __name__)
@@ -151,7 +152,7 @@ def article_endpoint(article_id):
 def article_page(article_id):
     if not current_user.has_role("edit_article"):
         abort(401)
-    ap = models.Journal.pull(article_id)
+    ap = models.Article.pull(article_id)
     if ap is None:
         abort(404)
 
@@ -159,15 +160,15 @@ def article_page(article_id):
     try:
         lockinfo = lock.lock("article", article_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/article_locked.html", article=ap, lock=l.lock, edit_article_page=True)
+        return render_template("admin/article_locked.html", article=ap, lock=l.lock, edit_article_page=True)    #TODO: create article_locked page
 
     if request.method == "GET":
-        job = None
-        job_id = request.values.get("job")
-        if job_id is not None and job_id != "":
-            job = models.BackgroundJob.pull(job_id)
-        fc = formcontext.ArticleFormFactory.get_form_context(role="admin", source=ap)
-        return fc.render_template(edit_article_page=True, lock=lockinfo, job=job)
+        # job = None
+        # job_id = request.values.get("job")
+        # if job_id is not None and job_id != "":
+        #     job = models.BackgroundJob.pull(job_id)
+        form = ArticleForm(id=article_id)
+        return render_template("formcontext/maned_article_review.html", form=form, source=ap)
     elif request.method == "POST":
         fc = formcontext.ArticleFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
         if fc.validate():

@@ -1,10 +1,205 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "publisher/publisher_base.html" %}
 
-</body>
-</html>
+{% block publisher_content %}
+
+<div class="row">
+    <div class="col-md-12">
+
+        {% if there_were_errors %}
+            <h4 class="red">There is a problem with the submitted form.</h4>
+        {% endif %}
+
+        {% from "_formhelpers.html" import render_field_horizontal %}
+        {% from "_formhelpers.html" import render_field %}
+
+        <form method="post" action="{{ url_for('publisher.metadata') }}" class="form-horizontal" id="article_metadata_form">
+            <fieldset>
+                {{ render_field_horizontal(form.title, style="width: 400px", placeholder="Enter the article title here") }}
+                {{ render_field_horizontal(form.doi, style="width: 300px", placeholder="10.1234/article-32") }}
+
+                <div class="form-group{% if author_error %} error{% endif %}">
+                    <label class="control-label col-md-3">Author(s) <span class="red">*</span></label>
+                    <div class="col-md-9">
+                    {% for subfield in form.authors %}
+                        <div style="margin-bottom: 10px" id="{{subfield.short_name}}-container">
+                        {% for field in subfield.form %}
+                            {{field.label.text | safe}}&nbsp;{{field(placeholder=field.label.text)}}
+                        {% endfor %}
+                        <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="btn btn-danger remove_button">
+                          <i class="glyphicon glyphicon-remove"></i>
+                        </button>
+                        </div>
+                    {% endfor %}
+                    <input type="submit" class="btn btn-info" name="more_authors" value="Add More Authors">
+                    {% if author_error %}
+                    <ul class="errors">
+                        <li>Please provide at least one author</li>
+                    </ul>
+                    {% endif %}
+                    </div>
+                </div>
+
+                {{ render_field_horizontal(form.abstract, classes="form-control", style="width: 400px; height: 200px", placeholder="Enter the abstract here") }}
+                {{ render_field_horizontal(form.keywords, style="width: 400px", placeholder="Enter some keywords for the article") }}
+                {{ render_field_horizontal(form.fulltext, style="width: 400px", placeholder="URL to the fulltext of the article") }}
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">Publication Date</label>
+                    <div class="col-md-9">
+                        {{form.publication_month(style="width: 75px")}}
+                        {{form.publication_year(style="width: 100px")}}
+                    </div>
+                </div>
+
+                {{ render_field_horizontal(form.pissn, style="width: 250px", required=True) }}
+                {{ render_field_horizontal(form.eissn, style="width: 250px", required=True) }}
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">Journal</label>
+                    <div class="col-md-9">
+                        Volume&nbsp;{{form.volume(style="width: 75px", placeholder="Vol")}}&nbsp;&nbsp;&nbsp;&nbsp;
+                        Issue Number&nbsp;{{form.number(style="width: 75px", placeholder="Issue")}}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">Page(s)</label>
+                    <div class="col-md-9">
+                        Start&nbsp;{{form.start(style="width: 75px", placeholder="Start")}}&nbsp;&nbsp;&nbsp;&nbsp;
+                        End&nbsp;{{form.end(style="width: 75px", placeholder="End")}}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3"><button class="btn btn-success" type="submit">Add Article</button></div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+$(document).ready(function() {
+
+    function prepAuthorContainer(params) {
+        var ne = params.element;
+        var reset = params.reset_value;
+        var number = params.number;
+
+        ne.id = 'authors-' + number + '-container';
+
+        ne = $(ne);
+        ne.find('[id^=authors-]').each( function () {
+            var ce = $(this);
+
+            // reset the value
+            if (reset) {
+                ce.val('')
+            }
+
+            // set the id as requestsed
+            items = ce.attr('id').split('-');
+            var id = 'authors-' + number + '-' + items[2];
+
+            // set both the id and the name to the new id, as per wtforms requirements
+            ce.attr('id', id);
+            ce.attr('name', id);
+        });
+
+        // we also need to update the remove button
+        ne.find("[id^=remove_authors-]").each(function() {
+            var ce = $(this);
+
+            // update the id as above - saving us a closure again
+            items = ce.attr('id').split('-');
+            var id = 'remove_authors-' + number;
+
+            // set both the id and the name to the new id
+            ce.attr('id', id);
+            ce.attr('name', id);
+        })
+    }
+
+    function showHideFirstRemoveButton() {
+        // Hide delete button when there's just one author
+        if ($('[id^=authors-][id$="container"]').length === 1) {
+            $('#remove_authors-0').css('visibility', 'hidden')
+        } else {
+            $('#remove_authors-0').css('visibility', 'visible')
+        }
+    }
+
+    function removeAuthor() {
+        event.preventDefault();
+
+        var id = $(this).attr("id");
+        var short_name = id.split("_")[1];
+        var container = short_name + "-container";
+
+        $("#" + container).remove();
+
+        var count = 0;
+        $('[id^=authors-][id$="container"]').each(function() {
+            prepAuthorContainer({
+                element : this,
+                number: count,
+                reset_value: false
+            });
+            count++;
+        });
+
+        showHideFirstRemoveButton()
+    }
+
+    $('input[name=more_authors]').click( function(event) {
+        event.preventDefault();
+
+        // get the last author div in the list
+        var all_e = $('[id^=authors-][id$="container"]');
+        var e = all_e.last();
+
+        // make a clone of the last author div
+        var ne = e.clone()[0];
+
+        // extract the last author's number from the div id and increment it
+        var items = ne.id.split('-');
+        var number = parseInt(items[1]);
+        number = number + 1;
+
+        // increment all the numbers
+        prepAuthorContainer({
+            element : ne,
+            number : number,
+            reset_value : true
+        });
+
+        e.after(ne);
+
+        var rem_b = $(".remove_button");
+        rem_b.unbind("click");
+        rem_b.click(removeAuthor);
+        if (all_e.length === 1){
+            $('#remove_authors-1').css('visibility', 'visible')
+        }
+
+        showHideFirstRemoveButton()
+	});
+
+    $(".remove_button").click(removeAuthor);
+
+    $("#keywords").select2({
+        minimumInputLength: 1,
+        tags: [],
+        tokenSeparators: [","]
+    });
+
+    $("#pissn").select2();
+    $("#eissn").select2()
+
+})
+</script>
+{% endblock %}
