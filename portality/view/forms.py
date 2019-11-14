@@ -58,9 +58,11 @@ class ArticleForm(Form):
         super(ArticleForm, self).__init__(*args, **kwargs)
         if "id" in kwargs:
             a = models.Article.pull(kwargs["id"])
-            bibjson = a.bibjson()
-            article_form.ArticleFormXWalk.obj2form(self, bibjson)
             self.id = kwargs["id"]
+            if ("method" not in kwargs or kwargs["method"] != "post"):
+                bibjson = a.bibjson()
+                article_form.ArticleFormXWalk.obj2form(self, bibjson)
+
 
         try:
             if not current_user.is_anonymous:

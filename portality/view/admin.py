@@ -177,8 +177,7 @@ def article_page(article_id):
         return render_template("admin/edit_article_metadata.html", form=form, source=ap)
 
     elif request.method == "POST":
-        ap = models.Article.pull(article_id)
-        form = ArticleForm(request.form, id=article_id)
+        form = ArticleForm(request.form, id=article_id, method="post")
 
         # first we need to do any server-side form modifications which
         # the user might request by pressing the add/remove authors buttons
