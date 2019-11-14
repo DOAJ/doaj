@@ -15,6 +15,9 @@ from functools import reduce
 class NoJournalException(Exception):
     pass
 
+class NoValidOwnerException(Exception):
+    pass
+
 
 class Article(DomainObject):
     __type__ = "article"
@@ -591,6 +594,34 @@ class Article(DomainObject):
         self._generate_index()
         return super(Article, self).save(*args, **kwargs)
 
+    def get_owner(self):
+        b = self.bibjson()
+        article_issns = b.get_identifiers(b.P_ISSN)
+        article_issns += b.get_identifiers(b.E_ISSN)
+        owners = []
+
+        seen_journal_issns = {}
+        for issn in article_issns:
+            journals = Journal.find_by_issn(issn)
+            if journals is not None and len(journals) > 0:
+                for j in journals:
+                    owners.append(j.owner)
+                    if j.owner not in seen_journal_issns:
+                        seen_journal_issns[j.owner] = []
+                    seen_journal_issns[j.owner] += j.bibjson().issns()
+
+        # deduplicate the list of owners
+        owners = list(set(owners))
+
+        # no owner means we can't confirm
+        if len(owners) == 0:
+            raise NoValidOwnerException
+
+        # multiple owners means ownership of this article is confused
+        if len(owners) > 1:
+            return NoValidOwnerException
+
+        return owners[0]
 
 class ArticleBibJSON(GenericBibJSON):
 

@@ -50,6 +50,12 @@ class Account(DomainObject, UserMixin):
             return None
 
     @classmethod
+    def pull_by_name(cls, name):
+        res = cls.query(q='name:"' + name + '"')
+        if res.get('hits', {}).get('total', 0) == 1:
+            return cls(**res['hits']['hits'][0]['_source'])
+
+    @classmethod
     def get_by_reset_token(cls, reset_token, not_expired=True):
         res = cls.query(q='reset_token.exact:"' + reset_token + '"')
         obs = [hit.get("_source") for hit in res.get("hits", {}).get("hits", [])]

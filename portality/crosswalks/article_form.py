@@ -126,12 +126,12 @@ class ArticleFormXWalk(object):
                 form.publication_month.data = bibjson.month
             if bibjson.year is not None:
                 form.publication_year.data = bibjson.year
-            pissn = bibjson.first_pissn
-            if pissn is not None:
-                form.pissn.data = pissn
-            eissn = bibjson.first_eissn
-            if eissn is not None:
-                form.eissn.data = eissn
+            pissn = bibjson.get_identifiers(bibjson.P_ISSN)
+            if len(pissn) > 0:
+                form.pissn.data = pissn[0]
+            eissn = bibjson.get_identifiers(bibjson.E_ISSN)
+            if len(eissn) > 0:
+                form.eissn.data = eissn[0]
             if bibjson.volume is not None:
                 form.volume.data = bibjson.volume
             if bibjson.number is not None:
@@ -140,4 +140,6 @@ class ArticleFormXWalk(object):
                 form.start.data = bibjson.start_page
             if bibjson.end_page is not None:
                 form.end.data = bibjson.end_page
+            if bibjson.abstract is not None:
+                form.abstract.data = bibjson.abstract
 

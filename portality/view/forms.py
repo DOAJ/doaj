@@ -60,18 +60,19 @@ class ArticleForm(Form):
             a = models.Article.pull(kwargs["id"])
             bibjson = a.bibjson()
             article_form.ArticleFormXWalk.obj2form(self, bibjson)
+            self.id = kwargs["id"]
 
         try:
             if not current_user.is_anonymous:
-                if "admin" in current_user.role:
-                    journal = models.Journal.find_by_issn(bibjson.first_eissn)[0]
-                    issns = models.Journal.issns_by_owner(journal.owner)
+                if "admin" in current_user.role and "id" in kwargs :
+                    issns = models.Journal.issns_by_owner(a.get_owner())
                 else:
                     issns = models.Journal.issns_by_owner(current_user.id)
                 ic = [("", "Select an ISSN")] + [(i,i) for i in issns]
                 self.pissn.choices = ic
                 self.eissn.choices = ic
-        except:
+        except Exception as e:
+            print (str(e))
             # not logged in, and current_user is broken
             # probably you are loading the class from the command line
             pass

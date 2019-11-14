@@ -6,6 +6,8 @@ from flask_login import current_user, login_required
 
 from werkzeug.datastructures import MultiDict
 
+from portality.bll.exceptions import ArticleMergeConflict
+from portality.crosswalks.article_form import ArticleFormXWalk
 from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
 
@@ -145,6 +147,14 @@ def article_endpoint(article_id):
     resp.mimetype = "application/json"
     return resp
 
+def _validate_authors(form, require=1):
+    counted = 0
+    for entry in form.authors.entries:
+        name = entry.data.get("name")
+        if name is not None and name != "":
+            counted += 1
+    return counted >= require
+
 @blueprint.route("/article/<article_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
@@ -163,26 +173,61 @@ def article_page(article_id):
         return render_template("admin/article_locked.html", article=ap, lock=l.lock, edit_article_page=True)    #TODO: create article_locked page
 
     if request.method == "GET":
-        # job = None
-        # job_id = request.values.get("job")
-        # if job_id is not None and job_id != "":
-        #     job = models.BackgroundJob.pull(job_id)
         form = ArticleForm(id=article_id)
         return render_template("admin/edit_article_metadata.html", form=form, source=ap)
+
     elif request.method == "POST":
-        fc = formcontext.ArticleFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
-        if fc.validate():
-            try:
-                fc.finalise()
-                flash('Article updated.', 'success')
-                for a in fc.alert:
-                    flash_with_url(a, "success")
-                return redirect(url_for("admin.article_page", article_id=ap.id, _anchor='done'))
-            except formcontext.FormContextException as e:
-                flash(str(e))
-                return redirect(url_for("admin.journal_page", article_id=ap.id, _anchor='cannot_edit'))
+        ap = models.Article.pull(article_id)
+        form = ArticleForm(request.form, id=article_id)
+
+        # first we need to do any server-side form modifications which
+        # the user might request by pressing the add/remove authors buttons
+        more_authors = request.values.get("more_authors")
+        remove_author = None
+        for v in list(request.values.keys()):
+            if v.startswith("remove_authors"):
+                remove_author = v.split("-")[1]
+
+        # if the user wants more authors, add an extra entry
+        if more_authors:
+            form.authors.append_entry()
+            return render_template("admin/edit_article_metadata.html", form=form)
+
+        # if the user wants to remove an author, do the various back-flips required
+        if remove_author is not None:
+            keep = []
+            while len(form.authors.entries) > 0:
+                entry = form.authors.pop_entry()
+                if entry.short_name == "authors-" + remove_author:
+                    break
+                else:
+                    keep.append(entry)
+            while len(keep) > 0:
+                form.authors.append_entry(keep.pop().data)
+            return render_template("admin/edit_article_metadata.html", form=form)
+
+        # if we get to here, then this is the full submission, and we need to
+        # validate and return
+        enough_authors = _validate_authors(form)
+        if form.validate():
+            # if the form validates, then we have to do our own bit of validation,
+            # which is to check that there is at least one author supplied
+            if not enough_authors:
+                return render_template("admin/edit_article_metadata.html", form=form, author_error=True)
+            else:
+                xwalk = ArticleFormXWalk()
+                art = xwalk.crosswalk_form(form)
+                articleService = DOAJ.articleService()
+                try:
+                    articleService.create_article(art, current_user._get_current_object(), add_journal_info=True)
+                    Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
+                    form = ArticleForm(id=article_id)
+                    return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id)
+                except ArticleMergeConflict:
+                    Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
+                    return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id)
         else:
-            return fc.render_template(edit_article_page=True, lock=lockinfo)
+            return render_template("admin/edit_article_metadata.html", form=form, author_error=not enough_authors, article_id=article_id)
 
 
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])

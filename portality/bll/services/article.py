@@ -3,6 +3,8 @@ from portality import models
 from portality.bll import exceptions
 from portality.ui.messages import Messages
 
+from flask_login import current_user
+
 from datetime import datetime
 
 
@@ -102,8 +104,9 @@ class ArticleService(object):
 
         return False
 
-    def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
+    def create_article(self, article, account = None, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False):
+
         """
         Create an individual article in the database
 
@@ -135,7 +138,7 @@ class ArticleService(object):
         self.is_acceptable(article)
 
         if limit_to_account:
-            legit = self.is_legitimate_owner(article, account.id)
+            legit = "admin" in account.role or self.is_legitimate_owner(article, account.id)
             if not legit:
                 owned, shared, unowned, unmatched = self.issn_ownership_status(article, account.id)
                 return {"success" : 0, "fail" : 1, "update" : 0, "new" : 0, "shared" : shared, "unowned" : unowned, "unmatched" : unmatched}
@@ -144,7 +147,10 @@ class ArticleService(object):
         # or an update
         is_update = 0
         if duplicate_check:
-            duplicate = self.get_duplicate(article, account.id)
+            if "admin" in current_user.role:
+                duplicate = self.get_duplicate(article, article.get_owner())
+            else:
+                duplicate = self.get_duplicate(article, account.id)
             if duplicate is not None:
                 if merge_duplicate:
                     is_update  = 1
@@ -373,13 +379,17 @@ class ArticleService(object):
             {"arg" : owner, "instance" : str, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
-        # Get the owner's ISSNs
-        issns = []
-        if owner is not None:
-            issns = models.Journal.issns_by_owner(owner)
-
         # We'll need the article bibjson a few times
         b = article.bibjson()
+
+        # Get the owner's ISSNs
+        issns = []              #TODO: this issns should be by article not by owner if admin
+        if "admin" in current_user.role:
+            issns = models.Journal.issns_by_owner(article.get_owner())
+        elif owner is not None:
+            issns = models.Journal.issns_by_owner(owner)
+
+
 
         # if we get more than one result, we'll record them here, and then at the end
         # if we haven't got a definitive match we'll pick the most likely candidate
