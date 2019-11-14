@@ -69,8 +69,7 @@ class Messages(object):
 
     @classmethod
     def flash_with_param(cls, message, category="error", **kwargs):
-        message += ": "
         for key, value in kwargs.items():
             if key != "message" or key != "category":
-                message = message + (" {0} = {1},".format(key, value))
+                message = message + (" {0}: {1},".format(key, value))
         flash(message, category)

@@ -325,7 +325,7 @@ class ArticleService(object):
         if len(dup) > 1:
             raise exceptions.ArticleMergeConflict(Messages.EXCEPTION_ARTICLE_MERGE_CONFLICT)
         if len(dup) == 1:
-            raise exceptions.ArticleExists(Messages.EXCEPTION_ARTICLE_OVERRIDE)
+            raise exceptions.ArticleExists(duplicate_id=dup[0]["id"])
         if dup:
             return dup.pop()
         else:

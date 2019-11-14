@@ -226,7 +226,7 @@ def article_page(article_id):
                     Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
                     return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id)
                 except ArticleExists as e:
-                    Messages.flash_with_param(message=Messages.EXCEPTION_ARTICLE_OVERRIDE, article_id=e.article_id)
+                    Messages.flash_with_param(message=Messages.EXCEPTION_ARTICLE_OVERRIDE, duplicate_id=e.duplicate_id)
                     return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id)
 
         else:

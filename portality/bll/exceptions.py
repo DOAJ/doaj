@@ -67,8 +67,8 @@ class ArticleMergeConflict(Exception):
     pass
 
 class ArticleExists(Exception):
-    def __init__(self, article_id):
-        self.article_id = article_id
+    def __init__(self, duplicate_id):
+        self.duplicate_id = duplicate_id
     """
     Exception to raise when the update is going to override another article
     """
