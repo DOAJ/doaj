@@ -5,7 +5,7 @@ from portality.lib import dataobj
 from portality import models
 # from portality.article import XWalk
 from portality.bll.doaj import DOAJ
-from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable
+from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, ArticleExists
 
 from copy import deepcopy
 
@@ -78,6 +78,8 @@ class ArticlesCrudApi(CrudApi):
             result = articleService.create_article(am, account, add_journal_info=True)
         except ArticleMergeConflict as e:
             raise Api400Error(str(e))
+        except ArticleExists:
+            pass
         except ArticleNotAcceptable as e:
             raise Api400Error("; ".join(e.errors))
 

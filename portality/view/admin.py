@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 
 from werkzeug.datastructures import MultiDict
 
-from portality.bll.exceptions import ArticleMergeConflict
+from portality.bll.exceptions import ArticleMergeConflict, ArticleExists
 from portality.crosswalks.article_form import ArticleFormXWalk
 from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
@@ -225,6 +225,10 @@ def article_page(article_id):
                 except ArticleMergeConflict:
                     Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
                     return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id)
+                except ArticleExists as e:
+                    Messages.flash_with_param(message=Messages.EXCEPTION_ARTICLE_OVERRIDE, article_id=e.article_id)
+                    return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id)
+
         else:
             return render_template("admin/edit_article_metadata.html", form=form, author_error=not enough_authors, article_id=article_id)
 

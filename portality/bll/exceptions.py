@@ -66,6 +66,13 @@ class ArticleMergeConflict(Exception):
     """
     pass
 
+class ArticleExists(Exception):
+    def __init__(self, article_id):
+        self.article_id = article_id
+    """
+    Exception to raise when the update is going to override another article
+    """
+
 class IngestException(Exception):
     def __init__(self, *args, **kwargs):
         self.stack = None

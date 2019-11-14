@@ -47,6 +47,7 @@ class Messages(object):
     EXCEPTION_DETECT_DUPLICATE_NO_ID = "The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated"
     EXCEPTION_ARTICLE_MERGE_CONFLICT = "The article matched multiple existing articles as duplicates, and we cannot tell which one to update"
     EXCEPTION_NO_DOI_NO_FULLTEXT = "The article must have a DOI and/or a Full-Text URL"
+    EXCEPTION_ARTICLE_OVERRIDE = "Article with this URL and DOI already exists. Cannot update the article. If you sure you want to override it please delete the other article first."
 
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
@@ -65,3 +66,11 @@ class Messages(object):
     @classmethod
     def flash_with_url(cls, message, category):
         flash(message, category + '+contains-url')
+
+    @classmethod
+    def flash_with_param(cls, message, category="error", **kwargs):
+        message += ": "
+        for key, value in kwargs.items():
+            if key != "message" or key != "category":
+                message = message + (" {0} = {1},".format(key, value))
+        flash(message, category)

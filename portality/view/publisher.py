@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from portality.core import app
 from portality import models
 from portality.bll import DOAJ
-from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict
+from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, ArticleExists
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.formcontext import formcontext
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
@@ -235,6 +235,8 @@ def metadata():
                 except ArticleMergeConflict:
                     Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
                     return render_template('publisher/metadata.html', form=form)
+                except ArticleExists:
+                    pass
         else:
             return render_template('publisher/metadata.html', form=form, author_error=not enough_authors)
 

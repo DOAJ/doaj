@@ -61,6 +61,8 @@ class ArticleService(object):
                                              dry_run=True)
             except exceptions.ArticleMergeConflict:
                 raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
+            except exceptions.ArticleExists:
+                pass
 
             success += result.get("success", 0)
             fail += result.get("fail", 0)
@@ -322,6 +324,8 @@ class ArticleService(object):
         dup = self.get_duplicates(article, owner, max_results=2)
         if len(dup) > 1:
             raise exceptions.ArticleMergeConflict(Messages.EXCEPTION_ARTICLE_MERGE_CONFLICT)
+        if len(dup) == 1:
+            raise exceptions.ArticleExists(Messages.EXCEPTION_ARTICLE_OVERRIDE)
         if dup:
             return dup.pop()
         else:
@@ -386,8 +390,6 @@ class ArticleService(object):
         issns = []
         if owner is not None:
             issns = models.Journal.issns_by_owner(owner)
-
-
 
         # if we get more than one result, we'll record them here, and then at the end
         # if we haven't got a definitive match we'll pick the most likely candidate
