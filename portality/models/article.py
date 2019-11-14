@@ -58,7 +58,7 @@ class Article(DomainObject):
         if issns is not None and len(issns) > 0:
             duplicate_articles = []
             for g in issn_groups:
-                q = DuplicateArticleQuery(issns=g,
+                q = DuplicateArticleQuery( # issns=g,
                                             publisher_record_id=publisher_record_id,
                                             doi=doi,
                                             urls=urls,

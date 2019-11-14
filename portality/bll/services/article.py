@@ -148,7 +148,7 @@ class ArticleService(object):
         is_update = 0
         if duplicate_check:
             if "admin" in current_user.role:
-                duplicate = self.get_duplicate(article, article.get_owner())
+                duplicate = self.get_duplicate(article)
             else:
                 duplicate = self.get_duplicate(article, account.id)
             if duplicate is not None:
@@ -383,10 +383,8 @@ class ArticleService(object):
         b = article.bibjson()
 
         # Get the owner's ISSNs
-        issns = []              #TODO: this issns should be by article not by owner if admin
-        if "admin" in current_user.role:
-            issns = models.Journal.issns_by_owner(article.get_owner())
-        elif owner is not None:
+        issns = []
+        if owner is not None:
             issns = models.Journal.issns_by_owner(owner)
 
 
