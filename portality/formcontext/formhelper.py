@@ -143,6 +143,7 @@ class FormHelperBS3(object):
             for k, v in kwargs.iteritems():
                 if k in ["class", "style", "disabled"] or k.startswith("data-"):
                     render_args[k] = v
+                render_args["autocomplete"] = "new-password"    # always turn off autocompletion at the field level
             frag += field(**render_args) # FIXME: this is probably going to do some weird stuff
 
             # FIXME: field.value isn't always set

@@ -7,7 +7,7 @@
 {% set heading_object_type = 'Journal' %}
 {% include 'formcontext/_lockable_header.html' %}
 
-<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
+<form autocomplete="off" method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
     {% if form_context.errors %}
     <h4 class="red form-status">There is a problem with the submitted form.</h4>
     {% endif %}
