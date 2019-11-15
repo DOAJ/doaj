@@ -63,7 +63,8 @@ $.extend(true, doaj, {
 
         editArticle : function (val, resultobj, renderer) {
             if (!resultobj.suggestion && resultobj.bibjson.journal) {
-                var result = '<a class="edit_article_link" href="';
+                var result = ' | '
+                result += '<a class="edit_article_link" href="';
                 result += doaj.adminJournalArticleSearchConfig.articleEditUrl;
                 result += resultobj['id'];
                 result += '" target="_blank"';
