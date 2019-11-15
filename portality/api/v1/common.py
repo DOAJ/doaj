@@ -56,7 +56,7 @@ class Api(object):
         return template
 
     @classmethod
-    def _build_swag_response(cls, template, api_key_optional_override=None):
+    def _build_swag_response(cls, template, api_key_optional_override=None, api_key_override=None):
         """
         Construct the swagger response structure upon a template
         :param template
@@ -65,10 +65,11 @@ class Api(object):
         """
         template = deepcopy(template)
         cls._add_swag_tag(template)
-        if api_key_optional_override is not None:
-            cls._add_api_key(template, optional=api_key_optional_override)
-        elif hasattr(cls, 'API_KEY_OPTIONAL'):
-            cls._add_api_key(template, optional=cls.API_KEY_OPTIONAL)
+        if api_key_override is not False:
+            if api_key_optional_override is not None:
+                cls._add_api_key(template, optional=api_key_optional_override)
+            elif hasattr(cls, 'API_KEY_OPTIONAL'):
+                cls._add_api_key(template, optional=cls.API_KEY_OPTIONAL)
         return template
 
 

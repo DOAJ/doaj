@@ -65,34 +65,16 @@ class TestCrudJournal(DoajTestCase):
         with self.assertRaises(Api404Error):
             a = JournalsCrudApi.retrieve("ijsidfawefwefw", account=None)
 
-    def test_04_retrieve_private_journal_success(self):
-        # set up all the bits we need
-        data = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
-        j = models.Journal(**data)
-        j.save()
-        time.sleep(2)
-
-        account = models.Account()
-        account.set_id(j.owner)
-        account.set_name("Tester")
-        account.set_email("test@test.com")
-
-        # call retrieve on the object
-        a = JournalsCrudApi.retrieve(j.id, account)
-
-        # check that we got back the object we expected
-        assert isinstance(a, OutgoingJournal)
-        assert a.id == j.id
-
-    def test_05_retrieve_private_journal_fail(self):
+    def test_04_retrieve_withdrawn_journal_fail(self):
         # set up all the bits we need
         data = JournalFixtureFactory.make_journal_source(in_doaj=False, include_obsolete_fields=True)
         j = models.Journal(**data)
-        j.save()
-        time.sleep(2)
+        j.save(blocking=True)
+
+        # there are various modes, they should all fail
 
         # no user
-        with self.assertRaises(Api401Error):
+        with self.assertRaises(Api404Error):
             a = JournalsCrudApi.retrieve(j.id, None)
 
         # wrong user
@@ -101,8 +83,17 @@ class TestCrudJournal(DoajTestCase):
         with self.assertRaises(Api404Error):
             a = JournalsCrudApi.retrieve(j.id, account)
 
-        # non-existant journal
+        # the owner
+        account = models.Account()
+        account.set_id(j.owner)
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        with self.assertRaises(Api404Error):
+            a = JournalsCrudApi.retrieve(j.id, account)
+
+        # non-existent journal
         account = models.Account()
         account.set_id(j.id)
         with self.assertRaises(Api404Error):
             a = JournalsCrudApi.retrieve("ijsidfawefwefw", account)
+
