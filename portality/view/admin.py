@@ -166,17 +166,11 @@ def article_page(article_id):
     if ap is None:
         abort(404)
 
-    # attempt to get a lock on the object
-    try:
-        lockinfo = lock.lock("article", article_id, current_user.id)
-    except lock.Locked as l:
-        return render_template("admin/article_locked.html", article=ap, lock=l.lock, edit_article_page=True)    #TODO: create article_locked page
-
     form = ArticleForm(id=article_id)
     form_context = formcontext.ManEdArticleReview(ap)
 
     if request.method == "GET":
-        return render_template("admin/edit_article_metadata.html", form=form, lock=lockinfo, source=ap, form_context=form_context)
+        return render_template("admin/edit_article_metadata.html", form=form, source=ap, form_context=form_context)
 
     elif request.method == "POST":
         form = ArticleForm(request.form, id=article_id, method="post")

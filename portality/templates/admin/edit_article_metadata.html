@@ -4,7 +4,18 @@
 {% set object_type = 'article' %}
 {% set heading_object_type = 'Article' %}
 {% set form_context = form_context %}
-{% include 'formcontext/_lockable_header.html' %}
+
+<div class="row" style="margin-bottom: 20px">
+    <div class="col-md-9">
+        <h1>{{ heading_object_type }}: {{form_context.source.bibjson().title}}</h1>
+        {% if form_context.source.last_updated %}
+          <h4>Last updated: {{form_context.source.last_updated}}</h4>
+        {% endif %}
+        {% if form_context.source.current_journal %}
+            <h4 style="margin-top: 1em;"><a href="{{ url_for('doaj.journal_readonly', journal_id=form_context.source.current_journal) }}" target="_blank">View associated journal</a></h4>
+        {% endif %}
+    </div>
+</div>
 
 <div class="row">
 <div class="col-md-12">
