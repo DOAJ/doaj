@@ -1416,8 +1416,21 @@ class PublisherUpdateRequestReadOnly(PrivateContext):
         pass
     """
 
-### Journal form contexts ###
+class ManEdArticleReview(PrivateContext):
+    def __init__(self, source):
+        super().__init__(source)
+        self._source = source
 
+    @property
+    def source(self):
+        return self._source
+
+    @source.setter
+    def source(self, value):
+        self._source = value
+
+
+### Journal form contexts ###
 class ManEdJournalReview(PrivateContext):
     """
     Managing Editor's Journal Review form.  Should be used in a context where the form warrants full

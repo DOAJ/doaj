@@ -5,19 +5,25 @@ from portality.view.forms import AuthorForm
 class ArticleFormXWalk(object):
     format_name = "form"
 
-    def crosswalk_form(self, form, add_journal_info=True, limit_to_owner=None):
-        article = models.Article()
-        bibjson = article.bibjson()
+    def crosswalk_form(self, form, add_journal_info=True, limit_to_owner=None, id=None):
+        if id is not None:
+            article = models.Article.pull(id)
+            bibjson = article.bibjson()
+        else:
+            article = models.Article()
+            bibjson = article.bibjson()
 
         # title
         bibjson.title = form.title.data
 
         # doi
         doi = form.doi.data
-        if doi is not None and doi != "":
+        if doi is not None:
             bibjson.add_identifier(bibjson.DOI, doi)
 
         # authors
+        if bibjson.author:
+            bibjson.author = []
         for subfield in form.authors:
             author = subfield.form.name.data
             aff = subfield.form.affiliation.data
@@ -26,18 +32,18 @@ class ArticleFormXWalk(object):
 
         # abstract
         abstract = form.abstract.data
-        if abstract is not None and abstract != "":
+        if abstract is not None:
             bibjson.abstract = abstract
 
         # keywords
         keywords = form.keywords.data
-        if keywords is not None and keywords != "":
+        if keywords is not None:
             ks = [k.strip() for k in keywords.split(",")]
             bibjson.set_keywords(ks)
 
         # fulltext
         ft = form.fulltext.data
-        if ft is not None and ft != "":
+        if ft is not None:
             bibjson.add_url(ft, "fulltext")
 
         # publication year/month
@@ -50,32 +56,32 @@ class ArticleFormXWalk(object):
 
         # pissn
         pissn = form.pissn.data
-        if pissn is not None and pissn != "":
+        if pissn is not None:
             bibjson.add_identifier(bibjson.P_ISSN, pissn)
 
         # eissn
         eissn = form.eissn.data
-        if eissn is not None and eissn != "":
+        if eissn is not None:
             bibjson.add_identifier(bibjson.E_ISSN, eissn)
 
         # volume
         volume = form.volume.data
-        if volume is not None and volume != "":
+        if volume is not None:
             bibjson.volume = volume
 
         # number
         number = form.number.data
-        if number is not None and number != "":
+        if number is not None:
             bibjson.number = number
 
         # start date
         start = form.start.data
-        if start is not None and start != "":
+        if start is not None:
             bibjson.start_page = start
 
         # end date
         end = form.end.data
-        if end is not None and end != "":
+        if end is not None:
             bibjson.end_page = end
 
         # add the journal info if requested

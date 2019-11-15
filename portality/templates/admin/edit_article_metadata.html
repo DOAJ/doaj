@@ -1,6 +1,10 @@
 {% extends "admin/admin_base.html" %}
 
 {% block content %}
+{% set object_type = 'article' %}
+{% set heading_object_type = 'Article' %}
+{% set form_context = form_context %}
+{% include 'formcontext/_lockable_header.html' %}
 
 <div class="row">
 <div class="col-md-12">

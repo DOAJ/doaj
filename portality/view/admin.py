@@ -20,7 +20,7 @@ from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_b
 from portality.bll.doaj import DOAJ
 from portality.formcontext import emails
 from portality.ui.messages import Messages
-from portality.crosswalks import article_form
+from portality.formcontext import formcontext
 
 from portality.view.forms import EditorGroupForm, MakeContinuation, ArticleForm
 from portality.background import BackgroundSummary
@@ -172,9 +172,11 @@ def article_page(article_id):
     except lock.Locked as l:
         return render_template("admin/article_locked.html", article=ap, lock=l.lock, edit_article_page=True)    #TODO: create article_locked page
 
+    form = ArticleForm(id=article_id)
+    form_context = formcontext.ManEdArticleReview(ap)
+
     if request.method == "GET":
-        form = ArticleForm(id=article_id)
-        return render_template("admin/edit_article_metadata.html", form=form, source=ap)
+        return render_template("admin/edit_article_metadata.html", form=form, lock=lockinfo, source=ap, form_context=form_context)
 
     elif request.method == "POST":
         form = ArticleForm(request.form, id=article_id, method="post")
@@ -190,7 +192,7 @@ def article_page(article_id):
         # if the user wants more authors, add an extra entry
         if more_authors:
             form.authors.append_entry()
-            return render_template("admin/edit_article_metadata.html", form=form)
+            return render_template("admin/edit_article_metadata.html", form=form, form_context=form_context)
 
         # if the user wants to remove an author, do the various back-flips required
         if remove_author is not None:
@@ -203,7 +205,7 @@ def article_page(article_id):
                     keep.append(entry)
             while len(keep) > 0:
                 form.authors.append_entry(keep.pop().data)
-            return render_template("admin/edit_article_metadata.html", form=form)
+            return render_template("admin/edit_article_metadata.html", form=form, form_context=form_context)
 
         # if we get to here, then this is the full submission, and we need to
         # validate and return
@@ -212,25 +214,25 @@ def article_page(article_id):
             # if the form validates, then we have to do our own bit of validation,
             # which is to check that there is at least one author supplied
             if not enough_authors:
-                return render_template("admin/edit_article_metadata.html", form=form, author_error=True)
+                return render_template("admin/edit_article_metadata.html", form=form, author_error=True, form_context=form_context)
             else:
                 xwalk = ArticleFormXWalk()
-                art = xwalk.crosswalk_form(form)
+                art = xwalk.crosswalk_form(form, id=article_id)
                 articleService = DOAJ.articleService()
                 try:
                     articleService.create_article(art, current_user._get_current_object(), add_journal_info=True)
                     Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
                     form = ArticleForm(id=article_id)
-                    return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id)
+                    return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id, form_context=form_context)
                 except ArticleMergeConflict:
                     Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
-                    return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id)
+                    return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id, form_context=form_context)
                 except ArticleExists as e:
                     Messages.flash_with_param(message=Messages.EXCEPTION_ARTICLE_OVERRIDE, duplicate_id=e.duplicate_id)
-                    return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id)
+                    return render_template("admin/edit_article_metadata.html", form=form, article_id=article_id, form_context=form_context)
 
         else:
-            return render_template("admin/edit_article_metadata.html", form=form, author_error=not enough_authors, article_id=article_id)
+            return render_template("admin/edit_article_metadata.html", form=form, author_error=not enough_authors, article_id=article_id, form_context=form_context)
 
 
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])

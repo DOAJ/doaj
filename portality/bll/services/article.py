@@ -324,7 +324,7 @@ class ArticleService(object):
         dup = self.get_duplicates(article, owner, max_results=2)
         if len(dup) > 1:
             raise exceptions.ArticleMergeConflict(Messages.EXCEPTION_ARTICLE_MERGE_CONFLICT)
-        if len(dup) == 1:
+        if len(dup) == 1 and dup[0]["id"] != article.id:
             raise exceptions.ArticleExists(duplicate_id=dup[0]["id"])
         if dup:
             return dup.pop()
