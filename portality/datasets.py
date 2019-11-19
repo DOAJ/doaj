@@ -126,7 +126,7 @@ def get_country_code(current_country, fail_if_not_found=False):
 
 def get_country_name(code):
     """ Get the name of a country from its two-character code """
-    return legacy_datasets.get_currency_name(code)
+    return legacy_datasets.get_country_name(code)
 '''
     try:
         return pycountry.countries.lookup(code).name

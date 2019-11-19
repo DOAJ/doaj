@@ -11,8 +11,8 @@ class TestDatasets(DoajTestCase):
 
     def test_01_countries(self):
         """ Use country information from our datasets """
-        assert datasets.get_country_code('united kingdom') == 'GB'
-        assert datasets.get_country_name('GB') == 'United Kingdom'
+        assert datasets.get_country_code('united kingdom') == 'GB', 'expected GB, received: {}'.format(datasets.get_country_name('GB'))
+        assert datasets.get_country_name('GB') == 'United Kingdom', 'expected United Kingdom, received: {}'.format(datasets.get_country_name('GB'))
 
         # If the country is unrecognised, we send it back unchanged.
         assert datasets.get_country_code('mordor') == 'mordor'
@@ -40,7 +40,8 @@ class TestDatasets(DoajTestCase):
 
     def test_03_languages(self):
         """ Use language information from our datasets """
-        #assert datasets.language_for('en') == [u'eng', u'', u'en', u'English', u'anglais'] # obsolete with pycountry
+        # assert datasets.language_for('en') == ['eng', '', 'en', 'English', 'anglais'] # obsolete with pycountry
         assert datasets.name_for_lang('en') == 'English'
         assert datasets.name_for_lang('eng') == 'English'
-        #assert datasets.name_for_lang('anglais') == u'English'  # doesnt work with pycountry languages
+        assert datasets.language_for('English') == ['eng', '', 'en', 'English', 'anglais'], 'Expected English, received: {}'.format(datasets.language_for('English'))
+        assert datasets.name_for_lang('anglais') == 'English'  , 'Expected English, received: {}'.format(datasets.name_for_lang('anglais'))
