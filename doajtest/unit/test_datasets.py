@@ -44,4 +44,4 @@ class TestDatasets(DoajTestCase):
         assert datasets.name_for_lang('en') == 'English'
         assert datasets.name_for_lang('eng') == 'English'
         assert datasets.language_for('English') == ['eng', '', 'en', 'English', 'anglais'], 'Expected English, received: {}'.format(datasets.language_for('English'))
-        assert datasets.name_for_lang('anglais') == 'English'  , 'Expected English, received: {}'.format(datasets.name_for_lang('anglais'))
+        assert datasets.name_for_lang('anglais') == 'English', 'Expected English, received: {}'.format(datasets.name_for_lang('anglais'))
