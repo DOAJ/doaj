@@ -236,7 +236,8 @@ def metadata():
                     Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
                     return render_template('publisher/metadata.html', form=form)
                 except ArticleExists:
-                    pass
+                    Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
+                    return render_template('publisher/metadata.html', form=form)
         else:
             return render_template('publisher/metadata.html', form=form, author_error=not enough_authors)
 
