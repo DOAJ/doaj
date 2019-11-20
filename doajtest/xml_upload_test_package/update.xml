@@ -28,6 +28,7 @@
         <affiliationsList>
             <affiliationName affiliationId="1"/>
         </affiliationsList>
+        <fullTextUrl>http://doaj.org/testing/100.pdf</fullTextUrl>
         <keywords>
             <keyword>Introduction</keyword>
             <keyword>Littérature amérindienne</keyword>

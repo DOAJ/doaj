@@ -14,7 +14,7 @@ from portality.ui.messages import Messages
 from portality import lock
 from portality.crosswalks.article_form import ArticleFormXWalk
 
-from huey.exceptions import QueueWriteException
+from huey.exceptions import TaskException
 
 import os, uuid
 from time import sleep
@@ -99,7 +99,7 @@ def update_request(journal_id):
                     Messages.flash_with_url(a, "success")
                 return redirect(url_for("publisher.updates_in_progress"))
             except formcontext.FormContextException as e:
-                Messages.flash(e.message)
+                Messages.flash(str(e))
                 return redirect(url_for("publisher.update_request", journal_id=journal_id, _anchor='cannot_edit'))
             finally:
                 if jlock is not None: jlock.delete()
@@ -156,7 +156,7 @@ def upload_file():
     try:
         job = IngestArticlesBackgroundTask.prepare(current_user.id, upload_file=f, schema=schema, url=url, previous=previous)
         IngestArticlesBackgroundTask.submit(job)
-    except (BackgroundException, QueueWriteException) as e:
+    except (BackgroundException, TaskException) as e:
         magic = str(uuid.uuid1())
         flash("An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the ID " + magic)
         app.logger.exception('File upload error. ' + magic)
@@ -193,7 +193,7 @@ def metadata():
         # the user might request by pressing the add/remove authors buttons
         more_authors = request.values.get("more_authors")
         remove_author = None
-        for v in request.values.keys():
+        for v in list(request.values.keys()):
             if v.startswith("remove_authors"):
                 remove_author = v.split("-")[1]
         

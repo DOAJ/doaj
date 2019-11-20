@@ -25,8 +25,8 @@ def editor_group_pull(cls, field, value):
     return eg
 
 mock_lcc_choices = [
-    (u'H', u'Social Sciences'),
-    (u'HB1-3840', u'--Economic theory. Demography')
+    ('H', 'Social Sciences'),
+    ('HB1-3840', '--Economic theory. Demography')
 ]
 
 def mock_lookup_code(code):
@@ -41,7 +41,8 @@ APPLICATION_FORM = ApplicationFixtureFactory.make_application_form(role="assed")
 
 ######################################################
 # Main test class
-######################################################
+######################################################        data = data.decode("utf-8")
+
 
 class TestAssedAppReview(DoajTestCase):
 

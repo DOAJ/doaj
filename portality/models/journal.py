@@ -2,6 +2,7 @@ from portality.dao import DomainObject
 from portality.core import app
 from portality.models import GenericBibJSON, shared_structs
 from portality.lib import dataobj, es_data_mapping, dates
+from portality import datasets
 
 from copy import deepcopy
 from datetime import datetime
@@ -156,7 +157,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
                 clusters[note["date"]] = [note]
             else:
                 clusters[note["date"]].append(note)
-        ordered_keys = sorted(clusters.keys(), reverse=True)
+        ordered_keys = sorted(list(clusters.keys()), reverse=True)
         ordered = []
         for key in ordered_keys:
             clusters[key].reverse()
@@ -268,7 +269,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         # add the keywords to the non-schema subjects (but not the classification)
         subjects += cbib.keywords
 
-        # get the bibjson object to conver the language to the english form
+        # get the bibjson object to convert the languages to the english form
         langs = cbib.language_name()
 
         # get the english name of the country
@@ -349,7 +350,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
             index["country"] = country
         if len(schema_codes) > 0:
             index["schema_code"] = schema_codes
-        if len(urls.keys()) > 0:
+        if len(list(urls.keys())) > 0:
             index.update(urls)
         if has_seal:
             index["has_seal"] = has_seal
@@ -732,7 +733,7 @@ class Journal(JournalLikeObject):
     def _calculate_has_apc(self):
         # work out of the journal has an apc
         has_apc = "No Information"
-        apc_field_present = len(self.bibjson().apc.keys()) > 0
+        apc_field_present = len(list(self.bibjson().apc.keys())) > 0
         if apc_field_present:
             has_apc = "Yes"
         elif self.is_ticked():
@@ -803,7 +804,6 @@ class JournalBibJSON(GenericBibJSON):
 
     def country_name(self):
         if self.country is not None:
-            from portality import datasets  # delayed import because of files to be loaded
             return datasets.get_country_name(self.country)
         return None
 
@@ -894,10 +894,7 @@ class JournalBibJSON(GenericBibJSON):
 
     def language_name(self):
         # copy the languages and convert them to their english forms
-        from portality import datasets  # delayed import, as it loads some stuff from file
-        if self.language is not None:
-            langs = self.language
-        langs = [datasets.name_for_lang(l) for l in langs]
+        langs = [datasets.name_for_lang(l) for l in self.language]
         uc = dataobj.to_unicode()
         langs = [uc(l) for l in langs]
         return list(set(langs))

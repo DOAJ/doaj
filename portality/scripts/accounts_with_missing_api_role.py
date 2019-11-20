@@ -6,9 +6,9 @@ with some useful account information.
 python accounts_with_missing_api_role.py -o accounts.csv
 ```
 """
-import esprit, codecs
+import csv
+import esprit
 from portality.core import app
-from portality.clcsv import UnicodeWriter
 from portality import models
 
 MISSING_API_ROLE = {
@@ -50,14 +50,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.out:
-        print "Please specify an output file path with the -o option"
+        print("Please specify an output file path with the -o option")
         parser.print_help()
         exit()
 
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
-    with codecs.open(args.out, "wb", "utf-8") as f:
-        writer = UnicodeWriter(f)
+    with open(args.out, "w", encoding="utf-8") as f:
+        writer = csv.writer(f)
         writer.writerow(["ID", "Name", "Email", "Created", "Last Updated"])
 
         for account in publishers_with_journals():

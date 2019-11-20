@@ -1,4 +1,4 @@
- import esprit
+import esprit
 
 from portality.core import app
 from portality import models
@@ -49,23 +49,23 @@ for s in esprit.tasks.scroll(conn, 'journal'):
             journal_edited_count += 1
             write_batch.append(journal_model.data)
     except DataStructureException:
-        print "Failed to create a journal model"
-        print "no model\t{0}".format(journal_model.id)
+        print("Failed to create a journal model")
+        print("no model\t{0}".format(journal_model.id))
         journal_failed_count += 1
         fa_journal.append(journal_model.id)
 
     # When we have enough, do some writing
     if len(write_batch) >= batch_size:
-        print "writing ", len(write_batch)
+        print("writing ", len(write_batch))
         models.Journal.bulk(write_batch)
         write_batch = []
 
 # Write the last part-batch to index
 if len(write_batch) > 0:
-    print "writing ", len(write_batch)
+    print("writing ", len(write_batch))
     models.Journal.bulk(write_batch)
 
-print "{0} journals were updated, {1} were left unchanged, {2} failed.".format(journal_edited_count, journal_unchanged_count, journal_failed_count)
+print("{0} journals were updated, {1} were left unchanged, {2} failed.".format(journal_edited_count, journal_unchanged_count, journal_failed_count))
 
 write_batch = []
 suggestion_edited_count = 0
@@ -87,20 +87,20 @@ for s in esprit.tasks.scroll(conn, 'suggestion'):
             suggestion_edited_count += 1
             write_batch.append(suggestion_model.data)
     except DataStructureException:
-        print "Failed to create a suggestion model"
-        print "no model\t{0}".format(suggestion_model.id)
+        print("Failed to create a suggestion model")
+        print("no model\t{0}".format(suggestion_model.id))
         suggestion_failed_count += 1
         fa_sug.append(suggestion_model.id)
 
     # When we have enough, do some writing
     if len(write_batch) >= batch_size:
-        print "writing ", len(write_batch)
+        print("writing ", len(write_batch))
         models.Suggestion.bulk(write_batch)
         write_batch = []
 
 # Write the last part-batch to index
 if len(write_batch) > 0:
-    print "writing ", len(write_batch)
+    print("writing ", len(write_batch))
     models.Suggestion.bulk(write_batch)
 
-print "{0} suggestions were updated, {1} were left unchanged, {2} failed.".format(suggestion_edited_count, suggestion_unchanged_count, suggestion_failed_count)
+print("{0} suggestions were updated, {1} were left unchanged, {2} failed.".format(suggestion_edited_count, suggestion_unchanged_count, suggestion_failed_count))

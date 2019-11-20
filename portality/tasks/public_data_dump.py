@@ -11,7 +11,7 @@ from portality.store import StoreFactory
 from portality.api.v1 import DiscoveryApi
 from portality.api.v1.common import ModelJsonEncoder
 
-import os, codecs, tarfile, json
+import os, tarfile, json
 
 
 class PublicDataDumpBackgroundTask(BackgroundTask):
@@ -73,7 +73,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
         # Scroll for article and/or journal
         for typ in types:
-            job.add_audit_message(dates.now() + u": Starting export of " + typ)
+            job.add_audit_message(dates.now() + ": Starting export of " + typ)
             job.save()
 
             out_dir = tmpStore.path(container, "doaj_" + typ + "_data_" + day_at_start, create_container=True, must_exist=False)
@@ -116,7 +116,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
                 job.save()
             except Exception as e:
                 tmpStore.delete_container(container)
-                raise BackgroundException("Error copying {0} data on complete {1}\n".format(typ, e.message))
+                raise BackgroundException("Error copying {0} data on complete {1}\n".format(typ, str(e)))
 
             store_url = mainStore.url(container, zipped_name)
             urls[typ] = store_url
@@ -126,19 +126,19 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             self._prune_container(mainStore, container, day_at_start, types)
             job.save()
 
-        self.background_job.add_audit_message(u"Removing temp store container {x}".format(x=container))
+        self.background_job.add_audit_message("Removing temp store container {x}".format(x=container))
         tmpStore.delete_container(container)
 
         # finally update the cache
         cache.Cache.cache_public_data_dump(urls["article"], sizes["article"], urls["journal"], sizes["journal"])
 
-        job.add_audit_message(dates.now() + u": done")
+        job.add_audit_message(dates.now() + ": done")
 
     def _finish_file(self, storage, container, filename, path, out_file, tarball):
         out_file.write("]")
         out_file.close()
 
-        self.background_job.add_audit_message(u"Adding file {filename} to compressed tar".format(filename=filename))
+        self.background_job.add_audit_message("Adding file {filename} to compressed tar".format(filename=filename))
         tarball.add(path, arcname=filename)
         storage.delete_file(container, filename)
 
@@ -148,9 +148,9 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         dn = os.path.dirname(output_file)
         if not os.path.exists(dn):
             os.makedirs(dn)
-        self.background_job.add_audit_message(u"Saving to file {filename}".format(filename=filename))
+        self.background_job.add_audit_message("Saving to file {filename}".format(filename=filename))
 
-        out_file = codecs.open(output_file, "wb", "utf-8")
+        out_file = open(output_file, "w", encoding="utf-8")
         out_file.write("[")
         return out_file, output_file, filename
 
@@ -163,7 +163,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
     def _copy_on_complete(self, mainStore, tmpStore, container, zipped_path):
         zipped_size = os.path.getsize(zipped_path)
         zipped_name = os.path.basename(zipped_path)
-        self.background_job.add_audit_message(u"Storing from temporary file {0} ({1} bytes) to container {2}".format(zipped_name, zipped_size, container))
+        self.background_job.add_audit_message("Storing from temporary file {0} ({1} bytes) to container {2}".format(zipped_name, zipped_size, container))
         mainStore.store(container, zipped_name, source_path=zipped_path)
         tmpStore.delete_file(container, zipped_name)
         return zipped_size
@@ -185,13 +185,13 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
         # only proceed if the files for today are present
         if found != len(files_for_today):
-            self.background_job.add_audit_message(u"Files not pruned. One of {0} is missing".format(",".join(files_for_today)))
+            self.background_job.add_audit_message("Files not pruned. One of {0} is missing".format(",".join(files_for_today)))
             return
 
         # go through the container files and remove any that are not today's files
         for container_file in container_files:
             if container_file not in files_for_today:
-                self.background_job.add_audit_message(u"Pruning old file {x} from storage container {y}".format(x=container_file, y=container))
+                self.background_job.add_audit_message("Pruning old file {x} from storage container {y}".format(x=container_file, y=container))
                 mainStore.delete_file(container, container_file)
 
     def cleanup(self):

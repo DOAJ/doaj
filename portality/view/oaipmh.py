@@ -121,7 +121,10 @@ class DateFormat(object):
 
 
 def make_set_spec(setspec):
-    return base64.urlsafe_b64encode(setspec).replace("=", "~")
+    s = setspec.replace('=', '~')
+    setspec_utf8 = s.encode("utf-8")
+    b = base64.urlsafe_b64encode(setspec_utf8)
+    return b
 
 
 def decode_set_spec(setspec):
@@ -173,7 +176,7 @@ def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None,
     if start_after is not None:
         d["a"] = start_after
     j = json.dumps(d)
-    b = base64.urlsafe_b64encode(j)
+    b = base64.urlsafe_b64encode(j.encode('utf-8'))
     return b
 
 
@@ -192,7 +195,7 @@ def decode_resumption_token(resumption_token):
     except TypeError:
         raise ResumptionTokenException()
     try:
-        d = json.loads(j)
+        d = json.loads(j.decode("utf-8"))   # convert the bytes to str for pre 3.5 compat
     except ValueError:
         raise ResumptionTokenException()
 
@@ -300,9 +303,9 @@ if sys.maxunicode >= 0x10000:  # not narrow build
                              (0xBFFFE, 0xBFFFF), (0xCFFFE, 0xCFFFF),
                              (0xDFFFE, 0xDFFFF), (0xEFFFE, 0xEFFFF),
                              (0xFFFFE, 0xFFFFF), (0x10FFFE, 0x10FFFF)])
-_illegal_ranges = ["%s-%s" % (unichr(low), unichr(high))
+_illegal_ranges = ["%s-%s" % (chr(low), chr(high))
                    for (low, high) in _illegal_unichrs]
-_illegal_xml_chars_RE = re.compile(u'[%s]' % u''.join(_illegal_ranges))
+_illegal_xml_chars_RE = re.compile('[%s]' % ''.join(_illegal_ranges))
 
 
 def valid_XML_char_ordinal(i):
@@ -316,7 +319,10 @@ def valid_XML_char_ordinal(i):
 
 def clean_unreadable(input_string):
     try:
-        return _illegal_xml_chars_RE.sub("", input_string)
+        if type(input_string) == str:
+            return _illegal_xml_chars_RE.sub("", input_string)
+        else:
+            return _illegal_xml_chars_RE.sub("", input_string.decode("utf-8"))
     except TypeError as e:
         app.logger.error("Unable to strip illegal XML chars from: {x}, {y}".format(x=input_string, y=type(input_string)))
         return None
@@ -1240,15 +1246,10 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         language = None
         if jlangs:
             if isinstance(jlangs, list):
-                jlangs = jlangs[0]
-            if jlangs in datasets.languages_3char_code_index:
-                language = jlangs.lower()
-            else:
-                char3 = datasets.languages_fullname_to_3char_code.get(jlangs)
-                if char3 is None:
-                    char3 = datasets.languages_dict.get(jlangs, {}).get("iso639-3_code")
-                if char3 is not None:
-                    language = char3.lower()
+                jlang = jlangs[0]
+            lang = datasets.language_for(jlang)
+            if lang is not None:
+                language = lang.alpha_3
 
         # if the language code lookup was successful, add it to the
         # result

@@ -1,8 +1,8 @@
 from portality.core import app
 from portality.lib import plugin
 
-import os, shutil, codecs, boto3
-from urllib import quote_plus
+import os, shutil, boto3
+from urllib.parse import quote_plus
 
 class StoreException(Exception):
     pass
@@ -175,7 +175,7 @@ class StoreLocal(Store):
         if source_path:
             shutil.copyfile(source_path, tpath)
         elif source_stream:
-            with codecs.open(tpath, "wb") as f:
+            with open(tpath, "w") as f:
                 f.write(source_stream.read())
 
     def exists(self, container_id):
@@ -190,9 +190,11 @@ class StoreLocal(Store):
         cpath = os.path.join(self.dir, container_id, target_name)
         if os.path.exists(cpath) and os.path.isfile(cpath):
             kwargs = {}
+            mode = "rb"
             if encoding is not None:
                 kwargs = {"encoding" : encoding}
-            f = codecs.open(cpath, "rb", **kwargs)
+                mode = "r"
+            f = open(cpath, mode, **kwargs)
             return f
 
     def url(self, container_id, target_name):

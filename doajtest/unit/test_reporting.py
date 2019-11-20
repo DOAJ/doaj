@@ -3,7 +3,7 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import ProvenanceFixtureFactory, ApplicationFixtureFactory
 
-import time, os, shutil, codecs, csv
+import time, os, shutil, csv
 from copy import deepcopy
 
 from portality import clcsv, models
@@ -46,7 +46,7 @@ APPLICATION_YEAR_OUTPUT = [
     ["Country", "2010", "2011", "2012", "2013", "2014", "2015"],
     ["Angola", 0, 1, 2, 3, 4, 5],
     ["Belarus", 6, 7, 8 , 9, 10, 0],
-    [u"Cambôdia", 11, 12, 13, 14, 15, 16]
+    ["Cambôdia", 11, 12, 13, 14, 15, 16]
 ]
 
 TMP_DIR = paths.rel2abs(__file__, "resources/reports")
@@ -67,7 +67,7 @@ class TestReporting(DoajTestCase):
         table = deepcopy(table)
         for row in table:
             for i in range(len(row)):
-                row[i] = unicode(row[i])
+                row[i] = str(row[i])
         return table
 
     def test_01_edits(self):
@@ -90,16 +90,15 @@ class TestReporting(DoajTestCase):
                 yearfile = o
 
         table_month = []
-        with codecs.open(monthfile) as f:
-            reader = csv.reader(f)
-            for row in reader:
-                table_month.append(row)
+        reader = csv.reader(open(monthfile, "r"))
+        for row in reader:
+            table_month.append(row)
 
         expected_month = self._as_output(MONTH_EDIT_OUTPUT)
         assert table_month == expected_month
 
         table_year = []
-        with codecs.open(yearfile) as f:
+        with open(yearfile, 'r') as f:
             reader = csv.reader(f)
             for row in reader:
                 table_year.append(row)
@@ -127,16 +126,32 @@ class TestReporting(DoajTestCase):
                 yearfile = o
 
         table_month = []
-        with codecs.open(monthfile) as f:
-            reader = csv.reader(f)
-            for row in reader:
-                table_month.append(row)
+
+        fi = open(monthfile, 'r')
+        data = fi.read()
+        fi.close()
+        fo = open(monthfile, 'w')
+        fo.write(data.replace('\0', ''))
+        fo.close()
+
+        fi = open(yearfile, 'r')
+        data = fi.read()
+        fi.close()
+        fo = open(yearfile, 'w')
+        fo.write(data.replace('\0', ''))
+        fo.close()
+
+        f = open(monthfile, "r")
+        reader = csv.reader(f)
+        for row in reader:
+            r = row
+            table_month.append(r)
 
         expected_month = self._as_output(MONTH_COMPLETE_OUTPUT)
         assert table_month == expected_month
 
         table_year = []
-        with codecs.open(yearfile) as f:
+        with open(yearfile) as f:
             reader = csv.reader(f)
             for row in reader:
                 table_year.append(row)
@@ -156,8 +171,8 @@ class TestReporting(DoajTestCase):
         assert os.path.exists(outfiles[0])
 
         table = []
-        with codecs.open(outfiles[0], "rb", "utf-8") as f:
-            reader = clcsv.UnicodeReader(f)
+        with open(outfiles[0], "r", encoding="utf-8") as f:
+            reader = csv.reader(f)
             for row in reader:
                 table.append(row)
 

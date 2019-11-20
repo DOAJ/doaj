@@ -65,9 +65,9 @@ class TestArticleCleanupSync(DoajTestCase):
         assert models.Article.count() == 3
 
         # run the sync/cleanup job
-        job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser")
-        job.save(blocking=True)
-        article_cleanup_sync.article_cleanup_sync(job.id)
+        job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser", write=True)
+        task = article_cleanup_sync.ArticleCleanupSyncBackgroundTask(job)
+        background.BackgroundApi.execute(task)
 
         time.sleep(2)
 
@@ -122,9 +122,9 @@ class TestArticleCleanupSync(DoajTestCase):
         time.sleep(1)
 
         # run the sync/cleanup job
-        job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser", prepall=True)
-        job.save(blocking=True)
-        article_cleanup_sync.article_cleanup_sync(job.id)
+        job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser", write=True, prepall=True)
+        task = article_cleanup_sync.ArticleCleanupSyncBackgroundTask(job)
+        background.BackgroundApi.execute(task)
 
         time.sleep(2)
 
@@ -209,9 +209,9 @@ class TestArticleCleanupSync(DoajTestCase):
         a4.save(blocking=True)
 
         # run the sync/cleanup job
-        job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser")
-        job.save(blocking=True)
-        article_cleanup_sync.article_cleanup_sync(job.id)
+        job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser", write=True)
+        task = article_cleanup_sync.ArticleCleanupSyncBackgroundTask(job)
+        background.BackgroundApi.execute(task)
 
         time.sleep(2)
 
