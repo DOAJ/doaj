@@ -40,7 +40,6 @@ FORMS = {
             "fields" : [
                 "boai"
             ],
-            "validate_by_group" : True  # should the validation run on the group before allowing the group to move on
         }
     },
     "fields": {
@@ -58,7 +57,7 @@ FORMS = {
             "help": {
                 "description": "",
                 "tooltip": "For a journal to be indexed in DOAJ, it must fulfil the BOAI definition of open access",
-                "doaj_compliance": "You must answer 'Yes'"
+                "doaj_criteria": "You must answer 'Yes'"
             },
             "validate": [
                 {"required_value" : {"value" : True}}
@@ -75,7 +74,7 @@ FORMS = {
         "oa_statement_url" : {
             "label" : "What is the URL for the journal's open access statement?",
             "input" : "text",
-            "conditional" : [{"id" : "boai", "value" : True}],
+            "conditional" : [{"field" : "boai", "value" : True}],
             "help": {
                 "description": "Must start with https://, http://, or www.",
                 "tooltip": """Here is an example of a suitable Open Access statement that meets our criteria:
@@ -84,7 +83,7 @@ FORMS = {
                         print, search, or link to the full texts of the articles, or use them for any other lawful
                         purpose, without asking prior permission from the publisher or the author. This is in accordance
                         with the BOAI definition of open access.""",
-                "doaj_compliance": "You must provide a URL"
+                "doaj_criteria": "You must provide a URL"
             },
             "validate" : [
                 "required",
@@ -98,6 +97,7 @@ FORMS = {
             "label" : "Country of Publisher",
             "input" : "select",
             "options" : "iso_country_list",     # means to get the list from a function
+            "multiple" : False,
             "help": {
                 "description": "",
                 "tooltip": """The country where the publisher carries out its business operations and is registered.""",
@@ -169,7 +169,8 @@ FORMS = {
         },
         "submission_time" : {
             "label" : "Average number of weeks between article submission & publication",
-            "input" : "integer",
+            "input" : "number",
+            "datatype" : "integer",
             "help": {
                 "description": "Enter a number"
             },
@@ -191,19 +192,7 @@ FORMS = {
                 {"display" : "Double blind peer review", "value" : "double_blind_peer_review"},
                 {"display" : "Post-publication peer review", "value" : "post_publication_peer_review"},
                 {"display" : "Open peer review", "value" : "open_peer_review"},
-                {"display" : "Other", "value" : "other",
-                    "subfields" : {
-                        "order" : ["peer_review_other"],
-                        "fields" : {
-                            "peer_review_other" : {
-                                "input" : "text",
-                                "asynchronous_warning" : [
-                                    {"warn_on_value" : {"value" : "None"}}
-                                ]
-                            }
-                        }
-                    }
-                }
+                {"display" : "Other", "value" : "other", "subfields" : ["peer_review_other"]}
             ],
             "help": {
                 "description": "Select all that apply",
@@ -213,13 +202,27 @@ FORMS = {
             "validate" : [
                 "required"
             ]
+        },
+        "peer_review_other": {
+            "input" : "text",
+            "asynchronous_warning" : [
+                {"warn_on_value" : {"value" : "None"}}
+            ]
         }
     }
 
 }
 
+def iso_country_list():
+    from portality.formcontext.choices import Choices
+    cl = []
+    for v, d in Choices.country():
+        cl.append({"display" : d, "value" : v})
+    return cl
+
 
 PYTHON_FUNCTIONS = {
+    "iso_country_list" : "portality.formcontext.form_definitions.iso_country_list",
     "required" : "portality.formcontext.validators.required",
     "is_url" : "portality.formcontext.validators.is_url",
     "all_urls_the_same" : "portality.formcontext.validators.all_urls_the_same",
@@ -243,3 +246,18 @@ JAVASCRIPT_FUNCTIONS = {
     "autocomplete" : "doaj.forms.widgets.autocomplete",
     "clickable_url" : "doaj.forms.widgets.clickable_url"
 }
+
+if __name__ == "__main__":
+    from portality.lib.formulaic import Formulaic, FormulaicException
+    import json
+
+    try:
+        f = Formulaic(FORMS, function_map=PYTHON_FUNCTIONS)
+        c = f.context("public")
+        print(json.dumps(c._definition, indent=2))
+        w = c.wtform()
+        for field in w:
+            print(field())
+    except FormulaicException as e:
+        print(e.message)
+        raise e
