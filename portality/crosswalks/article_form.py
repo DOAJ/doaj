@@ -19,6 +19,7 @@ class ArticleFormXWalk(object):
         # doi
         doi = form.doi.data
         if doi is not None:
+            bibjson.remove_identifiers(bibjson.DOI)
             bibjson.add_identifier(bibjson.DOI, doi)
 
         # authors
@@ -44,6 +45,7 @@ class ArticleFormXWalk(object):
         # fulltext
         ft = form.fulltext.data
         if ft is not None:
+            bibjson.remove_urls("fulltext")
             bibjson.add_url(ft, "fulltext")
 
         # publication year/month
@@ -57,11 +59,13 @@ class ArticleFormXWalk(object):
         # pissn
         pissn = form.pissn.data
         if pissn is not None:
+            bibjson.remove_identifiers(bibjson.P_ISSN)
             bibjson.add_identifier(bibjson.P_ISSN, pissn)
 
         # eissn
         eissn = form.eissn.data
         if eissn is not None:
+            bibjson.remove_identifiers(bibjson.E_ISSN)
             bibjson.add_identifier(bibjson.E_ISSN, eissn)
 
         # volume
