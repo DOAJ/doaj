@@ -464,6 +464,8 @@ class TestClient(DoajTestCase):
         gbj.add_identifier("doi", "10.1234/7")
         gbj.add_keyword("test")
         gbj.add_keyword("ONE") # make sure keywords are stored in lowercase
+        keyword = None  # make sure None keyword doesn't cause error
+        gbj.add_keyword(keyword)
         gbj.add_url("http://test", "test")
         gbj.add_subject("TEST", "first", "one")
 
@@ -477,10 +479,16 @@ class TestClient(DoajTestCase):
         gbj.remove_identifiers("doi")
         gbj.set_keywords("TwO") # make sure keywords are stored in lowercase
         gbj.set_subjects({"scheme" : "TEST", "term" : "first", "code" : "one"})
+        assert gbj.keywords == ["two"]
+
+        keywords = []
+        gbj.set_keywords(keywords)
+        keywords = None
+        gbj.set_keywords(keywords)
 
         assert len(gbj.get_identifiers()) == 2
         assert gbj.get_one_identifier("doi") is None
-        assert gbj.keywords == ["two"]
+
         assert len(gbj.subjects()) == 1
 
         gbj.remove_identifiers()
