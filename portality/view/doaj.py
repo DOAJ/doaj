@@ -1,7 +1,7 @@
 from flask import Blueprint, request, flash, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from jinja2.exceptions import TemplateNotFound
 
 from portality import dao
@@ -18,18 +18,6 @@ from portality.ui.messages import Messages
 
 import json
 import os
-
-import sys
-try:
-    if sys.version_info.major == 2 and sys.version_info.minor < 7:
-        from portality.ordereddict import OrderedDict
-except AttributeError:
-    if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-        from portality.ordereddict import OrderedDict
-    else:
-        from collections import OrderedDict
-else:
-    from collections import OrderedDict
 
 blueprint = Blueprint('doaj', __name__)
 
@@ -119,7 +107,7 @@ def search_post():
     if ref is None:
         abort(400)                                                                                # Referrer is required
     else:
-        return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(query)) + "&ref=" + urllib.quote(ref))
+        return redirect(url_for('.search') + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
 
 
 @blueprint.route("/subjects")

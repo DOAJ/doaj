@@ -136,6 +136,7 @@ class TestBLLUpdateRequest(DoajTestCase):
             if db_jlock == "no" and acc is not None:
                 assert not lock.has_lock("journal", jid, acc.id)
             elif db_jlock == "yes" and acc is not None:
+                l = lock.has_lock("journal", jid, acc.id)
                 assert lock.has_lock("journal", jid, acc.id)
 
             if db_alock == "no" and application.id is not None and acc is not None:

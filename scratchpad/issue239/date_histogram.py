@@ -1,6 +1,6 @@
 from portality import models
 from datetime import datetime
-import csv, requests, urllib, json
+import csv, requests, urllib.request, urllib.parse, urllib.error, json
 
 query = {
     "query" : { "bool" : {"must" : [{"term" : {"_type" : "article"}}]}},
@@ -22,7 +22,7 @@ query = {
 }
 
 base_url = "http://doaj.org/query/journal,article/_search"
-query_url = base_url + "?source=" + urllib.quote_plus(json.dumps(query))
+query_url = base_url + "?source=" + urllib.parse.quote_plus(json.dumps(query))
 resp = requests.get(query_url)
 j = resp.json()
 

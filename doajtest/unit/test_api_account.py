@@ -63,7 +63,7 @@ class TestAPIClient(DoajTestCase):
         with self.app_test.test_client() as t_client:
             # Check the authorised user can access our function, but the unauthorised one can't.
             response_authorised = t_client.get('/hello?api_key=' + a1_key)
-            assert response_authorised.data == "hello, world!"
+            assert response_authorised.data == b"hello, world!"
             assert response_authorised.status_code == 200
 
             response_denied = t_client.get('/hello?api_key=' + a2_key)
@@ -87,7 +87,7 @@ class TestAPIClient(DoajTestCase):
         with self.app_test.test_client() as t_client:
             # Check the authorised user can access our function, but the unauthorised one can't.
             response_authorised = t_client.get('/helloopt?api_key=' + a1_key)
-            assert response_authorised.data == "hello, world!"
+            assert response_authorised.data == b"hello, world!"
             assert response_authorised.status_code == 200
 
             response_denied = t_client.get('/helloopt?api_key=' + a2_key)
@@ -95,7 +95,7 @@ class TestAPIClient(DoajTestCase):
 
             # also check it's ok to not have a key at all
             response_authorised2 = t_client.get('/helloopt')
-            assert response_authorised2.data == "hello, world!"
+            assert response_authorised2.data == b"hello, world!"
             assert response_authorised2.status_code == 200
 
             # but if you do specify a key it needs to exist

@@ -40,7 +40,7 @@ fmulti = open(MULTI, "wb")
 multi_writer = csv.writer(fmulti)
 multi_writer.writerow(["Account ID", "Email", "Name", "Publisher"])
 
-print "processing accounts"
+print("processing accounts")
 for a in Account.iterall():
     id = a.id
     name = a.name
@@ -58,13 +58,13 @@ for a in Account.iterall():
         continue
 
     if name is not None:
-        name = unicode(name).encode("utf8", "replace")
+        name = str(name).encode("utf8", "replace")
     if name is None or name == "":
         name = "no name available"
-    publisher = unicode(publisher).encode("utf8", "replace")
+    publisher = str(publisher).encode("utf8", "replace")
     if email is not None and email != "":
         try:
-            email = unicode(email, "utf8")
+            email = str(email, "utf8")
         except: pass
         emails = [e.strip() for e in email.encode("utf8", "replace").split(",") if e is not None and e != ""]
         for e in emails:
@@ -128,7 +128,7 @@ fapp = open(APP, "wb")
 app_writer = csv.writer(fapp)
 app_writer.writerow(["Email", "Name", "Publisher", "Number of Applications"])
 
-print "processing suggestions"
+print("processing suggestions")
 for email, count in get_suggesters():
     suggs = get_suggestions(email)
     
@@ -149,14 +149,14 @@ for email, count in get_suggesters():
     publisher = ", ".join(publishers)
     
     if name is not None:
-        name = unicode(name).encode("utf8", "replace")
+        name = str(name).encode("utf8", "replace")
     if name is None or name == "":
         name = "no name available"
     
-    publisher = unicode(publisher).encode("utf8", "replace")
+    publisher = str(publisher).encode("utf8", "replace")
     
     try:
-        email = unicode(email, "utf8")
+        email = str(email, "utf8")
     except: pass
     emails = [e.strip() for e in email.encode("utf8", "replace").split(",") if e is not None and e != ""]
     for e in emails:

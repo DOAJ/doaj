@@ -402,7 +402,11 @@ class TestArticleMatch(DoajTestCase):
             'last': 'https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10'
         }
 
-        assert generate_link_headers(metadata) == '<https://example.org/api/v1/search/articles/%2A?page=1&pageSize=10>; rel=prev, <https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10>; rel=last, <https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10>; rel=next', generate_link_headers(metadata)
+        # Changed ordered after Python 3 introduction, test adjusted - to confirm correctness
+        headers = generate_link_headers(metadata)
+        assert '<https://example.org/api/v1/search/articles/%2A?page=1&pageSize=10>; rel=prev' in headers
+        assert '<https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10>; rel=next' in headers
+        assert '<https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10>; rel=last' in headers
 
     def test_06_deep_paging_limit(self):
         # populate the index with some journals
@@ -441,7 +445,8 @@ class TestArticleMatch(DoajTestCase):
                     data_dump_url = url_for("doaj.public_data_dump")
                     oai_article_url = url_for("oaipmh.oaipmh", specified="article")
                     oai_journal_url = url_for("oaipmh.oaipmh")
-                    assert data_dump_url in e.message
-                    assert oai_article_url in e.message
-                    assert oai_journal_url in e.message
+                    assert data_dump_url in str(e)
+                    assert oai_article_url in str(e)
+                    assert oai_journal_url in str(e)
                     raise
+

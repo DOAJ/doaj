@@ -18,7 +18,8 @@ class TestTOC(DoajTestCase):
         # Check we can handle invalid month
         a.bibjson().year = '12'
         a.bibjson().month = '0'
-        d = a.bibjson().get_publication_date()
+        bib = a.bibjson()
+        d = bib.get_publication_date()
         assert d == '2012-01-01T00:00:00Z'
 
         a.bibjson().year = '12'
@@ -99,8 +100,8 @@ class TestTOC(DoajTestCase):
         with self.app_test.test_client() as t_client:
             response = t_client.get('/toc/{}'.format(j.bibjson().get_preferred_issn()))
             assert response.status_code == 200
-            assert str(pissn) in response.data
-            assert str(eissn) in response.data
+            assert pissn in response.data.decode()
+            assert eissn in response.data.decode()
 
     def test_04_toc_correctly_uses_pissn(self):
         j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
@@ -115,7 +116,7 @@ class TestTOC(DoajTestCase):
         with self.app_test.test_client() as t_client:
             response = t_client.get('/toc/{}'.format(j.bibjson().get_preferred_issn()))
             assert response.status_code == 200
-            assert str(pissn) in response.data
+            assert pissn in response.data.decode()
 
     def test_05_toc_correctly_uses_eissn(self):
         j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
@@ -130,4 +131,4 @@ class TestTOC(DoajTestCase):
         with self.app_test.test_client() as t_client:
             response = t_client.get('/toc/{}'.format(j.bibjson().get_preferred_issn()))
             assert response.status_code == 200
-            assert str(eissn) in response.data
+            assert eissn in response.data.decode()

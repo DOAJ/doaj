@@ -160,7 +160,7 @@ class TestCrudArticle(DoajTestCase):
         data["admin"]["in_doaj"] = False
         data["created_date"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         ia = IncomingArticleDO(data)
-        assert isinstance(ia.bibjson.title, unicode)
+        assert isinstance(ia.bibjson.title, str)
 
         # now test some failures
 

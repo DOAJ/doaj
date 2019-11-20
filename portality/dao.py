@@ -1,11 +1,12 @@
-import UserDict, requests, uuid
+import requests, uuid
+from collections import UserDict
 from copy import deepcopy
 from datetime import datetime, timedelta
 import time
 import re
 
 from portality.core import app
-import urllib2
+import urllib.parse
 import json
 
 import esprit
@@ -22,7 +23,7 @@ class ElasticSearchWriteException(Exception):
     pass
 
 
-class DomainObject(UserDict.IterableUserDict, object):
+class DomainObject(UserDict, object):
     __type__ = None                                                       # set the type on the model that inherits this
 
     def __init__(self, **kwargs):
@@ -55,19 +56,19 @@ class DomainObject(UserDict.IterableUserDict, object):
     @classmethod
     def makeid(cls):
         """Create a new id for data object overwrite this in specific model types if required"""
-        return unicode(uuid.uuid4().hex)
+        return str(uuid.uuid4().hex)
 
     @property
     def id(self):
         rawid = self.data.get("id", None)
         if rawid is not None:
-            return unicode(rawid)
+            return str(rawid)
         return None
     
     def set_id(self, id=None):
         if id is None:
             id = self.makeid()
-        self.data["id"] = unicode(id)
+        self.data["id"] = str(id)
     
     @property
     def version(self):
@@ -130,12 +131,12 @@ class DomainObject(UserDict.IterableUserDict, object):
             try:
                 r = requests.post(url, data=d)
                 if r.status_code > 400:
-                    raise ElasticSearchWriteException(u"Error on ES save. Response code {0}".format(r.status_code))
+                    raise ElasticSearchWriteException("Error on ES save. Response code {0}".format(r.status_code))
                 else:
                     break  # everything is OK, so r should now be assigned to the result
 
             except requests.exceptions.ConnectionError:
-                app.logger.exception(u"Failed to connect to ES")
+                app.logger.exception("Failed to connect to ES")
                 attempt += 1
             except ElasticSearchWriteException:
                 try:
@@ -146,15 +147,15 @@ class DomainObject(UserDict.IterableUserDict, object):
                 # Retries depend on which end the error lies.
                 if 400 <= r.status_code < 500:
                     # Bad request, do not retry as it won't work. Fail with ElasticSearchWriteException.
-                    app.logger.exception(u"Bad Request to ES, save failed. Details: {0}".format(error_details))
+                    app.logger.exception("Bad Request to ES, save failed. Details: {0}".format(error_details))
                     raise
                 elif r.status_code >= 500:
                     # Server error, this could be temporary so we may want to retry
-                    app.logger.exception(u"Server Error from ES, retrying. Details: {0}".format(error_details))
+                    app.logger.exception("Server Error from ES, retrying. Details: {0}".format(error_details))
                     attempt += 1
             except Exception:
                 # if any other exception occurs, make sure it's at least logged.
-                app.logger.exception(u"Unhandled exception in save method of DAO")
+                app.logger.exception("Unhandled exception in save method of DAO")
                 raise
 
             # wait before retrying
@@ -162,8 +163,8 @@ class DomainObject(UserDict.IterableUserDict, object):
 
         if attempt > retries:
             raise DAOSaveExceptionMaxRetriesReached(
-                u"After {attempts} attempts the record with "
-                u"id {id} failed to save.".format(
+                "After {attempts} attempts the record with "
+                "id {id} failed to save.".format(
                     attempts=attempt, id=self.data['id']))
 
         if blocking:
@@ -241,7 +242,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                                      .format(out.text,
                                              out.status_code,
                                              out.reason,
-                                             e.message))
+                                             str(e)))
                 raise e
 
     @classmethod
@@ -732,7 +733,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                             return
             else:
                 if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
-                    raise BlockTimeOutException(u"Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
+                    raise BlockTimeOutException("Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
 
             time.sleep(sleep)
 
@@ -820,4 +821,4 @@ class Facetview2(object):
 
     @staticmethod
     def url_encode_query(query):
-        return urllib2.quote(json.dumps(query).replace(' ', ''))
+        return urllib.parse.quote(json.dumps(query).replace(' ', ''))

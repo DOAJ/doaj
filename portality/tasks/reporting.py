@@ -1,5 +1,4 @@
 from portality import models
-from portality.clcsv import UnicodeWriter
 from portality.lib import dates
 from portality import datasets
 from portality.core import app
@@ -9,7 +8,7 @@ from portality.tasks.redis_huey import main_queue, schedule
 from portality.app_email import email_archive
 from portality.decorators import write_required
 
-import codecs, os, shutil
+import os, shutil, csv
 
 
 def provenance_reports(fr, to, outdir):
@@ -30,8 +29,8 @@ def provenance_reports(fr, to, outdir):
         table = p.tabulate()
         outfile = os.path.join(outdir, p.filename(fr, to))
         outfiles.append(outfile)
-        with codecs.open(outfile, "wb", "utf-8") as f:
-            writer = UnicodeWriter(f)
+        with open(outfile, "w") as f:
+            writer = csv.writer(f)
             for row in table:
                 writer.writerow(row)
 
@@ -65,8 +64,8 @@ def content_reports(fr, to, outdir):
     outfiles = []
     outfile = os.path.join(outdir, filename)
     outfiles.append(outfile)
-    with codecs.open(outfile, "wb", "utf-8") as f:
-        writer = UnicodeWriter(f)
+    with open(outfile, "w", encoding="utf-8") as f:
+        writer = csv.writer(f)
         for row in table:
             writer.writerow(row)
 
@@ -74,8 +73,8 @@ def content_reports(fr, to, outdir):
 
 
 def _tabulate_time_entity_group(group, entityKey):
-    date_keys = group.keys()
-    date_keys.sort()
+    date_keys_unsorted = group.keys()
+    date_keys = sorted(date_keys_unsorted)
     table = []
     padding = []
     for db in date_keys:
@@ -282,25 +281,25 @@ class ContentByDate(object):
 
     def query(self):
         return {
-            "query" : {
-                "bool" : {
-                    "must" : [
-                        {"range" : {"created_date" : {"gt" : self.fr, "lte" : self.to}}}
+            "query": {
+                "bool": {
+                    "must": [
+                        {"range": {"created_date": {"gt": self.fr, "lte": self.to}}}
                     ]
                 }
             },
-            "size" : 0,
-            "aggs" : {
-                "years" : {
-                    "date_histogram" : {
-                        "field" : "created_date",
-                        "interval" : "year"
+            "size": 0,
+            "aggs": {
+                "years": {
+                    "date_histogram": {
+                        "field": "created_date",
+                        "interval": "year"
                     },
-                    "aggs" : {
-                        "countries" : {
-                            "terms" : {
-                                "field" : "bibjson.country.exact",
-                                "size" : 1000
+                    "aggs": {
+                        "countries": {
+                            "terms": {
+                                "field": "bibjson.country.exact",
+                                "size": 1000
                             }
                         }
                     }

@@ -74,7 +74,7 @@ class Choices(object):
         (NONE, NONE),
         ('Sherpa/Romeo', 'Sherpa/Romeo'),
         ('Dulcinea', 'Dulcinea'),
-        ('H\xc3\xa9lo\xc3\xafse'.decode('utf-8'), 'H\xc3\xa9lo\xc3\xafse'.decode('utf-8')),
+        ('Héloïse', 'Héloïse'),
         ('Diadorim', 'Diadorim'),
         (OTHER, OTHER)
     ]

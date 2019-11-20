@@ -3,7 +3,7 @@ from flask import Blueprint, request, redirect, url_for, render_template, abort
 from portality.models import OpenURLRequest
 from portality.lib import analytics
 from portality.core import app
-from urllib import unquote
+from urllib.parse import unquote
 
 blueprint = Blueprint('openurl', __name__)
 
@@ -14,8 +14,11 @@ def openurl():
     if len(request.values) == 0:
         abort(404)
 
+    # Decode and unquote the query string, which comes in as bytes.
+    qs = unquote(request.query_string.decode('utf-8'))
+
     # Validate the query syntax version and build an object representing it
-    parser_response = parse_query(query=unquote(request.query_string), req=request)
+    parser_response = parse_query(query=qs, req=request)
 
     # theoretically this can return None, so catch it
     if parser_response is None:
@@ -28,7 +31,7 @@ def openurl():
     # Log this request to analytics
     ga_event = analytics.GAEvent(category=app.config.get('GA_CATEGORY_OPENURL', 'OpenURL'),
                                  action=parser_response.genre,
-                                 label=unquote(request.query_string))
+                                 label=qs)
     ga_event.submit()
 
     # Get the OpenURLRequest object to issue a query and supply a url for the result
@@ -37,7 +40,6 @@ def openurl():
         return redirect(result_url)
     else:
         abort(404)
-
 
 def parse_query(query, req):
     """
@@ -57,7 +59,7 @@ def parse_query(query, req):
     rem_ns = lambda x: re.sub('rft.', '', x)
 
     # Pack the list of parameters into a dictionary, while un-escaping the string.
-    dict_params = {rem_ns(key): value for (key, value) in req.values.iteritems()}
+    dict_params = {rem_ns(key): value for (key, value) in req.values.items()}
 
     # Create an object to represent this OpenURL request.
     try:
@@ -83,7 +85,7 @@ def old_to_new(req):
     sub_title = lambda x: re.sub('^title', 'jtitle', x)
 
     # Add referent tags to each parameter, and change title tag using above function
-    rewritten_params = {"rft." + sub_title(key): value for (key, value) in req.values.iteritems()}
+    rewritten_params = {"rft." + sub_title(key): value for (key, value) in req.values.items()}
 
     # Add the rewritten parameters to the meta params
     params.update(rewritten_params)

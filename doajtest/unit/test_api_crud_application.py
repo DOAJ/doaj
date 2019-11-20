@@ -215,7 +215,7 @@ class TestCrudApplication(DoajTestCase):
             try:
                 a = ApplicationsCrudApi.create(data, publisher)
             except Api400Error as e:
-                assert e.message == "test exception"
+                assert str(e) == "test exception"
                 raise
         formcontext.FormContext.finalise = self.old_finalise
 
@@ -277,7 +277,7 @@ class TestCrudApplication(DoajTestCase):
             try:
                 a = ApplicationsCrudApi.create(data, publisher)
             except Api400Error as e:
-                assert e.message == "test exception"
+                assert str(e) == "test exception"
                 raise
         formcontext.FormContext.finalise = self.old_finalise
 
@@ -350,7 +350,7 @@ class TestCrudApplication(DoajTestCase):
         assert ia.bibjson.country == "BD"
         assert ia.bibjson.apc.currency == "BDT"
         assert ia.bibjson.allows_fulltext_indexing is True
-        assert isinstance(ia.bibjson.title, unicode)
+        assert isinstance(ia.bibjson.title, str)
         assert ia.bibjson.publication_time == 15
         assert "fr" in ia.bibjson.language
         assert "en" in ia.bibjson.language
@@ -610,7 +610,7 @@ class TestCrudApplication(DoajTestCase):
         # on the wrong id
         account.set_id("test")
         with self.assertRaises(Api404Error):
-            ApplicationsCrudApi.delete(u"adfasdfhwefwef", account)
+            ApplicationsCrudApi.delete("adfasdfhwefwef", account)
 
         # on one with a disallowed workflow status
         created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)

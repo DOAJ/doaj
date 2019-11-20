@@ -76,8 +76,8 @@ class IngestException(Exception):
 
         tb = sys.exc_info()[2]
         if self.inner is not None:
-            if self.inner_message is None and hasattr(self.inner, "message"):
-                self.inner_message = self.inner.message
+            if self.inner_message is None and self.inner.args[0] is not None:
+                self.inner_message = self.inner.args[0]
 
             if tb is not None:
                 self.stack = "".join(traceback.format_exception(self.inner.__class__, self.inner, tb))

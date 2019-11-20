@@ -82,7 +82,7 @@ class TestSnapshotClient(DoajTestCase):
 
         # Set up a mock responses for deleting the snapshots
         for s in SNAPSHOTS_LIST['snapshots']:
-            responses.add(responses.DELETE, self.snapshot_url + '/' + s['snapshot'], json={u"acknowledged": True}, status=200)
+            responses.add(responses.DELETE, self.snapshot_url + '/' + s['snapshot'], json={"acknowledged": True}, status=200)
 
         # Set the time to the day of the latest backup, and request a prune
         latest_fixture_date = datetime.utcfromtimestamp(SNAPSHOTS_LIST['snapshots'][-1]['start_time_in_millis'] / 1000)
@@ -100,7 +100,7 @@ class TestSnapshotClient(DoajTestCase):
         # Mock response for initiating a snapshot
         right_now = datetime.utcnow()
         slashtimestamp = datetime.strftime(right_now, "/%Y-%m-%d_%H%Mz")
-        responses.add(responses.PUT, self.snapshot_url + slashtimestamp, json={u"acknowledged": True}, status=200)
+        responses.add(responses.PUT, self.snapshot_url + slashtimestamp, json={"acknowledged": True}, status=200)
 
         # Request a new backup, check it has the right timestamp
         with freeze_time(right_now):
