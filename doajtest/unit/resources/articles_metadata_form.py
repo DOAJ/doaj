@@ -30,6 +30,21 @@ class ArticleMetadataFactory(object):
 
         return ImmutableMultiDict(form)
 
+    def update_article_doi(self, valid):
+        form = deepcopy(ARTICLE_METADATA_VALID_FORM)
+        if valid:
+            form["doi"] = '10.1111/article-0'
+        else:
+            form["doi"] = '10.1234/article'
+            form["doi"] = '10.1234/article'
+        form['pissn'] = list(filter(lambda identifier: identifier['type'] == 'pissn', self.article["bibjson"]["identifier"]))[0]["id"]
+        form["eissn"] = list(filter(lambda identifier: identifier['type'] == 'eissn', self.article["bibjson"]["identifier"]))[0]["id"]
+        form["fulltext"] = list(filter(lambda link: link['type'] == 'fulltext', self.article["bibjson"]["link"]))[0][
+            "url"]
+
+        return ImmutableMultiDict(form)
+
+
 ARTICLE_METADATA_VALID_FORM = {
     'title': 'New title',
     'authors-0-name': 'Agnieszka',

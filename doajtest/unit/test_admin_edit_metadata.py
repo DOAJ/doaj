@@ -78,6 +78,17 @@ class TestAdminEditMetadata(DoajTestCase):
     def test_update_fulltext_valid(self):
         source = ArticleMetadataFactory(article_source=self.a).update_article_fulltext(valid=True)
 
+        a1source = ArticleFixtureFactory.make_article_source(in_doaj=True)
+        a1source["id"] = 'aaaaaaaaa_article'
+        a1source["fulltext"] = "https://www.urltorepeat.com"
+        a1 = Article(**a1source)
+        b = a1.bibjson()
+        b.remove_urls("fulltext")
+        b.add_url( "fulltext", "https://www.urltorepeat.com")
+        b.remove_identifiers("doi")
+        b.add_identifier("10.1234/article", "doi")
+        a1.save(blocking=True)
+
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 self.login(t_client, "admin", "password123")
@@ -95,8 +106,13 @@ class TestAdminEditMetadata(DoajTestCase):
         a1source = ArticleFixtureFactory.make_article_source(in_doaj=True)
         a1source["id"]='aaaaaaaaa_article'
         a1source["fulltext"]="https://www.urltorepeat.com"
-        self.a1 = Article(**a1source)
-        self.a1.save(blocking=True)
+        a1 = Article(**a1source)
+        b = a1.bibjson()
+        b.remove_urls("fulltext")
+        b.add_url("https://www.urltorepeat.com", "fulltext")
+        b.remove_identifiers("doi")
+        b.add_identifier("10.1234/article", "doi")
+        a1.save(blocking=True)
 
 
         with self.app_test.test_request_context():
@@ -112,3 +128,60 @@ class TestAdminEditMetadata(DoajTestCase):
         assert b.get_single_url(
             "fulltext") == 'http://www.example.com/article', 'expected old url, received: {}'.format(
             b.get_single_url("fulltext"))
+
+    def test_update_doi_valid(self):
+        source = ArticleMetadataFactory(article_source=self.a).update_article_doi(valid=True)
+
+        a1source = ArticleFixtureFactory.make_article_source(in_doaj=True)
+        a1source["id"]='aaaaaaaaa_article'
+        a1source["fulltext"]="https://www.someurl.com"
+        a1source["doi"]='10.1234/article'
+        a1 = Article(**a1source)
+        b = a1.bibjson()
+        b.remove_urls("fulltext")
+        b.add_url("https://www.someurl.com", "fulltext")
+        b.remove_identifiers("doi")
+        b.add_identifier("10.1234/article", "doi")
+        a1.save(blocking=True)
+
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                self.login(t_client, "admin", "password123")
+                resp = t_client.post('/admin/article/' + self.a.id, data=dict(source))
+                assert resp.status_code == 200, "expected: 200, received: {}".format(resp.status)
+
+        a = Article.pull(self.a.id)
+        b = a.bibjson()
+        # expect new data
+        assert b.title == "New title", 'expect updated title, received: {}'.format(b.title)
+        assert b.get_one_identifier("doi") == '10.1111/article-0', 'expected new doi, received: {}'.format(b.get_single_identifier("doi"))
+
+    def test_update_doi_invalid(self):
+        source = ArticleMetadataFactory(article_source=self.a).update_article_doi(valid=False)
+
+        a1source = ArticleFixtureFactory.make_article_source(in_doaj=True)
+        a1source['id'] = 'aaaaaaaaa_article'
+        a1source["fulltext"] = "https://www.someurl.com"
+        a1source["doi"] = '10.1234/article'
+        a1 = Article(**a1source)
+        b = a1.bibjson()
+        b.remove_urls("fulltext")
+        b.add_url("fulltext", "https://www.someurl.com")
+        b.remove_identifiers("doi")
+        b.add_identifier(b.DOI, "10.1234/article")
+        a1.save(blocking=True)
+
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                self.login(t_client, "admin", "password123")
+                resp = t_client.post('/admin/article/' + self.a.id, data=dict(source))
+                assert resp.status_code == 200, "expected: 200, received: {}".format(resp.status)
+
+        a = Article.pull(self.a.id)
+        b = a.bibjson()
+        # expect old data
+        assert b.title == "Article Title", 'expect old title, received: {}'.format(b.title)
+        assert b.get_one_identifier("doi") == '10.0000/SOME.IDENTIFIER', 'expected old doi, received: {}'.format(
+            b.get_one_identifier("doi"))

@@ -20,16 +20,18 @@ class ArticleFormXWalk(object):
         doi = form.doi.data
         if doi is not None:
             bibjson.remove_identifiers(bibjson.DOI)
+        if doi is not "":
             bibjson.add_identifier(bibjson.DOI, doi)
 
         # authors
         if bibjson.author:
             bibjson.author = []
         for subfield in form.authors:
-            author = subfield.form.name.data
-            aff = subfield.form.affiliation.data
-            if author is not None and author != "":
-                bibjson.add_author(author, affiliation=aff)
+            if subfield.form.name.data is not "":
+                author = subfield.form.name.data
+                aff = subfield.form.affiliation.data
+                if author is not None and author != "":
+                    bibjson.add_author(author, affiliation=aff)
 
         # abstract
         abstract = form.abstract.data

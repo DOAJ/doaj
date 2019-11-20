@@ -1,3 +1,5 @@
+import json
+
 from portality.dao import DomainObject
 from portality.models import Journal, shared_structs
 from portality.models.bibjson import GenericBibJSON
@@ -84,7 +86,7 @@ class Article(DomainObject):
                                         start=start,
                                         should_match=should_match,
                                         size=size)
-            # print json.dumps(q.query())
+            print(json.dumps(q.query()))
 
             res = cls.query(q=q.query())
             return [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
