@@ -78,8 +78,6 @@ class ArticlesCrudApi(CrudApi):
             result = articleService.create_article(am, account, add_journal_info=True)
         except ArticleMergeConflict as e:
             raise Api400Error(str(e))
-        except ArticleExists as e:
-            raise Api400Error(str(e))
         except ArticleNotAcceptable as e:
             raise Api400Error("; ".join(e.errors))
 

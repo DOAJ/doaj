@@ -3,7 +3,7 @@ from portality import models
 import uuid, time
 from random import randint
 from portality.bll.doaj import DOAJ
-from portality.bll.exceptions import ArticleMergeConflict
+from portality.bll.exceptions import ArticleMergeConflict, ArticleExists
 from datetime import datetime
 
 
@@ -271,4 +271,4 @@ class TestArticleMatch(DoajTestCase):
         issns = [random_issn() for _ in range(2000)] + ["0000-0000"]
 
         dupes = models.Article.duplicates(issns=issns, doi="10.1234/duplicate")
-        assert len(dupes) == 1
+        assert len(dupes) == 1, "expected 1 duplicate, received {}".format(len(dupes))

@@ -61,8 +61,8 @@ class ArticleService(object):
                                              dry_run=True)
             except exceptions.ArticleMergeConflict:
                 raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
-            except exceptions.ArticleExists:
-                pass
+            # except exceptions.ArticleExists:
+            #     pass
 
             success += result.get("success", 0)
             fail += result.get("fail", 0)
@@ -149,10 +149,10 @@ class ArticleService(object):
         # or an update
         is_update = 0
         if duplicate_check:
-            if "admin" in current_user.role:
-                duplicate = self.get_duplicate(article)
-            else:
-                duplicate = self.get_duplicate(article, account.id)
+            # if current_user is not None and "admin" in current_user.role:
+            #     duplicate = self.get_duplicate(article)
+            # else:
+            duplicate = self.get_duplicate(article, account.id)
             if duplicate is not None:
                 if merge_duplicate:
                     is_update  = 1
@@ -321,12 +321,14 @@ class ArticleService(object):
             {"arg" : owner, "instance" : str, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
+        article.prep()
+
         dup = self.get_duplicates(article, owner, max_results=2)
         if len(dup) > 1:
             raise exceptions.ArticleMergeConflict(Messages.EXCEPTION_ARTICLE_MERGE_CONFLICT)
-        if len(dup) == 1 and dup[0]["id"] != article.id:
-            raise exceptions.ArticleExists(duplicate_id=dup[0]["id"])
-        if dup:
+        # if len(dup) == 1 and dup[0]["id"] != id:
+        #     raise exceptions.ArticleExists(duplicate_id=dup[0]["id"])
+        elif dup and dup[0]["id"] != article.id:
             return dup.pop()
         else:
             return None

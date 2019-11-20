@@ -58,7 +58,7 @@ class Article(DomainObject):
         if issns is not None and len(issns) > 0:
             duplicate_articles = []
             for g in issn_groups:
-                q = DuplicateArticleQuery( # issns=g,
+                q = DuplicateArticleQuery(  issns=g,
                                             publisher_record_id=publisher_record_id,
                                             doi=doi,
                                             urls=urls,
@@ -232,8 +232,8 @@ class Article(DomainObject):
             return doi
 
     def get_normalised_fulltext(self):
-        # if self.data.get("index", {}).get("fulltext") is not None:
-        #     return self.data["index"]["fulltext"]
+        if self.data.get("index", {}).get("fulltext") is not None:
+            return self.data["index"]["fulltext"]
         fulltexts = self.bibjson().get_urls(constants.LINK_TYPE_FULLTEXT)
         if len(fulltexts) == 0:
             return None
