@@ -67,7 +67,8 @@ initialise_index(app)
 # the other tiers' logos.
 SPONSORS = {
     'gold': {
-        'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'}
+        'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'},
+        'ieee': {'name' : 'IEEE', 'logo':'ieee.png', 'url':'https://www.ieee.org/'}
     },
     'silver': {
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'https://www.frontiersin.org'},
@@ -84,6 +85,7 @@ SPONSORS = {
         'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://publications.copernicus.org/'},
         'elsevier': {'name': 'Elsevier', 'logo': 'elsevier.svg', 'url': 'https://www.elsevier.com/'}
+
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
@@ -324,14 +326,21 @@ if 'api' in app.config['FEATURES']:
         )
 
 
-@app.errorhandler(404)
+@app.errorhandler(400)
 def page_not_found(e):
-    return render_template('404.html'), 404
-
+    return render_template('400.html'), 400
 
 @app.errorhandler(401)
 def page_not_found(e):
     return render_template('401.html'), 401
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
 
 
 if __name__ == "__main__":

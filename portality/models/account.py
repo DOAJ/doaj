@@ -98,7 +98,11 @@ class Account(DomainObject, UserMixin):
         self.data['password'] = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.data['password'], password)
+        try:
+            return check_password_hash(self.data['password'], password)
+        except:
+            app.logger.error("Problem with user '{}' account: no password field".format(self.data['id']))
+            raise
 
     @property
     def journal(self):
