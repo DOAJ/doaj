@@ -24,7 +24,6 @@ blueprint = Blueprint('doaj', __name__)
 
 @blueprint.route("/")
 def home():
-    flash('Good news! The DOAJ has been updated to Python 3.', 'info')                    # FIXME: remove before release
     news = blog.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     return render_template('doaj/index.html', news=news)
 
