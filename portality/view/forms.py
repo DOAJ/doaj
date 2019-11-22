@@ -67,12 +67,15 @@ class ArticleForm(Form):
         try:
             if not current_user.is_anonymous:
                 if "admin" in current_user.role and "id" in kwargs :
-                    issns = models.Journal.issns_by_owner(a.get_owner())
+                    eissns = models.Journal.eissns_by_owner(a.get_owner())
+                    pissns = models.Journal.pissns_by_owner(a.get_owner())
                 else:
-                    issns = models.Journal.issns_by_owner(current_user.id)
-                ic = [("", "Select an ISSN")] + [(i,i) for i in issns]
-                self.pissn.choices = ic
-                self.eissn.choices = ic
+                    eissns = models.Journal.eissns_by_owner(current_user.id)
+                    pissns = models.Journal.pissns_by_owner(current_user.id)
+                eic = [("", "Select an ISSN (online version)")] + [(i,i) for i in eissns]
+                pic = [("", "Select an ISSN (print version)")] + [(i,i) for i in pissns]
+                self.pissn.choices = pic
+                self.eissn.choices = eic
         except Exception as e:
             print (str(e))
             # not logged in, and current_user is broken

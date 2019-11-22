@@ -376,6 +376,7 @@ class DomainObject(UserDict, object):
         r = None
         count = 0
         exception = None
+        data = json.dumps(qobj)
         while count < retry:
             count += 1
             try:
