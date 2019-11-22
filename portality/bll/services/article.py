@@ -394,7 +394,7 @@ class ArticleService(object):
         doi = article.get_normalised_doi()
         if doi is not None:
             if isinstance(doi, str) and doi != '':
-                articles = models.Article.duplicates(issns=issns, doi=doi, size=results_per_match_type)
+                articles = models.Article.duplicates(doi=doi, size=results_per_match_type)
                 if len(articles) > 0:
                     possible_articles['doi'] = [a for a in articles if a.id != article.id]
                     if len(possible_articles['doi']) > 0:
@@ -403,7 +403,7 @@ class ArticleService(object):
         # Second test is to look by fulltext url
         fulltext = article.get_normalised_fulltext()
         if fulltext is not None:
-            articles = models.Article.duplicates(issns=issns, fulltexts=fulltext, size=results_per_match_type)
+            articles = models.Article.duplicates(fulltexts=fulltext, size=results_per_match_type)
             if len(articles) > 0:
                 possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
                 if possible_articles['fulltext']:
