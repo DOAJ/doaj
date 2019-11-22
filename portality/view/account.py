@@ -54,8 +54,8 @@ def username(username):
                 acc = models.Account.pull(newdata['id'])
         if request.values.get('submit', False) == 'Generate':
             acc.generate_api_key()
-        for k, v in list(newdata.items()):
-            if k not in ['marketing_consent', 'submit','password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
+        for k, v in newdata.items():
+            if k not in ['marketing_consent', 'submit', 'password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
                 acc.data[k] = v
         if 'password' in newdata and not newdata['password'].startswith('sha1'):
             if newdata.get("confirm", "") == "":
@@ -131,14 +131,15 @@ def login():
         user = models.Account.pull(username)
         if user is None:
             user = models.Account.pull_by_email(username)
-        if user is not None and user.check_password(password):
-            login_user(user, remember=True)
-            flash('Welcome back.', 'success')
-            # return form.redirect('index')
-            # return redirect(url_for('doaj.home'))
-            return redirect(get_redirect_target(form=form))
-        else:
-            flash('Incorrect username/password', 'error')
+        try:
+            if user is not None and user.check_password(password):
+                login_user(user, remember=True)
+                flash('Welcome back.', 'success')
+                return redirect(get_redirect_target(form=form))
+            else:
+                flash('Incorrect username/password', 'error')
+        except KeyError:
+            abort(500)
     if request.method == 'POST' and not form.validate():
         flash('Invalid credentials', 'error')
     return render_template('account/login.html', form=form)
