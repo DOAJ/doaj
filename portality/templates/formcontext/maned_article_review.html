@@ -1,5 +1,6 @@
 <fieldset>
     {{ render_field_horizontal(form.title, style="width: 400px", placeholder="Enter the article title here") }}
+    {{ render_field_horizontal(form.fulltext, style="width: 400px", placeholder="URL to the fulltext of the article") }}
     {{ render_field_horizontal(form.doi, style="width: 300px", placeholder="10.1234/article-32") }}
 
     <div class="form-group{% if author_error %} error{% endif %}">
@@ -24,10 +25,6 @@
         </div>
     </div>
 
-    {{ render_field_horizontal(form.abstract, classes="form-control", style="width: 400px; height: 200px", placeholder="Enter the abstract here") }}
-    {{ render_field_horizontal(form.keywords, style="width: 400px", placeholder="Enter some keywords for the article") }}
-    {{ render_field_horizontal(form.fulltext, style="width: 400px", placeholder="URL to the fulltext of the article") }}
-
     <div class="form-group">
         <label class="control-label col-md-3">Publication Date</label>
         <div class="col-md-9">
@@ -36,8 +33,8 @@
         </div>
     </div>
 
-    {{ render_field_horizontal(form.pissn, style="width: 250px", required=True) }}
-    {{ render_field_horizontal(form.eissn, style="width: 250px", required=True) }}
+    {{ render_field_horizontal(form.pissn, style="width: 250px") }}
+    {{ render_field_horizontal(form.eissn, style="width: 250px") }}
 
     <div class="form-group">
         <label class="control-label col-md-3">Journal</label>
@@ -54,6 +51,9 @@
             End&nbsp;{{form.end(style="width: 75px", placeholder="End")}}
         </div>
     </div>
+
+    {{ render_field_horizontal(form.abstract, classes="form-control", style="width: 400px; height: 200px", placeholder="Enter the abstract here") }}
+    {{ render_field_horizontal(form.keywords, style="width: 400px", placeholder="Enter some keywords for the article") }}
 
     <div class="form-group">
         <div class="col-md-9 col-md-offset-3"><button class="btn btn-success" type="submit">Add Article</button></div>

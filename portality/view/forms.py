@@ -47,7 +47,7 @@ class ArticleForm(Form):
     publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
     publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
     pissn = DOAJSelectField("Journal ISSN (print version)", [ThisOrThat("eissn")], choices=[]) # choices set at construction
-    eissn = DOAJSelectField("Journal ISSN (online version)", [ThisOrThat("pissn")], choices=[]) # choices set at construction
+    eissn = DOAJSelectField("Journal ISSN (online version)", [ThisOrThat("pissn")], choices=[], description="(You must provide a print and/or online version of Journal's ISSN)") # choices set at construction
  
     volume = StringField("Volume Number", [validators.Optional()])
     number = StringField("Issue Number", [validators.Optional()])
