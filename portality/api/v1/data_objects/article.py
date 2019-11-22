@@ -58,7 +58,8 @@ BASE_ARTICLE_STRUCT = {
                 "author": {
                     "fields": {
                         "name": {"coerce": "unicode"},
-                        "affiliation": {"coerce": "unicode"}
+                        "affiliation": {"coerce": "unicode"},
+                        "orcid_id": {"coerce": "unicode"}
                     }
                 },
                 "journal": {
