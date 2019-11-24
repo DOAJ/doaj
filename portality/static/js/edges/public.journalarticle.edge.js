@@ -268,7 +268,8 @@ $.extend(true, doaj, {
                         {'display':'Article: Abstract','field':'bibjson.abstract'},
                         {'display':'Article: Year','field':'bibjson.year'},
                         {'display':'Article: Journal Title','field':'bibjson.journal.title'},
-                        {'display':'Article: Author','field':'bibjson.author.name'},
+                        {'display':'Article: Author\'s name','field':'bibjson.author.name'},
+                        {'display':'Article: Author\'s Orcid ID','field':'bibjson.author.orcid_id'},
 
                         {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'}
                     ],
