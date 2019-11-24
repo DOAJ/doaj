@@ -1573,7 +1573,6 @@
         </keywords>
     </record>
 
-    <!-- a record with valid orcid ID -->
     <record>
         <language>fre</language>
         <publisher>Codicille éditeur et CRILCQ</publisher>
@@ -1636,7 +1635,6 @@
                 <name>Papillon, Joëlle</name>
                 <email/>
                 <affiliationId>1</affiliationId>
-                <orcid_id>0000-0001-1234-1234</orcid_id>
             </author>
         </authors>
         <affiliationsList>
@@ -1678,6 +1676,7 @@
                 <name>Papillon, Joëlle</name>
                 <email/>
                 <affiliationId>1</affiliationId>
+                <orcid_id>0000-0001-1234-1234</orcid_id>
             </author>
         </authors>
         <affiliationsList>

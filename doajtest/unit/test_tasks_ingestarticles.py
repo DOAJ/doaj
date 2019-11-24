@@ -1931,9 +1931,6 @@ We should parameterise this test set
 
         assert len(previous) == 1
 
-        found = [a for a in models.Article.find_by_orcid_id(["0000-0001-1234-1234"])]
-        assert len(found) == 1
-
     def test_58_file_with_invalid_orcid_id(self):
         handle = ArticleFixtureFactory.invalid_orcid_id()
         f = MockFileUpload(stream=handle)

@@ -99,7 +99,13 @@
          <xs:element name="name" type="xs:string" />
          <xs:element name="email" type="xs:string" minOccurs="0" />
          <xs:element name="affiliationId" minOccurs="0" maxOccurs="unbounded"/>
-         <xs:element name="orcid_id" minOccurs="0" maxOccurs="1" />
+         <xs:element name="orcid_id" minOccurs="0" maxOccurs="1">
+          <xs:simpleType>
+           <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}"/>
+           </xs:restriction>
+          </xs:simpleType>
+         </xs:element>
         </xs:sequence>
        </xs:complexType>
       </xs:element>
@@ -162,4 +168,5 @@
     <xs:pattern value="https?://([^/:]+\.[\p{L}]{2,10}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(.*)?"/>
    </xs:restriction>
   </xs:simpleType>
+
 </xs:schema>
