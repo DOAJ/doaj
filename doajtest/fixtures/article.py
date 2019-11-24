@@ -240,7 +240,8 @@ ARTICLE_SOURCE = {
         "author" : [
             {
                 "name" : "The Author",
-                "affiliation" : "University Cottage Labs"
+                "affiliation" : "University Cottage Labs",
+                "orcid_id" : "0000-0001-1234-1234"
             },
         ],
         "keywords": ["word", "key"],
