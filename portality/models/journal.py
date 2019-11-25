@@ -27,21 +27,25 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         return records
 
     @classmethod
-    def _return_one_type_issns(cls,q):
+    def _return_one_type_issns(cls,q, type):
+        one_type = []
         res = cls.query(q=q.query())
-        issns = [hit.get("fields", {}).get("bibjson.identifier.id")[0] for hit in res.get("hits", {}).get("hits", [])]
-        return issns
+        issns = [hit for hit in res.get("hits", {}).get("hits", [])[0].get("_source", {}).get("bibjson", {}).get("identifier", {})]
+        for issn in issns:
+            if issn.get("type") == type:
+                one_type.append(issn.get("id"))
+        return one_type
 
     @classmethod
     def eissns_by_owner(cls, owner):
         q = OneTypeIssnQuery(owner, "eissn")
-        return cls._return_one_type_issns(q)
+        return cls._return_one_type_issns(q, "eissn")
 
 
     @classmethod
     def pissns_by_owner(cls, owner):
         q = OneTypeIssnQuery(owner, "pissn")
-        return cls._return_one_type_issns(q)
+        return cls._return_one_type_issns(q, "pissn")
 
     @classmethod
     def issns_by_owner(cls, owner):
@@ -1364,24 +1368,15 @@ class OneTypeIssnQuery(object):
                 "must" : [
                     {"term" : { "admin.owner.exact" : "<owner id here>" }},
                     {"term" : { "bibjson.identifier.type" : "<issn type here>"}}
-                ],
-                "must_not" : {"term" : {"bibjson.identifier.type" : "<opposite type>"}}
+                ]
             }
-       },
-        "fields" : ["bibjson.identifier.id", "bibjson.identifier.type"]
+       }
     }
 
     def __init__(self, owner, type):
         self._query = deepcopy(self.base_query)
         self._query["query"]["bool"]["must"][0]["term"]["admin.owner.exact"] = owner
         self._query["query"]["bool"]["must"][1]["term"]["bibjson.identifier.type"] = type
-        if type == "pissn":
-            opp = "eissn"
-        else:
-            opp = "pissn"
-        self._query["query"]["bool"]["must_not"]["term"]["bibjson.identifier.type"] = opp
-        print(self._query)
-        print()
 
     def query(self):
         return self._query
