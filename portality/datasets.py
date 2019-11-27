@@ -87,6 +87,11 @@ currency_options = legacy_datasets.currency_options
 #language_options = _generate_language_options()
 language_options = legacy_datasets.language_options
 
+# FIXME: used by oai-pmh. These can be removed once that's restored to just using language_for()
+languages_3char_code_index = legacy_datasets.languages_3char_code_index
+languages_fullname_to_3char_code = legacy_datasets.languages_fullname_to_3char_code
+languages_dict = legacy_datasets.languages_dict
+
 # LICENSES
 # licenses contains a dict with each license's permissions. license_dict is ordered by the name of the licenses.
 # main_license_options is a list of tuples [(license_type, label)] for use in dropdown menus.
