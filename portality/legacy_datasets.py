@@ -6,7 +6,7 @@ from collections import OrderedDict
 
 # countries
 with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", 'country-codes.json'), 'rb') as f:
-    countries = json.loads(f.read())
+    countries = json.loads(f.read().decode("utf-8"))
 countries_dict = OrderedDict(sorted(list(countries.items()), key=lambda x: x[1]['name']))
 countries = list(countries_dict.items())
 
