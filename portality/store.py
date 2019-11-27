@@ -175,7 +175,7 @@ class StoreLocal(Store):
         if source_path:
             shutil.copyfile(source_path, tpath)
         elif source_stream:
-            with open(tpath, "w") as f:
+            with open(tpath, "wb") as f:
                 f.write(source_stream.read())
 
     def exists(self, container_id):
