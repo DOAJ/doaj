@@ -283,6 +283,16 @@ class TestClient(DoajTestCase):
             assert set0[1].text == 'LCC:Economic theory. Demography'
             assert set1[1].text == 'LCC:Social Sciences'
 
+            # check that we can retrieve a record with one of those sets
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc', set=set0[0].text))
+                assert resp.status_code == 200
+                t = etree.fromstring(resp.data)
+                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+                results = records[0].getchildren()
+            assert len(results) == 1
+
+
     def test_09_article(self):
         """test if the OAI-PMH journal feed returns records and only displays journals accepted in DOAJ"""
         article_source = ArticleFixtureFactory.make_article_source(eissn='1234-1234', pissn='5678-5678,', in_doaj=False)

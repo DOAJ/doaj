@@ -121,19 +121,20 @@ class DateFormat(object):
 
 
 def make_set_spec(setspec):
-    s = setspec.replace('=', '~')
-    setspec_utf8 = s.encode("utf-8")
-    b = base64.urlsafe_b64encode(setspec_utf8)
-    return b
+    b = base64.urlsafe_b64encode(setspec.encode("utf-8"))
+    setspec_utf8 = b.decode("utf-8")
+    s = setspec_utf8.replace('=', '~')
+    return s
 
 
 def decode_set_spec(setspec):
     # first, make sure the setspec is a string
+    """
     try:
         setspec = setspec.encode("utf-8")
     except:
         raise SetSpecException()
-
+    """
     # switch the ~ for =
     setspec = setspec.replace("~", "=")
 
