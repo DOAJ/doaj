@@ -11,11 +11,16 @@ class SludgePump(object):
         nc = self._cursor + n
         if nc > self._size:
             nc = self._size
-        total = nc - n
+        total = nc - self._cursor
+        self._cursor = nc
         if format == "bytes":
-            return b"x" * total
+            if total > 0:
+                return b"x" * total
+            return b""
         else:
-            return "x" * total
+            if total > 0:
+                return "x" * total
+            return ""
 
 class TestStore(DoajTestCase):
 
@@ -45,4 +50,9 @@ class TestStore(DoajTestCase):
 
     def test_02_local_large(self):
         local = StoreFactory.get(None)
+
         local.store("sludge", "sludge.txt", source_stream=SludgePump(100000000, format="text"))
+        local.store("sludge", "sludge.bin", source_stream=SludgePump(90000000, format="bytes"))
+
+        assert local.size("sludge", "sludge.txt") == 100000000
+        assert local.size("sludge", "sludge.bin") == 90000000

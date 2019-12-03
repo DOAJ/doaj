@@ -165,6 +165,7 @@ class StoreLocal(Store):
         self.dir = app.config.get("STORE_LOCAL_DIR")
         if self.dir is None:
             raise StoreException("STORE_LOCAL_DIR is not defined in config")
+        self.buffer_size = app.config.get("STORE_LOCAL_WRITE_BUFFER_SIZE", 16777216)
 
     def store(self, container_id, target_name, source_path=None, source_stream=None):
         cpath = os.path.join(self.dir, container_id)
@@ -175,13 +176,12 @@ class StoreLocal(Store):
         if source_path:
             shutil.copyfile(source_path, tpath)
         elif source_stream:
-            buffer_size = 16777216
-            data = source_stream.read(buffer_size)
+            data = source_stream.read(self.buffer_size)
             mode = "w" if isinstance(data, str) else "wb"
             with open(tpath, mode) as f:
                 while data:
                     f.write(data)
-                    data = source_stream.read(buffer_size)
+                    data = source_stream.read(self.buffer_size)
 
     def exists(self, container_id):
         cpath = os.path.join(self.dir, container_id)
@@ -221,6 +221,10 @@ class StoreLocal(Store):
                 os.remove(cpath)
             else:
                 shutil.rmtree(cpath)
+
+    def size(self, container_id, target_name):
+        cpath = os.path.join(self.dir, container_id, target_name)
+        return os.stat(cpath).st_size
 
 
 class TempStore(StoreLocal):
