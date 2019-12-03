@@ -142,6 +142,7 @@ STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
 STORE_LOCAL_EXPOSE = False  # if you want to allow files in the local store to be exposed under /store/<path> urls.  For dev only.
 STORE_LOCAL_WRITE_BUFFER_SIZE = 16777216
+STORE_TMP_WRITE_BUFFER_SIZE = 16777216
 
 # containers (buckets in AWS) where various content will be stored
 # These values are placeholders, and must be overridden in live deployment

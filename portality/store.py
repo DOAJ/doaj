@@ -232,6 +232,7 @@ class TempStore(StoreLocal):
         self.dir = app.config.get("STORE_TMP_DIR")
         if self.dir is None:
             raise StoreException("STORE_TMP_DIR is not defined in config")
+        self.buffer_size = app.config.get("STORE_TMP_WRITE_BUFFER_SIZE", 16777216)
 
     def path(self, container_id, filename, create_container=False, must_exist=True):
         container_path = os.path.join(self.dir, container_id)
