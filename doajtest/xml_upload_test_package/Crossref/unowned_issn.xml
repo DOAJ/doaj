@@ -1,47 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<records>
+<doi_batch version="4.4.2" xmlns="http://www.crossref.org/schema/4.4.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.crossref.org/schema/4.4.2" xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1">
+    <head>
+        <doi_batch_id>1dbb27d1030c6c9d9d-7ff0</doi_batch_id>
+        <timestamp>200504260247</timestamp>
+        <depositor>
+            <depositor_name>your name</depositor_name>
+            <email_address>your@email.com</email_address>
+        </depositor>
+        <registrant>WEB-FORM</registrant>
+    </head>
+    <body>
 
-    <record>
+        <!-- a record with two correct issns -->
+       <journal>
+            <journal_metadata>
+                <full_title>2 ISSNs Correct</full_title>
+                <abbrev_title>TP</abbrev_title>
+                <issn media_type="print">0000-0000</issn>
+                <issn media_type="electronic">0000-000X</issn>
+            </journal_metadata>
+            <journal_issue>
+                <publication_date media_type="print">
+                    <month>12</month>
+                    <day>1</day>
+                    <year>2005</year>
+                </publication_date>
+                <journal_volume>
+                    <volume>12</volume>
+                </journal_volume>
+                <issue>1</issue>
+            </journal_issue>
+            <!-- ====== This is the article's metadata ======== -->
+            <journal_article publication_type="full_text">
+                <titles>
+                    <title>Article 12292005 9:32</title>
+                </titles>
+                <contributors>
+                    <person_name sequence="first" contributor_role="author">
+                        <given_name>Bob</given_name>
+                        <surname>Surname</surname>
+                        <ORCID>http://orcid.org/0000-0002-4011-3590</ORCID>
+                    </person_name>
+                </contributors>
+                <publication_date media_type="print">
+                    <month>12</month>
+                    <day>1</day>
+                    <year>2004</year>
+                </publication_date>
+                <pages>
+                    <first_page>100</first_page>
+                    <last_page>200</last_page>
+                </pages>
+                <doi_data>
+                    <doi>10.50505/test_20051229930</doi>
+                    <resource>http://www.crossref.org/</resource>
+                </doi_data>
+            </journal_article>
+        </journal>
 
-        <language>fre</language>
-        <publisher>Codicille éditeur et CRILCQ</publisher>
-
-        <journalTitle>Successful</journalTitle>
-        <issn>0000-0000</issn>
-        <eissn>0000-000X</eissn>
-
-        <publicationDate>2013</publicationDate>
-        <volume/>
-        <issue>7</issue>
-        <startPage/>
-        <endPage/>
-        <doi>10.1234/2</doi>
-        <documentType>article</documentType>
-        <title language="fre">An article with an unmatched ISSN</title>
-        <authors>
-            <author>
-                <name>AN Author</name>
-                <affiliationId>1</affiliationId>
-            </author>
-        </authors>
-        <affiliationsList>
-            <affiliationName affiliationId="1"/>
-        </affiliationsList>
-        <fullTextUrl>http://doaj.org/testing/2.pdf</fullTextUrl>
-        <keywords>
-            <keyword>Introduction</keyword>
-            <keyword>Littérature amérindienne</keyword>
-            <keyword>Histoire</keyword>
-            <keyword>Identité</keyword>
-            <keyword>Amerindian Literature</keyword>
-            <keyword>History</keyword>
-            <keyword>Identity</keyword>
-            <keyword>Littérature contemporaine</keyword>
-            <keyword>Imaginaire</keyword>
-            <keyword>Contemporary Literature</keyword>
-            <keyword>Imaginary</keyword>
-        </keywords>
-    </record>
-
-</records>
+    </body>
+</doi_batch>

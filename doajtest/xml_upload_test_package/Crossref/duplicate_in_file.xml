@@ -15,7 +15,7 @@
         <!-- a record with two correct issns -->
        <journal>
             <journal_metadata>
-                <full_title>2 ISSNs Correct</full_title>
+                <full_title>Duplicated</full_title>
                 <abbrev_title>TP</abbrev_title>
                 <issn media_type="print">1234-5678</issn>
                 <issn media_type="electronic">9876-5432</issn>
@@ -62,7 +62,7 @@
         <!-- a record with two correct issns -->
        <journal>
             <journal_metadata>
-                <full_title>2 ISSNs Correct</full_title>
+                <full_title>Duplicated</full_title>
                 <abbrev_title>TP</abbrev_title>
                 <issn media_type="print">1234-5678</issn>
                 <issn media_type="electronic">9876-5432</issn>
