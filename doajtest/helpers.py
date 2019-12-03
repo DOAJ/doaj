@@ -7,7 +7,7 @@ from doajtest.bootstrap import prepare_for_test
 import dictdiffer
 from datetime import datetime
 from glob import glob
-import os, csv
+import os, csv, shutil
 from portality.lib import paths
 
 prepare_for_test()
@@ -33,6 +33,7 @@ class DoajTestCase(TestCase):
         self.destroy_index()
         for f in self.list_today_article_history_files() + self.list_today_journal_history_files():
             os.remove(f)
+        shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
 
     def list_today_article_history_files(self):
         return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
