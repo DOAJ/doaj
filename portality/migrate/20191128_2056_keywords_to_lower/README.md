@@ -4,6 +4,6 @@ Migration check all the keywords in database and if they contain any uppercase l
 
 To run migration simply run:
 
-`python portality/migrate/keywords_no_capital_letters/keywords_capital_letters.py`
+`python portality/upgrade.py -u portality/migrate/20191128_2056_keywords_to_lower/migrate.py`
 
 No arguments required
