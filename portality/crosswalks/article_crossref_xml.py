@@ -45,7 +45,7 @@ class CrossrefXWalk(object):
         if not valid:
             msg = "Validation message from schema '{x}': {y}\n".format(x=CrossrefXWalk.format_name,
                                                                        y=self.validation_log)
-            raise CrosswalkException(message="Unable to validate document with identified crossref xml schema", inner_message=msg)
+            raise CrosswalkException(message="Unable to validate document with identified crossref xml schema, maybe you would like to try to validate your file with Crossref Parser first? https://www.crossref.org/02publishers/parser.html", inner_message=msg)
 
         return doc
 
