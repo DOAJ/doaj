@@ -175,8 +175,13 @@ class StoreLocal(Store):
         if source_path:
             shutil.copyfile(source_path, tpath)
         elif source_stream:
-            with open(tpath, "wb") as f:
-                f.write(source_stream.read())
+            buffer_size = 16777216
+            data = source_stream.read(buffer_size)
+            mode = "w" if isinstance(data, str) else "wb"
+            with open(tpath, mode) as f:
+                while data:
+                    f.write(data)
+                    data = source_stream.read(buffer_size)
 
     def exists(self, container_id):
         cpath = os.path.join(self.dir, container_id)
