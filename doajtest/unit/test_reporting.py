@@ -3,7 +3,7 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import ProvenanceFixtureFactory, ApplicationFixtureFactory
 
-import time, os, shutil, csv
+import time, os, shutil, csv, json
 from copy import deepcopy
 
 from portality import clcsv, models
@@ -262,3 +262,17 @@ class TestReporting(DoajTestCase):
         assert not counter._is_countable(other, "admin")
         assert not counter._is_countable(other, "editor")
         assert not counter._is_countable(other, "api")
+
+    def test_07_provenance_is_empty(self):
+        """ Don't generate reports if there's no provenance data to write """
+        outfiles = reporting.provenance_reports("2015-01-01T00:00:00Z", "2016-01-01T00:00:00Z", TMP_DIR)
+        assert outfiles is None, outfiles
+
+        # Try as background job
+        job = reporting.ReportingBackgroundTask.prepare("system", outdir=TMP_DIR, from_date="1970-01-01T00:00:00Z",
+                                                        to_date=dates.now())
+        reporting.ReportingBackgroundTask.submit(job)
+        time.sleep(1)
+        job = models.BackgroundJob.pull(job.id)
+
+        assert 'No provenance records found' in json.dumps(job.audit), job.audit

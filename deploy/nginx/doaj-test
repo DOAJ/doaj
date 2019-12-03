@@ -22,10 +22,10 @@ server {
         proxy_pass http://localhost:5050/;
     }
     location =/robots.txt {
-        alias /home/cloo/doaj_python3/src/doaj/deploy/robots-test.txt;
+        alias /home/cloo/doaj/src/doaj/deploy/robots-test.txt;
     }
     location /static/ {
-        alias /home/cloo/doaj_python3/src/doaj/portality/static/;
+        alias /home/cloo/doaj/src/doaj/portality/static/;
         autoindex off;
         expires max;
     }
