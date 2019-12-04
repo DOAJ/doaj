@@ -1676,7 +1676,7 @@
                 <name>Papillon, Joëlle</name>
                 <email/>
                 <affiliationId>1</affiliationId>
-                <orcid_id>0000-0001-1234-1234</orcid_id>
+                <orcid_id>https://orcid.org/0000-0001-1234-1234</orcid_id>
             </author>
         </authors>
         <affiliationsList>
