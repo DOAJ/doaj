@@ -24,7 +24,7 @@ from portality import regex
 
 DOI_REGEX = regex.DOI_COMPILED
 DOI_ERROR = 'Invalid DOI.  A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
-ORCID_REGEX = re.compile(r'^https://orcid\.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$')
+ORCID_REGEX = regex.ORCID_COMPILED
 ORCID_ERROR = "Invalid ORCID iD. Please enter your Orchid iD in url format. Eg. https://orcid.org/0000-0000-0000-0000"
 
 # use the year choices in app.cfg or default to 15 years previous.
