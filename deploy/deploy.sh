@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Environment is a required arg to this script
-[ $# -ne 1 ] && echo "Call this script as `basename "$0"` <environment: [production, test]>" && exit 1
+[ $# -ne 1 ] && echo "Call this script as `basename "$0"` <environment: [production, test, harvester]>" && exit 1
 ENV=$1
 
 # apt dependencies for the DOAJ app
@@ -25,8 +25,12 @@ then
 elif [ "$ENV" = 'test' ]
 then
     aws --profile doaj-test secretsmanager get-secret-value --secret-id doaj/test-credentials | cut -f4 | base64 -d > app.cfg
+elif [ "$ENV" = 'harvester' ]
+then
+    # If this is the harvester machine, get the config and exit early since it'll be run via cron
+    aws --profile doaj-harvester secretsmanager get-secret-value --secret-id doaj/harvester-credentials | cut -f4 | base64 -d > app.cfg
+    exit 0
 fi
-
 
 # Restart all supervisor tasks, which will cover the app, and huey on the background server. Then reload nginx.
 sudo supervisorctl update
