@@ -28,22 +28,20 @@
                         <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="btn btn-danger remove_button">
                           <i class="glyphicon glyphicon-remove"></i>
                         </button>
-                        {% for error in subfield.errors %}
                         <div class="error">
                             <ul class="errors">
-                                <li>{{ subfield.errors.get(error)[0] }}</li>
+                                {% for error in subfield.errors %}
+                                    <li>{{ subfield.errors.get(error)[0] }}</li>
+                                {% endfor %}
                             </ul>
                         </div>
-                        {% endfor %}
                         </div>
                     {% endfor %}
                     <input type="submit" class="btn btn-info" name="more_authors" value="Add More Authors">
                     {% if author_error %}
-                    <div class="error">
                         <ul class="errors">
                             <li>Please provide at least one author</li>
                         </ul>
-                    </div>
                     {% endif %}
                     </div>
                 </div>

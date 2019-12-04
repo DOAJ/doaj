@@ -219,11 +219,11 @@
             <div class="col-md-9">
               {{ subfield(**kwargs) }}
               {% if subfield.errors %}
+                  <ul class="errors">
                   {% for error in subfield.errors %}
-                      <ul class="errors">
                         <li>{{ error }}</li>
-                      </ul>
                   {% endfor %}
+                   </ul>
               {% endif %}
             </div>
         </div>
