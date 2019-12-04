@@ -29,9 +29,11 @@
                           <i class="glyphicon glyphicon-remove"></i>
                         </button>
                         {% for error in subfield.errors %}
+                        <div class="error">
                             <ul class="errors">
                                 <li>{{ subfield.errors.get(error)[0] }}</li>
                             </ul>
+                        </div>
                         {% endfor %}
                         </div>
                     {% endfor %}
