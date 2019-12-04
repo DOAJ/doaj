@@ -7,8 +7,8 @@
         <publisher>Codicille éditeur et CRILCQ</publisher>
 
         <journalTitle>Successful</journalTitle>
-        <issn>1234-5678</issn>
-        <eissn>9876-5432</eissn>
+        <issn>1111-1111</issn>
+        <eissn>2222-2222</eissn>
 
 
         <publicationDate>2013</publicationDate>
@@ -23,7 +23,7 @@
             <author>
                 <name>AN Author</name>
                 <affiliationId>1</affiliationId>
-                <orcid_id>https://orcid.org/0001-1234-1234-1234</orcid_id>
+                <orcid_id>orcid.org/0001-1234-1234-1234</orcid_id>
             </author>
         </authors>
         <affiliationsList>
