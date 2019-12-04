@@ -680,7 +680,7 @@ class TestClient(DoajTestCase):
         assert bj.publisher == "IEEE"
         assert bj.author[0].get("name") == "Test"
         assert bj.author[0].get("affiliation") == "University of Life"
-        assert bj.author[0].get("orcid_id") == "0000-0001-1234-1234", "received: {}".format(bj.author[0].get("orcid_id"))
+        assert bj.author[0].get("orcid_id") == "https://orcid.org/0000-0001-1234-1234", "received: {}".format(bj.author[0].get("orcid_id"))
         assert bj.get_journal_license().get("title") == "CC-BY"
 
         bj.year = "2000"

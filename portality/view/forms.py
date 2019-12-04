@@ -24,8 +24,8 @@ from portality import regex
 
 DOI_REGEX = regex.DOI_COMPILED
 DOI_ERROR = 'Invalid DOI.  A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
-ORCID_REGEX = re.compile(r'^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$')
-ORCID_ERROR = "Invalid Orchid ID. Enter Orchid ID in format 0000-0000-0000-0000; full URL to your Orcid profile is not accepted"
+ORCID_REGEX = re.compile(r'^https://orcid\.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$')
+ORCID_ERROR = "Invalid ORCID iD. Please enter your Orchid iD in url format. Eg. https://orcid.org/0000-0000-0000-0000"
 
 # use the year choices in app.cfg or default to 15 years previous.
 start_year = app.config.get("METADATA_START_YEAR", datetime.now().year - 15)
@@ -37,7 +37,7 @@ MONTH_CHOICES = [("1", "01"), ("2", "02"), ("3", "03"), ("4", "04"), ("5", "05")
 class AuthorForm(Form):
     name = StringField("Name", [validators.Optional()])
     affiliation = StringField("Affiliation", [validators.Optional()])
-    orcid_id = StringField("Orcid ID", [validators.Optional(), validators.Regexp(regex=ORCID_REGEX, message=ORCID_ERROR)])
+    orcid_id = StringField("ORCID iD", [validators.Optional(), validators.Regexp(regex=ORCID_REGEX, message=ORCID_ERROR)])
 
 
 class ArticleForm(Form):

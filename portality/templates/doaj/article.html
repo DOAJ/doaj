@@ -163,7 +163,7 @@ hosted on DOAJ.org) #}
 
             <p>
                 {% for author in bibjson.author %}
-                    {% if author.orcid_id %}<a href="{{ "https://orcid.org/{}".format(author.orcid_id) }}"><img src="./../../static/doaj/images/orcid.gif" alt="orcid"></a>{% endif %}
+                    {% if author.orcid_id %}<a href="{{author.orcid_id}}"><img src="./../../static/doaj/images/orcid.gif" alt="orcid"></a>{% endif %}
                     <em>{{author.name}}
                     {% if author.affiliation %} ({{author.affiliation}}){% endif %}
                     </em><br>

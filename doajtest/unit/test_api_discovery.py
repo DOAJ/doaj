@@ -140,7 +140,7 @@ class TestArticleMatch(DoajTestCase):
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
             bj.add_identifier(bj.DOI, "10.test/{x}".format(x=i))
             bj.publisher = "Test Publisher {x}".format(x=i)
-            bj.add_author("Agnieszka Domanska", "CL University", "0000-0001-1234-1234")
+            bj.add_author("Agnieszka Domanska", "CL University", "https://orcid.org/0000-0001-1234-1234")
             a.save()
 
             # make sure the last updated dates are suitably different
