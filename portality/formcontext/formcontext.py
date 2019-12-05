@@ -7,6 +7,8 @@ from flask_login import current_user
 
 from portality import constants
 from portality import models, app_email, util
+from portality.bll import DOAJ
+from portality.bll.exceptions import ArticleMergeConflict
 from portality.core import app
 from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
 from portality.lcc import lcc_jstree
@@ -1778,6 +1780,7 @@ class AdminArticleForm(FormContext):
 
     def __init__(self, source, form_data, user):
         self.user = user
+        self.author_error = False
         super(AdminArticleForm, self).__init__(source=source, form_data=form_data)
 
     def _set_choices(self):
@@ -1790,6 +1793,14 @@ class AdminArticleForm(FormContext):
             # not logged in, and current_user is broken
             # probably you are loading the class from the command line
             pass
+
+    def _validate_authors(self):
+        counted = 0
+        for entry in self.form.authors.entries:
+            name = entry.data.get("name")
+            if name is not None and name != "":
+                counted += 1
+        return counted >= 1
 
     def set_template(self):
         self.template = "admin/edit_article_metadata.html"
@@ -1804,11 +1815,48 @@ class AdminArticleForm(FormContext):
         xwalk.AdminArticleXwalk.obj2form(self.form, bibjson=bibjson)
         self._set_choices()
 
+    def data2form(self):
+        self.blank_form()
+        #self.form = forms.AdminArticleForm()
+
+
     def form2target(self):
         xwalk.AdminArticleXwalk.form2obj(self.form_data)
 
     def render_template(self, **kwargs):
-        return render_template(self.template, form=self.form, form_context=self)
+        if "more_authors" in kwargs and kwargs["more_authors"] == True:
+            self.form.authors.append_entry()
+        if "remove_authors" in kwargs:
+            keep = []
+            while len(self.form.authors.entries) > 0:
+                entry = self.form.authors.pop_entry()
+                if entry.short_name == "authors-" + kwargs["remove_author"]:
+                    break
+                else:
+                    keep.append(entry)
+            while len(keep) > 0:
+                self.form.authors.append_entry(keep.pop().data)
+        return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
+
+    def validate(self):
+        if not self._validate_authors():
+            self.author_error = True
+        if not self.form.validate():
+            self.author_error = True
+            return False
+        return True
 
     def finalise(self):
-        self.form2target()
+        if self.validate():
+            self.form2target()
+            articleService = DOAJ.articleService()
+            try:
+                articleService.create_article(self.form_data, self.user, add_journal_info=True)
+                Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
+                return self.render_template()
+            except ArticleMergeConflict:
+                Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
+                return self.render_template()
+        else:
+            return self.render_template()
+

@@ -952,4 +952,55 @@ class JournalFormXWalk(JournalGenericXWalk):
         return forminfo
 
 class AdminArticleXwalk(ArticleFormXWalk):
-    pass
+    def data2form(self, form_data, form):
+        if form_data["title"] is not None:
+            form.title.data = form_data["title"]
+        # doi = form_dataget_one_identifier("doi")
+        # if doi is not None:
+        #     form.doi.data = doi
+        # if form_dataauthor is not None:
+        #     for a in form_dataauthor:
+        #         author = forms.AuthorForm()
+        #         if "name" in a:
+        #             author.name = a["name"]
+        #         else:
+        #             author.name = ""
+        #         if "affiliation" in a:
+        #             author.affiliation = a["affiliation"]
+        #         else:
+        #             author.affiliation = ""
+        #         form.authors.append_entry(author)
+        # for entry in form.authors:
+        #     if entry.name == "":
+        #         form.authors.remove_entry(entry)
+
+        # if form_data["keywords"] is not None:
+        #     form.keywords.data = ""
+        #     for k in form_datakeywords:
+        #         if form.keywords.data == "":
+        #             form.keywords.data = k
+        #         else:
+        #             form.keywords.data = form.keywords.data + "," + k
+        # url = form_dataget_single_url("fulltext")
+        # if url is not None:
+        #     form.fulltext.data = url
+        if form_data["month"] is not None:
+            form.publication_month.data = form_data["month"]
+        if form_data["year"] is not None:
+            form.publication_year.data = form_data["year"]
+        # pissn = form_dataget_identifiers(form_dataP_ISSN)
+        # if len(pissn) > 0:
+        #     form.pissn.data = pissn[0]
+        # eissn = form_dataget_identifiers(form_dataE_ISSN)
+        # if len(eissn) > 0:
+        #     form.eissn.data = eissn[0]
+        if form_data["volume"] is not None:
+            form.volume.data = form_data["volume"]
+        if form_data["number"] is not None:
+            form.number.data = form_data["number"]
+        if form_data["start_page"] is not None:
+            form.start.data = form_data["start_page"]
+        if form_data["end_page"] is not None:
+            form.end.data = form_data["end_page"]
+        if form_data["abstract"] is not None:
+            form.abstract.data = form_data["abstract"]
