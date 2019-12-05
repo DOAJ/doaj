@@ -1,26 +1,20 @@
 from portality import models
-from portality.view.forms import AuthorForm
+from portality.view import forms
 
 
 class ArticleFormXWalk(object):
     format_name = "form"
 
-    def crosswalk_form(self, form, add_journal_info=True, limit_to_owner=None, id=None):
-        if id is not None:
-            article = models.Article.pull(id)
-            bibjson = article.bibjson()
-        else:
-            article = models.Article()
-            bibjson = article.bibjson()
+    def form2obj(self, form, add_journal_info=True, id=None):
+        article = models.Article()
+        bibjson = article.bibjson()
 
         # title
         bibjson.title = form.title.data
 
         # doi
         doi = form.doi.data
-        if doi is not None:
-            bibjson.remove_identifiers(bibjson.DOI)
-        if doi is not "":
+        if doi is not None and doi is not "":
             bibjson.add_identifier(bibjson.DOI, doi)
 
         # authors
@@ -47,7 +41,6 @@ class ArticleFormXWalk(object):
         # fulltext
         ft = form.fulltext.data
         if ft is not None:
-            bibjson.remove_urls("fulltext")
             bibjson.add_url(ft, "fulltext")
 
         # publication year/month
@@ -61,13 +54,11 @@ class ArticleFormXWalk(object):
         # pissn
         pissn = form.pissn.data
         if pissn is not None:
-            bibjson.remove_identifiers(bibjson.P_ISSN)
             bibjson.add_identifier(bibjson.P_ISSN, pissn)
 
         # eissn
         eissn = form.eissn.data
         if eissn is not None:
-            bibjson.remove_identifiers(bibjson.E_ISSN)
             bibjson.add_identifier(bibjson.E_ISSN, eissn)
 
         # volume
@@ -114,7 +105,7 @@ class ArticleFormXWalk(object):
                 form.doi.data = doi
             if bibjson.author is not None:
                 for a in bibjson.author:
-                    author = AuthorForm()
+                    author = forms.AuthorForm()
                     if "name" in a:
                         author.name = a["name"]
                     else:
@@ -124,6 +115,10 @@ class ArticleFormXWalk(object):
                     else:
                         author.affiliation = ""
                     form.authors.append_entry(author)
+            for entry in form.authors:
+                if entry.name == "":
+                    form.authors.remove_entry(entry)
+
             if bibjson.keywords is not None:
                 form.keywords.data = ""
                 for k in bibjson.keywords:

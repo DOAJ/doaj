@@ -36,7 +36,6 @@ class AuthorForm(Form):
     name = StringField("Name", [validators.Optional()])
     affiliation = StringField("Affiliation", [validators.Optional()])
 
-
 class ArticleForm(Form):
     title = StringField("Article Title", [validators.DataRequired()])
     doi = StringField("DOI", [OptionalIf("fulltext"), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)], description="(You must provide a DOI and/or a Full-Text URL)")
@@ -56,29 +55,6 @@ class ArticleForm(Form):
 
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)
-        if "id" in kwargs:
-            a = models.Article.pull(kwargs["id"])
-            self.id = kwargs["id"]
-            if ("method" not in kwargs or kwargs["method"] != "post"):
-                bibjson = a.bibjson()
-                article_form.ArticleFormXWalk.obj2form(self, bibjson)
-
-
-        try:
-            if not current_user.is_anonymous:
-                if "admin" in current_user.role and "id" in kwargs :
-                    issns = models.Journal.issns_by_owner(a.get_owner())
-                else:
-                    issns = models.Journal.issns_by_owner(current_user.id)
-                ic = [("", "Select an ISSN")] + [(i,i) for i in issns]
-                self.pissn.choices = ic
-                self.eissn.choices = ic
-        except Exception as e:
-            print (str(e))
-            # not logged in, and current_user is broken
-            # probably you are loading the class from the command line
-            pass
-
 
 ##########################################################################
 ## Editor Group Forms

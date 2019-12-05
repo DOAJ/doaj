@@ -1,4 +1,5 @@
 from portality import models, lcc
+from portality.crosswalks.article_form import ArticleFormXWalk
 from portality.datasets import licenses, main_license_options
 from flask_login import current_user
 from portality.util import flash_with_url, listpop
@@ -949,3 +950,6 @@ class JournalFormXWalk(JournalGenericXWalk):
             forminfo['oa_end_year'] = bibjson.oa_end.get('year')
 
         return forminfo
+
+class AdminArticleXwalk(ArticleFormXWalk):
+    pass

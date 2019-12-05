@@ -10,6 +10,8 @@ from portality.formcontext.validate import URLOptionalScheme, OptionalIf, Exclus
 
 from portality.formcontext.choices import Choices
 
+from portality.view.forms import ArticleForm
+
 ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
@@ -566,3 +568,11 @@ class ManEdBulkEditJournalForm(Form):
     contact_email = StringField('Contact\'s email address',
         [validators.Optional(), validators.Email(message='Invalid email address.')]
     )
+
+class AdminArticleForm(ArticleForm):
+    """
+    This class has been created for sake of readability and clearness of Formcontext class that uses xwalks.
+    It should be discussed if ArticleForm crosswalk from crosswalks/article_form.py should be entirely moved here as soon as
+    publisher article form will use Formcontext as well
+    """
+    pass

@@ -212,7 +212,6 @@ class FormContext(object):
     def check_field_group_exists(self, field_group_name):
         return self.renderer.check_field_group_exists(field_group_name)
 
-
 class PrivateContext(FormContext):
     def _expand_descriptions(self, fields):
         # add the contents of a few fields to their descriptions since select2 autocomplete
@@ -617,7 +616,6 @@ class JournalFormFactory(object):
             return ReadOnlyJournal(source=source, form_data=form_data)
         elif role == "bulk_edit":
             return ManEdBulkEdit(source=source, form_data=form_data)
-
 
 class ManEdApplicationReview(ApplicationContext):
     """
@@ -1438,20 +1436,6 @@ class PublisherUpdateRequestReadOnly(PrivateContext):
         pass
     """
 
-class ManEdArticleReview(PrivateContext):
-    def __init__(self, source):
-        super().__init__(source)
-        self._source = source
-
-    @property
-    def source(self):
-        return self._source
-
-    @source.setter
-    def source(self, value):
-        self._source = value
-
-
 ### Journal form contexts ###
 class ManEdJournalReview(PrivateContext):
     """
@@ -1783,3 +1767,48 @@ class ReadOnlyJournal(PrivateContext):
     def _set_choices(self):
         # no application status (this is a journal) or editorial info (it's not even in the form) to set
         pass
+
+class ArticleFormFactory(object):
+    @classmethod
+    def get_from_context(cls, role, source=None, form_data=None, user=None):
+        if role == "admin":
+            return AdminArticleForm(source=source, form_data=form_data, user=user)
+
+class AdminArticleForm(FormContext):
+
+    def __init__(self, source, form_data, user):
+        self.user = user
+        super(AdminArticleForm, self).__init__(source=source, form_data=form_data)
+
+    def _set_choices(self):
+        try:
+            ic = choices.Choices.choices_for_article_issns(user=self.user,article_id=self.source.id)
+            self.form.pissn.choices = ic
+            self.form.eissn.choices = ic
+        except Exception as e:
+            print (str(e))
+            # not logged in, and current_user is broken
+            # probably you are loading the class from the command line
+            pass
+
+    def set_template(self):
+        self.template = "admin/edit_article_metadata.html"
+
+    def blank_form(self):
+        self.form = forms.AdminArticleForm()
+        self._set_choices()
+
+    def source2form(self):
+        self.form = forms.AdminArticleForm()
+        bibjson = self.source.bibjson()
+        xwalk.AdminArticleXwalk.obj2form(self.form, bibjson=bibjson)
+        self._set_choices()
+
+    def form2target(self):
+        xwalk.AdminArticleXwalk.form2obj(self.form_data)
+
+    def render_template(self, **kwargs):
+        return render_template(self.template, form=self.form, form_context=self)
+
+    def finalise(self):
+        self.form2target()
