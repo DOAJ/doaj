@@ -6,7 +6,10 @@ ENV=$1
 
 # apt dependencies for the DOAJ app
 sudo apt-get update
-sudo apt-get install -q -y libxml2-dev libxslt-dev python3.7-dev lib32z1-dev awscli
+sudo apt-get install -q -y libxml2-dev libxslt-dev python3.7-dev lib32z1-dev
+
+# get awscli from pip so it's up to date (although installation will use the one from the virtualenv it's handy to have)
+sudo pip install awscli
 
 # Run from the doaj folder that's already checked out
 
