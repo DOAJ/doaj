@@ -952,8 +952,9 @@ class JournalFormXWalk(JournalGenericXWalk):
         return forminfo
 
 class AdminArticleXwalk(ArticleFormXWalk):
-    def data2form(self, form_data, form):
-        if form_data["title"] is not None:
+    @classmethod
+    def data2form(cls,form_data, form):
+        if "title" in form_data:
             form.title.data = form_data["title"]
         # doi = form_dataget_one_identifier("doi")
         # if doi is not None:
@@ -984,9 +985,9 @@ class AdminArticleXwalk(ArticleFormXWalk):
         # url = form_dataget_single_url("fulltext")
         # if url is not None:
         #     form.fulltext.data = url
-        if form_data["month"] is not None:
+        if "month" in form_data:
             form.publication_month.data = form_data["month"]
-        if form_data["year"] is not None:
+        if "year" in form_data:
             form.publication_year.data = form_data["year"]
         # pissn = form_dataget_identifiers(form_dataP_ISSN)
         # if len(pissn) > 0:
@@ -994,13 +995,13 @@ class AdminArticleXwalk(ArticleFormXWalk):
         # eissn = form_dataget_identifiers(form_dataE_ISSN)
         # if len(eissn) > 0:
         #     form.eissn.data = eissn[0]
-        if form_data["volume"] is not None:
+        if "volume" in form_data:
             form.volume.data = form_data["volume"]
-        if form_data["number"] is not None:
+        if "number" in form_data:
             form.number.data = form_data["number"]
-        if form_data["start_page"] is not None:
+        if "start_page" in form_data:
             form.start.data = form_data["start_page"]
-        if form_data["end_page"] is not None:
+        if "end_page" in form_data:
             form.end.data = form_data["end_page"]
-        if form_data["abstract"] is not None:
+        if "abstract" in form_data:
             form.abstract.data = form_data["abstract"]

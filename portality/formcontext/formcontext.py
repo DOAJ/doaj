@@ -1816,9 +1816,10 @@ class AdminArticleForm(FormContext):
         self._set_choices()
 
     def data2form(self):
-        self.blank_form()
-        #self.form = forms.AdminArticleForm()
-
+        #self.blank_form()
+        self.form = forms.AdminArticleForm()
+        xwalk.AdminArticleXwalk.data2form(form_data=self.form_data, form=self.form)
+        self._set_choices()
 
     def form2target(self):
         xwalk.AdminArticleXwalk.form2obj(self.form_data)
@@ -1849,9 +1850,9 @@ class AdminArticleForm(FormContext):
     def finalise(self):
         if self.validate():
             self.form2target()
-            articleService = DOAJ.articleService()
+            article_service = DOAJ.articleService()
             try:
-                articleService.create_article(self.form_data, self.user, add_journal_info=True)
+                article_service.create_article(self.form_data, self.user, add_journal_info=True)
                 Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
                 return self.render_template()
             except ArticleMergeConflict:
