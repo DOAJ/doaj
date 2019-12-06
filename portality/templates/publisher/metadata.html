@@ -17,34 +17,39 @@
                 {{ render_field_horizontal(form.title, style="width: 400px", placeholder="Enter the article title here") }}
                 {{ render_field_horizontal(form.doi, style="width: 300px", placeholder="10.1234/article-32") }}
                 
-                <div class="form-group{% if author_error %} error{% endif %}">
+                <div class="form-group{% if author_error %} error{% endif %} authors">
                     <label class="control-label col-md-3">Author(s) <span class="red">*</span></label>
-                    <div class="col-md-9 authors">
-                    {% for subfield in form.authors %}
-                        <div style="margin-bottom: 10px" id="{{subfield.short_name}}-container">
-                        {% for field in subfield.form %}
-                            {{field.label.text | safe}}&nbsp;{{field(placeholder=field.label.text)}}<br/>
-                        {% endfor %}
-                        {% for error in subfield.errors %}
-                            <div class="error">
-                                <ul class="errors" style="padding-left: 15px">
-                                    <li>{{ subfield.errors.get(error)[0] }}</li>
-                                </ul>
-                            </div>
-                        {% endfor %}
-                        <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="btn btn-danger remove_button">
-                          Remove Author
-                        </button>
+                    <div class="col-md-9">
+                        <div class="author-field">
+                            {% for subfield in form.authors %}
+                                <div style="margin-bottom: 10px" id="{{subfield.short_name}}-container">
+                                    {% for field in subfield.form %}
+                                        <div class="author-row">
+                                            <div class="author-label">{{field.label.text | safe}}</div>
+                                            <div class="author-input">{{field(placeholder=field.label.text)}}<br/></div>
+                                        </div>
+                                    {% endfor %}
+                                    {% for error in subfield.errors %}
+                                        <div class="error">
+                                            <ul class="errors" style="padding-left: 15px">
+                                                <li>{{ subfield.errors.get(error)[0] }}</li>
+                                            </ul>
+                                        </div>
+                                    {% endfor %}
+                                    <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="btn btn-danger remove_button">
+                                      Remove Author
+                                    </button>
+                                </div>
+                            {% endfor %}
+                            <input type="submit" class="btn btn-info" name="more_authors" value="Add More Authors">
+                            {% if author_error %}
+                                <div class="error">
+                                    <ul class="errors">
+                                        <li>Please provide at least one author</li>
+                                    </ul>
+                                </div>
+                            {% endif %}
                         </div>
-                    {% endfor %}
-                    <input type="submit" class="btn btn-info" name="more_authors" value="Add More Authors">
-                    {% if author_error %}
-                    <div class="error">
-                        <ul class="errors">
-                            <li>Please provide at least one author</li>
-                        </ul>
-                    </div>
-                    {% endif %}
                     </div>
                 </div>
                 

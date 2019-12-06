@@ -1055,5 +1055,28 @@ label[for='doaj_seal'] {
 
 /* Custom responsive bits - elements, classes and id-s in that order */
 
+.author-field {
+    display: flex;
+    flex-direction: column;
+    width: 50%
 
+}
 
+.author-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.author-input {
+    width: 80%;
+}
+
+.author-input > input {
+    width: 100%;
+}
+
+.remove_button,
+.author-field > input.btn.btn-info{
+    width: 40%;
+}
