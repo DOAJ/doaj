@@ -43,7 +43,7 @@ class AuthorForm(Form):
 class ArticleForm(Form):
     title = StringField("Article Title", [validators.DataRequired()])
     doi = StringField("DOI", [OptionalIf("fulltext"), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)], description="(You must provide a DOI and/or a Full-Text URL)")
-    authors = FieldList(FormField(AuthorForm), min_entries=3) # We have to do the validation for this at a higher level
+    authors = FieldList(FormField(AuthorForm), min_entries=1) # We have to do the validation for this at a higher level
     abstract = TextAreaField("Abstract", [validators.Optional()])
     keywords = StringField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
     fulltext = StringField("Full-Text URL", [OptionalIf("doi"), validators.URL()], description="(The URL for each article must be unique.  You must provide a Full-Text URL and/or a DOI)")
