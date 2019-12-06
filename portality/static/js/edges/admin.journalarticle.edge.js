@@ -300,7 +300,7 @@ $.extend(true, doaj, {
 
                         {'display':'Article: Abstract','field':'bibjson.abstract'},
                         {'display':'Article: Author\'s name','field':'bibjson.author.name'},
-                        {'display':'Article: Author\'s Orcid iD','field':'bibjson.author.orcid_id'},
+                        {'display':'Article: Author\'s ORCID iD','field':'bibjson.author.orcid_id'},
                         {'display':'Article: Year','field':'bibjson.year'},
                         {'display':'Article: Journal Title','field':'bibjson.journal.title'},
 
