@@ -19,20 +19,22 @@
                 
                 <div class="form-group{% if author_error %} error{% endif %}">
                     <label class="control-label col-md-3">Author(s) <span class="red">*</span></label>
-                    <div class="col-md-9">
+                    <div class="col-md-9 authors">
                     {% for subfield in form.authors %}
                         <div style="margin-bottom: 10px" id="{{subfield.short_name}}-container">
                         {% for field in subfield.form %}
                             {{field.label.text | safe}}&nbsp;{{field(placeholder=field.label.text)}}<br/>
                         {% endfor %}
+                        {% for error in subfield.errors %}
+                            <div class="error">
+                                <ul class="errors" style="padding-left: 15px">
+                                    <li>{{ subfield.errors.get(error)[0] }}</li>
+                                </ul>
+                            </div>
+                        {% endfor %}
                         <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="btn btn-danger remove_button">
                           Remove Author
                         </button>
-                        {% for error in subfield.errors %}
-                            <ul class="errors">
-                                <li>{{ subfield.errors.get(error)[0] }}</li>
-                            </ul>
-                        {% endfor %}
                         </div>
                     {% endfor %}
                     <input type="submit" class="btn btn-info" name="more_authors" value="Add More Authors">
