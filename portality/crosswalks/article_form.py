@@ -5,7 +5,8 @@ from portality.view import forms
 class ArticleFormXWalk(object):
     format_name = "form"
 
-    def form2obj(self, form, add_journal_info=True, id=None):
+    @classmethod
+    def form2obj(cls, form, add_journal_info=True):
         article = models.Article()
         bibjson = article.bibjson()
 

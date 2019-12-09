@@ -163,7 +163,8 @@ def article_page(article_id):
         return fc.render_template()
 
     elif request.method == "POST":
-        fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=current_user, form_data=request.form)
+        user = models.Account.pull(current_user.id)
+        fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=user, form_data=request.form)
         # first we need to do any server-side form modifications which
         # the user might request by pressing the add/remove authors buttons
         more_authors = request.values.get("more_authors")

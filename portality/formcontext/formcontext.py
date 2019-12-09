@@ -1822,7 +1822,7 @@ class AdminArticleForm(FormContext):
         self._set_choices()
 
     def form2target(self):
-        xwalk.AdminArticleXwalk.form2obj(self.form_data)
+        self.target = xwalk.AdminArticleXwalk.form2obj(form=self.form)
 
     def render_template(self, **kwargs):
         if "more_authors" in kwargs and kwargs["more_authors"] == True:
@@ -1852,7 +1852,7 @@ class AdminArticleForm(FormContext):
             self.form2target()
             article_service = DOAJ.articleService()
             try:
-                article_service.create_article(self.form_data, self.user, add_journal_info=True)
+                article_service.create_article(self.target, self.user, add_journal_info=True)
                 Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
                 return self.render_template()
             except ArticleMergeConflict:
