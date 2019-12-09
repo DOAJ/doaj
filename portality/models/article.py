@@ -25,9 +25,8 @@ class Article(DomainObject):
     __type__ = "article"
 
     @classmethod
-    def duplicates(cls, issns=None, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
+    def duplicates(cls, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
         # some input sanitisation
-        issns = issns if isinstance(issns, list) else []
         urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, str) else []
 
         # make sure that we're dealing with the normal form of the identifiers
@@ -47,49 +46,18 @@ class Article(DomainObject):
             # leave the doi as it is
             pass
 
-        # in order to make sure we don't send too many terms to the ES query, break the issn list down into chunks
-        terms_limit = app.config.get("ES_TERMS_LIMIT", 1024)
-        issn_groups = []
-        lower = 0
-        upper = terms_limit
-        while lower < len(issns):
-            issn_groups.append(issns[lower:upper])
-            lower = upper
-            upper = lower + terms_limit
+        q = DuplicateArticleQuery(publisher_record_id=publisher_record_id,
+                                    doi=doi,
+                                    urls=urls,
+                                    title=title,
+                                    volume=volume,
+                                    number=number,
+                                    start=start,
+                                    should_match=should_match,
+                                    size=size)
 
-        if issns is not None and len(issns) > 0:
-            duplicate_articles = []
-            for g in issn_groups:
-                q = DuplicateArticleQuery(  issns=g,
-                                            publisher_record_id=publisher_record_id,
-                                            doi=doi,
-                                            urls=urls,
-                                            title=title,
-                                            volume=volume,
-                                            number=number,
-                                            start=start,
-                                            should_match=should_match,
-                                            size=size)
-                # print json.dumps(q.query())
-
-                res = cls.query(q=q.query())
-                duplicate_articles += [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
-
-            return duplicate_articles
-        else:
-            q = DuplicateArticleQuery(publisher_record_id=publisher_record_id,
-                                        doi=doi,
-                                        urls=urls,
-                                        title=title,
-                                        volume=volume,
-                                        number=number,
-                                        start=start,
-                                        should_match=should_match,
-                                        size=size)
-            print(json.dumps(q.query()))
-
-            res = cls.query(q=q.query())
-            return [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+        res = cls.query(q=q.query())
+        return [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
 
     @classmethod
     def list_volumes(cls, issns):

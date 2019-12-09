@@ -270,5 +270,5 @@ class TestArticleMatch(DoajTestCase):
 
         issns = [random_issn() for _ in range(2000)] + ["0000-0000"]
 
-        dupes = models.Article.duplicates(issns=issns, doi="10.1234/duplicate")
-        assert len(dupes) == 1, "expected 1 duplicate, received {}".format(len(dupes))
+        dupes = models.Article.duplicates(doi="10.1234/duplicate")
+        assert len(dupes) == 1
