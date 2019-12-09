@@ -206,6 +206,7 @@ class FormContext(object):
         return False
 
     def render_template(self, **kwargs):
+
         return render_template(self.template, form_context=self, **kwargs)
 
     def render_field_group(self, field_group_name=None, **kwargs):
@@ -1850,8 +1851,10 @@ class AdminArticleForm(FormContext):
     def finalise(self):
         if self.validate():
             self.form2target()
-            article_service = DOAJ.articleService()
+            if self.author_error:
+                return self.render_template()
             try:
+                article_service = DOAJ.articleService()
                 article_service.create_article(self.target, self.user, add_journal_info=True)
                 Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
                 return self.render_template()

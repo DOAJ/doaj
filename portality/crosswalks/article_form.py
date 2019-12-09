@@ -103,12 +103,12 @@ class ArticleFormXWalk(object):
 
     @classmethod
     def obj2form(cls, form, bibjson):
-            if bibjson.title is not None:
+            if bibjson.title:
                 form.title.data = bibjson.title
             doi = bibjson.get_one_identifier("doi")
-            if doi is not None:
+            if doi:
                 form.doi.data = doi
-            if bibjson.author is not None:
+            if bibjson.author:
                 for i in range(len(form.authors)):
                     form.authors.pop_entry()
                 for a in bibjson.author:
@@ -123,7 +123,7 @@ class ArticleFormXWalk(object):
                         author.affiliation = ""
                     form.authors.append_entry(author)
 
-            if bibjson.keywords is not None:
+            if bibjson.keywords:
                 form.keywords.data = ""
                 for k in bibjson.keywords:
                     if form.keywords.data == "":
@@ -131,11 +131,11 @@ class ArticleFormXWalk(object):
                     else:
                         form.keywords.data = form.keywords.data + "," + k
             url = bibjson.get_single_url("fulltext")
-            if url is not None:
+            if url:
                 form.fulltext.data = url
-            if bibjson.month is not None:
+            if bibjson.month:
                 form.publication_month.data = bibjson.month
-            if bibjson.year is not None:
+            if bibjson.year:
                 form.publication_year.data = bibjson.year
             pissn = bibjson.get_identifiers(bibjson.P_ISSN)
             if len(pissn) > 0:
@@ -143,14 +143,14 @@ class ArticleFormXWalk(object):
             eissn = bibjson.get_identifiers(bibjson.E_ISSN)
             if len(eissn) > 0:
                 form.eissn.data = eissn[0]
-            if bibjson.volume is not None:
+            if bibjson.volume:
                 form.volume.data = bibjson.volume
-            if bibjson.number is not None:
+            if bibjson.number:
                 form.number.data = bibjson.number
-            if bibjson.start_page is not None:
+            if bibjson.start_page:
                 form.start.data = bibjson.start_page
-            if bibjson.end_page is not None:
+            if bibjson.end_page:
                 form.end.data = bibjson.end_page
-            if bibjson.abstract is not None:
+            if bibjson.abstract:
                 form.abstract.data = bibjson.abstract
 

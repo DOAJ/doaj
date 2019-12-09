@@ -1,3 +1,5 @@
+from wtforms import FormField, FieldList
+
 from portality import models, lcc
 from portality.crosswalks.article_form import ArticleFormXWalk
 from portality.datasets import licenses, main_license_options
@@ -5,6 +7,9 @@ from flask_login import current_user
 from portality.util import flash_with_url, listpop
 from copy import deepcopy
 from portality.formcontext.choices import Choices
+from portality.view import forms
+from portality.view.forms import AuthorForm
+
 
 def interpret_list(current_values, allowed_values, substitutions):
     current_values = deepcopy(current_values)
@@ -957,33 +962,46 @@ class AdminArticleXwalk(ArticleFormXWalk):
     """
     @classmethod
     def data2form(cls,form_data, form):
-        form.author = []
-        for key in form_data:
-            if key == "title":
-                form.title.data = form_data["title"]
-            elif key == "doi" in form_data:
-                form.doi.data = form_data["doi"]
-            # elif key.startswith("authors"):
-            #     form.author.append(form_data[key])
-            elif key == "keywords":
-                form.keywords.data = form_data["keywords"]
-            elif key == "fulltext":
-                form.fulltext.data = form_data["fulltext"]
-            elif key == "month":
-                form.publication_month.data = form_data["month"]
-            elif key == "year":
-                form.publication_year.data = form_data["year"]
-            elif key == "pissn":
-                form.pissn.data = form_data["pissn"]
-            elif key == "eissn":
-                form.eissn.data = form_data["eissn"]
-            elif key == "volume":
-                form.volume.data = form_data["volume"]
-            elif key == "number":
-                form.number.data = form_data["number"]
-            elif key == "start_page":
-                form.start.data = form_data["start_page"]
-            elif key == "end_page":
-                form.end.data = form_data["end_page"]
-            elif key == "abstract":
-                form.abstract.data = form_data["abstract"]
+        authors = []
+        if form_data["title"]:
+            form.title.data = form_data["title"]
+        if form_data["doi"]:
+            form.doi.data = form_data["doi"]
+        if form_data["keywords"]:
+            form.keywords.data = form_data["keywords"]
+        if form_data["fulltext"]:
+            form.fulltext.data = form_data["fulltext"]
+        if form_data["publication_month"]:
+            form.publication_month.data = form_data["publication_month"]
+        if form_data["publication_year"]:
+            form.publication_year.data = form_data["publication_year"]
+        if form_data["pissn"]:
+            form.pissn.data = form_data["pissn"]
+        if form_data["eissn"]:
+            form.eissn.data = form_data["eissn"]
+        if form_data["volume"]:
+            form.volume.data = form_data["volume"]
+        if form_data["number"]:
+            form.number.data = form_data["number"]
+        if form_data["start"]:
+            form.start.data = form_data["start"]
+        if form_data["end"]:
+            form.end.data = form_data["end"]
+        if form_data["abstract"]:
+            form.abstract.data = form_data["abstract"]
+
+        authors = [(k,v) for k, v in form_data.items() if k.startswith('author')]
+        tmp_names = ["" for i in range(10)]
+        tmp_aff = ["" for i in range(10)]
+        for a in authors:
+            key = a[0].split("-")
+            if key[2] == "name":
+                tmp_names[int(key[1])] = a[1]
+            elif key[2] == "affiliation":
+                tmp_aff[int(key[1])] = a[1]
+        for i in range(len(tmp_names)):
+            author = forms.AuthorForm()
+            if tmp_names[i] != "":
+                author.name = tmp_names[i]
+                author.affiliation = tmp_aff[i]
+                form.authors.append_entry(author)
