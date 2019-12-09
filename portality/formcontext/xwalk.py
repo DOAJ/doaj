@@ -957,45 +957,33 @@ class AdminArticleXwalk(ArticleFormXWalk):
     """
     @classmethod
     def data2form(cls,form_data, form):
-        if "title" in form_data:
-            form.title.data = form_data["title"]
-        if "doi" in form_data:
-            form.doi.data = form_data["doi"]
-        # if form_dataauthor is not None:
-        #     for a in form_dataauthor:
-        #         author = forms.AuthorForm()
-        #         if "name" in a:
-        #             author.name = a["name"]
-        #         else:
-        #             author.name = ""
-        #         if "affiliation" in a:
-        #             author.affiliation = a["affiliation"]
-        #         else:
-        #             author.affiliation = ""
-        #         form.authors.append_entry(author)
-        # for entry in form.authors:
-        #     if entry.name == "":
-        #         form.authors.remove_entry(entry)
-
-        if "keywords" in form_data:
-            form.keywords.data = form_data["keywords"]
-        if "fulltext" in form_data:
-            form.fulltext.data = form_data["fulltext"]
-        if "month" in form_data:
-            form.publication_month.data = form_data["month"]
-        if "year" in form_data:
-            form.publication_year.data = form_data["year"]
-        if "pissn" in form_data:
-            form.pissn.data = form_data["pissn"]
-        if "eissn" in form_data:
-            form.eissn.data = form_data["eissn"]
-        if "volume" in form_data:
-            form.volume.data = form_data["volume"]
-        if "number" in form_data:
-            form.number.data = form_data["number"]
-        if "start_page" in form_data:
-            form.start.data = form_data["start_page"]
-        if "end_page" in form_data:
-            form.end.data = form_data["end_page"]
-        if "abstract" in form_data:
-            form.abstract.data = form_data["abstract"]
+        form.author = []
+        for key in form_data:
+            if key == "title":
+                form.title.data = form_data["title"]
+            elif key == "doi" in form_data:
+                form.doi.data = form_data["doi"]
+            # elif key.startswith("authors"):
+            #     form.author.append(form_data[key])
+            elif key == "keywords":
+                form.keywords.data = form_data["keywords"]
+            elif key == "fulltext":
+                form.fulltext.data = form_data["fulltext"]
+            elif key == "month":
+                form.publication_month.data = form_data["month"]
+            elif key == "year":
+                form.publication_year.data = form_data["year"]
+            elif key == "pissn":
+                form.pissn.data = form_data["pissn"]
+            elif key == "eissn":
+                form.eissn.data = form_data["eissn"]
+            elif key == "volume":
+                form.volume.data = form_data["volume"]
+            elif key == "number":
+                form.number.data = form_data["number"]
+            elif key == "start_page":
+                form.start.data = form_data["start_page"]
+            elif key == "end_page":
+                form.end.data = form_data["end_page"]
+            elif key == "abstract":
+                form.abstract.data = form_data["abstract"]

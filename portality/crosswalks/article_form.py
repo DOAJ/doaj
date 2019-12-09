@@ -1,3 +1,5 @@
+from wtforms import FieldList, FormField
+
 from portality import models
 from portality.view import forms
 
@@ -107,6 +109,8 @@ class ArticleFormXWalk(object):
             if doi is not None:
                 form.doi.data = doi
             if bibjson.author is not None:
+                for i in range(len(form.authors)):
+                    form.authors.pop_entry()
                 for a in bibjson.author:
                     author = forms.AuthorForm()
                     if "name" in a:
@@ -118,9 +122,6 @@ class ArticleFormXWalk(object):
                     else:
                         author.affiliation = ""
                     form.authors.append_entry(author)
-            for entry in form.authors:
-                if entry.name == "":
-                    form.authors.remove_entry(entry)
 
             if bibjson.keywords is not None:
                 form.keywords.data = ""
