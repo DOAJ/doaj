@@ -11,7 +11,8 @@ class ArticleFormXWalk(object):
         bibjson = article.bibjson()
 
         # title
-        bibjson.title = form.title.data
+        if form.title.data is not None and form.title.data is not "":
+            bibjson.title = form.title.data
 
         # doi
         doi = form.doi.data
@@ -24,62 +25,63 @@ class ArticleFormXWalk(object):
         for subfield in form.authors:
             if subfield.form.name.data is not "":
                 author = subfield.form.name.data
-                aff = subfield.form.affiliation.data
-                if author is not None and author != "":
+                if subfield.form.affiliation.data is not "":
+                    aff = subfield.form.affiliation.data
+                if author is not None:
                     bibjson.add_author(author, affiliation=aff)
 
         # abstract
         abstract = form.abstract.data
-        if abstract is not None:
+        if abstract is not None and abstract is not "":
             bibjson.abstract = abstract
 
         # keywords
         keywords = form.keywords.data
-        if keywords is not None:
+        if keywords is not None and keywords is not []:
             ks = [k.strip() for k in keywords.split(",")]
             bibjson.set_keywords(ks)
 
         # fulltext
         ft = form.fulltext.data
-        if ft is not None:
+        if ft is not None and ft is not "":
             bibjson.add_url(ft, "fulltext")
 
         # publication year/month
         py = form.publication_year.data
         pm = form.publication_month.data
-        if pm is not None:
+        if pm is not None and pm is not "":
             bibjson.month = pm
-        if py is not None:
+        if py is not None and py is not "":
             bibjson.year = py
 
         # pissn
         pissn = form.pissn.data
-        if pissn is not None:
+        if pissn is not None and pissn is not "":
             bibjson.add_identifier(bibjson.P_ISSN, pissn)
 
         # eissn
         eissn = form.eissn.data
-        if eissn is not None:
+        if eissn is not None and eissn is not "":
             bibjson.add_identifier(bibjson.E_ISSN, eissn)
 
         # volume
         volume = form.volume.data
-        if volume is not None:
+        if volume is not None and volume is not "":
             bibjson.volume = volume
 
         # number
         number = form.number.data
-        if number is not None:
+        if number is not None and number is not "":
             bibjson.number = number
 
         # start date
         start = form.start.data
-        if start is not None:
+        if start is not None and start is not "":
             bibjson.start_page = start
 
         # end date
         end = form.end.data
-        if end is not None:
+        if end is not None and end is not "":
             bibjson.end_page = end
 
         # add the journal info if requested
