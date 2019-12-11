@@ -8,7 +8,7 @@ from flask_login import current_user
 from portality import constants
 from portality import models, app_email, util
 from portality.bll import DOAJ
-from portality.bll.exceptions import ArticleMergeConflict
+from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
 from portality.core import app
 from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
 from portality.lcc import lcc_jstree
@@ -1864,16 +1864,14 @@ class AdminArticleForm(FormContext):
     def finalise(self):
         if self.validate():
             self.form2target()
-            if self.author_error:
-                return self.render_template()
-            try:
-                article_service = DOAJ.articleService()
-                article_service.create_article(self.target, self.user, add_journal_info=True)
-                Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
-                return self.render_template()
-            except ArticleMergeConflict:
-                Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
-                return self.render_template()
-        else:
-            return self.render_template()
+            if not self.author_error:
+                try:
+                    article_service = DOAJ.articleService()
+                    article_service.create_article(self.target, self.user, add_journal_info=True, update=self.source.id)
+                    Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
+                except ArticleMergeConflict:
+                    Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
+                except DuplicateArticleException:
+                    Messages.flash(Messages.ARTICLE_METADATA_UPDATE_CONFLICT)
+        return self.render_template()
 

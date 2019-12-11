@@ -10,6 +10,8 @@ class Messages(object):
     ARTICLE_METADATA_SUBMITTED_FLASH = ("Article created/updated", "success")
     ARTICLE_METADATA_MERGE_CONFLICT = ("""Article could not be submitted, as it matches more than one existing article.
     Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
+    ARTICLE_METADATA_UPDATE_CONFLICT = ("""Article could not be updated, as it matches another existing article.
+        Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
 
     SENT_ACCEPTED_APPLICATION_EMAIL = """Sent email to '{email}' to tell them that their journal was accepted."""
     SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER = """Sent email to user '{user}' ({name}, {email}) to tell them that their journal application was rejected."""

@@ -107,7 +107,7 @@ class ArticleService(object):
         return False
 
     def create_article(self, article, account = None, duplicate_check=True, merge_duplicate=True,
-                       limit_to_account=True, add_journal_info=False, dry_run=False):
+                       limit_to_account=True, add_journal_info=False, dry_run=False, update=None):
 
         """
         Create an individual article in the database
@@ -122,6 +122,7 @@ class ArticleService(object):
         :param limit_to_account:    Whether to limit create to when the account owns the journal to which the article belongs
         :param add_journal_info:    Should we fetch the journal info and attach it to the article before save?
         :param dry_run:     Whether to actuall save, or if this is just to either see if it would work, or to prep for a batch ingest
+        :param update: The article that it is supposed to be an update to
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing
@@ -149,16 +150,22 @@ class ArticleService(object):
         # or an update
         is_update = 0
         if duplicate_check:
-            # if current_user is not None and "admin" in current_user.role:
-            #     duplicate = self.get_duplicate(article)
-            # else:
-            duplicate = self.get_duplicate(article, account.id)
+            if current_user is not None and "admin" in current_user.role:
+                duplicate = self.get_duplicate(article)
+            else:
+                duplicate = self.get_duplicate(article, account.id)
             if duplicate is not None:
                 if merge_duplicate:
+                    if update is not None and duplicate.id != update:
+                        raise exceptions.DuplicateArticleException()
                     is_update  = 1
                     article.merge(duplicate) # merge will take the old id, so this will overwrite
                 else:
                     raise exceptions.DuplicateArticleException()
+
+        if update:
+            art = models.Article.pull(update)
+            article.merge(art)
 
         if add_journal_info:
             article.add_journal_metadata()
@@ -322,13 +329,10 @@ class ArticleService(object):
         ], exceptions.ArgumentException)
 
         article.prep()
-
         dup = self.get_duplicates(article, owner, max_results=2)
         if len(dup) > 1:
             raise exceptions.ArticleMergeConflict(Messages.EXCEPTION_ARTICLE_MERGE_CONFLICT)
-        # if len(dup) == 1 and dup[0]["id"] != id:
-        #     raise exceptions.ArticleExists(duplicate_id=dup[0]["id"])
-        elif dup and dup[0]["id"] != article.id:
+        elif dup:
             return dup.pop()
         else:
             return None
