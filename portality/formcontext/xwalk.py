@@ -999,9 +999,12 @@ class AdminArticleXwalk(ArticleFormXWalk):
                 tmp_names[int(key[1])] = a[1]
             elif key[2] == "affiliation":
                 tmp_aff[int(key[1])] = a[1]
+
         for i in range(len(tmp_names)):
             author = forms.AuthorForm()
             if tmp_names[i] != "":
                 author.name = tmp_names[i]
                 author.affiliation = tmp_aff[i]
                 form.authors.append_entry(author)
+
+
