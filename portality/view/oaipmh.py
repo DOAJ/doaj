@@ -121,19 +121,20 @@ class DateFormat(object):
 
 
 def make_set_spec(setspec):
-    s = setspec.replace('=', '~')
-    setspec_utf8 = s.encode("utf-8")
-    b = base64.urlsafe_b64encode(setspec_utf8)
-    return b
+    b = base64.urlsafe_b64encode(setspec.encode("utf-8"))
+    setspec_utf8 = b.decode("utf-8")
+    s = setspec_utf8.replace('=', '~')
+    return s
 
 
 def decode_set_spec(setspec):
     # first, make sure the setspec is a string
+    """
     try:
         setspec = setspec.encode("utf-8")
     except:
         raise SetSpecException()
-
+    """
     # switch the ~ for =
     setspec = setspec.replace("~", "=")
 
@@ -1244,12 +1245,27 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         # first, if there are any languages recorded, get the 3-char code
         # corresponding to the first language
         language = None
+
+        # FIXME: replace the block below with this once pycountry is in use again
+        '''
         if jlangs:
             if isinstance(jlangs, list):
                 jlang = jlangs[0]
             lang = datasets.language_for(jlang)
             if lang is not None:
                 language = lang.alpha_3
+        '''
+        if jlangs:
+            if isinstance(jlangs, list):
+                jlangs = jlangs[0]
+            if jlangs in datasets.languages_3char_code_index:
+                language = jlangs.lower()
+            else:
+                char3 = datasets.languages_fullname_to_3char_code.get(jlangs)
+                if char3 is None:
+                    char3 = datasets.languages_dict.get(jlangs, {}).get("iso639-3_code")
+                if char3 is not None:
+                    language = char3.lower()
 
         # if the language code lookup was successful, add it to the
         # result

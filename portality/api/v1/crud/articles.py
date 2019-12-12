@@ -83,7 +83,7 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we are allowed to create an article for this journal
         if result.get("fail", 0) == 1:
-            raise Api403Error()
+            raise Api403Error("It is not possible to create an article for this journal. Have you included in the upload an ISSN which is not associated with any journal in your account? ISSNs must match exactly the ISSNs against the journal record.")
 
         return am
 
