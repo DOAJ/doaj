@@ -717,7 +717,7 @@ $.extend(true, doaj, {
                         var orcid_logo = ""
                         if (author.name) {
                             if (author.orcid_id) {
-                                orcid_logo = "<a href='" + author.orcid_id + "'><img src='./../../static/doaj/images/orcid.gif' alt='orcid'></a>" + "&nbsp;"
+                                orcid_logo = "<a href='" + author.orcid_id + "'><img src='/static/doaj/images/orcid.gif' alt='orcid'></a>" + "&nbsp;"
                             }
                             var field = orcid_logo + edges.escapeHtml(author.name);
                             anames.push(field);
