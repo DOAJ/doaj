@@ -149,19 +149,15 @@ class ArticleService(object):
         # before saving, we need to determine whether this is a new article
         # or an update
         is_update = 0
-        if duplicate_check:
-            if current_user is not None and "admin" in current_user.role:
-                duplicate = self.get_duplicate(article)
-            else:
-                duplicate = self.get_duplicate(article, account.id)
-            if duplicate is not None:
-                if merge_duplicate:
-                    if update is not None and duplicate.id != update:
-                        raise exceptions.DuplicateArticleException()
-                    is_update  = 1
-                    article.merge(duplicate) # merge will take the old id, so this will overwrite
-                else:
+        duplicate = self.get_duplicate(article)
+        if duplicate is not None:
+            if merge_duplicate:
+                if update is not None and duplicate.id != update:
                     raise exceptions.DuplicateArticleException()
+                is_update  = 1
+                article.merge(duplicate) # merge will take the old id, so this will overwrite
+            else:
+                raise exceptions.DuplicateArticleException()
 
         if update:
             art = models.Article.pull(update)
@@ -312,7 +308,7 @@ class ArticleService(object):
 
         return owned, shared, unowned, unmatched
 
-    def get_duplicate(self, article, owner=None):
+    def get_duplicate(self, article):
         """
         Get at most one one, most recent, duplicate article for the supplied article.
 
@@ -325,11 +321,10 @@ class ArticleService(object):
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("get_duplicate", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : str, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
         article.prep()
-        dup = self.get_duplicates(article, owner, max_results=2)
+        dup = self.get_duplicates(article, max_results=2)
         if len(dup) > 1:
             raise exceptions.ArticleMergeConflict(Messages.EXCEPTION_ARTICLE_MERGE_CONFLICT)
         elif dup:
@@ -337,23 +332,21 @@ class ArticleService(object):
         else:
             return None
 
-    def get_duplicates(self, article, owner=None, max_results=10):
+    def get_duplicates(self, article, max_results=10):
         """
         Get all known duplicates of an article
 
         If the owner id is provided, this will limit the search to duplicates owned by that owner
 
         :param article:
-        :param owner:
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("get_duplicates", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : str, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
-        possible_articles_dict = self.discover_duplicates(article, owner, max_results)
+        possible_articles_dict = self.discover_duplicates(article, max_results)
         if not possible_articles_dict:
             return []
 
@@ -373,29 +366,22 @@ class ArticleService(object):
 
         return possible_articles[:max_results]
 
-    def discover_duplicates(self, article, owner=None, results_per_match_type=10):
+    def discover_duplicates(self, article, results_per_match_type=10):
         """
         Identify duplicates, separated by duplication criteria
 
         If the owner id is provided, this will limit the search to duplicates owned by that owner
 
         :param article:
-        :param owner:
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("discover_duplicates", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : str, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
         # We'll need the article bibjson a few times
         b = article.bibjson()
-
-        # Get the owner's ISSNs
-        issns = []
-        if owner is not None:
-            issns = models.Journal.issns_by_owner(owner)
 
         # if we get more than one result, we'll record them here, and then at the end
         # if we haven't got a definitive match we'll pick the most likely candidate
