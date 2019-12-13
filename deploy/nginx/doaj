@@ -55,13 +55,13 @@ server {
     error_log /var/log/nginx/doaj.error.log;
 
     location =/static/doaj/doajArticle(.*) { # this is for doajArticles.xsd, but is often accessed missing the "s", so use wildcard
-        alias /home/cloo/doaj_python3/src/doaj/portality/static/doaj/doajArticles.xsd;
+        alias /home/cloo/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
     }
     location =/static/doaj/iso_639-2b.xsd {
-        alias /home/cloo/doaj_python3/src/doaj/portality/static/doaj/iso_639-2b.xsd;
+        alias /home/cloo/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
     }
     location =/robots.txt {
-        alias /home/cloo/doaj_python3/src/doaj/deploy/robots-production.txt;
+        alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
     }
     location / {
         return 301 https://$host$request_uri;
@@ -217,10 +217,10 @@ server {
     }
     
     location =/robots.txt {
-        alias /home/cloo/doaj_python3/src/doaj/deploy/robots-production.txt;
+        alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
     }
     location /static/ {
-        alias /home/cloo/doaj_python3/src/doaj/portality/static/;
+        alias /home/cloo/doaj/src/doaj/portality/static/;
         autoindex off;
         expires max;
         add_header 'Access-Control-Allow-Origin' '*'; # why are these cors settings needed?
