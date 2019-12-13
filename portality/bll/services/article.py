@@ -149,15 +149,16 @@ class ArticleService(object):
         # before saving, we need to determine whether this is a new article
         # or an update
         is_update = 0
-        duplicate = self.get_duplicate(article)
-        if duplicate is not None:
-            if merge_duplicate:
-                if update is not None and duplicate.id != update:
+        if duplicate_check:
+            duplicate = self.get_duplicate(article)
+            if duplicate is not None:
+                if merge_duplicate:
+                    if update is not None and duplicate.id != update:
+                        raise exceptions.DuplicateArticleException()
+                    is_update  = 1
+                    article.merge(duplicate) # merge will take the old id, so this will overwrite
+                else:
                     raise exceptions.DuplicateArticleException()
-                is_update  = 1
-                article.merge(duplicate) # merge will take the old id, so this will overwrite
-            else:
-                raise exceptions.DuplicateArticleException()
 
         if update:
             art = models.Article.pull(update)
