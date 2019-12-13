@@ -38,12 +38,12 @@ We do not supply that service. You can either <a href="{{ url_for('doaj.subjects
     {% from "_formhelpers.html" import render_field_horizontal %}
     {% from "_formhelpers.html" import render_field %}
 
-<form action="{{ url_for('doaj.contact') }}" method="post" class="form-horizontal" id="contact_form">
+<form action="{{ url_for('doaj.contact')}}" method="post" class="form-horizontal" id="contact_form">
 
     {{ render_field_horizontal(form.email, style="width: 100%; max-width: 400px", placeholder="Please enter your email address") }}
     <div style="display: none">{{ render_field_horizontal(form.subject, style="width: 400px; height: 50px", placeholder="Please do not modify this field", autocomplete="off") }}</div>
     {{ render_field_horizontal(form.message, style="width: 100%; max-width: 400px; min-height: 200px", placeholder="Enter your message here") }}
-
+    {{form.recaptcha_value(id="recaptcha_value")}}
     <div class="form-group">
         <div class="submit-with-recaptcha col-md-9 col-md-offset-2">
             <form method="POST">

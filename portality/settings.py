@@ -48,7 +48,7 @@ CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the fu
 ENABLE_EMAIL = True
 ENABLE_PUBLISHER_EMAIL = True
 MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
-CONTACT_FORM_ADDRESS = "feedback+contactform@doaj.org"
+CONTACT_FORM_ADDRESS = "aga@cottagelabs.com"
 
 # Error logging via email
 SUPPRESS_ERROR_EMAILS = False

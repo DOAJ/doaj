@@ -344,16 +344,6 @@ def page_not_found(e):
 def page_not_found(e):
     return render_template('500.html'), 500
 
-@app.route('/gettoken/<g_recaptcha_response>')
-def verify_recaptcha(g_recaptcha_response):
-    with urllib.request.urlopen('https://www.google.com/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY", "") + '&response=' + g_recaptcha_response) as url:
-        data = json.loads(url.read().decode())
-        return data
-
-@app.route('/get_site_key')
-def get_site_key():
-    return app.config.get('RECAPTCHA_SITE_KEY')
-
 if __name__ == "__main__":
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)
     if len(sys.argv) > 1:

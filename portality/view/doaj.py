@@ -368,11 +368,26 @@ def contact():
         if not form.validate():
             return render_template("doaj/contact.html", form=form)
 
-        send_contact_form(form)
-        flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
-        form = ContactUs()
-        return render_template("doaj/contact.html", form=form)
+        data = _verify_recaptcha(form.recaptcha_value.data)
+        if data["success"]:
+            send_contact_form(form)
+            flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
+            form = ContactUs()
+            return render_template("doaj/contact.html", form=form)
+        else:
+            flash("Your form could not be submitted.", "error")
+            print(data["error-codes"])
+            return render_template("doaj/contact.html", form=form)
 
+def _verify_recaptcha(g_recaptcha_response):
+    print(g_recaptcha_response)
+    with urllib.request.urlopen('https://www.google.com/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY") + '&response=' + g_recaptcha_response) as url:
+        data = json.loads(url.read().decode())
+        return data
+
+@app.route('/get_site_key')
+def get_site_key():
+    return app.config.get('RECAPTCHA_SITE_KEY')
 ###############################################################
 # The various static endpoints
 ###############################################################

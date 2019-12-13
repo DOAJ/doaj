@@ -27,14 +27,8 @@ var onloadCallback = function() {
     $("#submitBtn").prop("disabled", true);
 
     var captchaCallback = function(param) {
-        $.get( "gettoken/" + param, function( data ) {
-          if (!data.success) {
-              window.alert("something went wrong" + data.error);
-          }
-          else {
-              $("#submitBtn").prop("disabled", false);
-          }
-        });
+      $('#recaptcha_value').val(param);
+      $("#submitBtn").prop("disabled", false);
   };
 
     function ajax1() {
@@ -42,7 +36,6 @@ var onloadCallback = function() {
     }
 
     $.when(ajax1()).done(function(key) {
-        window.console.log("now");
         grecaptcha.render('html_element', {
                 'sitekey' : key,
                 'callback' : captchaCallback,
