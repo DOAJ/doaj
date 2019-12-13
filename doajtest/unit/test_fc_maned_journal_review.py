@@ -27,8 +27,8 @@ def editor_group_pull(cls, field, value):
     return eg
 
 mock_lcc_choices = [
-    (u'H', u'Social Sciences'),
-    (u'HB1-3840', u'--Economic theory. Demography')
+    ('H', 'Social Sciences'),
+    ('HB1-3840', '--Economic theory. Demography')
 ]
 
 

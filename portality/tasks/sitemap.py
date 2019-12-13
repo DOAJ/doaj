@@ -69,7 +69,7 @@ class SitemapBackgroundTask(BackgroundTask):
             counter += 1
 
         # log to the screen
-        job.add_audit_message(u"{x} urls written to sitemap".format(x=counter))
+        job.add_audit_message("{x} urls written to sitemap".format(x=counter))
 
         # save it into the cache directory
         attachment_name = 'doaj_' + datetime.strftime(datetime.now(), '%Y%m%d_%H%M') + '.xml'

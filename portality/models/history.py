@@ -35,7 +35,7 @@ class History(DomainObject):
         if not os.path.isdir(full_dir):
             os.makedirs(full_dir)
 
-        with open(full_path, 'wb') as o:
+        with open(full_path, 'w') as o:
             o.write(json.dumps(self.data, indent=4))
 
 

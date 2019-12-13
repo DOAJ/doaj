@@ -1,6 +1,6 @@
 import os
 from lxml import etree
-from StringIO import StringIO
+from io import StringIO, BytesIO
 from copy import deepcopy
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
@@ -19,7 +19,7 @@ class ArticleFixtureFactory(object):
         for a in articles:
             nr.append(a)
         out = etree.tostring(nr, encoding="UTF-8", xml_declaration=True)
-        return StringIO(out)
+        return BytesIO(out)
 
     @classmethod
     def upload_2_issns_correct(cls):
@@ -47,7 +47,7 @@ class ArticleFixtureFactory(object):
 
     @classmethod
     def invalid_schema_xml(cls):
-        return StringIO("<this><isnot my='schema'></isnot></this>")
+        return BytesIO("<this><isnot my='schema'></isnot></this>".encode("UTF-8"))
 
     @classmethod
     def noids(cls):

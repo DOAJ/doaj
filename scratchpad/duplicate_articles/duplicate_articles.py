@@ -1,4 +1,4 @@
-import codecs
+import csv
 from portality import clcsv
 
 IN = "/home/richard/tmp/article_duplicates_2018-05-22/duplicate_articles_global_2018-05-22.csv"
@@ -21,16 +21,16 @@ bad_data_unique_deduplicated = []
 genuine_count = 0
 bad_data_count = 0
 
-with codecs.open(GENUINE, "wb", "utf-8") as a:
-    awriter = clcsv.UnicodeWriter(a)
+with open(GENUINE, "w", encoding="utf-8") as a:
+    awriter = csv.writer(a)
 
-    with codecs.open(BAD_DATA, "wb", "utf-8") as b:
-        bwriter = clcsv.UnicodeWriter(b)
+    with open(BAD_DATA, "w", encoding="utf-8") as b:
+        bwriter = csv.writer(b)
 
-        with codecs.open(IN, "rb", "utf-8") as f:
-            reader = clcsv.UnicodeReader(f)
+        with open(IN, "r", encoding="utf-8") as f:
+            reader = csv.writer(f)
 
-            headers = reader.next()
+            headers = next(reader)
             awriter.writerow(headers)
             bwriter.writerow(headers)
 
@@ -76,14 +76,14 @@ with codecs.open(GENUINE, "wb", "utf-8") as a:
 
 
 
-print("Total articles engaged in duplication: " + str(len(unique_ids)))
-print("Total articles that would remain after de-duplication: " + str(len(unique_deduplicated)))
+print(("Total articles engaged in duplication: " + str(len(unique_ids))))
+print(("Total articles that would remain after de-duplication: " + str(len(unique_deduplicated))))
 
-print("Total estimated genuine duplication pairs: " + str(genuine_count))
-print("Total estimated articles engaged in genuine duplication: " + str(len(genuine_unique_ids)))
-print("Total estimated articles that would remain from genuine duplication after de-duplication: " + str(len(genuine_unique_deduplicated)))
+print(("Total estimated genuine duplication pairs: " + str(genuine_count)))
+print(("Total estimated articles engaged in genuine duplication: " + str(len(genuine_unique_ids))))
+print(("Total estimated articles that would remain from genuine duplication after de-duplication: " + str(len(genuine_unique_deduplicated))))
 
-print("Total estimated bad data duplication pairs: " + str(bad_data_count))
-print("Total estimated articles engaged in 'bad data' duplication: " + str(len(bad_data_unique_ids)))
-print("Total estimated articles that would remain from 'bad data' duplication after de-duplication: " + str(len(bad_data_unique_deduplicated)))
+print(("Total estimated bad data duplication pairs: " + str(bad_data_count)))
+print(("Total estimated articles engaged in 'bad data' duplication: " + str(len(bad_data_unique_ids))))
+print(("Total estimated articles that would remain from 'bad data' duplication after de-duplication: " + str(len(bad_data_unique_deduplicated))))
 

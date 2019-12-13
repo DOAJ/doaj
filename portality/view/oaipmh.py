@@ -121,16 +121,20 @@ class DateFormat(object):
 
 
 def make_set_spec(setspec):
-    return base64.urlsafe_b64encode(setspec).replace("=", "~")
+    b = base64.urlsafe_b64encode(setspec.encode("utf-8"))
+    setspec_utf8 = b.decode("utf-8")
+    s = setspec_utf8.replace('=', '~')
+    return s
 
 
 def decode_set_spec(setspec):
     # first, make sure the setspec is a string
+    """
     try:
         setspec = setspec.encode("utf-8")
     except:
         raise SetSpecException()
-
+    """
     # switch the ~ for =
     setspec = setspec.replace("~", "=")
 
@@ -173,7 +177,7 @@ def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None,
     if start_after is not None:
         d["a"] = start_after
     j = json.dumps(d)
-    b = base64.urlsafe_b64encode(j)
+    b = base64.urlsafe_b64encode(j.encode('utf-8'))
     return b
 
 
@@ -192,7 +196,7 @@ def decode_resumption_token(resumption_token):
     except TypeError:
         raise ResumptionTokenException()
     try:
-        d = json.loads(j)
+        d = json.loads(j.decode("utf-8"))   # convert the bytes to str for pre 3.5 compat
     except ValueError:
         raise ResumptionTokenException()
 
@@ -300,9 +304,9 @@ if sys.maxunicode >= 0x10000:  # not narrow build
                              (0xBFFFE, 0xBFFFF), (0xCFFFE, 0xCFFFF),
                              (0xDFFFE, 0xDFFFF), (0xEFFFE, 0xEFFFF),
                              (0xFFFFE, 0xFFFFF), (0x10FFFE, 0x10FFFF)])
-_illegal_ranges = ["%s-%s" % (unichr(low), unichr(high))
+_illegal_ranges = ["%s-%s" % (chr(low), chr(high))
                    for (low, high) in _illegal_unichrs]
-_illegal_xml_chars_RE = re.compile(u'[%s]' % u''.join(_illegal_ranges))
+_illegal_xml_chars_RE = re.compile('[%s]' % ''.join(_illegal_ranges))
 
 
 def valid_XML_char_ordinal(i):
@@ -316,7 +320,10 @@ def valid_XML_char_ordinal(i):
 
 def clean_unreadable(input_string):
     try:
-        return _illegal_xml_chars_RE.sub("", input_string)
+        if type(input_string) == str:
+            return _illegal_xml_chars_RE.sub("", input_string)
+        else:
+            return _illegal_xml_chars_RE.sub("", input_string.decode("utf-8"))
     except TypeError as e:
         app.logger.error("Unable to strip illegal XML chars from: {x}, {y}".format(x=input_string, y=type(input_string)))
         return None
@@ -1238,6 +1245,16 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         # first, if there are any languages recorded, get the 3-char code
         # corresponding to the first language
         language = None
+
+        # FIXME: replace the block below with this once pycountry is in use again
+        '''
+        if jlangs:
+            if isinstance(jlangs, list):
+                jlang = jlangs[0]
+            lang = datasets.language_for(jlang)
+            if lang is not None:
+                language = lang.alpha_3
+        '''
         if jlangs:
             if isinstance(jlangs, list):
                 jlangs = jlangs[0]

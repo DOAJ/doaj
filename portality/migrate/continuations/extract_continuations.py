@@ -34,7 +34,7 @@ def migrate(data):
         if created is not None:
             j.set_created(created)
 
-        j.add_note(u"Continuation automatically extracted from journal {x} during migration".format(x=data.get("id")))
+        j.add_note("Continuation automatically extracted from journal {x} during migration".format(x=data.get("id")))
         j.save()
 
     if replaces is not None:

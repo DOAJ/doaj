@@ -1,5 +1,5 @@
 from portality import models
-import json, codecs
+import json
 
 if __name__ == "__main__":
     import argparse
@@ -11,17 +11,17 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.username:
-        print "Please specify a username with the -u option"
+        print("Please specify a username with the -u option")
         exit()
 
     if not args.out:
-        print "Please specify and output file with the -o option"
+        print("Please specify and output file with the -o option")
         exit()
 
     issns = models.Journal.issns_by_owner(args.username)
     articles = models.Article.find_by_issns(issns)
 
-    with codecs.open(args.out, "wb", "utf8") as f:
+    with open(args.out, "w", encoding="utf8") as f:
         f.write("[")
 
         first = True

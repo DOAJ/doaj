@@ -77,13 +77,13 @@ class ArticlesCrudApi(CrudApi):
         try:
             result = articleService.create_article(am, account, add_journal_info=True)
         except ArticleMergeConflict as e:
-            raise Api400Error(e.message)
+            raise Api400Error(str(e))
         except ArticleNotAcceptable as e:
             raise Api400Error("; ".join(e.errors))
 
         # Check we are allowed to create an article for this journal
         if result.get("fail", 0) == 1:
-            raise Api403Error()
+            raise Api403Error("It is not possible to create an article for this journal. Have you included in the upload an ISSN which is not associated with any journal in your account? ISSNs must match exactly the ISSNs against the journal record.")
 
         return am
 
@@ -94,7 +94,7 @@ class ArticlesCrudApi(CrudApi):
         try:
             ia = IncomingArticleDO(data)
         except dataobj.DataStructureException as e:
-            raise Api400Error(e.message)
+            raise Api400Error(str(e))
 
         # if that works, convert it to an Article object
         am = ia.to_article_model()
@@ -188,7 +188,7 @@ class ArticlesCrudApi(CrudApi):
         try:
             ia = IncomingArticleDO(data)
         except dataobj.DataStructureException as e:
-            raise Api400Error(e.message)
+            raise Api400Error(str(e))
 
         # if that works, convert it to an Article object bringing over everything outside the
         # incoming article from the original article

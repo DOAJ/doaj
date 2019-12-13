@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "3.0.11"
+DOAJ_VERSION = "3.1.0"
 
 OFFLINE_MODE = False
 
@@ -87,17 +87,18 @@ HUEY_REDIS_HOST = '127.0.0.1'
 HUEY_REDIS_PORT = 6379
 HUEY_EAGER = False
 
+#  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
 HUEY_SCHEDULE = {
     "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
     "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
-    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
+    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "35"},
     "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
     "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
     "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
-    "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
-    "public_data_dump" : {"month" : "*", "day" : "*/6", "day_of_week" : "*", "hour" : "10", "minute" : "0"}
+    "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
+    "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"}
 }
 
 HUEY_TASKS = {
@@ -140,6 +141,8 @@ from portality.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
 STORE_LOCAL_EXPOSE = False  # if you want to allow files in the local store to be exposed under /store/<path> urls.  For dev only.
+STORE_LOCAL_WRITE_BUFFER_SIZE = 16777216
+STORE_TMP_WRITE_BUFFER_SIZE = 16777216
 
 # containers (buckets in AWS) where various content will be stored
 # These values are placeholders, and must be overridden in live deployment
@@ -251,12 +254,23 @@ FACET_FIELD = ".exact"
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal",
-    "portality.models.Suggestion"
+    "portality.models.Suggestion",
+    "portality.models.harvester.HarvestState"
 ]
 
 # Map from dataobj coercion declarations to ES mappings
 DATAOBJ_TO_MAPPING_DEFAULTS = {
     "unicode": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "str": {
         "type": "string",
         "fields": {
             "exact": {
@@ -889,3 +903,52 @@ ELASTIC_APM = {
 
 CONSENT_COOKIE_KEY = "doaj-cookie-consent"
 
+
+
+#############################################
+## Harvester Configuration
+
+## Configuration options for the DOAJ API Client
+
+DOAJ_SEARCH_BASE = "https://doaj.org"
+
+DOAJ_SEARCH_PORT = 80
+
+DOAJ_QUERY_ENDPOINT = "query"
+
+DOAJ_SEARCH_TYPE = "journal,article"
+
+DOAJ_API_BASE_URL = "https://doaj.org/api/v1/"
+
+
+## EPMC Client configuration
+
+EPMC_REST_API = "http://www.ebi.ac.uk/europepmc/webservices/rest/"
+EPMC_TARGET_VERSION = "6.2"
+
+# General harvester configuraiton
+
+HARVESTERS = [
+    "portality.harvester.epmc.epmc_harvester.EPMCHarvester"
+]
+
+INITIAL_HARVEST_DATE = "2015-12-01T00:00:00Z"
+
+# The mapping from account ids to API keys.  MUST NOT be checked into the repo, put these
+# in the local.cfg instead
+HARVESTER_API_KEYS = {
+
+}
+
+EPMC_HARVESTER_THROTTLE = 0.2
+
+# Process name while harvester is starting, running
+HARVESTER_STARTING_PROCTITLE = 'harvester: starting'
+HARVESTER_RUNNING_PROCTITLE = 'harvester: running'
+
+# Minutes we wait between terminate and kill
+HARVESTER_MAX_WAIT = 10
+
+# Email notifications
+HARVESTER_EMAIL_ON_EVENT = False
+HARVESTER_EMAIL_RECIPIENTS = None

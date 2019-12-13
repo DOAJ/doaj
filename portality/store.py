@@ -1,8 +1,8 @@
 from portality.core import app
 from portality.lib import plugin
 
-import os, shutil, codecs, boto3
-from urllib import quote_plus
+import os, shutil, boto3
+from urllib.parse import quote_plus
 
 class StoreException(Exception):
     pass
@@ -165,6 +165,7 @@ class StoreLocal(Store):
         self.dir = app.config.get("STORE_LOCAL_DIR")
         if self.dir is None:
             raise StoreException("STORE_LOCAL_DIR is not defined in config")
+        self.buffer_size = app.config.get("STORE_LOCAL_WRITE_BUFFER_SIZE", 16777216)
 
     def store(self, container_id, target_name, source_path=None, source_stream=None):
         cpath = os.path.join(self.dir, container_id)
@@ -175,8 +176,12 @@ class StoreLocal(Store):
         if source_path:
             shutil.copyfile(source_path, tpath)
         elif source_stream:
-            with codecs.open(tpath, "wb") as f:
-                f.write(source_stream.read())
+            data = source_stream.read(self.buffer_size)
+            mode = "w" if isinstance(data, str) else "wb"
+            with open(tpath, mode) as f:
+                while data:
+                    f.write(data)
+                    data = source_stream.read(self.buffer_size)
 
     def exists(self, container_id):
         cpath = os.path.join(self.dir, container_id)
@@ -190,9 +195,11 @@ class StoreLocal(Store):
         cpath = os.path.join(self.dir, container_id, target_name)
         if os.path.exists(cpath) and os.path.isfile(cpath):
             kwargs = {}
+            mode = "rb"
             if encoding is not None:
                 kwargs = {"encoding" : encoding}
-            f = codecs.open(cpath, "rb", **kwargs)
+                mode = "r"
+            f = open(cpath, mode, **kwargs)
             return f
 
     def url(self, container_id, target_name):
@@ -215,12 +222,17 @@ class StoreLocal(Store):
             else:
                 shutil.rmtree(cpath)
 
+    def size(self, container_id, target_name):
+        cpath = os.path.join(self.dir, container_id, target_name)
+        return os.stat(cpath).st_size
+
 
 class TempStore(StoreLocal):
     def __init__(self):
         self.dir = app.config.get("STORE_TMP_DIR")
         if self.dir is None:
             raise StoreException("STORE_TMP_DIR is not defined in config")
+        self.buffer_size = app.config.get("STORE_TMP_WRITE_BUFFER_SIZE", 16777216)
 
     def path(self, container_id, filename, create_container=False, must_exist=True):
         container_path = os.path.join(self.dir, container_id)

@@ -120,11 +120,11 @@ class TestAsyncWorkflowEmails(DoajTestCase):
 
         async_workflow_notifications.managing_editor_notifications(emails)
         assert len(emails) > 0
-        assert app.config['MANAGING_EDITOR_EMAIL'] in emails.keys()
+        assert app.config['MANAGING_EDITOR_EMAIL'] in list(emails.keys())
 
         email_text_catted = " ".join(emails[app.config['MANAGING_EDITOR_EMAIL']][1])
-        assert u'1 application(s) are assigned to an Associate Editor' in email_text_catted
-        assert u"There are 1 records in status 'Ready'" in email_text_catted
+        assert '1 application(s) are assigned to an Associate Editor' in email_text_catted
+        assert "There are 1 records in status 'Ready'" in email_text_catted
         ctx.pop()
 
     def test_03_workflow_editor_notifications(self):
@@ -163,11 +163,11 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         async_workflow_notifications.editor_notifications(emails)
 
         assert len(emails) > 0
-        assert EDITOR_SOURCE['email'] in emails.keys()
+        assert EDITOR_SOURCE['email'] in list(emails.keys())
 
         email_text_catted = " ".join(emails[EDITOR_SOURCE['email']][1])
-        assert u'1 application(s) currently assigned to your Editor Group, "editorgroup", which have no Associate Editor' in email_text_catted
-        assert u"1 application(s) which have been assigned to an Associate Editor but have been idle" in email_text_catted
+        assert '1 application(s) currently assigned to your Editor Group, "editorgroup", which have no Associate Editor' in email_text_catted
+        assert "1 application(s) which have been assigned to an Associate Editor but have been idle" in email_text_catted
 
         ctx.pop()
 
@@ -203,10 +203,10 @@ class TestAsyncWorkflowEmails(DoajTestCase):
 
         async_workflow_notifications.associate_editor_notifications(emails)
         assert len(emails) > 0
-        assert ASSED1_SOURCE['email'] in emails.keys()
+        assert ASSED1_SOURCE['email'] in list(emails.keys())
 
         email_text = emails[ASSED1_SOURCE['email']][1].pop()
-        assert u'You have 2 application(s) assigned to you' in email_text
-        assert u'including 1 which have been unchanged' in email_text
+        assert 'You have 2 application(s) assigned to you' in email_text
+        assert 'including 1 which have been unchanged' in email_text
 
         ctx.pop()

@@ -52,7 +52,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
                 # for debugging, just print out the progress
                 i += 1
-                print i, article_model.id, len(journal_cache.keys()), len(write_batch), len(delete_batch)
+                print(i, article_model.id, len(list(journal_cache.keys())), len(write_batch), len(delete_batch))
 
                 # Try to find journal in our cache
                 bibjson = article_model.bibjson()
@@ -67,8 +67,8 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
                     else:
                         cache_miss = True
                 assoc_journal = None
-                if len(possibles.keys()) > 0:
-                    assoc_journal = self._get_best_journal(possibles.values())
+                if len(list(possibles.keys())) > 0:
+                    assoc_journal = self._get_best_journal(list(possibles.values()))
 
                 # Cache miss; ask the article model to try to find its journal
                 if assoc_journal is None or cache_miss:
@@ -112,37 +112,37 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
             # When we have reached the batch limit, do some writing or deleting
             if len(write_batch) >= batch_size:
-                job.add_audit_message(u"Writing {x} articles".format(x=len(write_batch)))
+                job.add_audit_message("Writing {x} articles".format(x=len(write_batch)))
                 models.Article.bulk(write_batch)
                 write_batch = []
 
             if len(delete_batch) >= batch_size:
-                job.add_audit_message(u"Deleting {x} articles".format(x=len(delete_batch)))
+                job.add_audit_message("Deleting {x} articles".format(x=len(delete_batch)))
                 esprit.raw.bulk_delete(conn, 'article', delete_batch)
                 delete_batch.clear()
 
         # Finish the last part-batches of writes or deletes
         if len(write_batch) > 0:
-            job.add_audit_message(u"Writing {x} articles".format(x=len(write_batch)))
+            job.add_audit_message("Writing {x} articles".format(x=len(write_batch)))
             models.Article.bulk(write_batch)
         if len(delete_batch) > 0:
-            job.add_audit_message(u"Deleting {x} articles".format(x=len(delete_batch)))
+            job.add_audit_message("Deleting {x} articles".format(x=len(delete_batch)))
             esprit.raw.bulk_delete(conn, 'article', delete_batch)
             delete_batch.clear()
 
         if write_changes:
-            job.add_audit_message(u"Done. {0} articles updated, {1} remain unchanged, and {2} deleted.".format(updated_count, same_count, deleted_count))
+            job.add_audit_message("Done. {0} articles updated, {1} remain unchanged, and {2} deleted.".format(updated_count, same_count, deleted_count))
         else:
-            job.add_audit_message(u"Done. Changes not written to index. {0} articles to be updated, {1} to remain unchanged, and {2} to be deleted. Set 'write' to write changes.".format(updated_count, same_count, deleted_count))
+            job.add_audit_message("Done. Changes not written to index. {0} articles to be updated, {1} to remain unchanged, and {2} to be deleted. Set 'write' to write changes.".format(updated_count, same_count, deleted_count))
 
         if len(failed_articles) > 0:
-            job.add_audit_message(u"Failed to create models for {x} articles in the index. Something is quite wrong.".format(x=len(failed_articles)))
+            job.add_audit_message("Failed to create models for {x} articles in the index. Something is quite wrong.".format(x=len(failed_articles)))
             job.add_audit_message("Failed article ids: {x}".format(x=", ".join(failed_articles)))
             job.fail()
 
     def _get_best_journal(self, journals):
         if len(journals) == 1:
-            return journals[0]
+            return list(journals)[0]
 
         # in_doaj
         # most recently updated (manual, then automatic)
@@ -166,16 +166,16 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
             context[lmu][lu] = j
 
         context = None
-        if len(result["in_doaj"].keys()) > 0:
+        if len(list(result["in_doaj"].keys())) > 0:
             context = result["in_doaj"]
         else:
             context = result["not_in_doaj"]
 
-        lmus = context.keys()
+        lmus = list(context.keys())
         lmus.sort()
         context = context[lmus.pop()]
 
-        lus = context.keys()
+        lus = list(context.keys())
         lus.sort()
         best = context[lus.pop()]
         return best

@@ -55,7 +55,7 @@ def username(username):
         if request.values.get('submit', False) == 'Generate':
             acc.generate_api_key()
         for k, v in newdata.items():
-            if k not in ['marketing_consent', 'submit','password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
+            if k not in ['marketing_consent', 'submit', 'password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
                 acc.data[k] = v
         if 'password' in newdata and not newdata['password'].startswith('sha1'):
             if newdata.get("confirm", "") == "":
@@ -165,8 +165,6 @@ def forgot():
             return render_template('account/forgot.html')
 
         # if we get to here, we have a user account to reset
-        #newpass = util.generate_password()
-        #account.set_password(newpass)
         reset_token = uuid.uuid4().hex
         account.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
         account.save()

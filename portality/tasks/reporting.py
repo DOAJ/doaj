@@ -1,5 +1,4 @@
 from portality import models
-from portality.clcsv import UnicodeWriter
 from portality.lib import dates
 from portality import datasets
 from portality.core import app
@@ -8,8 +7,9 @@ from portality.background import BackgroundApi, BackgroundTask
 from portality.tasks.redis_huey import main_queue, schedule
 from portality.app_email import email_archive
 from portality.decorators import write_required
+from portality.dao import ESMappingMissingError
 
-import codecs, os, shutil
+import os, shutil, csv
 
 
 def provenance_reports(fr, to, outdir):
@@ -21,17 +21,20 @@ def provenance_reports(fr, to, outdir):
     ]
 
     q = ProvenanceList(fr, to)
-    for prov in models.Provenance.iterate(q.query()):
-        for filt in pipeline:
-            filt.count(prov)
+    try:
+        for prov in models.Provenance.iterate(q.query()):
+            for filt in pipeline:
+                filt.count(prov)
+    except ESMappingMissingError:
+        return None
 
     outfiles = []
     for p in pipeline:
         table = p.tabulate()
         outfile = os.path.join(outdir, p.filename(fr, to))
         outfiles.append(outfile)
-        with codecs.open(outfile, "wb", "utf-8") as f:
-            writer = UnicodeWriter(f)
+        with open(outfile, "w") as f:
+            writer = csv.writer(f)
             for row in table:
                 writer.writerow(row)
 
@@ -65,8 +68,8 @@ def content_reports(fr, to, outdir):
     outfiles = []
     outfile = os.path.join(outdir, filename)
     outfiles.append(outfile)
-    with codecs.open(outfile, "wb", "utf-8") as f:
-        writer = UnicodeWriter(f)
+    with open(outfile, "w", encoding="utf-8") as f:
+        writer = csv.writer(f)
         for row in table:
             writer.writerow(row)
 
@@ -74,8 +77,8 @@ def content_reports(fr, to, outdir):
 
 
 def _tabulate_time_entity_group(group, entityKey):
-    date_keys = group.keys()
-    date_keys.sort()
+    date_keys_unsorted = group.keys()
+    date_keys = sorted(date_keys_unsorted)
     table = []
     padding = []
     for db in date_keys:
@@ -282,25 +285,25 @@ class ContentByDate(object):
 
     def query(self):
         return {
-            "query" : {
-                "bool" : {
-                    "must" : [
-                        {"range" : {"created_date" : {"gt" : self.fr, "lte" : self.to}}}
+            "query": {
+                "bool": {
+                    "must": [
+                        {"range": {"created_date": {"gt": self.fr, "lte": self.to}}}
                     ]
                 }
             },
-            "size" : 0,
-            "aggs" : {
-                "years" : {
-                    "date_histogram" : {
-                        "field" : "created_date",
-                        "interval" : "year"
+            "size": 0,
+            "aggs": {
+                "years": {
+                    "date_histogram": {
+                        "field": "created_date",
+                        "interval": "year"
                     },
-                    "aggs" : {
-                        "countries" : {
-                            "terms" : {
-                                "field" : "bibjson.country.exact",
-                                "size" : 1000
+                    "aggs": {
+                        "countries": {
+                            "terms": {
+                                "field": "bibjson.country.exact",
+                                "size": 1000
                             }
                         }
                     }
@@ -333,13 +336,16 @@ class ReportingBackgroundTask(BackgroundTask):
             os.makedirs(outdir)
 
         prov_outfiles = provenance_reports(fr, to, outdir)
+        if prov_outfiles is None:
+            job.add_audit_message("No provenance records found; no provenance reports will be recorded.")
+
         cont_outfiles = content_reports(fr, to, outdir)
         refs = {}
         self.set_reference(refs, "provenance_outfiles", prov_outfiles)
         self.set_reference(refs, "content_outfiles", cont_outfiles)
         job.reference = refs
 
-        msg = u"Generated reports for period {x} to {y}".format(x=fr, y=to)
+        msg = "Generated reports for period {x} to {y}".format(x=fr, y=to)
         job.add_audit_message(msg)
 
         send_email = self.get_param(params, "email", False)

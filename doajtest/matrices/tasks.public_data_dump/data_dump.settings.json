@@ -1,109 +1,78 @@
 {
   "parameters": [
     {
-      "type": "index", 
-      "name": "test_id"
-    }, 
+      "name": "test_id",
+      "type": "index"
+    },
     {
+      "name": "clean",
+      "type": "generated",
       "values": {
-        "yes": {}, 
+        "yes": {},
+        "no": {},
         "-": {
           "constraints": {
-            "articles": {
-              "or": [
-                "0"
-              ]
-            }, 
             "journals": {
               "or": [
                 "0"
               ]
-            }, 
+            },
+            "articles": {
+              "or": [
+                "0"
+              ]
+            },
             "tmp_write": {
               "or": [
                 "success"
               ]
-            }, 
+            },
             "store_write": {
               "or": [
                 "success"
               ]
             }
           }
-        }, 
-        "no": {}
-      }, 
-      "type": "generated", 
-      "name": "clean"
-    }, 
+        }
+      }
+    },
     {
+      "name": "prune",
+      "type": "generated",
       "values": {
-        "yes": {}, 
+        "yes": {},
+        "no": {},
         "-": {
           "constraints": {
-            "articles": {
-              "or": [
-                "0"
-              ]
-            }, 
             "journals": {
               "or": [
                 "0"
               ]
-            }, 
+            },
+            "articles": {
+              "or": [
+                "0"
+              ]
+            },
             "tmp_write": {
               "or": [
                 "success"
               ]
-            }, 
+            },
             "store_write": {
               "or": [
                 "success"
               ]
             }
           }
-        }, 
-        "no": {}
-      }, 
-      "type": "generated", 
-      "name": "prune"
-    }, 
+        }
+      }
+    },
     {
+      "name": "types",
+      "type": "generated",
       "values": {
-        "article": {
-          "constraints": {
-            "journals": {
-              "or": [
-                "0"
-              ]
-            }
-          }
-        }, 
-        "all": {}, 
-        "-": {
-          "constraints": {
-            "articles": {
-              "or": [
-                "0"
-              ]
-            }, 
-            "journals": {
-              "or": [
-                "0"
-              ]
-            }, 
-            "tmp_write": {
-              "or": [
-                "success"
-              ]
-            }, 
-            "store_write": {
-              "or": [
-                "success"
-              ]
-            }
-          }
-        }, 
+        "all": {},
         "journal": {
           "constraints": {
             "articles": {
@@ -112,38 +81,72 @@
               ]
             }
           }
+        },
+        "article": {
+          "constraints": {
+            "journals": {
+              "or": [
+                "0"
+              ]
+            }
+          }
+        },
+        "-": {
+          "constraints": {
+            "journals": {
+              "or": [
+                "0"
+              ]
+            },
+            "articles": {
+              "or": [
+                "0"
+              ]
+            },
+            "tmp_write": {
+              "or": [
+                "success"
+              ]
+            },
+            "store_write": {
+              "or": [
+                "success"
+              ]
+            }
+          }
         }
-      }, 
-      "type": "generated", 
-      "name": "types"
-    }, 
+      }
+    },
     {
+      "name": "journals",
+      "type": "generated",
       "values": {
-        "0": {}, 
-        "2": {}, 
+        "0": {},
+        "2": {},
         "4": {}
-      }, 
-      "type": "generated", 
-      "name": "journals"
-    }, 
+      }
+    },
     {
+      "name": "articles",
+      "type": "generated",
       "values": {
-        "0": {}, 
-        "2": {}, 
+        "0": {},
+        "2": {},
         "4": {}
-      }, 
-      "type": "generated", 
-      "name": "articles"
-    }, 
+      }
+    },
     {
+      "name": "batch_size",
+      "type": "generated",
       "values": {
         "3": {}
-      }, 
-      "type": "generated", 
-      "name": "batch_size"
-    }, 
+      }
+    },
     {
+      "name": "tmp_write",
+      "type": "generated",
       "values": {
+        "success": {},
         "fail": {
           "constraints": {
             "store_write": {
@@ -152,14 +155,14 @@
               ]
             }
           }
-        }, 
-        "success": {}
-      }, 
-      "type": "generated", 
-      "name": "tmp_write"
-    }, 
+        }
+      }
+    },
     {
+      "name": "store_write",
+      "type": "generated",
       "values": {
+        "success": {},
         "fail": {
           "constraints": {
             "tmp_write": {
@@ -168,16 +171,15 @@
               ]
             }
           }
-        }, 
-        "success": {}
-      }, 
-      "type": "generated", 
-      "name": "store_write"
-    }, 
+        }
+      }
+    },
     {
-      "default": "complete", 
+      "name": "status",
+      "type": "conditional",
+      "default": "complete",
       "values": {
-        "complete": {}, 
+        "complete": {},
         "error": {
           "conditions": [
             {
@@ -186,7 +188,7 @@
                   "fail"
                 ]
               }
-            }, 
+            },
             {
               "store_write": {
                 "or": [
@@ -196,9 +198,7 @@
             }
           ]
         }
-      }, 
-      "type": "conditional", 
-      "name": "status"
+      }
     }
   ]
 }

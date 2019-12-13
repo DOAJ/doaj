@@ -101,14 +101,14 @@ with open("application_2_journal.csv", "wb") as f:
                     writer.writerow(row)
 
             application.save()
-            print(counter, application.id)
+            print((counter, application.id))
         else:
             row = [
                 application.id, application.created_date, application.last_updated, application.last_manual_update, "", ",".join(issns),
                 "0", "", "", "", "", "", "", "", "", "", ""
             ]
             writer.writerow(row)
-            print(counter, application.id)
+            print((counter, application.id))
 
 # let the index catch up
 time.sleep(2)
@@ -168,7 +168,7 @@ for result in esprit.tasks.scroll(conn, "journal", keepalive="1m"):
         ]
         rows.append(row)
 
-    print(counter, journal.id)
+    print((counter, journal.id))
 
 with open("journal_2_application.csv", "wb") as f:
     writer = csv.writer(f)

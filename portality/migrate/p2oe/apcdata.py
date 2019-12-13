@@ -1,7 +1,7 @@
 from portality import models
 
 batch_size = 1000
-total=0
+total = 0
 
 batch = []
 journal_iterator = models.Journal.iterall(page_size=10000)
@@ -26,11 +26,11 @@ for j in journal_iterator:
 
     if len(batch) >= batch_size:
         total += len(batch)
-        print "writing", len(batch), "; total so far", total
+        print("writing", len(batch), "; total so far", total)
         models.Journal.bulk(batch)
         batch = []
 
 if len(batch) > 0:
     total += len(batch)
-    print "writing", len(batch), "; total so far", total
+    print("writing", len(batch), "; total so far", total)
     models.Journal.bulk(batch)

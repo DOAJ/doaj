@@ -54,17 +54,17 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         ids = self.get_param(params, 'ids')
 
         if not self._job_parameter_check(params):
-            raise BackgroundException(u"{}.run run without sufficient parameters".format(self.__class__.__name__))
+            raise BackgroundException("{}.run run without sufficient parameters".format(self.__class__.__name__))
 
         # repeat the estimations and log what they were at the time the job ran, in addition to what the user saw
         # when requesting the job in journal_bulk_delete_manage
         estimates = self.estimate_delete_counts(json.loads(job.reference['selection_query']))
-        job.add_audit_message(u"About to delete an estimated {} journals with {} articles associated with their ISSNs."
+        job.add_audit_message("About to delete an estimated {} journals with {} articles associated with their ISSNs."
                               .format(estimates['journals-to-be-deleted'], estimates['articles-to-be-deleted']))
 
         journal_delete_q_by_ids = models.Journal.make_query(should_terms={'_id': ids}, consistent_order=False)
         models.Journal.delete_selected(query=journal_delete_q_by_ids, articles=True, snapshot_journals=True, snapshot_articles=True)
-        job.add_audit_message(u"Deleted {} journals and all articles associated with their ISSNs.".format(len(ids)))
+        job.add_audit_message("Deleted {} journals and all articles associated with their ISSNs.".format(len(ids)))
 
     def cleanup(self):
         """
@@ -114,7 +114,7 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         cls.set_param(params, 'ids', kwargs['ids'])
 
         if not cls._job_parameter_check(params):
-            raise BackgroundException(u"{}.prepare run without sufficient parameters".format(cls.__name__))
+            raise BackgroundException("{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
 

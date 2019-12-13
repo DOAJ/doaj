@@ -170,7 +170,7 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
 
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
-        if len(self.data.keys()) == 0:
+        if len(list(self.data.keys())) == 0:
             return
 
         # at least one of print issn / e-issn, and they must be different

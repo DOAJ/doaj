@@ -70,8 +70,8 @@ class TestCrudReturnValues(DoajTestCase):
             assert response.mimetype == 'application/json'
 
             # Check it gives back a newly created application, with an ID
-            new_app_id = json.loads(response.data)['id']
-            new_app_loc = json.loads(response.data)['location']
+            new_app_id = json.loads(response.data.decode("utf-8"))['id']
+            new_app_loc = json.loads(response.data.decode("utf-8"))['location']
             assert new_app_id is not None
             assert new_app_id in new_app_loc
 
@@ -80,7 +80,7 @@ class TestCrudReturnValues(DoajTestCase):
             assert response.status_code == 200          # 200 "OK"
             assert response.mimetype == 'application/json'
 
-            retrieved_application = json.loads(response.data)
+            retrieved_application = json.loads(response.data.decode("utf-8"))
             new_app_title = retrieved_application['bibjson']['title']
             assert new_app_title == user_data['bibjson']['title']
 
@@ -92,7 +92,7 @@ class TestCrudReturnValues(DoajTestCase):
             assert response.mimetype == 'application/json'
 
             response = t_client.get('/api/v1/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))
-            retrieved_application = json.loads(response.data)
+            retrieved_application = json.loads(response.data.decode("utf-8"))
             new_app_title = retrieved_application['bibjson']['title']
             assert new_app_title == updated_data['bibjson']['title']
             assert new_app_title != user_data['bibjson']['title']
@@ -124,8 +124,8 @@ class TestCrudReturnValues(DoajTestCase):
             assert response.mimetype == 'application/json'
 
             # Check it gives back a newly created article, with an ID
-            new_ar_id = json.loads(response.data)['id']
-            new_ar_loc = json.loads(response.data)['location']
+            new_ar_id = json.loads(response.data.decode("utf-8"))['id']
+            new_ar_loc = json.loads(response.data.decode("utf-8"))['location']
             assert new_ar_id is not None
             assert new_ar_id in new_ar_loc
 
@@ -134,7 +134,7 @@ class TestCrudReturnValues(DoajTestCase):
             assert response.status_code == 200          # 200 "OK"
             assert response.mimetype == 'application/json'
 
-            retrieved_article = json.loads(response.data)
+            retrieved_article = json.loads(response.data.decode("utf-8"))
             new_ar_title = retrieved_article['bibjson']['title']
             assert new_ar_title == user_data['bibjson']['title']
 
@@ -146,7 +146,7 @@ class TestCrudReturnValues(DoajTestCase):
             assert response.mimetype == 'application/json'
 
             response = t_client.get('/api/v1/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key))
-            retrieved_article = json.loads(response.data)
+            retrieved_article = json.loads(response.data.decode("utf-8"))
             new_ar_title = retrieved_article['bibjson']['title']
             assert new_ar_title == updated_data['bibjson']['title']
             assert new_ar_title != user_data['bibjson']['title']

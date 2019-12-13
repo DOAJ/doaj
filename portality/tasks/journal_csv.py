@@ -22,7 +22,7 @@ class JournalCSVBackgroundTask(BackgroundTask):
         url, action_register = journalService.csv()
         for ar in action_register:
             job.add_audit_message(ar)
-        job.add_audit_message(u"CSV generated; will be served from {y}".format(y=url))
+        job.add_audit_message("CSV generated; will be served from {y}".format(y=url))
 
     def cleanup(self):
         """

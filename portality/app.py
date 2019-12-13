@@ -8,13 +8,14 @@ also be backed up by models, so have a look at the example models and use them /
 new ones as required too.
 """
 import os, sys
+import tzlocal
+import pytz
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
 from flask_login import login_user, current_user
 
 from datetime import datetime
-import tzlocal
-import pytz
+from collections import OrderedDict
 
 import portality.models as models
 from portality.core import app, initialise_index
@@ -60,28 +61,14 @@ app.register_blueprint(doaj)
 # putting it here ensures it will run under any web server
 initialise_index(app)
 
-"""
-FIXME: this needs to be sorted out - they shouldn't be in here and in doaj.py, but there is an issue
-with the 404 pages which requires them
-"""
-try:
-    if sys.version_info.major == 2 and sys.version_info.minor < 7:
-        from portality.ordereddict import OrderedDict
-except AttributeError:
-    if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-        from portality.ordereddict import OrderedDict
-    else:
-        from collections import OrderedDict
-else:
-    from collections import OrderedDict
-
 # The key should correspond to the sponsor logo name in /static/doaj/images/sponsors without the extension for
 # consistency - no code should rely on this though. Sponsors are in tiers: gold, silver, bronze, and patron.
 # Only gold sponsors appear on the front page, and patrons are displayed text-only on the sponsors page alongside
 # the other tiers' logos.
 SPONSORS = {
     'gold': {
-        'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'}
+        'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'},
+        'ieee': {'name' : 'IEEE', 'logo':'ieee.png', 'url':'https://www.ieee.org/'}
     },
     'silver': {
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'https://www.frontiersin.org'},
@@ -98,6 +85,7 @@ SPONSORS = {
         'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://publications.copernicus.org/'},
         'elsevier': {'name': 'Elsevier', 'logo': 'elsevier.svg', 'url': 'https://www.elsevier.com/'}
+
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
@@ -131,7 +119,7 @@ SPONSORS = {
 }
 
 # In each tier, create an ordered dictionary sorted alphabetically by sponsor name
-SPONSORS = {k: OrderedDict(sorted(v.items(), key=lambda t: t[0])) for k, v in SPONSORS.items()}
+SPONSORS = {k: OrderedDict(sorted(list(v.items()), key=lambda t: t[0])) for k, v in list(SPONSORS.items())}
 
 
 # Configure the Google Analytics tracker
@@ -266,9 +254,9 @@ def form_diff_table_comparison_value(val):
             dvals.append(form_diff_table_comparison_value(v))
         return ", ".join(dvals)
     else:
-        if val is True or (isinstance(val, basestring) and val.lower() == "true"):
+        if val is True or (isinstance(val, str) and val.lower() == "true"):
             return "Yes"
-        elif val is False or (isinstance(val, basestring) and val.lower() == "false"):
+        elif val is False or (isinstance(val, str) and val.lower() == "false"):
             return "No"
         return val
 
@@ -313,7 +301,7 @@ def standard_authentication():
             login_user(user, remember=False)
     elif 'api_key' in request.values:
         q = models.Account.query(q='api_key:"' + request.values['api_key'] + '"')
-        if q.has_key('hits'):
+        if 'hits' in q:
             res = q['hits']['hits']
             if len(res) == 1:
                 user = models.Account.pull(res[0]['_source']['id'])
