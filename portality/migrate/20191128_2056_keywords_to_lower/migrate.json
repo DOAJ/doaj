@@ -4,17 +4,17 @@
 			"type" : "suggestion",
 			"init_with_model" : true,
 			"keepalive" : "20m",
-                        "functions" : [
-                            "portality.migrate.20191128_2056_keywords_to_lower.operations.rewrite_keywords"
-                        ]
+			"functions" : [
+				"portality.migrate.20191128_2056_keywords_to_lower.operations.rewrite_keywords"
+			]
 		},
 		{
 			"type": "journal",
 			"init_with_model": true,
 			"keepalive": "20m",
-                        "functions" : [
-                            "portality.migrate.20191128_2056_keywords_to_lower.operations.rewrite_keywords"
-                        ]
+			"functions" : [
+				"portality.migrate.20191128_2056_keywords_to_lower.operations.rewrite_keywords"
+			]
 		}
 ]
 }
