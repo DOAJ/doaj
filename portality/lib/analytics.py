@@ -19,7 +19,7 @@ def create_tracker(ga_id, domain):
     global tracker
     if ga_id:
         #tracker = UniversalAnalytics.Tracker.create(ga_id, client_id=domain)
-        raise GAException("GA is not running because universal-analytics is broken")
+        raise GAException("GA is not running because universal-analytics is broken in Python 3")
     else:
         raise GAException("Invalid GA ID supplied, no tracker created.")
 
@@ -81,22 +81,24 @@ def ga_send_event(category, action, label='', value=None, fieldsobject=None):
     :param fieldsobject: Key, value pairs which don't fit into the above categories
     """
 
+    # Write event to file even if there's no tracker configured.
+    analytics_args = [category, action]
+
+    if label != '':
+        analytics_args.append(label)
+    if value is not None:
+        analytics_args.append(value)
+    if fieldsobject is not None:
+        analytics_args.append(fieldsobject)
+
+    logger.debug("Event Send %s", analytics_args)
+
+    # Send the event to GA via the tracker
     if tracker is not None:
-        analytics_args = [category, action]
-
-        if label != '':
-            analytics_args.append(label)
-
-        if value is not None:
-            analytics_args.append(value)
-
-        if fieldsobject is not None:
-            analytics_args.append(fieldsobject)
-
-        logger.debug("Event Send %s", analytics_args)
         tracker.send('event', *analytics_args)
     else:
-        logger.error("Google Analytics tracker is not configured.")
+        # logger.error("Google Analytics tracker is not configured.")
+        pass                    # we now know it's broken, stop spamming this in our logs.
 
 
 def sends_ga_event(event_category, event_action, event_label='',
