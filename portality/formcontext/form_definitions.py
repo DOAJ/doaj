@@ -76,6 +76,7 @@ FORMS = {
             "input" : "text",
             "conditional" : [{"field" : "boai", "value" : True}],
             "help": {
+                "placeholder" : "OA Statement URL",
                 "description": "Must start with https://, http://, or www.",
                 "tooltip": """Here is an example of a suitable Open Access statement that meets our criteria:
                         This is an open access journal which means that all content is freely available without charge

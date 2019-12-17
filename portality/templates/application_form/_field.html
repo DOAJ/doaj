@@ -1,0 +1,47 @@
+<div class="row">
+    <div class="col-xs-12">
+        {% if f.help.doaj_criteria %}<span title="{{ f.help.doaj_criteria }}">DOAJ</span>&nbsp;{% endif %}
+        {% if f.help.seal_criteria %}<span title="{{ f.help.seal_criteria }}">SEAL</span>{% endif %}
+    </div>
+    <div class="col-xs-12">
+        <div class="form-group" id="_field_id_container">
+            <label class="control-label col-md-4" for="{{ f.name }}">
+                <a class="question_id" name="{{ f.name }}" href="#{{ f.name }}">{{ f.name }}</a>
+                {{ f.label }}
+                {% if f.has_validator("required") %}<br>(required){% endif %}
+            </label>
+            <div class="col-md-7">
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        {{ f.render_form_control() }}
+                    </div>
+                </div>
+
+                {% if f.help.description %}
+                <div class="row">
+                    <div class="col-xs-12">
+                        {{ f.help.description }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if f.has_errors() %}
+                <div class="row">
+                    <div class="col-xs-12">
+                        <ul class="errors">
+                            {% for error in f.errors() %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+            <div class="col-md-1">
+                <span title="{{ f.help.tooltip }}">?</span>
+            </div>
+        </div>
+    </div>
+</div>

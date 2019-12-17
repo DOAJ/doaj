@@ -90,6 +90,7 @@ from copy import deepcopy
 from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, IntegerField, BooleanField, FormField, FieldList, RadioField, SelectMultipleField, SelectField
 from wtforms import widgets
+from wtforms.fields.core import UnboundField
 from portality.formcontext.fields import TagListField
 import inspect
 from portality.lib import plugin
@@ -228,14 +229,81 @@ class FormulaicContext(object):
         klazz = self.wtform_class()
         return klazz(form_data)
 
+    def get(self, field_name):
+        """returns the first instance of the field, only really for use in testing"""
+        for fs in self._definition.get("fieldsets", []):
+            for f in fs.get("fields", []):
+                if f.get("name") == field_name:
+                    return FormulaicField(f, self._wtforms_map, self._function_map)
+
     def _add_wtforms_field(self, FormClass, field):
         field_name = field.get("name")
         if not hasattr(FormClass, field_name):
-            field_definition = self._wtforms_field_definition(field)
+            # field_definition = self._wtforms_field_definition(field)
+            field_definition = FormulaicField.make_wtforms_field(field, self._wtforms_map, self._function_map)
             setattr(FormClass, field_name, field_definition)
 
-    def _wtforms_field_definition(self, field):
-        result = self._get_wtforms_map(field)
+
+class FormulaicField(object):
+    def __init__(self, definition, wtforms_map, function_map):
+        self._definition = definition
+        self._wtforms_map = wtforms_map
+        self._function_map = function_map
+        self._wtform_field = None
+        self._wtforms_field_bound = None
+
+    def __getattr__(self, name):
+        if hasattr(self.__class__, name):
+            return object.__getattribute__(self, name)
+
+        if name in self._definition:
+            return self._definition[name]
+
+        raise AttributeError('{name} is not set'.format(name=name))
+
+    def has_validator(self, validator_name):
+        for validator in self._definition.get("validate", []):
+            if isinstance(validator, str) and validator == validator_name:
+                return True
+            if isinstance(validator, dict):
+                if list(validator.keys())[0] == validator_name:
+                    return True
+        return False
+
+    def wtforms_field(self):
+        if self._wtform_field is None:
+            self._wtform_field = FormulaicField.make_wtforms_field(self._definition, self._wtforms_map, self._function_map)
+        return self._wtform_field
+
+    def wtforms_field_bound(self):
+        if self._wtforms_field_bound is None:
+            wtf = self.wtforms_field()
+            if isinstance(wtf, UnboundField):
+                class TempForm(Form):
+                    pass
+
+                setattr(TempForm, self._definition.get("name"), wtf)
+                form_instance = TempForm()
+                self._wtforms_field_bound = form_instance[self._definition.get("name")]
+            else:
+                self._wtforms_field_bound = wtf
+
+        return self._wtforms_field_bound
+
+    def has_errors(self):
+        return len(self.errors()) > 0
+
+    def errors(self):
+        wtf = self.wtforms_field_bound()
+        return wtf.errors
+
+    def render_form_control(self):
+        wtf = self.wtforms_field_bound()
+        return wtf()    # FIXME: need to pass in any additional parameters, like placeholder
+
+    @classmethod
+    def make_wtforms_field(cls, field, wtforms_map, function_map):
+        result = cls._get_wtforms_map(field, wtforms_map)
         if result is None:
             raise FormulaicException("No WTForms mapping for field '{x}'".format(x=field.get("name")))
         klazz = result.get("class")
@@ -252,16 +320,17 @@ class FormulaicContext(object):
         if "default" in field:
             kwargs["default"] = field["default"]
         if "options" in field:
-            kwargs["choices"] = self._options2choices(field["options"])
+            kwargs["choices"] = cls._options2choices(field["options"], function_map)
 
         return klazz(**kwargs)
 
-    def _get_wtforms_map(self, field):
+    @classmethod
+    def _get_wtforms_map(self, field, wtforms_map):
         input = field.get("input")
         options = "options" in field
         datatype = field.get("datatype")
 
-        for possible in self._wtforms_map:
+        for possible in wtforms_map:
             match = possible.get("match")
             input_match = "input" not in match or match.get("input") == input
             options_match = "options" not in match or match.get("options", False) == options
@@ -272,15 +341,14 @@ class FormulaicContext(object):
 
         return None
 
-    def _options2choices(self, options):
+    @classmethod
+    def _options2choices(self, options, function_map):
         if isinstance(options, str): # it's a function reference
-            fnpath = self._function_map.get(options)
+            fnpath = function_map.get(options)
             if fnpath is None:
                 raise FormulaicException("No function mapping defined for function reference '{x}'".format(x=options))
             fn = plugin.load_function(fnpath)
             options = fn()
-
-            # options = []
 
         choices = []
         for o in options:
@@ -291,6 +359,3 @@ class FormulaicContext(object):
             choices.append((value, display))
 
         return choices
-
-
-
