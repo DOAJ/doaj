@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <h1>Single Field Render Experiment</h1>
     {% set f = fc.get("boai") %}
     {% include 'application_form/_field.html' %}
+
+    <hr><hr>
+
+    {% for fs in fc.fieldsets() %}
+        <h1>{{ fs.label }}</h1>
+        {% for f in fs.fields() %}
+            {% include 'application_form/_field.html' %}
+            <hr>
+        {% endfor %}
+    {% endfor %}
 {% endblock %}

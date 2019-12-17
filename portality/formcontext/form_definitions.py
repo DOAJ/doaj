@@ -177,11 +177,15 @@ FORMS = {
             },
             "validate" : [
                 "required",
-                {"int_range" : {"gte" : 1, "lte" : 52}}
+                {"int_range" : {"gte" : 1, "lte" : 100}}
             ],
             "asynchronous_warning" : [
                 {"int_range" : {"lte" : 2}}
-            ]
+            ],
+            "attr" : {
+                "min" : "1",
+                "max" : "100"
+            }
         },
         "peer_review" : {
             "label" : "What type of peer review is used by the journal?",
@@ -206,6 +210,9 @@ FORMS = {
         },
         "peer_review_other": {
             "input" : "text",
+            "help" : {
+                "placeholder" : "Other peer review"
+            },
             "asynchronous_warning" : [
                 {"warn_on_value" : {"value" : "None"}}
             ]

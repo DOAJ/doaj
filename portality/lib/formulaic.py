@@ -41,6 +41,7 @@ EXAMPLE = {
                 }
             ],
             "help" : {
+                "placeholder" : "[input field placeholder text]",
                 "description" : "[description]",
                 "tooltip" : "[tooltip/long description]",
                 "doaj_criteria" : "[doaj compliance criteria]",
@@ -57,6 +58,9 @@ EXAMPLE = {
             "postprocessing" : {
                 "[processing function]",
                 {"[processing function]" : {"arg" : "argval"}}
+            },
+            "attr" : {
+                "[html attribute name]" : "[html attribute value]"
             },
             "contexts" : {
                 "[context name]" : {
@@ -91,6 +95,7 @@ from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, IntegerField, BooleanField, FormField, FieldList, RadioField, SelectMultipleField, SelectField
 from wtforms import widgets
 from wtforms.fields.core import UnboundField
+from wtforms.widgets.core import html_params, HTMLString
 from portality.formcontext.fields import TagListField
 import inspect
 from portality.lib import plugin
@@ -100,10 +105,41 @@ class NumberWidget(widgets.Input):
     input_type = 'number'
 
 
-def makeListWidget(prefix_label):
-    def lw():
-        return widgets.ListWidget(prefix_label=prefix_label)
-    return lw
+class ListWidgetWithSubfields(object):
+    """
+    Renders a list of fields as a `ul` or `ol` list.
+
+    This is used for fields which encapsulate many inner fields as subfields.
+    The widget will try to iterate the field to get access to the subfields and
+    call them to render them.
+
+    If `prefix_label` is set, the subfield's label is printed before the field,
+    otherwise afterwards. The latter is useful for iterating radios or
+    checkboxes.
+    """
+    def __init__(self, html_tag='ul', prefix_label=False):
+        assert html_tag in ('ol', 'ul')
+        self.html_tag = html_tag
+        self.prefix_label = prefix_label
+
+    def __call__(self, field, **kwargs):
+        kwargs.setdefault('id', field.id)
+        html = ['<%s %s>' % (self.html_tag, html_params(**kwargs))]
+        for subfield in field:
+            if self.prefix_label:
+                html.append('<li>%s %s' % (subfield.label, subfield()))
+            else:
+                html.append('<li>%s %s' % (subfield(), subfield.label))
+
+            if "formulaic" in kwargs:
+                sfs = kwargs["formulaic"].get_subfields(subfield._value())
+                for sf in sfs:
+                    html.append(sf.render_form_control())
+
+            html.append("</li>")
+
+        html.append('</%s>' % self.html_tag)
+        return HTMLString(''.join(html))
 
 
 WTFORMS_MAP = [
@@ -113,7 +149,7 @@ WTFORMS_MAP = [
     },
     {
         "match" : {"input" : "checkbox", "options" : True},
-        "wtforms" : {"class" : SelectMultipleField, "init" : {"option_widget" : widgets.CheckboxInput, "widget" : makeListWidget(prefix_label=False)}}
+        "wtforms" : {"class" : SelectMultipleField, "init" : {"option_widget" : widgets.CheckboxInput, "widget" : ListWidgetWithSubfields}}
     },
     {
         "match" : {"input" : "checkbox", "options" : False},
@@ -236,12 +272,35 @@ class FormulaicContext(object):
                 if f.get("name") == field_name:
                     return FormulaicField(f, self._wtforms_map, self._function_map)
 
+    def fieldsets(self):
+        return [FormulaicFieldset(fs, self._wtforms_map, self._function_map) for fs in self._definition.get("fieldsets", [])]
+
     def _add_wtforms_field(self, FormClass, field):
         field_name = field.get("name")
         if not hasattr(FormClass, field_name):
             # field_definition = self._wtforms_field_definition(field)
             field_definition = FormulaicField.make_wtforms_field(field, self._wtforms_map, self._function_map)
             setattr(FormClass, field_name, field_definition)
+
+
+class FormulaicFieldset(object):
+    def __init__(self, definition, wtforms_map, function_map):
+        self._definition = definition
+        self._wtforms_map = wtforms_map
+        self._function_map = function_map
+
+    def fields(self):
+        return [FormulaicField(f, self._wtforms_map, self._function_map) for f in
+                self._definition.get("fields", [])]
+
+    def __getattr__(self, name):
+        if hasattr(self.__class__, name):
+            return object.__getattribute__(self, name)
+
+        if name in self._definition:
+            return self._definition[name]
+
+        raise AttributeError('{name} is not set'.format(name=name))
 
 
 class FormulaicField(object):
@@ -290,6 +349,12 @@ class FormulaicField(object):
 
         return self._wtforms_field_bound
 
+    def get_subfields(self, option_value):
+        for option in self._definition.get("options", {}):
+            if option.get("value") == option_value:
+                return [FormulaicField(sfs, self._wtforms_map, self._function_map) for sfs in
+                        option.get("subfields", [])]
+
     def has_errors(self):
         return len(self.errors()) > 0
 
@@ -298,8 +363,15 @@ class FormulaicField(object):
         return wtf.errors
 
     def render_form_control(self):
+        kwargs = deepcopy(self._definition.get("attr", {}))
+        if "placeholder" in self._definition.get("help", {}):
+            kwargs["placeholder"] = self._definition["help"]["placeholder"]
+
+        if "options" in self._definition:
+            kwargs["formulaic"] = self
+
         wtf = self.wtforms_field_bound()
-        return wtf()    # FIXME: need to pass in any additional parameters, like placeholder
+        return wtf(**kwargs)
 
     @classmethod
     def make_wtforms_field(cls, field, wtforms_map, function_map):
