@@ -20,43 +20,49 @@
                 <div class="form-group{% if author_error %} error{% endif %} authors">
                     <label class="control-label col-md-3">Author(s) <span class="red">*</span></label>
                     <div class="col-md-9">
-                        <div class="author-field">
-                            {% for subfield in form.authors %}
-                                <div style="margin-bottom: 10px" id="{{subfield.short_name}}-container">
-                                    {% for field in subfield.form %}
-                                        <div class="author-row">
-                                            <div class="author-label">{{field.label.text | safe}}</div>
-                                            {% if field.label.text == "ORCID iD" %}
-                                                <div class="author-input">{{field(placeholder="https://orcid.org/0000-0000-0000-0000")}}<br/></div>
-                                            {% else %}
-                                                <div class="author-input">{{field(placeholder=field.label.text)}}<br/></div>
-                                            {% endif %}
-                                        </div>
-                                    {% endfor %}
-                                    {% for error in subfield.errors %}
-                                        <div class="error" style="width: 200%">
-                                            <ul class="errors" style="padding-left: 15px">
-                                                <li>{{ subfield.errors.get(error)[0] }}</li>
-                                            </ul>
-                                        </div>
-                                    {% endfor %}
-                                    <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="btn btn-danger remove_button">
-                                      Remove Author
-                                    </button>
-                                </div>
-                            {% endfor %}
-                            <input type="submit" class="btn btn-info" name="more_authors" value="Add More Authors">
-                            {% if author_error %}
-                                <div class="error">
-                                    <ul class="errors">
-                                        <li>Please provide at least one author</li>
-                                    </ul>
-                                </div>
-                            {% endif %}
-                        </div>
+                        {% for subfield in form.authors %}
+                            <div style="margin-bottom: 10px" id="{{subfield.short_name}}-container">
+                                {% for field in subfield.form %}
+                                    <div class="row">
+                                       <label class="col-md-2 col-xs-12">{{field.label.text | safe}}</label>
+                                        {% if field.label.text == "ORCID iD" %}
+                                            <div class="col-md-7 col-xs-12" > {{field(placeholder="https://orcid.org/0000-0000-0000-0000")}} </div>
+                                        {% else %}
+                                            <div class="col-md-7 col-xs-12"> {{field(placeholder=field.label.text)}} </div>
+                                        {% endif %}
+                                    </div>
+{#                                        <div class="author-row">#}
+{#                                            <div class="author-label">{{field.label.text | safe}}</div>#}
+{#                                            {% if field.label.text == "ORCID iD" %}#}
+{#                                                <div class="author-input">{{field(placeholder="https://orcid.org/0000-0000-0000-0000")}}<br/></div>#}
+{#                                            {% else %}#}
+{#                                                <div class="author-input">{{field(placeholder=field.label.text)}}<br/></div>#}
+{#                                            {% endif %}#}
+{#                                        </div>#}
+                                {% endfor %}
+                                {% for error in subfield.errors %}
+                                    <div class="error" style="width: 200%">
+                                        <ul class="errors" style="padding-left: 15px">
+                                            <li>{{ subfield.errors.get(error)[0] }}</li>
+                                        </ul>
+                                    </div>
+                                {% endfor %}
+                                <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="btn btn-danger remove_button">
+                                  Remove Author
+                                </button>
+                            </div>
+                        {% endfor %}
+                        <input type="submit" class="btn btn-info" name="more_authors" value="Add More Authors">
+                        {% if author_error %}
+                            <div class="error">
+                                <ul class="errors">
+                                    <li>Please provide at least one author</li>
+                                </ul>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
-                
+
                 {{ render_field_horizontal(form.abstract, classes="form-control", style="width: 400px; height: 200px", placeholder="Enter the abstract here") }}
                 {{ render_field_horizontal(form.keywords, style="width: 400px", placeholder="Enter some keywords for the article") }}
                 {{ render_field_horizontal(form.fulltext, style="width: 400px", placeholder="URL to the fulltext of the article") }}
