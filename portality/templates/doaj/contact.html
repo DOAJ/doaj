@@ -45,7 +45,7 @@ We do not supply that service. You can either <a href="{{ url_for('doaj.subjects
     {{ render_field_horizontal(form.message, style="width: 100%; max-width: 400px; min-height: 200px", placeholder="Enter your message here") }}
     {{form.recaptcha_value(id="recaptcha_value")}}
     <div class="form-group">
-        <div class="submit-with-recaptcha col-md-9 col-md-offset-2">
+        <div class="submit-with-recaptcha col-md-9 col-md-offset-3">
 {#            <form method="POST">#}
               <div id="html_element"></div>
 {#            </form>#}
@@ -53,7 +53,7 @@ We do not supply that service. You can either <a href="{{ url_for('doaj.subjects
                 async defer>
             </script>
             <div>
-                <button id="submitBtn" class="btn btn-success" margin="2em" id="send">Send</button>
+                <button id="submitBtn" class="btn btn-success" style="margin-top: 2em;"}>Send</button>
             </div>
         </div>
     </div>

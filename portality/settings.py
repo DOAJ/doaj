@@ -843,6 +843,7 @@ GA_ACTIONS_API = {
     'bulk_article_delete': 'Bulk article delete'
 }
 
+
 # GA for fixed query widget
 GA_CATEGORY_FQW = 'FQW'
 GA_ACTION_FQW = 'Hit'
@@ -944,6 +945,6 @@ HARVESTER_MAX_WAIT = 10
 HARVESTER_EMAIL_ON_EVENT = False
 HARVESTER_EMAIL_RECIPIENTS = None
 
-#Recaptcha test keys, should be overridden in dev.cfg
+#Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
