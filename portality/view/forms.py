@@ -154,7 +154,7 @@ class MakeContinuation(Form):
 
 class ContactUs(Form):
 
-    recaptcha_value = StringField()
+    recaptcha_value = HiddenField()
 
     email = StringField('Your Email', [validators.DataRequired(), validators.Email()])
 

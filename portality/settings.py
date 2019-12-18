@@ -48,7 +48,7 @@ CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the fu
 ENABLE_EMAIL = True
 ENABLE_PUBLISHER_EMAIL = True
 MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
-CONTACT_FORM_ADDRESS = "aga@cottagelabs.com"
+CONTACT_FORM_ADDRESS = "feedback+contactform@doaj.org"
 
 # Error logging via email
 SUPPRESS_ERROR_EMAILS = False
@@ -619,15 +619,6 @@ ARTICLE_CROSSWALKS = {
 
 # maximum size of files that can be provided by-reference (the default value is 250Mb)
 MAX_REMOTE_SIZE = 262144000
-
-# =================================
-# ReCaptcha settings
-# We use per-domain, not global keys
-RECAPTCHA_PUBLIC_KEY = '6LdaE-wSAAAAAKTofjeh5Zn94LN1zxzbrhxE8Zxr'
-# RECAPTCHA_PRIVATE_KEY is set in secret_settings.py which should not be
-# committed to the repository, but only held locally and on the server
-# (transfer using scp).
-
 
 # =================================
 # Cache settings

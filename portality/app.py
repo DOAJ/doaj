@@ -13,8 +13,6 @@ import pytz
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
 from flask_login import login_user, current_user
-import urllib.request
-import json
 
 from datetime import datetime
 from collections import OrderedDict
