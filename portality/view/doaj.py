@@ -375,8 +375,7 @@ def contact():
             form = ContactUs()
             return render_template("doaj/contact.html", form=form)
         else:
-            flash("Your form could not be submitted.", "error")
-            print(data["error-codes"])
+            flash("Your form could not be submitted,", "error")
             return render_template("doaj/contact.html", form=form)
 
 def _verify_recaptcha(g_recaptcha_response):
