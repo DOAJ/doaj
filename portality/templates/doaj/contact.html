@@ -46,12 +46,7 @@ We do not supply that service. You can either <a href="{{ url_for('doaj.subjects
     {{form.recaptcha_value(id="recaptcha_value")}}
     <div class="form-group">
         <div class="submit-with-recaptcha col-md-9 col-md-offset-3">
-{#            <form method="POST">#}
-              <div id="html_element"></div>
-{#            </form>#}
-            <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-                async defer>
-            </script>
+            <div id="html_element"></div>
             <div>
                 <button id="submitBtn" class="btn btn-success" style="margin-top: 2em;"}>Send</button>
             </div>
@@ -64,7 +59,8 @@ We do not supply that service. You can either <a href="{{ url_for('doaj.subjects
 {% endblock %}
 
 {% block extra_js_bottom %}
-     <script type="text/javascript" src="/static/js/contact.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript" src="/static/js/contact.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 {% endblock extra_js_bottom %}
 
 
