@@ -61,8 +61,6 @@ class ArticleService(object):
                                              dry_run=True)
             except exceptions.ArticleMergeConflict:
                 raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
-            # except exceptions.ArticleExists:
-            #     pass
 
             success += result.get("success", 0)
             fail += result.get("fail", 0)
@@ -106,7 +104,7 @@ class ArticleService(object):
 
         return False
 
-    def create_article(self, article, account = None, duplicate_check=True, merge_duplicate=True,
+    def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update=None):
 
         """
