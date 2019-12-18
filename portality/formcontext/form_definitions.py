@@ -74,6 +74,7 @@ FORMS = {
         "oa_statement_url" : {
             "label" : "What is the URL for the journal's open access statement?",
             "input" : "text",
+            "visible" : True,
             "conditional" : [{"field" : "boai", "value" : True}],
             "help": {
                 "placeholder" : "OA Statement URL",
@@ -92,7 +93,10 @@ FORMS = {
             ],
             "widgets" : [
                 "clickable_url"
-            ]
+            ],
+            "attr" : {
+                "type" : "url"
+            }
         },
         "country" : {
             "label" : "Country of Publisher",

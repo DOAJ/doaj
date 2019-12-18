@@ -97,9 +97,10 @@ from wtforms import widgets
 from wtforms.fields.core import UnboundField
 from wtforms.widgets.core import html_params, HTMLString
 from portality.formcontext.fields import TagListField
-import inspect
 from portality.lib import plugin
 
+import inspect
+import json
 
 class NumberWidget(widgets.Input):
     input_type = 'number'
@@ -275,6 +276,9 @@ class FormulaicContext(object):
     def fieldsets(self):
         return [FormulaicFieldset(fs, self._wtforms_map, self._function_map) for fs in self._definition.get("fieldsets", [])]
 
+    def json(self):
+        return json.dumps(self._definition)
+
     def _add_wtforms_field(self, FormClass, field):
         field_name = field.get("name")
         if not hasattr(FormClass, field_name):
@@ -366,6 +370,9 @@ class FormulaicField(object):
         kwargs = deepcopy(self._definition.get("attr", {}))
         if "placeholder" in self._definition.get("help", {}):
             kwargs["placeholder"] = self._definition["help"]["placeholder"]
+
+        if self.has_validator("required"):
+            kwargs["required"] = ""
 
         if "options" in self._definition:
             kwargs["formulaic"] = self
