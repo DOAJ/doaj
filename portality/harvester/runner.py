@@ -50,13 +50,15 @@ def run_only_once():
     # Startup complete, change process name to running.
     setproctitle(RUNNING_PROCTITLE)
 
+
 if __name__ == "__main__":
     run_only_once()
     initialise_index(app)
+    sub_prefix = app.confi.get('HARVESTER_EMAIL_SUBJECT_PREFIX', '')
 
     # Send an email when the harvester starts.
     mail_prereqs = False
-    fro = app.config.get("SYSTEM_EMAIL_FROM")
+    fro = app.config.get("HARVESTER_EMAIL_FROM_ADDRESS", 'harvester@doaj.org')
     if app.config.get("HARVESTER_EMAIL_ON_EVENT", False):
         to = app.config.get("HARVESTER_EMAIL_RECIPIENTS", None)
 
@@ -66,7 +68,7 @@ if __name__ == "__main__":
             mail.send_mail(
                 to=to,
                 fro=fro,
-                subject="DOAJ Harvester started at {0}".format(datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")),
+                subject=sub_prefix + "DOAJ Harvester started at {0}".format(datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")),
                 msg_body="A new running instance of the harvester has started."
             )
 
