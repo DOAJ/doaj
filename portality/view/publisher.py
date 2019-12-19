@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from portality.core import app
 from portality import models
 from portality.bll import DOAJ
-from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict
+from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, ArticleExists
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.formcontext import formcontext
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
@@ -225,7 +225,7 @@ def metadata():
                 return render_template('publisher/metadata.html', form=form, author_error=True)
             else:
                 xwalk = ArticleFormXWalk()
-                art = xwalk.crosswalk_form(form)
+                art = xwalk.form2obj(form)
                 articleService = DOAJ.articleService()
                 try:
                     articleService.create_article(art, current_user._get_current_object(), add_journal_info=True)

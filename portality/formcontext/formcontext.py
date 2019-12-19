@@ -7,10 +7,13 @@ from flask_login import current_user
 
 from portality import constants
 from portality import models, app_email, util
+from portality.bll import DOAJ
+from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
 from portality.core import app
 from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
 from portality.lcc import lcc_jstree
 from portality.ui.messages import Messages
+from portality.view.forms import MIN_ENTRIES
 
 ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
@@ -204,14 +207,14 @@ class FormContext(object):
         return False
 
     def render_template(self, **kwargs):
-        return render_template(self.template, form_context=self, **kwargs)
+
+           return render_template(self.template, form_context=self, **kwargs)
 
     def render_field_group(self, field_group_name=None, **kwargs):
         return self.renderer.render_field_group(self, field_group_name, **kwargs)
 
     def check_field_group_exists(self, field_group_name):
         return self.renderer.check_field_group_exists(field_group_name)
-
 
 class PrivateContext(FormContext):
     def _expand_descriptions(self, fields):
@@ -617,7 +620,6 @@ class JournalFormFactory(object):
             return ReadOnlyJournal(source=source, form_data=form_data)
         elif role == "bulk_edit":
             return ManEdBulkEdit(source=source, form_data=form_data)
-
 
 class ManEdApplicationReview(ApplicationContext):
     """
@@ -1439,7 +1441,6 @@ class PublisherUpdateRequestReadOnly(PrivateContext):
     """
 
 ### Journal form contexts ###
-
 class ManEdJournalReview(PrivateContext):
     """
     Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
@@ -1770,3 +1771,107 @@ class ReadOnlyJournal(PrivateContext):
     def _set_choices(self):
         # no application status (this is a journal) or editorial info (it's not even in the form) to set
         pass
+
+class ArticleFormFactory(object):
+    @classmethod
+    def get_from_context(cls, role, source=None, form_data=None, user=None):
+        if role == "admin":
+            return AdminArticleForm(source=source, form_data=form_data, user=user)
+
+class AdminArticleForm(FormContext):
+
+    def __init__(self, source, form_data, user):
+        self.user = user
+        self.author_error = False
+        super(AdminArticleForm, self).__init__(source=source, form_data=form_data)
+
+    def _set_choices(self):
+        try:
+            ic = choices.Choices.choices_for_article_issns(user=self.user,article_id=self.source.id)
+            self.form.pissn.choices = ic
+            self.form.eissn.choices = ic
+        except Exception as e:
+            print (str(e))
+            # not logged in, and current_user is broken
+            # probably you are loading the class from the command line
+            pass
+
+    def _validate_authors(self):
+        counted = 0
+        for entry in self.form.authors.entries:
+            name = entry.data.get("name")
+            if name is not None and name != "":
+                counted += 1
+        return counted >= 1
+
+    def set_template(self):
+        self.template = "admin/edit_article_metadata.html"
+
+    def blank_form(self):
+        self.form = forms.AdminArticleForm()
+        self._set_choices()
+
+    def source2form(self):
+        self.form = forms.AdminArticleForm()
+        bibjson = self.source.bibjson()
+        xwalk.AdminArticleXwalk.obj2form(self.form, bibjson=bibjson)
+        self._set_choices()
+
+    def data2form(self):
+        #self.blank_form()
+        self.form = forms.AdminArticleForm()
+        xwalk.AdminArticleXwalk.data2form(form_data=self.form_data, form=self.form)
+        self._set_choices()
+
+    def form2target(self):
+        self.target = xwalk.AdminArticleXwalk.form2obj(form=self.form)
+
+    def render_template(self, **kwargs):
+        if "more_authors" in kwargs and kwargs["more_authors"] == True:
+            self.form.authors.append_entry()
+        if "remove_authors" in kwargs:
+            keep = []
+            while len(self.form.authors.entries) > 0:
+                entry = self.form.authors.pop_entry()
+                if entry.short_name == "authors-" + kwargs["remove_author"]:
+                    break
+                else:
+                    keep.append(entry)
+            while len(keep) > 0:
+                self.form.authors.append_entry(keep.pop().data)
+
+        keep = []
+        # if len(self.form.authors.entries) > MIN_ENTRIES:
+        #     while len(self.form.authors.entries) > 0:
+        #         entry = self.form.authors.pop_entry()
+        #         print(entry.data["name"])
+        #         if entry.data["name"]:
+        #             break
+        #         else:
+        #             keep.append(entry)
+        #     while len(keep) > 0:
+        #         self.form.authors.append_entry(keep.pop().data)
+        return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
+
+    def validate(self):
+        if not self._validate_authors():
+            self.author_error = True
+        if not self.form.validate():
+            self.author_error = True
+            return False
+        return True
+
+    def finalise(self):
+        if self.validate():
+            self.form2target()
+            if not self.author_error:
+                try:
+                    article_service = DOAJ.articleService()
+                    article_service.create_article(self.target, self.user, add_journal_info=True, update=self.source.id)
+                    Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
+                except ArticleMergeConflict:
+                    Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
+                except DuplicateArticleException:
+                    Messages.flash(Messages.ARTICLE_METADATA_UPDATE_CONFLICT)
+        return self.render_template()
+

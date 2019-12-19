@@ -6,6 +6,8 @@ from flask_login import current_user, login_required
 
 from werkzeug.datastructures import MultiDict
 
+from portality.bll.exceptions import ArticleMergeConflict, ArticleExists
+from portality.crosswalks.article_form import ArticleFormXWalk
 from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
 
@@ -18,8 +20,9 @@ from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_b
 from portality.bll.doaj import DOAJ
 from portality.formcontext import emails
 from portality.ui.messages import Messages
+from portality.formcontext import formcontext
 
-from portality.view.forms import EditorGroupForm, MakeContinuation
+from portality.view.forms import EditorGroupForm, MakeContinuation, ArticleForm
 from portality.background import BackgroundSummary
 
 blueprint = Blueprint('admin', __name__)
@@ -124,7 +127,7 @@ def articles_list():
         return resp
 
 
-@blueprint.route("/article/<article_id>", methods=["POST"])
+@blueprint.route("/delete/article/<article_id>", methods=["POST"])
 @login_required
 @ssl_required
 @write_required()
@@ -143,6 +146,42 @@ def article_endpoint(article_id):
     resp = make_response(json.dumps({"success" : True}))
     resp.mimetype = "application/json"
     return resp
+
+@blueprint.route("/article/<article_id>", methods=["GET", "POST"])
+@login_required
+@ssl_required
+@write_required()
+def article_page(article_id):
+    if not current_user.has_role("edit_article"):
+        abort(401)
+    ap = models.Article.pull(article_id)
+    if ap is None:
+        abort(404)
+
+    fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=current_user)
+    if request.method == "GET":
+        return fc.render_template()
+
+    elif request.method == "POST":
+        user = models.Account.pull(current_user.id)
+        fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=user, form_data=request.form)
+        # first we need to do any server-side form modifications which
+        # the user might request by pressing the add/remove authors buttons
+        more_authors = request.values.get("more_authors")
+        remove_author = None
+        for v in list(request.values.keys()):
+            if v.startswith("remove_authors"):
+                remove_author = v.split("-")[1]
+
+        # if the user wants more authors, add an extra entry
+        if more_authors:
+            return fc.render_template(more_authors=True)
+
+        # if the user wants to remove an author, do the various back-flips required
+        if remove_author is not None:
+            return fc.render_template(remove_authors=remove_author)
+
+        return fc.finalise()
 
 
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])

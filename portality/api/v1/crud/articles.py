@@ -5,7 +5,7 @@ from portality.lib import dataobj
 from portality import models
 # from portality.article import XWalk
 from portality.bll.doaj import DOAJ
-from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable
+from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, ArticleExists
 
 from copy import deepcopy
 

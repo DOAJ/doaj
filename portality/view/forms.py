@@ -17,6 +17,7 @@ from portality import models
 from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen
 from portality.formcontext.fields import DOAJSelectField
 from portality import regex
+from portality.crosswalks import article_form
 
 ##########################################################################
 ## Forms and related features for Article metadata
@@ -30,17 +31,16 @@ start_year = app.config.get("METADATA_START_YEAR", datetime.now().year - 15)
 
 YEAR_CHOICES = [(str(y), str(y)) for y in range(datetime.now().year + 1, start_year - 1, -1)]
 MONTH_CHOICES = [("1", "01"), ("2", "02"), ("3", "03"), ("4", "04"), ("5", "05"), ("6", "06"), ("7", "07"), ("8", "08"), ("9", "09"), ("10", "10"), ("11", "11"), ("12", "12")]
-
+MIN_ENTRIES = 3
 
 class AuthorForm(Form):
     name = StringField("Name", [validators.Optional()])
     affiliation = StringField("Affiliation", [validators.Optional()])
 
-
 class ArticleForm(Form):
     title = StringField("Article Title", [validators.DataRequired()])
     doi = StringField("DOI", [OptionalIf("fulltext"), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)], description="(You must provide a DOI and/or a Full-Text URL)")
-    authors = FieldList(FormField(AuthorForm), min_entries=3) # We have to do the validation for this at a higher level
+    authors = FieldList(FormField(AuthorForm), min_entries=MIN_ENTRIES) # We have to do the validation for this at a higher level
     abstract = TextAreaField("Abstract", [validators.Optional()])
     keywords = StringField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
     fulltext = StringField("Full-Text URL", [OptionalIf("doi"), validators.URL()], description="(The URL for each article must be unique.  You must provide a Full-Text URL and/or a DOI)")
@@ -56,17 +56,6 @@ class ArticleForm(Form):
 
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)
-        try:
-            if not current_user.is_anonymous:
-                issns = models.Journal.issns_by_owner(current_user.id)
-                ic = [("", "Select an ISSN")] + [(i,i) for i in issns]
-                self.pissn.choices = ic
-                self.eissn.choices = ic
-        except:
-            # not logged in, and current_user is broken
-            # probably you are loading the class from the command line
-            pass
-
 
 ##########################################################################
 ## Editor Group Forms

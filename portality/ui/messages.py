@@ -10,6 +10,8 @@ class Messages(object):
     ARTICLE_METADATA_SUBMITTED_FLASH = ("Article created/updated", "success")
     ARTICLE_METADATA_MERGE_CONFLICT = ("""Article could not be submitted, as it matches more than one existing article.
     Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
+    ARTICLE_METADATA_UPDATE_CONFLICT = ("""Article could not be updated, as it matches another existing article.
+        Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
 
     SENT_ACCEPTED_APPLICATION_EMAIL = """Sent email to '{email}' to tell them that their journal was accepted."""
     SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER = """Sent email to user '{user}' ({name}, {email}) to tell them that their journal application was rejected."""
@@ -47,6 +49,7 @@ class Messages(object):
     EXCEPTION_DETECT_DUPLICATE_NO_ID = "The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated"
     EXCEPTION_ARTICLE_MERGE_CONFLICT = "The article matched multiple existing articles as duplicates, and we cannot tell which one to update"
     EXCEPTION_NO_DOI_NO_FULLTEXT = "The article must have a DOI and/or a Full-Text URL"
+    EXCEPTION_ARTICLE_OVERRIDE = "Article with this URL and DOI already exists. Cannot update the article. If you sure you want to override it please delete the other article first."
 
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
@@ -65,3 +68,10 @@ class Messages(object):
     @classmethod
     def flash_with_url(cls, message, category):
         flash(message, category + '+contains-url')
+
+    @classmethod
+    def flash_with_param(cls, message, category="error", **kwargs):
+        for key, value in kwargs.items():
+            if key != "message" or key != "category":
+                message = message + (" {0}: {1},".format(key, value))
+        flash(message, category)

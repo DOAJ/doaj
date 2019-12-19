@@ -1,6 +1,21 @@
-{% extends "publisher/publisher_base.html" %}
+{% extends "admin/admin_base.html" %}
 
-{% block publisher_content %}
+{% block content %}
+{% set object_type = 'article' %}
+{% set heading_object_type = 'Article' %}
+{% set form_context = form_context %}
+
+<div class="row" style="margin-bottom: 20px">
+    <div class="col-md-9">
+        <h1>{{ heading_object_type }}: {{form_context.source.bibjson().title}}</h1>
+        {% if form_context.source.last_updated %}
+          <h4>Last updated: {{form_context.source.last_updated}}</h4>
+        {% endif %}
+        {% if form_context.source.current_journal %}
+            <h4 style="margin-top: 1em;"><a href="{{ url_for('doaj.journal_readonly', journal_id=form_context.source.current_journal) }}" target="_blank">View associated journal</a></h4>
+        {% endif %}
+    </div>
+</div>
 
 <div class="row">
 <div class="col-md-12">
@@ -11,9 +26,9 @@
 
     {% from "_formhelpers.html" import render_field_horizontal %}
     {% from "_formhelpers.html" import render_field %}
-    <form method="post" action="{{ url_for('publisher.metadata') }}" class="form-horizontal" id="article_metadata_form">
+    <form method="post" action="{{ url_for('admin.article_page', article_id=form_context.source.id) }}" class="form-horizontal" id="article_metadata_form">
 
-    {% include "formcontext/admin_article_form.html" %}
+        {% include "formcontext/admin_article_form.html" %}
 
     </form>
         </div>

@@ -3,6 +3,8 @@ from portality import models
 from portality.bll import exceptions
 from portality.ui.messages import Messages
 
+from flask_login import current_user
+
 from datetime import datetime
 
 
@@ -103,7 +105,8 @@ class ArticleService(object):
         return False
 
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
-                       limit_to_account=True, add_journal_info=False, dry_run=False):
+                       limit_to_account=True, add_journal_info=False, dry_run=False, update=None):
+
         """
         Create an individual article in the database
 
@@ -117,6 +120,7 @@ class ArticleService(object):
         :param limit_to_account:    Whether to limit create to when the account owns the journal to which the article belongs
         :param add_journal_info:    Should we fetch the journal info and attach it to the article before save?
         :param dry_run:     Whether to actuall save, or if this is just to either see if it would work, or to prep for a batch ingest
+        :param update: The article that it is supposed to be an update to
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing
@@ -135,7 +139,7 @@ class ArticleService(object):
         self.is_acceptable(article)
 
         if limit_to_account:
-            legit = self.is_legitimate_owner(article, account.id)
+            legit = "admin" in account.role or self.is_legitimate_owner(article, account.id)
             if not legit:
                 owned, shared, unowned, unmatched = self.issn_ownership_status(article, account.id)
                 return {"success" : 0, "fail" : 1, "update" : 0, "new" : 0, "shared" : shared, "unowned" : unowned, "unmatched" : unmatched}
@@ -144,13 +148,19 @@ class ArticleService(object):
         # or an update
         is_update = 0
         if duplicate_check:
-            duplicate = self.get_duplicate(article, account.id)
+            duplicate = self.get_duplicate(article)
             if duplicate is not None:
                 if merge_duplicate:
+                    if update is not None and duplicate.id != update:
+                        raise exceptions.DuplicateArticleException()
                     is_update  = 1
                     article.merge(duplicate) # merge will take the old id, so this will overwrite
                 else:
                     raise exceptions.DuplicateArticleException()
+
+        if update:
+            art = models.Article.pull(update)
+            article.merge(art)
 
         if add_journal_info:
             article.add_journal_metadata()
@@ -297,7 +307,7 @@ class ArticleService(object):
 
         return owned, shared, unowned, unmatched
 
-    def get_duplicate(self, article, owner=None):
+    def get_duplicate(self, article):
         """
         Get at most one one, most recent, duplicate article for the supplied article.
 
@@ -310,34 +320,32 @@ class ArticleService(object):
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("get_duplicate", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : str, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
-        dup = self.get_duplicates(article, owner, max_results=2)
+        article.prep()
+        dup = self.get_duplicates(article, max_results=2)
         if len(dup) > 1:
             raise exceptions.ArticleMergeConflict(Messages.EXCEPTION_ARTICLE_MERGE_CONFLICT)
-        if dup:
+        elif dup:
             return dup.pop()
         else:
             return None
 
-    def get_duplicates(self, article, owner=None, max_results=10):
+    def get_duplicates(self, article, max_results=10):
         """
         Get all known duplicates of an article
 
         If the owner id is provided, this will limit the search to duplicates owned by that owner
 
         :param article:
-        :param owner:
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("get_duplicates", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : str, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
-        possible_articles_dict = self.discover_duplicates(article, owner, max_results)
+        possible_articles_dict = self.discover_duplicates(article, max_results)
         if not possible_articles_dict:
             return []
 
@@ -357,26 +365,19 @@ class ArticleService(object):
 
         return possible_articles[:max_results]
 
-    def discover_duplicates(self, article, owner=None, results_per_match_type=10):
+    def discover_duplicates(self, article, results_per_match_type=10):
         """
         Identify duplicates, separated by duplication criteria
 
         If the owner id is provided, this will limit the search to duplicates owned by that owner
 
         :param article:
-        :param owner:
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("discover_duplicates", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : str, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
-
-        # Get the owner's ISSNs
-        issns = []
-        if owner is not None:
-            issns = models.Journal.issns_by_owner(owner)
 
         # We'll need the article bibjson a few times
         b = article.bibjson()
@@ -394,7 +395,7 @@ class ArticleService(object):
         doi = article.get_normalised_doi()
         if doi is not None:
             if isinstance(doi, str) and doi != '':
-                articles = models.Article.duplicates(issns=issns, doi=doi, size=results_per_match_type)
+                articles = models.Article.duplicates(doi=doi, size=results_per_match_type)
                 if len(articles) > 0:
                     possible_articles['doi'] = [a for a in articles if a.id != article.id]
                     if len(possible_articles['doi']) > 0:
@@ -403,7 +404,7 @@ class ArticleService(object):
         # Second test is to look by fulltext url
         fulltext = article.get_normalised_fulltext()
         if fulltext is not None:
-            articles = models.Article.duplicates(issns=issns, fulltexts=fulltext, size=results_per_match_type)
+            articles = models.Article.duplicates(fulltexts=fulltext, size=results_per_match_type)
             if len(articles) > 0:
                 possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
                 if possible_articles['fulltext']:
