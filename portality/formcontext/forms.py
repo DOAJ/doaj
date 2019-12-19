@@ -192,7 +192,7 @@ class JournalInformation(Form):
         description="The URL should state that the journal actively checks for plagiarism and detail how this is done."
     )
     publication_time = IntegerField('What is the average number of weeks between submission and publication?',
-        [validators.DataRequired(), validators.NumberRange(min=0, max=53)]
+        [validators.DataRequired(), validators.NumberRange(min=0, max=100)]
     )
     oa_statement_url = URLField("What is the URL for the journal's Open Access statement?",
         [validators.DataRequired(), URLOptionalScheme()]
