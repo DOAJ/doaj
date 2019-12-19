@@ -54,7 +54,7 @@ def run_only_once():
 if __name__ == "__main__":
     run_only_once()
     initialise_index(app)
-    sub_prefix = app.confi.get('HARVESTER_EMAIL_SUBJECT_PREFIX', '')
+    sub_prefix = app.config.get('HARVESTER_EMAIL_SUBJECT_PREFIX', '')
 
     # Send an email when the harvester starts.
     mail_prereqs = False
@@ -95,6 +95,6 @@ if __name__ == "__main__":
         mail.send_mail(
             to=app.config["HARVESTER_EMAIL_RECIPIENTS"],
             fro=fro,
-            subject="DOAJ Harvester finished at {0}".format(datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")),
+            subject=sub_prefix + "DOAJ Harvester finished at {0}".format(datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")),
             msg_body=report
         )
