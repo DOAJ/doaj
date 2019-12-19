@@ -41,6 +41,13 @@
     <!-- get the app's css -->
     <link rel="stylesheet" type="text/css" href="/static/css/doaj.css?v={{config.get('DOAJ_VERSION')}}">
 
+    <!-- add preconnect links -->
+    <link rel="preconnect" href="https://vars.hotjar.com">
+    <link rel="preconnect" href="https://www.google.com">
+    <link rel="preconnect" href="https://script.hotjar.com">
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://www.google-analytics.com">
+
     {% block extra_stylesheets %}{% endblock %}
 
     {% block extra_head %}{% endblock %}
