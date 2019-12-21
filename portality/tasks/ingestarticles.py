@@ -223,7 +223,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         try:
             xwalk = plugin.load_class(xwalk_name)()
         except IngestException:
-            raise RetryException(u"Unable to load schema")
+            raise RetryException(u"Unable to load schema {}".format(xwalk_name))
 
         # now we have the record in the index and on disk, we can attempt to
         # validate it
@@ -279,7 +279,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         try:
             xwalk = plugin.load_class(xwalk_name)()
         except IngestException:
-            raise RetryException(u"Unable to load schema")
+            raise RetryException(u"Unable to load schema {}".format(xwalk_name))
 
         ingest_exception = False
         result = {}
@@ -441,7 +441,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         try:
             xwalk = plugin.load_class(xwalk_name)()
         except IngestException:
-            raise RetryException(u"Unable to load schema")
+            raise RetryException(u"Unable to load schema {}".format(xwalk_name))
 
         # now we have the record in the index and on disk, we can attempt to
         # validate it
