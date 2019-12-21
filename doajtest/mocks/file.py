@@ -1,4 +1,4 @@
-class ModelFileMockFactory(object):
+class FileMockFactory(object):
 
     def __init__(self, filename="filename.xml", stream=None):
         self.filename = filename

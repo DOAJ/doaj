@@ -1,16 +1,15 @@
 from doajtest.helpers import DoajTestCase
+from doajtest.mocks.bll_article import BLLArticleMockFactory
 
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
-from doajtest.mocks.model_File import ModelFileMockFactory
+from doajtest.mocks.file import FileMockFactory
 from doajtest.mocks.response import ResponseMockFactory
 from doajtest.mocks.ftp import FTPMockFactory
-from doajtest.mocks.model_Article import ModelArticleMockFactory
 from doajtest.mocks.xwalk import XwalkMockFactory
 
 from portality.bll.exceptions import IngestException
-
 
 import time
 from portality.crosswalks import article_crossref_xml
@@ -95,7 +94,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         etree.XMLSchema = self.mock_load_schema
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "crossref", previous)
@@ -115,7 +114,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         etree.XMLSchema = self.mock_load_schema
         handle = CrossrefArticleFixtureFactory.invalid_schema_xml()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         with self.assertRaises(BackgroundException):
@@ -146,7 +145,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         etree.XMLSchema = self.mock_load_schema
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         with self.assertRaises(BackgroundException):
@@ -280,7 +279,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
     def test_08_crossref_prepare_file_upload_success(self):
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
         etree.XMLSchema = self.mock_load_schema
 
         previous = []
@@ -301,7 +300,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         article_crossref_xml.CrossrefXWalk.validate = XwalkMockFactory.validate
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
         etree.XMLSchema = self.mock_load_schema
 
         previous = []
@@ -682,7 +681,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
     def test_25_process_filesystem_error(self):
 
         etree.XMLSchema = self.mock_load_schema
-        articleSvc.ArticleService.batch_create_articles = ModelArticleMockFactory.batch_create
+        articleSvc.ArticleService.batch_create_articles = BLLArticleMockFactory.batch_create
 
         j = models.Journal()
         j.set_owner("testowner")
@@ -728,7 +727,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
 
@@ -802,7 +801,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
 
@@ -837,7 +836,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_ambiguous()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -887,7 +886,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         # crossref
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -938,7 +937,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -978,7 +977,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1025,7 +1024,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1069,7 +1068,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1114,7 +1113,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_ambiguous()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1167,7 +1166,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1223,7 +1222,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1279,7 +1278,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1336,7 +1335,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1385,8 +1384,8 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         handle1 = CrossrefArticleFixtureFactory.upload_2_issns_correct()
         handle2 = CrossrefArticleFixtureFactory.upload_2_issns_correct()
 
-        f1 = ModelFileMockFactory(stream=handle1)
-        f2 = ModelFileMockFactory(stream=handle2)
+        f1 = FileMockFactory(stream=handle1)
+        f2 = FileMockFactory(stream=handle2)
 
         job1 = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f1)
         id1 = job1.params.get("ingest_articles__file_upload_id")
@@ -1436,7 +1435,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_superlong_should_not_clip()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1487,7 +1486,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_superlong_should_clip()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1537,7 +1536,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1586,7 +1585,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1636,7 +1635,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         # take an article with 2 issns, but one of which is not in the index
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="crossref", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1703,7 +1702,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         etree.XMLSchema = self.mock_unable_to_upload_schema
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "crossref", previous)

@@ -1,20 +1,14 @@
-from doajtest.fixtures import ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from lxml import etree
 
+from doajtest.mocks.bll_article import BLLArticleMockFactory
 from doajtest.mocks.ftp import FTPMockFactory
-from doajtest.mocks.model_Article import ModelArticleMockFactory
-from doajtest.mocks.model_File import ModelFileMockFactory
+from doajtest.mocks.file import FileMockFactory
 from doajtest.mocks.response import ResponseMockFactory
 from doajtest.mocks.xwalk import XwalkMockFactory
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
-from portality import models
-from portality.core import app
-import os, requests, ftplib
-from urllib.parse import urlparse
-from portality.background import BackgroundException, RetryException
 import time
 from portality.crosswalks import article_doaj_xml
 from portality.bll.services import article as articleSvc
@@ -97,7 +91,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_01_doaj_file_upload_success(self):
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
@@ -117,7 +111,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_02_doaj_file_upload_invalid(self):
 
         handle = DoajXmlArticleFixtureFactory.invalid_schema_xml()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         with self.assertRaises(BackgroundException):
@@ -148,7 +142,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         etree.XMLSchema = self.mock_load_schema
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         with self.assertRaises(BackgroundException):
@@ -279,7 +273,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_08_doajxml_prepare_file_upload_success(self):
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="doaj", previous=previous)
@@ -299,7 +293,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         article_doaj_xml.DOAJXWalk.validate = XwalkMockFactory.validate
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         with self.assertRaises(BackgroundException):
@@ -651,7 +645,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert list(file_upload.failure_reasons.keys()) == []
 
     def test_25_process_filesystem_error(self):
-        articleSvc.ArticleService.batch_create_articles = ModelArticleMockFactory.batch_create
+        articleSvc.ArticleService.batch_create_articles = BLLArticleMockFactory.batch_create
 
         j = models.Journal()
         j.set_owner("testowner")
@@ -696,7 +690,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
 
@@ -783,7 +777,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
 
@@ -820,7 +814,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_ambiguous()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -870,7 +864,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -920,7 +914,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -961,7 +955,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1008,7 +1002,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1053,7 +1047,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1100,7 +1094,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_ambiguous()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1154,7 +1148,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1209,7 +1203,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1263,7 +1257,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1318,7 +1312,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1366,8 +1360,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         handle1 = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         handle2 = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
 
-        f1 = ModelFileMockFactory(stream=handle1)
-        f2 = ModelFileMockFactory(stream=handle2)
+        f1 = FileMockFactory(stream=handle1)
+        f2 = FileMockFactory(stream=handle2)
 
         job1 = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f1)
         id1 = job1.params.get("ingest_articles__file_upload_id")
@@ -1415,7 +1409,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_superlong_should_not_clip()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1462,7 +1456,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_superlong_should_clip()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1510,7 +1504,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1558,7 +1552,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         account.save(blocking=True)
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1607,7 +1601,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         # take an article with 2 issns, but one of which is not in the index
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
@@ -1671,7 +1665,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_50_valid_url_starting_with_http(self):
         handle = DoajXmlArticleFixtureFactory.valid_url_http()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
@@ -1683,7 +1677,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_51_valid_url_starting_with_https(self):
         handle = DoajXmlArticleFixtureFactory.valid_url_https()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
@@ -1695,7 +1689,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_52_valid_url_with_non_ascii_chars(self):
         handle = DoajXmlArticleFixtureFactory.valid_url_non_ascii_chars()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
@@ -1706,7 +1700,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_53_invalid_url(self):
         handle = DoajXmlArticleFixtureFactory.invalid_url()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         with self.assertRaises(BackgroundException):
@@ -1723,7 +1717,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_54_invalid_url_http_missing(self):
         handle = DoajXmlArticleFixtureFactory.invalid_url_http_missing()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         with self.assertRaises(BackgroundException):
@@ -1740,7 +1734,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_55_valid_url_with_http_anchor(self):
         handle = DoajXmlArticleFixtureFactory.valid_url_http_anchor()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
@@ -1751,7 +1745,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_56_valid_url_with_parameters(self):
         handle = DoajXmlArticleFixtureFactory.valid_url_parameters()
-        f = ModelFileMockFactory(stream=handle)
+        f = FileMockFactory(stream=handle)
 
         previous = []
         id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
