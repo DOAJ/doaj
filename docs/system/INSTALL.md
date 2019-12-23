@@ -36,13 +36,13 @@ For background tasks, we use `redis`. Run this however you like, just make sure 
 
 #Python and Pip
 
-Install Python 2.7 or more recent . Not tested with Python 3.x. You can verify if correct version of python is in use by typing:
+Install Python 3.7 or more recent. Python 2.x is not supported anymore. You can verify if correct version of python is in use by typing:
 
     python --version
 
 Install pip using:
 
-    sudo apt install python-pip
+    sudo apt install python3-pip
 
 You can upgrade a package with
 
@@ -67,8 +67,8 @@ It's recommended to run the DOAJ inside a python virtual environment so it doesn
     # system dependencies
     sudo apt install libxml2-dev libxslt-dev python-dev lib32z1-dev
 
-    # Create a virtualenv for python 2.7 then activate it (also use this to run scripts etc)
-    virtualenv -p python2.7 doajenv
+    # Create a virtualenv for python 3.7 then activate it (also use this to run scripts etc)
+    virtualenv -p python3.7 doajenv
     cd doajenv
     . bin/activate
 
