@@ -480,3 +480,22 @@ class TestCrudArticle(DoajTestCase):
         account.set_id("test")
         with self.assertRaises(Api404Error):
             ArticlesCrudApi.delete("adfasdfhwefwef", account)
+
+    def test_12_too_many_keywords(self):
+        """ Check we get an error when we supply too many keywords to the API. """
+
+        # set up all the bits we need
+        account = models.Account()
+        account.set_id('test')
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save(blocking=True)
+
+        data = ArticleFixtureFactory.make_article_source()
+        data['bibjson']['keywords'] = ['one', 'two', 'three', 'four', 'five', 'six', 'seven']
+
+        with self.assertRaises(Api400Error):
+            ArticlesCrudApi.create(data, account)
+
