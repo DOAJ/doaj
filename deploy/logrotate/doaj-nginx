@@ -1,10 +1,12 @@
 /var/log/nginx/doaj.*.log {
-	weekly
+	daily
 	missingok
-	rotate 53
+	rotate 7
 	compress
 	delaycompress
 	notifempty
+    dateext
+	dateyesterday
 	create 0640 www-data adm
 	sharedscripts
 	prerotate
@@ -14,5 +16,6 @@
 	endscript
 	postrotate
 		invoke-rc.d nginx rotate >/dev/null 2>&1
+		aws --profile doaj-nginx-logs s3 sync . s3://doaj-nginx-logs --exclude "*" --include "doaj.*.gz"
 	endscript
 }
