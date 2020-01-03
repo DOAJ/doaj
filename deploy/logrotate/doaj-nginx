@@ -16,6 +16,6 @@
 	endscript
 	postrotate
 		invoke-rc.d nginx rotate >/dev/null 2>&1
-		aws --profile doaj-nginx-logs s3 sync . s3://doaj-nginx-logs --exclude "*" --include "doaj.*.gz"
+		aws --profile doaj-nginx-logs s3 sync /var/log/nginx/ s3://doaj-nginx-logs --exclude "*" --include "doaj.*.gz"
 	endscript
 }
