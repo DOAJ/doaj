@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "3.1.0"
+DOAJ_VERSION = "3.1.1"
 
 OFFLINE_MODE = False
 
@@ -944,7 +944,10 @@ HARVESTER_MAX_WAIT = 10
 # Email notifications
 HARVESTER_EMAIL_ON_EVENT = False
 HARVESTER_EMAIL_RECIPIENTS = None
+HARVESTER_EMAIL_FROM_ADDRESS = "harvester@doaj.org"
+HARVESTER_EMAIL_SUBJECT_PREFIX = "[harvester] "
 
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+
