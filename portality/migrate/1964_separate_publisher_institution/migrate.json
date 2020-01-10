@@ -1,0 +1,17 @@
+{
+	"batch" : 10000,
+	"types": [
+		{
+			"type" : "article",
+			"scroll_size" : 1000,
+			"keepalive" : "20m",
+			"query" : {
+				"query": {
+					"filtered": {
+						"query": {"match_all": {}}
+					}
+				}
+			}
+		}
+	]
+}
