@@ -341,10 +341,10 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
             index["schema_subject"] = schema_subjects
         if len(classification) > 0:
             index["classification"] = classification
-        if len(publisher) > 0:
+        if publisher > 0:
             index["publisher"] = publisher
-        if len(institution) > 0:
-            index["institution"] = publisher
+        if institution > 0:
+            index["institution"] = institution
         if len(license) > 0:
             index["license"] = license
         if len(langs) > 0:

@@ -2,16 +2,14 @@
 	"batch" : 10000,
 	"types": [
 		{
-			"type" : "article",
-			"scroll_size" : 1000,
-			"keepalive" : "20m",
-			"query" : {
-				"query": {
-					"filtered": {
-						"query": {"match_all": {}}
-					}
-				}
-			}
+			"type" : "suggestion",
+			"init_with_model" : true,
+			"keepalive" : "20m"
+		},
+		{
+			"type": "journal",
+			"init_with_model": true,
+			"keepalive": "20m"
 		}
-	]
+]
 }
