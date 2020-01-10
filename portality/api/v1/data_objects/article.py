@@ -68,6 +68,7 @@ BASE_ARTICLE_STRUCT = {
                         "volume": {"coerce": "unicode"},
                         "number": {"coerce": "unicode"},
                         "publisher": {"coerce": "unicode"},
+                        "institution": {"coerce": "unicode"},
                         "title": {"coerce": "unicode"},
                         "country": {"coerce": "unicode"}
                     },

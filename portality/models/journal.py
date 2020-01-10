@@ -301,7 +301,6 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         schema_subjects = list(set(schema_subjects))
         classification = list(set(classification))
         license = list(set(license))
-        publisher = list(set(publisher))
         schema_codes = list(set(schema_codes))
 
         # determine if the seal is applied
@@ -1261,7 +1260,9 @@ JOURNAL_STRUCT = {
                 "has_editor" : {"coerce" : "unicode"},
                 "publisher_ac" : {"coerce" : "unicode"},
                 "institution_ac" : {"coerce" : "unicode"},
-                "provider_ac" : {"coerce" : "unicode"}
+                "provider_ac" : {"coerce" : "unicode"},
+                "publisher" : {"coerce" : "unicode"},
+                "institution" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "issn" : {"contains" : "field", "coerce" : "unicode"},
@@ -1273,7 +1274,7 @@ JOURNAL_STRUCT = {
                 "license" : {"contains" : "field", "coerce" : "unicode"},
                 "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
                 "schema_code" : {"contains" : "field", "coerce" : "unicode"},
-                "publisher" : {"contains" : "field", "coerce" : "unicode"}
+
             }
         }
     }
