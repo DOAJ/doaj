@@ -201,7 +201,9 @@ APPLICATION_STRUCT = {
                 "continued" : {"coerce" : "unicode"},
                 "application_type": {"coerce": "unicode"},
                 "has_editor_group" : {"coerce" : "unicode"},
-                "has_editor" : {"coerce" : "unicode"}
+                "has_editor" : {"coerce" : "unicode"},
+                "publisher" : {"coerce" : "unicode"},
+                "institution" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "issn" : {"contains" : "field", "coerce" : "unicode"},
@@ -212,8 +214,7 @@ APPLICATION_STRUCT = {
                 "language" : {"contains" : "field", "coerce" : "unicode"},
                 "license" : {"contains" : "field", "coerce" : "unicode"},
                 "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
-                "schema_code" : {"contains" : "field", "coerce" : "unicode"},
-                "publisher" : {"contains" : "field", "coerce" : "unicode"}
+                "schema_code" : {"contains" : "field", "coerce" : "unicode"}
             }
         },
         "suggestion" : {

@@ -235,7 +235,8 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         langs = []
         country = None
         license = []
-        publisher = []
+        publisher = None
+        institution = None
         urls = {}
         has_seal = None
         classification_paths = []
@@ -282,9 +283,9 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
         # copy the publisher/institution
         if cbib.publisher:
-            publisher.append(cbib.publisher)
+            publisher = cbib.publisher
         if cbib.institution:
-            publisher.append(cbib.institution)
+            institution = cbib.institution
 
         # extract and convert all of the urls by their type
         links = cbib.get_urls()
@@ -342,6 +343,8 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
             index["classification"] = classification
         if len(publisher) > 0:
             index["publisher"] = publisher
+        if len(institution) > 0:
+            index["institution"] = publisher
         if len(license) > 0:
             index["license"] = license
         if len(langs) > 0:

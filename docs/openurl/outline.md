@@ -287,6 +287,7 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
         "country" : "<country of journal publication>",
         "license" : [<list of titles of licences>],
         "publisher" : "<publisher>",
+        "institution" : "<institution>",
         "homepage_url" : "<homepage url>",
         "waiver_policy_url" : "<waiver policy url>",
         "editorial_board_url" : "<editorial board url>",
@@ -375,7 +376,8 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
         "language" : [<list of languages of the journal>],
         "country" : "<country of journal publication>",
         "license" : [<list of titles of licences>],
-        "publisher" : "<publisher>"
+        "publisher" : "<publisher>",
+        "institution" : "<institution>"
     },
     "created_date" : "<date created>",
     "last_modified" : "<date record last modified>"
@@ -542,6 +544,7 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
         "country" : "<country of journal publication>",
         "license" : [<list of titles of licences>],
         "publisher" : "<publisher>",
+        "institution" : "<institution>",
         "homepage_url" : "<homepage url>",
         "waiver_policy_url" : "<waiver policy url>",
         "editorial_board_url" : "<editorial board url>",
@@ -630,7 +633,8 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
         "language" : [<list of languages of the journal>],
         "country" : "<country of journal publication>",
         "license" : [<list of titles of licences>],
-        "publisher" : "<publisher>"
+        "publisher" : "<publisher>",
+        "institution" : "<institution>"
     },
     "created_date" : "<date created>",
     "last_modified" : "<date record last modified>"

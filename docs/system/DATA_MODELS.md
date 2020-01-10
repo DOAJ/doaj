@@ -88,6 +88,7 @@
         "country" : "<country of journal publication>",
         "license" : [<list of titles of licences>],
         "publisher" : "<publisher>",
+        "institution" : "<institution>",
         "classification_paths" : [<list of all expanded LCC terms, with parents>],
         "unpunctitle" : "<title without punctuation>",
         "asciiunpunctitle" : "<ascii-folded title without puncuation>"
