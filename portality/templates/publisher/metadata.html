@@ -31,14 +31,6 @@
                                             <div class="col-md-7 col-xs-12"> {{field(placeholder=field.label.text)}} </div>
                                         {% endif %}
                                     </div>
-{#                                        <div class="author-row">#}
-{#                                            <div class="author-label">{{field.label.text | safe}}</div>#}
-{#                                            {% if field.label.text == "ORCID iD" %}#}
-{#                                                <div class="author-input">{{field(placeholder="https://orcid.org/0000-0000-0000-0000")}}<br/></div>#}
-{#                                            {% else %}#}
-{#                                                <div class="author-input">{{field(placeholder=field.label.text)}}<br/></div>#}
-{#                                            {% endif %}#}
-{#                                        </div>#}
                                 {% endfor %}
                                 {% for error in subfield.errors %}
                                     <div class="error" style="width: 200%">
