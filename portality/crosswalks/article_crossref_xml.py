@@ -160,12 +160,12 @@ Example record:
         article = models.Article()
         bibjson = article.bibjson()
 
-        # # journal title
-        # jm = journal.find("x:journal_metadata", NS)
-        # if jm is not None:
-        #     jt = _element(jm, "x:full_title", NS)
-        #     if jt is not None:
-        #         bibjson.journal_title = jt
+        # journal title
+        jm = journal.find("x:journal_metadata", NS)
+        if jm is not None:
+            jt = _element(jm, "x:full_title", NS)
+            if jt is not None:
+                bibjson.journal_title = jt
 
         # p-issn and e-issn
         md = journal.find("x:journal_metadata", NS)
