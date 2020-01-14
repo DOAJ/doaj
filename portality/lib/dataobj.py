@@ -1086,7 +1086,6 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
         for k in keys:
             if k not in allowed:
                 c = context if context != "" else "root"
-                print(k,c)
                 raise DataStructureException("Field '{k}' is not permitted at '{c}'".format(k=k, c=c))
 
 
