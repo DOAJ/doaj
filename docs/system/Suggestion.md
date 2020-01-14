@@ -168,6 +168,7 @@ The JSON structure of the model is as follows:
         "issn": [
             "string"
         ], 
+        "institution": "string", 
         "language": [
             "string"
         ], 
@@ -175,9 +176,7 @@ The JSON structure of the model is as follows:
             "string"
         ], 
         "oa_statement_url": "string", 
-        "publisher": [
-            "string"
-        ], 
+        "publisher": "string", 
         "schema_code": [
             "string"
         ], 
@@ -307,6 +306,7 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | index.has_seal |  | unicode |  |  |
 | index.homepage_url |  | unicode |  |  |
 | index.issn |  | unicode |  |  |
+| index.institution |  | unicode |  |  |
 | index.language |  | unicode |  |  |
 | index.license |  | unicode |  |  |
 | index.oa_statement_url |  | unicode |  |  |

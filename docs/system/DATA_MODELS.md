@@ -77,21 +77,21 @@
         }
     ]
     "index" : {
+        "asciiunpunctitle" : "<ascii-folded title without puncuation>",
+        "classification" : [<list of classification terms without prefixes>],
+        "classification_paths" : [<list of all expanded LCC terms, with parents>],
+        "country" : "<country of journal publication>",
         "date" : "<date of publication>"
         "date_toc_fv_month" : "<date of publication (duplicated for ToC facetview)>"
         "issn" : [<list of all issns that this item pertains to>],
+        "institution" : "<institution>",
+        "language" : [<list of languages of the journal>],
+        "license" : [<list of titles of licences>],
         "subject" : [<all possible subject keywords>],
         "schema_subject" : [<all subject keywords with schema prefixes>],
         "schema_code" : [<list of subject codes with schema prefixes>]
-        "classification" : [<list of classification terms without prefixes>],
-        "language" : [<list of languages of the journal>],
-        "country" : "<country of journal publication>",
-        "license" : [<list of titles of licences>],
         "publisher" : "<publisher>",
-        "institution" : "<institution>",
-        "classification_paths" : [<list of all expanded LCC terms, with parents>],
-        "unpunctitle" : "<title without punctuation>",
-        "asciiunpunctitle" : "<ascii-folded title without puncuation>"
+        "unpunctitle" : "<title without punctuation>"
     },
     "created_date" : "<date created>",
     "last_updated" : "<date record last modified>"

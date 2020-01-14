@@ -10,6 +10,11 @@
 			"type": "journal",
 			"init_with_model": true,
 			"keepalive": "20m"
+		},
+		{
+			"type": "article",
+			"init_with_model": true,
+			"keepalive": "20m"
 		}
 ]
 }
