@@ -222,12 +222,16 @@ def string_canonicalise(canon, allow_fail=False):
 ############################################################
 
 ############################################################
-## The core data object which manages all the interactions
-## with the underlying data member variable
+# The core data object which manages all the interactions
+# with the underlying data member variable
+
 
 class DataObjException(Exception):
-    def __init__(self, msg, *args, **kwargs):
-        self.message = msg
+    def __init__(self, *args, **kwargs):
+        try:
+            self.message = args[0]
+        except IndexError:
+            self.message = ''
         super(DataObjException, self).__init__(*args, **kwargs)
 
 
