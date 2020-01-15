@@ -5,6 +5,7 @@ from copy import deepcopy
 import json
 import time
 
+
 class TestCrudReturnValues(DoajTestCase):
 
     def setUp(self):
@@ -161,6 +162,39 @@ class TestCrudReturnValues(DoajTestCase):
             response = t_client.get('/api/v1/applications/{0}?api_key={1}'.format(new_ar_id, self.api_key))
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
+
+    def test_04_article_structure_exceptions(self):
+        # add some data to the index with a Create
+        user_data = ArticleFixtureFactory.make_article_source()
+
+        with self.app_test.test_client() as t_client:
+            # log into the app as our user
+            self.login(t_client, 'test', 'password123')
+
+            # attempt to CREATE a new article with invalid JSON
+            bad_data = json.dumps(user_data) + 'blarglrandomblah'
+            response = t_client.post('/api/v1/articles?api_key=' + self.api_key, data=bad_data)
+            assert response.status_code == 400  # 400 "Bad Request"
+            assert response.mimetype == 'application/json'
+            assert 'Supplied data was not valid JSON' in response.json['error']
+
+            # attempt to CREATE a new article with too many keywords (exception propagates from DataObj)
+            too_many_kwds = deepcopy(user_data)
+            too_many_kwds['bibjson']['keywords'] = ['one', 'two', 'three', 'four', 'five', 'six', 'SEVEN']
+
+            response = t_client.post('/api/v1/articles?api_key=' + self.api_key, data=json.dumps(too_many_kwds))
+            assert response.status_code == 400  # 400 "Bad Request"
+            assert response.mimetype == 'application/json'
+            assert 'maximum of 6 keywords' in response.json['error']
+
+            # attempt to CREATE an article with a missing required field (exception propagates from DataObj)
+            missing_title = deepcopy(user_data)
+            del missing_title['bibjson']['title']
+
+            response = t_client.post('/api/v1/articles?api_key=' + self.api_key, data=json.dumps(missing_title))
+            assert response.status_code == 400  # 400 "Bad Request"
+            assert response.mimetype == 'application/json'
+            assert "Field 'title' is required but not present" in response.json['error']
 
     @staticmethod
     def login(app, username, password):
