@@ -1,4 +1,7 @@
+from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
+from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, diff_dicts
+from portality.crosswalks.article_doaj_xml import DOAJXWalk
 from portality.formcontext import xwalk, forms
 from portality import models
 from werkzeug.datastructures import MultiDict
@@ -106,3 +109,22 @@ class TestXwalk(DoajTestCase):
         obj = xwalk.SuggestionFormXWalk.form2obj(form)
 
         assert obj.bibjson().get_license_type() == "None"
+
+    def test_05_doaj_article_xml_xwalk(self):
+        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
+        xwalk = DOAJXWalk()
+        art = xwalk.crosswalk_file(file_handle=handle, add_journal_info=False)
+        article = models.Article(**art[0])
+        bibjson = article.bibjson()
+
+        assert bibjson.journal_language == ["fre"], "expected ['fre'], actual: {} ".format(bibjson.journal_language)
+        assert bibjson.publisher == "Codicille éditeur et CRILCQ", "expected 'Codicille éditeur et CRILCQ', actual: {} ".format(bibjson.publisher)
+        assert bibjson.journal_title == "2 ISSNs Correct", "expected '2 ISSNs Correct', received: {}".format(bibjson.journal_title)
+        assert bibjson.get_one_identifier(bibjson.P_ISSN) == "1234-5678", "expected '1234-5678', received: {}".format(bibjson.get_one_identifier(bibjson.P_ISSN))
+        assert bibjson.get_one_identifier(bibjson.E_ISSN) == "9876-5432", "expected '9876-5432', received: {}".format(bibjson.get_one_identifier(bibjson.E_ISSN))
+        assert bibjson.year == "2013", "expected '2013', received: {}".format(bibjson.year)
+        assert bibjson.title == "Imaginaires autochtones contemporains. Introduction", "expected 'Imaginaires autochtones contemporains. Introduction', received: {}".format(bibjson.title)
+        assert bibjson.author == [{'name': 'Papillon, Joëlle'}], "expected [{'name': 'Papillon, Joëlle'}], received: {}".format(bibjson.author)
+        assert bibjson.get_single_url("fulltext") == "http://doaj.org/testing/url.pdf", "expected 'http://doaj.org/testing/url.pdf', received: {}".format(bibjson.get_single_url("fulltext"))
+
+
