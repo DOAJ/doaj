@@ -19,6 +19,7 @@
 	endscript
 	lastaction
 		# note: for this to work via cron, you must symlink the ~/.aws directory to /root/.aws
-		aws --profile doaj-nginx-logs s3 sync /var/log/nginx/ s3://doaj-nginx-logs/ --exclude "*" --include "doaj.*.gz"
+        HOSTNAME=`hostname`
+		aws --profile doaj-nginx-logs s3 sync /var/log/nginx/ s3://doaj-nginx-logs/$HOSTNAME/ --exclude "*" --include "doaj.*.gz"
 	endscript
 }
