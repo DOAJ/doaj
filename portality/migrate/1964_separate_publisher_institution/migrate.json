@@ -14,7 +14,8 @@
 		{
 			"type": "article",
 			"init_with_model": true,
-			"keepalive": "20m"
+			"keepalive": "20m",
+			"function": "portality.models.Article.add_journal_metadata"
 		}
 ]
 }
