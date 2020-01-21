@@ -232,14 +232,9 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         schema_subjects = []
         schema_codes = []
         classification = []
-        langs = []
-        country = None
         license = []
         publisher = None
-        institution = None
         urls = {}
-        has_seal = None
-        classification_paths = []
         unpunctitle = None
         asciiunpunctitle = None
         continued = "No"
@@ -284,8 +279,6 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         # copy the publisher/institution
         if cbib.publisher:
             publisher = cbib.publisher
-        if cbib.institution:
-            institution = cbib.institution
 
         # extract and convert all of the urls by their type
         links = cbib.get_urls()
@@ -342,8 +335,6 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
             index["classification"] = classification
         if publisher is not None:
             index["publisher"] = publisher
-        if institution is not None:
-            index["institution"] = institution
         if len(license) > 0:
             index["license"] = license
         if len(langs) > 0:
