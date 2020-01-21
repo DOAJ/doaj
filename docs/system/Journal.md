@@ -304,7 +304,6 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | index.has_editor_group |  | unicode |  |  |
 | index.has_seal |  | unicode |  |  |
 | index.homepage_url |  | unicode |  |  |
-| index.institution |  | unicode |  |  |
 | index.institution_ac |  | unicode |  |  |
 | index.issn |  | unicode |  |  |
 | index.language |  | unicode |  |  |
