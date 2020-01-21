@@ -6,9 +6,11 @@ import difflib
 from lxml import etree
 from lxml.builder import ElementMaker
 from portality.lib import paths
+from datetime import datetime
+from glob import glob
 
 SCHEMA_TEMPLATE = '''\
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.doaj.org/schemas/iso_639-2b/{schema_version}" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <xsd:annotation>
         <xsd:documentation>Codes for the representation of names of languages from the International Organization for Standardization (ISO) 639-2/B (bibliographic codes).</xsd:documentation>
@@ -103,11 +105,10 @@ def compare_lang_schemas(schema_old, schema_new, ofile):
     old_file = schema_old.split('/').pop()
     new_file = schema_new.split('/').pop()
 
-    # fixme: hilariously, this won't handle utf-8 correctly until Python 3.5 (upgrade required)
     diff = difflib.HtmlDiff().make_file(old_strlist, new_strlist, fromdesc=old_file, todesc=new_file, context=True)
 
     with open(ofile, 'w') as o:
-        o.writelines(l.encode('utf8') for l in diff)
+        o.writelines(diff)
 
     print("Diff saved to " + ofile)
 
@@ -122,18 +123,23 @@ if __name__ == '__main__':
                         nargs='?', const='isolang_diff.html', default=None)
 
     args = parser.parse_args()
-
     dest_path = paths.rel2abs(__file__, '..', 'static', 'doaj', args.filename)
 
+    # Retain our current languages file if we are overwriting it
     if os.path.exists(dest_path):
         print('Schema already exists with name {n} - replace? [y/N]'.format(n=args.filename))
-        resp = input('Your existing file will be retained as {fn}.old : '.format(fn=args.filename))
+        today = datetime.utcnow().strftime("%Y-%m-%d")
+        resp = input('Your existing file will be retained as {fn}.old.{td} : '.format(fn=args.filename, td=today))
         if resp.lower() == 'y':
-            os.rename(dest_path, dest_path + '.old')
+            os.rename(dest_path, dest_path + '.old.' + today)
 
-            with open(dest_path, 'w') as f:
-                write_lang_schema(f, args.version)
+    # Write the new schema file
+    with open(dest_path, 'wb') as f:
+        write_lang_schema(f, args.version)
 
-        if args.compare and os.path.exists(dest_path + '.old'):
-            compare_path = paths.rel2abs(__file__, '..', 'static', 'doaj', args.compare)
-            compare_lang_schemas(dest_path + '.old', dest_path, compare_path)
+    # Check for any old files and run the comparison if requested
+    old_files = glob(dest_path + '.old.*')
+    if args.compare and old_files:
+        compare_path = paths.rel2abs(__file__, '..', 'static', 'doaj', args.compare)
+        latest_previous = old_files.pop()
+        compare_lang_schemas(latest_previous, dest_path, compare_path)
