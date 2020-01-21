@@ -1252,8 +1252,7 @@ JOURNAL_STRUCT = {
                 "publisher_ac" : {"coerce" : "unicode"},
                 "institution_ac" : {"coerce" : "unicode"},
                 "provider_ac" : {"coerce" : "unicode"},
-                "publisher" : {"coerce" : "unicode"},
-                "institution" : {"coerce" : "unicode"}
+                "publisher" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "issn" : {"contains" : "field", "coerce" : "unicode"},
@@ -1264,8 +1263,7 @@ JOURNAL_STRUCT = {
                 "language" : {"contains" : "field", "coerce" : "unicode"},
                 "license" : {"contains" : "field", "coerce" : "unicode"},
                 "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
-                "schema_code" : {"contains" : "field", "coerce" : "unicode"},
-
+                "schema_code" : {"contains" : "field", "coerce" : "unicode"}
             }
         }
     }
