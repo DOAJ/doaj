@@ -202,7 +202,7 @@ APPLICATION_STRUCT = {
                 "application_type": {"coerce": "unicode"},
                 "has_editor_group" : {"coerce" : "unicode"},
                 "has_editor" : {"coerce" : "unicode"},
-                "publisher" : {"coerce" : "unicode"},
+                "publisher" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "issn" : {"contains" : "field", "coerce" : "unicode"},
