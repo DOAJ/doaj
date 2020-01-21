@@ -168,7 +168,6 @@ The JSON structure of the model is as follows:
         "issn": [
             "string"
         ], 
-        "institution": "string", 
         "language": [
             "string"
         ], 
