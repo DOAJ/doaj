@@ -2,16 +2,19 @@
 
 * Disable the default nginx logrotate in `/etc/logrotate.d/nginx` by renaming it to `nginx.disabled`
 * Check the logfile paths match those configured in `settings.py`, `production.cfg` or `app.cfg`
-* Symlink these configs with:
+* Copy these logrotate configs (files must be owned by root so symlinking isn't worth the bother)
+  The filemode should be 644.
+* If the root password has expired, crons won't run. Check this is set with `sudo chage -l root`
+  and set with `sudo passwd root` if necessary.
 
 ```
-sudo ln -s /home/cloo/doaj/src/doaj/deploy/logrotate/doaj-analytics /etc/logrotate.d/doaj-analytics
+sudo cp /home/cloo/doaj/src/doaj/deploy/logrotate/doaj-analytics /etc/logrotate.d/doaj-analytics
 ```
 
 and
 
 ```
-sudo ln -s /home/cloo/doaj/src/doaj/deploy/logrotate/doaj-nginx /etc/logrotate.d/doaj-nginx
+sudo cp /home/cloo/doaj/src/doaj/deploy/logrotate/doaj-nginx /etc/logrotate.d/doaj-nginx
 ```
 
 For the AWS S3 upload to work correctly, the correct credentials must be saved in `~/.aws/`, and 
