@@ -305,7 +305,6 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | index.has_seal |  | unicode |  |  |
 | index.homepage_url |  | unicode |  |  |
 | index.issn |  | unicode |  |  |
-| index.institution |  | unicode |  |  |
 | index.language |  | unicode |  |  |
 | index.license |  | unicode |  |  |
 | index.oa_statement_url |  | unicode |  |  |
