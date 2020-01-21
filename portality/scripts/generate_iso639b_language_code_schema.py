@@ -10,7 +10,6 @@ from datetime import datetime
 from glob import glob
 
 SCHEMA_TEMPLATE = '''\
-<?xml version="1.0"?>
 <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.doaj.org/schemas/iso_639-2b/{schema_version}" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <xsd:annotation>
         <xsd:documentation>Codes for the representation of names of languages from the International Organization for Standardization (ISO) 639-2/B (bibliographic codes).</xsd:documentation>
@@ -80,7 +79,7 @@ def write_lang_schema(out_file, schema_version):
         language_list_element.append(language_entry)
 
     # Write the new XML Schema file
-    schema_tree.write(out_file, pretty_print=True, encoding='utf-8')
+    schema_tree.write(out_file, pretty_print=True, encoding='utf-8', xml_declaration=True)
 
 
 def compare_lang_schemas(schema_old, schema_new, ofile):
