@@ -84,7 +84,6 @@
         "date" : "<date of publication>"
         "date_toc_fv_month" : "<date of publication (duplicated for ToC facetview)>"
         "issn" : [<list of all issns that this item pertains to>],
-        "institution" : "<institution>",
         "language" : [<list of languages of the journal>],
         "license" : [<list of titles of licences>],
         "subject" : [<all possible subject keywords>],

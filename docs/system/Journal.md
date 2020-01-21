@@ -171,7 +171,6 @@ The JSON structure of the model is as follows:
         "has_editor_group": "string", 
         "has_seal": "string", 
         "homepage_url": "string", 
-        "institution": "string", 
         "institution_ac": "string", 
         "issn": [
             "string"
