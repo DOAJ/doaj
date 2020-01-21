@@ -22,13 +22,17 @@ class CrossrefXWalk(object):
             raise exceptions.IngestException(
                 message="Unable to validate for CrossrefXWalk, as schema path is not set in config")
 
-        try:
-            schema_file = open(self.schema_path)
-            schema_doc = etree.parse(schema_file)
-            self.schema = etree.XMLSchema(schema_doc)
-        except Exception as e:
-            raise exceptions.IngestException(
-                message="There was an error attempting to load schema from " + self.schema_path, inner=e)
+        if not app.config.get("CROSSREF_SCHEMA"):
+            try:
+                schema_file = open(self.schema_path)
+                schema_doc = etree.parse(schema_file)
+                self.schema = etree.XMLSchema(schema_doc)
+                app.config["CROSSREF_SCHEMA"] = self.schema
+            except Exception as e:
+                raise exceptions.IngestException(
+                    message="There was an error attempting to load schema from " + self.schema_path, inner=e)
+        else:
+            self.schema = app.config["CROSSREF_SCHEMA"]
 
     def validate_file(self, file_handle):
         # first try to parse the file

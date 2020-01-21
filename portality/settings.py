@@ -611,6 +611,9 @@ SCHEMAS = {
     "crossref": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd")
 }
 
+DOAJ_SCHEMA = None
+CROSSREF_SCHEMA = None
+
 # mapping of format names to modules which implement the crosswalks
 ARTICLE_CROSSWALKS = {
     "doaj": "portality.crosswalks.article_doaj_xml.DOAJXWalk",

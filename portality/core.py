@@ -4,8 +4,10 @@ from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_cors import CORS
+from lxml import etree
 
 from portality import settings
+from portality.bll import exceptions
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping
 
@@ -26,6 +28,7 @@ def create_app():
     configure_app(app)
     setup_error_logging(app)
     setup_jinja(app)
+    load_crossref_schema(app)
     login_manager.init_app(app)
     CORS(app)
     initialise_apm(app)
@@ -94,6 +97,17 @@ application configuration (settings.py or app.cfg).
         )
     return env
 
+def load_crossref_schema(app):
+    schema_path = app.config["SCHEMAS"].get("crossref")
+
+    if not app.config.get("CROSSREF_SCHEMA"):
+        try:
+            schema_doc = etree.parse(schema_path)
+            schema = etree.XMLSchema(schema_doc)
+            app.config["CROSSREF_SCHEMA"] = schema
+        except Exception as e:
+            raise exceptions.IngestException(
+                message="There was an error attempting to load schema from " + self.schema_path, inner=e)
 
 def put_mappings(app, mappings):
     # make a connection to the index
