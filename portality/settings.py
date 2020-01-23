@@ -613,6 +613,7 @@ SCHEMAS = {
 
 DOAJ_SCHEMA = None
 CROSSREF_SCHEMA = None
+LOAD_CROSSREF_THREAD = None
 
 # mapping of format names to modules which implement the crosswalks
 ARTICLE_CROSSWALKS = {

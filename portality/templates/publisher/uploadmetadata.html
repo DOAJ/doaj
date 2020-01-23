@@ -1,7 +1,11 @@
 {% extends "publisher/publisher_base.html" %}
-
 {% block publisher_content %}
-
+<div id="crossref-alert" class="alert-messages">
+   <div class="alert alert-message fade in" data-alert="alert">
+       <a class="close" data-dismiss="alert" href="#">×</a>
+       Crossref schema is still loading, uploading your file may take a bit longer than usual.
+   </div>
+</div>
 <div class="row" style="margin-top: 20px">
     <div class="col-md-12">
         <div class="well">
@@ -153,18 +157,39 @@
 {% block extra_js_bottom %}
 <script type="text/javascript">
 $(document).ready(function() {
-    $("#previous_files").tablesorter();
 
-    $(".show_error_details").click(function(event) {
-        event.preventDefault();
-        var id = $(this).attr("data-id");
-        $("#details_" + id).slideToggle();
-        if ($(this).html() === "(show error details)") {
-            $(this).html("(hide error details)")
+document.getElementById("crossref-alert").style.display = "none";
+
+    function load_errors_and_previous_files(){
+        document.getElementById("crossref-alert").style.display = "none";
+        $("#previous_files").tablesorter();
+
+        $(".show_error_details").click(function (event) {
+            event.preventDefault();
+            var id = $(this).attr("data-id");
+            $("#details_" + id).slideToggle();
+            if ($(this).html() === "(show error details)") {
+                $(this).html("(hide error details)");
+            } else {
+                $(this).html("(show error details)");
+            }
+        })
+    }
+
+    function check_if_crossref_is_loaded() {
+        $.get("/isCrossrefLoaded", function(result) {
+        if (result === "true"){
+            load_errors_and_previous_files()
         } else {
-            $(this).html("(show error details)")
+            document.getElementById("crossref-alert").style.display = "block";
+            check_if_crossref_is_loaded();
         }
-    })
+
+        });
+    }
+
+    check_if_crossref_is_loaded()
+
 })
 </script>
 

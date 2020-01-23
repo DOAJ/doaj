@@ -1,5 +1,6 @@
 import os
 
+from tkinter import *
 from portality.core import app
 from lxml import etree
 import re
@@ -12,27 +13,20 @@ NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih
 
 class CrossrefXWalk(object):
     format_name = "crossref"
-    schema_path = app.config.get("SCHEMAS", {}).get("crossref")
 
     def __init__(self):
         self.validation_log = ""
+        self.schema_path = app.config.get("SCHEMAS", {}).get("crossref")
 
         # load the schema into memory for more efficient usage in repeat calls to the crosswalk
         if self.schema_path is None:
             raise exceptions.IngestException(
                 message="Unable to validate for CrossrefXWalk, as schema path is not set in config")
 
-        if not app.config.get("CROSSREF_SCHEMA"):
-            try:
-                schema_file = open(self.schema_path)
-                schema_doc = etree.parse(schema_file)
-                self.schema = etree.XMLSchema(schema_doc)
-                app.config["CROSSREF_SCHEMA"] = self.schema
-            except Exception as e:
-                raise exceptions.IngestException(
-                    message="There was an error attempting to load schema from " + self.schema_path, inner=e)
-        else:
-            self.schema = app.config["CROSSREF_SCHEMA"]
+        while app.config["CROSSREF_SCHEMA"] is None:
+            continue
+
+        self.schema = app.config["CROSSREF_SCHEMA"]
 
     def validate_file(self, file_handle):
         # first try to parse the file

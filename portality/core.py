@@ -1,4 +1,5 @@
 import os
+import threading
 
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
@@ -28,7 +29,8 @@ def create_app():
     configure_app(app)
     setup_error_logging(app)
     setup_jinja(app)
-    load_crossref_schema(app)
+    app.config["LOAD_CROSSREF_THREAD"] = threading.Thread(target=load_crossref_schema, args=(app, ), daemon=True)
+    app.config["LOAD_CROSSREF_THREAD"].start()
     login_manager.init_app(app)
     CORS(app)
     initialise_apm(app)
@@ -107,7 +109,7 @@ def load_crossref_schema(app):
             app.config["CROSSREF_SCHEMA"] = schema
         except Exception as e:
             raise exceptions.IngestException(
-                message="There was an error attempting to load schema from " + self.schema_path, inner=e)
+                message="There was an error attempting to load schema from " + schema_path, inner=e)
 
 def put_mappings(app, mappings):
     # make a connection to the index
