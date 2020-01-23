@@ -15,7 +15,7 @@ SUPPORTED_GENRES = ['journal', 'article']
 
 # Mapping from OpenURL schema to both supported models (Journal, Article)
 OPENURL_TO_ES = {
-    'au': (None, 'author.name.exact'),
+    'aulast': (None, 'author.name.exact'),
     'aucorp': (None, 'author.affiliation.exact'),
     'atitle': (None, 'bibjson.title.exact'),
     'jtitle': ('index.title.exact', 'bibjson.journal.title.exact'),    # Note we use index.title.exact for journals, to support continuations
