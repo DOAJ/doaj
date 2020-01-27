@@ -77,13 +77,22 @@ def allowed(query, wildcards=False, fuzzy=False):
 
 def escape(query):
     # just escapes all instances of "/" in the query with "\\/"
+    # amd all instances of ":" with "\\:
 
     # Function which does the replacement
     def slasher(m):
-        return m.group(0)[0] + "\\/"
+        data = m.group(0)[0] + "\\/"
+        return data
+
+    def colon_adder(m):
+        data = m.group(0)[0] + "\\:"
+        return data
+
+
 
     # the regular expression which looks for an unescaped /
     slash_rx = "[^\\\\]/"
+    slash_cl = "[^\\\\]:"
 
     # because the regex matches two characters, neighbouring /s will not both
     # get replaced at the same time because re.sub looks at "non overlapping matches".
@@ -92,6 +101,8 @@ def escape(query):
     count = 1
     while count > 0:
         query, count = re.subn(slash_rx, slasher, query)
+        query, count = re.subn(slash_cl, colon_adder, query)
+
 
     return query
 
