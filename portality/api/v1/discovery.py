@@ -101,7 +101,7 @@ def escape(query):
     count = 1
     while count > 0:
         query, count = re.subn(slash_rx, slasher, query)
-        query, count = re.subn(slash_cl, colon_adder, query)
+        query, count = re.subn(slash_cl, colon_escaper, query)
 
 
     return query
