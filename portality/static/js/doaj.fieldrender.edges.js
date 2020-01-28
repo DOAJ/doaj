@@ -714,8 +714,13 @@ $.extend(true, doaj, {
                     var authors = resultobj.bibjson.author;
                     for (var i = 0; i < authors.length; i++) {
                         var author = authors[i];
+                        var orcid_logo = ""
                         if (author.name) {
-                            anames.push(edges.escapeHtml(author.name));
+                            if (author.orcid_id) {
+                                orcid_logo = "<a href='" + author.orcid_id + "'><img src='/static/doaj/images/orcid.gif' alt='orcid'></a>" + "&nbsp;"
+                            }
+                            var field = orcid_logo + edges.escapeHtml(author.name);
+                            anames.push(field);
                         }
                     }
                     result += "<em>" + anames.join(", ") + "</em><br>";

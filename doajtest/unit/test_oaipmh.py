@@ -325,6 +325,8 @@ class TestClient(DoajTestCase):
 
                 # Check we have the correct journal
                 title = r[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text
+                # check orcid_id xwalk
+                assert str(records[0].xpath('//dc:creator/@id', namespaces=self.oai_ns)[0]) == a_public.bibjson().author[0].get("orcid_id")
                 assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == a_public.bibjson().title
 
                 resp = t_client.get(url_for('oaipmh.oaipmh',  specified='article', verb='GetRecord', metadataPrefix='oai_dc') + '&identifier=abcdefghijk_article')
