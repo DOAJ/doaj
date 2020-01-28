@@ -84,7 +84,7 @@ def escape(query):
         data = m.group(0)[0] + "\\/"
         return data
 
-    def colon_adder(m):
+    def colon_escaper(m):
         data = m.group(0)[0] + "\\:"
         return data
 
