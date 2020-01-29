@@ -79,20 +79,23 @@ def escape(query):
     # just escapes all instances of "/" in the query with "\\/"
     # amd all instances of ":" with "\\:
 
-    # Function which does the replacement
+    # Functions which does the replacements
     def slasher(m):
         data = m.group(0)[0] + "\\/"
         return data
 
-    def colon_escaper(m):
-        data = m.group(0)[0] + "\\:"
-        return data
-
-
+    def colon_escaper(q):
+        # we need to escape every colon that is not after keyword and is not already escaped
+        # colons after keywords are: first one and every first one after & or |
+        parts = q.split(":")
+        for i in range(1, len(parts)-1):
+            if '&' not in parts[i] and '|' not in parts[i] and not parts[i].endswith('\\'):
+                parts[i] = parts[i] + "\\"
+        query = ":".join(parts)
+        return query
 
     # the regular expression which looks for an unescaped /
     slash_rx = "[^\\\\]/"
-    slash_cl = "[^\\\\]:"
 
     # because the regex matches two characters, neighbouring /s will not both
     # get replaced at the same time because re.sub looks at "non overlapping matches".
@@ -101,9 +104,8 @@ def escape(query):
     count = 1
     while count > 0:
         query, count = re.subn(slash_rx, slasher, query)
-        query, count = re.subn(slash_cl, colon_escaper, query)
 
-
+    query = colon_escaper(query)
     return query
 
 
