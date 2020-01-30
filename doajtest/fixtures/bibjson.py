@@ -171,7 +171,8 @@ ARTICLE = {
     "author" : [
         {
             "name" : "Test",
-            "affiliation" : "University of Life"
+            "affiliation" : "University of Life",
+            "orcid_id" : "https://orcid.org/0000-0001-1234-1234"
         }
     ],
     "keywords" : ["key", "word"],

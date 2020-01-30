@@ -679,6 +679,8 @@ class TestClient(DoajTestCase):
         assert bj.journal_issns == ["1234-5678", "9876-5432"]
         assert bj.publisher == "IEEE"
         assert bj.author[0].get("name") == "Test"
+        assert bj.author[0].get("affiliation") == "University of Life"
+        assert bj.author[0].get("orcid_id") == "https://orcid.org/0000-0001-1234-1234", "received: {}".format(bj.author[0].get("orcid_id"))
         assert bj.get_journal_license().get("title") == "CC-BY"
 
         bj.year = "2000"
@@ -693,7 +695,7 @@ class TestClient(DoajTestCase):
         bj.journal_country = "FR"
         bj.journal_issns = ["1111-1111", "9999-9999"]
         bj.publisher = "Elsevier"
-        bj.add_author("Testing", "School of Hard Knocks")
+        bj.add_author("Testing", "School of Hard Knocks", "0000-0001-4321-4321")
         bj.set_journal_license("CC NC", "CC NC", "http://cc.nc", False)
         assert bj.get_publication_date() is not None
         assert bj.vancouver_citation() is not None
@@ -711,6 +713,8 @@ class TestClient(DoajTestCase):
         assert bj.journal_issns == ["1111-1111", "9999-9999"]
         assert bj.publisher == "Elsevier"
         assert bj.author[1].get("name") == "Testing"
+        assert bj.author[1].get("affiliation") == "School of Hard Knocks"
+        assert bj.author[1].get("orcid_id") == "0000-0001-4321-4321", "received: {}".format(bj.author[1].get("orcid_id"))
         assert bj.get_journal_license().get("title") == "CC NC"
 
         del bj.year
