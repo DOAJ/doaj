@@ -105,12 +105,6 @@ class Article(DomainObject):
         return articles
 
     @classmethod
-    def get_by_volume_issue(cls, issns, volume, issue):
-        q = ArticleIssueQuery(issns=issns, volume=volume, issue=issue)
-        articles = cls.query(q=q.query())
-        return _sort_articles([i['fields'] for i in articles.get('hits', {}).get('hits', [])])
-
-    @classmethod
     def find_by_issns(cls, issns):
         q = ArticleQuery(issns=issns)
         articles = cls.iterate(q.query(), page_size=1000)
@@ -706,10 +700,12 @@ class ArticleBibJSON(GenericBibJSON):
     def publisher(self, value):
         self._set_with_struct("journal.publisher", value)
 
-    def add_author(self, name, affiliation=None):
+    def add_author(self, name, affiliation=None, orcid_id=None):
         aobj = {"name": name}
         if affiliation is not None:
             aobj["affiliation"] = affiliation
+        if orcid_id is not None:
+            aobj["orcid_id"] = orcid_id
         self._add_to_list_with_struct("author", aobj)
 
     @property
@@ -855,7 +851,8 @@ ARTICLE_BIBJSON_EXTENSION = {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
                         "affiliation" : {"coerce" : "unicode"},
-                        "email" : {"coerce": "unicode"}
+                        "email" : {"coerce": "unicode"},
+                        "orcid_id" : {"coerce" : "unicode"}
                     }
                 },
 
@@ -926,69 +923,6 @@ class ArticleQuery(object):
             q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
 
         return q
-
-
-class ArticleIssueQuery(object):
-    base_query = {
-        "query" : {
-            "filtered": {
-                "filter": {
-                    "bool" : {
-                        "must" : []
-                    }
-                }
-            }
-        },
-        "sort": "bibjson.start_page",
-        "size": 100000,
-        "fields": [
-            "id",
-            "bibjson.journal.volume",
-            "bibjson.journal.number",
-            "bibjson.title",
-            "bibjson.author.name",
-            "bibjson.link.url",
-            "bibjson.start_page",
-            "bibjson.end_page",
-            "bibjson.abstract",
-            "bibjson.month",
-            "bibjson.year"
-        ]
-    }
-
-    _issn_terms = { "terms" : {"index.issn.exact" : ["<list of issns here>"]} }
-    _volume_term = { "term" : {"bibjson.journal.volume.exact" : "<volume here>"} }
-    _issue_term = { "term" : {"bibjson.journal.number.exact" : "<issue here>"} }
-    _noissue_term = { "missing" : {"field": "bibjson.journal.number.exact"} }
-
-    def __init__(self, issns=None, volume=None, issue=None):
-        self.issns = issns
-        self.volume = volume
-        self.issue = issue
-
-    def query(self):
-        q = deepcopy(self.base_query)
-
-        if self.issns is not None:
-            iq = deepcopy(self._issn_terms)
-            iq["terms"]["index.issn.exact"] = self.issns
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(iq)
-
-        if self.volume is not None:
-            vq = deepcopy(self._volume_term)
-            vq["term"]["bibjson.journal.volume.exact"] = self.volume
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
-
-        if self.issue is not None:
-            if self.issue == "unknown":
-                isq = deepcopy(self._noissue_term)
-            else:
-                isq = deepcopy(self._issue_term)
-                isq["term"]["bibjson.journal.number.exact"] = self.issue
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(isq)
-
-        return q
-
     
 class ArticleVolumesQuery(object):
     base_query = {

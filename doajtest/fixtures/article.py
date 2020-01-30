@@ -161,8 +161,9 @@ ARTICLE_SOURCE = {
                     " enough time to release its distinctive flavour, but without overpowering the delicate vanilla. ",
         "author": [
             {
-                "name": "The Author",
-                "affiliation": "University Cottage Labs"
+                "name" : "The Author",
+                "affiliation" : "University Cottage Labs",
+                "orcid_id" : "https://orcid.org/0000-0001-1234-1234"
             },
         ],
         "keywords": ["word", "key"],

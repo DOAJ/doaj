@@ -24,6 +24,8 @@ from portality import regex
 
 DOI_REGEX = regex.DOI_COMPILED
 DOI_ERROR = 'Invalid DOI.  A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
+ORCID_REGEX = regex.ORCID_COMPILED
+ORCID_ERROR = "Invalid ORCID iD. Please enter your ORCID iD as a full URL of the form https://orcid.org/0000-0000-0000-0000"
 
 # use the year choices in app.cfg or default to 15 years previous.
 start_year = app.config.get("METADATA_START_YEAR", datetime.now().year - 15)
@@ -35,12 +37,13 @@ MONTH_CHOICES = [("1", "01"), ("2", "02"), ("3", "03"), ("4", "04"), ("5", "05")
 class AuthorForm(Form):
     name = StringField("Name", [validators.Optional()])
     affiliation = StringField("Affiliation", [validators.Optional()])
+    orcid_id = StringField("ORCID iD", [validators.Optional(), validators.Regexp(regex=ORCID_REGEX, message=ORCID_ERROR)])
 
 
 class ArticleForm(Form):
     title = StringField("Article Title", [validators.DataRequired()])
     doi = StringField("DOI", [OptionalIf("fulltext"), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)], description="(You must provide a DOI and/or a Full-Text URL)")
-    authors = FieldList(FormField(AuthorForm), min_entries=3) # We have to do the validation for this at a higher level
+    authors = FieldList(FormField(AuthorForm), min_entries=1) # We have to do the validation for this at a higher level
     abstract = TextAreaField("Abstract", [validators.Optional()])
     keywords = StringField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
     fulltext = StringField("Full-Text URL", [OptionalIf("doi"), validators.URL()], description="(The URL for each article must be unique.  You must provide a Full-Text URL and/or a DOI)")

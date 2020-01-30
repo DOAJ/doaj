@@ -91,6 +91,7 @@ class DOAJXWalk(object):
              <author>
                 <name>WIM Thiery</name>
                 <affiliationId>1</affiliationId>
+                <orcid_id>https://orcid.org/0001-1234-1234</orcid_id>
             </author>
          </authors>
           <affiliationsList>
@@ -199,7 +200,8 @@ class DOAJXWalk(object):
                 name = _element(ael, "name")
                 affid = _element(ael, "affiliationId")
                 aff = affiliations.get(affid)
-                bibjson.add_author(name, affiliation=aff)
+                orcid = _element(ael, "orcid_id")
+                bibjson.add_author(name, affiliation=aff, orcid_id=orcid)
 
         # abstract
         abstract = _element(record, "abstract")

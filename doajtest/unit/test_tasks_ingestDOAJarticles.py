@@ -1754,13 +1754,26 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         fu = models.FileUpload.pull(id)
         assert fu.status == "validated"
 
+    def test_57_file_with_valid_orcid_id(self):
+        handle = ArticleFixtureFactory.valid_orcid_id()
+        f = MockFileUpload(stream=handle)
 
+        previous = []
+        id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+        self.cleanup_ids.append(id)
 
+        fu = models.FileUpload.pull(id)
+        assert fu is not None
+        assert fu.schema == "doaj"
+        assert fu.status == "validated"
 
-# TODO: reinstate this test when author emails have been disallowed again
-'''
-    def test_34_file_upload_author_email(self):
-        handle = ArticleFixtureFactory.upload_author_email_address()
+        path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
+        assert os.path.exists(path)
+
+        assert len(previous) == 1
+
+    def test_58_file_with_invalid_orcid_id(self):
+        handle = ArticleFixtureFactory.invalid_orcid_id()
         f = MockFileUpload(stream=handle)
 
         previous = []
@@ -1776,7 +1789,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "failed"
         assert fu.error is not None and fu.error != ""
         assert fu.error_details is not None and fu.error != ""
-        assert fu.failure_reasons.keys() == []
+        assert list(fu.failure_reasons.keys()) == []
 
         # file should have been removed from upload dir
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
@@ -1785,4 +1798,3 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # and placed into the failed dir
         fad = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
         assert os.path.exists(fad)
-'''

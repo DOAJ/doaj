@@ -60,6 +60,31 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
+        #incorrect orcid format
+        data = ArticleFixtureFactory.make_article_source()
+        data["bibjson"]["author"] = [
+            {
+                "name" : "The Author",
+                "affiliation" : "University Cottage Labs",
+                "orcid_id" : "orcid.org/0000-0001-1234-1234"
+            },
+        ]
+        with self.assertRaises(DataStructureException):
+            ia = IncomingArticleDO(data)
+
+        #another example
+        data = ArticleFixtureFactory.make_article_source()
+        data["bibjson"]["author"] = [
+            {
+                "name": "The Author",
+                "affiliation": "University Cottage Labs",
+                "orcid_id": "0000-0001-1234-123a"
+            },
+        ]
+        with self.assertRaises(DataStructureException):
+            ia = IncomingArticleDO(data)
+
+
     def test_02_create_article_success(self):
         # set up all the bits we need
         data = ArticleFixtureFactory.make_incoming_api_article()
