@@ -1067,6 +1067,8 @@ class OAI_DC_Article(OAI_DC):
             for author in bibjson.author:
                 ael = etree.SubElement(oai_dc, self.DC + "creator")
                 set_text(ael, author.get("name"))
+                if author.get("orcid_id"):
+                    ael.set('id', author.get("orcid_id"))
 
         if bibjson.publisher is not None:
             pubel = etree.SubElement(oai_dc, self.DC + "publisher")
@@ -1354,6 +1356,9 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
                     affiliations.append((new_affid, author['affiliation']))
                     author_affiliation_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "affiliationId")
                     set_text(author_affiliation_elem, str(new_affid))
+                if author.get('orcid_id'):
+                    orcid_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "orcid_id")
+                    set_text(orcid_elem, author.get("orcid_id"))
 
         if affiliations:
             affiliations_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "affiliationsList")

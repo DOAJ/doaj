@@ -70,7 +70,7 @@ class ArticlesCrudApi(CrudApi):
         if account is None:
             raise Api401Error()
 
-        # convert the data into a suitable article model
+        # convert the data into a suitable article model (raises Api400Error if doesn't conform to struct)
         am = cls.prep_article(data)
 
         articleService = DOAJ.articleService()
