@@ -155,16 +155,16 @@ JOURNAL_STRUCT = {
                 "oa_start": {
                     "fields": {
                         "year": {"coerce": "integer"},
-                        "volume": {"coerce": "integer"},
-                        "number": {"coerce": "integer"},
+                        "volume": {"coerce": "unicode"},
+                        "number": {"coerce": "unicode"},
                     }
                 },
 
                 "oa_end": {
                     "fields": {
                         "year": {"coerce": "integer"},
-                        "volume": {"coerce": "integer"},
-                        "number": {"coerce": "integer"},
+                        "volume": {"coerce": "unicode"},
+                        "number": {"coerce": "unicode"},
                     }
                 },
 
