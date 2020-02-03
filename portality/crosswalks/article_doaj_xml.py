@@ -237,7 +237,7 @@ class DOAJXWalk(object):
     @staticmethod
     def _localise_schema(schema_doc):
         """ Edit the DOAJ Article schema in-memory to use local paths """
-        language_list_import = schema_doc.xpath('//xs:import[@namespace=*iso-639-2b*]',
+        language_list_import = schema_doc.xpath("xs:import[contains(@schemaLocation, 'iso_639-2b.xsd')]",
                                                 namespaces=schema_doc.getroot().nsmap).pop()
         language_list_import['schemaLocation'] = './iso_639-2b.xsd'
         return schema_doc
