@@ -17,11 +17,15 @@ class DOAJXWalk(object):
         # load the schema into memory for more efficient usage in repeat calls to the crosswalk
         if self.schema_path is None:
             raise exceptions.IngestException(message="Unable to validate for DOAJXWalk, as schema path is not set in config")
-
         try:
-            schema_file = open(self.schema_path)
-            schema_doc = etree.parse(schema_file)
-            self.schema = etree.XMLSchema(schema_doc)
+            with open(self.schema_path) as schema_file:
+                schema_doc = etree.parse(schema_file)
+
+                # If we are using a test or dev environment, edit the schema to use local paths
+                if app.config.get("DOAJENV") != 'production':
+                    self._localise_schema(schema_doc)
+
+                self.schema = etree.XMLSchema(schema_doc)
         except Exception as e:
             raise exceptions.IngestException(message="There was an error attempting to load schema from " + self.schema_path, inner=e)
 
@@ -229,6 +233,14 @@ class DOAJXWalk(object):
             article.add_journal_metadata()
 
         return article
+
+    @staticmethod
+    def _localise_schema(schema_doc):
+        """ Edit the DOAJ Article schema in-memory to use local paths """
+        language_list_import = schema_doc.xpath("xs:import[contains(@schemaLocation, 'iso_639-2b.xsd')]",
+                                                namespaces=schema_doc.getroot().nsmap).pop()
+        language_list_import.attrib['schemaLocation'] = './iso_639-2b.xsd'
+        return schema_doc
 
 ###############################################################################
 # some convenient utilities
