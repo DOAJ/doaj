@@ -42,8 +42,13 @@
         <label for="url" class="col-md-3 control-label">Format of the file</label>
         <div class="col-md-9">
             <select name="schema" class="form-control" style="width: 200px">
-                <option value="doaj">DOAJ Native XML</option>
-                <option value="crossref">Crossref 4.4.2 XML</option>
+                {% if schema == '' or schema == 'doaj' %}
+                    <option value="doaj" selected>DOAJ Native XML</option>
+                    <option value="crossref">Crossref 4.4.2 XML</option>
+                {% else %}
+                    <option value="doaj">DOAJ Native XML</option>
+                    <option value="crossref" selected>Crossref 4.4.2 XML</option>
+                {% endif %}
             </select>
         </div>
     </div>
