@@ -102,7 +102,7 @@
          <xs:element name="orcid_id" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
            <xs:restriction base="xs:string">
-            <xs:pattern value="https://orcid\.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}"/>
+            <xs:pattern value="https://orcid\.org/[0-9]{4}-[0-9]{4}-[0-9]{4}-\d{3}[\dX]"/>
            </xs:restriction>
           </xs:simpleType>
          </xs:element>
