@@ -1,6 +1,5 @@
 import os
 
-from tkinter import *
 from portality.core import app
 from lxml import etree
 import re
