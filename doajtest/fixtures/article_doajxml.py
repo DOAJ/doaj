@@ -80,3 +80,11 @@ class DoajXmlArticleFixtureFactory(object):
     @classmethod
     def valid_url_parameters(cls):
         return cls._response_from_xpath("//record[journalTitle='Url with parameters']")
+
+    @classmethod
+    def valid_orcid_id(cls):
+        return cls._response_from_xpath("//record[journalTitle='With valid orcid_id']")
+
+    @classmethod
+    def invalid_orcid_id(cls):
+        return cls._response_from_xpath("//record[journalTitle='With invalid orcid_id']")

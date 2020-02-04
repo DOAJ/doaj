@@ -1697,15 +1697,5 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         assert file_upload.status == "failed"
 
-    @raises(RetryException)
-    def test_50_unable_to_load_schema(self):
-        etree.XMLSchema = self.mock_unable_to_upload_schema
-
-        handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
-        f = FileMockFactory(stream=handle)
-
-        previous = []
-        id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "crossref", previous)
-
 
 

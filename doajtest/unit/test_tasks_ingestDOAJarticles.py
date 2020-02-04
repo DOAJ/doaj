@@ -1755,8 +1755,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu.status == "validated"
 
     def test_57_file_with_valid_orcid_id(self):
-        handle = ArticleFixtureFactory.valid_orcid_id()
-        f = MockFileUpload(stream=handle)
+        handle = DoajXmlArticleFixtureFactory.valid_orcid_id()
+        f = FileMockFactory(stream=handle)
 
         previous = []
         id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
@@ -1773,8 +1773,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert len(previous) == 1
 
     def test_58_file_with_invalid_orcid_id(self):
-        handle = ArticleFixtureFactory.invalid_orcid_id()
-        f = MockFileUpload(stream=handle)
+        handle = DoajXmlArticleFixtureFactory.invalid_orcid_id()
+        f = FileMockFactory(stream=handle)
 
         previous = []
         with self.assertRaises(BackgroundException):
