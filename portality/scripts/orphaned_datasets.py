@@ -3,7 +3,11 @@ import json
 
 from portality import constants
 from portality.models import Suggestion, Journal
-from portality.datasets import language_for, get_country_name, get_currency_name
+from portality.datasets import country_options, currency_options, language_options
+
+country_codes = [co[0] for co in country_options]
+currency_codes = [cu[0] for cu in currency_options]
+language_codes = [la[0] for la in language_options]
 
 
 def check_invalid_datasets(journalobj, report):
@@ -12,17 +16,17 @@ def check_invalid_datasets(journalobj, report):
 
     # Check whether lookup fails on country code in bibjson
     country = bj.country
-    if get_country_name(country) == country:
+    if country not in country_codes:
         report['country'].append((journalobj.id, country))
 
     # Check whether lookup fails on currency in bibjson
     apc = bj.apc
-    if apc and get_currency_name(apc['currency']) == apc['currency']:
+    if apc and apc['currency'] not in currency_codes:
         report['currency'].append((journalobj.id, apc))
 
     # Check whether lookup fails on languages in bibjson
     for l in bj.language:
-        if language_for(l) == l:
+        if l not in language_codes:
             report['language'].append((journalobj.id, str(bj.language)))
         break
 
