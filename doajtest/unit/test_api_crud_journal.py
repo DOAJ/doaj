@@ -5,6 +5,7 @@ from portality import models
 from doajtest.fixtures import JournalFixtureFactory
 import time
 
+
 class TestCrudJournal(DoajTestCase):
 
     def setUp(self):
@@ -30,7 +31,27 @@ class TestCrudJournal(DoajTestCase):
         assert oj.data.get("admin", {}).get("editor_group") is None
         assert oj.data.get("admin", {}).get("editor") is None
 
-    def test_02_retrieve_public_journal_success(self):
+    def test_02_outgoing_journal_urls(self):
+        """ We've relaxed the URL constraints for outgoing journals - https://github.com/DOAJ/doajPM/issues/2268 """
+
+        data = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
+
+        invalid_url = 'an invalid url $321 >>,'
+        data['bibjson']['submission_charges_url'] = invalid_url
+        data['bibjson']['editorial_review']['url'] = invalid_url
+        data['bibjson']['plagiarism_detection']['url'] = invalid_url
+        data['bibjson']['article_statistics']['url'] = invalid_url
+        data['bibjson']['author_copyright']['url'] = invalid_url
+        data['bibjson']['author_publishing_rights']['url'] = invalid_url
+
+        for l in data['bibjson']['link']:
+            l['url'] = invalid_url
+
+        # Even with all of the dodgy URLS above, we should still have a successful OutgoingJournal object.
+        j = models.Journal(**data)
+        OutgoingJournal.from_model(j)
+
+    def test_03_retrieve_public_journal_success(self):
         # set up all the bits we need
         data = JournalFixtureFactory.make_journal_source(in_doaj=True, include_obsolete_fields=True)
         j = models.Journal(**data)
@@ -61,11 +82,11 @@ class TestCrudJournal(DoajTestCase):
         assert isinstance(a, OutgoingJournal)
         assert a.id == j.id
 
-    def test_03_retrieve_public_journal_fail(self):
+    def test_04_retrieve_public_journal_fail(self):
         with self.assertRaises(Api404Error):
             a = JournalsCrudApi.retrieve("ijsidfawefwefw", account=None)
 
-    def test_04_retrieve_private_journal_success(self):
+    def test_05_retrieve_private_journal_success(self):
         # set up all the bits we need
         data = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
         j = models.Journal(**data)
@@ -84,7 +105,7 @@ class TestCrudJournal(DoajTestCase):
         assert isinstance(a, OutgoingJournal)
         assert a.id == j.id
 
-    def test_05_retrieve_private_journal_fail(self):
+    def test_06_retrieve_private_journal_fail(self):
         # set up all the bits we need
         data = JournalFixtureFactory.make_journal_source(in_doaj=False, include_obsolete_fields=True)
         j = models.Journal(**data)
