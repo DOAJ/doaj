@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
-  version = "1.2"
+  version = "1.3"
   xmlns:xs ="http://www.w3.org/2001/XMLSchema"
   xmlns:iso_639-2b="http://www.doaj.org/schemas/iso_639-2b/1.1">
 
@@ -74,7 +74,13 @@
    <xs:element name="startPage" type="xs:string" minOccurs="0"/>
    <xs:element name="endPage" type="xs:string" minOccurs="0"/>
 
-   <xs:element name="doi" type="xs:string"  minOccurs="0"/>
+   <xs:element name="doi" minOccurs="0">
+    <xs:simpleType>
+     <xs:restriction base="xs:string">
+      <xs:pattern value="((https?://)?((dx\.)?doi\.org/|hdl\.handle\.net/)|doi:|info:doi/|info:hdl/)?10\.\S+/\S+"/>
+     </xs:restriction>
+    </xs:simpleType>
+   </xs:element>
             
    <xs:element name="publisherRecordId" type="xs:string" minOccurs="0"/>
 
