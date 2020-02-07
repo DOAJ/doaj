@@ -62,12 +62,12 @@ class TestAPIDataObj(DoajTestCase):
             assert isinstance(getattr(do.bibjson, l), list), '{0} declared as "list" but not a list?'.format(l)
 
         assert do.bibjson.oa_start.year == int(self.jm.bibjson().oa_start.get('year'))
-        assert do.bibjson.oa_start.volume == int(self.jm.bibjson().oa_start.get('volume'))
-        assert do.bibjson.oa_start.number == int(self.jm.bibjson().oa_start.get('number'))
+        assert do.bibjson.oa_start.volume == self.jm.bibjson().oa_start.get('volume')
+        assert do.bibjson.oa_start.number == self.jm.bibjson().oa_start.get('number')
 
         assert do.bibjson.oa_end.year == int(self.jm.bibjson().oa_end.get('year'))
-        assert do.bibjson.oa_end.volume == int(self.jm.bibjson().oa_end.get('volume'))
-        assert do.bibjson.oa_end.number == int(self.jm.bibjson().oa_end.get('number'))
+        assert do.bibjson.oa_end.volume == self.jm.bibjson().oa_end.get('volume')
+        assert do.bibjson.oa_end.number == self.jm.bibjson().oa_end.get('number')
 
         assert do.bibjson.apc.currency == self.jm.bibjson().apc['currency']
         assert do.bibjson.apc.average_price == self.jm.bibjson().apc['average_price']
