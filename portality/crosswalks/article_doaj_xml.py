@@ -43,7 +43,7 @@ class DOAJXWalk(object):
 
         if not valid:
             msg = "Validation message from schema '{x}': {y}\n".format(x=DOAJXWalk.format_name, y=self.validation_log)
-            raise CrosswalkException(message="Unable to validate document with identified doaj xml schema", inner_message=msg)
+            raise CrosswalkException(message="Unable to validate document with identified schema", inner_message=msg)
 
         return doc
 

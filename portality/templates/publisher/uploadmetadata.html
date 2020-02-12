@@ -115,7 +115,11 @@
                     <td style="word-wrap:break-word">
                         {% if file.error %}
                             {{file.error}}
-                            <a target="_blank" href="{{ url_for('doaj.publishers', _anchor=file.error) }}">(what does this mean?)</a><br>
+                            {% if file.error == "One or more articles failed to ingest; entire batch ingest halted" %}
+                                <a target="_blank" href="{{ url_for('doaj.publishers', _anchor="Reasons for individual article import failures") }}">(what does this mean?)</a><br>
+                            {% else %}
+                                <a target="_blank" href="{{ url_for('doaj.publishers', _anchor=file.error) }}">(what does this mean?)</a><br>
+                            {% endif %}
                         {% else %}
                             {% if file.status == "partial" or file.status == "processed" %}
                                 {{ file.imported }} articles imported 
@@ -134,7 +138,7 @@
                                 {% if file.failure_reasons %}
                                     {% if file.failure_reasons.shared %}
                                         The following ISSNs in your article metadata are owned by you and another user.  This is a problem at our end, please contact us with the details:<br>
-                                        {{ file.failure_reasons.shared|join(", ") }}
+                                        {{ file.failure_reasons.shared|join(",") }}
                                     {% endif %}
                                     {% if file.failure_reasons.unowned %}
                                         The following ISSNs in your article metadata are owned by another user, you cannot associate articles with them.  If you believe you should own these ISSNs, please contact us with the details:<br>
