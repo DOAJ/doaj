@@ -134,7 +134,14 @@
                         {% endif %}
                         {%  if file.error_details or file.failure_reasons %}
                             <div id="details_{{ file.id }}" style="display:none">
-                                {% if file.error_details %}{{ file.error_details }}{% endif %}
+                                {% if file.error_details %}
+                                    {% if file.error_details == 'utf-8' %}
+                                        Wrong file format.
+                                    {% else %}
+                                        {{ file.error_details }}
+                                    {% endif %}
+                                {% endif %}
+
                                 {% if file.failure_reasons %}
                                     {% if file.failure_reasons.shared %}
                                         The following ISSNs in your article metadata are owned by you and another user.  This is a problem at our end, please contact us with the details:<br>
