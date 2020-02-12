@@ -138,15 +138,18 @@
                                 {% if file.failure_reasons %}
                                     {% if file.failure_reasons.shared %}
                                         The following ISSNs in your article metadata are owned by you and another user.  This is a problem at our end, please contact us with the details:<br>
-                                        {{ file.failure_reasons.shared|join(",") }}
+                                        {{ file.failure_reasons.shared|join(", ") }}
+                                        <br>
                                     {% endif %}
                                     {% if file.failure_reasons.unowned %}
                                         The following ISSNs in your article metadata are owned by another user, you cannot associate articles with them.  If you believe you should own these ISSNs, please contact us with the details:<br>
                                         {{ file.failure_reasons.unowned|join(", ") }}
+                                        <br>
                                     {% endif %}
                                     {% if file.failure_reasons.unmatched %}
                                         The following ISSNs in your article metadata do not appear in DOAJ, you cannot associate articles with them.  If you believe these ISSNs should be associated with a journal you own, please contact us with the details:<br>
                                         {{ file.failure_reasons.unmatched|join(", ") }}
+                                        <br>
                                     {% endif %}
                                 {% endif %}
                             </div>
