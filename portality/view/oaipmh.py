@@ -121,19 +121,20 @@ class DateFormat(object):
 
 
 def make_set_spec(setspec):
-    s = setspec.replace('=', '~')
-    setspec_utf8 = s.encode("utf-8")
-    b = base64.urlsafe_b64encode(setspec_utf8)
-    return b
+    b = base64.urlsafe_b64encode(setspec.encode("utf-8"))
+    setspec_utf8 = b.decode("utf-8")
+    s = setspec_utf8.replace('=', '~')
+    return s
 
 
 def decode_set_spec(setspec):
     # first, make sure the setspec is a string
+    """
     try:
         setspec = setspec.encode("utf-8")
     except:
         raise SetSpecException()
-
+    """
     # switch the ~ for =
     setspec = setspec.replace("~", "=")
 
@@ -1066,6 +1067,8 @@ class OAI_DC_Article(OAI_DC):
             for author in bibjson.author:
                 ael = etree.SubElement(oai_dc, self.DC + "creator")
                 set_text(ael, author.get("name"))
+                if author.get("orcid_id"):
+                    ael.set('id', author.get("orcid_id"))
 
         if bibjson.publisher is not None:
             pubel = etree.SubElement(oai_dc, self.DC + "publisher")
@@ -1338,6 +1341,9 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
                     affiliations.append((new_affid, author['affiliation']))
                     author_affiliation_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "affiliationId")
                     set_text(author_affiliation_elem, str(new_affid))
+                if author.get('orcid_id'):
+                    orcid_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "orcid_id")
+                    set_text(orcid_elem, author.get("orcid_id"))
 
         if affiliations:
             affiliations_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "affiliationsList")

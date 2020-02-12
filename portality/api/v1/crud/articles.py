@@ -70,7 +70,7 @@ class ArticlesCrudApi(CrudApi):
         if account is None:
             raise Api401Error()
 
-        # convert the data into a suitable article model
+        # convert the data into a suitable article model (raises Api400Error if doesn't conform to struct)
         am = cls.prep_article(data)
 
         articleService = DOAJ.articleService()
@@ -83,7 +83,7 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we are allowed to create an article for this journal
         if result.get("fail", 0) == 1:
-            raise Api403Error()
+            raise Api403Error("It is not possible to create an article for this journal. Have you included in the upload an ISSN which is not associated with any journal in your account? ISSNs must match exactly the ISSNs against the journal record.")
 
         return am
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Steven Eardley 2019-02-11 for DOAJ - uploaded manually (todo: we should run this from s3 with a python adaptor """
+""" Steven Eardley 2020-02-07 for DOAJ - uploaded manually (todo: we should upload this in the release script) """
 
 import boto3
 import botocore
@@ -9,7 +9,10 @@ from datetime import datetime, timezone, timedelta
 s3 = boto3.client('s3')
 
 # Check the doaj elasticsearch snapshot bucket has been updated today (should happen daily at 0600 via background job)
-buckets = ["doaj-index-backups"]
+buckets = ['doaj-index-backups']
+
+# Check the doaj-nginx logs bucket has been updated today (should happen daily at 0630 via cron logrotate)
+buckets += ['doaj-nginx-logs']
 
 
 def lambda_handler(event, context):

@@ -24,7 +24,6 @@ class TestDatasets(DoajTestCase):
         assert datasets.get_country_code('the shire', fail_if_not_found=False) is 'the shire'
 
         # When we have more than one option, the first alphabetically is returned
-        #assert datasets.get_country_code('united') == 'AE' # doesn't work with pycountry - has to be full text match
         assert datasets.get_country_name('AE') == 'United Arab Emirates'
 
     def test_02_currencies(self):
@@ -40,8 +39,8 @@ class TestDatasets(DoajTestCase):
 
     def test_03_languages(self):
         """ Use language information from our datasets """
-        # assert datasets.language_for('en') == ['eng', '', 'en', 'English', 'anglais'] # obsolete with pycountry
         assert datasets.name_for_lang('en') == 'English'
         assert datasets.name_for_lang('eng') == 'English'
-        assert datasets.language_for('English') == ['eng', '', 'en', 'English', 'anglais'], 'Expected English, received: {}'.format(datasets.language_for('English'))
-        assert datasets.name_for_lang('anglais') == 'English', 'Expected English, received: {}'.format(datasets.name_for_lang('anglais'))
+        assert datasets.language_for('English').name == 'English'
+
+        assert datasets.language_for('german').bibliographic == 'ger'

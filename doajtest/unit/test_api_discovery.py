@@ -140,6 +140,7 @@ class TestArticleMatch(DoajTestCase):
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
             bj.add_identifier(bj.DOI, "10.test/{x}".format(x=i))
             bj.publisher = "Test Publisher {x}".format(x=i)
+            bj.add_author("Agnieszka Domanska", "CL University", "https://orcid.org/0000-0001-1234-1234")
             a.save()
 
             # make sure the last updated dates are suitably different
@@ -450,3 +451,15 @@ class TestArticleMatch(DoajTestCase):
                     assert oai_journal_url in str(e)
                     raise
 
+    def test_07_query_escaper(self):
+        from portality.api.v1.discovery import escape
+
+        test_tuples = [
+            ('issn:1111-2222&publisher:cheese/biscuits', 'issn:1111-2222&publisher:cheese\\/biscuits'),
+            ('issn:1111-2222&doi:10.1234/this_has_a:colon&start_page:3000', 'issn:1111-2222&doi:10.1234\\/this_has_a\\:colon&start_page:3000'),
+            ('abundance/of//slashes', 'abundance\\/of\\/\\/slashes'),
+            ('colon:colons:galore&more:more:more', 'colon:colons\\:galore&more:more\\:more')
+        ]
+
+        for t in test_tuples:
+            assert escape(t[0]) == t[1], "expected {0} got {1}".format(t[1], t[0])

@@ -7,6 +7,7 @@ from portality.background import BackgroundApi, BackgroundTask
 from portality.tasks.redis_huey import main_queue, schedule
 from portality.app_email import email_archive
 from portality.decorators import write_required
+from portality.dao import ESMappingMissingError
 
 import os, shutil, csv
 
@@ -20,9 +21,12 @@ def provenance_reports(fr, to, outdir):
     ]
 
     q = ProvenanceList(fr, to)
-    for prov in models.Provenance.iterate(q.query()):
-        for filt in pipeline:
-            filt.count(prov)
+    try:
+        for prov in models.Provenance.iterate(q.query()):
+            for filt in pipeline:
+                filt.count(prov)
+    except ESMappingMissingError:
+        return None
 
     outfiles = []
     for p in pipeline:
@@ -332,13 +336,16 @@ class ReportingBackgroundTask(BackgroundTask):
             os.makedirs(outdir)
 
         prov_outfiles = provenance_reports(fr, to, outdir)
+        if prov_outfiles is None:
+            job.add_audit_message("No provenance records found; no provenance reports will be recorded.")
+
         cont_outfiles = content_reports(fr, to, outdir)
         refs = {}
         self.set_reference(refs, "provenance_outfiles", prov_outfiles)
         self.set_reference(refs, "content_outfiles", cont_outfiles)
         job.reference = refs
 
-        msg = u"Generated reports for period {x} to {y}".format(x=fr, y=to)
+        msg = "Generated reports for period {x} to {y}".format(x=fr, y=to)
         job.add_audit_message(msg)
 
         send_email = self.get_param(params, "email", False)

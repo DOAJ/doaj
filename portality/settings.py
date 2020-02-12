@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "3.1.0"
+DOAJ_VERSION = "3.1.3"
 
 OFFLINE_MODE = False
 
@@ -141,6 +141,8 @@ from portality.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
 STORE_LOCAL_EXPOSE = False  # if you want to allow files in the local store to be exposed under /store/<path> urls.  For dev only.
+STORE_LOCAL_WRITE_BUFFER_SIZE = 16777216
+STORE_TMP_WRITE_BUFFER_SIZE = 16777216
 
 # containers (buckets in AWS) where various content will be stored
 # These values are placeholders, and must be overridden in live deployment
@@ -619,15 +621,6 @@ ARTICLE_CROSSWALKS = {
 MAX_REMOTE_SIZE = 262144000
 
 # =================================
-# ReCaptcha settings
-# We use per-domain, not global keys
-RECAPTCHA_PUBLIC_KEY = '6LdaE-wSAAAAAKTofjeh5Zn94LN1zxzbrhxE8Zxr'
-# RECAPTCHA_PRIVATE_KEY is set in secret_settings.py which should not be
-# committed to the repository, but only held locally and on the server
-# (transfer using scp).
-
-
-# =================================
 # Cache settings
 
 # number of seconds site statistics should be considered fresh
@@ -850,6 +843,7 @@ GA_ACTIONS_API = {
     'bulk_article_delete': 'Bulk article delete'
 }
 
+
 # GA for fixed query widget
 GA_CATEGORY_FQW = 'FQW'
 GA_ACTION_FQW = 'Hit'
@@ -950,3 +944,10 @@ HARVESTER_MAX_WAIT = 10
 # Email notifications
 HARVESTER_EMAIL_ON_EVENT = False
 HARVESTER_EMAIL_RECIPIENTS = None
+HARVESTER_EMAIL_FROM_ADDRESS = "harvester@doaj.org"
+HARVESTER_EMAIL_SUBJECT_PREFIX = "[harvester] "
+
+#Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
+RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+

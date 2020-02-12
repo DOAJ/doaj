@@ -117,7 +117,7 @@ def email_archive(data_dir, archv_name):
     archv = shutil.make_archive(archv_name, "zip", root_dir=data_dir)
 
     # Read the archive to create an attachment, send it with the app email
-    with open(archv) as f:
+    with open(archv, 'rb') as f:
         dat = f.read()
         attach = [make_attachment(filename=archv_name, content_type='application/zip', data=dat)]
         send_mail(to=email_to, fro=email_from, subject=email_sub, msg_body=msg, files=attach)

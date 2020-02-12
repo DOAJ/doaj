@@ -219,7 +219,7 @@
         </tr>
         <tr>
             <td>creator</td>
-            <td>The article's authors</td>
+            <td>The article's authors, may contain an optional attribute id for ORCID iD</td>
         </tr>
         </tbody>
     </table>
@@ -258,9 +258,9 @@
             O tabagismo é a segunda principal causa mundial de morte, sendo responsável pela morte de um a cada dez adultos (5 milhões por ano). Se os padrões atuais se mantiverem, em 2020 o tabagismo será a causa de 10 milhões de óbitos anuais, segundo a Organização Mundial da Saúde. Realizou-se um estudo transversal, em 2002, no qual foram entrevistados 459 estudantes de oito escolas do ensino médio estadual em Santa Maria, Rio Grande do Sul, Brasil, para determinar a prevalência e os fatores associados ao tabagismo, obtendo-se um modelo logístico multivariável descrevendo como as chances de ser fumante estão relacionadas com as variáveis investigadas. A prevalência encontrada para o tabagismo foi de 18% (IC95%: 14,6-21,7), sendo que os estudantes começam a fumar, em média, aos 14 anos. Os resultados permitem concluir que os estudantes das escolas estaduais de Santa Maria começam a fumar precocemente, sendo influenciados pelos amigos fumantes (OR = 4,37; p = 0,000), pela renda familiar mensal (OR = 2,04; p = 0,013) e idade (OR = 1,86; p = 0,031), destacando-se a necessidade de se trabalhar, preventivamente, no grupo de risco observado.
             &lt;/dc:description&gt;
             &lt;dc:creator&gt;Zanini Roselaine Ruviaro&lt;/dc:creator&gt;
-            &lt;dc:creator&gt;Moraes Anaelena Bragança de&lt;/dc:creator&gt;
+            &lt;dc:creator id="https://orcid.org/0000-0001-1234-1234"&gt;Moraes Anaelena Bragança de&lt;/dc:creator&gt;
             &lt;dc:creator&gt;Trindade Ana Cláudia Antunes&lt;/dc:creator&gt;
-            &lt;dc:creator&gt;Riboldi João&lt;/dc:creator&gt;
+            &lt;dc:creator id="https://orcid.org/0000-0001-1111-2222"&gt;Riboldi João&lt;/dc:creator&gt;
             &lt;dc:creator&gt;Medeiros Lídia Rosi de&lt;/dc:creator&gt;
             &lt;dc:publisher&gt;
                 Escola Nacional de Saúde Pública, Fundação Oswaldo Cruz
@@ -396,7 +396,7 @@
         </tr>
         <tr>
             <td>authors</td>
-            <td>A list of &lt;author&gt; elements. Each &lt;author&gt; element can have a &lt;name&gt;, &lt;email&gt; and &lt;affiliationId&gt; child elements. The <code>affiliationId</code> refers to one of the affiliations in the <code>affiliationsList</code> element described below.</td>
+            <td>A list of &lt;author&gt; elements. Each &lt;author&gt; element can have a &lt;name&gt;, &lt;email&gt;, &lt;affiliationId&gt; and &ltorcid_id&gt child elements. The <code>affiliationId</code> refers to one of the affiliations in the <code>affiliationsList</code> element described below.</td>
         </tr>
         <tr>
             <td>affiliationsList</td>
@@ -437,6 +437,7 @@
                 &lt;author&gt;
                     &lt;name&gt;Stevo Popovic&lt;/name&gt;
                     &lt;affiliationId&gt;0&lt;/affiliationId&gt;
+                    &lt;orcid_id&gt;https://orcid.org/0000-0001-1234-1234&lt;/orcid_id&gt;
                 &lt;/author&gt;
                 &lt;author&gt;
                     &lt;name&gt;Dusko Bjelica&lt;/name&gt;
@@ -445,6 +446,7 @@
                 &lt;author&gt;
                     &lt;name&gt;Gabriela Doina Tanase&lt;/name&gt;
                     &lt;affiliationId&gt;2&lt;/affiliationId&gt;
+                    &lt;orcid_id&gt;https://orcid.org/0000-0001-1111-2222&lt;/orcid_id&gt;
                 &lt;/author&gt;
                 &lt;author&gt;
                     &lt;name&gt;Rajko Mila&amp;#x161;inovi&amp;#x107;&lt;/name&gt;
