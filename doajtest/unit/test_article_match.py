@@ -3,7 +3,7 @@ from portality import models
 import uuid, time
 from random import randint
 from portality.bll.doaj import DOAJ
-from portality.bll.exceptions import ArticleMergeConflict, ArticleExists
+from portality.bll.exceptions import ArticleMergeConflict
 from datetime import datetime
 
 

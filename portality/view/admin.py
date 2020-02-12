@@ -6,8 +6,6 @@ from flask_login import current_user, login_required
 
 from werkzeug.datastructures import MultiDict
 
-from portality.bll.exceptions import ArticleMergeConflict, ArticleExists
-from portality.crosswalks.article_form import ArticleFormXWalk
 from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
 

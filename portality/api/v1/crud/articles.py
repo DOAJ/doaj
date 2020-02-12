@@ -3,9 +3,8 @@ from portality.api.v1 import Api400Error, Api401Error, Api403Error, Api404Error,
 from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
 from portality.lib import dataobj
 from portality import models
-# from portality.article import XWalk
 from portality.bll.doaj import DOAJ
-from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, ArticleExists
+from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable
 
 from copy import deepcopy
 
