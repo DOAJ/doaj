@@ -17,8 +17,8 @@
             <journal_metadata>
                 <full_title>Duplicated</full_title>
                 <abbrev_title>TP</abbrev_title>
-                <issn media_type="print">1234-5678</issn>
-                <issn media_type="electronic">9876-5432</issn>
+                <issn media_type="print">1111-1111</issn>
+                <issn media_type="electronic">2222-2222</issn>
             </journal_metadata>
             <journal_issue>
                 <publication_date media_type="print">
@@ -64,8 +64,8 @@
             <journal_metadata>
                 <full_title>Duplicated</full_title>
                 <abbrev_title>TP</abbrev_title>
-                <issn media_type="print">1234-5678</issn>
-                <issn media_type="electronic">9876-5432</issn>
+                <issn media_type="print">1111-1111</issn>
+                <issn media_type="electronic">2222-2222</issn>
             </journal_metadata>
             <journal_issue>
                 <publication_date media_type="print">
