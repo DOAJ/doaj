@@ -1713,7 +1713,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         fu = models.FileUpload.pull(id)
 
         assert fu.status == "failed"
-        assert fu.error == 'Unable to validate document with identified doaj xml schema'
+        assert fu.error == 'Unable to validate document with identified schema'
 
     def test_54_invalid_url_http_missing(self):
         handle = DoajXmlArticleFixtureFactory.invalid_url_http_missing()
@@ -1730,7 +1730,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         fu = models.FileUpload.pull(id)
 
         assert fu.status == "failed"
-        assert fu.error == 'Unable to validate document with identified doaj xml schema'
+        assert fu.error == 'Unable to validate document with identified schema'
 
     def test_55_valid_url_with_http_anchor(self):
         handle = DoajXmlArticleFixtureFactory.valid_url_http_anchor()
