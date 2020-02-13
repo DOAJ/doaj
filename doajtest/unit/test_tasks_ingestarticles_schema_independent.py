@@ -56,7 +56,7 @@ class TestIngestArticlesSchemaIndependent(DoajTestCase):
             if os.path.exists(path):
                 os.remove(path)
 
-    def test_16_http_upload_fail(self):
+    def test_1_http_upload_fail(self):
         requests.head = ResponseMockFactory.head_fail
         requests.get = ResponseMockFactory.get_fail
 
@@ -92,7 +92,7 @@ class TestIngestArticlesSchemaIndependent(DoajTestCase):
         assert file_upload.error_details is None
         assert list(file_upload.failure_reasons.keys()) == []
 
-    def test_28_run_errors(self):
+    def test_2_run_errors(self):
         job = models.BackgroundJob()
         task = ingestarticles.IngestArticlesBackgroundTask(job)
 
@@ -109,7 +109,7 @@ class TestIngestArticlesSchemaIndependent(DoajTestCase):
         with self.assertRaises(BackgroundException):
             task.run()
 
-    def test_30_submit_retry(self):
+    def test_3_submit_retry(self):
         app.config["HUEY_TASKS"]["ingest_articles"]["retries"] = 1
 
         fu = models.FileUpload()

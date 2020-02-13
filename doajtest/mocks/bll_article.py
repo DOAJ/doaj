@@ -94,5 +94,5 @@ class BLLArticleMockFactory(object):
 
     @classmethod
     def batch_create(cls, *args, **kwargs):
-        raise RuntimeError("oops")
+        raise RuntimeError("Batch create unsuccessful.")
 

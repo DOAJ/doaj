@@ -18,9 +18,7 @@ from portality.bll.services import article as articleSvc
 from portality import models
 from portality.core import app
 
-from portality.background import BackgroundException, RetryException
-
-from nose.tools import *
+from portality.background import BackgroundException
 
 import ftplib, os, requests
 from urllib.parse import urlparse

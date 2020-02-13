@@ -171,7 +171,7 @@ def legacy_doaj_XML_schema():
             )
 
 @app.route("/isCrossrefLoaded")
-def is_crossref_loading():
+def is_crossref_loaded():
     if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").isAlive():
         return "false"
     else:

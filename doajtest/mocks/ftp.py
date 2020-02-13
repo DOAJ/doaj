@@ -37,7 +37,7 @@ class FTPMockDoajFactory(FTPMockFactory):
 
     def __init__(self, hostname,  *args, **kwargs):
         if hostname in ["fail"]:
-            raise RuntimeError("oops")
+            raise RuntimeError("Hostname on Fail List")
         self.content = None
         if hostname in ["valid"]:
             self.content = DoajXmlArticleFixtureFactory.upload_1_issn_correct().read()
