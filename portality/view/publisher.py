@@ -132,7 +132,7 @@ def update_request_readonly(application_id):
 def updates_in_progress():
     return render_template("publisher/updates_in_progress.html")
 
-@blueprint.route("/uploadFile", methods=["GET", "POST"])
+
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
 @ssl_required

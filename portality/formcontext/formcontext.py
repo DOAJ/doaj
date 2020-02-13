@@ -13,7 +13,6 @@ from portality.core import app
 from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
 from portality.lcc import lcc_jstree
 from portality.ui.messages import Messages
-from portality.view.forms import MIN_ENTRIES
 
 ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
@@ -1808,18 +1807,18 @@ class AdminArticleForm(FormContext):
         self.template = "admin/edit_article_metadata.html"
 
     def blank_form(self):
-        self.form = forms.AdminArticleForm()
+        self.form = forms.ArticleForm()
         self._set_choices()
 
     def source2form(self):
-        self.form = forms.AdminArticleForm()
+        self.form = forms.ArticleForm()
         bibjson = self.source.bibjson()
         xwalk.AdminArticleXwalk.obj2form(self.form, bibjson=bibjson)
         self._set_choices()
 
     def data2form(self):
         #self.blank_form()
-        self.form = forms.AdminArticleForm()
+        self.form = forms.ArticleForm()
         xwalk.AdminArticleXwalk.data2form(form_data=self.form_data, form=self.form)
         self._set_choices()
 
@@ -1840,24 +1839,12 @@ class AdminArticleForm(FormContext):
             while len(keep) > 0:
                 self.form.authors.append_entry(keep.pop().data)
 
-        keep = []
-        # if len(self.form.authors.entries) > MIN_ENTRIES:
-        #     while len(self.form.authors.entries) > 0:
-        #         entry = self.form.authors.pop_entry()
-        #         print(entry.data["name"])
-        #         if entry.data["name"]:
-        #             break
-        #         else:
-        #             keep.append(entry)
-        #     while len(keep) > 0:
-        #         self.form.authors.append_entry(keep.pop().data)
         return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
 
     def validate(self):
         if not self._validate_authors():
             self.author_error = True
         if not self.form.validate():
-            self.author_error = True
             return False
         return True
 

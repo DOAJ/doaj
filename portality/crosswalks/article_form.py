@@ -26,13 +26,15 @@ class ArticleFormXWalk(object):
             bibjson.author = []
         for subfield in form.authors:
             if subfield.form.name.data is not "":
+                aff = ""
+                orcid_id = ""
                 author = subfield.form.name.data
                 if subfield.form.affiliation.data is not "":
                     aff = subfield.form.affiliation.data
                 if subfield.form.orcid_id.data is not "":
                     orcid_id = subfield.form.orcid_id.data
-        if author is not None and author != "":
-            bibjson.add_author(author, affiliation=aff, orcid_id=orcid_id)
+                if author is not None and author != "":
+                    bibjson.add_author(author, affiliation=aff, orcid_id=orcid_id)
 
         # abstract
         abstract = form.abstract.data

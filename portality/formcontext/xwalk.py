@@ -2,9 +2,8 @@ from wtforms import FormField, FieldList
 
 from portality import models, lcc
 from portality.crosswalks.article_form import ArticleFormXWalk
-from portality.datasets import licenses, main_license_options
-from flask_login import current_user
-from portality.util import flash_with_url, listpop
+from portality.datasets import licenses
+from portality.util import listpop
 from copy import deepcopy
 from portality.formcontext.choices import Choices
 from portality.view import forms
@@ -962,7 +961,6 @@ class AdminArticleXwalk(ArticleFormXWalk):
     """
     @classmethod
     def data2form(cls,form_data, form):
-        authors = []
         if form_data["title"]:
             form.title.data = form_data["title"]
         if form_data["doi"]:
@@ -993,18 +991,22 @@ class AdminArticleXwalk(ArticleFormXWalk):
         authors = [(k,v) for k, v in form_data.items() if k.startswith('author')]
         tmp_names = ["" for i in range(10)]
         tmp_aff = ["" for i in range(10)]
+        tmp_orcid = ["" for i in range(10)]
         for a in authors:
             key = a[0].split("-")
             if key[2] == "name":
                 tmp_names[int(key[1])] = a[1]
             elif key[2] == "affiliation":
                 tmp_aff[int(key[1])] = a[1]
+            elif key[2] == "orcid_id":
+                tmp_orcid[int(key[1])] = a[1]
 
         for i in range(len(tmp_names)):
             author = forms.AuthorForm()
             if tmp_names[i] != "":
                 author.name = tmp_names[i]
                 author.affiliation = tmp_aff[i]
+                author.orcid_id = tmp_orcid[i]
                 form.authors.append_entry(author)
 
 

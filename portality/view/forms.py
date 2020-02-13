@@ -7,7 +7,6 @@ features, and a bit of refactoring on the organisation of the formcontext stuff 
 from datetime import datetime
 import re
 
-from flask_login import current_user
 
 from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, FormField, FieldList, HiddenField
@@ -17,7 +16,6 @@ from portality import models
 from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen
 from portality.formcontext.fields import DOAJSelectField
 from portality import regex
-from portality.crosswalks import article_form
 
 ##########################################################################
 ## Forms and related features for Article metadata
