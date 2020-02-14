@@ -473,57 +473,46 @@ eventual number of repeated incidents.</p>
 
 <h3><a id="upload"></a>9) How to get your journal content / article metadata indexed in DOAJ. Uploading content.</h3>
 
-<p>It is the publisher's responsibility to upload article metadata to DOAJ. DOAJ does not actively collect article
-metadata for journals it indexes.</p>
+<p>It is the publisher's responsibility to upload article metadata to DOAJ. At this time, DOAJ doesn't go out and harvest metadata.</p>
 
-<p>PLEASE NOTE that DOAJ does not want author email addresses. We kindly request that you DO NOT send any email addresses to us in metadata uploaded to us. These should be stripped out before upload as XML or via the API. Recent guidelines on <a href="/privacy">the use of personal data</a> restrict what you can send us.</p>
+<p>PLEASE NOTE that DOAJ doesn't want author email addresses. We kindly ask that you don't send any email addresses to us in metadata uploadeds. Email addresses should be stripped out before the metadata is uploaded. Recent guidelines on <a href="/privacy">the use of personal data</a> restrict what you can send us.</p>
 
 <p>TO UPLOAD CONTENT TO US log in to <a href="{{ url_for('publisher.index') }}">your Publisher Area</a> and choose '<a href="https://doaj.org/publisher/uploadfile">Upload Article XML</a>' (automated) or '<a href="https://doaj.org/publisher/metadata">Enter Article Metadata</a>' (manual).</p>
 
-<p>You may only upload metadata for those journals in your account. Uploads only work if the ISSN information you provide matches the ISSNs we have on file for <a href="https://doaj.org/publisher/">your journals</a>. Discrepancies in ISSN information 
-will cause the upload to fail. If you need to update a journal record, you can submit an update to us.</p>
+<p>You can only upload metadata for journals that belong to your account. Uploads will only work if the ISSN(s) you provide matches the ISSN(s) we have on file for <a href="https://doaj.org/publisher/">your journals</a>. Discrepancies will cause the upload to fail. If you need to update an ISSN on a journal record, submit an update request to us.</p>
 
 <p>Every article you upload to DOAJ must have a unique URL. If you use the same URL for all articles, the upload will
-fail. Each article uploaded will overwrite the last so you will end up with only the last article you uploaded appearing online.</p>
+fail.</p>
 
 <p>It is strongly recommended that a DOI is provided (where available) for each article.</p>
 
-<p>We can only display one language for titles and abstracts. If your XML contains two or more languages, the
-  first occurring language in the XML will be picked up and displayed. On 3rd February 2020, we updated the code lists that we use for country, currency and language. This means that some codes which were previously recognised will no longer work. These code lists are referenced in our XSD file which all XML uploads are compared against. If your upload contains one of the old codes, the upload will fail. You will see the error <a href="/publishers#Unable%20to%20validate%20document%20with%20identified%20schema">'Unable to validate document with identified schema'</a>. The full details of all the code changes can be found in <a href="https://docs.google.com/document/d/1qpM7E35ctd6wtm-dKAbs3dW359Zo2q3qN3u98-T7P5I/edit?usp=sharing">this list</a>. If your uploads suddenly fail on or after Monday 3rd February 2020 then it is worth consulting this list.</a></p>
+<p>We can only display one language for titles and abstracts. If your XML contains two or more languages, the first occurring language in the XML will be displayed. On 3rd February 2020, we updated the code lists that we use for country, currency and language. This means that some codes which were previously recognised will no longer work. These code lists are referenced in our XSD file which all XML uploads are compared against. If your upload contains one of the old codes, the upload will fail. You will see the error <a href="/publishers#Unable%20to%20validate%20document%20with%20identified%20schema">'Unable to validate document with identified schema'</a>. The full details of all the code changes can be found in <a href="https://docs.google.com/document/d/1qpM7E35ctd6wtm-dKAbs3dW359Zo2q3qN3u98-T7P5I/edit?usp=sharing">this list</a>. If your uploads suddenly fail on or after Monday 3rd February 2020 then it is worth consulting this list.</a></p>
 
-<p>There are three ways to get your metadata into DOAJ.</p>
+<p><a id="uploading_XML"></a>Uploading metadata to us:</p>
 <ul>
-<li><b>Manually enter the metadata, article by article</b>, using the 'Enter Article Metadata' tab. This method is 
-ideal for uploading the occasional article or for correcting an existing article. It will suit journals that do not publish 
-many articles per month.<br>
-Metadata uploaded this way is checked for errors and then published to the site immediately. 
-You may only enter plain text. DO NOT enter HTML formatting, tables, images, style sheet (CSS) coding from Microsoft Word, or 
-any other form of code. Anything other than plain text may cause an error and, at the very least, prevent your
-articles from being found in searches.<br>
+<li><b>via the 'Upload Article XML' tab</b>. You can upload the file manually by selecting it from a location on your computer OR you can enter the URL where we should go to find the file. The location can be http or ftp.<br>
+We accept two formats of XML: DOAJ or Crossref.<br>
+For DOAJ XML, we suggest you <a href="http://www.freeformatter.com/xml-formatter.html">format the file</a> and 
+<a href="http://www.freeformatter.com/xml-validator-xsd.html">validate it</a> before you upload it to us. 
+(<a href="/static/doaj/doajArticles.xsd">The latest version of the DOAJ xsd file is here</a>.) Español:(<a href="https://doaj.org/static/doaj/doajArticles.xsd">El archivo xsd de DOAJ está aquí</a>.) Estos dos pasos identifican la mayoría de problemas. <br>
+<a href="https://support.crossref.org/hc/en-us/articles/214530063-Crossref-XSD-schema-quick-reference">The latest version of the Crossref xsd file is here.</a> For other help and documentation from Crossref, go to <a href="https://www.crossref.org/faqs/">the FAQ section on their website</a>. These <a href="https://www.crossref.org/xml-samples/">Crossref XML samples</a> may also be useful.
+You will see a message 'File uploaded and waiting to be processed. Check back here for updates.' Processing takes place every 30 minutes.
+All XML files are checked for errors and if a problem is found, an error message is displayed, 'processing failed', in the
+'History of uploads' section. If the upload is successful, you will see 'Successfully processed'. Articles are processed every 30 minutes. As soon as the XML has processed successfully, the articles are published to the site. The Table of Contents for a journal updates overnight.</li>
+
+<li><b>by manually entering the metadata</b>, using the 'Enter Article Metadata' tab. This method is 
+ideal for uploading the occasional article or for correcting an existing article.<br>
+Metadata uploaded this way is checked for errors and published to the site immediately. Do not enter HTML formatting, tables, images, style sheet (CSS) coding from Microsoft Word, or any other form of code. This will cause an error and will distort hhow your articles are displayed and found.<br>
 To correct existing articles, the full text URL must remain the same otherwise the new version will not overwrite the 
 old version.</li>
 
-<li><b>Upload DOAJ XML to us</b> via the 'Upload Article XML' tab. You can either upload the file manually by 
-selecting it from a location on your computer OR you can enter the URL where the DOAJ site should go to look for the 
-file. The location can be http or ftp.<br>
-Before you upload the file to us, <a href="http://www.freeformatter.com/xml-formatter.html">format it</a> and 
-<a href="http://www.freeformatter.com/xml-validator-xsd.html">validate it</a>. 
-(<a href="https://doaj.org/static/doaj/doajArticles.xsd">The xsd file for DOAJ is here</a>.) These two steps identify most 
-upload problems. Español:(<a href="https://doaj.org/static/doaj/doajArticles.xsd">El archivo xsd de DOAJ está aquí</a>.) Estos dos pasos identifican la mayoría de problemas. <br>
-You will see a message 'File uploaded and waiting to be processed. Check back here for updates.'. Processing takes place every 30 minutes.
-All XML files are checked for errors and, if a problem is found, an error message will be displayed, 'processing failed', in the
-'History of uploads' section. If the upload has been successful, you will see a 'Successfully processed' message in the 
-'History of uploads' section. Articles are processed every half hour so come back to your account after 30 minutes. As soon as 
-the XML has processed successfully, the articles are published to the site. The Table of Contents for a journal updates 
-overnight.</li>
-
-<li><b>Use <a href="{{ url_for('api_v1.docs')  }}">the DOAJ API</a></b>. This is highly automated and 
-the least labour intensive. You will need to request that we enable your API key on your account page. <a href="{{ url_for('doaj.contact') }}">Contact us</a> to do that. You should also <a href="https://doaj.org/api/v1/docs#intro_help">sign up to our
-API groups</a> for API support.</li>
+<li><b>Use <a href="{{ url_for('api_v1.docs')  }}">the DOAJ API</a></b>. This is the least labour intensive. You will need to request that we enable your API key on your account page. <a href="{{ url_for('doaj.contact') }}">Contact us</a> to do that. You should also <a href="https://doaj.org/api/v1/docs#intro_help">sign up to our API groups</a> for API support.</li>
 </ul>
 
 <p>For help with creating DOAJ XML and details on XML tags, read the
 <a href="{{ url_for('doaj.features', _anchor='xml_upload') }}">File Upload Info section</a> on our Features pages.</p>
+
+<p>For help with creating Crossref XML use their <a href="https://support.crossref.org/hc/en-us/articles/215654343-Web-deposit-form">web deposit form</a> and <a href="https://www.crossref.org/help/metadata-manager/">metadata manager</a>. Using the form will send a copy of the XML back to you which you can then upload to DOAJ. For help validating Crossref XML, use <a href="https://www.crossref.org/02publishers/parser.html">the Crossref parser</a>.</p>
 <br><br>
 
 
