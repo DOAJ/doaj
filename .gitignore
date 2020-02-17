@@ -14,7 +14,7 @@ tmp/*
 .env
 scratch.py
 .coverage
-htmlcov/
+htmlcov/*
 
 # PyCharm and other IntelliJ-based IDE-s and editors' folder:
 .idea

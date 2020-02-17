@@ -220,7 +220,10 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         job.add_audit_message("Downloaded {x} as {y}".format(x=file_upload.filename, y=file_upload.local_filename))
 
         xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(file_upload.schema)
-        xwalk = plugin.load_class(xwalk_name)()
+        try:
+            xwalk = plugin.load_class(xwalk_name)()
+        except IngestException:
+            raise RetryException("Unable to load schema {}".format(xwalk_name))
 
         # now we have the record in the index and on disk, we can attempt to
         # validate it
@@ -273,7 +276,10 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         account = models.Account.pull(file_upload.owner)
 
         xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(file_upload.schema)
-        xwalk = plugin.load_class(xwalk_name)()
+        try:
+            xwalk = plugin.load_class(xwalk_name)()
+        except IngestException:
+            raise RetryException(u"Unable to load schema {}".format(xwalk_name))
 
         ingest_exception = False
         result = {}
@@ -432,7 +438,10 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             raise BackgroundException("Failed to upload file - please contact an administrator")
 
         xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(schema)
-        xwalk = plugin.load_class(xwalk_name)()
+        try:
+            xwalk = plugin.load_class(xwalk_name)()
+        except IngestException:
+            raise RetryException(u"Unable to load schema {}".format(xwalk_name))
 
         # now we have the record in the index and on disk, we can attempt to
         # validate it

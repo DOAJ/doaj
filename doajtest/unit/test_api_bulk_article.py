@@ -214,7 +214,7 @@ class TestCrudArticle(DoajTestCase):
         dataset = []
         for i in range(10):
             data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i),
-                                                                   fulltext="http://example.com/" + str(i))
+                                                                          fulltext="http://example.com/" + str(i))
             dataset.append(data)
 
         # create the main account we're going to work as
