@@ -13,14 +13,16 @@ from portality.lib import plugin
 import ftplib, os, requests, traceback, shutil
 from urllib.parse import urlparse
 
-DEFAULT_MAX_REMOTE_SIZE=262144000
-CHUNK_SIZE=1048576
+DEFAULT_MAX_REMOTE_SIZE = 262144000
+CHUNK_SIZE = 1048576
+
 
 def file_failed(path):
     filename = os.path.split(path)[1]
     fad = app.config.get("FAILED_ARTICLE_DIR")
     dest = os.path.join(fad, filename)
     shutil.move(path, dest)
+
 
 def ftp_upload(job, path, parsed_url, file_upload):
     # 1. find out the file size
@@ -35,15 +37,16 @@ def ftp_upload(job, path, parsed_url, file_upload):
                          # hence, widely adopted ugly hack - since you can READ nonlocal
                          # vars from nested funcs, we use a mutable container!
     downloaded = [0]
+
     def ftp_callback(chunk):
-        '''Callback for processing downloaded chunks of the FTP file'''
+        """Callback for processing downloaded chunks of the FTP file"""
         if too_large[0]:
             return
         if type(chunk) == bytes:
-            l = len(chunk)
+            lc = len(chunk)
         else:
-            l = len(bytes(chunk, "utf-8"))
-        downloaded[0] += l
+            lc = len(bytes(chunk, "utf-8"))
+        downloaded[0] += lc
         if downloaded[0] > size_limit:
             too_large[0] = True
             return
@@ -55,7 +58,6 @@ def ftp_upload(job, path, parsed_url, file_upload):
                 else:
                     o.write(chunk)
                 o.flush()
-
 
     try:
         f = ftplib.FTP(parsed_url.hostname, parsed_url.username, parsed_url.password)
@@ -87,7 +89,7 @@ def ftp_upload(job, path, parsed_url, file_upload):
             file_upload.failed("The file at the URL was too large")
             job.add_audit_message("too large")
             try:
-                os.remove(path) # don't keep this file around
+                os.remove(path)  # don't keep this file around
             except:
                 pass
             return False
@@ -161,6 +163,7 @@ def http_upload(job, path, file_upload):
 
     file_upload.downloaded()
     return True
+
 
 class IngestArticlesBackgroundTask(BackgroundTask):
 
@@ -472,7 +475,6 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             previous.insert(0, record)
             raise BackgroundException("Failed to upload file - please contact an administrator")
 
-
     @classmethod
     def _url_upload(cls, username, url, schema, previous):
         # first define a few functions
@@ -493,7 +495,6 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             if get.status_code == requests.codes.ok:
                 return __ok(record, previous)
             return __fail(record, previous, error='error while checking submitted file reference: {0}'.format(get.status_code))
-
 
         def __ftp_upload(record, previous, parsed_url):
             # 1. find out whether the file exists
@@ -519,7 +520,6 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 return __fail(record, previous, error='error during FTP file existence check: ' + str(e.args))
 
             return __ok(record, previous)
-
 
         def __ok(record, previous):
             record.exists()
@@ -554,6 +554,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             raise
         except Exception as e:
             return __fail(record, previous, error="please check it before submitting again; " + str(e))
+
 
 @main_queue.task(**configure("ingest_articles"))
 @write_required(script=True)
