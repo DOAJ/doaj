@@ -1817,9 +1817,7 @@ class AdminArticleForm(FormContext):
         self._set_choices()
 
     def data2form(self):
-        #self.blank_form()
-        self.form = forms.ArticleForm()
-        xwalk.AdminArticleXwalk.data2form(form_data=self.form_data, form=self.form)
+        self.form = forms.ArticleForm(formdata=self.form_data)
         self._set_choices()
 
     def form2target(self):
