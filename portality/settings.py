@@ -609,12 +609,18 @@ FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "
 # crosswalks available
 
 SCHEMAS = {
-    "doaj" : os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd")
+    "doaj": os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd"),
+    "crossref": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd")
 }
+
+DOAJ_SCHEMA = None
+CROSSREF_SCHEMA = None
+LOAD_CROSSREF_THREAD = None
 
 # mapping of format names to modules which implement the crosswalks
 ARTICLE_CROSSWALKS = {
-    "doaj" : "portality.crosswalks.article_doaj_xml.DOAJXWalk"
+    "doaj": "portality.crosswalks.article_doaj_xml.DOAJXWalk",
+    "crossref": "portality.crosswalks.article_crossref_xml.CrossrefXWalk"
 }
 
 # maximum size of files that can be provided by-reference (the default value is 250Mb)

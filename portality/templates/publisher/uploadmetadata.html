@@ -1,13 +1,18 @@
 {% extends "publisher/publisher_base.html" %}
-
 {% block publisher_content %}
-
+<div id="crossref-alert" class="alert-messages">
+   <div class="alert alert-message fade in" data-alert="alert">
+       <a class="close" data-dismiss="alert" href="#">×</a>
+       Crossref schema is still loading, uploading your file may take a bit longer than usual.
+   </div>
+</div>
 <div class="row" style="margin-top: 20px">
     <div class="col-md-12">
         <div class="well">
             <p>Uploaded files must conform to one of the approved XML formats:</p>
             <ul>
                 <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
+                <li><a href="/static/crossref/crossref4.4.2.xsd">Crossref 4.4.2 XML</a></li>
             </ul>
             
             <p>Uploaded files must be &lt; 50Mb. Remote files must be &lt; 250Mb. If you need to upload more data, you should provide multiple files.</p>
@@ -37,7 +42,13 @@
         <label for="url" class="col-md-3 control-label">Format of the file</label>
         <div class="col-md-9">
             <select name="schema" class="form-control" style="width: 200px">
-                <option value="doaj">DOAJ Native XML</option>
+                {% if schema == '' or schema == 'doaj' %}
+                    <option value="doaj" selected>DOAJ Native XML</option>
+                    <option value="crossref">Crossref 4.4.2 XML</option>
+                {% else %}
+                    <option value="doaj">DOAJ Native XML</option>
+                    <option value="crossref" selected>Crossref 4.4.2 XML</option>
+                {% endif %}
             </select>
         </div>
     </div>
@@ -80,6 +91,8 @@
                     <td>
                         {% if file.schema == "doaj" %}
                             DOAJ Native XML
+                        {%  elif file.schema == "crossref" %}
+                            Crossref XML
                         {% elif file.schema == "mathml" %}
                             OJS MathML
                         {% endif %}
@@ -102,7 +115,11 @@
                     <td style="word-wrap:break-word">
                         {% if file.error %}
                             {{file.error}}
-                            <a target="_blank" href="{{ url_for('doaj.publishers', _anchor=file.error) }}">(what does this mean?)</a><br>
+                            {% if file.error == "One or more articles failed to ingest; entire batch ingest halted" %}
+                                <a target="_blank" href="{{ url_for('doaj.publishers', _anchor="Reasons for individual article import failures") }}">(what does this mean?)</a><br>
+                            {% else %}
+                                <a target="_blank" href="{{ url_for('doaj.publishers', _anchor=file.error) }}">(what does this mean?)</a><br>
+                            {% endif %}
                         {% else %}
                             {% if file.status == "partial" or file.status == "processed" %}
                                 {{ file.imported }} articles imported 
@@ -117,19 +134,25 @@
                         {% endif %}
                         {%  if file.error_details or file.failure_reasons %}
                             <div id="details_{{ file.id }}" style="display:none">
-                                {% if file.error_details %}{{ file.error_details }}{% endif %}
+                                {% if file.error_details %}
+                                    {{ file.error_details }}
+                                {% endif %}
+
                                 {% if file.failure_reasons %}
                                     {% if file.failure_reasons.shared %}
                                         The following ISSNs in your article metadata are owned by you and another user.  This is a problem at our end, please contact us with the details:<br>
                                         {{ file.failure_reasons.shared|join(", ") }}
+                                        <br>
                                     {% endif %}
                                     {% if file.failure_reasons.unowned %}
                                         The following ISSNs in your article metadata are owned by another user, you cannot associate articles with them.  If you believe you should own these ISSNs, please contact us with the details:<br>
                                         {{ file.failure_reasons.unowned|join(", ") }}
+                                        <br>
                                     {% endif %}
                                     {% if file.failure_reasons.unmatched %}
                                         The following ISSNs in your article metadata do not appear in DOAJ, you cannot associate articles with them.  If you believe these ISSNs should be associated with a journal you own, please contact us with the details:<br>
                                         {{ file.failure_reasons.unmatched|join(", ") }}
+                                        <br>
                                     {% endif %}
                                 {% endif %}
                             </div>
@@ -149,18 +172,39 @@
 {% block extra_js_bottom %}
 <script type="text/javascript">
 $(document).ready(function() {
-    $("#previous_files").tablesorter();
 
-    $(".show_error_details").click(function(event) {
-        event.preventDefault();
-        var id = $(this).attr("data-id");
-        $("#details_" + id).slideToggle();
-        if ($(this).html() === "(show error details)") {
-            $(this).html("(hide error details)")
+document.getElementById("crossref-alert").style.display = "none";
+
+    function load_errors_and_previous_files(){
+        document.getElementById("crossref-alert").style.display = "none";
+        $("#previous_files").tablesorter();
+
+        $(".show_error_details").click(function (event) {
+            event.preventDefault();
+            var id = $(this).attr("data-id");
+            $("#details_" + id).slideToggle();
+            if ($(this).html() === "(show error details)") {
+                $(this).html("(hide error details)");
+            } else {
+                $(this).html("(show error details)");
+            }
+        })
+    }
+
+    function check_if_crossref_is_loaded() {
+        $.get("/isCrossrefLoaded", function(result) {
+        if (result === "true"){
+            load_errors_and_previous_files()
         } else {
-            $(this).html("(show error details)")
+            document.getElementById("crossref-alert").style.display = "block";
+            check_if_crossref_is_loaded();
         }
-    })
+
+        });
+    }
+
+    check_if_crossref_is_loaded()
+
 })
 </script>
 
