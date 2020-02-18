@@ -135,11 +135,7 @@
                         {%  if file.error_details or file.failure_reasons %}
                             <div id="details_{{ file.id }}" style="display:none">
                                 {% if file.error_details %}
-                                    {% if file.error_details == 'utf-8' %}
-                                        Wrong file format.
-                                    {% else %}
-                                        {{ file.error_details }}
-                                    {% endif %}
+                                    {{ file.error_details }}
                                 {% endif %}
 
                                 {% if file.failure_reasons %}
