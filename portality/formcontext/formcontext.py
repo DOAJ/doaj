@@ -1847,16 +1847,13 @@ class AdminArticleForm(FormContext):
         return True
 
     def finalise(self):
-        if self.validate():
-            self.form2target()
-            if not self.author_error:
-                try:
-                    article_service = DOAJ.articleService()
-                    article_service.create_article(self.target, self.user, add_journal_info=True, update=self.source.id)
-                    Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
-                except ArticleMergeConflict:
-                    Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
-                except DuplicateArticleException:
-                    Messages.flash(Messages.ARTICLE_METADATA_UPDATE_CONFLICT)
-        return self.render_template()
+        self.form2target()
+        if not self.author_error:
+            article_service = DOAJ.articleService()
+            article_service.create_article(self.target, self.user, add_journal_info=True, update=self.source.id)
+            Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
+        else:
+            return
+
+
 

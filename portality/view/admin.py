@@ -6,6 +6,7 @@ from flask_login import current_user, login_required
 
 from werkzeug.datastructures import MultiDict
 
+from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
 from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
 
@@ -20,7 +21,7 @@ from portality.formcontext import emails
 from portality.ui.messages import Messages
 from portality.formcontext import formcontext
 
-from portality.view.forms import EditorGroupForm, MakeContinuation, ArticleForm
+from portality.view.forms import EditorGroupForm, MakeContinuation
 from portality.background import BackgroundSummary
 
 blueprint = Blueprint('admin', __name__)
@@ -179,7 +180,15 @@ def article_page(article_id):
         if remove_author is not None:
             return fc.render_template(remove_authors=remove_author)
 
-        return fc.finalise()
+        if fc.validate():
+            try:
+                fc.finalise()
+            except ArticleMergeConflict:
+                Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
+            except DuplicateArticleException:
+                Messages.flash(Messages.ARTICLE_METADATA_UPDATE_CONFLICT)
+
+        return fc.render_template()
 
 
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])

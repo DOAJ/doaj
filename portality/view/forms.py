@@ -22,7 +22,7 @@ from portality import regex
 ##########################################################################
 
 DOI_REGEX = regex.DOI_COMPILED
-DOI_ERROR = 'Invalid DOI.  A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
+DOI_ERROR = 'Invalid DOI. A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
 ORCID_REGEX = regex.ORCID_COMPILED
 ORCID_ERROR = "Invalid ORCID iD. Please enter your ORCID iD as a full URL of the form https://orcid.org/0000-0000-0000-0000"
 
