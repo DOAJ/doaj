@@ -3,8 +3,6 @@ from portality import models
 from portality.bll import exceptions
 from portality.ui.messages import Messages
 
-from flask_login import current_user
-
 from datetime import datetime
 
 
@@ -139,7 +137,7 @@ class ArticleService(object):
         self.is_acceptable(article)
 
         if limit_to_account:
-            legit = "admin" in account.role or self.is_legitimate_owner(article, account.id)
+            legit = account.has_role("admin") or self.is_legitimate_owner(article, account.id)
             if not legit:
                 owned, shared, unowned, unmatched = self.issn_ownership_status(article, account.id)
                 return {"success" : 0, "fail" : 1, "update" : 0, "new" : 0, "shared" : shared, "unowned" : unowned, "unmatched" : unmatched}

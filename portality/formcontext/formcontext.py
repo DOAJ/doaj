@@ -1846,7 +1846,7 @@ class AdminArticleForm(FormContext):
             return False
         return True
 
-    def finalise(self):
+    def finalise(self)
         if self.validate():
             self.form2target()
             if not self.author_error:
