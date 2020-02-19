@@ -25,7 +25,9 @@ class TestTaskArticleBulkDelete(DoajTestCase):
             self.journals.append(j)
             j.save()
             for i in range(0, TEST_ARTICLES_PER_JOURNAL):
-                a = models.Article(**ArticleFixtureFactory.make_article_source(with_id=False, eissn=j.bibjson().first_eissn, pissn=j.bibjson().first_pissn))
+                a = models.Article(
+                    **ArticleFixtureFactory.make_article_source(with_id=False, eissn=j.bibjson().first_eissn,
+                                                                pissn=j.bibjson().first_pissn))
                 a.save()
                 self.articles.append(a)
 
@@ -40,7 +42,8 @@ class TestTaskArticleBulkDelete(DoajTestCase):
         """Bulk delete journals as an admin, but leave some around to test queries in bulk delete job"""
 
         # all articles with the last journal's ISSN. The articles for the other journal should remain intact.
-        del_q_should_terms = {"query": {"bool": {"must": [{"match_all": {}}, {"terms": {"index.issn.exact": [self.journals[-1].bibjson().first_pissn]}}]}}}
+        del_q_should_terms = {"query": {"bool": {
+            "must": [{"match_all": {}}, {"terms": {"index.issn.exact": [self.journals[-1].bibjson().first_pissn]}}]}}}
 
         summary = article_bulk_delete_manage(del_q_should_terms, dry_run=True)
         assert summary.as_dict().get("affected", {}).get("articles") == 1 * TEST_ARTICLES_PER_JOURNAL, summary.as_dict()
@@ -54,8 +57,10 @@ class TestTaskArticleBulkDelete(DoajTestCase):
 
         audit_log = json.dumps(job.audit, indent=2)
 
-        assert len(models.Journal.all()) == TEST_JOURNAL_COUNT, "{}\n\n{}".format(len(models.Journal.all()), audit_log)  # json.dumps([j.data for j in models.Journal.all()], indent=2)
-        assert len(models.Article.all()) == 1 * TEST_ARTICLES_PER_JOURNAL, "{}\n\n{}".format(len(models.Article.all()), audit_log)  # json.dumps([a.data for a in models.Article.all()], indent=2)
+        assert len(models.Journal.all()) == TEST_JOURNAL_COUNT, "{}\n\n{}".format(len(models.Journal.all()),
+                                                                                  audit_log)  # json.dumps([j.data for j in models.Journal.all()], indent=2)
+        assert len(models.Article.all()) == 1 * TEST_ARTICLES_PER_JOURNAL, "{}\n\n{}".format(len(models.Article.all()),
+                                                                                             audit_log)  # json.dumps([a.data for a in models.Article.all()], indent=2)
 
         assert "About to delete 25 articles in 2 batches" in audit_log
         assert "Deleted 13 articles in batch 1 of 2" in audit_log

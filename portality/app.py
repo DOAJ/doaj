@@ -67,7 +67,6 @@ initialise_index(app)
 # the other tiers' logos.
 SPONSORS = {
     'gold': {
-        'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'},
         'ieee': {'name' : 'IEEE', 'logo':'ieee.png', 'url':'https://www.ieee.org/'}
     },
     'silver': {
@@ -76,7 +75,6 @@ SPONSORS = {
         'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.svg', 'url': 'http://www.mdpi.com/'},
         'oclc': {'name': 'OCLC', 'logo': 'oclc.svg', 'url': 'https://www.oclc.org/en-europe/home.html'},
         #'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.svg', 'url': 'https://www.plos.org/'},
-        'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
         'ufm': {'name': 'Danish Agency for Science and Higher Education', 'logo': 'ufm.svg', 'url': 'https://ufm.dk/'},
         'kbse': {'name': 'National Library of Sweden', 'logo': 'kbse.svg', 'url': 'https://www.kb.se/'},
         'finnish-learned-soc': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-tsvlogo.svg', 'url': 'https://tsv.fi/en/frontpage'},
@@ -88,6 +86,8 @@ SPONSORS = {
 
     },
     'bronze': {
+        'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'},
+        'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
         'aps': {'name': 'American Physical Society', 'logo': 'aps.gif', 'url': 'https://journals.aps.org/'},
         #'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'},
@@ -110,6 +110,9 @@ SPONSORS = {
         'edp': {'name': 'EDP Sciences', 'logo': 'edp.gif', 'url': 'https://www.edpsciences.org'},
         'elife': {'name': 'eLife', 'logo': 'elife.png', 'url': 'https://elifesciences.org/'},
         'karger': {'name': 'Karger', 'logo': 'karger.png', 'url': 'https://www.karger.com/'},
+        'cambridge': {'name': 'Cambridge University Press', 'logo': 'cambridge.png', 'url': 'https://www.cambridge.org/'},
+        'iet': {'name': 'IET (Institution of Engineering and Technology)', 'logo': 'iet.png', 'url': 'https://www.theiet.org/'},
+        'pensoft': {'name': 'Pensoft', 'logo': 'pensoftlogo.svg', 'url': 'https://pensoft.net/'}
     },
     'patron': {
         #'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
@@ -170,6 +173,12 @@ def legacy_doaj_XML_schema():
             mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
             )
 
+@app.route("/isCrossrefLoaded")
+def is_crossref_loaded():
+    if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").isAlive():
+        return "false"
+    else:
+        return "true"
 
 # FIXME: this used to calculate the site stats on request, but for the time being
 # this is an unnecessary overhead, so taking it out.  Will need to put something
