@@ -16,9 +16,7 @@ from portality.crosswalks.article_form import ArticleFormXWalk
 
 from huey.exceptions import TaskException
 
-import os, uuid
-from time import sleep
-
+import uuid
 
 blueprint = Blueprint('publisher', __name__)
 

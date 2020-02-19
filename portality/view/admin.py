@@ -10,7 +10,7 @@ from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleExcep
 from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
 
-from portality.formcontext import formcontext, choices
+from portality.formcontext import choices
 from portality import lock, app_email
 from portality.lib.es_query_http import remove_search_limits
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json

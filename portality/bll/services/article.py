@@ -151,7 +151,7 @@ class ArticleService(object):
                 if merge_duplicate:
                     if update is not None and duplicate.id != update:
                         raise exceptions.DuplicateArticleException()
-                    is_update  = 1
+                    is_update += 1
                     article.merge(duplicate) # merge will take the old id, so this will overwrite
                 else:
                     raise exceptions.DuplicateArticleException()

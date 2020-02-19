@@ -41,11 +41,7 @@ class GenericBibJSON(dataobj.DataObj):
     ## work with the identifiers
 
     def add_identifier(self, idtype, value):
-        all = self.get_identifiers()
-        existing = [x for x in all if x["type"] == idtype]
-        if existing:
-            for x in existing:
-                all.remove(x)
+        self._delete_from_list("identifier", matchsub={"type": idtype})
         idobj = {"type" : idtype, "id" : self._normalise_identifier(idtype, value)}
         self._add_to_list_with_struct("identifier", idobj)
 
