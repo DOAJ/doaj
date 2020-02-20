@@ -1,6 +1,6 @@
 from portality import models, lcc
 from portality.datasets import licenses
-from portality.formcontext.xwalks.interprets import interpret_special, reverse_interpret_special, interpret_other, \
+from portality.formcontext.xwalks.interpreting_methods import interpret_special, reverse_interpret_special, interpret_other, \
     reverse_interpret_other
 from portality.formcontext.xwalks.journal_generic import JournalGenericXWalk
 from portality.util import listpop
