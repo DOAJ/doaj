@@ -6,6 +6,7 @@ features, and a bit of refactoring on the organisation of the formcontext stuff 
 '''
 from datetime import datetime
 import re
+from flask_login import current_user
 
 
 from wtforms import Form, validators
@@ -16,6 +17,7 @@ from portality import models
 from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen
 from portality.formcontext.fields import DOAJSelectField
 from portality import regex
+from portality.formcontext.choices import Choices
 
 ##########################################################################
 ## Forms and related features for Article metadata
@@ -57,6 +59,13 @@ class ArticleForm(Form):
 
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)
+        try:
+            self.pissn.choices = Choices.choices_for_article_issns(current_user)
+            self.eissn.choices = Choices.choices_for_article_issns(current_user)
+        except:
+            # not logged in, and current_user is broken
+            # probably you are loading the class from the command line
+            pass
 
 ##########################################################################
 ## Editor Group Forms
