@@ -157,8 +157,8 @@ def article_page(article_id):
     if ap is None:
         abort(404)
 
-    fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=current_user)
     if request.method == "GET":
+        fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=current_user)
         return fc.render_template()
 
     elif request.method == "POST":

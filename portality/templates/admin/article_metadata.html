@@ -28,7 +28,7 @@
     {% from "_formhelpers.html" import render_field %}
     <form method="post" action="{{ url_for('admin.article_page', article_id=form_context.source.id) }}" class="form-horizontal" id="article_metadata_form">
 
-        {% include "formcontext/admin_article_form.html" %}
+        {% include "formcontext/article_form.html" %}
 
     </form>
         </div>

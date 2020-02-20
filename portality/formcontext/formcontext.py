@@ -1804,7 +1804,7 @@ class AdminArticleForm(FormContext):
         return counted >= 1
 
     def set_template(self):
-        self.template = "admin/edit_article_metadata.html"
+        self.template = "admin/article_metadata.html"
 
     def blank_form(self):
         self.form = forms.ArticleForm()
@@ -1812,8 +1812,7 @@ class AdminArticleForm(FormContext):
 
     def source2form(self):
         self.form = forms.ArticleForm()
-        bibjson = self.source.bibjson()
-        xwalk.AdminArticleXwalk.obj2form(self.form, bibjson=bibjson)
+        xwalk.AdminArticleXwalk.obj2form(self.form, article=self.source)
         self._set_choices()
 
     def data2form(self):
@@ -1846,11 +1845,11 @@ class AdminArticleForm(FormContext):
             return False
         return True
 
-    def finalise(self):
+    def finalise(self, duplicate_check = True):
         self.form2target()
         if not self.author_error:
             article_service = DOAJ.articleService()
-            article_service.create_article(self.target, self.user, add_journal_info=True, update=self.source.id)
+            article_service.create_article(self.target, self.user, add_journal_info=True, update=self.source.id, duplicate_check = duplicate_check)
             Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
         else:
             return

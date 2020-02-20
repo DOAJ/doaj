@@ -106,59 +106,60 @@ class ArticleFormXWalk(object):
         return article
 
     @classmethod
-    def obj2form(cls, form, bibjson):
-            if bibjson.title:
-                form.title.data = bibjson.title
-            doi = bibjson.get_one_identifier("doi")
-            if doi:
-                form.doi.data = doi
-            if bibjson.author:
-                for i in range(len(form.authors)):
-                    form.authors.pop_entry()
-                for a in bibjson.author:
-                    author = forms.AuthorForm()
-                    if "name" in a:
-                        author.name = a["name"]
-                    else:
-                        author.name = ""
-                    if "affiliation" in a:
-                        author.affiliation = a["affiliation"]
-                    else:
-                        author.affiliation = ""
-                    if "orcid_id" in a:
-                        author.orcid_id = a["orcid_id"]
-                    else:
-                        author.orcid_id = ""
-                    form.authors.append_entry(author)
+    def obj2form(cls, form, article):
+        bibjson = article.bibjson()
+        if bibjson.title:
+            form.title.data = bibjson.title
+        doi = bibjson.get_one_identifier("doi")
+        if doi:
+            form.doi.data = doi
+        if bibjson.author:
+            for i in range(len(form.authors)):
+                form.authors.pop_entry()
+            for a in bibjson.author:
+                author = forms.AuthorForm()
+                if "name" in a:
+                    author.name = a["name"]
+                else:
+                    author.name = ""
+                if "affiliation" in a:
+                    author.affiliation = a["affiliation"]
+                else:
+                    author.affiliation = ""
+                if "orcid_id" in a:
+                    author.orcid_id = a["orcid_id"]
+                else:
+                    author.orcid_id = ""
+                form.authors.append_entry(author)
 
-            if bibjson.keywords:
-                form.keywords.data = ""
-                for k in bibjson.keywords:
-                    if form.keywords.data == "":
-                        form.keywords.data = k
-                    else:
-                        form.keywords.data = form.keywords.data + "," + k
-            url = bibjson.get_single_url("fulltext")
-            if url:
-                form.fulltext.data = url
-            if bibjson.month:
-                form.publication_month.data = bibjson.month
-            if bibjson.year:
-                form.publication_year.data = bibjson.year
-            pissn = bibjson.get_identifiers(bibjson.P_ISSN)
-            if len(pissn) > 0:
-                form.pissn.data = pissn[0]
-            eissn = bibjson.get_identifiers(bibjson.E_ISSN)
-            if len(eissn) > 0:
-                form.eissn.data = eissn[0]
-            if bibjson.volume:
-                form.volume.data = bibjson.volume
-            if bibjson.number:
-                form.number.data = bibjson.number
-            if bibjson.start_page:
-                form.start.data = bibjson.start_page
-            if bibjson.end_page:
-                form.end.data = bibjson.end_page
-            if bibjson.abstract:
-                form.abstract.data = bibjson.abstract
+        if bibjson.keywords:
+            form.keywords.data = ""
+            for k in bibjson.keywords:
+                if form.keywords.data == "":
+                    form.keywords.data = k
+                else:
+                    form.keywords.data = form.keywords.data + "," + k
+        url = bibjson.get_single_url("fulltext")
+        if url:
+            form.fulltext.data = url
+        if bibjson.month:
+            form.publication_month.data = bibjson.month
+        if bibjson.year:
+            form.publication_year.data = bibjson.year
+        pissn = bibjson.get_identifiers(bibjson.P_ISSN)
+        if len(pissn) > 0:
+            form.pissn.data = pissn[0]
+        eissn = bibjson.get_identifiers(bibjson.E_ISSN)
+        if len(eissn) > 0:
+            form.eissn.data = eissn[0]
+        if bibjson.volume:
+            form.volume.data = bibjson.volume
+        if bibjson.number:
+            form.number.data = bibjson.number
+        if bibjson.start_page:
+            form.start.data = bibjson.start_page
+        if bibjson.end_page:
+            form.end.data = bibjson.end_page
+        if bibjson.abstract:
+            form.abstract.data = bibjson.abstract
 
