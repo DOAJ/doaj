@@ -1851,7 +1851,7 @@ class AdminArticleForm(FormContext):
         self.form2target()
         if not self.author_error:
             article_service = DOAJ.articleService()
-            article_service.create_article(self.target, self.user, add_journal_info=True, update=self.source.id, duplicate_check = duplicate_check)
+            article_service.create_article(self.target, self.user, add_journal_info=True, update_article_id=self.source.id, duplicate_check = duplicate_check)
             Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
         else:
             return

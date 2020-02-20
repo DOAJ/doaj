@@ -103,7 +103,7 @@ class ArticleService(object):
         return False
 
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
-                       limit_to_account=True, add_journal_info=False, dry_run=False, update=None):
+                       limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
 
         """
         Create an individual article in the database
@@ -118,7 +118,7 @@ class ArticleService(object):
         :param limit_to_account:    Whether to limit create to when the account owns the journal to which the article belongs
         :param add_journal_info:    Should we fetch the journal info and attach it to the article before save?
         :param dry_run:     Whether to actuall save, or if this is just to either see if it would work, or to prep for a batch ingest
-        :param update: The article that it is supposed to be an update to
+        :param update_article_id: The article id that it is supposed to be an update to
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing
@@ -129,7 +129,8 @@ class ArticleService(object):
             {"arg" : merge_duplicate, "instance" : bool, "allow_none" : False, "arg_name" : "merge_duplicate"},
             {"arg" : limit_to_account, "instance" : bool, "allow_none" : False, "arg_name" : "limit_to_account"},
             {"arg" : add_journal_info, "instance" : bool, "allow_none" : False, "arg_name" : "add_journal_info"},
-            {"arg" : dry_run, "instance" : bool, "allow_none" : False, "arg_name" : "dry_run"}
+            {"arg" : dry_run, "instance" : bool, "allow_none" : False, "arg_name" : "dry_run"},
+            {"arg" : update_article_id, "instance" : str, "allow_none" : False, "arg_name" : "update_article_id"}
         ], exceptions.ArgumentException)
 
         # quickly validate that the article is acceptable - it must have a DOI and/or a fulltext
@@ -149,15 +150,15 @@ class ArticleService(object):
             duplicate = self.get_duplicate(article)
             if duplicate is not None:
                 if merge_duplicate:
-                    if update is not None and duplicate.id != update:
+                    if update_article_id is not None and duplicate.id != update_article_id:
                         raise exceptions.DuplicateArticleException()
                     is_update += 1
                     article.merge(duplicate) # merge will take the old id, so this will overwrite
                 else:
                     raise exceptions.DuplicateArticleException()
 
-        if update:
-            art = models.Article.pull(update)
+        if update_article_id:
+            art = models.Article.pull(update_article_id)
             article.merge(art)
 
         if add_journal_info:
