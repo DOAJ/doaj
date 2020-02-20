@@ -130,7 +130,7 @@ class ArticleService(object):
             {"arg" : limit_to_account, "instance" : bool, "allow_none" : False, "arg_name" : "limit_to_account"},
             {"arg" : add_journal_info, "instance" : bool, "allow_none" : False, "arg_name" : "add_journal_info"},
             {"arg" : dry_run, "instance" : bool, "allow_none" : False, "arg_name" : "dry_run"},
-            {"arg" : update_article_id, "instance" : str, "allow_none" : False, "arg_name" : "update_article_id"}
+            {"arg" : update_article_id, "instance" : str, "allow_none" : True, "arg_name" : "update_article_id"}
         ], exceptions.ArgumentException)
 
         # quickly validate that the article is acceptable - it must have a DOI and/or a fulltext
@@ -156,10 +156,6 @@ class ArticleService(object):
                     article.merge(duplicate) # merge will take the old id, so this will overwrite
                 else:
                     raise exceptions.DuplicateArticleException()
-
-        if update_article_id:
-            art = models.Article.pull(update_article_id)
-            article.merge(art)
 
         if add_journal_info:
             article.add_journal_metadata()
