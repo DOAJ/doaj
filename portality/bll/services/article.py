@@ -118,7 +118,7 @@ class ArticleService(object):
         :param limit_to_account:    Whether to limit create to when the account owns the journal to which the article belongs
         :param add_journal_info:    Should we fetch the journal info and attach it to the article before save?
         :param dry_run:     Whether to actuall save, or if this is just to either see if it would work, or to prep for a batch ingest
-        :param update_article_id: The article id that it is supposed to be an update to
+        :param update_article_id: The article id that it is supposed to be an update to; taken into consideration ONLY if duplicate_check == True and merge_duplicate == True
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing

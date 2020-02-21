@@ -11,7 +11,7 @@ from doajtest.mocks.bll_article import BLLArticleMockFactory
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "create_article", "test_id",
-                               {"test_id" : []})
+                               {"test_id" : ["258"]})
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,
@@ -46,6 +46,8 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         limit_to_account_arg = kwargs.get("limit_to_account")
         add_journal_info_arg = kwargs.get("add_journal_info")
         dry_run_arg = kwargs.get("dry_run")
+        update_article_id_arg = kwargs.get("update_article_id")
+
 
         raises_arg = kwargs.get("raises")
         success_arg = kwargs.get("success")
@@ -102,10 +104,21 @@ class TestBLLArticleCreateArticle(DoajTestCase):
             this_doi = doi if has_doi else False
             this_fulltext = fulltext if has_ft else False
             source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=this_doi, fulltext=this_fulltext)
+            if update_article_id_arg == "correct":
+                source["bibjson"]["title"] = "This need to be updated"
             del source["bibjson"]["journal"]
             article = Article(**source)
             article.set_id()
             original_id = article.id
+
+        if update_article_id_arg == "correct":
+            this_doi = doi if has_doi else False
+            this_fulltext = fulltext if has_ft else False
+            source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=this_doi,
+                                                               fulltext=this_fulltext)
+            article_to_update = Article(**source)
+            id = article_to_update.set_id()
+            update_article_id = id
 
         account = None
         if account_arg != "none":
