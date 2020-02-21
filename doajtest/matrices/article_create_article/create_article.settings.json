@@ -263,8 +263,7 @@
       "name": "update_article_id",
       "type": "generated",
       "values": {
-        "doi_ft_changed_duplicate": {},
-        "doi_ft_not_changed\n": {
+        "doi_ft_changed_duplicate": {
           "constraints": {
             "article": {
               "or": [
@@ -301,9 +300,48 @@
                 "false"
               ]
             },
-            "add_journal_info": {
+            "dry_run": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        },
+        "doi_ft_not_changed": {
+          "constraints": {
+            "article": {
+              "or": [
+                "exists"
+              ]
+            },
+            "has_ids": {
+              "or": [
+                "doi+ft"
+              ]
+            },
+            "article_duplicate": {
+              "or": [
+                "no"
+              ]
+            },
+            "account": {
+              "or": [
+                "owner"
+              ]
+            },
+            "duplicate_check": {
               "or": [
                 "true"
+              ]
+            },
+            "merge_duplicate": {
+              "or": [
+                "true"
+              ]
+            },
+            "limit_to_account": {
+              "or": [
+                "false"
               ]
             },
             "dry_run": {
@@ -313,8 +351,51 @@
             }
           }
         },
-        "doi_ft_changed_ok": {},
-        "None": {}
+        "doi_ft_changed_ok": {
+          "constraints": {
+            "article": {
+              "or": [
+                "exists"
+              ]
+            },
+            "has_ids": {
+              "or": [
+                "doi+ft"
+              ]
+            },
+            "article_duplicate": {
+              "or": [
+                "no"
+              ]
+            },
+            "account": {
+              "or": [
+                "owner"
+              ]
+            },
+            "duplicate_check": {
+              "or": [
+                "true"
+              ]
+            },
+            "merge_duplicate": {
+              "or": [
+                "true"
+              ]
+            },
+            "limit_to_account": {
+              "or": [
+                "false"
+              ]
+            },
+            "dry_run": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        },
+        "none": {}
       }
     },
     {
@@ -410,46 +491,6 @@
               }
             },
             {
-              "article": {
-                "or": [
-                  "exists"
-                ]
-              },
-              "has_ids": {
-                "or": [
-                  "doi+ft"
-                ]
-              },
-              "account": {
-                "or": [
-                  "owner"
-                ]
-              },
-              "duplicate_check": {
-                "or": [
-                  "true"
-                ]
-              },
-              "merge_duplicate": {
-                "or": [
-                  "true"
-                ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "false"
-                ]
-              },
-              "add_journal_info": {
-                "or": [
-                  "true"
-                ]
-              },
-              "dry_run": {
-                "or": [
-                  "false"
-                ]
-              },
               "update_article_id": {
                 "or": [
                   "doi_ft_changed_duplicate"
@@ -582,58 +623,6 @@
                   "true"
                 ]
               }
-            },
-            {
-              "article": {
-                "or": [
-                  "exists"
-                ]
-              },
-              "has_ids": {
-                "or": [
-                  "doi+ft"
-                ]
-              },
-              "article_duplicate": {
-                "or": [
-                  "yes"
-                ]
-              },
-              "account": {
-                "or": [
-                  "owner"
-                ]
-              },
-              "duplicate_check": {
-                "or": [
-                  "true"
-                ]
-              },
-              "merge_duplicate": {
-                "or": [
-                  "true"
-                ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "false"
-                ]
-              },
-              "add_journal_info": {
-                "or": [
-                  "true"
-                ]
-              },
-              "dry_run": {
-                "or": [
-                  "false"
-                ]
-              },
-              "update_article_id": {
-                "or": [
-                  "doi_ft_changed_duplicate"
-                ]
-              }
             }
           ]
         },
@@ -665,110 +654,6 @@
               "account": {
                 "or": [
                   "owner"
-                ]
-              }
-            },
-            {
-              "article": {
-                "or": [
-                  "exists"
-                ]
-              },
-              "has_ids": {
-                "or": [
-                  "doi+ft"
-                ]
-              },
-              "article_duplicate": {
-                "or": [
-                  "yes"
-                ]
-              },
-              "account": {
-                "or": [
-                  "owner"
-                ]
-              },
-              "duplicate_check": {
-                "or": [
-                  "true"
-                ]
-              },
-              "merge_duplicate": {
-                "or": [
-                  "true"
-                ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "false"
-                ]
-              },
-              "add_journal_info": {
-                "or": [
-                  "true"
-                ]
-              },
-              "dry_run": {
-                "or": [
-                  "false"
-                ]
-              },
-              "update_article_id": {
-                "or": [
-                  "doi_ft_not_changed"
-                ]
-              }
-            },
-            {
-              "article": {
-                "or": [
-                  "exists"
-                ]
-              },
-              "has_ids": {
-                "or": [
-                  "doi+ft"
-                ]
-              },
-              "article_duplicate": {
-                "or": [
-                  "yes"
-                ]
-              },
-              "account": {
-                "or": [
-                  "owner"
-                ]
-              },
-              "duplicate_check": {
-                "or": [
-                  "true"
-                ]
-              },
-              "merge_duplicate": {
-                "or": [
-                  "true"
-                ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "false"
-                ]
-              },
-              "add_journal_info": {
-                "or": [
-                  "true"
-                ]
-              },
-              "dry_run": {
-                "or": [
-                  "false"
-                ]
-              },
-              "update_article_id": {
-                "or": [
-                  "doi_ft_changed_ok"
                 ]
               }
             }
@@ -912,158 +797,14 @@
               }
             },
             {
-              "article": {
-                "or": [
-                  "exists"
-                ]
-              },
-              "has_ids": {
-                "or": [
-                  "doi+ft"
-                ]
-              },
-              "article_duplicate": {
-                "or": [
-                  "yes"
-                ]
-              },
-              "account": {
-                "or": [
-                  "owner"
-                ]
-              },
-              "duplicate_check": {
-                "or": [
-                  "true"
-                ]
-              },
-              "merge_duplicate": {
-                "or": [
-                  "true"
-                ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "false"
-                ]
-              },
-              "add_journal_info": {
-                "or": [
-                  "true"
-                ]
-              },
               "dry_run": {
                 "or": [
                   "false"
                 ]
               },
               "update_article_id": {
-                "or": [
-                  "doi_ft_changed_ok"
-                ]
-              }
-            },
-            {
-              "article": {
-                "or": [
-                  "exists"
-                ]
-              },
-              "has_ids": {
-                "or": [
-                  "doi+ft"
-                ]
-              },
-              "article_duplicate": {
-                "or": [
-                  "yes"
-                ]
-              },
-              "account": {
-                "or": [
-                  "owner"
-                ]
-              },
-              "duplicate_check": {
-                "or": [
-                  "true"
-                ]
-              },
-              "merge_duplicate": {
-                "or": [
-                  "true"
-                ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "false"
-                ]
-              },
-              "add_journal_info": {
-                "or": [
-                  "true"
-                ]
-              },
-              "dry_run": {
-                "or": [
-                  "false"
-                ]
-              },
-              "update_article_id": {
-                "or": [
-                  "doi_ft_not_changed"
-                ]
-              }
-            },
-            {
-              "article": {
-                "or": [
-                  "exists"
-                ]
-              },
-              "has_ids": {
-                "or": [
-                  "doi+ft"
-                ]
-              },
-              "article_duplicate": {
-                "or": [
-                  "yes"
-                ]
-              },
-              "account": {
-                "or": [
-                  "owner"
-                ]
-              },
-              "duplicate_check": {
-                "or": [
-                  "true"
-                ]
-              },
-              "merge_duplicate": {
-                "or": [
-                  "true"
-                ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "false"
-                ]
-              },
-              "add_journal_info": {
-                "or": [
-                  "true"
-                ]
-              },
-              "dry_run": {
-                "or": [
-                  "false"
-                ]
-              },
-              "update_article_id": {
-                "or": [
-                  "doi_ft_changed_duplicate"
+                "nor": [
+                  "none"
                 ]
               }
             }
