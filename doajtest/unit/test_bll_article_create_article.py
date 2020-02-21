@@ -11,7 +11,7 @@ from doajtest.mocks.bll_article import BLLArticleMockFactory
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "create_article", "test_id",
-                               {"test_id" : ["258"]})
+                               {"test_id" : []})
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,
@@ -104,21 +104,41 @@ class TestBLLArticleCreateArticle(DoajTestCase):
             this_doi = doi if has_doi else False
             this_fulltext = fulltext if has_ft else False
             source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=this_doi, fulltext=this_fulltext)
-            if update_article_id_arg == "correct":
-                source["bibjson"]["title"] = "This need to be updated"
             del source["bibjson"]["journal"]
             article = Article(**source)
             article.set_id()
             original_id = article.id
 
-        if update_article_id_arg == "correct":
-            this_doi = doi if has_doi else False
-            this_fulltext = fulltext if has_ft else False
+        update_article_id = None
+        if update_article_id_arg is not "None":
+
+            this_doi = doi
+            this_fulltext = fulltext
             source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=this_doi,
                                                                fulltext=this_fulltext)
-            article_to_update = Article(**source)
-            id = article_to_update.set_id()
-            update_article_id = id
+            if update_article_id_arg == "correct":
+                source["bibjson"]["title"] = "This need to be updated"
+            del source["bibjson"]["journal"]
+            article = Article(**source)
+            article.set_id(original_id)
+            article.save(blocking=True)
+
+            if update_article_id_arg == "doi_ft_changed_duplicate":
+                another_source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi="10.1234/duplicate",
+                                                                   fulltext="https://duplicate.org")
+                duplicate = Article(**another_source)
+                duplicate.set_id()
+
+                article.bibjson().remove_identifiers("doi")
+                article.bibjson().add_identifier("doi", "10.1234/duplicate")
+
+            if update_article_id_arg == "doi_ft_changed_ok":
+                article.bibjson().remove_identifiers("doi")
+                article.bibjson().add_identifier("doi", "10.1234/updated")
+            if update_article_id_arg == "doi_ft_not_changed":
+                article.bibjson().title = "This needs to be updated"
+
+
 
         account = None
         if account_arg != "none":
@@ -151,10 +171,10 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         if raises is not None:
             with self.assertRaises(raises):
                 self.svc.create_article(article, account, duplicate_check, merge_duplicate,
-                                        limit_to_account, add_journal_info, dry_run)
+                                        limit_to_account, add_journal_info, dry_run, update_article_id)
         else:
             report = self.svc.create_article(article, account, duplicate_check, merge_duplicate,
-                                             limit_to_account, add_journal_info, dry_run)
+                                             limit_to_account, add_journal_info, dry_run, update_article_id)
 
             assert report["success"] == success
 
