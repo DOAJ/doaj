@@ -190,27 +190,29 @@ Example record:
 
         issue = journal.find("x:journal_issue", NS)
 
-        vol = issue.find("x:journal_volume", NS)
-        if vol is not None:
-            volume = _element(vol, "x:volume", NS)
-            if volume is not None:
-                bibjson.volume = volume
+        if issue is not None:
+            vol = issue.find("x:journal_volume", NS)
+            if vol is not None:
+                volume = _element(vol, "x:volume", NS)
+                if volume is not None:
+                    bibjson.volume = volume
 
-        # issue
-        number = _element(issue, "x:issue", NS)
-        if number is not None:
-            bibjson.number = number
+            # issue
+            number = _element(issue, "x:issue", NS)
+            if number is not None:
+                bibjson.number = number
 
         pages = record.find('x:pages', NS)
         # start page
-        sp = _element(pages, "x:first_page", NS)
-        if sp is not None:
-            bibjson.start_page = sp
+        if pages is not None:
+            sp = _element(pages, "x:first_page", NS)
+            if sp is not None:
+                bibjson.start_page = sp
 
-        # end page
-        ep = _element(pages, "x:last_page", NS)
-        if ep is not None:
-            bibjson.end_page = ep
+            # end page
+            ep = _element(pages, "x:last_page", NS)
+            if ep is not None:
+                bibjson.end_page = ep
 
         d = record.find("x:doi_data", NS)
         if d is not None:
