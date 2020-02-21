@@ -18,8 +18,8 @@ constraint add_journal_info,,exists,,,owner,true,true,true,true,false,,,,,,add s
 constraint dry_run,,,none,,,,,,,none,,,,,,
 constraint update_article_id,,exists,doi+ft,yes,owner,true,true,false,true,false,"doi_ft_not_changed
 ",,,,,
-,,exists,doi+ft,yes,owner,true,true,false,true,false,doi_ft_changed_ok,,,,,
-,,exists,doi+ft,yes,owner,true,true,false,true,false,doi_ft_changed_duplicate,,,,,
+constraint update_article_id,,exists,doi+ft,yes,owner,true,true,false,true,false,doi_ft_changed_ok,,,,,
+constraint update_article_id,,exists,doi+ft,yes,owner,true,true,false,true,false,doi_ft_changed_duplicate,,,,,
 ,,,,,,,,,,,,,,,,
 conditional raises,,none,,,,,,,,,,ArgumentException,,,,
 conditional raises,,,,,none,,,,,,,ArgumentException,,,,
