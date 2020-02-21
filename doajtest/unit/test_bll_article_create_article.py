@@ -132,10 +132,10 @@ class TestBLLArticleCreateArticle(DoajTestCase):
                 article.bibjson().remove_identifiers("doi")
                 article.bibjson().add_identifier("doi", "10.1234/duplicate")
 
-            if update_article_id_arg == "doi_ft_changed_ok":
+            elif update_article_id_arg == "doi_ft_changed_ok":
                 article.bibjson().remove_identifiers("doi")
-                article.bibjson().add_identifier("doi", "10.1234/updated")
-            if update_article_id_arg == "doi_ft_not_changed":
+                article.bibjson().add_identifier("doi", "10.1234/update")
+            elif update_article_id_arg == "doi_ft_not_changed":
                 article.bibjson().title = "This needs to be updated"
 
 
@@ -197,4 +197,11 @@ class TestBLLArticleCreateArticle(DoajTestCase):
 
             if add_journal_info:
                 assert article.bibjson().journal_title == "Add Journal Info Title"
+
+            if  update_article_id_arg == "doi_ft_changed_ok":
+                original = Article.pull(original_id)
+                assert original.bibjson().get_one_identifier("doi") == "10.0000/SOME.IDENTIFIER"
+            elif update_article_id_arg == "doi_ft_not_changed":
+                original = Article.pull(original_id)
+                assert original.bibjson().title == "Article Title"
 
