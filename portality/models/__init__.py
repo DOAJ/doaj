@@ -1,3 +1,5 @@
+from portality.models.v2 import shared_structs
+
 from portality.models.bibjson import GenericBibJSON
 from portality.models.lcc import LCC
 from portality.models.account import Account
