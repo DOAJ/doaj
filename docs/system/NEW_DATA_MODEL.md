@@ -77,13 +77,13 @@ One type may have some admin fields and not others and vice versa.
             "board_url" : "<editorial board url>"
         },
         "eissn" : "<eissn>",
-        "is_replaced_by" : [],
+        "is_replaced_by" : ["<issn>"],
         "institution" : {
             "name" : "Institution",
-            "country" : "institution country"        
+            "country" : "institution country"
         },
-        "keyword" : [],
-        "language" : [],
+        "keywords" : ["<keyword>"],
+        "language" : ["<language code>"],
         "license" : [
             {
                 "type" : "CC BY",
@@ -94,13 +94,6 @@ One type may have some admin fields and not others and vice versa.
                 "url" : "<licence terms url>"
             }
         ],
-        "link" : {
-            "oa_statement" : "<oa_statement url>",
-            "journal" : "<journal url>",
-            "aims_scope" : "<aims/scope url>",
-            "author_instructions" : "<author instructions url>",
-            "license_terms" : "<license terms url>"
-        },
         "other_charges" : {
             "has_other_charges" : true,
             "url" : "<other charges url>"
@@ -126,6 +119,13 @@ One type may have some admin fields and not others and vice versa.
             "name" : "publisher",
             "country" : "publisher country"
         },
+        "ref" : {
+            "oa_statement" : "<oa_statement url>",
+            "journal" : "<journal url>",
+            "aims_scope" : "<aims/scope url>",
+            "author_instructions" : "<author instructions url>",
+            "license_terms" : "<license terms url>"
+        },
         "replaces" : [],
         "subject" : [
             {
@@ -150,10 +150,8 @@ One type may have some admin fields and not others and vice versa.
         ], 
         "continued": "string",
         "country" : "string", 
-        "has_apc": "string", 
         "has_editor": "string", 
         "has_editor_group": "string", 
-        "has_seal": "string", 
         "institution_ac": "string", 
         "issn": [
             "string"
