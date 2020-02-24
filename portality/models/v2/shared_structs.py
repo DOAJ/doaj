@@ -1,4 +1,4 @@
-JOURNAL_LIKE_BIBJSON = {
+JOURNAL_BIBJSON = {
     "objects" : [
         "bibjson"
     ],

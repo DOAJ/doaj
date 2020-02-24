@@ -1,6 +1,6 @@
 from portality.dao import DomainObject
 from portality.models import Journal, shared_structs
-from portality.models.bibjson import GenericBibJSON
+from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article specifically uses the v1 BibJSON
 from copy import deepcopy
 from datetime import datetime
 from portality import datasets, constants

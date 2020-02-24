@@ -1,5 +1,5 @@
 from portality.lib import dataobj
-from portality.models import shared_structs
+from portality.models.v1 import shared_structs
 
 class GenericBibJSON(dataobj.DataObj):
     # vocab of known identifier types

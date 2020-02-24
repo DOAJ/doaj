@@ -3,8 +3,8 @@ from copy import deepcopy
 from portality import constants
 from portality.core import app
 from portality.lib import es_data_mapping
-from portality.models import shared_structs
-from portality.models.journal import JournalLikeObject
+from portality.models.v1 import shared_structs
+from portality.models.v1.journal import JournalLikeObject
 
 
 class Suggestion(JournalLikeObject):

@@ -40,8 +40,8 @@ One type may have some admin fields and not others and vice versa.
         ], 
         "seal": true, 
         "ticked": true,
-        "suggested_on" : "date suggested",
-        "suggester": {
+        "date_applied" : "date applied",
+        "applicant": {
             "email": "string", 
             "name": "string"
         }

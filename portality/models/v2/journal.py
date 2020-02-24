@@ -1,6 +1,7 @@
 from portality.dao import DomainObject
 from portality.core import app
-from portality.models import GenericBibJSON, shared_structs
+from portality.models.v2.bibjson import GenericBibJSON
+from portality.models.v2 import shared_structs
 from portality.lib import dataobj, es_data_mapping, dates
 from portality import datasets
 
