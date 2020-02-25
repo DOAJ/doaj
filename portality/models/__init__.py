@@ -1,8 +1,11 @@
 # import the versioned objects, so that the current version is the default one
 from portality.models.v2 import shared_structs
-from portality.models.v2.bibjson import GenericBibJSON
-from portality.models.v2.journal import Journal, JournalBibJSON, JournalQuery, IssnQuery, PublisherQuery, TitleQuery, ContinuationException
-from portality.models.v2.application import Suggestion, SuggestionQuery, OwnerStatusQuery
+from portality.models.v2.bibjson import JournalLikeBibJSON
+from portality.models.v2.journal import Journal, JournalQuery, IssnQuery, PublisherQuery, TitleQuery, ContinuationException
+from portality.models.v2.application import Application, SuggestionQuery, OwnerStatusQuery
+
+# FIXME: does this work?
+from portality.models.v2.application import Application as Suggestion
 
 # non versioned imports for convenience and consistency
 from portality.models.lcc import LCC

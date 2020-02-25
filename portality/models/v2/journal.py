@@ -2,19 +2,58 @@ from portality.dao import DomainObject
 from portality.core import app
 from portality.models.v2.bibjson import JournalLikeBibJSON
 from portality.models.v2 import shared_structs
-from portality.lib import dataobj, es_data_mapping, dates
-from portality import datasets
+from portality.lib import es_data_mapping, dates, coerce
+from portality.lib.seamless import SeamlessMixin
 
 from copy import deepcopy
 from datetime import datetime
 
-import string
+import string, uuid
 from unidecode import unidecode
+
+JOURNAL_STRUCT = {
+    "fields" : {
+        "last_reapplication" : {"coerce" : "utcdatetime"}   # FIXME: there's no method for this, but I am loathe to let go of the data
+    },
+    "objects" : [
+        "admin", "index"
+    ],
+
+    "structs" : {
+        "admin" : {
+            "fields" : {
+                "in_doaj" : {"coerce" : "bool"},
+                "ticked" : {"coerce" : "bool"},
+                "current_application" : {"coerce" : "unicode"}
+            },
+            "lists" : {
+                "related_applications" : {"contains" : "object"}
+            },
+            "structs" : {
+                "related_applications" : {
+                    "fields" : {
+                        "application_id" : {"coerce" : "unicode"},
+                        "date_accepted" : {"coerce" : "utcdatetime"},
+                        "status" : {"coerce" : "unicode"}
+                    }
+                }
+            }
+        },
+        "index" : {
+            "fields" : {
+                "publisher_ac" : {"coerce" : "unicode"},
+                "institution_ac" : {"coerce" : "unicode"}
+            }
+        }
+    }
+}
+
 
 class ContinuationException(Exception):
     pass
 
-class JournalLikeObject(dataobj.DataObj, DomainObject):
+
+class JournalLikeObject(SeamlessMixin, DomainObject):
 
     @classmethod
     def find_by_issn(cls, issns, in_doaj=None, max=10):
@@ -46,65 +85,97 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     @property
     def id(self):
-        return self._get_single("id")
+        return self.__seamless__.get_single("id")
 
     def set_id(self, id=None):
         if id is None:
             id = self.makeid()
-        self._set_with_struct("id", id)
+        self.__seamless__.set_with_struct("id", id)
 
     def set_created(self, date=None):
         if date is None:
             date = dates.now()
-        self._set_with_struct("created_date", date)
+        self.__seamless__.set_with_struct("created_date", date)
 
     @property
     def created_date(self):
-        return self._get_single("created_date")
+        return self.__seamless__.get_single("created_date")
 
     @property
     def created_timestamp(self):
-        return self._get_single("created_date", coerce=dataobj.to_datestamp())
+        return self.__seamless__.get_single("created_date", coerce=coerce.to_datestamp())
 
     def set_last_updated(self, date=None):
         if date is None:
             date = dates.now()
-        self._set_with_struct("last_updated", date)
+        self.__seamless__.set_with_struct("last_updated", date)
 
     @property
     def last_updated(self):
-        return self._get_single("last_updated")
+        return self.__seamless__.get_single("last_updated")
 
     @property
     def last_updated_timestamp(self):
-        return self._get_single("last_updated", coerce=dataobj.to_datestamp())
-
-    def bibjson(self):
-        bj = self._get_single("bibjson")
-        if bj is None:
-            self._set_single("bibjson", {})
-            bj = self._get_single("bibjson")
-        return JournalLikeBibJSON(bj)
-
-    def set_bibjson(self, bibjson):
-        bibjson = bibjson.data if isinstance(bibjson, JournalLikeBibJSON) else bibjson
-        self._set_with_struct("bibjson", bibjson)
+        return self.__seamless__.get_single("last_updated", coerce=coerce.to_datestamp())
 
     def set_last_manual_update(self, date=None):
         if date is None:
             date = dates.now()
-        self._set_with_struct("last_manual_update", date)
+        self.__seamless__.set_with_struct("last_manual_update", date)
 
     @property
     def last_manual_update(self):
-        return self._get_single("last_manual_update")
+        return self.__seamless__.get_single("last_manual_update")
 
     @property
     def last_manual_update_timestamp(self):
-        return self._get_single("last_manual_update", coerce=dataobj.to_datestamp())
+        return self.__seamless__.get_single("last_manual_update", coerce=coerce.to_datestamp())
 
     def has_been_manually_updated(self):
         return self.last_manual_update_timestamp > datetime.utcfromtimestamp(0)
+
+    def has_seal(self):
+        return self.__seamless__.get_single("admin.seal", default=False)
+
+    def set_seal(self, value):
+        self.__seamless__.set_with_struct("admin.seal", value)
+
+    @property
+    def bulk_upload_id(self):
+        return self.__seamless__.get_single("admin.bulk_upload")
+
+    def set_bulk_upload_id(self, bulk_upload_id):
+        self.__seamless__.set_with_struct("admin.bulk_upload", bulk_upload_id)
+
+    @property
+    def owner(self):
+        return self.__seamless__.get_single("admin.owner")
+
+    def set_owner(self, owner):
+        self.__seamless__.set_with_struct("admin.owner", owner)
+
+    def remove_owner(self):
+        self.__seamless__.delete("admin.owner")
+
+    @property
+    def editor_group(self):
+        return self.__seamless__.get_single("admin.editor_group")
+
+    def set_editor_group(self, eg):
+        self.__seamless__.set_with_struct("admin.editor_group", eg)
+
+    def remove_editor_group(self):
+        self.__seamless__.delete("admin.editor_group")
+
+    @property
+    def editor(self):
+        return self.__seamless__.get_single("admin.editor")
+
+    def set_editor(self, ed):
+        self.__seamless__.set_with_struct("admin.editor", ed)
+
+    def remove_editor(self):
+        self.__seamless__.delete('admin.editor')
 
     def contacts(self):
         return self._get_list("admin.contact")
@@ -124,26 +195,28 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         return contact.get("email", "")
 
     def add_contact(self, name, email):
-        self._add_to_list_with_struct("admin.contact", {"name" : name, "email" : email})
+        self.__seamless__.add_to_list_with_struct("admin.contact", {"name" : name, "email" : email})
 
     def remove_contacts(self):
-        self._delete("admin.contact")
+        self.__seamless__.delete("admin.contact")
 
-    def add_note(self, note, date=None):
+    def add_note(self, note, date=None, id=None):
         if date is None:
             date = dates.now()
-        obj = {"date" : date, "note" : note}
-        self._delete_from_list("admin.notes", matchsub=obj)
-        self._add_to_list_with_struct("admin.notes", obj)
+        obj = {"date" : date, "note" : note, "id" : id}
+        self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
+        if id is None:
+            obj["id"] = uuid.uuid4()
+        self.__seamless__.add_to_list_with_struct("admin.notes", obj)
 
     def remove_note(self, note):
-        self._delete_from_list("admin.notes", matchsub=note)
+        self.__seamless__.delete_from_list("admin.notes", matchsub=note)
 
     def set_notes(self, notes):
-        self._set_with_struct("admin.notes", notes)
+        self.__seamless__.set_with_struct("admin.notes", notes)
 
     def remove_notes(self):
-        self._delete("admin.notes")
+        self.__seamless__.delete("admin.notes")
 
     @property
     def notes(self):
@@ -164,37 +237,21 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
             clusters[key].reverse()
             ordered += clusters[key]
         return ordered
-        # return sorted(notes, key=lambda x: x["date"], reverse=True)
 
-    @property
-    def owner(self):
-        return self._get_single("admin.owner")
+    def bibjson(self):
+        bj = self.__seamless__.get_single("bibjson")
+        if bj is None:
+            self._set_single("bibjson", {})
+            bj = self.__seamless__.get_single("bibjson")
+        return JournalLikeBibJSON(bj)
 
-    def set_owner(self, owner):
-        self._set_with_struct("admin.owner", owner)
+    def set_bibjson(self, bibjson):
+        bibjson = bibjson.data if isinstance(bibjson, JournalLikeBibJSON) else bibjson
+        self.__seamless__.set_with_struct("bibjson", bibjson)
 
-    def remove_owner(self):
-        self._delete("admin.owner")
 
-    @property
-    def editor_group(self):
-        return self._get_single("admin.editor_group")
-
-    def set_editor_group(self, eg):
-        self._set_with_struct("admin.editor_group", eg)
-
-    def remove_editor_group(self):
-        self._delete("admin.editor_group")
-
-    @property
-    def editor(self):
-        return self._get_single("admin.editor")
-
-    def set_editor(self, ed):
-        self._set_with_struct("admin.editor", ed)
-
-    def remove_editor(self):
-        self._delete('admin.editor')
+    ######################################################
+    ## DEPRECATED METHODS
 
     def known_issns(self):
         """
@@ -209,25 +266,12 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         """
         return self.bibjson().issns()
 
-    def has_seal(self):
-        return self._get_single("admin.seal", default=False)
-
-    def set_seal(self, value):
-        self._set_with_struct("admin.seal", value)
-
-    @property
-    def bulk_upload_id(self):
-        return self._get_single("admin.bulk_upload")
-
-    def set_bulk_upload_id(self, bulk_upload_id):
-        self._set_with_struct("admin.bulk_upload", bulk_upload_id)
 
     ######################################################
     ## internal utility methods
 
     def _generate_index(self):
         # the index fields we are going to generate
-        issns = []
         titles = []
         subjects = []
         schema_subjects = []
@@ -237,7 +281,6 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         country = None
         license = []
         publisher = []
-        urls = {}
         has_seal = None
         classification_paths = []
         unpunctitle = None
@@ -249,16 +292,14 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         # the places we're going to get those fields from
         cbib = self.bibjson()
 
-        # get the issns out of the current bibjson
-        issns += cbib.get_identifiers(cbib.P_ISSN)
-        issns += cbib.get_identifiers(cbib.E_ISSN)
-
         # get the title out of the current bibjson
         if cbib.title is not None:
             titles.append(cbib.title)
+        if cbib.alternative_title:
+            titles.append(cbib.alternative_title)
 
         # get the subjects and concatenate them with their schemes from the current bibjson
-        for subs in cbib.subjects():
+        for subs in cbib.subject:
             scheme = subs.get("scheme")
             term = subs.get("term")
             subjects.append(term)
@@ -276,32 +317,16 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         # get the english name of the country
         country = cbib.country_name()
 
-        # get the title of the license
-        lic = cbib.get_license()
-        if lic is not None:
-            license.append(lic.get("title"))
-
-        # copy the publisher/institution
-        if cbib.publisher:
-            publisher.append(cbib.publisher)
-        if cbib.institution:
-            publisher.append(cbib.institution)
-
-        # extract and convert all of the urls by their type
-        links = cbib.get_urls()
-        for link in links:
-            lt = link.get("type")
-            if lt is not None:
-                urls[lt + "_url"] = link.get("url")
+        # get the type of the licenses
+        for l in cbib.licences:
+            license.append(l.get("type"))
 
         # deduplicate the lists
-        issns = list(set(issns))
         titles = list(set(titles))
         subjects = list(set(subjects))
         schema_subjects = list(set(schema_subjects))
         classification = list(set(classification))
         license = list(set(license))
-        publisher = list(set(publisher))
         schema_codes = list(set(schema_codes))
 
         # determine if the seal is applied
@@ -331,8 +356,21 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
         # build the index part of the object
         index = {}
-        if len(issns) > 0:
-            index["issn"] = issns
+
+        if country is not None:
+            index["country"] = country
+        index["has_apc"] = self._calculate_has_apc()
+        if has_seal:
+            index["has_seal"] = has_seal
+        if unpunctitle is not None:
+            index["unpunctitle"] = unpunctitle
+        if asciiunpunctitle is not None:
+            index["asciiunpunctitle"] = asciiunpunctitle
+        index["continued"] = continued
+        index["has_editor_group"] = has_editor_group
+        index["has_editor"] = has_editor
+
+        index["issn"] = cbib.issns()
         if len(titles) > 0:
             index["title"] = titles
         if len(subjects) > 0:
@@ -341,41 +379,41 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
             index["schema_subject"] = schema_subjects
         if len(classification) > 0:
             index["classification"] = classification
-        if len(publisher) > 0:
-            index["publisher"] = publisher
-        if len(license) > 0:
-            index["license"] = license
         if len(langs) > 0:
             index["language"] = langs
-        if country is not None:
-            index["country"] = country
-        if len(schema_codes) > 0:
-            index["schema_code"] = schema_codes
-        if len(list(urls.keys())) > 0:
-            index.update(urls)
-        if has_seal:
-            index["has_seal"] = has_seal
+        if len(license) > 0:
+            index["license"] = license
         if len(classification_paths) > 0:
             index["classification_paths"] = classification_paths
-        if unpunctitle is not None:
-            index["unpunctitle"] = unpunctitle
-        if asciiunpunctitle is not None:
-            index["asciiunpunctitle"] = asciiunpunctitle
-        index["continued"] = continued
-        index["has_editor_group"] = has_editor_group
-        index["has_editor"] = has_editor
-        self._set_with_struct("index", index)
+        if len(schema_codes) > 0:
+            index["schema_code"] = schema_codes
+
+        self.__seamless__.set_with_struct("index", index)
+
+    def _calculate_has_apc(self):
+        # work out of the journal has an apc
+        has_apc = "No Information"
+        apc_present = self.bibjson().has_apc
+        if apc_present:
+            has_apc = "Yes"
+        elif self.is_ticked():  # FIXME: what's this logic about?
+            has_apc = "No"
+        return has_apc
+
 
 class Journal(JournalLikeObject):
     __type__ = "journal"
+
+    __SEAMLESS_STRUCT__ = [
+        shared_structs.JOURNAL_BIBJSON,
+        shared_structs.SHARED_JOURNAL_LIKE,
+        JOURNAL_STRUCT
+    ]
 
     def __init__(self, **kwargs):
         # FIXME: hack, to deal with ES integration layer being improperly abstracted
         if "_source" in kwargs:
             kwargs = kwargs["_source"]
-        self._add_struct(shared_structs.SHARED_BIBJSON)
-        self._add_struct(shared_structs.JOURNAL_BIBJSON_EXTENSION)
-        self._add_struct(JOURNAL_STRUCT)
         super(Journal, self).__init__(raw=kwargs)
 
     #####################################################
@@ -445,10 +483,7 @@ class Journal(JournalLikeObject):
 
     @property
     def toc_id(self):
-        bibjson = self.bibjson()
-        id_ = bibjson.get_one_identifier(bibjson.E_ISSN)
-        if not id_:
-            id_ = bibjson.get_one_identifier(bibjson.P_ISSN)
+        id_ = self.bibjson().get_preferred_issn()
         if not id_:
             id_ = self.id
         return id_
@@ -509,8 +544,8 @@ class Journal(JournalLikeObject):
 
         # get a copy of the continuation's bibjson, then remove the existing issns
         cbj = j.bibjson()
-        cbj.remove_identifiers(cbj.E_ISSN)
-        cbj.remove_identifiers(cbj.P_ISSN)
+        del cbj.eissn
+        del cbj.pissn
 
         # also remove any existing continuation information
         del cbj.replaces
@@ -520,10 +555,10 @@ class Journal(JournalLikeObject):
         # now write the new identifiers
         if eissn is not None and eissn != "":
             cissns.append(eissn)
-            cbj.add_identifier(cbj.E_ISSN, eissn)
+            cbj.eissn = eissn
         if pissn is not None and pissn != "":
             cissns.append(pissn)
-            cbj.add_identifier(cbj.P_ISSN, pissn)
+            cbj.pissn = pissn
 
         # update the title
         if title is not None:
@@ -556,20 +591,26 @@ class Journal(JournalLikeObject):
     ## admin data methods
 
     def is_in_doaj(self):
-        return self._get_single("admin.in_doaj", default=False)
+        return self.__seamless__.get_single("admin.in_doaj", default=False)
 
     def set_in_doaj(self, value):
-        self._set_with_struct("admin.in_doaj", value)
+        self.__seamless__.set_with_struct("admin.in_doaj", value)
+
+    def is_ticked(self):
+        return self.__seamless__.get_single("admin.ticked", default=False)
+
+    def set_ticked(self, ticked):
+        self.__seamless__.set_with_struct("admin.ticked", ticked)
 
     @property
     def current_application(self):
-        return self._get_single("admin.current_application")
+        return self.__seamless__.get_single("admin.current_application")
 
     def set_current_application(self, application_id):
-        self._set_with_struct("admin.current_application", application_id)
+        self.__seamless__.set_with_struct("admin.current_application", application_id)
 
     def remove_current_application(self):
-        self._delete("admin.current_application")
+        self.__seamless__.delete("admin.current_application")
 
     @property
     def related_applications(self):
@@ -577,18 +618,18 @@ class Journal(JournalLikeObject):
 
     def add_related_application(self, application_id, date_accepted=None, status=None):
         obj = {"application_id" : application_id}
-        self._delete_from_list("admin.related_applications", matchsub=obj)
+        self.__seamless__.delete_from_list("admin.related_applications", matchsub=obj)
         if date_accepted is not None:
             obj["date_accepted"] = date_accepted
         if status is not None:
             obj["status"] = status
-        self._add_to_list_with_struct("admin.related_applications", obj)
+        self.__seamless__.add_to_list_with_struct("admin.related_applications", obj)
 
     def set_related_applications(self, related_applications_records):
-        self._set_with_struct("admin.related_applications", related_applications_records)
+        self.__seamless__.set_with_struct("admin.related_applications", related_applications_records)
 
     def remove_related_applications(self):
-        self._delete("admin.related_applications")
+        self.__seamless__.delete("admin.related_applications")
 
     def related_application_record(self, application_id):
         for record in self.related_applications:
@@ -604,22 +645,6 @@ class Journal(JournalLikeObject):
             return related[0].get("application_id")
         sorted(related, key=lambda x: x.get("date_accepted", "1970-01-01T00:00:00Z"))
         return related[0].get("application_id")
-
-    def is_ticked(self):
-        return self._get_single("admin.ticked", default=False)
-
-    def set_ticked(self, ticked):
-        self._set_with_struct("admin.ticked", ticked)
-
-    @property
-    def toc_id(self):
-        bibjson = self.bibjson()
-        id_ = bibjson.get_one_identifier(bibjson.E_ISSN)
-        if not id_:
-            id_ = bibjson.get_one_identifier(bibjson.P_ISSN)
-        if not id_:
-            id_ = self.id
-        return id_
 
     ########################################################################
     ## Functions for handling continuations
@@ -699,13 +724,12 @@ class Journal(JournalLikeObject):
         self._ensure_in_doaj()
         self.calculate_tick()
         self._generate_index()
-        self._calculate_has_apc()
         self._generate_autocompletes()
         self.set_last_updated()
 
     def save(self, snapshot=True, sync_owner=True, **kwargs):
         self.prep()
-        self.check_construct()
+        self.verify_against_struct()
         if sync_owner:
             self._sync_owner_to_application()
         res = super(Journal, self).save(**kwargs)
@@ -720,130 +744,26 @@ class Journal(JournalLikeObject):
         bj = self.bibjson()
         publisher = bj.publisher
         institution = bj.institution
-        provider = bj.provider
 
         if publisher is not None:
-            self._set_with_struct("index.publisher_ac", publisher.lower())
+            self.__seamless__.set_with_struct("index.publisher_ac", publisher.lower())
 
         if institution is not None:
-            self._set_with_struct("index.institution_ac", institution.lower())
-
-        if provider is not None:
-            self._set_with_struct("index.provider_ac", provider.lower())
-
-    def _calculate_has_apc(self):
-        # work out of the journal has an apc
-        has_apc = "No Information"
-        apc_field_present = len(list(self.bibjson().apc.keys())) > 0
-        if apc_field_present:
-            has_apc = "Yes"
-        elif self.is_ticked():
-            has_apc = "No"
-
-        self._set_with_struct("index.has_apc", has_apc)
+            self.__seamless__.set_with_struct("index.institution_ac", institution.lower())
 
     def _ensure_in_doaj(self):
-        # switching active to false takes the item out of the DOAJ
-        # though note that switching active to True does not put something IN the DOAJ
-        if not self.bibjson().active:
+        if self.__seamless__.get_single("admin.in_doaj", default=None) is None:
             self.set_in_doaj(False)
 
     def _sync_owner_to_application(self):
         if self.current_application is None:
             return
-        from portality.models import Suggestion
-        ca = Suggestion.pull(self.current_application)
+        from portality.models.v2.application import Application
+        ca = Application.pull(self.current_application)
         if ca is not None and ca.owner != self.owner:
             ca.set_owner(self.owner)
             ca.save(sync_owner=False)
 
-
-JOURNAL_STRUCT = {
-    "fields" : {
-        "id" : {"coerce" : "unicode"},
-        "created_date" : {"coerce" : "utcdatetime"},
-        "last_updated" : {"coerce" : "utcdatetime"},
-        "last_reapplication" : {"coerce" : "utcdatetime"},
-        "last_manual_update" : {"coerce" : "utcdatetime"}
-    },
-    "objects" : [
-        "admin", "index"
-    ],
-
-    "structs" : {
-        "admin" : {
-            "fields" : {
-                "in_doaj" : {"coerce" : "bool"},
-                "ticked" : {"coerce" : "bool"},
-                "seal" : {"coerce" : "bool"},
-                "bulk_upload" : {"coerce" : "unicode"},
-                "owner" : {"coerce" : "unicode"},
-                "editor_group" : {"coerce" : "unicode"},
-                "editor" : {"coerce" : "unicode"},
-                "current_application" : {"coerce" : "unicode"}
-            },
-            "lists" : {
-                "contact" : {"contains" : "object"},
-                "notes" : {"contains" : "object"},
-                "related_applications" : {"contains" : "object"}
-            },
-            "structs" : {
-                "contact" : {
-                    "fields" : {
-                        "email" : {"coerce" : "unicode"},
-                        "name" : {"coerce" : "unicode"}
-                    }
-                },
-                "notes" : {
-                    "fields" : {
-                        "note" : {"coerce" : "unicode"},
-                        "date" : {"coerce" : "utcdatetime"}
-                    }
-                },
-                "related_applications" : {
-                    "fields" : {
-                        "application_id" : {"coerce" : "unicode"},
-                        "date_accepted" : {"coerce" : "utcdatetime"},
-                        "status" : {"coerce" : "unicode"}
-                    }
-                }
-            }
-        },
-        "index" : {
-            "fields" : {
-                "country" : {"coerce" : "unicode"},
-                "homepage_url" : {"coerce" : "unicode"},
-                "waiver_policy_url" : {"coerce" : "unicode"},
-                "editorial_board_url" : {"coerce" : "unicode"},
-                "aims_scope_url" : {"coerce" : "unicode"},
-                "author_instructions_url" : {"coerce" : "unicode"},
-                "oa_statement_url" : {"coerce" : "unicode"},
-                "has_apc" : {"coerce" : "unicode"},
-                "has_seal" : {"coerce" : "unicode"},
-                "unpunctitle" : {"coerce" : "unicode"},
-                "asciiunpunctitle" : {"coerce" : "unicode"},
-                "continued" : {"coerce" : "unicode"},
-                "has_editor_group" : {"coerce" : "unicode"},
-                "has_editor" : {"coerce" : "unicode"},
-                "publisher_ac" : {"coerce" : "unicode"},
-                "institution_ac" : {"coerce" : "unicode"},
-                "provider_ac" : {"coerce" : "unicode"}
-            },
-            "lists" : {
-                "issn" : {"contains" : "field", "coerce" : "unicode"},
-                "title" : {"contains" : "field", "coerce" : "unicode"},
-                "subject" : {"contains" : "field", "coerce" : "unicode"},
-                "schema_subject" : {"contains" : "field", "coerce" : "unicode"},
-                "classification" : {"contains" : "field", "coerce" : "unicode"},
-                "language" : {"contains" : "field", "coerce" : "unicode"},
-                "license" : {"contains" : "field", "coerce" : "unicode"},
-                "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
-                "schema_code" : {"contains" : "field", "coerce" : "unicode"},
-                "publisher" : {"contains" : "field", "coerce" : "unicode"}
-            }
-        }
-    }
-}
 
 MAPPING_OPTS = {
     "dynamic": None,
@@ -935,14 +855,14 @@ class IssnQuery(object):
 class PublisherQuery(object):
     exact_query = {
         "query" : {
-            "term" : {"index.publisher.exact" : "<publisher name here>"}
+            "term" : {"bibjson.publisher.name.exact" : "<publisher name here>"}
         },
         "size": 10000
     }
 
     inexact_query = {
         "query" : {
-            "term" : {"index.publisher" : "<publisher name here>"}
+            "term" : {"bibjson.publisher.name" : "<publisher name here>"}
         },
         "size": 10000
     }
@@ -955,10 +875,10 @@ class PublisherQuery(object):
         q = None
         if self.exact:
             q = deepcopy(self.exact_query)
-            q["query"]["term"]["index.publisher.exact"] = self.publisher
+            q["query"]["term"]["bibjson.publisher.name.exact"] = self.publisher
         else:
             q = deepcopy(self.inexact_query)
-            q["query"]["term"]["index.publisher"] = self.publisher.lower()
+            q["query"]["term"]["bibjson.publisher.name"] = self.publisher.lower()
         return q
 
 class TitleQuery(object):

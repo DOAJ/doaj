@@ -1,13 +1,7 @@
 from portality.lib.seamless import SeamlessMixin, to_utf8_unicode
 from portality.models.v2 import shared_structs
 from portality import datasets
-from portality.lib import dates
-
-def to_datestamp(in_format=None):
-    def stampify(val):
-        return dates.parse(val, format=in_format)
-    return stampify
-
+from portality.lib import coerce
 
 class JournalLikeBibJSON(SeamlessMixin):
 
@@ -50,7 +44,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def discontinued_datestamp(self):
-        return self.__seamless__.get_single("discontinued_date", coerce=to_datestamp())
+        return self.__seamless__.get_single("discontinued_date", coerce=coerce.to_datestamp())
 
     @property
     def eissn(self):
@@ -61,6 +55,10 @@ class JournalLikeBibJSON(SeamlessMixin):
         val = self._normalise_issn(val)
         self.__seamless__.set_with_struct("eissn", val)
 
+    @eissn.deleter
+    def eissn(self):
+        self.__seamless__.delete("eissn")
+
     @property
     def pissn(self):
         return self.__seamless__.get_single("pissn")
@@ -69,6 +67,10 @@ class JournalLikeBibJSON(SeamlessMixin):
     def pissn(self, val):
         val = self._normalise_issn(val)
         self.__seamless__.set_with_struct("pissn", val)
+
+    @pissn.deleter
+    def pissn(self):
+        self.__seamless__.delete("pissn")
 
     @property
     def publication_time_weeks(self):

@@ -166,6 +166,68 @@ JOURNAL_BIBJSON = {
     }
 }
 
-SHARED_ADMIN = {
-
+SHARED_JOURNAL_LIKE = {
+    "fields" : {
+        "id" : {"coerce" : "unicode"},
+        "created_date" : {"coerce" : "utcdatetime"},
+        "last_updated" : {"coerce" : "utcdatetime"},
+        "last_manual_update" : {"coerce" : "utcdatetime"}
+    },
+    "objects" : [
+        "admin",
+        "index"
+    ],
+    "structs" : {
+        "admin" : {
+            "fields" : {
+                "seal" : {"coerce" : "bool"},
+                "bulk_upload" : {"coerce" : "unicode"},
+                "owner" : {"coerce" : "unicode"},
+                "editor_group" : {"coerce" : "unicode"},
+                "editor" : {"coerce" : "unicode"},
+            },
+            "lists" : {
+                "contact" : {"contains" : "object"},
+                "notes" : {"contains" : "object"}
+            },
+            "structs" : {
+                "contact" : {
+                    "fields" : {
+                        "email" : {"coerce" : "unicode"},
+                        "name" : {"coerce" : "unicode"}
+                    }
+                },
+                "notes" : {
+                    "fields" : {
+                        "id" : {"coerce" : "unicode"},
+                        "note" : {"coerce" : "unicode"},
+                        "date" : {"coerce" : "utcdatetime"}
+                    }
+                },
+            }
+        },
+        "index" : {
+            "fields" : {
+                "country" : {"coerce" : "unicode"},
+                "has_apc" : {"coerce" : "unicode"},
+                "has_seal" : {"coerce" : "unicode"},
+                "unpunctitle" : {"coerce" : "unicode"},
+                "asciiunpunctitle" : {"coerce" : "unicode"},
+                "continued" : {"coerce" : "unicode"},
+                "has_editor_group" : {"coerce" : "unicode"},
+                "has_editor" : {"coerce" : "unicode"}
+            },
+            "lists" : {
+                "issn" : {"contains" : "field", "coerce" : "unicode"},
+                "title" : {"contains" : "field", "coerce" : "unicode"},
+                "subject" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_subject" : {"contains" : "field", "coerce" : "unicode"},
+                "classification" : {"contains" : "field", "coerce" : "unicode"},
+                "language" : {"contains" : "field", "coerce" : "unicode"},
+                "license" : {"contains" : "field", "coerce" : "unicode"},
+                "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_code" : {"contains" : "field", "coerce" : "unicode"}
+            }
+        }
+    }
 }

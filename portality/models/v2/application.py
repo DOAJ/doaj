@@ -7,17 +7,53 @@ from portality.models.v2 import shared_structs
 from portality.models.v2.journal import JournalLikeObject
 
 
-class Suggestion(JournalLikeObject):
-    __type__ = "suggestion"
+APPLICATION_STRUCT = {
+    "objects" : [
+        "admin", "index"
+    ],
+
+    "structs" : {
+        "admin" : {
+            "fields" : {
+                "current_journal" : {"coerce" : "unicode"},
+                "related_journal" : {"coerce" : "unicode"},
+                "application_status" : {"coerce" : "unicode"},
+                "date_applied" : {"coerce" : "utcdatetime"}
+            },
+            "objects" : [
+                "applicant"
+            ],
+            "structs" : {
+                "applicant" : {
+                    "fields" : {
+                        "email" : {"coerce" : "unicode"},
+                        "name" : {"coerce" : "unicode"}
+                    }
+                }
+            }
+        },
+        "index" : {
+            "fields" : {
+                "application_type": {"coerce": "unicode"}
+            }
+        }
+    }
+}
+
+class Application(JournalLikeObject):
+    __type__ = "application"
+
+    __SEAMLESS_STRUCT__ = [
+        shared_structs.JOURNAL_BIBJSON,
+        shared_structs.SHARED_JOURNAL_LIKE,
+        APPLICATION_STRUCT
+    ]
 
     def __init__(self, **kwargs):
         # FIXME: hack, to deal with ES integration layer being improperly abstracted
         if "_source" in kwargs:
             kwargs = kwargs["_source"]
-        self._add_struct(shared_structs.SHARED_BIBJSON)
-        self._add_struct(shared_structs.JOURNAL_BIBJSON_EXTENSION)
-        self._add_struct(APPLICATION_STRUCT)
-        super(Suggestion, self).__init__(raw=kwargs)
+        super(Application, self).__init__(raw=kwargs)
 
     @classmethod
     def get_by_owner(cls, owner):
@@ -54,7 +90,7 @@ class Suggestion(JournalLikeObject):
 
     @property
     def current_journal(self):
-        return self._get_single("admin.current_journal")
+        return self.__seamless__.get_single("admin.current_journal")
 
     def set_current_journal(self, journal_id):
         self._set_with_struct("admin.current_journal", journal_id)
@@ -64,7 +100,7 @@ class Suggestion(JournalLikeObject):
 
     @property
     def related_journal(self):
-        return self._get_single("admin.related_journal")
+        return self.__seamless__.get_single("admin.related_journal")
 
     def set_related_journal(self, journal_id):
         self._set_with_struct("admin.related_journal", journal_id)
@@ -74,63 +110,45 @@ class Suggestion(JournalLikeObject):
 
     @property
     def application_status(self):
-        return self._get_single("admin.application_status")
+        return self.__seamless__.get_single("admin.application_status")
 
     def set_application_status(self, val):
         self._set_with_struct("admin.application_status", val)
 
-    ### suggestion properties (as in, the Suggestion model's "suggestion" object ###
+    @property
+    def date_applied(self):
+        return self.__seamless__.get_single("admin.date_applied")
+
+    @date_applied.setter
+    def date_applied(self, val):
+        self.__seamless__.set_with_struct("admin.date_applied", val)
 
     @property
-    def suggested_on(self):
-        return self._get_single("suggestion.suggested_on")
+    def applicant(self):
+        return self.__seamless__.get_single("admin.applicant", default={})
 
-    @suggested_on.setter
-    def suggested_on(self, val):
-        self._set_with_struct("suggestion.suggested_on", val)
-
-    @property
-    def articles_last_year(self):
-        return self._get_single("suggestion.articles_last_year")
-
-    def set_articles_last_year(self, count, url):
-        self._set_with_struct("suggestion.articles_last_year.count", count)
-        self._set_with_struct("suggestion.articles_last_year.url", url)
-
-    @property
-    def article_metadata(self):
-        return self._get_single("suggestion.article_metadata")
-
-    @article_metadata.setter
-    def article_metadata(self, val):
-        self._set_with_struct("suggestion.article_metadata", val)
-
-    @property
-    def suggester(self):
-        return self._get_single("suggestion.suggester", default={})
-
-    def set_suggester(self, name, email):
-        self._set_with_struct("suggestion.suggester.name", name)
-        self._set_with_struct("suggestion.suggester.email", email)
+    def set_applicant(self, name, email):
+        self.__seamless__.set_with_struct("admin.applicant.name", name)
+        self.__seamless__.set_with_struct("admin.applicant.email", email)
 
     def _sync_owner_to_journal(self):
         if self.current_journal is None:
             return
-        from portality.models import Journal
+        from portality.models.v2.journal import Journal
         cj = Journal.pull(self.current_journal)
         if cj is not None and cj.owner != self.owner:
             cj.set_owner(self.owner)
             cj.save(sync_owner=False)
 
     def _generate_index(self):
-        super(Suggestion, self)._generate_index()
+        super(Application, self)._generate_index()
 
         if self.current_journal is not None:
-            self._set_with_struct("index.application_type", constants.APPLICATION_TYPE_UPDATE_REQUEST)
+            self.__seamless__.set_with_struct("index.application_type", constants.APPLICATION_TYPE_UPDATE_REQUEST)
         elif self.application_status in [constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED]:
-            self._set_with_struct("index.application_type", constants.APPLICATION_TYPE_FINISHED)
+            self.__seamless__.set_with_struct("index.application_type", constants.APPLICATION_TYPE_FINISHED)
         else:
-            self._set_with_struct("index.application_type", constants.APPLICATION_TYPE_NEW_APPLICATION)
+            self.__seamless__.set_with_struct("index.application_type", constants.APPLICATION_TYPE_NEW_APPLICATION)
 
     def prep(self):
         self._generate_index()
@@ -138,110 +156,30 @@ class Suggestion(JournalLikeObject):
 
     def save(self, sync_owner=True, **kwargs):
         self.prep()
-        self.check_construct()
+        self.verify_against_struct()
         if sync_owner:
             self._sync_owner_to_journal()
-        return super(Suggestion, self).save(**kwargs)
+        return super(Application, self).save(**kwargs)
 
-APPLICATION_STRUCT = {
-    "fields" : {
-        "id" : {"coerce" : "unicode"},
-        "created_date" : {"coerce" : "utcdatetime"},
-        "last_updated" : {"coerce" : "utcdatetime"},
-        "last_manual_update" : {"coerce" : "utcdatetime"}
-    },
-    "objects" : [
-        "admin", "index", "suggestion"
-    ],
 
-    "structs" : {
-        "admin" : {
-            "fields" : {
-                "seal" : {"coerce" : "bool"},
-                "bulk_upload" : {"coerce" : "unicode"},
-                "owner" : {"coerce" : "unicode"},
-                "editor_group" : {"coerce" : "unicode"},
-                "editor" : {"coerce" : "unicode"},
-                "current_journal" : {"coerce" : "unicode"},
-                "related_journal" : {"coerce" : "unicode"},
-                "application_status" : {"coerce" : "unicode"}
-            },
-            "lists" : {
-                "contact" : {"contains" : "object"},
-                "notes" : {"contains" : "object"}
-            },
-            "structs" : {
-                "contact" : {
-                    "fields" : {
-                        "email" : {"coerce" : "unicode"},
-                        "name" : {"coerce" : "unicode"}
-                    }
-                },
-                "notes" : {
-                    "fields" : {
-                        "note" : {"coerce" : "unicode"},
-                        "date" : {"coerce" : "utcdatetime"}
-                    }
-                }
-            }
-        },
-        "index" : {
-            "fields" : {
-                "country" : {"coerce" : "unicode"},
-                "homepage_url" : {"coerce" : "unicode"},
-                "waiver_policy_url" : {"coerce" : "unicode"},
-                "editorial_board_url" : {"coerce" : "unicode"},
-                "aims_scope_url" : {"coerce" : "unicode"},
-                "author_instructions_url" : {"coerce" : "unicode"},
-                "oa_statement_url" : {"coerce" : "unicode"},
-                "has_apc" : {"coerce" : "unicode"},
-                "has_seal" : {"coerce" : "unicode"},
-                "unpunctitle" : {"coerce" : "unicode"},
-                "asciiunpunctitle" : {"coerce" : "unicode"},
-                "continued" : {"coerce" : "unicode"},
-                "application_type": {"coerce": "unicode"},
-                "has_editor_group" : {"coerce" : "unicode"},
-                "has_editor" : {"coerce" : "unicode"}
-            },
-            "lists" : {
-                "issn" : {"contains" : "field", "coerce" : "unicode"},
-                "title" : {"contains" : "field", "coerce" : "unicode"},
-                "subject" : {"contains" : "field", "coerce" : "unicode"},
-                "schema_subject" : {"contains" : "field", "coerce" : "unicode"},
-                "classification" : {"contains" : "field", "coerce" : "unicode"},
-                "language" : {"contains" : "field", "coerce" : "unicode"},
-                "license" : {"contains" : "field", "coerce" : "unicode"},
-                "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
-                "schema_code" : {"contains" : "field", "coerce" : "unicode"},
-                "publisher" : {"contains" : "field", "coerce" : "unicode"}
-            }
-        },
-        "suggestion" : {
-            "fields" : {
-                "article_metadata" : {"coerce" : "bool"},
-                "suggested_on" : {"coerce" : "utcdatetime"}
-            },
-            "objects" : [
-                "articles_last_year",
-                "suggester"
-            ],
-            "structs" : {
-                "suggester" : {
-                    "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "email" : {"coerce" : "unicode"}
-                    }
-                },
-                "articles_last_year" : {
-                    "fields" : {
-                        "count" : {"coerce" : "integer"},
-                        "url" : {"coerce" : "unicode"}
-                    }
-                }
-            }
-        }
-    }
-}
+    #########################################################
+    ## DEPRECATED METHODS
+
+    @property
+    def suggested_on(self):
+        return self.date_applied
+
+    @suggested_on.setter
+    def suggested_on(self, val):
+        self.date_applied = val
+
+    @property
+    def suggester(self):
+        return self.applicant
+
+    def set_suggester(self, name, email):
+        self.set_applicant(name, email)
+
 
 MAPPING_OPTS = {
     "dynamic": None,
@@ -258,7 +196,7 @@ MAPPING_OPTS = {
 
 class SuggestionQuery(object):
     _base_query = { "query" : { "bool" : {"must" : []}}}
-    _email_term = {"term" : {"suggestion.suggester.email.exact" : "<email address>"}}
+    _email_term = {"term" : {"admin.applicant.email.exact" : "<email address>"}}
     _status_terms = {"terms" : {"admin.application_status.exact" : ["<list of statuses>"]}}
     _owner_term = {"term" : {"admin.owner.exact" : "<the owner id>"}}
 
@@ -274,7 +212,7 @@ class SuggestionQuery(object):
         q = deepcopy(self._base_query)
         if self.email:
             et = deepcopy(self._email_term)
-            et["term"]["suggestion.suggester.email.exact"] = self.email
+            et["term"]["admin.applicant.email.exact"] = self.email
             q["query"]["bool"]["must"].append(et)
         if self.statuses and len(self.statuses) > 0:
             st = deepcopy(self._status_terms)
