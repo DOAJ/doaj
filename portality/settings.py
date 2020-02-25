@@ -290,6 +290,16 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
+    "unicode_lower": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
     "utcdatetime": {
         "type": "date",
         "format": "dateOptionalTime"
