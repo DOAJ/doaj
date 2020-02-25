@@ -8,21 +8,28 @@ from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.lib import dataobj
 from portality.models import shared_structs
-
+from portality.lib import seamless
 
 class TestClient(DoajTestCase):
 
     def test_00_structs(self):
         # shared structs
-        dataobj.construct_validate(shared_structs.SHARED_BIBJSON)
-        dataobj.construct_validate(shared_structs.JOURNAL_BIBJSON_EXTENSION)
+        try:
+            seamless.Construct(shared_structs.JOURNAL_BIBJSON, None, None).validate()
+        except seamless.SeamlessException as e:
+            raise Exception(e.message)
+
+        try:
+            seamless.Construct(shared_structs.SHARED_JOURNAL_LIKE, None, None).validate()
+        except seamless.SeamlessException as e:
+            raise Exception(e.message)
 
         # constructed structs
         journal = models.Journal()
-        dataobj.construct_validate(journal._struct)
+        journal.__seamless_struct__.validate()
 
-        jbj = models.JournalBibJSON()
-        dataobj.construct_validate(jbj._struct)
+        application = models.Application()
+        application.__seamless_struct__.validate()
 
     def test_01_imports(self):
         """import all of the model objects successfully?"""

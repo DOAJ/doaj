@@ -86,7 +86,7 @@ class Application(JournalLikeObject):
         return cls.q2obj(q=q.query())
 
     def mappings(self):
-        return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
+        return es_data_mapping.create_mapping(self.__seamless_struct__.raw, MAPPING_OPTS)
 
     @property
     def current_journal(self):

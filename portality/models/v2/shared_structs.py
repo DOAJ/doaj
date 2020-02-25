@@ -29,10 +29,10 @@ JOURNAL_BIBJSON = {
                 "editorial",
                 "institution",
                 "other_charges",
-                "pid_schema",
+                "pid_scheme",
                 "plagiarism",
                 "preservation",
-                "publisher"
+                "publisher",
                 "ref",
                 "waiver"
             ],
@@ -125,7 +125,7 @@ JOURNAL_BIBJSON = {
                 "preservation" : {
                     "fields" : {
                         "has_preservation" : {"coerce" : "bool"},
-                        "national_library" : {"coerce", "unicode"},
+                        "national_library" : {"coerce" : "unicode"},
                         "other" : {"coerce" : "unicode"},
                         "url" : {"coerce" : "unicode"}
                     },
