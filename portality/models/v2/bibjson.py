@@ -226,6 +226,14 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.set_with_struct("article.orcid", val)
 
     @property
+    def article_i4oc_open_citations(self):
+        return self.__seamless__.get_single("article.i4oc_open_citations")
+
+    @article_i4oc_open_citations.setter
+    def article_i4oc_open_citations(self, val):
+        self.__seamless__.set_with_struct("article.i4oc_open_citations", val)
+
+    @property
     def author_retains_copyright(self):
         return self.__seamless__.get_single("copyright.author_retains")
 

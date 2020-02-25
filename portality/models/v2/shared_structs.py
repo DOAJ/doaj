@@ -58,7 +58,8 @@ JOURNAL_BIBJSON = {
                     "fields" : {
                         "embedded_license" : {"coerce" : "bool"},
                         "embedded_license_example" : {"coerce" : "unicode"},
-                        "orcid" : {"coerce" : "bool"}
+                        "orcid" : {"coerce" : "bool"},
+                        "i4oc_open_citations" : {"coerce" : "bool"}
                     }
                 },
                 "copyright" : {
@@ -163,4 +164,8 @@ JOURNAL_BIBJSON = {
             }
         }
     }
+}
+
+SHARED_ADMIN = {
+
 }

@@ -58,7 +58,8 @@ One type may have some admin fields and not others and vice versa.
         "article" : {
             "embedded_license": true,
             "embedded_license_example" : "<example url>",
-            "orcid" : true
+            "orcid" : true,
+            "i4oc_open_citations" : true
         },
         "boai" : true,
         "copyright" : {
