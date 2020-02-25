@@ -201,11 +201,12 @@ class SeamlessMixin(object):
         if hasattr(self.__class__, name):
             return object.__getattribute__(self, name)
 
-        prop = self.__seamless_properties__.get(name)
-        if prop is not None:
-            path = prop["path"]
-            wrap = prop.get("wrapper")
-            return self.__seamless__.get_property(path, wrap)
+        if self.__seamless_properties__ is not None:
+            prop = self.__seamless_properties__.get(name)
+            if prop is not None:
+                path = prop["path"]
+                wrap = prop.get("wrapper")
+                return self.__seamless__.get_property(path, wrap)
 
         raise AttributeError('{name} is not set'.format(name=name))
 
@@ -216,13 +217,14 @@ class SeamlessMixin(object):
         if name.startswith("__seamless"):
             return object.__setattr__(self, name, value)
 
-        prop = self.__seamless_properties__.get(name)
-        if prop is not None:
-            path = prop["path"]
-            unwrap = prop.get("unwrapper")
-            wasset = self.__seamless__.set_property(path, value, unwrap)
-            if wasset:
-                return
+        if self.__seamless_properties__ is not None:
+            prop = self.__seamless_properties__.get(name)
+            if prop is not None:
+                path = prop["path"]
+                unwrap = prop.get("unwrapper")
+                wasset = self.__seamless__.set_property(path, value, unwrap)
+                if wasset:
+                    return
 
         # fall back to the default approach of allowing any attribute to be set on the object
         return object.__setattr__(self, name, value)
@@ -671,6 +673,10 @@ class Construct(object):
         return nk
 
     @property
+    def raw(self):
+        return self._definition
+
+    @property
     def required(self):
         return self._definition.get("required", [])
 
@@ -713,7 +719,7 @@ class Construct(object):
             self._definition["structs"][field] = deepcopy(struct)
         else:
             # recursively merge
-            self._definition["structs"][field] = Construct.merge(self._definition["structs"][field], struct)
+            self._definition["structs"][field] = Construct.merge(self._definition["structs"][field], struct).raw
 
     @property
     def fields(self):
@@ -906,7 +912,7 @@ class Construct(object):
 
         def recurse(struct, context):
             # check that only the allowed keys are present
-            keys = struct.keys()
+            keys = struct.raw.keys()
             for k in keys:
                 if k not in ["fields", "objects", "lists", "required", "structs"]:
                     raise SeamlessException("Key '{x}' present in struct at '{y}', but is not permitted".format(x=k, y=context))
@@ -948,13 +954,13 @@ class Construct(object):
                     raise SeamlessException("struct contains key '{a}' which is not listed in object or list definitions at '{x}'".format(a=s, x=context))
 
             # now recurse into each struct
-            for k,v in substructs.items():
+            for k, v in substructs.items():
                 nc = context
                 if nc == "":
                     nc = k
                 else:
                     nc += "." + k
-                recurse(v, context=nc)
+                recurse(Construct(v, None, None), context=nc)
 
             return True
 
