@@ -1,183 +1,488 @@
-from portality.lib import dataobj
+from portality.lib.seamless import SeamlessMixin, to_utf8_unicode
 from portality.models.v2 import shared_structs
+from portality import datasets
+from portality.lib import dates
 
-class GenericBibJSON(dataobj.DataObj):
-    # vocab of known identifier types
-    P_ISSN = "pissn"
-    E_ISSN = "eissn"
-    DOI = "doi"
+def to_datestamp(in_format=None):
+    def stampify(val):
+        return dates.parse(val, format=in_format)
+    return stampify
 
-    # allowable values for the url types
-    HOMEPAGE = "homepage"
-    WAIVER_POLICY = "waiver_policy"
-    EDITORIAL_BOARD = "editorial_board"
-    AIMS_SCOPE = "aims_scope"
-    AUTHOR_INSTRUCTIONS = "author_instructions"
-    OA_STATEMENT = "oa_statement"
-    FULLTEXT = "fulltext"
+
+class JournalLikeBibJSON(SeamlessMixin):
+
+    __SEAMLESS_STRUCT__ = shared_structs.JOURNAL_BIBJSON.get("structs", {}).get("bibjson")
 
     # constructor
     def __init__(self, bibjson=None, **kwargs):
-        self._add_struct(shared_structs.SHARED_BIBJSON.get("structs", {}).get("bibjson"))
-        # construct_maintain_reference is enforced here, don't allow override with kwargs
-        kwargs.pop('construct_maintain_reference', None)
-        super(GenericBibJSON, self).__init__(raw=bibjson, construct_maintain_reference=True, **kwargs)
+        super(JournalLikeBibJSON, self).__init__(raw=bibjson, **kwargs)
 
     ####################################################
-    # shared simple property getter and setters
+    # Current getters and setters
+
+    @property
+    def alternative_title(self):
+        return self.__seamless__.get_single("alternative_title")
+
+    @alternative_title.setter
+    def alternative_title(self, val):
+        self.__seamless__.set_with_struct("alternative_title", val)
+
+    @property
+    def boai(self):
+        return self.__seamless__.get_single("boai")
+
+    @boai.setter
+    def boai(self, val):
+        self.__seamless__.set_with_struct("boai", val)
+
+    @property
+    def discontinued_date(self):
+        return self.__seamless__.get_single("discontinued_date")
+
+    @discontinued_date.setter
+    def discontinued_date(self, val):
+        self.__seamless__.set_with_struct("discontinued_date", val)
+
+    @discontinued_date.deleter
+    def discontinued_date(self):
+        self.__seamless__.delete("discontinued_date")
+
+    @property
+    def discontinued_datestamp(self):
+        return self.__seamless__.get_single("discontinued_date", coerce=to_datestamp())
+
+    @property
+    def eissn(self):
+        return self.__seamless__.get_single("eissn")
+
+    @eissn.setter
+    def eissn(self, val):
+        val = self._normalise_issn(val)
+        self.__seamless__.set_with_struct("eissn", val)
+
+    @property
+    def pissn(self):
+        return self.__seamless__.get_single("pissn")
+
+    @pissn.setter
+    def pissn(self, val):
+        val = self._normalise_issn(val)
+        self.__seamless__.set_with_struct("pissn", val)
+
+    @property
+    def publication_time_weeks(self):
+        return self.__seamless__.get_single("publication_time")
+
+    @publication_time_weeks.setter
+    def publication_time_weeks(self, weeks):
+        self.__seamless__.set_with_struct("publication_time", weeks)
 
     @property
     def title(self):
-        return self._get_single("title")
+        return self.__seamless__.get_single("title")
 
     @title.setter
     def title(self, val):
-        self._set_with_struct("title", val)
+        self.__seamless__.set_with_struct("title", val)
 
-    #####################################################
-    # complex getters and setters
+    @property
+    def is_replaced_by(self):
+        return self.__seamless__.get_list("is_replaced_by")
 
+    @is_replaced_by.setter
+    def is_replaced_by(self, val):
+        self.__seamless__.set_with_struct("is_replaced_by", val)
 
-    ## work with the identifiers
+    @is_replaced_by.deleter
+    def is_replaced_by(self):
+        self.__seamless__.delete("is_replaced_by")
 
-    def add_identifier(self, idtype, value):
-        idobj = {"type" : idtype, "id" : self._normalise_identifier(idtype, value)}
-        self._add_to_list_with_struct("identifier", idobj)
-
-    def get_identifiers(self, idtype=None):
-        if idtype is None:
-            return self._get_list("identifier")
-
-        ids = []
-        for identifier in self._get_list("identifier"):
-            if identifier.get("type") == idtype and identifier.get("id") not in ids:
-                ids.append(identifier.get("id"))
-        return ids
-
-    def get_one_identifier(self, idtype=None):
-        results = self.get_identifiers(idtype=idtype)
-        if len(results) > 0:
-            return results[0]
-        else:
-            return None
-
-    def remove_identifiers(self, idtype=None, id=None):
-        # if we are to remove all identifiers, this is easy
-        if idtype is None and id is None:
-            self._delete("identifier")
-            return
-
-        match = {}
-        if idtype is not None:
-            match["type"] = idtype
-        if id is not None:
-            match["id"] = id
-        self._delete_from_list("identifier", matchsub=match)
-
-    def _normalise_identifier(self, idtype, value):
-        if idtype in [self.P_ISSN, self.E_ISSN]:
-            return self._normalise_issn(value)
-        return value
-
-    def _normalise_issn(self, issn):
-        issn = issn.upper()
-        if len(issn) > 8: return issn
-        if len(issn) == 8:
-            if "-" in issn: return "0" + issn
-            else: return issn[:4] + "-" + issn[4:]
-        if len(issn) < 8:
-            if "-" in issn: return ("0" * (9 - len(issn))) + issn
-            else:
-                issn = ("0" * (8 - len(issn))) + issn
-                return issn[:4] + "-" + issn[4:]
-
-    ## work with keywords
+    def add_is_replaced_by(self, val):
+        self.__seamless__.add_to_list_with_struct("is_replaced_by", val)
 
     @property
     def keywords(self):
-        return self._get_list("keywords")
+        return self.__seamless__.get_list("keywords")
 
     def add_keyword(self, keyword):
         if keyword is not None:
-            self._add_to_list_with_struct("keywords", keyword.lower())
+            self.__seamless__.add_to_list_with_struct("keywords", keyword.lower())
 
-    def set_keywords(self, keywords):
+    @keywords.setter
+    def keywords(self, keywords):
         if type(keywords) is list:
             keywords = [w.lower() for w in keywords]
-            self._set_with_struct("keywords", keywords)
+            self.__seamless__.set_with_struct("keywords", keywords)
         else:
             if keywords is not None:
-                self._set_with_struct("keywords", keywords.lower())
+                self.__seamless__.set_with_struct("keywords", keywords.lower())
 
-    ## work with urls
+    @property
+    def language(self):
+        return self.__seamless__.get_list("language")
 
-    def add_url(self, url, urltype=None, content_type=None):
-        if url is None:
-            # do not add empty URL-s
-            return
+    @language.setter
+    def language(self, language):
+        self.__seamless__.set_with_struct("language", language)
 
-        urlobj = {"url" : url}
-        if urltype is not None:
-            urlobj["type"] = urltype
-        if content_type is not None:
-            urlobj["content_type"] = content_type
+    def add_language(self, language):
+        self._add_to_list_with_struct("language", language)
 
-        self._add_to_list_with_struct("link", urlobj)
+    @property
+    def licences(self):
+        return self.__seamless__.get_single("license")
 
-    def get_urls(self, urltype=None, unpack_urlobj=True):
-        if urltype is None:
-            return self._get_list("link")
-
-        urls = []
-        for link in self._get_list("link"):
-            if link.get("type") == urltype:
-                if unpack_urlobj:
-                    urls.append(link.get("url"))
-                else:
-                    urls.append(link)
-        return urls
-
-    def get_single_url(self, urltype, unpack_urlobj=True):
-        urls = self.get_urls(urltype=urltype, unpack_urlobj=unpack_urlobj)
-        if len(urls) > 0:
-            return urls[0]
-        return None
-
-    def remove_urls(self, urltype=None, url=None):
-        # if we are to remove all urls, this is easy
-        if urltype is None and url is None:
-            self._delete("link")
-            return
-
-        match = {}
-        if urltype is not None:
-            match["type"] = urltype
+    def add_licence(self, license_type, url=None, by=None, sa=None, nc=None, nd=None):
+        lobj = {"type": license_type}
         if url is not None:
-            match["url"] = id
-        self._delete_from_list("link", matchsub=match)
+            lobj["url"] = url
+        if by is not None:
+            lobj["BY"] = by
+        if sa is not None:
+            lobj["SA"] = sa
+        if nc is not None:
+            lobj["NC"] = nc
+        if nd is not None:
+            lobj["ND"] = nd
 
-    ## work with subjects
+        self.__seamless__.add_to_list_with_struct("license", lobj)
+
+    @property
+    def replaces(self):
+        return self.__seamless__.get_list("replaces")
+
+    @replaces.setter
+    def replaces(self, val):
+        self.__seamless__.set_with_struct("replaces", val)
+
+    @replaces.deleter
+    def replaces(self):
+        self.__seamless__.delete("replaces")
+
+    def add_replaces(self, val):
+        self.__seamless__.add_to_list_with_struct("replaces", val)
+
+    @property
+    def subject(self):
+        return self.__seamless__.get_single("subject")
+
+    @subject.setter
+    def subject(self, subjects):
+        self.__seamless__.set_with_struct("subject", subjects)
+
+    @subject.deleter
+    def subject(self):
+        self.__seamless__.delete("subject")
 
     def add_subject(self, scheme, term, code=None):
-        sobj = {"scheme" : scheme, "term" : term}
+        sobj = {"scheme": scheme, "term": term}
         if code is not None:
             sobj["code"] = code
-        self._add_to_list_with_struct("subject", sobj)
+        self.__seamless__.add_to_list_with_struct("subject", sobj)
 
-    def subjects(self):
-        return self._get_list("subject")
+    @property
+    def apcs(self):
+        return self.__seamless__.get_list("apc.max")
 
-    def set_subjects(self, subjects):
-        self._set_with_struct("subject", subjects)
+    def add_apc(self, currency, price):
+        self.__seamless__.add_to_list_with_struct("apc.max", {"currency": currency, "price" : price})
+        self.__seamless__.set_with_struct("apc.has_apc", True)
 
-    def remove_subjects(self):
-        self._delete("subject")
+    @property
+    def apc_url(self):
+        return self.__seamless__.get_single("apc.url")
+
+    @apc_url.setter
+    def apc_url(self, url):
+        self.__seamless__.set_with_struct("apc.url", url)
+
+    @property
+    def has_apc(self):
+        return self.__seamless__.get_single("apc.has_apc")
+
+    @property
+    def article_embedded_license(self):
+        return self.__seamless__.get_single("article.embedded_license")
+
+    @article_embedded_license.setter
+    def article_embedded_license(self, val):
+        self.__seamless__.set_with_struct("article.embedded_license", val)
+
+    @property
+    def article_embedded_license_example_url(self):
+        return self.__seamless__.get_single("article.embedded_license_example")
+
+    @article_embedded_license_example_url.setter
+    def article_embedded_license_example_url(self, url):
+        self.__seamless__.set_with_struct("article.embedded_license_example", url)
+
+    @property
+    def article_orcid(self):
+        return self.__seamless__.get_single("article.orcid")
+
+    @article_orcid.setter
+    def article_orcid(self, val):
+        self.__seamless__.set_with_struct("article.orcid", val)
+
+    @property
+    def author_retains_copyright(self):
+        return self.__seamless__.get_single("copyright.author_retains")
+
+    @author_retains_copyright.setter
+    def author_retains_copyright(self, val):
+        self.__seamless__.set_single("copyright.author_retains", val)
+
+    @property
+    def copyright_url(self):
+        return self.__seamless__.get_single("copyright.url")
+
+    @copyright_url.setter
+    def copyright_url(self, url):
+        self.__seamless__.set_with_struct("copyright.url", url)
+
+    @property
+    def deposit_policy(self):
+        return self.__seamless__.get_list("deposit_policy.service")
+
+    @deposit_policy.setter
+    def deposit_policy(self, policies):
+        self.__seamless__.set_with_struct("deposit_policy.service", policies)
+        if len(policies) > 0:
+            self.__seamless__.set_with_struct("deposit_policy.has_policy", True)
+
+    def add_deposit_policy(self, policy):
+        self.__seamless__.add_to_list_with_struct("deposit_policy.service", policy)
+        self.__seamless__.set_with_struct("deposit_policy.has_policy", True)
+
+    @property
+    def has_deposit_policy(self):
+        return self.__seamless__.get_single("deposit_policy.has_policy")
+
+    @property
+    def deposit_policy_registered(self):
+        return self.__seamless__.get_single("deposit_policy.is_registered")
+
+    @deposit_policy_registered.setter
+    def deposit_policy_registered(self, val):
+        self.__seamless__.set_with_struct("deposit_policy.is_registered", val)
+
+    def set_editorial_review(self, process, review_url, board_url=None):
+        self._set_with_struct("editorial.review_process", process)
+        self._set_with_struct("editorial.review_url", review_url)
+        if board_url is not None:
+            self._set_with_struct("editorial.board_url", review_url)
+
+    @property
+    def editorial_review_process(self):
+        return self.__seamless__.get_list("editorial.review_process")
+
+    @property
+    def editorial_review_url(self):
+        return self.__seamless__.get_single("editorial.review_url")
+
+    @property
+    def editorial_board_url(self):
+        return self.__seamless__.get_single("editorial.board_url")
+
+    @property
+    def institution(self):
+        return self.__seamless__.get_single("institution.name")
+
+    @institution.setter
+    def institution(self, val):
+        self.__seamless__set_with_struct("institution.name", val)
+
+    @property
+    def institution_country(self):
+        return self.__seamless__.get_single("institution.country")
+
+    @institution_country.setter
+    def institution_country(self, country):
+        self.__seamless__.set_with_struct("institution.country", country)
+
+    @property
+    def has_other_charges(self):
+        return self.__seamless__.get_single("other_charges.has_other_charges")
+
+    @has_other_charges.setter
+    def has_other_charges(self, val):
+        self.__seamless__.set_with_struct("other_charges.has_other_charges", val)
+
+    @property
+    def other_charges_url(self):
+        return self.__seamless__.get_single("other_charges.url")
+
+    @other_charges_url.setter
+    def other_charges_url(self, url):
+        self.__seamless__.set_with_struct("other_charges.url")
+
+    @property
+    def persistent_identifier_scheme(self):
+        return self.__seamless__.get_list("pid_scheme.scheme")
+
+    @persistent_identifier_scheme.setter
+    def persistent_identifier_scheme(self, schemes):
+        self.__seamless__.set_with_struct("pid_scheme.scheme", schemes)
+        if len(schemes) > 0:
+            self.__seamless__.set_with_struct("pid_scheme.has_pid_scheme", True)
+
+    def add_persistent_identifier_scheme(self, scheme):
+        self.__seamless__.add_to_list_with_struct("pid_scheme.scheme", scheme)
+        self.__seamless__.set_with_struct("pid_scheme.has_pid_scheme", True)
+
+    def set_plagiarism_detection(self, url, has_detection=True):
+        self._set_with_struct("plagiarism.detection", has_detection)
+        self._set_with_struct("plagiarism.url", url)
+
+    @property
+    def plagiarism_detection(self):
+        return self._get_single("plagiarism_detection", default={})
+
+    @property
+    def preservation(self):
+        return self.__seamless__.get_single("preservation")
+
+    @property
+    def preservation_services(self):
+        pres = self.preservation
+        ret = []
+        if "service" in pres:
+            ret += pres["service"]
+        if "national_library" in pres:
+            ret.append("A national library: " + pres["national_library"])
+        if "other" in pres:
+            ret.append("Other: " + pres["other"])
+        return ret
+
+    def set_preservation(self, services, policy_url):
+        obj = {}
+        known = []
+        for p in services:
+            if isinstance(p, list):
+                k, v = p
+                if k.lower() == "other":
+                    obj["other"] = v
+                elif k.lower() == "a national library":
+                    obj["national_library"] = v
+            else:
+                known.append(p)
+        if len(known) > 0:
+            obj["services"] = known
+        if policy_url is not None:
+            obj["url"] = policy_url
+
+        self.__seamless__.set_with_struct("preservation", obj)
+
+    def add_preservation(self, service):
+        if isinstance(service, list):
+            k, v = service
+            if k.lower() == "other":
+                self.__seamless__set_with_struct("preservation.other", v)
+            elif k.lower() == "a national library":
+                self.__seamless__set_with_struct("preservation.national_library", v)
+        else:
+            self.__seamless__.add_to_list_with_struct("preservation.service", service)
+
+    @property
+    def publisher(self):
+        return self.__seamless__.get_single("publisher.name")
+
+    @publisher.setter
+    def publisher(self, val):
+        self.__seamless__set_with_struct("publisher.name", val)
+
+    @property
+    def publisher_country(self):
+        return self.__seamless__.get_single("publisher.country")
+
+    @publisher_country.setter
+    def publisher_country(self, country):
+        self.__seamless__.set_with_struct("publisher.country", country)
+
+    @property
+    def oa_statement_url(self):
+        return self.__seamless__.get_single("ref.oa_statement")
+
+    @oa_statement_url.setter
+    def oa_statement_url(self, url):
+        self.__seamless__.set_with_struct("ref.oa_statement", url)
+
+    @property
+    def journal_url(self):
+        return self.__seamless__.get_single("ref.journal")
+
+    @journal_url.setter
+    def journal_url(self, url):
+        self.__seamless__.set_with_struct("ref.journal", url)
+
+    @property
+    def aims_scope_url(self):
+        return self.__seamless__.get_single("ref.aims_scope")
+
+    @aims_scope_url.setter
+    def aims_scope_url(self, url):
+        self.__seamless__.set_with_struct("ref.aims_scope", url)
+
+    @property
+    def author_instructions_url(self):
+        return self.__seamless__.get_single("ref.author_instructions")
+
+    @author_instructions_url.setter
+    def author_instructions_url(self, url):
+        self.__seamless__.set_with_struct("ref.author_instructions", url)
+
+    @property
+    def license_terms_url(self):
+        return self.__seamless__.get_single("ref.license_terms")
+
+    @license_terms_url.setter
+    def license_terms_url(self, url):
+        self.__seamless__.set_with_struct("ref.license_terms", url)
+
+    @property
+    def has_waiver(self):
+        return self.__seamless__.get_single("waiver.has_waiver")
+
+    @has_waiver.setter
+    def has_waiver(self, url):
+        self.__seamless__.set_with_struct("waiver.has_waiver", url)
+
+    @property
+    def waiver_url(self):
+        return self.__seamless__.get_single("waiver.url")
+
+    @waiver_url.setter
+    def waiver_url(self, url):
+        self.__seamless__.set_with_struct("waiver.url", url)
+
+    #####################################################
+    ## External utility functions
+
+    def issns(self):
+        issns = []
+        if self.pissn:
+            issns.append(self.pissn)
+        if self.eissn:
+            issns.append(self.eissn)
+        return issns
+
+    def country_name(self):
+        if self.country is not None:
+            return datasets.get_country_name(self.country)
+        return None
+
+    def language_name(self):
+        # copy the languages and convert them to their english forms
+        langs = [datasets.name_for_lang(l) for l in self.language]
+        langs = [to_utf8_unicode(l) for l in langs]
+        return list(set(langs))
 
     def lcc_paths(self):
         classification_paths = []
 
         # calculate the classification paths
-        from portality.lcc import lcc # inline import since this hits the database
+        from portality.lcc import lcc  # inline import since this hits the database
         for subs in self.subjects():
             scheme = subs.get("scheme")
             term = subs.get("term")
@@ -191,16 +496,251 @@ class GenericBibJSON(dataobj.DataObj):
 
         return classification_paths
 
-    def issns(self):
-        issns = []
-        issns += self.get_identifiers(self.P_ISSN)
-        issns += self.get_identifiers(self.E_ISSN)
-        return issns
+    # to help with ToC - we prefer to refer to a journal by E-ISSN, or
+    # if not, then P-ISSN
+    def get_preferred_issn(self):
+        if self.eissn:
+            return self.eissn
+        if self.pissn:
+            return self.pissn
+
+    #####################################################
+    ## Internal utility functions
+
+    def _normalise_issn(self, issn):
+        issn = issn.upper()
+        if len(issn) > 8: return issn
+        if len(issn) == 8:
+            if "-" in issn: return "0" + issn
+            else: return issn[:4] + "-" + issn[4:]
+        if len(issn) < 8:
+            if "-" in issn: return ("0" * (9 - len(issn))) + issn
+            else:
+                issn = ("0" * (8 - len(issn))) + issn
+                return issn[:4] + "-" + issn[4:]
+
+    #####################################################
+    ## Back Compat methods for v1 of the model
+    ## ALL DEPRECATED
+
+    @property
+    def publication_time(self):
+        return self.publication_time_weeks
+
+    @publication_time.setter
+    def publication_time(self, weeks):
+        self.publication_time_weeks = weeks
+
+    def set_keywords(self, keywords):
+        self.keywords = keywords
+
+    def set_language(self, language):
+        self.language = language
+
+    def subjects(self):
+        return self.subject
+
+    def set_subjects(self, subjects):
+        self.subject = subjects
+
+    def remove_subjects(self):
+        del self.subject
+
+    def set_archiving_policy(self, policies, policy_url):
+        self.set_preservation(policies, policy_url)
+
+    def add_archiving_policy(self, policy_name):
+        self.add_preservation(policy_name)
+
+    @property
+    def flattened_archiving_policies(self):
+        return self.preservation_services
+
+    # vocab of known identifier types
+    P_ISSN = "pissn"
+    E_ISSN = "eissn"
+    DOI = "doi"
+
+    IDENTIFIER_MAP = {
+        P_ISSN : "pissn",
+        E_ISSN : "eissn"
+    }
+
+    def add_identifier(self, idtype, value):
+        field = self.IDENTIFIER_MAP.get(idtype)
+        if field is not None:
+            setattr(self, field, value)
+        raise RuntimeError("This object does not accept unrecognised identifier types")
+
+    def get_identifiers(self, idtype=None):
+        if idtype is None:
+            raise RuntimeError("This object cannot return a generic list of identifiers")
+        field = self.IDENTIFIER_MAP.get(idtype)
+        if field is None:
+            raise RuntimeError("No identifier of type {x} known".format(x=idtype))
+
+        return [getattr(self, field)]
+
+    def get_one_identifier(self, idtype=None):
+        if idtype is None:
+            raise RuntimeError("This object cannot return a generic identifier")
+        results = self.get_identifiers(idtype=idtype)
+        if len(results) > 0:
+            return results[0]
+        else:
+            return None
+
+    # allowable values for the url types
+    HOMEPAGE = "homepage"
+    WAIVER_POLICY = "waiver_policy"
+    EDITORIAL_BOARD = "editorial_board"
+    AIMS_SCOPE = "aims_scope"
+    AUTHOR_INSTRUCTIONS = "author_instructions"
+    OA_STATEMENT = "oa_statement"
+    FULLTEXT = "fulltext"
+
+    LINK_MAP = {
+        HOMEPAGE: "journal_url",
+        WAIVER_POLICY: "waiver_url",
+        EDITORIAL_BOARD: "editorial_board_url",
+        AIMS_SCOPE: "aims_scope_url",
+        AUTHOR_INSTRUCTIONS: "author_instructions_url",
+        OA_STATEMENT: "oa_statement_url"
+    }
+
+    def add_url(self, url, urltype=None, content_type=None):
+        if url is None:
+            # do not add empty URL-s
+            return
+
+        field = self.LINK_MAP.get(urltype)
+        if field is not None:
+            setattr(self, field, url)
+
+    def get_urls(self, urltype=None, unpack_urlobj=True):
+        if urltype is None:
+            raise RuntimeError("This object cannot return lists of urls")
+
+        field = self.LINK_MAP.get(urltype)
+        if field is None:
+            raise RuntimeError("No url of type {x} known".format(x=urltype))
+
+        url = getattr(self, field)
+        if unpack_urlobj:
+            return url
+        else:
+            return {"type" : urltype, "url" : url}
+
+    def get_single_url(self, urltype, unpack_urlobj=True):
+        urls = self.get_urls(urltype=urltype, unpack_urlobj=unpack_urlobj)
+        if len(urls) > 0:
+            return urls[0]
+        return None
 
     @property
     def first_pissn(self):
-        return self.get_identifiers(self.P_ISSN)[0]
+        return self.pissn
 
     @property
     def first_eissn(self):
-        return self.get_identifiers(self.E_ISSN)[0]
+        return self.eissn
+
+    @property
+    def country(self):
+        return self.publisher_country
+
+    @country.setter
+    def country(self, val):
+        self.publisher_country = val
+
+    @property
+    def open_access(self):
+        return self.boai
+
+    def set_open_access(self, open_access):
+        self.boai = open_access
+
+    #####################################################
+    ## Incompatible functions from v1
+
+    def set_license(self, license_title, license_type, url=None, version=None, open_access=None,
+                    by=None, sa=None, nc=None, nd=None,
+                    embedded=None, embedded_example_url=None):
+        """
+        # FIXME: why is there not a "remove license" function
+        if not license_title and not license_type:  # something wants to delete the license
+            self._delete("license")
+            return
+
+        lobj = {"title": license_title, "type": license_type}
+        if url is not None:
+            lobj["url"] = url
+        if version is not None:
+            lobj["version"] = version
+        if open_access is not None:
+            lobj["open_access"] = open_access
+        if by is not None:
+            lobj["BY"] = by
+        if sa is not None:
+            lobj["SA"] = sa
+        if nc is not None:
+            lobj["NC"] = nc
+        if nd is not None:
+            lobj["ND"] = nd
+        if embedded is not None:
+            lobj["embedded"] = embedded
+        if embedded_example_url is not None:
+            lobj["embedded_example_url"] = embedded_example_url
+
+        self._set_with_struct("license", [lobj])
+        """
+        raise RuntimeError("set_license is not back compat")
+
+    def get_license(self):
+        """
+        ll = self._get_list("license")
+        if len(ll) > 0:
+            return ll[0]
+        return None
+        """
+        raise RuntimeError("get_license is not back compat")
+
+    def get_license_type(self):
+        """
+        lobj = self.get_license()
+        if lobj is not None:
+            return lobj['type']
+        return None
+        """
+        raise RuntimeError("get_lcense_type is not back compat")
+
+    @property
+    def editorial_review(self):
+        """
+        return self._get_single("editorial_review", default={})
+        """
+        raise RuntimeError("editorial_review is not back compat")
+
+    @property
+    def archiving_policy(self):
+        """
+        ap = self._get_single("archiving_policy", default={})
+        ret = {"policy" : []}
+        if "url" in ap:
+            ret["url"] = ap["url"]
+        if "known" in ap:
+            ret["policy"] += ap["known"]
+        if "nat_lib" in ap:
+            ret["policy"].append(["A national library", ap["nat_lib"]])
+        if "other" in ap:
+            ret["policy"].append(["Other", ap["other"]])
+        return ret
+        """
+        raise RuntimeError("archiving_policy is not back compat")
+
+    def remove_identifiers(self, idtype=None, id=None):
+        raise RuntimeError("remove_identifiers is not back compat")
+
+    def remove_urls(self, urltype=None, url=None):
+        raise RuntimeError("remove_urls is not back compat")
+
