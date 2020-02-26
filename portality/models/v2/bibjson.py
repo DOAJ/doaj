@@ -7,6 +7,8 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     __SEAMLESS_STRUCT__ = shared_structs.JOURNAL_BIBJSON.get("structs", {}).get("bibjson")
 
+    __SEAMLESS_COERCE__ = coerce.COERCE_MAP
+
     # constructor
     def __init__(self, bibjson=None, **kwargs):
         super(JournalLikeBibJSON, self).__init__(raw=bibjson, **kwargs)
@@ -74,11 +76,11 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def publication_time_weeks(self):
-        return self.__seamless__.get_single("publication_time")
+        return self.__seamless__.get_single("publication_time_weeks")
 
     @publication_time_weeks.setter
     def publication_time_weeks(self, weeks):
-        self.__seamless__.set_with_struct("publication_time", weeks)
+        self.__seamless__.set_with_struct("publication_time_weeks", weeks)
 
     @property
     def title(self):
@@ -361,8 +363,6 @@ class JournalLikeBibJSON(SeamlessMixin):
             ret += pres["service"]
         if "national_library" in pres:
             ret.append("A national library: " + pres["national_library"])
-        if "other" in pres:
-            ret.append("Other: " + pres["other"])
         return ret
 
     def set_preservation(self, services, policy_url):
@@ -371,9 +371,7 @@ class JournalLikeBibJSON(SeamlessMixin):
         for p in services:
             if isinstance(p, list):
                 k, v = p
-                if k.lower() == "other":
-                    obj["other"] = v
-                elif k.lower() == "a national library":
+                if k.lower() == "a national library":
                     obj["national_library"] = v
             else:
                 known.append(p)
@@ -387,9 +385,7 @@ class JournalLikeBibJSON(SeamlessMixin):
     def add_preservation(self, service):
         if isinstance(service, list):
             k, v = service
-            if k.lower() == "other":
-                self.__seamless__set_with_struct("preservation.other", v)
-            elif k.lower() == "a national library":
+            if k.lower() == "a national library":
                 self.__seamless__set_with_struct("preservation.national_library", v)
         else:
             self.__seamless__.add_to_list_with_struct("preservation.service", service)

@@ -126,7 +126,6 @@ JOURNAL_BIBJSON = {
                     "fields" : {
                         "has_preservation" : {"coerce" : "bool"},
                         "national_library" : {"coerce" : "unicode"},
-                        "other" : {"coerce" : "unicode"},
                         "url" : {"coerce" : "unicode"}
                     },
                     "lists" : {

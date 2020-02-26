@@ -5,7 +5,7 @@ from portality.core import app
 from portality.lib import es_data_mapping
 from portality.models.v2 import shared_structs
 from portality.models.v2.journal import JournalLikeObject
-
+from portality.lib.coerce import COERCE_MAP
 
 APPLICATION_STRUCT = {
     "objects" : [
@@ -48,6 +48,8 @@ class Application(JournalLikeObject):
         shared_structs.SHARED_JOURNAL_LIKE,
         APPLICATION_STRUCT
     ]
+
+    __SEAMLESS_COERCE__ = COERCE_MAP
 
     def __init__(self, **kwargs):
         # FIXME: hack, to deal with ES integration layer being improperly abstracted

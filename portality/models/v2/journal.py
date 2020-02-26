@@ -4,6 +4,7 @@ from portality.models.v2.bibjson import JournalLikeBibJSON
 from portality.models.v2 import shared_structs
 from portality.lib import es_data_mapping, dates, coerce
 from portality.lib.seamless import SeamlessMixin
+from portality.lib.coerce import COERCE_MAP
 
 from copy import deepcopy
 from datetime import datetime
@@ -132,7 +133,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return self.__seamless__.get_single("last_manual_update", coerce=coerce.to_datestamp())
 
     def has_been_manually_updated(self):
-        return self.last_manual_update_timestamp > datetime.utcfromtimestamp(0)
+        lmut = self.last_manual_update_timestamp
+        if lmut is None:
+            return False
+        return lmut > datetime.utcfromtimestamp(0)
 
     def has_seal(self):
         return self.__seamless__.get_single("admin.seal", default=False)
@@ -178,7 +182,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         self.__seamless__.delete('admin.editor')
 
     def contacts(self):
-        return self._get_list("admin.contact")
+        return self.__seamless__.get_list("admin.contact")
 
     def get_latest_contact_name(self):
         try:
@@ -220,7 +224,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     @property
     def notes(self):
-        return self._get_list("admin.notes")
+        return self.__seamless__.get_list("admin.notes")
 
     @property
     def ordered_notes(self):
@@ -409,6 +413,8 @@ class Journal(JournalLikeObject):
         shared_structs.SHARED_JOURNAL_LIKE,
         JOURNAL_STRUCT
     ]
+
+    __SEAMLESS_COERCE__ = COERCE_MAP
 
     def __init__(self, **kwargs):
         # FIXME: hack, to deal with ES integration layer being improperly abstracted
@@ -614,7 +620,7 @@ class Journal(JournalLikeObject):
 
     @property
     def related_applications(self):
-        return self._get_list("admin.related_applications")
+        return self.__seamless__.get_list("admin.related_applications")
 
     def add_related_application(self, application_id, date_accepted=None, status=None):
         obj = {"application_id" : application_id}
