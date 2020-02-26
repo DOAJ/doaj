@@ -8,21 +8,34 @@ from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.lib import dataobj
 from portality.models import shared_structs
-
+from portality.lib import seamless
 
 class TestClient(DoajTestCase):
 
     def test_00_structs(self):
         # shared structs
-        dataobj.construct_validate(shared_structs.SHARED_BIBJSON)
-        dataobj.construct_validate(shared_structs.JOURNAL_BIBJSON_EXTENSION)
+        try:
+            seamless.Construct(shared_structs.JOURNAL_BIBJSON, None, None).validate()
+        except seamless.SeamlessException as e:
+            raise Exception(e.message)
+
+        try:
+            seamless.Construct(shared_structs.SHARED_JOURNAL_LIKE, None, None).validate()
+        except seamless.SeamlessException as e:
+            raise Exception(e.message)
 
         # constructed structs
         journal = models.Journal()
-        dataobj.construct_validate(journal._struct)
+        try:
+            journal.__seamless_struct__.validate()
+        except seamless.SeamlessException as e:
+            raise Exception(e.message)
 
-        jbj = models.JournalBibJSON()
-        dataobj.construct_validate(jbj._struct)
+        application = models.Application()
+        try:
+            application.__seamless_struct__.validate()
+        except seamless.SeamlessException as e:
+            raise Exception(e.message)
 
     def test_01_imports(self):
         """import all of the model objects successfully?"""
@@ -36,54 +49,100 @@ class TestClient(DoajTestCase):
     def test_02_journal_model_rw(self):
         """Read and write properties into the journal model"""
         j = models.Journal()
+
+        # check some properties of empty objects
+        assert not j.has_been_manually_updated()
+        assert not j.has_seal()
+        assert not j.is_in_doaj()
+        assert not j.is_ticked()
+
+        # methods for all journal-like objects
         j.set_id("abcd")
         j.set_created("2001-01-01T00:00:00Z")
         j.set_last_updated("2002-01-01T00:00:00Z")
-        j.set_bibjson({"title" : "test"})
         j.set_last_manual_update("2004-01-01T00:00:00Z")
-        j.set_in_doaj(True)
-        j.add_contact("richard", "richard@email.com")
-        j.add_note("testing", "2005-01-01T00:00:00Z")
+        j.set_seal(True)
+        j.set_bulk_upload_id("abcdef")
         j.set_owner("richard")
         j.set_editor_group("worldwide")
         j.set_editor("eddie")
-        j.set_current_application("0987654321")
-        j.set_ticked(True)
-        j.set_bulk_upload_id("abcdef")
-        j.set_seal(True)
-        j.add_related_application("123456789", "2003-01-01T00:00:00Z")
-        j.add_related_application("987654321", "2002-01-01T00:00:00Z")
+        j.add_contact("richard", "richard@email.com")
+        j.add_note("testing", "2005-01-01T00:00:00Z")
+        j.set_bibjson({"title": "test"})
 
         assert j.id == "abcd"
         assert j.created_date == "2001-01-01T00:00:00Z"
         assert j.created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2001-01-01T00:00:00Z"
         assert j.last_updated == "2002-01-01T00:00:00Z"
+        assert j.last_updated_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2002-01-01T00:00:00Z"
         assert j.last_manual_update == "2004-01-01T00:00:00Z"
         assert j.last_manual_update_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2004-01-01T00:00:00Z"
-        assert j.is_in_doaj() is True
+        assert j.has_been_manually_updated() is True
+        assert j.has_seal() is True
+        assert j.bulk_upload_id == "abcdef"
+        assert j.owner == "richard"
+        assert j.editor_group == "worldwide"
+        assert j.editor == "eddie"
         assert len(j.contacts()) == 1
         assert j.get_latest_contact_name() == "richard"
         assert j.get_latest_contact_email() == "richard@email.com"
         assert len(j.notes) == 1
-        assert j.owner == "richard"
-        assert j.editor_group == "worldwide"
-        assert j.editor == "eddie"
-        assert j.current_application == "0987654321"
-        assert j.is_ticked() is True
-        assert j.has_seal() is True
-        assert j.bulk_upload_id == "abcdef"
+        assert j.bibjson().title == "test"
 
-        assert j.last_update_request == "2003-01-01T00:00:00Z"
+        j.remove_owner()
+        j.remove_editor_group()
+        j.remove_editor()
+        j.remove_contacts()
 
+        assert j.owner is None
+        assert j.editor_group is None
+        assert j.editor is None
+        assert len(j.contacts()) == 0
+
+        j.add_note("another note", "2019-01-01T00:00:00Z", "1234567890")
+        assert len(j.notes) == 2
+        first = True
+        for n in j.ordered_notes:
+            if first:
+                assert n.get("note") == "another note"
+                assert n.get("date") == "2019-01-01T00:00:00Z"
+                assert n.get("id") == "1234567890"
+                first = False
+            else:
+                assert n.get("note") == "testing"
+                assert n.get("date") == "2005-01-01T00:00:00Z"
+                assert n.get("id") is not None
         notes = j.notes
         j.remove_note(notes[0])
+        assert len(j.notes) == 1
+        j.set_notes([{"note": "testing", "date": "2005-01-01T00:00:00Z"}])
+        assert len(j.notes) == 1
+        j.remove_notes()
         assert len(j.notes) == 0
 
-        j.set_notes([{"note" : "testing", "date" : "2005-01-01T00:00:00Z"}])
-        assert len(j.notes) == 1
+        # journal specific methods
+        j.bibjson().eissn = "1111-1111"
+        j.bibjson().pissn = "2222-2222"
+
+        j.set_in_doaj(True)
+        j.set_ticked(True)
+        j.set_current_application("0987654321")
+        j.add_related_application("123456789", "2003-01-01T00:00:00Z")
+        j.add_related_application("987654321", "2002-01-01T00:00:00Z")
+
+        assert j.toc_id == "1111-1111"
+        assert j.is_in_doaj() is True
+        assert j.is_ticked() is True
+        assert j.current_application == "0987654321"
+        assert j.last_update_request == "2003-01-01T00:00:00Z"
 
         j.remove_current_application()
         assert j.current_application is None
+
+        del j.bibjson().eissn
+        assert j.toc_id == "2222-2222"
+        del j.bibjson().pissn
+        assert j.toc_id == "abcd"
 
         # check over the related_applications management functions
         related = j.related_applications
@@ -113,6 +172,7 @@ class TestClient(DoajTestCase):
         assert bj2.publication_time == 7
 
         # check over ordered note reading
+        j.add_note("testing", "2005-01-01T00:00:00Z")
         j.add_note("another note", "2010-01-01T00:00:00Z")
         j.add_note("an old note", "2001-01-01T00:00:00Z")
         ons = j.ordered_notes
@@ -122,13 +182,19 @@ class TestClient(DoajTestCase):
         assert ons[0]["note"] == "another note"
 
         # now construct from a fixture
-        source = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
-        j = models.Journal(**source)
+        source = JournalFixtureFactory.make_journal_source()
+        try:
+            j = models.Journal(**source)
+        except seamless.SeamlessException as e:
+            raise Exception(e.message)
         assert j is not None
 
         # run the remaining methods just to make sure there are no errors
         j.calculate_tick()
-        j.prep()
+        try:
+            j.prep()
+        except seamless.SeamlessException as e:
+            raise Exception(e.message)
         j.save()
 
     def test_03_article_model_rw(self):

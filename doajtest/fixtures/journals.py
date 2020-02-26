@@ -8,11 +8,8 @@ from portality.formcontext import forms
 
 class JournalFixtureFactory(object):
     @staticmethod
-    def make_journal_source(in_doaj=False, include_obsolete_fields=False):
+    def make_journal_source(in_doaj=False):
         template = deepcopy(JOURNAL_SOURCE)
-        if include_obsolete_fields:
-            template['bibjson']['oa_start'] = JOURNAL_OBSOLETE_OA_START
-            template['bibjson']['oa_end'] = JOURNAL_OBSOLETE_OA_END
         template['admin']['in_doaj'] = in_doaj
         return template
 
@@ -29,19 +26,12 @@ class JournalFixtureFactory(object):
             if fakemonth > 9:
                 fakemonth = 9
             template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
-            template["bibjson"]['identifier'] = [
-                {"type": "pissn", "id": rstr.xeger(forms.ISSN_REGEX)},
-                {"type": "eissn", "id": rstr.xeger(forms.ISSN_REGEX)}
-            ]
+            template["bibjson"]["pissn"] = rstr.xeger(forms.ISSN_REGEX)
+            template["bibjson"]["eissn"] = rstr.xeger(forms.ISSN_REGEX)
             template['admin']['in_doaj'] = in_doaj
-            template['bibjson']['active'] = in_doaj  # legacy field?
             template['bibjson']['title'] = 'Test Title {}'.format(i)
             journal_sources.append(deepcopy(template))
         return journal_sources
-
-    @staticmethod
-    def make_journal_source_with_legacy_info():
-        return deepcopy(JOURNAL_SOURCE_WITH_LEGACY_INFO)
 
     @staticmethod
     def make_journal_form():
@@ -67,142 +57,130 @@ class JournalFixtureFactory(object):
     def question_answers():
         return deepcopy(JOURNAL_QUESTION_ANSWERS)
 
+
 JOURNAL_SOURCE = {
-    "id": "abcdefghijk_journal",
-    "created_date": "2000-01-01T00:00:00Z",
-    "bibjson": {
-        # "active" : true|false,
-        "title": "The Title",
-        "alternative_title": "Alternative Title",
-        "identifier": [
-            {"type": "pissn", "id": "1234-5678"},
-            {"type": "eissn", "id": "9876-5432"},
+    "id" : "id",
+    "created_date" :  "2000-01-01T00:00:00Z",
+    "last_manual_update" : "2001-01-01T00:00:00Z",
+    "last_updated" : "2002-01-01T00:00:00Z",
+    "admin": {
+        "bulk_upload": "bulk_1234567890",
+        "contact": [
+            {
+                "email": "contact@example.com",
+                "name": "Example Contact"
+            }
         ],
-        "keywords": ["word", "key"],
-        "language": ["EN", "FR"],
-        "country": "US",
-        "publisher": "The Publisher",
-        "provider": "Platform Host Aggregator",
-        "institution": "Society Institution",
-        "replaces" : ["1111-1111"],
+        "current_application" : "qwertyuiop",
+        "editor_group": "editorgroup",
+        "editor": "associate",
+        "in_doaj": False,
+        "notes": [
+            {"note": "Second Note", "date": "2014-05-22T00:00:00Z", "id" : "abcd"},
+            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "1234"}
+        ],
+        "owner": "Owner",
+        "related_applications" : [
+            {"application_id" : "asdfghjkl", "date_accepted" : "2018-01-01T00:00:00Z"},
+            {"application_id" : "zxcvbnm"}
+        ],
+        "seal": True,
+        "ticked": True
+    },
+    "bibjson" : {
+        "alternative_title" : "Alternative Title",
+        "apc" : {
+            "has_apc" : True,
+            "max" : [
+                {"currency" : "GBP", "price" :  2}
+            ],
+            "url" : "http://apc.com"
+        },
+        "article" : {
+            "embedded_license": True,
+            "embedded_license_example" : "http://licence.embedded",
+            "orcid" : True,
+            "i4oc_open_citations" : True
+        },
+        "boai" : True,
+        "copyright" : {
+            "author_retains" : True,
+            "url" : "http://copyright.com"
+        },
+        "deposit_policy" : {
+            "has_policy" : True,
+            "is_registered" : True,
+            "service" : ["Sherpa/Romeo", "Store it"]
+        },
+        "discontinued_date" : "2010-01-01",
+        "editorial" : {
+            "review_process" : ["Open peer review"],
+            "review_url" : "http://review.process",
+            "board_url" : "http://editorial.board"
+        },
+        "eissn" : "9876-5432",
         "is_replaced_by" : ["2222-2222"],
-        "discontinued_date" : "2001-01-01",
-        "link": [
-            {"type": "homepage", "url": "http://journal.url"},
-            {"type": "waiver_policy", "url": "http://waiver.policy"},
-            {"type": "editorial_board",
-             "url": "http://editorial.board"},
-            {"type": "aims_scope", "url": "http://aims.scope"},
-            {"type": "author_instructions",
-             "url": "http://author.instructions.com"},
-            {"type": "oa_statement", "url": "http://oa.statement"}
+        "institution" : {
+            "name" : "Society Institution",
+            "country" : "US"
+        },
+        "keywords" : ["word", "key"],
+        "language" : ["EN", "FR"],
+        "license" : [
+            {
+                "type" : "CC MY",
+                "BY" : True,
+                "NC" : True,
+                "ND" : False,
+                "SA" : False,
+                "url" : "http://licence.url"
+            }
         ],
+        "other_charges" : {
+            "has_other_charges" : True,
+            "url" : "http://other.charges"
+        },
+        "pid_scheme" : {
+            "has_pid_scheme" : True,
+            "scheme" : ["DOI", "ARK", "PURL"],
+        },
+        "pissn" : "1234-5678",
+        "plagiarism" : {
+            "detection" : True,
+            "url" : "http://plagiarism.screening"
+        },
+        "preservation" : {
+            "has_preservation" : True,
+            "service" : ["LOCKSS", "CLOCKSS", "A safe place"],
+            "national_library" : "Trinity",
+            "url" : "http://digital.archiving.policy"
+        },
+        "publication_time_weeks" : 8,
+        "publisher" : {
+            "name" : "The Publisher",
+            "country" : "US"
+        },
+        "ref" : {
+            "oa_statement" : "http://oa.statement",
+            "journal" : "http://journal.url",
+            "aims_scope" : "http://aims.scope",
+            "author_instructions" : "http://author.instructions.com",
+            "license_terms" : "http://license.terms"
+        },
+        "replaces" : ["1111-1111"],
         "subject": [
             {"scheme": "LCC", "term": "Economic theory. Demography",
              "code": "HB1-3840"},
             {"scheme": "LCC", "term": "Social Sciences", "code": "H"}
         ],
-
-        "oa_start": {
-            "year": 1980,
-        },
-        "apc_url" : "http://apc.com",
-        "apc": {
-            "currency": "GBP",
-            "average_price": 2
-        },
-        "submission_charges_url" : "http://submission.com",
-        "submission_charges": {
-            "currency": "USD",
-            "average_price": 4
-        },
-        "archiving_policy": {
-            "known" : ["LOCKSS", "CLOCKSS"],
-            "other" : "A safe place",
-            "nat_lib" : "Trinity",
-            "url": "http://digital.archiving.policy"
-        },
-        "editorial_review": {
-            "process": "Open peer review",
-            "url": "http://review.process"
-        },
-        "plagiarism_detection": {
-            "detection": True,
-            "url": "http://plagiarism.screening"
-        },
-        "article_statistics": {
-            "statistics": True,
-            "url": "http://download.stats"
-        },
-        "deposit_policy": ["Sherpa/Romeo", "Store it"],
-        "author_copyright": {
-            "copyright": "True",
-            "url": "http://copyright.com"
-        },
-        "author_publishing_rights": {
-            "publishing_rights": "True",
-            "url": "http://publishing.rights"
-        },
-        "allows_fulltext_indexing": True,
-        "persistent_identifier_scheme": ["DOI", "ARK", "PURL"],
-        "format": ["HTML", "XML", "Wordperfect"],
-        "publication_time": 8,
-        "license": [
-            {
-                "title": "CC MY",
-                "type": "CC MY",
-                "url": "http://licence.url",
-                "open_access": True,
-                "BY": True,
-                "NC": True,
-                "ND": False,
-                "SA": False,
-                "embedded": True,
-                "embedded_example_url": "http://licence.embedded"
-            }
-        ]
-    },
-    "admin": {
-        "notes": [
-            {"note": "Second Note", "date": "2014-05-22T00:00:00Z"},
-            {"note": "First Note", "date": "2014-05-21T14:02:45Z"}
-        ],
-        "contact": [
-            {
-                "email": "contact@email.com",
-                "name": "Contact Name"
-            }
-        ],
-        "owner": "Owner",
-        "editor_group": "editorgroup",
-        "editor": "associate",
-        "seal": True,
-        "current_application" : "qwertyuiop",
-        "related_applications" : [
-            {"application_id" : "asdfghjkl", "date_accepted" : "2018-01-01T00:00:00Z"},
-            {"application_id" : "zxcvbnm"}
-        ]
+        "title" : "The Title",
+        "waiver" : {
+            "has_waiver" : True,
+            "url" : "http://waiver.policy"
+        }
     }
 }
 
-JOURNAL_OBSOLETE_OA_START = {
-    "volume": "1",
-    "number": "1",
-    "year": "1980",  # some journals do have those as strings in live
-}
-
-JOURNAL_OBSOLETE_OA_END = {  # the entire oa_end is obsolete
-    "volume": "10",
-    "number": "10",
-    "year": "1985",
-}
-
-
-JOURNAL_SOURCE_WITH_LEGACY_INFO = deepcopy(JOURNAL_SOURCE)
-JOURNAL_SOURCE_WITH_LEGACY_INFO['bibjson']["author_pays"] = "Y"
-JOURNAL_SOURCE_WITH_LEGACY_INFO['bibjson']["author_pays_url"] = "http://author.pays"
-JOURNAL_SOURCE_WITH_LEGACY_INFO['bibjson']["oa_end"] = {}
-JOURNAL_SOURCE_WITH_LEGACY_INFO['bibjson']["oa_end"]["year"] = 1991
 
 JOURNAL_INFO = {
     "title": "The Title",

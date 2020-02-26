@@ -1,17 +1,13 @@
 from portality.lib.seamless import SeamlessMixin, to_utf8_unicode
 from portality.models.v2 import shared_structs
 from portality import datasets
-from portality.lib import dates
-
-def to_datestamp(in_format=None):
-    def stampify(val):
-        return dates.parse(val, format=in_format)
-    return stampify
-
+from portality.lib import coerce
 
 class JournalLikeBibJSON(SeamlessMixin):
 
     __SEAMLESS_STRUCT__ = shared_structs.JOURNAL_BIBJSON.get("structs", {}).get("bibjson")
+
+    __SEAMLESS_COERCE__ = coerce.COERCE_MAP
 
     # constructor
     def __init__(self, bibjson=None, **kwargs):
@@ -50,7 +46,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def discontinued_datestamp(self):
-        return self.__seamless__.get_single("discontinued_date", coerce=to_datestamp())
+        return self.__seamless__.get_single("discontinued_date", coerce=coerce.to_datestamp())
 
     @property
     def eissn(self):
@@ -61,6 +57,10 @@ class JournalLikeBibJSON(SeamlessMixin):
         val = self._normalise_issn(val)
         self.__seamless__.set_with_struct("eissn", val)
 
+    @eissn.deleter
+    def eissn(self):
+        self.__seamless__.delete("eissn")
+
     @property
     def pissn(self):
         return self.__seamless__.get_single("pissn")
@@ -70,13 +70,17 @@ class JournalLikeBibJSON(SeamlessMixin):
         val = self._normalise_issn(val)
         self.__seamless__.set_with_struct("pissn", val)
 
+    @pissn.deleter
+    def pissn(self):
+        self.__seamless__.delete("pissn")
+
     @property
     def publication_time_weeks(self):
-        return self.__seamless__.get_single("publication_time")
+        return self.__seamless__.get_single("publication_time_weeks")
 
     @publication_time_weeks.setter
     def publication_time_weeks(self, weeks):
-        self.__seamless__.set_with_struct("publication_time", weeks)
+        self.__seamless__.set_with_struct("publication_time_weeks", weeks)
 
     @property
     def title(self):
@@ -226,6 +230,14 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.set_with_struct("article.orcid", val)
 
     @property
+    def article_i4oc_open_citations(self):
+        return self.__seamless__.get_single("article.i4oc_open_citations")
+
+    @article_i4oc_open_citations.setter
+    def article_i4oc_open_citations(self, val):
+        self.__seamless__.set_with_struct("article.i4oc_open_citations", val)
+
+    @property
     def author_retains_copyright(self):
         return self.__seamless__.get_single("copyright.author_retains")
 
@@ -351,8 +363,6 @@ class JournalLikeBibJSON(SeamlessMixin):
             ret += pres["service"]
         if "national_library" in pres:
             ret.append("A national library: " + pres["national_library"])
-        if "other" in pres:
-            ret.append("Other: " + pres["other"])
         return ret
 
     def set_preservation(self, services, policy_url):
@@ -361,9 +371,7 @@ class JournalLikeBibJSON(SeamlessMixin):
         for p in services:
             if isinstance(p, list):
                 k, v = p
-                if k.lower() == "other":
-                    obj["other"] = v
-                elif k.lower() == "a national library":
+                if k.lower() == "a national library":
                     obj["national_library"] = v
             else:
                 known.append(p)
@@ -377,9 +385,7 @@ class JournalLikeBibJSON(SeamlessMixin):
     def add_preservation(self, service):
         if isinstance(service, list):
             k, v = service
-            if k.lower() == "other":
-                self.__seamless__set_with_struct("preservation.other", v)
-            elif k.lower() == "a national library":
+            if k.lower() == "a national library":
                 self.__seamless__set_with_struct("preservation.national_library", v)
         else:
             self.__seamless__.add_to_list_with_struct("preservation.service", service)
