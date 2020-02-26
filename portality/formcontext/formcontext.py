@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import render_template, url_for, request
 from flask_login import current_user
 
-import portality.formcontext.xwalks.admin_article_form
+import portality.formcontext.xwalks.metadata_article_form
 import portality.formcontext.xwalks.journal_form
 from portality import constants
 from portality import models, app_email, util
@@ -1773,22 +1773,26 @@ class ReadOnlyJournal(PrivateContext):
         # no application status (this is a journal) or editorial info (it's not even in the form) to set
         pass
 
+
 class ArticleFormFactory(object):
     @classmethod
     def get_from_context(cls, role, source=None, form_data=None, user=None):
         if role == "admin":
-            return AdminArticleForm(source=source, form_data=form_data, user=user)
+            return AdminMetadataArticleForm(source=source, form_data=form_data, user=user)
+        if role == "publisher":
+            return PublisherMetadataForm(source=source, form_data=form_data, user=user)
 
-class AdminArticleForm(FormContext):
+
+class MetadataForm(FormContext):
 
     def __init__(self, source, form_data, user):
         self.user = user
         self.author_error = False
-        super(AdminArticleForm, self).__init__(source=source, form_data=form_data)
+        super(MetadataForm, self).__init__(source=source, form_data=form_data)
 
     def _set_choices(self):
         try:
-            ic = choices.Choices.choices_for_article_issns(user=self.user,article_id=self.source.id)
+            ic = choices.Choices.choices_for_article_issns(user=self.user, article_id=self.source.id)
             self.form.pissn.choices = ic
             self.form.eissn.choices = ic
         except Exception as e:
@@ -1805,16 +1809,13 @@ class AdminArticleForm(FormContext):
                 counted += 1
         return counted >= 1
 
-    def set_template(self):
-        self.template = "admin/article_metadata.html"
-
     def blank_form(self):
         self.form = forms.ArticleForm()
         self._set_choices()
 
     def source2form(self):
         self.form = forms.ArticleForm()
-        portality.formcontext.xwalks.admin_article_form.AdminArticleFormXwalk.obj2form(self.form, article=self.source)
+        portality.formcontext.xwalks.metadata_article_form.MetadataArticleFormXwalk.obj2form(self.form, article=self.source)
         self._set_choices()
 
     def data2form(self):
@@ -1822,7 +1823,7 @@ class AdminArticleForm(FormContext):
         self._set_choices()
 
     def form2target(self):
-        self.target = portality.formcontext.xwalks.admin_article_form.AdminArticleFormXwalk.form2obj(form=self.form)
+        self.target = portality.formcontext.xwalks.metadata_article_form.MetadataArticleFormXwalk.form2obj(form=self.form)
 
     def render_template(self, **kwargs):
         if "more_authors" in kwargs and kwargs["more_authors"] == True:
@@ -1851,10 +1852,30 @@ class AdminArticleForm(FormContext):
         self.form2target()
         if not self.author_error:
             article_service = DOAJ.articleService()
-            article_service.create_article(self.target, self.user, add_journal_info=True, update_article_id=self.source.id, duplicate_check = duplicate_check)
+            article_service.create_article(self.target, self.user, add_journal_info=True,
+                                           update_article_id=self.source.id if self.source is not None else None,
+                                           duplicate_check = duplicate_check)
             Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
         else:
             return
+
+
+class PublisherMetadataForm(MetadataForm):
+
+    def __init__(self, source, form_data, user):
+        super(PublisherMetadataForm, self).__init__(source=source, form_data=form_data, user=user)
+
+    def set_template(self):
+        self.template = "publisher/metadata.html"
+
+
+class AdminMetadataArticleForm(MetadataForm):
+
+    def __init__(self, source, form_data, user):
+        super(AdminMetadataArticleForm, self).__init__(source=source, form_data=form_data, user=user)
+
+    def set_template(self):
+        self.template = "admin/article_metadata.html"
 
 
 
