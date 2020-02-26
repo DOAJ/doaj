@@ -95,27 +95,27 @@ class Application(JournalLikeObject):
         return self.__seamless__.get_single("admin.current_journal")
 
     def set_current_journal(self, journal_id):
-        self._set_with_struct("admin.current_journal", journal_id)
+        self.__seamless__.set_with_struct("admin.current_journal", journal_id)
 
     def remove_current_journal(self):
-        self._delete("admin.current_journal")
+        self.__seamless__.delete("admin.current_journal")
 
     @property
     def related_journal(self):
         return self.__seamless__.get_single("admin.related_journal")
 
     def set_related_journal(self, journal_id):
-        self._set_with_struct("admin.related_journal", journal_id)
+        self.__seamless__.set_with_struct("admin.related_journal", journal_id)
 
     def remove_related_journal(self):
-        self._delete("admin.related_journal")
+        self.__seamless__.delete("admin.related_journal")
 
     @property
     def application_status(self):
         return self.__seamless__.get_single("admin.application_status")
 
     def set_application_status(self, val):
-        self._set_with_struct("admin.application_status", val)
+        self.__seamless__.set_with_struct("admin.application_status", val)
 
     @property
     def date_applied(self):

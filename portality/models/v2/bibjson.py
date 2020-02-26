@@ -135,7 +135,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def licences(self):
-        return self.__seamless__.get_single("license")
+        return self.__seamless__.get_list("license")
 
     def add_licence(self, license_type, url=None, by=None, sa=None, nc=None, nd=None):
         lobj = {"type": license_type}
@@ -169,7 +169,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def subject(self):
-        return self.__seamless__.get_single("subject")
+        return self.__seamless__.get_list("subject")
 
     @subject.setter
     def subject(self, subjects):

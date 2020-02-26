@@ -215,27 +215,89 @@ class TestClient(DoajTestCase):
 
     def test_04_suggestion_model_rw(self):
         """Read and write properties into the suggestion model"""
-        s = models.Suggestion()
+        s = models.Application()
+
+        # check some properties of empty objects
+        assert not s.has_been_manually_updated()
+        assert not s.has_seal()
+
+        # methods for all journal-like objects
+        s.set_id("abcd")
+        s.set_created("2001-01-01T00:00:00Z")
+        s.set_last_updated("2002-01-01T00:00:00Z")
+        s.set_last_manual_update("2004-01-01T00:00:00Z")
+        s.set_seal(True)
+        s.set_bulk_upload_id("abcdef")
+        s.set_owner("richard")
+        s.set_editor_group("worldwide")
+        s.set_editor("eddie")
+        s.add_contact("richard", "richard@email.com")
+        s.add_note("testing", "2005-01-01T00:00:00Z")
+        s.set_bibjson({"title": "test"})
+
+        assert s.id == "abcd"
+        assert s.created_date == "2001-01-01T00:00:00Z"
+        assert s.created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2001-01-01T00:00:00Z"
+        assert s.last_updated == "2002-01-01T00:00:00Z"
+        assert s.last_updated_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2002-01-01T00:00:00Z"
+        assert s.last_manual_update == "2004-01-01T00:00:00Z"
+        assert s.last_manual_update_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2004-01-01T00:00:00Z"
+        assert s.has_been_manually_updated() is True
+        assert s.has_seal() is True
+        assert s.bulk_upload_id == "abcdef"
+        assert s.owner == "richard"
+        assert s.editor_group == "worldwide"
+        assert s.editor == "eddie"
+        assert len(s.contacts()) == 1
+        assert s.get_latest_contact_name() == "richard"
+        assert s.get_latest_contact_email() == "richard@email.com"
+        assert len(s.notes) == 1
+        assert s.bibjson().title == "test"
+
+        s.remove_owner()
+        s.remove_editor_group()
+        s.remove_editor()
+        s.remove_contacts()
+
+        assert s.owner is None
+        assert s.editor_group is None
+        assert s.editor is None
+        assert len(s.contacts()) == 0
+
+        s.add_note("another note", "2019-01-01T00:00:00Z", "1234567890")
+        assert len(s.notes) == 2
+        first = True
+        for n in s.ordered_notes:
+            if first:
+                assert n.get("note") == "another note"
+                assert n.get("date") == "2019-01-01T00:00:00Z"
+                assert n.get("id") == "1234567890"
+                first = False
+            else:
+                assert n.get("note") == "testing"
+                assert n.get("date") == "2005-01-01T00:00:00Z"
+                assert n.get("id") is not None
+        notes = s.notes
+        s.remove_note(notes[0])
+        assert len(s.notes) == 1
+        s.set_notes([{"note": "testing", "date": "2005-01-01T00:00:00Z"}])
+        assert len(s.notes) == 1
+        s.remove_notes()
+        assert len(s.notes) == 0
+
+        # application specific methods
         s.set_current_journal("9876543")
         s.set_related_journal("123456789")
-        s.set_bulk_upload_id("abcdef")
         s.set_application_status(constants.APPLICATION_STATUS_REJECTED)
-        s.suggested_on = "2001-01-01T00:00:00Z"
-        s.set_articles_last_year(12, "http://aly.com")
-        s.article_metadata = True
-        s.set_suggester("test", "test@test.com")
+        s.date_applied = "2001-01-01T00:00:00Z"
+        s.set_applicant("test", "test@test.com")
 
-        assert s.data.get("admin", {}).get("current_journal") == "9876543"
         assert s.current_journal == "9876543"
         assert s.related_journal == "123456789"
-        assert s.bulk_upload_id == "abcdef"
         assert s.application_status == constants.APPLICATION_STATUS_REJECTED
-        assert s.suggested_on == "2001-01-01T00:00:00Z"
-        assert s.articles_last_year.get("count") == 12
-        assert s.articles_last_year.get("url") == "http://aly.com"
-        assert s.article_metadata is True
-        assert s.suggester.get("name") == "test"
-        assert s.suggester.get("email") == "test@test.com"
+        assert s.date_applied == "2001-01-01T00:00:00Z"
+        assert s.applicant.get("name") == "test"
+        assert s.applicant.get("email") == "test@test.com"
 
         # check over ordered note reading
         s.add_note("another note", "2010-01-01T00:00:00Z")
@@ -246,28 +308,37 @@ class TestClient(DoajTestCase):
         assert ons[0]["note"] == "another note"
 
         s.prep()
-        assert 'index' in s, s
-        assert 'application_type' in s['index'], s['index']
-        assert s['index']['application_type'] == constants.APPLICATION_TYPE_UPDATE_REQUEST
+        d = s.__seamless__.data
+        assert 'index' in d, d
+        assert 'application_type' in d['index'], d['index']
+        assert d['index']['application_type'] == constants.APPLICATION_TYPE_UPDATE_REQUEST
 
         s.remove_current_journal()
         assert s.current_journal is None
         s.prep()
-        assert 'index' in s, s
-        assert 'application_type' in s['index'], s['index']
-        assert s['index']['application_type'] == constants.APPLICATION_TYPE_FINISHED
+        d = s.__seamless__.data
+        assert 'index' in d, d
+        assert 'application_type' in d['index'], d['index']
+        assert d['index']['application_type'] == constants.APPLICATION_TYPE_FINISHED
 
         s.set_application_status(constants.APPLICATION_STATUS_PENDING)
         s.prep()
-        assert s['index']['application_type'] == constants.APPLICATION_TYPE_NEW_APPLICATION
+        d = s.__seamless__.data
+        assert d['index']['application_type'] == constants.APPLICATION_TYPE_NEW_APPLICATION
 
         s.save()
 
         s.remove_current_journal()
         s.remove_related_journal()
-
         assert s.current_journal is None
         assert s.related_journal is None
+
+        # check deprecated methods (they still need to work)
+        s.suggested_on = "2003-01-01T00:00:00Z"
+        s.set_suggester("test2", "test2@test.com")
+        assert s.suggested_on == "2003-01-01T00:00:00Z"
+        assert s.suggester.get("name") == "test2"
+        assert s.suggester.get("email") == "test2@test.com"
 
     def test_05_sync_owners(self):
         # suggestion with no current_journal

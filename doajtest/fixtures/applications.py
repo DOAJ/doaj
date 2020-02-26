@@ -35,10 +35,8 @@ class ApplicationFixtureFactory(object):
             if fakemonth > 9:
                 fakemonth = 9
             template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
-            template["bibjson"]['identifier'] = [
-                {"type": "pissn", "id": rstr.xeger(forms.ISSN_REGEX)},
-                {"type": "eissn", "id": rstr.xeger(forms.ISSN_REGEX)},
-            ]
+            template["bibjson"]["pissn"] = rstr.xeger(forms.ISSN_REGEX)
+            template["bibjson"]["eissn"] = rstr.xeger(forms.ISSN_REGEX)
             template['bibjson']['title'] = 'Test Title {}'.format(i)
             application_sources.append(deepcopy(template))
             template["admin"]["current_journal"] = '123456789'
@@ -113,7 +111,13 @@ class ApplicationFixtureFactory(object):
 
         return apps
 
+
 APPLICATION_SOURCE = {
+    
+}
+
+
+OLD_APPLICATION_SOURCE = {
     "id" : "abcdefghijk",
     "created_date" : "2000-01-01T00:00:00Z",
     "bibjson": deepcopy(JOURNAL_SOURCE['bibjson']),
