@@ -18,17 +18,19 @@
 </div>
 
 <div class="row">
-<div class="col-md-12">
+  <div class="col-md-12">
 
-    {% if there_were_errors %}
-        <h4 class="red">There is a problem with the submitted form.</h4>
-    {% endif %}
+    {% include "formcontext/_error_header.html" %}
 
     {% from "_formhelpers.html" import render_field_horizontal %}
     {% from "_formhelpers.html" import render_field %}
     <form method="post" action="{{ url_for('admin.article_page', article_id=form_context.source.id) }}" class="form-horizontal" id="article_metadata_form">
 
-        {% include "formcontext/article_form.html" %}
+        {% include "formcontext/article_metadata_form.html" %}
+
+        <div class="form-group">
+            <div class="col-md-9 col-md-offset-3"><button class="btn btn-success" type="submit">Update Article</button></div>
+        </div>
 
     </form>
         </div>

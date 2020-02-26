@@ -5,92 +5,18 @@
 <div class="row">
     <div class="col-md-12">
         
-        {% if there_were_errors %}
-            <h4 class="red">There is a problem with the submitted form.</h4>
-        {% endif %}
+        {% include "formcontext/_error_header.html" %}
         
         {% from "_formhelpers.html" import render_field_horizontal %}
         {% from "_formhelpers.html" import render_field %}
         
         <form method="post" action="{{ url_for('publisher.metadata') }}" class="form-horizontal" id="article_metadata_form">
-            <fieldset>
-                {{ render_field_horizontal(form.title, style="width: 400px", placeholder="Enter the article title here") }}
-                {{ render_field_horizontal(form.doi, style="width: 300px", placeholder="10.1234/article-32") }}
-                
-                <div class="form-group{% if author_error %} error{% endif %} authors">
-                    <label class="control-label col-md-3">Author(s) <span class="red">*</span></label>
-                    <div class="col-md-9">
-                        {% for subfield in form.authors %}
-                            <div style="margin-bottom: 10px" id="{{subfield.short_name}}-container">
-                                {% for field in subfield.form %}
-                                    <div class="row">
-                                       <label class="col-md-2 col-xs-12">{{field.label.text | safe}}</label>
-                                        {% if field.label.text == "ORCID iD" %}
-                                            <div class="col-md-7 col-xs-12" > {{field(placeholder="https://orcid.org/0000-0000-0000-0000")}} </div>
-                                        {% else %}
-                                            <div class="col-md-7 col-xs-12"> {{field(placeholder=field.label.text)}} </div>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                                {% for error in subfield.errors %}
-                                    <div class="error" style="width: 200%">
-                                        <ul class="errors" style="padding-left: 15px">
-                                            <li>{{ subfield.errors.get(error)[0] }}</li>
-                                        </ul>
-                                    </div>
-                                {% endfor %}
-                                <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="btn btn-danger remove_button">
-                                  Remove Author
-                                </button>
-                            </div>
-                        {% endfor %}
-                        <input type="submit" class="btn btn-info" name="more_authors" value="Add More Authors">
-                        {% if author_error %}
-                            <div class="error">
-                                <ul class="errors">
-                                    <li>Please provide at least one author</li>
-                                </ul>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
 
-                {{ render_field_horizontal(form.abstract, classes="form-control", style="width: 400px; height: 200px", placeholder="Enter the abstract here") }}
-                {{ render_field_horizontal(form.keywords, style="width: 400px", placeholder="Enter some keywords for the article") }}
-                {{ render_field_horizontal(form.fulltext, style="width: 400px", placeholder="URL to the fulltext of the article") }}
-                
-                <div class="form-group">
-                    <label class="control-label col-md-3">Publication Date</label>
-                    <div class="col-md-9">
-                        {{form.publication_month(style="width: 75px")}}
-                        {{form.publication_year(style="width: 100px")}}
-                    </div>
-                </div>
-                
-                {{ render_field_horizontal(form.pissn, style="width: 250px", required=True) }}
-                {{ render_field_horizontal(form.eissn, style="width: 250px", required=True) }}
-                
-                <div class="form-group">
-                    <label class="control-label col-md-3">Journal</label>
-                    <div class="col-md-9">
-                        Volume&nbsp;{{form.volume(style="width: 75px", placeholder="Vol")}}&nbsp;&nbsp;&nbsp;&nbsp;
-                        Issue Number&nbsp;{{form.number(style="width: 75px", placeholder="Issue")}}
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="control-label col-md-3">Page(s)</label>
-                    <div class="col-md-9">
-                        Start&nbsp;{{form.start(style="width: 75px", placeholder="Start")}}&nbsp;&nbsp;&nbsp;&nbsp;
-                        End&nbsp;{{form.end(style="width: 75px", placeholder="End")}}
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <div class="col-md-9 col-md-offset-3"><button class="btn btn-success" type="submit">Add Article</button></div>
-                </div>
-                
-            </fieldset>
+            {% include "formcontext/article_metadata_form.html" %}
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-3"><button class="btn btn-success" type="submit">Add Article</button></div>
+            </div>
+
         </form>
     </div>
 </div>
