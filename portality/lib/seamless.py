@@ -24,6 +24,11 @@ def to_unicode_upper(val):
     return val.upper()
 
 
+def to_unicode_lower(val):
+    val = to_utf8_unicode(val)
+    return val.lower()
+
+
 def intify(val):
     # strip any characters that are outside the ascii range - they won't make up the int anyway
     # and this will get rid of things like strange currency marks
@@ -134,6 +139,7 @@ class SeamlessMixin(object):
     __SEAMLESS_COERCE__ = {
         "unicode": to_utf8_unicode,
         "unicode_upper" : to_unicode_upper,
+        "unicode_lower" : to_unicode_lower,
         "integer": intify,
         "float": floatify,
         "url": to_url,
@@ -424,7 +430,7 @@ class SeamlessData(object):
                     try:
                         type, struct, instructions = self._struct.lookup(path)
                         if struct is not None:
-                            matchsub = struct.construct(matchsub, struct)
+                            matchsub = struct.construct(matchsub, struct).data
                     except:
                         pass
 
@@ -456,13 +462,15 @@ class SeamlessData(object):
             if not isinstance(val, list):
                 val = [val]
             if substruct is not None:
-                val = [substruct.construct(x, check_required=check_required, silent_prune=silent_prune) for x in val]
+                val = [substruct.construct(x, check_required=check_required, silent_prune=silent_prune).data for x in val]
             kwargs = self._struct.kwargs(typ, "set", instructions)
-            coerce_fn = self._struct.get_coerce(instructions)
+            coerce_fn = None
+            if instructions.get("contains") != "object":
+                coerce_fn = self._struct.get_coerce(instructions)
             self.set_list(path, val, coerce=coerce_fn, **kwargs)
         elif typ == "object":
             if substruct is not None:
-                val = substruct.construct(val, check_required=check_required, silent_prune=silent_prune)
+                val = substruct.construct(val, check_required=check_required, silent_prune=silent_prune).data
             self.set_single(path, val)
         else:
             raise SeamlessException("Attempted to set_with_struct on path '{x}' but no such path exists in the struct".format(x=path))
@@ -472,7 +480,7 @@ class SeamlessData(object):
         if type != "list":
             raise SeamlessException("Attempt to add to list '{x}' failed - it is not a list element".format(x=path))
         if struct is not None:
-            val = struct.construct(val)
+            val = struct.construct(val).data
         kwargs = Construct.kwargs(type, "set", instructions)
         self.add_to_list(path, val, **kwargs)
 
