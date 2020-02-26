@@ -595,7 +595,7 @@ class ArticleForm(Form):
     authors = FieldList(FormField(AuthorForm), min_entries=1) # We have to do the validation for this at a higher level
     abstract = TextAreaField("Abstract", [validators.Optional()])
     keywords = StringField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
-    fulltext = StringField("Full-Text URL", [OptionalIf("doi"), validators.URL()], description="(The URL for each article must be unique.  You must provide a Full-Text URL and/or a DOI)")
+    fulltext = StringField("Full-Text URL", [OptionalIf("doi"), validators.URL()])
     publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
     publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
     pissn = DOAJSelectField("Journal ISSN (print version)", [ThisOrThat("eissn")], choices=[]) # choices set at construction
