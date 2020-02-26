@@ -85,6 +85,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     ## base property methods
 
     @property
+    def data(self):
+        return self.__seamless__.data
+
+    @property
     def id(self):
         return self.__seamless__.get_single("id")
 
@@ -245,7 +249,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")
         if bj is None:
-            self._set_single("bibjson", {})
+            self.__seamless__.set_single("bibjson", {})
             bj = self.__seamless__.get_single("bibjson")
         return JournalLikeBibJSON(bj)
 

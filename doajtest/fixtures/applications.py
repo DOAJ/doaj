@@ -113,43 +113,36 @@ class ApplicationFixtureFactory(object):
 
 
 APPLICATION_SOURCE = {
-    
-}
-
-
-OLD_APPLICATION_SOURCE = {
     "id" : "abcdefghijk",
-    "created_date" : "2000-01-01T00:00:00Z",
-    "bibjson": deepcopy(JOURNAL_SOURCE['bibjson']),
-    "suggestion" : {
-        "suggester" : {
-            "name" : "Suggester",
-            "email" : "suggester@email.com"
-        },
-        "articles_last_year" : {
-            "count" : 16,
-            "url" : "http://articles.last.year"
-        },
-        "article_metadata" : True
-    },
-    "admin" : {
+    "created_date" :  "2000-01-01T00:00:00Z",
+    "last_manual_update" : "2001-01-01T00:00:00Z",
+    "last_updated" : "2002-01-01T00:00:00Z",
+    "admin": {
         "application_status" : constants.APPLICATION_STATUS_PENDING,
-        "notes" : [
-            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"},
-            {"note": "First Note", "date": "2014-05-21T14:02:45Z"}
-        ],
+        "bulk_upload": "bulk123456789",
         "contact" : [
             {
                 "email" : "contact@email.com",
                 "name" : "Contact Name"
             }
         ],
-        "owner" : "Owner",
-        "editor_group" : "editorgroup",
+        "current_journal" : "poiuytrewq",
         "editor" : "associate",
-        "seal" : True,
-        "related_journal" : "987654321123456789"
-    }
+        "editor_group" : "editorgroup",
+        "notes" : [
+            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234"},
+            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd"}
+        ],
+        "owner" : "Owner",
+        "related_journal" : "987654321123456789",
+        "seal": True,
+        "date_applied" : "2003-01-01T00:00:00Z",
+        "applicant": {
+            "name" : "Suggester",
+            "email" : "suggester@email.com"
+        }
+    },
+    "bibjson" : deepcopy(JOURNAL_SOURCE['bibjson'])
 }
 
 _isbj = deepcopy(JOURNAL_SOURCE['bibjson'])

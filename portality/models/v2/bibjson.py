@@ -115,12 +115,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @keywords.setter
     def keywords(self, keywords):
-        if type(keywords) is list:
-            keywords = [w.lower() for w in keywords]
-            self.__seamless__.set_with_struct("keywords", keywords)
-        else:
-            if keywords is not None:
-                self.__seamless__.set_with_struct("keywords", keywords.lower())
+        self.__seamless__.set_with_struct("keywords", keywords)
 
     @property
     def language(self):
@@ -131,13 +126,16 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.set_with_struct("language", language)
 
     def add_language(self, language):
-        self._add_to_list_with_struct("language", language)
+        self.__seamless__.add_to_list_with_struct("language", language)
 
     @property
     def licences(self):
         return self.__seamless__.get_list("license")
 
     def add_licence(self, license_type, url=None, by=None, sa=None, nc=None, nd=None):
+        self.add_license(license_type, url, by, sa, nc, nd)
+
+    def add_license(self, license_type, url=None, by=None, sa=None, nc=None, nd=None):
         lobj = {"type": license_type}
         if url is not None:
             lobj["url"] = url
@@ -280,10 +278,10 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.set_with_struct("deposit_policy.is_registered", val)
 
     def set_editorial_review(self, process, review_url, board_url=None):
-        self._set_with_struct("editorial.review_process", process)
-        self._set_with_struct("editorial.review_url", review_url)
+        self.__seamless__.set_with_struct("editorial.review_process", process)
+        self.__seamless__.set_with_struct("editorial.review_url", review_url)
         if board_url is not None:
-            self._set_with_struct("editorial.board_url", review_url)
+            self.__seamless__.set_with_struct("editorial.board_url", board_url)
 
     @property
     def editorial_review_process(self):
@@ -297,13 +295,17 @@ class JournalLikeBibJSON(SeamlessMixin):
     def editorial_board_url(self):
         return self.__seamless__.get_single("editorial.board_url")
 
+    @editorial_board_url.setter
+    def editorial_board_url(self, url):
+        self.__seamless__.set_with_struct("editorial.board_url", url)
+
     @property
     def institution(self):
         return self.__seamless__.get_single("institution.name")
 
     @institution.setter
     def institution(self, val):
-        self.__seamless__set_with_struct("institution.name", val)
+        self.__seamless__.set_with_struct("institution.name", val)
 
     @property
     def institution_country(self):
@@ -327,29 +329,33 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @other_charges_url.setter
     def other_charges_url(self, url):
-        self.__seamless__.set_with_struct("other_charges.url")
+        self.__seamless__.set_with_struct("other_charges.url", url)
 
     @property
-    def persistent_identifier_scheme(self):
+    def pid_scheme(self):
         return self.__seamless__.get_list("pid_scheme.scheme")
 
-    @persistent_identifier_scheme.setter
-    def persistent_identifier_scheme(self, schemes):
+    @pid_scheme.setter
+    def pid_scheme(self, schemes):
         self.__seamless__.set_with_struct("pid_scheme.scheme", schemes)
         if len(schemes) > 0:
             self.__seamless__.set_with_struct("pid_scheme.has_pid_scheme", True)
 
-    def add_persistent_identifier_scheme(self, scheme):
+    def add_pid_scheme(self, scheme):
         self.__seamless__.add_to_list_with_struct("pid_scheme.scheme", scheme)
         self.__seamless__.set_with_struct("pid_scheme.has_pid_scheme", True)
 
     def set_plagiarism_detection(self, url, has_detection=True):
-        self._set_with_struct("plagiarism.detection", has_detection)
-        self._set_with_struct("plagiarism.url", url)
+        self.__seamless__.set_with_struct("plagiarism.detection", has_detection)
+        self.__seamless__.set_with_struct("plagiarism.url", url)
 
     @property
     def plagiarism_detection(self):
-        return self._get_single("plagiarism_detection", default={})
+        return self.__seamless__.get_single("plagiarism.detection", default={})
+
+    @property
+    def plagiarism_url(self):
+        return self.__seamless__.get_single("plagiarism.url")
 
     @property
     def preservation(self):
@@ -362,7 +368,7 @@ class JournalLikeBibJSON(SeamlessMixin):
         if "service" in pres:
             ret += pres["service"]
         if "national_library" in pres:
-            ret.append("A national library: " + pres["national_library"])
+            ret.append(["A national library", pres["national_library"]])
         return ret
 
     def set_preservation(self, services, policy_url):
@@ -376,7 +382,7 @@ class JournalLikeBibJSON(SeamlessMixin):
             else:
                 known.append(p)
         if len(known) > 0:
-            obj["services"] = known
+            obj["service"] = known
         if policy_url is not None:
             obj["url"] = policy_url
 
@@ -386,9 +392,17 @@ class JournalLikeBibJSON(SeamlessMixin):
         if isinstance(service, list):
             k, v = service
             if k.lower() == "a national library":
-                self.__seamless__set_with_struct("preservation.national_library", v)
+                self.__seamless__.set_with_struct("preservation.national_library", v)
         else:
             self.__seamless__.add_to_list_with_struct("preservation.service", service)
+
+    @property
+    def preservation_url(self):
+        return self.__seamless__.get_single("preservation.url")
+
+    @preservation_url.setter
+    def preservation_url(self, url):
+        self.__seamless__.set_with_struct("preservation.url", url)
 
     @property
     def publisher(self):
@@ -396,7 +410,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @publisher.setter
     def publisher(self, val):
-        self.__seamless__set_with_struct("publisher.name", val)
+        self.__seamless__.set_with_struct("publisher.name", val)
 
     @property
     def publisher_country(self):
@@ -473,9 +487,9 @@ class JournalLikeBibJSON(SeamlessMixin):
             issns.append(self.eissn)
         return issns
 
-    def country_name(self):
-        if self.country is not None:
-            return datasets.get_country_name(self.country)
+    def publisher_country_name(self):
+        if self.publisher_country is not None:
+            return datasets.get_country_name(self.publisher_country)
         return None
 
     def language_name(self):
@@ -543,6 +557,17 @@ class JournalLikeBibJSON(SeamlessMixin):
     def set_language(self, language):
         self.language = language
 
+    @property
+    def persistent_identifier_scheme(self):
+        return self.pid_scheme
+
+    @persistent_identifier_scheme.setter
+    def persistent_identifier_scheme(self, schemes):
+        self.pid_scheme = schemes
+
+    def add_persistent_identifier_scheme(self, scheme):
+        self.add_pid_scheme(scheme)
+
     def subjects(self):
         return self.subject
 
@@ -560,12 +585,12 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def flattened_archiving_policies(self):
-        return self.preservation_services
+        return [": ".join(p) if isinstance(p, list) else p for p in self.preservation_services]
 
     # vocab of known identifier types
     P_ISSN = "pissn"
     E_ISSN = "eissn"
-    DOI = "doi"
+    #DOI = "doi"
 
     IDENTIFIER_MAP = {
         P_ISSN : "pissn",
@@ -576,6 +601,7 @@ class JournalLikeBibJSON(SeamlessMixin):
         field = self.IDENTIFIER_MAP.get(idtype)
         if field is not None:
             setattr(self, field, value)
+            return
         raise RuntimeError("This object does not accept unrecognised identifier types")
 
     def get_identifiers(self, idtype=None):
@@ -603,7 +629,7 @@ class JournalLikeBibJSON(SeamlessMixin):
     AIMS_SCOPE = "aims_scope"
     AUTHOR_INSTRUCTIONS = "author_instructions"
     OA_STATEMENT = "oa_statement"
-    FULLTEXT = "fulltext"
+    #FULLTEXT = "fulltext"
 
     LINK_MAP = {
         HOMEPAGE: "journal_url",
@@ -622,6 +648,8 @@ class JournalLikeBibJSON(SeamlessMixin):
         field = self.LINK_MAP.get(urltype)
         if field is not None:
             setattr(self, field, url)
+            return
+        raise RuntimeError("This object does not accept unrecognised url types")
 
     def get_urls(self, urltype=None, unpack_urlobj=True):
         if urltype is None:
@@ -633,9 +661,9 @@ class JournalLikeBibJSON(SeamlessMixin):
 
         url = getattr(self, field)
         if unpack_urlobj:
-            return url
+            return [url]
         else:
-            return {"type" : urltype, "url" : url}
+            return [{"type" : urltype, "url" : url}]
 
     def get_single_url(self, urltype, unpack_urlobj=True):
         urls = self.get_urls(urltype=urltype, unpack_urlobj=unpack_urlobj)
@@ -665,6 +693,9 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     def set_open_access(self, open_access):
         self.boai = open_access
+
+    def country_name(self):
+        return self.publisher_country_name()
 
     #####################################################
     ## Incompatible functions from v1

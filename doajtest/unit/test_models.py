@@ -10,6 +10,8 @@ from portality.lib import dataobj
 from portality.models import shared_structs
 from portality.lib import seamless
 
+from portality.models.v1.bibjson import GenericBibJSON
+
 class TestClient(DoajTestCase):
 
     def test_00_structs(self):
@@ -343,51 +345,41 @@ class TestClient(DoajTestCase):
     def test_05_sync_owners(self):
         # suggestion with no current_journal
         s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
-        s.save()
-
-        models.Suggestion.refresh()
+        s.save(blocking=True)
         s = models.Suggestion.pull(s.id)
         assert s is not None
 
         # journal with no current_application
         j = models.Journal(**JournalFixtureFactory.make_journal_source())
-        j.save()
-
-        models.Journal.refresh()
+        j.save(blocking=True)
         j = models.Journal.pull(j.id)
         assert j is not None
 
         # suggestion with erroneous current_journal
         s.set_current_journal("asdklfjsadjhflasdfoasf")
-        s.save()
-
-        models.Suggestion.refresh()
+        s.save(blocking=True)
         s = models.Suggestion.pull(s.id)
         assert s is not None
 
         # journal with erroneous current_application
         j.set_current_application("kjwfuiwqhu220952gw")
-        j.save()
-
-        models.Journal.refresh()
+        j.save(blocking=True)
         j = models.Journal.pull(j.id)
         assert j is not None
 
         # suggestion with journal
         s.set_owner("my_new_owner")
         s.set_current_journal(j.id)
-        s.save()
+        s.save(blocking=True)
 
-        models.Journal.refresh()
         j = models.Journal.pull(j.id)
         assert j.owner == "my_new_owner"
 
         # journal with suggestion
         j.set_owner("another_new_owner")
         j.set_current_application(s.id)
-        j.save()
+        j.save(blocking=True)
 
-        models.Suggestion.refresh()
         s = models.Suggestion.pull(s.id)
         assert s.owner == "another_new_owner"
 
@@ -571,17 +563,18 @@ class TestClient(DoajTestCase):
         j = models.Journal()
         b = j.bibjson()
 
-        b.set_archiving_policy(["LOCKSS", "CLOCKSS", ["A national library", "Trinity"], ["Other", "Somewhere else"]], "http://url")
-        assert b.archiving_policy == {"url" : "http://url", "policy" : ["LOCKSS", "CLOCKSS", ["A national library", "Trinity"], ["Other", "Somewhere else"]]}
+        b.set_archiving_policy(["LOCKSS", "CLOCKSS", ["A national library", "Trinity"], "Somewhere else"], "http://url")
+        assert b.preservation_url == "http://url"
+        assert b.preservation_services == ["LOCKSS", "CLOCKSS", "Somewhere else", ["A national library", "Trinity"]]
 
         b.add_archiving_policy("SAFE")
-        assert b.archiving_policy == {"url" : "http://url", "policy" : ["LOCKSS", "CLOCKSS", "SAFE", ["A national library", "Trinity"], ["Other", "Somewhere else"]]}
+        assert b.preservation_services == ["LOCKSS", "CLOCKSS", "Somewhere else", "SAFE", ["A national library", "Trinity"]]
 
-        assert b.flattened_archiving_policies == ['LOCKSS', 'CLOCKSS', 'SAFE', 'A national library: Trinity', 'Other: Somewhere else']
+        assert b.flattened_archiving_policies == ['LOCKSS', 'CLOCKSS', "Somewhere else", 'SAFE', 'A national library: Trinity'], b.flattened_archiving_policies
 
     def test_13_generic_bibjson(self):
         source = BibJSONFixtureFactory.generic_bibjson()
-        gbj = models.GenericBibJSON(source)
+        gbj = GenericBibJSON(source)
 
         assert gbj.title == "The Title"
         assert len(gbj.get_identifiers()) == 2
@@ -633,124 +626,272 @@ class TestClient(DoajTestCase):
         assert len(gbj.get_identifiers()) == 0
         assert len(gbj.subjects()) == 0
 
-    def test_14_journal_bibjson(self):
+    def test_14_journal_like_bibjson(self):
         source = BibJSONFixtureFactory.journal_bibjson()
-        bj = models.JournalBibJSON(source)
+        bj = models.JournalLikeBibJSON(source)
 
         assert bj.alternative_title == "Alternative Title"
-        assert bj.country == "US"
-        assert bj.publisher == "The Publisher"
-        assert bj.provider == "Platform Host Aggregator"
-        assert bj.institution == "Society Institution"
-        assert bj.active is True
+        assert bj.boai is True
+        assert bj.discontinued_date == "2010-01-01"
+        assert bj.discontinued_datestamp.strftime("%Y-%m-%d") == "2010-01-01"
+        assert bj.eissn == "9876-5432"
+        assert bj.pissn == "1234-5678"
+        assert bj.publication_time_weeks == 8
+        assert bj.title == "The Title"
+        assert bj.is_replaced_by == ["2222-2222"]
+        assert bj.keywords == ["word", "key"]
         assert bj.language == ["EN", "FR"]
-        assert bj.get_license() is not None
-        assert bj.get_license_type() == "CC MY"
-        assert bj.open_access is True
-        assert bj.oa_start.get("year") == 1980
+        assert len(bj.licences) == 1
+        assert bj.replaces == ["1111-1111"]
+        assert len(bj.subject) == 2
+        assert len(bj.apcs) == 1
+        assert bj.apcs[0].get("currency") == "GBP"
+        assert bj.apcs[0].get("price") == 2
         assert bj.apc_url == "http://apc.com"
-        assert bj.apc.get("currency") == "GBP"
-        assert bj.apc.get("average_price") == 2
-        assert bj.submission_charges_url == "http://submission.com"
-        assert bj.submission_charges.get("currency") == "USD"
-        assert bj.submission_charges.get("average_price") == 4
-        assert bj.editorial_review.get("process") == "Open peer review"
-        assert bj.editorial_review.get("url") == "http://review.process"
-        assert bj.plagiarism_detection.get("detection") is True
-        assert bj.plagiarism_detection.get("url") == "http://plagiarism.screening"
-        assert bj.article_statistics.get("statistics") is True
-        assert bj.article_statistics.get("url") == "http://download.stats"
+        assert bj.has_apc is True
+        assert bj.article_embedded_license is True
+        assert bj.article_embedded_license_example_url == "http://licence.embedded"
+        assert bj.article_orcid is True
+        assert bj.article_i4oc_open_citations is True
+        assert bj.author_retains_copyright is True
+        assert bj.copyright_url == "http://copyright.com"
         assert bj.deposit_policy == ["Sherpa/Romeo", "Store it"]
-        assert bj.author_copyright.get("copyright") == "True"
-        assert bj.author_copyright.get("url") == "http://copyright.com"
-        assert bj.author_publishing_rights.get("publishing_rights") == "True"
-        assert bj.author_publishing_rights.get("url") == "http://publishing.rights"
-        assert bj.allows_fulltext_indexing is True
-        assert bj.persistent_identifier_scheme == ["DOI", "ARK", "PURL"]
-        assert bj.format == ["HTML", "XML", "Wordperfect"]
-        assert bj.publication_time == 8
-        assert bj.replaces == ["0000-0000"]
-        assert bj.is_replaced_by == ["9999-9999"]
-        assert bj.discontinued_date == "2001-01-01"
-        assert bj.discontinued_datestamp == datetime.strptime("2001-01-01", "%Y-%m-%d")
+        assert bj.has_deposit_policy is True
+        assert bj.deposit_policy_registered is True
+        assert bj.editorial_review_process == ["Open peer review"]
+        assert bj.editorial_review_url == "http://review.process"
+        assert bj.editorial_board_url == "http://editorial.board"
+        assert bj.institution == "Society Institution"
+        assert bj.institution_country == "US"
+        assert bj.has_other_charges is True
+        assert bj.other_charges_url == "http://other.charges"
+        assert bj.pid_scheme == ["DOI", "ARK", "PURL"]
+        assert bj.plagiarism_detection is True
+        assert bj.plagiarism_url == "http://plagiarism.screening"
+        assert bj.preservation is not None
+        assert bj.preservation_services == ["LOCKSS", "CLOCKSS", "A safe place", ["A national library", "Trinity"]]
+        assert bj.preservation_url == "http://digital.archiving.policy"
+        assert bj.publisher == "The Publisher"
+        assert bj.publisher_country == "US"
+        assert bj.oa_statement_url == "http://oa.statement"
+        assert bj.journal_url == "http://journal.url"
+        assert bj.aims_scope_url == "http://aims.scope"
+        assert bj.author_instructions_url == "http://author.instructions.com"
+        assert bj.license_terms_url == "http://license.terms"
+        assert bj.has_waiver is True
+        assert bj.waiver_url == "http://waiver.policy"
 
         bj.alternative_title = "New alternate"
-        bj.country = "UK"
-        bj.publisher = "Me"
-        bj.provider = "The claw"
-        bj.institution = "UCL"
-        bj.active = False
-        bj.set_language("DE")
-        bj.set_license("CC BY", "CC BY")
-        bj.set_open_access(False)
-        bj.set_oa_start(1900)
-        bj.apc_url = "http://apc2.com"
-        bj.set_apc("USD", 10)
-        bj.submission_charges_url = "http://sub2.com"
-        bj.set_submission_charges("GBP", 20)
-        bj.set_editorial_review("Whatever", "http://whatever")
-        bj.set_plagiarism_detection("http://test1", False)
-        bj.set_article_statistics("http://test2", False)
-        bj.deposit_policy = ["Never"]
-        bj.set_author_copyright("http://test3", "True")
-        bj.set_author_publishing_rights("http://test4", "True")
-        bj.allows_fulltext_indexing = False
-        bj.persistent_identifier_scheme = "DOI"
-        bj.format = "PDF"
-        bj.publication_time = 4
-        bj.replaces = ["1111-1111"]
-        bj.is_replaced_by = ["2222-2222"]
+        bj.boai = False
         bj.discontinued_date = "2002-01-01"
+        bj.eissn = "0000-000x"
+        bj.pissn = "1111-111x"
+        bj.publication_time_weeks = 4
+        bj.title = "Another title"
+        bj.keywords = ["new", "terms"]
+        bj.is_replaced_by = ["4444-4444"]
+        bj.language = ["IT"]
+        bj.replaces = ["3333-3333"]
+        bj.subject = [{"scheme": "TEST", "term": "first", "code": "one"}]
+        bj.apc_url = "http://apc2.com"
+        bj.article_embedded_license = False
+        bj.article_embedded_license_example_url = "http://licence2.embedded"
+        bj.article_orcid = False
+        bj.article_i4oc_open_citations = False
+        bj.author_retains_copyright = False
+        bj.copyright_url = "http://copyright2.url"
+        bj.deposit_policy = ["Never"]
+        bj.deposit_policy_registered = False
+        bj.set_editorial_review("Whatever", "http://whatever", "http://board2.url")
+        bj.institution = "UCL"
+        bj.institution_country = "FR"
+        bj.has_other_charges = False
+        bj.other_charges_url = "http://other2.url"
+        bj.pid_scheme = "Handle"
+        bj.set_plagiarism_detection("http://test1", False)
+        bj.set_preservation(["LOCKSS"], "http://preservation")
+        bj.publisher = "Me"
+        bj.publisher_country = "UK"
+        bj.oa_statement_url = "http://oa2.statement"
+        bj.journal_url = "http://journal2.url"
+        bj.aims_scope_url = "http://aims2.url"
+        bj.author_instructions_url = "http://inst2.url"
+        bj.license_terms_url = "http://terms2.url"
+        bj.has_waiver = False
+        bj.waiver_url = "http://waiver2.url"
 
         assert bj.alternative_title == "New alternate"
-        assert bj.country == "UK"
-        assert bj.publisher == "Me"
-        assert bj.provider == "The claw"
-        assert bj.institution == "UCL"
-        assert bj.active is False
-        assert bj.language == ["DE"]
-        assert bj.get_license_type() == "CC BY"
-        assert bj.open_access is False
-        assert bj.oa_start.get("year") == 1900
-        assert bj.apc_url == "http://apc2.com"
-        assert bj.apc.get("currency") == "USD"
-        assert bj.apc.get("average_price") == 10
-        assert bj.submission_charges_url == "http://sub2.com"
-        assert bj.submission_charges.get("currency") == "GBP"
-        assert bj.submission_charges.get("average_price") == 20
-        assert bj.editorial_review.get("process") == "Whatever"
-        assert bj.editorial_review.get("url") == "http://whatever"
-        assert bj.plagiarism_detection.get("detection") is False
-        assert bj.plagiarism_detection.get("url") == "http://test1"
-        assert bj.article_statistics.get("statistics") is False
-        assert bj.article_statistics.get("url") == "http://test2"
-        assert bj.deposit_policy == ["Never"]
-        assert bj.author_copyright.get("copyright") == "True"
-        assert bj.author_copyright.get("url") == "http://test3"
-        assert bj.author_publishing_rights.get("publishing_rights") == "True"
-        assert bj.author_publishing_rights.get("url") == "http://test4"
-        assert bj.allows_fulltext_indexing is False
-        assert bj.persistent_identifier_scheme == ["DOI"]
-        assert bj.format == ["PDF"]
-        assert bj.publication_time == 4
-        assert bj.replaces == ["1111-1111"]
-        assert bj.is_replaced_by == ["2222-2222"]
+        assert bj.boai is False
         assert bj.discontinued_date == "2002-01-01"
-        assert bj.discontinued_datestamp == datetime.strptime("2002-01-01", "%Y-%m-%d")
+        assert bj.eissn == "0000-000X"
+        assert bj.pissn == "1111-111X"
+        assert bj.publication_time_weeks == 4
+        assert bj.title == "Another title"
+        assert bj.is_replaced_by == ["4444-4444"]
+        assert bj.keywords == ["new", "terms"]
+        assert bj.language == ["IT"]
+        assert len(bj.licences) == 1
+        assert bj.replaces == ["3333-3333"]
+        assert len(bj.subject) == 1
+        assert bj.apc_url == "http://apc2.com"
+        assert bj.article_embedded_license is False
+        assert bj.article_embedded_license_example_url == "http://licence2.embedded"
+        assert bj.article_orcid is False
+        assert bj.article_i4oc_open_citations is False
+        assert bj.author_retains_copyright is False
+        assert bj.copyright_url == "http://copyright2.url"
+        assert bj.deposit_policy == ["Never"]
+        assert bj.has_deposit_policy is True
+        assert bj.deposit_policy_registered is False
+        assert bj.editorial_review_process == ["Whatever"]
+        assert bj.editorial_review_url == "http://whatever"
+        assert bj.editorial_board_url == "http://board2.url"
+        assert bj.institution == "UCL"
+        assert bj.institution_country == "FR"
+        assert bj.has_other_charges is False
+        assert bj.other_charges_url == "http://other2.url"
+        assert bj.pid_scheme == ["Handle"]
+        assert bj.plagiarism_detection is False
+        assert bj.plagiarism_url == "http://test1"
+        assert bj.preservation is not None
+        assert bj.preservation_services == ["LOCKSS"]
+        assert bj.preservation_url == "http://preservation"
+        assert bj.publisher == "Me"
+        assert bj.publisher_country == "UK"
+        assert bj.oa_statement_url == "http://oa2.statement"
+        assert bj.journal_url == "http://journal2.url"
+        assert bj.aims_scope_url == "http://aims2.url"
+        assert bj.author_instructions_url == "http://inst2.url"
+        assert bj.license_terms_url == "http://terms2.url"
+        assert bj.has_waiver is False
+        assert bj.waiver_url == "http://waiver2.url"
 
+        bj.preservation_url = "http://preservation3"
+        assert bj.preservation_url == "http://preservation3"
+
+        bj.add_is_replaced_by("4321-4321")
+        bj.add_keyword("keyword")
         bj.add_language("CZ")
+        bj.add_license("CC YOUR", "http://cc.your", True, True, True, False)
+        bj.add_replaces("1234-1234")
+        bj.add_subject("SCH", "TERM", "CDE")
+        bj.add_apc("USD", 7)
         bj.add_deposit_policy("OK")
-        bj.add_persistent_identifier_scheme("Handle")
-        bj.add_format("CSV")
-        bj.add_replaces("3333-3333")
-        bj.add_is_replaced_by("4444-4444")
+        bj.add_pid_scheme("PURL")
+        bj.add_preservation("MOUNTAIN")
 
-        assert bj.language == ["DE", "CZ"]
+        assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
+        assert bj.keywords == ["new", "terms", "keyword"]
+        assert bj.language == ["IT", "CZ"]
+        assert len(bj.licences) == 2
+        assert bj.replaces == ["3333-3333", "1234-1234"]
+        assert len(bj.subject) == 2
+        assert len(bj.apcs) == 2
         assert bj.deposit_policy == ["Never", "OK"]
-        assert bj.persistent_identifier_scheme == ["DOI", "Handle"]
-        assert bj.format == ["PDF", "CSV"]
-        assert bj.replaces == ["1111-1111", "3333-3333"]
-        assert bj.is_replaced_by == ["2222-2222", "4444-4444"]
+        assert bj.pid_scheme == ["Handle", "PURL"]
+        assert bj.preservation_services == ["LOCKSS", "MOUNTAIN"]
+
+        # special methods
+        assert bj.issns() == ["1111-111X", "0000-000X"], bj.issns()
+        assert bj.publisher_country_name() == "UK", bj.publisher_country_name()
+        assert "Italian" in bj.language_name(), bj.language_name()
+        assert bj.get_preferred_issn() == "0000-000X", bj.get_preferred_issn()
+
+        # deprecated methods (they still need to work)
+        bj.publication_time = 3
+        assert bj.publication_time == 3
+        assert bj.publication_time_weeks == 3
+
+        bj.set_keywords(["one", "two"])
+        assert bj.keywords == ["one", "two"]
+
+        bj.set_language("DE")
+        assert bj.language == ["DE"]
+
+        bj.persistent_identifier_scheme = ["ARK"]
+        assert bj.persistent_identifier_scheme == ["ARK"]
+        assert bj.pid_scheme == ["ARK"]
+        bj.add_persistent_identifier_scheme("PURL")
+        assert bj.pid_scheme == ["ARK", "PURL"]
+
+        assert bj.subject == bj.subjects()
+        bj.set_subjects({"scheme" : "whatever", "term" : "also whatever"})
+        assert bj.subject == [{"scheme" : "whatever", "term" : "also whatever"}]
+        bj.remove_subjects()
+        assert len(bj.subject) == 0
+
+        bj.set_archiving_policy(["LOCKSS"], "http://archiving")
+        assert bj.preservation_services == ["LOCKSS"]
+        assert bj.preservation_url == "http://archiving"
+        bj.add_archiving_policy("CLOCKSS")
+        assert bj.preservation_services == ["LOCKSS", "CLOCKSS"]
+
+        bj.add_identifier(bj.E_ISSN, "0101-0101")
+        assert bj.eissn == "0101-0101"
+        bj.add_identifier(bj.P_ISSN, "1010-1010")
+        assert bj.pissn == "1010-1010"
+        assert bj.get_identifiers(bj.E_ISSN) == ["0101-0101"]
+        assert bj.get_identifiers(bj.P_ISSN) == ["1010-1010"]
+        assert bj.get_one_identifier(bj.E_ISSN) == "0101-0101"
+        assert bj.get_one_identifier(bj.P_ISSN) == "1010-1010"
+
+        bj.add_url("http://homepage", bj.HOMEPAGE)
+        bj.add_url("http://waiver", bj.WAIVER_POLICY)
+        bj.add_url("http://editorial", bj.EDITORIAL_BOARD)
+        bj.add_url("http://aims", bj.AIMS_SCOPE)
+        bj.add_url("http://author", bj.AUTHOR_INSTRUCTIONS)
+        bj.add_url("http://oa", bj.OA_STATEMENT)
+
+        assert bj.journal_url == "http://homepage"
+        assert bj.waiver_url == "http://waiver"
+        assert bj.editorial_board_url == "http://editorial"
+        assert bj.aims_scope_url == "http://aims"
+        assert bj.author_instructions_url == "http://author"
+        assert bj.oa_statement_url == "http://oa"
+
+        assert bj.get_urls(bj.HOMEPAGE) == ["http://homepage"]
+        assert bj.get_urls(bj.WAIVER_POLICY) == ["http://waiver"]
+        assert bj.get_urls(bj.EDITORIAL_BOARD) == ["http://editorial"]
+        assert bj.get_urls(bj.AIMS_SCOPE) == ["http://aims"]
+        assert bj.get_urls(bj.AUTHOR_INSTRUCTIONS) == ["http://author"]
+        assert bj.get_urls(bj.OA_STATEMENT) == ["http://oa"]
+
+        assert bj.get_single_url(bj.HOMEPAGE) == "http://homepage"
+        assert bj.get_single_url(bj.WAIVER_POLICY) == "http://waiver"
+        assert bj.get_single_url(bj.EDITORIAL_BOARD) == "http://editorial"
+        assert bj.get_single_url(bj.AIMS_SCOPE) == "http://aims"
+        assert bj.get_single_url(bj.AUTHOR_INSTRUCTIONS) == "http://author"
+        assert bj.get_single_url(bj.OA_STATEMENT) == "http://oa"
+
+        assert bj.first_eissn == bj.eissn
+        assert bj.first_pissn == bj.pissn
+        assert bj.country == bj.publisher_country
+        assert bj.open_access == bj.boai
+
+        bj.country = "RU"
+        assert bj.country == "RU"
+        assert bj.publisher_country == "RU"
+
+        bj.set_open_access(not bj.open_access)
+        assert bj.open_access == bj.boai
+
+        assert bj.country_name() == bj.publisher_country_name()
+
+        # deleters
+        del bj.discontinued_date
+        del bj.eissn
+        del bj.pissn
+        del bj.is_replaced_by
+        del bj.replaces
+        del bj.subject
+
+        assert bj.discontinued_date is None
+        assert bj.eissn is None
+        assert bj.pissn is None
+        assert bj.is_replaced_by == []
+        assert bj.replaces == []
+        assert bj.subject == []
+
 
     def test_15_continuations(self):
         journal = models.Journal()
