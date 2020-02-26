@@ -7,7 +7,7 @@ One type may have some admin fields and not others and vice versa.
     "id" : "id",
     "created_date" :  "created date",
     "last_manual_update" : "last manual edit",
-    "last_update" : "last update of any kind",
+    "last_updated" : "last update of any kind",
     "admin": {
         "application_status" : "status",
         "bulk_upload": "string", 
@@ -112,7 +112,6 @@ One type may have some admin fields and not others and vice versa.
             "has_preservation" : true,
             "service" : ["<service name>"],
             "national_library" : "National Library Name",
-            "other" : "<service name>",
             "url" : "<preservation url>"
         },
         "publication_time_weeks" : 5,
