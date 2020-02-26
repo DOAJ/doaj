@@ -9,10 +9,8 @@ from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, D
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.formcontext import formcontext
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
-from portality.view.forms import ArticleForm
 from portality.ui.messages import Messages
 from portality import lock
-from portality.crosswalks.article_form import ArticleFormXWalk
 
 from huey.exceptions import TaskException
 

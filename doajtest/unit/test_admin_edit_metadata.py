@@ -8,7 +8,7 @@ from doajtest.unit.test_formcontext import TestForm
 from portality.models import Article, Account, Journal
 from flask import url_for
 from doajtest.unit.resources.articles_metadata_form import ArticleMetadataFactory
-from portality.view.forms import ArticleForm
+from portality.formcontext.forms import ArticleForm
 from werkzeug.datastructures import MultiDict
 
 

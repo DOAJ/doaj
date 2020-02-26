@@ -5,8 +5,9 @@ from datetime import datetime
 from flask import render_template, url_for, request
 from flask_login import current_user
 
-import portality.formcontext.xwalks.metadata_article_form
+import portality.formcontext.forms
 import portality.formcontext.xwalks.journal_form
+import portality.formcontext.xwalks.metadata_article_form
 from portality import constants
 from portality import models, app_email, util
 from portality.bll import DOAJ
@@ -1810,16 +1811,16 @@ class MetadataForm(FormContext):
         return counted >= 1
 
     def blank_form(self):
-        self.form = forms.ArticleForm()
+        self.form = portality.formcontext.forms.ArticleForm()
         self._set_choices()
 
     def source2form(self):
-        self.form = forms.ArticleForm()
+        self.form = portality.formcontext.forms.ArticleForm()
         portality.formcontext.xwalks.metadata_article_form.MetadataArticleFormXwalk.obj2form(self.form, article=self.source)
         self._set_choices()
 
     def data2form(self):
-        self.form = forms.ArticleForm(formdata=self.form_data)
+        self.form = portality.formcontext.forms.ArticleForm(formdata=self.form_data)
         self._set_choices()
 
     def form2target(self):

@@ -1,3 +1,4 @@
+import portality.formcontext.forms
 from portality.crosswalks.article_form import ArticleFormXWalk
 from portality.view import forms
 
@@ -49,7 +50,7 @@ class MetadataArticleFormXwalk(ArticleFormXWalk):
                 tmp_orcid[int(key[1])] = a[1]
 
         for i in range(len(tmp_names)):
-            author = forms.AuthorForm()
+            author = portality.formcontext.forms.AuthorForm()
             if tmp_names[i] != "":
                 author.name = tmp_names[i]
                 author.affiliation = tmp_aff[i]
