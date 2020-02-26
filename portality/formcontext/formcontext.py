@@ -1802,6 +1802,22 @@ class MetadataForm(FormContext):
             # probably you are loading the class from the command line
             pass
 
+    def modify_authors_if_required(self, request_data):
+
+        more_authors = request_data.get("more_authors")
+        remove_author = None
+        for v in list(request.values.keys()):
+            if v.startswith("remove_authors"):
+                remove_author = v.split("-")[1]
+
+        # if the user wants more authors, add an extra entry
+        if more_authors:
+            return self.render_template(more_authors=True)
+
+        # if the user wants to remove an author, do the various back-flips required
+        if remove_author is not None:
+            return self.render_template(remove_authors=remove_author)
+
     def _validate_authors(self):
         counted = 0
         for entry in self.form.authors.entries:

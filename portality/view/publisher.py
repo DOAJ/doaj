@@ -193,19 +193,8 @@ def metadata():
                                                              form_data=request.form)
         # first we need to do any server-side form modifications which
         # the user might request by pressing the add/remove authors buttons
-        more_authors = request.values.get("more_authors")
-        remove_author = None
-        for v in list(request.values.keys()):
-            if v.startswith("remove_authors"):
-                remove_author = v.split("-")[1]
 
-        # if the user wants more authors, add an extra entry
-        if more_authors:
-            return fc.render_template(more_authors=True)
-
-        # if the user wants to remove an author, do the various back-flips required
-        if remove_author is not None:
-            return fc.render_template(remove_authors=remove_author)
+        fc.modify_authors_if_required(request.values)
 
         if fc.validate():
             try:
