@@ -1,8 +1,7 @@
-import re
 from datetime import datetime
 
 from flask_login import current_user
-from wtforms import Form, validators, StringField, FieldList, FormField, TextAreaField
+from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, IntegerField, BooleanField, FormField, FieldList, RadioField
 from wtforms import widgets
 
@@ -15,11 +14,11 @@ from portality.formcontext.validate import URLOptionalScheme, OptionalIf, Exclus
 
 from portality.formcontext.choices import Choices
 
-ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
+ISSN_REGEX = regex.ISSN_COMPILED
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
-BIG_END_DATE_REGEX = "^\d{4}-\d{2}-\d{2}$"
-DATE_ERROR  = "Date must be supplied in the form YYYY-MM-DD"
+BIG_END_DATE_REGEX = regex.BIG_END_DATE_COMPILED
+DATE_ERROR = "Date must be supplied in the form YYYY-MM-DD"
 
 ###########################################################################
 # Definition of the form components
