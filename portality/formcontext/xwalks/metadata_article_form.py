@@ -1,8 +1,9 @@
+import portality.formcontext.forms
 from portality.crosswalks.article_form import ArticleFormXWalk
 from portality.view import forms
 
 
-class AdminArticleFormXwalk(ArticleFormXWalk):
+class MetadataArticleFormXwalk(ArticleFormXWalk):
     """
     ImmutableMultiDict([ ('authors-0-name', ''), ('authors-0-affiliation', ''), ('authors-1-name', ''), ('authors-1-affiliation', ''), ('authors-2-name', ''), ('authors-2-affiliation', ''), ('authors-3-name', 'Mitidieri, André Luis'), ('authors-3-affiliation', ''), ('authors-4-name', 'Guimarães, Letícia Batista'), ('authors-4-affiliation', ''), ('authors-5-name', 'Mazzutti, Luciana Helena Cajas'), ('authors-5-affiliation', ''), ('abstract', 'O presente artigo centra-se em Las memorias del General (1996) e Las vidas del General (2004), do ficcionista e jornalista argentino Tomás Eloy Martínez, enfatizando o sujeito do enunciado e o referente histórico. Apresentamos as reformulações julgadas significativas entre a primeira e a segunda dessas edições, antes de procedermos à análise do papel desempenhado pela memória, pela narrativa e pela reescrita do eu nos artigos que as compõem: 1) \x93Las memorias de Puerta de Hierro\x94; 2) \x93Días de exilio en Madrid \x94; 3) \x93Perón y sus novelas\x94. A voz autobiográfica do ex-presidente da Argentina, impressa nas entrevistas concedidas a Martínez, passa pelas reavaliações do autor no primeiro artigo, deposita-se residualmente no segundo texto, de caráter biográfico, e se une à própria voz autobiográfica do escritor no terceiro e nos paratextos dos livros analisados, em processo que permite notar as fronteiras contíguas entre narrativas memorialísticas, biográficas, históricas e autobiográficas'), ('keywords', 'LITERATURA ARGENTINA,ESCRITORES ARGENTINOS - CRÍTICA E INTERPRETAÇÃO,MARTINEZ,TOMÁS ELOY - CRÍTICA E INTERPRETAÇÃO,AUTOBIOGRAFIAS,PERONISMO (ARGENTINA),PERON,JUAN DOMINGO - BIOGRAFIA'), ('fulltext', 'http://revistaseletronicas.pucrs.br/ojs/index.php/fale/article/view/15435/10129'), ('publication_month', '1'), ('publication_year', '2013'), ('pissn', '0101-3335'), ('eissn', ''), ('volume', '48'), ('number', '4'), ('start', '431'), ('end', '440')])
     """
@@ -49,7 +50,7 @@ class AdminArticleFormXwalk(ArticleFormXWalk):
                 tmp_orcid[int(key[1])] = a[1]
 
         for i in range(len(tmp_names)):
-            author = forms.AuthorForm()
+            author = portality.formcontext.forms.AuthorForm()
             if tmp_names[i] != "":
                 author.name = tmp_names[i]
                 author.affiliation = tmp_aff[i]

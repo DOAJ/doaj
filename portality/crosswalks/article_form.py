@@ -1,5 +1,6 @@
 from wtforms import FieldList, FormField
 
+import portality.formcontext.forms
 from portality import models
 from portality.view import forms
 
@@ -117,7 +118,7 @@ class ArticleFormXWalk(object):
             for i in range(len(form.authors)):
                 form.authors.pop_entry()
             for a in bibjson.author:
-                author = forms.AuthorForm()
+                author = portality.formcontext.forms.AuthorForm()
                 if "name" in a:
                     author.name = a["name"]
                 else:
