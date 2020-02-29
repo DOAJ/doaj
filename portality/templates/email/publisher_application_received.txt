@@ -3,10 +3,15 @@ Dear {{ publisher_name }},
 {{ title }}
 {{ url }}
 
-Thank you for your application which has been safely received! These applications mean a lot to us and we take great care and consideration in reviewing each one. As it happens, we have quite a few in the queue right now but when the time comes to assess yours, we promise to give it the attention it deserves. You will receive an automated email from us when the application
-is assigned to an editor and then another email when they start working on it. It may take up to 6 months before you get a decision from us but please be assured that we are working as hard as we can with the resources we have.
+We have received your application.
 
-Please save this email as a record of when you submitted your application. We will not reply to emails requesting a status update for applications which are less than 6 months old. Before you contact us requesting an update, please check your spam folder to ensure that a member of our editorial team has not already contacted you. They may not be emailing from a doaj.org email address.
+DOAJ receives hundreds of applications every month. We will review yours as soon as we can. You will receive an email from us when the review is complete or if we have questions about your application.
+
+If you need to make a change to your application, send an email to feedback@doaj.org. You must include your ISSN.
+
+We cannot reply to emails requesting a status update for applications which are less than three months old.
+
+If you write to us, check first that there is nothing in your spam folder from us or one of our volunteers.
 
 Yours faithfully,
 
