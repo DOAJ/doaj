@@ -57,7 +57,7 @@ JOURNAL_BIBJSON = {
                 "article" : {
                     "fields" : {
                         "embedded_license" : {"coerce" : "bool"},
-                        "embedded_license_example" : {"coerce" : "unicode"},
+                        "embedded_license_url" : {"coerce" : "unicode"},
                         "orcid" : {"coerce" : "bool"},
                         "i4oc_open_citations" : {"coerce" : "bool"}
                     }
