@@ -303,28 +303,14 @@ class Article(DomainObject):
                 bibjson.journal_title = jbib.title
             rbj.title = jbib.title
 
-        if jbib.get_license() is not None:
-            lic = jbib.get_license()
-            alic = bibjson.get_journal_license()
-
-            if lic is not None and (alic is None or (lic.get("title") != alic.get("title") or
-                    lic.get("type") != alic.get("type") or
-                    lic.get("url") != alic.get("url") or
-                    lic.get("version") != alic.get("version") or
-                    lic.get("open_access") != alic.get("open_access"))):
-
-                bibjson.set_journal_license(lic.get("title"),
-                                            lic.get("type"),
-                                            lic.get("url"),
-                                            lic.get("version"),
-                                            lic.get("open_access"))
-                trip = True
-
-            rbj.set_license(lic.get("title"),
-                            lic.get("type"),
-                            lic.get("url"),
-                            lic.get("version"),
-                            lic.get("open_access"))
+        bibjson.remove_journal_licences()
+        for lic in jbib.licences:
+            bibjson.add_journal_license(
+                lic.get("type"),
+                lic.get("type"),
+                lic.get("url")
+            )
+            rbj.add_license(lic.get("type"), lic.get("url"))
 
         if len(jbib.language) > 0:
             jlang = jbib.language
@@ -476,10 +462,9 @@ class Article(DomainObject):
         elif cbib.journal_country:
             country = datasets.get_country_name(cbib.journal_country)
 
-        # get the title of the license
-        lic = cbib.get_journal_license()
-        if lic is not None:
-            licenses.append(lic.get("title"))
+        # get the type of the license
+        for lic in cbib.journal_licenses:
+            licenses.append(lic.get("type"))
 
         # copy the publisher/provider
         if cbib.publisher:
@@ -717,6 +702,16 @@ class ArticleBibJSON(GenericBibJSON):
     def author(self, authors):
         self._set_with_struct("author", authors)
 
+    def add_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+        lobj = {"title": licence_title, "type": licence_type}
+        if url is not None:
+            lobj["url"] = url
+        if version is not None:
+            lobj["version"] = version
+        if open_access is not None:
+            lobj["open_access"] = open_access
+        self._add_to_list_with_struct("journal.license", lobj)
+
     def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
         lobj = {"title": licence_title, "type": licence_type}
         if url is not None:
@@ -725,7 +720,6 @@ class ArticleBibJSON(GenericBibJSON):
             lobj["version"] = version
         if open_access is not None:
             lobj["open_access"] = open_access
-
         self._set_with_struct("journal.license", lobj)
 
     def get_journal_license(self):
@@ -733,6 +727,13 @@ class ArticleBibJSON(GenericBibJSON):
         if len(lics) == 0:
             return None
         return lics[0]
+
+    @property
+    def journal_licenses(self):
+        return self._get_list("journal.license")
+
+    def remove_journal_licences(self):
+        self._delete("journal.license")
 
     def get_publication_date(self, date_format='%Y-%m-%dT%H:%M:%SZ'):
         # work out what the date of publication is
