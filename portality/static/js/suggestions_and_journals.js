@@ -166,9 +166,8 @@ jQuery(document).ready(function($) {
     
     $("#languages").select2({allowClear: true});
 
-    autocomplete('#publisher', 'bibjson.publisher');
-    autocomplete('#society_institution', 'bibjson.institution');
-    autocomplete('#platform', 'bibjson.provider');
+    autocomplete('#publisher', 'bibjson.publisher.name');
+    autocomplete('#society_institution', 'bibjson.institution.name');
     autocomplete('#owner', 'id', 'account');
     autocomplete('#editor_group', 'name', 'editor_group', 1, false);
 

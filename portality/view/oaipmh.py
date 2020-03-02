@@ -1087,7 +1087,7 @@ class OAI_DC_Article(OAI_DC):
 
         if bibjson.get_journal_license() is not None:
             prov = etree.SubElement(oai_dc, self.DC + "provenance")
-            set_text(prov, "Journal Licence: " + bibjson.get_journal_license().get("title"))
+            set_text(prov, "Journal Licence(s): " + ", ".join([lic.get("type") for lic in bibjson.journal_licenses if "type" in lic]))
 
         citation = self._make_citation(bibjson)
         if citation is not None:

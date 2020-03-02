@@ -85,6 +85,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     ## base property methods
 
     @property
+    def data(self):
+        return self.__seamless__.data
+
+    @property
     def id(self):
         return self.__seamless__.get_single("id")
 
@@ -245,7 +249,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def bibjson(self):
         bj = self.__seamless__.get_single("bibjson")
         if bj is None:
-            self._set_single("bibjson", {})
+            self.__seamless__.set_single("bibjson", {})
             bj = self.__seamless__.get_single("bibjson")
         return JournalLikeBibJSON(bj)
 
@@ -363,7 +367,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
         if country is not None:
             index["country"] = country
-        index["has_apc"] = self._calculate_has_apc()
         if has_seal:
             index["has_seal"] = has_seal
         if unpunctitle is not None:
@@ -393,16 +396,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             index["schema_code"] = schema_codes
 
         self.__seamless__.set_with_struct("index", index)
-
-    def _calculate_has_apc(self):
-        # work out of the journal has an apc
-        has_apc = "No Information"
-        apc_present = self.bibjson().has_apc
-        if apc_present:
-            has_apc = "Yes"
-        elif self.is_ticked():  # FIXME: what's this logic about?
-            has_apc = "No"
-        return has_apc
 
 
 class Journal(JournalLikeObject):
@@ -730,6 +723,7 @@ class Journal(JournalLikeObject):
         self._ensure_in_doaj()
         self.calculate_tick()
         self._generate_index()
+        self._calculate_has_apc()
         self._generate_autocompletes()
         self.set_last_updated()
 
@@ -769,6 +763,17 @@ class Journal(JournalLikeObject):
         if ca is not None and ca.owner != self.owner:
             ca.set_owner(self.owner)
             ca.save(sync_owner=False)
+
+    def _calculate_has_apc(self):
+        # work out of the journal has an apc
+        has_apc = "No Information"
+        apc_present = self.bibjson().has_apc
+        if apc_present:
+            has_apc = "Yes"
+        elif self.is_ticked():  # Because if an item is not ticked we want to say "No Information"
+            has_apc = "No"
+
+        self.__seamless__.set_with_struct("index.has_apc", has_apc)
 
 
 MAPPING_OPTS = {

@@ -246,7 +246,7 @@ class SeamlessMixin(object):
 
         if (self.__seamless_struct__ is not None and
                 self.__seamless__ is not None):
-            self.__seamless_struct__.construct(self.__seamless__.data,
+            self.__seamless_struct__.construct(deepcopy(self.__seamless__.data),    # use a copy of the data, to avoid messing with any references to the current data
                 check_required=check_required,
                 silent_prune=silent_prune,
                 allow_other_fields=allow_other_fields)
@@ -466,7 +466,7 @@ class SeamlessData(object):
             kwargs = self._struct.kwargs(typ, "set", instructions)
             coerce_fn = None
             if instructions.get("contains") != "object":
-                coerce_fn = self._struct.get_coerce(instructions)
+                coerce_name, coerce_fn = self._struct.get_coerce(instructions)
             self.set_list(path, val, coerce=coerce_fn, **kwargs)
         elif typ == "object":
             if substruct is not None:
@@ -510,7 +510,7 @@ class SeamlessData(object):
 
         # if the struct contains a reference to the path, always return something, even if it is None - don't raise an AttributeError
         kwargs = self._struct.kwargs(type, "get", instructions)
-        coerce_fn = self._struct.get_coerce(instructions)
+        coerce_name, coerce_fn = self._struct.get_coerce(instructions)
         if coerce_fn is not None:
             kwargs["coerce"] = coerce_fn
 
