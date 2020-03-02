@@ -44,63 +44,52 @@ class TestCrudApplication(DoajTestCase):
         # now progressively remove the conditionally required/advanced validation stuff
         #
         # missing identifiers
-        data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["identifier"] = []
-        with self.assertRaises(DataStructureException):
-            ia = IncomingApplication(data)
 
         # no issns specified
-        data["bibjson"]["identifier"] = [{"type" : "wibble", "id": "alksdjfas"}]
+        data = ApplicationFixtureFactory.incoming_application()
+        del data["bibjson"]["pissn"]
+        del data["bibjson"]["eissn"]
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
 
+
         # issns the same (but not normalised the same)
-        data["bibjson"]["identifier"] = [{"type" : "pissn", "id": "12345678"}, {"type" : "eissn", "id": "1234-5678"}]
+        data["bibjson"]["pissn"] = "12345678"
+        data["bibjson"]["eissn"] = "1234-5678"
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
 
         # no homepage link
         data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["link"] = [{"type" : "awaypage", "url": "http://there"}]
+        del data["bibjson"]["ref"]["journal"]
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
 
         # plagiarism detection but no url
         data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["plagiarism_detection"] = {"detection" : True}
+        data["bibjson"]["plagiarism"]["detection"] = True
+        del data["bibjson"]["plagiarism"]["url"]
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
 
         # embedded licence but no url
         data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["license"][0]["embedded"] = True
-        del data["bibjson"]["license"][0]["embedded_example_url"]
+        data["bibjson"]["article"]["embedded_licence"] = True
+        del data["bibjson"]["article"]["embedded_licence_url"]
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
 
         # author copyright and no link
         data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["author_copyright"]["copyright"] = True
-        del data["bibjson"]["author_copyright"]["url"]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingApplication(data)
-
-        # author publishing rights and no ling
-        data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["author_publishing_rights"]["publishing_rights"] = True
-        del data["bibjson"]["author_publishing_rights"]["url"]
+        data["bibjson"]["copyright"]["author_retains"] = True
+        del data["bibjson"]["copyright"]["url"]
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
 
         # invalid domain in archiving_policy
         data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["archiving_policy"]["policy"] = [{"domain" : "my house", "name" : "something"}]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingApplication(data)
-
-        # invalid name in non-domained policy
-        data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["archiving_policy"]["policy"] = [{"name" : "something"}]
+        data["bibjson"]["preservation"]["has_preservation"] = True
+        data["bibjson"]["preservation"]["url"] = "abcd://abcd"
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
 
@@ -141,11 +130,11 @@ class TestCrudApplication(DoajTestCase):
         assert a.owner == "test"
 
         # also, because it's a special case, check the archiving_policy
-        archiving_policy = a.bibjson().archiving_policy
-        assert len(archiving_policy.get("policy")) == 4
+        preservation = a.bibjson().perservation
+        assert len(preservation.get("service")) == 4
         lcount = 0
         scount = 0
-        for ap in archiving_policy.get("policy"):
+        for ap in preservation.get("service"):
             if isinstance(ap, list):
                 lcount += 1
                 assert ap[0] in ["A national library", "Other"]
@@ -154,8 +143,8 @@ class TestCrudApplication(DoajTestCase):
                 scount += 1
         assert lcount == 2
         assert scount == 2
-        assert "CLOCKSS" in archiving_policy.get("policy")
-        assert "LOCKSS" in archiving_policy.get("policy")
+        assert "CLOCKSS" in preservation.get("service")
+        assert "LOCKSS" in preservation.get("service")
 
         time.sleep(2)
 

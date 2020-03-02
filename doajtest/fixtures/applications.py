@@ -117,17 +117,6 @@ APPLICATION_SOURCE = {
     "id" : "abcdefghijk",
     "created_date" : "2000-01-01T00:00:00Z",
     "bibjson": deepcopy(JOURNAL_SOURCE['bibjson']),
-    "suggestion" : {
-        "suggester" : {
-            "name" : "Suggester",
-            "email" : "suggester@email.com"
-        },
-        "articles_last_year" : {
-            "count" : 16,
-            "url" : "http://articles.last.year"
-        },
-        "article_metadata" : True
-    },
     "admin" : {
         "application_status" : constants.APPLICATION_STATUS_PENDING,
         "notes" : [
