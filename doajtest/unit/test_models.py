@@ -1009,9 +1009,7 @@ class TestClient(DoajTestCase):
         bj.add_identifier(bj.E_ISSN, "0000-0000")
         bj.add_identifier(bj.P_ISSN, "1111-1111")
         bj.title = "First Journal"
-        journal.save()
-
-        time.sleep(2)
+        journal.save(blocking=True)
 
         cont = journal.make_continuation("replaces", eissn="2222-2222", pissn="3333-3333", title="Second Journal")
 
@@ -1139,14 +1137,14 @@ class TestClient(DoajTestCase):
         j = models.Journal()
         j.set_created("1970-01-01T00:00:00Z")  # so it's before the tick
         b = j.bibjson()
-        b.set_apc("GBP", 100)
+        b.add_apc("GBP", 100)
         j.prep()
         assert j.data.get("index", {}).get("has_apc") == "Yes"
 
         # apc record, ticked
         j = models.Journal()
         b = j.bibjson()
-        b.set_apc("GBP", 100)
+        b.add_apc("GBP", 100)
         j.prep()
         assert j.data.get("index", {}).get("has_apc") == "Yes"
 
@@ -1169,20 +1167,18 @@ class TestClient(DoajTestCase):
         j = models.Journal()
         bj = j.bibjson()
         bj.publisher = "Deep Mind"
-        j.save()
+        j.save(blocking=True)
 
-        time.sleep(2)
-
-        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "Bio")
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "Bio")
         assert len(res) == 2
 
-        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "BioMed")
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "BioMed")
         assert len(res) == 2
 
-        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "De ")
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "De ")
         assert len(res) == 1
 
-        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "BioMed C")
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "BioMed C")
         assert len(res) == 1
 
     def test_23_provenance(self):
@@ -1197,12 +1193,12 @@ class TestClient(DoajTestCase):
         # run the remaining methods just to make sure there are no errors
         p.save()
 
-    def test_24_save_valid_dataobj(self):
+    def test_24_save_valid_seamless_or_dataobj(self):
         j = models.Journal()
         bj = j.bibjson()
         bj.title = "A legitimate title"
         j.data["junk"] = "in here"
-        with self.assertRaises(dataobj.DataStructureException):
+        with self.assertRaises(seamless.SeamlessException):
             j.save()
         assert j.id is None
 
@@ -1210,7 +1206,7 @@ class TestClient(DoajTestCase):
         sbj = s.bibjson()
         sbj.title = "A legitimate title"
         s.data["junk"] = "in here"
-        with self.assertRaises(dataobj.DataStructureException):
+        with self.assertRaises(seamless.SeamlessException):
             s.save()
         assert s.id is None
 
@@ -1227,7 +1223,7 @@ class TestClient(DoajTestCase):
         acc.add_role("associate_editor")
         acc.add_role("editor")
 
-        obj1 = models.Suggestion()
+        obj1 = models.Application()
         obj1.set_id("obj1")
 
         models.Provenance.make(acc, "act1", obj1)

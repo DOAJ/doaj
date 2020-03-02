@@ -506,9 +506,8 @@ QUERY_FILTERS = {
 UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"
 
 AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
-    "bibjson.publisher" : "index.publisher_ac",
-    "bibjson.institution" : "index.institution_ac",
-    "bibjson.provider" : "index.provider_ac"
+    "bibjson.publisher.name" : "index.publisher_ac",
+    "bibjson.institution.name" : "index.institution_ac"
 }
 
 # ========================

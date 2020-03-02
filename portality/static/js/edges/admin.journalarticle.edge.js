@@ -609,8 +609,8 @@ $.extend(true, doaj, {
                         autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
                     },
                     edit_metadata : function(context) {
-                        autocomplete($('#publisher', context), 'bibjson.publisher');
-                        autocomplete($('#platform', context), 'bibjson.provider');
+                        autocomplete($('#publisher', context), 'bibjson.publisher.name');
+                        autocomplete($('#platform', context), 'bibjson.provider.name');
                         $('#country', context).select2();
                         autocomplete($('#owner', context), 'id', 'account');
                     }

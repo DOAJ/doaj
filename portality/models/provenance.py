@@ -92,10 +92,16 @@ class Provenance(dataobj.DataObj, DomainObject):
             if eg.id not in egs:
                 egs.append(eg.id)
 
+        # FIXME: this is a back compatibility fix for when we change the index type from "suggestion" to "application",
+        # but we don't want to have to migrate the entire provenance system
+        objtyp = obj.__type__
+        if objtyp == "application":
+            objtyp = "suggestion"
+
         d = {
             "user" : account.id,
             "roles" : account.role,
-            "type" : obj.__type__,
+            "type" : objtyp,
             "action" : action,
             "resource_id" : obj.id,
             "editor_group" : egs

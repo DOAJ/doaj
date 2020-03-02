@@ -242,7 +242,7 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             bibjson.country = form.country.data
 
         if interpret_special(form.processing_charges.data):
-            bibjson.set_apc(form.processing_charges_currency.data, form.processing_charges_amount.data)
+            bibjson.add_apc(form.processing_charges_currency.data, form.processing_charges_amount.data)
 
         if form.processing_charges_url.data:
             bibjson.apc_url = form.processing_charges_url.data
@@ -622,7 +622,7 @@ class JournalFormXWalk(JournalGenericXWalk):
             bibjson.country = form.country.data
 
         if interpret_special(form.processing_charges.data):
-            bibjson.set_apc(form.processing_charges_currency.data, form.processing_charges_amount.data)
+            bibjson.add_apc(form.processing_charges_currency.data, form.processing_charges_amount.data)
 
         if form.processing_charges_url.data:
             bibjson.apc_url = form.processing_charges_url.data
