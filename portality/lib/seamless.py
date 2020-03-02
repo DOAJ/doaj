@@ -246,7 +246,7 @@ class SeamlessMixin(object):
 
         if (self.__seamless_struct__ is not None and
                 self.__seamless__ is not None):
-            self.__seamless_struct__.construct(self.__seamless__.data,
+            self.__seamless_struct__.construct(deepcopy(self.__seamless__.data),    # use a copy of the data, to avoid messing with any references to the current data
                 check_required=check_required,
                 silent_prune=silent_prune,
                 allow_other_fields=allow_other_fields)
