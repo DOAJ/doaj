@@ -66,7 +66,7 @@ def shorten():
         payload = {'long_url': urllib.parse.quote(doajurl)}
 
         # make the request
-        resp = requests.get(bitly, headers=headers, data=payload)
+        resp = requests.post(bitly, headers=headers, data=payload)
         shorturl = resp.json().get('link')
 
         # make the response
