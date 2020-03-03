@@ -1,20 +1,24 @@
-import re
 from datetime import datetime
 
+from flask_login import current_user
 from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, IntegerField, BooleanField, FormField, FieldList, RadioField
 from wtforms import widgets
 
+from portality import regex
+from portality.core import app
+
 from portality.formcontext.fields import DOAJSelectField, DOAJSelectMultipleField, URLField, TagListField, DisabledTextField, PermissiveSelectField, OptionalRadioField
-from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen, RegexpOnTagList, ReservedUsernames
+from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, \
+    MaxLen, RegexpOnTagList, ReservedUsernames, ThisOrThat
 
 from portality.formcontext.choices import Choices
 
-ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
+ISSN_REGEX = regex.ISSN_COMPILED
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
-BIG_END_DATE_REGEX = "^\d{4}-\d{2}-\d{2}$"
-DATE_ERROR  = "Date must be supplied in the form YYYY-MM-DD"
+BIG_END_DATE_REGEX = regex.BIG_END_DATE_COMPILED
+DATE_ERROR = "Date must be supplied in the form YYYY-MM-DD"
 
 ###########################################################################
 # Definition of the form components
@@ -566,3 +570,47 @@ class ManEdBulkEditJournalForm(Form):
     contact_email = StringField('Contact\'s email address',
         [validators.Optional(), validators.Email(message='Invalid email address.')]
     )
+
+
+DOI_REGEX = regex.DOI_COMPILED
+DOI_ERROR = 'Invalid DOI. A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
+ORCID_REGEX = regex.ORCID_COMPILED
+ORCID_ERROR = "Invalid ORCID iD. Please enter your ORCID iD as a full URL of the form https://orcid.org/0000-0000-0000-0000"
+start_year = app.config.get("METADATA_START_YEAR", datetime.now().year - 15)
+YEAR_CHOICES = [(str(y), str(y)) for y in range(datetime.now().year + 1, start_year - 1, -1)]
+MONTH_CHOICES = [("1", "01"), ("2", "02"), ("3", "03"), ("4", "04"), ("5", "05"), ("6", "06"), ("7", "07"), ("8", "08"), ("9", "09"), ("10", "10"), ("11", "11"), ("12", "12")]
+INITIAL_AUTHOR_FIELDS = 3
+
+
+class AuthorForm(Form):
+    name = StringField("Name", [validators.Optional()])
+    affiliation = StringField("Affiliation", [validators.Optional()])
+    orcid_id = StringField("ORCID iD", [validators.Optional(), validators.Regexp(regex=ORCID_REGEX, message=ORCID_ERROR)])
+
+
+class ArticleForm(Form):
+    title = StringField("Article Title", [validators.DataRequired()])
+    doi = StringField("DOI", [OptionalIf("fulltext"), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)], description="(You must provide a DOI and/or a Full-Text URL)")
+    authors = FieldList(FormField(AuthorForm), min_entries=1) # We have to do the validation for this at a higher level
+    abstract = TextAreaField("Abstract", [validators.Optional()])
+    keywords = StringField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
+    fulltext = StringField("Full-Text URL", [OptionalIf("doi"), validators.URL()])
+    publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
+    publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
+    pissn = DOAJSelectField("Journal ISSN (print version)", [ThisOrThat("eissn")], choices=[]) # choices set at construction
+    eissn = DOAJSelectField("Journal ISSN (online version)", [ThisOrThat("pissn")], choices=[]) # choices set at construction
+
+    volume = StringField("Volume Number", [validators.Optional()])
+    number = StringField("Issue Number", [validators.Optional()])
+    start = StringField("Start Page", [validators.Optional()])
+    end = StringField("End Page", [validators.Optional()])
+
+    def __init__(self, *args, **kwargs):
+        super(ArticleForm, self).__init__(*args, **kwargs)
+        try:
+            self.pissn.choices = Choices.choices_for_article_issns(current_user)
+            self.eissn.choices = Choices.choices_for_article_issns(current_user)
+        except:
+            # not logged in, and current_user is broken
+            # probably you are loading the class from the command line
+            pass

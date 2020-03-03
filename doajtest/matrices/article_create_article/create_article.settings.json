@@ -260,6 +260,145 @@
       }
     },
     {
+      "name": "update_article_id",
+      "type": "generated",
+      "values": {
+        "doi_ft_changed_duplicate": {
+          "constraints": {
+            "article": {
+              "or": [
+                "exists"
+              ]
+            },
+            "has_ids": {
+              "or": [
+                "doi+ft"
+              ]
+            },
+            "article_duplicate": {
+              "or": [
+                "yes"
+              ]
+            },
+            "account": {
+              "or": [
+                "owner"
+              ]
+            },
+            "duplicate_check": {
+              "or": [
+                "true"
+              ]
+            },
+            "merge_duplicate": {
+              "or": [
+                "true"
+              ]
+            },
+            "limit_to_account": {
+              "or": [
+                "false"
+              ]
+            },
+            "dry_run": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        },
+        "doi_ft_not_changed": {
+          "constraints": {
+            "article": {
+              "or": [
+                "exists"
+              ]
+            },
+            "has_ids": {
+              "or": [
+                "doi+ft"
+              ]
+            },
+            "article_duplicate": {
+              "or": [
+                "no"
+              ]
+            },
+            "account": {
+              "or": [
+                "owner"
+              ]
+            },
+            "duplicate_check": {
+              "or": [
+                "true"
+              ]
+            },
+            "merge_duplicate": {
+              "or": [
+                "true"
+              ]
+            },
+            "limit_to_account": {
+              "or": [
+                "false"
+              ]
+            },
+            "dry_run": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        },
+        "doi_ft_changed_ok": {
+          "constraints": {
+            "article": {
+              "or": [
+                "exists"
+              ]
+            },
+            "has_ids": {
+              "or": [
+                "doi+ft"
+              ]
+            },
+            "article_duplicate": {
+              "or": [
+                "no"
+              ]
+            },
+            "account": {
+              "or": [
+                "owner"
+              ]
+            },
+            "duplicate_check": {
+              "or": [
+                "true"
+              ]
+            },
+            "merge_duplicate": {
+              "or": [
+                "true"
+              ]
+            },
+            "limit_to_account": {
+              "or": [
+                "false"
+              ]
+            },
+            "dry_run": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        },
+        "none": {}
+      }
+    },
+    {
       "name": "raises",
       "type": "conditional",
       "default": "",
@@ -348,6 +487,13 @@
               "dry_run": {
                 "nor": [
                   "none"
+                ]
+              }
+            },
+            {
+              "update_article_id": {
+                "or": [
+                  "doi_ft_changed_duplicate"
                 ]
               }
             }
@@ -647,6 +793,18 @@
               "dry_run": {
                 "or": [
                   "false"
+                ]
+              }
+            },
+            {
+              "dry_run": {
+                "or": [
+                  "false"
+                ]
+              },
+              "update_article_id": {
+                "nor": [
+                  "none"
                 ]
               }
             }
