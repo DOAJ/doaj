@@ -8,7 +8,7 @@ class TestAPIDataObj(DoajTestCase):
 
     # we aren't going to talk to ES so override setup and teardown of index
     def setUp(self):
-        self.jm = models.Journal(**JournalFixtureFactory.make_journal_source(include_obsolete_fields=True))
+        self.jm = models.Journal(**JournalFixtureFactory.make_journal_source())
 
     def tearDown(self):
         pass
@@ -46,14 +46,11 @@ class TestAPIDataObj(DoajTestCase):
         assert isinstance(do.bibjson, dataobj.DataObj), 'Declared as "object" but not a Data Object?'
         assert do.bibjson.title == self.jm.bibjson().title
         assert do.bibjson.alternative_title == self.jm.bibjson().alternative_title
-        assert do.bibjson.country == self.jm.bibjson().country
         assert do.bibjson.publisher == self.jm.bibjson().publisher
-        assert do.bibjson.provider == self.jm.bibjson().provider
         assert do.bibjson.institution == self.jm.bibjson().institution
-        assert do.bibjson.apc_url == self.jm.bibjson().apc_url
-        assert do.bibjson.submission_charges_url == self.jm.bibjson().submission_charges_url
-        assert do.bibjson.allows_fulltext_indexing == self.jm.bibjson().allows_fulltext_indexing
-        assert do.bibjson.publication_time == self.jm.bibjson().publication_time
+        assert do.bibjson.apc == self.jm.bibjson().apc
+        assert do.bibjson.other_charges == self.jm.bibjson().other_charges
+        assert do.bibjson.publication_time_weeks == self.jm.bibjson().publication_time_weeks
 
         for o in expected_struct['structs']['bibjson']['objects']:
             assert isinstance(getattr(do.bibjson, o), dataobj.DataObj), '{0} declared as "object" but not a Data Object?'.format(o)
@@ -61,21 +58,11 @@ class TestAPIDataObj(DoajTestCase):
         for l in expected_struct['structs']['bibjson']['lists']:
             assert isinstance(getattr(do.bibjson, l), list), '{0} declared as "list" but not a list?'.format(l)
 
-        assert do.bibjson.oa_start.year == int(self.jm.bibjson().oa_start.get('year'))
-        assert do.bibjson.oa_start.volume == self.jm.bibjson().oa_start.get('volume')
-        assert do.bibjson.oa_start.number == self.jm.bibjson().oa_start.get('number')
+        assert do.bibjson.apc.max[0].currency == self.jm.bibjson().apc.max[0]['currency']
+        assert do.bibjson.apc.max[0].price == self.jm.bibjson().apc.max[0]['price']
 
-        assert do.bibjson.oa_end.year == int(self.jm.bibjson().oa_end.get('year'))
-        assert do.bibjson.oa_end.volume == self.jm.bibjson().oa_end.get('volume')
-        assert do.bibjson.oa_end.number == self.jm.bibjson().oa_end.get('number')
-
-        assert do.bibjson.apc.currency == self.jm.bibjson().apc['currency']
-        assert do.bibjson.apc.average_price == self.jm.bibjson().apc['average_price']
-        assert do.bibjson.submission_charges.currency == self.jm.bibjson().submission_charges['currency']
-        assert do.bibjson.submission_charges.average_price == self.jm.bibjson().submission_charges['average_price']
-
-        assert do.bibjson.archiving_policy.url == self.jm.bibjson().archiving_policy['url']
-        assert isinstance(do.bibjson.archiving_policy.policy, list)
+        assert do.bibjson.preservation.url == self.jm.bibjson().preservation_url
+        assert isinstance(do.bibjson.preservation_services, list)
         # TODO the below line passes but journal struct needs enhancing here
         # assert do.bibjson.archiving_policy.policy == [u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]"], do.bibjson.archiving_policy.policy
 

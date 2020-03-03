@@ -103,7 +103,7 @@ class TestCrudJournal(DoajTestCase):
 
     def test_06_retrieve_private_journal_fail(self):
         # set up all the bits we need
-        data = JournalFixtureFactory.make_journal_source(in_doaj=False, include_obsolete_fields=True)
+        data = JournalFixtureFactory.make_journal_source(in_doaj=False)
         j = models.Journal(**data)
         j.save()
         time.sleep(2)
