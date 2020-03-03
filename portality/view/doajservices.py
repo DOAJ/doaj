@@ -63,7 +63,7 @@ def shorten():
         headers = {'Authorization': 'Bearer ' + bitly_oauth}
 
         # Add the long url as a payload
-        payload = {'long_url': urllib.parse.quote(doajurl)}
+        payload = {'long_url': doajurl}
 
         # make the request
         resp = requests.post(bitly, headers=headers, data=json.dumps(payload))
