@@ -33,11 +33,6 @@ class TestAPIDataObj(DoajTestCase):
         assert do.created_date == self.jm.created_date
         assert do.last_updated == self.jm.last_updated
 
-        assert isinstance(do.admin.contact, list), 'Declared as "list" but is not a list?'
-        assert len(do.admin.contact) == 1
-        assert isinstance(do.admin.contact[0], dataobj.DataObj), 'Declared as "object" but not a Data Object?'
-        assert do.admin.contact[0].name == self.jm.get_latest_contact_name()
-        assert do.admin.contact[0].email == self.jm.get_latest_contact_email()
         assert do.admin.in_doaj is self.jm.is_in_doaj(), 'actual val {0} is of type {1}'.format(do.admin.in_doaj, type(do.admin.in_doaj))
         assert do.admin.ticked is self.jm.is_ticked()  # it's not set in the journal fixture so we expect a None back
         assert do.admin.seal is self.jm.has_seal()
