@@ -37,15 +37,11 @@ class TestCrudJournal(DoajTestCase):
         data = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
 
         invalid_url = 'an invalid url $321 >>,'
-        data['bibjson']['submission_charges_url'] = invalid_url
-        data['bibjson']['editorial_review']['url'] = invalid_url
-        data['bibjson']['plagiarism_detection']['url'] = invalid_url
-        data['bibjson']['article_statistics']['url'] = invalid_url
-        data['bibjson']['author_copyright']['url'] = invalid_url
-        data['bibjson']['author_publishing_rights']['url'] = invalid_url
-
-        for l in data['bibjson']['link']:
-            l['url'] = invalid_url
+        data['bibjson']['other_charges']['url'] = invalid_url
+        data['bibjson']['editorial']['review_url'] = invalid_url
+        data['bibjson']['plagiarism']['url'] = invalid_url
+        data['bibjson']['copyright']['url'] = invalid_url
+        data['bibjson']['ref']['journal'] = invalid_url
 
         # Even with all of the dodgy URLS above, we should still have a successful OutgoingJournal object.
         j = models.Journal(**data)
