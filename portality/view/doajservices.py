@@ -58,15 +58,16 @@ def shorten():
         # query arguments, so by this point it is double-encoded
         bitly = app.config.get("BITLY_SHORTENING_API_URL")
         bitly_oauth = app.config.get("BITLY_OAUTH_TOKEN")
-        bitlyurl = bitly + "&longUrl=" + urllib.parse.quote(doajurl)
 
         # Set an Auth Bearer token (Bitly 4.0)
         headers = {'Authorization': 'Bearer ' + bitly_oauth}
 
+        # Add the long url as a payload
+        payload = {'long_url': urllib.parse.quote(doajurl)}
+
         # make the request
-        resp = requests.get(bitlyurl, headers=headers)
-        j = resp.json()
-        shorturl = j.get("data", {}).get("url")
+        resp = requests.get(bitly, headers=headers, data=payload)
+        shorturl = resp.json().get('link')
 
         # make the response
         answer = make_response(json.dumps({"url": shorturl}))
