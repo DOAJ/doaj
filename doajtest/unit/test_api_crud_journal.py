@@ -19,7 +19,7 @@ class TestCrudJournal(DoajTestCase):
         oj = OutgoingJournal()
 
         # make one from an incoming journal model fixture
-        data = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
+        data = JournalFixtureFactory.make_journal_source()
         j = models.Journal(**data)
         oj = OutgoingJournal.from_model(j)
 
@@ -34,7 +34,7 @@ class TestCrudJournal(DoajTestCase):
     def test_02_outgoing_journal_urls(self):
         """ We've relaxed the URL constraints for outgoing journals - https://github.com/DOAJ/doajPM/issues/2268 """
 
-        data = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
+        data = JournalFixtureFactory.make_journal_source()
 
         invalid_url = 'an invalid url $321 >>,'
         data['bibjson']['other_charges']['url'] = invalid_url
@@ -49,7 +49,7 @@ class TestCrudJournal(DoajTestCase):
 
     def test_03_retrieve_public_journal_success(self):
         # set up all the bits we need
-        data = JournalFixtureFactory.make_journal_source(in_doaj=True, include_obsolete_fields=True)
+        data = JournalFixtureFactory.make_journal_source(in_doaj=True)
         j = models.Journal(**data)
         j.save()
         time.sleep(2)
@@ -84,7 +84,7 @@ class TestCrudJournal(DoajTestCase):
 
     def test_05_retrieve_private_journal_success(self):
         # set up all the bits we need
-        data = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
+        data = JournalFixtureFactory.make_journal_source()
         j = models.Journal(**data)
         j.save()
         time.sleep(2)

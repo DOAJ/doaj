@@ -15,8 +15,8 @@ class TestAPIDataObjCastFunctions(DoajTestCase):
 
     def test_01_to_url(self):
         empty_url_journal_source = JournalFixtureFactory.make_journal_source()
-        empty_url_journal_source['bibjson']['author_copyright']['copyright'] = False
-        empty_url_journal_source['bibjson']['author_copyright']['url'] = ''
+        empty_url_journal_source['bibjson']['copyright']['author_retains'] = False
+        empty_url_journal_source['bibjson']['copyright']['url'] = ''
         jm = models.Journal(**empty_url_journal_source)
 
         do = OutgoingJournal.from_model(jm)
