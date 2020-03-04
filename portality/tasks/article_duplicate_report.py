@@ -82,7 +82,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
                 # Get the global duplicates
                 try:
-                    global_duplicates = articleService.discover_duplicates(article, owner=None, results_per_match_type=10000)
+                    global_duplicates = articleService.discover_duplicates(article, results_per_match_type=10000)
                 except exceptions.DuplicateArticleException:
                     # this means the article did not have any ids that could be used for deduplication
                     owner = self._lookup_owner(article)

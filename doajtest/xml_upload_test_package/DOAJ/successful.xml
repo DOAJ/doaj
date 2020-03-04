@@ -7,8 +7,7 @@
         <publisher>Codicille éditeur et CRILCQ</publisher>
 
         <journalTitle>Successful</journalTitle>
-        <issn>1234-5678</issn>
-        <eissn>9876-5432</eissn>
+        <issn>0101-3335</issn>
 
 
         <publicationDate>2013</publicationDate>
@@ -29,7 +28,7 @@
         <affiliationsList>
             <affiliationName affiliationId="1"/>
         </affiliationsList>
-        <fullTextUrl>http://doaj.org/testing/100.pdf</fullTextUrl>
+        <fullTextUrl>http://revistaseletronicas.pucrs.br/ojs/index.php/fale/article/view/15435/10129</fullTextUrl>
         <keywords>
             <keyword>Introduction</keyword>
             <keyword>Littérature amérindienne</keyword>
