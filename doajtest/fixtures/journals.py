@@ -309,7 +309,6 @@ JOURNAL_APIDO_STRUCT = {
                 "in_doaj": {"coerce": "bool", "get__default": False},
                 "ticked": {"coerce": "bool", "get__default": False},
                 "seal": {"coerce": "bool", "get__default": False},
-                "owner": {"coerce": "unicode"},
             }
         },
         "bibjson": {

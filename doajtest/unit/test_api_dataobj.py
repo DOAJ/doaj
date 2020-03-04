@@ -36,7 +36,6 @@ class TestAPIDataObj(DoajTestCase):
         assert do.admin.in_doaj is self.jm.is_in_doaj(), 'actual val {0} is of type {1}'.format(do.admin.in_doaj, type(do.admin.in_doaj))
         assert do.admin.ticked is self.jm.is_ticked()  # it's not set in the journal fixture so we expect a None back
         assert do.admin.seal is self.jm.has_seal()
-        assert do.admin.owner == self.jm.owner
 
         assert isinstance(do.bibjson, dataobj.DataObj), 'Declared as "object" but not a Data Object?'
         assert do.bibjson.title == self.jm.bibjson().title
