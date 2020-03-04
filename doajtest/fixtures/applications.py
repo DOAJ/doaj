@@ -5,7 +5,7 @@ import rstr
 
 from portality import constants
 from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
-from doajtest.fixtures.journals import JOURNAL_SOURCE, JOURNAL_INFO
+from doajtest.fixtures.v1.journals import JOURNAL_SOURCE, JOURNAL_INFO
 from portality.formcontext import forms
 from portality.lib import dates
 from portality.models import Suggestion

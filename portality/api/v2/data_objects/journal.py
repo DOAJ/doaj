@@ -1,6 +1,6 @@
 from portality import models
 
-from portality.api.v1.data_objects.common_journal_application import OutgoingCommonJournalApplication
+from portality.api.v2.data_objects.common_journal_application import OutgoingCommonJournalApplication
 
 # we only have outgoing journals for the moment
 JOURNAL_STRUCT = {
@@ -13,9 +13,9 @@ JOURNAL_STRUCT = {
     "structs": {
         "admin": {
             "fields": {
-                "in_doaj": {"coerce": "bool", "get__default": "False"},
-                "seal": {"coerce": "bool", "get__default": "False"},
-                "ticked": {"coerce": "bool", "get__default": "False"},
+                "in_doaj": {"coerce": "bool", "get__default": False},
+                "ticked": {"coerce": "bool", "get__default": False},
+                "seal": {"coerce": "bool", "get__default": False},
                 "owner": {"coerce": "unicode"},
             }
         },
@@ -39,7 +39,7 @@ JOURNAL_STRUCT = {
                 "article",
                 "copyright",
                 "deposit_policy",
-                "editorial"
+                "editorial",
                 "institution",
                 "other_charges",
                 "pid_scheme",
@@ -78,7 +78,7 @@ JOURNAL_STRUCT = {
                 "copyright": {
                     "fields": {
                         "author_retains": {"coerce": "bool"},
-                        "url": {"coerce": "bool"},
+                        "url": {"coerce": "unicode"},
                     }
                 },
                 "deposit_policy": {
@@ -87,7 +87,7 @@ JOURNAL_STRUCT = {
                         "is_registered": {"coerce" : "bool"}
                     },
                     "lists" : {
-                        "service" : {"coerce": "unicode", "contains": "unicode"}
+                        "service" : {"coerce": "unicode", "contains": "field"}
                     }
                 },
                 "editorial": {
@@ -118,8 +118,6 @@ JOURNAL_STRUCT = {
                 "other_charges": {
                     "fields": {
                         "has_other_charges": {"coerce": "bool"},
-                    },
-                    "lists": {
                         "url": {"coerce": "unicode"}
                     }
                 },
@@ -196,7 +194,8 @@ class OutgoingJournal(OutgoingCommonJournalApplication):
     @classmethod
     def from_model(cls, jm):
         assert isinstance(jm, models.Journal)
-        return super(OutgoingJournal, cls).from_model(jm)
+        d = super(OutgoingJournal, cls).from_model(jm)
+        return d
 
     @classmethod
     def from_model_by_id(cls, id_):
