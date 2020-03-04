@@ -49,7 +49,7 @@ upstream doaj_index {
 # redirect to SSL version but serve some crucial xml schemas via plain http as well
 server {
     listen          80;
-    server_name     .doaj.org doajes.cottagelabs.com ix0.org;
+    server_name     .doaj.org doajes.cottagelabs.com;
     
     access_log /var/log/nginx/doaj.access.log ip_cloudflare;
     error_log /var/log/nginx/doaj.error.log;
@@ -241,4 +241,7 @@ server {
     location / {
         proxy_pass http://doaj_index;
     }
+
+    ssl_certificate /etc/letsencrypt/live/doajes.cottagelabs.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/doajes.cottagelabs.com/privkey.pem;
 }
