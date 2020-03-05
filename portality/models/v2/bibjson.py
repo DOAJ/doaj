@@ -184,7 +184,7 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.add_to_list_with_struct("subject", sobj)
 
     @property
-    def apcs(self):
+    def apc(self):
         return self.__seamless__.get_list("apc.max")
 
     def add_apc(self, currency, price):

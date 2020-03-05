@@ -807,12 +807,15 @@ class DataObj(object):
         # now set it on the path
         self._set_path(path, val)
 
-    def _add_to_list(self, path, val, coerce=None, allow_coerce_failure=False, allow_none=False, ignore_none=True, unique=False):
+    def _add_to_list(self, path, val, coerce=None, allow_coerce_failure=False, allow_none=False, allowed_values=None, ignore_none=True, unique=False):
         if val is None and ignore_none:
             return
 
         if val is None and not allow_none:
             raise DataSchemaException("NoneType is not allowed in list at {x}".format(x=path))
+
+        if allowed_values is not None and val not in allowed_values:
+            raise DataSchemaException("Value {x} is not permitted at {y}".format(x=val, y=path))
 
         # first coerce the value
         if coerce is not None:

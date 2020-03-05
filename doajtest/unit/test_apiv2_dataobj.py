@@ -36,15 +36,20 @@ class TestAPIDataObj(DoajTestCase):
         assert do.admin.in_doaj is self.jm.is_in_doaj(), 'actual val {0} is of type {1}'.format(do.admin.in_doaj, type(do.admin.in_doaj))
         assert do.admin.ticked is self.jm.is_ticked()  # it's not set in the journal fixture so we expect a None back
         assert do.admin.seal is self.jm.has_seal()
-        assert do.admin.owner == self.jm.owner
 
         assert isinstance(do.bibjson, dataobj.DataObj), 'Declared as "object" but not a Data Object?'
         assert do.bibjson.title == self.jm.bibjson().title
         assert do.bibjson.alternative_title == self.jm.bibjson().alternative_title
         assert do.bibjson.publisher.name == self.jm.bibjson().publisher, "do.bibjson.publisher:\n{},\nself.jm.bibjson().publisher:\n{}".format(do.bibjson.publisher, self.jm.bibjson().publisher)
         assert do.bibjson.institution.name == self.jm.bibjson().institution
-        assert do.bibjson.apc == self.jm.bibjson().apc
-        assert do.bibjson.other_charges == self.jm.bibjson().other_charges
+        assert do.bibjson.apc.max[0].currency == self.jm.bibjson().apc[0]["currency"], "do.bibjson.apc.currency:\n{},\nself.jm.bibjson().apc.currency:\n{}".format(do.bibjson.apc.max[0].currency, self.jm.bibjson().apc[0]["currency"])
+        assert do.bibjson.apc.max[0].price == self.jm.bibjson().apc[0]["price"], "do.bibjson.apc.price:\n{},\nself.jm.bibjson().apc.price:\n{}".format(do.bibjson.apc.max[0].price,self.jm.bibjson().apc[0]["price"])
+        assert do.bibjson.other_charges.has_other_charges == self.jm.bibjson().has_other_charges,\
+            "do.bibjson.other_charges.has_other_charges:\n{},\nself.jm.bibjson().has_other_charges:\n{}"\
+                .format(do.bibjson.other_charges.has_other_charges, self.jm.bibjson().has_other_charges)
+        assert do.bibjson.other_charges.url == self.jm.bibjson().other_charges_url, \
+            "do.bibjson.other_charges.other_charges_url:\n{},\nself.jm.bibjson().other_charges_url:\n{}" \
+                .format(do.bibjson.other_charges.other_charges_url, self.jm.bibjson().other_charges_url)
         assert do.bibjson.publication_time_weeks == self.jm.bibjson().publication_time_weeks
 
         for o in expected_struct['structs']['bibjson']['objects']:
@@ -53,13 +58,8 @@ class TestAPIDataObj(DoajTestCase):
         for l in expected_struct['structs']['bibjson']['lists']:
             assert isinstance(getattr(do.bibjson, l), list), '{0} declared as "list" but not a list?'.format(l)
 
-        assert do.bibjson.apc.max[0].currency == self.jm.bibjson().apc.max[0]['currency']
-        assert do.bibjson.apc.max[0].price == self.jm.bibjson().apc.max[0]['price']
-
         assert do.bibjson.preservation.url == self.jm.bibjson().preservation_url
-        assert isinstance(do.bibjson.preservation_services, list)
-        # TODO the below line passes but journal struct needs enhancing here
-        # assert do.bibjson.archiving_policy.policy == [u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]"], do.bibjson.archiving_policy.policy
+        assert isinstance(do.bibjson.preservation.service, list)
 
     def test_03_merge_outside_construct(self):
         struct = {

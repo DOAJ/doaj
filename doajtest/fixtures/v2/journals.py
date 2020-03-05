@@ -287,9 +287,7 @@ JOURNAL_APIDO_STRUCT = {
             "fields": {
                 "in_doaj": {"coerce": "bool", "get__default": False},
                 "ticked": {"coerce": "bool", "get__default": False},
-                "seal": {"coerce": "bool", "get__default": False},
-                "owner": {"coerce": "unicode"},
-            }
+                "seal": {"coerce": "bool", "get__default": False}            }
         },
         "bibjson": {
             "fields": {
@@ -311,7 +309,7 @@ JOURNAL_APIDO_STRUCT = {
                 "article",
                 "copyright",
                 "deposit_policy",
-                "editorial"
+                "editorial",
                 "institution",
                 "other_charges",
                 "pid_scheme",
@@ -368,7 +366,7 @@ JOURNAL_APIDO_STRUCT = {
                         "board_url": {"coerce":"unicode"}
                     },
                     "lists": {
-                        "review_process": {"coerce": "unicode","allowed_values": ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
+                        "review_process": {"contains" : "field", "coerce": "unicode", "allowed_values": ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
                     }
                 },
                 "institution": {
