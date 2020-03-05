@@ -1,8 +1,8 @@
 from doajtest.helpers import DoajTestCase
-from portality.api.v1.data_objects import OutgoingJournal
-from portality.api.v1 import JournalsCrudApi, Api401Error, Api404Error
+from portality.api.v2.data_objects.journal import OutgoingJournal
+from portality.api.v2.crud.journals import JournalsCrudApi, Api401Error, Api404Error
 from portality import models
-from doajtest.fixtures import JournalFixtureFactory
+from doajtest.fixtures.v2.journals import JournalFixtureFactory
 import time
 
 

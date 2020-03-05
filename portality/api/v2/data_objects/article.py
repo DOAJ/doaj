@@ -49,14 +49,6 @@ BASE_ARTICLE_STRUCT = {
                         "id": {"coerce": "unicode"}
                     }
                 },
-                # The base struct can't coerce url because we have bad data https://github.com/DOAJ/doajPM/issues/2038
-#                "link": {
-#                    "fields": {
-#                        "type": {"coerce": "link_type"},
-#                        "url": {"coerce": "url"},
-#                        "content_type": {"coerce": "link_content_type"}
-#                    }
-#                },
                 "author": {
                     "fields": {
                         "name": {"coerce": "unicode"},

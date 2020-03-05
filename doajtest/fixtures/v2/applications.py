@@ -5,10 +5,10 @@ import rstr
 
 from portality import constants
 from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
-from doajtest.fixtures.v1.journals import JOURNAL_SOURCE, JOURNAL_INFO
+from doajtest.fixtures.v2.journals import JOURNAL_SOURCE, JOURNAL_INFO
 from portality.formcontext import forms
 from portality.lib import dates
-from portality.models import Suggestion
+from portality.models.v2.application import Application
 
 
 class ApplicationFixtureFactory(object):
@@ -104,7 +104,7 @@ class ApplicationFixtureFactory(object):
                 count = row[i]
                 start, end = ranges[i]
                 for j in range(count):
-                    s = Suggestion()
+                    s = Application()
                     s.set_created(dates.random_date(start, end))
                     s.bibjson().country = country
                     apps.append(s)
@@ -146,14 +146,11 @@ APPLICATION_SOURCE = {
 }
 
 _isbj = deepcopy(JOURNAL_SOURCE['bibjson'])
-_isbj["archiving_policy"] = {
-    "policy" : [
-        {"name" : "LOCKSS"},
-        {"name" : "CLOCKSS"},
-        {"name" : "Trinity", "domain" : "A national library"},
-        {"name" : "A safe place", "domain" : "Other"}
-    ],
-    "url": "http://digital.archiving.policy"
+_isbj["preservation"] = {
+    "has_preservation": True,
+    "national_library": "Trinity",
+    "url": "http://digital.archiving.policy",
+    "services" : ["LOCKSS", "CLOCKSS", "A safe place"]
 }
 del _isbj["subject"]
 del _isbj["replaces"]
@@ -166,34 +163,18 @@ INCOMING_SOURCE = {
     "last_updated" : "2001-01-01T00:00:00Z",
 
     "bibjson": _isbj,
-    "suggestion" : {
-        "articles_last_year" : {
-            "count" : 16,
-            "url" : "http://articles.last.year"
-        },
-        "article_metadata" : True
-    },
     "admin" : {
-        "contact" : [
-            {
-                "email" : "contact@email.com",
-                "name" : "Contact Name"
-            }
-        ],
-        "current_journal" : "1234567890"
+        "contact" :
+        {
+            "email" : "contact@email.com",
+            "name" : "Contact Name"
+        },
+        "current_journal" : "1234567890",
+        "applicant" : {
+            "name" : "Applicant",
+            "email" : "applicant@email.com"
+        }
     }
-}
-
-SUGGESTION = {
-    "articles_last_year" : 16,
-    "articles_last_year_url" : "http://articles.last.year",
-    "metadata_provision" : "True"
-}
-
-SUGGESTER = {
-    "suggester_name" : "Suggester",
-    "suggester_email" : "suggester@email.com",
-    "suggester_email_confirm" : "suggester@email.com"
 }
 
 WORKFLOW = {
@@ -201,8 +182,6 @@ WORKFLOW = {
 }
 
 APPLICATION_FORMINFO = deepcopy(JOURNAL_INFO)
-APPLICATION_FORMINFO.update(deepcopy(SUGGESTION))
-APPLICATION_FORMINFO.update(deepcopy(SUGGESTER))
 APPLICATION_FORMINFO.update(deepcopy(NOTES))
 APPLICATION_FORMINFO.update(deepcopy(SUBJECT))
 APPLICATION_FORMINFO.update(deepcopy(OWNER))

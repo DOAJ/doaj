@@ -23,13 +23,20 @@ BASE_APPLICATION_STRUCT = {
                 "owner" : {"coerce" : "unicode"}
             },
             "objects" : [
-                "applicant"
+                "applicant",
+                "contact",
             ],
             "structs" : {
                 "applicant" : {
                     "fields" : {
-                        "email" : {"coerce" : "unicode"},
-                        "name" : {"coerce" : "unicode"}
+                        "name" : {"coerce" : "unicode"},
+                        "email": {"coerce" : "unicode"}
+                    }
+                },
+                "contact": {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "email": {"coerce" : "unicode"}
                     }
                 }
             }
@@ -160,14 +167,6 @@ BASE_APPLICATION_STRUCT = {
                     },
                     "lists": {
                         "service": {"coerce": "unicode", "contains": "object"},
-                    },
-                    "structs": {
-                        "policy": {
-                            "fields": {
-                                "name": {"coerce": "unicode"},
-                                "domain": {"coerce": "unicode"}
-                            }
-                        }
                     }
                 },
                 "publisher": {

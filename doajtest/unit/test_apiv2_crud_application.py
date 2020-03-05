@@ -1,19 +1,24 @@
 import time
 
 from portality import constants
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, AccountFixtureFactory
+from doajtest.fixtures.v2 import ApplicationFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.api.v2 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
-from portality.api.v2.data_objects import IncomingApplication, OutgoingApplication
+from portality.api.v2.common import Api401Error, Api400Error, Api404Error, Api403Error
+from portality.api.v2.crud.applications import ApplicationsCrudApi
+from portality.api.v2.data_objects.application import IncomingApplication, OutgoingApplication
 from portality.lib.dataobj import DataStructureException
 from portality.formcontext import FormContextException, formcontext
+
 
 def mock_finalise_exception(self, *args, **kwargs):
     raise FormContextException("test exception")
 
+
 def mock_custom_validate_always_pass(self, *args, **kwargs):
     return
+
 
 class TestCrudApplication(DoajTestCase):
 
@@ -119,8 +124,8 @@ class TestCrudApplication(DoajTestCase):
         assert a.id != "ignore_me"
         assert a.created_date != "2001-01-01T00:00:00Z"
         assert a.last_updated != "2001-01-01T00:00:00Z"
-        assert a.suggester.get("name") == "Tester"
-        assert a.suggester.get("email") == "test@test.com"
+        assert a.admin.applicant.get("name") == "Tester"
+        assert a.admin.applicant.get("email") == "test@test.com"
         assert a.owner == "test"
         assert a.suggested_on is not None
         assert len(a.bibjson().keywords) > 1
@@ -129,22 +134,12 @@ class TestCrudApplication(DoajTestCase):
         assert a.application_status == "pending"
         assert a.owner == "test"
 
-        # also, because it's a special case, check the archiving_policy
-        # preservation = a.bibjson().perservation
-        # assert len(preservation.get("service")) == 2
-        # assert preservation.get("national_library") == "Trinity"
-        # lcount = 0
-        # scount = 0
-        # for ap in preservation.get("service"):
-        #     if isinstance(ap, list):
-        #         lcount += 1
-        #         assert ap[1] in ["Trinity", "A safe place"]
-        #     else:
-        #         scount += 1
-        # assert lcount == 2
-        # assert scount == 2
-        # assert "CLOCKSS" in preservation.get("service")
-        # assert "LOCKSS" in preservation.get("service")
+        preservation = a.bibjson().perservation
+        assert len(preservation.get("service")) == 2
+        assert preservation.get("national_library") == "Trinity"
+        assert "CLOCKSS" in preservation.get("service")
+        assert "LOCKSS" in preservation.get("service")
+        assert "A safe place" in preservation.get("service")
 
         time.sleep(2)
 

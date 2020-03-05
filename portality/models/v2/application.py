@@ -21,13 +21,20 @@ APPLICATION_STRUCT = {
                 "date_applied" : {"coerce" : "utcdatetime"}
             },
             "objects" : [
-                "applicant"
+                "applicant",
+                "contact"
             ],
             "structs" : {
                 "applicant" : {
                     "fields" : {
                         "email" : {"coerce" : "unicode"},
                         "name" : {"coerce" : "unicode"}
+                    }
+                },
+                "contact": {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "email": {"coerce" : "unicode"}
                     }
                 }
             }

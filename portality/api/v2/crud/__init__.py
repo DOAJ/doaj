@@ -1,0 +1,1 @@
+from portality.api.v2.crud.journals import JournalsCrudApi
