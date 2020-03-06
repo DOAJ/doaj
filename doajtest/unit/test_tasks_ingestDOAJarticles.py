@@ -1495,7 +1495,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "2222-2222")
+        bj1.add_identifier(bj1.P_ISSN, "2222-2222")
         j1.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1541,7 +1541,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "9876-5432")
+        bj1.add_identifier(bj1.P_ISSN, "9876-5432")
         bj1.add_subject("LCC", "Whatever", "WHATEVA")
         bj1.add_subject("LCC", "Aquaculture. Fisheries. Angling", "SH1-691")
         j1.save()
@@ -1568,11 +1568,11 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         time.sleep(2)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None, 'expected FileUpload is not None, received: {}'.format(fu)
-        assert fu.status == "processed", 'expected status processed, received: {}'.format(fu.status)
-        assert fu.imported == 1, 'expected 1 imported, received: {}'.format(fu.imported)
-        assert fu.updates == 0, 'expected 0 updates, received: {}'.format(fu.updates)
-        assert fu.new == 1, 'expected 1 new, received: {}'.format(fu.new)
+        assert fu is not None
+        assert fu.status == "processed"
+        assert fu.imported == 1
+        assert fu.updates == 0
+        assert fu.new == 1
 
         fr = fu.failure_reasons
         assert len(fr.get("shared", [])) == 0

@@ -52,23 +52,10 @@ $.extend(true, doaj, {
                 // if it's not a suggestion or a journal .. (it's an article!)
                 // we really need to expose _type ...
                 var result = '<a class="delete_article_link" href="';
-                result += "/admin/delete/article/";
+                result += "/admin/article/";
                 result += resultobj['id'];
                 result += '" target="_blank"';
                 result += '>Delete this article</a>';
-                return result;
-            }
-            return false;
-        },
-
-        editArticle : function (val, resultobj, renderer) {
-            if (!resultobj.suggestion && resultobj.bibjson.journal) {
-                var result = ' | '
-                result += '<a class="edit_article_link" href="';
-                result += doaj.adminJournalArticleSearchConfig.articleEditUrl;
-                result += resultobj['id'];
-                result += '" target="_blank"';
-                result += '>Edit this article</a>';
                 return result;
             }
             return false;
@@ -548,9 +535,6 @@ $.extend(true, doaj, {
                                 },
                                 {
                                     "valueFunction": doaj.adminJournalArticleSearch.deleteArticle
-                                },
-                                {
-                                    "valueFunction": doaj.adminJournalArticleSearch.editArticle
                                 }
                             ]
                         ]
