@@ -1,4 +1,3 @@
-numpy
 # In order to install doaj you need to run
 # pip install -r requirements.txt
 # (i.e. target this file with the -r switch on pip).
