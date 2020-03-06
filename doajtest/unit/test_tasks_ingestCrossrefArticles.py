@@ -1476,7 +1476,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
+        j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
@@ -1525,10 +1525,8 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "2222-2222")
-        j1.save(blocking=True)
-
-        saved = models.Journal.find_by_issn("1234-5678")
+        bj1.add_identifier(bj1.P_ISSN, "2222-2222")
+        j1.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
@@ -1561,7 +1559,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         fr = fu.failure_reasons
         assert len(fr.get("shared", [])) == 0
         assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 1, "expected len = 1, received: {}".format(fr.get("unmatched"))
+        assert len(fr.get("unmatched", [])) == 1
         assert "9876-5432" in fr["unmatched"]
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
@@ -1574,7 +1572,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "9876-5432")
+        bj1.add_identifier(bj1.P_ISSN, "9876-5432")
         bj1.add_subject("LCC", "Whatever", "WHATEVA")
         bj1.add_subject("LCC", "Aquaculture. Fisheries. Angling", "SH1-691")
         j1.save()
@@ -1602,7 +1600,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
-        assert fu.status == "processed", "expected processed, received: {}".format(fu.status)
+        assert fu.status == "processed"
         assert fu.imported == 1
         assert fu.updates == 0
         assert fu.new == 1

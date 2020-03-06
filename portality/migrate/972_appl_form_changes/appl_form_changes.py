@@ -2,7 +2,7 @@ import esprit
 
 from portality.core import app
 from portality import models
-from portality.formcontext.xwalks.interpreting_methods import interpret_special
+from portality.formcontext.xwalk import interpret_special
 
 '''
 Use a scroll search to remove some possible question responses from

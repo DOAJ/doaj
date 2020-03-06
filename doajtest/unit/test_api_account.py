@@ -10,9 +10,6 @@ from portality.decorators import api_key_required, api_key_optional
 class TestAPIClient(DoajTestCase):
     @classmethod
     def setUpClass(cls):
-        # Turn off debug so we're allowed to add these routes after the app has been used in other tests
-        cls.app_test.debug = False
-
         @cls.app_test.route('/hello')
         @api_key_required
         def hello_world():
@@ -23,8 +20,6 @@ class TestAPIClient(DoajTestCase):
         def hello_world_opt():
             return Response("hello, world!")
 
-        # Reinstate debug
-        cls.app_test.debug = True
         cls.app_test.testing = True
         cls.app_test.login_manager.user_loader(load_account_for_login_manager)
 
@@ -37,7 +32,8 @@ class TestAPIClient(DoajTestCase):
     def test_01_api_role(self):
         """test the new roles added for the API"""
         a1 = models.Account.make_account(username="a1_user", name="a1_name", email="a1@example.com", roles=["user", "api"], associated_journal_ids=[])
-        a1.save(blocking=True)
+        a1.save()
+        time.sleep(1)
 
         # Check an API key was generated on account creation
         a1_key = a1.api_key
@@ -55,12 +51,14 @@ class TestAPIClient(DoajTestCase):
         """test the api_key_required decorator"""
         a1 = models.Account.make_account(username="a1_user", name="a1_name", email="a1@example.com", roles=["user", "api"], associated_journal_ids=[])
         a1_key = a1.api_key
-        a1.save(blocking=True)               # a1 has api access
+        a1.save()               # a1 has api access
 
         a2 = models.Account.make_account(username="a2_user", name="a2_name", email="a2@example.com", roles=["user", "api"], associated_journal_ids=[])
         a2_key = a2.api_key     # user gets the key before access is removed
         a2.remove_role('api')
-        a2.save(blocking=True)               # a2 does not have api access.
+        a2.save()               # a2 does not have api access.
+
+        time.sleep(1)
 
         with self.app_test.test_client() as t_client:
             # Check the authorised user can access our function, but the unauthorised one can't.
@@ -75,14 +73,16 @@ class TestAPIClient(DoajTestCase):
         """test the api_key_optional decorator"""
         a1 = models.Account.make_account(username="a1_user", name="a1_name", email="a1@example.com", roles=["user", "api"], associated_journal_ids=[])
         a1_key = a1.api_key
-        a1.save(blocking=True)               # a1 has api access
+        a1.save()               # a1 has api access
 
         a2 = models.Account.make_account(username="a2_user", name="a2_name", email="a2@example.com", roles=["user", "api"], associated_journal_ids=[])
         a2_key = a2.api_key     # user gets the key before access is removed
         a2.remove_role('api')
-        a2.save(blocking=True)               # a2 does not have api access.
+        a2.save()               # a2 does not have api access.
 
         # There is no a3 - the last test case is just a public call with no API key
+
+        time.sleep(1)
 
         with self.app_test.test_client() as t_client:
             # Check the authorised user can access our function, but the unauthorised one can't.

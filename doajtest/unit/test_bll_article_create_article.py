@@ -46,8 +46,6 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         limit_to_account_arg = kwargs.get("limit_to_account")
         add_journal_info_arg = kwargs.get("add_journal_info")
         dry_run_arg = kwargs.get("dry_run")
-        update_article_id_arg = kwargs.get("update_article_id")
-
 
         raises_arg = kwargs.get("raises")
         success_arg = kwargs.get("success")
@@ -100,7 +98,6 @@ class TestBLLArticleCreateArticle(DoajTestCase):
 
         article = None
         original_id = None
-        update_article_id = None
         if article_arg == "exists":
             this_doi = doi if has_doi else False
             this_fulltext = fulltext if has_ft else False
@@ -109,39 +106,6 @@ class TestBLLArticleCreateArticle(DoajTestCase):
             article = Article(**source)
             article.set_id()
             original_id = article.id
-
-            if update_article_id_arg != "none":
-
-                update_article_id = original_id
-                another_source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn,
-                                                                           doi=this_doi,
-                                                                           fulltext=this_fulltext)
-                original = Article(**another_source)
-                original.set_id(original_id)
-
-                if update_article_id_arg == "doi_ft_not_changed":
-                    original.bibjson().title = "This needs to be updated"
-
-                if update_article_id_arg == "doi_ft_changed_duplicate":
-                    duplicate_source = ArticleFixtureFactory.make_article_source(eissn="0000-0001", pissn="0000-000X",
-                                                                               doi="10.1234/duplicate",
-                                                                               fulltext="https://duplicate.com")
-                    duplicate = Article(**duplicate_source)
-                    duplicate.set_id()
-                    duplicate.save(blocking=True)
-
-                    article.bibjson().remove_identifiers("doi")
-                    article.bibjson().add_identifier("doi", "10.1234/duplicate")
-
-                elif update_article_id_arg == "doi_ft_changed_ok":
-
-                    article.bibjson().remove_identifiers("doi")
-                    article.bibjson().add_identifier("doi", "10.1234/updated")
-
-                original.save(blocking=True)
-
-
-
 
         account = None
         if account_arg != "none":
@@ -174,10 +138,10 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         if raises is not None:
             with self.assertRaises(raises):
                 self.svc.create_article(article, account, duplicate_check, merge_duplicate,
-                                        limit_to_account, add_journal_info, dry_run, update_article_id)
+                                        limit_to_account, add_journal_info, dry_run)
         else:
             report = self.svc.create_article(article, account, duplicate_check, merge_duplicate,
-                                             limit_to_account, add_journal_info, dry_run, update_article_id)
+                                             limit_to_account, add_journal_info, dry_run)
 
             assert report["success"] == success
 
@@ -200,11 +164,4 @@ class TestBLLArticleCreateArticle(DoajTestCase):
 
             if add_journal_info:
                 assert article.bibjson().journal_title == "Add Journal Info Title"
-
-            if update_article_id_arg == "doi_ft_changed_ok":
-                original = Article.pull(original_id)
-                assert original.bibjson().get_one_identifier("doi") == "10.1234/updated", "actual: {}".format(original.bibjson().get_one_identifier("doi"))
-            elif update_article_id_arg == "doi_ft_not_changed":
-                original = Article.pull(original_id)
-                assert original.bibjson().title == "Article Title"
 

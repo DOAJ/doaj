@@ -1,8 +1,7 @@
 """ Gather and test DOAJ regexes here """
 
 from doajtest.helpers import DoajTestCase
-from portality.view.forms import ISSN_REGEX
-from portality.formcontext.forms import DOI_REGEX
+from portality.view.forms import DOI_REGEX, ISSN_REGEX
 from doajtest.fixtures import dois, issns
 
 import re

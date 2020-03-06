@@ -156,9 +156,9 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
         svc = DOAJ.articleService()
         if raises is not None:
             with self.assertRaises(raises):
-                svc.discover_duplicates(article)
+                svc.discover_duplicates(article, owner_id)
         else:
-            possible_articles = svc.discover_duplicates(article)
+            possible_articles = svc.discover_duplicates(article, owner_id)
 
             if articles_by_doi_arg == "yes":
                 assert "doi" in possible_articles
