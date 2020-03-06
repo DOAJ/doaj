@@ -61,7 +61,7 @@ BASE_APPLICATION_STRUCT = {
                 "article",
                 "copyright",
                 "deposit_policy",
-                "editorial"
+                "editorial",
                 "institution",
                 "other_charges",
                 "pid_scheme",
@@ -91,8 +91,8 @@ BASE_APPLICATION_STRUCT = {
                 },
                 "article": {
                     "fields": {
-                        "embedded_licence": {"coerce": "bool"},
-                        "embedded_licence_url": {"coerce": "unicode"},
+                        "embedded_license": {"coerce": "bool"},
+                        "embedded_license_url": {"coerce": "unicode"},
                         "orcid": {"coerce": "unicode"},
                         "i4oc_open_citations": {"coerce": "unicode"}
                     }
@@ -100,7 +100,7 @@ BASE_APPLICATION_STRUCT = {
                 "copyright": {
                     "fields": {
                         "author_retains": {"coerce": "bool"},
-                        "url": {"coerce": "bool"},
+                        "url": {"coerce": "unicode"},
                     }
                 },
                 "deposit_policy": {
@@ -109,7 +109,7 @@ BASE_APPLICATION_STRUCT = {
                         "is_registered": {"coerce": "bool"}
                     },
                     "lists": {
-                        "service": {"coerce": "unicode", "contains": "unicode"}
+                        "service": {"coerce": "unicode", "contains": "field"}
                     }
                 },
                 "editorial": {
@@ -118,7 +118,7 @@ BASE_APPLICATION_STRUCT = {
                         "board_url": {"coerce": "unicode"}
                     },
                     "lists": {
-                        "review_process": {"coerce": "unicode",
+                        "review_process": {"contains" : "field", "coerce": "unicode",
                                            "allowed_values": ["Editorial review", "Peer review", "Blind peer review",
                                                               "Double blind peer review", "Open peer review", "None"]},
                     }
@@ -287,24 +287,13 @@ class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
         if len(list(self.data.keys())) == 0:
             return
 
-        # at least one of print issn / e-issn, and they must be different
-        #
-        # check that there are identifiers at all
-        identifiers = self.bibjson.identifier
-        if identifiers is None or len(identifiers) == 0:
-            raise dataobj.DataStructureException("You must specify at least one of P-ISSN or E-ISSN in bibjson.identifier")
 
         # extract the p/e-issn identifier objects
-        pissn = None
-        eissn = None
-        for ident in identifiers:
-            if ident.type == "pissn":
-                pissn = ident
-            elif ident.type == "eissn":
-                eissn = ident
+        pissn = self.bibjson.pissn
+        eissn = self.bibjson.eissn
 
-        # check that at least one of them appears
-        if pissn is None and eissn is None:
+        # check that at least one of them appears and if they are different
+        if pissn is None and eissn is None or pissn == eissn:
             raise dataobj.DataStructureException("You must specify at least one of P-ISSN or E-ISSN in bibjson.identifier")
 
         # normalise the ids
@@ -320,55 +309,39 @@ class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
 
         # A link to the journal homepage is required
         #
-        # check that there are links at all
-        links = self.bibjson.link
-        if links is None or len(links) == 0:
-            raise dataobj.DataStructureException("You must specify the journal homepage in bibjson.link@type='homepage'")
-        found = False
-        for l in links:
-            if l.type == "homepage":
-                found = True
-                break
-        if not found:
+        if self.bibjson.ref.journal is None:
             raise dataobj.DataStructureException("You must specify the journal homepage in bibjson.link@type='homepage'")
 
         # if plagiarism detection is done, then the url is a required field
-        if self.bibjson.plagiarism_detection.detection is True:
-            url = self.bibjson.plagiarism_detection.url
+        if self.bibjson.plagiarism.detection is True:
+            url = self.bibjson.plagiarism.url
             if url is None:
                 raise dataobj.DataStructureException("In this context bibjson.plagiarism_detection.url is required")
 
         # if licence.embedded is true, then the url is a required field
-        lic = self.bibjson.license
-        if lic is not None and len(lic) > 0:
-            lic = lic[0]
-            if lic.embedded:
-                if lic.embedded_example_url is None:
-                    raise dataobj.DataStructureException("In this context bibjson.license.embedded_example_url is required")
+        lic = self.bibjson.article.embedded_license
+        if lic and lic.embedded_example_url is None:
+            raise dataobj.DataStructureException("In this context bibjson.license.embedded_example_url is required")
 
         # if the author does not hold the copyright the url is optional, otherwise it is required
-        if self.bibjson.author_copyright.copyright is not False:
-            if self.bibjson.author_copyright.url is None:
+        if self.bibjson.copyright.author_retains is not False:
+            if self.bibjson.copyright.url is None:
                 raise dataobj.DataStructureException("In this context bibjson.author_copyright.url is required")
 
-        # if the author does not hold the publishing rights the url is optional, otherwise it is required
-        if self.bibjson.author_publishing_rights.publishing_rights is not False:
-            if self.bibjson.author_publishing_rights.url is None:
-                raise dataobj.DataStructureException("In this context bibjson.author_publishing_rights.url is required")
 
         # if the archiving policy has no "domain" set, then the policy must be from one of an allowed list
         # if the archiving policy does have "domain" set, then the domain must be from one of an allowed list
-        for ap in self.bibjson.archiving_policy.policy:
-            if ap.domain is not None:
-                # domain is in allowed list
-                opts = choices.Choices.digital_archiving_policy_list("optional")
-                if ap.domain not in opts:
-                    raise dataobj.DataStructureException("bibjson.archiving_policy.policy.domain must be one of {x}".format(x=" or ".join(opts)))
-            else:
-                # policy name is in allowed list
-                opts = choices.Choices.digital_archiving_policy_list("named")
-                if ap.name not in opts:
-                    raise dataobj.DataStructureException("bibjson.archiving_policy.policy.name must be one of '{x}' when 'domain' is not also set".format(x=", ".join(opts)))
+        # for ap in self.bibjson.archiving_policy.policy:
+        #     if ap.domain is not None:
+        #         # domain is in allowed list
+        #         opts = choices.Choices.digital_archiving_policy_list("optional")
+        #         if ap.domain not in opts:
+        #             raise dataobj.DataStructureException("bibjson.archiving_policy.policy.domain must be one of {x}".format(x=" or ".join(opts)))
+        #     else:
+        #         # policy name is in allowed list
+        #         opts = choices.Choices.digital_archiving_policy_list("named")
+        #         if ap.name not in opts:
+        #             raise dataobj.DataStructureException("bibjson.archiving_policy.policy.name must be one of '{x}' when 'domain' is not also set".format(x=", ".join(opts)))
 
         # check the number of keywords is no more than 6
         if len(self.bibjson.keywords) > 6:
@@ -388,26 +361,6 @@ class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
 
     def to_application_model(self, existing=None):
         nd = deepcopy(self.data)
-
-        # we need to re-write the archiving policy section
-        ap = nd.get("bibjson", {}).get("archiving_policy")
-        if ap is not None:
-            nap = {}
-            if "url" in ap:
-                nap["url"] = ap["url"]
-            if "policy" in ap:
-                known = []
-                for pol in ap["policy"]:
-                    if "domain" in pol:
-                        if pol.get("domain").lower() == "other":
-                            nap["other"] = pol.get("name")
-                        elif pol.get("domain").lower() == "a national library":
-                            nap["nat_lib"] = pol.get("name")
-                    else:
-                        known.append(pol.get("name"))
-                if len(known) > 0:
-                    nap["known"] = known
-            nd["bibjson"]["archiving_policy"] = nap
 
         if existing is None:
             return models.Suggestion(**nd)

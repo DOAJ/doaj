@@ -98,7 +98,7 @@ JOURNAL_SOURCE = {
         },
         "article" : {
             "embedded_license": True,
-            "embedded_license_example" : "http://licence.embedded",
+            "embedded_license_url" : "http://licence.embedded",
             "orcid" : True,
             "i4oc_open_citations" : True
         },
