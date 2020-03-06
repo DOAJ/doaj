@@ -1,8 +1,7 @@
 from copy import deepcopy
 from portality import datasets
 from portality.formcontext import choices
-from portality.formcontext.xwalks.journal_form import JournalFormXWalk
-
+from portality.formcontext.xwalk import JournalFormXWalk
 
 class JournalXwalkException(Exception):
     pass

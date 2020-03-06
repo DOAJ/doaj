@@ -5,16 +5,20 @@ from flask_login import current_user, login_required
 from portality.core import app
 from portality import models
 from portality.bll import DOAJ
-from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
+from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.formcontext import formcontext
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
+from portality.view.forms import ArticleForm
 from portality.ui.messages import Messages
 from portality import lock
+from portality.crosswalks.article_form import ArticleFormXWalk
 
 from huey.exceptions import TaskException
 
-import uuid
+import os, uuid
+from time import sleep
+
 
 blueprint = Blueprint('publisher', __name__)
 
@@ -128,7 +132,7 @@ def update_request_readonly(application_id):
 def updates_in_progress():
     return render_template("publisher/updates_in_progress.html")
 
-
+@blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
 @ssl_required
@@ -136,7 +140,7 @@ def updates_in_progress():
 def upload_file():
     # all responses involve getting the previous uploads
     previous = models.FileUpload.by_owner(current_user.id)
-
+    
     if request.method == "GET":
         schema = request.cookies.get("schema")
         if schema is None:
@@ -179,40 +183,70 @@ def upload_file():
 @ssl_required
 @write_required()
 def metadata():
-    user = current_user._get_current_object()
     # if this is a get request, give the blank form - there is no edit feature
     if request.method == "GET":
-        fc = formcontext.ArticleFormFactory.get_from_context(user=user, role="publisher")
-        return fc.render_template()
+        form = ArticleForm()
+        return render_template('publisher/metadata.html', form=form)
     
     # if this is a post request, a form button has been hit and we need to do
     # a bunch of work
     elif request.method == "POST":
-
-        fc = formcontext.ArticleFormFactory.get_from_context(role="publisher", user=user,
-                                                             form_data=request.form)
+        form = ArticleForm(request.form)
+        
         # first we need to do any server-side form modifications which
         # the user might request by pressing the add/remove authors buttons
-
-        fc.modify_authors_if_required(request.values)
-
-        if fc.validate():
-            try:
-                fc.finalise()
-            except ArticleMergeConflict:
-                Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
-            except DuplicateArticleException:
-                Messages.flash(Messages.ARTICLE_METADATA_UPDATE_CONFLICT)
-
-        return fc.render_template()
-
+        more_authors = request.values.get("more_authors")
+        remove_author = None
+        for v in list(request.values.keys()):
+            if v.startswith("remove_authors"):
+                remove_author = v.split("-")[1]
+        
+        # if the user wants more authors, add an extra entry
+        if more_authors:
+            form.authors.append_entry()
+            return render_template('publisher/metadata.html', form=form)
+        
+        # if the user wants to remove an author, do the various back-flips required
+        if remove_author is not None:
+            keep = []
+            while len(form.authors.entries) > 0:
+                entry = form.authors.pop_entry()
+                if entry.short_name == "authors-" + remove_author:
+                    break
+                else:
+                    keep.append(entry)
+            while len(keep) > 0:
+                form.authors.append_entry(keep.pop().data)
+            return render_template('publisher/metadata.html', form=form)
+        
+        # if we get to here, then this is the full submission, and we need to
+        # validate and return
+        enough_authors = _validate_authors(form)
+        if form.validate():
+            # if the form validates, then we have to do our own bit of validation,
+            # which is to check that there is at least one author supplied
+            if not enough_authors:
+                return render_template('publisher/metadata.html', form=form, author_error=True)
+            else:
+                xwalk = ArticleFormXWalk()
+                art = xwalk.crosswalk_form(form)
+                articleService = DOAJ.articleService()
+                try:
+                    articleService.create_article(art, current_user._get_current_object(), add_journal_info=True)
+                    Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
+                    form = ArticleForm()
+                    return render_template('publisher/metadata.html', form=form)
+                except ArticleMergeConflict:
+                    Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
+                    return render_template('publisher/metadata.html', form=form)
+        else:
+            return render_template('publisher/metadata.html', form=form, author_error=not enough_authors)
 
 @blueprint.route("/help")
 @login_required
 @ssl_required
 def help():
     return render_template("publisher/help.html")
-
 
 def _validate_authors(form, require=1):
     counted = 0

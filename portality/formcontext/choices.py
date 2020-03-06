@@ -1,4 +1,4 @@
-from portality import constants, models
+from portality import constants
 from portality import lcc
 from portality.datasets import language_options, main_license_options, country_options, currency_options, CURRENCY_DEFAULT
 from portality.formcontext import FormContextException
@@ -416,13 +416,3 @@ class Choices(object):
                 forward_choices = [(constants.APPLICATION_STATUS_IN_PROGRESS, 'In Progress')] + forward_choices
 
             return forward_choices
-
-    @classmethod
-    def choices_for_article_issns(cls, user, article_id=None):
-        if "admin" in user.role and article_id is not None:
-                a = models.Article.pull(article_id)
-                issns = models.Journal.issns_by_owner(a.get_owner())
-        else:
-            issns = models.Journal.issns_by_owner(user.id)
-        ic = [("", "Select an ISSN")] + [(i, i) for i in issns]
-        return ic
