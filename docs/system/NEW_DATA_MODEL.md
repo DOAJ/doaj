@@ -57,7 +57,7 @@ One type may have some admin fields and not others and vice versa.
         },
         "article" : {
             "embedded_license": true,
-            "embedded_license_example" : "<example url>",
+            "embedded_license_example_url" : "<example url>",
             "orcid" : true,
             "i4oc_open_citations" : true
         },
@@ -111,7 +111,7 @@ One type may have some admin fields and not others and vice versa.
         "preservation" : {
             "has_preservation" : true,
             "service" : ["<service name>"],
-            "national_library" : "National Library Name",
+            "national_library" : ["National Library Name"],
             "url" : "<preservation url>"
         },
         "publication_time_weeks" : 5,

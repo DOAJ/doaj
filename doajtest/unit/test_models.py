@@ -669,9 +669,9 @@ class TestClient(DoajTestCase):
         assert bj.plagiarism_detection is True
         assert bj.plagiarism_url == "http://plagiarism.screening"
         assert bj.preservation is not None
-        assert bj.preservation_services == ["LOCKSS", "CLOCKSS", "A safe place", ["A national library", "Trinity"]]
+        assert bj.preservation_services == ["LOCKSS", "CLOCKSS", "A safe place", ["A national library", "Trinity"], ["A national library", "Imperial"]]
         assert bj.preservation_url == "http://digital.archiving.policy"
-        assert bj.publisher == "The Publisher"
+        assert bj.publisher_name == "The Publisher"
         assert bj.publisher_country == "US"
         assert bj.oa_statement_url == "http://oa.statement"
         assert bj.journal_url == "http://journal.url"
@@ -709,8 +709,8 @@ class TestClient(DoajTestCase):
         bj.other_charges_url = "http://other2.url"
         bj.pid_scheme = "Handle"
         bj.set_plagiarism_detection("http://test1", False)
-        bj.set_preservation(["LOCKSS"], "http://preservation")
-        bj.publisher = "Me"
+        bj.set_preservation(["LOCKSS", ["a national library", "UCL"]], "http://preservation")
+        bj.publisher_name = "Me"
         bj.publisher_country = "UK"
         bj.oa_statement_url = "http://oa2.statement"
         bj.journal_url = "http://journal2.url"
@@ -754,9 +754,9 @@ class TestClient(DoajTestCase):
         assert bj.plagiarism_detection is False
         assert bj.plagiarism_url == "http://test1"
         assert bj.preservation is not None
-        assert bj.preservation_services == ["LOCKSS"]
+        assert bj.preservation_services == ["LOCKSS", ["A national library", "UCL"]]
         assert bj.preservation_url == "http://preservation"
-        assert bj.publisher == "Me"
+        assert bj.publisher_name == "Me"
         assert bj.publisher_country == "UK"
         assert bj.oa_statement_url == "http://oa2.statement"
         assert bj.journal_url == "http://journal2.url"
@@ -779,6 +779,7 @@ class TestClient(DoajTestCase):
         bj.add_deposit_policy("OK")
         bj.add_pid_scheme("PURL")
         bj.add_preservation("MOUNTAIN")
+        bj.add_preservation(["A national library", "LSE"])
 
         assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
         assert bj.keywords == ["new", "terms", "keyword"]
@@ -789,7 +790,7 @@ class TestClient(DoajTestCase):
         assert len(bj.apcs) == 2
         assert bj.deposit_policy == ["Never", "OK"]
         assert bj.pid_scheme == ["Handle", "PURL"]
-        assert bj.preservation_services == ["LOCKSS", "MOUNTAIN"]
+        assert bj.preservation_services == ["LOCKSS", "MOUNTAIN", ["A national library", "UCL"], ["A national library", "LSE"]]
 
         # special methods
         assert bj.issns() == ["1111-111X", "0000-000X"], bj.issns()
@@ -876,6 +877,8 @@ class TestClient(DoajTestCase):
         assert bj.open_access == bj.boai
 
         assert bj.country_name() == bj.publisher_country_name()
+
+        assert bj.publisher_name == bj.publisher
 
         # deleters
         del bj.discontinued_date

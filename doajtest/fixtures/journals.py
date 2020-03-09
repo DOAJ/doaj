@@ -98,7 +98,7 @@ JOURNAL_SOURCE = {
         },
         "article" : {
             "embedded_license": True,
-            "embedded_license_example" : "http://licence.embedded",
+            "embedded_license_example_url" : "http://licence.embedded",
             "orcid" : True,
             "i4oc_open_citations" : True
         },
@@ -152,7 +152,7 @@ JOURNAL_SOURCE = {
         "preservation" : {
             "has_preservation" : True,
             "service" : ["LOCKSS", "CLOCKSS", "A safe place"],
-            "national_library" : "Trinity",
+            "national_library" : ["Trinity", "Imperial"],
             "url" : "http://digital.archiving.policy"
         },
         "publication_time_weeks" : 8,

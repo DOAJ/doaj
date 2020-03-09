@@ -224,11 +224,11 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def article_embedded_license_example_url(self):
-        return self.__seamless__.get_single("article.embedded_license_example")
+        return self.__seamless__.get_single("article.embedded_license_example_url")
 
     @article_embedded_license_example_url.setter
     def article_embedded_license_example_url(self, url):
-        self.__seamless__.set_with_struct("article.embedded_license_example", url)
+        self.__seamless__.set_with_struct("article.embedded_license_example_url", url)
 
     @property
     def article_orcid(self):
@@ -379,7 +379,8 @@ class JournalLikeBibJSON(SeamlessMixin):
         if "service" in pres:
             ret += pres["service"]
         if "national_library" in pres:
-            ret.append(["A national library", pres["national_library"]])
+            for anl in pres["national_library"]:
+                ret.append(["A national library", anl])
         return ret
 
     def set_preservation(self, services, policy_url):
@@ -389,7 +390,10 @@ class JournalLikeBibJSON(SeamlessMixin):
             if isinstance(p, list):
                 k, v = p
                 if k.lower() == "a national library":
-                    obj["national_library"] = v
+                    if "national_library" in obj:
+                        obj["national_library"].append(v)
+                    else:
+                        obj["national_library"] = [v]
             else:
                 known.append(p)
         if len(known) > 0:
@@ -403,7 +407,7 @@ class JournalLikeBibJSON(SeamlessMixin):
         if isinstance(service, list):
             k, v = service
             if k.lower() == "a national library":
-                self.__seamless__.set_with_struct("preservation.national_library", v)
+                self.__seamless__.add_to_list_with_struct("preservation.national_library", v)
         else:
             self.__seamless__.add_to_list_with_struct("preservation.service", service)
 
@@ -416,11 +420,11 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.set_with_struct("preservation.url", url)
 
     @property
-    def publisher(self):
+    def publisher_name(self):
         return self.__seamless__.get_single("publisher.name")
 
-    @publisher.setter
-    def publisher(self, val):
+    @publisher_name.setter
+    def publisher_name(self, val):
         self.__seamless__.set_with_struct("publisher.name", val)
 
     @property
@@ -563,6 +567,14 @@ class JournalLikeBibJSON(SeamlessMixin):
     @publication_time.setter
     def publication_time(self, weeks):
         self.publication_time_weeks = weeks
+
+    @property
+    def publisher(self):
+        return self.publisher_name
+
+    @publisher.setter
+    def publisher(self, val):
+        self.publisher_name = val
 
     def set_keywords(self, keywords):
         self.keywords = keywords
