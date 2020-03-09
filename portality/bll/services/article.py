@@ -323,6 +323,8 @@ class ArticleService(object):
         """
         Get at most one one, most recent, duplicate article for the supplied article.
 
+        If the owner id is provided, this will limit the search to duplicates owned by that owner
+
         :param article:
         :param owner:
         :return:

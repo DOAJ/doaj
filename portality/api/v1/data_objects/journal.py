@@ -16,20 +16,7 @@ JOURNAL_STRUCT = {
             "fields": {
                 "in_doaj": {"coerce": "bool", "get__default": False},
                 "ticked": {"coerce": "bool", "get__default": False},
-                "seal": {"coerce": "bool", "get__default": False},
-                "owner": {"coerce": "unicode"},
-            },
-            "lists": {
-                "contact": {"contains": "object"}
-            },
-            "structs": {
-                "contact": {
-                    "fields": {
-                        "email": {"coerce": "unicode"},
-                        "name": {"coerce": "unicode"},
-                    }
-                }
-            }
+                "seal": {"coerce": "bool", "get__default": False}            }
         },
         "bibjson": {
             "fields": {
