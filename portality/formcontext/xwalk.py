@@ -369,6 +369,7 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         if getattr(form, 'application_status', None):
             suggestion.set_application_status(form.application_status.data)
 
+        # FIXME: in the new version of the form, notes will have IDs, so we need to pick them up too
         if getattr(form, 'notes', None):
             for formnote in form.notes.data:
                 if formnote["note"]:
@@ -732,6 +733,7 @@ class JournalFormXWalk(JournalGenericXWalk):
             publishing_rights = interpret_special(form.publishing_rights.data)
             bibjson.set_author_publishing_rights(form.publishing_rights_url.data, holds_rights=publishing_rights)
 
+        # FIXME: in the new version of the form, notes will have IDs, so we need to pick them up too
         for formnote in form.notes.data:
             if formnote["note"]:
                 journal.add_note(formnote["note"])
