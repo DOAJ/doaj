@@ -46,10 +46,12 @@ class TestAnon(DoajTestCase):
             }],
             'notes': [
                 {
+                    "id" : "note1",
                     'note': 'Test note',
                     'date': '2017-02-23T00:00:00Z'
                 },
                 {
+                    "id" : "note2",
                     'note': 'Test note 2',
                     'date': '2017-02-23T00:00:00Z'
                 }
@@ -70,10 +72,12 @@ class TestAnon(DoajTestCase):
             }],
             'notes': [
                 {
+                    "id" : "note1",
                     'note': 'f4007b0953d4a9ecb7e31820b5d481d96ee5d74a0a059a54f07a326d357ed895',
                     'date': '2017-02-23T00:00:00Z'
                 },
                 {
+                    "id" : "note2",
                     'note': '772cf6f91219db969e4aa28e4fd606b92316948545ad528fd34feb1b9b12a3ad',
                     'date': '2017-02-23T00:00:00Z'
                 }

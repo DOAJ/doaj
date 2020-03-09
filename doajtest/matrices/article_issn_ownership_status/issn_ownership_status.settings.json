@@ -1,14 +1,18 @@
 {
   "parameters": [
     {
-      "name": "test_id",
-      "type": "index"
+      "type": "index",
+      "name": "test_id"
     },
     {
-      "name": "article",
       "values": {
         "exists": {
           "constraints": {
+            "seen_eissn": {
+              "nor": [
+                "-"
+              ]
+            },
             "seen_pissn": {
               "nor": [
                 "-"
@@ -20,11 +24,6 @@
               ]
             },
             "article_pissn": {
-              "nor": [
-                "-"
-              ]
-            },
-            "seen_eissn": {
               "nor": [
                 "-"
               ]
@@ -33,6 +32,11 @@
         },
         "none": {
           "constraints": {
+            "seen_eissn": {
+              "or": [
+                "-"
+              ]
+            },
             "seen_pissn": {
               "or": [
                 "-"
@@ -47,19 +51,14 @@
               "or": [
                 "-"
               ]
-            },
-            "seen_eissn": {
-              "or": [
-                "-"
-              ]
             }
           }
         }
       },
-      "type": "generated"
+      "type": "generated",
+      "name": "article"
     },
     {
-      "name": "article_eissn",
       "values": {
         "-": {},
         "no": {
@@ -73,10 +72,10 @@
         },
         "yes": {}
       },
-      "type": "generated"
+      "type": "generated",
+      "name": "article_eissn"
     },
     {
-      "name": "article_pissn",
       "values": {
         "-": {},
         "no": {
@@ -90,36 +89,36 @@
         },
         "yes": {}
       },
-      "type": "generated"
+      "type": "generated",
+      "name": "article_pissn"
     },
     {
-      "name": "owner",
       "values": {
         "exists": {},
         "none": {}
       },
-      "type": "generated"
+      "type": "generated",
+      "name": "owner"
     },
     {
-      "name": "seen_eissn",
       "values": {
         "-": {},
         "no": {},
         "yes": {}
       },
-      "type": "generated"
+      "type": "generated",
+      "name": "seen_eissn"
     },
     {
-      "name": "seen_pissn",
       "values": {
         "-": {},
         "no": {},
         "yes": {}
       },
-      "type": "generated"
+      "type": "generated",
+      "name": "seen_pissn"
     },
     {
-      "name": "journal_owner",
       "values": {
         "mix": {
           "constraints": {
@@ -142,10 +141,10 @@
         "incorrect": {},
         "none": {}
       },
-      "type": "generated"
+      "type": "generated",
+      "name": "journal_owner"
     },
     {
-      "name": "raises",
       "values": {
         "ArgumentException": {
           "conditions": [
@@ -167,7 +166,8 @@
         }
       },
       "type": "conditional",
-      "default": ""
+      "default": "",
+      "name": "raises"
     }
   ]
 }

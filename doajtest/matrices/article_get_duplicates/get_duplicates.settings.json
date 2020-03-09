@@ -1,32 +1,11 @@
 {
   "parameters": [
     {
-      "name": "test_id",
-      "type": "index"
+      "type": "index",
+      "name": "test_id"
     },
     {
-      "name": "article",
-      "type": "generated",
       "values": {
-        "yes": {
-          "constraints": {
-            "doi_duplicates": {
-              "nor": [
-                "-"
-              ]
-            },
-            "fulltext_duplicates": {
-              "nor": [
-                "-"
-              ]
-            },
-            "overlap": {
-              "nor": [
-                "-"
-              ]
-            }
-          }
-        },
         "no": {
           "constraints": {
             "doi_duplicates": {
@@ -34,42 +13,53 @@
                 "-"
               ]
             },
-            "fulltext_duplicates": {
+            "overlap": {
               "or": [
                 "-"
               ]
             },
-            "overlap": {
+            "fulltext_duplicates": {
               "or": [
+                "-"
+              ]
+            }
+          }
+        },
+        "yes": {
+          "constraints": {
+            "doi_duplicates": {
+              "nor": [
+                "-"
+              ]
+            },
+            "overlap": {
+              "nor": [
+                "-"
+              ]
+            },
+            "fulltext_duplicates": {
+              "nor": [
                 "-"
               ]
             }
           }
         }
-      }
+      },
+      "type": "generated",
+      "name": "article"
     },
     {
-      "name": "owner",
-      "type": "generated",
       "values": {
-        "yes": {},
-        "no": {}
-      }
+        "no": {},
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "owner"
     },
     {
-      "name": "doi_duplicates",
-      "type": "generated",
       "values": {
         "-": {},
-        "0": {
-          "constraints": {
-            "overlap": {
-              "or": [
-                "0"
-              ]
-            }
-          }
-        },
+        "3": {},
         "1": {
           "constraints": {
             "overlap": {
@@ -79,14 +69,6 @@
             }
           }
         },
-        "3": {}
-      }
-    },
-    {
-      "name": "fulltext_duplicates",
-      "type": "generated",
-      "values": {
-        "-": {},
         "0": {
           "constraints": {
             "overlap": {
@@ -95,7 +77,15 @@
               ]
             }
           }
-        },
+        }
+      },
+      "type": "generated",
+      "name": "doi_duplicates"
+    },
+    {
+      "values": {
+        "-": {},
+        "3": {},
         "1": {
           "constraints": {
             "overlap": {
@@ -105,22 +95,30 @@
             }
           }
         },
-        "3": {}
-      }
+        "0": {
+          "constraints": {
+            "overlap": {
+              "or": [
+                "0"
+              ]
+            }
+          }
+        }
+      },
+      "type": "generated",
+      "name": "fulltext_duplicates"
     },
     {
-      "name": "overlap",
-      "type": "generated",
       "values": {
         "-": {},
-        "0": {},
+        "3": {},
         "1": {},
-        "3": {}
-      }
+        "0": {}
+      },
+      "type": "generated",
+      "name": "overlap"
     },
     {
-      "name": "raises",
-      "type": "conditional",
       "values": {
         "ArgumentException": {
           "conditions": [
@@ -133,7 +131,9 @@
             }
           ]
         }
-      }
+      },
+      "type": "conditional",
+      "name": "raises"
     }
   ]
 }

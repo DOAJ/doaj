@@ -247,11 +247,11 @@ class ApplicationService(object):
         # create a new blank journal record, which we can build up
         journal = models.Journal()
 
-        # first thing is to copy the bibjson as-is wholesale, and set active=True
+        # first thing is to copy the bibjson as-is wholesale,
         abj = application.bibjson()
         journal.set_bibjson(abj)
         jbj = journal.bibjson()
-        jbj.active = True
+        # jbj.active = True
 
         # now carry over key administrative properties from the application itself
         # * contacts
@@ -270,7 +270,7 @@ class ApplicationService(object):
         if application.editor_group is not None:
             journal.set_editor_group(application.editor_group)
         for note in notes:
-            journal.add_note(note.get("note"), note.get("date"))
+            journal.add_note(note.get("note"), note.get("date"), note.get("id"))
         if application.owner is not None:
             journal.set_owner(application.owner)
         journal.set_seal(application.has_seal())
@@ -295,7 +295,7 @@ class ApplicationService(object):
                 # bring forward any notes from the old journal record
                 old_notes = cj.notes
                 for note in old_notes:
-                    journal.add_note(note.get("note"), note.get("date"))
+                    journal.add_note(note.get("note"), note.get("date"), note.get("id"))
 
                 # bring forward any related applications
                 related = cj.related_applications

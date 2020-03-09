@@ -644,7 +644,7 @@ class JournalLikeBibJSON(SeamlessMixin):
         ident = getattr(self, field)
         if ident is not None:
             return [getattr(self, field)]
-        return None
+        return []
 
     def get_one_identifier(self, idtype=None):
         if idtype is None:
