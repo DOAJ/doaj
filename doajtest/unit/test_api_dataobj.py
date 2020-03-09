@@ -8,7 +8,7 @@ class TestAPIDataObj(DoajTestCase):
 
     # we aren't going to talk to ES so override setup and teardown of index
     def setUp(self):
-        self.jm = models.Journal(**JournalFixtureFactory.make_journal_source(include_obsolete_fields=True))
+        self.jm = models.Journal(**JournalFixtureFactory.make_journal_source())
 
     def tearDown(self):
         pass

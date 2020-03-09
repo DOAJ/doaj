@@ -13,6 +13,10 @@ class JournalLikeBibJSON(SeamlessMixin):
     def __init__(self, bibjson=None, **kwargs):
         super(JournalLikeBibJSON, self).__init__(raw=bibjson, **kwargs)
 
+    @property
+    def data(self):
+        return self.__seamless__.data
+
     ####################################################
     # Current getters and setters
 
@@ -129,8 +133,12 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.add_to_list_with_struct("language", language)
 
     @property
-    def licences(self):
+    def licenses(self):
         return self.__seamless__.get_list("license")
+
+    @property
+    def licences(self):
+        return self.licenses
 
     def add_licence(self, license_type, url=None, by=None, sa=None, nc=None, nd=None):
         self.add_license(license_type, url, by, sa, nc, nd)
@@ -149,6 +157,9 @@ class JournalLikeBibJSON(SeamlessMixin):
             lobj["ND"] = nd
 
         self.__seamless__.add_to_list_with_struct("license", lobj)
+
+    def remove_licenses(self):
+        self.__seamless__.delete("license")
 
     @property
     def replaces(self):
@@ -528,6 +539,8 @@ class JournalLikeBibJSON(SeamlessMixin):
     ## Internal utility functions
 
     def _normalise_issn(self, issn):
+        if issn is None:
+            return issn
         issn = issn.upper()
         if len(issn) > 8: return issn
         if len(issn) == 8:
@@ -606,12 +619,20 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     def get_identifiers(self, idtype=None):
         if idtype is None:
-            raise RuntimeError("This object cannot return a generic list of identifiers")
+            idents = []
+            if self.eissn:
+                idents.append({"type" : self.E_ISSN, "id" : self.eissn})
+            if self.pissn:
+                idents.append({"type" : self.P_ISSN, "id" : self.pissn})
+            return idents
         field = self.IDENTIFIER_MAP.get(idtype)
         if field is None:
             raise RuntimeError("No identifier of type {x} known".format(x=idtype))
 
-        return [getattr(self, field)]
+        ident = getattr(self, field)
+        if ident is not None:
+            return [getattr(self, field)]
+        return None
 
     def get_one_identifier(self, idtype=None):
         if idtype is None:

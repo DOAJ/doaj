@@ -27,6 +27,6 @@ COERCE_MAP = {
     "url": seamless.to_url,
     "bool": seamless.to_bool,
     "datetime" : seamless.to_datetime,
-    "utcdatetime" : seamless.to_datetime,
+    "utcdatetime" : date_str(),
     "bigenddate" : date_str(out_format="%Y-%m-%d")
 }

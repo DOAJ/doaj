@@ -123,8 +123,8 @@ class TestBLLJournalCSV(DoajTestCase):
             for i in range(len(noissns)):
                 noissn = noissns[i]
                 bj = noissn.bibjson()
-                bj.remove_identifiers(idtype=bj.P_ISSN)
-                bj.remove_identifiers(idtype=bj.E_ISSN)
+                del bj.eissn
+                del bj.pissn
                 noissn.set_id("no_issn_{i}".format(i=i))
             journals += noissns
 

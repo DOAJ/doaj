@@ -208,11 +208,6 @@ class ApplicationService(object):
         if application is None:
             app.logger.info("No existing update request for journal {x}; creating one".format(x=journal.id))
             application = journalService.journal_2_application(journal, account=account)
-            lra_id = journal.latest_related_application_id()
-            if lra_id is not None:
-                lra, _ = self.application(lra_id)
-                if lra is not None:
-                    self.patch_application(application, lra)
             if account is not None:
                 journal_lock = lock.lock("journal", journal_id, account.id)
 
@@ -239,30 +234,6 @@ class ApplicationService(object):
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed update_request_for_journal; return application object")
 
         return application, journal_lock, application_lock
-
-    def patch_application(self, target, source):
-        # first validate the incoming arguments to ensure that we've got the right thing
-        argvalidate("application_2_journal", [
-            {"arg": target, "instance" : models.Suggestion, "allow_none" : False, "arg_name" : "target"},
-            {"arg" : source, "instance" : models.Suggestion, "allow_none" : False, "arg_name" : "source"}
-        ], exceptions.ArgumentException)
-
-        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering patch_application")
-
-        if target.article_metadata is None:
-            target.article_metadata = source.article_metadata
-
-        saly = source.articles_last_year
-        taly = target.articles_last_year
-        if taly is None:
-            taly = {}
-        if taly.get("count") is None:
-            taly["count"] = saly.get("count")
-        if taly.get("url") is None:
-            taly["url"] = saly.get("url")
-        target.set_articles_last_year(taly.get("count"), taly.get("url"))
-
-        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed patch_application")
 
     def application_2_journal(self, application, manual_update=True):
         # first validate the incoming arguments to ensure that we've got the right thing

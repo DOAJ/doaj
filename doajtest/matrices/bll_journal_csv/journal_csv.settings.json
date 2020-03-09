@@ -1,15 +1,12 @@
 {
   "parameters": [
     {
-      "name": "test_id",
-      "type": "index"
+      "type": "index",
+      "name": "test_id"
     },
     {
-      "name": "prune",
-      "type": "generated",
       "values": {
         "True": {},
-        "False": {},
         "None": {
           "constraints": {
             "tmp_write": {
@@ -22,7 +19,7 @@
                 "success"
               ]
             },
-            "journals": {
+            "journals_with_articles": {
               "or": [
                 "0"
               ]
@@ -32,20 +29,20 @@
                 "0"
               ]
             },
-            "journals_with_articles": {
+            "journals": {
               "or": [
                 "0"
               ]
             }
           }
-        }
-      }
+        },
+        "False": {}
+      },
+      "type": "generated",
+      "name": "prune"
     },
     {
-      "name": "tmp_write",
-      "type": "generated",
       "values": {
-        "success": {},
         "fail": {
           "constraints": {
             "main_write": {
@@ -54,21 +51,23 @@
               ]
             }
           }
-        }
-      }
+        },
+        "success": {}
+      },
+      "type": "generated",
+      "name": "tmp_write"
     },
     {
-      "name": "main_write",
-      "type": "generated",
       "values": {
-        "success": {},
-        "fail": {}
-      }
+        "fail": {},
+        "success": {}
+      },
+      "type": "generated",
+      "name": "main_write"
     },
     {
-      "name": "journals",
-      "type": "generated",
       "values": {
+        "3": {},
         "0": {
           "constraints": {
             "journals_with_articles": {
@@ -77,30 +76,37 @@
               ]
             }
           }
+        }
+      },
+      "type": "generated",
+      "name": "journals"
+    },
+    {
+      "values": {
+        "1": {},
+        "0": {}
+      },
+      "type": "generated",
+      "name": "journals_no_issn"
+    },
+    {
+      "values": {
+        "1": {}
+      },
+      "type": "generated",
+      "name": "not_in_doaj"
+    },
+    {
+      "values": {
+        "3": {
+          "constraints": {
+            "journals": {
+              "or": [
+                "3"
+              ]
+            }
+          }
         },
-        "3": {}
-      }
-    },
-    {
-      "name": "journals_no_issn",
-      "type": "generated",
-      "values": {
-        "0": {},
-        "1": {}
-      }
-    },
-    {
-      "name": "not_in_doaj",
-      "type": "generated",
-      "values": {
-        "1": {}
-      }
-    },
-    {
-      "name": "journals_with_articles",
-      "type": "generated",
-      "values": {
-        "0": {},
         "1": {
           "constraints": {
             "journals": {
@@ -110,33 +116,13 @@
             }
           }
         },
-        "3": {
-          "constraints": {
-            "journals": {
-              "or": [
-                "3"
-              ]
-            }
-          }
-        }
-      }
+        "0": {}
+      },
+      "type": "generated",
+      "name": "journals_with_articles"
     },
     {
-      "name": "raises",
-      "type": "conditional",
-      "default": "",
       "values": {
-        "ArgumentException": {
-          "conditions": [
-            {
-              "prune": {
-                "or": [
-                  "None"
-                ]
-              }
-            }
-          ]
-        },
         "IOError": {
           "conditions": [
             {
@@ -154,12 +140,26 @@
               }
             }
           ]
+        },
+        "ArgumentException": {
+          "conditions": [
+            {
+              "prune": {
+                "or": [
+                  "None"
+                ]
+              }
+            }
+          ]
         }
-      }
+      },
+      "type": "conditional",
+      "name": "raises",
+      "default": ""
     },
     {
-      "name": "comment",
-      "type": ""
+      "type": "",
+      "name": "comment"
     }
   ]
 }

@@ -5,13 +5,15 @@
       "type": "index"
     },
     {
-      "name": "article",
-      "type": "generated",
       "values": {
-        "yes": {},
         "no": {
           "constraints": {
             "article_doi": {
+              "or": [
+                "no"
+              ]
+            },
+            "fulltext_duplicate": {
               "or": [
                 "no"
               ]
@@ -22,11 +24,6 @@
               ]
             },
             "doi_duplicate": {
-              "or": [
-                "no"
-              ]
-            },
-            "fulltext_duplicate": {
               "or": [
                 "no"
               ]
@@ -37,40 +34,35 @@
               ]
             }
           }
-        }
-      }
+        },
+        "yes": {}
+      },
+      "name": "article",
+      "type": "generated"
     },
     {
-      "name": "article_doi",
-      "type": "generated",
       "values": {
+        "invalid": {
+          "constraints": {
+            "article_fulltext": {
+              "or": [
+                "no",
+                "yes",
+                "invalid"
+              ]
+            },
+            "doi_duplicate": {
+              "or": [
+                "yes"
+              ]
+            }
+          }
+        },
         "no": {
           "constraints": {
             "doi_duplicate": {
               "or": [
                 "no"
-              ]
-            }
-          }
-        },
-        "yes": {
-          "constraints": {
-            "article_fulltext": {
-              "or": [
-                "no",
-                "yes"
-              ]
-            },
-            "doi_duplicate": {
-              "or": [
-                "no",
-                "yes"
-              ]
-            },
-            "fulltext_duplicate": {
-              "or": [
-                "no",
-                "yes"
               ]
             }
           }
@@ -97,39 +89,34 @@
             }
           }
         },
-        "invalid": {
+        "yes": {
           "constraints": {
             "article_fulltext": {
               "or": [
                 "no",
-                "yes",
-                "invalid"
+                "yes"
               ]
             },
             "doi_duplicate": {
               "or": [
+                "no",
+                "yes"
+              ]
+            },
+            "fulltext_duplicate": {
+              "or": [
+                "no",
                 "yes"
               ]
             }
           }
         }
-      }
+      },
+      "name": "article_doi",
+      "type": "generated"
     },
     {
-      "name": "article_fulltext",
-      "type": "generated",
       "values": {
-        "no": {
-          "constraints": {
-            "fulltext_duplicate": {
-              "or": [
-                "no"
-              ]
-            }
-          }
-        },
-        "yes": {},
-        "padded": {},
         "https": {
           "constraints": {
             "article_doi": {
@@ -167,14 +154,26 @@
               ]
             }
           }
-        }
-      }
+        },
+        "no": {
+          "constraints": {
+            "fulltext_duplicate": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        },
+        "padded": {},
+        "yes": {}
+      },
+      "name": "article_fulltext",
+      "type": "generated"
     },
     {
-      "name": "doi_duplicate",
-      "type": "generated",
       "values": {
         "no": {},
+        "padded": {},
         "yes": {
           "constraints": {
             "article_doi": {
@@ -183,15 +182,16 @@
               ]
             }
           }
-        },
-        "padded": {}
-      }
+        }
+      },
+      "name": "doi_duplicate",
+      "type": "generated"
     },
     {
-      "name": "fulltext_duplicate",
-      "type": "generated",
       "values": {
+        "https": {},
         "no": {},
+        "padded": {},
         "yes": {
           "constraints": {
             "article_fulltext": {
@@ -200,29 +200,14 @@
               ]
             }
           }
-        },
-        "padded": {},
-        "https": {}
-      }
+        }
+      },
+      "name": "fulltext_duplicate",
+      "type": "generated"
     },
     {
-      "name": "owner",
-      "type": "generated",
       "values": {
-        "none": {
-          "constraints": {
-            "doi_duplicate": {
-              "or": [
-                "no"
-              ]
-            },
-            "fulltext_duplicate": {
-              "or": [
-                "no"
-              ]
-            }
-          }
-        },
+        "articles": {},
         "no_articles": {
           "constraints": {
             "doi_duplicate": {
@@ -237,14 +222,29 @@
             }
           }
         },
-        "articles": {}
-      }
+        "none": {
+          "constraints": {
+            "doi_duplicate": {
+              "or": [
+                "no"
+              ]
+            },
+            "fulltext_duplicate": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        }
+      },
+      "name": "owner",
+      "type": "generated"
     },
     {
-      "name": "articles_by_doi",
-      "type": "conditional",
       "default": "no",
+      "name": "articles_by_doi",
       "values": {
+        "no": {},
         "yes": {
           "conditions": [
             {
@@ -272,74 +272,74 @@
               }
             }
           ]
-        },
-        "no": {}
-      }
+        }
+      },
+      "type": "conditional"
     },
     {
-      "name": "articles_by_fulltext",
-      "type": "conditional",
       "default": "no",
+      "name": "articles_by_fulltext",
       "values": {
+        "no": {},
         "yes": {
           "conditions": [
             {
+              "owner": {
+                "or": [
+                  "articles"
+                ]
+              },
               "fulltext_duplicate": {
                 "or": [
                   "yes"
                 ]
-              },
+              }
+            },
+            {
               "owner": {
                 "or": [
                   "articles"
                 ]
-              }
-            },
-            {
+              },
               "fulltext_duplicate": {
                 "or": [
                   "padded"
                 ]
-              },
+              }
+            },
+            {
               "owner": {
                 "or": [
                   "articles"
                 ]
-              }
-            },
-            {
+              },
               "fulltext_duplicate": {
                 "or": [
                   "https"
                 ]
-              },
-              "owner": {
-                "or": [
-                  "articles"
-                ]
               }
             }
           ]
-        },
-        "no": {}
-      }
+        }
+      },
+      "type": "conditional"
     },
     {
-      "name": "raises",
-      "type": "conditional",
       "default": "",
+      "name": "raises",
       "values": {
+        "ValueError": {},
         "DuplicateArticleException": {
           "conditions": [
             {
-              "article": {
-                "or": [
-                  "yes"
-                ]
-              },
               "article_doi": {
                 "or": [
                   "no"
+                ]
+              },
+              "article": {
+                "or": [
+                  "yes"
                 ]
               },
               "article_fulltext": {
@@ -360,9 +360,9 @@
               }
             }
           ]
-        },
-        "ValueError": {}
-      }
+        }
+      },
+      "type": "conditional"
     },
     {
       "name": "notes",

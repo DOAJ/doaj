@@ -70,7 +70,10 @@ class JournalService(object):
             if journal.editor_group is not None:
                 application.set_editor_group(journal.editor_group)
         for n in notes:
-            application.add_note(n.get("note"), n.get("date"))
+            # NOTE: we keep the same id for notes between journal and application, since ids only matter within
+            # the scope of a record there are no id clashes, and at the same time it may be useful in future to
+            # check the origin of some journal notes by comparing ids to application notes.
+            application.add_note(n.get("note"), n.get("date"), n.get("id"))
         application.set_owner(journal.owner)
         application.set_seal(journal.has_seal())
         application.set_bibjson(bj)

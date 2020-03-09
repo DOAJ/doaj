@@ -6,61 +6,60 @@
     },
     {
       "name": "article",
-      "type": "generated",
       "values": {
-        "none": {
+        "exists": {
           "constraints": {
-            "article_eissn": {
-              "or": [
-                "-"
-              ]
-            },
             "article_pissn": {
-              "or": [
+              "nor": [
                 "-"
               ]
             },
             "seen_eissn": {
-              "or": [
+              "nor": [
+                "-"
+              ]
+            },
+            "article_eissn": {
+              "nor": [
                 "-"
               ]
             },
             "seen_pissn": {
-              "or": [
+              "nor": [
                 "-"
               ]
             }
           }
         },
-        "exists": {
+        "none": {
           "constraints": {
-            "article_eissn": {
-              "nor": [
-                "-"
-              ]
-            },
             "article_pissn": {
-              "nor": [
+              "or": [
                 "-"
               ]
             },
             "seen_eissn": {
-              "nor": [
+              "or": [
+                "-"
+              ]
+            },
+            "article_eissn": {
+              "or": [
                 "-"
               ]
             },
             "seen_pissn": {
-              "nor": [
+              "or": [
                 "-"
               ]
             }
           }
         }
-      }
+      },
+      "type": "generated"
     },
     {
       "name": "article_eissn",
-      "type": "generated",
       "values": {
         "-": {},
         "yes": {},
@@ -78,11 +77,11 @@
             }
           }
         }
-      }
+      },
+      "type": "generated"
     },
     {
       "name": "article_pissn",
-      "type": "generated",
       "values": {
         "-": {},
         "yes": {},
@@ -100,38 +99,39 @@
             }
           }
         }
-      }
+      },
+      "type": "generated"
     },
     {
       "name": "owner",
-      "type": "generated",
       "values": {
-        "none": {},
-        "exists": {}
-      }
+        "exists": {},
+        "none": {}
+      },
+      "type": "generated"
     },
     {
       "name": "seen_eissn",
-      "type": "generated",
       "values": {
         "-": {},
         "yes": {},
         "no": {}
-      }
+      },
+      "type": "generated"
     },
     {
       "name": "seen_pissn",
-      "type": "generated",
       "values": {
         "-": {},
         "yes": {},
         "no": {}
-      }
+      },
+      "type": "generated"
     },
     {
       "name": "journal_owner",
-      "type": "generated",
       "values": {
+        "incorrect": {},
         "none": {},
         "correct": {
           "constraints": {
@@ -142,7 +142,6 @@
             }
           }
         },
-        "incorrect": {},
         "mix": {
           "constraints": {
             "owner": {
@@ -152,12 +151,11 @@
             }
           }
         }
-      }
+      },
+      "type": "generated"
     },
     {
       "name": "raises",
-      "type": "conditional",
-      "default": "",
       "values": {
         "ArgumentException": {
           "conditions": [
@@ -177,21 +175,16 @@
             }
           ]
         }
-      }
+      },
+      "type": "conditional",
+      "default": ""
     },
     {
       "name": "legit",
-      "type": "conditional",
-      "default": "no",
       "values": {
         "yes": {
           "conditions": [
             {
-              "article_eissn": {
-                "or": [
-                  "yes"
-                ]
-              },
               "article_pissn": {
                 "or": [
                   "no"
@@ -202,23 +195,23 @@
                   "yes"
                 ]
               },
-              "seen_pissn": {
-                "or": [
-                  "no"
-                ]
-              },
               "journal_owner": {
                 "or": [
                   "correct"
+                ]
+              },
+              "article_eissn": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "seen_pissn": {
+                "or": [
+                  "no"
                 ]
               }
             },
             {
-              "article_eissn": {
-                "or": [
-                  "yes"
-                ]
-              },
               "article_pissn": {
                 "or": [
                   "yes"
@@ -229,23 +222,23 @@
                   "yes"
                 ]
               },
-              "seen_pissn": {
+              "journal_owner": {
+                "or": [
+                  "correct"
+                ]
+              },
+              "article_eissn": {
                 "or": [
                   "yes"
                 ]
               },
-              "journal_owner": {
+              "seen_pissn": {
                 "or": [
-                  "correct"
+                  "yes"
                 ]
               }
             },
             {
-              "article_eissn": {
-                "or": [
-                  "no"
-                ]
-              },
               "article_pissn": {
                 "or": [
                   "yes"
@@ -256,20 +249,27 @@
                   "no"
                 ]
               },
-              "seen_pissn": {
-                "or": [
-                  "yes"
-                ]
-              },
               "journal_owner": {
                 "or": [
                   "correct"
+                ]
+              },
+              "article_eissn": {
+                "or": [
+                  "no"
+                ]
+              },
+              "seen_pissn": {
+                "or": [
+                  "yes"
                 ]
               }
             }
           ]
         }
-      }
+      },
+      "type": "conditional",
+      "default": "no"
     }
   ]
 }

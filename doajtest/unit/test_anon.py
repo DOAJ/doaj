@@ -118,8 +118,8 @@ class TestAnon(DoajTestCase):
 
     def test_09_anonymise_suggestion(self):
         asug = anon_export.anonymise_suggestion(ApplicationFixtureFactory.make_application_source())
-        assert asug['suggestion']['suggester']['name'] == 'Jon Cole', asug['suggestion']['suggester']['name']
-        assert asug['suggestion']['suggester']['email'] == '5224a2ac2278eeb77400bf5d35e518a1627a7fb10bf0108171542c6af81988a7@example.com', asug['suggestion']['suggester']['email']
+        assert asug['admin']['applicant']['name'] == 'Jon Cole', asug['suggestion']['suggester']['name']
+        assert asug['admin']['applicant']['email'] == '5224a2ac2278eeb77400bf5d35e518a1627a7fb10bf0108171542c6af81988a7@example.com', asug['suggestion']['suggester']['email']
 
     def test_10_anonymise_background_job(self):
         bgjob = BackgroundFixtureFactory.example()

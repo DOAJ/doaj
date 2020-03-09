@@ -56,7 +56,7 @@ class TestUpgrade(DoajTestCase):
         p = re.compile('[0-4]000-0001')
 
         for id in saved_journals:
-            j = models.journal.Journal.pull(id)
+            j = models.Journal.pull(id)
             bj = j.bibjson()
             pissn = bj.get_one_identifier(bj.P_ISSN)
 

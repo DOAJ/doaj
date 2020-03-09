@@ -216,9 +216,6 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         expected_app_status = constants.APPLICATION_STATUS_ON_HOLD
         for s in self.suggestions:
             del s.data['bibjson']['apc']
-            del s.data['bibjson']['apc_url']
-            del s.data['bibjson']['submission_charges']
-            del s.data['bibjson']['submission_charges_url']
             s.save()
         self.suggestions[-1].save(blocking=True)
 
