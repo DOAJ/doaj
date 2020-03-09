@@ -514,6 +514,8 @@ class Article(DomainObject):
                 # if we can't normalise the fulltext store it as-is
                 fulltext = source_fulltext
 
+
+
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:

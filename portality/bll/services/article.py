@@ -152,10 +152,17 @@ class ArticleService(object):
                 if merge_duplicate:
                     if update_article_id is not None and duplicate.id != update_article_id:
                         raise exceptions.DuplicateArticleException()
-                    is_update += 1
-                    article.merge(duplicate) # merge will take the old id, so this will overwrite
-                else:
-                    raise exceptions.DuplicateArticleException()
+                    elif update_article_id is not None and duplicate.id == update_article_id:
+                        doi_or_ft_updated = self._doi_or_fulltext_updated(article, update_article_id)
+                        if doi_or_ft_updated:
+                            if account.has_role("admin"):
+                                is_update += 1
+                                article.merge(duplicate)
+                            else:
+                                raise exceptions.DuplicateArticleException()
+                        else:
+                            is_update += 1
+                            article.merge(duplicate)
 
         if add_journal_info:
             article.add_journal_metadata()
@@ -239,6 +246,16 @@ class ArticleService(object):
 
         return True
 
+    def _doi_or_fulltext_updated(self, new_article, update_id):
+        old_art = models.Article.pull(update_id)
+        old_doi = old_art.get_normalised_doi()
+        old_ft_url = old_art.get_normalised_fulltext()
+
+        new_doi = new_article.get_normalised_doi()
+        new_ft_url = new_article.get_normalised_fulltext()
+
+        return old_doi != new_doi or old_ft_url != new_ft_url
+
     def issn_ownership_status(self, article, owner):
         """
         Determine the ownership status of the supplied owner over the issns in the given article
@@ -306,8 +323,6 @@ class ArticleService(object):
         """
         Get at most one one, most recent, duplicate article for the supplied article.
 
-        If the owner id is provided, this will limit the search to duplicates owned by that owner
-
         :param article:
         :param owner:
         :return:
@@ -325,6 +340,7 @@ class ArticleService(object):
             return dup.pop()
         else:
             return None
+
 
     def get_duplicates(self, article, max_results=10):
         """
@@ -392,7 +408,7 @@ class ArticleService(object):
             if isinstance(doi, str) and doi != '':
                 articles = models.Article.duplicates(doi=doi, size=results_per_match_type)
                 if len(articles) > 0:
-                    possible_articles['doi'] = [a for a in articles if a.id != article.id]
+                    possible_articles['doi'] = [a for a in articles]
                     if len(possible_articles['doi']) > 0:
                         found = True
 
@@ -401,7 +417,7 @@ class ArticleService(object):
         if fulltext is not None:
             articles = models.Article.duplicates(fulltexts=fulltext, size=results_per_match_type)
             if len(articles) > 0:
-                possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
+                possible_articles['fulltext'] = [a for a in articles]
                 if possible_articles['fulltext']:
                     found = True
 
