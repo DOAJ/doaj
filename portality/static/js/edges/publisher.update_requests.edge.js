@@ -84,7 +84,7 @@ $.extend(true, doaj, {
                         {'display': 'ISSN', 'field': 'index.issn.exact'},
                         {'display': 'Country of publisher', 'field': 'index.country'},
                         {'display': 'Journal Language', 'field': 'index.language'},
-                        {'display': 'Publisher', 'field': 'index.publisher'},
+                        {'display': 'Publisher', 'field': 'bibjson.publisher'},
                         {'display': 'Platform, Host, Aggregator', 'field': 'bibjson.provider'}
                     ],
                     defaultOperator: "AND",
