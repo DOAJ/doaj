@@ -1413,7 +1413,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         # now let's check that only one article got created
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1
+        assert len(found) == 2
 
     def test_crossref_44_journal_1_article_1_superlong_noclip(self):
         etree.XMLSchema = self.mock_load_schema

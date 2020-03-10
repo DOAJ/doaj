@@ -149,7 +149,13 @@ class ArticleService(object):
         if duplicate_check:
             duplicate = self.get_duplicate(article)
             if duplicate is not None:
-                if merge_duplicate:
+                if update_article_id is None:
+                    if merge_duplicate:
+                        is_update = 1
+                        article.merge(duplicate)  # merge will take the old id, so this will overwrite
+                    else:
+                        raise exceptions.DuplicateArticleException()
+                else:
                     if update_article_id is not None and duplicate.id != update_article_id:
                         raise exceptions.DuplicateArticleException()
                     elif update_article_id is not None and duplicate.id == update_article_id:
@@ -163,6 +169,7 @@ class ArticleService(object):
                         else:
                             is_update += 1
                             article.merge(duplicate)
+
 
         if add_journal_info:
             article.add_journal_metadata()
