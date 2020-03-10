@@ -644,9 +644,9 @@ class TestClient(DoajTestCase):
         assert len(bj.licences) == 1
         assert bj.replaces == ["1111-1111"]
         assert len(bj.subject) == 2
-        assert len(bj.apcs) == 1
-        assert bj.apcs[0].get("currency") == "GBP"
-        assert bj.apcs[0].get("price") == 2
+        assert len(bj.apc) == 1
+        assert bj.apc[0].get("currency") == "GBP"
+        assert bj.apc[0].get("price") == 2
         assert bj.apc_url == "http://apc.com"
         assert bj.has_apc is True
         assert bj.article_embedded_license is True
@@ -791,7 +791,7 @@ class TestClient(DoajTestCase):
         assert len(bj.licences) == 2
         assert bj.replaces == ["3333-3333", "1234-1234"]
         assert len(bj.subject) == 2
-        assert len(bj.apcs) == 2
+        assert len(bj.apc) == 2
         assert bj.deposit_policy == ["Never", "OK"]
         assert bj.pid_scheme == ["Handle", "PURL"]
         assert bj.preservation_services == ["LOCKSS", "MOUNTAIN", ["A national library", "UCL"], ["A national library", "LSE"]]

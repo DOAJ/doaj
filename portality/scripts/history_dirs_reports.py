@@ -1,32 +1,32 @@
 import os, json, csv
 
-WORKING_DIR = "/home/richard/tmp/doaj/history.20200306/history"
+WORKING_DIR = "/home/richard/tmp/doaj/history.20200306/assembled"
 
 BASE_DIRS = [
-    "article_2016_web-pre2019",
-    "article_2017_background-pre2019",
-    "article_2018_background-pre2019",
-    "article_2018_web-pre2019",
+    #"article_2016_web-pre2019",
+    #"article_2017_background-pre2019",
+    #"article_2018_background-pre2019",
+    #"article_2018_web-pre2019",
     "article_2019_background-2019",
-    "article_2019_background-pre2019",
+    #"article_2019_background-pre2019",
     "article_2019_web-2019",
-    "article_2019_web-pre2019",
-    "article_2020_background-2019",
-    "article_2020_web-2019",
-    "journal_2016_background-pre2019",
-    "journal_2017_background-pre2019",
-    "journal_2017_web-pre2019",
-    "journal_2018_background-pre2019",
-    "journal_2018_web-pre2019",
+    #"article_2019_web-pre2019",
+    #"article_2020_background-2019",
+    #"article_2020_web-2019",
+    #"journal_2016_background-pre2019",
+    #"journal_2017_background-pre2019",
+    #"journal_2017_web-pre2019",
+    #"journal_2018_background-pre2019",
+    #"journal_2018_web-pre2019",
     "journal_2019_background-2019",
-    "journal_2019_background-pre2019",
-    "journal_2019_web-pre2019",
-    "journal_2019_web-2019",
-    "journal_2020_background-2019",
-    "journal_2020_web-2019"
+    #"journal_2019_background-pre2019",
+    #"journal_2019_web-pre2019",
+    #"journal_2019_web-2019",
+    #"journal_2020_background-2019",
+    #"journal_2020_web-2019"
 ]
 
-OUT_DIR = "/home/richard/tmp/doaj/history.20200306"
+OUT_DIR = "/home/richard/tmp/doaj/history.20200306/assembled"
 
 
 def history_dirs_reports(working_dir, base_dirs, out_dir):
