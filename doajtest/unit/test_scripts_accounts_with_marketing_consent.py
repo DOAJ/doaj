@@ -71,5 +71,5 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
             reader = csv.reader(f)
             for row in reader:
                 table.append(row)
-        assert len(table) == 21
+        assert len(table) == 21, "expected: 21, received: {}".format(len(table))
         self.assertCountEqual(table, expected_data)
