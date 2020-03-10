@@ -658,6 +658,7 @@ class TestClient(DoajTestCase):
         assert bj.deposit_policy == ["Sherpa/Romeo", "Store it"]
         assert bj.has_deposit_policy is True
         assert bj.deposit_policy_registered is True
+        assert bj.deposit_policy_url == "http://deposit.policy"
         assert bj.editorial_review_process == ["Open peer review"]
         assert bj.editorial_review_url == "http://review.process"
         assert bj.editorial_board_url == "http://editorial.board"
@@ -702,6 +703,8 @@ class TestClient(DoajTestCase):
         bj.copyright_url = "http://copyright2.url"
         bj.deposit_policy = ["Never"]
         bj.deposit_policy_registered = False
+        bj.deposit_policy_url = "http://other.policy"
+        bj.has_deposit_policy = False
         bj.set_editorial_review("Whatever", "http://whatever", "http://board2.url")
         bj.institution = "UCL"
         bj.institution_country = "FR"
@@ -741,8 +744,9 @@ class TestClient(DoajTestCase):
         assert bj.author_retains_copyright is False
         assert bj.copyright_url == "http://copyright2.url"
         assert bj.deposit_policy == ["Never"]
-        assert bj.has_deposit_policy is True
+        assert bj.has_deposit_policy is False
         assert bj.deposit_policy_registered is False
+        assert bj.deposit_policy_url == "http://other.policy"
         assert bj.editorial_review_process == ["Whatever"]
         assert bj.editorial_review_url == "http://whatever"
         assert bj.editorial_board_url == "http://board2.url"
@@ -797,6 +801,10 @@ class TestClient(DoajTestCase):
         assert bj.publisher_country_name() == "UK", bj.publisher_country_name()
         assert "Italian" in bj.language_name(), bj.language_name()
         assert bj.get_preferred_issn() == "0000-000X", bj.get_preferred_issn()
+
+        bj.set_unregistered_journal_policy("http://unregistered.policy")
+        assert bj.deposit_policy_url == "http://unregistered.policy"
+        assert bj.has_deposit_policy is True
 
         # deprecated methods (they still need to work)
         bj.publication_time = 3

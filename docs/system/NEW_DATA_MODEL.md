@@ -69,7 +69,8 @@ One type may have some admin fields and not others and vice versa.
         "deposit_policy" : {
             "has_policy" : true,
             "is_registered" : true,
-            "service" : ["<service name>"]
+            "service" : ["<service name>"],
+            "url" : "<journal deposit policy url>"
         },
         "discontinued_date" : "<date>",
         "editorial" : {

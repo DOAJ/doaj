@@ -280,6 +280,10 @@ class JournalLikeBibJSON(SeamlessMixin):
     def has_deposit_policy(self):
         return self.__seamless__.get_single("deposit_policy.has_policy")
 
+    @has_deposit_policy.setter
+    def has_deposit_policy(self, val):
+        self.__seamless__.set_with_struct("deposit_policy.has_policy", val)
+
     @property
     def deposit_policy_registered(self):
         return self.__seamless__.get_single("deposit_policy.is_registered")
@@ -287,6 +291,18 @@ class JournalLikeBibJSON(SeamlessMixin):
     @deposit_policy_registered.setter
     def deposit_policy_registered(self, val):
         self.__seamless__.set_with_struct("deposit_policy.is_registered", val)
+
+    @property
+    def deposit_policy_url(self):
+        return self.__seamless__.get_single("deposit_policy.url")
+
+    @deposit_policy_url.setter
+    def deposit_policy_url(self, url):
+        self.__seamless__.set_with_struct("deposit_policy.url", url)
+
+    def set_unregistered_journal_policy(self, url):
+        self.deposit_policy_url = url
+        self.has_deposit_policy = True
 
     def set_editorial_review(self, process, review_url, board_url=None):
         self.__seamless__.set_with_struct("editorial.review_process", process)

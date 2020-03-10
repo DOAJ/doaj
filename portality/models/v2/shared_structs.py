@@ -71,7 +71,8 @@ JOURNAL_BIBJSON = {
                 "deposit_policy" : {
                     "fields" : {
                         "has_policy" : {"coerce" : "bool"},
-                        "is_registered" : {"coerce" : "bool"}
+                        "is_registered" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "unicode"}
                     },
                     "lists" : {
                         "service" : {"contains" : "field", "coerce" : "unicode"}

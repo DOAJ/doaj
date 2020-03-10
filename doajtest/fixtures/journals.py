@@ -110,7 +110,8 @@ JOURNAL_SOURCE = {
         "deposit_policy" : {
             "has_policy" : True,
             "is_registered" : True,
-            "service" : ["Sherpa/Romeo", "Store it"]
+            "service" : ["Sherpa/Romeo", "Store it"],
+            "url" : "http://deposit.policy"
         },
         "discontinued_date" : "2010-01-01",
         "editorial" : {
