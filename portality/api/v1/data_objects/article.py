@@ -171,10 +171,53 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         self._add_struct(INCOMING_ARTICLE_REQUIRED)
         super(IncomingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_ARTICLE_COERCE, swagger_trans=BASE_ARTICLE_SWAGGER_TRANS)
 
+    def _trim_empty_strings(self):
+        bibjson = self.data["bibjson"]
+
+        if "title" in bibjson and bibjson["title"] == "":
+            del bibjson["title"]
+
+        if "identifier" in bibjson:
+            for ide in bibjson["identifier"]:
+                if ide["id"] == "":
+                    bibjson["identifier"].remove(ide)
+
+        if "year" in bibjson and bibjson["year"] == "":
+            del bibjson["year"]
+
+        if "month" in bibjson and bibjson["month"] == "":
+            del bibjson["month"]
+
+        if "link" in bibjson:
+            for link in bibjson["link"]:
+                if link["url"] == "":
+                    bibjson["link"].remove(link)
+
+        if "abstract" in bibjson and bibjson["abstract"] == "":
+            del bibjson["abstract"]
+
+        if "author" in bibjson:
+            for author in bibjson["author"]:
+                if author["name"] == "":
+                    bibjson["author"].remove(author)
+
+        if "keywords" in bibjson:
+            for keyword in bibjson["keywords"]:
+                if keyword == "":
+                    bibjson["keywords"].remove(keyword)
+
+        if "subject" in bibjson:
+            for subject in bibjson["subject"]:
+                if subject["term"] == "":
+                    bibjson["subject"].remove(subject)
+
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
         if len(list(self.data.keys())) == 0:
             return
+
+        # remove all fields with empty data ""
+        self._trim_empty_strings()
 
         # at least one of print issn / e-issn, and they must be different
         #
@@ -215,7 +258,6 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         for author in self.bibjson.author:
             if author.orcid_id is not None and regex.ORCID_COMPILED.match(author.orcid_id) is None:
                 raise dataobj.DataStructureException("Invalid ORCID iD format. Please use url format, eg: https://orcid.org/0001-1111-1111-1111")
-
 
     def to_article_model(self, existing=None):
         dat = deepcopy(self.data)
