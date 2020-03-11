@@ -117,16 +117,12 @@ PUBLIC_ACCESSIBLE_JSON = True
 # email settings
 
 # Settings for Flask-Mail. Set in app.cfg
-MAIL_SERVER = None          # default localhost
-MAIL_PORT = 25              # default 25
-#MAIL_USE_TLS               # default False
-#MAIL_USE_SSL               # default False
-#MAIL_DEBUG                 # default app.debug
-#MAIL_USERNAME              # default None
-#MAIL_PASSWORD              # default None
-#MAIL_DEFAULT_SENDER        # default None
-#MAIL_MAX_EMAILS            # default None
-#MAIL_SUPPRESS_SEND         # default app.testing
+MAIL_SERVER = 'smtp.mailtrap.io'         # default localhost
+MAIL_PORT = 2525            # default 25
+MAIL_USERNAME = 'fcc31ce27ca409'
+MAIL_PASSWORD = '91c576c88187c3'
+MAIL_USE_TLS = True
+MAIL_USE_SSL = False
 
 # ================================
 # File store

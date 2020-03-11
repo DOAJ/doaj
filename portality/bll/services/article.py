@@ -385,7 +385,7 @@ class ArticleService(object):
 
         return possible_articles[:max_results]
 
-    def discover_duplicates(self, article, results_per_match_type=10):
+    def discover_duplicates(self, article, results_per_match_type=10, include_article = True):
         """
         Identify duplicates, separated by duplication criteria
 
@@ -417,7 +417,10 @@ class ArticleService(object):
             if isinstance(doi, str) and doi != '':
                 articles = models.Article.duplicates(doi=doi, size=results_per_match_type)
                 if len(articles) > 0:
-                    possible_articles['doi'] = [a for a in articles]
+                    if include_article:
+                        possible_articles['doi'] = [a for a in articles]
+                    else:
+                        possible_articles['doi'] = [a for a in articles if a.id != article.id]
                     if len(possible_articles['doi']) > 0:
                         found = True
 
@@ -426,7 +429,10 @@ class ArticleService(object):
         if fulltext is not None:
             articles = models.Article.duplicates(fulltexts=fulltext, size=results_per_match_type)
             if len(articles) > 0:
-                possible_articles['fulltext'] = [a for a in articles]
+                if include_article:
+                    possible_articles['fulltext'] = [a for a in articles]
+                else:
+                    possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
                 if possible_articles['fulltext']:
                     found = True
 

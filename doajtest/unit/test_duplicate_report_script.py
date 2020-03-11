@@ -154,7 +154,8 @@ class TestArticleMatch(DoajTestCase):
         task = article_duplicate_report.ArticleDuplicateReportBackgroundTask(job)
         task.run()
 
-        assert job.audit.pop(1).get('message', '') == '6 articles processed for duplicates. 3 global duplicate sets found.',"found: {}".format(job.audit.pop(1).get('message', ''))
+        audit = job.audit
+        assert next((msg for msg in audit if msg["message"] == '6 articles processed for duplicates. 3 global duplicate sets found.'), None) is not None
 
         table = []
         with open(TMP_DIR + '/duplicate_articles_global_' + dates.today() + '.csv') as f:
