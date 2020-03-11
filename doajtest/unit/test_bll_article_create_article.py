@@ -91,7 +91,8 @@ class TestBLLArticleCreateArticle(DoajTestCase):
             j = Journal(**jsource)
             bj = j.bibjson()
             bj.title = "Add Journal Info Title"
-            bj.remove_identifiers()
+            del bj.eissn
+            del bj.pissn
             bj.add_identifier(bj.P_ISSN, pissn)
             bj.add_identifier(bj.E_ISSN, eissn)
             j.save(blocking=True)

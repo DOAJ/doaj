@@ -113,13 +113,11 @@ class TestCrudArticle(DoajTestCase):
         # make sure non-overwritable journal metadata matches the article
         journal.bibjson().title = "The Title"
         journal.bibjson().publisher = "The Publisher"
-        journal.bibjson().set_license(
+        journal.bibjson().remove_licenses()
+        journal.bibjson().add_license(
             **{
-                "license_title" : "CC BY",
                 "license_type" : "CC BY",
-                "url" : "http://license.example.com",
-                "version" : "1.0",
-                "open_access": True,
+                "url" : "http://license.example.com"
             }
         )
         journal.bibjson().country = "US"
@@ -146,9 +144,7 @@ class TestCrudArticle(DoajTestCase):
         assert a.bibjson().get_journal_license() == {
             "title" : "CC BY",
             "type" : "CC BY",
-            "url" : "http://license.example.com",
-            "version" : "1.0",
-            "open_access": True,
+            "url" : "http://license.example.com"
         }
         assert a.bibjson().journal_language == ["EN", "FR"]
         assert a.bibjson().journal_country == "US"
@@ -319,13 +315,11 @@ class TestCrudArticle(DoajTestCase):
         # make sure non-overwritable journal metadata matches the article
         journal.bibjson().title = "The Title"
         journal.bibjson().publisher = "The Publisher"
-        journal.bibjson().set_license(
+        journal.bibjson().remove_licenses()
+        journal.bibjson().add_license(
             **{
-                "license_title" : "CC BY",
                 "license_type" : "CC BY",
-                "url" : "http://license.example.com",
-                "version" : "1.0",
-                "open_access": True,
+                "url" : "http://license.example.com"
             }
         )
         journal.bibjson().country = "US"
@@ -361,8 +355,6 @@ class TestCrudArticle(DoajTestCase):
                 "title" : "BAD LICENSE",
                 "type" : "GOOD DOG",
                 "url" : "Lala land",
-                "version" : "XI",
-                "open_access": False
             }
         ]
         data['bibjson']['journal']['language'] = ["ES", "These aren't even", "lang codes"]
@@ -394,9 +386,7 @@ class TestCrudArticle(DoajTestCase):
         assert updated.bibjson().get_journal_license() == {
             "title" : "CC BY",
             "type" : "CC BY",
-            "url" : "http://license.example.com",
-            "version" : "1.0",
-            "open_access": True,
+            "url" : "http://license.example.com"
         }
         assert updated.bibjson().journal_language == ["EN", "FR"]
         assert updated.bibjson().journal_country == "US"

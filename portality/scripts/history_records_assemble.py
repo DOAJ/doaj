@@ -7,16 +7,16 @@ from portality import clcsv
 # to pip install it.
 from jsondiff import diff, symbols
 
-ID = "83562250934e45e28416e22828004f5c"
+ID = "530ee48c2e31475eb4afd82581fd9710"
 
-ASSEMBLE = False
+ASSEMBLE = True
 DIFF = True
 
-CSV_DIR = "/home/richard/tmp/doaj/history/tosync"
+CSV_DIR = "/home/richard/tmp/doaj/history.20200306"
 
-TAR_DIR = "/home/richard/tmp/doaj/history/tosync"
+TAR_DIR = "/home/richard/tmp/doaj/history.20200306/history"
 
-OUT_DIR = "/home/richard/tmp/doaj/history/workspace/"
+OUT_DIR = "/home/richard/tmp/doaj/history.20200306/workspace/"
 
 
 def history_records_assemble(id, csv_dir, tar_dir, out_dir, assemble, do_diff):
@@ -50,10 +50,15 @@ def history_records_assemble(id, csv_dir, tar_dir, out_dir, assemble, do_diff):
             writer.writerow(["CSV", "Tar Name", "Tar Path", "Date", "File ID"])
             for p in paths:
                 tarball = tarfile.open(os.path.join(tar_dir, p["tarname"]), "r:gz")
-                member = tarball.getmember(p["tarpath"])
+                try:
+                    member = tarball.getmember(p["tarpath"])
+                except KeyError:
+                    p["tarpath"] = p["tarpath"][1:] if p["tarpath"].startswith("/") else p["tarpath"]
+                    member = tarball.getmember(p["tarpath"])
+
                 handle = tarball.extractfile(member)
                 out = os.path.join(out_dir, p["date"] + "_" + p["fileid"] + ".json")
-                with open(out, "w", encoding="utf-8") as f:
+                with open(out, "wb") as f:
                     shutil.copyfileobj(handle, f)
                 writer.writerow([p["csv"], p["tarname"], p["tarpath"], p["date"], p["fileid"]])
 
@@ -82,7 +87,11 @@ def history_records_assemble(id, csv_dir, tar_dir, out_dir, assemble, do_diff):
                 changes.append(d)
 
         with open(difffile, "w", encoding="utf-8") as o:
-            o.write(json.dumps(changes, indent=2, sort_keys=True))
+            try:
+                o.write(json.dumps(changes, indent=2, sort_keys=True))
+            except TypeError:
+                print(changes)
+                raise
 
 
 def _fix_symbols(data):

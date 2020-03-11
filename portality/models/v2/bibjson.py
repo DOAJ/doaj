@@ -13,6 +13,10 @@ class JournalLikeBibJSON(SeamlessMixin):
     def __init__(self, bibjson=None, **kwargs):
         super(JournalLikeBibJSON, self).__init__(raw=bibjson, **kwargs)
 
+    @property
+    def data(self):
+        return self.__seamless__.data
+
     ####################################################
     # Current getters and setters
 
@@ -129,8 +133,12 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.add_to_list_with_struct("language", language)
 
     @property
-    def licences(self):
+    def licenses(self):
         return self.__seamless__.get_list("license")
+
+    @property
+    def licences(self):
+        return self.licenses
 
     def add_licence(self, license_type, url=None, by=None, sa=None, nc=None, nd=None):
         self.add_license(license_type, url, by, sa, nc, nd)
@@ -149,6 +157,9 @@ class JournalLikeBibJSON(SeamlessMixin):
             lobj["ND"] = nd
 
         self.__seamless__.add_to_list_with_struct("license", lobj)
+
+    def remove_licenses(self):
+        self.__seamless__.delete("license")
 
     @property
     def replaces(self):
@@ -213,11 +224,11 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def article_embedded_license_example_url(self):
-        return self.__seamless__.get_single("article.embedded_license_example")
+        return self.__seamless__.get_single("article.embedded_license_example_url")
 
     @article_embedded_license_example_url.setter
     def article_embedded_license_example_url(self, url):
-        self.__seamless__.set_with_struct("article.embedded_license_example", url)
+        self.__seamless__.set_with_struct("article.embedded_license_example_url", url)
 
     @property
     def article_orcid(self):
@@ -269,6 +280,10 @@ class JournalLikeBibJSON(SeamlessMixin):
     def has_deposit_policy(self):
         return self.__seamless__.get_single("deposit_policy.has_policy")
 
+    @has_deposit_policy.setter
+    def has_deposit_policy(self, val):
+        self.__seamless__.set_with_struct("deposit_policy.has_policy", val)
+
     @property
     def deposit_policy_registered(self):
         return self.__seamless__.get_single("deposit_policy.is_registered")
@@ -276,6 +291,18 @@ class JournalLikeBibJSON(SeamlessMixin):
     @deposit_policy_registered.setter
     def deposit_policy_registered(self, val):
         self.__seamless__.set_with_struct("deposit_policy.is_registered", val)
+
+    @property
+    def deposit_policy_url(self):
+        return self.__seamless__.get_single("deposit_policy.url")
+
+    @deposit_policy_url.setter
+    def deposit_policy_url(self, url):
+        self.__seamless__.set_with_struct("deposit_policy.url", url)
+
+    def set_unregistered_journal_policy(self, url):
+        self.deposit_policy_url = url
+        self.has_deposit_policy = True
 
     def set_editorial_review(self, process, review_url, board_url=None):
         self.__seamless__.set_with_struct("editorial.review_process", process)
@@ -368,7 +395,8 @@ class JournalLikeBibJSON(SeamlessMixin):
         if "service" in pres:
             ret += pres["service"]
         if "national_library" in pres:
-            ret.append(["A national library", pres["national_library"]])
+            for anl in pres["national_library"]:
+                ret.append(["A national library", anl])
         return ret
 
     def set_preservation(self, services, policy_url):
@@ -378,7 +406,10 @@ class JournalLikeBibJSON(SeamlessMixin):
             if isinstance(p, list):
                 k, v = p
                 if k.lower() == "a national library":
-                    obj["national_library"] = v
+                    if "national_library" in obj:
+                        obj["national_library"].append(v)
+                    else:
+                        obj["national_library"] = [v]
             else:
                 known.append(p)
         if len(known) > 0:
@@ -392,7 +423,7 @@ class JournalLikeBibJSON(SeamlessMixin):
         if isinstance(service, list):
             k, v = service
             if k.lower() == "a national library":
-                self.__seamless__.set_with_struct("preservation.national_library", v)
+                self.__seamless__.add_to_list_with_struct("preservation.national_library", v)
         else:
             self.__seamless__.add_to_list_with_struct("preservation.service", service)
 
@@ -405,11 +436,11 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.set_with_struct("preservation.url", url)
 
     @property
-    def publisher(self):
+    def publisher_name(self):
         return self.__seamless__.get_single("publisher.name")
 
-    @publisher.setter
-    def publisher(self, val):
+    @publisher_name.setter
+    def publisher_name(self, val):
         self.__seamless__.set_with_struct("publisher.name", val)
 
     @property
@@ -528,6 +559,8 @@ class JournalLikeBibJSON(SeamlessMixin):
     ## Internal utility functions
 
     def _normalise_issn(self, issn):
+        if issn is None:
+            return issn
         issn = issn.upper()
         if len(issn) > 8: return issn
         if len(issn) == 8:
@@ -550,6 +583,14 @@ class JournalLikeBibJSON(SeamlessMixin):
     @publication_time.setter
     def publication_time(self, weeks):
         self.publication_time_weeks = weeks
+
+    @property
+    def publisher(self):
+        return self.publisher_name
+
+    @publisher.setter
+    def publisher(self, val):
+        self.publisher_name = val
 
     def set_keywords(self, keywords):
         self.keywords = keywords
@@ -606,12 +647,20 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     def get_identifiers(self, idtype=None):
         if idtype is None:
-            raise RuntimeError("This object cannot return a generic list of identifiers")
+            idents = []
+            if self.eissn:
+                idents.append({"type" : self.E_ISSN, "id" : self.eissn})
+            if self.pissn:
+                idents.append({"type" : self.P_ISSN, "id" : self.pissn})
+            return idents
         field = self.IDENTIFIER_MAP.get(idtype)
         if field is None:
             raise RuntimeError("No identifier of type {x} known".format(x=idtype))
 
-        return [getattr(self, field)]
+        ident = getattr(self, field)
+        if ident is not None:
+            return [getattr(self, field)]
+        return []
 
     def get_one_identifier(self, idtype=None):
         if idtype is None:

@@ -1,32 +1,29 @@
 {
   "parameters": [
     {
-      "name": "test_id",
-      "type": "index"
+      "type": "index",
+      "name": "test_id"
     },
     {
-      "name": "article",
-      "type": "generated",
       "values": {
-        "yes": {},
         "no": {
           "constraints": {
-            "article_doi": {
-              "or": [
-                "no"
-              ]
-            },
-            "article_fulltext": {
-              "or": [
-                "no"
-              ]
-            },
             "doi_duplicate": {
               "or": [
                 "no"
               ]
             },
+            "article_doi": {
+              "or": [
+                "no"
+              ]
+            },
             "fulltext_duplicate": {
+              "or": [
+                "no"
+              ]
+            },
+            "article_fulltext": {
               "or": [
                 "no"
               ]
@@ -37,12 +34,13 @@
               ]
             }
           }
-        }
-      }
+        },
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "article"
     },
     {
-      "name": "article_doi",
-      "type": "generated",
       "values": {
         "no": {
           "constraints": {
@@ -53,36 +51,8 @@
             }
           }
         },
-        "yes": {
-          "constraints": {
-            "article_fulltext": {
-              "or": [
-                "no",
-                "yes"
-              ]
-            },
-            "doi_duplicate": {
-              "or": [
-                "no",
-                "yes"
-              ]
-            },
-            "fulltext_duplicate": {
-              "or": [
-                "no",
-                "yes"
-              ]
-            }
-          }
-        },
         "padded": {
           "constraints": {
-            "article_fulltext": {
-              "or": [
-                "no",
-                "padded"
-              ]
-            },
             "doi_duplicate": {
               "or": [
                 "no",
@@ -90,6 +60,12 @@
               ]
             },
             "fulltext_duplicate": {
+              "or": [
+                "no",
+                "padded"
+              ]
+            },
+            "article_fulltext": {
               "or": [
                 "no",
                 "padded"
@@ -99,25 +75,47 @@
         },
         "invalid": {
           "constraints": {
+            "doi_duplicate": {
+              "or": [
+                "yes"
+              ]
+            },
             "article_fulltext": {
               "or": [
                 "no",
                 "yes",
                 "invalid"
               ]
-            },
+            }
+          }
+        },
+        "yes": {
+          "constraints": {
             "doi_duplicate": {
               "or": [
+                "no",
+                "yes"
+              ]
+            },
+            "fulltext_duplicate": {
+              "or": [
+                "no",
+                "yes"
+              ]
+            },
+            "article_fulltext": {
+              "or": [
+                "no",
                 "yes"
               ]
             }
           }
         }
-      }
+      },
+      "type": "generated",
+      "name": "article_doi"
     },
     {
-      "name": "article_fulltext",
-      "type": "generated",
       "values": {
         "no": {
           "constraints": {
@@ -128,17 +126,32 @@
             }
           }
         },
-        "yes": {},
         "padded": {},
-        "https": {
+        "invalid": {
           "constraints": {
             "article_doi": {
+              "or": [
+                "no",
+                "yes",
+                "invalid"
+              ]
+            },
+            "fulltext_duplicate": {
+              "or": [
+                "yes"
+              ]
+            }
+          }
+        },
+        "https": {
+          "constraints": {
+            "doi_duplicate": {
               "or": [
                 "no",
                 "yes"
               ]
             },
-            "doi_duplicate": {
+            "article_doi": {
               "or": [
                 "no",
                 "yes"
@@ -152,29 +165,15 @@
             }
           }
         },
-        "invalid": {
-          "constraints": {
-            "article_doi": {
-              "or": [
-                "no",
-                "yes",
-                "invalid"
-              ]
-            },
-            "fulltext_duplicate": {
-              "or": [
-                "yes"
-              ]
-            }
-          }
-        }
-      }
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "article_fulltext"
     },
     {
-      "name": "doi_duplicate",
-      "type": "generated",
       "values": {
         "no": {},
+        "padded": {},
         "yes": {
           "constraints": {
             "article_doi": {
@@ -183,15 +182,16 @@
               ]
             }
           }
-        },
-        "padded": {}
-      }
+        }
+      },
+      "type": "generated",
+      "name": "doi_duplicate"
     },
     {
-      "name": "fulltext_duplicate",
-      "type": "generated",
       "values": {
         "no": {},
+        "padded": {},
+        "https": {},
         "yes": {
           "constraints": {
             "article_fulltext": {
@@ -200,29 +200,14 @@
               ]
             }
           }
-        },
-        "padded": {},
-        "https": {}
-      }
+        }
+      },
+      "type": "generated",
+      "name": "fulltext_duplicate"
     },
     {
-      "name": "owner",
-      "type": "generated",
       "values": {
-        "none": {
-          "constraints": {
-            "doi_duplicate": {
-              "or": [
-                "no"
-              ]
-            },
-            "fulltext_duplicate": {
-              "or": [
-                "no"
-              ]
-            }
-          }
-        },
+        "articles": {},
         "no_articles": {
           "constraints": {
             "doi_duplicate": {
@@ -237,14 +222,27 @@
             }
           }
         },
-        "articles": {}
-      }
+        "none": {
+          "constraints": {
+            "doi_duplicate": {
+              "or": [
+                "no"
+              ]
+            },
+            "fulltext_duplicate": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        }
+      },
+      "type": "generated",
+      "name": "owner"
     },
     {
-      "name": "articles_by_doi",
-      "type": "conditional",
-      "default": "no",
       "values": {
+        "no": {},
         "yes": {
           "conditions": [
             {
@@ -272,15 +270,15 @@
               }
             }
           ]
-        },
-        "no": {}
-      }
-    },
-    {
-      "name": "articles_by_fulltext",
+        }
+      },
       "type": "conditional",
       "default": "no",
+      "name": "articles_by_doi"
+    },
+    {
       "values": {
+        "no": {},
         "yes": {
           "conditions": [
             {
@@ -320,14 +318,13 @@
               }
             }
           ]
-        },
-        "no": {}
-      }
+        }
+      },
+      "type": "conditional",
+      "default": "no",
+      "name": "articles_by_fulltext"
     },
     {
-      "name": "raises",
-      "type": "conditional",
-      "default": "",
       "values": {
         "DuplicateArticleException": {
           "conditions": [
@@ -362,11 +359,14 @@
           ]
         },
         "ValueError": {}
-      }
+      },
+      "type": "conditional",
+      "default": "",
+      "name": "raises"
     },
     {
-      "name": "notes",
-      "type": "comment"
+      "type": "comment",
+      "name": "notes"
     }
   ]
 }

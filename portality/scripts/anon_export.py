@@ -18,7 +18,7 @@ def _anonymise_admin(record):
     record.add_contact(anon_name(), new_email)
     for note in record.notes[:]:
         record.remove_note(note)
-        record.add_note(basic_hash(note['note']))
+        record.add_note(basic_hash(note['note']), id=note["id"])
 
     return record
 

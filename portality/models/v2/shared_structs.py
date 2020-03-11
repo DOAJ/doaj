@@ -57,7 +57,7 @@ JOURNAL_BIBJSON = {
                 "article" : {
                     "fields" : {
                         "embedded_license" : {"coerce" : "bool"},
-                        "embedded_license_url" : {"coerce" : "unicode"},
+                        "embedded_license_example_url" : {"coerce" : "unicode"},
                         "orcid" : {"coerce" : "bool"},
                         "i4oc_open_citations" : {"coerce" : "bool"}
                     }
@@ -71,7 +71,8 @@ JOURNAL_BIBJSON = {
                 "deposit_policy" : {
                     "fields" : {
                         "has_policy" : {"coerce" : "bool"},
-                        "is_registered" : {"coerce" : "bool"}
+                        "is_registered" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "unicode"}
                     },
                     "lists" : {
                         "service" : {"contains" : "field", "coerce" : "unicode"}
@@ -125,10 +126,10 @@ JOURNAL_BIBJSON = {
                 "preservation" : {
                     "fields" : {
                         "has_preservation" : {"coerce" : "bool"},
-                        "national_library" : {"coerce" : "unicode"},
                         "url" : {"coerce" : "unicode"}
                     },
                     "lists" : {
+                        "national_library" : {"contains" : "field", "coerce" : "unicode"},
                         "service" : {"contains" : "field", "coerce" : "unicode"}
                     }
                 },

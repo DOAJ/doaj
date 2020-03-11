@@ -38,19 +38,26 @@ class TestOpenURL(DoajTestCase):
 
         time.sleep(1)
 
+        def compare_queries(q1, q2):
+            q1bits = q1.split("&")
+            q2bits = q2.split("&")
+            q1bits.sort()
+            q2bits.sort()
+            return q1bits == q2bits
+
         """ Check if we receive only journals in DOAJ """
 
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 resp = t_client.get(url_for('openurl.openurl', issn=j_private1.bibjson().get_one_identifier('pissn')))
                 query = urlparse(resp.location).query
-                assert query == QUERY + '&rft.issn=' + j_private1.bibjson().get_one_identifier('pissn')
+                assert compare_queries(query, QUERY + '&rft.issn=' + j_private1.bibjson().get_one_identifier('pissn'))
                 resp = t_client.get(url_for('openurl.openurl')+ query)
                 assert resp.status_code == 404
 
                 resp = t_client.get(url_for('openurl.openurl', issn=j_public1.bibjson().get_one_identifier('pissn')))
                 query = urlparse(resp.location).query
-                assert query == QUERY + '&rft.issn=' + j_public1.bibjson().get_one_identifier('pissn')
+                assert compare_queries(query, QUERY + '&rft.issn=' + j_public1.bibjson().get_one_identifier('pissn'))
                 resp = t_client.get(url_for('openurl.openurl') + query)
                 assert resp.status_code == 404
 

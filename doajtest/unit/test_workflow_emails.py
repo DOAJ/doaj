@@ -9,6 +9,7 @@ from portality import models
 from portality.background import BackgroundException
 from portality.core import app
 from portality.tasks import async_workflow_notifications
+from portality.lib.seamless import SeamlessException
 
 APPLICATION_SOURCE = ApplicationFixtureFactory.make_application_source()
 
@@ -96,7 +97,10 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         [APPLICATION_SOURCE_1, APPLICATION_SOURCE_2, APPLICATION_SOURCE_3] = ApplicationFixtureFactory.make_many_application_sources(count=3)
         comfortably_idle = app.config['ASSOC_ED_IDLE_DAYS'] + 1
         APPLICATION_SOURCE_1['last_manual_update'] = datetime.utcnow() - timedelta(days=comfortably_idle)
-        application1 = models.Suggestion(**APPLICATION_SOURCE_1)
+        try:
+            application1 = models.Suggestion(**APPLICATION_SOURCE_1)
+        except SeamlessException as e:
+            raise Exception(e.message)
         application1.save()
 
         # This exceeds the idle limit, managing editors should be notified.

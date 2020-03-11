@@ -72,9 +72,11 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
             source = JournalFixtureFactory.make_journal_source(in_doaj=True)
             journal = Journal(**source)
             journal.set_owner(owner.id)
-            journal.bibjson().remove_identifiers()
-            journal.bibjson().add_identifier("eissn", "1234-5678")
-            journal.bibjson().add_identifier("pissn", "9876-5432")
+            jbj = journal.bibjson()
+            del jbj.eissn
+            del jbj.pissn
+            jbj.add_identifier("eissn", "1234-5678")
+            jbj.add_identifier("pissn", "9876-5432")
             journal.save(blocking=True)
 
         # determine what we need to load into the index

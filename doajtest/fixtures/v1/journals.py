@@ -98,7 +98,7 @@ JOURNAL_SOURCE = {
         },
         "article" : {
             "embedded_license": True,
-            "embedded_license_example" : "http://licence.embedded",
+            "embedded_license_example_url" : "http://licence.embedded",
             "orcid" : True,
             "i4oc_open_citations" : True
         },
@@ -110,7 +110,8 @@ JOURNAL_SOURCE = {
         "deposit_policy" : {
             "has_policy" : True,
             "is_registered" : True,
-            "service" : ["Sherpa/Romeo", "Store it"]
+            "service" : ["Sherpa/Romeo", "Store it"],
+            "url" : "http://deposit.policy"
         },
         "discontinued_date" : "2010-01-01",
         "editorial" : {
@@ -152,7 +153,7 @@ JOURNAL_SOURCE = {
         "preservation" : {
             "has_preservation" : True,
             "service" : ["LOCKSS", "CLOCKSS", "A safe place"],
-            "national_library" : "Trinity",
+            "national_library" : ["Trinity", "Imperial"],
             "url" : "http://digital.archiving.policy"
         },
         "publication_time_weeks" : 8,
