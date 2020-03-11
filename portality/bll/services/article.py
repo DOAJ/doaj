@@ -350,7 +350,6 @@ class ArticleService(object):
         else:
             return None
 
-
     def get_duplicates(self, article, max_results=10):
         """
         Get all known duplicates of an article

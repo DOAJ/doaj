@@ -100,8 +100,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                     # remove article's own id from global_duplicates
                     dupcount = len(s)-1
                     if s not in global_matches:
-                            self._write_rows_from_duplicates(article, owner, global_duplicates, global_report)
-                            global_matches.append(s)
+                        self._write_rows_from_duplicates(article, owner, global_duplicates, global_report)
+                        global_matches.append(s)
 
                 app.logger.debug('{0}/{1} {2} {3} {4} {5}'.format(a_count, total, article.id, dupcount, len(global_matches), estimated_finish))
 
