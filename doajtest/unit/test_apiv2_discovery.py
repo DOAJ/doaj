@@ -5,14 +5,14 @@ from portality.api.v1.common import generate_link_headers
 import time
 from flask import url_for
 
-class TestArticleMatch(DoajTestCase):
+class TestAPIDiscovery(DoajTestCase):
 
     def setUp(self):
-        super(TestArticleMatch, self).setUp()
+        super(TestAPIDiscovery, self).setUp()
         self.max = self.app_test.config.get("DISCOVERY_MAX_RECORDS_SIZE")
 
     def tearDown(self):
-        super(TestArticleMatch, self).tearDown()
+        super(TestAPIDiscovery, self).tearDown()
         self.app_test.config["DISCOVERY_MAX_RECORDS_SIZE"] = self.max
 
     def test_01_journals(self):
@@ -452,7 +452,7 @@ class TestArticleMatch(DoajTestCase):
                     raise
 
     def test_07_query_escaper(self):
-        from portality.api.v1.discovery import escape
+        from portality.api.v2.discovery import escape
 
         test_tuples = [
             ('issn:1111-2222&publisher:cheese/biscuits', 'issn:1111-2222&publisher:cheese\\/biscuits'),

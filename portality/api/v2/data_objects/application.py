@@ -1,17 +1,18 @@
-from portality.lib import dataobj, swagger
+from portality.lib import swagger, seamless
 from portality import models
-from portality.formcontext import choices
 from copy import deepcopy
 
 from portality.api.v1.data_objects.common_journal_application import OutgoingCommonJournalApplication
 
 # both incoming and outgoing applications share this struct
 # "required" fields are only put on incoming applications
+from portality.lib.seamless import SeamlessMixin
+
 BASE_APPLICATION_STRUCT = {
     "fields": {
         "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
-        "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
-        "last_updated": {"coerce": "utcdatetime"}   # to the real object
+        "created_date": {"coerce": "datetime"},  # caller, but we'll need to ignore them on the conversion
+        "last_updated": {"coerce": "datetime"}   # to the real object
     },
     "objects": ["admin", "bibjson"],
     "structs": {
@@ -92,7 +93,7 @@ BASE_APPLICATION_STRUCT = {
                 "article": {
                     "fields": {
                         "embedded_license": {"coerce": "bool"},
-                        "embedded_license_url": {"coerce": "unicode"},
+                        "embedded_license_example_url": {"coerce": "unicode"},
                         "orcid": {"coerce": "unicode"},
                         "i4oc_open_citations": {"coerce": "unicode"}
                     }
@@ -276,11 +277,11 @@ INCOMING_APPLICATION_REQUIREMENTS = {
 }
 
 
-class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
+class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     def __init__(self, raw=None):
         self._add_struct(BASE_APPLICATION_STRUCT)
         self._add_struct(INCOMING_APPLICATION_REQUIREMENTS)
-        super(IncomingApplication, self).__init__(raw, construct_silent_prune=False, expose_data=True)
+        super(IncomingApplication, self).__init__(raw, struct=BASE_APPLICATION_STRUCT, silent_prune=False)
 
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
@@ -294,7 +295,7 @@ class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
 
         # check that at least one of them appears and if they are different
         if pissn is None and eissn is None or pissn == eissn:
-            raise dataobj.DataStructureException("You must specify at least one of P-ISSN or E-ISSN in bibjson.identifier")
+            raise seamless.SeamlessException("You must specify at least one of P-ISSN or E-ISSN in bibjson.identifier")
 
         # normalise the ids
         if pissn is not None:
@@ -305,28 +306,28 @@ class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
         # check they are not the same
         if pissn is not None and eissn is not None:
             if pissn.id == eissn.id:
-                raise dataobj.DataStructureException("P-ISSN and E-ISSN should be different")
+                raise seamless.SeamlessException("P-ISSN and E-ISSN should be different")
 
         # A link to the journal homepage is required
         #
         if self.bibjson.ref.journal is None:
-            raise dataobj.DataStructureException("You must specify the journal homepage in bibjson.link@type='homepage'")
+            raise seamless.SeamlessException("You must specify the journal homepage in bibjson.link@type='homepage'")
 
         # if plagiarism detection is done, then the url is a required field
         if self.bibjson.plagiarism.detection is True:
             url = self.bibjson.plagiarism.url
             if url is None:
-                raise dataobj.DataStructureException("In this context bibjson.plagiarism_detection.url is required")
+                raise seamless.SeamlessException("In this context bibjson.plagiarism_detection.url is required")
 
         # if licence.embedded is true, then the url is a required field
         lic = self.bibjson.article.embedded_license
         if lic and lic.embedded_example_url is None:
-            raise dataobj.DataStructureException("In this context bibjson.license.embedded_example_url is required")
+            raise seamless.SeamlessException("In this context bibjson.license.embedded_example_url is required")
 
         # if the author does not hold the copyright the url is optional, otherwise it is required
         if self.bibjson.copyright.author_retains is not False:
             if self.bibjson.copyright.url is None:
-                raise dataobj.DataStructureException("In this context bibjson.author_copyright.url is required")
+                raise seamless.SeamlessException("In this context bibjson.author_copyright.url is required")
 
 
         # if the archiving policy has no "domain" set, then the policy must be from one of an allowed list
@@ -345,7 +346,7 @@ class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
 
         # check the number of keywords is no more than 6
         if len(self.bibjson.keywords) > 6:
-            raise dataobj.DataStructureException("bibjson.keywords may only contain a maximum of 6 keywords")
+            raise seamless.SeamlessException("bibjson.keywords may only contain a maximum of 6 keywords")
 
     def _normalise_issn(self, issn):
         issn = issn.upper()
@@ -365,13 +366,14 @@ class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
         if existing is None:
             return models.Suggestion(**nd)
         else:
-            nnd = dataobj.merge_outside_construct(self._struct, nd, existing.data)
+            #nnd = dataobj.merge_outside_construct(self._struct, nd, existing.data)
+            nnd = seamless.SeamlessMixin.extend_struct(self._struct, nd)
             return models.Suggestion(**nnd)
 
 class OutgoingApplication(OutgoingCommonJournalApplication):
     def __init__(self, raw=None):
         self._add_struct(BASE_APPLICATION_STRUCT)
-        super(OutgoingApplication, self).__init__(raw, construct_silent_prune=True, expose_data=True)
+        super(OutgoingApplication, self).__init__(raw, struct=BASE_APPLICATION_STRUCT, construct_silent_prune=True)
 
     @classmethod
     def from_model(cls, application):

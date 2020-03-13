@@ -1,7 +1,6 @@
 from portality import models, lcc
-from portality.datasets import licenses, main_license_options
-from flask_login import current_user
-from portality.util import flash_with_url, listpop
+from portality.datasets import licenses
+from portality.util import listpop
 from copy import deepcopy
 from portality.formcontext.choices import Choices
 
@@ -415,7 +414,7 @@ class SuggestionFormXWalk(JournalGenericXWalk):
 
 
     @classmethod
-    def obj2form(cls, obj):
+    def obj2form(cls, obj):     #TODO: This needs to be done for applications API discovery
         forminfo = {}
         bibjson = obj.bibjson()
 

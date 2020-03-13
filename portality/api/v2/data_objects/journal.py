@@ -7,8 +7,9 @@ JOURNAL_STRUCT = {
     "objects": ["bibjson", "admin"],
     "fields": {
         "id": {"coerce": "unicode"},
-        "created_date": {"coerce": "utcdatetime"},
-        "last_updated": {"coerce": "utcdatetime"}
+        "created_date" : {"coerce" : "datetime"},
+        "last_updated" : {"coerce" : "datetime"},
+        "last_manual_update" : {"coerce" : "datetime"}
     },
     "structs": {
         "admin": {
@@ -68,7 +69,7 @@ JOURNAL_STRUCT = {
                 "article":{
                     "fields": {
                         "embedded_licence": {"coerce": "bool"},
-                        "embedded_licence_url": {"coerce": "unicode"},
+                        "embedded_license_example_url": {"coerce": "unicode"},
                         "orcid" : {"coerce": "unicode"},
                         "i4oc_open_citations": {"coerce": "unicode"}
                     }
@@ -187,7 +188,7 @@ JOURNAL_STRUCT = {
 class OutgoingJournal(OutgoingCommonJournalApplication):
 
     def __init__(self, raw=None):
-        super(OutgoingJournal, self).__init__(raw, struct=JOURNAL_STRUCT, construct_silent_prune=True, expose_data=True)
+        super(OutgoingJournal, self).__init__(raw, struct=JOURNAL_STRUCT)
 
     @classmethod
     def from_model(cls, jm):
@@ -199,3 +200,11 @@ class OutgoingJournal(OutgoingCommonJournalApplication):
     def from_model_by_id(cls, id_):
         j = models.Journal.pull(id_)
         return cls.from_model(j)
+
+    @property
+    def _struct(self):
+        return self.__seamless_struct__.raw
+
+    @property
+    def data(self):
+        return self.__seamless__.data

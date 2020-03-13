@@ -8,13 +8,13 @@ from flask import url_for
 import json
 import time
 
-class TestCrudArticle(DoajTestCase):
+class TestBulkArticle(DoajTestCase):
 
     def setUp(self):
-        super(TestCrudArticle, self).setUp()
+        super(TestBulkArticle, self).setUp()
 
     def tearDown(self):
-        super(TestCrudArticle, self).tearDown()
+        super(TestBulkArticle, self).tearDown()
 
     def test_01_create_articles_success(self):
         def find_dict_in_list(lst, key, value):

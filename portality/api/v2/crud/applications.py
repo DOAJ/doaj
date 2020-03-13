@@ -1,7 +1,7 @@
 from portality.api.v2.crud.common import CrudApi
 from portality.api.v2.common import Api401Error, Api400Error, Api404Error, Api403Error, Api409Error
 from portality.api.v2.data_objects.application import IncomingApplication, OutgoingApplication
-from portality.lib import dataobj
+from portality.lib import seamless
 from portality import models
 
 from portality.bll import DOAJ
@@ -55,7 +55,7 @@ class ApplicationsCrudApi(CrudApi):
         # first thing to do is a structural validation, but instantiating the data object
         try:
             ia = IncomingApplication(data)
-        except dataobj.DataStructureException as e:
+        except seamless.SeamlessException as e:
             raise Api400Error(str(e))
 
         # if that works, convert it to a Suggestion object
@@ -64,7 +64,7 @@ class ApplicationsCrudApi(CrudApi):
         # now augment the suggestion object with all the additional information it requires
         #
         # suggester name and email from the user account
-        ap.set_suggester(account.name, account.email)
+        ap.set_applicant(account.name, account.email)
 
         # they are not allowed to set "subject"
         ap.bibjson().remove_subjects()
@@ -95,7 +95,7 @@ class ApplicationsCrudApi(CrudApi):
                 raise Api404Error()
 
             # convert the incoming application into the web form
-            form = MultiDict(xwalk.SuggestionFormXWalk.obj2form(ap))
+            form = MultiDict(xwalk.SuggestionFormXWalk.obj2form(ap))        #TODO: not converted to v2 yet
 
             fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
             if fc.validate():

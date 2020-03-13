@@ -1,30 +1,15 @@
 from copy import deepcopy
 
-from portality.lib import dataobj, swagger
+from portality.lib import swagger
+from portality.lib.seamless import SeamlessMixin
 
-class OutgoingCommonJournalApplication(dataobj.DataObj, swagger.SwaggerSupport):
+
+class OutgoingCommonJournalApplication(SeamlessMixin, swagger.SwaggerSupport):
+
+    # def __init__(self, raw=None, struct=None):
+    #     super(OutgoingCommonJournalApplication, self).__init__(raw, struct=struct)
 
     @classmethod
     def from_model(cls, journal_or_app):
         d = deepcopy(journal_or_app.data)
-
-        # we need to re-write the preservation section
-        # joa = d.get("bibjson", {}).get("preservation")
-        joa = journal_or_app.bibjson().preservation
-        if joa is not None:
-            njoa = {}
-            if "url" in joa:
-                njoa["url"] = joa["url"]
-
-            if "service" in joa:
-                npol = []
-                for pol in joa["service"]:
-                    if isinstance(pol, list):
-                        npol.append({"name" : pol[1], "domain" : pol[0]})
-                    else:
-                        npol.append({"name" : pol})
-                njoa["service"] = npol
-
-            d["bibjson"]["preservation"] = njoa
-        cd = cls(d)
-        return cd
+        return cls(d)

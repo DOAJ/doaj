@@ -1,6 +1,6 @@
 import time
 
-from portality import constants
+from portality import constants, models
 from doajtest.fixtures.v2 import ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.fixtures import AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
@@ -79,7 +79,7 @@ class TestCrudApplication(DoajTestCase):
         # embedded licence but no url
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["article"]["embedded_licence"] = True
-        del data["bibjson"]["article"]["embedded_licence_url"]
+        del data["bibjson"]["article"]["embedded_license_example_url"]
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
 

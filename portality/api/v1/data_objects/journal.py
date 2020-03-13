@@ -197,7 +197,7 @@ JOURNAL_STRUCT = {
 class OutgoingJournal(OutgoingCommonJournalApplication):
 
     def __init__(self, raw=None):
-        super(OutgoingJournal, self).__init__(raw, struct=JOURNAL_STRUCT, construct_silent_prune=True, expose_data=True)
+        super(OutgoingJournal, self).__init__(raw, struct=JOURNAL_STRUCT)
 
     @classmethod
     def from_model(cls, jm):

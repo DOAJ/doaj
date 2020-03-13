@@ -3,6 +3,8 @@ from portality.lib import dataobj
 from portality.api.v2.data_objects.journal import OutgoingJournal
 from portality import models
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
+from portality.lib.seamless import SeamlessData, SeamlessMixin
+
 
 class TestAPIDataObj(DoajTestCase):
 
@@ -15,51 +17,51 @@ class TestAPIDataObj(DoajTestCase):
 
     def test_01_create_empty(self):
         """Create an empty dataobject, mostly to check it doesn't die a recursive death"""
-        do = dataobj.DataObj()
+        do = SeamlessData()
         assert do.data == {}
         assert do._struct is None
         with self.assertRaises(AttributeError):
             do.nonexistent_attribute
 
-    def test_02_create_from_model(self):
+    def test_02_create_from_model(self):        #TODO fix commented out
         expected_struct = JournalFixtureFactory.make_journal_apido_struct()
         do = OutgoingJournal.from_model(self.jm)
-        assert do._struct == expected_struct, "do._struct:\n {}, \n expected_struct:\n {}".format(do._struct, expected_struct)
+        assert do._struct == expected_struct, "do._struct:\n {}, \n expected_struct:\n {}".format(do.__seamless_struct__.raw, expected_struct)
         self.check_do(do, expected_struct)
 
     def check_do(self, do, expected_struct):
-        assert isinstance(do.admin, dataobj.DataObj), 'Declared as "object" but not a Data Object?'
-        assert do.id == self.jm.id
-        assert do.created_date == self.jm.created_date
-        assert do.last_updated == self.jm.last_updated
+        assert isinstance(do, SeamlessMixin), 'Declared as "SeamlessMixin" but not a Data Object?'
+        assert do.data["id"] == self.jm.id
+        assert do.data["created_date"] == self.jm.created_date
+        assert do.data["last_updated"] == self.jm.last_updated
 
-        assert do.admin.in_doaj is self.jm.is_in_doaj(), 'actual val {0} is of type {1}'.format(do.admin.in_doaj, type(do.admin.in_doaj))
-        assert do.admin.ticked is self.jm.is_ticked()  # it's not set in the journal fixture so we expect a None back
-        assert do.admin.seal is self.jm.has_seal()
+        assert do.data["admin"]["in_doaj"] is self.jm.is_in_doaj(), 'actual val {0} is of type {1}'.format(do.admin.in_doaj, type(do.admin.in_doaj))
+        assert do.data["admin"]["ticked"] is self.jm.is_ticked()  # it's not set in the journal fixture so we expect a None back
+        assert do.data["admin"]["seal"] is self.jm.has_seal()
 
-        assert isinstance(do.bibjson, dataobj.DataObj), 'Declared as "object" but not a Data Object?'
-        assert do.bibjson.title == self.jm.bibjson().title
-        assert do.bibjson.alternative_title == self.jm.bibjson().alternative_title
-        assert do.bibjson.publisher.name == self.jm.bibjson().publisher, "do.bibjson.publisher:\n{},\nself.jm.bibjson().publisher:\n{}".format(do.bibjson.publisher, self.jm.bibjson().publisher)
-        assert do.bibjson.institution.name == self.jm.bibjson().institution
-        assert do.bibjson.apc.max[0].currency == self.jm.bibjson().apc[0]["currency"], "do.bibjson.apc.currency:\n{},\nself.jm.bibjson().apc.currency:\n{}".format(do.bibjson.apc.max[0].currency, self.jm.bibjson().apc[0]["currency"])
-        assert do.bibjson.apc.max[0].price == self.jm.bibjson().apc[0]["price"], "do.bibjson.apc.price:\n{},\nself.jm.bibjson().apc.price:\n{}".format(do.bibjson.apc.max[0].price,self.jm.bibjson().apc[0]["price"])
-        assert do.bibjson.other_charges.has_other_charges == self.jm.bibjson().has_other_charges,\
-            "do.bibjson.other_charges.has_other_charges:\n{},\nself.jm.bibjson().has_other_charges:\n{}"\
-                .format(do.bibjson.other_charges.has_other_charges, self.jm.bibjson().has_other_charges)
-        assert do.bibjson.other_charges.url == self.jm.bibjson().other_charges_url, \
-            "do.bibjson.other_charges.other_charges_url:\n{},\nself.jm.bibjson().other_charges_url:\n{}" \
-                .format(do.bibjson.other_charges.other_charges_url, self.jm.bibjson().other_charges_url)
-        assert do.bibjson.publication_time_weeks == self.jm.bibjson().publication_time_weeks
+        # assert isinstance(do.data["bibjson"], dataobj.DataObj), 'Declared as "object" but not a Data Object?'
+        assert do.data["bibjson"]["title"] == self.jm.bibjson().title
+        assert do.data["bibjson"]["alternative_title"] == self.jm.bibjson().alternative_title
+        assert do.data["bibjson"]["publisher"]["name"] == self.jm.bibjson().publisher, "do.data['bibjson'].publisher:\n{},\nself.jm.bibjson().publisher:\n{}".format(do.data["bibjson"].publisher, self.jm.bibjson().publisher)
+        assert do.data["bibjson"]["institution"]["name"] == self.jm.bibjson().institution
+        assert do.data["bibjson"]["apc"]["max"][0]["currency"] == self.jm.bibjson().apc[0]["currency"], "do.data['bibjson'].apc.currency:\n{},\nself.jm.bibjson().apc.currency:\n{}".format(do.data["bibjson"].apc.max[0].currency, self.jm.bibjson().apc[0]["currency"])
+        assert do.data["bibjson"]["apc"]["max"][0]["price"] == self.jm.bibjson().apc[0]["price"], "do.data['bibjson'].apc.price:\n{},\nself.jm.bibjson().apc.price:\n{}".format(do.data["bibjson"].apc.max[0].price,self.jm.bibjson().apc[0]["price"])
+        assert do.data["bibjson"]["other_charges"]["has_other_charges"] == self.jm.bibjson().has_other_charges,\
+            "do.data['bibjson'].other_charges.has_other_charges:\n{},\nself.jm.bibjson().has_other_charges:\n{}"\
+                .format(do.data["bibjson"]["other_charges"]["has_other_charges"], self.jm.bibjson().has_other_charges)
+        assert do.data["bibjson"]["other_charges"]["url"] == self.jm.bibjson().other_charges_url, \
+            "do.data['bibjson'].other_charges.other_charges_url:\n{},\nself.jm.bibjson().other_charges_url:\n{}" \
+                .format(do.data["bibjson"]["other_charges"]["other_charges_url"], self.jm.bibjson().other_charges_url)
+        assert do.data['bibjson']["publication_time_weeks"] == self.jm.bibjson().publication_time_weeks
 
         for o in expected_struct['structs']['bibjson']['objects']:
-            assert isinstance(getattr(do.bibjson, o), dataobj.DataObj), '{0} declared as "object" but not a Data Object?'.format(o)
+            assert isinstance(do.data["bibjson"][o], dict), '{0} declared as "object" but not a dicts?'.format(o)
 
         for l in expected_struct['structs']['bibjson']['lists']:
-            assert isinstance(getattr(do.bibjson, l), list), '{0} declared as "list" but not a list?'.format(l)
+            assert isinstance(do.data["bibjson"][l], list), '{0} declared as "list" but not a list?'.format(l)
 
-        assert do.bibjson.preservation.url == self.jm.bibjson().preservation_url
-        assert isinstance(do.bibjson.preservation.service, list)
+        assert do.data["bibjson"]["preservation"]["url"] == self.jm.bibjson().preservation_url
+        assert isinstance(do.data["bibjson"]["preservation"]["service"], list)
 
     def test_03_merge_outside_construct(self):
         struct = {

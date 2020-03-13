@@ -1,6 +1,6 @@
-from portality.api.v1.crud.common import CrudApi
-from portality.api.v1.common import Api404Error, Api400Error, Api403Error, CREATED_TEMPLATE
-from portality.api.v1.crud import ApplicationsCrudApi
+from portality.api.v2.crud.common import CrudApi
+from portality.api.v2.common import Api404Error, Api400Error, Api403Error
+from portality.api.v2.crud import ApplicationsCrudApi
 from copy import deepcopy
 
 class ApplicationsBulkApi(CrudApi):
