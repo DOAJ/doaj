@@ -56,8 +56,8 @@ One type may have some admin fields and not others and vice versa.
             "url" : "<apc url>"
         },
         "article" : {
-            "embedded_license": true,
-            "embedded_license_example_url" : "<example url>",
+            "license_display" : ["embed", "display"],
+            "license_display_example_url" : "<example url>",
             "orcid" : true,
             "i4oc_open_citations" : true
         },

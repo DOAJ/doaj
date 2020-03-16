@@ -97,8 +97,8 @@ JOURNAL_SOURCE = {
             "url" : "http://apc.com"
         },
         "article" : {
-            "embedded_license": True,
-            "embedded_license_example_url" : "http://licence.embedded",
+            "license_display": ["embed", "display"],
+            "license_display_example_url" : "http://licence.embedded",
             "orcid" : True,
             "i4oc_open_citations" : True
         },

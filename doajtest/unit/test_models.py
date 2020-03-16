@@ -649,8 +649,8 @@ class TestClient(DoajTestCase):
         assert bj.apc[0].get("price") == 2
         assert bj.apc_url == "http://apc.com"
         assert bj.has_apc is True
-        assert bj.article_embedded_license is True
-        assert bj.article_embedded_license_example_url == "http://licence.embedded"
+        assert bj.article_license_display == ["embed", "display"]
+        assert bj.article_license_display_example_url == "http://licence.embedded"
         assert bj.article_orcid is True
         assert bj.article_i4oc_open_citations is True
         assert bj.author_retains_copyright is True
@@ -695,8 +695,8 @@ class TestClient(DoajTestCase):
         bj.replaces = ["3333-3333"]
         bj.subject = [{"scheme": "TEST", "term": "first", "code": "one"}]
         bj.apc_url = "http://apc2.com"
-        bj.article_embedded_license = False
-        bj.article_embedded_license_example_url = "http://licence2.embedded"
+        bj.article_license_display = "no"
+        bj.article_license_display_example_url = "http://licence2.embedded"
         bj.article_orcid = False
         bj.article_i4oc_open_citations = False
         bj.author_retains_copyright = False
@@ -737,8 +737,8 @@ class TestClient(DoajTestCase):
         assert bj.replaces == ["3333-3333"]
         assert len(bj.subject) == 1
         assert bj.apc_url == "http://apc2.com"
-        assert bj.article_embedded_license is False
-        assert bj.article_embedded_license_example_url == "http://licence2.embedded"
+        assert bj.article_license_display == ["no"]
+        assert bj.article_license_display_example_url == "http://licence2.embedded"
         assert bj.article_orcid is False
         assert bj.article_i4oc_open_citations is False
         assert bj.author_retains_copyright is False
@@ -784,6 +784,7 @@ class TestClient(DoajTestCase):
         bj.add_pid_scheme("PURL")
         bj.add_preservation("MOUNTAIN")
         bj.add_preservation(["A national library", "LSE"])
+        bj.add_article_license_display("embed")
 
         assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
         assert bj.keywords == ["new", "terms", "keyword"]
@@ -795,6 +796,7 @@ class TestClient(DoajTestCase):
         assert bj.deposit_policy == ["Never", "OK"]
         assert bj.pid_scheme == ["Handle", "PURL"]
         assert bj.preservation_services == ["LOCKSS", "MOUNTAIN", ["A national library", "UCL"], ["A national library", "LSE"]]
+        assert bj.article_license_display == ["no", "embed"]
 
         # special methods
         assert bj.issns() == ["1111-111X", "0000-000X"], bj.issns()
@@ -805,6 +807,9 @@ class TestClient(DoajTestCase):
         bj.set_unregistered_journal_policy("http://unregistered.policy")
         assert bj.deposit_policy_url == "http://unregistered.policy"
         assert bj.has_deposit_policy is True
+
+        with self.assertRaises(seamless.SeamlessException):
+            bj.add_article_license_display("notallowedvalue")
 
         # deprecated methods (they still need to work)
         bj.publication_time = 3

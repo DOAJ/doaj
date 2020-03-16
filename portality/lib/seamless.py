@@ -355,7 +355,7 @@ class SeamlessData(object):
                 return deepcopy(val)
 
     def set_list(self, path, val, coerce=None, allow_coerce_failure=False, allow_none=True,
-                 ignore_none=False, context=""):
+                 ignore_none=False, allowed_values=None, context=""):
         # first ensure that the value is a list
         if not isinstance(val, list):
             val = [val]
@@ -367,6 +367,8 @@ class SeamlessData(object):
             if v is None and not allow_none:
                 if not ignore_none:
                     raise SeamlessException("NoneType is not allowed at '{x}'".format(x=context + "." + path))
+            if allowed_values is not None and v not in allowed_values:
+                raise SeamlessException("Value '{x}' is not permitted at '{y}'".format(x=val, y=context + "." + path))
 
         # now coerce each of the values, stripping out Nones if necessary
         val = [self._coerce(v, coerce, accept_failure=allow_coerce_failure) for v in val if v is not None or not ignore_none]
@@ -385,12 +387,14 @@ class SeamlessData(object):
         self._set_path(path, val)
 
     def add_to_list(self, path, val, coerce=None, allow_coerce_failure=False, allow_none=False,
-                    ignore_none=True, unique=False, context=""):
+                    ignore_none=True, unique=False, allowed_values=None, context=""):
         if val is None and ignore_none:
             return
 
         if val is None and not allow_none:
             raise SeamlessException("NoneType is not allowed in list at '{x}'".format(x=context + "." + path))
+        if allowed_values is not None and val not in allowed_values:
+            raise SeamlessException("Value '{x}' is not permitted at '{y}'".format(x=val, y=context + "." + path))
 
         # first coerce the value
         if coerce is not None:
