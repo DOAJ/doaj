@@ -24,12 +24,12 @@ class TestCrudJournal(DoajTestCase):
         oj = OutgoingJournal.from_model(j)
 
         # check that it does not contain information that it shouldn't
-        assert oj.data.get("index") is None
-        assert oj.data.get("history") is None
-        assert oj.data.get("admin", {}).get("active") is None
-        assert oj.data.get("admin", {}).get("notes") is None
-        assert oj.data.get("admin", {}).get("editor_group") is None
-        assert oj.data.get("admin", {}).get("editor") is None
+        assert oj.data.get("index") is None, "index: {}".format(oj.data.get("index"))
+        assert oj.data.get("history") is None, "history: {}".format(oj.data.get("history"))
+        assert oj.data.get("admin", {}).get("active") is None, "active: {}".format(oj.data.get("admin", {}).get("active"))
+        assert oj.data.get("admin", {}).get("notes") is None, "notes: {}".format(oj.data.get("admin", {}).get("notes"))
+        assert oj.data.get("admin", {}).get("editor_group") is None, "editor_group: {}".format(oj.data.get("admin", {}).get("editor_group"))
+        assert oj.data.get("admin", {}).get("editor") is None, "editor: {}".format(oj.data.get("admin", {}).get("editor"))
 
     def test_02_outgoing_journal_urls(self):
         """ We've relaxed the URL constraints for outgoing journals - https://github.com/DOAJ/doajPM/issues/2268 """

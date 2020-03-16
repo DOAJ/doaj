@@ -125,11 +125,13 @@ def to_datetime(val):
     except:
         raise ValueError("Could not convert string {val} to UTC Datetime".format(val=val))
 
+def to_isolang(val):
+    return to_isolang(output_format="alpha2")
+
 
 class SeamlessException(Exception):
-    def __init__(self, msg, *args, **kwargs):
-        self.message = msg
-        super(SeamlessException, self).__init__(*args, **kwargs)
+    def __init__(self, message, *args, **kwargs):
+        super(SeamlessException, self).__init__(message, *args, **kwargs)
 
 
 class SeamlessMixin(object):
@@ -468,7 +470,7 @@ class SeamlessData(object):
             if instructions.get("contains") != "object":
                 coerce_name, coerce_fn = self._struct.get_coerce(instructions)
             self.set_list(path, val, coerce=coerce_fn, **kwargs)
-        elif typ == "object":
+        elif typ == "object" or typ == "struct":
             if substruct is not None:
                 val = substruct.construct(val, check_required=check_required, silent_prune=silent_prune).data
             self.set_single(path, val)
@@ -789,7 +791,7 @@ class Construct(object):
             # then check the objects
             if bits[0] in self.objects:
                 substruct = self.substruct(bits[0])
-                return "object", substruct, None
+                return "struct", substruct, instructions
 
         return None, None, None
 
@@ -847,7 +849,7 @@ class Construct(object):
 
                 typ, substruct, instructions = struct.lookup(field_name)
 
-                if instructions is None:
+                if substruct is None:
                     # this is the lowest point at which we have instructions, so just accept the data structure as-is
                     # (taking a deep copy to destroy any references)
                     constructed.set_single(field_name, deepcopy(val))
@@ -864,6 +866,7 @@ class Construct(object):
                 if vals is None:
                     continue
                 if not isinstance(vals, list):
+                    print("Expecting list at '{x}' but found something else '{y}'".format(x=context + field_name, y=type(val)))
                     raise SeamlessException("Expecting list at '{x}' but found something else '{y}'".format(x=context + field_name, y=type(val)))
 
                 typ, substruct, instructions = struct.lookup(field_name)
@@ -886,6 +889,7 @@ class Construct(object):
                         val = vals[i]
 
                         if type(val) != dict:
+                            print("Expected dict at '{x}[{p}]' but got '{y}'".format(x=context + field_name, y=type(val), p=i))
                             raise SeamlessException("Expected dict at '{x}[{p}]' but got '{y}'".format(x=context + field_name, y=type(val), p=i))
 
                         substruct = struct.substruct(field_name)
@@ -899,6 +903,7 @@ class Construct(object):
                             constructed.add_to_list(field_name, beneath)
 
                 else:
+                    print("Cannot understand structure where list '{x}' elements contain '{y}'".format(x=context + field_name, y=contains))
                     raise SeamlessException("Cannot understand structure where list '{x}' elements contain '{y}'".format(x=context + field_name, y=contains))
 
             # finally, if we allow other fields, make sure that they come across too

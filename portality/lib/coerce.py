@@ -1,6 +1,8 @@
 from portality.lib import dates
 from datetime import date, datetime
 from portality.lib import seamless
+from portality.lib.dataobj import to_isolang
+
 
 def to_datestamp(in_format=None):
     def stampify(val):
@@ -28,5 +30,6 @@ COERCE_MAP = {
     "bool": seamless.to_bool,
     "datetime" : seamless.to_datetime,
     "utcdatetime" : date_str(),
+    "isolang_2letter": to_isolang(output_format="alpha2"),
     "bigenddate" : date_str(out_format="%Y-%m-%d")
 }

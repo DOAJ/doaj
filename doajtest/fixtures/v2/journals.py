@@ -152,7 +152,7 @@ JOURNAL_SOURCE = {
         "preservation" : {
             "has_preservation" : True,
             "service" : ["LOCKSS", "CLOCKSS", "A safe place"],
-            "national_library" : "Trinity",
+            "national_library" : ["Trinity"],
             "url" : "http://digital.archiving.policy"
         },
         "publication_time_weeks" : 8,
@@ -301,7 +301,7 @@ JOURNAL_APIDO_STRUCT = {
             },
             "lists": {
                 "keywords": {"coerce": "unicode", "contains": "field"},
-                "language": {"coerce": "isolang_2letter", "contains": "field"},
+                "language": {"coerce": "unicode", "contains": "field"}, # isolang_2letter
                 "license": {"contains" : "object"},
                 "subject": {"contains": "object"}
             },
@@ -378,7 +378,7 @@ JOURNAL_APIDO_STRUCT = {
                 },
                 "license": {
                     "fields": {
-                        "type": {"coerce": "license"},
+                        "type": {"coerce": "unicode"},
                         "url": {"coerce": "unicode"},
                         "BY": {"coerce": "bool"},
                         "NC": {"coerce": "bool"},

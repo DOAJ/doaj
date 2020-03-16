@@ -7,30 +7,31 @@ JOURNAL_STRUCT = {
     "objects": ["bibjson", "admin"],
     "fields": {
         "id": {"coerce": "unicode"},
-        "created_date" : {"coerce" : "datetime"},
-        "last_updated" : {"coerce" : "datetime"},
-        "last_manual_update" : {"coerce" : "datetime"}
+        "created_date": {"coerce": "datetime"},
+        "last_updated": {"coerce": "datetime"},
+        "last_manual_update": {"coerce": "datetime"}
     },
     "structs": {
         "admin": {
             "fields": {
                 "in_doaj": {"coerce": "bool", "get__default": False},
                 "ticked": {"coerce": "bool", "get__default": False},
-                "seal": {"coerce": "bool", "get__default": False}            }
+                "seal": {"coerce": "bool", "get__default": False}
+            }
         },
         "bibjson": {
             "fields": {
                 "alternative_title": {"coerce": "unicode"},
                 "boai": {"coerce": "bool"},
-                "eissn":{"coerce": "unicode"},
+                "eissn": {"coerce": "unicode"},
                 "pissn": {"coerce": "unicode"},
                 "publication_time_weeks": {"coerce": "integer"},
                 "title": {"coerce": "unicode"}
             },
             "lists": {
                 "keywords": {"coerce": "unicode", "contains": "field"},
-                "language": {"coerce": "isolang_2letter", "contains": "field"},
-                "license": {"contains" : "object"},
+                "language": {"coerce": "unicode", "contains": "field"},
+                "license": {"contains": "object"},
                 "subject": {"contains": "object"}
             },
             "objects": [
@@ -54,23 +55,23 @@ JOURNAL_STRUCT = {
                         "url": {"coerce": "unicode"},
                         "has_apc": {"coerce": "unicode"}
                     },
-                    "lists" : {
-                        "max" : {"contains" : "object"}
+                    "lists": {
+                        "max": {"contains": "object"}
                     },
-                    "structs" : {
-                        "max" : {
-                            "fields" : {
-                                "currency" : {"coerce" : "unicode"},
-                                "price" : {"coerce" : "integer"}
+                    "structs": {
+                        "max": {
+                            "fields": {
+                                "currency": {"coerce": "unicode"},
+                                "price": {"coerce": "integer"}
                             }
                         }
                     }
                 },
-                "article":{
+                "article": {
                     "fields": {
                         "embedded_licence": {"coerce": "bool"},
                         "embedded_license_example_url": {"coerce": "unicode"},
-                        "orcid" : {"coerce": "unicode"},
+                        "orcid": {"coerce": "unicode"},
                         "i4oc_open_citations": {"coerce": "unicode"}
                     }
                 },
@@ -82,17 +83,17 @@ JOURNAL_STRUCT = {
                 },
                 "deposit_policy": {
                     "fields": {
-                        "has_policy" : {"coerce" : "bool"},
-                        "is_registered": {"coerce" : "bool"}
+                        "has_policy": {"coerce": "bool"},
+                        "is_registered": {"coerce": "bool"}
                     },
-                    "lists" : {
-                        "service" : {"coerce": "unicode", "contains": "field"}
+                    "lists": {
+                        "service": {"coerce": "unicode", "contains": "field"}
                     }
                 },
                 "editorial": {
                     "fields": {
                         "review_url": {"coerce": "unicode"},
-                        "board_url": {"coerce":"unicode"}
+                        "board_url": {"coerce": "unicode"}
                     },
                     "lists": {
                         "review_process": {"contains": "field", "coerce": "unicode","allowed_values": ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
@@ -106,7 +107,7 @@ JOURNAL_STRUCT = {
                 },
                 "license": {
                     "fields": {
-                        "type": {"coerce": "license"},
+                        "type": {"coerce": "unicode"},
                         "url": {"coerce": "unicode"},
                         "BY": {"coerce": "bool"},
                         "NC": {"coerce": "bool"},
@@ -139,13 +140,13 @@ JOURNAL_STRUCT = {
                         "url": {"coerce": "unicode"}
                     },
                     "lists": {
-                        "service": {"coerce": "unicode", "contains": "object"},
+                        "service": {"coerce": "unicode", "contains": "field"},
                     },
-                    "structs" : {
-                        "policy" : {
-                            "fields" : {
-                                "name" : {"coerce": "unicode"},
-                                "domain" : {"coerce" : "unicode"}
+                    "structs": {
+                        "policy": {
+                            "fields": {
+                                "name": {"coerce": "unicode"},
+                                "domain": {"coerce": "unicode"}
                             }
                         }
                     }
@@ -157,7 +158,7 @@ JOURNAL_STRUCT = {
                     }
                 },
                 "ref": {
-                    "fields":{
+                    "fields": {
                         "license_terms": {"coerce": "unicode"},
                         "oa_statement": {"coerce": "unicode"},
                         "journal": {"coerce": "unicode"},
@@ -174,10 +175,10 @@ JOURNAL_STRUCT = {
                     }
                 },
                 "waiver": {
-                     "fields": {
-                         "has_waiver": {"coerce": "unicode"},
-                         "url": {"coerce": "unicode"}
-                     }
+                    "fields": {
+                        "has_waiver": {"coerce": "unicode"},
+                        "url": {"coerce": "unicode"}
+                    }
                 }
             }
         }
@@ -188,7 +189,7 @@ JOURNAL_STRUCT = {
 class OutgoingJournal(OutgoingCommonJournalApplication):
 
     def __init__(self, raw=None):
-        super(OutgoingJournal, self).__init__(raw, struct=JOURNAL_STRUCT)
+        super(OutgoingJournal, self).__init__(raw, struct=JOURNAL_STRUCT, silent_prune=True)
 
     @classmethod
     def from_model(cls, jm):

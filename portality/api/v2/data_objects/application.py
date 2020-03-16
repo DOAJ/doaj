@@ -53,7 +53,7 @@ BASE_APPLICATION_STRUCT = {
             },
             "lists": {
                 "keywords": {"coerce": "unicode", "contains": "field"},
-                "language": {"coerce": "isolang_2letter", "contains": "field"},
+                "language": {"coerce": "unicode", "contains": "field"},
                 "license": {"contains" : "object"},
                 "subject": {"contains": "object"}
             },
