@@ -58,7 +58,6 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @eissn.setter
     def eissn(self, val):
-        val = self._normalise_issn(val)
         self.__seamless__.set_with_struct("eissn", val)
 
     @eissn.deleter
@@ -71,7 +70,6 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @pissn.setter
     def pissn(self, val):
-        val = self._normalise_issn(val)
         self.__seamless__.set_with_struct("pissn", val)
 
     @pissn.deleter
@@ -215,20 +213,23 @@ class JournalLikeBibJSON(SeamlessMixin):
         return self.__seamless__.get_single("apc.has_apc")
 
     @property
-    def article_embedded_license(self):
-        return self.__seamless__.get_single("article.embedded_license")
+    def article_license_display(self):
+        return self.__seamless__.get_list("article.license_display")
 
-    @article_embedded_license.setter
-    def article_embedded_license(self, val):
-        self.__seamless__.set_with_struct("article.embedded_license", val)
+    @article_license_display.setter
+    def article_license_display(self, val):
+        self.__seamless__.set_with_struct("article.license_display", val)
+
+    def add_article_license_display(self, val):
+        self.__seamless__.add_to_list_with_struct("article.license_display", val)
 
     @property
-    def article_embedded_license_example_url(self):
-        return self.__seamless__.get_single("article.embedded_license_example_url")
+    def article_license_display_example_url(self):
+        return self.__seamless__.get_single("article.license_display_example_url")
 
-    @article_embedded_license_example_url.setter
-    def article_embedded_license_example_url(self, url):
-        self.__seamless__.set_with_struct("article.embedded_license_example_url", url)
+    @article_license_display_example_url.setter
+    def article_license_display_example_url(self, url):
+        self.__seamless__.set_with_struct("article.license_display_example_url", url)
 
     @property
     def article_orcid(self):

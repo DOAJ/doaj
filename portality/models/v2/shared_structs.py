@@ -8,17 +8,17 @@ JOURNAL_BIBJSON = {
                 "alternative_title" : {"coerce" : "unicode"},
                 "boai" : {"coerce" : "bool"},
                 "discontinued_date" : {"coerce" : "bigenddate"},
-                "eissn" : {"coerce" : "unicode"},
-                "pissn" : {"coerce" : "unicode"},
+                "eissn" : {"coerce" : "issn"},
+                "pissn" : {"coerce" : "issn"},
                 "publication_time_weeks" : {"coerce" : "integer"},
                 "title" : {"coerce" : "unicode"}
             },
             "lists" : {
-                "is_replaced_by" : {"contains" : "field", "coerce" : "unicode"},
+                "is_replaced_by" : {"contains" : "field", "coerce" : "issn"},
                 "keywords" : {"contains" : "field", "coerce" : "unicode_lower"},
-                "language" : {"contains" : "field", "coerce" : "unicode_upper"},
+                "language" : {"contains" : "field", "coerce" : "isolang_2letter"},
                 "license" : {"contains" : "object"},
-                "replaces" : {"contains" : "field", "coerce" : "unicode"},
+                "replaces" : {"contains" : "field", "coerce" : "issn"},
                 "subject" : {"contains" : "object"}
             },
             "objects" : [
@@ -40,7 +40,7 @@ JOURNAL_BIBJSON = {
                 "apc" : {
                     "fields" : {
                         "has_apc" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "unicode"}
+                        "url" : {"coerce" : "url"}
                     },
                     "lists" : {
                         "max" : {"contains" : "object"}
@@ -48,7 +48,7 @@ JOURNAL_BIBJSON = {
                     "structs" : {
                         "max" : {
                             "fields" : {
-                                "currency" : {"coerce" : "unicode"},
+                                "currency" : {"coerce" : "currency_code"},
                                 "price" : {"coerce" : "integer"}
                             }
                         }
@@ -56,23 +56,25 @@ JOURNAL_BIBJSON = {
                 },
                 "article" : {
                     "fields" : {
-                        "embedded_license" : {"coerce" : "bool"},
-                        "embedded_license_example_url" : {"coerce" : "unicode"},
+                        "license_display_example_url" : {"coerce" : "url"},
                         "orcid" : {"coerce" : "bool"},
                         "i4oc_open_citations" : {"coerce" : "bool"}
+                    },
+                    "lists" : {
+                        "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["embed", "display", "no"]},
                     }
                 },
                 "copyright" : {
                     "fields" : {
                         "author_retains" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "unicode"}
+                        "url" : {"coerce" : "url"}
                     }
                 },
                 "deposit_policy" : {
                     "fields" : {
                         "has_policy" : {"coerce" : "bool"},
                         "is_registered" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "unicode"}
+                        "url" : {"coerce" : "url"}
                     },
                     "lists" : {
                         "service" : {"contains" : "field", "coerce" : "unicode"}
@@ -80,8 +82,8 @@ JOURNAL_BIBJSON = {
                 },
                 "editorial" : {
                     "fields" : {
-                        "review_url" : {"coerce" : "unicode"},
-                        "board_url" : {"coerce" : "unicode"}
+                        "review_url" : {"coerce" : "url"},
+                        "board_url" : {"coerce" : "url"}
                     },
                     "lists" : {
                         "review_process" : {"contains" : "field", "coerce" : "unicode"}
@@ -90,7 +92,7 @@ JOURNAL_BIBJSON = {
                 "institution" : {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
-                        "country" : {"coerce" : "unicode"}
+                        "country" : {"coerce" : "country_code"}
                     }
                 },
                 "license" : {
@@ -100,13 +102,13 @@ JOURNAL_BIBJSON = {
                         "NC" : {"coerce" : "bool"},
                         "ND" : {"coerce" : "bool"},
                         "SA" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "unicode"}
+                        "url" : {"coerce" : "url"}
                     }
                 },
                 "other_charges" : {
                     "fields" :{
                         "has_other_charges" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "unicode"}
+                        "url" : {"coerce" : "url"}
                     }
                 },
                 "pid_scheme" : {
@@ -120,13 +122,13 @@ JOURNAL_BIBJSON = {
                 "plagiarism" : {
                     "fields" : {
                         "detection" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "unicode"}
+                        "url" : {"coerce" : "url"}
                     }
                 },
                 "preservation" : {
                     "fields" : {
                         "has_preservation" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "unicode"}
+                        "url" : {"coerce" : "url"}
                     },
                     "lists" : {
                         "national_library" : {"contains" : "field", "coerce" : "unicode"},
@@ -136,16 +138,16 @@ JOURNAL_BIBJSON = {
                 "publisher" : {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
-                        "country" : {"coerce" : "unicode"}
+                        "country" : {"coerce" : "country_code"}
                     }
                 },
                 "ref" : {
                     "fields" : {
-                        "oa_statement" : {"coerce" : "unicode"},
-                        "journal" : {"coerce" : "unicode"},
-                        "aims_scope" : {"coerce" : "unicode"},
-                        "author_instructions" : {"coerce" : "unicode"},
-                        "license_terms" : {"coerce" : "unicode"},
+                        "oa_statement" : {"coerce" : "url"},
+                        "journal" : {"coerce" : "url"},
+                        "aims_scope" : {"coerce" : "url"},
+                        "author_instructions" : {"coerce" : "url"},
+                        "license_terms" : {"coerce" : "url"},
                     }
                 },
                 "subject" : {
@@ -158,7 +160,7 @@ JOURNAL_BIBJSON = {
                 "waiver" : {
                     "fields" : {
                         "has_waiver" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "unicode"}
+                        "url" : {"coerce" : "url"}
                     }
                 }
             }
