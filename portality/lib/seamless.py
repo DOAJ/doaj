@@ -127,9 +127,8 @@ def to_datetime(val):
 
 
 class SeamlessException(Exception):
-    def __init__(self, msg, *args, **kwargs):
-        self.message = msg
-        super(SeamlessException, self).__init__(*args, **kwargs)
+    def __init__(self, message, *args, **kwargs):
+        super(SeamlessException, self).__init__(message, *args, **kwargs)
 
 
 class SeamlessMixin(object):
