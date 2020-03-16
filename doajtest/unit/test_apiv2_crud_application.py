@@ -7,8 +7,8 @@ from doajtest.helpers import DoajTestCase
 from portality.api.v2.common import Api401Error, Api400Error, Api404Error, Api403Error
 from portality.api.v2.crud.applications import ApplicationsCrudApi
 from portality.api.v2.data_objects.application import IncomingApplication, OutgoingApplication
-from portality.lib.dataobj import DataStructureException
 from portality.formcontext import FormContextException, formcontext
+from portality.lib.seamless import SeamlessException
 
 
 def mock_finalise_exception(self, *args, **kwargs):
@@ -42,7 +42,7 @@ class TestCrudApplication(DoajTestCase):
         # make another one that's broken
         data = ApplicationFixtureFactory.incoming_application()
         del data["bibjson"]["title"]
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # now progressively remove the conditionally required/advanced validation stuff
@@ -53,54 +53,54 @@ class TestCrudApplication(DoajTestCase):
         data = ApplicationFixtureFactory.incoming_application()
         del data["bibjson"]["pissn"]
         del data["bibjson"]["eissn"]
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
 
         # issns the same (but not normalised the same)
         data["bibjson"]["pissn"] = "12345678"
         data["bibjson"]["eissn"] = "1234-5678"
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # no homepage link
         data = ApplicationFixtureFactory.incoming_application()
         del data["bibjson"]["ref"]["journal"]
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # plagiarism detection but no url
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["plagiarism"]["detection"] = True
         del data["bibjson"]["plagiarism"]["url"]
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # embedded licence but no url
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["article"]["embedded_licence"] = True
         del data["bibjson"]["article"]["embedded_license_example_url"]
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # author copyright and no link
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["copyright"]["author_retains"] = True
         del data["bibjson"]["copyright"]["url"]
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # invalid domain in archiving_policy
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["preservation"]["has_preservation"] = True
         data["bibjson"]["preservation"]["url"] = "abcd://abcd"
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # too many keywords
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["keywords"] = ["one", "two", "three", "four", "five", "six", "seven"]
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
     def test_02_create_application_success(self):
@@ -312,9 +312,9 @@ class TestCrudApplication(DoajTestCase):
         data["bibjson"]["pid_scheme"]["has_pid_scheme"] = True
         data["bibjson"]["pid_scheme"]["scheme"] = ["doi", "HandleS", "something"]
         data["bibjson"]["license"]["type"] = "cc"
-        data["bibjson"]["licence"]["BY"] = True
+        data["bibjson"]["license"]["BY"] = True
         data["bibjson"]["deposit_policy"]["has_policy"] = True
-        data["bibjson"]["deposit_policy"]["services"] = ["sherpa/romeo", "other"]
+        data["bibjson"]["deposit_policy"]["service"] = ["sherpa/romeo", "other"]
 
         ia = IncomingApplication(data)
 
@@ -337,37 +337,37 @@ class TestCrudApplication(DoajTestCase):
         # invalid country name
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["publisher"]["country"] = "LandLand"
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # invalid currency name
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["apc"]["max"][0]["currency"] = "Wonga"
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # an invalid url
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["apc"]["url"] = "Two streets down on the left"
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # invalid bool
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["has_apc"] = "Yes"
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # invalid int
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["publication_time_weeks"] = "Fifteen"
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
         # invalid language code
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["language"] = ["Hagey Pagey"]
-        with self.assertRaises(DataStructureException):
+        with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
     def test_05_outgoing_application_do(self):

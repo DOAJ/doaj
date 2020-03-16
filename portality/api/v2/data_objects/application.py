@@ -2,7 +2,7 @@ from portality.lib import swagger, seamless
 from portality import models
 from copy import deepcopy
 
-from portality.api.v1.data_objects.common_journal_application import OutgoingCommonJournalApplication
+from portality.api.v2.data_objects.common_journal_application import OutgoingCommonJournalApplication
 
 # both incoming and outgoing applications share this struct
 # "required" fields are only put on incoming applications
@@ -133,7 +133,7 @@ BASE_APPLICATION_STRUCT = {
                 },
                 "license": {
                     "fields": {
-                        "type": {"coerce": "license"},
+                        "type": {"coerce": "unicode"},
                         "url": {"coerce": "unicode"},
                         "BY": {"coerce": "bool"},
                         "NC": {"coerce": "bool"},
@@ -143,9 +143,7 @@ BASE_APPLICATION_STRUCT = {
                 },
                 "other_charges": {
                     "fields": {
-                        "has_other_charges": {"coerce", "bool"},
-                    },
-                    "lists": {
+                        "has_other_charges": {"coerce": "bool"},
                         "url": {"coerce": "unicode"}
                     }
                 },
@@ -168,7 +166,7 @@ BASE_APPLICATION_STRUCT = {
                         "url": {"coerce": "unicode"}
                     },
                     "lists": {
-                        "service": {"coerce": "unicode", "contains": "object"},
+                        "service": {"coerce": "unicode", "contains": "field"},
                     }
                 },
                 "publisher": {
@@ -280,8 +278,6 @@ INCOMING_APPLICATION_REQUIREMENTS = {
 
 class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     def __init__(self, raw=None):
-        self._add_struct(BASE_APPLICATION_STRUCT)
-        self._add_struct(INCOMING_APPLICATION_REQUIREMENTS)
         super(IncomingApplication, self).__init__(raw, struct=BASE_APPLICATION_STRUCT, silent_prune=False)
 
     def custom_validate(self):
@@ -373,7 +369,6 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
 
 class OutgoingApplication(OutgoingCommonJournalApplication):
     def __init__(self, raw=None):
-        self._add_struct(BASE_APPLICATION_STRUCT)
         super(OutgoingApplication, self).__init__(raw, struct=BASE_APPLICATION_STRUCT, construct_silent_prune=True)
 
     @classmethod

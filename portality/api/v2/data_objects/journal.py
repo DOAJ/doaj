@@ -203,11 +203,3 @@ class OutgoingJournal(OutgoingCommonJournalApplication):
     def from_model_by_id(cls, id_):
         j = models.Journal.pull(id_)
         return cls.from_model(j)
-
-    @property
-    def _struct(self):
-        return self.__seamless_struct__.raw
-
-    @property
-    def data(self):
-        return self.__seamless__.data

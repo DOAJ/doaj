@@ -150,7 +150,7 @@ _isbj["preservation"] = {
     "has_preservation": True,
     "national_library": "Trinity",
     "url": "http://digital.archiving.policy",
-    "services" : ["LOCKSS", "CLOCKSS", "A safe place"]
+    "service" : ["LOCKSS", "CLOCKSS", "A safe place"]
 }
 del _isbj["subject"]
 del _isbj["replaces"]
