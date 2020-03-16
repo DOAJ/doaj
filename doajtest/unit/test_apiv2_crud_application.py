@@ -79,7 +79,7 @@ class TestCrudApplication(DoajTestCase):
         # embedded licence but no url
         data = ApplicationFixtureFactory.incoming_application()
         data["bibjson"]["article"]["embedded_licence"] = True
-        del data["bibjson"]["article"]["embedded_license_example_url"]
+        del data["bibjson"]["article"]["license_display_example_url"]
         with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 

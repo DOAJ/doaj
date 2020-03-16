@@ -188,7 +188,7 @@ class ApplicationsCrudApi(CrudApi):
         # next thing to do is a structural validation of the replacement data, by instantiating the object
         try:
             ia = IncomingApplication(data)
-        except dataobj.DataStructureException as e:
+        except seamless.SeamlessException as e:
             raise Api400Error(str(e))
 
         # now see if there's something for us to update

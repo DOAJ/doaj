@@ -36,15 +36,17 @@ class TestCrudJournal(DoajTestCase):
 
         data = JournalFixtureFactory.make_journal_source()
 
-        invalid_url = 'an invalid url $321 >>,'
-        data['bibjson']['other_charges']['url'] = invalid_url
-        data['bibjson']['editorial']['review_url'] = invalid_url
-        data['bibjson']['plagiarism']['url'] = invalid_url
-        data['bibjson']['copyright']['url'] = invalid_url
-        data['bibjson']['ref']['journal'] = invalid_url
-
         # Even with all of the dodgy URLS above, we should still have a successful OutgoingJournal object.
         j = models.Journal(**data)
+        bjson = j.bibjson()
+        invalid_url = 'an invalid url $321 >>,'
+        bjson.other_charges_url = invalid_url
+        bjson.editorial_review_url = invalid_url
+        bjson.plagiarism_url = invalid_url
+        bjson.copyright_url = invalid_url
+        bjson.journal_url = invalid_url
+        j.save(blocking=True)
+
         OutgoingJournal.from_model(j)
 
     def test_03_retrieve_public_journal_success(self):

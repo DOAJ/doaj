@@ -3,13 +3,15 @@ from portality import models
 from portality.api.v2.data_objects.common_journal_application import OutgoingCommonJournalApplication
 
 # we only have outgoing journals for the moment
+from portality.lib.coerce import COERCE_MAP
+
 JOURNAL_STRUCT = {
     "objects": ["bibjson", "admin"],
     "fields": {
         "id": {"coerce": "unicode"},
-        "created_date": {"coerce": "datetime"},
-        "last_updated": {"coerce": "datetime"},
-        "last_manual_update": {"coerce": "datetime"}
+        "created_date": {"coerce": "utcdatetime"},
+        "last_updated": {"coerce": "utcdatetime"},
+        "last_manual_update": {"coerce": "utcdatetime"}
     },
     "structs": {
         "admin": {
@@ -30,7 +32,7 @@ JOURNAL_STRUCT = {
             },
             "lists": {
                 "keywords": {"coerce": "unicode", "contains": "field"},
-                "language": {"coerce": "unicode", "contains": "field"},
+                "language": {"coerce": "isolang_2letter", "contains": "field"},
                 "license": {"contains": "object"},
                 "subject": {"contains": "object"}
             },
@@ -67,12 +69,14 @@ JOURNAL_STRUCT = {
                         }
                     }
                 },
-                "article": {
-                    "fields": {
-                        "embedded_licence": {"coerce": "bool"},
-                        "embedded_license_example_url": {"coerce": "unicode"},
-                        "orcid": {"coerce": "unicode"},
-                        "i4oc_open_citations": {"coerce": "unicode"}
+                "article" : {
+                    "fields" : {
+                        "license_display_example_url" : {"coerce" : "unicode"},
+                        "orcid" : {"coerce" : "bool"},
+                        "i4oc_open_citations" : {"coerce" : "bool"}
+                    },
+                    "lists" : {
+                        "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["embed", "display", "no"]},
                     }
                 },
                 "copyright": {
@@ -190,6 +194,8 @@ JOURNAL_STRUCT = {
 
 class OutgoingJournal(OutgoingCommonJournalApplication):
 
+    __SEAMLESS_COERCE__ = COERCE_MAP
+
     def __init__(self, raw=None):
         super(OutgoingJournal, self).__init__(raw, struct=JOURNAL_STRUCT, silent_prune=True)
 
@@ -203,3 +209,7 @@ class OutgoingJournal(OutgoingCommonJournalApplication):
     def from_model_by_id(cls, id_):
         j = models.Journal.pull(id_)
         return cls.from_model(j)
+
+    @property
+    def data(self):
+        return self.__seamless__.data

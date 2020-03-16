@@ -125,9 +125,6 @@ def to_datetime(val):
     except:
         raise ValueError("Could not convert string {val} to UTC Datetime".format(val=val))
 
-def to_isolang(val):
-    return to_isolang(output_format="alpha2")
-
 
 def string_canonicalise(canon, allow_fail=False):
     normalised = {}
@@ -224,6 +221,8 @@ class SeamlessMixin(object):
                                     silent_prune=self.__seamless_silent_prune__,
                                     allow_other_fields=self.__seamless_allow_other_fields__)
 
+        self.custom_validate()
+
         super(SeamlessMixin, self).__init__(*args, **kwargs)
 
     def __getattr__(self, name):
@@ -267,6 +266,12 @@ class SeamlessMixin(object):
     def __deepcopy__(self):
         # FIXME: should also reflect all the constructor arguments
         return self.__class__(deepcopy(self.__seamless__.data))
+
+    def custom_validate(self):
+        """
+            Should be implemented on the higher level
+        """
+        pass
 
     def verify_against_struct(self, check_required=True, silent_prune=None, allow_other_fields=None):
 

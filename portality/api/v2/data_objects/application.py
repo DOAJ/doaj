@@ -6,13 +6,14 @@ from portality.api.v2.data_objects.common_journal_application import OutgoingCom
 
 # both incoming and outgoing applications share this struct
 # "required" fields are only put on incoming applications
+from portality.lib.coerce import COERCE_MAP
 from portality.lib.seamless import SeamlessMixin
 
 BASE_APPLICATION_STRUCT = {
     "fields": {
         "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
-        "created_date": {"coerce": "datetime"},  # caller, but we'll need to ignore them on the conversion
-        "last_updated": {"coerce": "datetime"}   # to the real object
+        "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
+        "last_updated": {"coerce": "utcdatetime"}   # to the real object
     },
     "objects": ["admin", "bibjson"],
     "structs": {
@@ -53,7 +54,7 @@ BASE_APPLICATION_STRUCT = {
             },
             "lists": {
                 "keywords": {"coerce": "unicode", "contains": "field"},
-                "language": {"coerce": "unicode", "contains": "field"},
+                "language": {"coerce": "isolang_2letter", "contains": "field"},
                 "license": {"contains" : "object"},
                 "subject": {"contains": "object"}
             },
@@ -75,7 +76,7 @@ BASE_APPLICATION_STRUCT = {
             "structs": {
                 "apc": {
                     "fields": {
-                        "url": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
                         "has_apc": {"coerce": "unicode"}
                     },
                     "lists": {
@@ -90,18 +91,20 @@ BASE_APPLICATION_STRUCT = {
                         }
                     }
                 },
-                "article": {
-                    "fields": {
-                        "embedded_license": {"coerce": "bool"},
-                        "embedded_license_example_url": {"coerce": "unicode"},
-                        "orcid": {"coerce": "unicode"},
-                        "i4oc_open_citations": {"coerce": "unicode"}
+                "article" : {
+                    "fields" : {
+                        "license_display_example_url" : {"coerce" : "url"},
+                        "orcid" : {"coerce" : "bool"},
+                        "i4oc_open_citations" : {"coerce" : "bool"}
+                    },
+                    "lists" : {
+                        "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["embed", "display", "no"]},
                     }
                 },
                 "copyright": {
                     "fields": {
                         "author_retains": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
                     }
                 },
                 "deposit_policy": {
@@ -115,7 +118,7 @@ BASE_APPLICATION_STRUCT = {
                 },
                 "editorial": {
                     "fields": {
-                        "review_url": {"coerce": "unicode"},
+                        "review_url": {"coerce": "url"},
                         "board_url": {"coerce": "unicode"}
                     },
                     "lists": {
@@ -134,7 +137,7 @@ BASE_APPLICATION_STRUCT = {
                 "license": {
                     "fields": {
                         "type": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
                         "BY": {"coerce": "bool"},
                         "NC": {"coerce": "bool"},
                         "ND": {"coerce": "bool"},
@@ -156,14 +159,14 @@ BASE_APPLICATION_STRUCT = {
                 "plagiarism": {
                     "fields": {
                         "detection": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
                     }
                 },
                 "preservation": {
                     "fields": {
                         "has_preservation": {"coerce": "unicode"},
                         "national_library": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"}
+                        "url": {"coerce": "url"}
                     },
                     "lists": {
                         "service": {"coerce": "unicode", "contains": "field"},
@@ -195,7 +198,7 @@ BASE_APPLICATION_STRUCT = {
                 "waiver": {
                     "fields": {
                         "has_waiver": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"}
+                        "url": {"coerce": "url"}
                     }
                 }
             }
@@ -222,11 +225,13 @@ INCOMING_APPLICATION_REQUIREMENTS = {
                 "copyright",
                 "deposit_policy",
                 "editorial",
+                "eissn",
                 "keywords",
                 "language",
                 "license",
                 "ref",
                 "pid_scheme",
+                "pissn",
                 "plagiarism",
                 "preservation",
                 "publication_time_weeks",
@@ -277,18 +282,32 @@ INCOMING_APPLICATION_REQUIREMENTS = {
 
 
 class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
-    def __init__(self, raw=None):
-        super(IncomingApplication, self).__init__(raw, struct=BASE_APPLICATION_STRUCT, silent_prune=False)
+    __type__ = "application"
+    __SEAMLESS_COERCE__ = COERCE_MAP
+    __SEAMLESS_STRUCT__ = [
+        BASE_APPLICATION_STRUCT,
+        INCOMING_APPLICATION_REQUIREMENTS
+    ]
+
+    def __init__(self, raw=None, **kwargs):
+        if raw is None:
+            super(IncomingApplication, self).__init__(silent_prune=False, check_required_on_init=False)
+        else:
+            super(IncomingApplication, self).__init__(raw=raw, silent_prune=False, **kwargs)
+
+    @property
+    def data(self):
+        return self.__seamless__.data
 
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
-        if len(list(self.data.keys())) == 0:
+        if len(list(self.__seamless__.data.keys())) == 0:
             return
 
 
         # extract the p/e-issn identifier objects
-        pissn = self.bibjson.pissn
-        eissn = self.bibjson.eissn
+        pissn = self.data["bibjson"]["pissn"]
+        eissn = self.data["bibjson"]["eissn"]
 
         # check that at least one of them appears and if they are different
         if pissn is None and eissn is None or pissn == eissn:
@@ -296,53 +315,39 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
 
         # normalise the ids
         if pissn is not None:
-            pissn.id = self._normalise_issn(pissn.id)
+            pissn = self._normalise_issn(pissn)
         if eissn is not None:
-            eissn.id = self._normalise_issn(eissn.id)
+            eissn = self._normalise_issn(eissn)
 
         # check they are not the same
         if pissn is not None and eissn is not None:
-            if pissn.id == eissn.id:
+            if pissn == eissn:
                 raise seamless.SeamlessException("P-ISSN and E-ISSN should be different")
 
         # A link to the journal homepage is required
         #
-        if self.bibjson.ref.journal is None:
+        if self.data["bibjson"]["ref"]["journal"] is None or self.data["bibjson"]["ref"]["journal"] == "":
             raise seamless.SeamlessException("You must specify the journal homepage in bibjson.link@type='homepage'")
 
         # if plagiarism detection is done, then the url is a required field
-        if self.bibjson.plagiarism.detection is True:
-            url = self.bibjson.plagiarism.url
+        if self.data["bibjson"]["plagiarism"]["detection"] is True:
+            url = self.data["bibjson"]["plagiarism"]["url"]
             if url is None:
                 raise seamless.SeamlessException("In this context bibjson.plagiarism_detection.url is required")
 
-        # if licence.embedded is true, then the url is a required field
-        lic = self.bibjson.article.embedded_license
-        if lic and lic.embedded_example_url is None:
-            raise seamless.SeamlessException("In this context bibjson.license.embedded_example_url is required")
+        # if licence_display is "embed", then the url is a required field   #TODO: what with "display"
+        art = self.data["bibjson"]["article"]
+        if "embed" in art["license_display"] or "display" in art["license_display"]:
+            if art["license_display_example_url"] is None or art["license_display_example_url"] ==  "":
+                raise seamless.SeamlessException("In this context bibjson.license.license_display_example_url is required")
 
         # if the author does not hold the copyright the url is optional, otherwise it is required
-        if self.bibjson.copyright.author_retains is not False:
-            if self.bibjson.copyright.url is None:
+        if self.data["bibjson"]["copyright"]["author_retains"] is not False:
+            if self.data["bibjson"]["copyright"]["url"] is None or self.data["bibjson"]["copyright"]["url"] == "":
                 raise seamless.SeamlessException("In this context bibjson.author_copyright.url is required")
 
-
-        # if the archiving policy has no "domain" set, then the policy must be from one of an allowed list
-        # if the archiving policy does have "domain" set, then the domain must be from one of an allowed list
-        # for ap in self.bibjson.archiving_policy.policy:
-        #     if ap.domain is not None:
-        #         # domain is in allowed list
-        #         opts = choices.Choices.digital_archiving_policy_list("optional")
-        #         if ap.domain not in opts:
-        #             raise dataobj.DataStructureException("bibjson.archiving_policy.policy.domain must be one of {x}".format(x=" or ".join(opts)))
-        #     else:
-        #         # policy name is in allowed list
-        #         opts = choices.Choices.digital_archiving_policy_list("named")
-        #         if ap.name not in opts:
-        #             raise dataobj.DataStructureException("bibjson.archiving_policy.policy.name must be one of '{x}' when 'domain' is not also set".format(x=", ".join(opts)))
-
         # check the number of keywords is no more than 6
-        if len(self.bibjson.keywords) > 6:
+        if len(self.data["bibjson"]["keywords"]) > 6:
             raise seamless.SeamlessException("bibjson.keywords may only contain a maximum of 6 keywords")
 
     def _normalise_issn(self, issn):
@@ -368,6 +373,9 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
             return models.Suggestion(**nnd)
 
 class OutgoingApplication(OutgoingCommonJournalApplication):
+
+    __SEAMLESS_COERCE__ = COERCE_MAP
+
     def __init__(self, raw=None):
         super(OutgoingApplication, self).__init__(raw, struct=BASE_APPLICATION_STRUCT, construct_silent_prune=True)
 

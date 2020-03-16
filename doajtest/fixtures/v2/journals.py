@@ -97,8 +97,8 @@ JOURNAL_SOURCE = {
             "url" : "http://apc.com"
         },
         "article" : {
-            "embedded_license": True,
-            "embedded_license_example_url" : "http://licence.embedded",
+            "license_display": ["embed"],
+            "license_display_example_url" : "http://licence.embedded",
             "orcid" : True,
             "i4oc_open_citations" : True
         },
@@ -279,8 +279,8 @@ JOURNAL_APIDO_STRUCT = {
     "objects": ["bibjson", "admin"],
     "fields": {
         "id": {"coerce": "unicode"},
-        "created_date": {"coerce": "datetime"},
-        "last_updated": {"coerce": "datetime"},
+        "created_date": {"coerce": "utcdatetime"},
+        "last_updated": {"coerce": "utcdatetime"},
         'last_manual_update': {'coerce': 'datetime'}
     },
     "structs": {
@@ -301,7 +301,7 @@ JOURNAL_APIDO_STRUCT = {
             },
             "lists": {
                 "keywords": {"coerce": "unicode", "contains": "field"},
-                "language": {"coerce": "unicode", "contains": "field"}, # isolang_2letter
+                "language": {"coerce": "isolang_2letter", "contains": "field"},
                 "license": {"contains" : "object"},
                 "subject": {"contains": "object"}
             },
@@ -341,7 +341,7 @@ JOURNAL_APIDO_STRUCT = {
                 "article":{
                     "fields": {
                         "embedded_licence": {"coerce": "bool"},
-                        "embedded_license_example_url": {"coerce": "unicode"},
+                        "license_display_example_url": {"coerce": "unicode"},
                         "orcid" : {"coerce": "unicode"},
                         "i4oc_open_citations": {"coerce": "unicode"}
                     }
