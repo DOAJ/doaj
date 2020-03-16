@@ -129,6 +129,21 @@ def suggestion():
         else:
             return fc.render_template(edit_suggestion_page=True)
 
+############################################
+# Experimental
+
+from portality.lib.formulaic import Formulaic
+from portality.formcontext.form_definitions import FORMS, PYTHON_FUNCTIONS, JAVASCRIPT_FUNCTIONS
+
+@blueprint.route("/application/newnew")
+@write_required()
+def public_application():
+    f = Formulaic(FORMS, function_map=PYTHON_FUNCTIONS)
+    fc = f.context("public")
+    return render_template("application_form/public_application.html", fc=fc, js_functions=JAVASCRIPT_FUNCTIONS)
+
+
+#############################################
 
 @blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
 @login_required

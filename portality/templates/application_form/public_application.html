@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Single Field Render Experiment</h1>
+    {% set f = fc.get("boai") %}
+    {% include 'application_form/_field.html' %}
+
+    <hr><hr>
+
+    <form id="public_application">
+    {% for fs in fc.fieldsets() %}
+        <h1>{{ fs.label }}</h1>
+        <fieldset>
+        {% for f in fs.fields() %}
+            {% include 'application_form/_field.html' %}
+            <hr>
+        {% endfor %}
+        </fieldset>
+    {% endfor %}
+    </form>
+{% endblock %}
+
+{% block extra_js_bottom %}
+    <script type="text/javascript">
+        var formulaicSettings = {};
+        formulaicSettings.config = {{ fc._definition|tojson }};
+        formulaicSettings.functions = {{ js_functions|tojson }};
+    </script>
+    <script type="text/javascript" src="/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            //formulaic.init({
+            //    formSelector: "#public_application"
+            //});
+        });
+    </script>
+
+{% endblock %}
