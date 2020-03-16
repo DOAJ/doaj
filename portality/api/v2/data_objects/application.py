@@ -120,8 +120,9 @@ BASE_APPLICATION_STRUCT = {
                     },
                     "lists": {
                         "review_process": {"contains" : "field", "coerce": "unicode",
-                                           "allowed_values": ["Editorial review", "Peer review", "Blind peer review",
-                                                              "Double blind peer review", "Open peer review", "None"]},
+                                           #"allowed_values": ["Editorial review", "Peer review", "Blind peer review",
+                                           #                   "Double blind peer review", "Open peer review", "None"]
+                                           },
                     }
                 },
                 "institution": {

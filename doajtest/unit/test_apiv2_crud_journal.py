@@ -57,7 +57,7 @@ class TestCrudJournal(DoajTestCase):
         a = JournalsCrudApi.retrieve(j.id, account=None)
         # check that we got back the object we expected
         assert isinstance(a, OutgoingJournal)
-        assert a.id == j.id
+        assert a.data["id"] == j.id
         
         # it should also work if we're logged in with the owner or another user
         # owner first
@@ -69,14 +69,14 @@ class TestCrudJournal(DoajTestCase):
         a = JournalsCrudApi.retrieve(j.id, account)
 
         assert isinstance(a, OutgoingJournal)
-        assert a.id == j.id
+        assert a.data["id"] == j.id
         
         # try with another account
         not_owner = models.Account()
         not_owner.set_id("asdklfjaioefwe")
         a = JournalsCrudApi.retrieve(j.id, not_owner)
         assert isinstance(a, OutgoingJournal)
-        assert a.id == j.id
+        assert a.data["id"] == j.id
 
     def test_04_retrieve_public_journal_fail(self):
         with self.assertRaises(Api404Error):
@@ -99,7 +99,7 @@ class TestCrudJournal(DoajTestCase):
 
         # check that we got back the object we expected
         assert isinstance(a, OutgoingJournal)
-        assert a.id == j.id
+        assert a.data["id"] == j.id
 
     def test_06_retrieve_private_journal_fail(self):
         # set up all the bits we need

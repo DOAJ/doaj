@@ -96,7 +96,9 @@ JOURNAL_STRUCT = {
                         "board_url": {"coerce": "unicode"}
                     },
                     "lists": {
-                        "review_process": {"contains": "field", "coerce": "unicode","allowed_values": ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
+                        "review_process": {"contains": "field", "coerce": "unicode"
+                            #,"allowed_values": ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]
+                        },
                     }
                 },
                 "institution": {
