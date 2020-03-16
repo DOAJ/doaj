@@ -126,6 +126,33 @@ def to_datetime(val):
         raise ValueError("Could not convert string {val} to UTC Datetime".format(val=val))
 
 
+def string_canonicalise(canon, allow_fail=False):
+    normalised = {}
+    for a in canon:
+        normalised[a.strip().lower()] = a
+
+    def sn(val):
+        if val is None:
+            if allow_fail:
+                return None
+            raise ValueError("NoneType not permitted")
+
+        try:
+            norm = val.strip().lower()
+        except:
+            raise ValueError("Unable to treat value as a string")
+
+        uc = to_utf8_unicode
+        if norm in normalised:
+            return uc(normalised[norm])
+        if allow_fail:
+            return uc(val)
+
+        raise ValueError("Unable to canonicalise string")
+
+    return sn
+
+
 class SeamlessException(Exception):
     def __init__(self, msg, *args, **kwargs):
         self.message = msg

@@ -1,6 +1,5 @@
 import json
 import time
-from datetime import datetime
 
 from portality import constants
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory
@@ -714,7 +713,7 @@ class TestClient(DoajTestCase):
         bj.set_plagiarism_detection("http://test1", False)
         bj.set_preservation(["LOCKSS", ["a national library", "UCL"]], "http://preservation")
         bj.publisher_name = "Me"
-        bj.publisher_country = "UK"
+        bj.publisher_country = "GB"
         bj.oa_statement_url = "http://oa2.statement"
         bj.journal_url = "http://journal2.url"
         bj.aims_scope_url = "http://aims2.url"
@@ -761,7 +760,7 @@ class TestClient(DoajTestCase):
         assert bj.preservation_services == ["LOCKSS", ["A national library", "UCL"]]
         assert bj.preservation_url == "http://preservation"
         assert bj.publisher_name == "Me"
-        assert bj.publisher_country == "UK"
+        assert bj.publisher_country == "GB"
         assert bj.oa_statement_url == "http://oa2.statement"
         assert bj.journal_url == "http://journal2.url"
         assert bj.aims_scope_url == "http://aims2.url"
@@ -800,7 +799,7 @@ class TestClient(DoajTestCase):
 
         # special methods
         assert bj.issns() == ["1111-111X", "0000-000X"], bj.issns()
-        assert bj.publisher_country_name() == "UK", bj.publisher_country_name()
+        assert bj.publisher_country_name() == "United Kingdom", bj.publisher_country_name()
         assert "Italian" in bj.language_name(), bj.language_name()
         assert bj.get_preferred_issn() == "0000-000X", bj.get_preferred_issn()
 

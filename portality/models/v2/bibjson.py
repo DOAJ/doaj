@@ -58,7 +58,6 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @eissn.setter
     def eissn(self, val):
-        val = self._normalise_issn(val)
         self.__seamless__.set_with_struct("eissn", val)
 
     @eissn.deleter
@@ -71,7 +70,6 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @pissn.setter
     def pissn(self, val):
-        val = self._normalise_issn(val)
         self.__seamless__.set_with_struct("pissn", val)
 
     @pissn.deleter
