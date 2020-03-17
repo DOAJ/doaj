@@ -319,6 +319,10 @@ class JournalLikeBibJSON(SeamlessMixin):
     def editorial_review_url(self):
         return self.__seamless__.get_single("editorial.review_url")
 
+    @editorial_review_url.setter
+    def editorial_review_url(self, url):
+        self.__seamless__.set_with_struct("editorial.review_url", url)
+
     @property
     def editorial_board_url(self):
         return self.__seamless__.get_single("editorial.board_url")
@@ -384,6 +388,10 @@ class JournalLikeBibJSON(SeamlessMixin):
     @property
     def plagiarism_url(self):
         return self.__seamless__.get_single("plagiarism.url")
+
+    @plagiarism_url.setter
+    def plagiarism_url(self, url):
+        self.__seamless__.set_with_struct("plagiarism.url", url)
 
     @property
     def preservation(self):

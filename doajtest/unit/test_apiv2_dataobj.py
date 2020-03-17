@@ -26,7 +26,7 @@ class TestAPIDataObj(DoajTestCase):
     def test_02_create_from_model(self):        #TODO fix commented out
         expected_struct = JournalFixtureFactory.make_journal_apido_struct()
         do = OutgoingJournal.from_model(self.jm)
-        assert do._struct == expected_struct, "do._struct:\n {}, \n expected_struct:\n {}".format(do.__seamless_struct__.raw, expected_struct)
+        assert do.__seamless_struct__.raw == expected_struct, "do._struct:\n {}, \n expected_struct:\n {}".format(do.__seamless_struct__.raw, expected_struct)
         self.check_do(do, expected_struct)
 
     def check_do(self, do, expected_struct):

@@ -31,6 +31,7 @@ JOURNAL_STRUCT = {
                 "title": {"coerce": "unicode"}
             },
             "lists": {
+                "is_replaced_by" : {"contains" : "field", "coerce" : "issn"},
                 "keywords": {"coerce": "unicode", "contains": "field"},
                 "language": {"coerce": "isolang_2letter", "contains": "field"},
                 "license": {"contains": "object"},

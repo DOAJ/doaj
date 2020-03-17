@@ -5,6 +5,11 @@ from portality import models
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
 import time
 
+from portality.lib.seamless import SeamlessMixin, SeamlessData, Construct
+
+
+def mock_lookup(struct, path):
+    return "field", None, {'coerce': 'unicode'}
 
 class TestCrudJournal(DoajTestCase):
 
@@ -31,15 +36,15 @@ class TestCrudJournal(DoajTestCase):
         assert oj.data.get("admin", {}).get("editor_group") is None, "editor_group: {}".format(oj.data.get("admin", {}).get("editor_group"))
         assert oj.data.get("admin", {}).get("editor") is None, "editor: {}".format(oj.data.get("admin", {}).get("editor"))
 
-    def test_02_outgoing_journal_urls(self):
+    def test_02_outgoing_journal_urls(self):    #TODO allow allow_coerce_failure=True for journal.__setattr__
         """ We've relaxed the URL constraints for outgoing journals - https://github.com/DOAJ/doajPM/issues/2268 """
-
         data = JournalFixtureFactory.make_journal_source()
 
         # Even with all of the dodgy URLS above, we should still have a successful OutgoingJournal object.
         j = models.Journal(**data)
         bjson = j.bibjson()
         invalid_url = 'an invalid url $321 >>,'
+        Construct.lookup = mock_lookup
         bjson.other_charges_url = invalid_url
         bjson.editorial_review_url = invalid_url
         bjson.plagiarism_url = invalid_url

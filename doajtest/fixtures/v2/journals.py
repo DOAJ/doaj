@@ -281,7 +281,7 @@ JOURNAL_APIDO_STRUCT = {
         "id": {"coerce": "unicode"},
         "created_date": {"coerce": "utcdatetime"},
         "last_updated": {"coerce": "utcdatetime"},
-        'last_manual_update': {'coerce': 'datetime'}
+        'last_manual_update': {'coerce': 'utcdatetime'}
     },
     "structs": {
         "admin": {
@@ -300,6 +300,7 @@ JOURNAL_APIDO_STRUCT = {
                 "title": {"coerce": "unicode"}
             },
             "lists": {
+                "is_replaced_by" : {"contains" : "field", "coerce" : "issn"},
                 "keywords": {"coerce": "unicode", "contains": "field"},
                 "language": {"coerce": "isolang_2letter", "contains": "field"},
                 "license": {"contains" : "object"},
@@ -340,10 +341,12 @@ JOURNAL_APIDO_STRUCT = {
                 },
                 "article":{
                     "fields": {
-                        "embedded_licence": {"coerce": "bool"},
                         "license_display_example_url": {"coerce": "unicode"},
-                        "orcid" : {"coerce": "unicode"},
-                        "i4oc_open_citations": {"coerce": "unicode"}
+                        "orcid" : {"coerce": "bool"},
+                        "i4oc_open_citations": {"coerce": "bool"}
+                    },
+                    "lists" : {
+                        "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["embed", "display", "no"]},
                     }
                 },
                 "copyright": {
@@ -413,7 +416,7 @@ JOURNAL_APIDO_STRUCT = {
                         "url": {"coerce": "unicode"}
                     },
                     "lists": {
-                        "service": {"coerce": "unicode", "contains": "object"},
+                        "service": {"coerce": "unicode", "contains": "field"},
                     },
                     "structs" : {
                         "policy" : {

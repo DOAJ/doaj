@@ -902,7 +902,6 @@ class Construct(object):
                 if vals is None:
                     continue
                 if not isinstance(vals, list):
-                    print("Expecting list at '{x}' but found something else '{y}'".format(x=context + field_name, y=type(val)))
                     raise SeamlessException("Expecting list at '{x}' but found something else '{y}'".format(x=context + field_name, y=type(val)))
 
                 typ, substruct, instructions = struct.lookup(field_name)
@@ -939,7 +938,6 @@ class Construct(object):
                             constructed.add_to_list(field_name, beneath)
 
                 else:
-                    print("Cannot understand structure where list '{x}' elements contain '{y}'".format(x=context + field_name, y=contains))
                     raise SeamlessException("Cannot understand structure where list '{x}' elements contain '{y}'".format(x=context + field_name, y=contains))
 
             # finally, if we allow other fields, make sure that they come across too
