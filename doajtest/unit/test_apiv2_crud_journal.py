@@ -1,4 +1,5 @@
 from doajtest.helpers import DoajTestCase
+from portality.api.v2.data_objects import journal
 from portality.api.v2.data_objects.journal import OutgoingJournal
 from portality.api.v2.crud.journals import JournalsCrudApi, Api401Error, Api404Error
 from portality import models
@@ -14,9 +15,11 @@ def mock_lookup(struct, path):
 class TestCrudJournal(DoajTestCase):
 
     def setUp(self):
+        self.old_lookup = Construct.lookup
         super(TestCrudJournal, self).setUp()
 
     def tearDown(self):
+        Construct.lookup = self.old_lookup
         super(TestCrudJournal, self).tearDown()
 
     def test_01_outgoing_journal_do(self):
@@ -44,13 +47,13 @@ class TestCrudJournal(DoajTestCase):
         j = models.Journal(**data)
         bjson = j.bibjson()
         invalid_url = 'an invalid url $321 >>,'
-        Construct.lookup = mock_lookup
-        bjson.other_charges_url = invalid_url
-        bjson.editorial_review_url = invalid_url
-        bjson.plagiarism_url = invalid_url
-        bjson.copyright_url = invalid_url
-        bjson.journal_url = invalid_url
+        bjson._set_attr_with_no_check(bjson.other_charges_url,invalid_url)
+        bjson._set_attr_with_no_check(bjson.editorial_review_url, invalid_url)
+        bjson._set_attr_with_no_check(bjson.plagiarism_url, invalid_url)
+        bjson._set_attr_with_no_check(bjson.copyright_url, invalid_url)
+        bjson._set_attr_with_no_check(bjson.journal_url, invalid_url)
         j.save(blocking=True)
+
 
         OutgoingJournal.from_model(j)
 

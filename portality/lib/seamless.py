@@ -244,7 +244,7 @@ class SeamlessMixin(object):
 
         raise AttributeError('{name} is not set'.format(name=name))
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name, value, allow_coerce_failure=False):
         if hasattr(self.__class__, name):
             return object.__setattr__(self, name, value)
 
@@ -256,7 +256,7 @@ class SeamlessMixin(object):
             if prop is not None:
                 path = prop["path"]
                 unwrap = prop.get("unwrapper")
-                wasset = self.__seamless__.set_property(path, value, unwrap)
+                wasset = self.__seamless__.set_property(path, value, unwrap, allow_coerce_failure)
                 if wasset:
                     return
 
@@ -560,7 +560,7 @@ class SeamlessData(object):
 
         return None
 
-    def set_property(self, path, value, unwrapper=None):
+    def set_property(self, path, value, unwrapper=None, allow_coerce_failure=False):
         if unwrapper is None:
             unwrapper = lambda x : x
 
@@ -579,10 +579,10 @@ class SeamlessData(object):
             if self._struct is None:
                 if isinstance(value, list):
                     value = [unwrapper(v) for v in value]
-                    self.set_list(path, value)
+                    self.set_list(path, value, allow_coerce_failure)
                 else:
                     value = unwrapper(value)
-                    self.set_single(path, value)
+                    self.set_single(path, value, allow_coerce_failure)
 
                 return True
             else:

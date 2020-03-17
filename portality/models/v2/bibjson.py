@@ -680,6 +680,9 @@ class JournalLikeBibJSON(SeamlessMixin):
         else:
             return None
 
+    def _set_attr_with_no_check(self, name, value):
+        self.__setattr__(name, value, allow_coerce_failure=True)
+
     # allowable values for the url types
     HOMEPAGE = "homepage"
     WAIVER_POLICY = "waiver_policy"

@@ -14,7 +14,7 @@ JOURNAL_BIBJSON = {
                 "title" : {"coerce" : "unicode"}
             },
             "lists" : {
-                "is_replaced_by" : {"contains" : "field", "coerce" : "issn"},
+                "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
                 "keywords" : {"contains" : "field", "coerce" : "unicode_lower"},
                 "language" : {"contains" : "field", "coerce" : "isolang_2letter"},
                 "license" : {"contains" : "object"},
