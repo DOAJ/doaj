@@ -89,7 +89,10 @@ def escape(query):
         # colons after keywords are: first one and every first one after & or |
         parts = q.split(":")
         for i in range(1, len(parts)-1):
-            if '&' not in parts[i] and '|' not in parts[i] and not parts[i].endswith('\\'):
+            if '&' not in parts[i] \
+                    and not parts[i].endswith('\\') \
+                    and ' AND ' not in parts[i]\
+                    and ' OR ' not in parts[i]:
                 parts[i] = parts[i] + "\\"
         query = ":".join(parts)
         return query
