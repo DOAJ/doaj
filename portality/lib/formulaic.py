@@ -125,12 +125,16 @@ class ListWidgetWithSubfields(object):
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
+        #required = False
+        #if required in kwargs:
+        #    required = True
+        #    del kwargs["required"]
         html = ['<%s %s>' % (self.html_tag, html_params(**kwargs))]
         for subfield in field:
             if self.prefix_label:
-                html.append('<li>%s %s' % (subfield.label, subfield()))
+                html.append('<li>%s %s' % (subfield.label, subfield(**kwargs)))
             else:
-                html.append('<li>%s %s' % (subfield(), subfield.label))
+                html.append('<li>%s %s' % (subfield(**kwargs), subfield.label))
 
             if "formulaic" in kwargs:
                 sfs = kwargs["formulaic"].get_subfields(subfield._value())
@@ -176,6 +180,22 @@ WTFORMS_MAP = [
         "match" : {"input" : "number", "datatype" : "integer"},
         "wtforms" : {"class": IntegerField, "init" : {"widget" : NumberWidget}}
     }
+]
+
+UI_CONFIG_FIELDS = [
+    "label",
+    "input",
+    "options",
+    "help",
+    "validate",
+    "visible",
+    "conditional",
+    "widgets",
+    "attr",
+    "multiple",
+    "datatype",
+    "disabled",
+    "name"
 ]
 
 
@@ -228,10 +248,14 @@ class Formulaic(object):
                     o["subfields"] = self._process_fields(context_name, subfields)
 
             # filter for context
-            context_overrides = field_def.get("context", {}).get(context_name)
+            context_overrides = field_def.get("contexts", {}).get(context_name)
             if context_overrides is not None:
                 for k, v in context_overrides.items():
                     field_def[k] = v
+
+            # and remove the context overrides settings, so they don't bleed to contexts that don't require them
+            if "contexts" in field_def:
+                del field_def["contexts"]
 
             field_defs.append(field_def)
 
@@ -275,6 +299,16 @@ class FormulaicContext(object):
 
     def fieldsets(self):
         return [FormulaicFieldset(fs, self._wtforms_map, self._function_map) for fs in self._definition.get("fieldsets", [])]
+
+    @property
+    def ui_settings(self):
+        ui = deepcopy(self._definition.get("fieldsets", []))
+        for fieldset in ui:
+            for field in fieldset.get("fields", []):
+                for fn in [k for k in field.keys()]:
+                    if fn not in UI_CONFIG_FIELDS:
+                        del field[fn]
+        return ui
 
     def json(self):
         return json.dumps(self._definition)
@@ -324,6 +358,13 @@ class FormulaicField(object):
 
         raise AttributeError('{name} is not set'.format(name=name))
 
+    @property
+    def explicit_options(self):
+        opts = self._definition.get("options", [])
+        if isinstance(opts, list):
+            return opts
+        return []
+
     def has_validator(self, validator_name):
         for validator in self._definition.get("validate", []):
             if isinstance(validator, str) and validator == validator_name:
@@ -332,6 +373,10 @@ class FormulaicField(object):
                 if list(validator.keys())[0] == validator_name:
                     return True
         return False
+
+    @property
+    def has_conditional(self):
+        return len(self._definition.get("conditional", [])) > 0
 
     def wtforms_field(self):
         if self._wtform_field is None:
@@ -354,10 +399,16 @@ class FormulaicField(object):
         return self._wtforms_field_bound
 
     def get_subfields(self, option_value):
-        for option in self._definition.get("options", {}):
+        for option in self.explicit_options:
             if option.get("value") == option_value:
                 return [FormulaicField(sfs, self._wtforms_map, self._function_map) for sfs in
                         option.get("subfields", [])]
+
+    def has_subfields(self):
+        for option in self.explicit_options:
+            if len(option.get("subfields", [])) > 0:
+                return True
+        return False
 
     def has_errors(self):
         return len(self.errors()) > 0
@@ -374,7 +425,7 @@ class FormulaicField(object):
         if self.has_validator("required"):
             kwargs["required"] = ""
 
-        if "options" in self._definition:
+        if self.has_subfields():
             kwargs["formulaic"] = self
 
         wtf = self.wtforms_field_bound()

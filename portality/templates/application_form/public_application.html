@@ -1,37 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Single Field Render Experiment</h1>
-    {% set f = fc.get("boai") %}
-    {% include 'application_form/_field.html' %}
 
-    <hr><hr>
-
-    <form id="public_application">
+    <form id="public_application" novalidate>
     {% for fs in fc.fieldsets() %}
         <h1>{{ fs.label }}</h1>
-        <fieldset>
+        <fieldset id="{{ fs.name }}">
         {% for f in fs.fields() %}
             {% include 'application_form/_field.html' %}
             <hr>
         {% endfor %}
         </fieldset>
     {% endfor %}
+        <button type="submit" id="submit">Submit</button>
     </form>
+
 {% endblock %}
 
 {% block extra_js_bottom %}
-    <script type="text/javascript">
-        var formulaicSettings = {};
-        formulaicSettings.config = {{ fc._definition|tojson }};
-        formulaicSettings.functions = {{ js_functions|tojson }};
-    </script>
+    <script type="text/javascript" src="/static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript" src="/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
     <script type="text/javascript" src="/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
-            //formulaic.init({
-            //    formSelector: "#public_application"
-            //});
+            formulaic.active = formulaic.newFormulaic({
+                formSelector: "#public_application",
+                fieldsets : {{ fc.ui_settings|tojson }},
+                functions : {{ js_functions|tojson }}
+            });
         });
     </script>
 

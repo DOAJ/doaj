@@ -1,4 +1,4 @@
-<div id="{{ f.name }}_container" {% if f.visible == False %}style="display:none"{% endif %}>
+<div class="{{ f.name }}_container" {% if f.has_conditional %}style="display:none"{% endif %}>
     <div class="row">
         <div class="col-xs-12">
             {% if f.help.doaj_criteria %}<span title="{{ f.help.doaj_criteria }}">DOAJ</span>&nbsp;{% endif %}

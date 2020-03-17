@@ -49,18 +49,14 @@ FORMS = {
                 or use them for any other lawful purpose, without financial, legal, or technical barriers other than
                 those inseparable from gaining access to the internet itself.' Does the journal adhere to this
                 definition of open access?""",
-            "input": "radio",
-            "options": [
-                {"display": "Yes", "value" : True},
-                {"display": "No", "value" : False}
-            ],
+            "input": "checkbox",
             "help": {
                 "description": "",
                 "tooltip": "For a journal to be indexed in DOAJ, it must fulfil the BOAI definition of open access",
                 "doaj_criteria": "You must answer 'Yes'"
             },
             "validate": [
-                {"required_value" : {"value" : True}}
+                "required"
             ],
             "contexts" : {
                 "editor" : {
@@ -74,7 +70,6 @@ FORMS = {
         "oa_statement_url" : {
             "label" : "What is the URL for the journal's open access statement?",
             "input" : "text",
-            "visible" : True,
             "conditional" : [{"field" : "boai", "value" : True}],
             "help": {
                 "placeholder" : "OA Statement URL",
@@ -251,12 +246,12 @@ PYTHON_FUNCTIONS = {
 JAVASCRIPT_FUNCTIONS = {
     "required_value" : "doaj.forms.validators.requiredValue",
     "required" : "doaj.forms..validators.required",
-    "is_url" : "doaj.forms.validators.is_url",
-    "max_tags" : "doaj.forms.validators.max_tags",
-    "stop_words" : "doaj.forms.validators.stop_words",
-    "int_range" : "doaj.forms.validators.int_range",
+    "is_url" : "doaj.forms.validators.isUrl",
+    "max_tags" : "doaj.forms.validators.maxTags",
+    "stop_words" : "doaj.forms.validators.stopWords",
+    "int_range" : "doaj.forms.validators.intRange",
     "autocomplete" : "doaj.forms.widgets.autocomplete",
-    "clickable_url" : "doaj.forms.widgets.clickable_url"
+    "clickable_url" : "doaj.forms.widgets.clickableUrl"
 }
 
 if __name__ == "__main__":
