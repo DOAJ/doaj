@@ -44,11 +44,11 @@ FORMS = {
     },
     "fields": {
         "boai": {
-            "label": """DOAJ adheres to the BOAI [definition of open access LINK].  This means that users are
-                permitted 'to read, download, copy, distribute, print, search, or link to the full texts of articles,
-                or use them for any other lawful purpose, without financial, legal, or technical barriers other than
-                those inseparable from gaining access to the internet itself.' Does the journal adhere to this
-                definition of open access?""",
+            "label": "DOAJ adheres to the BOAI [definition of open access LINK].  This means that users are"
+                "permitted 'to read, download, copy, distribute, print, search, or link to the full texts of articles,"
+                "or use them for any other lawful purpose, without financial, legal, or technical barriers other than"
+                "those inseparable from gaining access to the internet itself.' Does the journal adhere to this"
+                "definition of open access?",
             "input": "checkbox",
             "help": {
                 "description": "",
@@ -74,12 +74,12 @@ FORMS = {
             "help": {
                 "placeholder" : "OA Statement URL",
                 "description": "Must start with https://, http://, or www.",
-                "tooltip": """Here is an example of a suitable Open Access statement that meets our criteria:
-                        This is an open access journal which means that all content is freely available without charge
-                        to the user or his/her institution. Users are allowed to read, download, copy, distribute,
-                        print, search, or link to the full texts of the articles, or use them for any other lawful
-                        purpose, without asking prior permission from the publisher or the author. This is in accordance
-                        with the BOAI definition of open access.""",
+                "tooltip": "Here is an example of a suitable Open Access statement that meets our criteria: "
+                        "This is an open access journal which means that all content is freely available without charge" 
+                        "to the user or his/her institution. Users are allowed to read, download, copy, distribute," 
+                        "print, search, or link to the full texts of the articles, or use them for any other lawful" 
+                        "purpose, without asking prior permission from the publisher or the author. This is in accordance"
+                        "with the BOAI definition of open access.",
                 "doaj_criteria": "You must provide a URL"
             },
             "validate" : [
@@ -122,8 +122,8 @@ FORMS = {
             "input" : "taglist",
             "help": {
                 "description": "Up to 6 keywords, separated with a comma; must be in English",
-                "tooltip": """Only 6 keywords are allowed. Choose words that describe the subject matter of the
-                        journal and not the journal's qualities. All keywords must be in English. """,
+                "tooltip": "Only 6 keywords are allowed. Choose words that describe the subject matter of the"
+                           "journal and not the journal's qualities. All keywords must be in English.",
             },
             "validate" : [
                 "required",
@@ -157,9 +157,9 @@ FORMS = {
             ],
             "help": {
                 "description": "Select all licenses permitted by this journal.",
-                "tooltip": """The journal must use some form of licensing to be considered for indexing in DOAJ.
-                        If Creative Commons licensing is not used, then select 'Publisher's own license' and enter
-                        more details below.""",
+                "tooltip": "The journal must use some form of licensing to be considered for indexing in DOAJ. "
+                        "If Creative Commons licensing is not used, then select 'Publisher's own license' and enter "
+                        "more details below.",
                 "doaj_criteria" : "Content must be licenced",
                 "seal_criteria" : "Yes: CC BY, CC BY-SA, CC BY-NC"
             },
@@ -251,7 +251,7 @@ JAVASCRIPT_FUNCTIONS = {
     "stop_words" : "doaj.forms.validators.stopWords",
     "int_range" : "doaj.forms.validators.intRange",
     "autocomplete" : "doaj.forms.widgets.autocomplete",
-    "clickable_url" : "doaj.forms.widgets.clickableUrl"
+    "clickable_url" : "formulaic.widgets.newClickableUrl"
 }
 
 if __name__ == "__main__":

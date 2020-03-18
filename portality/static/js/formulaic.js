@@ -21,12 +21,21 @@ var formulaic = {
         // internal variable for holding reference to the parsley validator for the form
         this.activeParsley = false;
 
+        // hold references to widgets that we have loaded
+        this.widgetRefs = {};
+
+        // hold references to instantiated widgets
+        this.activeWidgets = {};
+
         this.init = function() {
             // first detect any sychronised fields and register them
             this._registerSynchronised();
 
             // bind any conditional fields
             this._bindConditional();
+
+            // attach any widgets to the form
+            this._applyWidgets();
 
             // start up the validator
             this.bounceParsley();
@@ -100,6 +109,57 @@ var formulaic = {
                     }
                 }
             }
+        };
+
+        this._applyWidgets = function() {
+            for (var i = 0; i < this.fieldsets.length; i++) {
+                var fieldset = this.fieldsets[i];
+                for (var j = 0; j < fieldset.fields.length; j++) {
+                    var fieldDef = fieldset.fields[j];
+                    if (fieldDef.hasOwnProperty("widgets")) {
+                        for (var k = 0; k < fieldDef.widgets.length; k++) {
+                            var widgetName = fieldDef.widgets[k];
+                            var widget = this._getWidget(widgetName);
+                            if (!widget) {
+                                continue;
+                            }
+                            var active = widget({
+                                fieldDef: fieldDef,
+                                formulaic: this
+                            });
+                            if (this.activeWidgets.hasOwnProperty(fieldDef.name)) {
+                                this.activeWidgets[fieldDef.name].push(active);
+                            } else {
+                                this.activeWidgets[fieldDef.name] = [active]
+                            }
+
+                        }
+                    }
+                }
+            }
+        };
+
+        this._getWidget = function(widgetName) {
+            if (this.widgetRefs[widgetName]) {
+                return this.widgetRefs[widgetName];
+            }
+
+            var functionPath = this.functions[widgetName];
+            if (!functionPath) {
+                return false;
+            }
+
+            var bits = functionPath.split(".");
+            var context = window;
+            for (var i = 0; i < bits.length; i++) {
+                var bit = bits[i];
+                context = context[bit];
+                if (!context) {
+                    console.log("Unable to load " + widgetName + " from path " + functionPath);
+                    return false;
+                }
+            }
+            return context;
         };
 
         this.destroyParsley = function() {
@@ -206,5 +266,47 @@ var formulaic = {
         };
 
         this.init();
+    },
+
+    widgets : {
+        newClickableUrl : function(params) {
+            return edges.instantiate(formulaic.widgets.ClickableUrl, params)
+        },
+        ClickableUrl : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+
+            this.ns = "formulaic-clickableurl";
+
+            this.link = false;
+
+            this.init = function() {
+                var elements = this.form._controlSelect({name: this.fieldDef.name});
+                edges.on(elements, "change.ClickableUrl", this, "updateUrl");
+            };
+
+            this.updateUrl = function(element) {
+                var that = $(element);
+                var val = that.val();
+
+                if (val) {
+                    if (this.link) {
+                        this.link.attr("href", val);
+                    } else {
+                        var classes = edges.css_classes(this.ns, "visit");
+                        var id = edges.css_id(this.ns, this.fieldDef.name);
+                        that.after('<a id="' + id + '" class="' + classes + '" target="_blank" href="' + val + '">visit site</a>');
+
+                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                        this.link = $(selector, this.form.context);
+                    }
+                } else {
+                    this.link.remove();
+                    this.link = false;
+                }
+            };
+
+            this.init();
+        }
     }
 };
