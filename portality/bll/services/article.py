@@ -150,25 +150,28 @@ class ArticleService(object):
             duplicate = self.get_duplicate(article)
             if duplicate is not None:
                 if update_article_id is None:
-                    if merge_duplicate:
-                        is_update = 1
-                        article.merge(duplicate)  # merge will take the old id, so this will overwrite
-                    else:
-                        raise exceptions.DuplicateArticleException()
-                else:
-                    if update_article_id is not None and duplicate.id != update_article_id:
-                        raise exceptions.DuplicateArticleException()
-                    elif update_article_id is not None and duplicate.id == update_article_id:
-                        doi_or_ft_updated = self._doi_or_fulltext_updated(article, update_article_id)
-                        if doi_or_ft_updated:
-                            if account.has_role("admin"):
-                                is_update += 1
-                                article.merge(duplicate)
-                            else:
-                                raise exceptions.DuplicateArticleException()
-                        else:
+                    update_article_id = duplicate.id
+
+                if update_article_id is not None and duplicate.id != update_article_id:
+                    raise exceptions.DuplicateArticleException()
+                elif update_article_id is not None and duplicate.id == update_article_id:
+                    doi_or_ft_updated = self._doi_or_fulltext_updated(article, update_article_id)
+                    if doi_or_ft_updated:
+                        if account.has_role("admin"):
                             is_update += 1
                             article.merge(duplicate)
+                        else:
+                            raise exceptions.DuplicateArticleException()
+                    else:
+                        is_update += 1
+                        article.merge(duplicate)
+            else:   #requested to update article has both url and doi changed to new values - no duplicate detected
+                if update_article_id is not None:
+                    if account.has_role("admin"):
+                        is_update += 1
+                        update_article = models.Article.pull(update_article_id)
+                        update_article.merge(article)
+
 
 
         if add_journal_info:
