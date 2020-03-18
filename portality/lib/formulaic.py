@@ -374,6 +374,16 @@ class FormulaicField(object):
                     return True
         return False
 
+    def get_validator_settings(self, validator_name):
+        for validator in self._definition.get("validate", []):
+            if isinstance(validator, str) and validator == validator_name:
+                return {}
+            if isinstance(validator, dict):
+                name = list(validator.keys())[0]
+                if name == validator_name:
+                    return validator[name]
+        return False
+
     @property
     def has_conditional(self):
         return len(self._definition.get("conditional", [])) > 0
@@ -424,6 +434,12 @@ class FormulaicField(object):
 
         if self.has_validator("required"):
             kwargs["required"] = ""
+            settings = self.get_validator_settings("required")
+            if "message" in settings:
+                kwargs["data-parsley-required-message"] = settings["message"]
+
+        if self.has_validator("url"):
+            kwargs["type"] = "url"
 
         if self.has_subfields():
             kwargs["formulaic"] = self

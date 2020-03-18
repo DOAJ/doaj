@@ -56,7 +56,7 @@ FORMS = {
                 "doaj_criteria": "You must answer 'Yes'"
             },
             "validate": [
-                "required"
+                {"required" : {"message" : "You must check this box to continue"}}
             ],
             "contexts" : {
                 "editor" : {

@@ -18,12 +18,18 @@ var formulaic = {
         // an inverted map of conditionals: keys are fields which are conditions of other fields
         this.conditionals = {};
 
+        // internal variable for holding reference to the parsley validator for the form
+        this.activeParsley = false;
+
         this.init = function() {
             // first detect any sychronised fields and register them
             this._registerSynchronised();
 
             // bind any conditional fields
             this._bindConditional();
+
+            // start up the validator
+            this.bounceParsley();
         };
 
         this._registerSynchronised = function() {
@@ -94,6 +100,18 @@ var formulaic = {
                     }
                 }
             }
+        };
+
+        this.destroyParsley = function() {
+            if (this.activeParsley) {
+                this.activeParsley.destroy();
+            }
+            // $(".has-error").removeClass("has-error");
+        };
+
+        this.bounceParsley = function() {
+            this.destroyParsley();
+            this.activeParsley = this.context.parsley();
         };
 
         this.checkConditional = function(element) {
