@@ -11,7 +11,7 @@ If you need to make a change to your application, send an email to feedback@doaj
 
 We cannot reply to emails requesting a status update for applications which are less than three months old.
 
-If you write to us, check first that there is nothing in your spam folder from us or one of our volunteers.
+If you write to us, check first that there is nothing in your spam folder from us or one of our volunteers. Our volunteers may not be emailing from a DOAJ email address: check that their name is here https://doaj.org/volunteers.
 
 Yours faithfully,
 
