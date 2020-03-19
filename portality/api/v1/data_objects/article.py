@@ -172,44 +172,33 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         super(IncomingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_ARTICLE_COERCE, swagger_trans=BASE_ARTICLE_SWAGGER_TRANS)
 
     def _trim_empty_strings(self):
+
+        def _remove_element_if_empty_data(field):
+            if field in bibjson and bibjson[field] == "":
+                del bibjson[field]
+
+        def _remove_from_the_list_if_empty_data(bibjson_element, field=None):
+            if bibjson_element in bibjson:
+                for i in range(len(bibjson[bibjson_element]) - 1, -1, -1):
+                    ide = bibjson[bibjson_element][i]
+                    if field is not None:
+                        if ide[field] == "":
+                            bibjson[bibjson_element].remove(ide)
+                    else:
+                        if ide == "":
+                            bibjson[bibjson_element].remove(ide)
+
         bibjson = self.data["bibjson"]
 
-        if "title" in bibjson and bibjson["title"] == "":
-            del bibjson["title"]
-
-        if "identifier" in bibjson:
-            for ide in bibjson["identifier"]:
-                if ide["id"] == "":
-                    bibjson["identifier"].remove(ide)
-
-        if "year" in bibjson and bibjson["year"] == "":
-            del bibjson["year"]
-
-        if "month" in bibjson and bibjson["month"] == "":
-            del bibjson["month"]
-
-        if "link" in bibjson:
-            for link in bibjson["link"]:
-                if link["url"] == "":
-                    bibjson["link"].remove(link)
-
-        if "abstract" in bibjson and bibjson["abstract"] == "":
-            del bibjson["abstract"]
-
-        if "author" in bibjson:
-            for author in bibjson["author"]:
-                if author["name"] == "":
-                    bibjson["author"].remove(author)
-
-        if "keywords" in bibjson:
-            for keyword in bibjson["keywords"]:
-                if keyword == "":
-                    bibjson["keywords"].remove(keyword)
-
-        if "subject" in bibjson:
-            for subject in bibjson["subject"]:
-                if subject["term"] == "":
-                    bibjson["subject"].remove(subject)
+        _remove_element_if_empty_data("title")
+        _remove_element_if_empty_data("year")
+        _remove_element_if_empty_data("month")
+        _remove_element_if_empty_data("abstract")
+        _remove_from_the_list_if_empty_data("author", "name")
+        _remove_from_the_list_if_empty_data("subject", "term")
+        _remove_from_the_list_if_empty_data("identifier", "id")
+        _remove_from_the_list_if_empty_data("link", "url")
+        _remove_from_the_list_if_empty_data("keywords")
 
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
