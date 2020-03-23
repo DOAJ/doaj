@@ -34,8 +34,7 @@ JOURNAL_STRUCT = {
                 "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
                 "keywords": {"coerce": "unicode", "contains": "field"},
                 "language": {"coerce": "isolang_2letter", "contains": "field"},
-                "license": {"contains": "object"},
-                "subject": {"contains": "object"}
+                "subject": {"coerce": "unicode", "contaisn": "objects"}
             },
             "objects": [
                 "apc",
@@ -44,6 +43,7 @@ JOURNAL_STRUCT = {
                 "deposit_policy",
                 "editorial",
                 "institution",
+                "license",
                 "other_charges",
                 "pid_scheme",
                 "plagiarism",
@@ -89,7 +89,8 @@ JOURNAL_STRUCT = {
                 "deposit_policy": {
                     "fields": {
                         "has_policy": {"coerce": "bool"},
-                        "is_registered": {"coerce": "bool"}
+                        "is_registered": {"coerce": "bool"},
+                        "url": {"coerce": "unicode"}
                     },
                     "lists": {
                         "service": {"coerce": "unicode", "contains": "field"}
@@ -101,8 +102,7 @@ JOURNAL_STRUCT = {
                         "board_url": {"coerce": "unicode"}
                     },
                     "lists": {
-                        "review_process": {"contains": "field", "coerce": "unicode"
-                            #,"allowed_values": ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]
+                        "review_process": {"contains": "field", "coerce": "unicode","allowed_values": ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]
                         },
                     }
                 },
@@ -148,14 +148,6 @@ JOURNAL_STRUCT = {
                     },
                     "lists": {
                         "service": {"coerce": "unicode", "contains": "field"},
-                    },
-                    "structs": {
-                        "policy": {
-                            "fields": {
-                                "name": {"coerce": "unicode"},
-                                "domain": {"coerce": "unicode"}
-                            }
-                        }
                     }
                 },
                 "publisher": {

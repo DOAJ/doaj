@@ -65,12 +65,11 @@ JOURNAL_SOURCE = {
     "last_updated" : "2002-01-01T00:00:00Z",
     "admin": {
         "bulk_upload": "bulk_1234567890",
-        "contact": [
+        "contact":
             {
                 "email": "contact@example.com",
                 "name": "Example Contact"
-            }
-        ],
+            },
         "current_application" : "qwertyuiop",
         "editor_group": "editorgroup",
         "editor": "associate",
@@ -152,7 +151,7 @@ JOURNAL_SOURCE = {
         "preservation" : {
             "has_preservation" : True,
             "service" : ["LOCKSS", "CLOCKSS", "A safe place"],
-            "national_library" : ["Trinity"],
+            "national_library" : "Trinity",
             "url" : "http://digital.archiving.policy"
         },
         "publication_time_weeks" : 8,
@@ -399,8 +398,10 @@ JOURNAL_APIDO_STRUCT = {
                 },
                 "pid_scheme": {
                     "fields": {
-                        "has_pid_scheme": {"coerce": "bool"},
-                        "scheme": {"coerce": "unicode"}
+                        "has_pid_scheme": {"coerce": "bool"}
+                    },
+                    "lists" : {
+                        "scheme": {"coerce": "unicode", "contains" : "field"}
                     }
                 },
                 "plagiarism": {

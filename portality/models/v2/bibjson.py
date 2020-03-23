@@ -262,6 +262,7 @@ class JournalLikeBibJSON(SeamlessMixin):
     @copyright_url.setter
     def copyright_url(self, url):
         self.__seamless__.set_with_struct("copyright.url", url)
+        self.__seamless__.set_with_struct("copyright.author_retains", True)
 
     @property
     def deposit_policy(self):

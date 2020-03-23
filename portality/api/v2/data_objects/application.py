@@ -50,14 +50,14 @@ BASE_APPLICATION_STRUCT = {
                 "eissn":{"coerce": "unicode"},
                 "pissn": {"coerce": "unicode"},
                 "publication_time_weeks": {"coerce": "integer"},
-                "title": {"coerce": "unicode"}
+                "title": {"coerce": "unicode"},
+                "discontinued_date":{"coerce":"unicode"}
             },
             "lists": {
                 "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
                 "keywords": {"coerce": "unicode", "contains": "field"},
                 "language": {"coerce": "isolang_2letter", "contains": "field"},
-                "license": {"contains" : "object"},
-                "subject": {"contains": "object"}
+                "subject": {"coerce": "unicode", "contaisn": "objects"}
             },
             "objects": [
                 "apc",
@@ -66,6 +66,7 @@ BASE_APPLICATION_STRUCT = {
                 "deposit_policy",
                 "editorial",
                 "institution",
+                "license",
                 "other_charges",
                 "pid_scheme",
                 "plagiarism",
@@ -120,13 +121,21 @@ BASE_APPLICATION_STRUCT = {
                 "editorial": {
                     "fields": {
                         "review_url": {"coerce": "url"},
-                        "board_url": {"coerce": "unicode"}
+                        "board_url": {"coerce": "url"}
                     },
                     "lists": {
-                        "review_process": {"contains" : "field", "coerce": "unicode",
-                                           #"allowed_values": ["Editorial review", "Peer review", "Blind peer review",
-                                           #                   "Double blind peer review", "Open peer review", "None"]
-                                           },
+                        "review_process": {"contains" : "field", "coerce": "unicode", "allowed_values": ["Editorial "
+                                                                                                         "review",
+                                                                                                         "Peer "
+                                                                                                         "review",
+                                                                                                         "Blind peer "
+                                                                                                         "review",
+                                                                                                         "Double "
+                                                                                                         "blind peer "
+                                                                                                         "review",
+                                                                                                         "Open peer "
+                                                                                                         "review",
+                                                                                                         "None"]},
                     }
                 },
                 "institution": {
@@ -148,13 +157,15 @@ BASE_APPLICATION_STRUCT = {
                 "other_charges": {
                     "fields": {
                         "has_other_charges": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"}
+                        "url": {"coerce": "url"}
                     }
                 },
                 "pid_scheme": {
                     "fields": {
                         "has_pid_scheme": {"coerce": "bool"},
-                        "scheme": {"coerce": "unicode"}
+                    },
+                    "lists" : {
+                        "scheme": {"coerce": "unicode", "contains" : "field"}
                     }
                 },
                 "plagiarism": {
@@ -171,6 +182,14 @@ BASE_APPLICATION_STRUCT = {
                     },
                     "lists": {
                         "service": {"coerce": "unicode", "contains": "field"},
+                    },
+                    "structs" : {
+                        "policy" : {
+                            "fields" : {
+                                "name" : {"coerce": "unicode"},
+                                "domain" : {"coerce" : "unicode"}
+                            }
+                        }
                     }
                 },
                 "publisher": {

@@ -185,8 +185,14 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_editor(self):
         self.__seamless__.delete('admin.editor')
 
-    def contacts(self):
-        return self.__seamless__.get_list("admin.contact")
+    def contact_name(self):
+        return self.__seamless__.get_single("admin.contact.name")
+
+    def contact_email(self):
+        return self.__seamless__.get_single("admin.contact.email")
+
+    def set_contact(self):
+        return self.__seamless__.set_with_struct()
 
     def get_latest_contact_name(self):
         try:

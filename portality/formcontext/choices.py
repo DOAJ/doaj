@@ -335,6 +335,26 @@ class Choices(object):
         return [cls.FALSE]
 
     @classmethod
+    def deposit_policy_url_optional(cls):
+        return [cls.FALSE]
+
+    @classmethod
+    def other_charges(cls):
+        return cls.binary()
+
+    @classmethod
+    def other_charges_url_optional(cls):
+        return [cls.FALSE]
+
+    @classmethod
+    def orcid(cls):
+        return cls.binary()
+
+    @classmethod
+    def i40c_open_citations(cls):
+        return cls.binary()
+
+    @classmethod
     def publishing_rights(cls):
         return cls.binary()
 
