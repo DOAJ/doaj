@@ -125,10 +125,7 @@ class ListWidgetWithSubfields(object):
 
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
-        #required = False
-        #if required in kwargs:
-        #    required = True
-        #    del kwargs["required"]
+        fl = kwargs.pop("formulaic", None)
         html = ['<%s %s>' % (self.html_tag, html_params(**kwargs))]
         for subfield in field:
             if self.prefix_label:
@@ -136,10 +133,15 @@ class ListWidgetWithSubfields(object):
             else:
                 html.append('<li>%s %s' % (subfield(**kwargs), subfield.label))
 
-            if "formulaic" in kwargs:
-                sfs = kwargs["formulaic"].get_subfields(subfield._value())
+            if fl is not None:
+                sfs = fl.get_subfields(subfield._value())
                 for sf in sfs:
+                    style = ""
+                    if sf.has_conditional:
+                        style = " style=display:none "
+                    html.append('<span class="{x}_container" {y}>'.format(x=sf.name, y=style))
                     html.append(sf.render_form_control())
+                    html.append("</span>")
 
             html.append("</li>")
 
@@ -229,7 +231,7 @@ class Formulaic(object):
             expanded_fieldsets.append(fieldset_def)
 
         context_def["fieldsets"] = expanded_fieldsets
-        return FormulaicContext(context_def, self._wtforms_map, self._function_map)
+        return FormulaicContext(context_def, self._wtforms_map, self._function_map, self)
 
     def _process_fields(self, context_name, field_names):
         field_defs = []
@@ -240,13 +242,14 @@ class Formulaic(object):
                 raise FormulaicException("Field '{x}' is referenced but not defined".format(x=fn))
 
             # check for subfields
+            """
             for o in field_def.get("options", []):
                 if isinstance(o, str):  # it's a function reference
                     continue
                 subfields = o.get("subfields")
                 if subfields is not None:
                     o["subfields"] = self._process_fields(context_name, subfields)
-
+            """
             # filter for context
             context_overrides = field_def.get("contexts", {}).get(context_name)
             if context_overrides is not None:
@@ -263,10 +266,11 @@ class Formulaic(object):
 
 
 class FormulaicContext(object):
-    def __init__(self, definition, wtforms_map, function_map):
+    def __init__(self, definition, wtforms_map, function_map, parent):
         self._definition = definition
         self._wtforms_map = wtforms_map
         self._function_map = function_map
+        self._formulaic = parent
 
     def wtform_class(self):
         class TempForm(Form):
@@ -290,15 +294,16 @@ class FormulaicContext(object):
         klazz = self.wtform_class()
         return klazz(form_data)
 
-    def get(self, field_name):
-        """returns the first instance of the field, only really for use in testing"""
+    def get(self, field_name, parent=None):
+        if parent is None:
+            parent = self
         for fs in self._definition.get("fieldsets", []):
             for f in fs.get("fields", []):
                 if f.get("name") == field_name:
-                    return FormulaicField(f, self._wtforms_map, self._function_map)
+                    return FormulaicField(f, self._wtforms_map, self._function_map, parent)
 
     def fieldsets(self):
-        return [FormulaicFieldset(fs, self._wtforms_map, self._function_map) for fs in self._definition.get("fieldsets", [])]
+        return [FormulaicFieldset(fs, self._wtforms_map, self._function_map, self) for fs in self._definition.get("fieldsets", [])]
 
     @property
     def ui_settings(self):
@@ -322,14 +327,15 @@ class FormulaicContext(object):
 
 
 class FormulaicFieldset(object):
-    def __init__(self, definition, wtforms_map, function_map):
+    def __init__(self, definition, wtforms_map, function_map, parent):
         self._definition = definition
         self._wtforms_map = wtforms_map
         self._function_map = function_map
+        self._formulaic_context = parent
 
     def fields(self):
-        return [FormulaicField(f, self._wtforms_map, self._function_map) for f in
-                self._definition.get("fields", [])]
+        return [FormulaicField(f, self._wtforms_map, self._function_map, self) for f in
+                self._definition.get("fields", []) if not f.get("subfield")]
 
     def __getattr__(self, name):
         if hasattr(self.__class__, name):
@@ -342,12 +348,13 @@ class FormulaicFieldset(object):
 
 
 class FormulaicField(object):
-    def __init__(self, definition, wtforms_map, function_map):
+    def __init__(self, definition, wtforms_map, function_map, parent):
         self._definition = definition
         self._wtforms_map = wtforms_map
         self._function_map = function_map
         self._wtform_field = None
         self._wtforms_field_bound = None
+        self._formulaic_fieldset = parent
 
     def __getattr__(self, name):
         if hasattr(self.__class__, name):
@@ -384,6 +391,14 @@ class FormulaicField(object):
                     return validator[name]
         return False
 
+    def validators(self):
+        for validator in self._definition.get("validate", []):
+            if isinstance(validator, str):
+                yield validator, {}
+            if isinstance(validator, dict):
+                name = list(validator.keys())[0]
+                yield name, validator[name]
+
     @property
     def has_conditional(self):
         return len(self._definition.get("conditional", [])) > 0
@@ -411,8 +426,11 @@ class FormulaicField(object):
     def get_subfields(self, option_value):
         for option in self.explicit_options:
             if option.get("value") == option_value:
-                return [FormulaicField(sfs, self._wtforms_map, self._function_map) for sfs in
-                        option.get("subfields", [])]
+                sfs = []
+                for sf in option.get("subfields", []):
+                    subimpl = self._formulaic_fieldset._formulaic_context.get(sf, self._formulaic_fieldset)
+                    sfs.append(subimpl)
+                return sfs
 
     def has_subfields(self):
         for option in self.explicit_options:
@@ -427,22 +445,25 @@ class FormulaicField(object):
         wtf = self.wtforms_field_bound()
         return wtf.errors
 
-    def render_form_control(self):
+    def render_form_control(self, custom_args=None):
         kwargs = deepcopy(self._definition.get("attr", {}))
         if "placeholder" in self._definition.get("help", {}):
             kwargs["placeholder"] = self._definition["help"]["placeholder"]
 
-        if self.has_validator("required"):
-            kwargs["required"] = ""
-            settings = self.get_validator_settings("required")
-            if "message" in settings:
-                kwargs["data-parsley-required-message"] = settings["message"]
-
-        if self.has_validator("url"):
-            kwargs["type"] = "url"
+        render_functions = self._function_map.get("validate", {}).get("render", {})
+        for validator, settings in self.validators():
+            if validator in render_functions:
+                function_path = render_functions[validator]
+                fn = plugin.load_function(function_path)
+                fn(settings, kwargs)
 
         if self.has_subfields():
             kwargs["formulaic"] = self
+
+        # allow custom args to overwite all other arguments
+        if custom_args is not None:
+            for k, v in custom_args.items():
+                kwargs[k] = v
 
         wtf = self.wtforms_field_bound()
         return wtf(**kwargs)
@@ -466,7 +487,7 @@ class FormulaicField(object):
         if "default" in field:
             kwargs["default"] = field["default"]
         if "options" in field:
-            kwargs["choices"] = cls._options2choices(field["options"], function_map)
+            kwargs["choices"] = cls._options2choices(field["options"], function_map.get("options", {}))
 
         return klazz(**kwargs)
 

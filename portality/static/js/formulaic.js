@@ -27,6 +27,9 @@ var formulaic = {
         // hold references to instantiated widgets
         this.activeWidgets = {};
 
+        // references to exclusive checkboxes
+        this.exclusive = {};
+
         this.init = function() {
             // first detect any sychronised fields and register them
             this._registerSynchronised();
@@ -36,6 +39,9 @@ var formulaic = {
 
             // attach any widgets to the form
             this._applyWidgets();
+
+            // find any checkboxes that
+            this._bindExclusiveCheckboxes();
 
             // start up the validator
             this.bounceParsley();
@@ -118,15 +124,27 @@ var formulaic = {
                     var fieldDef = fieldset.fields[j];
                     if (fieldDef.hasOwnProperty("widgets")) {
                         for (var k = 0; k < fieldDef.widgets.length; k++) {
-                            var widgetName = fieldDef.widgets[k];
+                            var widgetDef = fieldDef.widgets[k];
+
+                            var widgetName = false;
+                            var widgetArgs = {};
+                            if (typeof widgetDef === "string") {
+                                widgetName = widgetDef
+                            } else {
+                                widgetName = Object.keys(widgetDef)[0];
+                                widgetArgs = widgetDef[widgetName];
+                            }
+
                             var widget = this._getWidget(widgetName);
                             if (!widget) {
                                 continue;
                             }
                             var active = widget({
                                 fieldDef: fieldDef,
-                                formulaic: this
+                                formulaic: this,
+                                args: widgetArgs
                             });
+
                             if (this.activeWidgets.hasOwnProperty(fieldDef.name)) {
                                 this.activeWidgets[fieldDef.name].push(active);
                             } else {
@@ -137,6 +155,64 @@ var formulaic = {
                     }
                 }
             }
+        };
+
+        this._bindExclusiveCheckboxes = function() {
+            // first register all the exclusive elements and values
+            for (var i = 0; i < this.fieldsets.length; i++) {
+                var fieldset = this.fieldsets[i];
+                for (var j = 0; j < fieldset.fields.length; j++) {
+                    var field = fieldset.fields[j];
+                    if (field.hasOwnProperty("options")) {
+                        for (var k = 0; k < field.options.length; k++) {
+                            var opt = field.options[k];
+                            if (opt.hasOwnProperty("exclusive") && opt.exclusive) {
+                                if (this.exclusive.hasOwnProperty(field.name)) {
+                                    if ($.inArray(opt.value, this.exclusive) === -1) {
+                                        this.exclusive[field.name].push(opt.value);
+                                    }
+                                } else {
+                                    this.exclusive[field.name] = [opt.value];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            var exclusiveFields = Object.keys(this.exclusive);
+            for (var i = 0; i < exclusiveFields.length; i++) {
+                var name = exclusiveFields[i];
+                var elements = this._controlSelect({name: name});
+                edges.on(elements, "change.Exclusive", this, "checkExclusive");
+            }
+
+        };
+
+        this.checkExclusive = function(element) {
+            var jqel = $(element);
+            var name = jqel.attr("name");
+            var value = jqel.val();
+
+            if (!this.exclusive.hasOwnProperty(name)) {
+                return;
+            }
+            var values = this.exclusive[name];
+            if ($.inArray(value, values) === -1) {
+                return;
+            }
+
+            var checked = jqel.is(":checked");
+            var elements = this._controlSelect({name: name});
+            elements.each(function() {
+                var that = $(this);
+                if (checked && that.val() !== value) {
+                    that.prop("checked", false);
+                    that.prop('disabled', true);
+                } else {
+                    that.prop('disabled', false);
+                }
+            });
         };
 
         this._getWidget = function(widgetName) {
@@ -193,13 +269,19 @@ var formulaic = {
             var definition = this.getFieldDefinition(params);
             for (var i = 0; i < definition.conditional.length; i++) {
                 var condField = definition.conditional[i];
-                var element = this._controlSelect({name: condField.field});
-                var type = element.attr("type");
+                var elements = this._controlSelect({name: condField.field});
+                var type = elements.attr("type");
                 var val = condField.value;
 
                 if (type === "radio" || type === "checkbox") {
-                    var checked = element.is(":checked");
-                    if (checked !== val) {
+                    var checkedValues = [];
+                    elements.each(function() {
+                        var that = $(this);
+                        if (that.is(":checked")) {
+                            checkedValues.push(that.val());
+                        }
+                    });
+                    if ($.inArray(val, checkedValues) === -1) {
                         return false;
                     }
                 }
@@ -304,6 +386,62 @@ var formulaic = {
                     this.link.remove();
                     this.link = false;
                 }
+            };
+
+            this.init();
+        },
+
+        newSelect : function(params) {
+            return edges.instantiate(formulaic.widgets.Select, params);
+        },
+        Select : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+            this.args = params.args;    // TODO: no args currently supported
+
+            this.ns = "formulaic-select";
+            this.elements = false;
+
+            this.init = function() {
+                this.elements = this.form._controlSelect({name: this.fieldDef.name});
+                this.elements.select2({
+                    allowClear: true
+                });
+            };
+
+            this.init();
+        },
+
+        newTagList : function(params) {
+            return edges.instantiate(formulaic.widgets.TagList, params);
+        },
+        TagList : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+            this.args = params.args;
+
+            this.ns = "formulaic-taglist";
+
+            this.init = function() {
+
+                var minInputLength = edges.getParam(this.args.minimumInputLength, 1);
+                var tokenSeparators = edges.getParam(this.args.tokenSeparators, [","]);
+                var maximumSelectionSize = edges.getParam(this.args.maximumSelectionSize, 6);
+                var stopWords = edges.getParam(this.args.stopWords, []);
+
+                this.elements = this.form._controlSelect({name: this.fieldDef.name});
+                this.elements.select2({
+                    minimumInputLength: minInputLength,
+                    tags: [],
+                    tokenSeparators: tokenSeparators,
+                    maximumSelectionSize: maximumSelectionSize,
+                    createSearchChoice : function(term) {   // NOTE: if we update select2, this has to change
+                        if ($.inArray(term, stopWords) !== -1) {
+                            return null;
+                        }
+                        return {id: $.trim(term), text: $.trim(term)};
+                    }
+                });
             };
 
             this.init();

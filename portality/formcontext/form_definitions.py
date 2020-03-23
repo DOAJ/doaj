@@ -32,7 +32,8 @@ FORMS = {
             "label" : "Editorial",
             "fields" : [
                 "submission_time",
-                "peer_review"
+                "peer_review",
+                "peer_review_other"
             ]
         },
         "public_priority": {
@@ -70,7 +71,7 @@ FORMS = {
         "oa_statement_url" : {
             "label" : "What is the URL for the journal's open access statement?",
             "input" : "text",
-            "conditional" : [{"field" : "boai", "value" : True}],
+            "conditional" : [{"field" : "boai", "value" : "y"}],
             "help": {
                 "placeholder" : "OA Statement URL",
                 "description": "Must start with https://, http://, or www.",
@@ -106,7 +107,7 @@ FORMS = {
                 "required"
             ],
             "widgets" : [
-                {"autocomplete" : {"field" : "country"}}
+                {"select" : {}}
             ],
             "contexts" : {
                 "editor" : {
@@ -115,6 +116,9 @@ FORMS = {
                 "associate_editor" : {
                     "disabled" : True
                 }
+            },
+            "attr" : {
+                "class" : "input-xlarge"
             }
         },
         "keywords" : {
@@ -133,6 +137,17 @@ FORMS = {
             "postprocessing" : [
                 "to_lower"
             ],
+            "widgets" : [
+                {
+                    "taglist" : {
+                        "maximumSelectionSize" : 6,
+                        "stopWords" : ["a", "and"]
+                    }
+                }
+            ],
+            "attr" : {
+                "class" : "input-xlarge"
+            },
             "contexts" : {
                 "editor" : {
                     "disabled" : True
@@ -208,10 +223,12 @@ FORMS = {
             ]
         },
         "peer_review_other": {
+            "subfield" : True,
             "input" : "text",
             "help" : {
                 "placeholder" : "Other peer review"
             },
+            "conditional" : [{"field" : "peer_review", "value" : "other"}],
             "asynchronous_warning" : [
                 {"warn_on_value" : {"value" : "None"}}
             ]
@@ -219,6 +236,7 @@ FORMS = {
     }
 
 }
+
 
 def iso_country_list():
     from portality.formcontext.choices import Choices
@@ -228,10 +246,40 @@ def iso_country_list():
     return cl
 
 
+def render_required(settings, args):
+    args["required"] = ""
+    if "message" in settings:
+        args["data-parsley-required-message"] = settings["message"]
+
+
+def render_is_url(settings, args):
+    args["type"] = "url"
+
+
+def render_int_range(settings, args):
+    args["data-parsley-type"] = "digits"
+    if "gte" in settings:
+        args["data-parsley-min"] = settings.get("gte")
+    if "lte" in settings:
+        args["data-parsley-max"] = settings.get("lte")
+
+
 PYTHON_FUNCTIONS = {
-    "iso_country_list" : "portality.formcontext.form_definitions.iso_country_list",
-    "required" : "portality.formcontext.validators.required",
-    "is_url" : "portality.formcontext.validators.is_url",
+    "options" : {
+        "iso_country_list" : "portality.formcontext.form_definitions.iso_country_list",
+    },
+    "validate" : {
+        "render" : {
+            "required" : "portality.formcontext.form_definitions.render_required",
+            "is_url" : "portality.formcontext.form_definitions.render_is_url",
+            "int_range" : "portality.formcontext.form_definitions.render_int_range",
+        },
+        "apply" : {
+
+        }
+    },
+
+
     "all_urls_the_same" : "portality.formcontext.validators.all_urls_the_same",
     "required_value" : "portality.formcontext.validators.required_value",
     "max_tags" : "portality.formcontext.validators.max_tags",
@@ -239,7 +287,9 @@ PYTHON_FUNCTIONS = {
     "to_lower" : "portality.formcontext.postprocessing.to_lower",
     "int_range" : "portality.formcontext.validators.int_range",
     "warn_on_value" : "portality.formcontext.validators.warn_on_value",
-    "clickable_url" : "portality.formcontext.widgets.clickable_url"
+    "clickable_url" : "portality.formcontext.widgets.clickable_url",
+
+    "required" : "portality.formcontext.validators.required",
 }
 
 
@@ -251,7 +301,9 @@ JAVASCRIPT_FUNCTIONS = {
     "stop_words" : "doaj.forms.validators.stopWords",
     "int_range" : "doaj.forms.validators.intRange",
     "autocomplete" : "doaj.forms.widgets.autocomplete",
-    "clickable_url" : "formulaic.widgets.newClickableUrl"
+    "clickable_url" : "formulaic.widgets.newClickableUrl",
+    "select" : "formulaic.widgets.newSelect",
+    "taglist" : "formulaic.widgets.newTagList"
 }
 
 if __name__ == "__main__":
