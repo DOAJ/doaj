@@ -401,13 +401,18 @@ class JournalLikeBibJSON(SeamlessMixin):
     @property
     def preservation_services(self):
         pres = self.preservation
-        ret = []
         if "service" in pres:
-            ret += pres["service"]
+            return pres["service"]
+        else:
+            return None
+
+    @property
+    def preservation_library (self):
+        pres = self.preservation
         if "national_library" in pres:
-            for anl in pres["national_library"]:
-                ret.append(["A national library", anl])
-        return ret
+            return pres["national_library"]
+        return None
+
 
     def set_preservation(self, services, policy_url):
         obj = {}
@@ -429,13 +434,22 @@ class JournalLikeBibJSON(SeamlessMixin):
 
         self.__seamless__.set_with_struct("preservation", obj)
 
-    def add_preservation(self, service):
-        if isinstance(service, list):
-            k, v = service
-            if k.lower() == "a national library":
-                self.__seamless__.add_to_list_with_struct("preservation.national_library", v)
-        else:
-            self.__seamless__.add_to_list_with_struct("preservation.service", service)
+    def add_preservation(self, service, library):
+        if service is not None:
+            for s in service:
+                self.__seamless__.add_to_list_with_struct("preservation.service", s)
+        if library is not None:
+            self.__seamless__.set_with_struct("preservation.national_library", library)
+        if self.preservation_services is not None or self.preservation_library is not None:
+            self.has_preservation = True
+
+    @property
+    def has_preservation(self):
+        return self.__seamless__.get_single("preservation.has_preservation")
+
+    @has_preservation.setter
+    def has_preservation(self, has_preservation):
+        return self.__seamless__.set_single("preservation.has_preservation", has_preservation)
 
     @property
     def preservation_url(self):
@@ -460,6 +474,22 @@ class JournalLikeBibJSON(SeamlessMixin):
     @publisher_country.setter
     def publisher_country(self, country):
         self.__seamless__.set_with_struct("publisher.country", country)
+
+    @property
+    def review_process(self):
+        return self.__seamless__.editorial.review_proccess[0]
+
+    @review_process.setter
+    def review_process(self, review_process):
+        self.__seamless__.add_to_list_with_struct("editorial.review_process", review_process)
+
+    @property
+    def review_process_url(self):
+        return self.__seamless__.editorial.review_url
+
+    @review_process_url.setter
+    def review_process_url(self, url):
+        self.__seamless__.set_with_struct("editorial.review_url", url)
 
     @property
     def oa_statement_url(self):
@@ -516,6 +546,10 @@ class JournalLikeBibJSON(SeamlessMixin):
     @waiver_url.setter
     def waiver_url(self, url):
         self.__seamless__.set_with_struct("waiver.url", url)
+
+    def add_waiver_url(self, url):
+        self.has_waiver = True
+        self.waiver_url = url
 
     #####################################################
     ## External utility functions
@@ -762,9 +796,9 @@ class JournalLikeBibJSON(SeamlessMixin):
     #####################################################
     ## Incompatible functions from v1
 
-    def set_license(self, license_title, license_type, url=None, version=None, open_access=None,
+    def set_license(self, license_type, url=None, version=None, open_access=None,
                     by=None, sa=None, nc=None, nd=None,
-                    embedded=None, embedded_example_url=None):
+                    display=None, display_example_url=None):
         """
         # FIXME: why is there not a "remove license" function
         if not license_title and not license_type:  # something wants to delete the license

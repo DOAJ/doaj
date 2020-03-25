@@ -57,7 +57,8 @@ BASE_APPLICATION_STRUCT = {
                 "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
                 "keywords": {"coerce": "unicode", "contains": "field"},
                 "language": {"coerce": "isolang_2letter", "contains": "field"},
-                "subject": {"coerce": "unicode", "contaisn": "objects"}
+                "license" : {"coerce": "unicode", "contains": "object"},
+                "subject": {"coerce": "unicode", "contains": "object"}
             },
             "objects": [
                 "apc",
@@ -66,7 +67,6 @@ BASE_APPLICATION_STRUCT = {
                 "deposit_policy",
                 "editorial",
                 "institution",
-                "license",
                 "other_charges",
                 "pid_scheme",
                 "plagiarism",
@@ -112,7 +112,8 @@ BASE_APPLICATION_STRUCT = {
                 "deposit_policy": {
                     "fields": {
                         "has_policy": {"coerce": "bool"},
-                        "is_registered": {"coerce": "bool"}
+                        "is_registered": {"coerce": "bool"},
+                        "url" : {"coerce": "url"}
                     },
                     "lists": {
                         "service": {"coerce": "unicode", "contains": "field"}
@@ -176,7 +177,7 @@ BASE_APPLICATION_STRUCT = {
                 },
                 "preservation": {
                     "fields": {
-                        "has_preservation": {"coerce": "unicode"},
+                        "has_preservation": {"coerce": "bool"},
                         "national_library": {"coerce": "unicode"},
                         "url": {"coerce": "url"}
                     },

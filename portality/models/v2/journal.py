@@ -209,7 +209,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return contact.get("email", "")
 
     def add_contact(self, name, email):
-        self.__seamless__.add_to_list_with_struct("admin.contact", {"name" : name, "email" : email})
+        self.__seamless__.set_with_struct("admin.contact", {"name" : name, "email" : email})
 
     def remove_contacts(self):
         self.__seamless__.delete("admin.contact")

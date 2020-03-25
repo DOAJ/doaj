@@ -123,8 +123,8 @@ class TestCrudApplication(DoajTestCase):
         assert a.id != "ignore_me"
         assert a.created_date != "2001-01-01T00:00:00Z"
         assert a.last_updated != "2001-01-01T00:00:00Z"
-        assert a.admin.applicant.get("name") == "Tester"
-        assert a.admin.applicant.get("email") == "test@test.com"
+        assert a['admin']['applicant']["name"] == "Tester"
+        assert a['admin']['applicant']["email"] == "test@test.com"
         assert a.owner == "test"
         assert a.suggested_on is not None
         assert len(a.bibjson().keywords) > 1
@@ -133,8 +133,8 @@ class TestCrudApplication(DoajTestCase):
         assert a.application_status == "pending"
         assert a.owner == "test"
 
-        preservation = a.bibjson().perservation
-        assert len(preservation.get("service")) == 2
+        preservation = a.bibjson().preservation
+        assert len(preservation.get("service")) == 3, "expected 3, got: {}".format(len(preservation.get("service")))
         assert preservation.get("national_library") == "Trinity"
         assert "CLOCKSS" in preservation.get("service")
         assert "LOCKSS" in preservation.get("service")

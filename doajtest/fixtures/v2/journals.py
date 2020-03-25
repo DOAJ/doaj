@@ -109,7 +109,8 @@ JOURNAL_SOURCE = {
         "deposit_policy" : {
             "has_policy" : True,
             "is_registered" : True,
-            "service" : ["Sherpa/Romeo", "Store it"]
+            "service" : ["Sherpa/Romeo", "Store it"],
+            "url": "http://deposit.policy"
         },
         "discontinued_date" : "2010-01-01",
         "editorial" : {
@@ -203,7 +204,6 @@ JOURNAL_INFO = {
     "submission_charges_url" : "http://submission.com",
     "submission_charges_amount": 4,
     "submission_charges_currency": "USD",
-    "waiver_policy": "True",
     "waiver_policy_url": "http://waiver.policy",
     "digital_archiving_policy": ["LOCKSS", "CLOCKSS",
                                  "A national library", "Other"],
@@ -357,7 +357,8 @@ JOURNAL_APIDO_STRUCT = {
                 "deposit_policy": {
                     "fields": {
                         "has_policy" : {"coerce" : "bool"},
-                        "is_registered": {"coerce" : "bool"}
+                        "is_registered": {"coerce" : "bool"},
+                        "url": {"coerce" : "unicode"}
                     },
                     "lists" : {
                         "service" : {"coerce": "unicode", "contains": "field"}
