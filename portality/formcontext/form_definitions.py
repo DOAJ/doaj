@@ -301,6 +301,7 @@ JAVASCRIPT_FUNCTIONS = {
     "stop_words" : "doaj.forms.validators.stopWords",
     "int_range" : "doaj.forms.validators.intRange",
     "autocomplete" : "doaj.forms.widgets.autocomplete",
+
     "clickable_url" : "formulaic.widgets.newClickableUrl",
     "select" : "formulaic.widgets.newSelect",
     "taglist" : "formulaic.widgets.newTagList"

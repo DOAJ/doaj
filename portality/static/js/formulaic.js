@@ -47,6 +47,10 @@ var formulaic = {
             this.bounceParsley();
         };
 
+        this.save = function() {
+            var data = this.context.serialize();
+        };
+
         this._registerSynchronised = function() {
             var fieldRegister = [];
             for (var i = 0; i < this.fieldsets.length; i++) {
