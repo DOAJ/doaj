@@ -152,9 +152,9 @@ class ArticleService(object):
                 if update_article_id is None:
                     update_article_id = duplicate.id
 
-                if update_article_id is not None and duplicate.id != update_article_id:
+                if duplicate.id != update_article_id:
                     raise exceptions.DuplicateArticleException()
-                elif update_article_id is not None and duplicate.id == update_article_id:
+                else:
                     doi_or_ft_updated = self._doi_or_fulltext_updated(article, update_article_id)
                     if doi_or_ft_updated:
                         if account.has_role("admin"):

@@ -6,6 +6,16 @@ from datetime import datetime
 class BLLArticleMockFactory(object):
 
     @classmethod
+    def doi_or_fulltext_updated(cls, doi_updated, ft_updated):
+
+        result = doi_updated and ft_updated
+
+        def mock(new_article, update_id):
+            return result
+
+        return mock
+
+    @classmethod
     def discover_duplicates(cls, doi_duplicates=0, fulltext_duplicates=0, overlap=0):
 
         if overlap > doi_duplicates or overlap > fulltext_duplicates:
@@ -77,17 +87,16 @@ class BLLArticleMockFactory(object):
         if not return_none and not merge_conflict:
             source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
             article = Article(**source)
-            article.set_id()
 
         def mock(*args, **kwargs):
             if merge_conflict:
                 raise ArticleMergeConflict()
 
-            supplied_article = args[0]
             if given_article_id is not None:
-                if given_article_id == supplied_article.id:
-                    return article
+                article.set_id(given_article_id)
+                return article
             else:
+                article.set_id()
                 return article
 
         return mock

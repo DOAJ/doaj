@@ -11,7 +11,7 @@ from doajtest.mocks.bll_article import BLLArticleMockFactory
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "create_article", "test_id",
-                               {"test_id" : []})
+                               {"test_id" : ["458","459"]})
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,
@@ -27,11 +27,13 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         self._is_legitimate_owner = self.svc.is_legitimate_owner
         self._issn_ownership_status = self.svc.issn_ownership_status
         self._get_duplicate = self.svc.get_duplicate
+        self.__doi_or_fulltext_updated = self.svc._doi_or_fulltext_updated
 
     def tearDown(self):
         self.svc.is_legitimate_owner = self._is_legitimate_owner
         self.svc.issn_ownership_status = self._issn_ownership_status
         self.svc.get_duplicate = self._get_duplicate
+        self.svc._doi_or_fulltext_updated = self.__doi_or_fulltext_updated
         super(TestBLLArticleCreateArticle, self).tearDown()
 
     @parameterized.expand(load_cases)
@@ -112,15 +114,15 @@ class TestBLLArticleCreateArticle(DoajTestCase):
 
             if update_article_id_arg != "none":
 
-                update_article_id = original_id
                 another_source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn,
                                                                            doi=this_doi,
                                                                            fulltext=this_fulltext)
                 original = Article(**another_source)
-                original.set_id(original_id)
+                original.save(blocking=True)
+                update_article_id = original.id
 
                 if update_article_id_arg == "doi_ft_not_changed":
-                    original.bibjson().title = "This needs to be updated"
+                    article.bibjson().title = "This needs to be updated"
 
                 if update_article_id_arg == "doi_ft_changed_duplicate":
                     duplicate_source = ArticleFixtureFactory.make_article_source(eissn="0000-0001", pissn="0000-000X",
@@ -138,8 +140,8 @@ class TestBLLArticleCreateArticle(DoajTestCase):
                     article.bibjson().remove_identifiers("doi")
                     article.bibjson().add_identifier("doi", "10.1234/updated")
 
-                original.save(blocking=True)
-
+            else:
+                update_article_id = None
 
 
 
@@ -165,8 +167,15 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         else:
             gd_mock = BLLArticleMockFactory.get_duplicate(return_none=True)
         self.svc.get_duplicate = gd_mock
-
         mock_article = self.svc.get_duplicate(article)
+
+        doift_mock = None
+        if update_article_id_arg == "doi_ft_changed_duplicate" or update_article_id_arg == "doi_ft_changed_ok":
+            doift_mock = BLLArticleMockFactory.doi_or_fulltext_updated(True,True)
+        else:
+            doift_mock = BLLArticleMockFactory.doi_or_fulltext_updated(False, False)
+
+        self.svc._doi_or_fulltext_updated = doift_mock
 
         ###########################################################
         # Execution
