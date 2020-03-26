@@ -1,0 +1,137 @@
+html {
+  font-size: 16px;
+}
+
+/* Typography */
+
+body {
+  background-color: #FEFBF8;
+  color: #282624;
+  font-family: 'Source Sans Pro', sans-serif;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typescale in minor third */
+h1, h2, h3, h4, h5, h6 {
+    margin: 2.75rem 0 1rem;
+    font-family: 'Spectral', serif;
+    letter-spacing: -0.04em;
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+h1 {
+    font-size: 2.488em;
+}
+
+h2 {
+    font-size: 2.074em;
+}
+
+h3 {
+    font-size: 1.728em;
+}
+
+h4 {
+    font-size: 1.44em;
+}
+
+h5 {
+    font-size: 1.2em;
+}
+
+h6, small {
+    font-size: 0.833em;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 1.25em;
+}
+
+a {
+  text-decoration: underline;
+  color: #282624;
+}
+
+/* Header */
+
+header {
+  background-color: #9A4B00;
+}
+
+header h1 {
+  margin-top: 0;
+}
+
+header nav {
+  text-transform: uppercase;
+  font-size: smaller;
+}
+
+header nav:first-child a {
+  color: #FEFBF8;
+}
+
+header nav:nth-child(2) {
+  background-color: #FEFBF8;
+}
+
+header a {
+  text-decoration: none;
+}
+
+/* Homepage main */
+
+main > section:first-child,
+main > section:nth-child(4) {
+  background-color: rgba(154, 75, 0, 0.05);
+}
+
+main section h2,
+main section h3,
+main section h4 {
+  margin-top: 0;
+}
+
+/* Aside */
+
+aside {
+  font-size: smaller;
+}
+
+/* Footer */
+
+footer {
+  background-color: #282624;
+  color: #FEFBF8;
+  font-size: 0.85rem;
+}
+
+footer h2 {
+  text-transform: uppercase;
+  font-family: 'Source Sans Pro', sans-serif;
+  letter-spacing: 0.01em;
+  font-size: 1em;
+}
+
+footer p {
+  margin-bottom: 0;
+}
+
+footer ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+footer li {
+  margin-bottom: 1em;
+}
+
+footer a {
+  text-decoration: none;
+  color: #FEFBF8;
+}
