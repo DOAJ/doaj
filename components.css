@@ -1,0 +1,223 @@
+/* Logo */
+.logo-wrapper {
+  padding: 10px 0;
+}
+
+.logo {
+  height: 30px;
+}
+
+/* Nav */
+.nav-top ul {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-bottom {
+  background-color: #FEFBF8;
+}
+
+.nav-bottom ul {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+}
+
+.nav-bottom li:last-child {
+  margin-left: 40%;
+}
+
+.nav-bottom a {
+  display: block;
+  line-height: 50px;
+  color: #282624;
+}
+
+/* Themed posts */
+
+.themed-posts article a {
+  display: block;
+  padding: 0.85em 0;
+  margin-bottom: 1em;
+  border-top: 1px dashed #9A4B00;
+  text-decoration: none;
+}
+
+
+/* New journals */
+
+.new-journals ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.new-journals li:nth-child(4n+1) {
+  clear: both;
+}
+
+.new-journals li a {
+  display: block;
+  padding: 0.85em 0;
+  margin-bottom: 1em;
+  border-top: 1px dashed #9A4B00;
+  text-decoration: none;
+}
+
+/* Stats */
+
+.stats {
+  padding-right: 3em;
+  border-right: 1px dashed #F68112;
+}
+
+.stat {
+  display: block;
+  font-family: 'Spectral', serif;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.desc {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: rgba(40, 38, 36, 0.75);
+}
+
+/* Blog */
+
+.latest-post {
+  box-shadow: none;
+  padding: 3rem;
+  position: relative;
+  display: inline-block;
+  border: 1px solid #9A4B00;
+  top: 0.5em;
+  bottom: -0.5em;
+  right: -0.5em;
+  left: 0.5em;
+  transition: all 90ms ease-in;
+  text-decoration: none;
+  background-color: #9A4B00;
+  color: #FEFBF8;
+  font-size: 1.15em;
+}
+
+.latest-post:before {
+  outline: 1px solid #9A4B00;
+  background: #FEFBF8;
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: -0.5em;
+  bottom: 0.5em;
+  right: 0.5em;
+  left: -0.5em;
+  z-index: -5;
+  transition: all 90ms ease-in;
+}
+
+.post-tag {
+  margin: 0 0 0.5em 0;
+  text-transform: uppercase;
+  font-size: 0.75em;
+}
+
+
+/* Legal stuff */
+
+.legal {
+  border-top: 1px solid #FEFBF8;
+}
+
+.legal p:last-of-type {
+  text-align: right;
+}
+
+.legal a {
+  margin-right: 3em;
+}
+
+/* Buttons */
+
+.button {
+  box-shadow: none;
+  padding: 0.5rem 0.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+  border: 1px solid;
+  top: 0.25em;
+  bottom: -0.25em;
+  right: -0.25em;
+  left: 0.25em;
+  transition: all 90ms ease-in;
+  text-decoration: none;
+}
+
+.button:before {
+  outline: 1px solid #9A4B00;
+  background: #FEFBF8;
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: -0.25em;
+  bottom: 0.25em;
+  right: 0.25em;
+  left: -0.25em;
+  z-index: -5;
+  transition: all 90ms ease-in;
+}
+
+.button:hover,
+.button:active,
+.button:focus {
+  box-shadow: none;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.button:hover:before,
+.button:active:before,
+.button:focus:before {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.primary-button {
+  background: #9A4B00;
+  color: #FEFBF8;
+  border-color: #9A4B00;
+}
+
+.secondary-button {
+  background: #FEFBF8;
+}
+
+/* Input groups */
+
+.input-group {
+  display: table;
+  margin: 1rem 0;
+}
+
+.input-group input[type="text"] {
+  width: 50%;
+}
+
+.input-group select {
+  width: 30%;
+  margin-left: -1px;
+}
+.input-group input[type="submit"] {
+  width: 20%;
+  margin-left: -1px;
+}
