@@ -1,48 +1,53 @@
-<!doctype html>
-<html class="no-js" lang="">
-
+<!DOCTYPE html>
+<html class="no-js" lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Directory of Open Access Journals</title>
-	<meta name="description" content="">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <title>Directory of Open Access Journals</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<link rel="manifest" href="site.webmanifest">
-	<link rel="apple-touch-icon" href="icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
 
-	<link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="normalize.css">
+  <!-- Custom Bootstrap 3 -->
+  <link rel="stylesheet" href="bootstrap.css">
+  <!-- <link rel="stylesheet" href="bootstrap-theme.css"> -->
+  <link rel="stylesheet" href="main.css">
 
-	<link rel="stylesheet" href="simple-grid.css">
-	<link rel="stylesheet" href="main.css">
-
-	<meta name="theme-color" content="#9A4B00">
+  <meta name="theme-color" content="#9A4B00">
 </head>
 
 <body>
-	<!--[if IE]>
-	<p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-	<![endif]-->
+  <!--[if IE]>
+  <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
 
-	<header>
-    <h1>DOAJ</h1>
-    <nav>
-      <a href="">Apply</a>
-      <a href="">Support</a>
-      <a href="">Search</a>
-    </nav>
-    <nav>
-      <a href="">Journals & articles</a>
-      <a href="">Data</a>
-      <a href="">About</a>
-      <a href="">Login</a>
-    </nav>
-	</header>
+  <header>
+    <div class="container">
+      <h1 class="col-xs-6">DOAJ</h1>
+      <nav class="col-xs-6">
+        <a href="">Apply</a></li>
+        <a href="">Support</a></li>
+        <a href="">Search</a></li>
+      </nav>
+      <nav>
+        <ul>
+          <li><a href="">Journals & articles</a></li>
+          <li><a href="">Data</a></li>
+          <li><a href="">About</a></li>
+          <li><a href="">Login</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-	<main>
+  <main>
     <!-- Search bar -->
     <section>
+      <div class="container">
       <h2>Find open access journals & articles.</h2>
       <form>
         <input type="radio" id="journals" name="content-type" value="journals" checked>
@@ -64,25 +69,28 @@
         <input type="submit" value="Search">
       </form>
 
-      <p>
-        <span>130</span> countries represented
-      </p>
-      <p>
-        <span>10,474</span> journals without APCs
-      </p>
-      <p>
-        <span>10,961</span> recently-updated journals
-      </p>
-      <p>
-        <span>13,886</span> OA journals
-      </p>
-      <p>
-        <span>4,398,818</span> OA articles
-      </p>
+        <section class="row">
+          <p class="col-sm-2">
+            <span class="stat">130</span> <span class="desc">countries represented</span>
+          </p>
+          <p class="col-sm-2">
+            <span class="stat">10,474</span> <span class="desc">journals without APCs</span>
+          </p>
+          <p class="col-sm-2">
+            <span class="stat">10,961</span> <span class="desc">recently-updated journals</span>
+          </p>
+          <p class="col-sm-2">
+            <span class="stat">13,886</span> <span class="desc">OA journals</span>
+          </p>
+          <p class="col-sm-2">
+            <span class="stat">4,398,818</span> <span class="desc">OA articles</span>
+          </p>
+        </section>
+      </div>
     </section>
 
     <!-- About -->
-    <section>
+    <section class="container">
       <h2>About</h2>
       <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.</p>
       <p>All DOAJ services are free of charge including being indexed. All data is freely available.</p>
@@ -93,7 +101,7 @@
         <p>
           DOAJ is independent. All funding is via donations, 22% of which comes from sponsors and 78% from supporters.
         </p>
-        <a href="">Support DOAJ</a>
+        <a href="" class="button primary-button">Support DOAJ</a>
         <p>
           <small>
             Journal publishers don’t need to donate to be part of DOAJ. <a href="">Apply now</a>.
@@ -103,7 +111,7 @@
     </section>
 
     <!-- Blog -->
-    <section>
+    <section class="container blog">
       <h2>From the blog <sup><a href="">See all</a></sup></h2>
 
       <article>
@@ -130,152 +138,195 @@
       <!-- Special / themed posts, optional -->
       <h3>Special post series. Myth busting</h3>
 
-      <article>
-        <h4>Myth: “All open access journals can be listed on DOAJ”</h4>
-      </article>
+      <div class="row">
+        <article class="col-md-4">
+          <h4>Myth: “All open access journals can be listed on DOAJ”</h4>
+        </article>
 
-      <article>
-        <h4>Myth: “Journals must meet the DOAJ seal criteria to be indexed” </h4>
-      </article>
+        <article class="col-md-4">
+          <h4>Myth: “Journals must meet the DOAJ seal criteria to be indexed” </h4>
+        </article>
 
-      <article>
-        <h4>Myth: “DOAJ indexes predatory journals”</h4>
-      </article>
+        <article class="col-md-4">
+          <h4>Myth: “DOAJ indexes predatory journals”</h4>
+        </article>
+      </div>
     </section>
 
     <!-- Community -->
     <section>
-      <h2>Community</h2>
-      <h3>Volunteers <sup><a href="">See all</a></sup></h3>
-      <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
+      <div class="container">
+        <section>
+          <div class="row">
+            <div class="col-sm-8">
+              <h2>Community</h2>
+              <h3>Volunteers <sup><a href="">See all</a></sup></h3>
+              <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
+            </div>
+          </div>
+          <div class="row">
+            <article class="col-md-4">
+              <h4>Karina Menegaldo</h4>
+              <p>Linguistics and computation</p>
+              <p>Volunteer since 2018, from São Paulo,	Brasil</p>
+            </article>
 
-      <article>
-        <h4>Karina Menegaldo</h4>
-        <p>Linguistics and computation</p>
-        <p>Volunteer since 2018, from São Paulo,	Brasil</p>
-      </article>
+            <article class="col-md-4">
+              <h4>Marco Tullney</h4>
+              <p>Social sciences</p>
+              <p>Volunteer since 2014, from Hannover, Germany</p>
+            </article>
 
-      <article>
-        <h4>Marco Tullney</h4>
-        <p>Social sciences</p>
-        <p>Volunteer since 2014, from Hannover, Germany</p>
-      </article>
+            <article class="col-md-4">
+              <h4>Karima Akool Al Salihi</h4>
+              <p>Medicine</p>
+              <p>Volunteer since 2018, from Baghdad, Iraq</p>
+            </article>
+          </div>
+        </section>
 
-      <article>
-        <h4>Karima Akool Al Salihi</h4>
-        <p>Medicine</p>
-        <p>Volunteer since 2018, from Baghdad, Iraq</p>
-      </article>
+        <section>
+          <div class="row">
+            <div class="col-sm-8">
+              <h3>Funding</h3>
+              <p>Some organisations and publishers support DOAJ with either a one-off payment or an annual payment.</p>
+            </div>
+          </div>
+          <div class="row">
+            <article class="col-sm-6">
+              <h4>Sustainable funders</h4>
+              <p>DOAJ Membership is recommended for those who can support the DOAJ with a long-term annual fixed contribution.</p>
+              <p><a href="">Learn more</a></p>
+            </article>
 
-      <h3>Funding</h3>
-      <p>Some organisations and publishers support DOAJ with either a one-off payment or an annual payment.</p>
+            <article class="col-sm-6">
+              <h4>Publisher members</h4>
+              <p>If you publish or own an Open Access journal, you may prefer to become a Publisher Member.</p>
+              <p><a href="">Learn more</a></p>
+            </article>
+          </div>
+        </section>
 
-      <h4>Sustainable funders</h4>
-      <p>DOAJ Membership is recommended for those who can support the DOAJ with a long-term annual fixed contribution.</p>
-      <p><a href="">Learn more</a></p>
+        <section>
+          <h3>Sponsors</h3>
+          <p>The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.</p>
+          <p><a href="">Learn more</a></p>
 
-      <h4>Publisher members</h4>
-      <p>If you publish or own an Open Access journal, you may prefer to become a Publisher Member.</p>
-      <p><a href="">Learn more</a></p>
-
-      <h3>Sponsors</h3>
-      <p>The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.</p>
-      <p><a href="">Learn more</a></p>
-
-      <h4>Gold</h4>
-      <a href="">EBSCO</a>
-      <a href="">IEEE</a>
-
+          <h4>Gold</h4>
+          <a href="">EBSCO</a>
+          <a href="">IEEE</a>
+        </section>
+      </div>
     </section>
 
     <!-- New journals -->
-    <section>
-      <h2>Recently-added journals</h2>
-      <p><a href="">See all</a></p>
-      <ul>
-        <li><a href="">Journal of Electrical, Electronics and Informatics</a></li>
-        <li><a href="">Journal of Pure and Applied Microbiology</a></li>
-        <li><a href="">Çocuk ve Gençlik Ruh Sağlığı Dergisi</a></li>
-        <li><a href="">transLogos: Translation Studies Journal</a></li>
-        <li><a href="">Amasya İlahiyat Dergisi</a></li>
-        <li><a href=""><a href="">Computational Methods for Differential Equations</a></li>
-        <li><a href="">Танцювальні студії</a></li>
-        <li><a href="">Научный журнал Российского НИИ проблем мелиорации</a></li>
-        <li><a href="">Ciencia y Educación</a></li>
-        <li><a href="">Iranian Journal of Pathology</a></li>
-        <li><a href="">Environmental Pollutants & Bioavailability</a></li>
-        <li><a href="">Journal of the Egyptian National Cancer Institute</a></li>
-        <li><a href="">Известия Томского политехнического университета: Инжиниринг георесурсов</a></li>
-        <li><a href="">Curricula: Journal of Teaching and Learning</a></li>
-        <li><a href="">Pengarah</a></li>
-        <li><a href="">Journal of Innovation Management</a></li>
-      </ul>
+    <section class="new-journals">
+      <div class="container">
+        <div class="col-sm-4">
+          <h2>Recently-added journals</h2>
+          <p><a href="">See all</a></p>
+        </div>
+        <ul class="col-sm-8">
+          <li><a href="">Journal of Electrical, Electronics and Informatics</a></li>
+          <li><a href="">Journal of Pure and Applied Microbiology</a></li>
+          <li><a href="">Çocuk ve Gençlik Ruh Sağlığı Dergisi</a></li>
+          <li><a href="">transLogos: Translation Studies Journal</a></li>
+          <li><a href="">Amasya İlahiyat Dergisi</a></li>
+          <li><a href=""><a href="">Computational Methods for Differential Equations</a></li>
+          <li><a href="">Танцювальні студії</a></li>
+          <li><a href="">Научный журнал Российского НИИ проблем мелиорации</a></li>
+          <li><a href="">Ciencia y Educación</a></li>
+          <li><a href="">Iranian Journal of Pathology</a></li>
+          <li><a href="">Environmental Pollutants & Bioavailability</a></li>
+          <li><a href="">Journal of the Egyptian National Cancer Institute</a></li>
+          <li><a href="">Известия Томского политехнического университета: Инжиниринг георесурсов</a></li>
+          <li><a href="">Curricula: Journal of Teaching and Learning</a></li>
+          <li><a href="">Pengarah</a></li>
+          <li><a href="">Journal of Innovation Management</a></li>
+        </ul>
+      </div>
     </section>
 
-	</main>
+  </main>
 
-	<footer>
-    <h2>Apply</h2>
-    <ul>
-      <li><a href="">Application form</a></li>
-      <li><a href="">Guide to applying</a></li>
-      <li><a href="">Copyright & licensing help</a></li>
-      <li><a href="">The DOAJ seal</a></li>
-      <li><a href="">Transparency & best practice</a></li>
-      <li><a href="">Why index your journal in DOAJ?</a></li>
-    </ul>
+  <footer>
+    <div class="container">
+      <section class="row">
+        <div class="col-sm-2">
+          <h2>Apply</h2>
+          <ul>
+            <li><a href="">Application form</a></li>
+            <li><a href="">Guide to applying</a></li>
+            <li><a href="">Copyright & licensing help</a></li>
+            <li><a href="">The DOAJ seal</a></li>
+            <li><a href="">Transparency & best practice</a></li>
+            <li><a href="">Why index your journal in DOAJ?</a></li>
+          </ul>
+        </div>
 
-    <h2>Journals & articles</h2>
-    <ul>
-      <li><a href="">Journals</a></li>
-      <li><a href="">Articles</a></li>
-      <li><a href="">Browse by subject</a></li>
-      <li><a href="">Open Knowledge Maps</a></li>
-    </ul>
+        <div class="col-sm-2">
+          <h2>Journals & articles</h2>
+          <ul>
+            <li><a href="">Journals</a></li>
+            <li><a href="">Articles</a></li>
+            <li><a href="">Browse by subject</a></li>
+            <li><a href="">Open Knowledge Maps</a></li>
+          </ul>
+        </div>
 
-    <h2>Data</h2>
-    <ul>
-      <li><a href="">API</a></li>
-      <li><a href="">OAI-PMH</a></li>
-      <li><a href="">XML</a></li>
-      <li><a href="">Widgets</a></li>
-      <li><a href="">Public data dump</a></li>
-    </ul>
+        <div class="col-sm-2">
+          <h2>Data</h2>
+          <ul>
+            <li><a href="">API</a></li>
+            <li><a href="">OAI-PMH</a></li>
+            <li><a href="">XML</a></li>
+            <li><a href="">Widgets</a></li>
+            <li><a href="">Public data dump</a></li>
+          </ul>
+        </div>
 
-    <h2>About</h2>
-    <ul>
-      <li><a href="">History & mission</a></li>
-      <li><a href="">Team & ambassadors</a></li>
-      <li><a href="">Advisory Board & Council</a></li>
-      <li><a href="">Volunteers</a></li>
-      <li><a href="">News</a></li>
-      <li><a href="">FAQs</a></li>
-    </ul>
+        <div class="col-sm-2">
+          <h2>About</h2>
+          <ul>
+            <li><a href="">History & mission</a></li>
+            <li><a href="">Team & ambassadors</a></li>
+            <li><a href="">Advisory Board & Council</a></li>
+            <li><a href="">Volunteers</a></li>
+            <li><a href="">News</a></li>
+            <li><a href="">FAQs</a></li>
+          </ul>
+        </div>
 
-    <h2>Support</h2>
-    <ul>
-      <li><a href="">Support or donate</a></li>
-      <li><a href="">Sponsors</a></li>
-      <li><a href="">Publisher members</a></li>
-      <li><a href="">Sustainable funders</a></li>
-    </ul>
+        <div class="col-sm-2">
+          <h2>Support</h2>
+          <ul>
+            <li><a href="">Support or donate</a></li>
+            <li><a href="">Sponsors</a></li>
+            <li><a href="">Publisher members</a></li>
+            <li><a href="">Sustainable funders</a></li>
+          </ul>
+        </div>
 
-    <h2>Stay up to date</h2>
-    <ul>
-      <li><a href="">Twitter</a></li>
-      <li><a href="">Facebook</a></li>
-      <li><a href="">Linkedin</a></li>
-      <li><a href="">Github</a></li>
-      <li><a href="">New journals RSS</a></li>
-    </ul>
+        <div class="col-sm-2">
+          <h2>Stay up to date</h2>
+          <ul>
+            <li><a href="">Twitter</a></li>
+            <li><a href="">Facebook</a></li>
+            <li><a href="">Linkedin</a></li>
+            <li><a href="">Github</a></li>
+            <li><a href="">New journals RSS</a></li>
+          </ul>
+        </div>
+      </section>
 
-    <section>
-      <p>
-        <a href="">Privacy</a> <a href="">Contact us</a> <a href="">IS4OA</a> <a href="">Cottage Labs LLP</a>
-        ©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.
-      </p>
-    </section>
-	</footer>
+      <section class="row">
+        <p class="col-sm-6">
+          <a href="">Privacy</a> <a href="">Contact us</a> <a href="">IS4OA</a> <a href="">Cottage Labs LLP</a>
+        </p>
+        <p class="col-sm-6">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
+      </section>
+    </div>
+  </footer>
 
 </body>
 
