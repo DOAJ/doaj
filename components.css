@@ -68,8 +68,17 @@
 /* Stats */
 
 .stats {
-  padding-right: 3em;
   border-right: 1px dashed #F68112;
+}
+
+.stats:last-of-type {
+  border-right: 0;
+}
+
+.stats a {
+  display: block;
+  padding-right: 3em;
+  text-decoration: none;
 }
 
 .stat {
@@ -86,11 +95,28 @@
   color: rgba(40, 38, 36, 0.75);
 }
 
+/* Eyebrow */
+.eyebrow + h3 {
+  margin-top: 0;
+}
+
+.eyebrow {
+  margin: 0 0 0.5em 0;
+  text-transform: uppercase;
+  font-size: 0.75em;
+}
+
 /* Blog */
 
-.latest-post {
+.blog article a {
+  display: block;
+  margin-bottom: 2rem;
+  text-decoration: none;
+}
+
+.latest-post a {
   box-shadow: none;
-  padding: 3rem;
+  padding: 4rem 2rem;
   position: relative;
   display: inline-block;
   border: 1px solid #9A4B00;
@@ -102,10 +128,9 @@
   text-decoration: none;
   background-color: #9A4B00;
   color: #FEFBF8;
-  font-size: 1.15em;
 }
 
-.latest-post:before {
+.latest-post a:before {
   outline: 1px solid #9A4B00;
   background: #FEFBF8;
   content: "";
@@ -120,10 +145,31 @@
   transition: all 90ms ease-in;
 }
 
-.post-tag {
-  margin: 0 0 0.5em 0;
-  text-transform: uppercase;
-  font-size: 0.75em;
+.latest-post a:hover,
+.latest-post a:active,
+.latest-post a:focus {
+  box-shadow: none;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.latest-post a:hover:before,
+.latest-post a:active:before,
+.latest-post a:focus:before {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.blog .eyebrow {
+  color: #BC0B0B;
+}
+
+.latest-post .eyebrow {
+  color: #FEFBF8;
 }
 
 
@@ -200,6 +246,8 @@
 
 .secondary-button {
   background: #FEFBF8;
+  border-color: #9A4B00;
+  color: #9A4B00;
 }
 
 /* Input groups */

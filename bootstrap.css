@@ -955,9 +955,7 @@ legend {
   margin-bottom: 20px;
   font-size: 21px;
   line-height: inherit;
-  color: #333333;
   border: 0;
-  border-bottom: 1px solid #e5e5e5;
 }
 
 input[type="search"] {
@@ -1003,7 +1001,6 @@ output {
   padding-top: 7px;
   font-size: 14px;
   line-height: 1.42857143;
-  color: #555555;
 }
 .form-control {
   display: block;
@@ -1012,32 +1009,13 @@ output {
   padding: 6px 12px;
   font-size: 14px;
   line-height: 1.42857143;
-  color: #555555;
-  background-color: #ffffff;
   background-image: none;
-  border: 1px solid #cccccc;
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
   -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-}
-.form-control:focus {
-  border-color: #66afe9;
-  outline: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, 0.6);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, 0.6);
-}
-.form-control::-moz-placeholder {
-  color: #999999;
-  opacity: 1;
-}
-.form-control:-ms-input-placeholder {
-  color: #999999;
-}
-.form-control::-webkit-input-placeholder {
-  color: #999999;
 }
 .form-control::-ms-expand {
   background-color: transparent;
@@ -1046,7 +1024,6 @@ output {
 .form-control[disabled],
 .form-control[readonly],
 fieldset[disabled] .form-control {
-  background-color: #eeeeee;
   opacity: 1;
 }
 .form-control[disabled],
