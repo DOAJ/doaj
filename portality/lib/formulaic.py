@@ -282,17 +282,18 @@ class FormulaicContext(object):
                 self._add_wtforms_field(TempForm, field)
 
                 # add any subfields
+                """
                 options = field.get("options", [])
                 if not isinstance(options, str):
                     for o in field.get("options", []):
                         for subfield in o.get("subfields", []):
                             self._add_wtforms_field(TempForm, subfield)
-
+                """
         return TempForm
 
-    def wtform(self, form_data=None):
+    def wtform(self, formdata=None, data=None):
         klazz = self.wtform_class()
-        return klazz(form_data)
+        return klazz(formdata=formdata, data=data)
 
     def get(self, field_name, parent=None):
         if parent is None:
@@ -301,6 +302,12 @@ class FormulaicContext(object):
             for f in fs.get("fields", []):
                 if f.get("name") == field_name:
                     return FormulaicField(f, self._wtforms_map, self._function_map, parent)
+
+    def fieldset(self, fieldset_name):
+        for fs in self._definition.get("fieldsets", []):
+            if fs.get("name") == fieldset_name:
+                return FormulaicFieldset(fs, self._wtforms_map, self._function_map, self)
+        return None
 
     def fieldsets(self):
         return [FormulaicFieldset(fs, self._wtforms_map, self._function_map, self) for fs in self._definition.get("fieldsets", [])]

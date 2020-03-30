@@ -139,12 +139,24 @@ from portality.formcontext.form_definitions import FORMS, PYTHON_FUNCTIONS, JAVA
 @write_required()
 def public_application():
     if request.method == "GET":
+        fc = formcontext.ApplicationFormFactory.get_form_context()
+        return fc.render_template()
+    elif request.method == "POST":
+        fc = formcontext.ApplicationFormFactory.get_form_context(form_data=request.form)
+        if fc.validate():
+            fc.finalise()
+            return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
+        else:
+            return fc.render_template()
+    """
+    if request.method == "GET":
         f = Formulaic(FORMS, function_map=PYTHON_FUNCTIONS)
         fc = f.context("public")
         return render_template("application_form/public_application.html", fc=fc, js_functions=JAVASCRIPT_FUNCTIONS)
     elif request.method == "POST":
         print(request.form.to_dict(flat=False))
         return "", 200
+    """
 
 
 #############################################

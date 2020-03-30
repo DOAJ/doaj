@@ -3,7 +3,7 @@
 {% block content %}
 
     <form id="public_application" novalidate action="{{ url_for("doaj.public_application") }}">
-    {% for fs in fc.fieldsets() %}
+    {% for fs in form_context.fieldsets() %}
         <h1>{{ fs.label }}</h1>
         <fieldset id="{{ fs.name }}">
         {% for f in fs.fields() %}
@@ -25,10 +25,9 @@
         jQuery(document).ready(function($) {
             formulaic.active = formulaic.newFormulaic({
                 formSelector: "#public_application",
-                fieldsets : {{ fc.ui_settings|tojson }},
+                fieldsets : {{ form_context.ui_settings|tojson }},
                 functions : {{ js_functions|tojson }}
             });
         });
     </script>
-
 {% endblock %}
