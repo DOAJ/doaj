@@ -45,6 +45,11 @@
   text-decoration: none;
 }
 
+.themed-posts article a:hover,
+.themed-posts article a:focus,
+.themed-posts article a:active {
+  border-top: 1px solid #9A4B00;
+}
 
 /* New journals */
 
@@ -63,6 +68,12 @@
   margin-bottom: 1em;
   border-top: 1px dashed #9A4B00;
   text-decoration: none;
+}
+
+.new-journals li a:hover,
+.new-journals li a:focus,
+.new-journals li a:active {
+  border-top: 1px solid #9A4B00;
 }
 
 /* Stats */
