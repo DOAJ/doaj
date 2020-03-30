@@ -81,8 +81,15 @@ a {
   color: #282624;
 }
 
+a:hover,
+a:focus,
+a:active {
+  text-decoration: none;
+  color: rgba(40, 38, 36, 0.75);
+}
+
 section {
-  padding: 2rem 0;
+  padding: 1.5rem 0;
 }
 
 section aside {

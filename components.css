@@ -105,6 +105,7 @@
   text-transform: uppercase;
   font-size: 0.75em;
   font-weight: 600;
+  color: rgba(40, 38, 36, 0.75);
 }
 
 /* Blog */
@@ -177,6 +178,7 @@
 
 .volunteers article figure {
   position: relative;
+  margin: 1rem 0 1.5rem 0;
   width: 225px;
   background-color: rgba(246, 129, 18, 0.25);
 }
@@ -197,15 +199,35 @@
 }
 
 .volunteers .desc {
-  margin-top: 1rem;
   color: rgba(40, 38, 36, 0.75);
   font-size: smaller;
 }
 
 .volunteers .discipline {
+  display: block;
   text-transform: uppercase;
   font-weight: 600;
   color: #9A4B00;
+}
+
+/* Funders */
+
+.funders {}
+
+.funder {
+  position: relative;
+  padding: 1.5rem 175px 1.5rem 1.5rem;
+  background-color: rgba(246, 129, 18, 0.25);
+}
+
+.funder:after {
+  position: absolute;
+  right: 0;
+  top: 0;
+  content: '';
+  height: 100%;
+  width: 150px;
+  background-color: rgba(246, 129, 18, 0.25);
 }
 
 /* Legal stuff */
@@ -279,9 +301,21 @@
   border-color: #9A4B00;
 }
 
+.primary-button:hover,
+.primary-button:active,
+.primary-button:focus {
+  color: #FEFBF8;
+}
+
 .secondary-button {
   background: #FEFBF8;
   border-color: #9A4B00;
+  color: #9A4B00;
+}
+
+.secondary-button:hover,
+.secondary-button:active,
+.secondary-button:focus {
   color: #9A4B00;
 }
 
