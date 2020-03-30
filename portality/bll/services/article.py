@@ -25,19 +25,20 @@ class ArticleService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("batch_create_article", [
-            {"arg": articles, "instance" : list, "allow_none" : False, "arg_name" : "articles"},
-            {"arg": account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
-            {"arg" : duplicate_check, "instance" : bool, "allow_none" : False, "arg_name" : "duplicate_check"},
-            {"arg" : merge_duplicate, "instance" : bool, "allow_none" : False, "arg_name" : "merge_duplicate"},
-            {"arg" : limit_to_account, "instance" : bool, "allow_none" : False, "arg_name" : "limit_to_account"},
-            {"arg" : add_journal_info, "instance" : bool, "allow_none" : False, "arg_name" : "add_journal_info"}
+            {"arg": articles, "instance": list, "allow_none": False, "arg_name": "articles"},
+            {"arg": account, "instance": models.Account, "allow_none": False, "arg_name": "account"},
+            {"arg": duplicate_check, "instance": bool, "allow_none": False, "arg_name": "duplicate_check"},
+            {"arg": merge_duplicate, "instance": bool, "allow_none": False, "arg_name": "merge_duplicate"},
+            {"arg": limit_to_account, "instance": bool, "allow_none": False, "arg_name": "limit_to_account"},
+            {"arg": add_journal_info, "instance": bool, "allow_none": False, "arg_name": "add_journal_info"}
         ], exceptions.ArgumentException)
 
         # 1. dedupe the batch
         if duplicate_check:
             batch_duplicates = self._batch_contains_duplicates(articles)
             if batch_duplicates:
-                report = {"success" : 0, "fail" : len(articles), "update" : 0, "new" : 0, "shared" : [], "unowned" : [], "unmatched" : []}
+                report = {"success": 0, "fail": len(articles), "update": 0, "new": 0, "shared": [], "unowned": [],
+                          "unmatched": []}
                 raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_DUPLICATE, result=report)
 
         # 2. check legitimate ownership
@@ -68,7 +69,8 @@ class ArticleService(object):
             all_unowned.update(result.get("unowned", set()))
             all_unmatched.update(result.get("unmatched", set()))
 
-        report = {"success" : success, "fail" : fail, "update" : update, "new" : new, "shared" : all_shared, "unowned" : all_unowned, "unmatched" : all_unmatched}
+        report = {"success": success, "fail": fail, "update": update, "new": new, "shared": all_shared,
+                  "unowned": all_unowned, "unmatched": all_unmatched}
 
         # if there were no failures in the batch, then we can do the save
         if fail == 0:
@@ -102,6 +104,44 @@ class ArticleService(object):
 
         return False
 
+    def _prepare_update_admin(self, article, duplicate, update_article_id, merge_duplicate):
+
+        # we assume update_article_id is not None as admin update the articles only via Admin Article Form
+        if update_article_id is None:
+            raise exceptions.ConfigurationException("Upload articles for admin available only via Admin Metadata "
+                                                    "Article Form. Contact us if you can see this message")
+        is_update = 0
+        if duplicate is not None:
+            if duplicate.id != update_article_id:
+                # it means that doi or ft url has been changes so that it duplicates existing article
+                raise exceptions.DuplicateArticleException()
+            elif merge_duplicate:
+                is_update += 1
+                article.merge(duplicate)
+        elif merge_duplicate:  # requested to update article has both url and doi changed to new values - no duplicate detected
+            is_update += 1
+            update_article = models.Article.pull(update_article_id)
+            update_article.merge(article)
+
+        return is_update
+
+    def _prepare_update_publisher(self, article, duplicate, merge_duplicate):
+        # before saving, we need to determine whether this is a new article
+        # or an update
+        is_update = 0
+
+        if duplicate is not None:  # else -> it is new article
+            if duplicate.id == article.id:  # it is update
+                doi_or_ft_updated = self._doi_or_fulltext_updated(article, duplicate.id)
+                if doi_or_ft_updated:
+                    raise exceptions.DuplicateArticleException()
+                elif merge_duplicate:
+                    is_update += 1
+                    article.merge(duplicate)
+            else:
+                raise exceptions.DuplicateArticleException()
+        return is_update
+
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
 
@@ -118,70 +158,61 @@ class ArticleService(object):
         :param limit_to_account:    Whether to limit create to when the account owns the journal to which the article belongs
         :param add_journal_info:    Should we fetch the journal info and attach it to the article before save?
         :param dry_run:     Whether to actuall save, or if this is just to either see if it would work, or to prep for a batch ingest
-        :param update_article_id: The article id that it is supposed to be an update to; taken into consideration ONLY if duplicate_check == True and merge_duplicate == True
+        :param update_article_id: The article id that it is supposed to be an update to; taken into consideration ONLY
+            if duplicate_check == True and merge_duplicate == True
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("create_article", [
-            {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg": account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
-            {"arg" : duplicate_check, "instance" : bool, "allow_none" : False, "arg_name" : "duplicate_check"},
-            {"arg" : merge_duplicate, "instance" : bool, "allow_none" : False, "arg_name" : "merge_duplicate"},
-            {"arg" : limit_to_account, "instance" : bool, "allow_none" : False, "arg_name" : "limit_to_account"},
-            {"arg" : add_journal_info, "instance" : bool, "allow_none" : False, "arg_name" : "add_journal_info"},
-            {"arg" : dry_run, "instance" : bool, "allow_none" : False, "arg_name" : "dry_run"},
-            {"arg" : update_article_id, "instance" : str, "allow_none" : True, "arg_name" : "update_article_id"}
+            {"arg": article, "instance": models.Article, "allow_none": False, "arg_name": "article"},
+            {"arg": account, "instance": models.Account, "allow_none": False, "arg_name": "account"},
+            {"arg": duplicate_check, "instance": bool, "allow_none": False, "arg_name": "duplicate_check"},
+            {"arg": merge_duplicate, "instance": bool, "allow_none": False, "arg_name": "merge_duplicate"},
+            {"arg": limit_to_account, "instance": bool, "allow_none": False, "arg_name": "limit_to_account"},
+            {"arg": add_journal_info, "instance": bool, "allow_none": False, "arg_name": "add_journal_info"},
+            {"arg": dry_run, "instance": bool, "allow_none": False, "arg_name": "dry_run"},
+            {"arg": update_article_id, "instance": str, "allow_none": True, "arg_name": "update_article_id"}
         ], exceptions.ArgumentException)
 
         # quickly validate that the article is acceptable - it must have a DOI and/or a fulltext
         # this raises an exception if the article is not acceptable, containing all the relevant validation details
         self.is_acceptable(article)
 
+        has_permissions_result = self.has_permissions(account, article, limit_to_account)
+        if has_permissions_result:
+
+            is_update = 0
+            if duplicate_check and merge_duplicate:
+                duplicate = self.get_duplicate(article)
+                try:
+                    if account.has_role("admin"):
+                        is_update = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
+                    else:
+                        is_update = self._prepare_update_publisher(article, duplicate, merge_duplicate)
+                except (exceptions.DuplicateArticleException, exceptions.ArticleMergeConflict) as e:
+                    raise e
+
+            if add_journal_info:
+                article.add_journal_metadata()
+
+            # finally, save the new article
+            if not dry_run:
+                article.save()
+
+            return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),
+                    "unmatched": set()}
+
+
+    def has_permissions(self, account, article, limit_to_account):
+
         if limit_to_account:
             legit = account.has_role("admin") or self.is_legitimate_owner(article, account.id)
             if not legit:
                 owned, shared, unowned, unmatched = self.issn_ownership_status(article, account.id)
-                return {"success" : 0, "fail" : 1, "update" : 0, "new" : 0, "shared" : shared, "unowned" : unowned, "unmatched" : unmatched}
+                return {"success": 0, "fail": 1, "update": 0, "new": 0, "shared": shared, "unowned": unowned,
+                        "unmatched": unmatched}
+        return True
 
-        # before saving, we need to determine whether this is a new article
-        # or an update
-        is_update = 0
-        if duplicate_check:
-            duplicate = self.get_duplicate(article)
-            if duplicate is not None:
-                if update_article_id is None:
-                    update_article_id = duplicate.id
-
-                if duplicate.id != update_article_id:
-                    raise exceptions.DuplicateArticleException()
-                else:
-                    doi_or_ft_updated = self._doi_or_fulltext_updated(article, update_article_id)
-                    if doi_or_ft_updated:
-                        if account.has_role("admin"):
-                            is_update += 1
-                            article.merge(duplicate)
-                        else:
-                            raise exceptions.DuplicateArticleException()
-                    else:
-                        is_update += 1
-                        article.merge(duplicate)
-            else:   #requested to update article has both url and doi changed to new values - no duplicate detected
-                if update_article_id is not None:
-                    if account.has_role("admin"):
-                        is_update += 1
-                        update_article = models.Article.pull(update_article_id)
-                        update_article.merge(article)
-
-
-
-        if add_journal_info:
-            article.add_journal_metadata()
-
-        # finally, save the new article
-        if not dry_run:
-            article.save()
-
-        return {"success" : 1, "fail" : 0, "update" : is_update, "new" : 1 - is_update, "shared" : set(), "unowned" : set(), "unmatched" : set()}
 
     def is_acceptable(self, article):
         """
@@ -211,8 +242,8 @@ class ArticleService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("is_legitimate_owner", [
-            {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : str, "allow_none" : False, "arg_name" : "owner"}
+            {"arg": article, "instance": models.Article, "allow_none": False, "arg_name": "article"},
+            {"arg": owner, "instance": str, "allow_none": False, "arg_name": "owner"}
         ], exceptions.ArgumentException)
 
         # get all the issns for the article
@@ -283,8 +314,8 @@ class ArticleService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("issn_ownership_status", [
-            {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
-            {"arg" : owner, "instance" : str, "allow_none" : False, "arg_name" : "owner"}
+            {"arg": article, "instance": models.Article, "allow_none": False, "arg_name": "article"},
+            {"arg": owner, "instance": str, "allow_none": False, "arg_name": "owner"}
         ], exceptions.ArgumentException)
 
         # get all the issns for the article
@@ -341,7 +372,7 @@ class ArticleService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("get_duplicate", [
-            {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
+            {"arg": article, "instance": models.Article, "allow_none": False, "arg_name": "article"},
         ], exceptions.ArgumentException)
 
         article.prep()
@@ -364,7 +395,7 @@ class ArticleService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("get_duplicates", [
-            {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
+            {"arg": article, "instance": models.Article, "allow_none": False, "arg_name": "article"},
         ], exceptions.ArgumentException)
 
         possible_articles_dict = self.discover_duplicates(article, max_results)
@@ -387,7 +418,7 @@ class ArticleService(object):
 
         return possible_articles[:max_results]
 
-    def discover_duplicates(self, article, results_per_match_type=10, include_article = True):
+    def discover_duplicates(self, article, results_per_match_type=10, include_article=True):
         """
         Identify duplicates, separated by duplication criteria
 
@@ -398,7 +429,7 @@ class ArticleService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("discover_duplicates", [
-            {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
+            {"arg": article, "instance": models.Article, "allow_none": False, "arg_name": "article"},
         ], exceptions.ArgumentException)
 
         # We'll need the article bibjson a few times
