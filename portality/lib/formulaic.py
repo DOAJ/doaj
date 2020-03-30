@@ -124,7 +124,7 @@ class ListWidgetWithSubfields(object):
         self.prefix_label = prefix_label
 
     def __call__(self, field, **kwargs):
-        kwargs.setdefault('id', field.id)
+        # kwargs.setdefault('id', field.id)
         fl = kwargs.pop("formulaic", None)
         html = ['<%s %s>' % (self.html_tag, html_params(**kwargs))]
         for subfield in field:

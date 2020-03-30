@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <form id="public_application" novalidate>
+    <form id="public_application" novalidate action="{{ url_for("doaj.public_application") }}">
     {% for fs in fc.fieldsets() %}
         <h1>{{ fs.label }}</h1>
         <fieldset id="{{ fs.name }}">

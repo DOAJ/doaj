@@ -30,9 +30,14 @@ var formulaic = {
         // references to exclusive checkboxes
         this.exclusive = {};
 
+        this.lastSaveVal = "";
+
         this.init = function() {
+            // set up the save button
+            this.bindSave();
+
             // first detect any sychronised fields and register them
-            this._registerSynchronised();
+            this.registerSynchronised();
 
             // bind any conditional fields
             this._bindConditional();
@@ -47,11 +52,57 @@ var formulaic = {
             this.bounceParsley();
         };
 
-        this.save = function() {
-            var data = this.context.serialize();
+        //////////////////////////////////////////////
+        // Functions for handling save
+
+        this.bindSave = function() {
+            edges.on(this.context, "submit.Save", this, "saveRequested");
+            setTimeout(this.backgroundSaveClosure(), 60000);
         };
 
-        this._registerSynchronised = function() {
+        this.backgroundSaveClosure = function() {
+            var that = this;
+            return function() {
+                that.save({validate: false, additional : {"draft" : "true"}});
+                setTimeout(that.backgroundSaveClosure(), 60000);
+            }
+        };
+
+        this.saveRequested = function(element) {
+            this.save();
+        };
+
+        this.save = function(params) {
+            if (!params) { params = {}}
+            var validate = edges.getParam(params.validate, true);
+            var additional_params = edges.getParam(params.additional, {});
+
+            if (!validate || (this.activeParsley && this.activeParsley.isValid())) {
+                var data = this.context.serialize();
+                if (data === this.lastSaveVal) {
+                    return;
+                }
+                var full_data = $.param(additional_params) + "&" + data;
+                var that = this;
+                $.post({
+                    url: this.context.attr("action"),
+                    data: full_data,
+                    error: function() {alert("background save failed")},
+                    success: function() {
+                        that.lastSaveVal = data;
+                    }
+                })
+            } else {
+                alert("Unable to save due to validation");
+            }
+        };
+
+        /////////////////////////////////////////////////////
+
+        /////////////////////////////////////////////////////
+        // Functions for handling synchronised fields
+
+        this.registerSynchronised = function() {
             var fieldRegister = [];
             for (var i = 0; i < this.fieldsets.length; i++) {
                 var fieldset = this.fieldsets[i];
@@ -74,7 +125,9 @@ var formulaic = {
                 var name = fields[i];
                 var allByName = this._controlSelect({name: name});
                 allByName.each(function() {
-                    $(this).attr("data-formulaic-sync", name);
+                    var that = $(this);
+                    var current_id = that.attr("id");
+                    that.attr("data-formulaic-sync", name).attr("data-formulaic-id", current_id);
                 });
 
                 var fieldsets = this.synchronised[name];
@@ -82,13 +135,39 @@ var formulaic = {
                     var fieldset = fieldsets[j];
                     var elements = this._controlSelect({fieldset: fieldset, name: name});
                     elements.each(function() {
-                        $(this).attr("name", fieldset + "__" + name);
+                        var newname = fieldset + "__" + name;
+                        var newid = fieldset + "__" + $(this).attr("id");
+                        $(this).attr("name", newname).attr("id", newid);
                     });
                 }
 
                 edges.on(allByName, "change.Synchronise", this, "synchroniseChange");
             }
         };
+
+        this.synchroniseChange = function(element) {
+            var that = $(element);
+            var name = that.attr("data-formulaic-sync");
+            var original_id = that.attr("data-formulaic-id");
+            var type = that.attr("type");
+
+            // TODO: we currently only synchronise radio and checkboxes, so if you need to synchronise
+            // other fields, this will need extending
+            if (type === "radio" || type === "checkbox") {
+                var checked = that.is(":checked");
+                var toSync = this._controlSelect({syncName: name});
+                toSync.each(function() {
+                    var el = $(this);
+                    if (el.attr("data-formulaic-id") === original_id) {
+                        el.prop("checked", checked);
+                    } else {
+                        el.prop("checked", !checked);
+                    }
+                });
+            }
+        };
+
+        ///////////////////////////////////////////////////////
 
         this._bindConditional = function() {
             for (var i = 0; i < this.fieldsets.length; i++) {
@@ -293,25 +372,7 @@ var formulaic = {
             return true;
         };
 
-        this.synchroniseChange = function(element) {
-            var that = $(element);
-            var name = that.attr("data-formulaic-sync");
-            var id = that.attr("id");
-            var type = that.attr("type");
 
-            if (type === "radio" || type === "checkbox") {
-                var checked = that.is(":checked");
-                var toSync = this._controlSelect({syncName: name});
-                toSync.each(function() {
-                    var el = $(this);
-                    if (el.attr("id") === id) {
-                        el.prop("checked", checked);
-                    } else {
-                        el.prop("checked", !checked);
-                    }
-                });
-            }
-        };
 
         this._controlSelect = function(params) {
             var context = this.context;

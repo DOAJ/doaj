@@ -135,12 +135,16 @@ def suggestion():
 from portality.lib.formulaic import Formulaic
 from portality.formcontext.form_definitions import FORMS, PYTHON_FUNCTIONS, JAVASCRIPT_FUNCTIONS
 
-@blueprint.route("/application/newnew")
+@blueprint.route("/application/newnew", methods=["GET", "POST"])
 @write_required()
 def public_application():
-    f = Formulaic(FORMS, function_map=PYTHON_FUNCTIONS)
-    fc = f.context("public")
-    return render_template("application_form/public_application.html", fc=fc, js_functions=JAVASCRIPT_FUNCTIONS)
+    if request.method == "GET":
+        f = Formulaic(FORMS, function_map=PYTHON_FUNCTIONS)
+        fc = f.context("public")
+        return render_template("application_form/public_application.html", fc=fc, js_functions=JAVASCRIPT_FUNCTIONS)
+    elif request.method == "POST":
+        print(request.form.to_dict(flat=False))
+        return "", 200
 
 
 #############################################
