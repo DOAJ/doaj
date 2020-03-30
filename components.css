@@ -68,11 +68,11 @@
 /* Stats */
 
 .stats {
-  border-right: 1px dashed #F68112;
+  border-left: 1px dashed #F68112;
 }
 
-.stats:last-of-type {
-  border-right: 0;
+.stats:first-of-type {
+  border-left: 0;
 }
 
 .stats a {
