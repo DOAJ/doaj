@@ -81,7 +81,7 @@
   text-decoration: none;
 }
 
-.stat {
+.stats .stat {
   display: block;
   font-family: 'Spectral', serif;
   letter-spacing: -0.04em;
@@ -89,7 +89,7 @@
   font-size: 2rem;
 }
 
-.desc {
+.stats .desc {
   text-transform: uppercase;
   font-size: 0.75rem;
   color: rgba(40, 38, 36, 0.75);
@@ -104,6 +104,7 @@
   margin: 0 0 0.5em 0;
   text-transform: uppercase;
   font-size: 0.75em;
+  font-weight: 600;
 }
 
 /* Blog */
@@ -172,6 +173,40 @@
   color: #FEFBF8;
 }
 
+/* Community */
+
+.volunteers article figure {
+  position: relative;
+  width: 225px;
+  background-color: rgba(246, 129, 18, 0.25);
+}
+
+.volunteers article figure:after {
+  position: absolute;
+  left: 225px;
+  content: '';
+  height: 150px;
+  width: 75px;
+  background-color: rgba(246, 129, 18, 0.25);
+  border-bottom-right-radius: 100px;
+  border-top-right-radius: 100px;
+}
+
+.volunteers article img {
+  mix-blend-mode: multiply;
+}
+
+.volunteers .desc {
+  margin-top: 1rem;
+  color: rgba(40, 38, 36, 0.75);
+  font-size: smaller;
+}
+
+.volunteers .discipline {
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #9A4B00;
+}
 
 /* Legal stuff */
 
@@ -187,7 +222,7 @@
   margin-right: 3em;
 }
 
-/* Buttons */
+/* 3D buttons */
 
 .button {
   box-shadow: none;

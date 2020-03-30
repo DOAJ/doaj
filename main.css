@@ -24,7 +24,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  margin-top: 0.5rem;
+  margin: 2rem 0;
   font-size: 2.488em;
 }
 
@@ -83,6 +83,14 @@ a {
 
 section {
   padding: 2rem 0;
+}
+
+section aside {
+  border-left: 1px dashed #9A4B00;
+}
+
+time {
+  font-size: smaller;
 }
 
 
