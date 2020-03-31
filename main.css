@@ -85,7 +85,6 @@ a:hover,
 a:focus,
 a:active {
   text-decoration: none;
-  color: #5C5956;
 }
 
 section {
@@ -98,35 +97,6 @@ section aside {
 
 time {
   font-size: smaller;
-}
-
-
-/* Header */
-
-header {
-  background-color: #9A4B00;
-  font-weight: 600;
-}
-
-header h1 {
-  margin-top: 0;
-}
-
-header nav {
-  text-transform: uppercase;
-}
-
-header nav a {
-  color: #F8F2ED;
-}
-
-header nav ul {
-  padding: 0;
-  list-style: none;
-}
-
-header a {
-  text-decoration: none;
 }
 
 /* Homepage main */
@@ -182,7 +152,7 @@ footer a {
 
 /* Forms */
 
-input, select {
+input, select, button {
   padding: 0.5em 0.5em;
   background-color: #FEFBF8;
   border: 1px solid #282624;
@@ -194,15 +164,28 @@ input, select {
 select {
   -webkit-appearance: none;
   -webkit-border-radius: 0px;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Ctitle%3Edown-arrow%3C%2Ftitle%3E%3Cg%20fill%3D%22%23000000%22%3E%3Cpath%20d%3D%22M10.293%2C3.293%2C6%2C7.586%2C1.707%2C3.293A1%2C1%2C0%2C0%2C0%2C.293%2C4.707l5%2C5a1%2C1%2C0%2C0%2C0%2C1.414%2C0l5-5a1%2C1%2C0%2C1%2C0-1.414-1.414Z%22%20fill%3D%22%23000000%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  background-size: 0.5em;
+  background-position: calc(100% - 0.5em) center;
+  background-repeat: no-repeat;
 }
 
-/* Submit buttons */
+/* Buttons */
 
-input[type="submit"] {
+input[type="submit"],
+button[type="submit"] {
   padding: 0.5em 3em;
   background-color: #9A4B00;
   border-color: #9A4B00;
   color: #FEFBF8;
+}
+
+button:disabled,
+button[disabled] {
+  background-color: #F8F2ED;
+  border-color: #F8F2ED;
+  color: #5C5956;
+  font-style: italic;
 }
 
 /* Custom radio buttons & checkboxes */
