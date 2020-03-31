@@ -50,6 +50,7 @@ class ArticleService(object):
         all_unowned = set()
         all_unmatched = set()
 
+
         for article in articles:
             try:
                 result = self.create_article(article, account,
@@ -60,8 +61,6 @@ class ArticleService(object):
                                              dry_run=True)
             except (exceptions.ArticleMergeConflict, exceptions.ConfigurationException):
                 raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
-            except exceptions.DuplicateArticleException:
-                pass
 
             success += result.get("success", 0)
             fail += result.get("fail", 0)
