@@ -6,6 +6,7 @@ from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
 
 from portality.formcontext import forms
 
+
 class JournalFixtureFactory(object):
     @staticmethod
     def make_journal_source(in_doaj=False):
@@ -59,10 +60,10 @@ class JournalFixtureFactory(object):
 
 
 JOURNAL_SOURCE = {
-    "id" : "id",
-    "created_date" :  "2000-01-01T00:00:00Z",
-    "last_manual_update" : "2001-01-01T00:00:00Z",
-    "last_updated" : "2002-01-01T00:00:00Z",
+    "id": "id",
+    "created_date": "2000-01-01T00:00:00Z",
+    "last_manual_update": "2001-01-01T00:00:00Z",
+    "last_updated": "2002-01-01T00:00:00Z",
     "admin": {
         "bulk_upload": "bulk_1234567890",
         "contact":
@@ -70,117 +71,116 @@ JOURNAL_SOURCE = {
                 "email": "contact@example.com",
                 "name": "Example Contact"
             },
-        "current_application" : "qwertyuiop",
+        "current_application": "qwertyuiop",
         "editor_group": "editorgroup",
         "editor": "associate",
         "in_doaj": False,
         "notes": [
-            {"note": "Second Note", "date": "2014-05-22T00:00:00Z", "id" : "abcd"},
-            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "1234"}
+            {"note": "Second Note", "date": "2014-05-22T00:00:00Z", "id": "abcd"},
+            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id": "1234"}
         ],
         "owner": "Owner",
-        "related_applications" : [
-            {"application_id" : "asdfghjkl", "date_accepted" : "2018-01-01T00:00:00Z"},
-            {"application_id" : "zxcvbnm"}
+        "related_applications": [
+            {"application_id": "asdfghjkl", "date_accepted": "2018-01-01T00:00:00Z"},
+            {"application_id": "zxcvbnm"}
         ],
         "seal": True,
         "ticked": True
     },
-    "bibjson" : {
-        "alternative_title" : "Alternative Title",
-        "apc" : {
-            "has_apc" : True,
-            "max" : [
-                {"currency" : "GBP", "price" :  2}
+    "bibjson": {
+        "alternative_title": "Alternative Title",
+        "apc": {
+            "has_apc": True,
+            "max": [
+                {"currency": "GBP", "price": 2}
             ],
-            "url" : "http://apc.com"
+            "url": "http://apc.com"
         },
-        "article" : {
+        "article": {
             "license_display": ["embed"],
-            "license_display_example_url" : "http://licence.embedded",
-            "orcid" : True,
-            "i4oc_open_citations" : True
+            "license_display_example_url": "http://licence.embedded",
+            "orcid": True,
+            "i4oc_open_citations": True
         },
-        "boai" : True,
-        "copyright" : {
-            "author_retains" : True,
-            "url" : "http://copyright.com"
+        "boai": True,
+        "copyright": {
+            "author_retains": True,
+            "url": "http://copyright.com"
         },
-        "deposit_policy" : {
-            "has_policy" : True,
-            "is_registered" : True,
-            "service" : ["Sherpa/Romeo", "Store it"],
+        "deposit_policy": {
+            "has_policy": True,
+            "is_registered": True,
+            "service": ["Sherpa/Romeo", "Store it"],
             "url": "http://deposit.policy"
         },
-        "discontinued_date" : "2010-01-01",
-        "editorial" : {
-            "review_process" : ["Open peer review"],
-            "review_url" : "http://review.process",
-            "board_url" : "http://editorial.board"
+        "discontinued_date": "2010-01-01",
+        "editorial": {
+            "review_process": ["Open peer review"],
+            "review_url": "http://review.process",
+            "board_url": "http://editorial.board"
         },
-        "eissn" : "9876-5432",
-        "is_replaced_by" : ["2222-2222"],
-        "institution" : {
-            "name" : "Society Institution",
-            "country" : "US"
+        "eissn": "9876-5432",
+        "is_replaced_by": ["2222-2222"],
+        "institution": {
+            "name": "Society Institution",
+            "country": "US"
         },
-        "keywords" : ["word", "key"],
-        "language" : ["EN", "FR"],
-        "license" : [
+        "keywords": ["word", "key"],
+        "language": ["EN", "FR"],
+        "license": [
             {
-                "type" : "CC MY",
-                "BY" : True,
-                "NC" : True,
-                "ND" : False,
-                "SA" : False,
-                "url" : "http://licence.url"
+                "type": "CC MY",
+                "BY": True,
+                "NC": True,
+                "ND": False,
+                "SA": False,
+                "url": "http://licence.url"
             }
         ],
-        "other_charges" : {
-            "has_other_charges" : True,
-            "url" : "http://other.charges"
+        "other_charges": {
+            "has_other_charges": True,
+            "url": "http://other.charges"
         },
-        "pid_scheme" : {
-            "has_pid_scheme" : True,
-            "scheme" : ["DOI", "ARK", "PURL"],
+        "pid_scheme": {
+            "has_pid_scheme": True,
+            "scheme": ["DOI", "ARK", "PURL"],
         },
-        "pissn" : "1234-5678",
-        "plagiarism" : {
-            "detection" : True,
-            "url" : "http://plagiarism.screening"
+        "pissn": "1234-5678",
+        "plagiarism": {
+            "detection": True,
+            "url": "http://plagiarism.screening"
         },
-        "preservation" : {
-            "has_preservation" : True,
-            "service" : ["LOCKSS", "CLOCKSS", "A safe place"],
-            "national_library" : "Trinity",
-            "url" : "http://digital.archiving.policy"
+        "preservation": {
+            "has_preservation": True,
+            "service": ["LOCKSS", "CLOCKSS", "A safe place"],
+            "national_library": "Trinity",
+            "url": "http://digital.archiving.policy"
         },
-        "publication_time_weeks" : 8,
-        "publisher" : {
-            "name" : "The Publisher",
-            "country" : "US"
+        "publication_time_weeks": 8,
+        "publisher": {
+            "name": "The Publisher",
+            "country": "US"
         },
-        "ref" : {
-            "oa_statement" : "http://oa.statement",
-            "journal" : "http://journal.url",
-            "aims_scope" : "http://aims.scope",
-            "author_instructions" : "http://author.instructions.com",
-            "license_terms" : "http://license.terms"
+        "ref": {
+            "oa_statement": "http://oa.statement",
+            "journal": "http://journal.url",
+            "aims_scope": "http://aims.scope",
+            "author_instructions": "http://author.instructions.com",
+            "license_terms": "http://license.terms"
         },
-        "replaces" : ["1111-1111"],
+        "replaces": ["1111-1111"],
         "subject": [
             {"scheme": "LCC", "term": "Economic theory. Demography",
              "code": "HB1-3840"},
             {"scheme": "LCC", "term": "Social Sciences", "code": "H"}
         ],
-        "title" : "The Title",
-        "waiver" : {
-            "has_waiver" : True,
-            "url" : "http://waiver.policy"
+        "title": "The Title",
+        "waiver": {
+            "has_waiver": True,
+            "url": "http://waiver.policy"
         }
     }
 }
-
 
 JOURNAL_INFO = {
     "title": "The Title",
@@ -197,11 +197,11 @@ JOURNAL_INFO = {
     "confirm_contact_email": "contact@email.com",
     "country": "US",
     "processing_charges": "True",
-    "processing_charges_url" : "http://apc.com",
+    "processing_charges_url": "http://apc.com",
     "processing_charges_amount": 2,
     "processing_charges_currency": "GBP",
     "submission_charges": "True",
-    "submission_charges_url" : "http://submission.com",
+    "submission_charges_url": "http://submission.com",
     "submission_charges_amount": 4,
     "submission_charges_currency": "USD",
     "waiver_policy_url": "http://waiver.policy",
@@ -242,9 +242,9 @@ JOURNAL_INFO = {
     "copyright_url": "http://copyright.com",
     "publishing_rights": "True",
     "publishing_rights_url": "http://publishing.rights",
-    "replaces" : ["1111-1111"],
-    "is_replaced_by" : ["2222-2222"],
-    "discontinued_date" : "2001-01-01"
+    "replaces": ["1111-1111"],
+    "is_replaced_by": ["2222-2222"],
+    "discontinued_date": "2001-01-01"
 }
 
 JOURNAL_LEGACY = {
@@ -287,25 +287,27 @@ JOURNAL_APIDO_STRUCT = {
             "fields": {
                 "in_doaj": {"coerce": "bool", "get__default": False},
                 "ticked": {"coerce": "bool", "get__default": False},
-                "seal": {"coerce": "bool", "get__default": False}            }
+                "seal": {"coerce": "bool", "get__default": False}}
         },
-        "bibjson": {
-            "fields": {
-                "alternative_title": {"coerce": "unicode"},
-                "boai": {"coerce": "bool"},
-                "eissn":{"coerce": "unicode"},
-                "pissn": {"coerce": "unicode"},
-                "publication_time_weeks": {"coerce": "integer"},
-                "title": {"coerce": "unicode"}
+        "bibjson" : {
+            "fields" : {
+                "alternative_title" : {"coerce" : "unicode"},
+                "boai" : {"coerce" : "bool"},
+                "discontinued_date" : {"coerce" : "bigenddate"},
+                "eissn" : {"coerce" : "issn"},
+                "pissn" : {"coerce" : "issn"},
+                "publication_time_weeks" : {"coerce" : "integer"},
+                "title" : {"coerce" : "unicode"}
             },
-            "lists": {
+            "lists" : {
                 "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
-                "keywords": {"coerce": "unicode", "contains": "field"},
-                "language": {"coerce": "isolang_2letter", "contains": "field"},
-                "license": {"contains" : "object"},
-                "subject": {"contains": "object"}
+                "keywords" : {"contains" : "field", "coerce" : "unicode_lower"},
+                "language" : {"contains" : "field", "coerce" : "isolang_2letter"},
+                "license" : {"contains" : "object"},
+                "replaces" : {"contains" : "field", "coerce" : "issn"},
+                "subject" : {"contains" : "object"}
             },
-            "objects": [
+            "objects" : [
                 "apc",
                 "article",
                 "copyright",
@@ -320,11 +322,11 @@ JOURNAL_APIDO_STRUCT = {
                 "ref",
                 "waiver"
             ],
-            "structs": {
-                "apc": {
-                    "fields": {
-                        "url": {"coerce": "unicode"},
-                        "has_apc": {"coerce": "unicode"}
+            "structs" : {
+                "apc" : {
+                    "fields" : {
+                        "has_apc" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
                     },
                     "lists" : {
                         "max" : {"contains" : "object"}
@@ -332,83 +334,81 @@ JOURNAL_APIDO_STRUCT = {
                     "structs" : {
                         "max" : {
                             "fields" : {
-                                "currency" : {"coerce" : "unicode"},
+                                "currency" : {"coerce" : "currency_code"},
                                 "price" : {"coerce" : "integer"}
                             }
                         }
                     }
                 },
-                "article":{
-                    "fields": {
-                        "license_display_example_url": {"coerce": "unicode"},
-                        "orcid" : {"coerce": "bool"},
-                        "i4oc_open_citations": {"coerce": "bool"}
+                "article" : {
+                    "fields" : {
+                        "license_display_example_url" : {"coerce" : "url"},
+                        "orcid" : {"coerce" : "bool"},
+                        "i4oc_open_citations" : {"coerce" : "bool"}
                     },
                     "lists" : {
                         "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["embed", "display", "no"]},
                     }
                 },
-                "copyright": {
-                    "fields": {
-                        "author_retains": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"},
+                "copyright" : {
+                    "fields" : {
+                        "author_retains" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
                     }
                 },
-                "deposit_policy": {
-                    "fields": {
+                "deposit_policy" : {
+                    "fields" : {
                         "has_policy" : {"coerce" : "bool"},
-                        "is_registered": {"coerce" : "bool"},
-                        "url": {"coerce" : "unicode"}
+                        "is_registered" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
                     },
                     "lists" : {
-                        "service" : {"coerce": "unicode", "contains": "field"}
+                        "service" : {"contains" : "field", "coerce" : "unicode"}
                     }
                 },
-                "editorial": {
-                    "fields": {
-                        "review_url": {"coerce": "unicode"},
-                        "board_url": {"coerce":"unicode"}
-                    },
-                    "lists": {
-                        "review_process": {"contains" : "field", "coerce": "unicode"
-                            # , "allowed_values": ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]
-                            },
-                    }
-                },
-                "institution": {
-                    "fields": {
-                        "name": {"coerce": "unicode"},
-                        "country": {"coerce": "unicode"}
-                    }
-                },
-                "license": {
-                    "fields": {
-                        "type": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"},
-                        "BY": {"coerce": "bool"},
-                        "NC": {"coerce": "bool"},
-                        "ND": {"coerce": "bool"},
-                        "SA": {"coerce": "bool"}
-                    }
-                },
-                "other_charges": {
-                    "fields": {
-                        "has_other_charges": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"}
-                    }
-                },
-                "pid_scheme": {
-                    "fields": {
-                        "has_pid_scheme": {"coerce": "bool"}
+                "editorial" : {
+                    "fields" : {
+                        "review_url" : {"coerce" : "url"},
+                        "board_url" : {"coerce" : "url"}
                     },
                     "lists" : {
-                        "scheme": {"coerce": "unicode", "contains" : "field"}
+                        "review_process" : {"contains" : "field", "coerce" : "unicode"}
                     }
                 },
-                "plagiarism": {
-                    "fields": {
-                        "detection": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"},
+                "institution" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "country" : {"coerce" : "country_code"}
+                    }
+                },
+                "license" : {
+                    "fields" : {
+                        "type" : {"coerce" : "unicode"},
+                        "BY" : {"coerce" : "bool"},
+                        "NC" : {"coerce" : "bool"},
+                        "ND" : {"coerce" : "bool"},
+                        "SA" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
+                    }
+                },
+                "other_charges" : {
+                    "fields" :{
+                        "has_other_charges" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
+                    }
+                },
+                "pid_scheme" : {
+                    "fields" : {
+                        "has_pid_scheme" : {"coerce" : "bool"},
+                    },
+                    "lists" : {
+                        "scheme" : {"coerce" : "unicode", "contains" : "field"}
+                    }
+                },
+                "plagiarism" : {
+                    "fields" : {
+                        "detection" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
                     }
                 },
                 "preservation": {
@@ -429,41 +429,40 @@ JOURNAL_APIDO_STRUCT = {
                         }
                     }
                 },
-                "publisher": {
-                    "fields": {
-                        "name": {"coerce": "unicode"},
-                        "country": {"coerce": "unicode"}
+                "publisher" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "country" : {"coerce" : "country_code"}
                     }
                 },
-                "ref": {
-                    "fields":{
-                        "license_terms": {"coerce": "unicode"},
-                        "oa_statement": {"coerce": "unicode"},
-                        "journal": {"coerce": "unicode"},
-                        "aims_scope": {"coerce": "unicode"},
-                        "author_instructions": {"coerce": "unicode"}
-
+                "ref" : {
+                    "fields" : {
+                        "oa_statement" : {"coerce" : "url"},
+                        "journal" : {"coerce" : "url"},
+                        "aims_scope" : {"coerce" : "url"},
+                        "author_instructions" : {"coerce" : "url"},
+                        "license_terms" : {"coerce" : "url"},
                     }
                 },
-                "subject": {
-                    "fields": {
-                        "code": {"coerce": "unicode"},
-                        "scheme": {"coerce": "unicode"},
-                        "term": {"coerce": "unicode"}
+                "subject" : {
+                    "fields" : {
+                        "code" : {"coerce" : "unicode"},
+                        "scheme" : {"coerce" : "unicode"},
+                        "term" : {"coerce" : "unicode"}
                     }
                 },
-                "waiver": {
-                     "fields": {
-                         "has_waiver": {"coerce": "unicode"},
-                         "url": {"coerce": "unicode"}
-                     }
+                "waiver" : {
+                    "fields" : {
+                        "has_waiver" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
+                    }
                 }
             }
         }
     }
 }
 
-JOURNAL_BULK_EDIT =  {
+JOURNAL_BULK_EDIT = {
     "publisher": "Test Publisher",
     "doaj_seal": True,
     "country": "DZ",
@@ -472,7 +471,6 @@ JOURNAL_BULK_EDIT =  {
     "owner": "testuser",
     "contact_name": "Test User"
 }
-
 
 CSV_HEADERS = [
     'Journal title',
@@ -493,8 +491,8 @@ CSV_HEADERS = [
     'Submission fee amount',
     'Submission fee currency',
     # these are not in the journal model, only in the suggestion model
-    #'Number of articles published in the last calendar year',
-    #'Number of articles information URL',
+    # 'Number of articles published in the last calendar year',
+    # 'Number of articles information URL',
     'Journal waiver policy (for developing country authors etc)',
     'Waiver policy information URL',
     'Digital archiving policy or program(s)',
@@ -556,8 +554,8 @@ JOURNAL_QUESTION_ANSWERS = [
     '4',
     'USD - US Dollar',
     # these were the articles_last_year and associated URL which are not in the journal model
-    #'',
-    #'',
+    # '',
+    # '',
     'Yes',
     'http://waiver.policy',
     'LOCKSS, CLOCKSS',

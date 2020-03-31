@@ -21,29 +21,31 @@ JOURNAL_STRUCT = {
                 "seal": {"coerce": "bool", "get__default": False}
             }
         },
-        "bibjson": {
-            "fields": {
-                "alternative_title": {"coerce": "unicode"},
-                "boai": {"coerce": "bool"},
-                "eissn": {"coerce": "unicode"},
-                "pissn": {"coerce": "unicode"},
-                "publication_time_weeks": {"coerce": "integer"},
-                "title": {"coerce": "unicode"}
+        "bibjson" : {
+            "fields" : {
+                "alternative_title" : {"coerce" : "unicode"},
+                "boai" : {"coerce" : "bool"},
+                "discontinued_date" : {"coerce" : "bigenddate"},
+                "eissn" : {"coerce" : "issn"},
+                "pissn" : {"coerce" : "issn"},
+                "publication_time_weeks" : {"coerce" : "integer"},
+                "title" : {"coerce" : "unicode"}
             },
-            "lists": {
+            "lists" : {
                 "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
-                "keywords": {"coerce": "unicode", "contains": "field"},
-                "language": {"coerce": "isolang_2letter", "contains": "field"},
-                "subject": {"coerce": "unicode", "contaisn": "objects"}
+                "keywords" : {"contains" : "field", "coerce" : "unicode_lower"},
+                "language" : {"contains" : "field", "coerce" : "isolang_2letter"},
+                "license" : {"contains" : "object"},
+                "replaces" : {"contains" : "field", "coerce" : "issn"},
+                "subject" : {"contains" : "object"}
             },
-            "objects": [
+            "objects" : [
                 "apc",
                 "article",
                 "copyright",
                 "deposit_policy",
                 "editorial",
                 "institution",
-                "license",
                 "other_charges",
                 "pid_scheme",
                 "plagiarism",
@@ -52,27 +54,27 @@ JOURNAL_STRUCT = {
                 "ref",
                 "waiver"
             ],
-            "structs": {
-                "apc": {
-                    "fields": {
-                        "url": {"coerce": "unicode"},
-                        "has_apc": {"coerce": "unicode"}
+            "structs" : {
+                "apc" : {
+                    "fields" : {
+                        "has_apc" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
                     },
-                    "lists": {
-                        "max": {"contains": "object"}
+                    "lists" : {
+                        "max" : {"contains" : "object"}
                     },
-                    "structs": {
-                        "max": {
-                            "fields": {
-                                "currency": {"coerce": "unicode"},
-                                "price": {"coerce": "integer"}
+                    "structs" : {
+                        "max" : {
+                            "fields" : {
+                                "currency" : {"coerce" : "currency_code"},
+                                "price" : {"coerce" : "integer"}
                             }
                         }
                     }
                 },
                 "article" : {
                     "fields" : {
-                        "license_display_example_url" : {"coerce" : "unicode"},
+                        "license_display_example_url" : {"coerce" : "url"},
                         "orcid" : {"coerce" : "bool"},
                         "i4oc_open_citations" : {"coerce" : "bool"}
                     },
@@ -80,64 +82,65 @@ JOURNAL_STRUCT = {
                         "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["embed", "display", "no"]},
                     }
                 },
-                "copyright": {
-                    "fields": {
-                        "author_retains": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"},
+                "copyright" : {
+                    "fields" : {
+                        "author_retains" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
                     }
                 },
-                "deposit_policy": {
-                    "fields": {
-                        "has_policy": {"coerce": "bool"},
-                        "is_registered": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"}
+                "deposit_policy" : {
+                    "fields" : {
+                        "has_policy" : {"coerce" : "bool"},
+                        "is_registered" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
                     },
-                    "lists": {
-                        "service": {"coerce": "unicode", "contains": "field"}
+                    "lists" : {
+                        "service" : {"contains" : "field", "coerce" : "unicode"}
                     }
                 },
-                "editorial": {
-                    "fields": {
-                        "review_url": {"coerce": "unicode"},
-                        "board_url": {"coerce": "unicode"}
+                "editorial" : {
+                    "fields" : {
+                        "review_url" : {"coerce" : "url"},
+                        "board_url" : {"coerce" : "url"}
                     },
-                    "lists": {
-                        "review_process": {"contains": "field", "coerce": "unicode","allowed_values": ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]
-                        },
+                    "lists" : {
+                        "review_process" : {"contains" : "field", "coerce" : "unicode"}
                     }
                 },
-                "institution": {
-                    "fields": {
-                        "name": {"coerce": "unicode"},
-                        "country": {"coerce": "unicode"}
+                "institution" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "country" : {"coerce" : "country_code"}
                     }
                 },
-                "license": {
-                    "fields": {
-                        "type": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"},
-                        "BY": {"coerce": "bool"},
-                        "NC": {"coerce": "bool"},
-                        "ND": {"coerce": "bool"},
-                        "SA": {"coerce": "bool"}
+                "license" : {
+                    "fields" : {
+                        "type" : {"coerce" : "unicode"},
+                        "BY" : {"coerce" : "bool"},
+                        "NC" : {"coerce" : "bool"},
+                        "ND" : {"coerce" : "bool"},
+                        "SA" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
                     }
                 },
-                "other_charges": {
-                    "fields": {
-                        "has_other_charges": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"}
+                "other_charges" : {
+                    "fields" :{
+                        "has_other_charges" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
                     }
                 },
-                "pid_scheme": {
-                    "fields": {
-                        "has_pid_scheme": {"coerce": "bool"},
-                        "scheme": {"coerce": "unicode"}
+                "pid_scheme" : {
+                    "fields" : {
+                        "has_pid_scheme" : {"coerce" : "bool"},
+                    },
+                    "lists" : {
+                        "scheme" : {"coerce" : "unicode", "contains" : "field"}
                     }
                 },
-                "plagiarism": {
-                    "fields": {
-                        "detection": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"},
+                "plagiarism" : {
+                    "fields" : {
+                        "detection" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
                     }
                 },
                 "preservation": {
@@ -148,35 +151,42 @@ JOURNAL_STRUCT = {
                     },
                     "lists": {
                         "service": {"coerce": "unicode", "contains": "field"},
+                    },
+                    "structs" : {
+                        "policy" : {
+                            "fields" : {
+                                "name" : {"coerce": "unicode"},
+                                "domain" : {"coerce" : "unicode"}
+                            }
+                        }
                     }
                 },
-                "publisher": {
-                    "fields": {
-                        "name": {"coerce": "unicode"},
-                        "country": {"coerce": "unicode"}
+                "publisher" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "country" : {"coerce" : "country_code"}
                     }
                 },
-                "ref": {
-                    "fields": {
-                        "license_terms": {"coerce": "unicode"},
-                        "oa_statement": {"coerce": "unicode"},
-                        "journal": {"coerce": "unicode"},
-                        "aims_scope": {"coerce": "unicode"},
-                        "author_instructions": {"coerce": "unicode"}
-
+                "ref" : {
+                    "fields" : {
+                        "oa_statement" : {"coerce" : "url"},
+                        "journal" : {"coerce" : "url"},
+                        "aims_scope" : {"coerce" : "url"},
+                        "author_instructions" : {"coerce" : "url"},
+                        "license_terms" : {"coerce" : "url"},
                     }
                 },
-                "subject": {
-                    "fields": {
-                        "code": {"coerce": "unicode"},
-                        "scheme": {"coerce": "unicode"},
-                        "term": {"coerce": "unicode"}
+                "subject" : {
+                    "fields" : {
+                        "code" : {"coerce" : "unicode"},
+                        "scheme" : {"coerce" : "unicode"},
+                        "term" : {"coerce" : "unicode"}
                     }
                 },
-                "waiver": {
-                    "fields": {
-                        "has_waiver": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"}
+                "waiver" : {
+                    "fields" : {
+                        "has_waiver" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "url"}
                     }
                 }
             }
