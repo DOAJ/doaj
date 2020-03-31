@@ -1,6 +1,6 @@
 /* Page header */
 .page-header {
-  background-color: #9A4B00;
+  background-color: #982E0A;
   font-weight: 600;
 }
 
@@ -79,14 +79,14 @@ header .container {
   display: block;
   padding: 0.85em 0;
   margin-bottom: 1em;
-  border-top: 1px dashed #9A4B00;
+  border-top: 1px dashed #982E0A;
   text-decoration: none;
 }
 
 .themed-posts article a:hover,
 .themed-posts article a:focus,
 .themed-posts article a:active {
-  border-top: 1px solid #9A4B00;
+  border-top: 1px solid #982E0A;
 }
 
 /* New journals */
@@ -104,14 +104,14 @@ header .container {
   display: block;
   padding: 0.85em 0;
   margin-bottom: 1em;
-  border-top: 1px dashed #9A4B00;
+  border-top: 1px dashed #982E0A;
   text-decoration: none;
 }
 
 .new-journals li a:hover,
 .new-journals li a:focus,
 .new-journals li a:active {
-  border-top: 1px solid #9A4B00;
+  border-top: 1px solid #982E0A;
 }
 
 /* Stats */
@@ -170,19 +170,19 @@ header .container {
   padding: 4rem 2rem;
   position: relative;
   display: inline-block;
-  border: 1px solid #9A4B00;
+  border: 1px solid #982E0A;
   top: 0.5em;
   bottom: -0.5em;
   right: -0.5em;
   left: 0.5em;
   transition: all 90ms ease-in;
   text-decoration: none;
-  background-color: #9A4B00;
+  background-color: #982E0A;
   color: #FEFBF8;
 }
 
 .latest-post a:before {
-  outline: 1px solid #9A4B00;
+  outline: 1px solid #982E0A;
   background: #FEFBF8;
   content: "";
   width: 100%;
@@ -257,7 +257,7 @@ header .container {
   display: block;
   text-transform: uppercase;
   font-weight: 600;
-  color: #9A4B00;
+  color: #982E0A;
   margin-bottom: 0.5rem;
 }
 
@@ -302,7 +302,7 @@ header .container {
 }
 
 .button:before {
-  outline: 1px solid #9A4B00;
+  outline: 1px solid #982E0A;
   background: #FEFBF8;
   content: "";
   width: 100%;
@@ -336,9 +336,9 @@ header .container {
 }
 
 .primary-button {
-  background: #9A4B00;
+  background: #982E0A;
   color: #FEFBF8;
-  border-color: #9A4B00;
+  border-color: #982E0A;
 }
 
 .primary-button:hover,
@@ -349,14 +349,14 @@ header .container {
 
 .secondary-button {
   background: #FEFBF8;
-  border-color: #9A4B00;
-  color: #9A4B00;
+  border-color: #982E0A;
+  color: #982E0A;
 }
 
 .secondary-button:hover,
 .secondary-button:active,
 .secondary-button:focus {
-  color: #9A4B00;
+  color: #982E0A;
 }
 
 /* Input groups */
