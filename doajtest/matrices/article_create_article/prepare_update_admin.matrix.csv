@@ -1,0 +1,7 @@
+test_id,duplicate,merge_duplicate,is_update,raises
+1,same_as_update_article_id,yes,1,
+2,same_as_update_article_id,no,0,
+3,different_than_update_article_id,yes,,DuplicateArticle
+4,different_than_update_article_id,no,0,DuplicateArticle
+5,none,yes,1,
+6,none,no,0,
