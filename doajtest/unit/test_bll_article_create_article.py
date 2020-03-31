@@ -53,7 +53,6 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         account_arg = kwargs.get("account")
         get_duplicate_result_arg = kwargs.get("get_duplicate_result")
         role_arg = kwargs.get("role")
-        original_saved_arg = kwargs.get("original_saved")
         merge_duplicate_arg = kwargs.get("merge_duplicate")
         add_journal_info_arg = kwargs.get("add_journal_info")
         dry_run_arg = kwargs.get("dry_run")
@@ -263,16 +262,6 @@ class TestBLLArticleCreateArticle(DoajTestCase):
             elif update_article_id_arg == "doi_ft_not_changed":
                 original = Article.pull(original_id)
                 assert original is not None
-
-
-class TestBLLHelpers(DoajTestCase):
-
-    def setUp(self):
-        super(TestBLLHelpers, self).setUp()
-        self.svc = DOAJ.articleService()
-
-    def tearDown(self):
-        super(TestBLLHelpers, self).tearDown()
 
     @parameterized.expand(is_acceptable_load_cases)
     def test_is_acceptable(self, value, kwargs):
