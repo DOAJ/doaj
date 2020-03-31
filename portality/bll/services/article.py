@@ -179,28 +179,29 @@ class ArticleService(object):
         self.is_acceptable(article)
 
         has_permissions_result = self.has_permissions(account, article, limit_to_account)
-        if has_permissions_result:
+        if isinstance(has_permissions_result,dict):
+            return has_permissions_result
 
-            is_update = 0
-            if duplicate_check and merge_duplicate:
-                duplicate = self.get_duplicate(article)
-                try:
-                    if account.has_role("admin"):
-                        is_update = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
-                    else:
-                        is_update = self._prepare_update_publisher(article, duplicate, merge_duplicate)
-                except (exceptions.DuplicateArticleException, exceptions.ArticleMergeConflict) as e:
-                    raise e
+        is_update = 0
+        if duplicate_check and merge_duplicate:
+            duplicate = self.get_duplicate(article)
+            try:
+                if account.has_role("admin"):
+                    is_update = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
+                else:
+                    is_update = self._prepare_update_publisher(article, duplicate, merge_duplicate)
+            except (exceptions.DuplicateArticleException, exceptions.ArticleMergeConflict) as e:
+                raise e
 
-            if add_journal_info:
-                article.add_journal_metadata()
+        if add_journal_info:
+            article.add_journal_metadata()
 
-            # finally, save the new article
-            if not dry_run:
-                article.save()
+        # finally, save the new article
+        if not dry_run:
+            article.save()
 
-            return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),
-                    "unmatched": set()}
+        return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),
+                "unmatched": set()}
 
 
     def has_permissions(self, account, article, limit_to_account):

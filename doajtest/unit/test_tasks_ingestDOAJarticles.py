@@ -831,7 +831,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
-        assert fu.status == "failed"
+        assert fu.status == "failed", "received status: {}".format(fu.status)
         assert fu.error is not None and fu.error != ""
         assert fu.error_details is None
 
@@ -1386,8 +1386,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         fu1 = models.FileUpload.pull(id1)
         fu2 = models.FileUpload.pull(id2)
 
-        assert fu1.status == "processed"
-        assert fu2.status == "processed"
+        assert fu1.status == "processed", "received status: {}".format(fu1.status)
+        assert fu2.status == "processed", "received status: {}".format(fu2.status)
 
         # now let's check that only one article got created
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
