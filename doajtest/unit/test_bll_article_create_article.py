@@ -10,21 +10,30 @@ from portality.lib.paths import rel2abs
 from doajtest.mocks.bll_article import BLLArticleMockFactory
 
 
-def create_article_load_cases():
-    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "create_article",
-                               "test_id",
-                               {"test_id": []})
-
-
 EXCEPTIONS = {
     "ArgumentException": exceptions.ArgumentException,
     "DuplicateArticleException": exceptions.DuplicateArticleException,
     "ArticleNotAcceptable": exceptions.ArticleNotAcceptable
 }
 
+def create_article_load_cases():
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "create_article",
+                               "test_id",
+                               {"test_id": ["1"]})
 
 def is_acceptable_load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "is_acceptable",
+                               "test_id",
+                               {"test_id": ["1"]})
+
+
+def prepare_update_admin_load_cases():
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "prepare_update_admin",
+                               "test_id",
+                               {"test_id": ["1"]})
+
+def prepare_update_publisher_load_cases():
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "prepare_update_publisher",
                                "test_id",
                                {"test_id": []})
 
@@ -34,16 +43,10 @@ class TestBLLArticleCreateArticle(DoajTestCase):
     def setUp(self):
         super(TestBLLArticleCreateArticle, self).setUp()
         self.svc = DOAJ.articleService()
-        self._is_legitimate_owner = self.svc.is_legitimate_owner
-        self._issn_ownership_status = self.svc.issn_ownership_status
-        self._get_duplicate = self.svc.get_duplicate
-        self.__doi_or_fulltext_updated = self.svc._doi_or_fulltext_updated
+
 
     def tearDown(self):
-        self.svc.is_legitimate_owner = self._is_legitimate_owner
-        self.svc.issn_ownership_status = self._issn_ownership_status
-        self.svc.get_duplicate = self._get_duplicate
-        self.svc._doi_or_fulltext_updated = self.__doi_or_fulltext_updated
+
         super(TestBLLArticleCreateArticle, self).tearDown()
 
     @parameterized.expand(create_article_load_cases)
@@ -316,3 +319,92 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         failed_result = self.svc.has_permissions(publisher_stranged, article, True)
         assert failed_result == {'success': 0, 'fail': 1, 'update': 0, 'new': 0, 'shared': [], 'unowned': [pissn, eissn],
                                  'unmatched': []}, "received: {}".format(failed_result)
+
+    @parameterized.expand(prepare_update_admin_load_cases)
+    def test_prepare_update_admin(self, value, kwargs):
+
+        with self.assertRaises(exceptions.ConfigurationException):
+            self.svc._prepare_update_admin(None, None, None, None)
+
+        Article.merge = BLLArticleMockFactory.merge_mock
+        Article.pull = BLLArticleMockFactory.pull_mock
+
+        duplicate_arg = kwargs.get("duplicate")
+        merge_duplicate_arg = kwargs.get("merge_duplicate")
+        is_update_arg = kwargs.get("is_update")
+        raises_arg = kwargs.get("raises")
+
+        pissn1 = "1234-5678"
+        eissn1 = "9876-5432"
+        pissn2 = "1111-1111"
+        eissn2 = "2222-2222"
+        doi = "10.1234/article-10"
+        ft = "https://example.com"
+
+        update_article_id = "update_id"
+
+        article_src = ArticleFixtureFactory.make_article_source(pissn=pissn1, eissn=eissn1, doi=doi, fulltext=ft)
+        article = Article(**article_src)
+        article.set_id("article_id")
+
+        duplicate = None
+        if duplicate_arg != "none":
+            duplicate_src = ArticleFixtureFactory.make_article_source(pissn=pissn2, eissn=eissn2, doi=doi, fulltext=ft)
+            duplicate = Article(**duplicate_src)
+            if duplicate_arg == "same_as_update_article_id":
+                duplicate.set_id("update_id")
+            elif duplicate_arg == "different_then_update_article_id":
+                duplicate.set_id("duplicate_id")
+
+        merge_duplicate = True if merge_duplicate_arg == "yes" else False
+
+        if raises_arg == "DuplicateArticle":
+            with self.assertRaises(exceptions.DuplicateArticleException):
+                self.svc._prepare_update_admin(article,duplicate,update_article_id,merge_duplicate)
+        else:
+            assert self.svc._prepare_update_admin(article,duplicate,update_article_id,merge_duplicate) == int(is_update_arg)
+
+    @parameterized.expand(prepare_update_publisher_load_cases)
+    def test_prepare_update_publisher(self, value, kwargs):
+
+        Article.merge = BLLArticleMockFactory.merge_mock
+
+        duplicate_arg = kwargs.get("duplicate")
+        merge_duplicate_arg = kwargs.get("merge_duplicate")
+        doi_or_ft_update_arg = kwargs.get("doi_or_ft_updated")
+        is_update_arg = kwargs.get("is_update")
+        raises_arg = kwargs.get("raises")
+
+        pissn1 = "1234-5678"
+        eissn1 = "9876-5432"
+        pissn2 = "1111-1111"
+        eissn2 = "2222-2222"
+        doi = "10.1234/article-10"
+        ft = "https://example.com"
+
+        if doi_or_ft_update_arg == "yes":
+            self.svc._doi_or_fulltext_updated = BLLArticleMockFactory.doi_or_fulltext_updated(True,True)
+        else:
+            self.svc._doi_or_fulltext_updated = BLLArticleMockFactory.doi_or_fulltext_updated(False,False)
+
+        article_src = ArticleFixtureFactory.make_article_source(pissn=pissn1, eissn=eissn1, doi=doi, fulltext=ft)
+        article = Article(**article_src)
+        article.set_id("article_id")
+
+        duplicate = None
+        if duplicate_arg != "none":
+            duplicate_src = ArticleFixtureFactory.make_article_source(pissn=pissn2, eissn=eissn2, doi=doi, fulltext=ft)
+            duplicate = Article(**duplicate_src)
+            if duplicate_arg == "same_as_article_id":
+                duplicate.set_id("article_id")
+            elif duplicate_arg == "different_than_article_id":
+                duplicate.set_id("duplicate_id")
+
+        merge_duplicate = True if merge_duplicate_arg == "yes" else False
+
+        if raises_arg == "DuplicateArticle":
+            with self.assertRaises(exceptions.DuplicateArticleException):
+                self.svc._prepare_update_publisher(article,duplicate,merge_duplicate)
+        else:
+            assert self.svc._prepare_update_publisher(article,duplicate,merge_duplicate) == int(is_update_arg)
+

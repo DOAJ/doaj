@@ -113,7 +113,7 @@ class ArticleService(object):
         is_update = 0
         if duplicate is not None:
             if duplicate.id != update_article_id:
-                # it means that doi or ft url has been changes so that it duplicates existing article
+                # it means that doi or ft url has been changed so that it duplicates existing article
                 raise exceptions.DuplicateArticleException()
             elif merge_duplicate:
                 is_update += 1

@@ -7,6 +7,14 @@ from datetime import datetime
 class BLLArticleMockFactory(object):
 
     @classmethod
+    def merge_mock(cls, article):
+        pass
+
+    @classmethod
+    def pull_mock(cls, id):
+        return Article
+
+    @classmethod
     def doi_or_fulltext_updated(cls, doi_updated, ft_updated):
 
         result = doi_updated and ft_updated

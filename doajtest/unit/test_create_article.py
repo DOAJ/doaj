@@ -61,7 +61,7 @@ class TestCreateOrUpdateArticle(DoajTestCase):
 
         # try for admin
 
-        resp = ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10)
+        resp = ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10, update_article_id=self.article10.id)
 
         assert resp["success"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["update"] == 1, "expected 1 updated, received: {}".format(resp)
@@ -95,11 +95,11 @@ class TestCreateOrUpdateArticle(DoajTestCase):
         assert resp["new"] == 1, "expected 1 new, received: {}".format(resp)
 
         #for admin
-        resp = ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10)
+        resp = ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10, update_article_id=self.article10.id)
 
         assert resp["success"] == 1, "expected 1 new, received: {}".format(resp)
-        assert resp["update"] == 0, "expected 1 new, received: {}".format(resp)
-        assert resp["new"] == 1, "expected 1 new, received: {}".format(resp)
+        assert resp["update"] == 1, "expected 1 new, received: {}".format(resp)
+        assert resp["new"] == 0, "expected 1 new, received: {}".format(resp)
 
     def test_02_old_doi_existing_url_admin(self):
         ba = self.article10.bibjson()
@@ -113,7 +113,7 @@ class TestCreateOrUpdateArticle(DoajTestCase):
 
         # try as an admin
         with self.assertRaises(ArticleMergeConflict):
-            ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10)
+            ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10, update_article_id=self.article10.id)
 
         # check for url from other article owned by someone else
         ba.remove_urls(ba.FULLTEXT)
@@ -125,7 +125,7 @@ class TestCreateOrUpdateArticle(DoajTestCase):
 
         # try as an admin
         with self.assertRaises(ArticleMergeConflict):
-            ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10)
+            ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10, update_article_id=self.article10.id)
 
     def test_03_existing_doi_old_url_admin(self):
         ba = self.article10.bibjson()
@@ -139,7 +139,7 @@ class TestCreateOrUpdateArticle(DoajTestCase):
 
         # try as an admin
         with self.assertRaises(ArticleMergeConflict):
-            ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10)
+            ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10, update_article_id=self.article10.id)
 
         ba.remove_identifiers(ba.DOI)
         # check for DOI from other article owned by someone else
@@ -151,7 +151,7 @@ class TestCreateOrUpdateArticle(DoajTestCase):
 
         # try as an admin
         with self.assertRaises(ArticleMergeConflict):
-            ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10)
+            ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10, update_article_id=self.article10.id)
 
     def test_04_old_doi_new_url(self):
         ba = self.article10.bibjson()
@@ -163,7 +163,7 @@ class TestCreateOrUpdateArticle(DoajTestCase):
             ArticleService.create_article(self=ArticleService(), account=self.publisher, article=self.article10)
 
         # try as an admin
-        resp = ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10)
+        resp = ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10, update_article_id=self.article10.id)
 
         assert resp["success"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["update"] == 1, "expected 1 updated, received: {}".format(resp)
@@ -181,7 +181,7 @@ class TestCreateOrUpdateArticle(DoajTestCase):
             ArticleService.create_article(self=ArticleService(), account=self.publisher, article=self.article10)
 
         # try as an admin
-        resp = ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10)
+        resp = ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10, update_article_id=self.article10.id)
 
         assert resp["success"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["update"] == 1, "expected 1 updated, received: {}".format(resp)
@@ -202,13 +202,8 @@ class TestCreateOrUpdateArticle(DoajTestCase):
         with self.assertRaises(DuplicateArticleException):
             ArticleService.create_article(self=ArticleService(), account=self.publisher, article=self.article10)
 
-        resp = ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10)
-
-        assert resp["success"] == 1, "expected 1 updated, received: {}".format(resp)
-        assert resp["update"] == 1, "expected 1 updated, received: {}".format(resp)
-        assert resp["new"] == 0, "expected 1 new, received: {}".format(resp)
-        assert self.article10.get_normalised_fulltext() == "//updated.com", "expected //updated.com, received: {}".format(
-            self.article10.get_normalised_fulltext())
+        with self.assertRaises(DuplicateArticleException):
+            ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10, update_article_id=self.article10.id)
 
     def test_07_new_doi_existing_url(self):
         ba = self.article10.bibjson()
@@ -223,23 +218,5 @@ class TestCreateOrUpdateArticle(DoajTestCase):
             ArticleService.create_article(self=ArticleService(), account=self.publisher, article=self.article10)
 
         # try as an admin
-        resp = ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10)
-
-        assert resp["success"] == 1, "expected 1 updated, received: {}".format(resp)
-        assert resp["update"] == 1, "expected 1 updated, received: {}".format(resp)
-        assert resp["new"] == 0, "expected 1 new, received: {}".format(resp)
-        assert self.article10.get_normalised_fulltext() == "//www.article11.com", "expected //www.article11.com, received: {}".format(
-            self.article10.get_normalised_fulltext())
-        assert self.article11.get_normalised_fulltext() == "//www.article11.com", "expected //www.article11.com, received: {}".format(
-            self.article10.get_normalised_fulltext())
-
-        art = Article.pull("articleid10")
-        assert art.get_normalised_fulltext() == "//www.article10.com", "expected //www.article10.com, received: {}".format(
-            self.article10.get_normalised_fulltext())
-        assert art.get_normalised_doi() == "10.0000/article-10", "expected 10.0000/article-10, received: {}".format(art.get_normalised_doi())
-
-        art = Article.pull("articleid11")
-        assert art.get_normalised_fulltext() == "//www.article11.com", "expected //www.article11.com, received: {}".format(
-            self.article10.get_normalised_fulltext())
-        assert art.get_normalised_doi() == "10.0000/article-UPDATED", "expected 10.0000/article-UPDATED, received: {}".format(
-            art.get_normalised_doi())
+        with self.assertRaises(DuplicateArticleException):
+            ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10, update_article_id=self.article10.id)
