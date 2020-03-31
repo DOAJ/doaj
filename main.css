@@ -24,7 +24,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  margin: 2rem 0;
+  margin: 1.75rem 0;
   font-size: 2.488em;
 }
 
@@ -85,7 +85,7 @@ a:hover,
 a:focus,
 a:active {
   text-decoration: none;
-  color: rgba(40, 38, 36, 0.75);
+  color: #5C5956;
 }
 
 section {
@@ -105,6 +105,7 @@ time {
 
 header {
   background-color: #9A4B00;
+  font-weight: 600;
 }
 
 header h1 {
@@ -116,7 +117,7 @@ header nav {
 }
 
 header nav a {
-  color: #FEFBF8;
+  color: #F8F2ED;
 }
 
 header nav ul {
@@ -132,7 +133,7 @@ header a {
 
 main > section:first-of-type,
 main > section:nth-of-type(4) {
-  background-color: rgba(154, 75, 0, 0.05);
+  background-color: #F8F2ED;
 }
 
 /* Aside */

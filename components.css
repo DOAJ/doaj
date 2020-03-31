@@ -1,13 +1,27 @@
 /* Logo */
 .logo-wrapper {
-  padding: 10px 0;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  height: 50px;
 }
 
 .logo {
   height: 30px;
 }
 
+.logo path {
+  fill: #FEFBF8;
+}
+
 /* Nav */
+
+header .container {
+}
+
+.nav-top {
+  height: 50px;
+}
+
 .nav-top ul {
   display: flex;
   justify-content: space-between;
@@ -103,7 +117,7 @@
 .stats .desc {
   text-transform: uppercase;
   font-size: 0.75rem;
-  color: rgba(40, 38, 36, 0.75);
+  color: #5C5956;
 }
 
 /* Eyebrow */
@@ -116,7 +130,7 @@
   text-transform: uppercase;
   font-size: 0.75em;
   font-weight: 600;
-  color: rgba(40, 38, 36, 0.75);
+  color: #5C5956;
 }
 
 /* Blog */
@@ -191,7 +205,7 @@
   position: relative;
   margin: 1rem 0 1.5rem 0;
   width: 225px;
-  background-color: rgba(246, 129, 18, 0.25);
+  background-color: #F8D6B6;
 }
 
 .volunteers article figure:after {
@@ -200,7 +214,7 @@
   content: '';
   height: 150px;
   width: 75px;
-  background-color: rgba(246, 129, 18, 0.25);
+  background-color: #F8D6B6;
   border-bottom-right-radius: 100px;
   border-top-right-radius: 100px;
 }
@@ -210,8 +224,9 @@
 }
 
 .volunteers .desc {
-  color: rgba(40, 38, 36, 0.75);
+  color: #5C5956;
   font-size: smaller;
+  margin-bottom: 0.25rem;
 }
 
 .volunteers .discipline {
@@ -219,6 +234,7 @@
   text-transform: uppercase;
   font-weight: 600;
   color: #9A4B00;
+  margin-bottom: 0.5rem;
 }
 
 /* Funders */
@@ -228,21 +244,7 @@
 .funder {
   position: relative;
   padding: 1.5rem 175px 1.5rem 1.5rem;
-  background-color: rgba(246, 129, 18, 0.25);
-}
-
-.funder:after {
-  position: absolute;
-  right: 0;
-  top: 0;
-  content: '';
-  height: 100%;
-  width: 150px;
-  background-color: rgba(246, 129, 18, 0.25);
-}
-
-.funder:hover:after {
-  width: 100%;
+  background-color: #F8D6B6;
 }
 
 /* Legal stuff */
