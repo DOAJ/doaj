@@ -139,6 +139,8 @@ class ArticleService(object):
                 elif merge_duplicate:
                     is_update += 1
                     article.merge(duplicate)
+                else:
+                    raise exceptions.DuplicateArticleException
             else:
                 raise exceptions.DuplicateArticleException()
         return is_update
@@ -184,7 +186,7 @@ class ArticleService(object):
             return has_permissions_result
 
         is_update = 0
-        if duplicate_check and merge_duplicate:
+        if duplicate_check:
             duplicate = self.get_duplicate(article)
             try:
                 if account.has_role("admin"):

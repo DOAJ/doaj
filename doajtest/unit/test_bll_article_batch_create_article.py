@@ -15,7 +15,7 @@ import time
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_batch_create_article"), "batch_create_article", "test_id",
-                               {"test_id" : ["130"]})
+                               {"test_id" : []})
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,
@@ -203,7 +203,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         if duplicate_in_index == 1:
             gd_mock = BLLArticleMockFactory.get_duplicate(given_article_id=last_id, eissn=last_issn, pissn=last_issn, doi=last_doi, fulltext=last_ft)
         elif duplicate_in_index == 2:
-            gd_mock = BLLArticleMockFactory.get_duplicate()
+            gd_mock = BLLArticleMockFactory.get_duplicate(merge_duplicate=True)
         else:
             gd_mock = BLLArticleMockFactory.get_duplicate(return_none=True)
         self.svc.get_duplicate = gd_mock

@@ -91,17 +91,25 @@ class BLLArticleMockFactory(object):
         return mock
 
     @classmethod
-    def get_duplicate(cls, given_article_id = None, return_none=False, eissn=None, pissn=None, doi=None, fulltext=None):
+    def get_duplicate(cls, given_article_id = None, return_none=False, eissn=None, pissn=None, doi=None, fulltext=None, merge_duplicate=False):
         article = None
-        if given_article_id == "exception":
-            raise exceptions.ArticleMergeConflict()
-        if not return_none:
-            source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
-            article = Article(**source)
-            article.set_id(given_article_id)
+        if not merge_duplicate:
+            if given_article_id == "exception":
+                raise exceptions.ArticleMergeConflict()
+            if not return_none:
+                source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
+                article = Article(**source)
+                article.set_id(given_article_id)
 
         def mock(*args, **kwargs):
-            return article
+            if merge_duplicate:
+                raise exceptions.ArticleMergeConflict()
+            supplied_article = args[0]
+            if given_article_id is not None:
+                if given_article_id == supplied_article.id:
+                    return article
+            else:
+                return article
 
         return mock
 
