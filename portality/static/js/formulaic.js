@@ -63,7 +63,7 @@ var formulaic = {
         this.backgroundSaveClosure = function() {
             var that = this;
             return function() {
-                that.save({validate: false, additional : {"draft" : "true"}});
+                that.save({validate: false, additional : {"draft" : "true"}, complete: false});
                 setTimeout(that.backgroundSaveClosure(), 60000);
             }
         };
@@ -76,6 +76,7 @@ var formulaic = {
             if (!params) { params = {}}
             var validate = edges.getParam(params.validate, true);
             var additional_params = edges.getParam(params.additional, {});
+            var complete = edges.getParam(params.complete, true);
 
             if (!validate || (this.activeParsley && this.activeParsley.isValid())) {
                 var data = this.context.serialize();
@@ -89,7 +90,11 @@ var formulaic = {
                     data: full_data,
                     error: function() {alert("background save failed")},
                     success: function() {
-                        that.lastSaveVal = data;
+                        if (complete) {
+                            window.location.href = that.context.attr("data-formulaic-after")
+                        } else {
+                            that.lastSaveVal = data;
+                        }
                     }
                 })
             } else {

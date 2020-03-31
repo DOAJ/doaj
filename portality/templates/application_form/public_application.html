@@ -2,7 +2,11 @@
 
 {% block content %}
 
-    <form id="public_application" novalidate action="{{ url_for("doaj.public_application") }}">
+    <form id="public_application"
+          novalidate
+          action="{{ url_for("doaj.public_application") }}"
+          data-formulaic-after="{{ url_for("doaj.suggestion_thanks", _anchor='thanks') }}">
+
     {% for fs in form_context.fieldsets() %}
         <h1>{{ fs.label }}</h1>
         <fieldset id="{{ fs.name }}">
@@ -12,6 +16,7 @@
         {% endfor %}
         </fieldset>
     {% endfor %}
+
         <button type="submit" id="submit">Submit</button>
     </form>
 
