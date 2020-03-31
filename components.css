@@ -362,10 +362,23 @@ header .container {
 /* Input groups */
 
 .input-group {
-  display: table;
   margin: 1rem 0;
+  position: relative;
+  display: table;
+  border-collapse: separate;
 }
 
+.input-group input,
+.input-group select {
+  position: relative;
+  z-index: 2;
+  float: left;
+  width: 100%;
+  margin-bottom: 0;
+  display: table-cell;
+}
+
+/* This is specific to the homepage search bar... */
 .input-group input[type="text"] {
   width: 50%;
 }
