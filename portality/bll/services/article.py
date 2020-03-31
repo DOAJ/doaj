@@ -58,8 +58,10 @@ class ArticleService(object):
                                              limit_to_account=limit_to_account,
                                              add_journal_info=add_journal_info,
                                              dry_run=True)
-            except exceptions.ArticleMergeConflict:
+            except (exceptions.ArticleMergeConflict, exceptions.ConfigurationException):
                 raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
+            except exceptions.DuplicateArticleException:
+                pass
 
             success += result.get("success", 0)
             fail += result.get("fail", 0)
@@ -131,7 +133,7 @@ class ArticleService(object):
         is_update = 0
 
         if duplicate is not None:  # else -> it is new article
-            if duplicate.id == article.id:  # it is update
+            if duplicate.id == article.id or article.id is None:  # it is update
                 doi_or_ft_updated = self._doi_or_fulltext_updated(article, duplicate.id)
                 if doi_or_ft_updated:
                     raise exceptions.DuplicateArticleException()
