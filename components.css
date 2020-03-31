@@ -47,6 +47,10 @@
   justify-content: space-between;
 }
 
+.nav-top svg {
+  height: 20px;
+}
+
 .nav-bottom {
   background-color: #FEFBF8;
 }
