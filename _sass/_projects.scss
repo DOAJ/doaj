@@ -1,0 +1,35 @@
+/**
+ * Projects list & project detail
+ */
+
+.projets {
+
+  li {
+
+    &:nth-child(1) a {
+      background: #FFA61B;
+    }
+
+    &:nth-child(2) a {
+      background: #FFDAA1;
+    }
+
+    &:nth-child(3) a {
+      background: #FFBB90;
+    }
+
+    &:nth-child(4) a {
+      background: #E88D00;
+    }
+
+    &:nth-child(5) a {
+      background: #FC7925;
+    }
+
+    &:nth-child(6) a {
+      background: #FFC468;
+    }
+
+  }
+
+}
