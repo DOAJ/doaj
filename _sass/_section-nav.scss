@@ -1,7 +1,7 @@
 /* Table of contents */
 
 .toc {
-  margin-top: 6rem;
+  margin-top: $spacing-06;
   font-size: 0.833em;
 
   h2 {
@@ -24,13 +24,13 @@
 
     li {
       padding: 0;
-      margin-left: 0.75rem;
+      margin-left: $spacing-03;
     }
   }
 
   a {
     display: block;
-    margin-bottom: 0.375rem;
+    margin-bottom: $spacing-02;
     text-decoration: none;
   }
 }

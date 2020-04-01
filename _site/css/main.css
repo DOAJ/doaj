@@ -1,5 +1,6 @@
 @charset "UTF-8";
 /* Colour palette */
+/* Spacing units Use with margins & padding Base unit: 16px */
 /* Base */
 /* Typography */
 html { font-size: 16px; }
@@ -182,8 +183,8 @@ input[type="radio"] + label::before { border-radius: 50%; }
 .hero { background-color: #F8F2ED; }
 
 .hero .button { /* box-shadow: none;
-padding: 0.375rem;
-margin-bottom: 1.5rem;
+padding: $spacing-02;
+margin-bottom: $spacing-04;
 position: static;
 display: inline-block;
 border: 1px solid;

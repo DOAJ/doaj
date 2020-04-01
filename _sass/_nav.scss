@@ -17,12 +17,12 @@
   }
 
   li:last-child a {
-    padding: 0 0.75rem;
+    padding: 0 $spacing-03;
     background-color: $grapefruit;
   }
 
   .feather-search {
-    top: 0.1875rem;
+    top: $spacing-01;
     height: 20px;
   }
 
@@ -67,7 +67,7 @@
   }
 
   .feather-menu {
-    margin-right: 0.1875rem;
+    margin-right: $spacing-01;
   }
 
 }
