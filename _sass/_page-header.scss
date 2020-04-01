@@ -1,0 +1,33 @@
+/* Page header */
+
+.page-header {
+  background-color: #F8F2ED;
+}
+
+.page-header h1 {
+  margin-top: 0;
+}
+
+.page-header {
+  text-transform: uppercase;
+}
+
+.page-header ul {
+  padding: 0;
+  list-style: none;
+}
+
+.page-header a {
+  text-decoration: none;
+}
+
+.page-header .feather {
+  position: relative;
+}
+
+.page-header-top {
+  position: fixed;
+  width: 100vw;
+  z-index: 10;
+  background-color: #F8F2ED;
+}

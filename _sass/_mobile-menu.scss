@@ -1,0 +1,28 @@
+/* Mobile menu  */
+
+.nav-bottom .nav__icon {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .nav-bottom .nav__menu {
+    max-height: 0;
+    overflow: hidden;
+    display: block;
+  }
+
+  .nav-bottom .nav__menu li {
+    margin-left: 0;
+  }
+
+  .nav-bottom .nav__icon {
+    display: block;
+    color: #282624;
+    stroke: #282624;
+  }
+
+  .nav-bottom .nav__menu_is-active {
+    max-height: 100%;
+    height: auto;
+  }
+}

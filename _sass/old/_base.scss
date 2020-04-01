@@ -1,0 +1,55 @@
+/**
+* Basic / general styles
+*/
+
+body {
+  color: #000;
+  background-color: #fff;
+}
+
+hr {
+  border-color: grey;
+}
+
+img {
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+figure > img {
+  display: block;
+}
+
+p, ol, ul {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+blockquote {
+  border-color: #000;
+}
+
+
+small {
+  font-size: 14px;
+}
+
+a {
+  color: #000;
+
+  &:hover, &:focus, &:active, &:active:focus {
+    color: #000;
+    text-decoration: none;
+  }
+
+}
+
+%clearfix {
+
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+}
