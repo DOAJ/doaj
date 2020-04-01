@@ -5,9 +5,9 @@
   font-weight: 600;
 }
 
-.nav-top ul {
-  display: flex;
-  justify-content: space-between;
+.nav-top a {
+  display: block;
+  line-height: 50px;
 }
 
 .nav-top .feather-search {
@@ -31,11 +31,6 @@
 
 .nav-bottom ul {
   border-bottom: 1px solid $dark-grey;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: space-between;
-  height: 50px;
 }
 
 .nav-bottom li:last-child {
