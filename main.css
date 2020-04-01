@@ -16,7 +16,7 @@ body {
 
 /* Typescale in minor third */
 h1, h2, h3, h4, h5, h6 {
-  margin: 2.75rem 0 1rem;
+  margin: 3rem 0 1.5rem;
   font-family: 'Spectral', serif;
   letter-spacing: -0.04em;
   font-weight: 600;
@@ -69,7 +69,7 @@ h1 a:after, h2 a:after, h3 a:after, h4 a:after, h5 a:after, h6 a:after {
 
 p {
   margin-top: 0;
-  margin-bottom: 1.25em;
+  margin-bottom: 1.5rem;
 }
 
 pre, code {
@@ -126,7 +126,7 @@ aside a {
 footer {
   background-color: #282624;
   color: #FEFBF8;
-  font-size: 0.85rem;
+  font-size: 0.833em;
 }
 
 footer h2 {
@@ -161,7 +161,7 @@ form {
 }
 
 input, select, button {
-  padding: 0.5em 0.5em;
+  padding: 0.5em;
   background-color: #FEFBF8;
   border: 1px solid #282624;
   font-family: 'Source Sans Pro', sans-serif;
@@ -185,7 +185,7 @@ select {
 
 input[type="submit"],
 button[type="submit"] {
-  padding: 0.5em 3em;
+  padding: 0.5em auto;
   background-color: #982E0A;
   border-color: #982E0A;
   color: #FEFBF8;
@@ -211,11 +211,11 @@ input[type="checkbox"] + label::before,
 input[type="radio"] + label::before {
   content: '\a0';
   display: inline-block;
-  margin: .2em .5em;
-  width: .8em;
-  height: .8em;
-  line-height: .75em;
-  transition: all .35s;
+  margin: 0.2em 0.5em;
+  width: 0.8em;
+  height: 0.8em;
+  line-height: 0.75em;
+  transition: all 0.35s;
   border: 1px solid #282624;
 }
 
