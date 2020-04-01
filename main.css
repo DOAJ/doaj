@@ -24,7 +24,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  margin: 1.75rem 0;
+  margin: 1.5rem 0 3rem 0;
   font-size: 2.488em;
 }
 
@@ -101,6 +101,10 @@ time {
 
 /* Homepage main */
 
+main > section:first-of-type {
+  padding-top: 3rem;
+}
+
 main > section:first-of-type,
 main > section:nth-of-type(4) {
   background-color: #F8F2ED;
@@ -151,6 +155,10 @@ footer a {
 }
 
 /* Forms */
+
+form {
+  margin-bottom: 1.5rem;
+}
 
 input, select, button {
   padding: 0.5em 0.5em;

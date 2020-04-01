@@ -1,6 +1,7 @@
 /* Page header */
-.page-header {
 
+.page-header {
+  background-color: #F8F2ED;
 }
 
 .page-header h1 {
@@ -18,6 +19,18 @@
 
 .page-header a {
   text-decoration: none;
+}
+
+.page-header .feather {
+  height: 20px;
+  vertical-align: sub;
+}
+
+.page-header-top {
+  position: fixed;
+  width: 100vw;
+  z-index: 10;
+  background-color: #F8F2ED;
 }
 
 /* Logo */
@@ -47,16 +60,12 @@
   justify-content: space-between;
 }
 
-.nav-top svg {
-  height: 20px;
-}
-
 .nav-bottom {
-  background-color: #FEFBF8;
+  padding-top: 50px;
 }
 
 .nav-bottom ul {
-  border-top: 1px solid #282624;
+  border-bottom: 1px solid #282624;
   padding: 0;
   margin: 0;
   display: flex;
@@ -72,6 +81,10 @@
   display: block;
   line-height: 50px;
   color: #5C5956;
+}
+
+.nav-bottom .feather {
+  stroke: #5C5956;
 }
 
 /* Themed posts */
@@ -118,7 +131,7 @@
 /* Stats */
 
 .stats {
-  border-left: 1px dashed #F68112;
+  border-left: 1px dashed #982E0A;
 }
 
 .stats:first-of-type {
@@ -151,11 +164,11 @@
 }
 
 .eyebrow {
-  margin: 0 0 0.5em 0;
+  margin: 0 0 0.75rem 0;
   text-transform: uppercase;
   font-size: 0.75em;
   font-weight: 600;
-  color: #5C5956;
+  color: #982E0A;
 }
 
 /* Blog */
@@ -216,10 +229,6 @@
   left: 0;
 }
 
-.blog .eyebrow {
-  color: #BC0B0B;
-}
-
 .latest-post .eyebrow {
   color: #FEFBF8;
 }
@@ -230,7 +239,7 @@
   position: relative;
   margin: 1rem 0 1.5rem 0;
   width: 225px;
-  background-color: #F8D6B6;
+  background-color: rgba(152, 46, 10, 0.25);
 }
 
 .volunteers article figure:after {
@@ -239,7 +248,7 @@
   content: '';
   height: 150px;
   width: 75px;
-  background-color: #F8D6B6;
+  background-color: rgba(152, 46, 10, 0.25);
   border-bottom-right-radius: 100px;
   border-top-right-radius: 100px;
 }
@@ -259,7 +268,7 @@
   text-transform: uppercase;
   font-weight: 600;
   color: #982E0A;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 /* Funders */
@@ -268,7 +277,7 @@
 
 .funder {
   padding-left: 1em;
-  border-left: 1px dashed #F68112;
+  border-left: 1px dashed #982E0A;
 }
 
 /* Legal stuff */
