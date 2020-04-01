@@ -2,12 +2,13 @@
 
 .toc {
   margin-top: $spacing-06;
-  font-size: 0.833em;
+  border-left: 1px dashed $grapefruit;
+  @include typescale-06;
 
   h2 {
     margin-top: 0;
     font-family: 'Source Sans Pro', sans-serif;
-    font-size: 1em;
+    @include typescale-05;
     line-height: 0.9;
   }
 }

@@ -1,6 +1,7 @@
 @charset "UTF-8";
-/* Colour palette */
-/* Spacing units Use with margins & padding Base unit: 16px */
+/* Variables for colour palette */
+/* Variables for spacing units Use with margins & padding Base unit: 16px */
+/* Mixins for typescale in minor third Use with headings and text only Base unit: 16px */
 /* Base */
 /* Typography */
 html { font-size: 16px; }
@@ -205,8 +206,8 @@ text-decoration: none; */ }
 .input-group input[type="submit"] { width: 20%; margin-left: -1px; }
 
 /* Table of contents */
-.toc { margin-top: 6rem; font-size: 0.833em; }
-.toc h2 { margin-top: 0; font-family: 'Source Sans Pro', sans-serif; font-size: 1em; line-height: 0.9; }
+.toc { margin-top: 6rem; border-left: 1px dashed #FD5A3B; font-size: 0.833em; }
+.toc h2 { margin-top: 0; font-family: 'Source Sans Pro', sans-serif; font-size: 1.2em; line-height: 0.9; }
 
 .section-nav, .section-nav ul { padding: 0; margin: 0; }
 .section-nav li, .section-nav ul li { padding: 0; margin: 0; list-style: none; }
