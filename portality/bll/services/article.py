@@ -139,7 +139,7 @@ class ArticleService(object):
                 elif merge_duplicate:
                     is_update += 1
                     article.merge(duplicate)
-                else:
+                elif article.id is None:
                     raise exceptions.DuplicateArticleException
             else:
                 raise exceptions.DuplicateArticleException()

@@ -19,18 +19,18 @@ EXCEPTIONS = {
 def create_article_load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "create_article",
                                "test_id",
-                               {"test_id": ["1"]})
+                               {"test_id": []})
 
 def is_acceptable_load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "is_acceptable",
                                "test_id",
-                               {"test_id": ["1"]})
+                               {"test_id": []})
 
 
 def prepare_update_admin_load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "prepare_update_admin",
                                "test_id",
-                               {"test_id": ["1"]})
+                               {"test_id": []})
 
 def prepare_update_publisher_load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "prepare_update_publisher",
