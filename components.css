@@ -266,6 +266,12 @@
   color: #FEFBF8;
 }
 
+@media (max-width: 768px) {
+  .latest-post a {
+    padding: 1.5rem 0.75rem;
+  }
+}
+
 /* Community */
 
 .volunteers article figure {
