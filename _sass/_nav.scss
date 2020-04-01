@@ -21,8 +21,8 @@
 .nav-top a:hover .feather-circle,
 .nav-top a:active .feather-circle,
 .nav-top a:focus .feather-circle {
-  fill: #982E0A;
-  stroke: #982E0A;
+  fill: $sanguine;
+  stroke: $sanguine;
 }
 
 .nav-bottom {
@@ -30,7 +30,7 @@
 }
 
 .nav-bottom ul {
-  border-bottom: 1px solid #5C5956;
+  border-bottom: 1px solid $dark-grey;
   padding: 0;
   margin: 0;
   display: flex;
@@ -45,7 +45,7 @@
 .nav-bottom a {
   display: block;
   line-height: 50px;
-  color: #5C5956;
+  color: $dark-grey;
 }
 
 .nav-bottom .feather {

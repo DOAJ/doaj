@@ -4,14 +4,14 @@
   display: block;
   padding: 0.85em 0;
   margin-bottom: 1.5rem;
-  border-top: 1px dashed #982E0A;
+  border-top: 1px dashed $sanguine;
   text-decoration: none;
 }
 
 .themed-posts article a:hover,
 .themed-posts article a:focus,
 .themed-posts article a:active {
-  border-top: 1px solid #982E0A;
+  border-top: 1px solid $sanguine;
 }
 
 /* New journals */
@@ -29,20 +29,20 @@
   display: block;
   padding: 0.85em 0;
   margin-bottom: 1.5rem;
-  border-top: 1px dashed #982E0A;
+  border-top: 1px dashed $sanguine;
   text-decoration: none;
 }
 
 .new-journals li a:hover,
 .new-journals li a:focus,
 .new-journals li a:active {
-  border-top: 1px solid #982E0A;
+  border-top: 1px solid $sanguine;
 }
 
 /* Stats */
 
 .stats {
-  border-left: 1px dashed #982E0A;
+  border-left: 1px dashed $sanguine;
 }
 
 .stats:first-of-type {
@@ -66,7 +66,7 @@
 .stats .desc {
   text-transform: uppercase;
   font-size: 0.833em; /* h6 / small size */
-  color: #5C5956;
+  color: $dark-grey;
 }
 
 /* Eyebrow */
@@ -79,7 +79,7 @@
   text-transform: uppercase;
   font-size: 0.833em;
   font-weight: 600;
-  color: #982E0A;
+  color: $sanguine;
 }
 
 /* Blog */
@@ -95,20 +95,20 @@
   padding: 6rem 3rem;
   position: relative;
   display: inline-block;
-  border: 1px solid #982E0A;
+  border: 1px solid $sanguine;
   top: 0.5em;
   bottom: -0.5em;
   right: -0.5em;
   left: 0.5em;
   transition: all 90ms ease-in;
   text-decoration: none;
-  background-color: #982E0A;
-  color: #FEFBF8;
+  background-color: $sanguine;
+  color: $warm-white;
 }
 
 .latest-post a:before {
-  outline: 1px solid #982E0A;
-  background: #FEFBF8;
+  outline: 1px solid $sanguine;
+  background: $warm-white;
   content: "";
   width: 100%;
   height: 100%;
@@ -141,7 +141,7 @@
 }
 
 .latest-post .eyebrow {
-  color: #FEFBF8;
+  color: $warm-white;
 }
 
 @media (max-width: 768px) {
@@ -175,7 +175,7 @@
 }
 
 .volunteers .desc {
-  color: #5C5956;
+  color: $dark-grey;
   font-size: smaller;
   margin-bottom: 0.1875rem;
 }
@@ -184,7 +184,7 @@
   display: block;
   text-transform: uppercase;
   font-weight: 600;
-  color: #982E0A;
+  color: $sanguine;
   margin-bottom: 0.75rem;
 }
 
@@ -194,14 +194,14 @@
 
 .funder {
   padding-left: 1.5em;
-  border-left: 1px dashed #982E0A;
+  border-left: 1px dashed $sanguine;
 }
 
 /* Legal stuff */
 
 .legal {
   padding: 1.5rem 0 0 0;
-  border-top: 1px solid #FEFBF8;
+  border-top: 1px solid $warm-white;
 }
 
 .legal p:last-of-type {
@@ -237,8 +237,8 @@
 }
 
 .button:before {
-  outline: 1px solid #982E0A;
-  background: #FEFBF8;
+  outline: 1px solid $sanguine;
+  background: $warm-white;
   content: "";
   width: 100%;
   height: 100%;
@@ -271,27 +271,27 @@
 }
 
 .primary-button {
-  background: #982E0A;
-  color: #FEFBF8;
-  border-color: #982E0A;
+  background: $sanguine;
+  color: $warm-white;
+  border-color: $sanguine;
 }
 
 .primary-button:hover,
 .primary-button:active,
 .primary-button:focus {
-  color: #FEFBF8;
+  color: $warm-white;
 }
 
 .secondary-button {
-  background: #FEFBF8;
-  border-color: #982E0A;
-  color: #982E0A;
+  background: $warm-white;
+  border-color: $sanguine;
+  color: $sanguine;
 }
 
 .secondary-button:hover,
 .secondary-button:active,
 .secondary-button:focus {
-  color: #982E0A;
+  color: $sanguine;
 }
 
 /* Input groups */
@@ -316,7 +316,7 @@
 /* Hero sections */
 
 .hero {
-  background-color: #F8F2ED;
+  background-color: $faded-orange;
 }
 
 .hero .button {
@@ -337,7 +337,7 @@
 .hero .button:hover,
 .hero .button:focus,
 .hero .button:active {
-  background-color: #F8F2ED;
+  background-color: $faded-orange;
 }
 
 /* This is specific to the homepage search bar... */

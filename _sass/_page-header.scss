@@ -1,7 +1,7 @@
 /* Page header */
 
 .page-header {
-  background-color: #F8F2ED;
+  background-color: $faded-orange;
 }
 
 .page-header h1 {
@@ -29,5 +29,5 @@
   position: fixed;
   width: 100vw;
   z-index: 10;
-  background-color: #F8F2ED;
+  background-color: $faded-orange;
 }
