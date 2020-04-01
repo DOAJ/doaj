@@ -1,6 +1,7 @@
 ---
-layout: left-nav
+layout: sidenav
 title: Why index your journal in DOAJ?
+toc: true
 ---
 
 As a focal point for open access publishing, DOAJ helps promote quality, peer-reviewed open access journals. DOAJ encourages open access as the sustainable model for the future of scholarly publishing.
@@ -14,7 +15,7 @@ As a focal point for open access publishing, DOAJ helps promote quality, peer-re
 3. Open access publication funds often require DOAJ indexing to release funding.
 4. Certification in DOAJ makes your journal compliant for various publishing initiatives such as [Plan S].
 
-## Five ways in which DOAJ can help your journal
+### Five ways in which DOAJ can help your journal
 
 1. We help you to serve your authors better.
 2. We will help you adopt a range of ethical and quality standards, making your journals more attractive publishing channels.

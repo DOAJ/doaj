@@ -16,6 +16,11 @@
     line-height: 50px;
   }
 
+  li:last-child a {
+    padding: 0 0.75rem;
+    background-color: $grapefruit;
+  }
+
   .feather-search {
     top: 0.1875rem;
     height: 20px;

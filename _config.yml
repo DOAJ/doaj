@@ -29,3 +29,5 @@ permalink:
   pretty
 sass:
     style: :compact
+plugins_dir:
+  - jekyll-toc

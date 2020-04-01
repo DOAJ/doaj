@@ -7,9 +7,13 @@
 }
 
 .logo {
-  height: 30px;
+  display: block;
+  
+  svg {
+    height: 30px;
 
-  path {
-    fill: $warm-black;
+    path {
+      fill: $warm-black;
+    }
   }
 }

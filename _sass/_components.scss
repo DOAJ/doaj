@@ -1,3 +1,5 @@
+/* TODO Break components up into individual scss files */
+
 /* Themed posts */
 
 .themed-posts article a {
@@ -42,7 +44,7 @@
 /* Stats */
 
 .stats {
-  border-left: 1px dashed $sanguine;
+  border-left: 1px dashed $grapefruit;
 }
 
 .stats:first-of-type {

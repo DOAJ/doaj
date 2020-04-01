@@ -74,6 +74,14 @@ p {
   margin-bottom: 1.5rem;
 }
 
+ul, ol {
+  padding-left: 1.5rem;
+
+  ul, ol {
+    margin-left: 0.75rem;
+  }
+}
+
 pre, code {
   font-family: 'Source Code Pro', monospace;
 }
@@ -153,6 +161,16 @@ footer a {
   text-decoration: none;
   color: $warm-white;
   line-height: 1.5;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: $grapefruit;
+  }
+
+  .feather {
+    height: 1em;
+  }
 }
 
 /* Forms */
@@ -200,7 +218,7 @@ button svg {
 
 input[type="submit"],
 button[type="submit"] {
-  padding: 0.5em auto;
+  padding: 0.5em 0.75rem;
   background-color: $sanguine;
   border-color: $sanguine;
   color: $warm-white;
