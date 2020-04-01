@@ -325,7 +325,12 @@
 /* Legal stuff */
 
 .legal {
+  padding: 0;
   border-top: 1px solid #FEFBF8;
+}
+
+.legal p {
+    margin: 1.5rem 0;
 }
 
 .legal p:last-of-type {
@@ -334,6 +339,12 @@
 
 .legal a {
   margin-right: 3rem;
+}
+
+@media (max-width: 768px) {
+  .legal p:last-of-type {
+    text-align: left;
+  }
 }
 
 /* 3D buttons */
