@@ -57,7 +57,10 @@
       </div>
       <nav class="nav-bottom">
         <div class="container">
-          <ul>
+          <a href="#" class="nav__icon" id="nav__icon" aria-label="Click to open menu">
+            <span data-feather="menu"></span>
+          </a>
+          <ul class="nav__menu">
             <li>
               <a href="">Journals & articles <span data-feather="chevron-down"></span></a>
             </li>
@@ -415,7 +418,16 @@
       </div>
     </footer>
     <script>
+      // User Feather icons
       feather.replace()
+
+      // Responsive menu
+      var openMenu = document.querySelector(".nav__icon");
+      var nav = document.querySelector(".nav__menu");
+
+      openMenu.addEventListener('click', function() {
+        nav.classList.toggle("nav__menu_is-active");
+      }, false);
     </script>
   </body>
 

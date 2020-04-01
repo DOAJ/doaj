@@ -87,6 +87,34 @@
   stroke: #5C5956;
 }
 
+/* Nav menu  */
+
+.nav-bottom .nav__icon {
+  display: none;
+  text-align: center;
+}
+.nav-bottom .nav__menu > li > a {
+  text-transform: uppercase;
+}
+
+
+@media (max-width: 768px) {
+  .nav-bottom .nav__menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.75s;
+  }
+
+  .nav-bottom .nav__icon {
+    display: block;
+  }
+
+  .nav-bottom .nav__menu_is-active {
+    max-height: 100%;
+  }
+}
+
+
 /* Themed posts */
 
 .themed-posts article a {
