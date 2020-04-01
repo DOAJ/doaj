@@ -1,0 +1,73 @@
+/* Nav */
+
+
+// Top / primary
+
+.nav-top {
+  position: fixed;
+  width: 100vw;
+  z-index: 10;
+  height: 50px;
+  font-weight: 600;
+  background-color: $faded-orange;
+
+  a {
+    display: block;
+    line-height: 50px;
+  }
+
+  li:last-child a {
+    padding: 0 $spacing-03;
+    background-color: $grapefruit;
+  }
+
+  .feather-search {
+    top: $spacing-01;
+    height: 20px;
+  }
+
+  .feather-circle {
+    height: 10px;
+  }
+
+  a:hover .feather-circle,
+  a:active .feather-circle,
+  a:focus .feather-circle {
+    fill: $sanguine;
+    stroke: $sanguine;
+  }
+}
+
+// Bottom / secondary
+
+.nav-bottom {
+  padding-top: 50px;
+
+  ul {
+    border-bottom: 1px solid $dark-grey;
+  }
+
+  li:last-child {
+    margin-left: 40%;
+
+    @media (max-width: 768px) {
+        margin-left: 0;
+    }
+  }
+
+  a {
+    display: block;
+    line-height: 50px;
+    color: $dark-grey;
+  }
+
+  .feather {
+    top: 0.125em;
+    height: 15px;
+  }
+
+  .feather-menu {
+    margin-right: $spacing-01;
+  }
+
+}
