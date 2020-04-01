@@ -139,16 +139,18 @@ footer h2 {
 
 footer ul {
   padding-left: 0;
+  margin: 0;
   list-style: none;
 }
 
 footer li {
-  margin-bottom: 1em;
+  margin-bottom: 0.75em;
 }
 
 footer a {
   text-decoration: none;
   color: #FEFBF8;
+  line-height: 1.5;
 }
 
 /* Forms */
