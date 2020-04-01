@@ -461,20 +461,6 @@
   display: table-cell;
 }
 
-/* This is specific to the homepage search bar... */
-.input-group input[type="text"] {
-  width: 50%;
-}
-
-.input-group select {
-  width: 30%;
-  margin-left: -1px;
-}
-.input-group input[type="submit"] {
-  width: 20%;
-  margin-left: -1px;
-}
-
 /* Hero sections */
 
 .hero {
@@ -500,4 +486,19 @@
 .hero .button:focus,
 .hero .button:active {
   background-color: #F8F2ED;
+}
+
+/* This is specific to the homepage search bar... */
+
+.input-group input[type="text"] {
+  width: 40%;
+}
+
+.input-group select {
+  width: 40%;
+  margin-left: -1px;
+}
+.input-group input[type="submit"] {
+  width: 20%;
+  margin-left: -1px;
 }
