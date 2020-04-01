@@ -186,6 +186,14 @@ select {
   background-repeat: no-repeat;
 }
 
+/* Buttons with icons */
+
+button svg {
+  position: relative;
+  top: 0.1em;
+  height: 1em;
+}
+
 /* Buttons */
 
 input[type="submit"],
