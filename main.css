@@ -162,6 +162,7 @@ form {
 }
 
 input, select, button {
+  border-radius: 0;
   padding: 0.5em;
   background-color: #FEFBF8;
   border: 1px solid #282624;
