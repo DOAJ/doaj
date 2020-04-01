@@ -22,8 +22,7 @@
 }
 
 .page-header .feather {
-  height: 20px;
-  vertical-align: sub;
+  position: relative;
 }
 
 .page-header-top {
@@ -60,12 +59,27 @@
   justify-content: space-between;
 }
 
+.nav-top .feather-search {
+  height: 20px;
+}
+
+.nav-top .feather-circle {
+  height: 10px;
+}
+
+.nav-top a:hover .feather-circle,
+.nav-top a:active .feather-circle,
+.nav-top a:focus .feather-circle {
+  fill: #982E0A;
+  stroke: #982E0A;
+}
+
 .nav-bottom {
   padding-top: 50px;
 }
 
 .nav-bottom ul {
-  border-bottom: 1px solid #282624;
+  border-bottom: 1px solid #5C5956;
   padding: 0;
   margin: 0;
   display: flex;
@@ -81,6 +95,15 @@
   display: block;
   line-height: 50px;
   color: #5C5956;
+}
+
+.nav-bottom .feather {
+  top: 0.125em;
+  height: 15px;
+}
+
+.nav-bottom .feather-menu {
+  margin-right: 0.1875rem;
 }
 
 /* Nav menu  */
