@@ -148,7 +148,7 @@ input[type="radio"] + label::before { border-radius: 50%; }
 .volunteers .discipline { display: block; text-transform: uppercase; font-weight: 600; color: #982E0A; margin-bottom: 0.75rem; }
 
 /* Funders */
-.funder { padding-left: 1.5em; border-left: 1px dashed #982E0A; }
+.funder { padding-left: 1.5em; border-left: 1px dashed #FD5A3B; }
 
 /* Legal stuff */
 .legal { padding: 1.5rem 0 0 0; border-top: 1px solid #FEFBF8; }
