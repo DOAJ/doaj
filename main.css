@@ -95,6 +95,12 @@ section aside {
   border-left: 1px dashed #982E0A;
 }
 
+blockquote {
+  margin: 3rem 0;
+  padding-left: 1.5em;
+  border-left: 1px dashed #982E0A;
+}
+
 time {
   font-size: smaller;
 }
