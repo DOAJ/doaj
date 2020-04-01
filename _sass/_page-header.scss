@@ -2,36 +2,26 @@
 
 .page-header {
   background-color: $faded-orange;
-}
-
-.page-header h1 {
-  margin-top: 0;
-}
-
-.page-header {
   text-transform: uppercase;
-}
 
-.page-header ul {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: space-between;
-  list-style: none;
-  height: 50px;
-}
+  h1 {
+    margin-top: 0;
+  }
 
-.page-header a {
-  text-decoration: none;
-}
+  ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    height: 50px;
+  }
 
-.page-header .feather {
-  position: relative;
-}
+  a {
+    text-decoration: none;
+  }
 
-.page-header-top {
-  position: fixed;
-  width: 100vw;
-  z-index: 10;
-  background-color: $faded-orange;
+  .feather {
+    position: relative;
+  }
 }

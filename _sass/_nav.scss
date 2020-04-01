@@ -1,53 +1,68 @@
 /* Nav */
 
+
+// Top / primary
+
 .nav-top {
+  position: fixed;
+  width: 100vw;
+  z-index: 10;
   height: 50px;
   font-weight: 600;
+  background-color: $faded-orange;
+
+  a {
+    display: block;
+    line-height: 50px;
+  }
+
+  .feather-search {
+    top: 0.1875rem;
+    height: 20px;
+  }
+
+  .feather-circle {
+    height: 10px;
+  }
+
+  a:hover .feather-circle,
+  a:active .feather-circle,
+  a:focus .feather-circle {
+    fill: $sanguine;
+    stroke: $sanguine;
+  }
 }
 
-.nav-top a {
-  display: block;
-  line-height: 50px;
-}
-
-.nav-top .feather-search {
-  height: 20px;
-}
-
-.nav-top .feather-circle {
-  height: 10px;
-}
-
-.nav-top a:hover .feather-circle,
-.nav-top a:active .feather-circle,
-.nav-top a:focus .feather-circle {
-  fill: $sanguine;
-  stroke: $sanguine;
-}
+// Bottom / secondary
 
 .nav-bottom {
   padding-top: 50px;
-}
 
-.nav-bottom ul {
-  border-bottom: 1px solid $dark-grey;
-}
+  ul {
+    border-bottom: 1px solid $dark-grey;
+  }
 
-.nav-bottom li:last-child {
-  margin-left: 40%;
-}
+  li:last-child {
+    margin-left: 40%;
 
-.nav-bottom a {
-  display: block;
-  line-height: 50px;
-  color: $dark-grey;
-}
+    @media (max-width: 768px) {
+        margin-left: 0;
+    }
+  }
 
-.nav-bottom .feather {
-  top: 0.125em;
-  height: 15px;
-}
+  a {
+    display: block;
+    line-height: 50px;
+    color: $dark-grey;
+  }
 
-.nav-bottom .feather-menu {
-  margin-right: 0.1875rem;
+  .feather {
+    top: 0.125em;
+    height: 15px;
+  }
+
+  .feather-menu {
+    margin-right: 0.1875rem;
+  }
+
 }
