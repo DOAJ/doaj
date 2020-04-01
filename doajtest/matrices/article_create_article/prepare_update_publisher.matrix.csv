@@ -2,7 +2,7 @@ test_id,duplicate,merge_duplicate,doi_or_ft_updated,is_update,raises
 1,same_as_article_id,yes,yes,,DuplicateArticle
 2,same_as_article_id,yes,no,1,
 3,same_as_article_id,no,yes,0,DuplicateArticle
-4,same_as_article_id,no,no,0,
+4,same_as_article_id,no,no,0,DuplicateArticle
 5,different_than_article_id,yes,yes,,DuplicateArticle
 6,different_than_article_id,yes,no,,DuplicateArticle
 7,different_than_article_id,no,yes,0,DuplicateArticle

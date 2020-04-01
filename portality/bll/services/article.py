@@ -134,13 +134,11 @@ class ArticleService(object):
         if duplicate is not None:  # else -> it is new article
             if duplicate.id == article.id or article.id is None:  # it is update
                 doi_or_ft_updated = self._doi_or_fulltext_updated(article, duplicate.id)
-                if doi_or_ft_updated:
+                if doi_or_ft_updated or not merge_duplicate:
                     raise exceptions.DuplicateArticleException()
-                elif merge_duplicate:
+                else:
                     is_update += 1
                     article.merge(duplicate)
-                elif article.id is None:
-                    raise exceptions.DuplicateArticleException
             else:
                 raise exceptions.DuplicateArticleException()
         return is_update
@@ -292,6 +290,9 @@ class ArticleService(object):
         return True
 
     def _doi_or_fulltext_updated(self, new_article, update_id):
+        if new_article.id is None:
+            return False
+
         old_art = models.Article.pull(update_id)
         old_doi = old_art.get_normalised_doi()
         old_ft_url = old_art.get_normalised_fulltext()

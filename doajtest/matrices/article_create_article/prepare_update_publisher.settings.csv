@@ -6,6 +6,7 @@ values,,none,,,,
 ,,,,,,
 conditional raises,,different_than_article_id,,,,DuplicateArticle
 conditional raises,,,,yes,,DuplicateArticle
+conditional raises,,same_as_article_id,no,,,DuplicateArticle
 conditional is_update,,same_as_article_id,yes,no,1,
 conditional is_update,,none,,,0,
 conditional is_update,,,no,,0,

@@ -101,6 +101,18 @@
                   "yes"
                 ]
               }
+            },
+            {
+              "duplicate": {
+                "or": [
+                  "same_as_article_id"
+                ]
+              },
+              "merge_duplicate": {
+                "or": [
+                  "no"
+                ]
+              }
             }
           ]
         }
