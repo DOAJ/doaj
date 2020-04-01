@@ -93,16 +93,11 @@
   display: none;
   text-align: center;
 }
-.nav-bottom .nav__menu > li > a {
-  text-transform: uppercase;
-}
-
 
 @media (max-width: 768px) {
   .nav-bottom .nav__menu {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.75s;
   }
 
   .nav-bottom .nav__icon {
@@ -114,6 +109,16 @@
   }
 }
 
+/* Mobile scrollable rows */
+
+@media (max-width: 768px) {
+  .mobile-scrollable {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
 
 /* Themed posts */
 
@@ -265,7 +270,7 @@
 
 .volunteers article figure {
   position: relative;
-  margin: 1rem 0 1.5rem 0;
+  margin: 1rem 3rem 1.5rem 0;
   width: 225px;
   background-color: rgba(152, 46, 10, 0.25);
 }
