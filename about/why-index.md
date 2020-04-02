@@ -15,6 +15,8 @@ As a focal point for open access publishing, DOAJ helps promote quality, peer-re
 3. Open access publication funds often require DOAJ indexing to release funding.
 4. Certification in DOAJ makes your journal compliant for various publishing initiatives such as [Plan S].
 
+---
+
 ### Five ways in which DOAJ can help your journal
 
 1. We help you to serve your authors better.

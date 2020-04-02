@@ -132,47 +132,6 @@ aside a {
   color: $sanguine;
 }
 
-/* Footer */
-
-footer {
-  background-color: $warm-black;
-  color: $warm-white;
-  @include typescale-06;
-}
-
-footer h2 {
-  text-transform: uppercase;
-  font-family: 'Source Sans Pro', sans-serif;
-  letter-spacing: 0.01em;
-  font-size: 1em;
-}
-
-footer ul {
-  padding-left: 0;
-  margin: 0;
-  list-style: none;
-}
-
-footer li {
-  margin-bottom: 0.75em;
-}
-
-footer a {
-  text-decoration: none;
-  color: $warm-white;
-  line-height: 1.5;
-
-  &:hover,
-  &:focus,
-  &:active {
-    color: $grapefruit;
-  }
-
-  .feather {
-    height: 1em;
-  }
-}
-
 /* Forms */
 
 form {
@@ -206,32 +165,6 @@ select {
   background-repeat: no-repeat;
 }
 
-/* Buttons with icons */
-
-button svg {
-  position: relative;
-  top: 0.1em;
-  height: 1em;
-}
-
-/* Buttons */
-
-input[type="submit"],
-button[type="submit"] {
-  padding: 0.5em $spacing-03;
-  background-color: $grapefruit;
-  border-color: $grapefruit;
-  color: $warm-black;
-}
-
-button:disabled,
-button[disabled] {
-  background-color: $faded-orange;
-  border-color: $faded-orange;
-  color: $dark-grey;
-  font-style: italic;
-}
-
 /* Custom radio buttons & checkboxes */
 
 input[type="checkbox"],
@@ -258,6 +191,10 @@ input[type="radio"] {
   }
 }
 
-input[type="radio"] + label::before {
-  border-radius: 50%;
+input[type="radio"] + label {
+  margin-right: $spacing-04;
+
+  &::before {
+    border-radius: 50%;
+  }
 }

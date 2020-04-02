@@ -21,7 +21,7 @@
           </a>
         </div>
         <nav class="col-xs-8 col-sm-6">
-          <ul>
+          <ul class="menu">
             <li><a href="">Support</a></li>
             <li><a href="">Apply</a></li>
             <li><a href=""><span data-feather="search"></span><span class="sr-only"> Search</span></a></li>
@@ -35,15 +35,43 @@
       <a href="#" class="nav__icon" id="nav__icon" aria-label="Click to open menu">
         <span data-feather="menu"></span> Menu
       </a>
-      <ul class="nav__menu">
-        <li>
-          <a href="">Journals & articles <span data-feather="chevron-down"></span></a>
+      <ul class="menu nav__menu ">
+        <li class="dropdown">
+          <a id="menu-journals-articles" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Journals & articles <span data-feather="chevron-down"></span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="menu-journals-articles">
+            <li><a href="">Journals</a></li>
+            <li><a href="">Articles</a></li>
+            <li><a href="">Browse by subject</a></li>
+            <li><a href="">Open Knowledge Maps</a></li>
+          </ul>
         </li>
-        <li>
-          <a href="">Data <span data-feather="chevron-down"></span></a>
+        <li class="dropdown">
+          <a id="menu-data" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Data <span data-feather="chevron-down"></span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="menu-data">
+            <li><a href="">API</a></li>
+            <li><a href="">OAI-PMH</a></li>
+            <li><a href="">XML</a></li>
+            <li><a href="">Widgets</a></li>
+            <li><a href="">Public data dump</a></li>
+            <li><a href="">OpenURL</a></li>
+          </ul>
         </li>
-        <li>
-          <a href="about/why-index">About <span data-feather="chevron-down"></span></a>
+        <li class="dropdown">
+          <a id="menu-about" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            About <span data-feather="chevron-down"></span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="menu-about">
+            <li><a href="">History & mission</a></li>
+            <li><a href="">Team & ambassadors</a></li>
+            <li><a href="">Advisory Board & Council</a></li>
+            <li><a href="">Volunteers</a></li>
+            <li><a href="">News</a></li>
+            <li><a href="">FAQs</a></li>
+          </ul>
         </li>
         <li>
           <a href="">Login <span data-feather="log-in"></span></a>

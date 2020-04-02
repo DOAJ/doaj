@@ -1,0 +1,42 @@
+/* Page footer */
+
+/* Footer */
+
+.page-footer {
+  background-color: $warm-black;
+  color: $warm-white;
+  @include typescale-06;
+
+  h2 {
+    text-transform: uppercase;
+    font-family: 'Source Sans Pro', sans-serif;
+    letter-spacing: 0.01em;
+    font-size: 1em;
+  }
+
+  ul {
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  li {
+    margin-bottom: 0.75em;
+  }
+
+  a {
+    text-decoration: none;
+    color: $warm-white;
+    line-height: 1.5;
+
+    &:hover,
+    &:focus,
+    &:active {
+      color: $grapefruit;
+    }
+
+    .feather {
+      height: 1em;
+    }
+  }
+}

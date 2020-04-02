@@ -1,0 +1,25 @@
+/* Buttons */
+
+input[type="submit"],
+button[type="submit"] {
+  padding: 0.5em $spacing-03;
+  background-color: $grapefruit;
+  border-color: $grapefruit;
+  color: $warm-black;
+}
+
+button:disabled,
+button[disabled] {
+  background-color: $faded-orange;
+  border-color: $faded-orange;
+  color: $dark-grey;
+  font-style: italic;
+}
+
+/* With icons */
+
+button svg {
+  position: relative;
+  top: 0.1em;
+  height: 1em;
+}

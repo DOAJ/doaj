@@ -1,0 +1,49 @@
+/*!
+ * Bootstrap v3.4.1 (https://getbootstrap.com/)
+ * Copyright 2011-2019 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+
+.dropdown {
+ position: relative;
+ cursor: pointer;
+}
+
+.dropdown-menu {
+ position: absolute;
+ top: 100%;
+ left: 0;
+ z-index: 1000;
+ display: none;
+ float: left;
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ background-color: $faded-orange;
+ border: 1px solid $warm-black;
+ -webkit-background-clip: padding-box;
+ background-clip: padding-box;
+
+ > li > a {
+   display: block;
+   padding: $spacing-04;
+   clear: both;
+   white-space: nowrap;
+   color: $warm-black;
+   text-transform: none;
+
+   &:hover,
+   &:active,
+   &:focus {
+
+     color: $warm-black;
+     text-decoration: none;
+     background-color: $grapefruit;
+   }
+ }
+}
+
+.open > .dropdown-menu,
+.dropdown:hover .dropdown-menu {
+ display: block;
+}

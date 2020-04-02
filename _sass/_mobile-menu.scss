@@ -16,9 +16,14 @@
   }
 
   .nav-bottom .nav__icon {
-    display: block;
+    display: inline-block;
+    padding: 0 $spacing-03 0 $spacing-02;
     color: $warm-black;
     stroke: $warm-black;
+
+    &:hover, &:focus, &:active {
+      background-color: $grapefruit;
+    }
   }
 
   .nav-bottom .nav__menu_is-active {

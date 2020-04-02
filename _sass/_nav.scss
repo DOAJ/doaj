@@ -43,31 +43,45 @@
 .nav-bottom {
   padding-top: 50px;
 
-  ul {
+  .menu {
     border-bottom: 1px solid $dark-grey;
-  }
 
-  li:last-child {
-    margin-left: 40%;
+    > li {
 
-    @media (max-width: 768px) {
-        margin-left: 0;
+      &:last-child {
+        margin-left: 40%;
+
+        @media (max-width: 768px) {
+            margin-left: 0;
+        }
+      }
+
+      > a {
+        display: block;
+        line-height: 50px;
+        color: $dark-grey;
+      }
+    }
+
+    .feather {
+      top: 0.125em;
+      height: 15px;
+    }
+
+    .feather-menu {
+      margin-right: $spacing-01;
     }
   }
+}
 
-  a {
-    display: block;
-    line-height: 50px;
-    color: $dark-grey;
+.nav-top,
+.nav-bottom {
+  .menu {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    height: 50px;
   }
-
-  .feather {
-    top: 0.125em;
-    height: 15px;
-  }
-
-  .feather-menu {
-    margin-right: $spacing-01;
-  }
-
 }
