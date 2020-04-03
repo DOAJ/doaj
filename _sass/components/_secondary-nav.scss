@@ -1,0 +1,35 @@
+/* Bottom / secondary nav */
+
+.secondary-nav {
+  padding-top: 50px;
+
+  .menu {
+    border-bottom: 1px solid $dark-grey;
+
+    > li {
+
+      &:last-child {
+        margin-left: 40%;
+
+        @media (max-width: 768px) {
+          margin-left: 0;
+        }
+      }
+
+      > a {
+        display: block;
+        line-height: 50px;
+        color: $dark-grey;
+      }
+    }
+
+    .feather {
+      top: 0.125em;
+      height: 15px;
+    }
+
+    .feather-menu {
+      margin-right: $spacing-01;
+    }
+  }
+}

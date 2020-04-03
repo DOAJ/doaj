@@ -1,27 +1,27 @@
 /* Mobile menu  */
 
-.nav-bottom .nav__icon {
+.secondary-nav .nav__icon {
   display: none;
 }
 
 @media (max-width: 768px) {
-  .nav-bottom .nav__menu {
+  .secondary-nav .nav__menu {
     max-height: 0;
     overflow: hidden;
     display: block;
   }
 
-  .nav-bottom .nav__menu li {
+  .secondary-nav .nav__menu li {
     margin-left: 0;
   }
 
-  .nav-bottom .nav__menu li a {
+  .secondary-nav .nav__menu li a {
     padding: $spacing-02 0;
     display: block;
     line-height: 1;
   }
 
-  .nav-bottom .nav__icon {
+  .secondary-nav .nav__icon {
     display: inline-block;
     padding: $spacing-03 0;
     color: $warm-black;
@@ -34,7 +34,7 @@
     }
   }
 
-  .nav-bottom .nav__menu_is-active {
+  .secondary-nav .nav__menu_is-active {
     max-height: 100%;
     height: auto;
   }
