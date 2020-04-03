@@ -1,19 +1,19 @@
 /* Logo */
 
-.logo-wrapper {
+.logo {
   padding-top: 10px;
   padding-bottom: 10px;
   height: 50px;
-}
 
-.logo {
-  display: inline-block;
+  a {
+    display: inline-block;
+  }
 
   svg {
     height: 30px;
-
-    path {
-      fill: $warm-black;
-    }
+  }
+  
+  path {
+    fill: $warm-black;
   }
 }
