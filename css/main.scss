@@ -6,26 +6,26 @@
 
 // Import partials
 @import
-  "palette",
-  "spacing",
-  "typescale",
-  "fonts",
-  "general",
+  "base/palette",
+  "base/spacing",
+  "base/typescale",
+  "base/fonts",
+  "base/general",
 
-  "page-header",
-  "page-content",
-  "page-footer",
+  "layout/page-header",
+  "layout/page-content",
+  "layout/page-footer",
+
+  "components/blog-post",
+  "components/buttons",
+  "components/dropdown",
+  "components/stat",
+  "components/mobile-scrollable-row",
 
   "components",
-  "blog-post",
-  "buttons",
-  "dropdown",
-  "stat",
-
   "featured-section",
   "section-nav",
   "logo",
   "nav",
-  "mobile-menu",
-  "scrollable-row"
+  "mobile-menu"
 ;
