@@ -25,7 +25,7 @@
  background-clip: padding-box;
 }
 
-.dropdown__item a {
+.dropdown__link {
  display: block;
  padding: $spacing-04;
  clear: both;
@@ -40,6 +40,10 @@
    text-decoration: none;
    background-color: $grapefruit;
  }
+}
+
+.dropdown__trigger {
+  color: $dark-grey;
 }
 
 .open > .dropdown__menu,

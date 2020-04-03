@@ -7,30 +7,14 @@
   height: 50px;
   font-weight: 600;
   background-color: $fair-pink;
+}
 
-  a {
-    display: block;
-    line-height: 50px;
-  }
-
-  li:last-child a {
-    padding: 0 $spacing-03;
-    background-color: $grapefruit;
-  }
+.primary-nav__search {
+  padding: 0 $spacing-03;
+  background-color: $grapefruit;
 
   .feather-search {
     top: $spacing-01;
     height: 20px;
-  }
-
-  .feather-circle {
-    height: 10px;
-  }
-
-  a:hover .feather-circle,
-  a:active .feather-circle,
-  a:focus .feather-circle {
-    fill: $sanguine;
-    stroke: $sanguine;
   }
 }

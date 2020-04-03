@@ -3,33 +3,42 @@
 .secondary-nav {
   padding-top: 50px;
 
-  .menu {
+  .nav-bar {
     border-bottom: 1px solid $dark-grey;
-
-    > li {
-
-      &:last-child {
-        margin-left: 40%;
-
-        @media (max-width: 768px) {
-          margin-left: 0;
-        }
-      }
-
-      > a {
-        display: block;
-        line-height: 50px;
-        color: $dark-grey;
-      }
-    }
 
     .feather {
       top: 0.125em;
       height: 15px;
     }
+  }
+}
 
-    .feather-menu {
-      margin-right: $spacing-01;
+.secondary-nav__login {
+  margin-left: 40%;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
+}
+
+.secondary-nav__menu-toggle {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: inline-block;
+    padding: $spacing-03 0;
+    color: $warm-black;
+    stroke: $warm-black;
+
+    svg {
+      margin-top: -$spacing-01;
+      display: inline-block;
+      vertical-align: middle;
     }
   }
+}
+
+.secondary-nav__menu-toggle--is-active {
+  max-height: 100%;
+  height: auto;
 }
