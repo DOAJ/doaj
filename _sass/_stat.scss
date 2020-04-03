@@ -1,0 +1,28 @@
+/* Statistics */
+
+.stat {
+  border-left: 1px dashed $grapefruit;
+
+  &:first-of-type {
+    border-left: 0;
+  }
+
+  a {
+    display: block;
+    padding-right: $spacing-05;
+    text-decoration: none;
+  }
+}
+
+.stat__number {
+  display: block;
+  font-weight: 600;
+  @include font-serif;
+  @include typescale-02;
+}
+
+.stat__description {
+  text-transform: uppercase;
+  @include typescale-06;
+  color: $dark-grey;
+}
