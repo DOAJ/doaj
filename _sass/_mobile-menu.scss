@@ -15,19 +15,53 @@
     margin-left: 0;
   }
 
+  .nav-bottom .nav__menu li a {
+    padding: $spacing-02 0;
+    display: inline-block;
+  }
+
   .nav-bottom .nav__icon {
     display: inline-block;
-    padding: 0 $spacing-03 0 $spacing-02;
+    padding: $spacing-03 0;
     color: $warm-black;
     stroke: $warm-black;
 
-    &:hover, &:focus, &:active {
-      background-color: $grapefruit;
+    svg {
+      margin-top: -$spacing-01;
+      display: inline-block;
+      vertical-align: middle;
     }
   }
 
   .nav-bottom .nav__menu_is-active {
     max-height: 100%;
     height: auto;
+  }
+
+  .dropdown {
+    margin: $spacing-03 0;
+  }
+
+  .dropdown-menu {
+    display: block;
+    position: static;
+    float: none;
+    border: 0;
+
+    > li a {
+      &:before {
+        content: "— ";
+      }
+
+      &:hover,
+      &:focus,
+      &:active {
+        background: none;
+      }
+    }
+  }
+
+  .feather-chevron-down {
+    display: none;
   }
 }
