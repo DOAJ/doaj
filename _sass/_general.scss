@@ -1,6 +1,4 @@
-/* Base */
-
-/* Typography */
+/* General styles */
 
 html {
   font-size: 16px;
@@ -9,20 +7,16 @@ html {
 body {
   background-color: $warm-white;
   color: $warm-black;
-  font-family: 'Source Sans Pro', sans-serif;
-  letter-spacing: 0.01em;
-  line-height: 1.25;
+  line-height: 1.35;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  @include font-sans-serif;
 }
 
-/* Typescale in minor third */
 h1, h2, h3, h4, h5, h6 {
   margin: $spacing-05 0 $spacing-04;
-  font-family: 'Spectral', serif;
-  letter-spacing: -0.04em;
-  font-weight: 600;
   line-height: 1.05;
+  @include font-serif;
 }
 
 h1 {
@@ -51,13 +45,12 @@ h6, small {
 }
 
 h1 sup a, h2 sup a, h3 sup a, h4 sup a, h5 sup a, h6 sup a {
-  font-family: 'Source Sans Pro', sans-serif;
-  letter-spacing: 0;
   font-weight: 400;
   font-size: 0.75em;
   text-transform: uppercase;
   text-decoration: none;
   color: $sanguine;
+  @include font-sans-serif;
 }
 
 h1 sup a, h2 sup a, h3 sup a, h4 sup a, h5 sup a, h6 sup a {
@@ -83,18 +76,19 @@ ul, ol {
 }
 
 pre, code {
-  font-family: 'Source Code Pro', monospace;
+  @include font-monospace;
 }
 
 a {
   text-decoration: underline;
   color: $warm-black;
-}
 
-a:hover,
-a:focus,
-a:active {
-  text-decoration: none;
+  &:hover,
+  &:focus,
+  &:active {
+    color: $sanguine;
+    text-decoration: none;
+  }
 }
 
 section {
@@ -148,9 +142,8 @@ input, select, button {
   padding: 0.5em;
   background-color: $warm-white;
   border: 1px solid $warm-black;
-  font-family: 'Source Sans Pro', sans-serif;
-  letter-spacing: 0.01em;
   font-size: 1rem;
+  @include font-sans-serif;
 }
 
 select {

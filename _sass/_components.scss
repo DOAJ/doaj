@@ -59,15 +59,14 @@
 
 .stats .stat {
   display: block;
-  font-family: 'Spectral', serif;
-  letter-spacing: -0.04em;
   font-weight: 600;
-  @include typescale-02; /* h2 size*/
+  @include font-serif;
+  @include typescale-02;
 }
 
 .stats .desc {
   text-transform: uppercase;
-  @include typescale-06; /* h6 / small size */
+  @include typescale-06;
   color: $dark-grey;
 }
 

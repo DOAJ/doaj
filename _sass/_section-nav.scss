@@ -7,9 +7,9 @@
 
   h2 {
     margin-top: 0;
-    font-family: 'Source Sans Pro', sans-serif;
-    @include typescale-05;
     line-height: 0.9;
+    @include font-sans-serif;
+    @include typescale-05;
   }
 }
 

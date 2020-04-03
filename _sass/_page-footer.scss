@@ -9,9 +9,8 @@
 
   h2 {
     text-transform: uppercase;
-    font-family: 'Source Sans Pro', sans-serif;
-    letter-spacing: 0.01em;
     font-size: 1em;
+    @include font-sans-serif;
   }
 
   ul {
