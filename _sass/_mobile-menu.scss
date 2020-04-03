@@ -39,29 +39,6 @@
     height: auto;
   }
 
-  .dropdown {
-    margin: 0 0 $spacing-03 0;
-  }
-
-  .dropdown-menu {
-    display: block;
-    position: static;
-    float: none;
-    border: 0;
-
-    > li a {
-      &:before {
-        content: "— ";
-      }
-
-      &:hover,
-      &:focus,
-      &:active {
-        background: none;
-      }
-    }
-  }
-
   .feather-chevron-down {
     display: none;
   }

@@ -1,4 +1,4 @@
-/*!
+/* On-hover dropdown menus adapted from Bootstrap
  * Bootstrap v3.4.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -9,7 +9,7 @@
  cursor: pointer;
 }
 
-.dropdown-menu {
+.dropdown__menu {
  position: absolute;
  top: 100%;
  left: 0;
@@ -23,27 +23,54 @@
  border: 1px solid $warm-black;
  -webkit-background-clip: padding-box;
  background-clip: padding-box;
+}
 
- > li > a {
-   display: block;
-   padding: $spacing-04;
-   clear: both;
-   white-space: nowrap;
+.dropdown__item a {
+ display: block;
+ padding: $spacing-04;
+ clear: both;
+ white-space: nowrap;
+ color: $warm-black;
+ text-transform: none;
+
+ &:hover,
+ &:active,
+ &:focus {
    color: $warm-black;
-   text-transform: none;
-
-   &:hover,
-   &:active,
-   &:focus {
-
-     color: $warm-black;
-     text-decoration: none;
-     background-color: $grapefruit;
-   }
+   text-decoration: none;
+   background-color: $grapefruit;
  }
 }
 
-.open > .dropdown-menu,
-.dropdown:hover .dropdown-menu {
+.open > .dropdown__menu,
+.dropdown:hover .dropdown__menu {
  display: block;
+}
+
+// Expand menu items on mobile
+
+@media (max-width: 768px) {
+  .dropdown {
+    margin: 0 0 $spacing-03 0;
+  }
+
+  .dropdown__menu {
+    display: block;
+    position: static;
+    float: none;
+    border: 0;
+  }
+
+  .dropdown__item a {
+
+    &:before {
+      content: "— ";
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      background: none;
+    }
+  }
 }
