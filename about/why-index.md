@@ -11,13 +11,13 @@ As a focal point for open access publishing, DOAJ helps promote quality, peer-re
 1. DOAJ is the [most important community-driven, open access service in the world].
   - DOAJ covers more than 14,000 gold open access journals from 133 countries, in 77 languages, and over 300 subject areas.
   - All journals are reviewed by our team of staff and volunteer editors to ensure they meet a set of quality standards.
-2. The [DOAJ criteria] have become the accepted way of measuring an open access journal’s adherence to standards and best practice in academic publishing.
+2. The [DOAJ criteria] have become the accepted way of measuring an open access journal’s adherence to standards and best practice in academic publishing.1ù
 3. Open access publication funds often require DOAJ indexing to release funding.
 4. Certification in DOAJ makes your journal compliant for various publishing initiatives such as [Plan S].
 
 ---
 
-### Five ways in which DOAJ can help your journal
+## Five ways in which DOAJ can help your journal
 
 1. We help you to serve your authors better.
 2. We will help you adopt a range of ethical and quality standards, making your journals more attractive publishing channels.

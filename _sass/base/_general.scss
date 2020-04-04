@@ -10,7 +10,7 @@ body {
   line-height: 1.35;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  @include font-sans-serif;
+  @include font-sans;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -50,7 +50,7 @@ h1 sup a, h2 sup a, h3 sup a, h4 sup a, h5 sup a, h6 sup a {
   text-transform: uppercase;
   text-decoration: none;
   color: $sanguine;
-  @include font-sans-serif;
+  @include font-sans;
 }
 
 h1 sup a, h2 sup a, h3 sup a, h4 sup a, h5 sup a, h6 sup a {
@@ -143,7 +143,7 @@ input, select, button {
   background-color: $warm-white;
   border: 1px solid $warm-black;
   font-size: 1rem;
-  @include font-sans-serif;
+  @include font-sans;
 }
 
 select {

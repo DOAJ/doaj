@@ -8,7 +8,7 @@
   h2 {
     margin-top: 0;
     line-height: 0.9;
-    @include font-sans-serif;
+    @include font-sans;
     @include typescale-05;
   }
 }

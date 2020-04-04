@@ -743,3 +743,7 @@
 .modal-footer:after {
   clear: both;
 }
+
+.affix {
+  position: fixed;
+}

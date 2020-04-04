@@ -19,6 +19,8 @@ collections:
   - search
   - data
   - about
+  - apply
+  - support
 
 # Build settings
 markdown: kramdown
@@ -31,3 +33,10 @@ sass:
     style: :compact
 plugins_dir:
   - jekyll-toc
+
+# TOC settings s
+toc:
+  list_class: page-nav__list
+  sublist_class: page-nav__sublist
+  item_class: page-nav__item
+  item_prefix: item-

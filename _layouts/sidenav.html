@@ -17,10 +17,12 @@
           </section>
         </div>
 
-        <nav class="col-md-4 toc">
-          <h2>Contents</h2>
-          {{ content | toc_only }}
-        </nav>
+        <div class="col-md-4">
+          <nav class="page-nav" data-spy="affix">
+            <h2 class="page-nav__heading">Contents</h2>
+            {{ content | toc_only }}
+          </nav>
+        </div>
 
       </div>
     </main>

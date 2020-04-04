@@ -10,7 +10,7 @@
   h2 {
     text-transform: uppercase;
     font-size: 1em;
-    @include font-sans-serif;
+    @include font-sans;
   }
 
   ul {
