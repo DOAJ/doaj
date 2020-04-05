@@ -39,3 +39,25 @@
     }
   }
 }
+
+/* Legal stuff */
+
+.legal {
+  padding: $spacing-04 0 0 0;
+  border-top: 1px solid $warm-white;
+}
+
+.legal p:last-of-type {
+  text-align: right;
+}
+
+.legal li {
+  display: inline-block;
+  margin: 0 $spacing-04 $spacing-04 0;
+}
+
+@media (max-width: 768px) {
+  .legal p:last-of-type {
+    text-align: left;
+  }
+}

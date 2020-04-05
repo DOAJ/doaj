@@ -8,10 +8,11 @@
 
 @media (min-width: 992px) {
   .page-nav {
-    margin: $spacing-06 0;
-    padding-left: $spacing-03;
+    margin: $spacing-05 0;
+    padding-left: $spacing-04;
     width: 264px; // fixed page element: needs absolute width to avoid overflowing from cols
     border-left: 1px dashed $grapefruit;
+    @include typescale-06;
   }
 
   .page-nav__heading {

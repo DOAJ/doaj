@@ -7,6 +7,13 @@
   height: 50px;
   font-weight: 600;
   background-color: $fair-pink;
+
+  @media (max-width: 768px) {
+    .feather-chevron-down,
+    .dropdown__menu {
+      display: none !important;
+    }
+  }
 }
 
 .primary-nav__search {

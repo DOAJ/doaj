@@ -1,45 +1,6 @@
 /* TODO Break components up into individual scss files */
 
-/* Themed posts */
 
-.themed-posts article a {
-  display: block;
-  padding: 0.85em 0;
-  margin-bottom: $spacing-04;
-  border-top: 1px dashed $sanguine;
-  text-decoration: none;
-}
-
-.themed-posts article a:hover,
-.themed-posts article a:focus,
-.themed-posts article a:active {
-  border-top: 1px solid $sanguine;
-}
-
-/* New journals */
-
-.new-journals ul {
-  padding-left: 0;
-  list-style: none;
-}
-
-.new-journals li:nth-child(4n+1) {
-  clear: both;
-}
-
-.new-journals li a {
-  display: block;
-  padding: 0.85em 0;
-  margin-bottom: $spacing-04;
-  border-top: 1px dashed $sanguine;
-  text-decoration: none;
-}
-
-.new-journals li a:hover,
-.new-journals li a:focus,
-.new-journals li a:active {
-  border-top: 1px solid $sanguine;
-}
 
 /* Eyebrow */
 .eyebrow + h3 {
@@ -92,38 +53,6 @@
   margin-bottom: $spacing-03;
 }
 
-/* Funders */
-
-.funders ul {
-  padding: 0;
-  list-style: none;
-}
-
-.funder {
-  border-top: 1px dashed $grapefruit;
-}
-
-/* Legal stuff */
-
-.legal {
-  padding: $spacing-04 0 0 0;
-  border-top: 1px solid $warm-white;
-}
-
-.legal p:last-of-type {
-  text-align: right;
-}
-
-.legal li {
-  display: inline-block;
-  margin: 0 $spacing-04 $spacing-04 0;
-}
-
-@media (max-width: 768px) {
-  .legal p:last-of-type {
-    text-align: left;
-  }
-}
 
 /* 3D buttons */
 
