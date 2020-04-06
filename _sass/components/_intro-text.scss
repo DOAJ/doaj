@@ -1,0 +1,7 @@
+/* Introduction paragraphs */
+
+.intro-text {
+  font-weight: 400;
+  @include font-serif;
+  @include typescale-03;
+}

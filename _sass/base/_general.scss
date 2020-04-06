@@ -10,17 +10,19 @@ body {
   line-height: 1.35;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
   @include font-sans;
 }
 
 h1, h2, h3, h4, h5, h6 {
   margin: $spacing-05 0 $spacing-04;
   line-height: 1.05;
+  font-weight: 700;
   @include font-serif;
 }
 
 h1 {
-  margin: $spacing-04 0 $spacing-05 0;
+  margin: $spacing-04 0 $spacing-05;
   @include typescale-01;
 }
 
