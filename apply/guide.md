@@ -5,7 +5,7 @@ toc: true
 highlight: false
 ---
 
-Watch our video for an introduction to DOAJ and best practice. We have guides to help you complete the form in sixteen different languages.
+Watch our [video for an introduction to DOAJ](https://www.youtube.com/embed/videoseries?list=PLgsj-CNPbicMgBrdzA4jfevecibpl_a1G) and best practice. We have guides to help you complete the form in sixteen different languages.
 
 Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them.
 
