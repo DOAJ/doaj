@@ -10,15 +10,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=Spectral:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
 
   <!-- Vendors -->
-  <link rel="stylesheet" href="{% if page.url != ''/' %}../../{% endif %}css/vendors/normalize.css">
-  <link rel="stylesheet" href="{% if page.url != ''/' %}../../{% endif %}css/vendors/bootstrap.css">
+  <link rel="stylesheet" href="{% if page.layout == 'sidenav' %}../../{% endif %}css/vendors/normalize.css">
+  <link rel="stylesheet" href="{% if page.layout == 'sidenav' %}../../{% endif %}css/vendors/bootstrap.css">
 
-  <link rel="stylesheet" href="{% if page.url != ''/' %}../../{% endif %}css/main.css">
+  <link rel="stylesheet" href="{% if page.layout == 'sidenav' %}../../{% endif %}css/main.css">
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
 
-  <script src="{% if page.url != ''/' %}../../{% endif %}js/vendors/bootstrap.js"></script>
+  <script src="{% if page.layout == 'sidenav' %}../../{% endif %}js/vendors/bootstrap.js"></script>
 
   <meta name="theme-color" content="#982E0A">
 
