@@ -95,7 +95,7 @@ class ApplicationsCrudApi(CrudApi):
                 raise Api404Error()
 
             # convert the incoming application into the web form
-            form = MultiDict(xwalk.SuggestionFormXWalk.obj2form(ap))        #TODO: not converted to v2 yet
+            form = MultiDict(xwalk.SuggestionFormXWalk.obj2form(ap))
 
             fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
             if fc.validate():

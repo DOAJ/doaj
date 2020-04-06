@@ -39,7 +39,8 @@ class SwaggerSupport(object):
         except:
             self._swagger_trans = swagger_trans if swagger_trans is not None else deepcopy(self.DEFAULT_SWAGGER_TRANS)
 
-        super(SwaggerSupport, self).__init__(*args, **kwargs)
+        # super(SwaggerSupport, self).__init__(*args, **kwargs) # UT fails with args and kwargs - takes only one argument, object to initialize
+        super(SwaggerSupport, self).__init__()
 
     def struct_to_swag(self, struct=None, schema_title='', **kwargs):
         if not struct:

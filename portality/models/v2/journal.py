@@ -37,6 +37,10 @@ JOURNAL_STRUCT = {
                         "date_accepted" : {"coerce" : "utcdatetime"},
                         "status" : {"coerce" : "unicode"}
                     }
+                },
+                "contact":{
+                    "name": {"coerce" : "unicode"},
+                    "email": {"coerce" : "unicode"}
                 }
             }
         },

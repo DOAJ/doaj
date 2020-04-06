@@ -1,4 +1,7 @@
-from portality.lib import swagger, seamless
+import uuid
+from datetime import datetime
+
+from portality.lib import swagger, seamless, coerce, dates
 from portality import models
 from copy import deepcopy
 
@@ -8,6 +11,7 @@ from portality.api.v2.data_objects.common_journal_application import OutgoingCom
 # "required" fields are only put on incoming applications
 from portality.lib.coerce import COERCE_MAP
 from portality.lib.seamless import SeamlessMixin
+from portality.models import JournalLikeBibJSON
 
 BASE_APPLICATION_STRUCT = {
     "fields": {
@@ -87,7 +91,7 @@ BASE_APPLICATION_STRUCT = {
                     "structs": {
                         "max": {
                             "fields": {
-                                "currency": {"coerce": "unicode"},
+                                "currency": {"coerce": "currency_code"},
                                 "price": {"coerce": "integer"}
                             }
                         }
@@ -142,7 +146,7 @@ BASE_APPLICATION_STRUCT = {
                 "institution": {
                     "fields": {
                         "name": {"coerce": "unicode"},
-                        "country": {"coerce": "unicode"}
+                        "country": {"coerce": "country_code"}
                     }
                 },
                 "license": {
@@ -196,7 +200,7 @@ BASE_APPLICATION_STRUCT = {
                 "publisher": {
                     "fields": {
                         "name": {"coerce": "unicode"},
-                        "country": {"coerce": "unicode"}
+                        "country": {"coerce": "country_code"}
                     }
                 },
                 "ref": {
@@ -392,6 +396,181 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
             #nnd = dataobj.merge_outside_construct(self._struct, nd, existing.data)
             nnd = seamless.SeamlessMixin.extend_struct(self._struct, nd)
             return models.Suggestion(**nnd)
+
+    @property
+    def id(self):
+        return self.__seamless__.get_single("id")
+
+    def set_id(self, id=None):
+        if id is None:
+            id = self.makeid()
+        self.__seamless__.set_with_struct("id", id)
+
+    def set_created(self, date=None):
+        if date is None:
+            date = dates.now()
+        self.__seamless__.set_with_struct("created_date", date)
+
+    @property
+    def created_date(self):
+        return self.__seamless__.get_single("created_date")
+
+    @property
+    def created_timestamp(self):
+        return self.__seamless__.get_single("created_date", coerce=coerce.to_datestamp())
+
+    def set_last_updated(self, date=None):
+        if date is None:
+            date = dates.now()
+        self.__seamless__.set_with_struct("last_updated", date)
+
+    @property
+    def last_updated(self):
+        return self.__seamless__.get_single("last_updated")
+
+    @property
+    def last_updated_timestamp(self):
+        return self.__seamless__.get_single("last_updated", coerce=coerce.to_datestamp())
+
+    def set_last_manual_update(self, date=None):
+        if date is None:
+            date = dates.now()
+        self.__seamless__.set_with_struct("last_manual_update", date)
+
+    @property
+    def last_manual_update(self):
+        return self.__seamless__.get_single("last_manual_update")
+
+    @property
+    def last_manual_update_timestamp(self):
+        return self.__seamless__.get_single("last_manual_update", coerce=coerce.to_datestamp())
+
+    def has_been_manually_updated(self):
+        lmut = self.last_manual_update_timestamp
+        if lmut is None:
+            return False
+        return lmut > datetime.utcfromtimestamp(0)
+
+    def has_seal(self):
+        return self.__seamless__.get_single("admin.seal", default=False)
+
+    def set_seal(self, value):
+        self.__seamless__.set_with_struct("admin.seal", value)
+
+    @property
+    def bulk_upload_id(self):
+        return self.__seamless__.get_single("admin.bulk_upload")
+
+    def set_bulk_upload_id(self, bulk_upload_id):
+        self.__seamless__.set_with_struct("admin.bulk_upload", bulk_upload_id)
+
+    @property
+    def owner(self):
+        return self.__seamless__.get_single("admin.owner")
+
+    def set_owner(self, owner):
+        self.__seamless__.set_with_struct("admin.owner", owner)
+
+    def remove_owner(self):
+        self.__seamless__.delete("admin.owner")
+
+    @property
+    def editor_group(self):
+        return self.__seamless__.get_single("admin.editor_group")
+
+    def set_editor_group(self, eg):
+        self.__seamless__.set_with_struct("admin.editor_group", eg)
+
+    def remove_editor_group(self):
+        self.__seamless__.delete("admin.editor_group")
+
+    @property
+    def editor(self):
+        return self.__seamless__.get_single("admin.editor")
+
+    def set_editor(self, ed):
+        self.__seamless__.set_with_struct("admin.editor", ed)
+
+    def remove_editor(self):
+        self.__seamless__.delete('admin.editor')
+
+    def contact_name(self):
+        return self.__seamless__.get_single("admin.contact.name")
+
+    def contact_email(self):
+        return self.__seamless__.get_single("admin.contact.email")
+
+    def set_contact(self):
+        return self.__seamless__.set_with_struct()
+
+    def get_latest_contact_name(self):
+        try:
+            contact = self.contacts()[-1]
+        except IndexError as e:
+            return ""
+        return contact.get("name", "")
+
+    def get_latest_contact_email(self):
+        try:
+            contact = self.contacts()[-1]
+        except IndexError as e:
+            return ""
+        return contact.get("email", "")
+
+    def add_contact(self, name, email):
+        self.__seamless__.set_with_struct("admin.contact", {"name": name, "email": email})
+
+    def remove_contacts(self):
+        self.__seamless__.delete("admin.contact")
+
+    def add_note(self, note, date=None, id=None):
+        if date is None:
+            date = dates.now()
+        obj = {"date": date, "note": note, "id": id}
+        self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
+        if id is None:
+            obj["id"] = uuid.uuid4()
+        self.__seamless__.add_to_list_with_struct("admin.notes", obj)
+
+    def remove_note(self, note):
+        self.__seamless__.delete_from_list("admin.notes", matchsub=note)
+
+    def set_notes(self, notes):
+        self.__seamless__.set_with_struct("admin.notes", notes)
+
+    def remove_notes(self):
+        self.__seamless__.delete("admin.notes")
+
+    @property
+    def notes(self):
+        return self.__seamless__.get_list("admin.notes")
+
+    @property
+    def ordered_notes(self):
+        notes = self.notes
+        clusters = {}
+        for note in notes:
+            if note["date"] not in clusters:
+                clusters[note["date"]] = [note]
+            else:
+                clusters[note["date"]].append(note)
+        ordered_keys = sorted(list(clusters.keys()), reverse=True)
+        ordered = []
+        for key in ordered_keys:
+            clusters[key].reverse()
+            ordered += clusters[key]
+        return ordered
+
+    def bibjson(self):
+        bj = self.__seamless__.get_single("bibjson")
+        if bj is None:
+            self.__seamless__.set_single("bibjson", {})
+            bj = self.__seamless__.get_single("bibjson")
+        return JournalLikeBibJSON(bj)
+
+    def set_bibjson(self, bibjson):
+        bibjson = bibjson.data if isinstance(bibjson, JournalLikeBibJSON) else bibjson
+        self.__seamless__.set_with_struct("bibjson", bibjson)
 
 class OutgoingApplication(OutgoingCommonJournalApplication):
 

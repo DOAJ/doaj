@@ -311,27 +311,28 @@ class TestCrudApplication(DoajTestCase):
         data["bibjson"]["language"] = ["French", "English"]
         data["bibjson"]["pid_scheme"]["has_pid_scheme"] = True
         data["bibjson"]["pid_scheme"]["scheme"] = ["doi", "HandleS", "something"]
-        data["bibjson"]["license"]["type"] = "cc"
-        data["bibjson"]["license"]["BY"] = True
+        data["bibjson"]["license"][0]["type"] = "cc"
+        data["bibjson"]["license"][0]["BY"] = True
         data["bibjson"]["deposit_policy"]["has_policy"] = True
         data["bibjson"]["deposit_policy"]["service"] = ["sherpa/romeo", "other"]
 
         ia = IncomingApplication(data)
 
-        assert ia.bibjson.publisher.country == "BD"
-        assert ia.bibjson.apc.max[0].currency == "BDT"
-        assert isinstance(ia.bibjson.title, str)
-        assert ia.bibjson.publication_time_weeks == 15
-        assert "fr" in ia.bibjson.language
-        assert "en" in ia.bibjson.language
-        assert len(ia.bibjson.language) == 2
-        assert ia.bibjson.pid_scheme.scheme[0] == "DOI"
-        assert ia.bibjson.pid_scheme.scheme[1] == "Handles"
-        assert ia.bibjson.pid_scheme.scheme[2] == "something"
-        assert ia.bibjson.license.type == "CC BY"
-        assert ia.bibjson.license["BY"]
-        assert ia.bibjson.deposit_policy.services[0] == "Sherpa/Romeo"
-        assert ia.bibjson.deposit_policy.services[1] == "other"
+        ba = ia.bibjson()
+        assert ba.country == "BD"
+        assert ba.apc[0]["currency"] == "BDT"
+        assert isinstance(ba.title, str)
+        assert ba.publication_time_weeks == 15
+        assert "FR" in ba.language
+        assert "EN" in ba.language
+        assert len(ba.language) == 2
+        assert ba.pid_scheme[0] == "doi"
+        assert ba.pid_scheme[1] == "HandleS"
+        assert ba.pid_scheme[2] == "something"
+        assert ba.licenses[0]["type"] == "cc"
+        assert ba.licenses[0]["BY"]
+        assert ba.deposit_policy[0] == "sherpa/romeo"
+        assert ba.deposit_policy[1] == "other"
 
         # now test some failures
         # invalid country name
@@ -623,7 +624,6 @@ class TestCrudApplication(DoajTestCase):
         account.save(blocking=True)
 
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.bibjson().remove_identifiers()
         journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
         journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
         journal.bibjson().title = "not changed"
@@ -662,7 +662,6 @@ class TestCrudApplication(DoajTestCase):
         data = ApplicationFixtureFactory.incoming_application()
 
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.bibjson().remove_identifiers()
         journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
         journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
         journal.bibjson().title = "not changed"
@@ -693,7 +692,6 @@ class TestCrudApplication(DoajTestCase):
         account.add_role("publisher")
 
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.bibjson().remove_identifiers()
         journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
         journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
         journal.bibjson().title = "not changed"
@@ -720,7 +718,6 @@ class TestCrudApplication(DoajTestCase):
         account.add_role("publisher")
 
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.bibjson().remove_identifiers()
         journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
         journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
         journal.bibjson().title = "not changed"
@@ -767,7 +764,6 @@ class TestCrudApplication(DoajTestCase):
         account.add_role("publisher")
 
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.bibjson().remove_identifiers()
         journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
         journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
         journal.bibjson().title = "not changed"
