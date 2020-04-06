@@ -2,4 +2,8 @@
 
 .page-content {
   padding-right: $spacing-06;
+
+  @media (max-width: 768px) {
+    padding-right: 0;
+  }
 }
