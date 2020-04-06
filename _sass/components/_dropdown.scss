@@ -43,6 +43,19 @@
  }
 }
 
+.dropdown__link--is-disabled {
+  cursor: not-allowed;
+  color: rgba($warm-black, 0.75);
+  background-color: rgba($warm-black, 0.45);
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: rgba($warm-black, 0.75);
+    background-color: rgba($warm-black, 0.45);
+  }
+}
+
 .dropdown__trigger {
   color: $dark-grey;
 }
