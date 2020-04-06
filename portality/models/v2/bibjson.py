@@ -311,6 +311,9 @@ class JournalLikeBibJSON(SeamlessMixin):
         if board_url is not None:
             self.__seamless__.set_with_struct("editorial.board_url", board_url)
 
+    def add_editorial_review_process(self, process):
+        self.__seamless__.add_to_list_with_struct("editorial.review_process", process)
+
     @property
     def editorial_review_process(self):
         return self.__seamless__.get_list("editorial.review_process")

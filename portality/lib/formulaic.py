@@ -86,103 +86,24 @@ CONTEXT_EXAMPLE = {
     ],
     "asynchronous_warnings" : [
         "[warning function reference]"
-    ]
+    ],
+    "template" : "path/to/form/page/template.html",
+    "crosswalks" : {
+        "obj2form" : "crosswalk.obj2form",
+        "form2obj" : "crosswalk.form2obj"
+    },
+    "processor" : "module.path.to.processor"
 }
 """
 
 from copy import deepcopy
-from wtforms import Form, validators
-from wtforms import StringField, TextAreaField, IntegerField, BooleanField, FormField, FieldList, RadioField, SelectMultipleField, SelectField
-from wtforms import widgets
+from wtforms import Form
 from wtforms.fields.core import UnboundField
-from wtforms.widgets.core import html_params, HTMLString
-from portality.formcontext.fields import TagListField
 from portality.lib import plugin
+from flask import render_template
 
 import inspect
 import json
-
-class NumberWidget(widgets.Input):
-    input_type = 'number'
-
-
-class ListWidgetWithSubfields(object):
-    """
-    Renders a list of fields as a `ul` or `ol` list.
-
-    This is used for fields which encapsulate many inner fields as subfields.
-    The widget will try to iterate the field to get access to the subfields and
-    call them to render them.
-
-    If `prefix_label` is set, the subfield's label is printed before the field,
-    otherwise afterwards. The latter is useful for iterating radios or
-    checkboxes.
-    """
-    def __init__(self, html_tag='ul', prefix_label=False):
-        assert html_tag in ('ol', 'ul')
-        self.html_tag = html_tag
-        self.prefix_label = prefix_label
-
-    def __call__(self, field, **kwargs):
-        # kwargs.setdefault('id', field.id)
-        fl = kwargs.pop("formulaic", None)
-        html = ['<%s %s>' % (self.html_tag, html_params(**kwargs))]
-        for subfield in field:
-            if self.prefix_label:
-                html.append('<li>%s %s' % (subfield.label, subfield(**kwargs)))
-            else:
-                html.append('<li>%s %s' % (subfield(**kwargs), subfield.label))
-
-            if fl is not None:
-                sfs = fl.get_subfields(subfield._value())
-                for sf in sfs:
-                    style = ""
-                    if sf.has_conditional:
-                        style = " style=display:none "
-                    html.append('<span class="{x}_container" {y}>'.format(x=sf.name, y=style))
-                    html.append(sf.render_form_control())
-                    html.append("</span>")
-
-            html.append("</li>")
-
-        html.append('</%s>' % self.html_tag)
-        return HTMLString(''.join(html))
-
-
-WTFORMS_MAP = [
-    {
-        "match" : {"input" : "radio"},
-        "wtforms" : {"class" : RadioField}
-    },
-    {
-        "match" : {"input" : "checkbox", "options" : True},
-        "wtforms" : {"class" : SelectMultipleField, "init" : {"option_widget" : widgets.CheckboxInput, "widget" : ListWidgetWithSubfields}}
-    },
-    {
-        "match" : {"input" : "checkbox", "options" : False},
-        "wtforms" : {"class" : BooleanField}
-    },
-    {
-        "match" : {"input" : "select"},
-        "wtforms" : {"class" : SelectField}
-    },
-    {
-        "match" : {"input" : "select"},
-        "wtforms" : {"class", SelectMultipleField}
-    },
-    {
-        "match" : {"input" : "text"},
-        "wtforms" : {"class" : StringField}
-    },
-    {
-        "match" : {"input" : "taglist"},
-        "wtforms" : {"class" : TagListField}
-    },
-    {
-        "match" : {"input" : "number", "datatype" : "integer"},
-        "wtforms" : {"class": IntegerField, "init" : {"widget" : NumberWidget}}
-    }
-]
 
 UI_CONFIG_FIELDS = [
     "label",
@@ -208,10 +129,11 @@ class FormulaicException(Exception):
 
 
 class Formulaic(object):
-    def __init__(self, definition, wtforms_map=WTFORMS_MAP, function_map=None):
+    def __init__(self, definition, wtforms_map, function_map=None, javascript_functions=None):
         self._definition = definition
         self._wtforms_map = wtforms_map
         self._function_map = function_map
+        self._javascript_functions = javascript_functions
 
     def context(self, context_name):
         context_def = deepcopy(self._definition.get("contexts", {}).get(context_name))
@@ -232,6 +154,10 @@ class Formulaic(object):
 
         context_def["fieldsets"] = expanded_fieldsets
         return FormulaicContext(context_def, self._wtforms_map, self._function_map, self)
+
+    @property
+    def javascript_functions(self):
+        return self._javascript_functions
 
     def _process_fields(self, context_name, field_names):
         field_defs = []
@@ -322,8 +248,36 @@ class FormulaicContext(object):
                         del field[fn]
         return ui
 
+    @property
+    def javascript_functions(self):
+        return self._formulaic.javascript_functions
+
     def json(self):
         return json.dumps(self._definition)
+
+    def render_template(self, **kwargs):
+        template = self._definition.get("template")
+        return render_template(template, formulaic_context=self, **kwargs)
+
+    def processor(self, form_data=None, source=None):
+        processor_path = self._definition.get("processor")
+        klazz = plugin.load_class(processor_path)
+        return klazz(form_data=form_data, source=source, formulaic_context=self)
+
+    def obj2form(self, obj):
+        xwalk_path = self._definition.get("crosswalks", {}).get("obj2form")
+        if xwalk_path is None:
+            return None
+        xwalk_fn = plugin.load_function(xwalk_path)
+        data = xwalk_fn(obj)
+        return self.wtform(data=data)
+
+    def form2obj(self, form):
+        xwalk_path = self._definition.get("crosswalks", {}).get("form2obj")
+        if xwalk_path is None:
+            return None
+        xwalk_fn = plugin.load_function(xwalk_path)
+        return xwalk_fn(form)
 
     def _add_wtforms_field(self, FormClass, field):
         field_name = field.get("name")
@@ -533,3 +487,172 @@ class FormulaicField(object):
             choices.append((value, display))
 
         return choices
+
+
+class FormProcessor(object):
+    def __init__(self, form_data=None, source=None, formulaic_context=None):
+        # initialise our core properties
+        self._source = source
+        self._target = None
+        self._form_data = form_data
+        self._form = None
+        self._alert = []
+        self._info = ''
+        self._formulaic = formulaic_context
+
+        # now create our form instance, with the form_data (if there is any)
+        if form_data is not None:
+            self.data2form()
+
+        # if there isn't any form data, then we should create the form properties from source instead
+        elif source is not None:
+            self.source2form()
+
+        # if there is no source, then a blank form object
+        else:
+            self.blank_form()
+
+    ############################################################
+    # getters and setters on the main FormContext properties
+    ############################################################
+
+    @property
+    def form(self):
+        return self._form
+
+    @form.setter
+    def form(self, val):
+        self._form = val
+
+    @property
+    def source(self):
+        return self._source
+
+    @property
+    def form_data(self):
+        return self._form_data
+
+    @property
+    def target(self):
+        return self._target
+
+    @target.setter
+    def target(self, val):
+        self._target = val
+
+    @property
+    def renderer(self):
+        return self._renderer
+
+    @renderer.setter
+    def renderer(self, val):
+        self._renderer = val
+
+    @property
+    def template(self):
+        return self._template
+
+    @template.setter
+    def template(self, val):
+        self._template = val
+
+    @property
+    def alert(self):
+        return self._alert
+
+    def add_alert(self, val):
+        self._alert.append(val)
+
+    @property
+    def info(self):
+        return self._info
+
+    @info.setter
+    def info(self, val):
+        self._info = val
+
+    #############################################################
+    # Lifecycle functions you don't have to overwrite unless you
+    # want to do something different
+    #############################################################
+
+    def blank_form(self):
+        """
+        This will be called during init, and must populate the self.form_data property with an instance of the form in this
+        context, based on no originating source or form data
+        """
+        self.form = self._formulaic.wtform()
+
+    def data2form(self):
+        """
+        This will be called during init, and must convert the form_data into an instance of the form in this context,
+        and write to self.form
+        """
+        self.form = self._formulaic.wtform(formdata=self.form_data)
+
+    def source2form(self):
+        """
+        This will be called during init, and must convert the source object into an instance of the form in this
+        context, and write to self.form
+        """
+        self.form = self._formulaic.obj2form(self.source)
+
+    def form2target(self):
+        """
+        Convert the form object into a the target system object, and write to self.target
+        """
+        self.target = self._formulaic.form2obj(self.form)
+
+    ############################################################
+    # Lifecycle functions that subclasses should implement
+    ############################################################
+
+    def pre_validate(self):
+        """
+        This will be run before validation against the form is run.
+        Use it to patch the form with any relevant data, such as fields which were disabled
+        """
+        pass
+
+    def patch_target(self):
+        """
+        Patch the target with data from the source.  This will be run by the finalise method (unless you override it)
+        """
+        pass
+
+    def finalise(self, *args, **kwargs):
+        """
+        Finish up with the FormContext.  Carry out any final workflow tasks, etc.
+        """
+        self.form2target()
+        self.patch_target()
+
+    ############################################################
+    # Functions which can be called directly, but may be overridden if desired
+    ############################################################
+
+    def validate(self):
+        self.pre_validate()
+        f = self.form
+        valid = False
+        if f is not None:
+            valid = f.validate()
+
+        # if this isn't a valid form, record the fields that have errors
+        # with the renderer for use later
+        if not valid:
+            error_fields = []
+            for field in self.form:
+                if field.errors:
+                    error_fields.append(field.short_name)
+            if self.renderer is not None:
+                self.renderer.set_error_fields(error_fields)
+
+        return valid
+
+    @property
+    def errors(self):
+        f = self.form
+        if f is not None:
+            return f.errors
+        return False

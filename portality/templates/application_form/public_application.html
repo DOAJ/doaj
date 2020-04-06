@@ -7,7 +7,7 @@
           action="{{ url_for("doaj.public_application") }}"
           data-formulaic-after="{{ url_for("doaj.suggestion_thanks", _anchor='thanks') }}">
 
-    {% for fs in form_context.fieldsets() %}
+    {% for fs in formulaic_context.fieldsets() %}
         <h1>{{ fs.label }}</h1>
         <fieldset id="{{ fs.name }}">
         {% for f in fs.fields() %}
@@ -30,8 +30,8 @@
         jQuery(document).ready(function($) {
             formulaic.active = formulaic.newFormulaic({
                 formSelector: "#public_application",
-                fieldsets : {{ form_context.ui_settings|tojson }},
-                functions : {{ js_functions|tojson }}
+                fieldsets : {{ formulaic_context.ui_settings|tojson }},
+                functions : {{ formulaic_context.javascript_functions|tojson }}
             });
         });
     </script>

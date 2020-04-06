@@ -1,3 +1,13 @@
+from portality.lib.formulaic import Formulaic, FormulaicException
+import json
+
+from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField
+from wtforms import widgets
+from wtforms.widgets.core import html_params, HTMLString
+from portality.formcontext.fields import TagListField
+
+from portality.crosswalks.application_form import ApplicationFormXWalk
+
 FORMS = {
     "contexts" : {
         "public" : {
@@ -9,7 +19,13 @@ FORMS = {
             ],
             "asynchronous_warnings" : [
                 "all_urls_the_same"
-            ]
+            ],
+            "template" : "application_form/public_application.html",
+            "crosswalks" : {
+                "obj2form" : "portality.formcontext.form_definitions.application_obj2form",
+                "form2obj" : "portality.formcontext.form_definitions.application_form2obj"
+            },
+            "processor" : "portality.formcontext.formcontext.PublicApplication"
         }
     },
     "fieldsets": {
@@ -264,6 +280,14 @@ def render_int_range(settings, args):
         args["data-parsley-max"] = settings.get("lte")
 
 
+def application_obj2form(obj):
+    return ApplicationFormXWalk.obj2form(obj)
+
+
+def application_form2obj(form):
+    return ApplicationFormXWalk.form2obj(form)
+
+
 PYTHON_FUNCTIONS = {
     "options" : {
         "iso_country_list" : "portality.formcontext.form_definitions.iso_country_list",
@@ -307,13 +331,95 @@ JAVASCRIPT_FUNCTIONS = {
     "taglist" : "formulaic.widgets.newTagList"
 }
 
-if __name__ == "__main__":
-    from portality.lib.formulaic import Formulaic, FormulaicException
-    import json
 
+class NumberWidget(widgets.Input):
+    input_type = 'number'
+
+
+class ListWidgetWithSubfields(object):
+    """
+    Renders a list of fields as a `ul` or `ol` list.
+
+    This is used for fields which encapsulate many inner fields as subfields.
+    The widget will try to iterate the field to get access to the subfields and
+    call them to render them.
+
+    If `prefix_label` is set, the subfield's label is printed before the field,
+    otherwise afterwards. The latter is useful for iterating radios or
+    checkboxes.
+    """
+    def __init__(self, html_tag='ul', prefix_label=False):
+        assert html_tag in ('ol', 'ul')
+        self.html_tag = html_tag
+        self.prefix_label = prefix_label
+
+    def __call__(self, field, **kwargs):
+        # kwargs.setdefault('id', field.id)
+        fl = kwargs.pop("formulaic", None)
+        html = ['<%s %s>' % (self.html_tag, html_params(**kwargs))]
+        for subfield in field:
+            if self.prefix_label:
+                html.append('<li>%s %s' % (subfield.label, subfield(**kwargs)))
+            else:
+                html.append('<li>%s %s' % (subfield(**kwargs), subfield.label))
+
+            if fl is not None:
+                sfs = fl.get_subfields(subfield._value())
+                for sf in sfs:
+                    style = ""
+                    if sf.has_conditional:
+                        style = " style=display:none "
+                    html.append('<span class="{x}_container" {y}>'.format(x=sf.name, y=style))
+                    html.append(sf.render_form_control())
+                    html.append("</span>")
+
+            html.append("</li>")
+
+        html.append('</%s>' % self.html_tag)
+        return HTMLString(''.join(html))
+
+
+WTFORMS_MAP = [
+    {
+        "match" : {"input" : "radio"},
+        "wtforms" : {"class" : RadioField}
+    },
+    {
+        "match" : {"input" : "checkbox", "options" : True},
+        "wtforms" : {"class" : SelectMultipleField, "init" : {"option_widget" : widgets.CheckboxInput, "widget" : ListWidgetWithSubfields}}
+    },
+    {
+        "match" : {"input" : "checkbox", "options" : False},
+        "wtforms" : {"class" : BooleanField}
+    },
+    {
+        "match" : {"input" : "select"},
+        "wtforms" : {"class" : SelectField}
+    },
+    {
+        "match" : {"input" : "select"},
+        "wtforms" : {"class", SelectMultipleField}
+    },
+    {
+        "match" : {"input" : "text"},
+        "wtforms" : {"class" : StringField}
+    },
+    {
+        "match" : {"input" : "taglist"},
+        "wtforms" : {"class" : TagListField}
+    },
+    {
+        "match" : {"input" : "number", "datatype" : "integer"},
+        "wtforms" : {"class": IntegerField, "init" : {"widget" : NumberWidget}}
+    }
+]
+
+application_form = Formulaic(FORMS, WTFORMS_MAP, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
+
+
+if __name__ == "__main__":
     try:
-        f = Formulaic(FORMS, function_map=PYTHON_FUNCTIONS)
-        c = f.context("public")
+        c = application_form.context("public")
         print(json.dumps(c._definition, indent=2))
         w = c.wtform()
         for field in w:

@@ -88,7 +88,7 @@ var formulaic = {
                 $.post({
                     url: this.context.attr("action"),
                     data: full_data,
-                    error: function() {alert("background save failed")},
+                    error: function() {/*alert("background save failed")*/},
                     success: function() {
                         if (complete) {
                             window.location.href = that.context.attr("data-formulaic-after")

@@ -132,26 +132,31 @@ def suggestion():
 ############################################
 # Experimental
 
-from portality.lib.formulaic import Formulaic
-from portality.formcontext.form_definitions import FORMS, PYTHON_FUNCTIONS, JAVASCRIPT_FUNCTIONS
+#from portality.lib.formulaic import Formulaic
+#from portality.formcontext.form_definitions import FORMS, PYTHON_FUNCTIONS, JAVASCRIPT_FUNCTIONS
+
+from portality.formcontext.form_definitions import application_form as ApplicationFormFactory
 
 @blueprint.route("/application/newnew", methods=["GET", "POST"])
 @write_required()
 def public_application():
     if request.method == "GET":
-        fc = formcontext.ApplicationFormFactory.get_form_context()
+        fc = ApplicationFormFactory.context("public")
         return fc.render_template()
     elif request.method == "POST":
         draft = request.form.get("draft")
-        fc = formcontext.ApplicationFormFactory.get_form_context(form_data=request.form)
+        fc = ApplicationFormFactory.context("public")
+        processor = fc.processor(form_data=request.form)
         if draft is not None:
             # add draft save handling here
-            pass
+            print("Draft save request")
+            print(request.form.to_dict(flat=False))
         else:
-            if fc.validate():
-                fc.finalise()
+            if processor.validate():
+                processor.finalise()
                 return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
             else:
+                # FIXME: how do we render the template with all the bits filled in?
                 return fc.render_template()
     """
     if request.method == "GET":
