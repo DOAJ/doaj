@@ -1,0 +1,13 @@
+/* Portraits / photographs of people
+   Used in biographies, profiles... */
+
+.portrait {
+  position: relative;
+  margin: 1rem $spacing-05 $spacing-04 0;
+  width: 300px;
+  background-color: rgba($sanguine, 0.25);
+}
+
+.portrait__img {
+  mix-blend-mode: multiply;
+}

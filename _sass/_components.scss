@@ -15,43 +15,6 @@
   color: $sanguine;
 }
 
-/* Community */
-
-.volunteers article figure {
-  position: relative;
-  margin: 1rem $spacing-05 $spacing-04 0;
-  width: 225px;
-  background-color: rgba(152, 46, 10, 0.25);
-}
-
-.volunteers article figure:after {
-  position: absolute;
-  left: 225px;
-  content: '';
-  height: 150px;
-  width: 75px;
-  background-color: rgba(152, 46, 10, 0.25);
-  border-bottom-right-radius: 100px;
-  border-top-right-radius: 100px;
-}
-
-.volunteers article img {
-  mix-blend-mode: multiply;
-}
-
-.volunteers .desc {
-  color: $dark-grey;
-  font-size: smaller;
-  margin-bottom: $spacing-01;
-}
-
-.volunteers .discipline {
-  display: block;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: $sanguine;
-  margin-bottom: $spacing-03;
-}
 
 
 /* 3D buttons */
