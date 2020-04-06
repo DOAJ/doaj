@@ -4,13 +4,6 @@
   @include typescale-06;
 }
 
-.card__label {
-  margin-bottom: $spacing-02;
-  text-transform: uppercase;
-  font-weight: 600;
-  color: $sanguine;
-}
-
 .card__desc {
   color: $dark-grey;
   margin-bottom: $spacing-01;

@@ -1,14 +1,18 @@
 /* Blog posts */
 
-.blog-post a {
+.blog-post__link {
   display: block;
   margin-bottom: $spacing-05;
   text-decoration: none;
 }
 
+.blog-post__title {
+  margin-top: $spacing-03;
+}
+
 /* Featured / "3d" effect article */
 
-.blog-post--featured a {
+.blog-post--featured .blog-post__link {
   position: relative;
   padding: $spacing-06 $spacing-05;
   border: 1px solid $sanguine;
@@ -52,7 +56,7 @@
     }
   }
 
-  .eyebrow {
+  .label {
     color: $warm-white;
   }
 

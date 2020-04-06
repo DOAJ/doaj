@@ -1,22 +1,5 @@
 /* TODO Break components up into individual scss files */
 
-
-
-/* Eyebrow */
-.eyebrow + h3 {
-  margin-top: 0;
-}
-
-.eyebrow {
-  margin: 0 0 $spacing-03 0;
-  text-transform: uppercase;
-  @include typescale-06;
-  font-weight: 600;
-  color: $sanguine;
-}
-
-
-
 /* 3D buttons */
 
 .button {
