@@ -5,6 +5,8 @@ A static Jekyll site for doaj.org
 
 ## Install Jekyll
 
+Ruby is required. 
+
 1. `gem install jekyll`
 
 ## Building the site
