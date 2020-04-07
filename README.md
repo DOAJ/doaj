@@ -14,7 +14,7 @@ Ruby is required.
 1. `git clone https://github.com/DOAJ/doaj-static.git`
 2. `cd doaj-static`
 3. `jekyll build`
-4. Content will be found in `_site/`
+4. Compiled static HTML, CSS, & JS will be found in `_site/`
 
 ## Updating & editing content
 
