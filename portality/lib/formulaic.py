@@ -102,9 +102,8 @@ from wtforms import Form
 from wtforms.fields.core import UnboundField
 from portality.lib import plugin
 from flask import render_template
-
-import inspect
 import json
+
 
 UI_CONFIG_FIELDS = [
     "label",
@@ -291,12 +290,12 @@ class FormulaicContext(object):
         data = xwalk_fn(obj)
         return self.wtform(data=data)
 
-    def form2obj(self, form=None):   # FIXME: we can probably just use the wtform_inst
+    def form2obj(self):
         xwalk_path = self._definition.get("crosswalks", {}).get("form2obj")
         if xwalk_path is None:
             return None
         xwalk_fn = plugin.load_function(xwalk_path)
-        return xwalk_fn(self._wtform_inst)  # FIXME: Can remove the arg if this works correctly
+        return xwalk_fn(self._wtform_inst)
 
     def _add_wtforms_field(self, FormClass, field):
         field_name = field.get("name")
@@ -339,8 +338,6 @@ class FormulaicFieldset(object):
 class FormulaicField(object):
     def __init__(self, definition, parent):
         self._definition = definition
-        # self._wtform_field = None
-        # self._wtforms_field_bound = None
         self._formulaic_fieldset = parent
 
     def __getattr__(self, name):
@@ -376,6 +373,10 @@ class FormulaicField(object):
             return opts
         return []
 
+    @property
+    def has_conditional(self):
+        return len(self._definition.get("conditional", [])) > 0
+
     def has_validator(self, validator_name):
         for validator in self._definition.get("validate", []):
             if isinstance(validator, str) and validator == validator_name:
@@ -403,34 +404,6 @@ class FormulaicField(object):
                 name = list(validator.keys())[0]
                 yield name, validator[name]
 
-    @property
-    def has_conditional(self):
-        return len(self._definition.get("conditional", [])) > 0
-
-    """
-    def wtforms_field(self):
-        if self._wtform_field is None:
-            self._wtform_field = FormulaicField.make_wtforms_field(self._definition, self.wtforms_map, self.function_map)
-        return self._wtform_field
-    """
-
-    """
-    def wtforms_field_bound(self):
-        if self._wtforms_field_bound is None:
-            wtf = self.wtforms_field()
-            if isinstance(wtf, UnboundField):
-                class TempForm(Form):
-                    pass
-
-                setattr(TempForm, self._definition.get("name"), wtf)
-                form_instance = TempForm()
-                self._wtforms_field_bound = form_instance[self._definition.get("name")]
-            else:
-                self._wtforms_field_bound = wtf
-
-        return self._wtforms_field_bound
-    """
-
     def get_subfields(self, option_value):
         for option in self.explicit_options:
             if option.get("value") == option_value:
@@ -450,7 +423,6 @@ class FormulaicField(object):
         return len(self.errors()) > 0
 
     def errors(self):
-        # wtf = self.wtforms_field_bound()
         wtf = self.wtfield
         return wtf.errors
 
@@ -474,7 +446,6 @@ class FormulaicField(object):
             for k, v in custom_args.items():
                 kwargs[k] = v
 
-        # wtf = self.wtforms_field_bound()
         wtf = self.wtfield
         return wtf(**kwargs)
 
@@ -493,8 +464,7 @@ class FormulaicField(object):
                 vname = list(v.keys())[0]
                 args = v[vname]
             if vname not in vfuncs:
-                continue
-                # raise FormulaicException("No validate apply function defined for {x}".format(x=vname))
+                raise FormulaicException("No validate apply function defined for {x}".format(x=vname))
             vfn_path = vfuncs[vname]
             vfn = plugin.load_function(vfn_path)
             validators.append(vfn(field, args))
@@ -546,7 +516,6 @@ class FormProcessor(object):
         self._source = source
         self._target = None
         self._formdata = formdata
-        # self._form = None
         self._alert = []
         self._info = ''
         self._formulaic = parent
@@ -571,14 +540,6 @@ class FormProcessor(object):
     def form(self):
         # return self._form
         return self._formulaic.wtform_inst
-
-    """
-    @form.setter
-    def form(self, val):
-        # FIXME: wtform_inst is not writable
-        # self._form = val
-        self._formulaic.wtform_inst = val
-    """
 
     @property
     def source(self):
@@ -629,7 +590,6 @@ class FormProcessor(object):
         This will be called during init, and must populate the self.form_data property with an instance of the form in this
         context, based on no originating source or form data
         """
-        # self.form = self._formulaic.wtform()
         self._formulaic.wtform()
 
     def data2form(self):
@@ -637,8 +597,6 @@ class FormProcessor(object):
         This will be called during init, and must convert the form_data into an instance of the form in this context,
         and write to self.form
         """
-        # self.form = self._formulaic.wtform(formdata=self.form_data)
-        # FIXME: what about form_data
         self._formulaic.wtform(formdata=self.form_data)
 
     def source2form(self):
@@ -646,14 +604,12 @@ class FormProcessor(object):
         This will be called during init, and must convert the source object into an instance of the form in this
         context, and write to self.form
         """
-        # self.form = self._formulaic.obj2form(self.source)
         self._formulaic.obj2form(self.source)
 
     def form2target(self):
         """
         Convert the form object into a the target system object, and write to self.target
         """
-        # self.target = self._formulaic.form2obj(self.form)
         self.target = self._formulaic.form2obj()
 
     ############################################################
