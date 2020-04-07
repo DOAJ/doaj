@@ -146,7 +146,7 @@ def public_application():
     elif request.method == "POST":
         draft = request.form.get("draft")
         fc = ApplicationFormFactory.context("public")
-        processor = fc.processor(form_data=request.form)
+        processor = fc.processor(formdata=request.form)
         if draft is not None:
             # add draft save handling here
             print("Draft save request")
@@ -157,16 +157,7 @@ def public_application():
                 return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
             else:
                 # FIXME: how do we render the template with all the bits filled in?
-                return fc.render_template()
-    """
-    if request.method == "GET":
-        f = Formulaic(FORMS, function_map=PYTHON_FUNCTIONS)
-        fc = f.context("public")
-        return render_template("application_form/public_application.html", fc=fc, js_functions=JAVASCRIPT_FUNCTIONS)
-    elif request.method == "POST":
-        print(request.form.to_dict(flat=False))
-        return "", 200
-    """
+                return fc.render_template(formdata=processor.form)
 
 
 #############################################

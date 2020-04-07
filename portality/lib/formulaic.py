@@ -32,6 +32,7 @@ EXAMPLE = {
                     "subfields" : ["[field name]"]
                 }
             ],
+            "options_fn" : "function name to generate options",
             "default" : "[default value]",
             "disabled" : "[disabled: True|False]",
             "conditional" : [   # conditions to AND together
@@ -167,20 +168,19 @@ class Formulaic(object):
             if field_def is None:
                 raise FormulaicException("Field '{x}' is referenced but not defined".format(x=fn))
 
-            # check for subfields
-            """
-            for o in field_def.get("options", []):
-                if isinstance(o, str):  # it's a function reference
-                    continue
-                subfields = o.get("subfields")
-                if subfields is not None:
-                    o["subfields"] = self._process_fields(context_name, subfields)
-            """
             # filter for context
             context_overrides = field_def.get("contexts", {}).get(context_name)
             if context_overrides is not None:
                 for k, v in context_overrides.items():
                     field_def[k] = v
+
+            # if there is an options_fn, expand them into the options field
+            if "options_fn" in field_def:
+                fnpath = self._function_map.get("options", {}).get(field_def["options_fn"])
+                if fnpath is None:
+                    raise FormulaicException("No function mapping defined for function reference '{x}'".format(x=field_def["options_fn"]))
+                fn = plugin.load_function(fnpath)
+                field_def["options"] = fn()
 
             # and remove the context overrides settings, so they don't bleed to contexts that don't require them
             if "contexts" in field_def:
@@ -207,14 +207,6 @@ class FormulaicContext(object):
                 # add the main fields
                 self._add_wtforms_field(TempForm, field)
 
-                # add any subfields
-                """
-                options = field.get("options", [])
-                if not isinstance(options, str):
-                    for o in field.get("options", []):
-                        for subfield in o.get("subfields", []):
-                            self._add_wtforms_field(TempForm, subfield)
-                """
         return TempForm
 
     def wtform(self, formdata=None, data=None):
@@ -255,14 +247,14 @@ class FormulaicContext(object):
     def json(self):
         return json.dumps(self._definition)
 
-    def render_template(self, **kwargs):
+    def render_template(self, formdata=None, **kwargs):
         template = self._definition.get("template")
         return render_template(template, formulaic_context=self, **kwargs)
 
-    def processor(self, form_data=None, source=None):
+    def processor(self, formdata=None, source=None):
         processor_path = self._definition.get("processor")
         klazz = plugin.load_class(processor_path)
-        return klazz(form_data=form_data, source=source, formulaic_context=self)
+        return klazz(form_data=formdata, source=source, formulaic_context=self)
 
     def obj2form(self, obj):
         xwalk_path = self._definition.get("crosswalks", {}).get("obj2form")
@@ -282,7 +274,6 @@ class FormulaicContext(object):
     def _add_wtforms_field(self, FormClass, field):
         field_name = field.get("name")
         if not hasattr(FormClass, field_name):
-            # field_definition = self._wtforms_field_definition(field)
             field_definition = FormulaicField.make_wtforms_field(field, self._wtforms_map, self._function_map)
             setattr(FormClass, field_name, field_definition)
 
@@ -434,47 +425,49 @@ class FormulaicField(object):
         result = cls._get_wtforms_map(field, wtforms_map)
         if result is None:
             raise FormulaicException("No WTForms mapping for field '{x}'".format(x=field.get("name")))
-        klazz = result.get("class")
-        kwargs = {
-            "label": field.get("label")
-        }
-        if "init" in result:
-            for k, v in result["init"].items():
-                if inspect.isclass(v) or inspect.isfunction(v):
-                    v = v()
-                kwargs[k] = v
-        if "description" in field.get("help", {}):
-            kwargs["description"] = field["help"]["description"]
-        if "default" in field:
-            kwargs["default"] = field["default"]
-        if "options" in field:
-            kwargs["choices"] = cls._options2choices(field["options"], function_map.get("options", {}))
 
-        return klazz(**kwargs)
+        validators = []
+        vfuncs = function_map.get("validate", {}).get("apply", {})
+        for v in field.get("validate", []):
+            vname = v
+            args = {}
+            if isinstance(v, dict):
+                vname = list(v.keys())[0]
+                args = v[vname]
+            if vname not in vfuncs:
+                continue
+                # raise FormulaicException("No validate apply function defined for {x}".format(x=vname))
+            vfn_path = vfuncs[vname]
+            vfn = plugin.load_function(vfn_path)
+            validators.append(vfn(field, args))
+
+        wtargs = {
+            "label" : field.get("label"),
+            "validators" : validators,
+            "description": field.get("help", {}).get("description"),
+        }
+        if "default" in field:
+            wtargs["default"] = field["default"]
+        if "options" in field or "options_fn" in field:
+            wtargs["choices"] = cls._options2choices(field, function_map.get("options", {}))
+
+        return result(field, wtargs)
 
     @classmethod
     def _get_wtforms_map(self, field, wtforms_map):
-        input = field.get("input")
-        options = "options" in field
-        datatype = field.get("datatype")
-
         for possible in wtforms_map:
-            match = possible.get("match")
-            input_match = "input" not in match or match.get("input") == input
-            options_match = "options" not in match or match.get("options", False) == options
-            datatype_match = "datatype" not in match or match.get("datatype") == datatype
-
-            if input_match and options_match and datatype_match:
+            match_fn = possible.get("match")
+            if match_fn(field):
                 return possible.get("wtforms")
-
         return None
 
     @classmethod
-    def _options2choices(self, options, function_map):
-        if isinstance(options, str): # it's a function reference
-            fnpath = function_map.get(options)
+    def _options2choices(self, field, function_map):
+        options = field.get("options", [])
+        if len(options) == 0 and "options_fn" in field:
+            fnpath = function_map.get(field["options_fn"])
             if fnpath is None:
-                raise FormulaicException("No function mapping defined for function reference '{x}'".format(x=options))
+                raise FormulaicException("No function mapping defined for function reference '{x}'".format(x=field["options_fn"]))
             fn = plugin.load_function(fnpath)
             options = fn()
 
@@ -645,8 +638,6 @@ class FormProcessor(object):
             for field in self.form:
                 if field.errors:
                     error_fields.append(field.short_name)
-            if self.renderer is not None:
-                self.renderer.set_error_fields(error_fields)
 
         return valid
 

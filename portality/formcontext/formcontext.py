@@ -196,8 +196,6 @@ class FormContext(object):
             for field in self.form:
                 if field.errors:
                     error_fields.append(field.short_name)
-            if self.renderer is not None:
-                self.renderer.set_error_fields(error_fields)
 
         return valid
 

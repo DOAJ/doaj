@@ -2,7 +2,7 @@ from portality.lib.formulaic import Formulaic, FormulaicException
 import json
 
 from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField
-from wtforms import widgets
+from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 from portality.formcontext.fields import TagListField
 
@@ -113,7 +113,7 @@ FORMS = {
         "country" : {
             "label" : "Country of Publisher",
             "input" : "select",
-            "options" : "iso_country_list",     # means to get the list from a function
+            "options_fn" : "iso_country_list",
             "multiple" : False,
             "help": {
                 "description": "",
@@ -268,6 +268,9 @@ def render_required(settings, args):
         args["data-parsley-required-message"] = settings["message"]
 
 
+def apply_required(settings, args):
+    return validators.DataRequired(message=args.get("message"))
+
 def render_is_url(settings, args):
     args["type"] = "url"
 
@@ -299,7 +302,7 @@ PYTHON_FUNCTIONS = {
             "int_range" : "portality.formcontext.form_definitions.render_int_range",
         },
         "apply" : {
-
+            "required" : "portality.formcontext.form_definitions.apply_required"
         }
     },
 
@@ -379,39 +382,83 @@ class ListWidgetWithSubfields(object):
         return HTMLString(''.join(html))
 
 
+def match_radio(cfg):
+    return cfg.get("input") == "radio"
+
+
+def radio_field(cfg, wtargs):
+    return RadioField(**wtargs)
+
+
+def match_multi_checkbox(cfg):
+    return cfg.get("input") == "checkbox" and \
+           (len(cfg.get("options", [])) > 0 or cfg.get("options_fn") is not None)
+
+
+def multi_checkbox(cfg, wtargs):
+    wtargs["option_widget"] = widgets.CheckboxInput()
+    wtargs["widget"] = ListWidgetWithSubfields()
+    return SelectMultipleField(**wtargs)
+
+
+def match_single_checkbox(cfg):
+    return cfg.get("input") == "checkbox" and len(cfg.get("options", [])) == 0 and cfg.get("options_fn") is None
+
+
+def single_checkbox(cfg, wtargs):
+    return BooleanField(**wtargs)
+
+
+def match_select(cfg):
+    return cfg.get("input") == "select"
+
+
+def select_field(cfg, wtargs):
+    return SelectField(**wtargs)
+
+
+def match_multi_select(cfg):
+    return cfg.get("input") == "select" and cfg.get("repeatable", False)
+
+
+def multi_select(cfg, wtargs):
+    return SelectMultipleField(**wtargs)
+
+
+def match_text(cfg):
+    return cfg.get("input") == "text"
+
+
+def string_field(cfg, wtargs):
+    return StringField(**wtargs)
+
+
+def match_taglist(cfg):
+    return cfg.get("input") == "taglist"
+
+
+def taglist_field(cfg, wtargs):
+    return TagListField(**wtargs)
+
+
+def match_integer(cfg):
+    return cfg.get("input") == "number" and cfg.get("datatype") == "integer"
+
+
+def integer_field(cfg, wtargs):
+    wtargs["widget"] = NumberWidget()
+    return IntegerField(**wtargs)
+
+
 WTFORMS_MAP = [
-    {
-        "match" : {"input" : "radio"},
-        "wtforms" : {"class" : RadioField}
-    },
-    {
-        "match" : {"input" : "checkbox", "options" : True},
-        "wtforms" : {"class" : SelectMultipleField, "init" : {"option_widget" : widgets.CheckboxInput, "widget" : ListWidgetWithSubfields}}
-    },
-    {
-        "match" : {"input" : "checkbox", "options" : False},
-        "wtforms" : {"class" : BooleanField}
-    },
-    {
-        "match" : {"input" : "select"},
-        "wtforms" : {"class" : SelectField}
-    },
-    {
-        "match" : {"input" : "select"},
-        "wtforms" : {"class", SelectMultipleField}
-    },
-    {
-        "match" : {"input" : "text"},
-        "wtforms" : {"class" : StringField}
-    },
-    {
-        "match" : {"input" : "taglist"},
-        "wtforms" : {"class" : TagListField}
-    },
-    {
-        "match" : {"input" : "number", "datatype" : "integer"},
-        "wtforms" : {"class": IntegerField, "init" : {"widget" : NumberWidget}}
-    }
+    { "match" : match_radio, "wtforms" : radio_field },
+    { "match" : match_multi_checkbox, "wtforms" : multi_checkbox },
+    { "match" : match_single_checkbox, "wtforms" : single_checkbox},
+    { "match" : match_select, "wtforms" : select_field},
+    { "match" : match_multi_select, "wtforms" : multi_select},
+    { "match" : match_text, "wtforms" : string_field},
+    { "match" : match_taglist, "wtforms" : taglist_field},
+    { "match" : match_integer, "wtforms" : integer_field}
 ]
 
 application_form = Formulaic(FORMS, WTFORMS_MAP, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)

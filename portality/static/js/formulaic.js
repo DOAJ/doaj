@@ -12,6 +12,10 @@ var formulaic = {
 
         this.functions = edges.getParam(params.functions, {});
 
+        this.doValidation = edges.getParam(params.doValidation, true);
+
+        this.autoSave = edges.getParam(params.autoSave, false);
+
         // list of fields whose values are synchronised
         this.synchronised = {};
 
@@ -56,8 +60,10 @@ var formulaic = {
         // Functions for handling save
 
         this.bindSave = function() {
-            edges.on(this.context, "submit.Save", this, "saveRequested");
-            setTimeout(this.backgroundSaveClosure(), 60000);
+            edges.on(this.context, "submit.Save", this, "saveRequested", false, false, false);
+            if (this.autoSave) {
+                setTimeout(this.backgroundSaveClosure(), 60000);
+            }
         };
 
         this.backgroundSaveClosure = function() {
@@ -68,36 +74,42 @@ var formulaic = {
             }
         };
 
-        this.saveRequested = function(element) {
-            this.save();
+        this.saveRequested = function(element, event) {
+            this.save({event: event});
         };
 
         this.save = function(params) {
             if (!params) { params = {}}
-            var validate = edges.getParam(params.validate, true);
+            var validate = edges.getParam(params.validate, this.doValidation);
             var additional_params = edges.getParam(params.additional, {});
             var complete = edges.getParam(params.complete, true);
+            var event = params.event;
 
             if (!validate || (this.activeParsley && this.activeParsley.isValid())) {
-                var data = this.context.serialize();
-                if (data === this.lastSaveVal) {
-                    return;
-                }
-                var full_data = $.param(additional_params) + "&" + data;
-                var that = this;
-                $.post({
-                    url: this.context.attr("action"),
-                    data: full_data,
-                    error: function() {/*alert("background save failed")*/},
-                    success: function() {
-                        if (complete) {
-                            window.location.href = that.context.attr("data-formulaic-after")
-                        } else {
+                if (!complete) {
+                    if (event) {
+                        event.preventDefault();
+                    }
+                    // otherwise, do an asynchronous save
+                    var data = this.context.serialize();
+                    if (data === this.lastSaveVal) {
+                        return;
+                    }
+                    var full_data = $.param(additional_params) + "&" + data;
+                    var that = this;
+                    $.post({
+                        url: this.context.attr("action"),
+                        data: full_data,
+                        error: function() {/*alert("background save failed")*/},
+                        success: function() {
                             that.lastSaveVal = data;
                         }
-                    }
-                })
+                    });
+                }
             } else {
+                if (event) {
+                    event.preventDefault();
+                }
                 alert("Unable to save due to validation");
             }
         };
@@ -327,6 +339,7 @@ var formulaic = {
         };
 
         this.destroyParsley = function() {
+            if (!this.doValidation) { return; }
             if (this.activeParsley) {
                 this.activeParsley.destroy();
             }
@@ -334,6 +347,7 @@ var formulaic = {
         };
 
         this.bounceParsley = function() {
+            if (!this.doValidation) { return; }
             this.destroyParsley();
             this.activeParsley = this.context.parsley();
         };

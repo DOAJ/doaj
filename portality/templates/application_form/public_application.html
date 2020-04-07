@@ -5,6 +5,7 @@
     <form id="public_application"
           novalidate
           action="{{ url_for("doaj.public_application") }}"
+          method="post"
           data-formulaic-after="{{ url_for("doaj.suggestion_thanks", _anchor='thanks') }}">
 
     {% for fs in formulaic_context.fieldsets() %}
@@ -31,7 +32,8 @@
             formulaic.active = formulaic.newFormulaic({
                 formSelector: "#public_application",
                 fieldsets : {{ formulaic_context.ui_settings|tojson }},
-                functions : {{ formulaic_context.javascript_functions|tojson }}
+                functions : {{ formulaic_context.javascript_functions|tojson }},
+                doValidation : false
             });
         });
     </script>
