@@ -23,7 +23,11 @@ Most of the content of doaj.org’s static pages can be written in Markdown (`.m
 - `support/`
 
 Each `.md` file represents a single page. Each page includes YAML front matter which indicates: 
-- the layout to be used for that page (for now, we only have `sidenav`) 
-- the page title (displayed in an `<h1>` tag)
-- whether or not we want a table of contents on the side
-- whether or not the page should start with a highlight section (slightly darker background, as seen in the homepage’s search box)
+- `layout`: 
+  - the layout to be used for that page (for now, we only have `sidenav`) 
+- `title`: 
+  - the page title (displayed in `<h1>` and `<title>` tags)
+- `toc` (`true` or `false`): 
+  - whether or not we want a table of contents on the side
+- `highlight` (`true` or `false`): 
+  - whether or not the page should start with a highlight section (slightly darker background, as seen in the homepage’s search box)
