@@ -9,12 +9,11 @@ As a focal point for open access publishing, DOAJ helps promote quality, peer-re
 
 ## Four reasons why being indexed in DOAJ matters
 
-1. DOAJ is the [most important community-driven, open access service in the world].
-  - DOAJ covers more than 14,000 gold open access journals from 133 countries, in 77 languages, and over 300 subject areas.
-  - All journals are reviewed by our team of staff and volunteer editors to ensure they meet a set of quality standards.
-2. The [DOAJ criteria] have become the accepted way of measuring an open access journal’s adherence to standards and best practice in academic publishing.
-3. Open access publication funds often require DOAJ indexing to release funding.
-4. Certification in DOAJ makes your journal compliant for various publishing initiatives such as [Plan S].
+{:.numbered-table}
+|   | Participation in the world’s most important open access service | DOAJ is the [most important community-driven, open access service in the world](http://repository.jisc.ac.uk/6269/10/final-KE-Report-V5.1-20JAN2016.pdf).DOAJ covers more than 14,000 gold open access journals from 133 countries, in 77 languages, and over 300 subject areas.All journals are reviewed by our team of staff and volunteer editors to ensure they meet a set of quality standards. |
+|   | Adherence to standards                                          | The [DOAJ criteria](/apply/guide/) have become the accepted way of measuring an open access journal’s adherence to standards and best practice in academic publishing.                                                                                                                                                                                                                               |
+|   | Access to funding                                               | Open access publication funds often require DOAJ indexing to release funding.                                                                                                                                                                                                                                                                                                                        |
+|   | Compliance to publishing initiatives                            | Certification in DOAJ makes your journal compliant for various publishing initiatives such as [Plan S](https://www.coalition-s.org/).                                                                                                                                                                                                                                                                |
 
 ---
 

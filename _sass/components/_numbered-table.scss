@@ -17,6 +17,10 @@
         @include font-serif;
       }
 
+      &:nth-child(2) {
+        width: 40%;
+      }
+
       &:nth-child(3) {
         @include typescale-06;
       }
