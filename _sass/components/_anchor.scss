@@ -2,4 +2,8 @@
 
 .anchor {
   padding-top: 70px;
+
+  @media (max-width: 768px) {
+    padding-top: 0;
+  }
 }
