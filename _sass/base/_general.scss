@@ -138,13 +138,20 @@ table {
     }
   }
 
+  th, td {
+    vertical-align: top;
+    padding: $spacing-03 $spacing-02;
+  }
+
   th {
     font-weight: 400;
   }
 
-  th, td {
-    vertical-align: top;
-    padding: $spacing-03 $spacing-02 $spacing-03 0;
+  td {
+
+    &:first-child {
+      padding-left: 0;
+    }
   }
 }
 

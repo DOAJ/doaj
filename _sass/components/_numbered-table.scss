@@ -7,11 +7,26 @@
   tbody tr {
     counter-increment: row-number;
 
-    td:first-child::before {
-      padding-right: $spacing-04;
-      content: counter(row-number);
-      vertical-align: baseline;
-      font-weight: 400;
+    td {
+      &:first-child::before {
+        padding-right: $spacing-03;
+        content: counter(row-number);
+        vertical-align: baseline;
+        font-weight: 400;
+        @include typescale-03;
+        @include font-serif;
+      }
+
+      &:nth-child(3) {
+        @include typescale-06;
+      }
+    }
+  }
+}
+
+.numbered-table--labels {
+  td {
+    &:nth-child(2) {
       @include typescale-03;
       @include font-serif;
     }
