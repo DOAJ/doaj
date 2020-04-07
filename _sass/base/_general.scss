@@ -128,6 +128,8 @@ table {
 
   thead {
     text-align: left;
+    color: $dark-grey;
+    @include typescale-06;
   }
 
   tr {
@@ -193,6 +195,7 @@ input, select, button {
 }
 
 select {
+  padding-right: 30px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
