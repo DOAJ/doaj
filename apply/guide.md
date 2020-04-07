@@ -5,7 +5,14 @@ toc: true
 highlight: false
 ---
 
-Watch our [video for an introduction to DOAJ](https://www.youtube.com/embed/videoseries?list=PLgsj-CNPbicMgBrdzA4jfevecibpl_a1G) and best practice. We have guides to help you complete the form in sixteen different languages.
+<label for="languages">Show me this guide in&hellip;</label>
+<select name="languages" id="languages">
+  <option value="en">English</option>
+  <option value="fr">Français</option>
+  <option value="es">Español</option>
+</select>
+
+Watch our [video for an introduction to DOAJ] and best practice. We have guides to help you complete the form in sixteen different languages.
 
 Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them.
 
@@ -184,3 +191,5 @@ We cannot provide a status update for applications which are less than three mon
 The applicant is responsible for providing accurate information when submitting an application. If the information provided is not sufficient or is incomplete, the application will be rejected.
 In cases where the information provided is found to be untrue, either during review or after admission, we reserve the right to reject the application or remove the journal and to not accept new applications for a period of one year.
 In cases where a single publisher has submitted more than five applications with false information, we reserve the right to reject all associated applications and remove all associated journals. We will not accept any more applications for a maximum period of three years, depending on the number of journals for which false information was provided and the eventual number of repeated incidents.
+
+[video for an introduction to DOAJ]: https://www.youtube.com/embed/videoseries?list=PLgsj-CNPbicMgBrdzA4jfevecibpl_a1G
