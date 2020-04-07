@@ -7,6 +7,8 @@ from wtforms.widgets.core import html_params, HTMLString
 from portality.formcontext.fields import TagListField
 
 from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen, RegexpOnTagList, ReservedUsernames
+
 
 FORMS = {
     "contexts" : {
@@ -147,8 +149,8 @@ FORMS = {
             },
             "validate" : [
                 "required",
-                {"max_tags" : {"max" : 6}},
-                "stop_words"
+                {"stop_words" : {"disallowed" : ["a", "and"]}},
+                {"max_tags" : { "max" : 6 }}
             ],
             "postprocessing" : [
                 "to_lower"
@@ -254,6 +256,10 @@ FORMS = {
 }
 
 
+#######################################################
+# Options lists
+#######################################################
+
 def iso_country_list():
     from portality.formcontext.choices import Choices
     cl = []
@@ -261,6 +267,10 @@ def iso_country_list():
         cl.append({"display" : d, "value" : v})
     return cl
 
+
+#######################################################
+# Validation features
+#######################################################
 
 def render_required(settings, args):
     args["required"] = ""
@@ -271,8 +281,13 @@ def render_required(settings, args):
 def apply_required(settings, args):
     return validators.DataRequired(message=args.get("message"))
 
+
 def render_is_url(settings, args):
     args["type"] = "url"
+
+
+def apply_is_url(settings, args):
+    return URLOptionalScheme()
 
 
 def render_int_range(settings, args):
@@ -282,6 +297,32 @@ def render_int_range(settings, args):
     if "lte" in settings:
         args["data-parsley-max"] = settings.get("lte")
 
+
+def apply_int_range(settings, args):
+    min = args.get("gte")
+    max = args.get("lte")
+    kwargs = {}
+    if min is not None:
+        kwargs["min"] = min
+    if max is not None:
+        kwargs["max"] = max
+    return validators.NumberRange(**kwargs)
+
+
+def apply_max_tags(settings, args):
+    max = args.get("max")
+    message = args.get("message") if "message" in args else 'You can only enter up to {x} keywords.'.format(x=max)
+    return MaxLen(max, message=message)
+
+
+def apply_stop_words(settings, args):
+    stopwords = args.get("disallowed", [])
+    return StopWords(stopwords)
+
+
+#########################################################
+# Crosswalks
+#########################################################
 
 def application_obj2form(obj):
     return ApplicationFormXWalk.obj2form(obj)
@@ -302,21 +343,19 @@ PYTHON_FUNCTIONS = {
             "int_range" : "portality.formcontext.form_definitions.render_int_range",
         },
         "apply" : {
-            "required" : "portality.formcontext.form_definitions.apply_required"
+            "required" : "portality.formcontext.form_definitions.apply_required",
+            "is_url" : "portality.formcontext.form_definitions.apply_is_url",
+            "max_tags" : "portality.formcontext.form_definitions.apply_max_tags",
+            "int_range" : "portality.formcontext.form_definitions.apply_int_range",
+            "stop_words" : "portality.formcontext.form_definitions.apply_stop_words"
         }
     },
 
 
     "all_urls_the_same" : "portality.formcontext.validators.all_urls_the_same",
-    "required_value" : "portality.formcontext.validators.required_value",
-    "max_tags" : "portality.formcontext.validators.max_tags",
-    "stop_words" : "portality.formcontext.validators.stop_words",
     "to_lower" : "portality.formcontext.postprocessing.to_lower",
-    "int_range" : "portality.formcontext.validators.int_range",
     "warn_on_value" : "portality.formcontext.validators.warn_on_value",
     "clickable_url" : "portality.formcontext.widgets.clickable_url",
-
-    "required" : "portality.formcontext.validators.required",
 }
 
 
@@ -333,6 +372,19 @@ JAVASCRIPT_FUNCTIONS = {
     "select" : "formulaic.widgets.newSelect",
     "taglist" : "formulaic.widgets.newTagList"
 }
+
+
+class StopWords(object):
+    def __init__(self, stopwords, message=None):
+        self.stopwords = stopwords
+        if not message:
+            message = "You may not enter '{stop_word}' in this field"
+        self.message = message
+
+    def __call__(self, form, field):
+        for v in field.data:
+            if v.strip() in self.stopwords:
+                raise validators.ValidationError(self.message.format(stop_word=v))
 
 
 class NumberWidget(widgets.Input):
