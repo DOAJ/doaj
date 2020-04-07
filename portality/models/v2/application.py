@@ -18,7 +18,8 @@ APPLICATION_STRUCT = {
                 "current_journal" : {"coerce" : "unicode"},
                 "related_journal" : {"coerce" : "unicode"},
                 "application_status" : {"coerce" : "unicode"},
-                "date_applied" : {"coerce" : "utcdatetime"}
+                "date_applied" : {"coerce" : "utcdatetime"},
+                "last_manual_update": {"coerce": "utcdatetime"}
             },
             "objects" : [
                 "applicant",

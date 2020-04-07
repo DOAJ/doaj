@@ -13,38 +13,22 @@ from portality.lib.coerce import COERCE_MAP
 from portality.lib.seamless import SeamlessMixin
 from portality.models import JournalLikeBibJSON
 
-BASE_APPLICATION_STRUCT = {
+OUTGOING_APPLICATION_STRUCT = {
     "fields": {
         "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
         "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
-        "last_updated": {"coerce": "utcdatetime"}   # to the real object
+        "last_updated": {"coerce": "utcdatetime"}, # to the real object
+        "last_manual_update": {"coerce": "utcdatetime"}
     },
     "objects": ["admin", "bibjson"],
     "structs": {
         "admin" : {
             "fields" : {
                 "application_status" : {"coerce" : "unicode"},
+                "bulk_upload" : {"coerce" : "unicode"},
                 "current_journal" : {"coerce" : "unicode"},
                 "date_applied" : {"coerce" : "unicode"},
                 "owner" : {"coerce" : "unicode"}
-            },
-            "objects" : [
-                "applicant",
-                "contact",
-            ],
-            "structs" : {
-                "applicant" : {
-                    "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "email": {"coerce" : "unicode"}
-                    }
-                },
-                "contact": {
-                    "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "email": {"coerce" : "unicode"}
-                    }
-                }
             }
         },
         "bibjson": {
@@ -55,7 +39,8 @@ BASE_APPLICATION_STRUCT = {
                 "pissn": {"coerce": "unicode"},
                 "publication_time_weeks": {"coerce": "integer"},
                 "title": {"coerce": "unicode"},
-                "discontinued_date":{"coerce":"unicode"}
+                "discontinued_date":{"coerce":"unicode"},
+                "replaces":{"coerce":"unicode"}
             },
             "lists": {
                 "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
@@ -231,6 +216,48 @@ BASE_APPLICATION_STRUCT = {
     }
 }
 
+INTERNAL_APPLICATION_STRUCT = {
+"fields": {
+        "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
+        "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
+        "last_updated": {"coerce": "utcdatetime"}, # to the real object
+        "last_manual_update": {"coerce": "utcdatetime"}
+    },
+    "objects": ["admin", "bibjson"],
+    "structs": {
+        "admin" : {
+            "fields" : {
+                "related_journal" : {"coerce" : "unicode"},
+                "editor_group" : {"coerce" : "unicode"},
+                "editor" : {"coerce" : "unicode"},
+                "owner" : {"coerce" : "unicode"},
+                "notes" : {"coerce" : "unicode"},
+                "seal" : {"coerce" : "unicode"}
+            },
+            "objects": [
+                "applicant",
+                "contact"
+            ],
+            "structs" : {
+                "applicant" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "email": {"coerce" : "unicode"}
+                    }
+                },
+                "contact": {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "email": {"coerce" : "unicode"}
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
 INCOMING_APPLICATION_REQUIREMENTS = {
     "required" : ["admin", "bibjson"],
 
@@ -310,7 +337,8 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     __type__ = "application"
     __SEAMLESS_COERCE__ = COERCE_MAP
     __SEAMLESS_STRUCT__ = [
-        BASE_APPLICATION_STRUCT,
+        OUTGOING_APPLICATION_STRUCT,
+        INTERNAL_APPLICATION_STRUCT,
         INCOMING_APPLICATION_REQUIREMENTS
     ]
 
@@ -572,14 +600,19 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         bibjson = bibjson.data if isinstance(bibjson, JournalLikeBibJSON) else bibjson
         self.__seamless__.set_with_struct("bibjson", bibjson)
 
+
 class OutgoingApplication(OutgoingCommonJournalApplication):
 
     __SEAMLESS_COERCE__ = COERCE_MAP
 
     def __init__(self, raw=None):
-        super(OutgoingApplication, self).__init__(raw, struct=BASE_APPLICATION_STRUCT, construct_silent_prune=True)
+        super(OutgoingApplication, self).__init__(raw, struct=OUTGOING_APPLICATION_STRUCT, silent_prune=True)
 
     @classmethod
     def from_model(cls, application):
         assert isinstance(application, models.Suggestion)
         return super(OutgoingApplication, cls).from_model(application)
+
+    @property
+    def data(self):
+        return self.__seamless__.data

@@ -203,7 +203,7 @@ class TestCrudApplication(DoajTestCase):
             data = ApplicationFixtureFactory.incoming_application()
             del data["admin"]["current_journal"]
             # a duff email should trigger the form validation failure
-            data["admin"]["applicant"]["email"] = "not an email address"
+            data["admin"]["contact"]["email"] = "not an email address"
             publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
             try:
                 a = ApplicationsCrudApi.create(data, publisher)
@@ -383,11 +383,11 @@ class TestCrudApplication(DoajTestCase):
         # check that it does not contain information that it shouldn't
         assert oa.data.get("index") is None
         assert oa.data.get("history") is None
-        assert oa.data.get("admin", {}).get("notes") is None
-        assert oa.data.get("admin", {}).get("editor_group") is None
-        assert oa.data.get("admin", {}).get("editor") is None
-        assert oa.data.get("admin", {}).get("seal") is None
-        assert oa.data.get("admin", {}).get("related_journal") is None
+        assert "notes" not in oa.data.get("admin", {})
+        assert "editor_group" not in oa.data.get("admin", {})
+        assert "editor" not in oa.data.get("admin", {})
+        assert "seal" not in oa.data.get("admin", {})
+        assert "related_journal" not in oa.data.get("admin", {})
 
         # check that it does contain admin information that it should
         assert oa.data.get("admin", {}).get("current_journal") is not None
@@ -396,8 +396,7 @@ class TestCrudApplication(DoajTestCase):
         # set up all the bits we need
         data = ApplicationFixtureFactory.make_update_request_source()
         ap = models.Application(**data)
-        ap.save()
-        time.sleep(2)
+        ap.save(blocking=True)
 
         account = models.Account()
         account.set_id(ap.owner)
@@ -409,7 +408,7 @@ class TestCrudApplication(DoajTestCase):
 
         # check that we got back the object we expected
         assert isinstance(a, OutgoingApplication)
-        assert a.id == ap.id
+        assert a.data["id"] == ap.id
 
     def test_07_retrieve_application_fail(self):
         # set up all the bits we need
@@ -639,8 +638,8 @@ class TestCrudApplication(DoajTestCase):
         assert a.id != "ignore_me"
         assert a.created_date != "2001-01-01T00:00:00Z"
         assert a.last_updated != "2001-01-01T00:00:00Z"
-        assert a.admin.applicant.get("name") == "Tester"           # The suggester should be the owner of the existing journal
-        assert a.admin.applicant.get("email") == "test@test.com"
+        assert a["admin"]["applicant"]["name"] == "Tester"           # The suggester should be the owner of the existing journal
+        assert a["admin"]["applicant"]["email"] == "test@test.com"
         assert a.owner == "test"
         assert a.suggested_on is not None
         assert a.bibjson().issns() == ["9999-8888", "7777-6666"] or a.bibjson().issns() == ["7777-6666", "9999-8888"]
@@ -648,10 +647,10 @@ class TestCrudApplication(DoajTestCase):
 
         # also, because it's a special case, check the archiving_policy
         preservation_services = a.bibjson().preservation_services
-        assert len(preservation_services) == 4
+        assert len(preservation_services) == 3
         assert "CLOCKSS" in preservation_services
         assert "LOCKSS" in preservation_services
-        assert "Trinity" in preservation_services, "Expected: 'Trinity', found: {}".format(preservation_services)
+        assert "A safe place" in preservation_services, "Expected: 'A safe place', found: {}".format(preservation_services)
 
         time.sleep(2)
 
@@ -751,7 +750,7 @@ class TestCrudApplication(DoajTestCase):
 
         # now check the properties to make sure the update tool
         assert updated.bibjson().title == "not changed"
-        assert updated.bibjson().publisher.name == "An updated publisher"
+        assert updated.bibjson().publisher == "An updated publisher"
         assert updated.created_date == created.created_date
 
     def test_17_update_application_update_request_fail(self):

@@ -53,16 +53,15 @@ class JournalService(object):
 
         # copy all the relevant information from the journal to the application
         bj = journal.bibjson()
-        contacts = journal.contacts()
+        contact = journal.contact
         notes = journal.notes
         first_contact = None
 
         application = models.Suggestion()
         application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
-        for c in contacts:
-            application.add_contact(c.get("name"), c.get("email"))
-            if first_contact is None:
-                first_contact = c
+        application.add_contact(contact.get("name"), contact.get("email"))
+        if first_contact is None:
+            first_contact = contact
         application.set_current_journal(journal.id)
         if keep_editors is True:
             if journal.editor is not None:

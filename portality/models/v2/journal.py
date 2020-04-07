@@ -14,7 +14,7 @@ from unidecode import unidecode
 
 JOURNAL_STRUCT = {
     "fields" : {
-        "last_reapplication" : {"coerce" : "utcdatetime"}   # FIXME: there's no method for this, but I am loathe to let go of the data
+        "last_reapplication" : {"coerce" : "utcdatetime"}
     },
     "objects" : [
         "admin", "index"
@@ -38,7 +38,7 @@ JOURNAL_STRUCT = {
                         "status" : {"coerce" : "unicode"}
                     }
                 },
-                "contact":{
+                "contact": {
                     "name": {"coerce" : "unicode"},
                     "email": {"coerce" : "unicode"}
                 }
@@ -188,6 +188,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     def remove_editor(self):
         self.__seamless__.delete('admin.editor')
+
+    @property
+    def contact(self):
+        return self.__seamless__.get_single("admin.contact")
 
     def contact_name(self):
         return self.__seamless__.get_single("admin.contact.name")

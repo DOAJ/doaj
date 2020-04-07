@@ -365,9 +365,6 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         if form.contact_name.data and form.contact_email.data:
             suggestion.add_contact(form.contact_name.data, form.contact_email.data)
 
-        if form.applicant_name.data and form.applicant_email.data:
-            suggestion.set_applicant(form.applicant_name.data, form.applicant_email.data)
-
         return suggestion
 
 
