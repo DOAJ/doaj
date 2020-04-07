@@ -113,6 +113,7 @@ blockquote {
 }
 
 hr {
+  margin: $spacing-05 0;
   border: 0;
   height: 1px;
   background-color: rgba($dark-grey, 0.5);
