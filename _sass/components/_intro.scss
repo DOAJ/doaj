@@ -1,15 +1,15 @@
 /* Introduction paragraphs */
 
-.intro-text {
+.intro {
   @include typescale-03;
 }
 
-.intro-text__text {
+.intro__text {
   font-weight: 400;
   @include font-serif;
 }
 
-.intro-text__cta {
+.intro__cta {
   text-align: right;
   font-size: 1rem;
 }
