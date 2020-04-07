@@ -22,7 +22,9 @@
 }
 
 .stat__description {
+  display: block;
   text-transform: uppercase;
-  @include typescale-06;
   color: $dark-grey;
+  line-height: 1.35;
+  @include typescale-06;
 }
