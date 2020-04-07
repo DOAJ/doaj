@@ -15,7 +15,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  margin: $spacing-05 0 $spacing-04;
+  margin: $spacing-04 0;
   line-height: 1.05;
   font-weight: 600;
   @include font-serif;
@@ -115,11 +115,37 @@ blockquote {
 hr {
   border: 0;
   height: 1px;
-  background-color: $dark-grey;
+  background-color: rgba($dark-grey, 0.5);
 }
 
 time {
   font-size: smaller;
+}
+
+table {
+  margin-bottom: $spacing-05;
+  width: 100%;
+
+  thead {
+    text-align: left;
+  }
+
+  tr {
+    border-bottom: 1px solid rgba($dark-grey, 0.25);
+
+    &:last-child {
+      border: 0;
+    }
+  }
+
+  th {
+    font-weight: 400;
+  }
+
+  th, td {
+    vertical-align: top;
+    padding: $spacing-03 $spacing-02 $spacing-03 0;
+  }
 }
 
 /* Main */

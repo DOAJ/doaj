@@ -18,26 +18,20 @@ Before you start the application process, you will be asked to log in or registe
 
 ## Basic criteria for inclusion in DOAJ
 
-Journals applying to DOAJ **must**:
+Journals applying to DOAJ **must** meet the following criteria:
 
-1. make all of their content available for free and open access without delay (no embargo period);
-  - the journal must be ‘gold’ (non-APC or APC) open access;
-  - the journal's open access policy must be stated on the journal web site;
-2. be actively publishing scholarly research;
-  - its primary target audience should be researchers;
-3. publish at least five (5) scholarly articles per year;
-  - ⅓ of all content must be peer-reviewed original research and/or review papers;
-4. have a dedicated homepage or website;
-  - the URL is stable and reliable;
-5. make their articles available as individual, full-text articles;
-  - each article has its own page with a unique URL;
-6. have an editor and an editorial board;
-7. have at least one current ISSN registered and confirmed at issn.org;
-  - the name of the journal in the application must match what is registered at issn.org and on the website;
-8. clearly indicate the terms of copyright on the website;
-  - it can not restrict authors’ rights to fair use only;
-9. clearly indicate its licensing terms on the website;
-  - licensing terms must be available and clearly stated on the journal website, preferably on the full text of every article.
+{:.numbered-table}
+|   | Criteria                                                                              | Details                                                                                                                             |
+|---|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+|   | make all content available for free and open access without delay (no embargo period) | the journal must be ‘gold’ (non-APC or APC) open access <br>the journal’s open access policy must be stated on the journal web site |
+|   | be actively publishing scholarly research                                             | its primary target audience should be researchers                                                                                   |
+|   | publish at least five (5) scholarly articles per year                                 | ⅓ of all content must be peer-reviewed original research and/or review papers                                                       |
+|   | have a dedicated homepage or website                                                  | the URL is stable and reliable                                                                                                      |
+|   | make their articles available as individual, full-text articles                       | each article has its own page with a unique URL                                                                                     |
+|   | have an editor and an editorial board                                                 |                                                                                                                                     |
+|   | have at least one current ISSN registered and confirmed at issn.org                   | the name of the journal in the application must match what is registered at issn.org and on the website                             |
+|   | clearly indicate the terms of copyright on the website                                | it can not restrict authors’ rights to fair use only                                                                                |
+|   | clearly indicate its licensing terms on the website                                   | licensing terms must be available and clearly stated on the journal website, preferably on the full text of every article           |
 
 Furthermore, please make sure that:
 
@@ -167,7 +161,7 @@ Fair use alone is not open access and DOAJ will not accept a journal with these 
 
 ---
 
-### The application process
+## The application process
 
 1. Once you have submitted your application, you will see a _Thank You_ screen and will be sent an automated confirmation email.
   - If you do not receive that email, contact us.
@@ -181,12 +175,14 @@ Fair use alone is not open access and DOAJ will not accept a journal with these 
     - You may not submit another application for the same journal for six months.
     - If you re-apply, we expect the journal to demonstrate very clearly that our recommendations have been implemented.
 
-#### Time from submission to decision
+### Time from submission to decision
 
 The time from submission to decision varies greatly and is dependent on the responsiveness of the journal contact and/or applicant. It can take up to six months for a decision to be reached but often a decision is reached within three months.
 We cannot provide a status update for applications which are less than three months old.
 
-### Editorial disclaimer
+---
+
+## Editorial disclaimer
 
 The applicant is responsible for providing accurate information when submitting an application. If the information provided is not sufficient or is incomplete, the application will be rejected.
 In cases where the information provided is found to be untrue, either during review or after admission, we reserve the right to reject the application or remove the journal and to not accept new applications for a period of one year.
