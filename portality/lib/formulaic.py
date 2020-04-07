@@ -154,7 +154,15 @@ class Formulaic(object):
             expanded_fieldsets.append(fieldset_def)
 
         context_def["fieldsets"] = expanded_fieldsets
-        return FormulaicContext(context_def, self._wtforms_map, self._function_map, self)
+        return FormulaicContext(context_def, self)
+
+    @property
+    def wtforms_map(self):
+        return self._wtforms_map
+
+    @property
+    def function_map(self):
+        return self._function_map
 
     @property
     def javascript_functions(self):
@@ -192,13 +200,45 @@ class Formulaic(object):
 
 
 class FormulaicContext(object):
-    def __init__(self, definition, wtforms_map, function_map, parent):
+    def __init__(self, definition: dict, parent: Formulaic):
         self._definition = definition
-        self._wtforms_map = wtforms_map
-        self._function_map = function_map
         self._formulaic = parent
+        self._wtform_class = None
+        self._wtform_inst = None
+
+        self._wtform_class = self.wtform_class()
+        self._wtform_inst = self.wtform()
+
+    @property
+    def wtforms_map(self):
+        return self._formulaic.wtforms_map
+
+    @property
+    def function_map(self):
+        return self._formulaic.function_map
+
+    @property
+    def wtform_inst(self):
+        return self._wtform_inst
+
+    @property
+    def javascript_functions(self):
+        return self._formulaic.javascript_functions
+
+    @property
+    def ui_settings(self):
+        ui = deepcopy(self._definition.get("fieldsets", []))
+        for fieldset in ui:
+            for field in fieldset.get("fields", []):
+                for fn in [k for k in field.keys()]:
+                    if fn not in UI_CONFIG_FIELDS:
+                        del field[fn]
+        return ui
 
     def wtform_class(self):
+        if self._wtform_class is not None:
+            return self._wtform_class
+
         class TempForm(Form):
             pass
 
@@ -211,7 +251,8 @@ class FormulaicContext(object):
 
     def wtform(self, formdata=None, data=None):
         klazz = self.wtform_class()
-        return klazz(formdata=formdata, data=data)
+        self._wtform_inst = klazz(formdata=formdata, data=data)
+        return self._wtform_inst
 
     def get(self, field_name, parent=None):
         if parent is None:
@@ -219,42 +260,28 @@ class FormulaicContext(object):
         for fs in self._definition.get("fieldsets", []):
             for f in fs.get("fields", []):
                 if f.get("name") == field_name:
-                    return FormulaicField(f, self._wtforms_map, self._function_map, parent)
+                    return FormulaicField(f, parent)
 
     def fieldset(self, fieldset_name):
         for fs in self._definition.get("fieldsets", []):
             if fs.get("name") == fieldset_name:
-                return FormulaicFieldset(fs, self._wtforms_map, self._function_map, self)
+                return FormulaicFieldset(fs, self)
         return None
 
     def fieldsets(self):
-        return [FormulaicFieldset(fs, self._wtforms_map, self._function_map, self) for fs in self._definition.get("fieldsets", [])]
-
-    @property
-    def ui_settings(self):
-        ui = deepcopy(self._definition.get("fieldsets", []))
-        for fieldset in ui:
-            for field in fieldset.get("fields", []):
-                for fn in [k for k in field.keys()]:
-                    if fn not in UI_CONFIG_FIELDS:
-                        del field[fn]
-        return ui
-
-    @property
-    def javascript_functions(self):
-        return self._formulaic.javascript_functions
+        return [FormulaicFieldset(fs, self) for fs in self._definition.get("fieldsets", [])]
 
     def json(self):
         return json.dumps(self._definition)
 
-    def render_template(self, formdata=None, **kwargs):
+    def render_template(self, **kwargs):
         template = self._definition.get("template")
         return render_template(template, formulaic_context=self, **kwargs)
 
     def processor(self, formdata=None, source=None):
         processor_path = self._definition.get("processor")
         klazz = plugin.load_class(processor_path)
-        return klazz(form_data=formdata, source=source, formulaic_context=self)
+        return klazz(formdata=formdata, source=source, parent=self)
 
     def obj2form(self, obj):
         xwalk_path = self._definition.get("crosswalks", {}).get("obj2form")
@@ -264,29 +291,39 @@ class FormulaicContext(object):
         data = xwalk_fn(obj)
         return self.wtform(data=data)
 
-    def form2obj(self, form):
+    def form2obj(self, form=None):   # FIXME: we can probably just use the wtform_inst
         xwalk_path = self._definition.get("crosswalks", {}).get("form2obj")
         if xwalk_path is None:
             return None
         xwalk_fn = plugin.load_function(xwalk_path)
-        return xwalk_fn(form)
+        return xwalk_fn(self._wtform_inst)  # FIXME: Can remove the arg if this works correctly
 
     def _add_wtforms_field(self, FormClass, field):
         field_name = field.get("name")
         if not hasattr(FormClass, field_name):
-            field_definition = FormulaicField.make_wtforms_field(field, self._wtforms_map, self._function_map)
+            field_definition = FormulaicField.make_wtforms_field(field, self.wtforms_map, self.function_map)
             setattr(FormClass, field_name, field_definition)
 
 
 class FormulaicFieldset(object):
-    def __init__(self, definition, wtforms_map, function_map, parent):
+    def __init__(self, definition, parent):
         self._definition = definition
-        self._wtforms_map = wtforms_map
-        self._function_map = function_map
         self._formulaic_context = parent
 
+    @property
+    def wtforms_map(self):
+        return self._formulaic_context.wtforms_map
+
+    @property
+    def function_map(self):
+        return self._formulaic_context.function_map
+
+    @property
+    def wtform_inst(self):
+        return self._formulaic_context.wtform_inst
+
     def fields(self):
-        return [FormulaicField(f, self._wtforms_map, self._function_map, self) for f in
+        return [FormulaicField(f, self) for f in
                 self._definition.get("fields", []) if not f.get("subfield")]
 
     def __getattr__(self, name):
@@ -300,12 +337,10 @@ class FormulaicFieldset(object):
 
 
 class FormulaicField(object):
-    def __init__(self, definition, wtforms_map, function_map, parent):
+    def __init__(self, definition, parent):
         self._definition = definition
-        self._wtforms_map = wtforms_map
-        self._function_map = function_map
-        self._wtform_field = None
-        self._wtforms_field_bound = None
+        # self._wtform_field = None
+        # self._wtforms_field_bound = None
         self._formulaic_fieldset = parent
 
     def __getattr__(self, name):
@@ -316,6 +351,23 @@ class FormulaicField(object):
             return self._definition[name]
 
         raise AttributeError('{name} is not set'.format(name=name))
+
+    @property
+    def wtforms_map(self):
+        return self._formulaic_fieldset.wtforms_map
+
+    @property
+    def function_map(self):
+        return self._formulaic_fieldset.function_map
+
+    @property
+    def wtform_inst(self):
+        return self._formulaic_fieldset.wtform_inst
+
+    @property
+    def wtfield(self):
+        name = self._definition.get("name")
+        return getattr(self.wtform_inst, name)
 
     @property
     def explicit_options(self):
@@ -355,11 +407,14 @@ class FormulaicField(object):
     def has_conditional(self):
         return len(self._definition.get("conditional", [])) > 0
 
+    """
     def wtforms_field(self):
         if self._wtform_field is None:
-            self._wtform_field = FormulaicField.make_wtforms_field(self._definition, self._wtforms_map, self._function_map)
+            self._wtform_field = FormulaicField.make_wtforms_field(self._definition, self.wtforms_map, self.function_map)
         return self._wtform_field
+    """
 
+    """
     def wtforms_field_bound(self):
         if self._wtforms_field_bound is None:
             wtf = self.wtforms_field()
@@ -374,6 +429,7 @@ class FormulaicField(object):
                 self._wtforms_field_bound = wtf
 
         return self._wtforms_field_bound
+    """
 
     def get_subfields(self, option_value):
         for option in self.explicit_options:
@@ -394,7 +450,8 @@ class FormulaicField(object):
         return len(self.errors()) > 0
 
     def errors(self):
-        wtf = self.wtforms_field_bound()
+        # wtf = self.wtforms_field_bound()
+        wtf = self.wtfield
         return wtf.errors
 
     def render_form_control(self, custom_args=None):
@@ -402,7 +459,7 @@ class FormulaicField(object):
         if "placeholder" in self._definition.get("help", {}):
             kwargs["placeholder"] = self._definition["help"]["placeholder"]
 
-        render_functions = self._function_map.get("validate", {}).get("render", {})
+        render_functions = self.function_map.get("validate", {}).get("render", {})
         for validator, settings in self.validators():
             if validator in render_functions:
                 function_path = render_functions[validator]
@@ -417,11 +474,12 @@ class FormulaicField(object):
             for k, v in custom_args.items():
                 kwargs[k] = v
 
-        wtf = self.wtforms_field_bound()
+        # wtf = self.wtforms_field_bound()
+        wtf = self.wtfield
         return wtf(**kwargs)
 
     @classmethod
-    def make_wtforms_field(cls, field, wtforms_map, function_map):
+    def make_wtforms_field(cls, field, wtforms_map, function_map) -> UnboundField:
         result = cls._get_wtforms_map(field, wtforms_map)
         if result is None:
             raise FormulaicException("No WTForms mapping for field '{x}'".format(x=field.get("name")))
@@ -483,18 +541,18 @@ class FormulaicField(object):
 
 
 class FormProcessor(object):
-    def __init__(self, form_data=None, source=None, formulaic_context=None):
+    def __init__(self, formdata=None, source=None, parent: FormulaicContext=None):
         # initialise our core properties
         self._source = source
         self._target = None
-        self._form_data = form_data
-        self._form = None
+        self._formdata = formdata
+        # self._form = None
         self._alert = []
         self._info = ''
-        self._formulaic = formulaic_context
+        self._formulaic = parent
 
         # now create our form instance, with the form_data (if there is any)
-        if form_data is not None:
+        if formdata is not None:
             self.data2form()
 
         # if there isn't any form data, then we should create the form properties from source instead
@@ -511,11 +569,16 @@ class FormProcessor(object):
 
     @property
     def form(self):
-        return self._form
+        # return self._form
+        return self._formulaic.wtform_inst
 
+    """
     @form.setter
     def form(self, val):
-        self._form = val
+        # FIXME: wtform_inst is not writable
+        # self._form = val
+        self._formulaic.wtform_inst = val
+    """
 
     @property
     def source(self):
@@ -523,7 +586,7 @@ class FormProcessor(object):
 
     @property
     def form_data(self):
-        return self._form_data
+        return self._formdata
 
     @property
     def target(self):
@@ -532,14 +595,6 @@ class FormProcessor(object):
     @target.setter
     def target(self, val):
         self._target = val
-
-    @property
-    def renderer(self):
-        return self._renderer
-
-    @renderer.setter
-    def renderer(self, val):
-        self._renderer = val
 
     @property
     def template(self):
@@ -574,27 +629,32 @@ class FormProcessor(object):
         This will be called during init, and must populate the self.form_data property with an instance of the form in this
         context, based on no originating source or form data
         """
-        self.form = self._formulaic.wtform()
+        # self.form = self._formulaic.wtform()
+        self._formulaic.wtform()
 
     def data2form(self):
         """
         This will be called during init, and must convert the form_data into an instance of the form in this context,
         and write to self.form
         """
-        self.form = self._formulaic.wtform(formdata=self.form_data)
+        # self.form = self._formulaic.wtform(formdata=self.form_data)
+        # FIXME: what about form_data
+        self._formulaic.wtform(formdata=self.form_data)
 
     def source2form(self):
         """
         This will be called during init, and must convert the source object into an instance of the form in this
         context, and write to self.form
         """
-        self.form = self._formulaic.obj2form(self.source)
+        # self.form = self._formulaic.obj2form(self.source)
+        self._formulaic.obj2form(self.source)
 
     def form2target(self):
         """
         Convert the form object into a the target system object, and write to self.target
         """
-        self.target = self._formulaic.form2obj(self.form)
+        # self.target = self._formulaic.form2obj(self.form)
+        self.target = self._formulaic.form2obj()
 
     ############################################################
     # Lifecycle functions that subclasses should implement

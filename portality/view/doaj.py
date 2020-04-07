@@ -157,7 +157,7 @@ def public_application():
                 return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
             else:
                 # FIXME: how do we render the template with all the bits filled in?
-                return fc.render_template(formdata=processor.form)
+                return fc.render_template()
 
 
 #############################################
