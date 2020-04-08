@@ -137,24 +137,38 @@ def suggestion():
 
 from portality.formcontext.form_definitions import application_form as ApplicationFormFactory
 
+
 @blueprint.route("/application/newnew", methods=["GET", "POST"])
+@blueprint.route("/application/newnew/<draft_id>", methods=["GET", "POST"])
 @write_required()
-def public_application():
+def public_application(draft_id=None):
+
+    draft_application = None
+    if draft_id is not None:
+        draft_application = models.DraftApplication.pull(draft_id)
+        if draft_application is None:
+            abort(404)
+
     if request.method == "GET":
         fc = ApplicationFormFactory.context("public")
-        return fc.render_template()
+        if draft_application is not None:
+            fc.processor(source=draft_application)
+        return fc.render_template(obj=draft_application)
+
     elif request.method == "POST":
         draft = request.form.get("draft")
         async = request.form.get("async")
-        id = request.form.get("id")
+        draft_id = request.form.get("id") if draft_id is None else draft_id
         fc = ApplicationFormFactory.context("public")
         processor = fc.processor(formdata=request.form)
+
         if draft is not None:
-            the_draft = processor.draft(id=id)
+            the_draft = processor.draft(id=draft_id)
             if async is not None:
                 return make_response(json.dumps({"id" : the_draft.id}), 200)
             else:
                 return redirect(url_for('doaj.suggestion_thanks', _anchor='draft'))
+
         else:
             if processor.validate():
                 processor.finalise()

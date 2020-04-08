@@ -20,6 +20,10 @@
 
         <button name="complete" type="submit" id="complete">Submit</button>
         <button name="draft" type="submit" id="draft">Save as Draft</button>
+
+        {% if obj %}
+        <input type="hidden" name="id" value="{{ obj.id }}">
+        {% endif %}
     </form>
 
 {% endblock %}
@@ -35,7 +39,7 @@
                 fieldsets : {{ formulaic_context.ui_settings|tojson }},
                 functions : {{ formulaic_context.javascript_functions|tojson }},
                 doValidation : false,
-                autoSave: 20000
+                autoSave: 0
             });
         });
     </script>

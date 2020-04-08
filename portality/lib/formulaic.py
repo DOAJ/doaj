@@ -167,6 +167,13 @@ class Formulaic(object):
     def javascript_functions(self):
         return self._javascript_functions
 
+    def choices_for(self, field_name):
+        field_def = self._definition.get("fields", {}).get(field_name)
+        if field_def is None:
+            return []
+        return FormulaicField._options2choices(field_def, self.function_map)
+
+
     def _process_fields(self, context_name, field_names):
         field_defs = []
         for fn in field_names:
