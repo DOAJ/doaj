@@ -636,6 +636,9 @@ class FormProcessor(object):
         self.form2target()
         self.patch_target()
 
+    def draft(self, *args, **kwargs):
+        pass
+
     ############################################################
     # Functions which can be called directly, but may be overridden if desired
     ############################################################
@@ -646,14 +649,6 @@ class FormProcessor(object):
         valid = False
         if f is not None:
             valid = f.validate()
-
-        # if this isn't a valid form, record the fields that have errors
-        # with the renderer for use later
-        if not valid:
-            error_fields = []
-            for field in self.form:
-                if field.errors:
-                    error_fields.append(field.short_name)
 
         return valid
 

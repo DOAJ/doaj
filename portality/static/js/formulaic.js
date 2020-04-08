@@ -14,7 +14,7 @@ var formulaic = {
 
         this.doValidation = edges.getParam(params.doValidation, true);
 
-        this.autoSave = edges.getParam(params.autoSave, false);
+        this.autoSave = edges.getParam(params.autoSave, 0);
 
         // list of fields whose values are synchronised
         this.synchronised = {};
@@ -61,16 +61,16 @@ var formulaic = {
 
         this.bindSave = function() {
             edges.on(this.context, "submit.Save", this, "saveRequested", false, false, false);
-            if (this.autoSave) {
-                setTimeout(this.backgroundSaveClosure(), 60000);
+            if (this.autoSave > 0) {
+                setTimeout(this.backgroundSaveClosure(), this.autoSave);
             }
         };
 
         this.backgroundSaveClosure = function() {
             var that = this;
             return function() {
-                that.save({validate: false, additional : {"draft" : "true"}, complete: false});
-                setTimeout(that.backgroundSaveClosure(), 60000);
+                that.save({validate: false, additional : {"draft" : "true", "async" : "true"}, complete: false});
+                setTimeout(that.backgroundSaveClosure(), that.autoSave);
             }
         };
 
@@ -91,18 +91,20 @@ var formulaic = {
                         event.preventDefault();
                     }
                     // otherwise, do an asynchronous save
-                    var data = this.context.serialize();
-                    if (data === this.lastSaveVal) {
+                    var submit_data = this.context.serialize();
+                    if (submit_data === this.lastSaveVal) {
                         return;
                     }
-                    var full_data = $.param(additional_params) + "&" + data;
+                    var full_data = $.param(additional_params) + "&" + submit_data;
                     var that = this;
                     $.post({
                         url: this.context.attr("action"),
                         data: full_data,
                         error: function() {/*alert("background save failed")*/},
-                        success: function() {
-                            that.lastSaveVal = data;
+                        success: function(response_data) {
+                            that.lastSaveVal = submit_data;
+                            var rd = JSON.parse(response_data);
+                            that.setId(rd);
                         }
                     });
                 }
@@ -111,6 +113,16 @@ var formulaic = {
                     event.preventDefault();
                 }
                 alert("Unable to save due to validation");
+            }
+        };
+
+        this.setId = function(params) {
+            var id = params.id;
+            var existing = this.context.find("[name=id]");
+            if (existing.length > 0) {
+                existing.attr("value", id);
+            } else {
+                this.context.append('<input type="hidden" name="id" value="' + id + '">');
             }
         };
 

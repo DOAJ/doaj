@@ -2,9 +2,8 @@
 from portality.models.v2 import shared_structs
 from portality.models.v2.bibjson import JournalLikeBibJSON
 from portality.models.v2.journal import Journal, JournalQuery, IssnQuery, PublisherQuery, TitleQuery, ContinuationException
-from portality.models.v2.application import Application, SuggestionQuery, OwnerStatusQuery
+from portality.models.v2.application import Application, SuggestionQuery, OwnerStatusQuery, DraftApplication
 
-# FIXME: does this work?
 from portality.models.v2.application import Application as Suggestion
 
 # non versioned imports for convenience and consistency

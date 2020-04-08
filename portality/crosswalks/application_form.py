@@ -217,24 +217,31 @@ class ApplicationFormXWalk(JournalGenericXWalk):
 
     @classmethod
     def form2obj(cls, form):
-        suggestion = models.Suggestion()
-        bibjson = suggestion.bibjson()
+        application = models.Application()
+        bibjson = application.bibjson()
 
-        bibjson.boai = form.boai.data
-        bibjson.oa_statement_url = form.oa_statement_url.data
-        bibjson.publisher_country = form.country.data
-        bibjson.keywords = form.keywords.data
+        if form.boai.data:
+            bibjson.boai = form.boai.data
+        if form.oa_statement_url.data:
+            bibjson.oa_statement_url = form.oa_statement_url.data
+        if form.country.data:
+            bibjson.publisher_country = form.country.data
+        if form.keywords.data:
+            bibjson.keywords = form.keywords.data
 
-        for license in form.licensing.data:
-            bibjson.add_license(license)
+        if form.licensing.data:
+            for license in form.licensing.data:
+                bibjson.add_license(license)
 
-        bibjson.publication_time_weeks = form.submission_time.data
+        if form.submission_time.data:
+            bibjson.publication_time_weeks = form.submission_time.data
 
-        bibjson.set_editorial_review(form.peer_review.data, "http://example.com/editorial-review")
+        if form.peer_review.data:
+            bibjson.set_editorial_review(form.peer_review.data, "http://example.com/editorial-review")
         if form.peer_review_other.data:
             bibjson.add_editorial_review_process(form.peer_review_other.data)
 
-        return suggestion
+        return application
 
         if form.title.data:
             bibjson.title = form.title.data

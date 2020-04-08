@@ -145,18 +145,21 @@ def public_application():
         return fc.render_template()
     elif request.method == "POST":
         draft = request.form.get("draft")
+        async = request.form.get("async")
+        id = request.form.get("id")
         fc = ApplicationFormFactory.context("public")
         processor = fc.processor(formdata=request.form)
         if draft is not None:
-            # add draft save handling here
-            print("Draft save request")
-            print(request.form.to_dict(flat=False))
+            the_draft = processor.draft(id=id)
+            if async is not None:
+                return make_response(json.dumps({"id" : the_draft.id}), 200)
+            else:
+                return redirect(url_for('doaj.suggestion_thanks', _anchor='draft'))
         else:
             if processor.validate():
                 processor.finalise()
                 return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
             else:
-                # FIXME: how do we render the template with all the bits filled in?
                 return fc.render_template()
 
 

@@ -18,7 +18,8 @@
         </fieldset>
     {% endfor %}
 
-        <button type="submit" id="submit">Submit</button>
+        <button name="complete" type="submit" id="complete">Submit</button>
+        <button name="draft" type="submit" id="draft">Save as Draft</button>
     </form>
 
 {% endblock %}
@@ -33,7 +34,8 @@
                 formSelector: "#public_application",
                 fieldsets : {{ formulaic_context.ui_settings|tojson }},
                 functions : {{ formulaic_context.javascript_functions|tojson }},
-                doValidation : false
+                doValidation : false,
+                autoSave: 20000
             });
         });
     </script>

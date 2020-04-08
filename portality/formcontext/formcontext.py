@@ -1336,6 +1336,23 @@ class PublicApplication(FormProcessor):
     # PublicApplicationForm versions of FormProcessor lifecycle functions
     ############################################################
 
+    def draft(self, id=None, *args, **kwargs):
+        # check for validity
+        valid = self.validate()
+
+        # if not valid, then remove all fields which have validation errors
+        if not valid:
+            for field in self.form:
+                if field.errors:
+                    field.data = field.default
+
+        self.form2target()
+        draft_application = models.DraftApplication(**self.target.data)
+        if id is not None:
+            draft_application.set_id(id)
+        draft_application.save()
+        return draft_application
+
     def pre_validate(self):
         # no pre-validation requirements
         pass
