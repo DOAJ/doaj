@@ -344,7 +344,7 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
 
     def __init__(self, raw=None, **kwargs):
         if raw is None:
-            super(IncomingApplication, self).__init__(silent_prune=False, check_required_on_init=False)
+            super(IncomingApplication, self).__init__(silent_prune=False, check_required_on_init=False, **kwargs)
         else:
             super(IncomingApplication, self).__init__(raw=raw, silent_prune=False, **kwargs)
 

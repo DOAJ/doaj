@@ -15,8 +15,8 @@ DOAJ_VERSION = "3.1.3"
 OFFLINE_MODE = False
 
 # List the features we want to be active
-FEATURES = ['api']
-VALID_FEATURES = ['api']
+FEATURES = ['api1','api2']
+VALID_FEATURES = ['api1','api2']
 
 # ========================
 # MAIN SETTINGS

@@ -1,7 +1,7 @@
 from portality import models
 from portality.api.v2.crud.common import CrudApi
-from portality.api.v2.data_objects.journal import OutgoingJournal
-from portality.api.v2.common import Api400Error, Api401Error, Api404Error
+from portality.api.v2.data_objects.journal import OutgoingJournal, JOURNAL_STRUCT
+from portality.api.common import Api400Error, Api401Error, Api404Error
 
 from copy import deepcopy
 
@@ -23,8 +23,11 @@ class JournalsCrudApi(CrudApi):
         template = deepcopy(cls.SWAG_TEMPLATE)
         template["parameters"].append(cls.SWAG_ID_PARAM)
         template['responses']['200'] = cls.R200
-        template['responses']['200']['schema'] = OutgoingJournal().struct_to_swag(schema_title='Journal schema')
-        template['responses']['200']['description'] = 'Detailed documentation on the response format is available <a href="https://github.com/DOAJ/doaj/blob/develop/docs/system/OutgoingAPIJournal.md">here</a>'
+        template['responses']['200']['schema'] = OutgoingJournal().struct_to_swag(schema_title='Journal schema',
+                                                                                  struct=JOURNAL_STRUCT)
+        template['responses']['200']['description'] = 'Detailed documentation on the response format is available <a ' \
+                                                      'href="https://github.com/DOAJ/doaj/blob/develop/docs/system' \
+                                                      '/OutgoingAPIJournal.md">here</a> '
         template['responses']['401'] = cls.R401
         template['responses']['404'] = cls.R404
         return cls._build_swag_response(template)

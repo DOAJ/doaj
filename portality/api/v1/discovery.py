@@ -1,4 +1,4 @@
-from portality.api.v1.common import Api
+from portality.api.common import Api
 from portality import util
 from portality.core import app
 from portality.lib import dates

@@ -1,5 +1,5 @@
 from portality.api.v2.crud.common import CrudApi
-from portality.api.v2.common import Api401Error, Api400Error, Api404Error, Api403Error, Api409Error
+from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Error, Api409Error
 from portality.api.v2.data_objects.application import IncomingApplication, OutgoingApplication
 from portality.lib import seamless
 from portality import models
@@ -11,6 +11,10 @@ from portality.formcontext import formcontext, xwalk
 from werkzeug.datastructures import MultiDict
 
 from copy import deepcopy
+
+from portality.models.v2 import shared_structs
+from portality.models.v2.application import APPLICATION_STRUCT
+
 
 class ApplicationsCrudApi(CrudApi):
 
@@ -136,10 +140,12 @@ class ApplicationsCrudApi(CrudApi):
 
     @classmethod
     def retrieve_swag(cls):
+
         template = deepcopy(cls.SWAG_TEMPLATE)
         template['parameters'].append(cls.SWAG_ID_PARAM)
         template['responses']['200'] = cls.R200
-        template['responses']['200']['schema'] = IncomingApplication().struct_to_swag(schema_title='Application schema')
+        ap = IncomingApplication()
+        template['responses']['200']['schema'] = IncomingApplication().struct_to_swag(schema_title='Application schema', struct=ap.__seamless_struct__)
         template['responses']['401'] = cls.R401
         template['responses']['404'] = cls.R404
         return cls._build_swag_response(template)

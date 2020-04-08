@@ -4,7 +4,7 @@ from portality import constants, models
 from doajtest.fixtures.v2 import ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.fixtures import AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
-from portality.api.v2.common import Api401Error, Api400Error, Api404Error, Api403Error
+from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Error
 from portality.api.v2.crud.applications import ApplicationsCrudApi
 from portality.api.v2.data_objects.application import IncomingApplication, OutgoingApplication
 from portality.formcontext import FormContextException, formcontext

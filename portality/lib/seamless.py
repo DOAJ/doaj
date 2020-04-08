@@ -801,6 +801,12 @@ class Construct(object):
         coerce_name = instructions.get("coerce", self._default_coerce)
         return coerce_name, self._coerce.get(coerce_name)
 
+    def get(self, elem, default=None):
+        if elem in self._definition:
+            return self._definition.get(elem)
+        else:
+            return default
+
     def lookup(self, path):
         bits = path.split(".")
 

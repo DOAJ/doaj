@@ -1,5 +1,6 @@
 from copy import deepcopy
 from .dataobj import DataSchemaException
+from portality.lib.seamless import Construct
 
 class SwaggerSupport(object):
     # Translation between our simple field types and swagger spec types.
@@ -62,7 +63,7 @@ class SwaggerSupport(object):
         # If no struct is specified this is the first call, so set the
         # operating struct to the entire current DO struct.
 
-        if not isinstance(struct, dict):
+        if not (isinstance(struct, dict) or isinstance(struct, Construct)):
             raise DataSchemaException("The struct whose properties we're translating to Swagger should always be a dict-like object.")
 
         swag_properties = {}
