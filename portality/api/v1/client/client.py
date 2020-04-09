@@ -32,7 +32,7 @@ class DOAJv1API(object):
     ]
 
     def __init__(self, api_base_url=None, api_key=None):
-        self.api_base_url = api_base_url if api_base_url else app.config.get("DOAJ_API_BASE_URL", "https://doaj.org/api/v1/")
+        self.api_base_url = api_base_url if api_base_url else app.config.get("DOAJ_API1_BASE_URL", "https://doaj.org/api/v1/")
         self.api_key = api_key
 
         if not self.api_base_url.endswith("/"):

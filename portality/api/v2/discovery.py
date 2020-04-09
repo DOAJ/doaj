@@ -110,9 +110,9 @@ def escape(query):
 
 
 DISCOVERY_API_SWAG = {
-    'application': json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_application_swag.json'))),
-    'journal': json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_journal_swag.json'))),
-    'article': json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_article_swag.json')))
+    'application': json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v2', 'discovery_api_application_swag.json'))),
+    'journal': json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v2', 'discovery_api_journal_swag.json'))),
+    'article': json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v2', 'discovery_api_article_swag.json')))
 }
 max_page_size = str(app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100))
 
@@ -268,13 +268,13 @@ class DiscoveryApi(Api):
         }
 
         if previous_page is not None:
-            result["prev"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=previous_page, pageSize=page_size, sort=sort)
+            result["prev"] = app.config['BASE_URL'] + url_for(app.config['API2_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=previous_page, pageSize=page_size, sort=sort)
 
         if next_page is not None:
-            result["next"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=next_page, pageSize=page_size, sort=sort)
+            result["next"] = app.config['BASE_URL'] + url_for(app.config['API2_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=next_page, pageSize=page_size, sort=sort)
 
         if last_page is not None:
-            result["last"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=last_page, pageSize=page_size, sort=sort)
+            result["last"] = app.config['BASE_URL'] + url_for(app.config['API2_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=last_page, pageSize=page_size, sort=sort)
 
         if sort is not None:
             result["sort"] = sort

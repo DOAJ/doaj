@@ -31,7 +31,8 @@ elif BASE_URL.startswith('http://'):
     BASE_DOMAIN = BASE_URL[7:]
 else:
     BASE_DOMAIN = BASE_URL
-API_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
+API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
+API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
 
 # Used when generating external links, e.g. in the API docs
 PREFERRED_URL_SCHEME = 'https'
@@ -70,7 +71,7 @@ VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
-ELASTIC_SEARCH_DB = "doaj"
+ELASTIC_SEARCH_DB = "doaj_apitest"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "1.7.5"
@@ -983,7 +984,8 @@ DOAJ_QUERY_ENDPOINT = "query"
 
 DOAJ_SEARCH_TYPE = "journal,article"
 
-DOAJ_API_BASE_URL = "https://doaj.org/api/v1/"
+DOAJ_API1_BASE_URL = "https://doaj.org/api/v1/"
+DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
 
 
 ## EPMC Client configuration

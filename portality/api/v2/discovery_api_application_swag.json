@@ -31,54 +31,11 @@
                                 "id": {
                                     "type": "string"
                                 },
-                                "suggestion": {
-                                    "type": "object",
-                                    "properties": {
-                                        "articles_last_year": {
-                                            "type": "object",
-                                            "properties": {
-                                                "count": {
-                                                    "type": "string"
-                                                },
-                                                "url": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "title": "articles_last_year"
-                                        },
-                                        "suggested_on": {
-                                            "type": "string",
-                                            "format": "dateTime"
-                                        },
-                                        "suggester": {
-                                            "type": "object",
-                                            "properties": {
-                                                "name": {
-                                                    "type": "string"
-                                                },
-                                                "email": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "title": "suggester"
-                                        },
-                                        "article_metadata": {
-                                            "type": "boolean"
-                                        }
-                                    },
-                                    "title": "suggestion"
-                                },
                                 "bibjson": {
                                     "type": "object",
                                     "properties": {
                                         "author_pays": {
                                             "type": "string"
-                                        },
-                                        "format": {
-                                            "items": {
-                                                "type": "string"
-                                            },
-                                            "type": "array"
                                         },
                                         "plagiarism_detection": {
                                             "type": "object",
@@ -92,16 +49,13 @@
                                             },
                                             "title": "plagiarism_detection"
                                         },
-                                        "allows_fulltext_indexing": {
-                                            "type": "boolean"
-                                        },
                                         "apc_url": {
                                             "type": "string"
                                         },
-                                        "archiving_policy": {
+                                        "preservation": {
                                             "type": "object",
                                             "properties": {
-                                                "policy": {
+                                                "services": {
                                                     "items": {
                                                         "type": "string"
                                                     },
@@ -111,31 +65,7 @@
                                                     "type": "string"
                                                 }
                                             },
-                                            "title": "archiving_policy"
-                                        },
-                                        "submission_charges": {
-                                            "type": "object",
-                                            "properties": {
-                                                "currency": {
-                                                    "type": "string"
-                                                },
-                                                "average_price": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "title": "apc"
-                                        },
-                                        "author_publishing_rights": {
-                                            "type": "object",
-                                            "properties": {
-                                                "url": {
-                                                    "type": "string"
-                                                },
-                                                "publishing_rights": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "title": "author_publishing_rights"
+                                            "title": "preservation"
                                         },
                                         "link": {
                                             "items": {
@@ -152,21 +82,6 @@
                                             },
                                             "type": "array"
                                         },
-                                        "oa_start": {
-                                            "type": "object",
-                                            "properties": {
-                                                "volume": {
-                                                    "type": "string"
-                                                },
-                                                "number": {
-                                                    "type": "string"
-                                                },
-                                                "year": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "title": "oa_start"
-                                        },
                                         "keywords": {
                                             "items": {
                                                 "type": "string"
@@ -179,7 +94,7 @@
                                                 "currency": {
                                                     "type": "string"
                                                 },
-                                                "average_price": {
+                                                "max_price": {
                                                     "type": "string"
                                                 }
                                             },
@@ -197,17 +112,17 @@
                                             },
                                             "title": "editorial_review"
                                         },
-                                        "author_copyright": {
+                                        "copyright": {
                                             "type": "object",
                                             "properties": {
                                                 "url": {
                                                     "type": "string"
                                                 },
-                                                "copyright": {
+                                                "author_retains": {
                                                     "type": "string"
                                                 }
                                             },
-                                            "title": "author_copyright"
+                                            "title": "copyright"
                                         },
                                         "institution": {
                                             "type": "string"
@@ -231,8 +146,13 @@
                                             "type": "array"
                                         },
                                         "deposit_policy": {
-                                            "items": {
-                                                "type": "string"
+                                            "properties": {
+                                                "service": {
+                                                    "type" : "array"
+                                                },
+                                                "url" : {
+                                                    "type" : "string"
+                                                }
                                             },
                                             "type": "array"
                                         },
@@ -240,7 +160,7 @@
                                             "items": {
                                                 "type": "object",
                                                 "properties": {
-                                                    "title": {
+                                                    "type": {
                                                         "type": "string"
                                                     },
                                                     "url": {
@@ -252,34 +172,25 @@
                                                     "ND": {
                                                         "type": "boolean"
                                                     },
-                                                    "embedded_example_url": {
-                                                        "type": "string"
-                                                    },
                                                     "SA": {
                                                         "type": "boolean"
                                                     },
-                                                    "type": {
-                                                        "type": "string"
-                                                    },
                                                     "BY": {
                                                         "type": "boolean"
+                                                    },
+                                                    "embedded": {
+                                                        "type" : "string"
+                                                    },
+                                                    "embedded_example_url": {
+                                                        "type" : "string"
+                                                    },
+                                                    "open_access" : {
+                                                        "type" : "string"
                                                     }
                                                 },
                                                 "title": "license"
                                             },
                                             "type": "array"
-                                        },
-                                        "article_statistics": {
-                                            "type": "object",
-                                            "properties": {
-                                                "url": {
-                                                    "type": "string"
-                                                },
-                                                "statistics": {
-                                                    "type": "boolean"
-                                                }
-                                            },
-                                            "title": "article_statistics"
                                         },
                                         "title": {
                                             "type": "string"
@@ -290,41 +201,23 @@
                                         "country": {
                                             "type": "string"
                                         },
-                                        "publication_time": {
+                                        "publication_time_weeks": {
                                             "type": "string"
                                         },
                                         "publisher": {
                                             "type": "string"
                                         },
-                                        "submission_charges_url": {
+                                        "other_charges_url": {
                                             "type": "string"
                                         },
                                         "alternative_title": {
                                             "type": "string"
                                         },
-                                        "persistent_identifier_scheme": {
+                                        "pid_scheme": {
                                             "items": {
                                                 "type": "string"
                                             },
                                             "type": "array"
-                                        },
-                                        "oa_end": {
-                                            "type": "object",
-                                            "properties": {
-                                                "volume": {
-                                                    "type": "string"
-                                                },
-                                                "number": {
-                                                    "type": "string"
-                                                },
-                                                "year": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "title": "oa_end"
-                                        },
-                                        "provider": {
-                                            "type": "string"
                                         },
                                         "identifier": {
                                             "items": {

@@ -90,7 +90,6 @@ JOURNAL_SOURCE = {
     "bibjson": {
         "alternative_title": "Alternative Title",
         "apc": {
-            "has_apc": True,
             "max": [
                 {"currency": "GBP", "price": 2}
             ],
@@ -108,8 +107,7 @@ JOURNAL_SOURCE = {
             "url": "http://copyright.com"
         },
         "deposit_policy": {
-            "has_policy": True,
-            "is_registered": True,
+           "is_registered": True,
             "service": ["Sherpa/Romeo", "Store it"],
             "url": "http://deposit.policy"
         },
@@ -138,11 +136,9 @@ JOURNAL_SOURCE = {
             }
         ],
         "other_charges": {
-            "has_other_charges": True,
             "url": "http://other.charges"
         },
         "pid_scheme": {
-            "has_pid_scheme": True,
             "scheme": ["DOI", "ARK", "PURL"],
         },
         "pissn": "1234-5678",
@@ -151,7 +147,6 @@ JOURNAL_SOURCE = {
             "url": "http://plagiarism.screening"
         },
         "preservation": {
-            "has_preservation": True,
             "service": ["LOCKSS", "CLOCKSS", "A safe place"],
             "national_library": "Trinity",
             "url": "http://digital.archiving.policy"
@@ -176,7 +171,6 @@ JOURNAL_SOURCE = {
         ],
         "title": "The Title",
         "waiver": {
-            "has_waiver": True,
             "url": "http://waiver.policy"
         }
     }
