@@ -278,7 +278,7 @@ def render_required(settings, args):
         args["data-parsley-required-message"] = settings["message"]
 
 
-def apply_required(settings, args):
+def wtforms_required(settings, args):
     return validators.DataRequired(message=args.get("message"))
 
 
@@ -286,7 +286,7 @@ def render_is_url(settings, args):
     args["type"] = "url"
 
 
-def apply_is_url(settings, args):
+def wtforms_is_url(settings, args):
     return URLOptionalScheme()
 
 
@@ -298,7 +298,7 @@ def render_int_range(settings, args):
         args["data-parsley-max"] = settings.get("lte")
 
 
-def apply_int_range(settings, args):
+def wtforms_int_range(settings, args):
     min = args.get("gte")
     max = args.get("lte")
     kwargs = {}
@@ -309,13 +309,13 @@ def apply_int_range(settings, args):
     return validators.NumberRange(**kwargs)
 
 
-def apply_max_tags(settings, args):
+def wtforms_max_tags(settings, args):
     max = args.get("max")
     message = args.get("message") if "message" in args else 'You can only enter up to {x} keywords.'.format(x=max)
     return MaxLen(max, message=message)
 
 
-def apply_stop_words(settings, args):
+def wtforms_stop_words(settings, args):
     stopwords = args.get("disallowed", [])
     return StopWords(stopwords)
 
@@ -342,12 +342,12 @@ PYTHON_FUNCTIONS = {
             "is_url" : "portality.formcontext.form_definitions.render_is_url",
             "int_range" : "portality.formcontext.form_definitions.render_int_range",
         },
-        "apply" : {
-            "required" : "portality.formcontext.form_definitions.apply_required",
-            "is_url" : "portality.formcontext.form_definitions.apply_is_url",
-            "max_tags" : "portality.formcontext.form_definitions.apply_max_tags",
-            "int_range" : "portality.formcontext.form_definitions.apply_int_range",
-            "stop_words" : "portality.formcontext.form_definitions.apply_stop_words"
+        "wtforms" : {
+            "required" : "portality.formcontext.form_definitions.wtforms_required",
+            "is_url" : "portality.formcontext.form_definitions.wtforms_is_url",
+            "max_tags" : "portality.formcontext.form_definitions.wtforms_max_tags",
+            "int_range" : "portality.formcontext.form_definitions.wtforms_int_range",
+            "stop_words" : "portality.formcontext.form_definitions.wtforms_stop_words"
         }
     },
 

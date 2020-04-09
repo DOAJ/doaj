@@ -463,7 +463,7 @@ class FormulaicField(object):
             raise FormulaicException("No WTForms mapping for field '{x}'".format(x=field.get("name")))
 
         validators = []
-        vfuncs = function_map.get("validate", {}).get("apply", {})
+        vfuncs = function_map.get("validate", {}).get("wtforms", {})
         for v in field.get("validate", []):
             vname = v
             args = {}

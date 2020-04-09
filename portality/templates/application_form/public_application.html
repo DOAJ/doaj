@@ -18,8 +18,8 @@
         </fieldset>
     {% endfor %}
 
-        <button name="complete" type="submit" id="complete">Submit</button>
-        <button name="draft" type="submit" id="draft">Save as Draft</button>
+        <button name="complete" class="formulaic-complete" type="submit" id="complete">Submit</button>
+        <button name="draft" class="formulaic-draft" type="submit" id="draft">Save as Draft</button>
 
         {% if obj %}
         <input type="hidden" name="id" value="{{ obj.id }}">
@@ -39,7 +39,7 @@
                 fieldsets : {{ formulaic_context.ui_settings|tojson }},
                 functions : {{ formulaic_context.javascript_functions|tojson }},
                 doValidation : true,
-                autoSave: 60000
+                autoSave: 0
             });
         });
     </script>

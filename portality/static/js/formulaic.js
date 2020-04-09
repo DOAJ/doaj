@@ -51,18 +51,15 @@ var formulaic = {
 
             // find any checkboxes that
             this._bindExclusiveCheckboxes();
-
-            // start up the validator
-            this.bounceParsley();
         };
 
         //////////////////////////////////////////////
         // Functions for handling save
 
         this.bindSave = function() {
-            // fixme: need to bind each button (by class, probably) so that we can disambiguate save and draft saves
-            // so that we can validate them differently
-            edges.on(this.context, "submit.Save", this, "saveRequested", false, false, false);
+            edges.on(this.context.find(".formulaic-complete"), "click.Complete", this, "saveComplete", false, false, false);
+            edges.on(this.context.find(".formulaic-draft"), "click.Draft", this, "saveDraftAndComplete", false, false, false);
+
             if (this.autoSave > 0) {
                 setTimeout(this.backgroundSaveClosure(), this.autoSave);
             }
@@ -76,8 +73,12 @@ var formulaic = {
             }
         };
 
-        this.saveRequested = function(element, event) {
+        this.saveComplete = function(element, event) {
             this.save({event: event});
+        };
+
+        this.saveDraftAndComplete = function(element, event) {
+            this.save({validate: false, additional : {"draft" : "true", "async" : "true"}, event: event})
         };
 
         this.save = function(params) {
@@ -87,12 +88,17 @@ var formulaic = {
             var complete = edges.getParam(params.complete, true);
             var event = params.event;
 
+            if (validate) {
+                this.bounceParsley();
+            } else {
+                this.destroyParsley();
+            }
+
             if (!validate || (this.activeParsley && this.activeParsley.isValid())) {
                 if (!complete) {
                     if (event) {
                         event.preventDefault();
                     }
-                    // otherwise, do an asynchronous save
                     var submit_data = this.context.serialize();
                     if (submit_data === this.lastSaveVal) {
                         return;
@@ -110,11 +116,14 @@ var formulaic = {
                         }
                     });
                 }
+                // otherwise, event propagates and form is submitted by the browser
             } else {
                 if (event) {
                     event.preventDefault();
                 }
-                alert("Unable to save due to validation");
+                if (this.activeParsley) {
+                    this.activeParsley.validate();
+                }
             }
         };
 
@@ -356,6 +365,8 @@ var formulaic = {
             if (!this.doValidation) { return; }
             if (this.activeParsley) {
                 this.activeParsley.destroy();
+                this.activeParsley = false;
+                this.context.off("submit.Parsley");
             }
             // $(".has-error").removeClass("has-error");
         };
