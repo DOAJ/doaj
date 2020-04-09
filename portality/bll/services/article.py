@@ -437,9 +437,6 @@ class ArticleService(object):
             {"arg": article, "instance": models.Article, "allow_none": False, "arg_name": "article"},
         ], exceptions.ArgumentException)
 
-        # We'll need the article bibjson a few times
-        b = article.bibjson()
-
         # if we get more than one result, we'll record them here, and then at the end
         # if we haven't got a definitive match we'll pick the most likely candidate
         # (this isn't as bad as it sounds - the identifiers are pretty reliable, this catches
