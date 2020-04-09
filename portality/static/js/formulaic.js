@@ -60,6 +60,8 @@ var formulaic = {
         // Functions for handling save
 
         this.bindSave = function() {
+            // fixme: need to bind each button (by class, probably) so that we can disambiguate save and draft saves
+            // so that we can validate them differently
             edges.on(this.context, "submit.Save", this, "saveRequested", false, false, false);
             if (this.autoSave > 0) {
                 setTimeout(this.backgroundSaveClosure(), this.autoSave);

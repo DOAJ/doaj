@@ -1336,7 +1336,7 @@ class PublicApplication(FormProcessor):
     # PublicApplicationForm versions of FormProcessor lifecycle functions
     ############################################################
 
-    def draft(self, id=None, *args, **kwargs):
+    def draft(self, account, id=None, *args, **kwargs):
         # check for validity
         valid = self.validate()
 
@@ -1350,6 +1350,7 @@ class PublicApplication(FormProcessor):
         draft_application = models.DraftApplication(**self.target.data)
         if id is not None:
             draft_application.set_id(id)
+        draft_application.set_owner(account.id)
         draft_application.save()
         return draft_application
 

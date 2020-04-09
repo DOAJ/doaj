@@ -217,8 +217,6 @@ class ApplicationFormXWalk(JournalGenericXWalk):
 
     @classmethod
     def form2obj(cls, form):
-        from portality.formcontext.form_definitions import application_form as ApplicationFormFactory
-
         application = models.Application()
         bibjson = application.bibjson()
 
@@ -440,6 +438,9 @@ class ApplicationFormXWalk(JournalGenericXWalk):
 
     @classmethod
     def obj2form(cls, obj):
+
+        from portality.formcontext.form_definitions import application_form as ApplicationFormFactory
+
         forminfo = {}
         bibjson = obj.bibjson()
 
@@ -448,7 +449,7 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         forminfo["country"] = bibjson.publisher_country
         forminfo["keywords"] = bibjson.keywords
         forminfo["licensing"] = [l.get("type") for l in bibjson.licenses]
-        forminfo["submission_tile"] = bibjson.publication_time_weeks
+        forminfo["submission_time"] = bibjson.publication_time_weeks
         forminfo["peer_review"] = [p for p in bibjson.editorial_review_process if p in [c[0] for c in ApplicationFormFactory.choices_for("peer_review")]]
 
         others = [p for p in bibjson.editorial_review_process if

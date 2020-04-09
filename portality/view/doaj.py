@@ -141,12 +141,15 @@ from portality.formcontext.form_definitions import application_form as Applicati
 @blueprint.route("/application/newnew", methods=["GET", "POST"])
 @blueprint.route("/application/newnew/<draft_id>", methods=["GET", "POST"])
 @write_required()
+@login_required
 def public_application(draft_id=None):
 
     draft_application = None
     if draft_id is not None:
         draft_application = models.DraftApplication.pull(draft_id)
         if draft_application is None:
+            abort(404)
+        if draft_application.owner != current_user.id:
             abort(404)
 
     if request.method == "GET":
@@ -159,11 +162,19 @@ def public_application(draft_id=None):
         draft = request.form.get("draft")
         async = request.form.get("async")
         draft_id = request.form.get("id") if draft_id is None else draft_id
+
+        if draft_id is not None:
+            draft_application = models.DraftApplication.pull(draft_id)
+            if draft_application is None:
+                abort(404)
+            if draft_application.owner != current_user.id:
+                abort(404)
+
         fc = ApplicationFormFactory.context("public")
         processor = fc.processor(formdata=request.form)
 
         if draft is not None:
-            the_draft = processor.draft(id=draft_id)
+            the_draft = processor.draft(current_user._get_current_object(), id=draft_id)
             if async is not None:
                 return make_response(json.dumps({"id" : the_draft.id}), 200)
             else:

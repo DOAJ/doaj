@@ -38,8 +38,8 @@
                 formSelector: "#public_application",
                 fieldsets : {{ formulaic_context.ui_settings|tojson }},
                 functions : {{ formulaic_context.javascript_functions|tojson }},
-                doValidation : false,
-                autoSave: 0
+                doValidation : true,
+                autoSave: 60000
             });
         });
     </script>
