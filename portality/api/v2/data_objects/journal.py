@@ -145,7 +145,7 @@ JOURNAL_STRUCT = {
                 },
                 "preservation": {
                     "fields": {
-                        "has_preservation": {"coerce": "unicode"},
+                        "has_preservation": {"coerce": "bool"},
                         "national_library": {"coerce": "unicode"},
                         "url": {"coerce": "unicode"}
                     },

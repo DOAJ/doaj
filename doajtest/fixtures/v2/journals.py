@@ -407,7 +407,7 @@ JOURNAL_APIDO_STRUCT = {
                 },
                 "preservation": {
                     "fields": {
-                        "has_preservation": {"coerce": "unicode"},
+                        "has_preservation": {"coerce": "bool"},
                         "national_library": {"coerce": "unicode"},
                         "url": {"coerce": "unicode"}
                     },
@@ -447,7 +447,7 @@ JOURNAL_APIDO_STRUCT = {
                 },
                 "waiver" : {
                     "fields" : {
-                        "has_waiver" : {"coerce" : "bool"},
+                        "has_waiver": {'coerce': 'bool'},
                         "url" : {"coerce" : "url"}
                     }
                 }

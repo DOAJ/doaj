@@ -67,8 +67,7 @@ OUTGOING_APPLICATION_STRUCT = {
             "structs": {
                 "apc": {
                     "fields": {
-                        "url": {"coerce": "url"},
-                        "has_apc": {"coerce": "unicode"}
+                        "url": {"coerce": "url"}
                     },
                     "lists": {
                         "max": {"contains": "object"}
@@ -100,7 +99,6 @@ OUTGOING_APPLICATION_STRUCT = {
                 },
                 "deposit_policy": {
                     "fields": {
-                        "has_policy": {"coerce": "bool"},
                         "is_registered": {"coerce": "bool"},
                         "url" : {"coerce": "url"}
                     },
@@ -146,14 +144,10 @@ OUTGOING_APPLICATION_STRUCT = {
                 },
                 "other_charges": {
                     "fields": {
-                        "has_other_charges": {"coerce": "bool"},
                         "url": {"coerce": "url"}
                     }
                 },
                 "pid_scheme": {
-                    "fields": {
-                        "has_pid_scheme": {"coerce": "bool"},
-                    },
                     "lists" : {
                         "scheme": {"coerce": "unicode", "contains" : "field"}
                     }
@@ -166,7 +160,6 @@ OUTGOING_APPLICATION_STRUCT = {
                 },
                 "preservation": {
                     "fields": {
-                        "has_preservation": {"coerce": "bool"},
                         "national_library": {"coerce": "unicode"},
                         "url": {"coerce": "url"}
                     },
@@ -207,7 +200,6 @@ OUTGOING_APPLICATION_STRUCT = {
                 },
                 "waiver": {
                     "fields": {
-                        "has_waiver": {"coerce": "unicode"},
                         "url": {"coerce": "url"}
                     }
                 }
@@ -294,39 +286,21 @@ INCOMING_APPLICATION_REQUIREMENTS = {
                 "title"
             ],
             "structs": {
-                "apc": {
-                    "required" : ["has_apc"]
-                },
                 "copyright": {
                     "required" : ["url"]
-                },
-                "deposit_policy": {
-                    "required" : ["has_policy"]
                 },
                 "editorial": {
                     "required" : ["review_process", "review_url"]
                 },
-                "pid_scheme": {
-                    "required" : ["has_pid_scheme"]
-                },
                 "plagiarism": {
                     "required": ["detection","url"]
-                },
-                "preservation": {
-                    "required": ["has_preservation"]
                 },
                 "publisher": {
                     "required": ["name"]
                 },
                 "ref": {
                     "required" : ["journal"]
-                },
-                "other_charges": {
-                    "required": ["has_other_charges"]
-                },
-                "waiver": {
-                    "requred": ["has_waiver"]
-                },
+                }
             }
         }
     }

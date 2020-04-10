@@ -146,7 +146,6 @@ APPLICATION_SOURCE = {
 
 _isbj = deepcopy(JOURNAL_SOURCE['bibjson'])
 _isbj["preservation"] = {
-    "has_preservation": True,
     "national_library": "Trinity",
     "url": "http://digital.archiving.policy",
     "service" : ["LOCKSS", "CLOCKSS", "A safe place"]

@@ -92,7 +92,6 @@ class TestCrudApplication(DoajTestCase):
 
         # invalid domain in archiving_policy
         data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["preservation"]["has_preservation"] = True
         data["bibjson"]["preservation"]["url"] = "abcd://abcd"
         with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
@@ -134,6 +133,7 @@ class TestCrudApplication(DoajTestCase):
         assert a.owner == "test"
 
         preservation = a.bibjson().preservation
+        assert preservation.get("has_preservation")
         assert len(preservation.get("service")) == 3, "expected 3, got: {}".format(len(preservation.get("service")))
         assert preservation.get("national_library") == "Trinity"
         assert "CLOCKSS" in preservation.get("service")
@@ -309,11 +309,9 @@ class TestCrudApplication(DoajTestCase):
         data["bibjson"]["apc"]["max"][0]["currency"] = "Taka"
         data["bibjson"]["publication_time_weeks"] = "15"
         data["bibjson"]["language"] = ["French", "English"]
-        data["bibjson"]["pid_scheme"]["has_pid_scheme"] = True
         data["bibjson"]["pid_scheme"]["scheme"] = ["doi", "HandleS", "something"]
         data["bibjson"]["license"][0]["type"] = "cc"
         data["bibjson"]["license"][0]["BY"] = True
-        data["bibjson"]["deposit_policy"]["has_policy"] = True
         data["bibjson"]["deposit_policy"]["service"] = ["sherpa/romeo", "other"]
 
         ia = IncomingApplication(data)
