@@ -57,7 +57,6 @@ def missing_resource(invalid_path):
 def docs():
     return render_template('api/v2/api_docs.html')
 
-
 @swag(swag_summary='Search your applications <span class="red">[Authenticated, not public]</span>', swag_spec=DiscoveryApi.get_application_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @blueprint.route("/search/applications/<path:search_query>")
 @api_key_required
