@@ -1,5 +1,5 @@
 from portality.api.common import Api, Api404Error, Api400Error, Api403Error, Api401Error
-from portality.api.v1.crud import ArticlesCrudApi
+from portality.api.v2.crud import ArticlesCrudApi
 
 from portality.bll import DOAJ
 from portality.bll import exceptions

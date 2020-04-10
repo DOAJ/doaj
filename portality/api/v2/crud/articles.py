@@ -1,9 +1,8 @@
-from portality.api.v1.crud.common import CrudApi
-from portality.api.v1 import Api400Error, Api401Error, Api403Error, Api404Error, Api500Error
-from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
+from portality.api.v2.crud.common import CrudApi
+from portality.api.v2 import Api400Error, Api401Error, Api403Error, Api404Error, Api500Error
+from portality.api.v2.data_objects.article import IncomingArticleDO, OutgoingArticleDO
 from portality.lib import dataobj
 from portality import models
-# from portality.article import XWalk
 from portality.bll.doaj import DOAJ
 from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable
 
@@ -23,7 +22,7 @@ class ArticlesCrudApi(CrudApi):
     SWAG_ARTICLE_BODY_PARAM = {
         "description": """<div class=\"search-query-docs\">
             Article JSON that you would like to create or update. The contents should comply with the schema displayed
-            in the <a href=\"/api/v1/docs#CRUD_Articles_get_api_v1_articles_article_id\"> GET (Retrieve) an article route</a>.
+            in the <a href=\"/api/v2/docs#CRUD_Articles_get_api_v2_articles_article_id\"> GET (Retrieve) an article route</a>.
             Explicit documentation for the structure of this data is also <a href="https://github.com/DOAJ/doaj/blob/master/docs/system/IncomingAPIArticle.md">provided here</a>.
             Partial updates are not allowed, you have to supply the full JSON.</div>""",
         "required": True,

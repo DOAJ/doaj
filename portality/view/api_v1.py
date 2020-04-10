@@ -1,13 +1,11 @@
 from flask import Blueprint, url_for, redirect, request
 
-from portality.api.v1 import Api400Error
-from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi, ApplicationsBulkApi, ArticlesBulkApi
-from portality.api.v1 import DiscoveryApi
+from portality.api.v2 import Api400Error
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional, swag, write_required
 from portality.lib import analytics
 
-blueprint = Blueprint('api_v1', __name__)
+blueprint = Blueprint('api_v2', __name__)
 
 API_VERSION_NUMBER = '1.0.0'
 
@@ -15,9 +13,9 @@ API_VERSION_NUMBER = '1.0.0'
 GA_CATEGORY = app.config.get('GA_CATEGORY_API', 'API Hit')
 GA_ACTIONS = app.config.get('GA_ACTIONS_API', {})
 
-API_V1_ERROR = "Version 1 is no longer supported."
+API_v2_ERROR = "Version 1 is no longer supported."
 
-# the API v1 is not supported anymore, this file handles api v1 requests:
+# the API v2 is not supported anymore, this file handles api v2 requests:
 # requests to articles are redirected to v2
 # other requests raise the 400 Error
 
@@ -26,7 +24,7 @@ API_V1_ERROR = "Version 1 is no longer supported."
 
 
 @blueprint.route('/')
-def api_v1_root():
+def api_v2_root():
     return redirect(url_for('.api_spec'))
 
 
@@ -94,7 +92,7 @@ def bulk_article_delete():
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('retrieve_journal', 'Retrieve journal'),
                           record_value_of_which_arg='journal_id')
 def retrieve_journal(journal_id):
-    raise Api400Error(API_V1_ERROR)
+    raise Api400Error(API_v2_ERROR)
 
 
 @blueprint.route("/bulk/applications", methods=["POST"])
@@ -102,7 +100,7 @@ def retrieve_journal(journal_id):
 @write_required(api=True)
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('bulk_application_create', 'Bulk application create'))
 def bulk_application_create():
-    raise Api400Error(API_V1_ERROR)
+    raise Api400Error(API_v2_ERROR)
 
 
 @blueprint.route("/bulk/applications", methods=["DELETE"])
@@ -110,7 +108,7 @@ def bulk_application_create():
 @write_required(api=True)
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('bulk_application_delete', 'Bulk application delete'))
 def bulk_application_delete():
-    raise Api400Error(API_V1_ERROR)
+    raise Api400Error(API_v2_ERROR)
 
 
 @blueprint.route("/applications", methods=["POST"])
@@ -118,7 +116,7 @@ def bulk_application_delete():
 @write_required(api=True)
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('create_application', 'Create application'))
 def create_application():
-    raise Api400Error(API_V1_ERROR)
+    raise Api400Error(API_v2_ERROR)
 
 
 @blueprint.route("/applications/<application_id>", methods=["GET"])
@@ -126,7 +124,7 @@ def create_application():
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('retrieve_application', 'Retrieve application'),
                           record_value_of_which_arg='application_id')
 def retrieve_application(application_id):
-    raise Api400Error(API_V1_ERROR)
+    raise Api400Error(API_v2_ERROR)
 
 
 @blueprint.route("/applications/<application_id>", methods=["PUT"])
@@ -135,7 +133,7 @@ def retrieve_application(application_id):
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('update_application', 'Update application'),
                           record_value_of_which_arg='application_id')
 def update_application(application_id):
-    raise Api400Error(API_V1_ERROR)
+    raise Api400Error(API_v2_ERROR)
 
 
 @blueprint.route("/applications/<application_id>", methods=["DELETE"])
@@ -144,7 +142,7 @@ def update_application(application_id):
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('delete_application', 'Delete application'),
                           record_value_of_which_arg='application_id')
 def delete_application(application_id):
-    raise Api400Error(API_V1_ERROR)
+    raise Api400Error(API_v2_ERROR)
 
 
 @blueprint.route("/search/applications/<path:search_query>")
@@ -152,11 +150,11 @@ def delete_application(application_id):
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('search_applications', 'Search applications'),
                           record_value_of_which_arg='search_query')
 def search_applications(search_query):
-    raise Api400Error(API_V1_ERROR)
+    raise Api400Error(API_v2_ERROR)
 
 
 @blueprint.route('/search/journals/<path:search_query>')
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('search_journals', 'Search journals'),
                           record_value_of_which_arg='search_query')
 def search_journals(search_query):
-    raise Api400Error(API_V1_ERROR)
+    raise Api400Error(API_v2_ERROR)
