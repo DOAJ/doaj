@@ -191,6 +191,13 @@ class Application(JournalLikeObject):
         self.set_applicant(name, email)
 
 
+class DraftApplication(Application):
+    __type__ = "draft_application"
+
+    __SEAMLESS_APPLY_STRUCT_ON_INIT__ = False
+    __SEAMLESS_CHECK_REQUIRED_ON_INIT__ = False
+
+
 MAPPING_OPTS = {
     "dynamic": None,
     "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
