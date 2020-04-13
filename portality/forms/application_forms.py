@@ -1,5 +1,4 @@
-from portality.lib.formulaic import Formulaic, FormulaicException
-import json
+from portality.lib.formulaic import Formulaic
 
 from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField
 from wtforms import widgets, validators
@@ -7,8 +6,21 @@ from wtforms.widgets.core import html_params, HTMLString
 from portality.formcontext.fields import TagListField
 
 from portality.crosswalks.application_form import ApplicationFormXWalk
-from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen, RegexpOnTagList, ReservedUsernames
+from portality.forms.validate import (
+    URLOptionalScheme,
+    OptionalIf,
+    ExclusiveCheckbox,
+    ExtraFieldRequiredIf,
+    MaxLen,
+    RegexpOnTagList,
+    ReservedUsernames,
+    StopWords,
+    InPublicDOAJ,
+    DifferentTo
+)
 
+from portality.datasets import language_options, country_options
+from portality.regex import ISSN, ISSN_COMPILED
 
 # Stop words used in the keywords field
 STOP_WORDS = [
@@ -27,7 +39,6 @@ STOP_WORDS = [
     "scholarly",
     "research journal"
 ]
-
 
 ########################################################
 # Define all our individual fields
@@ -83,10 +94,7 @@ class FieldDefinitions:
         ],
         "attr": {
             "type": "url"
-        },
-        "asynchronous_warnings": [
-            "all_urls_the_same"
-        ]
+        }
     }
 
     TITLE = {
@@ -158,12 +166,11 @@ class FieldDefinitions:
             }
         },
         "asynchronous_warnings": [
-            "in_public_doaj",   # check whether the journal url is already in a public DOAJ record
+            {"in_public_doaj" : {"field" : "bibjson.ref.journal.exact"}},   # check whether the journal url is already in a public DOAJ record
             {"rejected_application" : {"age" : "6 months"}},     # check that the journal does not have a rejection less than 6 months ago
-            "active_application",    # Check that the URL is not related to an active application
-            "all_urls_the_same"
+            "active_application"    # Check that the URL is not related to an active application
         ]
-    },
+    }
 
     PISSN = {
         "name" : "pissn",
@@ -212,7 +219,7 @@ class FieldDefinitions:
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
             "in_public_doaj",
             {"is_issn": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "eissn"}}
+            {"different_to": {"field": "pissn"}}
         ],
         "contexts": {
             "editor": {
@@ -230,7 +237,7 @@ class FieldDefinitions:
             {"rejected_application": {"age": "6 months"}},
             "active_application"  # Check that the ISSN is not related to an active application
         ]
-    },
+    }
 
     KEYWORDS = {
         "name" : "keywords",
@@ -283,12 +290,18 @@ class FieldDefinitions:
         ],
     }
 
+    PUBLISHER = {
+        "name" : "publisher",
+        "label" : "publisher",
+        "input" : "group",
+        "fields" : [
+            "publisher_name",
+            "publisher_country"
+        ]
+    }
+
     PUBLISHER_NAME = {
         "name" : "publisher_name",
-        "group" : {     # FIXME: this is a new concept, does it fit here?
-            "id" : "publisher",
-            "label" : "Publisher"
-        },
         "label" : "Name",
         "input" : "text",
         "validate": [
@@ -301,10 +314,6 @@ class FieldDefinitions:
 
     PUBLISHER_COUNTRY = {
         "name": "publisher_country",
-        "group": {  # FIXME: this is a new concept, does it fit here?
-            "id": "publisher",
-            "label": "Publisher"
-        },
         "label": "Country",
         "input": "select",
         "options_fn": "iso_country_list",
@@ -326,6 +335,16 @@ class FieldDefinitions:
                 "disabled": True
             }
         }
+    }
+
+    INSTITUTION = {
+        "name": "institution",
+        "label": "Society or institution, if applicable",
+        "input": "group",
+        "fields": [
+            "institution_name",
+            "institution_country"
+        ]
     }
 
     INSTITUTION_NAME = {
@@ -369,10 +388,121 @@ class FieldDefinitions:
         }
     }
 
+    LICENSE = {
+        "name" : "license",
+        "label": "License(s) permitted by the journal",
+        "input": "checkbox",
+        "multiple" : True,
+        "options": [
+            {"display": "CC BY", "value": "CC BY"},
+            {"display": "CC BY-SA", "value": "CC BY-SA"},
+            {"display": "CC BY-ND", "value": "CC BY-ND"},
+            {"display": "CC BY-NC", "value": "CC BY-NC"},
+            {"display": "CC BY-NC-SA", "value": "CC BY-NC-SA"},
+            {"display": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
+            {"display": "CC0", "value": "CC0"},
+            {"display": "Public domain", "value": "Public domain"},
+            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True},
+        ],
+        "help": {
+            "long_help": "The journal must use some form of licensing to be considered for indexing in DOAJ. "
+                       "If Creative Commons licensing is not used, then select 'Publisher's own license' and enter "
+                       "more details below.",
+            "doaj_criteria": "Content must be licenced",
+            "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    LICENSE_ATTRIBUTES = {
+        "name" : "license_attributes",
+        "label" : "Select all the attributes that your license has",
+        "input" : "checkbox",
+        "multiple" : True,
+        "conditional" : [
+            {"field" : "license", "value" : "Publisher's own license"}
+        ],
+        "options" : [
+            {"display" : "Attribution", "value" : "BY"},
+            {"display" : "Share Alike", "value" : "SA"},
+            {"display" : "No Derivatives", "value" : "ND"},
+            {"display" : "No Commercial Usage", "value" : "NC"}
+        ],
+        "help": {
+            "doaj_criteria": "Content must be licenced"
+        }
+    }
+
+    LICENSE_TERMS_URL = {
+        "name" : "license_terms_url",
+        "label" : "Link to the page where the license terms are stated",
+        "input" : "text",
+        "validate" : [
+            "required",
+            "is_url"
+        ],
+        "help": {
+            "doaj_criteria": "You must provide a link to your license terms"
+        },
+        "widgets" : [
+            "clickable_url"
+        ]
+    }
+
+    LICENSE_DISPLAY = {
+        "name" : "license_display",
+        "label" : "Does the journal embed and/or display licensing information in its articles?",
+        "input" : "checkbox",
+        "multiple" : True,
+        "help" : {
+            "long_help" : "Licensing information must be displayed or embedded on every PDF or in the full text of the "
+                        "HTML articles. We do not accept licensing information that is only displayed in other parts of "
+                        "the site.",
+            "seal_criteria" : "If the answer is Embed"
+        },
+        "options": [
+            {"display": "Embed", "value": "Embed"},
+            {"display": "Display", "value": "Display"},
+            {"display": "No", "value": "No", "exclusive" : True}
+        ],
+        "validate" : [
+            "required"
+        ]
+    }
+
+    LICENSE_DISPLAY_EXAMPLE_URL = {
+        "name" : "license_display_example_url",
+        "label" : "Link to a recent article displaying or embedding a license in the full text",
+        "input" : "text",
+        "validate" : [
+            "required",
+            "is_url"
+        ],
+        "widgets" : [
+            "clickable_url"
+        ]
+    }
+
+
 FIELDS = {
     FieldDefinitions.BOAI["name"] : FieldDefinitions.BOAI,
     FieldDefinitions.OA_STATEMENT_URL["name"] : FieldDefinitions.OA_STATEMENT_URL,
-    # FieldDefinitions.TITLE["name"] : FieldDefinitions.TITLE
+
+    FieldDefinitions.TITLE["name"] : FieldDefinitions.TITLE,
+    FieldDefinitions.ALTERNATIVE_TITLE["name"] : FieldDefinitions.ALTERNATIVE_TITLE,
+    FieldDefinitions.JOURNAL_URL["name"] : FieldDefinitions.JOURNAL_URL,
+    FieldDefinitions.PISSN["name"] : FieldDefinitions.PISSN,
+    FieldDefinitions.EISSN["name"] : FieldDefinitions.EISSN,
+    FieldDefinitions.KEYWORDS["name"] : FieldDefinitions.KEYWORDS,
+    FieldDefinitions.LANGUAGE["name"] : FieldDefinitions.LANGUAGE,
+    FieldDefinitions.PUBLISHER["name"] : FieldDefinitions.PUBLISHER,
+    FieldDefinitions.PUBLISHER_NAME["name"] : FieldDefinitions.PUBLISHER_NAME,
+    FieldDefinitions.PUBLISHER_COUNTRY["name"] : FieldDefinitions.PUBLISHER_COUNTRY,
+    FieldDefinitions.INSTITUTION["name"] : FieldDefinitions.INSTITUTION,
+    FieldDefinitions.INSTITUTION_NAME["name"] : FieldDefinitions.INSTITUTION_NAME,
+    FieldDefinitions.INSTITUTION_COUNTRY["name"] : FieldDefinitions.INSTITUTION_COUNTRY
 }
 
 ##########################################################
@@ -389,6 +519,26 @@ class FieldSetDefinitions:
         ]
     }
 
+    ABOUT_THE_JOURNAL = {
+        "name" : "about_the_journal",
+        "label" : "About the Journal",
+        "fields" : [
+            FieldDefinitions.TITLE["name"],
+            FieldDefinitions.ALTERNATIVE_TITLE["name"],
+            FieldDefinitions.JOURNAL_URL["name"],
+            FieldDefinitions.PISSN["name"],
+            FieldDefinitions.EISSN["name"],
+            FieldDefinitions.KEYWORDS["name"],
+            FieldDefinitions.LANGUAGE["name"],
+            FieldDefinitions.PUBLISHER["name"],
+            #FieldDefinitions.PUBLISHER_NAME["name"],
+            #FieldDefinitions.PUBLISHER_COUNTRY["name"],
+            FieldDefinitions.INSTITUTION["name"],
+            #FieldDefinitions.INSTITUTION_NAME["name"],
+            #FieldDefinitions.INSTITUTION_COUNTRY["name"]
+        ]
+    }
+
 
 ###########################################################
 # Define our Contexts
@@ -398,7 +548,8 @@ class ContextDefinitions:
     PUBLIC = {
         "name" : "public",
         "fieldsets" : [
-            FieldSetDefinitions.BASIC_COMPLIANCE["name"]
+            FieldSetDefinitions.BASIC_COMPLIANCE["name"],
+            FieldSetDefinitions.ABOUT_THE_JOURNAL["name"]
         ],
         "asynchronous_warnings": [
             "all_urls_the_same"
@@ -417,12 +568,10 @@ FORMS = {
         ContextDefinitions.PUBLIC["name"] : ContextDefinitions.PUBLIC
     },
     "fieldsets" : {
-        FieldSetDefinitions.BASIC_COMPLIANCE["name"] : FieldSetDefinitions.BASIC_COMPLIANCE
+        FieldSetDefinitions.BASIC_COMPLIANCE["name"] : FieldSetDefinitions.BASIC_COMPLIANCE,
+        FieldSetDefinitions.ABOUT_THE_JOURNAL["name"] : FieldSetDefinitions.ABOUT_THE_JOURNAL
     },
-    "fields" : {
-        FieldDefinitions.BOAI["name"] : FieldDefinitions.BOAI,
-        FieldDefinitions.OA_STATEMENT_URL["name"] : FieldDefinitions.OA_STATEMENT_URL
-    }
+    "fields" : FIELDS
 }
 
 
@@ -676,10 +825,16 @@ _FORMS = {
 # Options lists
 #######################################################
 
-def iso_country_list():
-    from portality.formcontext.choices import Choices
+def iso_country_list(field):
     cl = []
-    for v, d in Choices.country():
+    for v, d in country_options:
+        cl.append({"display" : d, "value" : v})
+    return cl
+
+
+def iso_language_list(field):
+    cl = []
+    for v, d in language_options:
         cl.append({"display" : d, "value" : v})
     return cl
 
@@ -688,52 +843,105 @@ def iso_country_list():
 # Validation features
 #######################################################
 
-def render_required(settings, args):
-    args["required"] = ""
-    if "message" in settings:
-        args["data-parsley-required-message"] = settings["message"]
+class RequiredBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["required"] = ""
+        if "message" in settings:
+            html_attrs["data-parsley-required-message"] = settings["message"]
+
+    @staticmethod
+    def wtforms(field, settings):
+        return validators.DataRequired(message=settings.get("message"))
 
 
-def wtforms_required(settings, args):
-    return validators.DataRequired(message=args.get("message"))
+class IsURLBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["type"] = "url"
+
+    @staticmethod
+    def wtforms(field, settings):
+        # FIXME: do we want the scheme to be optional?
+        return URLOptionalScheme()
 
 
-def render_is_url(settings, args):
-    args["type"] = "url"
+class IntRangeBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-type"] = "digits"
+        if "gte" in settings:
+            html_attrs["data-parsley-min"] = settings.get("gte")
+        if "lte" in settings:
+            html_attrs["data-parsley-max"] = settings.get("lte")
+
+    @staticmethod
+    def wtforms(field, settings):
+        min = settings.get("gte")
+        max = settings.get("lte")
+        kwargs = {}
+        if min is not None:
+            kwargs["min"] = min
+        if max is not None:
+            kwargs["max"] = max
+        return validators.NumberRange(**kwargs)
 
 
-def wtforms_is_url(settings, args):
-    return URLOptionalScheme()
+class MaxTagsBuilder:
+    @staticmethod
+    def wtforms(field, settings):
+        max = settings.get("max")
+        message = settings.get("message") if "message" in settings else 'You can only enter up to {x} keywords.'.format(x=max)
+        return MaxLen(max, message=message)
 
 
-def render_int_range(settings, args):
-    args["data-parsley-type"] = "digits"
-    if "gte" in settings:
-        args["data-parsley-min"] = settings.get("gte")
-    if "lte" in settings:
-        args["data-parsley-max"] = settings.get("lte")
+class StopWordsBuilder:
+    @staticmethod
+    def wtforms(field, settings):
+        stopwords = settings.get("disallowed", [])
+        return StopWords(stopwords)
 
 
-def wtforms_int_range(settings, args):
-    min = args.get("gte")
-    max = args.get("lte")
-    kwargs = {}
-    if min is not None:
-        kwargs["min"] = min
-    if max is not None:
-        kwargs["max"] = max
-    return validators.NumberRange(**kwargs)
+class InPublicDOAJBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        # FIXME: not yet implemented in the front end, so setting here is speculative
+        html_attrs["data-parsley-in-public-doaj"] = settings.get("field")
+
+    @staticmethod
+    def wtforms(field, settings):
+        return InPublicDOAJ(settings.get("field"), message=settings.get("message"))
+
+class OptionalIfBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-optional-if"] = settings.get("field")
+
+    @staticmethod
+    def wtforms(field, settings):
+        return OptionalIf(settings.get("field"))
 
 
-def wtforms_max_tags(settings, args):
-    max = args.get("max")
-    message = args.get("message") if "message" in args else 'You can only enter up to {x} keywords.'.format(x=max)
-    return MaxLen(max, message=message)
+class IsISSNBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["pattern"] = ISSN
+        html_attrs["data-parsley-pattern"] = ISSN
+
+    @staticmethod
+    def wtforms(field, settings):
+        validators.Regexp(regex=ISSN_COMPILED, message=settings.get("message"))
 
 
-def wtforms_stop_words(settings, args):
-    stopwords = args.get("disallowed", [])
-    return StopWords(stopwords)
+class DifferentToBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        # FIXME: front end validator for this does not yet exist
+        html_attrs["data-parsley-different-to"] = settings.get("field")
+
+    @staticmethod
+    def wtforms(field, settings):
+        return DifferentTo(settings.get("field"))
 
 
 #########################################################
@@ -750,20 +958,29 @@ def application_form2obj(form):
 
 PYTHON_FUNCTIONS = {
     "options" : {
-        "iso_country_list" : "portality.forms.application_forms.iso_country_list",
+        "iso_country_list" : iso_country_list,
+        "iso_language_list" : iso_language_list,
     },
     "validate" : {
         "render" : {
-            "required" : "portality.forms.application_forms.render_required",
-            "is_url" : "portality.forms.application_forms.render_is_url",
-            "int_range" : "portality.forms.application_forms.render_int_range",
+            "required" : RequiredBuilder.render,
+            "is_url" : IsURLBuilder.render,
+            "int_range" : IntRangeBuilder.render,
+            "in_public_doaj" : InPublicDOAJBuilder.render,
+            "optional_if" : OptionalIfBuilder.render,
+            "is_issn": IsISSNBuilder.render,
+            "different_to" : DifferentToBuilder.render
         },
         "wtforms" : {
-            "required" : "portality.forms.application_forms.wtforms_required",
-            "is_url" : "portality.forms.application_forms.wtforms_is_url",
-            "max_tags" : "portality.forms.application_forms.wtforms_max_tags",
-            "int_range" : "portality.forms.application_forms.wtforms_int_range",
-            "stop_words" : "portality.forms.application_forms.wtforms_stop_words"
+            "required" : RequiredBuilder.wtforms,
+            "is_url" : IsURLBuilder.wtforms,
+            "max_tags" : MaxTagsBuilder.wtforms,
+            "int_range" : IntRangeBuilder.wtforms,
+            "stop_words" : StopWordsBuilder.wtforms,
+            "in_public_doaj" : InPublicDOAJBuilder.wtforms,
+            "optional_if" : OptionalIfBuilder.wtforms,
+            "is_issn" : IsISSNBuilder.wtforms,
+            "different_to" : DifferentToBuilder.wtforms
         }
     },
 
@@ -788,19 +1005,6 @@ JAVASCRIPT_FUNCTIONS = {
     "select" : "formulaic.widgets.newSelect",
     "taglist" : "formulaic.widgets.newTagList"
 }
-
-
-class StopWords(object):
-    def __init__(self, stopwords, message=None):
-        self.stopwords = stopwords
-        if not message:
-            message = "You may not enter '{stop_word}' in this field"
-        self.message = message
-
-    def __call__(self, form, field):
-        for v in field.data:
-            if v.strip() in self.stopwords:
-                raise validators.ValidationError(self.message.format(stop_word=v))
 
 
 class NumberWidget(widgets.Input):

@@ -10,7 +10,7 @@ from portality.decorators import ssl_required, write_required
 from portality import models
 from portality import util, app_email
 
-from portality.formcontext.validate import ReservedUsernames
+from portality.forms.validate import ReservedUsernames
 
 blueprint = Blueprint('account', __name__)
 

@@ -145,6 +145,8 @@ class Formulaic(object):
         expanded_fieldsets = []
         for fsn in fieldsets:
             fieldset_def = deepcopy(self._definition.get("fieldsets", {}).get(fsn))
+            if fieldset_def is None:
+                raise FormulaicException("Unable to locate fieldset with name {x} in context {y}".format(x=fsn, y=context_name))
             fieldset_def["name"] = fsn
 
             expanded_fields = self._process_fields(context_name, fieldset_def.get("fields", []))
@@ -190,11 +192,12 @@ class Formulaic(object):
 
             # if there is an options_fn, expand them into the options field
             if "options_fn" in field_def:
-                fnpath = self._function_map.get("options", {}).get(field_def["options_fn"])
-                if fnpath is None:
+                opt_fn = self._function_map.get("options", {}).get(field_def["options_fn"])
+                if opt_fn is None:
                     raise FormulaicException("No function mapping defined for function reference '{x}'".format(x=field_def["options_fn"]))
-                fn = plugin.load_function(fnpath)
-                field_def["options"] = fn()
+                if isinstance(opt_fn, str):
+                    opt_fn = plugin.load_function(opt_fn)
+                field_def["options"] = opt_fn(field_def)
 
             # and remove the context overrides settings, so they don't bleed to contexts that don't require them
             if "contexts" in field_def:
@@ -471,9 +474,10 @@ class FormulaicField(object):
                 vname = list(v.keys())[0]
                 args = v[vname]
             if vname not in vfuncs:
-                raise FormulaicException("No validate apply function defined for {x}".format(x=vname))
-            vfn_path = vfuncs[vname]
-            vfn = plugin.load_function(vfn_path)
+                raise FormulaicException("No validate WTForms function defined for {x} in python function references".format(x=vname))
+            vfn = vfuncs[vname]
+            if isinstance(vfn, str):
+                vfn = plugin.load_function(vfn)
             validators.append(vfn(field, args))
 
         wtargs = {

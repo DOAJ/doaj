@@ -6,11 +6,12 @@ from wtforms import StringField, TextAreaField, IntegerField, BooleanField, Form
 from wtforms import widgets
 
 from portality.formcontext.fields import DOAJSelectField, DOAJSelectMultipleField, URLField, TagListField, DisabledTextField, PermissiveSelectField, OptionalRadioField
-from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen, RegexpOnTagList, ReservedUsernames
+from portality.forms.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen, RegexpOnTagList, ReservedUsernames
 
 from portality.formcontext.choices import Choices
 
-ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
+from portality.regex import ISSN_COMPILED as ISSN_REGEX
+
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
 BIG_END_DATE_REGEX = "^\d{4}-\d{2}-\d{2}$"

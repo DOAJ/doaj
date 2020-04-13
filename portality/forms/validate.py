@@ -34,6 +34,7 @@ class DataOptional(object):
             field.errors[:] = []
             raise validators.StopValidation()
 
+
 class OptionalIf(DataOptional):
     # A validator which makes a field optional if # another field is set
     # and has a truthy value.
@@ -166,6 +167,7 @@ class ExclusiveCheckbox(object):
             # {exclusive_checkbox_value} is not present in the message
             # passed to the constructor
 
+
 class URLOptionalScheme(validators.Regexp):
     # copied from (around) https://github.com/wtforms/wtforms/blob/master/wtforms/validators.py#L375
     """
@@ -211,6 +213,7 @@ class MaxLen(object):
         if len(field.data) > self.max_len:
             raise validators.ValidationError(self.message.format(max_len=self.max_len))
 
+
 class RequiredIfRole(validators.Required):
     '''
     Makes a field required, if the user has the specified role
@@ -223,6 +226,7 @@ class RequiredIfRole(validators.Required):
     def __call__(self, form, field):
         if current_user.has_role(self.role):
             super(RequiredIfRole, self).__call__(form, field)
+
 
 class RegexpOnTagList(object):
     """
@@ -254,6 +258,7 @@ class RegexpOnTagList(object):
                         message = self.message
 
                 raise validators.ValidationError(message)
+
 
 class ThisOrThat(object):
     def __init__(self, other_field_name, *args, **kwargs):
@@ -290,3 +295,38 @@ class ReservedUsernames(object):
     @classmethod
     def validate(cls, username):
         return cls().__validate(username)
+
+
+class InPublicDOAJ(object):
+    def __init__(self, search_field, message=None):
+        self.search_field = search_field
+        if not message:
+            message = "You may not enter '{stop_word}' in this field"
+        self.message = message
+
+    def __call__(self, *args, **kwargs):
+        raise NotImplementedError("You need to implement this validator")
+
+
+class StopWords(object):
+    def __init__(self, stopwords, message=None):
+        self.stopwords = stopwords
+        if not message:
+            message = "You may not enter '{stop_word}' in this field"
+        self.message = message
+
+    def __call__(self, form, field):
+        for v in field.data:
+            if v.strip() in self.stopwords:
+                raise validators.ValidationError(self.message.format(stop_word=v))
+
+
+class DifferentTo(object):
+    def __init__(self, other_field, message=None):
+        self.other_field = other_field
+        if not message:
+            message = "This field must contain different text to the field '{x}'".format(x=other_field)
+        self.message = message
+
+    def __call__(self, form, field):
+        raise NotImplementedError("You need to implement this validator")

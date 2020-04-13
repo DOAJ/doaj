@@ -14,7 +14,7 @@ from wtforms import StringField, TextAreaField, FormField, FieldList, HiddenFiel
 
 from portality.core import app
 from portality import models
-from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen
+from portality.forms.validate import ThisOrThat, OptionalIf, MaxLen
 from portality.formcontext.fields import DOAJSelectField
 from portality import regex
 
