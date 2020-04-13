@@ -5,7 +5,7 @@ from portality.lib import swagger, seamless, coerce, dates
 from portality import models
 from copy import deepcopy
 
-from portality.api.v2.data_objects.common_journal_application import OutgoingCommonJournalApplication
+from portality.api.v2.data_objects.common_journal_application import OutgoingCommonJournalApplication, _SHARED_STRUCT
 
 # both incoming and outgoing applications share this struct
 # "required" fields are only put on incoming applications
@@ -29,180 +29,6 @@ OUTGOING_APPLICATION_STRUCT = {
                 "current_journal" : {"coerce" : "unicode"},
                 "date_applied" : {"coerce" : "unicode"},
                 "owner" : {"coerce" : "unicode"}
-            }
-        },
-        "bibjson": {
-            "fields": {
-                "alternative_title": {"coerce": "unicode"},
-                "boai": {"coerce": "bool"},
-                "eissn":{"coerce": "unicode"},
-                "pissn": {"coerce": "unicode"},
-                "publication_time_weeks": {"coerce": "integer"},
-                "title": {"coerce": "unicode"},
-                "discontinued_date":{"coerce":"unicode"}
-            },
-            "lists": {
-                "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
-                "keywords": {"coerce": "unicode", "contains": "field"},
-                "language": {"coerce": "isolang_2letter", "contains": "field"},
-                "license" : {"coerce": "unicode", "contains": "object"},
-                "subject": {"coerce": "unicode", "contains": "object"},
-                "replaces":{"coerce":"issn", "contains": "field"}
-            },
-            "objects": [
-                "apc",
-                "article",
-                "copyright",
-                "deposit_policy",
-                "editorial",
-                "institution",
-                "other_charges",
-                "pid_scheme",
-                "plagiarism",
-                "preservation",
-                "publisher",
-                "ref",
-                "waiver"
-            ],
-            "structs": {
-                "apc": {
-                    "fields": {
-                        "url": {"coerce": "url"}
-                    },
-                    "lists": {
-                        "max": {"contains": "object"}
-                    },
-                    "structs": {
-                        "max": {
-                            "fields": {
-                                "currency": {"coerce": "currency_code"},
-                                "price": {"coerce": "integer"}
-                            }
-                        }
-                    }
-                },
-                "article" : {
-                    "fields" : {
-                        "license_display_example_url" : {"coerce" : "url"},
-                        "orcid" : {"coerce" : "bool"},
-                        "i4oc_open_citations" : {"coerce" : "bool"}
-                    },
-                    "lists" : {
-                        "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["embed", "display", "no"]},
-                    }
-                },
-                "copyright": {
-                    "fields": {
-                        "author_retains": {"coerce": "bool"},
-                        "url": {"coerce": "url"},
-                    }
-                },
-                "deposit_policy": {
-                    "fields": {
-                        "is_registered": {"coerce": "bool"},
-                        "url" : {"coerce": "url"}
-                    },
-                    "lists": {
-                        "service": {"coerce": "unicode", "contains": "field"}
-                    }
-                },
-                "editorial": {
-                    "fields": {
-                        "review_url": {"coerce": "url"},
-                        "board_url": {"coerce": "url"}
-                    },
-                    "lists": {
-                        "review_process": {"contains" : "field", "coerce": "unicode", "allowed_values": ["Editorial "
-                                                                                                         "review",
-                                                                                                         "Peer "
-                                                                                                         "review",
-                                                                                                         "Blind peer "
-                                                                                                         "review",
-                                                                                                         "Double "
-                                                                                                         "blind peer "
-                                                                                                         "review",
-                                                                                                         "Open peer "
-                                                                                                         "review",
-                                                                                                         "None"]},
-                    }
-                },
-                "institution": {
-                    "fields": {
-                        "name": {"coerce": "unicode"},
-                        "country": {"coerce": "country_code"}
-                    }
-                },
-                "license": {
-                    "fields": {
-                        "type": {"coerce": "unicode"},
-                        "url": {"coerce": "url"},
-                        "BY": {"coerce": "bool"},
-                        "NC": {"coerce": "bool"},
-                        "ND": {"coerce": "bool"},
-                        "SA": {"coerce": "bool"}
-                    }
-                },
-                "other_charges": {
-                    "fields": {
-                        "url": {"coerce": "url"}
-                    }
-                },
-                "pid_scheme": {
-                    "lists" : {
-                        "scheme": {"coerce": "unicode", "contains" : "field"}
-                    }
-                },
-                "plagiarism": {
-                    "fields": {
-                        "detection": {"coerce": "bool"},
-                        "url": {"coerce": "url"},
-                    }
-                },
-                "preservation": {
-                    "fields": {
-                        "national_library": {"coerce": "unicode"},
-                        "url": {"coerce": "url"}
-                    },
-                    "lists": {
-                        "service": {"coerce": "unicode", "contains": "field"},
-                    },
-                    "structs" : {
-                        "policy" : {
-                            "fields" : {
-                                "name" : {"coerce": "unicode"},
-                                "domain" : {"coerce" : "unicode"}
-                            }
-                        }
-                    }
-                },
-                "publisher": {
-                    "fields": {
-                        "name": {"coerce": "unicode"},
-                        "country": {"coerce": "country_code"}
-                    }
-                },
-                "ref": {
-                    "fields": {
-                        "license_terms": {"coerce": "unicode"},
-                        "oa_statement": {"coerce": "unicode"},
-                        "journal": {"coerce": "unicode"},
-                        "aims_scope": {"coerce": "unicode"},
-                        "author_instructions": {"coerce": "unicode"}
-
-                    }
-                },
-                "subject": {
-                    "fields": {
-                        "code": {"coerce": "unicode"},
-                        "scheme": {"coerce": "unicode"},
-                        "term": {"coerce": "unicode"}
-                    }
-                },
-                "waiver": {
-                    "fields": {
-                        "url": {"coerce": "url"}
-                    }
-                }
             }
         }
     }
@@ -315,6 +141,7 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     __SEAMLESS_STRUCT__ = [
         OUTGOING_APPLICATION_STRUCT,
         INTERNAL_APPLICATION_STRUCT,
+        _SHARED_STRUCT,
         INCOMING_APPLICATION_REQUIREMENTS
     ]
 
@@ -580,9 +407,13 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
 class OutgoingApplication(OutgoingCommonJournalApplication):
 
     __SEAMLESS_COERCE__ = COERCE_MAP
+    __SEAMLESS_STRUCT__ = [
+        OUTGOING_APPLICATION_STRUCT,
+        _SHARED_STRUCT
+    ]
 
-    def __init__(self, raw=None):
-        super(OutgoingApplication, self).__init__(raw, struct=OUTGOING_APPLICATION_STRUCT, silent_prune=True)
+    def __init__(self, raw=None, **kwargs):
+        super(OutgoingApplication, self).__init__(raw, silent_prune=True, **kwargs)
 
     @classmethod
     def from_model(cls, application):

@@ -23,7 +23,7 @@ class TestAPIDataObj(DoajTestCase):
         with self.assertRaises(AttributeError):
             do.nonexistent_attribute
 
-    def test_02_create_from_model(self):        #TODO fix commented out
+    def test_02_create_from_model(self):
         expected_struct = JournalFixtureFactory.make_journal_apido_struct()
         do = OutgoingJournal.from_model(self.jm)
         assert do.__seamless_struct__.raw == expected_struct, "do._struct:\n {}, \n expected_struct:\n {}".format(do.__seamless_struct__.raw, expected_struct)
@@ -46,9 +46,6 @@ class TestAPIDataObj(DoajTestCase):
         assert do.data["bibjson"]["institution"]["name"] == self.jm.bibjson().institution
         assert do.data["bibjson"]["apc"]["max"][0]["currency"] == self.jm.bibjson().apc[0]["currency"], "do.data['bibjson'].apc.currency:\n{},\nself.jm.bibjson().apc.currency:\n{}".format(do.data["bibjson"].apc.max[0].currency, self.jm.bibjson().apc[0]["currency"])
         assert do.data["bibjson"]["apc"]["max"][0]["price"] == self.jm.bibjson().apc[0]["price"], "do.data['bibjson'].apc.price:\n{},\nself.jm.bibjson().apc.price:\n{}".format(do.data["bibjson"].apc.max[0].price,self.jm.bibjson().apc[0]["price"])
-        assert do.data["bibjson"]["other_charges"]["has_other_charges"] == self.jm.bibjson().has_other_charges,\
-            "do.data['bibjson'].other_charges.has_other_charges:\n{},\nself.jm.bibjson().has_other_charges:\n{}"\
-                .format(do.data["bibjson"]["other_charges"]["has_other_charges"], self.jm.bibjson().has_other_charges)
         assert do.data["bibjson"]["other_charges"]["url"] == self.jm.bibjson().other_charges_url, \
             "do.data['bibjson'].other_charges.other_charges_url:\n{},\nself.jm.bibjson().other_charges_url:\n{}" \
                 .format(do.data["bibjson"]["other_charges"]["other_charges_url"], self.jm.bibjson().other_charges_url)

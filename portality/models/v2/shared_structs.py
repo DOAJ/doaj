@@ -7,9 +7,9 @@ JOURNAL_BIBJSON = {
             "fields" : {
                 "alternative_title" : {"coerce" : "unicode"},
                 "boai" : {"coerce" : "bool"},
-                "discontinued_date" : {"coerce" : "bigenddate"},
                 "eissn" : {"coerce" : "issn"},
                 "pissn" : {"coerce" : "issn"},
+                "discontinued_date" : {"coerce" : "bigenddate"},
                 "publication_time_weeks" : {"coerce" : "integer"},
                 "title" : {"coerce" : "unicode"}
             },
