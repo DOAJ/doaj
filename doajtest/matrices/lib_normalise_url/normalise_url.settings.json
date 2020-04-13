@@ -1,10 +1,12 @@
 {
   "parameters": [
     {
-      "type": "index", 
-      "name": "test_id"
-    }, 
+      "name": "test_id",
+      "type": "index"
+    },
     {
+      "name": "url",
+      "type": "generated",
       "values": {
         "none": {
           "constraints": {
@@ -12,21 +14,21 @@
               "or": [
                 "-"
               ]
-            }, 
+            },
             "whitespace": {
               "or": [
                 "-"
               ]
             }
           }
-        }, 
+        },
         "exists": {
           "constraints": {
             "scheme": {
               "nor": [
                 "-"
               ]
-            }, 
+            },
             "whitespace": {
               "nor": [
                 "-"
@@ -34,36 +36,36 @@
             }
           }
         }
-      }, 
-      "type": "generated", 
-      "name": "url"
-    }, 
+      }
+    },
     {
+      "name": "scheme",
+      "type": "generated",
       "values": {
-        "//": {}, 
-        "ftp": {}, 
-        "none": {}, 
-        "http": {}, 
-        "unknown": {}, 
-        "-": {}, 
-        "invalid": {}, 
-        "ftps": {}, 
-        "https": {}
-      }, 
-      "type": "generated", 
-      "name": "scheme"
-    }, 
+        "-": {},
+        "http": {},
+        "https": {},
+        "ftp": {},
+        "ftps": {},
+        "invalid": {},
+        "unknown": {},
+        "none": {},
+        "//": {}
+      }
+    },
     {
+      "name": "whitespace",
+      "type": "generated",
       "values": {
-        "yes": {}, 
-        "-": {}, 
+        "-": {},
+        "yes": {},
         "no": {}
-      }, 
-      "type": "generated", 
-      "name": "whitespace"
-    }, 
+      }
+    },
     {
-      "default": "", 
+      "name": "raises",
+      "type": "conditional",
+      "default": "",
       "values": {
         "ValueError": {
           "conditions": [
@@ -73,7 +75,7 @@
                   "invalid"
                 ]
               }
-            }, 
+            },
             {
               "scheme": {
                 "or": [
@@ -83,9 +85,7 @@
             }
           ]
         }
-      }, 
-      "type": "conditional", 
-      "name": "raises"
+      }
     }
   ]
 }

@@ -8,7 +8,6 @@ from flask import url_for
 import json
 import time
 
-
 class TestCrudArticle(DoajTestCase):
 
     def setUp(self):
@@ -215,7 +214,7 @@ class TestCrudArticle(DoajTestCase):
         dataset = []
         for i in range(10):
             data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i),
-                                                                   fulltext="http://example.com/" + str(i))
+                                                                          fulltext="http://example.com/" + str(i))
             dataset.append(data)
 
         # create the main account we're going to work as
@@ -258,7 +257,7 @@ class TestCrudArticle(DoajTestCase):
                 resp = t_client.post(url_for('api_v1.bulk_article_create', api_key=article_owner.api_key),
                                      data=json.dumps(dataset))
                 assert resp.status_code == 201
-                reply = json.loads(resp.data)
+                reply = json.loads(resp.data.decode("utf-8"))
                 assert len(reply) == len(dataset)
                 first_art = reply.pop()
                 assert first_art['status'] == 'created'

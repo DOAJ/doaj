@@ -45,11 +45,7 @@ def index():
 def journals():
     if not current_user.has_role("admin_journals"):
         abort(401)
-    return render_template('admin/journals.html',
-               search_page=True,
-               facetviews=['admin.journals.facetview'],
-               admin_page=True
-           )
+    return render_template('admin/journals.html', admin_page=True)
 
 
 @blueprint.route("/journals", methods=["POST", "DELETE"])
@@ -104,7 +100,7 @@ def articles_list():
         try:
             query = json.loads(request.values.get("q"))
         except:
-            print request.values.get("q")
+            print(request.values.get("q"))
             abort(400)
         total = models.Article.hit_count(query, consistent_order=False)
         resp = make_response(json.dumps({"total" : total}))
@@ -183,7 +179,7 @@ def journal_page(journal_id):
                     flash_with_url(a, "success")
                 return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='done'))
             except formcontext.FormContextException as e:
-                flash(e.message)
+                flash(str(e))
                 return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_journal_page=True, lock=lockinfo)
@@ -276,9 +272,8 @@ def journal_continue(journal_id):
 @login_required
 @ssl_required
 def suggestions():
-    return render_template("admin/suggestions.html",
-                           admin_page=True, search_page=True,
-                           facetviews=['admin.applications.facetview'],
+    return render_template("admin/applications.html",
+                           admin_page=True,
                            application_status_choices=choices.Choices.application_status("admin"))
 
 
@@ -312,7 +307,7 @@ def suggestion_page(suggestion_id):
                     flash_with_url(a, "success")
                 return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='done'))
             except formcontext.FormContextException as e:
-                flash(e.message)
+                flash(str(e))
                 return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
@@ -392,8 +387,7 @@ def admin_site_search():
     edit_form = edit_formcontext.render_template()
 
     return render_template("admin/admin_site_search.html",
-                           admin_page=True, search_page=True,
-                           facetviews=['admin.journalarticle.facetview'],
+                           admin_page=True,
                            edit_form=edit_form)
 
 
@@ -401,13 +395,13 @@ def admin_site_search():
 @login_required
 @ssl_required
 def editor_group_search():
-    return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['admin.editorgroups.facetview'])
+    return render_template("admin/editor_group_search.html", admin_page=True)
 
 @blueprint.route("/background_jobs")
 @login_required
 @ssl_required
 def background_jobs_search():
-    return render_template("admin/background_jobs_search.html", admin_page=True, search_page=True, facetviews=['admin.background_jobs.facetview'])
+    return render_template("admin/background_jobs_search.html", admin_page=True)
 
 @blueprint.route("/editor_group", methods=["GET", "POST"])
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])

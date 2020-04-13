@@ -26,6 +26,7 @@ class Api(object):
     R403 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Access to this route/resource requires authentication, and you provided the wrong credentials. This includes situations where you are authenticated successfully via your API key, but you are not the owner of a specific resource and are therefore barred from updating/deleting it."}
     R404 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Resource not found"}
     R409 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "This resource or one it depends on is currently locked for editing by another user, and you may not submit changes to it at this time"}
+    R500 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Unable to retrieve the recource. This record contains bad data"}
 
     SWAG_API_KEY_REQ_PARAM = {
         "description": "<div class=\"search-query-docs\"> Go to the top right of the page and click your username. If you have generated an API key already, it will appear under your name. If not, click the Generate API Key button. Accounts are not available to the public. <a href=\"#intro_auth\">More details</a></div>",
@@ -86,10 +87,15 @@ class Api403Error(Exception):
 class Api404Error(Exception):
     pass
 
+
 class Api409Error(Exception):
     """
     API error to throw if a resource being edited is locked
     """
+    pass
+
+
+class Api500Error(Exception):
     pass
 
 
@@ -155,10 +161,10 @@ def generate_link_headers(metadata):
     keys 'next', 'prev' and 'last' defined. The values are the
     corresponding pre-generated links.
     """
-    link_metadata = {k: v for k, v in metadata.iteritems() if k in LINK_HEADERS}
+    link_metadata = {k: v for k, v in metadata.items() if k in LINK_HEADERS}
 
     links = []
-    for k, v in link_metadata.iteritems():
+    for k, v in link_metadata.items():
         links.append(Link(v, rel=k))  # e.g. Link("http://example.com/foo", rel="next")
 
     return str(LinkHeader(links))  # RFC compliant headers e.g.
@@ -189,38 +195,47 @@ def respond(data, status, metadata=None):
 @app.errorhandler(Api400Error)
 def bad_request(error):
     magic = uuid.uuid1()
-    app.logger.info("Sending 400 Bad Request from client: {x} (ref: {y})".format(x=error.message, y=magic))
+    app.logger.info("Sending 400 Bad Request from client: {x} (ref: {y})".format(x=str(error), y=magic))
     t = deepcopy(ERROR_TEMPLATE)
     t['status'] = 'bad_request'
-    t['error'] = error.message + " (ref: {y})".format(y=magic)
+    t['error'] = str(error) + " (ref: {y})".format(y=magic)
     return respond(json.dumps(t), 400)
 
 
 @app.errorhandler(Api404Error)
 def not_found(error):
     magic = uuid.uuid1()
-    app.logger.info("Sending 404 Not Found from client: {x} (ref: {y})".format(x=error.message, y=magic))
+    app.logger.info("Sending 404 Not Found from client: {x} (ref: {y})".format(x=str(error), y=magic))
     t = deepcopy(ERROR_TEMPLATE)
     t['status'] = 'not_found'
-    t['error'] = error.message + " (ref: {y})".format(y=magic)
+    t['error'] = str(error) + " (ref: {y})".format(y=magic)
     return respond(json.dumps(t), 404)
 
 
 @app.errorhandler(Api401Error)
 def unauthorised(error):
     magic = uuid.uuid1()
-    app.logger.info("Sending 401 Unauthorised from client: {x} (ref: {y})".format(x=error.message, y=magic))
+    app.logger.info("Sending 401 Unauthorised from client: {x} (ref: {y})".format(x=str(error), y=magic))
     t = deepcopy(ERROR_TEMPLATE)
     t['status'] = 'unauthorised'
-    t['error'] = error.message + " (ref: {y})".format(y=magic)
+    t['error'] = str(error) + " (ref: {y})".format(y=magic)
     return respond(json.dumps(t), 401)
 
 
 @app.errorhandler(Api403Error)
 def forbidden(error):
     magic = uuid.uuid1()
-    app.logger.info("Sending 403 Forbidden from client: {x} (ref: {y})".format(x=error.message, y=magic))
+    app.logger.info("Sending 403 Forbidden from client: {x} (ref: {y})".format(x=str(error), y=magic))
     t = deepcopy(ERROR_TEMPLATE)
     t['status'] = 'forbidden'
-    t['error'] = error.message + " (ref: {y})".format(y=magic)
+    t['error'] = str(error) + " (ref: {y})".format(y=magic)
     return respond(json.dumps(t), 403)
+
+@app.errorhandler(Api500Error)
+def bad_request(error):
+    magic = uuid.uuid1()
+    app.logger.info("Sending 500 Bad Request from client: {x} (ref: {y})".format(x=str(error), y=magic))
+    t = deepcopy(ERROR_TEMPLATE)
+    t['status'] = 'Unable to retrieve the recource.'
+    t['error'] = str(error) + " (ref: {y})".format(y=magic)
+    return respond(json.dumps(t), 500)

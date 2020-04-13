@@ -26,19 +26,19 @@ def scroll_edit(connection, es_type, query):
 
         # When we have enough, do some writing
         if len(write_batch) >= batch_size:
-            print "writing ", len(write_batch)
+            print("writing ", len(write_batch))
             raw.bulk(connection, es_type, write_batch)
             write_batch = []
 
     # Write the last part-batch to index
     if len(write_batch) > 0:
-        print "writing ", len(write_batch)
+        print("writing ", len(write_batch))
         raw.bulk(connection, es_type, write_batch)
 
 
 if __name__ == "__main__":
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-        print "System is in READ-ONLY mode, script cannot run"
+        print("System is in READ-ONLY mode, script cannot run")
         exit(1)
 
     import argparse
@@ -50,14 +50,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.query:
-        print 'A query parameter is required. This can be a match_all if you really do want to edit indiscriminately.'
+        print('A query parameter is required. This can be a match_all if you really do want to edit indiscriminately.')
         exit(1)
 
     if not args.type:
-        print 'One or more type parameters are required. If supplying more than one, ensure the query is valid for both types.'
+        print('One or more type parameters are required. If supplying more than one, ensure the query is valid for both types.')
         exit(1)
 
-    print 'Starting {0}.'.format(datetime.now())
+    print('Starting {0}.'.format(datetime.now()))
 
     # Connection to the ES index
     conn = raw.Connection(host=app.config.get("ELASTIC_SEARCH_HOST"), index=app.config.get("ELASTIC_SEARCH_DB"))
@@ -65,4 +65,4 @@ if __name__ == "__main__":
     for t in args.type:
         scroll_edit(conn, t, json.loads(args.query))
 
-    print 'Finished {0}.'.format(datetime.now())
+    print('Finished {0}.'.format(datetime.now()))

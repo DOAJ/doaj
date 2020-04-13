@@ -309,31 +309,19 @@ JOURNAL_APIDO_STRUCT = {
                 "in_doaj": {"coerce": "bool", "get__default": False},
                 "ticked": {"coerce": "bool", "get__default": False},
                 "seal": {"coerce": "bool", "get__default": False},
-                "owner": {"coerce": "unicode"},
-            },
-            "lists": {
-                "contact": {"contains": "object"}
-            },
-            "structs": {
-                "contact": {
-                    "fields": {
-                        "email": {"coerce": "unicode"},
-                        "name": {"coerce": "unicode"},
-                    }
-                }
             }
         },
         "bibjson": {
             "fields": {
                 "allows_fulltext_indexing": {"coerce": "bool"},
                 "alternative_title": {"coerce": "unicode"},
-                "apc_url": {"coerce": "url"},
+                "apc_url": {"coerce": "unicode"},
                 "country": {"coerce": "country_code"},
                 "institution": {"coerce": "unicode"},
                 "provider": {"coerce": "unicode"},
                 "publication_time": {"coerce": "integer"},
                 "publisher": {"coerce": "unicode"},
-                "submission_charges_url": {"coerce": "url"},
+                "submission_charges_url": {"coerce": "unicode"},
                 "title": {"coerce": "unicode"},
             },
             "lists": {
@@ -370,7 +358,7 @@ JOURNAL_APIDO_STRUCT = {
 
                 "archiving_policy": {               # NOTE: this is not the same as the storage model, so beware when working with this
                     "fields": {
-                        "url": {"coerce": "url"},
+                        "url": {"coerce": "unicode"},
                     },
                     "lists": {
                         "policy": {"coerce": "unicode", "contains": "object"},
@@ -389,28 +377,28 @@ JOURNAL_APIDO_STRUCT = {
                 "article_statistics": {
                     "fields": {
                         "statistics": {"coerce": "bool"},
-                        "url": {"coerce": "url"},
+                        "url": {"coerce": "unicode"},
                     }
                 },
 
                 "author_copyright": {
                     "fields": {
                         "copyright": {"coerce": "unicode"},
-                        "url": {"coerce": "url"},
+                        "url": {"coerce": "unicode"},
                     }
                 },
 
                 "author_publishing_rights": {
                     "fields": {
                         "publishing_rights": {"coerce": "unicode"},
-                        "url": {"coerce": "url"},
+                        "url": {"coerce": "unicode"},
                     }
                 },
 
                 "editorial_review": {
                     "fields": {
                         "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
-                        "url": {"coerce": "url"},
+                        "url": {"coerce": "unicode"},
                     }
                 },
 
@@ -425,7 +413,7 @@ JOURNAL_APIDO_STRUCT = {
                     "fields": {
                         "title": {"coerce": "license"},
                         "type": {"coerce": "license"},
-                        "url": {"coerce": "url"},
+                        "url": {"coerce": "unicode"},
                         "version": {"coerce": "unicode"},
                         "open_access": {"coerce": "bool"},
                         "BY": {"coerce": "bool"},
@@ -433,37 +421,37 @@ JOURNAL_APIDO_STRUCT = {
                         "ND": {"coerce": "bool"},
                         "SA": {"coerce": "bool"},
                         "embedded": {"coerce": "bool"},
-                        "embedded_example_url": {"coerce": "url"},
+                        "embedded_example_url": {"coerce": "unicode"},
                     }
                 },
 
                 "link": {
                     "fields": {
                         "type": {"coerce": "unicode"},
-                        "url": {"coerce": "url"},
+                        "url": {"coerce": "unicode"},
                     }
                 },
 
                 "oa_start": {
                     "fields": {
                         "year": {"coerce": "integer"},
-                        "volume": {"coerce": "integer"},
-                        "number": {"coerce": "integer"},
+                        "volume": {"coerce": "unicode"},
+                        "number": {"coerce": "unicode"},
                     }
                 },
 
                 "oa_end": {
                     "fields": {
                         "year": {"coerce": "integer"},
-                        "volume": {"coerce": "integer"},
-                        "number": {"coerce": "integer"},
+                        "volume": {"coerce": "unicode"},
+                        "number": {"coerce": "unicode"},
                     }
                 },
 
                 "plagiarism_detection": {
                     "fields": {
                         "detection": {"coerce": "bool"},
-                        "url": {"coerce": "url"},
+                        "url": {"coerce": "unicode"},
                     }
                 },
 

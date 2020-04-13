@@ -12,6 +12,10 @@ server {
     }
 }
 
+log_format ip_cloudflare '$remote_addr - $remote_user [$time_local] "$request" '
+                         '$status $body_bytes_sent "$http_referer" "$http_user_agent" '
+                         '$http_cf_connecting_ip';
+
 #ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK';
 #ssl_ciphers 'HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES';
 #ssl_stapling on;
@@ -45,9 +49,9 @@ upstream doaj_index {
 # redirect to SSL version but serve some crucial xml schemas via plain http as well
 server {
     listen          80;
-    server_name     .doaj.org doajes.cottagelabs.com ix0.org;
+    server_name     .doaj.org doajes.cottagelabs.com;
     
-    access_log /var/log/nginx/doaj.access.log;
+    access_log /var/log/nginx/doaj.access.log ip_cloudflare;
     error_log /var/log/nginx/doaj.error.log;
 
     location =/static/doaj/doajArticle(.*) { # this is for doajArticles.xsd, but is often accessed missing the "s", so use wildcard
@@ -74,7 +78,7 @@ server {
     proxy_read_timeout 600s;
     client_max_body_size 50M;
 
-    access_log /var/log/nginx/doaj.access.log;
+    access_log /var/log/nginx/doaj.access.log ip_cloudflare;
     error_log /var/log/nginx/doaj.error.log;
 
     location /api {
@@ -226,170 +230,6 @@ server {
     }
 
 }
-
-server {
-    listen          443 ssl;
-    server_name     ix0.org; # can remove all the ix0.org stuff once we are happy it works
-
-    ssl_certificate /etc/letsencrypt/live/ix0.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/ix0.org/privkey.pem;
-
-    proxy_read_timeout 600s;
-    client_max_body_size 50M;
-
-    access_log /var/log/nginx/doaj.access.log;
-    error_log /var/log/nginx/doaj.error.log;
-
-    location /api {
-        if ($http_user_agent ~* (bot|spider) ) {
-            return 403;
-        }
-        limit_req zone=api burst=8 nodelay;
-        proxy_pass http://doaj_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-    location /search {
-        if ($block_ua) {return 403;}
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-    location /query {
-        if ($block_ua) {return 403;}
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-
-    # for now we are going to send all login functions to the bg machine
-    # technically ONLY the routes that require file upload need to go to the bg machine
-    # but we think it is handy to separate them out, and later we could send them to other machines
-    location /account {
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-    location /admin { # there are admin bulk actions that MUST go to bg machine
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-    location /editor {
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-    location /journal/readonly {
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-    location /publisher { # only /publisher/uploadfile MUST go to bg, and /publisher/uploadFile
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-    location /service {
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-
-    # eventually we want to switch these so that they are served from disk, but 
-    # that requires code changes in the app. For now, they are generated by the 
-    # code in a background task, so they have to be served by the app on the bg server
-    location /sitemap.xml {
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-    location /csv {
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-    
-    location / {
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-    
-    location =/robots.txt {
-        alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
-    }
-    location /static/ {
-        alias /home/cloo/doaj/src/doaj/portality/static/;
-        autoindex off;
-        expires max;
-        add_header 'Access-Control-Allow-Origin' '*'; # why are these cors settings needed?
-        add_header 'Access-Control-Allow-Credentials' 'true';
-        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
-    }
-
-}
-
 
 server {
     listen          443;
@@ -401,4 +241,7 @@ server {
     location / {
         proxy_pass http://doaj_index;
     }
+
+    ssl_certificate /etc/letsencrypt/live/doajes.cottagelabs.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/doajes.cottagelabs.com/privkey.pem;
 }

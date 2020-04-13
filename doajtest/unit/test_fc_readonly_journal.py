@@ -13,8 +13,8 @@ from doajtest.fixtures import JournalFixtureFactory
 # Mocks required to make some of the lookups work
 #####################################################################
 mock_lcc_choices = [
-    (u'H', u'Social Sciences'),
-    (u'HB1-3840', u'--Economic theory. Demography')
+    ('H', 'Social Sciences'),
+    ('HB1-3840', '--Economic theory. Demography')
 ]
 
 def mock_lookup_code(code):

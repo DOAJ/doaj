@@ -25,8 +25,8 @@ def editor_group_pull(cls, field, value):
     return eg
 
 mock_lcc_choices = [
-    (u'H', u'Social Sciences'),
-    (u'HB1-3840', u'--Economic theory. Demography')
+    ('H', 'Social Sciences'),
+    ('HB1-3840', '--Economic theory. Demography')
 ]
 
 def mock_lookup_code(code):
@@ -36,12 +36,13 @@ def mock_lookup_code(code):
 
 
 
-APPLICATION_SOURCE = ApplicationFixtureFactory.make_application_source()
+APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
 APPLICATION_FORM = ApplicationFixtureFactory.make_application_form(role="assed")
 
 ######################################################
 # Main test class
-######################################################
+######################################################        data = data.decode("utf-8")
+
 
 class TestAssedAppReview(DoajTestCase):
 
@@ -144,7 +145,7 @@ class TestAssedAppReview(DoajTestCase):
 
     def test_02_classification_required(self):
         # Check we can mark an application 'completed' with a subject classification present
-        in_progress_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        in_progress_application = models.Suggestion(**ApplicationFixtureFactory.make_update_request_source())
         in_progress_application.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
 
         fc = formcontext.ApplicationFormFactory.get_form_context(role='associate_editor', source=in_progress_application)
@@ -155,7 +156,7 @@ class TestAssedAppReview(DoajTestCase):
         assert fc.validate()
 
         # Without a subject classification, we should not be able to set the status to 'completed'
-        no_class_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        no_class_application = models.Suggestion(**ApplicationFixtureFactory.make_update_request_source())
         del no_class_application.data['bibjson']['subject']
         fc = formcontext.ApplicationFormFactory.get_form_context(role='associate_editor', source=no_class_application)
         # Make changes to the application status via the form

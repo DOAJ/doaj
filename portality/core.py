@@ -1,11 +1,14 @@
 import os
+import threading
 
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_cors import CORS
+from lxml import etree
 
 from portality import settings
+from portality.bll import exceptions
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping
 
@@ -26,6 +29,8 @@ def create_app():
     configure_app(app)
     setup_error_logging(app)
     setup_jinja(app)
+    app.config["LOAD_CROSSREF_THREAD"] = threading.Thread(target=load_crossref_schema, args=(app, ), daemon=True)
+    app.config["LOAD_CROSSREF_THREAD"].start()
     login_manager.init_app(app)
     CORS(app)
     initialise_apm(app)
@@ -50,16 +55,16 @@ def configure_app(app):
     here = os.path.dirname(os.path.abspath(__file__))
     app.config['DOAJENV'] = get_app_env(app)
     config_path = os.path.join(os.path.dirname(here), app.config['DOAJENV'] + '.cfg')
-    print 'Running in ' + app.config['DOAJENV']  # the app.logger is not set up yet (?)
+    print('Running in ' + app.config['DOAJENV'])  # the app.logger is not set up yet (?)
     if os.path.exists(config_path):
         app.config.from_pyfile(config_path)
-        print 'Loaded environment config from ' + config_path
+        print('Loaded environment config from ' + config_path)
 
     # import from app.cfg
     config_path = os.path.join(os.path.dirname(here), 'app.cfg')
     if os.path.exists(config_path):
         app.config.from_pyfile(config_path)
-        print 'Loaded secrets config from ' + config_path
+        print('Loaded secrets config from ' + config_path)
 
 
 def get_app_env(app):
@@ -94,6 +99,17 @@ application configuration (settings.py or app.cfg).
         )
     return env
 
+def load_crossref_schema(app):
+    schema_path = app.config["SCHEMAS"].get("crossref")
+
+    if not app.config.get("CROSSREF_SCHEMA"):
+        try:
+            schema_doc = etree.parse(schema_path)
+            schema = etree.XMLSchema(schema_doc)
+            app.config["CROSSREF_SCHEMA"] = schema
+        except Exception as e:
+            raise exceptions.IngestException(
+                message="There was an error attempting to load schema from " + schema_path, inner=e)
 
 def put_mappings(app, mappings):
     # make a connection to the index
@@ -103,12 +119,12 @@ def put_mappings(app, mappings):
     es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
 
     # for each mapping (a class may supply multiple), create them in the index
-    for key, mapping in mappings.iteritems():
+    for key, mapping in iter(mappings.items()):
         if not esprit.raw.type_exists(conn, key, es_version=es_version):
             r = esprit.raw.put_mapping(conn, key, mapping, es_version=es_version)
-            print "Creating ES Type + Mapping for", key, "; status:", r.status_code
+            print("Creating ES Type + Mapping for", key, "; status:", r.status_code)
         else:
-            print "ES Type + Mapping already exists for", key
+            print("ES Type + Mapping already exists for", key)
 
 
 def initialise_index(app):
@@ -144,7 +160,7 @@ def setup_jinja(app):
 
     # a jinja filter that prints to the Flask log
     def jinja_debug(text):
-        print text
+        print(text)
         return ''
     app.jinja_env.filters['debug']=jinja_debug
 

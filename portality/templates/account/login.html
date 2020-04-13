@@ -1,27 +1,22 @@
-{% extends "base.html" %}
+{% extends "sidebar-page.html" %}
 
 {% block content %}
 
 <div class="row">
-    <div class="span4">
+    <div class="col-md-4">
         &nbsp;
     </div>
-    <div class="span5">
+    <div class="col-md-5">
     {% from "_formhelpers.html" import render_field %}
       <form method="post" action="">
           {{ render_field(form.username, placeholder="your username") }}
           {{ render_field(form.password, placeholder="********") }}
           {{ render_field(form.next) }}
         <div class="actions">
-          <input type="submit" value="Login" class="btn btn-primary" />
+          <input id="login-button" type="submit" value="Login" class="btn btn-primary" />
         </div>
       </form>
-      
-      {# FIXME: at some point we will need to support a new user registration process, but not yet
-      {% if app.config['PUBLIC_REGISTER'] %}
-      <p><br />No account yet? <a href="{{url_for('account.register')}}">Sign up now &raquo;</a></p>
-      {% endif %}
-      #}
+
       <br><br>
       <p><a href="{{url_for('account.forgot')}}">I forgot my username/password</a></p>
     </div>

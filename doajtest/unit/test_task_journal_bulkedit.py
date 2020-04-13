@@ -169,7 +169,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
                                  doaj_seal=True,
                                  country="AF",
                                  owner="test1",
-                                 platform=u"my platfo®m",   # stick in a weird character for good measure
+                                 platform="my platfo®m",   # stick in a weird character for good measure
                                  contact_name="my contact",
                                  contact_email="contact@example.com",
                                  dry_run=True)
@@ -180,7 +180,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
                                  doaj_seal=True,
                                  country="AF",
                                  owner="test1",
-                                 platform=u"my platfo®m",   # stick in a weird character for good measure
+                                 platform="my platfo®m",   # stick in a weird character for good measure
                                  contact_name="my contact",
                                  contact_email="contact@example.com",
                                  dry_run=False)
@@ -201,7 +201,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
             assert j.has_seal()
             assert j.bibjson().country == "AF"
             assert j.owner == "test1"
-            assert j.bibjson().provider == u"my platfo®m"
+            assert j.bibjson().provider == "my platfo®m"
             assert j.get_latest_contact_name() == "my contact"
             assert j.get_latest_contact_email() == "contact@example.com"
 

@@ -13,7 +13,7 @@ from portality.formcontext import formcontext
 # Source objects to be used for testing
 #####################################################################
 
-UPDATE_REQUEST_SOURCE = ApplicationFixtureFactory.make_application_source()
+UPDATE_REQUEST_SOURCE = ApplicationFixtureFactory.make_update_request_source()
 UPDATE_REQUEST_SOURCE["admin"]["application_status"] = constants.APPLICATION_STATUS_UPDATE_REQUEST
 UPDATE_REQUEST_FORM = ApplicationFixtureFactory.make_application_form(role="publisher")
 

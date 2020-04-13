@@ -159,15 +159,15 @@ class ExclusiveCheckbox(object):
         # this validator is all about
 
         if detected_exclusive and detected_others:
-            raise validators.ValidationError(self.message
-                    .format(exclusive_checkbox_value=self.exclusive_checkbox_value)
-            )
+            raise validators.ValidationError(self.message.format(exclusive_checkbox_value=self.exclusive_checkbox_value))
             # it won't insert the checkbox value anywhere if
             # {exclusive_checkbox_value} is not present in the message
             # passed to the constructor
 
+
 class URLOptionalScheme(validators.Regexp):
     # copied from (around) https://github.com/wtforms/wtforms/blob/master/wtforms/validators.py#L375
+    # TODO: Check whether this needs bringing up to date after the python 3 / dependency upgrades
     """
     Simple regexp based url validation. Much like the email validator, you
     probably want to validate the url later by other means if the url must
@@ -181,9 +181,10 @@ class URLOptionalScheme(validators.Regexp):
         Error message to raise in case of a validation error.
     """
     def __init__(self, require_tld=True, message=None):
-        tld_part = (require_tld and r'\.[a-z]{2,10}' or '')
+        # apparently, a TLD can be 63 bytes long (we've seen up to 18)
+        tld_part = (require_tld and r'\.[a-z]{2,63}' or '')
         # the original regex - the URL scheme is not optional
-        #regex = r'^[a-z]+://([^/:]+s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
+        # regex = r'^[a-z]+://([^/:]+s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
         regex = r'^([a-z]+://){0,1}?([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
         super(URLOptionalScheme, self).__init__(regex, re.IGNORECASE, message)
 
@@ -281,7 +282,7 @@ class ReservedUsernames(object):
         return self.__validate(field.data)
 
     def __validate(self, username):
-        if not isinstance(username, basestring):
+        if not isinstance(username, str):
             raise validators.ValidationError('Invalid username (not a string) passed to ReservedUsernames validator.')
 
         if username.lower() in [u.lower() for u in app.config.get('RESERVED_USERNAMES', [])]:

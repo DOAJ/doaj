@@ -25,8 +25,8 @@ def editor_group_pull(cls, field, value):
     return eg
 
 mock_lcc_choices = [
-    (u'H', u'Social Sciences'),
-    (u'HB1-3840', u'--Economic theory. Demography')
+    ('H', 'Social Sciences'),
+    ('HB1-3840', '--Economic theory. Demography')
 ]
 
 def mock_lookup_code(code):
@@ -38,7 +38,7 @@ def mock_lookup_code(code):
 # Source objects to be used for testing
 #####################################################################
 
-APPLICATION_SOURCE = ApplicationFixtureFactory.make_application_source()
+APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
 APPLICATION_FORM = ApplicationFixtureFactory.make_application_form(role="maned")
 
 ######################################################

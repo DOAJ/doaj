@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "sidebar-page.html" %}
 {% block content %}
 
 <h2>Frequently Asked Questions</h2>
@@ -542,17 +542,8 @@ can obtain records from DOAJ. The OAI data is always up to date. OAI is well-est
 imported into Excel or any equivalent analysis tool. The CSV file is updated every 30 minutes. To retrieve the data:</p>
 <ol>
 <li><a href="{{ url_for('doaj.csv_data') }}">Download the file to your computer</a></li>
-<li>Open or import the file into a document processing program like Excel or OpenOffice. Be careful to check the configuration options when you import the file as sometimes the fields can shift upon import.</li>
+<li>Open or import the file into a document processing program like Excel or OpenOffice. Be careful to check the configuration options when you import the file as sometimes the fields can shift upon import. Choose Unicode (UTF-8) as the file origin.</li>
 </ol>
-
-<p>HINT: are you seeing scrambled diacritic characters in your CSV? Follow these steps:<br>
-  <ol>
-    <li>On a Windows computer, open the .csv file using Notepad (right click on the file and select Open with and then Notepad).</li>
-    <li>Click File and then Save As.</li>
-    <li>In the dialog window that appears select ANSI from the Encoding field. Then click Save.</li>
-    <li>Now when you open the .csv file in Excel it will include the diacritics.</li>
-    </ol>
-</p>
 
 <p>If you wish to crawl DOAJ, you may do so as long as you follow general guidelines for crawling good behaviour. If your crawler hits our servers too often, or your crawler starts to affect DOAJ's performance in any way, then your access will be restricted or even blocked. It's actually faster and easier for you to collect our medata if you connect via the API.</p>
 

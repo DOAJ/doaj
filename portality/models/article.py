@@ -3,12 +3,14 @@ from portality.models import Journal, shared_structs
 from portality.models.bibjson import GenericBibJSON
 from copy import deepcopy
 from datetime import datetime
-from portality import xwalk, regex, constants
+from portality import datasets, constants
 from portality.core import app
 from portality.lib import normalise
 
 import string
 from unidecode import unidecode
+from functools import reduce
+
 
 class NoJournalException(Exception):
     pass
@@ -21,7 +23,7 @@ class Article(DomainObject):
     def duplicates(cls, issns=None, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
         # some input sanitisation
         issns = issns if isinstance(issns, list) else []
-        urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, unicode) else []
+        urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, str) else []
 
         # make sure that we're dealing with the normal form of the identifiers
         norm_urls = []
@@ -101,12 +103,6 @@ class Article(DomainObject):
         q = ArticleQuery(issns=issns, volume=volume)
         articles = cls.iterate(q.query(), page_size=1000)
         return articles
-
-    @classmethod
-    def get_by_volume_issue(cls, issns, volume, issue):
-        q = ArticleIssueQuery(issns=issns, volume=volume, issue=issue)
-        articles = cls.query(q=q.query())
-        return _sort_articles([i['fields'] for i in articles.get('hits', {}).get('hits', [])])
 
     @classmethod
     def find_by_issns(cls, issns):
@@ -470,7 +466,6 @@ class Article(DomainObject):
                 schema_codes.append(scheme + ":" + subs.get("code"))
 
         # copy the languages
-        from portality import datasets  # delayed import, as it loads some stuff from file
         if len(cbib.journal_language) > 0:
             langs = [datasets.name_for_lang(l) for l in cbib.journal_language]
 
@@ -478,7 +473,7 @@ class Article(DomainObject):
         if jindex.get('country'):
             country = jindex.get('country')
         elif cbib.journal_country:
-            country = xwalk.get_country_name(cbib.journal_country)
+            country = datasets.get_country_name(cbib.journal_country)
 
         # get the title of the license
         lic = cbib.get_journal_license()
@@ -567,7 +562,7 @@ class Article(DomainObject):
             self.data["index"]["language"] = langs
         if country is not None:
             self.data["index"]["country"] = country
-        if schema_codes > 0:
+        if len(schema_codes) > 0:
             self.data["index"]["schema_code"] = schema_codes
         if len(classification_paths) > 0:
             self.data["index"]["classification_paths"] = classification_paths
@@ -705,10 +700,12 @@ class ArticleBibJSON(GenericBibJSON):
     def publisher(self, value):
         self._set_with_struct("journal.publisher", value)
 
-    def add_author(self, name, affiliation=None):
+    def add_author(self, name, affiliation=None, orcid_id=None):
         aobj = {"name": name}
         if affiliation is not None:
             aobj["affiliation"] = affiliation
+        if orcid_id is not None:
+            aobj["orcid_id"] = orcid_id
         self._add_to_list_with_struct("author", aobj)
 
     @property
@@ -740,7 +737,7 @@ class ArticleBibJSON(GenericBibJSON):
         # work out what the date of publication is
         date = ""
         if self.year is not None:
-            if type(self.year is str):          # It should be, if the mappings are correct. but len() needs a sequence.
+            if type(self.year) is str:  # It should be, if the mappings are correct. but len() needs a sequence.
                 # fix 2 digit years
                 if len(self.year) == 2:
                     try:
@@ -764,12 +761,21 @@ class ArticleBibJSON(GenericBibJSON):
             date += str(self.year)
             if self.month is not None:
                 try:
-                    if type(self.month) is int or len(self.month) <= 2:
-                        month_number = self.month
-                    elif len(self.month) == 3:                                     # 'May' works with either case, obvz.
+                    if type(self.month) is int:
+                        if 1 <= int(self.month) <= 12:
+                            month_number = self.month
+                        else:
+                            month_number = 1
+                    elif len(self.month) <= 2:
+                        if 1 <= int(self.month) <= 12:
+                            month_number = self.month
+                        else:
+                            month_number = '1'
+                    elif len(self.month) == 3:  # 'May' works with either case, obvz.
                         month_number = datetime.strptime(self.month, '%b').month
                     else:
                         month_number = datetime.strptime(self.month, '%B').month
+
 
                     # pad the month number to two digits. This accepts int or string
                     date += '-{:0>2}'.format(month_number)
@@ -845,7 +851,8 @@ ARTICLE_BIBJSON_EXTENSION = {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
                         "affiliation" : {"coerce" : "unicode"},
-                        "email" : {"coerce": "unicode"}
+                        "email" : {"coerce": "unicode"},
+                        "orcid_id" : {"coerce" : "unicode"}
                     }
                 },
 
@@ -916,69 +923,6 @@ class ArticleQuery(object):
             q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
 
         return q
-
-
-class ArticleIssueQuery(object):
-    base_query = {
-        "query" : {
-            "filtered": {
-                "filter": {
-                    "bool" : {
-                        "must" : []
-                    }
-                }
-            }
-        },
-        "sort": "bibjson.start_page",
-        "size": 100000,
-        "fields": [
-            "id",
-            "bibjson.journal.volume",
-            "bibjson.journal.number",
-            "bibjson.title",
-            "bibjson.author.name",
-            "bibjson.link.url",
-            "bibjson.start_page",
-            "bibjson.end_page",
-            "bibjson.abstract",
-            "bibjson.month",
-            "bibjson.year"
-        ]
-    }
-
-    _issn_terms = { "terms" : {"index.issn.exact" : ["<list of issns here>"]} }
-    _volume_term = { "term" : {"bibjson.journal.volume.exact" : "<volume here>"} }
-    _issue_term = { "term" : {"bibjson.journal.number.exact" : "<issue here>"} }
-    _noissue_term = { "missing" : {"field": "bibjson.journal.number.exact"} }
-
-    def __init__(self, issns=None, volume=None, issue=None):
-        self.issns = issns
-        self.volume = volume
-        self.issue = issue
-
-    def query(self):
-        q = deepcopy(self.base_query)
-
-        if self.issns is not None:
-            iq = deepcopy(self._issn_terms)
-            iq["terms"]["index.issn.exact"] = self.issns
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(iq)
-
-        if self.volume is not None:
-            vq = deepcopy(self._volume_term)
-            vq["term"]["bibjson.journal.volume.exact"] = self.volume
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
-
-        if self.issue is not None:
-            if self.issue == "unknown":
-                isq = deepcopy(self._noissue_term)
-            else:
-                isq = deepcopy(self._issue_term)
-                isq["term"]["bibjson.journal.number.exact"] = self.issue
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(isq)
-
-        return q
-
     
 class ArticleVolumesQuery(object):
     base_query = {
@@ -1076,7 +1020,7 @@ class DuplicateArticleQuery(object):
         self.issns = issns if isinstance(issns, list) else []
         self.publisher_record_id = publisher_record_id
         self.doi = doi
-        self.urls = urls if isinstance(urls, list) else [urls] if isinstance(urls, str) or isinstance(urls, unicode) else []
+        self.urls = urls if isinstance(urls, list) else [urls] if isinstance(urls, str) or isinstance(urls, str) else []
         self.title = title
         self.volume = volume
         self.number = number

@@ -1,15 +1,3 @@
-[submodule "portality/static/portality/vendor/jtedit"]
-	path = portality/static/portality/vendor/jtedit
-	url = https://github.com/CottageLabs/jtedit.git
-[submodule "portality/static/portality/vendor/facetview"]
-	path = portality/static/portality/vendor/facetview
-	url = https://github.com/DOAJ/facetview.git
-[submodule "portality/static/portality/vendor/graphview"]
-	path = portality/static/portality/vendor/graphview
-	url = https://github.com/CottageLabs/graphview.git
-[submodule "portality/static/portality/vendor/facetview2"]
-	path = portality/static/portality/vendor/facetview2
-	url = https://github.com/CottageLabs/facetview2.git
-[submodule "portality/static/portality/vendor/swagger-ui"]
-	path = portality/static/portality/vendor/swagger-ui
-	url = https://github.com/swagger-api/swagger-ui.git
+[submodule "portality/static/vendor/edges"]
+	path = portality/static/vendor/edges
+	url = https://github.com/CottageLabs/edges.git

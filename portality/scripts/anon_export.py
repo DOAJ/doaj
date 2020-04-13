@@ -90,14 +90,14 @@ anonymisation_procedures = {
 def _copy_on_complete(path):
     name = os.path.basename(path)
     raw_size = os.path.getsize(path)
-    print("Compressing temporary file {x} (from {y} bytes)".format(x=path, y=raw_size))
+    print(("Compressing temporary file {x} (from {y} bytes)".format(x=path, y=raw_size)))
     zipped_name = name + ".gz"
     dir = os.path.dirname(path)
     zipped_path = os.path.join(dir, zipped_name)
     with open(path, "rb") as f_in, gzip.open(zipped_path, "wb") as f_out:
         shutil.copyfileobj(f_in, f_out)
     zipped_size = os.path.getsize(zipped_path)
-    print("Storing from temporary file {x} ({y} bytes)".format(x=zipped_name, y=zipped_size))
+    print(("Storing from temporary file {x} ({y} bytes)".format(x=zipped_name, y=zipped_size)))
     mainStore.store(container, name, source_path=zipped_path)
     tmpStore.delete_file(container, name)
     tmpStore.delete_file(container, zipped_name)
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     parser.add_argument("-c", "--clean", action="store_true", help="Clean any pre-existing output before continuing")
     parser.add_argument("-b", "--batch", default=100000, type=int, help="Output batch sizes")
     args = parser.parse_args()
-    if args.limit > 0:
+    if args.limit is not None and args.limit > 0:
         limit = args.limit
     else:
         limit = None
@@ -128,7 +128,7 @@ if __name__ == '__main__':
     for type_ in esprit.raw.list_types(connection=conn):
         filename = type_ + ".bulk"
         output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
-        print(dates.now() + " " + type_ + " => " + output_file + ".*")
+        print((dates.now() + " " + type_ + " => " + output_file + ".*"))
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
             filenames = esprit.tasks.dump(conn, type_, limit=limit, transform=transform,
@@ -139,7 +139,7 @@ if __name__ == '__main__':
                                           out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
                                           es_bulk_fields=["_id"])
 
-        print(dates.now() + " done\n")
+        print((dates.now() + " done\n"))
 
     tmpStore.delete_container(container)
 

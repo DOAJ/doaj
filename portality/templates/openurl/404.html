@@ -1,4 +1,4 @@
-{% extends "/base.html" %}
+{% extends "sidebar-page.html" %}
 
 {% block content %}
 
@@ -11,5 +11,6 @@
 <li>Use the <a href="{{ url_for('doaj.search') }}">Search</a> page to manually find Open Access articles and journals.</li>
 <li>Refer to the <a href="{{ url_for('openurl.help') }}">OpenURL help</a> page to for guidance with using OpenURL.</li>
 <li><a href="{{ url_for('doaj.suggestion') }}">Apply</a> for a journal's inclusion into DOAJ <strong>if you are the publisher</strong>.</li>
+</ul>
 
 {% endblock %}

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, flash, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from jinja2.exceptions import TemplateNotFound
 
 from portality import dao
@@ -18,18 +18,6 @@ from portality.ui.messages import Messages
 
 import json
 import os
-
-import sys
-try:
-    if sys.version_info.major == 2 and sys.version_info.minor < 7:
-        from portality.ordereddict import OrderedDict
-except AttributeError:
-    if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-        from portality.ordereddict import OrderedDict
-    else:
-        from collections import OrderedDict
-else:
-    from collections import OrderedDict
 
 blueprint = Blueprint('doaj', __name__)
 
@@ -64,6 +52,21 @@ def widgets():
                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
                            )
 
+@blueprint.route("/ssw_demo")
+def ssw_demo():
+    return render_template('doaj/ssw_demo.html',
+                           env=app.config.get("DOAJENV"),
+                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+                           )
+
+@blueprint.route("/fqw_demo")
+def fqw_demo():
+    return render_template('doaj/fqw_demo.html',
+                           env=app.config.get("DOAJENV"),
+                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+                           )
+
+
 
 @blueprint.route("/fqw_hit", methods=['POST'])
 def fqw_hit():
@@ -82,7 +85,7 @@ def fqw_hit():
 
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return render_template('doaj/search.html', search_page=True, facetviews=['public.journalarticle.facetview'])
+    return render_template('doaj/search.html')
 
 
 @blueprint.route("/search", methods=['POST'])
@@ -104,7 +107,7 @@ def search_post():
     if ref is None:
         abort(400)                                                                                # Referrer is required
     else:
-        return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(query)) + "&ref=" + urllib.quote(ref))
+        return redirect(url_for('.search') + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
 
 
 @blueprint.route("/subjects")
@@ -238,20 +241,31 @@ def toc(identifier=None, volume=None, issue=None):
     # identifier may be the journal id or an issn
     journal = None
     issn_ref = False
+
+    if identifier is None:
+        abort(404)
+
     if len(identifier) == 9:
         js = models.Journal.find_by_issn(identifier, in_doaj=True)
+
         if len(js) > 1:
-            abort(400)                             # really this is a 500 - we have more than one journal with this issn
+            abort(400)  # really this is a 500 - we have more than one journal with this issn
         if len(js) == 0:
             abort(404)
         journal = js[0]
 
-        issn_ref = True     # just a flag so we can check if we were requested via issn
-    else:
-        journal = models.Journal.pull(identifier)  # Returns None on fail
+        if journal is None:
+            abort(400)
 
-    if journal is None:
-        abort(404)
+        issn_ref = True  # just a flag so we can check if we were requested via issn
+    elif len(identifier) == 32:
+        js = models.Journal.pull(identifier)  # Returns None on fail
+
+        if js is None or not js.is_in_doaj():
+            abort(404)
+        journal = js
+    else:
+        abort(400)
 
     # get the bibjson record that we're going to render
     bibjson = journal.bibjson()
@@ -312,7 +326,7 @@ def toc(identifier=None, volume=None, issue=None):
 
     # now render all that information
     return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future_journals, past=past_journals,
-                           search_page=True, toc_issns=journal.bibjson().issns(), facetviews=['public.journaltocarticles.facetview'])
+                           toc_issns=journal.bibjson().issns())
 
 
 @blueprint.route("/article/<identifier>")
@@ -354,11 +368,24 @@ def contact():
         if not form.validate():
             return render_template("doaj/contact.html", form=form)
 
-        send_contact_form(form)
-        flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
-        form = ContactUs()
-        return render_template("doaj/contact.html", form=form)
+        data = _verify_recaptcha(form.recaptcha_value.data)
+        if data["success"]:
+            send_contact_form(form)
+            flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
+            form = ContactUs()
+            return render_template("doaj/contact.html", form=form)
+        else:
+            flash("Your form could not be submitted,", "error")
+            return render_template("doaj/contact.html", form=form)
 
+def _verify_recaptcha(g_recaptcha_response):
+    with urllib.request.urlopen('https://www.google.com/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY") + '&response=' + g_recaptcha_response) as url:
+        data = json.loads(url.read().decode())
+        return data
+
+@app.route('/get_site_key')
+def get_site_key():
+    return app.config.get('RECAPTCHA_SITE_KEY')
 ###############################################################
 # The various static endpoints
 ###############################################################

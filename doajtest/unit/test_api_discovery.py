@@ -140,6 +140,7 @@ class TestArticleMatch(DoajTestCase):
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
             bj.add_identifier(bj.DOI, "10.test/{x}".format(x=i))
             bj.publisher = "Test Publisher {x}".format(x=i)
+            bj.add_author("Agnieszka Domanska", "CL University", "https://orcid.org/0000-0001-1234-1234")
             a.save()
 
             # make sure the last updated dates are suitably different
@@ -402,7 +403,11 @@ class TestArticleMatch(DoajTestCase):
             'last': 'https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10'
         }
 
-        assert generate_link_headers(metadata) == '<https://example.org/api/v1/search/articles/%2A?page=1&pageSize=10>; rel=prev, <https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10>; rel=last, <https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10>; rel=next', generate_link_headers(metadata)
+        # Changed ordered after Python 3 introduction, test adjusted - to confirm correctness
+        headers = generate_link_headers(metadata)
+        assert '<https://example.org/api/v1/search/articles/%2A?page=1&pageSize=10>; rel=prev' in headers
+        assert '<https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10>; rel=next' in headers
+        assert '<https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10>; rel=last' in headers
 
     def test_06_deep_paging_limit(self):
         # populate the index with some journals
@@ -441,7 +446,21 @@ class TestArticleMatch(DoajTestCase):
                     data_dump_url = url_for("doaj.public_data_dump")
                     oai_article_url = url_for("oaipmh.oaipmh", specified="article")
                     oai_journal_url = url_for("oaipmh.oaipmh")
-                    assert data_dump_url in e.message
-                    assert oai_article_url in e.message
-                    assert oai_journal_url in e.message
+                    assert data_dump_url in str(e)
+                    assert oai_article_url in str(e)
+                    assert oai_journal_url in str(e)
                     raise
+
+    def test_07_query_escaper(self):
+        from portality.api.v1.discovery import escape
+
+        test_tuples = [
+            ('issn:1111-2222 AND publisher:cheese/biscuits', 'issn:1111-2222 AND publisher:cheese\\/biscuits'),
+            ('issn:1111-2222 AND doi:10.1234/this_has_a:colon AND start_page:3000',
+             'issn:1111-2222 AND doi:10.1234\\/this_has_a\\:colon AND start_page:3000'),
+            ('abundance/of//slashes', 'abundance\\/of\\/\\/slashes'),
+            ('colon:colons:galore AND more:more:more', 'colon:colons\\:galore AND more:more\\:more')
+        ]
+
+        for t in test_tuples:
+            assert escape(t[0]) == t[1], "expected {0} got {1}".format(t[1], t[0])

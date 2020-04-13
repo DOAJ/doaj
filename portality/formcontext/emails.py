@@ -85,8 +85,41 @@ def send_assoc_editor_email(obj):
                         group_name=eg.name,
                         url_root=url_root)
 
+def send_publisher_update_request_editor_assigned_email(application):
+    """ Send email to publisher informing them an editor has been assigned """
 
-def send_publisher_editor_assigned_email(application):
+    owner = models.Account.pull(application.owner)
+    send_list = [
+        {
+            "name" : owner.name,
+            "email" : owner.email,
+            "sent_alert" : Messages.SENT_PUBLISHER_ASSIGNED_EMAIL,
+            "not_sent_alert" : Messages.NOT_SENT_PUBLISHER_ASSIGNED_EMAIL
+        }
+    ]
+
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME","") + " - your update request has been assigned an editor for review"
+
+    alerts = []
+    for instructions in send_list:
+        to = [instructions["email"]]
+        try:
+            app_email.send_mail(to=to,
+                            fro=fro,
+                            subject=subject,
+                            template_name="email/publisher_update_request_editor_assigned.txt",
+                            application_title=application.bibjson().title,
+                            publisher_name=instructions["name"])
+            alerts.append(instructions["sent_alert"])
+        except app_email.EmailException:
+            alerts.append(instructions["not_sent_alert"])
+
+    return alerts
+
+
+
+def send_publisher_application_editor_assigned_email(application):
     """ Send email to publisher informing them an editor has been assigned """
 
     contact_name = application.get_latest_contact_name()
@@ -218,8 +251,40 @@ def send_editor_completed_email(application):
                         application_title=journal_name,
                         url_for_application=url_for_application)
 
+def send_publisher_update_request_inprogress_email(application):
+    """Tell the publisher the UR is underway"""
+    journal_title = application.bibjson().title
 
-def send_publisher_inprogress_email(application):
+    owner = models.Account.pull(application.owner)
+    send_list = [
+        {
+            "name" : owner.name,
+            "email" : owner.email,
+            "sent_alert" : Messages.SENT_PUBLISHER_IN_PROGRESS_EMAIL,
+            "not_sent_alert" : Messages.NOT_SENT_PUBLISHER_IN_PROGRESS_EMAIL
+        }
+    ]
+
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME", "") + " - your update request is under review"
+
+    alerts = []
+    for instructions in send_list:
+        to = [instructions["email"]]
+        try:
+            app_email.send_mail(to=to,
+                                fro=fro,
+                                subject=subject,
+                                template_name="email/publisher_update_request_inprogress.txt",
+                                publisher_name=instructions["name"],
+                                journal_title=journal_title)
+            alerts.append(instructions["sent_alert"])
+        except app_email.EmailException:
+            alerts.append(instructions["not_sent_alert"])
+
+    return alerts
+
+def send_publisher_application_inprogress_email(application):
     """Tell the publisher the application is underway"""
     journal_title = application.bibjson().title
 

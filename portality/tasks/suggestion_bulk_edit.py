@@ -66,7 +66,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
         application_status = self.get_param(params, 'application_status')
 
         if not self._job_parameter_check(params):
-            raise BackgroundException(u"{}.run run without sufficient parameters".format(self.__class__.__name__))
+            raise BackgroundException("{}.run run without sufficient parameters".format(self.__class__.__name__))
 
         for suggestion_id in ids:
             updated = False
@@ -74,14 +74,14 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
             s = models.Suggestion.pull(suggestion_id)
 
             if s is None:
-                job.add_audit_message(u"Suggestion with id {} does not exist, skipping".format(suggestion_id))
+                job.add_audit_message("Suggestion with id {} does not exist, skipping".format(suggestion_id))
                 continue
 
             fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=s)
 
             if editor_group:
                 job.add_audit_message(
-                    u"Setting editor_group to {x} for suggestion {y}".format(x=str(editor_group), y=suggestion_id))
+                    "Setting editor_group to {x} for suggestion {y}".format(x=str(editor_group), y=suggestion_id))
 
                 # set the editor group
                 f = fc.form.editor_group
@@ -94,7 +94,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
                 updated = True
 
             if note:
-                job.add_audit_message(u"Adding note to for suggestion {y}".format(y=suggestion_id))
+                job.add_audit_message("Adding note to for suggestion {y}".format(y=suggestion_id))
                 fc.form.notes.append_entry(
                     {'date': datetime.now().strftime(app.config['DEFAULT_DATE_FORMAT']), 'note': note}
                 )
@@ -102,7 +102,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
 
             if application_status:
                 job.add_audit_message(
-                    u"Setting application_status to {x} for suggestion {y}".format(x=str(editor_group), y=suggestion_id))
+                    "Setting application_status to {x} for suggestion {y}".format(x=str(editor_group), y=suggestion_id))
                 f = fc.form.application_status
                 f.data = application_status
                 updated = True
@@ -113,21 +113,21 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
                         fc.finalise()
                     except formcontext.FormContextException as e:
                         job.add_audit_message(
-                            u"Form context exception while bulk editing suggestion {} :\n{}".format(suggestion_id, e.message))
+                            "Form context exception while bulk editing suggestion {} :\n{}".format(suggestion_id, str(e)))
                 else:
                     data_submitted = {}
-                    for affected_field_name in fc.form.errors.keys():
+                    for affected_field_name in list(fc.form.errors.keys()):
                         affected_field = getattr(fc.form, affected_field_name,
                                                  ' Field {} does not exist on form. '.format(affected_field_name))
-                        if isinstance(affected_field, basestring):  # ideally this should never happen, an error should not be reported on a field that is not present on the form
+                        if isinstance(affected_field, str):  # ideally this should never happen, an error should not be reported on a field that is not present on the form
                             data_submitted[affected_field_name] = affected_field
                             continue
 
                         data_submitted[affected_field_name] = affected_field.data
                     job.add_audit_message(
-                        u"Data validation failed while bulk editing suggestion {} :\n"
-                        u"{}\n\n"
-                        u"The data from the fields with the errors is:\n{}".format(
+                        "Data validation failed while bulk editing suggestion {} :\n"
+                        "{}\n\n"
+                        "The data from the fields with the errors is:\n{}".format(
                             suggestion_id, json.dumps(fc.form.errors), json.dumps(data_submitted)
                         )
                     )
@@ -176,7 +176,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
         cls.set_param(params, 'application_status', kwargs.get('application_status', ''))
 
         if not cls._job_parameter_check(params):
-            raise BackgroundException(u"{}.prepare run without sufficient parameters".format(cls.__name__))
+            raise BackgroundException("{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
 

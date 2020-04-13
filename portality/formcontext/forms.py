@@ -156,7 +156,7 @@ class JournalInformation(Form):
     )
     keywords = TagListField('Add keyword(s) that best describe the journal (comma delimited)',
         [validators.DataRequired(), MaxLen(6, message='You can only enter up to {max_len} keywords.')],
-        description='Maximum 6. Keywords must be in English.'
+        description='Maximum 6. Keywords must be in English. All keywords are stored in lowercase.'
     )
     languages = DOAJSelectMultipleField('Select the language(s) that the Full Text of the articles is published in',
         [validators.DataRequired()],
@@ -192,7 +192,7 @@ class JournalInformation(Form):
         description="The URL should state that the journal actively checks for plagiarism and detail how this is done."
     )
     publication_time = IntegerField('What is the average number of weeks between submission and publication?',
-        [validators.DataRequired(), validators.NumberRange(min=0, max=53)]
+        [validators.DataRequired(), validators.NumberRange(min=0, max=100)]
     )
     oa_statement_url = URLField("What is the URL for the journal's Open Access statement?",
         [validators.DataRequired(), URLOptionalScheme()]

@@ -8,13 +8,14 @@ also be backed up by models, so have a look at the example models and use them /
 new ones as required too.
 """
 import os, sys
+import tzlocal
+import pytz
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
 from flask_login import login_user, current_user
 
 from datetime import datetime
-import tzlocal
-import pytz
+from collections import OrderedDict
 
 import portality.models as models
 from portality.core import app, initialise_index
@@ -60,28 +61,13 @@ app.register_blueprint(doaj)
 # putting it here ensures it will run under any web server
 initialise_index(app)
 
-"""
-FIXME: this needs to be sorted out - they shouldn't be in here and in doaj.py, but there is an issue
-with the 404 pages which requires them
-"""
-try:
-    if sys.version_info.major == 2 and sys.version_info.minor < 7:
-        from portality.ordereddict import OrderedDict
-except AttributeError:
-    if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-        from portality.ordereddict import OrderedDict
-    else:
-        from collections import OrderedDict
-else:
-    from collections import OrderedDict
-
 # The key should correspond to the sponsor logo name in /static/doaj/images/sponsors without the extension for
 # consistency - no code should rely on this though. Sponsors are in tiers: gold, silver, bronze, and patron.
 # Only gold sponsors appear on the front page, and patrons are displayed text-only on the sponsors page alongside
 # the other tiers' logos.
 SPONSORS = {
     'gold': {
-        'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'}
+        'ieee': {'name' : 'IEEE', 'logo':'ieee.png', 'url':'https://www.ieee.org/'}
     },
     'silver': {
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'https://www.frontiersin.org'},
@@ -89,17 +75,20 @@ SPONSORS = {
         'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.svg', 'url': 'http://www.mdpi.com/'},
         'oclc': {'name': 'OCLC', 'logo': 'oclc.svg', 'url': 'https://www.oclc.org/en-europe/home.html'},
         #'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.svg', 'url': 'https://www.plos.org/'},
-        'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
         'ufm': {'name': 'Danish Agency for Science and Higher Education', 'logo': 'ufm.svg', 'url': 'https://ufm.dk/'},
         'kbse': {'name': 'National Library of Sweden', 'logo': 'kbse.svg', 'url': 'https://www.kb.se/'},
         'finnish-learned-soc': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-tsvlogo.svg', 'url': 'https://tsv.fi/en/frontpage'},
         'nsd': {'name': 'NSD (Norwegian Centre for Research Data)', 'logo': 'nsd.svg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
         'swedish-research': {'name': 'Swedish Research Council', 'logo': 'swedish-research.svg', 'url': 'https://vr.se/english.html'},
-        'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
+        #'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://publications.copernicus.org/'},
+        'elsevier': {'name': 'Elsevier', 'logo': 'elsevier.svg', 'url': 'https://www.elsevier.com/'}
+
     },
     'bronze': {
-        '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
+        'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'},
+        'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
+        #'1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
         'aps': {'name': 'American Physical Society', 'logo': 'aps.gif', 'url': 'https://journals.aps.org/'},
         #'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'},
         'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.svg', 'url': 'https://cottagelabs.com'},
@@ -110,16 +99,21 @@ SPONSORS = {
         'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.svg', 'url': 'http://www.taylorandfrancisgroup.com/'},
         'wiley': {'name': 'Wiley', 'logo': 'wiley.svg', 'url': 'https://wiley.com'},
         'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.svg', 'url': 'http://emeraldpublishing.com/'},
-        'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.svg', 'url': 'https://www.thieme.com'},
+        #'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.svg', 'url': 'https://www.thieme.com'},
         #'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tec-mx.png', 'url': 'https://tec.mx/es'},
         #'brill': {'name': 'BRILL', 'logo': 'brill.jpg', 'url': 'https://brill.com/'},
         'ubiquity': {'name': 'Ubiquity Press', 'logo': 'ubiquity_press.svg', 'url': 'https://www.ubiquitypress.com/'},
         #'openedition': {'name': 'Open Edition', 'logo': 'open_edition.svg', 'url': 'https://www.openedition.org'},
         'iop': {"name": "IOP Publishing", "logo": "iop.jpg", "url": "http://ioppublishing.org/"},
-        'degruyter': {'name': 'De Gruyter', 'logo': 'degruyter.jpg', 'url': 'https://www.degruyter.com/dg/page/open-access'},
-        'rsc': {'name': 'Royal Society of Chemistry', 'logo': 'rsc.svg', 'url': 'https://www.rsc.org'},
+        #'degruyter': {'name': 'De Gruyter', 'logo': 'degruyter.jpg', 'url': 'https://www.degruyter.com/dg/page/open-access'},
+        'rsc': {'name': 'Royal Society of Chemistry', 'logo': 'rsc.jpg', 'url': 'https://www.rsc.org'},
         'edp': {'name': 'EDP Sciences', 'logo': 'edp.gif', 'url': 'https://www.edpsciences.org'},
         'elife': {'name': 'eLife', 'logo': 'elife.png', 'url': 'https://elifesciences.org/'},
+        'karger': {'name': 'Karger', 'logo': 'karger.png', 'url': 'https://www.karger.com/'},
+        'cambridge': {'name': 'Cambridge University Press', 'logo': 'cambridge.png', 'url': 'https://www.cambridge.org/'},
+        'iet': {'name': 'IET (Institution of Engineering and Technology)', 'logo': 'iet.png', 'url': 'https://www.theiet.org/'},
+        'pensoft': {'name': 'Pensoft', 'logo': 'pensoftlogo.svg', 'url': 'https://pensoft.net/'},
+        'plos': {'name': 'PLOS', 'logo': 'plos.png', 'url': 'https://plos.org/'}
     },
     'patron': {
         #'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
@@ -129,7 +123,7 @@ SPONSORS = {
 }
 
 # In each tier, create an ordered dictionary sorted alphabetically by sponsor name
-SPONSORS = {k: OrderedDict(sorted(v.items(), key=lambda t: t[0])) for k, v in SPONSORS.items()}
+SPONSORS = {k: OrderedDict(sorted(list(v.items()), key=lambda t: t[0])) for k, v in list(SPONSORS.items())}
 
 
 # Configure the Google Analytics tracker
@@ -137,16 +131,17 @@ from portality.lib import analytics
 try:
     analytics.create_logfile(app.config.get('GOOGLE_ANALTYICS_LOG_DIR', None))
     analytics.create_tracker(app.config['GOOGLE_ANALYTICS_ID'], app.config['BASE_DOMAIN'])
-except (KeyError, analytics.GAException):
+except KeyError:
     err = "No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'."
     if app.config.get("DOAJENV") == 'production':
         app.logger.error(err)
     else:
         app.logger.debug(err)
-
+except analytics.GAException as e:
+    app.logger.debug('Unable to send events to Google Analytics: ' + str(e))
 
 # Redirects from previous DOAJ app.
-# RJ: I have decided to put these here so that they can be managed 
+# RJ: I have decided to put these here so that they can be managed
 # alongside the DOAJ codebase.  I know they could also go into the
 # nginx config, but there is a chance that they will get lost or forgotten
 # some day, whereas this approach doesn't have that risk.
@@ -179,6 +174,12 @@ def legacy_doaj_XML_schema():
             mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
             )
 
+@app.route("/isCrossrefLoaded")
+def is_crossref_loaded():
+    if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").isAlive():
+        return "false"
+    else:
+        return "true"
 
 # FIXME: this used to calculate the site stats on request, but for the time being
 # this is an unnecessary overhead, so taking it out.  Will need to put something
@@ -195,8 +196,6 @@ def set_current_context():
     information.
     '''
     return {
-        'heading_title': '',
-        'heading_text': '',
         'sponsors': SPONSORS,
         'settings': settings,
         'statistics': models.JournalArticle.site_statistics(),
@@ -266,9 +265,9 @@ def form_diff_table_comparison_value(val):
             dvals.append(form_diff_table_comparison_value(v))
         return ", ".join(dvals)
     else:
-        if val is True or (isinstance(val, basestring) and val.lower() == "true"):
+        if val is True or (isinstance(val, str) and val.lower() == "true"):
             return "Yes"
-        elif val is False or (isinstance(val, basestring) and val.lower() == "false"):
+        elif val is False or (isinstance(val, str) and val.lower() == "false"):
             return "No"
         return val
 
@@ -311,13 +310,14 @@ def standard_authentication():
         user = models.Account.pull(remote_user)
         if user:
             login_user(user, remember=False)
-    # add a check for provision of api key
     elif 'api_key' in request.values:
-        res = models.Account.query(q='api_key:"' + request.values['api_key'] + '"')['hits']['hits']
-        if len(res) == 1:
-            user = models.Account.pull(res[0]['_source']['id'])
-            if user:
-                login_user(user, remember=False)
+        q = models.Account.query(q='api_key:"' + request.values['api_key'] + '"')
+        if 'hits' in q:
+            res = q['hits']['hits']
+            if len(res) == 1:
+                user = models.Account.pull(res[0]['_source']['id'])
+                if user:
+                    login_user(user, remember=False)
 
 
 if 'api' in app.config['FEATURES']:
@@ -337,15 +337,21 @@ if 'api' in app.config['FEATURES']:
         )
 
 
-@app.errorhandler(404)
+@app.errorhandler(400)
 def page_not_found(e):
-    return render_template('404.html'), 404
-
+    return render_template('400.html'), 400
 
 @app.errorhandler(401)
 def page_not_found(e):
     return render_template('401.html'), 401
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
 
 if __name__ == "__main__":
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)

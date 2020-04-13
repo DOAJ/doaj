@@ -1,0 +1,13 @@
+/home/cloo/appdata/doaj/ga_logs/portality.lib.analytics.log {
+	daily
+	missingok
+	compress
+	delaycompress
+	notifempty
+	dateext
+	dateyesterday
+	rotate 365
+	postrotate
+	    sudo supervisorctl restart all && sudo nginx -s reload
+	endscript
+}

@@ -72,7 +72,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         params = job.params
 
         if not self._job_parameter_check(params):
-            raise BackgroundException(u"{}.run run without sufficient parameters".format(self.__class__.__name__))
+            raise BackgroundException("{}.run run without sufficient parameters".format(self.__class__.__name__))
 
         # get the parameters for the job
         ids = self.get_param(params, 'ids')
@@ -80,7 +80,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         metadata = json.loads(self.get_param(params, 'replacement_metadata', "{}"))
 
         # if there is metadata, validate it
-        if (len(metadata.keys()) > 0):
+        if len(metadata.keys()) > 0:
             formdata = MultiDict(metadata)
             fc = formcontext.JournalFormFactory.get_form_context(
                 role="bulk_edit",
@@ -95,7 +95,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
             j = models.Journal.pull(journal_id)
 
             if j is None:
-                job.add_audit_message(u"Journal with id {} does not exist, skipping".format(journal_id))
+                job.add_audit_message("Journal with id {} does not exist, skipping".format(journal_id))
                 continue
 
             fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=j)
@@ -122,13 +122,13 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
             if "contact_email" in metadata:
                 fc.form.confirm_contact_email.data = metadata["contact_email"]
 
-            for k, v in metadata.iteritems():
-                job.add_audit_message(u"Setting {f} to {x} for journal {y}".format(f=k, x=v, y=journal_id))
+            for k, v in metadata.items():
+                job.add_audit_message("Setting {f} to {x} for journal {y}".format(f=k, x=v, y=journal_id))
                 fc.form[k].data = v
                 updated = True
 
             if note:
-                job.add_audit_message(u"Adding note to for journal {y}".format(y=journal_id))
+                job.add_audit_message("Adding note to for journal {y}".format(y=journal_id))
                 fc.form.notes.append_entry(
                     {'date': datetime.now().strftime(app.config['DEFAULT_DATE_FORMAT']), 'note': note}
                 )
@@ -139,21 +139,21 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                     try:
                         fc.finalise()
                     except formcontext.FormContextException as e:
-                        job.add_audit_message(u"Form context exception while bulk editing journal {} :\n{}".format(journal_id, e.message))
+                        job.add_audit_message("Form context exception while bulk editing journal {} :\n{}".format(journal_id, str(e)))
                 else:
                     data_submitted = {}
                     for affected_field_name in fc.form.errors.keys():
                         affected_field = getattr(fc.form, affected_field_name,
                                                  ' Field {} does not exist on form. '.format(affected_field_name))
-                        if isinstance(affected_field, basestring):  # ideally this should never happen, an error should not be reported on a field that is not present on the form
+                        if isinstance(affected_field, str):  # ideally this should never happen, an error should not be reported on a field that is not present on the form
                             data_submitted[affected_field_name] = affected_field
                             continue
 
                         data_submitted[affected_field_name] = affected_field.data
                     job.add_audit_message(
-                        u"Data validation failed while bulk editing journal {} :\n"
-                        u"{}\n\n"
-                        u"The data from the fields with the errors is:\n{}".format(
+                        "Data validation failed while bulk editing journal {} :\n"
+                        "{}\n\n"
+                        "The data from the fields with the errors is:\n{}".format(
                             journal_id, json.dumps(fc.form.errors), json.dumps(data_submitted)
                         )
                     )
@@ -208,14 +208,14 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         # get the metadata overwrites
         if "replacement_metadata" in kwargs:
             metadata = {}
-            for k, v in kwargs["replacement_metadata"].iteritems():
+            for k, v in kwargs["replacement_metadata"].items():
                 if v is not None and v != "":
                     metadata[k] = v
             if len(metadata.keys()) > 0:
                 cls.set_param(params, 'replacement_metadata', json.dumps(metadata))
 
         if not cls._job_parameter_check(params):
-            raise BackgroundException(u"{}.prepare run without sufficient parameters".format(cls.__name__))
+            raise BackgroundException("{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
 

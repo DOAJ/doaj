@@ -7,7 +7,7 @@ from doajtest.bootstrap import prepare_for_test
 import dictdiffer
 from datetime import datetime
 from glob import glob
-import os, csv
+import os, csv, shutil
 from portality.lib import paths
 
 prepare_for_test()
@@ -33,6 +33,7 @@ class DoajTestCase(TestCase):
         self.destroy_index()
         for f in self.list_today_article_history_files() + self.list_today_journal_history_files():
             os.remove(f)
+        shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
 
     def list_today_article_history_files(self):
         return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
@@ -62,39 +63,39 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
     :return: nothing, prints results to STDOUT
     """
     differ = dictdiffer.DictDiffer(d1, d2)
-    print 'Added :: keys present in {d1} which are not in {d2}'.format(d1=d1_label, d2=d2_label)
-    print differ.added()
-    print
-    print 'Removed :: keys present in {d2} which are not in {d1}'.format(d1=d1_label, d2=d2_label)
-    print differ.removed()
-    print
-    print 'Changed :: keys which are the same in {d1} and {d2} but whose values are different'.format(d1=d1_label, d2=d2_label)
-    print differ.changed()
-    print
+    print('Added :: keys present in {d1} which are not in {d2}'.format(d1=d1_label, d2=d2_label))
+    print(differ.added())
+    print()
+    print('Removed :: keys present in {d2} which are not in {d1}'.format(d1=d1_label, d2=d2_label))
+    print(differ.removed())
+    print()
+    print('Changed :: keys which are the same in {d1} and {d2} but whose values are different'.format(d1=d1_label, d2=d2_label))
+    print(differ.changed())
+    print()
 
     if differ.changed():
-        print 'Changed values :: the values of keys which have changed. Format is as follows:'
-        print '  Key name:'
-        print '    value in {d1}'.format(d1=d1_label)
-        print '    value in {d2}'.format(d2=d2_label)
-        print
+        print('Changed values :: the values of keys which have changed. Format is as follows:')
+        print('  Key name:')
+        print('    value in {d1}'.format(d1=d1_label))
+        print('    value in {d2}'.format(d2=d2_label))
+        print()
         for key in differ.changed():
-            print ' ', key + ':'
-            print '   ', d1[key]
-            print '   ', d2[key]
-            print
-        print
+            print(' ', key + ':')
+            print('   ', d1[key])
+            print('   ', d2[key])
+            print()
+        print()
 
     if print_unchanged:
-        print 'Unchanged :: keys which are the same in {d1} and {d2} and whose values are also the same'.format(d1=d1_label, d2=d2_label)
-        print differ.unchanged()
+        print('Unchanged :: keys which are the same in {d1} and {d2} and whose values are also the same'.format(d1=d1_label, d2=d2_label))
+        print(differ.unchanged())
 
 def load_from_matrix(filename, test_ids):
     if test_ids is None:
         test_ids = []
-    with open(paths.rel2abs(__file__, "matrices", filename)) as f:
+    with open(paths.rel2abs(__file__, "matrices", filename), 'r') as f:
         reader = csv.reader(f)
-        reader.next()   # pop the header row
+        next(reader)   # pop the header row
         cases = []
         for row in reader:
             if row[0] in test_ids or len(test_ids) == 0:

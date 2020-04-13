@@ -30,25 +30,25 @@ def index():
 @login_required
 @ssl_required
 def group_journals():
-    return render_template("editor/group_journals.html", search_page=True, facetviews=["editor.groupjournals.facetview"])
+    return render_template("editor/group_journals.html")
 
 @blueprint.route('/group_applications')
 @login_required
 @ssl_required
 def group_suggestions():
-    return render_template("editor/group_suggestions.html", search_page=True, facetviews=["editor.groupapplications.facetview"])
+    return render_template("editor/group_applications.html")
 
 @blueprint.route('/your_journals')
 @login_required
 @ssl_required
 def associate_journals():
-    return render_template("editor/associate_journals.html", search_page=True, facetviews=["associate.journals.facetview"])
+    return render_template("editor/associate_journals.html")
 
 @blueprint.route('/your_applications')
 @login_required
 @ssl_required
 def associate_suggestions():
-    return render_template("editor/associate_suggestions.html", search_page=True, facetviews=["associate.applications.facetview"])
+    return render_template("editor/associate_applications.html")
 
 @blueprint.route('/journal/<journal_id>', methods=["GET", "POST"])
 @login_required
@@ -101,7 +101,7 @@ def journal_page(journal_id):
                     flash_with_url(a, "success")
                 return redirect(url_for("editor.journal_page", journal_id=j.id, _anchor='done'))
             except formcontext.FormContextException as e:
-                flash(e.message)
+                flash(str(e))
                 return redirect(url_for("editor.journal_page", journal_id=j.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_journal_page=True, lock=lockinfo)
@@ -158,7 +158,7 @@ def suggestion_page(suggestion_id):
                     flash_with_url(a, "success")
                 return redirect(url_for("editor.suggestion_page", suggestion_id=s.id, _anchor='done'))
             except formcontext.FormContextException as e:
-                flash(e.message)
+                flash(str(e))
                 return redirect(url_for("editor.suggestion_page", suggestion_id=s.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True, lock=lockinfo)

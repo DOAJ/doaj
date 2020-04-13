@@ -7,13 +7,13 @@ from portality.tasks import article_duplicate_report
 from portality.lib import paths
 from portality import models
 from portality.lib import dates
-from portality.clcsv import UnicodeReader
 
 from collections import OrderedDict
 
 import time
 import os
 import shutil
+import csv
 
 TMP_DIR = paths.rel2abs(__file__, "resources/article_duplicates_report")
 
@@ -158,7 +158,7 @@ class TestArticleMatch(DoajTestCase):
 
         table = []
         with open(TMP_DIR + '/duplicate_articles_global_' + dates.today() + '.csv') as f:
-            reader = UnicodeReader(f)
+            reader = csv.reader(f)
             for row in reader:
                 table.append(row)
 

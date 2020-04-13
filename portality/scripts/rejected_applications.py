@@ -1,12 +1,12 @@
-import codecs
+import csv
 
 from portality import constants
-from portality import models, clcsv, datasets
+from portality import models, datasets
 
 
 def do_report(out):
-    with codecs.open(out, "wb", encoding="utf-8") as f:
-        writer = clcsv.UnicodeWriter(f)
+    with open(out, "w", encoding="utf-8") as f:
+        writer = csv.writer(f)
         writer.writerow(["Title", "ISSN(s)", "Country Code", "Country", "Status", "Date Applied", "Last Manual Update", "Last Update", "Notes"])
         gen = models.Suggestion.list_by_status(constants.APPLICATION_STATUS_REJECTED)
         for s in gen:
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.out:
-        print "Please specify an output file path with -o"
+        print("Please specify an output file path with -o")
         exit()
 
     do_report(args.out)

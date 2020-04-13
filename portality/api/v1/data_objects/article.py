@@ -1,5 +1,7 @@
+import re
+
 from portality.lib import dataobj, swagger
-from portality import models
+from portality import models, regex
 from portality.util import normalise_issn
 from copy import deepcopy
 
@@ -47,22 +49,21 @@ BASE_ARTICLE_STRUCT = {
                         "id": {"coerce": "unicode"}
                     }
                 },
-
-                "link": {
-                    "fields": {
-                        "type": {"coerce": "link_type"},
-                        "url": {"coerce": "url"},
-                        "content_type": {"coerce": "link_content_type"}
-                    }
-                },
-
+                # The base struct can't coerce url because we have bad data https://github.com/DOAJ/doajPM/issues/2038
+#                "link": {
+#                    "fields": {
+#                        "type": {"coerce": "link_type"},
+#                        "url": {"coerce": "url"},
+#                        "content_type": {"coerce": "link_content_type"}
+#                    }
+#                },
                 "author": {
                     "fields": {
                         "name": {"coerce": "unicode"},
-                        "affiliation": {"coerce": "unicode"}
+                        "affiliation": {"coerce": "unicode"},
+                        "orcid_id": {"coerce": "unicode"}
                     }
                 },
-
                 "journal": {
                     "fields": {
                         "start_page": {"coerce": "unicode"},
@@ -120,11 +121,33 @@ INCOMING_ARTICLE_REQUIRED = {
                 },
 
                 "link": {
-                    "required": ["type", "url"]
+                    "required": ["type", "url"],
+                    "fields": {
+                        "type": {"coerce": "link_type"},
+                        "url": {"coerce": "url"},
+                        "content_type": {"coerce": "link_content_type"}
+                    }
                 },
 
                 "author": {
                     "required": ["name"]
+                }
+            }
+        }
+    }
+}
+
+OUTGOING_ARTICLE_PATCH = {
+    "structs": {
+        "bibjson": {
+            "structs": {
+                "link": {
+                    "required": ["type", "url"],
+                    "fields": {
+                        "type": {"coerce": "link_type"},
+                        "url": {"coerce": "unicode"},
+                        "content_type": {"coerce": "link_content_type"}
+                    }
                 }
             }
         }
@@ -150,7 +173,7 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
 
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
-        if len(self.data.keys()) == 0:
+        if len(list(self.data.keys())) == 0:
             return
 
         # at least one of print issn / e-issn, and they must be different
@@ -188,6 +211,12 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         if len(self.bibjson.keywords) > 6:
             raise dataobj.DataStructureException("bibjson.keywords may only contain a maximum of 6 keywords")
 
+        # check if orcid id is valid
+        for author in self.bibjson.author:
+            if author.orcid_id is not None and regex.ORCID_COMPILED.match(author.orcid_id) is None:
+                raise dataobj.DataStructureException("Invalid ORCID iD format. Please use url format, eg: https://orcid.org/0001-1111-1111-1111")
+
+
     def to_article_model(self, existing=None):
         dat = deepcopy(self.data)
         if "journal" in dat["bibjson"] and "start_page" in dat["bibjson"].get("journal", {}):
@@ -215,6 +244,7 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
 class OutgoingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
     def __init__(self, raw=None):
         self._add_struct(BASE_ARTICLE_STRUCT)
+        self._add_struct(OUTGOING_ARTICLE_PATCH)
         super(OutgoingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_ARTICLE_COERCE, swagger_trans=BASE_ARTICLE_SWAGGER_TRANS)
 
     @classmethod

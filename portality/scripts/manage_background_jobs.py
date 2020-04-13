@@ -20,6 +20,7 @@ suggestion_bulk_edit
 sitemap
 read_news
 journal_csv
+public_data_dump
 
 If you need to re-queue any other kind of job, you need to add it here.
 
@@ -37,6 +38,7 @@ from portality.tasks.article_cleanup_sync import ArticleCleanupSyncBackgroundTas
 from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask
 from portality.tasks.check_latest_es_backup import CheckLatestESBackupBackgroundTask
 from portality.tasks.prune_es_backups import PruneESBackupsBackgroundTask
+from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
 
 
 HANDLERS = {
@@ -49,6 +51,7 @@ HANDLERS = {
     'set_in_doaj': SetInDOAJBackgroundTask,
     'check_latest_es_backup': CheckLatestESBackupBackgroundTask,
     'prune_es_backups': PruneESBackupsBackgroundTask,
+    'public_data_dump': PublicDataDumpBackgroundTask,
 }
 
 
@@ -58,7 +61,7 @@ def manage_jobs(verb, action, status, from_date, to_date):
     jobs = models.BackgroundJob.q2obj(q=q.query())
 
     print('You are about to {verb} {count} job(s)'.format(verb=verb, count=len(jobs)))
-    doit = raw_input('Proceed? [y\\N] ')
+    doit = input('Proceed? [y\\N] ')
 
     if doit.lower() == 'y':
         print('Please wait...')
@@ -67,7 +70,7 @@ def manage_jobs(verb, action, status, from_date, to_date):
                 print('This script is not set up to {0} task type {1}. Skipping.'.format(verb, job.action))
                 continue
 
-            job.add_audit_message(u"Job {pp} from job management script.".format(
+            job.add_audit_message("Job {pp} from job management script.".format(
                 pp={'requeue': 'requeued', 'cancel': 'cancelled'}[verb]))
 
             if verb == 'requeue':                                                     # Re-queue and execute immediately

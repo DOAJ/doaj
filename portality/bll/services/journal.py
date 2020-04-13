@@ -1,6 +1,8 @@
+import logging
+
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
-from portality import models, constants, clcsv
+from portality import models, constants
 from portality.bll import exceptions
 from portality.core import app
 from portality import lock
@@ -9,7 +11,7 @@ from portality.store import StoreFactory, prune_container
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
 
 from datetime import datetime
-import codecs, os, re
+import re, csv
 
 
 class JournalService(object):
@@ -35,7 +37,7 @@ class JournalService(object):
             {"arg" : account, "instance" : models.Account, "arg_name" : "account"}
         ], exceptions.ArgumentException)
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering journal_2_application")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering journal_2_application")
 
         authService = DOAJ.authorisationService()
 
@@ -46,7 +48,7 @@ class JournalService(object):
             except exceptions.AuthoriseException as e:
                 msg = "Account {x} is not permitted to create an update request on journal {y}".format(x=account.id, y=journal.id)
                 app.logger.info(msg)
-                e.message = msg
+                e.args += (msg,)
                 raise
 
         # copy all the relevant information from the journal to the application
@@ -76,7 +78,7 @@ class JournalService(object):
             application.set_suggester(first_contact.get("name"), first_contact.get("email"))
         application.suggested_on = dates.now()
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Completed journal_2_application; return application object")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed journal_2_application; return application object")
         return application
 
     def journal(self, journal_id, lock_journal=False, lock_account=None, lock_timeout=None):
@@ -154,11 +156,10 @@ class JournalService(object):
                 cols[issn] = kvs + meta_kvs + article_kvs
 
             issns = cols.keys()
-            issns.sort()
 
-            csvwriter = clcsv.UnicodeWriter(file_object)
+            csvwriter = csv.writer(file_object)
             qs = None
-            for i in issns:
+            for i in sorted(issns):
                 if qs is None:
                     qs = [q for q, _ in cols[i]]
                     csvwriter.writerow(qs)
@@ -187,7 +188,7 @@ class JournalService(object):
             ]
             return kvs
 
-        with codecs.open(out, 'wb', encoding='utf-8') as csvfile:
+        with open(out, 'w', encoding='utf-8') as csvfile:
             _make_journals_csv(csvfile)
 
         mainStore = StoreFactory.get("cache")

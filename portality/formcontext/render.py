@@ -1,11 +1,11 @@
-from portality.formcontext.formhelper import FormHelper
+from portality.formcontext.formhelper import FormHelperBS3
 from portality.formcontext.choices import Choices
 from copy import deepcopy
 
 class Renderer(object):
     def __init__(self):
         self.FIELD_GROUPS = {}
-        self.fh = FormHelper()
+        self.fh = FormHelperBS3()
         self._error_fields = []
         self._disabled_fields = []
         self._disable_all_fields = False
@@ -19,7 +19,7 @@ class Renderer(object):
         else:
             return True
 
-    def render_field_group(self, form_context, field_group_name=None):
+    def render_field_group(self, form_context, field_group_name=None, group_cfg=None):
         if field_group_name is None:
             return self._render_all(form_context)
 
@@ -31,7 +31,7 @@ class Renderer(object):
         # build the frag
         frag = ""
         for entry in group_def:
-            field_name = entry.keys()[0]
+            field_name = list(entry.keys())[0]
             config = entry.get(field_name)
             config = deepcopy(config)
 
@@ -44,6 +44,9 @@ class Renderer(object):
             if self._highlight_completable_fields is True:
                 valid = field.validate(form_context.form)
                 config["complete_me"] = not valid
+
+            if group_cfg is not None:
+                config.update(group_cfg)
 
             frag += self.fh.render_field(field, **config)
 
@@ -69,7 +72,7 @@ class Renderer(object):
     def _rewrite_extra_fields(self, form_context, config):
         if "extra_input_fields" in config:
             config = deepcopy(config)
-            for opt, field_ref in config.get("extra_input_fields").iteritems():
+            for opt, field_ref in config.get("extra_input_fields").items():
                 extra_field = form_context.form[field_ref]
                 config["extra_input_fields"][opt] = extra_field
         return config
@@ -159,7 +162,7 @@ class BasicJournalInformationRenderer(Renderer):
 
             "editorial_process" : [
                 {"editorial_board_url" : {"class": "input-xlarge"}},
-                {"review_process" : {}},
+                {"review_process" : {"class" : "form-control input-xlarge"}},
                 {"review_process_url" : {"class": "input-xlarge"}},
                 {"aims_scope_url" : {"class": "input-xlarge"}},
                 {"instructions_authors_url" : {"class": "input-xlarge"}},
@@ -226,7 +229,7 @@ class BasicJournalInformationRenderer(Renderer):
                     'Can\'t number a group which does not exist. '
                     'Field group "{0}" is not defined in self.FIELD_GROUPS '
                     'but is present in self.NUMBERING_ORDER. '
-                    'This is in renderer {1}.'.format(e.message, self.__class__.__name__)
+                    'This is in renderer {1}.'.format(str(e), self.__class__.__name__)
                 )
 
         for group in self.ERROR_CHECK_ORDER:
@@ -237,7 +240,7 @@ class BasicJournalInformationRenderer(Renderer):
                     'Can\'t check a group which does not exist for errors. '
                     'Field group "{0}" is not defined in self.FIELD_GROUPS '
                     'but is present in self.ERROR_CHECK_ORDER. '
-                    'This is in renderer {1}.'.format(e.message, self.__class__.__name__)
+                    'This is in renderer {1}.'.format(str(e), self.__class__.__name__)
                 )
 
     def number_questions(self):
@@ -245,7 +248,7 @@ class BasicJournalInformationRenderer(Renderer):
         for g in self.NUMBERING_ORDER:
             cfg = self.FIELD_GROUPS.get(g)
             for obj in cfg:
-                field = obj.keys()[0]
+                field = list(obj.keys())[0]
                 obj[field]["q_num"] = str(q)
                 q += 1
 
@@ -253,7 +256,7 @@ class BasicJournalInformationRenderer(Renderer):
         for g in self.FIELD_GROUPS:
             cfg = self.FIELD_GROUPS.get(g)
             for obj in cfg:
-                f = obj.keys()[0]
+                f = list(obj.keys())[0]
                 if f == field and "q_num" in obj[f]:
                     return obj[f]["q_num"]
         return ""
@@ -270,7 +273,7 @@ class BasicJournalInformationRenderer(Renderer):
             # it for errors - there are no fields to check.
             if cfg:
                 for obj in cfg:
-                    field = obj.keys()[0]
+                    field = list(obj.keys())[0]
                     if field in self.error_fields:
                         obj[field]["first_error"] = True
                         found = True
@@ -289,9 +292,9 @@ class ApplicationRenderer(BasicJournalInformationRenderer):
         self.ERROR_CHECK_ORDER = deepcopy(self.NUMBERING_ORDER)  # in this case these can be the same
 
         self.FIELD_GROUPS["submitter_info"] = [
-            {"suggester_name" : {}},
-            {"suggester_email" : {"class": "input-xlarge"}},
-            {"suggester_email_confirm" : {"class": "input-xlarge"}},
+            {"suggester_name" : {"label_width" : 5}},
+            {"suggester_email" : {"label_width" : 5, "class": "input-xlarge"}},
+            {"suggester_email_confirm" : {"label_width" : 5, "class": "input-xlarge"}},
         ]
 
         self.insert_field_after(
@@ -356,7 +359,7 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
 
         # extend the list of field groups
         self.FIELD_GROUPS["status"] = [
-            {"application_status" : {"class" : "input-large"}}
+            {"application_status" : {"class" : "form-control input-large"}}
         ]
         self.FIELD_GROUPS["account"] = [
             {"owner" : {"class" : "input-large"}}
@@ -366,7 +369,7 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
         ]
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
-            {"editor" : {"class" : "input-large"}}
+            {"editor" : {"class" : "form-control input-large"}},
         ]
         self.FIELD_GROUPS["notes"] = [
             {
@@ -374,7 +377,8 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
                     "render_subfields_horizontal" : True,
                     "container_class" : "deletable",
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 0
                 }
             }
         ]
@@ -402,21 +406,22 @@ class EditorApplicationReviewRenderer(ApplicationRenderer):
 
         # extend the list of field groups
         self.FIELD_GROUPS["status"] = [
-            {"application_status" : {"class" : "input-large"}}
+            {"application_status" : {"class" : "form-control input-large"}}
         ]
         self.FIELD_GROUPS["subject"] = [
             {"subject" : {}}
         ]
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
-            {"editor" : {"class" : "input-large"}}
+            {"editor" : {"class" : "form-control input-large"}},
         ]
         self.FIELD_GROUPS["notes"] = [
             {
                 "notes" : {
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 0
                 }
             }
         ]
@@ -437,7 +442,7 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
 
         # extend the list of field groups
         self.FIELD_GROUPS["status"] = [
-            {"application_status" : {"class" : "input-large"}}
+            {"application_status" : {"class" : "form-control input-large"}}
         ]
         self.FIELD_GROUPS["subject"] = [
             {"subject" : {}}
@@ -447,7 +452,8 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
                 "notes" : {
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 0
                 }
             }
         ]
@@ -475,11 +481,11 @@ class JournalRenderer(BasicJournalInformationRenderer):
             {"oa_end_year": {"class": "input-mini"}},
         ]
 
-    def render_field_group(self, form_context, field_group_name=None):
+    def render_field_group(self, form_context, field_group_name=None, **kwargs):
         if field_group_name == "old_journal_fields":
             display_old_journal_fields = False
             for old_field_def in self.FIELD_GROUPS["old_journal_fields"]:
-                old_field_name = old_field_def.keys()[0]
+                old_field_name = list(old_field_def.keys())[0]
                 old_field = getattr(form_context.form, old_field_name)
                 if old_field:
                     if old_field.data and old_field.data != 'None':
@@ -489,7 +495,7 @@ class JournalRenderer(BasicJournalInformationRenderer):
                 return ""
             # otherwise let it fall through and render the old journal fields
 
-        return super(JournalRenderer, self).render_field_group(form_context, field_group_name)
+        return super(JournalRenderer, self).render_field_group(form_context, field_group_name, **kwargs)
 
 
 class ManEdJournalReviewRenderer(JournalRenderer):
@@ -503,7 +509,7 @@ class ManEdJournalReviewRenderer(JournalRenderer):
 
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
-            {"editor" : {"class" : "input-large"}},
+            {"editor" : {"class" : "form-control input-large"}},
         ]
         self.FIELD_GROUPS["notes"] = [
             {
@@ -511,7 +517,8 @@ class ManEdJournalReviewRenderer(JournalRenderer):
                     "render_subfields_horizontal" : True,
                     "container_class" : "deletable",
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 0
                 }
             }
         ]
@@ -547,10 +554,10 @@ class ManEdJournalBulkEditRenderer(Renderer):
                 {"country" : {"class": "input-large"}},
 
                 {"owner" : {"class" : "input-large"}},
-                {"contact_name" : {}},
-                {"contact_email" : {}},
+                {"contact_name" : {"class" : "input-large"}},
+                {"contact_email" : {"class" : "input-large"}},
 
-                {"doaj_seal" : {}},
+                {"doaj_seal" : {"class" : "form-control input-large"}}
             ]
         }
 
@@ -563,14 +570,15 @@ class EditorJournalReviewRenderer(JournalRenderer):
 
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
-            {"editor" : {"class" : "input-large"}}
+            {"editor" : {"class" : "form-control input-large"}},
         ]
         self.FIELD_GROUPS["notes"] = [
             {
                 "notes" : {
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 0
                 }
             }
         ]
@@ -596,7 +604,8 @@ class AssEdJournalReviewRenderer(JournalRenderer):
                 "notes" : {
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 0
                 }
             }
         ]
@@ -620,7 +629,8 @@ class ReadOnlyJournalRenderer(JournalRenderer):
                 "notes" : {
                     "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
-                    "subfield_display-date" : "3"
+                    "subfield_display-date" : "3",
+                    "label_width" : 0
                 }
             }
         ]

@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, flash
 from flask_login import current_user, login_required
 
@@ -14,7 +14,7 @@ from portality.ui.messages import Messages
 from portality import lock
 from portality.crosswalks.article_form import ArticleFormXWalk
 
-from huey.exceptions import QueueWriteException
+from huey.exceptions import TaskException
 
 import os, uuid
 from time import sleep
@@ -31,7 +31,7 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template("publisher/index.html", search_page=True, facetviews=["publisher.journals.facetview"])
+    return render_template("publisher/index.html")
 
 
 @blueprint.route("/update_request/<journal_id>", methods=["GET", "POST", "DELETE"])
@@ -99,7 +99,7 @@ def update_request(journal_id):
                     Messages.flash_with_url(a, "success")
                 return redirect(url_for("publisher.updates_in_progress"))
             except formcontext.FormContextException as e:
-                Messages.flash(e.message)
+                Messages.flash(str(e))
                 return redirect(url_for("publisher.update_request", journal_id=journal_id, _anchor='cannot_edit'))
             finally:
                 if jlock is not None: jlock.delete()
@@ -130,7 +130,7 @@ def update_request_readonly(application_id):
 @login_required
 @ssl_required
 def updates_in_progress():
-    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["publisher.update_requests.facetview"])
+    return render_template("publisher/updates_in_progress.html")
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
@@ -142,13 +142,18 @@ def upload_file():
     previous = models.FileUpload.by_owner(current_user.id)
     
     if request.method == "GET":
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        schema = request.cookies.get("schema")
+        if schema is None:
+            schema = ""
+        return render_template('publisher/uploadmetadata.html', previous=previous, schema=schema)
     
     # otherwise we are dealing with a POST - file upload or supply of url
     f = request.files.get("file")
     schema = request.values.get("schema")
     url = request.values.get("url")
-    
+    resp = make_response(redirect(url_for("publisher.upload_file")))
+    resp.set_cookie("schema", schema)
+
     # file upload takes precedence over URL, in case the user has given us both
     if f is not None and f.filename != "" and url is not None and url != "":
         flash("You provided a file and a URL - the URL has been ignored")
@@ -156,23 +161,22 @@ def upload_file():
     try:
         job = IngestArticlesBackgroundTask.prepare(current_user.id, upload_file=f, schema=schema, url=url, previous=previous)
         IngestArticlesBackgroundTask.submit(job)
-    except (BackgroundException, QueueWriteException) as e:
+    except (BackgroundException, TaskException) as e:
         magic = str(uuid.uuid1())
         flash("An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the ID " + magic)
         app.logger.exception('File upload error. ' + magic)
-        return redirect(url_for("publisher.upload_file"))
+        return resp
 
     if f is not None and f.filename != "":
         flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
-        return redirect(url_for("publisher.upload_file"))
+        return resp
     
     if url is not None and url != "":
         flash("File reference successfully received - it will be processed shortly", "success")
-        return redirect(url_for("publisher.upload_file"))
+        return resp
     
     flash("No file or URL provided", "error")
-    return redirect(url_for("publisher.upload_file"))
-
+    return resp
 
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required
@@ -193,7 +197,7 @@ def metadata():
         # the user might request by pressing the add/remove authors buttons
         more_authors = request.values.get("more_authors")
         remove_author = None
-        for v in request.values.keys():
+        for v in list(request.values.keys()):
             if v.startswith("remove_authors"):
                 remove_author = v.split("-")[1]
         

@@ -2,10 +2,12 @@
 <html dir="ltr" lang="en">
 <head>
     <meta charset="utf-8">
+
     {% block page_title %}<title>{{ app.config['SERVICE_NAME'] }}</title>{% endblock %}
     {% block page_desc %}<meta name="description" content="{{ app.config['SERVICE_TAGLINE'] }}">{% endblock %}
+
     <meta name="author" content="{{ app.config['ADMIN_NAME'] }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link href="{{ url_for('static', filename='doaj/images/favicon.ico') }}" rel="icon" type="image/x-icon" />
 
@@ -20,46 +22,31 @@
 
     {% block extra_meta_tags %}{% endblock %}
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <!-- bootstrap 3 -->
+    <link rel="stylesheet" href="/static/vendor/bootstrap-3.3.7/css/bootstrap.min.css?v={{config.get('DOAJ_VERSION')}}">
 
-    {% if config.get("OFFLINE_MODE", False) %}
-        <!-- get bootstrap css -->
-        <link rel="stylesheet" href="/static/doaj/css/offline/bootstrap-combined.min.css?v={{config.get('DOAJ_VERSION')}}">
-
-        <!-- get fontawesome css -->
-        <link href="/static/doaj/css/offline/font-awesome.css?v={{config.get('DOAJ_VERSION')}}" rel="stylesheet">
-    {% else %}
-        <!-- get bootstrap css -->
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/css/bootstrap-combined.min.css">
-
-        <!-- get fontawesome css -->
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-    {% endif %}
-
-
-    <!-- get facetview css -->
-    <!-- <link rel="stylesheet" href="/static/portality/vendor/facetview/css/facetview.css"> -->
-    <link rel="stylesheet" href="/static/portality/vendor/facetview2/css/facetview.css?v={{config.get('DOAJ_VERSION')}}">
-
-    <!-- get portality css -->
-    <link rel="stylesheet" type="text/css" href="/static/portality/css/portality.css?v={{config.get('DOAJ_VERSION')}}">
+    <!-- get fontawesome css -->
+    {# FIXME: we can probably replace this with bootstrap icons? #}
+    <link href="/static/vendor/fontawesome-free-5.8.1/css/all.min.css?v={{config.get('DOAJ_VERSION')}}" rel="stylesheet">
 
     <!-- get the table sorter css -->
-    <link rel="stylesheet" type="text/css" href="/static/portality/vendor/tablesorter/css/blue/style.css?v={{config.get('DOAJ_VERSION')}}">
+    <link rel="stylesheet" type="text/css" href="/static/vendor/tablesorter-2.3.10/css/blue/style.css?v={{config.get('DOAJ_VERSION')}}">
 
     <!-- get the select2 css -->
-    <link rel="stylesheet" type="text/css" href="/static/portality/vendor/select2-release-3.2/select2.css?v={{config.get('DOAJ_VERSION')}}">
+    <link rel="stylesheet" type="text/css" href="/static/vendor/select2-3.5.4/select2.css?v={{config.get('DOAJ_VERSION')}}">
 
     <!-- get jstree css -->
-    <link rel="stylesheet" type="text/css" href="/static/portality/vendor/jstree-3.0.0-beta10/themes/default/style.min.css?v={{config.get('DOAJ_VERSION')}}">
+    <link rel="stylesheet" type="text/css" href="/static/vendor/jstree-3.0.0-beta10/themes/default/style.min.css?v={{config.get('DOAJ_VERSION')}}">
 
     <!-- get the app's css -->
-    <link rel="stylesheet" type="text/css" href="/static/doaj/css/doaj.css?v={{config.get('DOAJ_VERSION')}}">
-    <link rel="stylesheet" type="text/css" href="/static/doaj/css/social-media-icons.css?v={{config.get('DOAJ_VERSION')}}">
-    <link rel="stylesheet" type="text/css" href="/static/doaj/css/facetview-customisations.css?v={{config.get('DOAJ_VERSION')}}">
+    <link rel="stylesheet" type="text/css" href="/static/css/doaj.css?v={{config.get('DOAJ_VERSION')}}">
+
+    <!-- add preconnect links -->
+    <link rel="preconnect" href="https://vars.hotjar.com">
+    <link rel="preconnect" href="https://www.google.com">
+    <link rel="preconnect" href="https://script.hotjar.com">
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://www.google-analytics.com">
 
     {% block extra_stylesheets %}{% endblock %}
 
@@ -78,29 +65,20 @@
 
 <div class="container">
 
+    {% block main_panel %}
     <div class="content">
-        <div class="row-fluid">
-                {# Let facetview fill the whole screen on the search
-                page, but keep space for the sidebar on other pages #}
-            <div class="span{%- if search_page or admin_page or edit_suggestion_page or edit_journal_page or no_sidebar -%}
-                    12
-                {%- else -%}
-                    9
-                {%- endif -%}">
-            {% block content %}{% endblock %}
+        <div class="row">
+            <div class="col-xs-12">
+                {% block content %}{% endblock %}
             </div>
-            {% if not search_page and not admin_page and not edit_suggestion_page and not edit_journal_page and not no_sidebar%}
-                {% include 'sidebar.html' %}
-            {% endif %}
         </div>
-    </div> <!-- /content -->
-
+    </div>
+    {% endblock %}
 
     {% include 'footer.html' %}
     {% include '_js_includes.html' %}
-    {% block extra_js_bottom %}
-      
-    {% endblock extra_js_bottom %}
+
+    {% block extra_js_bottom %}{% endblock extra_js_bottom %}
 
 </div> <!-- /container -->
 

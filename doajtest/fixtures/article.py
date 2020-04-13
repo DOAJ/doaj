@@ -1,6 +1,6 @@
 import os
 from lxml import etree
-from StringIO import StringIO
+from io import StringIO, BytesIO
 from copy import deepcopy
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
@@ -9,52 +9,9 @@ ARTICLES = os.path.join(RESOURCES, "article_uploads.xml")
 
 class ArticleFixtureFactory(object):
 
-    @classmethod
-    def _response_from_xpath(cls, xpath):
-        with open(ARTICLES) as f:
-            doc = etree.parse(f)
-        records = doc.getroot()
-        articles = records.xpath(xpath)
-        nr = etree.Element("records")
-        for a in articles:
-            nr.append(a)
-        out = etree.tostring(nr, encoding="UTF-8", xml_declaration=True)
-        return StringIO(out)
-
-    @classmethod
-    def upload_2_issns_correct(cls):
-        return cls._response_from_xpath("//record[journalTitle='2 ISSNs Correct']")
-
-    @classmethod
-    def upload_2_issns_ambiguous(cls):
-        return cls._response_from_xpath("//record[journalTitle='2 ISSNs Ambiguous']")
-
-    @classmethod
-    def upload_1_issn_correct(cls):
-        return cls._response_from_xpath("//record[journalTitle='PISSN Correct']")
-
-    @classmethod
-    def upload_author_email_address(cls):
-        return cls._response_from_xpath("//record[journalTitle='author email address']")
-
-    @classmethod
-    def upload_1_issn_superlong_should_not_clip(cls):
-        return cls._response_from_xpath("//record[journalTitle='PISSN Correct Superlong Abstract Expected to Not be Clipped']")
-
-    @classmethod
-    def upload_1_issn_superlong_should_clip(cls):
-        return cls._response_from_xpath("//record[journalTitle='PISSN Correct Superlong Abstract Expected to be Clipped']")
-
-    @classmethod
-    def invalid_schema_xml(cls):
-        return StringIO("<this><isnot my='schema'></isnot></this>")
-
-    @classmethod
-    def noids(cls):
-        return cls._response_from_xpath("//record[journalTitle='NOIDS']")
-
     @staticmethod
-    def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True, with_journal_info=True, doi=None, fulltext=None):
+    def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True, with_journal_info=True, doi=None,
+                            fulltext=None):
         source = deepcopy(ARTICLE_SOURCE)
         if not with_id:
             del source["id"]
@@ -96,7 +53,7 @@ class ArticleFixtureFactory(object):
                         ident["id"] = doi
                         set_doi = True
                 if not set_doi:
-                    source["bibjson"]["identifier"].append({"type" : "doi", "id" : doi})
+                    source["bibjson"]["identifier"].append({"type": "doi", "id": doi})
 
         if fulltext is not None:
             if fulltext is False:
@@ -112,10 +69,10 @@ class ArticleFixtureFactory(object):
                         ident["url"] = fulltext
                         set_fulltext = True
                 if not set_fulltext:
-                    source["bibjson"]["link"].append({"type" : "fulltext", "url" : fulltext})
+                    source["bibjson"]["link"].append({"type": "fulltext", "url": fulltext})
 
         return source
-    
+
     @staticmethod
     def make_incoming_api_article(doi=None, fulltext=None):
         template = deepcopy(ARTICLE_SOURCE)
@@ -132,7 +89,7 @@ class ArticleFixtureFactory(object):
                     ident["id"] = doi
                     set_doi = True
             if not set_doi:
-                template["bibjson"]["identifier"].append({"type" : "doi", "id" : doi})
+                template["bibjson"]["identifier"].append({"type": "doi", "id": doi})
 
         if fulltext is not None:
             set_fulltext = False
@@ -142,7 +99,7 @@ class ArticleFixtureFactory(object):
                     ident["url"] = fulltext
                     set_fulltext = True
             if not set_fulltext:
-                template["bibjson"]["link"].append({"type" : "fulltext", "url" : fulltext})
+                template["bibjson"]["link"].append({"type": "fulltext", "url": fulltext})
 
 
         return deepcopy(template)
@@ -151,64 +108,66 @@ class ArticleFixtureFactory(object):
     def make_article_apido_struct():
         return deepcopy(ARTICLE_STRUCT)
 
+
 ARTICLE_SOURCE = {
-    "id" : "abcdefghijk_article",
-    "admin" : {
-        "in_doaj" : True,
-        "seal" : False,
-        "publisher_record_id" : "some_identifier",
-        "upload_id" : "zyxwvutsrqpo_upload_id"
+    "id": "abcdefghijk_article",
+    "admin": {
+        "in_doaj": True,
+        "seal": False,
+        "publisher_record_id": "some_identifier",
+        "upload_id": "zyxwvutsrqpo_upload_id"
     },
-    "bibjson" : {
-        "title" : "Article Title",
+    "bibjson": {
+        "title": "Article Title",
         "identifier": [
-            {"type" : "doi", "id" : "10.0000/SOME.IDENTIFIER"},
+            {"type": "doi", "id": "10.0000/SOME.IDENTIFIER"},
             {"type": "pissn", "id": "1234-5678"},
             {"type": "eissn", "id": "9876-5432"},
         ],
-        "journal" : {
-            "volume" : "1",
-            "number" : "99",
-            "publisher" : "The Publisher",
-            "title" : "The Title",
-            "license" : [
+        "journal": {
+            "volume": "1",
+            "number": "99",
+            "publisher": "The Publisher",
+            "title": "The Title",
+            "license": [
                 {
-                    "title" : "CC BY",
-                    "type" : "CC BY",
-                    "url" : "http://license.example.com",
-                    "version" : "1.0",
+                    "title": "CC BY",
+                    "type": "CC BY",
+                    "url": "http://license.example.com",
+                    "version": "1.0",
                     "open_access": True,
                 }
             ],
-            "language" : ["EN", "FR"],
-            "country" : "US"
+            "language": ["EN", "FR"],
+            "country": "US"
         },
-        "year" : "1991",
-        "month" : "January",
-        "start_page" : "3",
-        "end_page" : "21",
-        "link" : [
+        "year": "1991",
+        "month": "January",
+        "start_page": "3",
+        "end_page": "21",
+        "link": [
             {
-                "url" : "http://www.example.com/article",
-                "type" : "fulltext",
-                "content_type" : "HTML"
+                "url": "http://www.example.com/article",
+                "type": "fulltext",
+                "content_type": "HTML"
             }
         ],
-        "abstract" : "This is the abstract for the example article. It can be quite a long field so there's a fairly"
-                     " sizable chunk of text here. The weather today is grey, because I am writing this from Scotland,"
-                     " and the time is early evening. A cup of tea helps work's pleasantness - in particular, a"
-                     " rooibos blend with vanilla and spice. It's a tea that goes fairly well with ginger biscuits."
-                     " Never dunked, of course. Rooibos is from South Africa; it's a flavoursome caffeine-free tea,"
-                     " ideal for the working day. I like mine fairly strong - steeping for 3-4 minutes gives this tea"
-                     " enough time to release its distinctive flavour, but without overpowering the delicate vanilla. ",
-        "author" : [
+        "abstract": "This is the abstract for the example article. It can be quite a long field so there's a fairly"
+                    " sizable chunk of text here. The weather today is grey, because I am writing this from Scotland,"
+                    " and the time is early evening. A cup of tea helps work's pleasantness - in particular, a"
+                    " rooibos blend with vanilla and spice. It's a tea that goes fairly well with ginger biscuits."
+                    " Never dunked, of course. Rooibos is from South Africa; it's a flavoursome caffeine-free tea,"
+                    " ideal for the working day. I like mine fairly strong - steeping for 3-4 minutes gives this tea"
+                    " enough time to release its distinctive flavour, but without overpowering the delicate vanilla. ",
+        "author": [
             {
                 "name" : "The Author",
-                "affiliation" : "University Cottage Labs"
+                "affiliation" : "University Cottage Labs",
+                "orcid_id" : "https://orcid.org/0000-0001-1234-1234"
             },
         ],
         "keywords": ["word", "key"],
-        "subject" : [
+        "subject": [
             {
                 "scheme": "LCC",
                 "term": "Economic theory. Demography",
@@ -226,9 +185,9 @@ ARTICLE_SOURCE = {
 
 ARTICLE_STRUCT = {
     "fields": {
-        "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
+        "id": {"coerce": "unicode"},  # Note that we'll leave these in for ease of use by the
         "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
-        "last_updated": {"coerce": "utcdatetime"}   # to the real object
+        "last_updated": {"coerce": "utcdatetime"}  # to the real object
     },
     "objects": ["admin", "bibjson"],
 

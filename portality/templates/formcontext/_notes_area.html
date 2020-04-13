@@ -1,0 +1,15 @@
+<section class="form-area">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="form-panel with-borders">
+                <h3>Notes</h3>
+                <p><strong>Notes are presented in descending date order: the most recent notes appear at the top.</strong></p>
+                <div class="addable-field-container" id="notes-outer-container">
+                    {% autoescape off %}
+                    {{ form_context.render_field_group("notes") }}
+                    {% endautoescape %}
+                </div>
+            </section>
+        </div>
+    </div>
+</section>

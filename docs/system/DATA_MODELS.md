@@ -58,7 +58,8 @@
         "author" : [
             {
                 "name" : "<author name>",
-                "affiliation" : "<author affiliation>"
+                "affiliation" : "<author affiliation>",
+                "orcid_id" : "<author ORCID iD>"
             },
         ],
         "keywords" : [<list of free text keywords>],

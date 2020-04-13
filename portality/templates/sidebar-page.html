@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block main_panel %}
+<div class="content">
+    <div class="row">
+        <div class="col-xs-12 col-md-9">
+            {% block content %}{% endblock %}
+        </div>
+        {% include 'sidebar.html' %}
+    </div>
+</div>
+{% endblock %}

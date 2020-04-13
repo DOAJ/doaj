@@ -5,6 +5,9 @@
 <h2>Help</h2>
 <p>Here are some resources to help you with the main Publisher features of DOAJ.</p>
 
+<h3>We have updated our code lists for country, currency and language</h3>
+<p>On 3rd February 2020, we updated the code lists that we use for country, currency and language. This means that some codes which were previously recognised will no longer work. These code lists are referenced in our XSD file which all XML uploads are compared against. If your upload contains one of the old codes, the upload will fail. You will see the error <a href="/publishers#Unable%20to%20validate%20document%20with%20identified%20schema">'Unable to validate document with identified schema'</a>. The full details of all the code changes can be found in <a href="https://docs.google.com/document/d/1qpM7E35ctd6wtm-dKAbs3dW359Zo2q3qN3u98-T7P5I/edit?usp=sharing">this list</a>. If your uploads suddenly fail on or after Monday 3rd February then it is worth consulting this list.</a>
+
 <h3>Application Form</h3>
 <p>Guides to filling in the <a href="{{ url_for('doaj.suggestion') }}">Application Form</a> are available in at least 15 other 
 languages. <a href="{{ url_for('doaj.translated') }}">Download the language of your choice</a> and refer to it when 
@@ -16,11 +19,8 @@ filling in the form.</p>
 <h3>The API</h3>
 <p>The API is the fastest and most automated way for you to upload content to us. You will need the API key from your account page. If you do not see an API key there, contact us. The API is also the only way for you to update or delete content that is part of your content holding with us. For more information, <a href="https://doaj.org/api/v1/docs">see our API page</a>. We recommend that you sign up to our API groups. <b>Español</b>: La API es la forma más rápida y automatizada de cargar contenido en DOAJ. Necesitará la clave API desde la página de su cuenta. Si no ve una clave API allí, contáctenos. La API también es la mejor forma de actualizar o eliminar contenido que forma parte de su contenido con nosotros. Para obtener más información, <a href="https://doaj.org/api/v1/docs"> vaya a la página sobre la API</a>. Le recomendamos que se registre en nuestros grupos de información dedicados a la API</p>
 
-<h3>Creating DOAJ XML</h3>
-<p>For help with creating DOAJ XML and details on XML tags, read the 
-<a href="{{ url_for('doaj.features', _anchor='xml_upload') }}">File Upload Info section</a>
-on our Features pages and the <a href="{{ url_for('doaj.publishers', _anchor='upload') }}">Uploading content</a> 
-section on our 'For Publishers' page.</p>
+<h3>Uploading XML to us</h3>
+<p>For help with <a href="/publishers#uploading_XML">uploading DOAJ or Crossref XML to us</a>; for details on DOAJ XML tagging, go to the <a href="{{ url_for('doaj.features', _anchor='xml_upload') }}">File Upload Info section</a>.</p>
 
 <h3>Problems with XML files</h3>
 <p>For problems with XML file uploads, read the <a href="{{ url_for('doaj.publishers', _anchor='failed') }}">

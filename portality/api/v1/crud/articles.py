@@ -1,5 +1,5 @@
 from portality.api.v1.crud.common import CrudApi
-from portality.api.v1 import Api400Error, Api401Error, Api403Error, Api404Error
+from portality.api.v1 import Api400Error, Api401Error, Api403Error, Api404Error, Api500Error
 from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
 from portality.lib import dataobj
 from portality import models
@@ -70,20 +70,20 @@ class ArticlesCrudApi(CrudApi):
         if account is None:
             raise Api401Error()
 
-        # convert the data into a suitable article model
+        # convert the data into a suitable article model (raises Api400Error if doesn't conform to struct)
         am = cls.prep_article(data)
 
         articleService = DOAJ.articleService()
         try:
             result = articleService.create_article(am, account, add_journal_info=True)
         except ArticleMergeConflict as e:
-            raise Api400Error(e.message)
+            raise Api400Error(str(e))
         except ArticleNotAcceptable as e:
             raise Api400Error("; ".join(e.errors))
 
         # Check we are allowed to create an article for this journal
         if result.get("fail", 0) == 1:
-            raise Api403Error()
+            raise Api403Error("It is not possible to create an article for this journal. Have you included in the upload an ISSN which is not associated with any journal in your account? ISSNs must match exactly the ISSNs against the journal record.")
 
         return am
 
@@ -94,7 +94,7 @@ class ArticlesCrudApi(CrudApi):
         try:
             ia = IncomingArticleDO(data)
         except dataobj.DataStructureException as e:
-            raise Api400Error(e.message)
+            raise Api400Error(str(e))
 
         # if that works, convert it to an Article object
         am = ia.to_article_model()
@@ -123,6 +123,7 @@ class ArticlesCrudApi(CrudApi):
         template['responses']['200']['schema'] = IncomingArticleDO().struct_to_swag(schema_title='Article schema')
         template['responses']['401'] = cls.R401
         template['responses']['404'] = cls.R404
+        template['responses']['500'] = cls.R500
         return cls._build_swag_response(template, api_key_optional_override=True)
 
     @classmethod
@@ -136,7 +137,10 @@ class ArticlesCrudApi(CrudApi):
         # at this point we're happy to return the article if it's
         # meant to be seen by the public
         if ar.is_in_doaj():
-            return OutgoingArticleDO.from_model(ar)
+            try:
+                return OutgoingArticleDO.from_model(ar)
+            except:
+                raise Api500Error()
 
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
@@ -184,7 +188,7 @@ class ArticlesCrudApi(CrudApi):
         try:
             ia = IncomingArticleDO(data)
         except dataobj.DataStructureException as e:
-            raise Api400Error(e.message)
+            raise Api400Error(str(e))
 
         # if that works, convert it to an Article object bringing over everything outside the
         # incoming article from the original article

@@ -33,15 +33,9 @@ class TestAPIDataObj(DoajTestCase):
         assert do.created_date == self.jm.created_date
         assert do.last_updated == self.jm.last_updated
 
-        assert isinstance(do.admin.contact, list), 'Declared as "list" but is not a list?'
-        assert len(do.admin.contact) == 1
-        assert isinstance(do.admin.contact[0], dataobj.DataObj), 'Declared as "object" but not a Data Object?'
-        assert do.admin.contact[0].name == self.jm.get_latest_contact_name()
-        assert do.admin.contact[0].email == self.jm.get_latest_contact_email()
         assert do.admin.in_doaj is self.jm.is_in_doaj(), 'actual val {0} is of type {1}'.format(do.admin.in_doaj, type(do.admin.in_doaj))
         assert do.admin.ticked is self.jm.is_ticked()  # it's not set in the journal fixture so we expect a None back
         assert do.admin.seal is self.jm.has_seal()
-        assert do.admin.owner == self.jm.owner
 
         assert isinstance(do.bibjson, dataobj.DataObj), 'Declared as "object" but not a Data Object?'
         assert do.bibjson.title == self.jm.bibjson().title
@@ -62,12 +56,12 @@ class TestAPIDataObj(DoajTestCase):
             assert isinstance(getattr(do.bibjson, l), list), '{0} declared as "list" but not a list?'.format(l)
 
         assert do.bibjson.oa_start.year == int(self.jm.bibjson().oa_start.get('year'))
-        assert do.bibjson.oa_start.volume == int(self.jm.bibjson().oa_start.get('volume'))
-        assert do.bibjson.oa_start.number == int(self.jm.bibjson().oa_start.get('number'))
+        assert do.bibjson.oa_start.volume == self.jm.bibjson().oa_start.get('volume')
+        assert do.bibjson.oa_start.number == self.jm.bibjson().oa_start.get('number')
 
         assert do.bibjson.oa_end.year == int(self.jm.bibjson().oa_end.get('year'))
-        assert do.bibjson.oa_end.volume == int(self.jm.bibjson().oa_end.get('volume'))
-        assert do.bibjson.oa_end.number == int(self.jm.bibjson().oa_end.get('number'))
+        assert do.bibjson.oa_end.volume == self.jm.bibjson().oa_end.get('volume')
+        assert do.bibjson.oa_end.number == self.jm.bibjson().oa_end.get('number')
 
         assert do.bibjson.apc.currency == self.jm.bibjson().apc['currency']
         assert do.bibjson.apc.average_price == self.jm.bibjson().apc['average_price']

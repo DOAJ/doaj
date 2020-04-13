@@ -1,7 +1,7 @@
 from portality import models
 from portality.api.v1.crud.common import CrudApi
 from portality.api.v1.data_objects.journal import OutgoingJournal
-from portality.api.v1 import Api401Error, Api404Error
+from portality.api.v1 import Api400Error, Api401Error, Api404Error
 
 from copy import deepcopy
 
@@ -32,7 +32,10 @@ class JournalsCrudApi(CrudApi):
     @classmethod
     def retrieve(cls, jid, account):
         # is the journal id valid
-        j = models.Journal.pull(jid)
+        try:
+            j = models.Journal.pull(jid)
+        except Exception as e:
+            raise Api400Error(str(e))
         if j is None:
             raise Api404Error()
 
@@ -50,7 +53,7 @@ class JournalsCrudApi(CrudApi):
         # we need to check ownership
         # is the current account the owner of the journal
         # if not we raise a 404 because that id does not exist for that user account.
-        if j.owner != account.id:
+        if account.is_anonymous or j.owner != account.id:
             raise Api404Error()
 
         return OutgoingJournal.from_model(j)
