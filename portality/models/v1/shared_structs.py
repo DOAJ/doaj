@@ -67,7 +67,7 @@ JOURNAL_BIBJSON_EXTENSION = {
                 "format" : {"contains" : "field", "coerce" : "unicode"},
                 "license" : {"contains" : "object"},
                 "is_replaced_by" : {"contains" : "field", "coerce" : "unicode"},
-                "replaces" : {"contains" : "field", "coerce" : "unicode"}
+                "replaces" : {"contains" : "field", "coerce" : "issn"}
             },
             "objects" : [
                 "oa_start",

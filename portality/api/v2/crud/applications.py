@@ -88,7 +88,7 @@ class ApplicationsCrudApi(CrudApi):
                 if e.reason == AuthoriseException.WRONG_STATUS:
                     raise Api403Error("The application is no longer in a state in which it can be edited via the API")
                 else:
-                    raise Api404Error()
+                    raise Api404Error(str(e))
             except lock.Locked as e:
                 raise Api409Error("The application you are requesting an update for is locked for editing by another user")
 
@@ -96,7 +96,7 @@ class ApplicationsCrudApi(CrudApi):
             if vanilla_ap is None:
                 if jlock is not None: jlock.delete()
                 if alock is not None: alock.delete()
-                raise Api404Error()
+                raise Api404Error(jlock, alock)
 
             # convert the incoming application into the web form
             form = MultiDict(xwalk.SuggestionFormXWalk.obj2form(ap))

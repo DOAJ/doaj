@@ -39,15 +39,15 @@ OUTGOING_APPLICATION_STRUCT = {
                 "pissn": {"coerce": "unicode"},
                 "publication_time_weeks": {"coerce": "integer"},
                 "title": {"coerce": "unicode"},
-                "discontinued_date":{"coerce":"unicode"},
-                "replaces":{"coerce":"unicode"}
+                "discontinued_date":{"coerce":"unicode"}
             },
             "lists": {
                 "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
                 "keywords": {"coerce": "unicode", "contains": "field"},
                 "language": {"coerce": "isolang_2letter", "contains": "field"},
                 "license" : {"coerce": "unicode", "contains": "object"},
-                "subject": {"coerce": "unicode", "contains": "object"}
+                "subject": {"coerce": "unicode", "contains": "object"},
+                "replaces":{"coerce":"issn", "contains": "field"}
             },
             "objects": [
                 "apc",
@@ -223,13 +223,15 @@ INTERNAL_APPLICATION_STRUCT = {
                 "editor_group" : {"coerce" : "unicode"},
                 "editor" : {"coerce" : "unicode"},
                 "owner" : {"coerce" : "unicode"},
-                "notes" : {"coerce" : "unicode"},
                 "seal" : {"coerce" : "unicode"}
             },
             "objects": [
                 "applicant",
                 "contact"
             ],
+            "lists": {
+                "notes" : {"contains" : "object"},
+            },
             "structs" : {
                 "applicant" : {
                     "fields" : {

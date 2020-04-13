@@ -145,11 +145,6 @@ APPLICATION_SOURCE = {
 }
 
 _isbj = deepcopy(JOURNAL_SOURCE['bibjson'])
-_isbj["preservation"] = {
-    "national_library": "Trinity",
-    "url": "http://digital.archiving.policy",
-    "service" : ["LOCKSS", "CLOCKSS", "A safe place"]
-}
 del _isbj["subject"]
 del _isbj["replaces"]
 del _isbj["is_replaced_by"]

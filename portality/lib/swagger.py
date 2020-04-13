@@ -99,6 +99,6 @@ class SwaggerSupport(object):
                 swag_properties[l]['items']['properties'] = self.__struct_to_swag_properties(struct=struct.get('structs', {}).get(l, {}), path=newpath)  # recursive call, process sub-struct(s)
                 swag_properties[l]['items']['required'] = deepcopy(struct.get('structs', {}).get(l, {}).get('required', []))
             else:
-                raise DataSchemaException("Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items.".format(x=newpath))
+                raise DataSchemaException("Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items. Found: {y}".format(x=newpath, y=instructions['contains']))
 
         return swag_properties

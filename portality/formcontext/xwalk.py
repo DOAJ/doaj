@@ -250,7 +250,7 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         bibjson.add_preservation(services, library)
 
         if form.preservation_url.data:
-            bibjson.preservation_url = form.preservation_url
+            bibjson.preservation_url = form.preservation_url.data
 
         if form.copyright_url.data:
             bibjson.author_retains_copyright = True
