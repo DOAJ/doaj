@@ -115,6 +115,7 @@ def subjects():
     return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
 
 
+"""
 @blueprint.route("/application/new", methods=["GET", "POST"])
 @write_required()
 def suggestion():
@@ -128,18 +129,12 @@ def suggestion():
             return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
         else:
             return fc.render_template(edit_suggestion_page=True)
+"""
 
-############################################
-# Experimental
+from portality.forms.application_forms import ApplicationFormFactory
 
-#from portality.lib.formulaic import Formulaic
-#from portality.formcontext.form_definitions import FORMS, PYTHON_FUNCTIONS, JAVASCRIPT_FUNCTIONS
-
-from portality.formcontext.form_definitions import application_form as ApplicationFormFactory
-
-
-@blueprint.route("/application/newnew", methods=["GET", "POST"])
-@blueprint.route("/application/newnew/<draft_id>", methods=["GET", "POST"])
+@blueprint.route("/application/new", methods=["GET", "POST"])
+@blueprint.route("/application/new/<draft_id>", methods=["GET", "POST"])
 @write_required()
 @login_required
 def public_application(draft_id=None):

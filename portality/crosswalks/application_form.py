@@ -224,7 +224,9 @@ class ApplicationFormXWalk(JournalGenericXWalk):
             bibjson.boai = form.boai.data
         if form.oa_statement_url.data:
             bibjson.oa_statement_url = form.oa_statement_url.data
-        if form.country.data:
+
+        """
+        if form.publisher_country.data:
             bibjson.publisher_country = form.country.data
         if form.keywords.data:
             bibjson.keywords = form.keywords.data
@@ -240,7 +242,8 @@ class ApplicationFormXWalk(JournalGenericXWalk):
             bibjson.set_editorial_review(form.peer_review.data, "http://example.com/editorial-review")
         if form.peer_review_other.data:
             bibjson.add_editorial_review_process(form.peer_review_other.data)
-
+        """
+        
         return application
 
         if form.title.data:

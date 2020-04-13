@@ -38,10 +38,10 @@
                         </a>
                     </li>
 
-                    <li{% if request.path == url_for('doaj.suggestion') %} class="active"{% endif %}>
-                        <a href="{{url_for('doaj.suggestion')}}">
+                    <li{% if request.path == url_for('doaj.public_application') %} class="active"{% endif %}>
+                        <a href="{{url_for('doaj.public_application')}}">
                             Apply
-                            {% if request.path == url_for('doaj.suggestion') %} <span class="sr-only">(current)</span>{% endif %}
+                            {% if request.path == url_for('doaj.public_application') %} <span class="sr-only">(current)</span>{% endif %}
                         </a>
                     </li>
 

@@ -16,7 +16,8 @@ from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_p
 from portality.core import app
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, article_bulk_delete
 from portality.bll.doaj import DOAJ
-from portality.formcontext import emails
+# from portality.formcontext import emails
+import portality.notifications.application_emails as emails
 from portality.ui.messages import Messages
 
 from portality.view.forms import EditorGroupForm, MakeContinuation

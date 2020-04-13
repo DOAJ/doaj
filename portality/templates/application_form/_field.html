@@ -1,13 +1,9 @@
 <div class="{{ f.name }}_container" {% if f.has_conditional %}style="display:none"{% endif %}>
     <div class="row">
         <div class="col-xs-12">
-            {% if f.help.doaj_criteria %}<span title="{{ f.help.doaj_criteria }}">DOAJ</span>&nbsp;{% endif %}
-            {% if f.help.seal_criteria %}<span title="{{ f.help.seal_criteria }}">SEAL</span>{% endif %}
-        </div>
-        <div class="col-xs-12">
             <div class="form-group">
                 <label class="control-label col-md-4" for="{{ f.name }}">
-                    <a class="question_id" name="{{ f.name }}" href="#{{ f.name }}">{{ f.name }}</a>
+                    <a class="question_id" name="{{ f.name }}" href="#{{ f.name }}">{{ f.name }}</a><br>
                     {{ f.label }}
                     {% if f.has_validator("required") %}<br>(required){% endif %}
                 </label>
@@ -19,10 +15,10 @@
                         </div>
                     </div>
 
-                    {% if f.help.description %}
+                    {% if f.help.short_help %}
                     <div class="row">
                         <div class="col-xs-12">
-                            {{ f.help.description }}
+                            {{ f.help.short_help }}
                         </div>
                     </div>
                     {% endif %}
@@ -42,7 +38,9 @@
                 </div>
             </div>
             <div class="col-md-1">
-                <span title="{{ f.help.tooltip }}">?</span>
+                {% if f.help.doaj_criteria %}<span title="{{ f.help.doaj_criteria }}">DOAJ</span>&nbsp;{% endif %}
+                {% if f.help.seal_criteria %}<span title="{{ f.help.seal_criteria }}">SEAL</span>{% endif %}
+                {% if f.help.long_help %}<span title="{{ f.help.long_help }}">HELP</span>{% endif %}
             </div>
         </div>
     </div>

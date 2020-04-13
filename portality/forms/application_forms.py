@@ -10,7 +10,423 @@ from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen, RegexpOnTagList, ReservedUsernames
 
 
+# Stop words used in the keywords field
+STOP_WORDS = [
+    "open access",
+    "high quality",
+    "peer-reviewed",
+    "peer-review",
+    "peer review",
+    "quality",
+    "multidisciplinary",
+    "interdisciplinary",
+    "journal",
+    "scholarly journal",
+    "open science",
+    "impact factor",
+    "scholarly",
+    "research journal"
+]
+
+
+########################################################
+# Define all our individual fields
+########################################################
+
+class FieldDefinitions:
+    BOAI = {
+        "name" : "boai",
+        "label": "DOAJ adheres to the BOAI [definition of open access LINK].  This means that users are"
+            "permitted 'to read, download, copy, distribute, print, search, or link to the full texts of articles,"
+            "or use them for any other lawful purpose, without financial, legal, or technical barriers other than"
+            "those inseparable from gaining access to the internet itself.' Does the journal adhere to this"
+            "definition of open access?",
+        "input": "checkbox",
+        "help": {
+            "doaj_criteria": "You must answer 'Yes'"
+        },
+        "validate": [
+            {"required" : {"message" : "You must check this box to continue"}}
+        ],
+        "contexts" : {
+            "editor" : {
+                "disabled" : True
+            },
+            "associate_editor" : {
+                "disabled" : True
+            }
+        },
+        "asynchronous_warnings": [
+            {"value_must_be" : {"value" : "y"}}
+        ]
+    }
+
+    OA_STATEMENT_URL = {
+        "name" : "oa_statement_url",
+        "label": "Link to the journal's open access statement",
+        "input": "text",
+        "help": {
+            "long_help": "Here is an example of a suitable Open Access statement that meets our criteria: "
+                       "This is an open access journal which means that all content is freely available without charge"
+                       "to the user or his/her institution. Users are allowed to read, download, copy, distribute,"
+                       "print, search, or link to the full texts of the articles, or use them for any other lawful"
+                       "purpose, without asking prior permission from the publisher or the author. This is in accordance"
+                       "with the BOAI definition of open access.",
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate": [
+            "required",
+            "is_url"
+        ],
+        "widgets": [
+            "clickable_url"
+        ],
+        "attr": {
+            "type": "url"
+        },
+        "asynchronous_warnings": [
+            "all_urls_the_same"
+        ]
+    }
+
+    TITLE = {
+        "name" : "title",
+        "label" : "Journal title",
+        "input" : "text",
+        "help" : {
+            "long_help" : "The journal title must match what is displayed on the website and what is registered at the "
+                            "ISSN Portal (https://portal.issn.org/).  For translated titles, you may add the "
+                            "translation as an alternative title.",
+            "doaj_criteria" : "Title in application form, title at ISSN and website must all match"
+        },
+        "validate": [
+            "required"
+        ],
+        "contexts": {
+            "editor": {
+                "disabled": True
+            },
+            "associate_editor": {
+                "disabled": True
+            },
+            "update_request" : {
+                "disabled" : True
+            }
+        }
+    }
+
+    ALTERNATIVE_TITLE = {
+        "name" : "alternative_title",
+        "label" : "Alternative title (including translation of the title)",
+        "input" : "text",
+        "help" : {
+            "long_help" : "The journal title must match what is displayed on the website and what is registered at the "
+                            "ISSN Portal (https://portal.issn.org/).  For translated titles, you may add the "
+                            "translation as an alternative title.",
+        },
+        "validate": [
+            "required"
+        ],
+        "contexts": {
+            "editor": {
+                "disabled": True
+            },
+            "associate_editor": {
+                "disabled": True
+            }
+        }
+    }
+
+    JOURNAL_URL = {
+        "name" : "journal_url",
+        "label" : "Link to the journal's homepage",
+        "input" : "text",
+        "validate": [
+            "required",
+            "is_url",
+            "in_public_doaj"    # Check whether the journal url is already in a public DOAJ record
+        ],
+        "widgets" : [
+            "clickable_url"
+        ],
+        "contexts": {
+            "editor": {
+                "disabled": True
+            },
+            "associate_editor": {
+                "disabled": True
+            }
+        },
+        "asynchronous_warnings": [
+            "in_public_doaj",   # check whether the journal url is already in a public DOAJ record
+            {"rejected_application" : {"age" : "6 months"}},     # check that the journal does not have a rejection less than 6 months ago
+            "active_application",    # Check that the URL is not related to an active application
+            "all_urls_the_same"
+        ]
+    },
+
+    PISSN = {
+        "name" : "pissn",
+        "label" : "ISSN (print)",
+        "input" : "text",
+        "help" : {
+            "long_help" : "Must be a valid ISSN, fully registered and confirmed at the ISSN Portal (https://portal.issn.org/)"
+                        "The ISSN must match what is given on the journal website.",
+            "doaj_criteria" : "ISSN must be provided"
+        },
+        "validate" : [
+            {"optional_if" : {"field" : "eissn", "message" : "You must provide one or both of an online ISSN or a print ISSN"}},
+            "in_public_doaj",
+            {"is_issn" : {"message" : "This is not a valid ISSN"}},
+            {"different_to" : {"field" : "eissn"}}
+        ],
+        "contexts": {
+            "editor": {
+                "disabled": True
+            },
+            "associate_editor": {
+                "disabled": True
+            },
+            "update_request": {
+                "disabled": True
+            }
+        },
+        "asynchronous_warnings": [
+            "in_public_doaj",  # check whether the journal url is already in a public DOAJ record
+            {"rejected_application": {"age": "6 months"}},
+            "active_application"  # Check that the ISSN is not related to an active application
+        ]
+    }
+
+    EISSN = {
+        "name": "eissn",
+        "label": "ISSN (online)",
+        "input": "text",
+        "help": {
+            "long_help": "Must be a valid ISSN, fully registered and confirmed at the ISSN Portal (https://portal.issn.org/)"
+                         "The ISSN must match what is given on the journal website.",
+            "doaj_criteria": "ISSN must be provided"
+        },
+        "validate": [
+            {"optional_if": {"field": "pissn",
+                             "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+            "in_public_doaj",
+            {"is_issn": {"message": "This is not a valid ISSN"}},
+            {"different_to": {"field": "eissn"}}
+        ],
+        "contexts": {
+            "editor": {
+                "disabled": True
+            },
+            "associate_editor": {
+                "disabled": True
+            },
+            "update_request": {
+                "disabled": True
+            }
+        },
+        "asynchronous_warnings": [
+            "in_public_doaj",  # check whether the journal url is already in a public DOAJ record
+            {"rejected_application": {"age": "6 months"}},
+            "active_application"  # Check that the ISSN is not related to an active application
+        ]
+    },
+
+    KEYWORDS = {
+        "name" : "keywords",
+        "label" : "Up to six subject keywords in English",
+        "input" : "taglist",
+        "help": {
+            "long_help": "Only 6 keywords are allowed. Choose words that describe the subject matter of the journal "
+                         "and not the journal's qualities. Keywords must be in English and separated by a comma.",
+        },
+        "validate" : [
+            "required",
+            {"stop_words" : {"disallowed" : STOP_WORDS}},
+            {"max_tags" : { "max" : 6 }}
+        ],
+        "postprocessing" : [
+            "to_lower"  # FIXME: this might just be a feature of the crosswalk
+        ],
+        "widgets" : [
+            {
+                "taglist" : {
+                    "maximumSelectionSize" : 6,
+                    "stopWords" : STOP_WORDS
+                }
+            }
+        ],
+        "attr" : {
+            "class" : "input-xlarge"
+        },
+        "contexts" : {
+            "editor" : {
+                "disabled" : True
+            },
+            "associate_editor" : {
+                "disabled" : True
+            }
+        }
+    }
+
+    LANGUAGE = {
+        "name" : "language",
+        "label" : "Languages in which the journal accepts manuscripts",
+        "input" : "select",
+        "multiple" : True,
+        "options_fn" : "iso_language_list",
+        "validate" : [
+            "required"
+        ],
+        "widgets" : [
+            {"select" : {}}
+        ],
+    }
+
+    PUBLISHER_NAME = {
+        "name" : "publisher_name",
+        "group" : {     # FIXME: this is a new concept, does it fit here?
+            "id" : "publisher",
+            "label" : "Publisher"
+        },
+        "label" : "Name",
+        "input" : "text",
+        "validate": [
+            "required"
+        ],
+        "widgets" : [
+            {"autocomplete" : {"field" : "publisher_name"}}
+        ]
+    }
+
+    PUBLISHER_COUNTRY = {
+        "name": "publisher_country",
+        "group": {  # FIXME: this is a new concept, does it fit here?
+            "id": "publisher",
+            "label": "Publisher"
+        },
+        "label": "Country",
+        "input": "select",
+        "options_fn": "iso_country_list",
+        "help" : {
+            "long_help" : "The country where the publisher carries out its business operations and is registered.",
+            "doaj_criteria" : "You must provide a publisher country"
+        },
+        "validate": [
+            "required"
+        ],
+        "widgets": [
+            {"select": {}}
+        ],
+        "contexts": {
+            "editor": {
+                "disabled": True
+            },
+            "associate_editor": {
+                "disabled": True
+            }
+        }
+    }
+
+    INSTITUTION_NAME = {
+        "name": "institution_name",
+        "group": {  # FIXME: this is a new concept, does it fit here?
+            "id": "institution",
+            "label": "Society or institution, if applicable"
+        },
+        "label": "Name",
+        "input": "text",
+        "widgets": [
+            {"autocomplete": {"field": "institution_name"}}
+        ]
+    }
+
+    INSTITUTION_COUNTRY = {
+        "name": "institution_country",
+        "group": {  # FIXME: this is a new concept, does it fit here?
+            "id": "institution",
+            "label": "Society or institution, if applicable"
+        },
+        "label": "Country",
+        "input": "select",
+        "options_fn": "iso_country_list",
+        "help": {
+            "short_help" : "The society or institution responsible for the journal",
+            "long_help": "Some societies or institutions are linked to a journal in some way but are not responsible "
+                        "for publishing it. The publisher can be a separate organisation. If your journal is linked to "
+                        "a society or other type of institution, enter that here."
+        },
+        "widgets": [
+            {"select": {}}
+        ],
+        "contexts": {
+            "editor": {
+                "disabled": True
+            },
+            "associate_editor": {
+                "disabled": True
+            }
+        }
+    }
+
+FIELDS = {
+    FieldDefinitions.BOAI["name"] : FieldDefinitions.BOAI,
+    FieldDefinitions.OA_STATEMENT_URL["name"] : FieldDefinitions.OA_STATEMENT_URL,
+    # FieldDefinitions.TITLE["name"] : FieldDefinitions.TITLE
+}
+
+##########################################################
+# Define our fieldsets
+##########################################################
+
+class FieldSetDefinitions:
+    BASIC_COMPLIANCE = {
+        "name" : "basic_compliance",
+        "label" : "Basic Compliance",
+        "fields" : [
+            FieldDefinitions.BOAI["name"],
+            FieldDefinitions.OA_STATEMENT_URL["name"]
+        ]
+    }
+
+
+###########################################################
+# Define our Contexts
+###########################################################
+
+class ContextDefinitions:
+    PUBLIC = {
+        "name" : "public",
+        "fieldsets" : [
+            FieldSetDefinitions.BASIC_COMPLIANCE["name"]
+        ],
+        "asynchronous_warnings": [
+            "all_urls_the_same"
+        ],
+        "template": "application_form/public_application.html",
+        "crosswalks": {
+            "obj2form": "portality.forms.application_forms.application_obj2form",
+            "form2obj": "portality.forms.application_forms.application_form2obj"
+        },
+        "processor": "portality.forms.application_processors.PublicApplication",
+    }
+
+
 FORMS = {
+    "contexts" : {
+        ContextDefinitions.PUBLIC["name"] : ContextDefinitions.PUBLIC
+    },
+    "fieldsets" : {
+        FieldSetDefinitions.BASIC_COMPLIANCE["name"] : FieldSetDefinitions.BASIC_COMPLIANCE
+    },
+    "fields" : {
+        FieldDefinitions.BOAI["name"] : FieldDefinitions.BOAI,
+        FieldDefinitions.OA_STATEMENT_URL["name"] : FieldDefinitions.OA_STATEMENT_URL
+    }
+}
+
+
+_FORMS = {
     "contexts" : {
         "public" : {
             "fieldsets" : [
@@ -334,39 +750,39 @@ def application_form2obj(form):
 
 PYTHON_FUNCTIONS = {
     "options" : {
-        "iso_country_list" : "portality.formcontext.form_definitions.iso_country_list",
+        "iso_country_list" : "portality.forms.application_forms.iso_country_list",
     },
     "validate" : {
         "render" : {
-            "required" : "portality.formcontext.form_definitions.render_required",
-            "is_url" : "portality.formcontext.form_definitions.render_is_url",
-            "int_range" : "portality.formcontext.form_definitions.render_int_range",
+            "required" : "portality.forms.application_forms.render_required",
+            "is_url" : "portality.forms.application_forms.render_is_url",
+            "int_range" : "portality.forms.application_forms.render_int_range",
         },
         "wtforms" : {
-            "required" : "portality.formcontext.form_definitions.wtforms_required",
-            "is_url" : "portality.formcontext.form_definitions.wtforms_is_url",
-            "max_tags" : "portality.formcontext.form_definitions.wtforms_max_tags",
-            "int_range" : "portality.formcontext.form_definitions.wtforms_int_range",
-            "stop_words" : "portality.formcontext.form_definitions.wtforms_stop_words"
+            "required" : "portality.forms.application_forms.wtforms_required",
+            "is_url" : "portality.forms.application_forms.wtforms_is_url",
+            "max_tags" : "portality.forms.application_forms.wtforms_max_tags",
+            "int_range" : "portality.forms.application_forms.wtforms_int_range",
+            "stop_words" : "portality.forms.application_forms.wtforms_stop_words"
         }
     },
 
 
-    "all_urls_the_same" : "portality.formcontext.validators.all_urls_the_same",
-    "to_lower" : "portality.formcontext.postprocessing.to_lower",
-    "warn_on_value" : "portality.formcontext.validators.warn_on_value",
-    "clickable_url" : "portality.formcontext.widgets.clickable_url",
+    #"all_urls_the_same" : "portality.formcontext.validators.all_urls_the_same",
+    #"to_lower" : "portality.formcontext.postprocessing.to_lower",
+    #"warn_on_value" : "portality.formcontext.validators.warn_on_value",
+    #"clickable_url" : "portality.formcontext.widgets.clickable_url",
 }
 
 
 JAVASCRIPT_FUNCTIONS = {
-    "required_value" : "doaj.forms.validators.requiredValue",
-    "required" : "doaj.forms..validators.required",
-    "is_url" : "doaj.forms.validators.isUrl",
-    "max_tags" : "doaj.forms.validators.maxTags",
-    "stop_words" : "doaj.forms.validators.stopWords",
-    "int_range" : "doaj.forms.validators.intRange",
-    "autocomplete" : "doaj.forms.widgets.autocomplete",
+    #"required_value" : "doaj.forms.validators.requiredValue",
+    #"required" : "doaj.forms..validators.required",
+    #"is_url" : "doaj.forms.validators.isUrl",
+    #"max_tags" : "doaj.forms.validators.maxTags",
+    #"stop_words" : "doaj.forms.validators.stopWords",
+    #"int_range" : "doaj.forms.validators.intRange",
+    #"autocomplete" : "doaj.forms.widgets.autocomplete",
 
     "clickable_url" : "formulaic.widgets.newClickableUrl",
     "select" : "formulaic.widgets.newSelect",
@@ -513,16 +929,4 @@ WTFORMS_MAP = [
     { "match" : match_integer, "wtforms" : integer_field}
 ]
 
-application_form = Formulaic(FORMS, WTFORMS_MAP, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
-
-
-if __name__ == "__main__":
-    try:
-        c = application_form.context("public")
-        print(json.dumps(c._definition, indent=2))
-        w = c.wtform()
-        for field in w:
-            print(field())
-    except FormulaicException as e:
-        print(e.message)
-        raise e
+ApplicationFormFactory = Formulaic(FORMS, WTFORMS_MAP, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
