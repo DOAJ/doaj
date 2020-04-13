@@ -4,6 +4,7 @@ from portality.lib import dataobj, swagger
 from portality import models, regex
 from portality.util import normalise_issn
 from copy import deepcopy
+from portality.regex import DOI,DOI_COMPILED
 
 BASE_ARTICLE_STRUCT = {
     "fields": {
@@ -215,6 +216,11 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         for author in self.bibjson.author:
             if author.orcid_id is not None and regex.ORCID_COMPILED.match(author.orcid_id) is None:
                 raise dataobj.DataStructureException("Invalid ORCID iD format. Please use url format, eg: https://orcid.org/0001-1111-1111-1111")
+
+        if self.bibjson.get_one_identifier("doi") is not None:
+            if not DOI_COMPILED.match(self.bibjson.get_one_identifier("doi")):
+                raise dataobj.DataStructureException(
+                    "Invalid DOI format.")
 
 
     def to_article_model(self, existing=None):

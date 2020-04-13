@@ -678,11 +678,12 @@ class JournalLikeBibJSON(SeamlessMixin):
     # vocab of known identifier types
     P_ISSN = "pissn"
     E_ISSN = "eissn"
-    #DOI = "doi"
+    DOI = "doi"
 
     IDENTIFIER_MAP = {
         P_ISSN : "pissn",
-        E_ISSN : "eissn"
+        E_ISSN : "eissn",
+        DOI : "doi"
     }
 
     def add_identifier(self, idtype, value):
