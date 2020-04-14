@@ -1,5 +1,6 @@
 from copy import deepcopy
 from .dataobj import DataSchemaException
+from portality.lib.seamless import Construct
 
 class SwaggerSupport(object):
     # Translation between our simple field types and swagger spec types.
@@ -39,7 +40,8 @@ class SwaggerSupport(object):
         except:
             self._swagger_trans = swagger_trans if swagger_trans is not None else deepcopy(self.DEFAULT_SWAGGER_TRANS)
 
-        super(SwaggerSupport, self).__init__(*args, **kwargs)
+        # super(SwaggerSupport, self).__init__(*args, **kwargs) # UT fails with args and kwargs - takes only one argument, object to initialize
+        super(SwaggerSupport, self).__init__()
 
     def struct_to_swag(self, struct=None, schema_title='', **kwargs):
         if not struct:
@@ -61,7 +63,7 @@ class SwaggerSupport(object):
         # If no struct is specified this is the first call, so set the
         # operating struct to the entire current DO struct.
 
-        if not isinstance(struct, dict):
+        if not (isinstance(struct, dict) or isinstance(struct, Construct)):
             raise DataSchemaException("The struct whose properties we're translating to Swagger should always be a dict-like object.")
 
         swag_properties = {}
@@ -97,6 +99,6 @@ class SwaggerSupport(object):
                 swag_properties[l]['items']['properties'] = self.__struct_to_swag_properties(struct=struct.get('structs', {}).get(l, {}), path=newpath)  # recursive call, process sub-struct(s)
                 swag_properties[l]['items']['required'] = deepcopy(struct.get('structs', {}).get(l, {}).get('required', []))
             else:
-                raise DataSchemaException("Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items.".format(x=newpath))
+                raise DataSchemaException("Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items. Found: {y}".format(x=newpath, y=instructions['contains']))
 
         return swag_properties

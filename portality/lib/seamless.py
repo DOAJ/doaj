@@ -221,6 +221,8 @@ class SeamlessMixin(object):
                                     silent_prune=self.__seamless_silent_prune__,
                                     allow_other_fields=self.__seamless_allow_other_fields__)
 
+        self.custom_validate()
+
         super(SeamlessMixin, self).__init__(*args, **kwargs)
 
     def __getattr__(self, name):
@@ -242,7 +244,7 @@ class SeamlessMixin(object):
 
         raise AttributeError('{name} is not set'.format(name=name))
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name, value, allow_coerce_failure=False):
         if hasattr(self.__class__, name):
             return object.__setattr__(self, name, value)
 
@@ -254,7 +256,7 @@ class SeamlessMixin(object):
             if prop is not None:
                 path = prop["path"]
                 unwrap = prop.get("unwrapper")
-                wasset = self.__seamless__.set_property(path, value, unwrap)
+                wasset = self.__seamless__.set_property(path, value, unwrap, allow_coerce_failure)
                 if wasset:
                     return
 
@@ -264,6 +266,12 @@ class SeamlessMixin(object):
     def __deepcopy__(self):
         # FIXME: should also reflect all the constructor arguments
         return self.__class__(deepcopy(self.__seamless__.data))
+
+    def custom_validate(self):
+        """
+            Should be implemented on the higher level
+        """
+        pass
 
     def verify_against_struct(self, check_required=True, silent_prune=None, allow_other_fields=None):
 
@@ -498,7 +506,7 @@ class SeamlessData(object):
             if instructions.get("contains") != "object":
                 coerce_name, coerce_fn = self._struct.get_coerce(instructions)
             self.set_list(path, val, coerce=coerce_fn, **kwargs)
-        elif typ == "object":
+        elif typ == "object" or typ == "struct":
             if substruct is not None:
                 val = substruct.construct(val, check_required=check_required, silent_prune=silent_prune).data
             self.set_single(path, val)
@@ -552,7 +560,7 @@ class SeamlessData(object):
 
         return None
 
-    def set_property(self, path, value, unwrapper=None):
+    def set_property(self, path, value, unwrapper=None, allow_coerce_failure=False):
         if unwrapper is None:
             unwrapper = lambda x : x
 
@@ -571,10 +579,10 @@ class SeamlessData(object):
             if self._struct is None:
                 if isinstance(value, list):
                     value = [unwrapper(v) for v in value]
-                    self.set_list(path, value)
+                    self.set_list(path, value, allow_coerce_failure)
                 else:
                     value = unwrapper(value)
-                    self.set_single(path, value)
+                    self.set_single(path, value, allow_coerce_failure)
 
                 return True
             else:
@@ -793,6 +801,12 @@ class Construct(object):
         coerce_name = instructions.get("coerce", self._default_coerce)
         return coerce_name, self._coerce.get(coerce_name)
 
+    def get(self, elem, default=None):
+        if elem in self._definition:
+            return self._definition.get(elem)
+        else:
+            return default
+
     def lookup(self, path):
         bits = path.split(".")
 
@@ -819,7 +833,7 @@ class Construct(object):
             # then check the objects
             if bits[0] in self.objects:
                 substruct = self.substruct(bits[0])
-                return "object", substruct, None
+                return "struct", substruct, instructions
 
         return None, None, None
 
@@ -877,7 +891,7 @@ class Construct(object):
 
                 typ, substruct, instructions = struct.lookup(field_name)
 
-                if instructions is None:
+                if substruct is None:
                     # this is the lowest point at which we have instructions, so just accept the data structure as-is
                     # (taking a deep copy to destroy any references)
                     constructed.set_single(field_name, deepcopy(val))
@@ -916,6 +930,7 @@ class Construct(object):
                         val = vals[i]
 
                         if type(val) != dict:
+                            print("Expected dict at '{x}[{p}]' but got '{y}'".format(x=context + field_name, y=type(val), p=i))
                             raise SeamlessException("Expected dict at '{x}[{p}]' but got '{y}'".format(x=context + field_name, y=type(val), p=i))
 
                         substruct = struct.substruct(field_name)

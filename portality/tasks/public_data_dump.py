@@ -9,7 +9,7 @@ from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.store import StoreFactory
 from portality.api.v1 import DiscoveryApi
-from portality.api.v1.common import ModelJsonEncoder
+from portality.api.common import ModelJsonEncoder
 
 import os, tarfile, json
 

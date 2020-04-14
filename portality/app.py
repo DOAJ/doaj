@@ -31,8 +31,10 @@ from portality.view.openurl import blueprint as openurl
 from portality.view.atom import blueprint as atom
 from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
-if 'api' in app.config['FEATURES']:
+if 'api1' in app.config['FEATURES']:
     from portality.view.api_v1 import blueprint as api_v1
+if 'api2' in app.config['FEATURES']:
+    from portality.view.api_v2 import blueprint as api_v2
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 
@@ -46,8 +48,10 @@ app.register_blueprint(query, url_prefix="/editor_query")
 app.register_blueprint(query, url_prefix="/associate_query")
 app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
-if 'api' in app.config['FEATURES']:
+if 'api1' in app.config['FEATURES']:
     app.register_blueprint(api_v1, url_prefix='/api/v1')
+if 'api2' in app.config['FEATURES']:
+    app.register_blueprint(api_v2, url_prefix='/api/v2')
 app.register_blueprint(status, url_prefix='/status')
 
 app.register_blueprint(oaipmh)
@@ -321,6 +325,22 @@ if 'api' in app.config['FEATURES']:
                         'base_url': url_for('api_v1.api_spec', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
                         'note': 'First version of the DOAJ API',
                         'docs_url': url_for('api_v1.docs', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
+                    }
+                ]
+            }
+        )
+
+if 'api2' in app.config['FEATURES']:
+    @app.route('/api2/')
+    def api_directory():
+        return jsonify(
+            {
+                'api_versions': [
+                    {
+                        'version': '2.0.0',
+                        'base_url': url_for('api_v2.api_spec', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
+                        'note': 'Second version of the DOAJ API',
+                        'docs_url': url_for('api_v2.docs', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
                     }
                 ]
             }

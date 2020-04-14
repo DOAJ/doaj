@@ -107,7 +107,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         return self.last_manual_update_timestamp > datetime.utcfromtimestamp(0)
 
     def contacts(self):
-        return self._get_list("admin.contact")
+        return self._get_single("admin.contact")
 
     def get_latest_contact_name(self):
         try:

@@ -67,7 +67,7 @@
                     </li>
 
                     <li{% if request.path.startswith('/api') %} class="active"{% endif %}>
-                        <a href="{{url_for('api_v1.docs')}}" alt="API Documentation" title="API Documentation">
+                        <a href="{{url_for('api_v2.docs')}}" alt="API Documentation" title="API Documentation">
                             API
                             {% if request.path.startswith('/api') %} <span class="sr-only">(current)</span>{% endif %}
                         </a>

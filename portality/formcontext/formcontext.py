@@ -1168,7 +1168,7 @@ class PublisherUpdateRequest(ApplicationContext):
 
         # carry forward the disabled fields
         bj = self.source.bibjson()
-        contacts = self.source.contacts()
+        contact = self.source.contact
 
         self.form.title.data = bj.title
         self.form.alternative_title.data = bj.alternative_title
@@ -1181,13 +1181,12 @@ class PublisherUpdateRequest(ApplicationContext):
         if eissn == "": eissn = None
         self.form.eissn.data = eissn
 
-        if len(contacts) == 0:
+        if len(contact) == 0:
             # this will cause a validation failure if the form does not provide them
             return
 
         # we copy across the contacts if they are necessary.  The contact details are conditionally
         # disabled, so they /may/ be set
-        contact = contacts[0]
         if "contact_name" in self.renderer.disabled_fields:
             self.form.contact_name.data = contact.get("name")
         if "contact_email" in self.renderer.disabled_fields:
@@ -1281,13 +1280,11 @@ class PublisherUpdateRequest(ApplicationContext):
         disable = ["title", "alternative_title", "pissn", "eissn"] # these are always disabled
 
         # contact fields are only disabled if they already have content in source
-        contacts = self.source.contacts()
-        if len(contacts) > 0:
-            c = contacts[0]
-            if c.get("name"):
-                disable.append("contact_name")
-            if c.get("email"):
-                disable += ["contact_email", "confirm_contact_email"]
+        contact = self.source.contact
+        if contact.get("name"):
+            disable.append("contact_name")
+        if contact.get("email"):
+            disable += ["contact_email", "confirm_contact_email"]
 
         self.renderer.set_disabled_fields(disable)
 
@@ -1318,8 +1315,6 @@ class PublisherUpdateRequest(ApplicationContext):
             self.add_alert('Hm, sending the "update request received" email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.error(magic + "\n" + repr(e))
             raise e
-
-
 
 
 class PublisherUpdateRequestReadOnly(PrivateContext):
