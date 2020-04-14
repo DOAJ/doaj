@@ -1,0 +1,5 @@
+test_id,doi,fulltext_url,is_acceptable
+1,exists,exists,yes
+2,exists,none,yes
+3,none,exists,yes
+4,none,none,no

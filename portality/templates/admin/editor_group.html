@@ -7,9 +7,7 @@
 <div class="row">
     <div class="col-md-12">
 
-        {% if there_were_errors %}
-            <h4 class="red">There is a problem with the submitted form.</h4>
-        {% endif %}
+        {% include "formcontext/_error_header.html" %}
 
         {% from "_formhelpers.html" import render_field_horizontal %}
 

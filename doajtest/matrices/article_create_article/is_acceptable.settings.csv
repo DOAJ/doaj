@@ -1,0 +1,8 @@
+field,test_id,doi,fulltext_url,is_acceptable
+type,index,generated,generated,conditional
+values,,exists,exists,yes
+values,,none,none,no
+,,,,
+conditional is_acceptable,,exists,,yes
+conditional is_acceptable,,,exists,yes
+conditional is_acceptable,,none,none,no

@@ -9,6 +9,7 @@ from portality.models import Article, Journal, Account
 from portality.lib.paths import rel2abs
 from doajtest.mocks.model_Journal import ModelJournalMockFactory
 
+
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_is_legitimate_owner"), "is_legitimate_owner", "test_id",
                                {"test_id" : []})
