@@ -32,27 +32,27 @@ class TestCrudReturnValues(DoajTestCase):
 
         # we should get a JSON 404 if we try to hit a nonexistent endpoint
         with self.app_test.test_client() as t_client:
-            response = t_client.get('/api/v1/not_valid')
+            response = t_client.get('/api/v2/not_valid')
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
-            response = t_client.post('/api/v1/not_valid')
+            response = t_client.post('/api/v2/not_valid')
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
-            response = t_client.put('/api/v1/not_valid')
+            response = t_client.put('/api/v2/not_valid')
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
-            response = t_client.delete('/api/v1/not_valid')
+            response = t_client.delete('/api/v2/not_valid')
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
-            response = t_client.patch('/api/v1/not_valid')
+            response = t_client.patch('/api/v2/not_valid')
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
-            response = t_client.head('/api/v1/not_valid')
+            response = t_client.head('/api/v2/not_valid')
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
@@ -66,7 +66,7 @@ class TestCrudReturnValues(DoajTestCase):
             self.login(t_client, 'test', 'password123')
 
             # CREATE a new application
-            response = t_client.post('/api/v1/applications?api_key=' + self.api_key, data=json.dumps(user_data))
+            response = t_client.post('/api/v2/applications?api_key=' + self.api_key, data=json.dumps(user_data))
             assert response.status_code == 201          # 201 "Created"
             assert response.mimetype == 'application/json'
 
@@ -77,7 +77,7 @@ class TestCrudReturnValues(DoajTestCase):
             assert new_app_id in new_app_loc
 
             # RETRIEVE the same application using the ID
-            response = t_client.get('/api/v1/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))
+            response = t_client.get('/api/v2/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))
             assert response.status_code == 200          # 200 "OK"
             assert response.mimetype == 'application/json'
 
@@ -88,11 +88,11 @@ class TestCrudReturnValues(DoajTestCase):
             # UPDATE the title of the application
             updated_data = deepcopy(user_data)
             updated_data['bibjson']['title'] = 'This is a new title for this application'
-            response = t_client.put('/api/v1/applications/{0}?api_key={1}'.format(new_app_id, self.api_key), data=json.dumps(updated_data))
+            response = t_client.put('/api/v2/applications/{0}?api_key={1}'.format(new_app_id, self.api_key), data=json.dumps(updated_data))
             assert response.status_code == 204          # 204 "No Content"
             assert response.mimetype == 'application/json'
 
-            response = t_client.get('/api/v1/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))
+            response = t_client.get('/api/v2/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))
             retrieved_application = json.loads(response.data.decode("utf-8"))
             new_app_title = retrieved_application['bibjson']['title']
             assert new_app_title == updated_data['bibjson']['title']
@@ -100,12 +100,12 @@ class TestCrudReturnValues(DoajTestCase):
 
             # DELETE the application
             assert models.Suggestion.pull(new_app_id) is not None
-            response = t_client.delete('/api/v1/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))
+            response = t_client.delete('/api/v2/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))
             assert response.status_code == 204          # 204 "No Content"
             assert response.mimetype == 'application/json'
 
             # Try to RETRIEVE the Application again - check it isn't there anymore
-            response = t_client.get('/api/v1/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))
+            response = t_client.get('/api/v2/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
@@ -120,7 +120,7 @@ class TestCrudReturnValues(DoajTestCase):
             self.login(t_client, 'test', 'password123')
 
             # CREATE a new article
-            response = t_client.post('/api/v1/articles?api_key=' + self.api_key, data=json.dumps(user_data))
+            response = t_client.post('/api/v2/articles?api_key=' + self.api_key, data=json.dumps(user_data))
             assert response.status_code == 201          # 201 "Created"
             assert response.mimetype == 'application/json'
 
@@ -131,7 +131,7 @@ class TestCrudReturnValues(DoajTestCase):
             assert new_ar_id in new_ar_loc
 
             # RETRIEVE the same article using the ID
-            response = t_client.get('/api/v1/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key))
+            response = t_client.get('/api/v2/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key))
             assert response.status_code == 200          # 200 "OK"
             assert response.mimetype == 'application/json'
 
@@ -142,11 +142,11 @@ class TestCrudReturnValues(DoajTestCase):
             # UPDATE the title of the article
             updated_data = deepcopy(user_data)
             updated_data['bibjson']['title'] = 'This is a new title for this article'
-            response = t_client.put('/api/v1/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key), data=json.dumps(updated_data))
+            response = t_client.put('/api/v2/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key), data=json.dumps(updated_data))
             assert response.status_code == 204          # 204 "No Content"
             assert response.mimetype == 'application/json'
 
-            response = t_client.get('/api/v1/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key))
+            response = t_client.get('/api/v2/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key))
             retrieved_article = json.loads(response.data.decode("utf-8"))
             new_ar_title = retrieved_article['bibjson']['title']
             assert new_ar_title == updated_data['bibjson']['title']
@@ -154,12 +154,12 @@ class TestCrudReturnValues(DoajTestCase):
 
             # DELETE the article
             assert models.Article.pull(new_ar_id) is not None
-            response = t_client.delete('/api/v1/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key))
+            response = t_client.delete('/api/v2/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key))
             assert response.status_code == 204          # 204 "No Content"
             assert response.mimetype == 'application/json'
 
             # Try to RETRIEVE the article again - check it isn't there anymore
-            response = t_client.get('/api/v1/applications/{0}?api_key={1}'.format(new_ar_id, self.api_key))
+            response = t_client.get('/api/v2/applications/{0}?api_key={1}'.format(new_ar_id, self.api_key))
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
@@ -173,7 +173,7 @@ class TestCrudReturnValues(DoajTestCase):
 
             # attempt to CREATE a new article with invalid JSON
             bad_data = json.dumps(user_data) + 'blarglrandomblah'
-            response = t_client.post('/api/v1/articles?api_key=' + self.api_key, data=bad_data)
+            response = t_client.post('/api/v2/articles?api_key=' + self.api_key, data=bad_data)
             assert response.status_code == 400  # 400 "Bad Request"
             assert response.mimetype == 'application/json'
             assert 'Supplied data was not valid JSON' in response.json['error']
@@ -182,7 +182,7 @@ class TestCrudReturnValues(DoajTestCase):
             too_many_kwds = deepcopy(user_data)
             too_many_kwds['bibjson']['keywords'] = ['one', 'two', 'three', 'four', 'five', 'six', 'SEVEN']
 
-            response = t_client.post('/api/v1/articles?api_key=' + self.api_key, data=json.dumps(too_many_kwds))
+            response = t_client.post('/api/v2/articles?api_key=' + self.api_key, data=json.dumps(too_many_kwds))
             assert response.status_code == 400  # 400 "Bad Request"
             assert response.mimetype == 'application/json'
             assert 'maximum of 6 keywords' in response.json['error']
@@ -191,7 +191,7 @@ class TestCrudReturnValues(DoajTestCase):
             missing_title = deepcopy(user_data)
             del missing_title['bibjson']['title']
 
-            response = t_client.post('/api/v1/articles?api_key=' + self.api_key, data=json.dumps(missing_title))
+            response = t_client.post('/api/v2/articles?api_key=' + self.api_key, data=json.dumps(missing_title))
             assert response.status_code == 400  # 400 "Bad Request"
             assert response.mimetype == 'application/json'
             assert "Field 'title' is required but not present" in response.json['error']

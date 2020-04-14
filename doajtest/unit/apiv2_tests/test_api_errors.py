@@ -14,11 +14,11 @@ class TestApiErrors(DoajTestCase):
     def test_01_api_404(self):
         with self.app_test.test_client() as t_client:
             # On API blueprint, check we get an HTML doc page but a json 404
-            response = t_client.get('/api/v1/docs')
+            response = t_client.get('/api/v2/docs')
             assert response.status_code == 200
             assert response.mimetype == 'text/html'
 
-            response = t_client.get('/api/v1/not_valid')
+            response = t_client.get('/api/v2/not_valid')
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
@@ -36,11 +36,11 @@ class TestApiErrors(DoajTestCase):
 
         with self.app_test.test_client() as t_client:
             # a normal journal query, with a valid page number
-            response = t_client.get('/api/v1/search/journals/query_string?page=1')
+            response = t_client.get('/api/v2/search/journals/query_string?page=1')
             assert response.status_code == 200
 
             # a bad request, the page number is invalid
-            response = t_client.get('/api/v1/search/journals/query_string?page=@')
+            response = t_client.get('/api/v2/search/journals/query_string?page=@')
             assert response.status_code == 400
             assert response.mimetype == 'application/json'
             # check the error string has appeared in the response
@@ -66,7 +66,7 @@ class TestApiErrors(DoajTestCase):
 
         with self.app_test.test_client() as t_client:
             # a successful authenticated query, giving the right result
-            response = t_client.get('/api/v1/search/applications/issn%3A0000-0000?api_key=' + a1_key)
+            response = t_client.get('/api/v2/search/applications/issn%3A0000-0000?api_key=' + a1_key)
             assert response.status_code == 200, "first assertions: received: {}".format(response.status_code)
             # check we got a result by looking for something that must be in the results
             assert b"Test Suggestion Title" in response.data, "first assertions: data received: {}".format(response.data)
@@ -75,13 +75,13 @@ class TestApiErrors(DoajTestCase):
             a.set_owner('not_a1_user')
             a.save()
             time.sleep(1)
-            response = t_client.get('/api/v1/search/applications/issn%3A0000-0000?api_key=' + a1_key)
+            response = t_client.get('/api/v2/search/applications/issn%3A0000-0000?api_key=' + a1_key)
             assert response.status_code == 200, "second assertions: received: {}".format(response.status_code)
             assert b"Test Suggestion Title" not in response.data, "second assertions: received data: {}".format(response.data)
 
             # and we expect a json 401 error if we fail to authenticate
             spurious_key = 'blahblahblah'
-            response = t_client.get('/api/v1/search/applications/issn%3A0000-0000?api_key=' + spurious_key)
+            response = t_client.get('/api/v2/search/applications/issn%3A0000-0000?api_key=' + spurious_key)
             assert response.status_code == 401, "third assertions: received: {}".format(response.status_code)
             assert response.mimetype == 'application/json', "third assertions: mimetype received: {}".format(response.mimetype)
             assert b"An API Key is required to access this." in response.data, "third assertions: data received: {}".format(response.data)

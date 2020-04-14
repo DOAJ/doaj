@@ -5,7 +5,7 @@ from portality.core import app
 from portality.decorators import api_key_required, api_key_optional, swag, write_required
 from portality.lib import analytics
 
-blueprint = Blueprint('api_v2', __name__)
+blueprint = Blueprint('api_v1', __name__)
 
 API_VERSION_NUMBER = '1.0.0'
 
@@ -39,7 +39,7 @@ def search_articles(search_query):
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('create_article', 'Create article'))
 def create_article():
     print(request.args["api_key"])
-    return redirect(url_for('api_v2.create_article', **request.args), code=307)
+    return redirect(url_for('api_v2.create_article', **request.args), code=301)
 
 
 @blueprint.route("/articles/<article_id>", methods=["GET"])
@@ -56,7 +56,7 @@ def retrieve_article(article_id):
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('update_article', 'Update article'),
                           record_value_of_which_arg='article_id')
 def update_article(article_id):
-    return redirect(url_for('api_v2.search_articles', article_id=article_id, **request.args), code=307)
+    return redirect(url_for('api_v2.search_articles', article_id=article_id, **request.args), code=301)
 
 
 @blueprint.route("/articles/<article_id>", methods=["DELETE"])
@@ -65,7 +65,7 @@ def update_article(article_id):
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('delete_article', 'Delete article'),
                           record_value_of_which_arg='article_id')
 def delete_article(article_id):
-    return redirect(url_for('api_v2.delete_article', article_id=article_id, **request.args), code=307)
+    return redirect(url_for('api_v2.delete_article', article_id=article_id, **request.args), code=301)
 
 
 @blueprint.route("/bulk/articles", methods=["POST"])
@@ -73,7 +73,7 @@ def delete_article(article_id):
 @write_required(api=True)
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('bulk_article_create', 'Bulk article create'))
 def bulk_article_create():
-    return redirect(url_for('api_v2.bulk_article_create', **request.args), code=307)
+    return redirect(url_for('api_v2.bulk_article_create', **request.args), code=301)
 
 
 @blueprint.route("/bulk/articles", methods=["DELETE"])
@@ -81,7 +81,7 @@ def bulk_article_create():
 @write_required(api=True)
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('bulk_article_delete', 'Bulk article delete'))
 def bulk_article_delete():
-    return redirect(url_for('api_v2.bulk_article_delete', **request.args), code=307)
+    return redirect(url_for('api_v2.bulk_article_delete', **request.args), code=301)
 
 
 #######################################

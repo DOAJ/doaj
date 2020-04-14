@@ -1,19 +1,11 @@
-from portality.api.v1.data_objects.journal import OutgoingJournal
-from portality.api.v1.data_objects.article import IncomingArticleDO
+from portality.api.v2.data_objects.journal import OutgoingJournal
+from portality.api.v2.data_objects.article import IncomingArticleDO
 
 
 class Journal(OutgoingJournal):
 
     def all_issns(self):
-        issns = []
-
-        # get the issns from the identifiers record
-        idents = self.bibjson.identifier
-        if idents is not None:
-            for ident in idents:
-                if ident.type in ["pissn", "eissn"]:
-                    issns.append(ident.id)
-
+        issns = [self.data["bibjson"]["pissn"], self.data["bibjson"]["eissn"]]
         return issns
 
 
