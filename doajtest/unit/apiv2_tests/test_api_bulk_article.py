@@ -249,12 +249,18 @@ class TestBulkArticle(DoajTestCase):
 
                 # Bulk create
                 # The wrong owner can't create articles
+                resp = t_client.post(url_for('api_v2.bulk_article_create', api_key=somebody_else.api_key),
+                                     data=json.dumps(dataset))
+                assert resp.status_code == 400, resp.status_code
+
+                # Bulk create
+                # redirected from v1
                 resp = t_client.post(url_for('api_v1.bulk_article_create', api_key=somebody_else.api_key),
                                      data=json.dumps(dataset))
-                assert resp.status_code == 400
+                assert resp.status_code == 301, resp.status_code
 
                 # But the correct owner can create articles
-                resp = t_client.post(url_for('api_v1.bulk_article_create', api_key=article_owner.api_key),
+                resp = t_client.post(url_for('api_v2.bulk_article_create', api_key=article_owner.api_key),
                                      data=json.dumps(dataset))
                 assert resp.status_code == 201
                 reply = json.loads(resp.data.decode("utf-8"))
@@ -267,13 +273,13 @@ class TestBulkArticle(DoajTestCase):
 
                 # Bulk delete
                 all_but_one = [new_art['id'] for new_art in reply]
-                resp = t_client.delete(url_for('api_v1.bulk_article_delete', api_key=article_owner.api_key),
+                resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=article_owner.api_key),
                                        data=json.dumps(all_but_one))
                 assert resp.status_code == 204
                 time.sleep(1)
                 # we should have deleted all but one of the articles.
                 assert len(models.Article.all()) == 1
                 # And our other user isn't allowed to delete the remaining one.
-                resp = t_client.delete(url_for('api_v1.bulk_article_delete', api_key=somebody_else.api_key),
+                resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=somebody_else.api_key),
                                        data=json.dumps([first_art['id']]))
                 assert resp.status_code == 400
