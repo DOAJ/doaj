@@ -99,6 +99,7 @@ application configuration (settings.py or app.cfg).
         )
     return env
 
+
 def load_crossref_schema(app):
     schema_path = app.config["SCHEMAS"].get("crossref")
 
@@ -111,14 +112,26 @@ def load_crossref_schema(app):
             raise exceptions.IngestException(
                 message="There was an error attempting to load schema from " + schema_path, inner=e)
 
-def put_mappings(app, mappings):
-    # make a connection to the index
-    conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
 
+def create_es_connection(app):
+    # FIXME: temporary logging config for debugging index-per-type
+    import logging
+    esprit.raw.configure_logging(logging.DEBUG)
+
+    # make a connection to the index
+    if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+        conn = esprit.raw.Connection(host=app.config['ELASTIC_SEARCH_HOST'], index='')
+    else:
+        conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
+
+    return conn
+
+
+def put_mappings(conn, mappings):
     # get the ES version that we're working with
     es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
 
-    # for each mapping (a class may supply multiple), create them in the index
+    # for each mapping (a class may supply multiple), create a mapping, or mapping and index
     for key, mapping in iter(mappings.items()):
         if not esprit.raw.type_exists(conn, key, es_version=es_version):
             r = esprit.raw.put_mapping(conn, key, mapping, es_version=es_version)
@@ -127,7 +140,7 @@ def put_mappings(app, mappings):
             print("ES Type + Mapping already exists for", key)
 
 
-def initialise_index(app):
+def initialise_index(app, conn):
     if not app.config['INITIALISE_INDEX']:
         app.logger.warn('INITIALISE_INDEX config var is not True, initialise_index command cannot run')
         return
@@ -140,7 +153,7 @@ def initialise_index(app):
     mappings = es_data_mapping.get_mappings(app)
 
     # Send the mappings to ES
-    put_mappings(app, mappings)
+    put_mappings(conn, mappings)
 
 
 def initialise_apm(app):
@@ -166,3 +179,4 @@ def setup_jinja(app):
 
 
 app = create_app()
+es_connection = create_es_connection(app)

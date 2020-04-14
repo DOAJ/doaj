@@ -1,7 +1,7 @@
 import esprit, requests
-from portality.core import app, initialise_index
+from portality.core import app, es_connection, initialise_index
 
-initialise_index(app)
+initialise_index(app, es_connection)
 
 live = esprit.raw.Connection(app.config.get("DOAJGATE_URL"), "doaj", auth=requests.auth.HTTPBasicAuth(app.config.get("DOAJGATE_UN"), app.config.get("DOAJGATE_PW")), verify_ssl=False, port=app.config.get("DOAJGATE_PORT"))
 local = esprit.raw.Connection(app.config.get("ELASTIC_SEARCH_HOST"), app.config.get("ELASTIC_SEARCH_DB"))

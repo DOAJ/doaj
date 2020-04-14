@@ -18,7 +18,7 @@ from datetime import datetime
 from collections import OrderedDict
 
 import portality.models as models
-from portality.core import app, initialise_index
+from portality.core import app, es_connection, initialise_index
 from portality import settings
 
 from portality.view.account import blueprint as account
@@ -60,7 +60,7 @@ app.register_blueprint(doaj)
 # because that does not run if gunicorn is loading the app, as opposed
 # to the app being run directly by python portality/app.py
 # putting it here ensures it will run under any web server
-initialise_index(app)
+initialise_index(app, es_connection)
 
 # The key should correspond to the sponsor logo name in /static/doaj/images/sponsors without the extension for
 # consistency - no code should rely on this though. Sponsors are in tiers: gold, silver, bronze, and patron.
