@@ -944,6 +944,9 @@ class DifferentToBuilder:
 # Crosswalks
 #########################################################
 
+# FIXME: it would be good if the plugin loader could figure out how to load a class method
+# probably just by trial and error for the kind of thing that it's been given
+
 def application_obj2form(obj):
     return ApplicationFormXWalk.obj2form(obj)
 
@@ -1002,6 +1005,11 @@ JAVASCRIPT_FUNCTIONS = {
     "taglist" : "formulaic.widgets.newTagList"
 }
 
+
+##############################################################
+## Additional WTForms bits, that will probably need to be
+## moved out to the correct modules before wrapping up
+##############################################################
 
 class NumberWidget(widgets.Input):
     input_type = 'number'
@@ -1064,14 +1072,6 @@ class RadioBuilder(WTFormsBuilder):
         return RadioField(**wtfargs)
 
 
-#def match_radio(cfg):
-#    return cfg.get("input") == "radio"
-
-
-#def radio_field(cfg, wtargs):
-#    return RadioField(**wtargs)
-
-
 class MultiCheckboxBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
@@ -1084,17 +1084,6 @@ class MultiCheckboxBuilder(WTFormsBuilder):
         wtfargs["widget"] = ListWidgetWithSubfields()
         return SelectMultipleField(**wtfargs)
 
-"""
-def match_multi_checkbox(cfg):
-    return cfg.get("input") == "checkbox" and \
-           (len(cfg.get("options", [])) > 0 or cfg.get("options_fn") is not None)
-
-
-def multi_checkbox(cfg, wtargs):
-    wtargs["option_widget"] = widgets.CheckboxInput()
-    wtargs["widget"] = ListWidgetWithSubfields()
-    return SelectMultipleField(**wtargs)
-"""
 
 class SingleCheckboxBuilder(WTFormsBuilder):
     @staticmethod
@@ -1105,14 +1094,6 @@ class SingleCheckboxBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         return BooleanField(**wtfargs)
 
-"""
-def match_single_checkbox(cfg):
-    return cfg.get("input") == "checkbox" and len(cfg.get("options", [])) == 0 and cfg.get("options_fn") is None
-
-
-def single_checkbox(cfg, wtargs):
-    return BooleanField(**wtargs)
-"""
 
 class SelectBuilder(WTFormsBuilder):
     @staticmethod
@@ -1123,14 +1104,6 @@ class SelectBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         return SelectField(**wtfargs)
 
-"""
-def match_select(cfg):
-    return cfg.get("input") == "select"
-
-
-def select_field(cfg, wtargs):
-    return SelectField(**wtargs)
-"""
 
 class MultiSelectBuilder(WTFormsBuilder):
     @staticmethod
@@ -1141,14 +1114,6 @@ class MultiSelectBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         return SelectMultipleField(**wtfargs)
 
-"""
-def match_multi_select(cfg):
-    return cfg.get("input") == "select" and cfg.get("repeatable", False)
-
-
-def multi_select(cfg, wtargs):
-    return SelectMultipleField(**wtargs)
-"""
 
 class TextBuilder(WTFormsBuilder):
     @staticmethod
@@ -1159,14 +1124,6 @@ class TextBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         return StringField(**wtfargs)
 
-"""
-def match_text(cfg):
-    return cfg.get("input") == "text"
-
-
-def string_field(cfg, wtargs):
-    return StringField(**wtargs)
-"""
 
 class TagListBuilder(WTFormsBuilder):
     @staticmethod
@@ -1177,14 +1134,6 @@ class TagListBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         return TagListField(**wtfargs)
 
-"""
-def match_taglist(cfg):
-    return cfg.get("input") == "taglist"
-
-
-def taglist_field(cfg, wtargs):
-    return TagListField(**wtargs)
-"""
 
 class IntegerBuilder(WTFormsBuilder):
     @staticmethod
@@ -1196,15 +1145,6 @@ class IntegerBuilder(WTFormsBuilder):
         wtfargs["widget"] = NumberWidget()
         return IntegerField(**wtfargs)
 
-"""
-def match_integer(cfg):
-    return cfg.get("input") == "number" and cfg.get("datatype") == "integer"
-
-
-def integer_field(cfg, wtargs):
-    wtargs["widget"] = NumberWidget()
-    return IntegerField(**wtargs)
-"""
 
 class GroupBuilder(WTFormsBuilder):
     @staticmethod
@@ -1213,47 +1153,10 @@ class GroupBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
-        #class SubForm(Form):
-        #    pass
-
-        #for subfield in field.get("fields", []):
-        #    subfield_def = formulaic_context.get(subfield)
-        #    formulaic_context.bind_wtforms_field(SubForm, subfield_def)
         fields = [formulaic_context.get(subfield) for subfield in field.get("subfields", [])]
         klazz = formulaic_context.make_wtform_class(fields)
-
         return FormField(klazz)
 
-"""
-def match_group(cfg):
-    return cfg.get("input") == "group"
-
-
-def group_field(cfg, wtargs):
-
-    class SubForm(Form):
-        pass
-
-    for field in cfg.get("fields", []):
-        # add the main fields
-        self._add_wtforms_field(SubForm, field)
-
-    return FormField(SubForm)
-"""
-
-"""
-WTFORMS_MAP = [
-    { "match" : match_group, "wtforms" : group_field},
-    { "match" : match_radio, "wtforms" : radio_field },
-    { "match" : match_multi_checkbox, "wtforms" : multi_checkbox },
-    { "match" : match_single_checkbox, "wtforms" : single_checkbox},
-    { "match" : match_select, "wtforms" : select_field},
-    { "match" : match_multi_select, "wtforms" : multi_select},
-    { "match" : match_text, "wtforms" : string_field},
-    { "match" : match_taglist, "wtforms" : taglist_field},
-    { "match" : match_integer, "wtforms" : integer_field}
-]
-"""
 
 WTFORMS_BUILDERS = [
     RadioBuilder,
