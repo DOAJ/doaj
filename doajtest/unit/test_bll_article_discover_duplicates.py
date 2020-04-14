@@ -75,7 +75,7 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
             journal.bibjson().remove_identifiers()
             journal.bibjson().add_identifier("eissn", "1234-5678")
             journal.bibjson().add_identifier("pissn", "9876-5432")
-            journal.save(blocking=True)
+            journal.save()
 
         # determine what we need to load into the index
         article_ids = []
@@ -102,7 +102,7 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
                 source = ArticleFixtureFactory.make_article_source(eissn="1234-5678", pissn="9876-5432", doi=the_doi, fulltext=the_fulltext)
                 article = Article(**source)
                 article.set_id()
-                article.save()
+                article.save(blocking=True)
                 article_ids.append(article.id)
                 aids_block.append((article.id, article.last_updated))
 
@@ -156,9 +156,9 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
         svc = DOAJ.articleService()
         if raises is not None:
             with self.assertRaises(raises):
-                svc.discover_duplicates(article, owner_id)
+                svc.discover_duplicates(article)
         else:
-            possible_articles = svc.discover_duplicates(article, owner_id)
+            possible_articles = svc.discover_duplicates(article)
 
             if articles_by_doi_arg == "yes":
                 assert "doi" in possible_articles

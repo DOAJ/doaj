@@ -1,9 +1,11 @@
+import portality.formcontext.xwalks.journal_form
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, diff_dicts
 from portality.crosswalks.article_doaj_xml import DOAJXWalk
 from portality.crosswalks.article_crossref_xml import CrossrefXWalk
-from portality.formcontext import xwalk, forms
+from portality.formcontext import forms
+from portality.formcontext.xwalks import suggestion_form
 from portality import models
 from werkzeug.datastructures import MultiDict
 from copy import deepcopy
@@ -43,12 +45,12 @@ class TestXwalk(DoajTestCase):
         lcc.lookup_code = self.old_lookup_code
 
     def test_01_journal(self):
-        forminfo = xwalk.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))
+        forminfo = portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))
         #diff_dicts(JOURNAL_FORMINFO, forminfo)
         assert forminfo == JOURNAL_FORMINFO
 
         form = forms.ManEdJournalReviewForm(formdata=MultiDict(JOURNAL_FORM))
-        obj = xwalk.JournalFormXWalk.form2obj(form)
+        obj = portality.formcontext.xwalks.journal_form.JournalFormXWalk.form2obj(form)
 
         onotes = obj["admin"]["notes"]
         del obj["admin"]["notes"]
@@ -70,12 +72,12 @@ class TestXwalk(DoajTestCase):
         assert obj == csource, diff_dicts(csource, obj, 'csource', 'modelobj')
 
     def test_02_application(self):
-        forminfo = xwalk.SuggestionFormXWalk.obj2form(models.Suggestion(**APPLICATION_SOURCE))
+        forminfo = suggestion_form.SuggestionFormXWalk.obj2form(models.Suggestion(**APPLICATION_SOURCE))
         #diff_dicts(APPLICATION_FORMINFO, forminfo)
         assert forminfo == APPLICATION_FORMINFO
 
         form = forms.ManEdApplicationReviewForm(formdata=MultiDict(APPLICATION_FORM))
-        obj = xwalk.SuggestionFormXWalk.form2obj(form)
+        obj = suggestion_form.SuggestionFormXWalk.form2obj(form)
 
         onotes = obj["admin"]["notes"]
         del obj["admin"]["notes"]
@@ -99,7 +101,7 @@ class TestXwalk(DoajTestCase):
         assert obj == csource
 
     def test_03_old_style_to_new_style(self):
-        forminfo = xwalk.SuggestionFormXWalk.obj2form(models.Suggestion(**OLD_STYLE_APP))
+        forminfo = suggestion_form.SuggestionFormXWalk.obj2form(models.Suggestion(**OLD_STYLE_APP))
         # assert forminfo.get("article_identifiers") != "None"
 
     def test_04_application_license_other_text_broken(self):
@@ -107,7 +109,7 @@ class TestXwalk(DoajTestCase):
         af["license_other"] = "None",
 
         form = forms.ManEdApplicationReviewForm(formdata=MultiDict(af))
-        obj = xwalk.SuggestionFormXWalk.form2obj(form)
+        obj = suggestion_form.SuggestionFormXWalk.form2obj(form)
 
         assert obj.bibjson().get_license_type() == "None"
 

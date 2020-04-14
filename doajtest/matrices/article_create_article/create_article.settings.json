@@ -10,19 +10,19 @@
       "values": {
         "none": {
           "constraints": {
-            "has_ids": {
+            "get_duplicate_result": {
               "or": [
-                "none"
-              ]
-            },
-            "article_duplicate": {
-              "or": [
-                "no"
+                "itself"
               ]
             },
             "account": {
               "nor": [
                 "owner"
+              ]
+            },
+            "role": {
+              "or": [
+                "admin"
               ]
             },
             "duplicate_check": {
@@ -31,11 +31,6 @@
               ]
             },
             "merge_duplicate": {
-              "or": [
-                "false"
-              ]
-            },
-            "limit_to_account": {
               "or": [
                 "false"
               ]
@@ -56,28 +51,16 @@
       }
     },
     {
-      "name": "has_ids",
+      "name": "get_duplicate_result",
       "type": "generated",
       "values": {
-        "none": {},
-        "doi+ft": {}
-      }
-    },
-    {
-      "name": "article_duplicate",
-      "type": "generated",
-      "values": {
-        "no": {},
-        "yes": {
+        "itself": {},
+        "different": {},
+        "none": {
           "constraints": {
-            "article": {
+            "update_article_id": {
               "or": [
-                "exists"
-              ]
-            },
-            "has_ids": {
-              "or": [
-                "doi+ft"
+                "doi_ft_changed_ok"
               ]
             }
           }
@@ -88,37 +71,32 @@
       "name": "account",
       "type": "generated",
       "values": {
-        "none": {
-          "constraints": {
-            "has_ids": {
-              "or": [
-                "none"
-              ]
-            },
-            "limit_to_account": {
-              "or": [
-                "false"
-              ]
-            }
-          }
-        },
+        "none": {},
         "owner": {},
         "not_owner": {}
+      }
+    },
+    {
+      "name": "role",
+      "type": "generated",
+      "values": {
+        "admin": {},
+        "publisher": {}
+      }
+    },
+    {
+      "name": "has_doi_ft_changed",
+      "type": "",
+      "values": {
+        "yes": {},
+        "no": {}
       }
     },
     {
       "name": "duplicate_check",
       "type": "generated",
       "values": {
-        "none": {
-          "constraints": {
-            "has_ids": {
-              "or": [
-                "none"
-              ]
-            }
-          }
-        },
+        "none": {},
         "true": {},
         "false": {}
       }
@@ -127,32 +105,7 @@
       "name": "merge_duplicate",
       "type": "generated",
       "values": {
-        "none": {
-          "constraints": {
-            "has_ids": {
-              "or": [
-                "none"
-              ]
-            }
-          }
-        },
-        "true": {},
-        "false": {}
-      }
-    },
-    {
-      "name": "limit_to_account",
-      "type": "generated",
-      "values": {
-        "none": {
-          "constraints": {
-            "has_ids": {
-              "or": [
-                "none"
-              ]
-            }
-          }
-        },
+        "none": {},
         "true": {},
         "false": {}
       }
@@ -168,14 +121,9 @@
                 "exists"
               ]
             },
-            "has_ids": {
+            "get_duplicate_result": {
               "or": [
-                "none"
-              ]
-            },
-            "article_duplicate": {
-              "or": [
-                "no"
+                "itself"
               ]
             },
             "account": {
@@ -189,11 +137,6 @@
               ]
             },
             "merge_duplicate": {
-              "or": [
-                "false"
-              ]
-            },
-            "limit_to_account": {
               "or": [
                 "false"
               ]
@@ -227,11 +170,6 @@
                 "true"
               ]
             },
-            "limit_to_account": {
-              "or": [
-                "true"
-              ]
-            },
             "dry_run": {
               "or": [
                 "false"
@@ -246,17 +184,186 @@
       "name": "dry_run",
       "type": "generated",
       "values": {
-        "none": {
+        "none": {},
+        "true": {},
+        "false": {}
+      }
+    },
+    {
+      "name": "update_article_id",
+      "type": "generated",
+      "values": {
+        "doi_ft_changed_duplicate": {
           "constraints": {
-            "has_ids": {
+            "article": {
               "or": [
-                "none"
+                "exists"
+              ]
+            },
+            "get_duplicate_result": {
+              "or": [
+                "different"
+              ]
+            },
+            "account": {
+              "or": [
+                "owner"
+              ]
+            },
+            "role": {
+              "or": [
+                "admin"
+              ]
+            },
+            "duplicate_check": {
+              "or": [
+                "true"
+              ]
+            },
+            "merge_duplicate": {
+              "or": [
+                "true"
+              ]
+            },
+            "add_journal_info": {
+              "or": [
+                "false"
+              ]
+            },
+            "dry_run": {
+              "or": [
+                "false"
               ]
             }
           }
         },
-        "true": {},
-        "false": {}
+        "doi_ft_not_changed": {
+          "constraints": {
+            "article": {
+              "or": [
+                "exists"
+              ]
+            },
+            "get_duplicate_result": {
+              "or": [
+                "itself"
+              ]
+            },
+            "account": {
+              "or": [
+                "owner"
+              ]
+            },
+            "role": {
+              "or": [
+                "admin"
+              ]
+            },
+            "duplicate_check": {
+              "or": [
+                "true"
+              ]
+            },
+            "merge_duplicate": {
+              "or": [
+                "true"
+              ]
+            },
+            "add_journal_info": {
+              "or": [
+                "false"
+              ]
+            },
+            "dry_run": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        },
+        "doi_ft_changed_ok": {
+          "constraints": {
+            "article": {
+              "or": [
+                "exists"
+              ]
+            },
+            "get_duplicate_result": {
+              "or": [
+                "none"
+              ]
+            },
+            "account": {
+              "or": [
+                "owner"
+              ]
+            },
+            "role": {
+              "or": [
+                "admin"
+              ]
+            },
+            "duplicate_check": {
+              "or": [
+                "true"
+              ]
+            },
+            "merge_duplicate": {
+              "or": [
+                "true"
+              ]
+            },
+            "add_journal_info": {
+              "or": [
+                "false"
+              ]
+            },
+            "dry_run": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        },
+        "none": {
+          "constraints": {
+            "article": {
+              "or": [
+                "exists"
+              ]
+            },
+            "account": {
+              "or": [
+                "owner"
+              ]
+            },
+            "role": {
+              "or": [
+                "publisher"
+              ]
+            },
+            "duplicate_check": {
+              "or": [
+                "true"
+              ]
+            },
+            "merge_duplicate": {
+              "or": [
+                "true"
+              ]
+            },
+            "add_journal_info": {
+              "or": [
+                "false"
+              ]
+            },
+            "dry_run": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        }
       }
     },
     {
@@ -273,127 +380,9 @@
                   "exists"
                 ]
               },
-              "article_duplicate": {
+              "get_duplicate_result": {
                 "or": [
-                  "yes"
-                ]
-              },
-              "account": {
-                "or": [
-                  "owner"
-                ]
-              },
-              "duplicate_check": {
-                "or": [
-                  "true"
-                ]
-              },
-              "merge_duplicate": {
-                "or": [
-                  "false"
-                ]
-              },
-              "limit_to_account": {
-                "nor": [
-                  "none"
-                ]
-              },
-              "add_journal_info": {
-                "nor": [
-                  "none"
-                ]
-              },
-              "dry_run": {
-                "nor": [
-                  "none"
-                ]
-              }
-            },
-            {
-              "article": {
-                "or": [
-                  "exists"
-                ]
-              },
-              "article_duplicate": {
-                "or": [
-                  "yes"
-                ]
-              },
-              "account": {
-                "or": [
-                  "not_owner"
-                ]
-              },
-              "duplicate_check": {
-                "or": [
-                  "true"
-                ]
-              },
-              "merge_duplicate": {
-                "or": [
-                  "false"
-                ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "false"
-                ]
-              },
-              "add_journal_info": {
-                "nor": [
-                  "none"
-                ]
-              },
-              "dry_run": {
-                "nor": [
-                  "none"
-                ]
-              }
-            }
-          ]
-        },
-        "ArticleNotAcceptable": {
-          "conditions": [
-            {
-              "article": {
-                "or": [
-                  "exists"
-                ]
-              },
-              "has_ids": {
-                "or": [
-                  "none"
-                ]
-              },
-              "account": {
-                "nor": [
-                  "none"
-                ]
-              },
-              "duplicate_check": {
-                "nor": [
-                  "none"
-                ]
-              },
-              "merge_duplicate": {
-                "nor": [
-                  "none"
-                ]
-              },
-              "limit_to_account": {
-                "nor": [
-                  "none"
-                ]
-              },
-              "add_journal_info": {
-                "nor": [
-                  "none"
-                ]
-              },
-              "dry_run": {
-                "nor": [
-                  "none"
+                  "different"
                 ]
               }
             }
@@ -424,13 +413,6 @@
             },
             {
               "merge_duplicate": {
-                "or": [
-                  "none"
-                ]
-              }
-            },
-            {
-              "limit_to_account": {
                 "or": [
                   "none"
                 ]
@@ -471,11 +453,6 @@
                 "or": [
                   "not_owner"
                 ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "true"
-                ]
               }
             }
           ]
@@ -492,11 +469,6 @@
                 "or": [
                   "not_owner"
                 ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "false"
-                ]
               }
             },
             {
@@ -508,6 +480,13 @@
               "account": {
                 "or": [
                   "owner"
+                ]
+              }
+            },
+            {
+              "update_article_id": {
+                "nor": [
+                  "doi_ft_changed_duplicate"
                 ]
               }
             }
@@ -528,19 +507,9 @@
                   "exists"
                 ]
               },
-              "article_duplicate": {
+              "get_duplicate_result": {
                 "or": [
-                  "no"
-                ]
-              },
-              "account": {
-                "or": [
-                  "owner"
-                ]
-              },
-              "limit_to_account": {
-                "nor": [
-                  "none"
+                  "itself"
                 ]
               },
               "dry_run": {
@@ -555,36 +524,9 @@
                   "exists"
                 ]
               },
-              "article_duplicate": {
+              "get_duplicate_result": {
                 "or": [
-                  "no"
-                ]
-              },
-              "account": {
-                "nor": [
-                  "none"
-                ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "false"
-                ]
-              },
-              "dry_run": {
-                "or": [
-                  "false"
-                ]
-              }
-            },
-            {
-              "article": {
-                "or": [
-                  "exists"
-                ]
-              },
-              "article_duplicate": {
-                "or": [
-                  "yes"
+                  "different"
                 ]
               },
               "account": {
@@ -602,11 +544,6 @@
                   "none"
                 ]
               },
-              "limit_to_account": {
-                "nor": [
-                  "none"
-                ]
-              },
               "dry_run": {
                 "or": [
                   "false"
@@ -619,9 +556,9 @@
                   "exists"
                 ]
               },
-              "article_duplicate": {
+              "get_duplicate_result": {
                 "or": [
-                  "yes"
+                  "different"
                 ]
               },
               "account": {
@@ -639,20 +576,42 @@
                   "none"
                 ]
               },
-              "limit_to_account": {
-                "or": [
-                  "false"
-                ]
-              },
               "dry_run": {
                 "or": [
                   "false"
+                ]
+              }
+            },
+            {
+              "dry_run": {
+                "or": [
+                  "true"
+                ]
+              },
+              "update_article_id": {
+                "or": [
+                  "doi_ft_not_changed"
                 ]
               }
             }
           ]
         },
-        "no": {}
+        "no": {
+          "conditions": [
+            {
+              "dry_run": {
+                "or": [
+                  "true"
+                ]
+              },
+              "update_article_id": {
+                "or": [
+                  "doi_ft_changed_ok"
+                ]
+              }
+            }
+          ]
+        }
       }
     },
     {
@@ -668,9 +627,9 @@
                   "exists"
                 ]
               },
-              "article_duplicate": {
+              "get_duplicate_result": {
                 "or": [
-                  "yes"
+                  "different"
                 ]
               },
               "account": {
@@ -688,11 +647,6 @@
                   "true"
                 ]
               },
-              "limit_to_account": {
-                "nor": [
-                  "none"
-                ]
-              },
               "dry_run": {
                 "or": [
                   "false"
@@ -705,9 +659,9 @@
                   "exists"
                 ]
               },
-              "article_duplicate": {
+              "get_duplicate_result": {
                 "or": [
-                  "yes"
+                  "different"
                 ]
               },
               "account": {
@@ -723,11 +677,6 @@
               "merge_duplicate": {
                 "or": [
                   "true"
-                ]
-              },
-              "limit_to_account": {
-                "or": [
-                  "false"
                 ]
               },
               "dry_run": {
