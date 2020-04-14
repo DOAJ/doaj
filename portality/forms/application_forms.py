@@ -6,6 +6,7 @@ from wtforms.widgets.core import html_params, HTMLString
 from portality.formcontext.fields import TagListField
 
 from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.forms import application_processors
 from portality.forms.validate import (
     URLOptionalScheme,
     OptionalIf,
@@ -566,10 +567,10 @@ class ContextDefinitions:
             "default_field" : "application_form/_field.html"
         },
         "crosswalks": {
-            "obj2form": "portality.forms.application_forms.application_obj2form",
-            "form2obj": "portality.forms.application_forms.application_form2obj"
+            "obj2form" : ApplicationFormXWalk.obj2form,
+            "form2obj" : ApplicationFormXWalk.form2obj
         },
-        "processor": "portality.forms.application_processors.PublicApplication",
+        "processor": application_processors.PublicApplication,
     }
 
 
@@ -940,7 +941,7 @@ class IsISSNBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        validators.Regexp(regex=ISSN_COMPILED, message=settings.get("message"))
+        return validators.Regexp(regex=ISSN_COMPILED, message=settings.get("message"))
 
 
 class DifferentToBuilder:
@@ -957,17 +958,6 @@ class DifferentToBuilder:
 #########################################################
 # Crosswalks
 #########################################################
-
-# FIXME: it would be good if the plugin loader could figure out how to load a class method
-# probably just by trial and error for the kind of thing that it's been given
-
-def application_obj2form(obj):
-    return ApplicationFormXWalk.obj2form(obj)
-
-
-def application_form2obj(form):
-    return ApplicationFormXWalk.form2obj(form)
-
 
 PYTHON_FUNCTIONS = {
     "options" : {

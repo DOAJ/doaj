@@ -260,17 +260,12 @@ class FormulaicContext(object):
         if self._wtform_class is not None:
             return self._wtform_class
 
-        #class TempForm(Form):
-        #    pass
-
         # FIXME: we should just store a list of fields in the context, and reference them
         # from the fieldset, which would get rid of a lot of this double-layered looping
         fields = []
         for fieldset in self._definition.get("fieldsets", []):
             for field in fieldset.get("fields", []):
-                # add the main fields
                 fields.append(field)
-                # self.bind_wtforms_field(TempForm, field)
 
         klazz = self.make_wtform_class(fields)
         self._wtform_class = klazz
@@ -306,23 +301,26 @@ class FormulaicContext(object):
         return render_template(template, formulaic_context=self, **kwargs)
 
     def processor(self, formdata=None, source=None):
-        processor_path = self._definition.get("processor")
-        klazz = plugin.load_class(processor_path)
+        klazz = self._definition.get("processor")
+        if isinstance(klazz, str):
+            klazz = plugin.load_class(klazz)
         return klazz(formdata=formdata, source=source, parent=self)
 
     def obj2form(self, obj):
-        xwalk_path = self._definition.get("crosswalks", {}).get("obj2form")
-        if xwalk_path is None:
+        xwalk_fn = self._definition.get("crosswalks", {}).get("obj2form")
+        if xwalk_fn is None:
             return None
-        xwalk_fn = plugin.load_function(xwalk_path)
+        if isinstance(xwalk_fn, str):
+            xwalk_fn = plugin.load_function(xwalk_fn)
         data = xwalk_fn(obj)
         return self.wtform(data=data)
 
     def form2obj(self):
-        xwalk_path = self._definition.get("crosswalks", {}).get("form2obj")
-        if xwalk_path is None:
+        xwalk_fn = self._definition.get("crosswalks", {}).get("form2obj")
+        if xwalk_fn is None:
             return None
-        xwalk_fn = plugin.load_function(xwalk_path)
+        if isinstance(xwalk_fn, str):
+            xwalk_fn = plugin.load_function(xwalk_fn)
         return xwalk_fn(self._wtform_inst)
 
     def bind_wtforms_field(self, FormClass, field):
@@ -473,8 +471,7 @@ class FormulaicField(object):
             return None
         return [self._formulaic_fieldset.field(s) for s in subs]
 
-    def has_subfields(self):
-        # FIXME: this is now ambiguous as there is also the subfields root element
+    def has_options_subfields(self):
         for option in self.explicit_options:
             if len(option.get("subfields", [])) > 0:
                 return True
@@ -500,7 +497,7 @@ class FormulaicField(object):
                     fn = plugin.load_function(fn)
                 fn(settings, kwargs)
 
-        if self.has_subfields():
+        if self.has_options_subfields():
             kwargs["formulaic"] = self
 
         # allow custom args to overwite all other arguments
@@ -549,10 +546,6 @@ class FormulaicField(object):
         for builder in wtforms_builders:
             if builder.match(field):
                 return builder.wtform
-        #for possible in wtforms_map:
-        #    match_fn = possible.get("match")
-        #    if match_fn(field):
-        #        return possible.get("wtforms")
         return None
 
     @classmethod

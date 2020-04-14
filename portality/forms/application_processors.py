@@ -5,6 +5,8 @@ from portality import models, constants, app_email
 from portality.lib.formulaic import FormProcessor
 import portality.notifications.application_emails as emails
 
+from wtforms import FormField
+
 
 class PublicApplication(FormProcessor):
     """
@@ -26,11 +28,17 @@ class PublicApplication(FormProcessor):
         # check for validity
         valid = self.validate()
 
+        def _resetDefaults(form):
+            for field in form:
+                if field.errors:
+                    if isinstance(field, FormField):
+                        _resetDefaults(field.form)
+                    else:
+                        field.data = field.default
+
         # if not valid, then remove all fields which have validation errors
         if not valid:
-            for field in self.form:
-                if field.errors:
-                    field.data = field.default
+            _resetDefaults(self.form)
 
         self.form2target()
         draft_application = models.DraftApplication(**self.target.data)

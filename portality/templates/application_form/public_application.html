@@ -41,7 +41,7 @@
                 formSelector: "#public_application",
                 fieldsets : {{ formulaic_context.ui_settings|tojson }},
                 functions : {{ formulaic_context.javascript_functions|tojson }},
-                doValidation : true,
+                doValidation : false,
                 autoSave: 60000
             });
         });
