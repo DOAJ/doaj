@@ -7,14 +7,14 @@ JOURNAL_BIBJSON = {
             "fields" : {
                 "alternative_title" : {"coerce" : "unicode"},
                 "boai" : {"coerce" : "bool"},
-                "discontinued_date" : {"coerce" : "bigenddate"},
                 "eissn" : {"coerce" : "issn"},
                 "pissn" : {"coerce" : "issn"},
+                "discontinued_date" : {"coerce" : "bigenddate"},
                 "publication_time_weeks" : {"coerce" : "integer"},
                 "title" : {"coerce" : "unicode"}
             },
             "lists" : {
-                "is_replaced_by" : {"contains" : "field", "coerce" : "issn"},
+                "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
                 "keywords" : {"contains" : "field", "coerce" : "unicode_lower"},
                 "language" : {"contains" : "field", "coerce" : "isolang_2letter"},
                 "license" : {"contains" : "object"},
@@ -116,7 +116,7 @@ JOURNAL_BIBJSON = {
                         "has_pid_scheme" : {"coerce" : "bool"},
                     },
                     "lists" : {
-                        "scheme" : {"contains" : "field", "coerce" : "unicode"}
+                        "scheme" : {"coerce" : "unicode", "contains" : "field"}
                     }
                 },
                 "plagiarism" : {
@@ -125,14 +125,22 @@ JOURNAL_BIBJSON = {
                         "url" : {"coerce" : "url"}
                     }
                 },
-                "preservation" : {
-                    "fields" : {
-                        "has_preservation" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "url"}
+                "preservation": {
+                    "fields": {
+                        "has_preservation": {"coerce": "unicode"},
+                        "national_library": {"coerce": "unicode"},
+                        "url": {"coerce": "unicode"}
                     },
-                    "lists" : {
-                        "national_library" : {"contains" : "field", "coerce" : "unicode"},
-                        "service" : {"contains" : "field", "coerce" : "unicode"}
+                    "lists": {
+                        "service": {"coerce": "unicode", "contains": "field"},
+                    },
+                    "structs" : {
+                        "policy" : {
+                            "fields" : {
+                                "name" : {"coerce": "unicode"},
+                                "domain" : {"coerce" : "unicode"}
+                            }
+                        }
                     }
                 },
                 "publisher" : {
@@ -189,9 +197,11 @@ SHARED_JOURNAL_LIKE = {
                 "editor" : {"coerce" : "unicode"},
             },
             "lists" : {
-                "contact" : {"contains" : "object"},
                 "notes" : {"contains" : "object"}
             },
+            "objects" : [
+                "contact"
+            ],
             "structs" : {
                 "contact" : {
                     "fields" : {

@@ -1,5 +1,5 @@
 from copy import deepcopy
-from doajtest.fixtures.journals import JOURNAL_SOURCE
+from doajtest.fixtures.v2.journals import JOURNAL_SOURCE
 
 class BibJSONFixtureFactory(object):
     @classmethod

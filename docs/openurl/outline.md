@@ -217,7 +217,7 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
         "publication_time" : "<average time in weeks to publication>",
         "license" : [
             {
-                "title" : "<name of licence>",
+                "title" : "<name of license>",
                 "type" : "<type>",
                 "url" : "<url>",
                 "version" : "<version>",
