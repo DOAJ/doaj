@@ -10,9 +10,12 @@
 
     {% for fs in formulaic_context.fieldsets() %}
         <h1>{{ fs.label }}</h1>
-        <fieldset id="{{ fs.name }}">
-        {% for f in fs.fields() %}
-            {% include 'application_form/_field.html' %}
+        <fieldset id="{{ fs.name }}" class="form_page">
+        {% for field in fs.fields() %}
+            {% set f = field %}
+            {% set field_template = f.template %}
+            {# {% include 'application_form/_field.html' %} #}
+            {%  include field_template %}
             <hr>
         {% endfor %}
         </fieldset>

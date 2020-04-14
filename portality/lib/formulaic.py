@@ -243,6 +243,10 @@ class FormulaicContext(object):
                         del field[fn]
         return ui
 
+    @property
+    def default_field_template(self):
+        return self._definition.get("templates", {}).get("default_field")
+
     def make_wtform_class(self, fields):
         class TempForm(Form):
             pass
@@ -298,7 +302,7 @@ class FormulaicContext(object):
         return json.dumps(self._definition)
 
     def render_template(self, **kwargs):
-        template = self._definition.get("template")
+        template = self._definition.get("templates", {}).get("form")
         return render_template(template, formulaic_context=self, **kwargs)
 
     def processor(self, formdata=None, source=None):
@@ -345,9 +349,18 @@ class FormulaicFieldset(object):
     def wtform_inst(self):
         return self._formulaic_context.wtform_inst
 
+    @property
+    def default_field_template(self):
+        return self._formulaic_context.default_field_template
+
     def fields(self):
         return [FormulaicField(f, self) for f in
                 self._definition.get("fields", []) if not f.get("subfield")]
+
+    def field(self, field_name):
+        for f in self._definition.get("fields", []):
+            if f.get("name") == field_name:
+                return FormulaicField(f, self)
 
     def __getattr__(self, name):
         if hasattr(self.__class__, name):
@@ -410,6 +423,14 @@ class FormulaicField(object):
     def has_conditional(self):
         return len(self._definition.get("conditional", [])) > 0
 
+    @property
+    def template(self):
+        local = self._definition.get("template")
+        if local is not None:
+            return local
+
+        return self._formulaic_fieldset.default_field_template
+
     def has_validator(self, validator_name):
         for validator in self._definition.get("validate", []):
             if isinstance(validator, str) and validator == validator_name:
@@ -446,7 +467,14 @@ class FormulaicField(object):
                     sfs.append(subimpl)
                 return sfs
 
+    def group_subfields(self):
+        subs = self._definition.get("subfields")
+        if subs is None:
+            return None
+        return [self._formulaic_fieldset.field(s) for s in subs]
+
     def has_subfields(self):
+        # FIXME: this is now ambiguous as there is also the subfields root element
         for option in self.explicit_options:
             if len(option.get("subfields", [])) > 0:
                 return True

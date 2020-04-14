@@ -288,6 +288,9 @@ class FieldDefinitions:
         "widgets" : [
             {"select" : {}}
         ],
+        "attr" : {
+            "class" : "input-xlarge"
+        }
     }
 
     PUBLISHER = {
@@ -297,7 +300,8 @@ class FieldDefinitions:
         "subfields" : [
             "publisher_name",
             "publisher_country"
-        ]
+        ],
+        "template" : "application_form/_group.html"
     }
 
     PUBLISHER_NAME = {
@@ -329,6 +333,9 @@ class FieldDefinitions:
         "widgets": [
             {"select": {}}
         ],
+        "attr" : {
+            "class" : "input-xlarge"
+        },
         "contexts": {
             "editor": {
                 "disabled": True
@@ -346,7 +353,8 @@ class FieldDefinitions:
         "subfields": [
             "institution_name",
             "institution_country"
-        ]
+        ],
+        "template" : "application_form/_group.html"
     }
 
     INSTITUTION_NAME = {
@@ -374,6 +382,9 @@ class FieldDefinitions:
         "widgets": [
             {"select": {}}
         ],
+        "attr" : {
+            "class" : "input-xlarge"
+        },
         "contexts": {
             "editor": {
                 "disabled": True
@@ -550,7 +561,10 @@ class ContextDefinitions:
         "asynchronous_warnings": [
             "all_urls_the_same"
         ],
-        "template": "application_form/public_application.html",
+        "templates": {
+            "form" : "application_form/public_application.html",
+            "default_field" : "application_form/_field.html"
+        },
         "crosswalks": {
             "obj2form": "portality.forms.application_forms.application_obj2form",
             "form2obj": "portality.forms.application_forms.application_form2obj"
