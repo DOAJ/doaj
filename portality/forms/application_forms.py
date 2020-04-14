@@ -1,6 +1,6 @@
-from portality.lib.formulaic import Formulaic
+from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
-from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField
+from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, Form, FormField
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 from portality.formcontext.fields import TagListField
@@ -292,15 +292,16 @@ class FieldDefinitions:
 
     PUBLISHER = {
         "name" : "publisher",
-        "label" : "publisher",
+        "label" : "Publisher",
         "input" : "group",
-        "fields" : [
+        "subfields" : [
             "publisher_name",
             "publisher_country"
         ]
     }
 
     PUBLISHER_NAME = {
+        "subfield": True,
         "name" : "publisher_name",
         "label" : "Name",
         "input" : "text",
@@ -313,6 +314,7 @@ class FieldDefinitions:
     }
 
     PUBLISHER_COUNTRY = {
+        "subfield": True,
         "name": "publisher_country",
         "label": "Country",
         "input": "select",
@@ -341,18 +343,15 @@ class FieldDefinitions:
         "name": "institution",
         "label": "Society or institution, if applicable",
         "input": "group",
-        "fields": [
+        "subfields": [
             "institution_name",
             "institution_country"
         ]
     }
 
     INSTITUTION_NAME = {
+        "subfield": True,
         "name": "institution_name",
-        "group": {  # FIXME: this is a new concept, does it fit here?
-            "id": "institution",
-            "label": "Society or institution, if applicable"
-        },
         "label": "Name",
         "input": "text",
         "widgets": [
@@ -361,11 +360,8 @@ class FieldDefinitions:
     }
 
     INSTITUTION_COUNTRY = {
+        "subfield": True,
         "name": "institution_country",
-        "group": {  # FIXME: this is a new concept, does it fit here?
-            "id": "institution",
-            "label": "Society or institution, if applicable"
-        },
         "label": "Country",
         "input": "select",
         "options_fn": "iso_country_list",
@@ -531,11 +527,11 @@ class FieldSetDefinitions:
             FieldDefinitions.KEYWORDS["name"],
             FieldDefinitions.LANGUAGE["name"],
             FieldDefinitions.PUBLISHER["name"],
-            #FieldDefinitions.PUBLISHER_NAME["name"],
-            #FieldDefinitions.PUBLISHER_COUNTRY["name"],
+            FieldDefinitions.PUBLISHER_NAME["name"],
+            FieldDefinitions.PUBLISHER_COUNTRY["name"],
             FieldDefinitions.INSTITUTION["name"],
-            #FieldDefinitions.INSTITUTION_NAME["name"],
-            #FieldDefinitions.INSTITUTION_COUNTRY["name"]
+            FieldDefinitions.INSTITUTION_NAME["name"],
+            FieldDefinitions.INSTITUTION_COUNTRY["name"]
         ]
     }
 
@@ -1054,14 +1050,41 @@ class ListWidgetWithSubfields(object):
         return HTMLString(''.join(html))
 
 
-def match_radio(cfg):
-    return cfg.get("input") == "radio"
+##########################################################
+## Mapping from configurations to WTForms builders
+##########################################################
+
+class RadioBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "radio"
+
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        return RadioField(**wtfargs)
 
 
-def radio_field(cfg, wtargs):
-    return RadioField(**wtargs)
+#def match_radio(cfg):
+#    return cfg.get("input") == "radio"
 
 
+#def radio_field(cfg, wtargs):
+#    return RadioField(**wtargs)
+
+
+class MultiCheckboxBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "checkbox" and \
+               (len(field.get("options", [])) > 0 or field.get("options_fn") is not None)
+
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        wtfargs["option_widget"] = widgets.CheckboxInput()
+        wtfargs["widget"] = ListWidgetWithSubfields()
+        return SelectMultipleField(**wtfargs)
+
+"""
 def match_multi_checkbox(cfg):
     return cfg.get("input") == "checkbox" and \
            (len(cfg.get("options", [])) > 0 or cfg.get("options_fn") is not None)
@@ -1071,48 +1094,109 @@ def multi_checkbox(cfg, wtargs):
     wtargs["option_widget"] = widgets.CheckboxInput()
     wtargs["widget"] = ListWidgetWithSubfields()
     return SelectMultipleField(**wtargs)
+"""
 
+class SingleCheckboxBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "checkbox" and len(field.get("options", [])) == 0 and field.get("options_fn") is None
 
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        return BooleanField(**wtfargs)
+
+"""
 def match_single_checkbox(cfg):
     return cfg.get("input") == "checkbox" and len(cfg.get("options", [])) == 0 and cfg.get("options_fn") is None
 
 
 def single_checkbox(cfg, wtargs):
     return BooleanField(**wtargs)
+"""
 
+class SelectBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "select"
 
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        return SelectField(**wtfargs)
+
+"""
 def match_select(cfg):
     return cfg.get("input") == "select"
 
 
 def select_field(cfg, wtargs):
     return SelectField(**wtargs)
+"""
 
+class MultiSelectBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "select" and field.get("multiple", False)
 
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        return SelectMultipleField(**wtfargs)
+
+"""
 def match_multi_select(cfg):
     return cfg.get("input") == "select" and cfg.get("repeatable", False)
 
 
 def multi_select(cfg, wtargs):
     return SelectMultipleField(**wtargs)
+"""
 
+class TextBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "text"
 
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        return StringField(**wtfargs)
+
+"""
 def match_text(cfg):
     return cfg.get("input") == "text"
 
 
 def string_field(cfg, wtargs):
     return StringField(**wtargs)
+"""
 
+class TagListBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "taglist"
 
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        return TagListField(**wtfargs)
+
+"""
 def match_taglist(cfg):
     return cfg.get("input") == "taglist"
 
 
 def taglist_field(cfg, wtargs):
     return TagListField(**wtargs)
+"""
 
+class IntegerBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "number" and field.get("datatype") == "integer"
 
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        wtfargs["widget"] = NumberWidget()
+        return IntegerField(**wtfargs)
+
+"""
 def match_integer(cfg):
     return cfg.get("input") == "number" and cfg.get("datatype") == "integer"
 
@@ -1120,9 +1204,46 @@ def match_integer(cfg):
 def integer_field(cfg, wtargs):
     wtargs["widget"] = NumberWidget()
     return IntegerField(**wtargs)
+"""
+
+class GroupBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "group"
+
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        #class SubForm(Form):
+        #    pass
+
+        #for subfield in field.get("fields", []):
+        #    subfield_def = formulaic_context.get(subfield)
+        #    formulaic_context.bind_wtforms_field(SubForm, subfield_def)
+        fields = [formulaic_context.get(subfield) for subfield in field.get("subfields", [])]
+        klazz = formulaic_context.make_wtform_class(fields)
+
+        return FormField(klazz)
+
+"""
+def match_group(cfg):
+    return cfg.get("input") == "group"
 
 
+def group_field(cfg, wtargs):
+
+    class SubForm(Form):
+        pass
+
+    for field in cfg.get("fields", []):
+        # add the main fields
+        self._add_wtforms_field(SubForm, field)
+
+    return FormField(SubForm)
+"""
+
+"""
 WTFORMS_MAP = [
+    { "match" : match_group, "wtforms" : group_field},
     { "match" : match_radio, "wtforms" : radio_field },
     { "match" : match_multi_checkbox, "wtforms" : multi_checkbox },
     { "match" : match_single_checkbox, "wtforms" : single_checkbox},
@@ -1132,5 +1253,18 @@ WTFORMS_MAP = [
     { "match" : match_taglist, "wtforms" : taglist_field},
     { "match" : match_integer, "wtforms" : integer_field}
 ]
+"""
 
-ApplicationFormFactory = Formulaic(FORMS, WTFORMS_MAP, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
+WTFORMS_BUILDERS = [
+    RadioBuilder,
+    MultiCheckboxBuilder,
+    SingleCheckboxBuilder,
+    SelectBuilder,
+    MultiSelectBuilder,
+    TextBuilder,
+    TagListBuilder,
+    IntegerBuilder,
+    GroupBuilder
+]
+
+ApplicationFormFactory = Formulaic(FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)

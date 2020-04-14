@@ -15,10 +15,10 @@
                         </div>
                     </div>
 
-                    {% if f.help.short_help %}
+                    {% if f.help("short_help") %}
                     <div class="row">
                         <div class="col-xs-12">
-                            {{ f.help.short_help }}
+                            {{ f.help("short_help") }}
                         </div>
                     </div>
                     {% endif %}
@@ -38,9 +38,9 @@
                 </div>
             </div>
             <div class="col-md-1">
-                {% if f.help.doaj_criteria %}<span title="{{ f.help.doaj_criteria }}">DOAJ</span>&nbsp;{% endif %}
-                {% if f.help.seal_criteria %}<span title="{{ f.help.seal_criteria }}">SEAL</span>{% endif %}
-                {% if f.help.long_help %}<span title="{{ f.help.long_help }}">HELP</span>{% endif %}
+                {% if f.help("doaj_criteria") %}<span title="{{ f.help("doaj_criteria") }}">DOAJ</span>&nbsp;{% endif %}
+                {% if f.help("seal_criteria") %}<span title="{{ f.help("seal_criteria") }}">SEAL</span>{% endif %}
+                {% if f.help("long_help") %}<span title="{{ f.help("long_help") }}">HELP</span>{% endif %}
             </div>
         </div>
     </div>
