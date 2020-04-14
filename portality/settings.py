@@ -70,8 +70,16 @@ VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
+
+# e.g. host:port/index/type/id
 ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
+
+# e.g. host:port/type/doc/id
+ELASTIC_SEARCH_INDEX_PER_TYPE = True
+ELASTIC_SEARCH_DB_PREFIX = "doaj"
+ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest"
+
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "1.7.5"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
