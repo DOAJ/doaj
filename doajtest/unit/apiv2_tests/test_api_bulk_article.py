@@ -1,5 +1,5 @@
 from doajtest.helpers import DoajTestCase
-from portality.api.v1 import ArticlesBulkApi, Api401Error, Api400Error
+from portality.api.v2 import ArticlesBulkApi, Api401Error, Api400Error
 from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 from copy import deepcopy

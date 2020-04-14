@@ -1,4 +1,4 @@
-from doajtest.fixtures.v1.journals import JournalFixtureFactory
+from doajtest.fixtures.v2.journals import JournalFixtureFactory
 from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
 from .editors import EditorGroupFixtureFactory
 from .accounts import AccountFixtureFactory

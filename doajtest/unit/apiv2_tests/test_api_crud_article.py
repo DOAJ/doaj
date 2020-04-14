@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from portality.lib.dataobj import DataStructureException
-from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
-from portality.api.v1 import ArticlesCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
+from portality.api.v2.data_objects.article import IncomingArticleDO, OutgoingArticleDO
+from portality.api.v2 import ArticlesCrudApi, Api401Error, Api400Error, Api404Error
 from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 import time
@@ -67,6 +67,18 @@ class TestCrudArticle(DoajTestCase):
                 "name" : "The Author",
                 "affiliation" : "University Cottage Labs",
                 "orcid_id" : "orcid.org/0000-0001-1234-1234"
+            },
+        ]
+        with self.assertRaises(DataStructureException):
+            ia = IncomingArticleDO(data)
+
+        # incorrect doi format
+        data = ArticleFixtureFactory.make_article_source()
+        data["bibjson"]["identifier"] = [
+            {
+                "id": "wrong-doi-format",
+                "type": "doi"
+
             },
         ]
         with self.assertRaises(DataStructureException):

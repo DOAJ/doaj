@@ -160,7 +160,7 @@ def public_application(draft_id=None):
 
     elif request.method == "POST":
         draft = request.form.get("draft")
-        async = request.form.get("async")
+        async_def = request.form.get("async")
         draft_id = request.form.get("id") if draft_id is None else draft_id
 
         if draft_id is not None:
@@ -175,7 +175,7 @@ def public_application(draft_id=None):
 
         if draft is not None:
             the_draft = processor.draft(current_user._get_current_object(), id=draft_id)
-            if async is not None:
+            if async_def is not None:
                 return make_response(json.dumps({"id" : the_draft.id}), 200)
             else:
                 return redirect(url_for('doaj.suggestion_thanks', _anchor='draft'))

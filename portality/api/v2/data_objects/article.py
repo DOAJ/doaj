@@ -217,10 +217,12 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
             if author.orcid_id is not None and regex.ORCID_COMPILED.match(author.orcid_id) is None:
                 raise dataobj.DataStructureException("Invalid ORCID iD format. Please use url format, eg: https://orcid.org/0001-1111-1111-1111")
 
-        if self.bibjson.get_one_identifier("doi") is not None:
-            if not DOI_COMPILED.match(self.bibjson.get_one_identifier("doi")):
-                raise dataobj.DataStructureException(
-                    "Invalid DOI format.")
+        for x in self.bibjson.identifier:
+            if x.type == "doi":
+                if not DOI_COMPILED.match(x.id):
+                    raise dataobj.DataStructureException(
+                        "Invalid DOI format.")
+                break
 
 
     def to_article_model(self, existing=None):

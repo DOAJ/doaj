@@ -79,7 +79,6 @@ def reverse_interpret_special(val, field=''):
     return val
 
 
-
 def interpret_other(value, other_field_data, other_value=Choices.OTHER, store_other_label=False):
     '''
     Interpret a value list coming from (e.g.) checkboxes when one of
@@ -232,16 +231,16 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         # new journal object being constructed.
         # add_url in the journal model has a safeguard against empty URL-s.
 
-        if form.alternative_title.data:
+        if form.alternative_title.data and form.alternative_title.data != '':
             bibjson.alternative_title = form.alternative_title.data
 
-        if form.processing_charges_amount.data:
+        if form.processing_charges_amount.data and form.processing_charges_amount.data != '':
             bibjson.add_apc(form.processing_charges_currency.data, form.processing_charges_amount.data)
 
-        if form.processing_charges_url.data:
+        if form.processing_charges_url.data and form.processing_charges_url.data != '':
             bibjson.apc_url = form.processing_charges_url.data
 
-        if form.other_charges_url.data:
+        if form.other_charges_url.data and form.other_charges_url.data != '':
             bibjson.other_charges_url = form.other_charges_url.data
 
 
@@ -249,49 +248,48 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         library = form.preservation_library.data if form.preservation_library.data else None
         bibjson.add_preservation(services, library)
 
-        if form.preservation_url.data:
+        if form.preservation_url.data and form.preservation_url.data != '':
             bibjson.preservation_url = form.preservation_url.data
 
-        if form.copyright_url.data:
-            bibjson.author_retains_copyright = True
+        if form.copyright_url.data and form.copyright_url.data != '':
             bibjson.copyright_url = form.copyright_url.data
 
-        if form.country.data:
+        if form.country.data and form.country.data != '':
             bibjson.country = form.country.data
 
-        if form.deposit_policy_service.data:
+        if form.deposit_policy_service.data and form.deposit_policy_service.data != '':
             services = form.deposit_policy_service.split(',')
             for s in services:
                 bibjson.add_deposit_policy(s)
 
-        if form.deposit_policy_is_registered.data:
+        if form.deposit_policy_is_registered.data and form.deposit_policy_is_registered.data != '':
             bibjson.deposit_policy_registered = form.deposit_policy_is_registered.data
 
-        if form.deposit_policy_url.data:
+        if form.deposit_policy_url.data and form.deposit_policy_url.data != '':
             bibjson.deposit_policy_url = form.deposit_policy_url.data
 
-        if form.review_process.data:
+        if form.review_process.data and form.review_process.data != '':
             bibjson.review_process = form.review_process.data
 
-        if form.review_process_url.data:
+        if form.review_process_url.data and form.review_process_url.data != '':
             bibjson.review_process_url = form.review_process_url.data
 
-        if form.pissn.data:
+        if form.pissn.data and form.pissn.data != '':
             bibjson.add_identifier(bibjson.P_ISSN, form.pissn.data)
 
-        if form.eissn.data:
+        if form.eissn.data and form.eissn.data != '':
             bibjson.add_identifier(bibjson.E_ISSN, form.eissn.data)
 
-        if form.society_institution.data:
+        if form.society_institution.data and form.society_institution.data != '':
             bibjson.institution = form.society_institution.data
 
-        if form.keywords.data:
+        if form.keywords.data and form.keywords.data != '':
             bibjson.set_keywords(form.keywords.data)  # tag list field
 
-        if form.languages.data:
+        if form.languages.data and form.languages.data != '':
             bibjson.set_language(form.languages.data)  # select multiple field - gives a list back
 
-        if form.license_checkbox.data:
+        if form.license_checkbox.data and form.license_checkbox.data != '':
             by = True if 'BY' in form.license_checkbox.data else False
             nc = True if 'NC' in form.license_checkbox.data else False
             nd = True if 'ND' in form.license_checkbox.data else False
@@ -311,58 +309,57 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             by=by, nc=nc, nd=nd, sa=sa,
         )
 
-        if form.license_display.data:
+        if form.license_display.data and form.license_display.data != '':
             bibjson.add_article_license_display(form.license_display.data)
-        if form.license_display_example_url.data:
+        if form.license_display_example_url.data and form.license_display_example_url.data != '':
             bibjson.article_license_display_example_url = form.license_display_example_url.data
 
-        if form.boai.data:
+        if form.boai.data and form.boai.data != '':
             bibjson.boai = form.boai.data
 
-        if form.oa_statement_url.data:
+        if form.oa_statement_url.data and form.oa_statement_url.data != '':
             bibjson.add_url(form.url.data, urltype='oa_statement')
 
-        if form.url.data:
+        if form.url.data and form.url.data != '':
             bibjson.add_url(form.url.data, urltype='homepage')
 
-        if form.aims_scope_url:
+        if form.aims_scope_url and form.aims_scope_url != '':
             bibjson.add_url(form.url.data, urltype='aims_scope')
 
-        if form.editorial_board_url.data:
+        if form.editorial_board_url.data and form.editorial_board_url.data != '':
             bibjson.add_url(form.url.data, urltype='editorial_board')
 
-        if form.author_instructions_url.data:
+        if form.author_instructions_url.data and form.author_instructions_url.data != '':
             bibjson.add_url(form.url.data, urltype='author_instructions')
 
-        if form.waiver_policy_url.data:
+        if form.waiver_policy_url.data and form.waiver_policy_url.data != '':
             bibjson.add_url(form.url.data, urltype='waiver_policy')
 
-        if form.pid_scheme.data:
+        if form.pid_scheme.data and form.pid_scheme.data != '':
             bibjson.add_pid_scheme(form.pid_scheme.data)
 
-        if form.plagiarism_screening_url.data:
+        if form.plagiarism_screening_url.data and form.plagiarism_screening_url.data != '':
             bibjson.set_plagiarism_detection(form.plagiarism_screening_url.data)
 
-        if form.publication_time.data:
+        if form.publication_time.data and form.publication_time.data != '':
             bibjson.publication_time_weeks = form.publication_time.data
 
-        if form.publisher.data:
+        if form.publisher.data and form.publisher.data != '':
             bibjson.publisher = form.publisher.data
 
-        if form.title.data:
+        if form.title.data and form.title.data != '':
             bibjson.title = form.title.data
 
-        if form.processing_charges_url.data:
+        if form.processing_charges_url.data and form.processing_charges_url.data != '':
             bibjson.apc_url = form.processing_charges_url.data
 
-
-        if form.article_orcid.data:
+        if form.article_orcid.data and form.article_orcid.data != '':
             bibjson.article_orcid = form.article_orcid.data
 
-        if form.article_i4oc_open_citations.data:
+        if form.article_i4oc_open_citations.data and form.article_i4oc_open_citations.data != '':
             bibjson.article_i4oc_open_citations = form.article_i4oc_open_citations.data
 
-        if form.contact_name.data and form.contact_email.data:
+        if form.contact_name.data and form.contact_email.data != '':
             suggestion.add_contact(form.contact_name.data, form.contact_email.data)
 
         return suggestion
