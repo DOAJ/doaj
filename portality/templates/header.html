@@ -66,13 +66,14 @@
                         </a>
                     </li>
 
+                    {% if "api2" in config.get("FEATURES") %}
                     <li{% if request.path.startswith('/api') %} class="active"{% endif %}>
                         <a href="{{url_for('api_v2.docs')}}" alt="API Documentation" title="API Documentation">
                             API
                             {% if request.path.startswith('/api') %} <span class="sr-only">(current)</span>{% endif %}
                         </a>
                     </li>
-
+                    {% endif %}
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
