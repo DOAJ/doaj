@@ -493,6 +493,121 @@ class FieldDefinitions:
         ]
     }
 
+    COPYRIGHT_AUTHOR_RETAINS = {
+        "name" : "copyright_author_retains",
+        "label" : "For all the licenses you have indicated above, do authors or their institutions retain the copyright "
+                  "and full publishing rights without restrictions?",
+        "input" : "checkbox",
+        "validate" : [
+            "required"
+        ],
+        "help" : {
+            "seal_criteria" : "The author must retain the copyright"
+        },
+        "asynchronous_warnings" : [
+            {"required_value" : {"value" : "y"}}
+        ]
+    }
+
+    COPYRIGHT_URL = {
+        "name" : "copyright_url",
+        "label" : "Link to the journal's copyright terms",
+        "input" : "text",
+        "validate" : [
+            "required",
+            "is_url"
+        ],
+        "widgets" : [
+            "clickable_url"
+        ]
+    }
+
+    REVIEW_PROCESS = {
+        "name" : "peer_review",
+        "label": "DOAJ only accepts peer-reviewed journals."
+                    "Which type(s) of peer review does this journal use?",
+        "input": "checkbox",
+        "multiple" : True,
+        "options": [
+            {"display": "Editorial review", "value": "editorial_review"},
+            {"display": "Peer review", "value": "peer_review"},
+            {"display": "Blind peer review", "value": "blind_peer_review"},
+            {"display": "Double blind peer review", "value": "double_blind_peer_review"},
+            {"display": "Post-publication peer review", "value": "post_publication_peer_review"},
+            {"display": "Open peer review", "value": "open_peer_review"},
+            {"display": "Other", "value": "other", "subfields": ["review_process_other"]}
+        ],
+        "help": {
+            "doaj_criteria": "Peer review must be carried out"
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    REVIEW_PROCESS_OTHER = {
+        "name" : "review_process_other",
+        "subfield": True,
+        "label" : "Other",
+        "input": "text",
+        "help": {
+            "placeholder": "Other peer review"
+        },
+        "conditional": [{"field": "review_process", "value": "other"}],
+        "validate" : [
+            {"required_if" : {"field" : "review_process", "value" : "other"}}
+        ],
+        "asynchronous_warning": [
+            {"warn_on_value": {"value": "None"}}
+        ]
+    }
+
+    REVIEW_URL = {
+        "name" : "review_url",
+        "label" : "Link to the journal's peer review policy",
+        "input" : "text",
+        "help" : {
+            "doaj_criteria" : "You must provide a URL"
+        },
+        "validate" : [
+            "required",
+            "is_url"
+        ],
+        "widgets" : [
+            "clickable_url"
+        ]
+    }
+
+    PLAGIARISM_DETECTION = {
+        "name" : "plagiarism_detection",
+        "label" : "Does the journal routinely screen article submissions for plagiarism?",
+        "input" : "radio",
+        "options" : [
+            {"display" : "Yes", "value" : True},
+            {"display" : "No", "value" : False}
+        ],
+        "validate" : [
+            "required"
+        ]
+    }
+
+    PLAGIARISM_URL = {
+        "name" : "plagiarism_url",
+        "label" : "Link to the journal's plagiarism policy",
+        "input" : "text",
+        "conditional": [{"field": "plagiarism_detection", "value": True}],
+        "help": {
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate" : [
+            "required",
+            "is_url"
+        ],
+        "widgets" : [
+            "clickable_url"
+        ]
+    }
+
 
 FIELDS = {
     FieldDefinitions.BOAI["name"] : FieldDefinitions.BOAI,
@@ -510,7 +625,13 @@ FIELDS = {
     FieldDefinitions.PUBLISHER_COUNTRY["name"] : FieldDefinitions.PUBLISHER_COUNTRY,
     FieldDefinitions.INSTITUTION["name"] : FieldDefinitions.INSTITUTION,
     FieldDefinitions.INSTITUTION_NAME["name"] : FieldDefinitions.INSTITUTION_NAME,
-    FieldDefinitions.INSTITUTION_COUNTRY["name"] : FieldDefinitions.INSTITUTION_COUNTRY
+    FieldDefinitions.INSTITUTION_COUNTRY["name"] : FieldDefinitions.INSTITUTION_COUNTRY,
+
+    FieldDefinitions.LICENSE["name"] : FieldDefinitions.LICENSE,
+    FieldDefinitions.LICENSE_ATTRIBUTES["name"] : FieldDefinitions.LICENSE_ATTRIBUTES,
+    FieldDefinitions.LICENSE_TERMS_URL["name"] : FieldDefinitions.LICENSE_TERMS_URL,
+    FieldDefinitions.LICENSE_DISPLAY["name"] : FieldDefinitions.LICENSE_DISPLAY,
+    FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"] : FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL
 }
 
 ##########################################################
@@ -547,6 +668,18 @@ class FieldSetDefinitions:
         ]
     }
 
+    LICENSING = {
+        "name" : "licensing",
+        "label" : "Licensing",
+        "fields" : [
+            FieldDefinitions.LICENSE["name"],
+            FieldDefinitions.LICENSE_ATTRIBUTES["name"],
+            FieldDefinitions.LICENSE_TERMS_URL["name"],
+            FieldDefinitions.LICENSE_DISPLAY["name"],
+            FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]
+        ]
+    }
+
 
 ###########################################################
 # Define our Contexts
@@ -557,7 +690,8 @@ class ContextDefinitions:
         "name" : "public",
         "fieldsets" : [
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
-            FieldSetDefinitions.ABOUT_THE_JOURNAL["name"]
+            FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
+            FieldSetDefinitions.LICENSING["name"]
         ],
         "asynchronous_warnings": [
             "all_urls_the_same"
@@ -580,7 +714,8 @@ FORMS = {
     },
     "fieldsets" : {
         FieldSetDefinitions.BASIC_COMPLIANCE["name"] : FieldSetDefinitions.BASIC_COMPLIANCE,
-        FieldSetDefinitions.ABOUT_THE_JOURNAL["name"] : FieldSetDefinitions.ABOUT_THE_JOURNAL
+        FieldSetDefinitions.ABOUT_THE_JOURNAL["name"] : FieldSetDefinitions.ABOUT_THE_JOURNAL,
+        FieldSetDefinitions.LICENSING["name"] : FieldSetDefinitions.LICENSING
     },
     "fields" : FIELDS
 }
