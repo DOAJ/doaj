@@ -124,6 +124,15 @@ hr {
   background-color: rgba($dark-grey, 0.5);
 }
 
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+iframe {
+  margin-bottom: $spacing-04;
+}
+
 time {
   font-size: smaller;
 }
