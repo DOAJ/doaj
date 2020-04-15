@@ -22,6 +22,12 @@ Before you start the application process, you will be asked to log in or registe
 
 Journals applying to DOAJ **must** meet the following criteria:
 
+| Name  | Year | Fruit   |
+|-------|------|---------|
+| Dom   | 1901 | Oranges |
+| Sophy | 1086 | Apples  |
+
+
 {:.numbered-table}
 |   | Criteria                                                                                                      | Details                                                                                                                             |
 |---|---------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
