@@ -608,6 +608,26 @@ class FieldDefinitions:
         ]
     }
 
+    AIMS_SCOPE_URL = {
+        "name" : "aims_scope_url",
+        "label" : "Link to the journal's Aims & Scope",
+        "input" : "text",
+        "help": {
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate" : [
+            "required",
+            "is_url"
+        ],
+        "widgets" : [
+            "clickable_url"
+        ]
+    }
+
+    EDITORIAL_BOARD_URL = {
+        "name" : "editorial_board_url"
+    }
+
 
 FIELDS = {
     FieldDefinitions.BOAI["name"] : FieldDefinitions.BOAI,
@@ -631,7 +651,10 @@ FIELDS = {
     FieldDefinitions.LICENSE_ATTRIBUTES["name"] : FieldDefinitions.LICENSE_ATTRIBUTES,
     FieldDefinitions.LICENSE_TERMS_URL["name"] : FieldDefinitions.LICENSE_TERMS_URL,
     FieldDefinitions.LICENSE_DISPLAY["name"] : FieldDefinitions.LICENSE_DISPLAY,
-    FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"] : FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL
+    FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"] : FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL,
+
+    FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"] : FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS,
+    FieldDefinitions.COPYRIGHT_URL["name"] : FieldDefinitions.COPYRIGHT_URL
 }
 
 ##########################################################
@@ -680,6 +703,15 @@ class FieldSetDefinitions:
         ]
     }
 
+    COPYRIGHT = {
+        "name" : "copyright",
+        "label" : "Copyright",
+        "fields" : [
+            FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"],
+            FieldDefinitions.COPYRIGHT_URL["name"]
+        ]
+    }
+
 
 ###########################################################
 # Define our Contexts
@@ -691,7 +723,8 @@ class ContextDefinitions:
         "fieldsets" : [
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
             FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
-            FieldSetDefinitions.LICENSING["name"]
+            FieldSetDefinitions.LICENSING["name"],
+            FieldSetDefinitions.COPYRIGHT["name"]
         ],
         "asynchronous_warnings": [
             "all_urls_the_same"
@@ -715,7 +748,8 @@ FORMS = {
     "fieldsets" : {
         FieldSetDefinitions.BASIC_COMPLIANCE["name"] : FieldSetDefinitions.BASIC_COMPLIANCE,
         FieldSetDefinitions.ABOUT_THE_JOURNAL["name"] : FieldSetDefinitions.ABOUT_THE_JOURNAL,
-        FieldSetDefinitions.LICENSING["name"] : FieldSetDefinitions.LICENSING
+        FieldSetDefinitions.LICENSING["name"] : FieldSetDefinitions.LICENSING,
+        FieldSetDefinitions.COPYRIGHT["name"] : FieldSetDefinitions.COPYRIGHT
     },
     "fields" : FIELDS
 }
