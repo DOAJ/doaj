@@ -107,6 +107,8 @@ class ArticleService(object):
 
     def _prepare_update_admin(self, article, duplicate, update_article_id, merge_duplicate):
 
+        updated_article = None
+
         # we assume update_article_id is not None as admin update the articles only via Admin Article Form
         if update_article_id is None:
             raise exceptions.ConfigurationException("Upload articles for admin available only via Admin Metadata "
@@ -119,12 +121,14 @@ class ArticleService(object):
             elif merge_duplicate:
                 is_update += 1
                 article.merge(duplicate)
+                updated_article = article
         elif merge_duplicate:  # requested to update article has both url and doi changed to new values - no duplicate detected
             is_update += 1
             update_article = models.Article.pull(update_article_id)
             update_article.merge(article)
+            updated_article = update_article
 
-        return is_update
+        return is_update, updated_article
 
     def _prepare_update_publisher(self, article, duplicate, merge_duplicate):
         # before saving, we need to determine whether this is a new article
@@ -141,7 +145,7 @@ class ArticleService(object):
                     article.merge(duplicate)
             else:
                 raise exceptions.DuplicateArticleException()
-        return is_update
+        return is_update, article
 
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
@@ -188,18 +192,18 @@ class ArticleService(object):
             duplicate = self.get_duplicate(article)
             try:
                 if account.has_role("admin"):
-                    is_update = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
+                    is_update, updated_article = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
                 else:
-                    is_update = self._prepare_update_publisher(article, duplicate, merge_duplicate)
+                    is_update, updated_article = self._prepare_update_publisher(article, duplicate, merge_duplicate)
             except (exceptions.DuplicateArticleException, exceptions.ArticleMergeConflict) as e:
                 raise e
 
         if add_journal_info:
-            article.add_journal_metadata()
+            updated_article.add_journal_metadata()
 
         # finally, save the new article
         if not dry_run:
-            article.save()
+            updated_article.save()
 
         return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),
                 "unmatched": set()}
