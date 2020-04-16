@@ -11,6 +11,14 @@ Sponsorship levels are tiered and have accompanying benefits. To discuss your sp
 
 ## Sponsors by tier
 
+### Gold
+
+### Silver
+
+### Bronze
+
+---
+
 ## Rates and benefits
 
 {:.numbered-table .numbered-table--labels}
