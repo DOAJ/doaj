@@ -124,9 +124,9 @@ class ArticleService(object):
                 updated_article = article
         elif merge_duplicate:  # requested to update article has both url and doi changed to new values - no duplicate detected
             is_update += 1
-            update_article = models.Article.pull(update_article_id)
-            update_article.merge(article)
-            updated_article = update_article
+            art = models.Article.pull(update_article_id)
+            art.merge(article)
+            updated_article = art
 
         return is_update, updated_article
 
@@ -187,23 +187,23 @@ class ArticleService(object):
         if isinstance(has_permissions_result,dict):
             return has_permissions_result
 
-        is_update = 0
+        updated_article = article
         if duplicate_check:
             duplicate = self.get_duplicate(article)
             try:
                 if account.has_role("admin"):
-                    is_update, updated_article = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
+                    is_update, article = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
                 else:
-                    is_update, updated_article = self._prepare_update_publisher(article, duplicate, merge_duplicate)
+                    is_update, article = self._prepare_update_publisher(article, duplicate, merge_duplicate)
             except (exceptions.DuplicateArticleException, exceptions.ArticleMergeConflict) as e:
                 raise e
 
         if add_journal_info:
-            updated_article.add_journal_metadata()
+            article.add_journal_metadata()
 
         # finally, save the new article
         if not dry_run:
-            updated_article.save()
+            article.save()
 
         return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),
                 "unmatched": set()}
