@@ -28,12 +28,16 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
         super(TestBLLPrepareUpdatePublisher, self).setUp()
         self.svc = DOAJ.articleService()
         self.is_id_updated = self.svc._doi_or_fulltext_updated
+        self.has_permission = self.svc.has_permissions
         self.merge = Article.merge
+        acc_source = AccountFixtureFactory.make_publisher_source()
+        self.publisher = Account(**acc_source)
 
     def tearDown(self):
 
         super(TestBLLPrepareUpdatePublisher, self).tearDown()
         self.svc._doi_or_fulltext_updated = self.is_id_updated
+        self.svc.has_permissions = self.has_permission
         Article.merge = self.merge
 
     @parameterized.expand(prepare_update_publisher_load_cases)
@@ -74,8 +78,13 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
 
         merge_duplicate = True if merge_duplicate_arg == "yes" else False
 
+        if duplicate_arg == "different_than_article_id":
+            self.svc.has_permissions = BLLArticleMockFactory.has_permissions(False)
+        else:
+            self.svc.has_permissions = BLLArticleMockFactory.has_permissions(True)
+
         if raises_arg == "DuplicateArticle":
             with self.assertRaises(exceptions.DuplicateArticleException):
-                self.svc._prepare_update_publisher(article,duplicate,merge_duplicate)
+                self.svc._prepare_update_publisher(article,duplicate,merge_duplicate,self.publisher,True)
         else:
-            assert self.svc._prepare_update_publisher(article,duplicate,merge_duplicate) == int(is_update_arg)
+            assert self.svc._prepare_update_publisher(article,duplicate,merge_duplicate,self.publisher,True) == int(is_update_arg)
