@@ -70,17 +70,17 @@ class TestCreateOrUpdateArticle(DoajTestCase):
         assert resp["success"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["update"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["new"] == 0, "expected 1 updated, received: {}".format(resp)
-        assert self.article10.bibjson().title == "Updated Article", "Expected `Updated Article`, received: {}" \
-            .format(self.article10.bibjson().title)
 
-        ba.title = "Updated 2nd time"
+        a = Article.pull(self.article10.id)
+        assert a.bibjson().title == "Updated Article", "Expected `Updated Article`, received: {}" \
+            .format(a.bibjson().title)
 
     def test_01_new_doi_new_url(self):
         ba = self.article10.bibjson()
         ba.remove_identifiers(ba.DOI)
         ba.remove_urls(ba.FULLTEXT)
         ba.add_identifier(ba.DOI, "10.0000/NEW")
-        ba.add_url(ba.FULLTEXT, "https://www.UPDATED.com")
+        ba.add_url("https://www.UPDATED.com", ba.FULLTEXT)
 
         resp = ArticleService.create_article(self=ArticleService(), account=self.admin, article=self.article10,
                                              update_article_id=self.article10.id)
@@ -88,6 +88,11 @@ class TestCreateOrUpdateArticle(DoajTestCase):
         assert resp["success"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["update"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["new"] == 0, "expected 1 updated, received: {}".format(resp)
+
+        a = Article.pull(self.article10.id)
+        assert a.bibjson().get_one_identifier("doi") == "10.0000/NEW", a.bibjson().get_one_identifier("doi")
+        assert a.bibjson().get_single_url("fulltext") == "https://www.UPDATED.com", a.bibjson().get_single_url("fulltext")
+
 
     def test_02_old_doi_existing_url_admin(self):
         ba = self.article10.bibjson()
@@ -141,7 +146,8 @@ class TestCreateOrUpdateArticle(DoajTestCase):
         assert resp["success"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["update"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["new"] == 0, "expected 1 new, received: {}".format(resp)
-        assert self.article10.get_normalised_fulltext() == "//updated.com", "expected //updated.com, received: {}".format(
+        art = Article.pull(self.article10.id)
+        assert art.get_normalised_fulltext() == "//updated.com", "expected //updated.com, received: {}".format(
             self.article10.get_normalised_fulltext())
 
     def test_05_new_doi_old_url(self):
@@ -156,9 +162,10 @@ class TestCreateOrUpdateArticle(DoajTestCase):
         assert resp["success"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["update"] == 1, "expected 1 updated, received: {}".format(resp)
         assert resp["new"] == 0, "expected 1 updated, received: {}".format(resp)
-        assert self.article10.get_normalised_doi() == "10.0000/article-UPDATED", \
+        art = Article.pull(self.article10.id)
+        assert art.get_normalised_doi() == "10.0000/article-UPDATED", \
             "expected 10.0000/article-UPDATED, received: {}".format(
-                self.article10.get_normalised_fulltext())
+                self.article10.get_normalised_doi())
 
     def test_06_existing_doi_new_url(self):
         ba = self.article10.bibjson()
