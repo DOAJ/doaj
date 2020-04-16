@@ -625,7 +625,56 @@ class FieldDefinitions:
     }
 
     EDITORIAL_BOARD_URL = {
-        "name" : "editorial_board_url"
+        "name" : "editorial_board_url",
+        "label" : "Link to the journal's editorial board",
+        "input" : "text",
+        "help": {
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate" : [
+            "required",
+            "is_url"
+        ],
+        "widgets" : [
+            "clickable_url"
+        ]
+    }
+
+    AUTHOR_INSTRUCTIONS_URL = {
+        "name": "author_instructions_url",
+        "label": "Link to the journal's Instructions for Author",
+        "input": "text",
+        "help": {
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate": [
+            "required",
+            "is_url"
+        ],
+        "widgets": [
+            "clickable_url"
+        ]
+    }
+
+    PUBLICATION_TIME_WEEKS = {
+        "name" : "publication_time_weeks",
+        "label": "Average number of <strong>weeks</strong> between article submission & publication",
+        "input": "number",
+        "datatype": "integer",
+        "help": {
+            "description": "Enter a number"
+        },
+        "validate": [
+            "required",
+            {"int_range": {"gte": 1, "lte": 52}}
+        ],
+        "asynchronous_warning": [
+            {"int_range": {"lte": 2}}
+        ],
+        "attr": {
+            "min": "1",
+            "max": "100"
+        }
     }
 
 
