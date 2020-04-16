@@ -121,18 +121,20 @@ class ArticleService(object):
                 article.merge(duplicate)
         elif merge_duplicate:  # requested to update article has both url and doi changed to new values - no duplicate detected
             is_update += 1
-            update_article = models.Article.pull(update_article_id)
-            update_article.merge(article)
+            art = models.Article.pull(update_article_id)
+            article.merge(art)
 
         return is_update
 
-    def _prepare_update_publisher(self, article, duplicate, merge_duplicate):
+    def _prepare_update_publisher(self, article, duplicate, merge_duplicate, account, limit_to_account):
         # before saving, we need to determine whether this is a new article
         # or an update
         is_update = 0
 
         if duplicate is not None:  # else -> it is new article
-            if duplicate.id == article.id or article.id is None:  # it is update
+            # check if can update the duplicate - if is the owner
+            has_permissions_result = self.has_permissions(account, article, limit_to_account)
+            if isinstance(has_permissions_result, bool) and has_permissions_result == True:
                 doi_or_ft_updated = self._doi_or_fulltext_updated(article, duplicate.id)
                 if doi_or_ft_updated or not merge_duplicate:
                     raise exceptions.DuplicateArticleException()
@@ -190,8 +192,8 @@ class ArticleService(object):
                 if account.has_role("admin"):
                     is_update = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
                 else:
-                    is_update = self._prepare_update_publisher(article, duplicate, merge_duplicate)
-            except (exceptions.DuplicateArticleException, exceptions.ArticleMergeConflict) as e:
+                    is_update = self._prepare_update_publisher(article, duplicate, merge_duplicate, account, limit_to_account)
+            except (exceptions.DuplicateArticleException, exceptions.ArticleMergeConflict, exceptions.ConfigurationException) as e:
                 raise e
 
         if add_journal_info:

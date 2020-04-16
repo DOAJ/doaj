@@ -1,6 +1,7 @@
 from portality.api.v1.crud.common import CrudApi
 from portality.api.v1 import Api400Error, Api401Error, Api403Error, Api404Error, Api500Error
 from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
+from portality.bll import exceptions
 from portality.lib import dataobj
 from portality import models
 from portality.bll.doaj import DOAJ
@@ -79,6 +80,8 @@ class ArticlesCrudApi(CrudApi):
             raise Api400Error(str(e))
         except ArticleNotAcceptable as e:
             raise Api400Error("; ".join(e.errors))
+        except exceptions.DuplicateArticleException as e:
+            raise Api403Error(str(e))
 
         # Check we are allowed to create an article for this journal
         if result.get("fail", 0) == 1:
