@@ -107,8 +107,6 @@ class ArticleService(object):
 
     def _prepare_update_admin(self, article, duplicate, update_article_id, merge_duplicate):
 
-        updated_article = None
-
         # we assume update_article_id is not None as admin update the articles only via Admin Article Form
         if update_article_id is None:
             raise exceptions.ConfigurationException("Upload articles for admin available only via Admin Metadata "
@@ -121,22 +119,22 @@ class ArticleService(object):
             elif merge_duplicate:
                 is_update += 1
                 article.merge(duplicate)
-                updated_article = article
         elif merge_duplicate:  # requested to update article has both url and doi changed to new values - no duplicate detected
             is_update += 1
             art = models.Article.pull(update_article_id)
-            art.merge(article)
-            updated_article = art
+            article.merge(art)
 
-        return is_update, updated_article
+        return is_update
 
-    def _prepare_update_publisher(self, article, duplicate, merge_duplicate):
+    def _prepare_update_publisher(self, article, duplicate, merge_duplicate, account, limit_to_account):
         # before saving, we need to determine whether this is a new article
         # or an update
         is_update = 0
 
         if duplicate is not None:  # else -> it is new article
-            if duplicate.id == article.id or article.id is None:  # it is update
+            # check if can update the duplicate - if is the owner
+            has_permissions_result = self.has_permissions(account, article, limit_to_account)
+            if isinstance(has_permissions_result, bool) and has_permissions_result == True:
                 doi_or_ft_updated = self._doi_or_fulltext_updated(article, duplicate.id)
                 if doi_or_ft_updated or not merge_duplicate:
                     raise exceptions.DuplicateArticleException()
@@ -145,7 +143,7 @@ class ArticleService(object):
                     article.merge(duplicate)
             else:
                 raise exceptions.DuplicateArticleException()
-        return is_update, article
+        return is_update
 
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
@@ -187,15 +185,15 @@ class ArticleService(object):
         if isinstance(has_permissions_result,dict):
             return has_permissions_result
 
-        updated_article = article
+        is_update = 0
         if duplicate_check:
             duplicate = self.get_duplicate(article)
             try:
                 if account.has_role("admin"):
-                    is_update, article = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
+                    is_update = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
                 else:
-                    is_update, article = self._prepare_update_publisher(article, duplicate, merge_duplicate)
-            except (exceptions.DuplicateArticleException, exceptions.ArticleMergeConflict) as e:
+                    is_update = self._prepare_update_publisher(article, duplicate, merge_duplicate, account, limit_to_account)
+            except (exceptions.DuplicateArticleException, exceptions.ArticleMergeConflict, exceptions.ConfigurationException) as e:
                 raise e
 
         if add_journal_info:
