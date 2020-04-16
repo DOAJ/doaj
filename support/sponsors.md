@@ -14,8 +14,8 @@ Sponsorship levels are tiered and have accompanying benefits. To discuss your sp
 ## Rates and benefits
 
 {:.numbered-table .numbered-table--labels}
-| Sponsor level | Commercial rate | Non-commercial rate | Benefits |
-|---------------|-----------------|---------------------|----------|
-| Gold          | £18,000         | £9,000              |          |
-| Silver        | £12,000         | £6,000              |          |
-| Bronze        | £6,000          | £3,000              |          |
+| | Sponsor level | Commercial rate | Non-commercial rate | Benefits |
+|-|---------------|-----------------|---------------------|----------|
+| | Gold          | £18,000         | £9,000              |          |
+| | Silver        | £12,000         | £6,000              |          |
+| | Bronze        | £6,000          | £3,000              |          |
