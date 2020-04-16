@@ -8,6 +8,12 @@
     counter-increment: row-number;
 
     td {
+       
+      &:not(:first-child),
+      &:not(:nth-child(2)){
+        @include typescale-06;
+      }
+  
       &:first-child::before {
         padding-right: $spacing-03;
         content: counter(row-number);
@@ -19,10 +25,6 @@
 
       &:nth-child(2) {
         width: 40%;
-      }
-
-      &:nth-child(3) {
-        @include typescale-06;
       }
     }
   }
