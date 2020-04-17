@@ -4,7 +4,7 @@
             <div class="form-group">
                 <fieldset>
                     <a class="question_id" name="{{ f.name }}" href="#{{ f.name }}">{{ f.name }}</a><br>
-                    <legend>{{ f.label }}</legend>
+                    <legend>{% autoescape off %}{{ f.label }}{% endautoescape %}</legend>
 
                     <div class="col-md-11">
 

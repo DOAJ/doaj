@@ -4,7 +4,7 @@
             <div class="form-group">
                 <label class="control-label col-md-4" for="{{ f.name }}">
                     <a class="question_id" name="{{ f.name }}" href="#{{ f.name }}">{{ f.name }}</a><br>
-                    {{ f.label }}
+                    {% autoescape off %}{{ f.label }}{% endautoescape %}
                     {% if f.has_validator("required") %}<br>(required){% endif %}
                 </label>
                 <div class="col-md-7">

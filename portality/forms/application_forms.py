@@ -17,10 +17,11 @@ from portality.forms.validate import (
     ReservedUsernames,
     StopWords,
     InPublicDOAJ,
-    DifferentTo
+    DifferentTo,
+    RequiredIfOtherValue
 )
 
-from portality.datasets import language_options, country_options
+from portality.datasets import language_options, country_options, currency_options
 from portality.regex import ISSN, ISSN_COMPILED
 
 # Stop words used in the keywords field
@@ -523,7 +524,7 @@ class FieldDefinitions:
     }
 
     REVIEW_PROCESS = {
-        "name" : "peer_review",
+        "name" : "review_process",
         "label": "DOAJ only accepts peer-reviewed journals."
                     "Which type(s) of peer review does this journal use?",
         "input": "checkbox",
@@ -583,8 +584,8 @@ class FieldDefinitions:
         "label" : "Does the journal routinely screen article submissions for plagiarism?",
         "input" : "radio",
         "options" : [
-            {"display" : "Yes", "value" : True},
-            {"display" : "No", "value" : False}
+            {"display" : "Yes", "value" : "y"},
+            {"display" : "No", "value" : "n"}
         ],
         "validate" : [
             "required"
@@ -595,12 +596,12 @@ class FieldDefinitions:
         "name" : "plagiarism_url",
         "label" : "Link to the journal's plagiarism policy",
         "input" : "text",
-        "conditional": [{"field": "plagiarism_detection", "value": True}],
+        "conditional": [{"field": "plagiarism_detection", "value": "y"}],
         "help": {
             "doaj_criteria": "You must provide a URL"
         },
         "validate" : [
-            "required",
+            {"required_if" : {"field" : "plagiarism_detection", "value" : "y"}},
             "is_url"
         ],
         "widgets" : [
@@ -661,9 +662,6 @@ class FieldDefinitions:
         "label": "Average number of <strong>weeks</strong> between article submission & publication",
         "input": "number",
         "datatype": "integer",
-        "help": {
-            "description": "Enter a number"
-        },
         "validate": [
             "required",
             {"int_range": {"gte": 1, "lte": 52}}
@@ -675,6 +673,151 @@ class FieldDefinitions:
             "min": "1",
             "max": "100"
         }
+    }
+
+    APC = {
+        "name" : "apc",
+        "label" : "Does the journal require payment of article processing charges (APCs)?",
+        "input" : "radio",
+        "options": [
+            {"display": "Yes", "value": "y"},
+            {"display": "No", "value": "n"}
+        ],
+        "help": {
+            "doaj_criteria": "You must tell us about any APCs"
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    APC_URL = {
+        "name" : "apc_url",
+        "label" : "Link to the page where this is stated",
+        "input": "text",
+        "help": {
+            "short_help" : "The page must declare whether or not APCs are charged.",
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate": [
+            "required",
+            "is_url"
+        ],
+        "widgets": [
+            "clickable_url"
+        ]
+    }
+
+    APC_CHARGES = {
+        "name" : "apc_charges",
+        "input" : "group",
+        # "template" : "application_form/_inline_group.html",
+        "repeatable" : True,
+        "conditional" : [
+            {"field" : "apc", "value" : "y"}
+        ],
+        "subfields" : [
+            "apc_currency",
+            "apc_max"
+        ]
+    }
+
+    APC_CURRENCY = {
+        "subfield" : True,
+        "name" : "apc_currency",
+        "input" : "select",
+        "options_fn" : "iso_currency_list",
+        "help" : {
+            "long_help" : "If the journal charges different APCs, you must enter the highest APC charged. If more than "
+                            "one currency is used, add a new line"
+        },
+        "widgets" : [
+            {"select" : {}}
+        ]
+    }
+
+    APC_MAX = {
+        "subfield" : True,
+        "name" : "apc_max",
+        "label" : "Highest APC Charged",
+        "input" : "number",
+        "datatype" : "integer",
+    }
+
+    HAS_WAIVER = {
+        "name" : "has_waiver",
+        "label" : "Does the journal provide APC waivers or discounts for authors?",
+        "input" : "radio",
+        "options": [
+            {"display": "Yes", "value": "y"},
+            {"display": "No", "value": "n"}
+        ],
+        "help" : {
+            "long_help" : "Answer Yes if the journal provides APC waivers for authors from low-income economies, "
+                        "discounts for authors from lower middle-income economies, and/or waivers and discounts for "
+                        "other authors with demonstrable needs. "
+        },
+        "validate" : [
+            "required"
+        ]
+    }
+
+    WAIVER_URL = {
+        "name": "waiver_url",
+        "label": "Link to the journal's waiver information",
+        "input": "text",
+        "conditional" : [
+            {"field" : "has_waiver", "value" : "y"}
+        ],
+        "help": {
+            "short_help": "The page must declare whether or not APCs are charged.",
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate": [
+            {"required_if" : {"field" : "has_waiver", "value" : "y"}},
+            "is_url"
+        ],
+        "widgets": [
+            "clickable_url"
+        ]
+    }
+
+    HAS_OTHER_CHARGES = {
+        "name": "has_other_charges",
+        "label": "Does the journal charge any other fees to authors?",
+        "input": "radio",
+        "options": [
+            {"display": "Yes", "value": "y"},
+            {"display": "No", "value": "n"}
+        ],
+        "help": {
+            "long_help": "Declare all other charges: editorial processing charges, colour charges, submission fees, "
+                        "page charges, membership fees, print subscription costs, other supplementary charges",
+            "doaj_criteria" : "You must declare any other charges if they exist"
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    OTHER_CHARGES_URL = {
+        "name": "other_charges_url",
+        "label": "Link to the journal's fees information",
+        "input": "text",
+        "conditional": [
+            {"field": "has_other_charges", "value": "y"}
+        ],
+        "help": {
+            "short_help": "The page must declare whether or not APCs are charged.",
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate": [
+            {"required_if": {"field": "has_other_charges", "value": "y"}},
+            "is_url"
+        ],
+        "widgets": [
+            "clickable_url"
+        ]
     }
 
 
@@ -703,7 +846,28 @@ FIELDS = {
     FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"] : FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL,
 
     FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"] : FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS,
-    FieldDefinitions.COPYRIGHT_URL["name"] : FieldDefinitions.COPYRIGHT_URL
+    FieldDefinitions.COPYRIGHT_URL["name"] : FieldDefinitions.COPYRIGHT_URL,
+
+    FieldDefinitions.REVIEW_PROCESS["name"] : FieldDefinitions.REVIEW_PROCESS,
+    FieldDefinitions.REVIEW_PROCESS_OTHER["name"] : FieldDefinitions.REVIEW_PROCESS_OTHER,
+    FieldDefinitions.REVIEW_URL["name"] : FieldDefinitions.REVIEW_URL,
+    FieldDefinitions.PLAGIARISM_DETECTION["name"] : FieldDefinitions.PLAGIARISM_DETECTION,
+    FieldDefinitions.PLAGIARISM_URL["name"] : FieldDefinitions.PLAGIARISM_URL,
+
+    FieldDefinitions.AIMS_SCOPE_URL["name"] : FieldDefinitions.AIMS_SCOPE_URL,
+    FieldDefinitions.EDITORIAL_BOARD_URL["name"] : FieldDefinitions.EDITORIAL_BOARD_URL,
+    FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"] : FieldDefinitions.AUTHOR_INSTRUCTIONS_URL,
+    FieldDefinitions.PUBLICATION_TIME_WEEKS["name"] : FieldDefinitions.PUBLICATION_TIME_WEEKS,
+
+    FieldDefinitions.APC["name"] : FieldDefinitions.APC,
+    FieldDefinitions.APC_URL["name"] : FieldDefinitions.APC_URL,
+    FieldDefinitions.APC_CHARGES["name"] : FieldDefinitions.APC_CHARGES,
+    FieldDefinitions.APC_CURRENCY["name"] : FieldDefinitions.APC_CURRENCY,
+    FieldDefinitions.APC_MAX["name"] : FieldDefinitions.APC_MAX,
+    FieldDefinitions.HAS_WAIVER["name"] : FieldDefinitions.HAS_WAIVER,
+    FieldDefinitions.WAIVER_URL["name"] : FieldDefinitions.WAIVER_URL,
+    FieldDefinitions.HAS_OTHER_CHARGES["name"] : FieldDefinitions.HAS_OTHER_CHARGES,
+    FieldDefinitions.OTHER_CHARGES_URL["name"] : FieldDefinitions.OTHER_CHARGES_URL
 }
 
 ##########################################################
@@ -761,6 +925,45 @@ class FieldSetDefinitions:
         ]
     }
 
+    PEER_REVIEW = {
+        "name" : "peer_review",
+        "label" : "Peer Review",
+        "fields" : [
+            FieldDefinitions.REVIEW_PROCESS["name"],
+            FieldDefinitions.REVIEW_PROCESS_OTHER["name"],
+            FieldDefinitions.REVIEW_URL["name"],
+            FieldDefinitions.PLAGIARISM_DETECTION["name"],
+            FieldDefinitions.PLAGIARISM_URL["name"]
+        ]
+    }
+
+    EDITORIAL = {
+        "name" : "editorial",
+        "label" : "Editorial",
+        "fields" : [
+            FieldDefinitions.AIMS_SCOPE_URL["name"],
+            FieldDefinitions.EDITORIAL_BOARD_URL["name"],
+            FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"],
+            FieldDefinitions.PUBLICATION_TIME_WEEKS["name"]
+        ]
+    }
+
+    BUSINESS_MODEL = {
+        "name" : "business_model",
+        "label" : "Business Model",
+        "fields" : [
+            FieldDefinitions.APC["name"],
+            FieldDefinitions.APC_URL["name"],
+            FieldDefinitions.APC_CHARGES["name"],
+            FieldDefinitions.APC_CURRENCY["name"],
+            FieldDefinitions.APC_MAX["name"],
+            FieldDefinitions.HAS_WAIVER["name"],
+            FieldDefinitions.WAIVER_URL["name"],
+            FieldDefinitions.HAS_OTHER_CHARGES["name"],
+            FieldDefinitions.OTHER_CHARGES_URL["name"]
+        ]
+    }
+
 
 ###########################################################
 # Define our Contexts
@@ -773,7 +976,10 @@ class ContextDefinitions:
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
             FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
             FieldSetDefinitions.LICENSING["name"],
-            FieldSetDefinitions.COPYRIGHT["name"]
+            FieldSetDefinitions.COPYRIGHT["name"],
+            FieldSetDefinitions.PEER_REVIEW["name"],
+            FieldSetDefinitions.EDITORIAL["name"],
+            FieldSetDefinitions.BUSINESS_MODEL["name"]
         ],
         "asynchronous_warnings": [
             "all_urls_the_same"
@@ -798,7 +1004,10 @@ FORMS = {
         FieldSetDefinitions.BASIC_COMPLIANCE["name"] : FieldSetDefinitions.BASIC_COMPLIANCE,
         FieldSetDefinitions.ABOUT_THE_JOURNAL["name"] : FieldSetDefinitions.ABOUT_THE_JOURNAL,
         FieldSetDefinitions.LICENSING["name"] : FieldSetDefinitions.LICENSING,
-        FieldSetDefinitions.COPYRIGHT["name"] : FieldSetDefinitions.COPYRIGHT
+        FieldSetDefinitions.COPYRIGHT["name"] : FieldSetDefinitions.COPYRIGHT,
+        FieldSetDefinitions.PEER_REVIEW["name"] : FieldSetDefinitions.PEER_REVIEW,
+        FieldSetDefinitions.EDITORIAL["name"] : FieldSetDefinitions.EDITORIAL,
+        FieldSetDefinitions.BUSINESS_MODEL["name"] : FieldSetDefinitions.BUSINESS_MODEL
     },
     "fields" : FIELDS
 }
@@ -1068,6 +1277,12 @@ def iso_language_list(field):
     return cl
 
 
+def iso_currency_list(field):
+    cl = []
+    for v, d in currency_options:
+        cl.append({"display": d, "value": v})
+    return cl
+
 #######################################################
 # Validation features
 #######################################################
@@ -1173,6 +1388,17 @@ class DifferentToBuilder:
         return DifferentTo(settings.get("field"))
 
 
+class RequiredIfBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-required-if-field"] = settings.get("field")
+        html_attrs["data-parsley-required-if-value"] = settings.get("value")
+
+    @staticmethod
+    def wtforms(field, settings):
+        return RequiredIfOtherValue(settings.get("field"), settings.get("value"))
+
+
 #########################################################
 # Crosswalks
 #########################################################
@@ -1181,6 +1407,7 @@ PYTHON_FUNCTIONS = {
     "options" : {
         "iso_country_list" : iso_country_list,
         "iso_language_list" : iso_language_list,
+        "iso_currency_list" : iso_currency_list
     },
     "validate" : {
         "render" : {
@@ -1190,7 +1417,8 @@ PYTHON_FUNCTIONS = {
             "in_public_doaj" : InPublicDOAJBuilder.render,
             "optional_if" : OptionalIfBuilder.render,
             "is_issn": IsISSNBuilder.render,
-            "different_to" : DifferentToBuilder.render
+            "different_to" : DifferentToBuilder.render,
+            "required_if" : RequiredIfBuilder.render,
         },
         "wtforms" : {
             "required" : RequiredBuilder.wtforms,
@@ -1201,7 +1429,8 @@ PYTHON_FUNCTIONS = {
             "in_public_doaj" : InPublicDOAJBuilder.wtforms,
             "optional_if" : OptionalIfBuilder.wtforms,
             "is_issn" : IsISSNBuilder.wtforms,
-            "different_to" : DifferentToBuilder.wtforms
+            "different_to" : DifferentToBuilder.wtforms,
+            "required_if" : RequiredIfBuilder.wtforms
         }
     },
 
