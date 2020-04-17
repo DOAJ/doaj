@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import time
 import re
 
-from portality.core import app
+from portality.core import app, es_connection
 import urllib.parse
 import json
 
@@ -44,13 +44,19 @@ class DomainObject(UserDict, object):
     @classmethod
     def target_whole_index(cls):
         t = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/') + '/'
-        t += app.config['ELASTIC_SEARCH_DB'] + '/'
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE'] and cls.__type__ is not None:
+            t += app.config['ELASTIC_SEARCH_DB_PREFIX'] + '-' + cls.__type__ + '/'             # todo: version goes here
+        else:
+            t += app.config['ELASTIC_SEARCH_DB'] + '/'
         return t
             
     @classmethod
     def target(cls):
         t = cls.target_whole_index()
-        t += cls.__type__ + '/'
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+            t += esprit.raw.INDEX_PER_TYPE_SUBSTITUTE + '/'
+        else:
+            t += cls.__type__ + '/'
         return t
     
     @classmethod
@@ -432,7 +438,13 @@ class DomainObject(UserDict, object):
             app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
             return
 
-        r = requests.delete(cls.target_whole_index())
+        url = cls.target_whole_index()
+
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+            indexes = [i for i in esprit.raw.list_indexes(connection=es_connection) if i.startswith(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '-')]
+            url += ','.join(indexes)
+
+        r = requests.delete(url)
         return r
     
     def update(self, doc):

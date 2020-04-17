@@ -133,7 +133,12 @@ def mutate_mapping(conn, type, mapping):
         try:
             mapping[esprit.raw.INDEX_PER_TYPE_SUBSTITUTE] = mapping.pop(type)
         except KeyError:
-            pass                                        # Allow this mapping through unaltered if it isn't keyed by type
+            # Allow this mapping through unaltered if it isn't keyed by type
+            pass
+
+        # Add the index prefix to the mapping as we create the type
+        type = app.config['ELASTIC_SEARCH_DB_PREFIX'] + '-' + type
+    return type
 
 
 def put_mappings(conn, mappings):
@@ -142,9 +147,9 @@ def put_mappings(conn, mappings):
 
     # for each mapping (a class may supply multiple), create a mapping, or mapping and index
     for key, mapping in iter(mappings.items()):
-        if not esprit.raw.type_exists(conn, key, es_version=es_version):
-            mutate_mapping(conn, key, mapping)
-            r = esprit.raw.put_mapping(conn, key, mapping, es_version=es_version)
+        altered_key = mutate_mapping(conn, key, mapping)
+        if not esprit.raw.type_exists(conn, altered_key, es_version=es_version):
+            r = esprit.raw.put_mapping(conn, altered_key, mapping, es_version=es_version)
             print("Creating ES Type + Mapping for", key, "; status:", r.status_code)
         else:
             print("ES Type + Mapping already exists for", key)
