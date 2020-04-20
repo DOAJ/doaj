@@ -84,6 +84,11 @@ ul, ol {
 
 pre, code {
   @include font-monospace;
+  @include typescale-06;
+}
+
+pre {
+  padding: $spacing-02;
 }
 
 a {
