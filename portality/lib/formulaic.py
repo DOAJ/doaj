@@ -116,9 +116,13 @@ UI_CONFIG_FIELDS = [
     "widgets",
     "attr",
     "multiple",
+    "repeatable",
     "datatype",
     "disabled",
-    "name"
+    "name",
+    "subfields",
+    "subfield",
+    "in_group"
 ]
 
 
@@ -247,6 +251,10 @@ class FormulaicContext(object):
     def default_field_template(self):
         return self._definition.get("templates", {}).get("default_field")
 
+    @property
+    def default_group_template(self):
+        return self._definition.get("templates", {}).get("default_group")
+
     def make_wtform_class(self, fields):
         class TempForm(Form):
             pass
@@ -351,6 +359,10 @@ class FormulaicFieldset(object):
     def default_field_template(self):
         return self._formulaic_context.default_field_template
 
+    @property
+    def default_group_template(self):
+        return self._formulaic_context.default_group_template
+
     def fields(self):
         return [FormulaicField(f, self) for f in
                 self._definition.get("fields", []) if not f.get("subfield")]
@@ -426,6 +438,9 @@ class FormulaicField(object):
         local = self._definition.get("template")
         if local is not None:
             return local
+
+        if self._definition.get("input") == "group":
+            return self._formulaic_fieldset.default_group_template
 
         return self._formulaic_fieldset.default_field_template
 

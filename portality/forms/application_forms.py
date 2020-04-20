@@ -303,7 +303,7 @@ class FieldDefinitions:
             "publisher_name",
             "publisher_country"
         ],
-        "template" : "application_form/_group.html"
+        # "template" : "application_form/_group.html"
     }
 
     PUBLISHER_NAME = {
@@ -356,7 +356,7 @@ class FieldDefinitions:
             "institution_name",
             "institution_country"
         ],
-        "template" : "application_form/_group.html"
+        # "template" : "application_form/_group.html"
     }
 
     INSTITUTION_NAME = {
@@ -711,7 +711,6 @@ class FieldDefinitions:
     APC_CHARGES = {
         "name" : "apc_charges",
         "input" : "group",
-        # "template" : "application_form/_inline_group.html",
         "repeatable" : True,
         "conditional" : [
             {"field" : "apc", "value" : "y"}
@@ -719,7 +718,8 @@ class FieldDefinitions:
         "subfields" : [
             "apc_currency",
             "apc_max"
-        ]
+        ],
+        # "template" : "application_form/_group.html"
     }
 
     APC_CURRENCY = {
@@ -733,7 +733,10 @@ class FieldDefinitions:
         },
         "widgets" : [
             {"select" : {}}
-        ]
+        ],
+        "attr" : {
+            "class" : "input-xlarge"
+        }
     }
 
     APC_MAX = {
@@ -986,7 +989,8 @@ class ContextDefinitions:
         ],
         "templates": {
             "form" : "application_form/public_application.html",
-            "default_field" : "application_form/_field.html"
+            "default_field" : "application_form/_field.html",
+            "default_group" : "application_form/_group.html"
         },
         "crosswalks": {
             "obj2form" : ApplicationFormXWalk.obj2form,

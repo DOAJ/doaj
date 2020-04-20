@@ -4,17 +4,32 @@ var formulaic = {
         return edges.instantiate(formulaic.Formulaic, params);
     },
     Formulaic : function(params) {
+        // Construction Arguments
+        ///////////////////////////////////////////////////////
+
+        // jquery selector for the form we're working with
         this.formSelector = edges.getParam(params.formSelector, "#formulaic");
 
-        this.context = $(this.formSelector);
-
+        // the fieldsets configuration for this form
         this.fieldsets = edges.getParam(params.fieldsets, {});
 
+        // a mapping from short strings to function paths for the functions used by this form
         this.functions = edges.getParam(params.functions, {});
 
+        // should we apply front-end validation
         this.doValidation = edges.getParam(params.doValidation, true);
 
+        // should we autosave?  Enter 0 for no, or the number of milliseconds between each save
         this.autoSave = edges.getParam(params.autoSave, 0);
+
+        this.controlSelect = edges.getParam(params.controlSelect, formulaic.newDefaultControlSelect());
+        this.controlSelect.set_formuaic(this);
+
+        // Internal properties
+        ///////////////////////////////////////////////////////
+
+        // jquery handle on the form
+        this.context = $(this.formSelector);
 
         // list of fields whose values are synchronised
         this.synchronised = {};
@@ -36,6 +51,9 @@ var formulaic = {
 
         this.lastSaveVal = "";
 
+        /**
+         * Construct the Formulaic instance
+         */
         this.init = function() {
             // set up the save button
             this.bindSave();
@@ -44,14 +62,62 @@ var formulaic = {
             this.registerSynchronised();
 
             // bind any conditional fields
-            this._bindConditional();
+            this.bindConditional();
 
             // attach any widgets to the form
-            this._applyWidgets();
+            this.applyWidgets();
 
             // find any checkboxes that
-            this._bindExclusiveCheckboxes();
+            this.bindExclusiveCheckboxes();
+
+            // Note that we don't bind parsley validation on init, because we don't want to
+            // always validate.  Instead Parsley is inited later when the user attempts an initial
+            // submit
         };
+
+        // Object utility functions
+        ////////////////////////////////////////////////
+
+        /*
+        this._controlSelect = function(params) {
+            var context = this.context;
+            if (params.fieldset) {
+                context = $("#" + params.fieldset, this.context);
+            }
+            if (params.name) {
+                return $("[name=" + params.name + "], [data-formulaic-sync=" + params.name + "]", context).filter(":input");
+            } else if (params.id) {
+                return $("#" + params.id, context).filter(":input");
+            } else if (params.syncName) {
+                return $("[data-formulaic-sync=" + params.syncName + "]", context).filter(":input");
+            }
+        };*/
+
+        this.getElementName = function(element) {
+            var name = element.attr("data-formulaic-sync");
+            if (!name) {
+                name = element.attr("name");
+            }
+            return name;
+        };
+
+        this.getFieldDefinition = function(params) {
+            var field = params.field;
+
+            for (var i = 0; i < this.fieldsets.length; i++) {
+                var fieldset = this.fieldsets[i];
+                for (var j = 0; j < fieldset.fields.length; j++) {
+                    var fieldDef = fieldset.fields[j];
+                    if (fieldDef.name === field) {
+                        return fieldDef;
+                    }
+                }
+            }
+
+            return false;
+        };
+
+        ////////////////////////////////////////////////
 
         //////////////////////////////////////////////
         // Functions for handling save
@@ -163,7 +229,7 @@ var formulaic = {
             var fields = Object.keys(this.synchronised);
             for (var i = 0; i < fields.length; i++) {
                 var name = fields[i];
-                var allByName = this._controlSelect({name: name});
+                var allByName = this.controlSelect.input({name: name});
                 allByName.each(function() {
                     var that = $(this);
                     var current_id = that.attr("id");
@@ -173,7 +239,7 @@ var formulaic = {
                 var fieldsets = this.synchronised[name];
                 for (var j = 0; j < fieldsets.length; j++) {
                     var fieldset = fieldsets[j];
-                    var elements = this._controlSelect({fieldset: fieldset, name: name});
+                    var elements = this.controlSelect.input({fieldset: fieldset, name: name});
                     elements.each(function() {
                         var newname = fieldset + "__" + name;
                         var newid = fieldset + "__" + $(this).attr("id");
@@ -195,7 +261,7 @@ var formulaic = {
             // other fields, this will need extending
             if (type === "radio" || type === "checkbox") {
                 var checked = that.is(":checked");
-                var toSync = this._controlSelect({syncName: name});
+                var toSync = this.controlSelect.input({syncName: name});
                 toSync.each(function() {
                     var el = $(this);
                     if (el.attr("data-formulaic-id") === original_id) {
@@ -209,7 +275,10 @@ var formulaic = {
 
         ///////////////////////////////////////////////////////
 
-        this._bindConditional = function() {
+        // Functionsl for conditional fields
+        ///////////////////////////////////////////////////////
+
+        this.bindConditional = function() {
             for (var i = 0; i < this.fieldsets.length; i++) {
                 var fieldset = this.fieldsets[i];
                 for (var j = 0; j < fieldset.fields.length; j++) {
@@ -233,14 +302,57 @@ var formulaic = {
                         }
 
                         // bind a change event for checking conditionals
-                        var element = this._controlSelect({name: condField});
+                        var element = this.controlSelect.input({name: condField});
                         edges.on(element, "change.Conditional", this, "checkConditional");
                     }
                 }
             }
         };
 
-        this._applyWidgets = function() {
+        this.checkConditional = function(element) {
+            var name = this.getElementName($(element));
+            var downstream = this.conditionals[name];
+            for (var i = 0; i < downstream.length; i++) {
+                var field = downstream[i];
+                if (this.isConditionSatisfied({field: field})) {
+                    this.controlSelect.container({name: field}).show();
+                } else {
+                    this.controlSelect.container({name: field}).hide();
+                }
+            }
+        };
+
+        this.isConditionSatisfied = function(params) {
+            var field = params.field;
+            var definition = this.getFieldDefinition(params);
+            for (var i = 0; i < definition.conditional.length; i++) {
+                var condField = definition.conditional[i];
+                var elements = this.controlSelect.input({name: condField.field});
+                var type = elements.attr("type");
+                var val = condField.value;
+
+                if (type === "radio" || type === "checkbox") {
+                    var checkedValues = [];
+                    elements.each(function() {
+                        var that = $(this);
+                        if (that.is(":checked")) {
+                            checkedValues.push(that.val());
+                        }
+                    });
+                    if ($.inArray(val, checkedValues) === -1) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        };
+
+        ///////////////////////////////////////////////////////
+
+        // Functions for widget handling
+        ///////////////////////////////////////////////////////
+
+        this.applyWidgets = function() {
             for (var i = 0; i < this.fieldsets.length; i++) {
                 var fieldset = this.fieldsets[i];
                 for (var j = 0; j < fieldset.fields.length; j++) {
@@ -258,7 +370,7 @@ var formulaic = {
                                 widgetArgs = widgetDef[widgetName];
                             }
 
-                            var widget = this._getWidget(widgetName);
+                            var widget = this.getWidget(widgetName);
                             if (!widget) {
                                 continue;
                             }
@@ -280,7 +392,35 @@ var formulaic = {
             }
         };
 
-        this._bindExclusiveCheckboxes = function() {
+        this.getWidget = function(widgetName) {
+            if (this.widgetRefs[widgetName]) {
+                return this.widgetRefs[widgetName];
+            }
+
+            var functionPath = this.functions[widgetName];
+            if (!functionPath) {
+                return false;
+            }
+
+            var bits = functionPath.split(".");
+            var context = window;
+            for (var i = 0; i < bits.length; i++) {
+                var bit = bits[i];
+                context = context[bit];
+                if (!context) {
+                    console.log("Unable to load " + widgetName + " from path " + functionPath);
+                    return false;
+                }
+            }
+            return context;
+        };
+
+        //////////////////////////////////////////////////////
+
+        // Functions for exclusive checkboxes
+        //////////////////////////////////////////////////////
+
+        this.bindExclusiveCheckboxes = function() {
             // first register all the exclusive elements and values
             for (var i = 0; i < this.fieldsets.length; i++) {
                 var fieldset = this.fieldsets[i];
@@ -306,10 +446,9 @@ var formulaic = {
             var exclusiveFields = Object.keys(this.exclusive);
             for (var i = 0; i < exclusiveFields.length; i++) {
                 var name = exclusiveFields[i];
-                var elements = this._controlSelect({name: name});
+                var elements = this.controlSelect.input({name: name});
                 edges.on(elements, "change.Exclusive", this, "checkExclusive");
             }
-
         };
 
         this.checkExclusive = function(element) {
@@ -326,7 +465,7 @@ var formulaic = {
             }
 
             var checked = jqel.is(":checked");
-            var elements = this._controlSelect({name: name});
+            var elements = this.controlSelect.input({name: name});
             elements.each(function() {
                 var that = $(this);
                 if (checked && that.val() !== value) {
@@ -338,28 +477,10 @@ var formulaic = {
             });
         };
 
-        this._getWidget = function(widgetName) {
-            if (this.widgetRefs[widgetName]) {
-                return this.widgetRefs[widgetName];
-            }
+        ////////////////////////////////////////////////////
 
-            var functionPath = this.functions[widgetName];
-            if (!functionPath) {
-                return false;
-            }
-
-            var bits = functionPath.split(".");
-            var context = window;
-            for (var i = 0; i < bits.length; i++) {
-                var bit = bits[i];
-                context = context[bit];
-                if (!context) {
-                    console.log("Unable to load " + widgetName + " from path " + functionPath);
-                    return false;
-                }
-            }
-            return context;
-        };
+        // Parsley state management
+        ////////////////////////////////////////////////////
 
         this.destroyParsley = function() {
             if (!this.doValidation) { return; }
@@ -377,54 +498,42 @@ var formulaic = {
             this.activeParsley = this.context.parsley();
         };
 
-        this.checkConditional = function(element) {
-            var name = this._getElementName($(element));
-            var downstream = this.conditionals[name];
-            for (var i = 0; i < downstream.length; i++) {
-                var field = downstream[i];
-                var el = this._controlSelect({name: field});
-                if (this._isConditionSatisfied({field: field})) {
-                    el.parents("." + field + "_container").show();
-                } else {
-                    el.parents("." + field + "_container").hide();
-                }
-            }
+        ////////////////////////////////////////////////////
+
+        // call the init  function to complete construction
+        this.init();
+    },
+
+    newDefaultControlSelect : function(params) {
+        return edges.instantiate(formulaic.DefaultControlSelect, params);
+    },
+    DefaultControlSelect : function(params) {
+        this.containerClassTemplate = edges.getParam(params.containerClassTemplate, "{name}__container");
+
+        this.formulaic = false;
+
+        this.set_formuaic = function(f) {
+            this.formulaic = f;
         };
 
-        this._isConditionSatisfied = function(params) {
-            var field = params.field;
-            var definition = this.getFieldDefinition(params);
-            for (var i = 0; i < definition.conditional.length; i++) {
-                var condField = definition.conditional[i];
-                var elements = this._controlSelect({name: condField.field});
-                var type = elements.attr("type");
-                var val = condField.value;
-
-                if (type === "radio" || type === "checkbox") {
-                    var checkedValues = [];
-                    elements.each(function() {
-                        var that = $(this);
-                        if (that.is(":checked")) {
-                            checkedValues.push(that.val());
-                        }
-                    });
-                    if ($.inArray(val, checkedValues) === -1) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        };
-
-
-
-        this._controlSelect = function(params) {
-            var context = this.context;
+        this.get_context = function(params) {
+            var context = this.formulaic.context;
             if (params.fieldset) {
-                context = $("#" + params.fieldset, this.context);
+                context = $("#" + params.fieldset, context);
             }
+            return context;
+        };
+
+        this.input = function(params) {
+            var context = this.get_context(params);
             if (params.name) {
-                return $("[name=" + params.name + "], [data-formulaic-sync=" + params.name + "]", context).filter(":input");
+                var name = params.name;
+                // TODO: we might need to do something about nested fields, especially if they are repeatable
+                //var def = this.formulaic.getFieldDefinition({field: name});
+                //if (def.in_group) {
+                //    name = def.in_group + "-" + name;
+                //}
+                return $("[name=" + name + "], [data-formulaic-sync=" + name + "]", context).filter(":input");
             } else if (params.id) {
                 return $("#" + params.id, context).filter(":input");
             } else if (params.syncName) {
@@ -432,31 +541,12 @@ var formulaic = {
             }
         };
 
-        this._getElementName = function(element) {
-            var name = element.attr("data-formulaic-sync");
-            if (!name) {
-                name = element.attr("name");
-            }
-            return name;
+        this.container = function(params) {
+            var context = this.get_context(params);
+            var name = params.name || params.syncName;
+            var selector = "." + this.containerClassTemplate.replace("{name}", name);
+            return $(selector, context)
         };
-
-        this.getFieldDefinition = function(params) {
-            var field = params.field;
-
-            for (var i = 0; i < this.fieldsets.length; i++) {
-                var fieldset = this.fieldsets[i];
-                for (var j = 0; j < fieldset.fields.length; j++) {
-                    var fieldDef = fieldset.fields[j];
-                    if (fieldDef.name === field) {
-                        return fieldDef;
-                    }
-                }
-            }
-
-            return false;
-        };
-
-        this.init();
     },
 
     widgets : {
@@ -472,7 +562,7 @@ var formulaic = {
             this.link = false;
 
             this.init = function() {
-                var elements = this.form._controlSelect({name: this.fieldDef.name});
+                var elements = this.form.controlSelect.input({name: this.fieldDef.name});
                 edges.on(elements, "change.ClickableUrl", this, "updateUrl");
             };
 
@@ -512,7 +602,7 @@ var formulaic = {
             this.elements = false;
 
             this.init = function() {
-                this.elements = this.form._controlSelect({name: this.fieldDef.name});
+                this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
                 this.elements.select2({
                     allowClear: true
                 });
@@ -538,7 +628,7 @@ var formulaic = {
                 var maximumSelectionSize = edges.getParam(this.args.maximumSelectionSize, 6);
                 var stopWords = edges.getParam(this.args.stopWords, []);
 
-                this.elements = this.form._controlSelect({name: this.fieldDef.name});
+                this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
                 this.elements.select2({
                     minimumInputLength: minInputLength,
                     tags: [],
