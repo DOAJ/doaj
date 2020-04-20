@@ -26,7 +26,7 @@ DOAJ uses the services of approximately 100 voluntary editorial staff who review
 DOAJ has a global network of Ambassadors who are also bound by an Agreement and must declare all conflicts of interest,
 
 ## Partnerships and collaborations
-DOAJ partners with many organisations. The nature of the partnership varies and may include membership, contracts for work, exchanges of information or services, initiative signatories or access to information resources that assist with our application review process.
+DOAJ partners with many organisations. The nature of the partnership varies and may include membership, contracts for work, exchanges of information or services, initiative signatories or access to information resources that assist DOAJ with its application review process.
 
 + [Creative Commons Global Network](https://network.creativecommons.org/)
 + [COPE](https://publicationethics.org/) We are a member of and subscribe to the principles of COPE.
