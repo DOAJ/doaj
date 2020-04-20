@@ -14,13 +14,36 @@ Widgets are tools that allow you to embed DOAJ into your site. There are two wid
 
 Copy and paste the code below into your page where you want the search box to be displayed.
 
-CODE SNIPPET AND EXAMPLE FROM https://doaj.org/widgets
+```html
+<script src="https://doaj.org/static/widget/simple_search.js" type="text/javascript"></script>
+<div id="doaj-simple-search-widget"></div>
+```
 
 ## Fixed Query
 
 Copy and paste the code below into your page where you want the widget to be displayed.
 
-CODE SNIPPET AND EXAMPLE FROM https://doaj.org/widgets
+```html
+<script type="text/javascript">
+    !window.jQuery && document.write("<scr" + "ipt type=\"text/javascript\" src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js\"></scr" + "ipt>");
+</script>
+
+<script type="text/javascript">
+var doaj_url = "https://doaj.org";
+var QUERY_OPTIONS = {
+    query_string : 'medicine',                   // The plain-text query string
+    query_field: 'bibjson.title',                // The field we are querying
+    sort_field: 'index.unpunctitle.exact',       // Field to order results by
+    sort_direction:  'asc',                      // Direction of sort "asc" | "desc"
+    search_operator : 'AND',                     // Which sort operator to use "AND" | "OR"
+    search_type: 'journal',                      // Which type to search upon (omit for both) "article" | "journal"
+    page_size : 5,                               // How many results to show per widget page
+    page_from : 0                                // Which result to start from
+    }
+</script>
+<script src="https://doaj.org/static/widget/fixed_query.js" type="text/javascript"></script>
+<div id="doaj-fixed-query-widget"></div>
+``` 
 
 ### Configuring via QUERY_OPTIONS
 
@@ -36,7 +59,7 @@ Note: the vertical size can change depending on the number of results shown on e
 
 You can only embed one fixed query widget per page. If you see strange characters in the results, try declaring the encoding in the `<head>` element of your HTML page by adding `<meta charset="utf-8">`.
   
-| query_string    | <plain text> - any text you might put in the search box                                                                                                                                                                                                                                                                                       |
+| query_string    | `<plain text>` - any text you might put in the search box                                                                                                                                                                                                                                                                                       |
 |-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | query_field     | The field to query. Omit for any field, or specify one of these below    + bibjson.title - Title   + bibjson.keywords - Keywords   + index.classification- Subject   + index.issn.exact - ISSN   + bibjson.identifier.id - DOI   + index.country - Country of publisher   + index.language - Journal Language   + index.publisher - Publisher |
 | sort_field      | + created_date - Date added to DOAJ (default) + index.unpunctitle.exact - Title                                                                                                                                                                                                                                                               |
