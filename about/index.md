@@ -23,3 +23,22 @@ DOAJ has [an Advisory Board and a Council](/board-council/), the members of whic
 
 DOAJ uses the services of approximately 100 voluntary editorial staff who review applications. Volunteers are bound by a Code of Conduct and an Agreement ADD LINK TO SAMPLE DOCS. Two references are requested from everyone who volunteers. All volunteers must declare any conflicts of interest to the Managing Editors.
 
+## Partnerships and collaborations
+DOAJ partners with many organisations. The nature of the partnership varies and may include membership, contracts for work, exchanges of information or services, initiative signatories or access to information resources that assist with our application review process.
+
++ [Creative Commons Global Network](https://network.creativecommons.org/)
++ [COPE](https://publicationethics.org/) We are a member of and subscribe to the principles of COPE.
++ [Cottage Labs LLP](https://cottagelabs.com/)
++ [Érudit](https://www.erudit.org/en/)
++ [Federation of Finnish Learned Societies](https://tsv.fi/en)
++ [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
++ [ISSN](https://www.issn.org/)
++ [Library Publishing Coalition](https://librarypublishing.org/)
++ [OASPA](https://oaspa.org/)
++ [OCLC](https://www.oclc.org/en/home.html)
++ [Redalyc](http://www.redalyc.org/home.oa)
++ [Research4Life](https://www.research4life.org/)
++ [SciELO](http://www.scielo.org/)
++ [Think. Check. Submit.](https://thinkchecksubmit.org/)
+
+DOAJ is [an adopting organisation](https://c4disc.org/about/adopting-organizations/) of [the C4DISC Joint Statement of Principles](https://c4disc.org/principles/). Adopting the Joint Statement of Principles is a show of support for improving diversity and inclusion in scholarly communications.
