@@ -9,9 +9,9 @@ highlight: false
 
 + First convert your article metadata into an accepted XML format: DOAJ or Crossref.
   + It is important that it is structured correctly.
-  + Its format must follow a set of rules laid out in the DOAJ XML schema file that we supply, or the rules laid out in Crossref’s schema file.
-+ If you are creating DOAJ XML manually, try formatting and validating the file before you upload it to us. 
-+ If you are exporting XML from an OJS plugin, you can upload the file immediately.
+  + Its format must follow a set of rules laid out in the [DOAJ XML schema file](/static/doaj/doajArticles.xsd), or the rules laid out in [Crossref’s schema file](https://support.crossref.org/hc/en-us/articles/214530063-Crossref-XSD-schema-quick-reference).
++ If you are creating DOAJ XML manually, try [formatting](https://jsonformatter.org/xml-formatter) and [validating](https://www.xmlvalidation.com/) the file before you upload it to us. 
++ If you are exporting XML from an OJS plugin, you can [upload the file](/publisher/uploadfile) immediately.
 
 ## List of DOAJ XML elements
 
