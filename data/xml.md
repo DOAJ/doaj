@@ -8,8 +8,8 @@ highlight: false
 **Uploading an XML file
 
 + First convert your article metadata into an accepted XML format: DOAJ or Crossref.
-++ It is important that it is structured correctly.
-++ Its format must follow a set of rules laid out in the DOAJ XML schema file that we supply, or the rules laid out in Crossref’s schema file.
+  + It is important that it is structured correctly.
+  + Its format must follow a set of rules laid out in the DOAJ XML schema file that we supply, or the rules laid out in Crossref’s schema file.
 + If you are creating DOAJ XML manually, try formatting and validating the file before you upload it to us. 
 + If you are exporting XML from an OJS plugin, you can upload the file immediately.
 
