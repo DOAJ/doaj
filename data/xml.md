@@ -5,7 +5,7 @@ toc: true
 highlight: false
 ---
 
-**Uploading an XML file
+##Uploading an XML file
 
 + First convert your article metadata into an accepted XML format: DOAJ or Crossref.
   + It is important that it is structured correctly.
@@ -13,7 +13,7 @@ highlight: false
 + If you are creating DOAJ XML manually, try formatting and validating the file before you upload it to us. 
 + If you are exporting XML from an OJS plugin, you can upload the file immediately.
 
-**List of DOAJ XML elements
+##List of DOAJ XML elements
 
 Here is a table of each possible element in the DOAJ XML file. It shows you whether or not the element is required by the DOAJ schema. Providing as much information in the metadata as possible ensures a more complete record in our database and allows the record to be distributed more easily to other services.
 
@@ -40,13 +40,13 @@ Here is a table of each possible element in the DOAJ XML file. It shows you whet
 
 There are [European Union restrictions](https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en) on how you distribute personal data, such as email addresses. DOAJ doesn’t have any need for or display author email addresses so please don’t send them to us in the XML.
 
-**Example DOAJ XML File
+##Example DOAJ XML File
 
 The example file below contains only one record. 
 
 ADD SAMPLE HERE
 
-**The doajArticles.xsd schema file
+##The doajArticles.xsd schema file
 
 The [doajArticles.xsd](http://www.doaj.org/static/doaj/doajArticles.xsd) file specifies what may or may not be uploaded to the database.
 
