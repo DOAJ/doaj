@@ -16,7 +16,7 @@ You can support us:
 + with a longer-term contribution, often over a three-year period, having a greater impact on the future of DOAJ and allowing for more sustainable development;
 + with a one-time contribution made via Paypal;
 as a publisher supporter, if you publish, own or are the editor of an open access journal;
-+ via a [sponsorship] (/sponsorship/); 
++ via a [sponsorship](/sponsorship/); 
   + for more information email dom@doaj.org.
   
 All supporters will have their name listed on our site, and can use their supporter status and a DOAJ logo for marketing activities.
