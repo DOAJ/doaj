@@ -11,25 +11,30 @@ Widgets are tools that allow you to embed DOAJ into your site. There are two wid
 2. A Fixed Query widget which allows you to embed, into your site, a specific set of results from a predefined DOAJ search.
 
 ## Simple Search
+
 Copy and paste the code below into your page where you want the search box to be displayed.
 
 CODE SNIPPET AND EXAMPLE FROM https://doaj.org/widgets
 
 ## Fixed Query
+
 Copy and paste the code below into your page where you want the widget to be displayed.
 
 CODE SNIPPET AND EXAMPLE FROM https://doaj.org/widgets
 
 ### Configuring via QUERY_OPTIONS
-There are a handful of options available, all are optional; omit them from QUERY_OPTIONS for the default behaviour.
 
-The parameter QUERY_OPTIONS takes a subset of fields to define which results to retrieve. The example above displays the journals containing the word 'medicine' in the title and in alphabetical order. Configuration via these QUERY_OPTIONS provides a simplified way to display results by keyword.
+There are a handful of options available, all are optional; omit them from `QUERY_OPTIONS` for the default behaviour.
 
-For more control over which results to display, we recommend configuring your query via the Search page - use the controls to find the results you want to show then click the share | embed button and copy the text provided in the box below 'embed this search' for inclusion on your page.
+The parameter `QUERY_OPTIONS` takes a subset of fields to define which results to retrieve. The example above displays the journals containing the word `medicine` in the title and in alphabetical order. Configuration via these `QUERY_OPTIONS` provides a simplified way to display results by keyword.
 
-The widget can resize nicely to fit within available horizontal space. Use the page_size property to minimise its vertical requirement by reducing the number of results per page. Note: the vertical size can fluctuate slightly depending on the number of results shown on each page.
+For more control over which results to display, we recommend configuring your query via the _Search_ page. Use the controls to find the results you want to show then click the _Share_ button and copy the text provided in the box below _Embed this search_ for inclusion on your page.
 
-You can only embed one fixed query widget per page. If you see strange artifacts in the results, try declaring your page encoding in the <head>, i.e. add: <meta charset="utf-8">.
+The widget can be resized to fit within available horizontal space. Use the `page_size` property to minimise its vertical requirement by reducing the number of results per page. 
+
+Note: the vertical size can change depending on the number of results shown on each page.
+
+You can only embed one fixed query widget per page. If you see strange characters in the results, try declaring the encoding in the `<head>` element of your HTML page by adding `<meta charset="utf-8">`.
   
 | query_string    | <plain text> - any text you might put in the search box                                                                                                                                                                                                                                                                                       |
 |-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
