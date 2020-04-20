@@ -87,6 +87,14 @@ The example file below contains only one record.
 </records>
 ```
 
+| Element             | Comment                                                                                                                                                                                                               |
+|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `record`            | Represents a single record.                                                                                                                                                                                           |
+| `language`          | The language tag content must conform to the ISO 639-2b standard.[Find the correct language code](https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes).                                                             |
+| `issn`  <br>`eissn` |                                                                                                                                                                                                                       |
+| `title language=""` | If the title occurs in more than one language, then you may include those in your XML. However we can only display one language. The title tag’s language attribute must be set according to the ISO 639-2b standard. |
+| `name`              | The author name should be formatted First Name, Middle Name, Last Name                                                                                                                                                |
+| `affiliationId`     | Note that the `affilitationId` numbers denote the affilitations in the `affiliationslist` below.                                                                                                                      |
 
 
 ---
