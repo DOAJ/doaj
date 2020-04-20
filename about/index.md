@@ -21,7 +21,9 @@ DOAJ is a non-profit organisation managed by [Infrastructure Services for Open A
 
 DOAJ has [an Advisory Board and a Council](/board-council/), the members of which carry out their duties voluntarily.
 
-DOAJ uses the services of approximately 100 voluntary editorial staff who review applications. Volunteers are bound by a Code of Conduct and an Agreement ADD LINK TO SAMPLE DOCS. Two references are requested from everyone who volunteers. All volunteers must declare any conflicts of interest to the Managing Editors.
+DOAJ uses the services of approximately 100 voluntary editorial staff who review applications. All volunteers are bound by an Agreement. Two references are requested from everyone who volunteers. All volunteers must declare any conflicts of interest to the Managing Editors.
+
+DOAJ has a global network of Ambassadors who are also bound by an Agreement and must declare all conflicts of interest,
 
 ## Partnerships and collaborations
 DOAJ partners with many organisations. The nature of the partnership varies and may include membership, contracts for work, exchanges of information or services, initiative signatories or access to information resources that assist with our application review process.
