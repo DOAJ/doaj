@@ -1,4 +1,4 @@
-from flask import Blueprint, make_response
+from flask import Blueprint, make_response, url_for
 from portality import util
 from portality.core import app
 from portality import models
@@ -78,7 +78,7 @@ def status():
 
     for addr in app.config.get('APP_MACHINES_INTERNAL_IPS',[]):
         if not addr.startswith('http'): addr = 'http://' + addr
-        addr += '/status/stats'
+        addr += url_for('.stats')
         r = requests.get(addr)
         res['ping']['apps'][addr] = r.status_code if r.status_code != 200 else r.json()
         try:
@@ -262,5 +262,5 @@ def status():
     return resp
 
 
-{"query": {"bool": {"must": [{"term":{"status":"complete"}}]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
+#{"query": {"bool": {"must": [{"term":{"status":"complete"}}]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
 
