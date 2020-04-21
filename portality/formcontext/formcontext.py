@@ -1885,7 +1885,7 @@ class PublisherMetadataForm(MetadataForm):
         self.template = "publisher/metadata.html"
 
     def render_template(self, **kwargs):
-        self._check_for_author_errors()
+        self._check_for_author_errors(**kwargs)
         if "validated" in kwargs and kwargs["validated"] == True:
             self.blank_form()
         return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
@@ -1899,6 +1899,6 @@ class AdminMetadataArticleForm(MetadataForm):
         self.template = "admin/article_metadata.html"
 
     def render_template(self, **kwargs):
-        self._check_for_author_errors()
+        self._check_for_author_errors(**kwargs)
         return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
 
