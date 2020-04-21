@@ -220,21 +220,21 @@ def status():
         res['stable'] = False
     try:
         # alert about errors in the last ten minutes - assuming we are going to use uptimerobot to check this every ten minutes
-        error_seconds = app.config.get("STATUS_ERROR_CHECK_SECONDS",600)
-        error_ignore = app.config.get("STATUS_ERROR_IGNORE",[]) # configure a list of strings that denote something to ignore
+        error_seconds = app.config.get("STATUS_ERROR_CHECK_SECONDS", 600)
+        error_ignore = app.config.get("STATUS_ERROR_IGNORE", []) # configure a list of strings that denote something to ignore
         error_ignore = [error_ignore] if isinstance(error_ignore, str) else error_ignore
-        error_ignore_fields = app.config.get("STATUS_ERROR_IGNORE_FIELDS_TO_CHECK",False) # which fields to get in the query, to check for the strings provided above
+        error_ignore_fields = app.config.get("STATUS_ERROR_IGNORE_FIELDS_TO_CHECK", False) # which fields to get in the query, to check for the strings provided above
         error_ignore_fields = [error_ignore_fields] if isinstance(error_ignore_fields, str) else error_ignore_fields
-        error_means_unstable = app.config.get("STATUS_ERROR_MEANS_UNSTABLE",True)
+        error_means_unstable = app.config.get("STATUS_ERROR_MEANS_UNSTABLE", True)
         qer = {"query": {"bool": {"must": [
             {"term": {"status": "error"}},
-            {"range": {"created_date": {"lte": dates.format(dates.before(datetime.utcnow(), error_seconds))}}}
+            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), error_seconds))}}}
         ]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}} # this could be customised with a fields list if we only want to check certain fields for ignore types
         if error_ignore_fields != False:
             qer["fields"] = error_ignore_fields
         rer = models.BackgroundJob.send_query(qer)
         error_count = 0
-        for job in rer.get('hits',{}).get('hits',[]):
+        for job in rer.get('hits', {}).get('hits', []):
             countable = True
             jsj = json.dumps(job)
             for ig in error_ignore:
