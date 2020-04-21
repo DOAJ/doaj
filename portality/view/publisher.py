@@ -196,15 +196,17 @@ def metadata():
 
         fc.modify_authors_if_required(request.values)
 
+        validated = False
         if fc.validate():
             try:
                 fc.finalise()
+                validated = True
             except ArticleMergeConflict:
                 Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
             except DuplicateArticleException:
                 Messages.flash(Messages.ARTICLE_METADATA_UPDATE_CONFLICT)
 
-        return fc.render_template()
+        return fc.render_template(validated=validated)
 
 
 @blueprint.route("/help")

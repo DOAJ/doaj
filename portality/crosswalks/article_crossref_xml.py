@@ -250,7 +250,8 @@ Example record:
             text = ""
             if text_elems is not None:
                 for elems in text_elems:
-                    text = text + elems.text
+                    if elems.text is not None:
+                        text = text + elems.text
             bibjson.abstract = text[:30000]  # avoids Elasticsearch
             # exceptions about .exact analyser not being able to handle
             # more than 32766 UTF8 characters
