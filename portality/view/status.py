@@ -203,21 +203,21 @@ def status():
         res['background']['status'] = 'Unstable'
         res['background']['info'].append('Error when trying to check background job prune_es_backups in the last 24 hours - could be a problem with this job or with long running queue')
         res['stable'] = False
-    try:
-        # remove old jobs if there are too many - remove anything over six months and complete
-        old_seconds = app.config.get("STATUS_OLD_REMOVE_SECONDS", 15552000)
-        qbg = {"query": {"bool": {"must": [
-            {"term": {"status": "complete"}},
-            {"range": {"created_date": {"lte": dates.format(dates.before(datetime.utcnow(), old_seconds))}}}
-        ]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
-        rbg = models.BackgroundJob.send_query(qbg)
-        for job in rbg.get('hits', {}).get('hits', []):
-            models.BackgroundJob.remove_by_id(job['fields']['id'][0])
-        res['background']['info'].append('Removed {0} old complete background jobs'.format(rbg.get('hits', {}).get('total', 0)))
-    except:
-        res['background']['status'] = 'Unstable'
-        res['background']['info'].append('Error when trying to remove old background jobs')
-        res['stable'] = False
+    # try:         #fixme: commented out by SE - this isn't working well, it should probably be a background task itself
+    #     # remove old jobs if there are too many - remove anything over six months and complete
+    #     old_seconds = app.config.get("STATUS_OLD_REMOVE_SECONDS", 15552000)
+    #     qbg = {"query": {"bool": {"must": [
+    #         {"term": {"status": "complete"}},
+    #         {"range": {"created_date": {"lte": dates.format(dates.before(datetime.utcnow(), old_seconds))}}}
+    #     ]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
+    #     rbg = models.BackgroundJob.send_query(qbg)
+    #     for job in rbg.get('hits', {}).get('hits', []):
+    #         models.BackgroundJob.remove_by_id(job['fields']['id'][0])
+    #     res['background']['info'].append('Removed {0} old complete background jobs'.format(rbg.get('hits', {}).get('total', 0)))
+    # except:
+    #     res['background']['status'] = 'Unstable'
+    #     res['background']['info'].append('Error when trying to remove old background jobs')
+    #     res['stable'] = False
     try:
         # alert about errors in the last ten minutes - assuming we are going to use uptimerobot to check this every ten minutes
         error_seconds = app.config.get("STATUS_ERROR_CHECK_SECONDS", 600)
