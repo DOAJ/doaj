@@ -14,6 +14,7 @@ Sponsorship levels are tiered and have accompanying benefits. To discuss your sp
 ### Gold
 
 ### Silver
+![Norwegian Center for Research Data logo silver sponsor](../../img/nsd.svg "Norwegian Center for Research Data logo silver sponsor")
 
 ### Bronze
 
