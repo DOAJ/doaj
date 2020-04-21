@@ -13,8 +13,9 @@ from portality.background import BackgroundTask, BackgroundApi, BackgroundExcept
 import esprit
 import json
 from portality import models
-from portality.core import app
+from portality.core import app, es_connection
 from datetime import datetime
+
 
 class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
@@ -41,12 +42,12 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         same_count = 0
         deleted_count = 0
 
-        # Connection to the ES index, rely on esprit sorting out the port from the host
-        conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+        # Connection to the ES index, imported from the main app configuration
+        conn = es_connection
 
         # Scroll though all articles in the index
         i = 0
-        for a in esprit.tasks.scroll(conn, 'article', q={"query" : {"match_all" : {}}, "sort" : ["_doc"]}, page_size=100, keepalive='5m'):
+        for a in esprit.tasks.scroll(conn, 'article', q={"query": {"match_all": {}}, "sort": ["_doc"]}, page_size=100, keepalive='5m'):
             try:
                 article_model = models.Article(_source=a)
 
@@ -234,6 +235,7 @@ def scheduled_article_cleanup_sync():
     user = app.config.get("SYSTEM_USERNAME")
     job = ArticleCleanupSyncBackgroundTask.prepare(user)
     ArticleCleanupSyncBackgroundTask.submit(job)
+
 
 @long_running.task()
 @write_required(script=True)
