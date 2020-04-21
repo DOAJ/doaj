@@ -438,15 +438,11 @@ class DomainObject(UserDict, object):
             app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
             return
 
-        url = cls.target_whole_index()
-
         if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-            indexes = [i for i in esprit.raw.list_indexes(connection=es_connection) if i.startswith(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '-')]
-            url += ','.join(indexes)
+            return esprit.raw.delete_index_by_prefix(es_connection, app.config['ELASTIC_SEARCH_DB_PREFIX'])
+        else:
+            return esprit.raw.delete_index(es_connection)
 
-        r = requests.delete(url)
-        return r
-    
     def update(self, doc):
         """
         add the provided doc to the existing object
