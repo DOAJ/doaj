@@ -193,8 +193,8 @@ def status():
     try:
         # check if prune_es_backups, which should run at 9.30am every day, has completed in the last 24 hours (which confirms long running queue)
         qprune = {"query": {"bool": {"must": [
-            {"term":{"status":"complete"}},
-            {"term":{"action":"prune_es_backups"}},
+            {"term": {"status": "complete"}},
+            {"term": {"action":"prune_es_backups"}},
             {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 86400))}}}
         ]}}, "size": 1, "sort": {"created_date": {"order": "desc"}}}
         rprune = models.BackgroundJob.send_query(qprune)['hits']['hits'][0]['_source']
@@ -205,15 +205,15 @@ def status():
         res['stable'] = False
     try:
         # remove old jobs if there are too many - remove anything over six months and complete
-        old_seconds = app.config.get("STATUS_OLD_REMOVE_SECONDS",15552000)
+        old_seconds = app.config.get("STATUS_OLD_REMOVE_SECONDS", 15552000)
         qbg = {"query": {"bool": {"must": [
-            {"term":{"status":"complete"}},
+            {"term": {"status": "complete"}},
             {"range": {"created_date": {"lte": dates.format(dates.before(datetime.utcnow(), old_seconds))}}}
         ]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
         rbg = models.BackgroundJob.send_query(qbg)
-        for job in rbg.get('hits',{}).get('hits',[]):
+        for job in rbg.get('hits', {}).get('hits', []):
             models.BackgroundJob.remove_by_id(job['fields']['id'][0])
-        res['background']['info'].append('Removed ' + rbg['hits']['total'] + ' old complete background jobs')
+        res['background']['info'].append('Removed {0} old complete background jobs'.format(rbg.get('hits', {}).get('total', 0)))
     except:
         res['background']['status'] = 'Unstable'
         res['background']['info'].append('Error when trying to remove old background jobs')
@@ -227,7 +227,7 @@ def status():
         error_ignore_fields = [error_ignore_fields] if isinstance(error_ignore_fields, str) else error_ignore_fields
         error_means_unstable = app.config.get("STATUS_ERROR_MEANS_UNSTABLE",True)
         qer = {"query": {"bool": {"must": [
-            {"term":{"status":"error"}},
+            {"term": {"status": "error"}},
             {"range": {"created_date": {"lte": dates.format(dates.before(datetime.utcnow(), error_seconds))}}}
         ]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}} # this could be customised with a fields list if we only want to check certain fields for ignore types
         if error_ignore_fields != False:
@@ -247,9 +247,9 @@ def status():
             res['background']['status'] = 'Unstable'
             res['background']['info'].append('Background jobs are causing errors')
             res['stable'] = error_means_unstable
-        emsg = 'Found ' + error_count + ' background jobs in error status in the last ' + error_seconds + ' seconds'
+        emsg = 'Found {0} background jobs in error status in the last {1} seconds'.format(error_count, error_seconds)
         if len(error_ignore) != 0:
-            emsg += '. Ignoring ' + ', '.join(error_ignore) + ' which reduced the error count from ' + rer.get('hits',{}).get('total',0)
+            emsg += '. Ignoring ' + ', '.join(error_ignore) + ' which reduced the error count from ' + str(rer.get('hits', {}).get('total', 0))
         res['background']['info'].append(emsg)
     except:
         res['background']['status'] = 'Unstable'
