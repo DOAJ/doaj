@@ -48,7 +48,8 @@ app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
 if 'api' in app.config['FEATURES']:
     app.register_blueprint(api_v1, url_prefix='/api/v1')
-app.register_blueprint(status, url_prefix='/status')
+app.register_blueprint(status, url_prefix='/_status')
+app.register_blueprint(status, url_prefix='/status')   # TODO: remove duplicate route once uptimerobot has been informed
 
 app.register_blueprint(oaipmh)
 app.register_blueprint(openurl)

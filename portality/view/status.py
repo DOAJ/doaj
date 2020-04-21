@@ -1,7 +1,10 @@
-from flask import Blueprint, make_response
+from flask import Blueprint, make_response, url_for
 from portality import util
 from portality.core import app
+from portality import models
+from portality.lib import dates
 import json, requests, math, os, time
+from datetime import datetime
 
 blueprint = Blueprint('status', __name__)
 
@@ -53,7 +56,7 @@ def stats():
 @blueprint.route('/')
 @util.jsonp
 def status():
-    res = {'stable': True, 'ping': {'apps': {}, 'indices': {}}, 'notes': []}
+    res = {'stable': True, 'ping': {'apps': {}, 'indices': {}}, 'background': {'status': 'Background jobs are stable', 'info': []}, 'notes': []}
     
     # to get monitoring on this, use uptime robot or similar to check that the status page 
     # contains the 'stable': True string and the following note strings
@@ -75,7 +78,7 @@ def status():
 
     for addr in app.config.get('APP_MACHINES_INTERNAL_IPS',[]):
         if not addr.startswith('http'): addr = 'http://' + addr
-        addr += '/status/stats'
+        addr += url_for('.stats')
         r = requests.get(addr)
         res['ping']['apps'][addr] = r.status_code if r.status_code != 200 else r.json()
         try:
@@ -173,7 +176,91 @@ def status():
             indexable_note = 'INDEX/DELETE OPERATIONS NOT TESTED DUE TO SYSTEM ALREADY UNSTABLE'
         res['notes'].append(indexable_note)
 
+    # check background jobs
+    try:
+        # check if journal_csv, which should run at half past every hour on the main queue, has completed in the last 2 hours (which confirms main queue)
+        qcsv = {"query": {"bool": {"must": [
+            {"term":{"status":"complete"}},
+            {"term":{"action":"journal_csv"}},
+            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 7200))}}}
+        ]}}, "size": 1, "sort": {"created_date": {"order": "desc"}}}
+        rcsv = models.BackgroundJob.send_query(qcsv)['hits']['hits'][0]['_source']
+        res['background']['info'].append('journal_csv has run in the last 2 hours, confirming main queue is running')
+    except:
+        res['background']['status'] = 'Unstable'
+        res['background']['info'].append('Error when trying to check background job journal_csv in the last 2 hours - could be a problem with this job or with main queue')
+        res['stable'] = False
+    try:
+        # check if prune_es_backups, which should run at 9.30am every day, has completed in the last 24 hours (which confirms long running queue)
+        qprune = {"query": {"bool": {"must": [
+            {"term": {"status": "complete"}},
+            {"term": {"action":"prune_es_backups"}},
+            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 86400))}}}
+        ]}}, "size": 1, "sort": {"created_date": {"order": "desc"}}}
+        rprune = models.BackgroundJob.send_query(qprune)['hits']['hits'][0]['_source']
+        res['background']['info'].append('prune_es_backups has run in the last 24 hours, confirming long running queue is running')
+    except:
+        res['background']['status'] = 'Unstable'
+        res['background']['info'].append('Error when trying to check background job prune_es_backups in the last 24 hours - could be a problem with this job or with long running queue')
+        res['stable'] = False
+    # try:         #fixme: commented out by SE - this isn't working well, it should probably be a background task itself
+    #     # remove old jobs if there are too many - remove anything over six months and complete
+    #     old_seconds = app.config.get("STATUS_OLD_REMOVE_SECONDS", 15552000)
+    #     qbg = {"query": {"bool": {"must": [
+    #         {"term": {"status": "complete"}},
+    #         {"range": {"created_date": {"lte": dates.format(dates.before(datetime.utcnow(), old_seconds))}}}
+    #     ]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
+    #     rbg = models.BackgroundJob.send_query(qbg)
+    #     for job in rbg.get('hits', {}).get('hits', []):
+    #         models.BackgroundJob.remove_by_id(job['fields']['id'][0])
+    #     res['background']['info'].append('Removed {0} old complete background jobs'.format(rbg.get('hits', {}).get('total', 0)))
+    # except:
+    #     res['background']['status'] = 'Unstable'
+    #     res['background']['info'].append('Error when trying to remove old background jobs')
+    #     res['stable'] = False
+    try:
+        # alert about errors in the last ten minutes - assuming we are going to use uptimerobot to check this every ten minutes
+        error_seconds = app.config.get("STATUS_ERROR_CHECK_SECONDS", 600)
+        error_ignore = app.config.get("STATUS_ERROR_IGNORE", []) # configure a list of strings that denote something to ignore
+        error_ignore = [error_ignore] if isinstance(error_ignore, str) else error_ignore
+        error_ignore_fields = app.config.get("STATUS_ERROR_IGNORE_FIELDS_TO_CHECK", False) # which fields to get in the query, to check for the strings provided above
+        error_ignore_fields = [error_ignore_fields] if isinstance(error_ignore_fields, str) else error_ignore_fields
+        error_means_unstable = app.config.get("STATUS_ERROR_MEANS_UNSTABLE", True)
+        qer = {"query": {"bool": {"must": [
+            {"term": {"status": "error"}},
+            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), error_seconds))}}}
+        ]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}} # this could be customised with a fields list if we only want to check certain fields for ignore types
+        if error_ignore_fields != False:
+            qer["fields"] = error_ignore_fields
+        rer = models.BackgroundJob.send_query(qer)
+        error_count = 0
+        for job in rer.get('hits', {}).get('hits', []):
+            countable = True
+            jsj = json.dumps(job)
+            for ig in error_ignore:
+                if ig in jsj:
+                    countable = False
+                    break
+            if countable:
+                error_count += 1
+        if error_count != 0:
+            res['background']['status'] = 'Unstable'
+            res['background']['info'].append('Background jobs are causing errors')
+            res['stable'] = error_means_unstable
+        emsg = 'Found {0} background jobs in error status in the last {1} seconds'.format(error_count, error_seconds)
+        if len(error_ignore) != 0:
+            emsg += '. Ignoring ' + ', '.join(error_ignore) + ' which reduced the error count from ' + str(rer.get('hits', {}).get('total', 0))
+        res['background']['info'].append(emsg)
+    except:
+        res['background']['status'] = 'Unstable'
+        res['background']['info'].append('Error when trying to check background jobs for errors')
+        res['stable'] = False
+
+
     resp = make_response(json.dumps(res))
     resp.mimetype = "application/json"
     return resp
+
+
+#{"query": {"bool": {"must": [{"term":{"status":"complete"}}]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
 
