@@ -141,7 +141,7 @@ img {
 iframe {
   margin-bottom: $spacing-04;
   padding: $spacing-02;
-  width: 100%; 
+  width: 100%;
   border: 1px dashed $sanguine;
 }
 
@@ -202,6 +202,11 @@ aside a {
 
 form {
   margin-bottom: $spacing-04;
+}
+
+label {
+  display: block;
+  margin-bottom: $spacing-02;
 }
 
 input, select, button {
