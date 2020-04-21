@@ -122,7 +122,7 @@ UI_CONFIG_FIELDS = [
     "name",
     "subfields",
     "subfield",
-    "in_group"
+    "group"
 ]
 
 
@@ -273,6 +273,8 @@ class FormulaicContext(object):
         fields = []
         for fieldset in self._definition.get("fieldsets", []):
             for field in fieldset.get("fields", []):
+                if "group" in field:
+                    continue
                 fields.append(field)
 
         klazz = self.make_wtform_class(fields)
@@ -415,6 +417,10 @@ class FormulaicField(object):
 
     @property
     def wtform_inst(self):
+        if "group" in self._definition:
+            group = self._definition["group"]
+            group_field = self._formulaic_fieldset.field(group)
+            return group_field.wtfield
         return self._formulaic_fieldset.wtform_inst
 
     @property
@@ -519,6 +525,8 @@ class FormulaicField(object):
         if custom_args is not None:
             for k, v in custom_args.items():
                 kwargs[k] = v
+
+        # kwargs["name"] = "mycustomformname-" + self._definition.get("name")
 
         wtf = self.wtfield
         return wtf(**kwargs)

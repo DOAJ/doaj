@@ -1,6 +1,6 @@
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
-from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, Form, FormField
+from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, Form, FormField, FieldList
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 from portality.formcontext.fields import TagListField
@@ -302,12 +302,12 @@ class FieldDefinitions:
         "subfields" : [
             "publisher_name",
             "publisher_country"
-        ],
-        # "template" : "application_form/_group.html"
+        ]
     }
 
     PUBLISHER_NAME = {
         "subfield": True,
+        "group" : "publisher",
         "name" : "publisher_name",
         "label" : "Name",
         "input" : "text",
@@ -321,6 +321,7 @@ class FieldDefinitions:
 
     PUBLISHER_COUNTRY = {
         "subfield": True,
+        "group" : "publisher",
         "name": "publisher_country",
         "label": "Country",
         "input": "select",
@@ -355,12 +356,12 @@ class FieldDefinitions:
         "subfields": [
             "institution_name",
             "institution_country"
-        ],
-        # "template" : "application_form/_group.html"
+        ]
     }
 
     INSTITUTION_NAME = {
         "subfield": True,
+        "group" : "institution",
         "name": "institution_name",
         "label": "Name",
         "input": "text",
@@ -371,6 +372,7 @@ class FieldDefinitions:
 
     INSTITUTION_COUNTRY = {
         "subfield": True,
+        "group" : "institution",
         "name": "institution_country",
         "label": "Country",
         "input": "select",
@@ -711,7 +713,7 @@ class FieldDefinitions:
     APC_CHARGES = {
         "name" : "apc_charges",
         "input" : "group",
-        "repeatable" : True,
+        # "repeatable" : True,
         "conditional" : [
             {"field" : "apc", "value" : "y"}
         ],
@@ -724,6 +726,7 @@ class FieldDefinitions:
 
     APC_CURRENCY = {
         "subfield" : True,
+        "group" : "apc_charges",
         "name" : "apc_currency",
         "input" : "select",
         "options_fn" : "iso_currency_list",
@@ -741,6 +744,7 @@ class FieldDefinitions:
 
     APC_MAX = {
         "subfield" : True,
+        "group" : "apc_charges",
         "name" : "apc_max",
         "label" : "Highest APC Charged",
         "input" : "number",
@@ -991,6 +995,7 @@ class ContextDefinitions:
             "form" : "application_form/public_application.html",
             "default_field" : "application_form/_field.html",
             "default_group" : "application_form/_group.html"
+            # "default_group" : "application_form/_field.html"
         },
         "crosswalks": {
             "obj2form" : ApplicationFormXWalk.obj2form,
@@ -1610,7 +1615,10 @@ class GroupBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         fields = [formulaic_context.get(subfield) for subfield in field.get("subfields", [])]
         klazz = formulaic_context.make_wtform_class(fields)
-        return FormField(klazz)
+        ff = FormField(klazz)
+        if field.get("repeatable", False):
+            return FieldList(ff)
+        return ff
 
 
 WTFORMS_BUILDERS = [

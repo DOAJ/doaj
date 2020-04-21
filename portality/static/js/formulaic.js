@@ -510,6 +510,8 @@ var formulaic = {
     DefaultControlSelect : function(params) {
         this.containerClassTemplate = edges.getParam(params.containerClassTemplate, "{name}__container");
 
+        this.groupSeparator = edges.getParam(params.groupSeparator, "-");
+
         this.formulaic = false;
 
         this.set_formuaic = function(f) {
@@ -524,15 +526,21 @@ var formulaic = {
             return context;
         };
 
+        this.localiseName = function(params) {
+            var name = params.name;
+            var def = this.formulaic.getFieldDefinition({field: name});
+            if (def.hasOwnProperty("group")) {
+                var upperChain = this.localiseName({name: def.group});
+                return upperChain + this.groupSeparator + name;
+            } else {
+                return name;
+            }
+        };
+
         this.input = function(params) {
             var context = this.get_context(params);
             if (params.name) {
-                var name = params.name;
-                // TODO: we might need to do something about nested fields, especially if they are repeatable
-                //var def = this.formulaic.getFieldDefinition({field: name});
-                //if (def.in_group) {
-                //    name = def.in_group + "-" + name;
-                //}
+                var name = this.localiseName({name : params.name});
                 return $("[name=" + name + "], [data-formulaic-sync=" + name + "]", context).filter(":input");
             } else if (params.id) {
                 return $("#" + params.id, context).filter(":input");
