@@ -1818,6 +1818,21 @@ class MetadataForm(FormContext):
         if remove_author is not None:
             return self.render_template(remove_authors=remove_author)
 
+    def _check_for_author_errors(self, **kwargs):
+
+        if "more_authors" in kwargs and kwargs["more_authors"] == True:
+            self.form.authors.append_entry()
+        if "remove_authors" in kwargs:
+            keep = []
+            while len(self.form.authors.entries) > 0:
+                entry = self.form.authors.pop_entry()
+                if entry.short_name == "authors-" + kwargs["remove_author"]:
+                    break
+                else:
+                    keep.append(entry)
+            while len(keep) > 0:
+                self.form.authors.append_entry(keep.pop().data)
+
     def _validate_authors(self):
         counted = 0
         for entry in self.form.authors.entries:
@@ -1841,22 +1856,6 @@ class MetadataForm(FormContext):
 
     def form2target(self):
         self.target = portality.formcontext.xwalks.metadata_article_form.MetadataArticleFormXwalk.form2obj(form=self.form)
-
-    def render_template(self, **kwargs):
-        if "more_authors" in kwargs and kwargs["more_authors"] == True:
-            self.form.authors.append_entry()
-        if "remove_authors" in kwargs:
-            keep = []
-            while len(self.form.authors.entries) > 0:
-                entry = self.form.authors.pop_entry()
-                if entry.short_name == "authors-" + kwargs["remove_author"]:
-                    break
-                else:
-                    keep.append(entry)
-            while len(keep) > 0:
-                self.form.authors.append_entry(keep.pop().data)
-
-        return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
 
     def validate(self):
         if not self._validate_authors():
@@ -1885,6 +1884,11 @@ class PublisherMetadataForm(MetadataForm):
     def set_template(self):
         self.template = "publisher/metadata.html"
 
+    def render_template(self, **kwargs):
+        self._check_for_author_errors(**kwargs)
+        if "validated" in kwargs and kwargs["validated"] == True:
+            self.blank_form()
+        return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
 
 class AdminMetadataArticleForm(MetadataForm):
 
@@ -1894,5 +1898,7 @@ class AdminMetadataArticleForm(MetadataForm):
     def set_template(self):
         self.template = "admin/article_metadata.html"
 
-
+    def render_template(self, **kwargs):
+        self._check_for_author_errors(**kwargs)
+        return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
 

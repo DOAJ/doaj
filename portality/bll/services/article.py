@@ -107,10 +107,6 @@ class ArticleService(object):
 
     def _prepare_update_admin(self, article, duplicate, update_article_id, merge_duplicate):
 
-        # we assume update_article_id is not None as admin update the articles only via Admin Article Form
-        if update_article_id is None:
-            raise exceptions.ConfigurationException("Upload articles for admin available only via Admin Metadata "
-                                                    "Article Form. Contact us if you can see this message")
         is_update = 0
         if duplicate is not None:
             if duplicate.id != update_article_id:
@@ -189,7 +185,8 @@ class ArticleService(object):
         if duplicate_check:
             duplicate = self.get_duplicate(article)
             try:
-                if account.has_role("admin"):
+                if account.has_role("admin") and update_article_id is not None:     # is update_article_id is None then treat as normal publisher upload
+                                                                                    # for testing by admin
                     is_update = self._prepare_update_admin(article, duplicate, update_article_id, merge_duplicate)
                 else:
                     is_update = self._prepare_update_publisher(article, duplicate, merge_duplicate, account, limit_to_account)
