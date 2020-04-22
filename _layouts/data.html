@@ -87,9 +87,53 @@
 
             {% elsif page.name == 'advisory-board-council.md' %}
               <!-- About section: advisory board & council -->
-              {% for i in site.data.advisory-board-council %}
-                <p>{{ i.name }}, {{ i.role }}, {{ i.bio }}</p>
-              {% endfor %}
+              <h2>Advisory Board</h2>
+              <p>The DOAJ Advisory Board was elected by the community. All board members started in August 2019.</p>
+              <ul class="row title-list">
+                {% for i in site.data.advisory-board-council.advisory_board %}
+                <li class="col-md-6">
+                  <div class="title-list__text">
+                    <p class="label">{{ i.country }}</p>
+                    <h3 class="title-list__heading">{{ i.name }}</h3>
+                    <p class="title-list__para">
+                      {{ i.institution }}<br/>
+                    </p>
+                    {% if i.coi %}
+                    <p class="title-list__para">
+                      <em>Conflict of interest statement(s)</em>:
+                      {% for j in i.coi %}
+                      <a href="{{ j[1] }}" target="_blank">{{ j[0] }}</a>
+                      {% endfor %}
+                    </p>
+                    {% endif %}
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+
+              <h2>Council</h2>
+              <p>The DOAJ Council was elected by the community. All Council members started in September 2019 unless otherwise stated.</p>
+              <ul class="row bleed title-list">
+                {% for i in site.data.advisory-board-council.council %}
+                <li class="col-md-4">
+                  <div class="title-list__text">
+                    <p class="label">{{ i.country }}</p>
+                    <h3 class="title-list__heading">{{ i.name }}</h3>
+                    <p class="title-list__para">
+                      {{ i.institution }}<br/>
+                    </p>
+                    {% if i.coi %}
+                    <p class="title-list__para">
+                      <em>Conflict of interest statement(s)</em>:
+                      {% for j in i.coi %}
+                      <a href="{{ j[1] }}" target="_blank">{{ j[0] }}</a>
+                      {% endfor %}
+                    </p>
+                    {% endif %}
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
 
             {% elsif page.name == 'volunteers.md' %}
               <!-- About section: volunteers -->
@@ -140,7 +184,7 @@
             {% assign max = site.data.promo.size %}
             {% assign diff = max | minus: min %}
             {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
-            
+
             <h2 class="promo__heading">{{ site.data.promo[random].title }}</h2>
             <p class="promo__text">
               {{ site.data.promo[random].summary }}

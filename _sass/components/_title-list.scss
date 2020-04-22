@@ -16,6 +16,10 @@
   text-decoration: none;
 }
 
+.title-list__para {
+  margin-bottom: $spacing-03;
+}
+
 .title-list__link {
   &:hover,
   &:focus,
