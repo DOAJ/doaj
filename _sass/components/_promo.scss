@@ -1,0 +1,26 @@
+/* Promotional space in sidebar */
+
+@media (min-width: 992px) {
+  .promo {
+    margin: $spacing-06 0;
+    padding-top: $spacing-03;
+    color: $warm-black;
+    border-top: 1px dashed $grapefruit;
+  }
+
+  .promo__heading {
+    margin: $spacing-03 0 $spacing-04;
+    @include typescale-04;
+  }
+
+  .promo__link {
+    display: block;
+    margin-top: $spacing-04;
+    text-decoration: none;
+    color: $dark-grey;
+
+    &:before {
+      content: '→ ';
+    }
+  }
+}
