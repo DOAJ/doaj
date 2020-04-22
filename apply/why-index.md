@@ -7,7 +7,6 @@ highlight: false
 
 As a focal point for open access publishing, DOAJ helps promote quality, peer-reviewed open access journals. DOAJ encourages open access as the sustainable model for the future of scholarly publishing.
 
-{:.anchor}
 ## Four reasons why being indexed in DOAJ matters
 
 {:.numbered-table .numbered-table--labels}
@@ -18,7 +17,6 @@ As a focal point for open access publishing, DOAJ helps promote quality, peer-re
 
 ---
 
-{:.anchor}
 ## Five ways in which DOAJ can help your journal
 
 {:.numbered-table .numbered-table--labels}

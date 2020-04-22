@@ -12,12 +12,11 @@ highlight: false
   <option value="es">Español</option>
 </select>
 
-Watch our video series for an introduction to DOAJ and best practice: 
+Watch our video series for an introduction to DOAJ and best practice:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLgsj-CNPbicMgBrdzA4jfevecibpl_a1G" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
 Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them.
 
-{:.anchor}
 ## Basic criteria for inclusion in DOAJ
 
 Journals applying to DOAJ **must** meet the following criteria:
@@ -57,7 +56,6 @@ Journals included in DOAJ **can** also:
 
 ---
 
-{:.anchor}
 ### Type of open access
 
 The full text of all the content must be available for free and be open access without delay (no embargo period). DOAJ will accept journals that have flipped to open access even if the previous volumes aren’t freely available.
@@ -72,7 +70,6 @@ The journal's open access policy must be stated on the journal web site and not 
 
 ---
 
-{:.anchor}
 ### Journal website
 
 The journal must be linkable (it must have a URL) and have its own dedicated website.
@@ -95,12 +92,10 @@ Information on author charges must include all fees that an author might have to
 
 It must be clearly stated if a journal doesn’t have any charges.
 
-{:.anchor}
 #### Full-text articles
 
 The journal content must be available as individual full-text articles: one unique URL per article. Each article must be downloadable as HTML or a PDF, as a minimum.
 
-{:.anchor}
 ### Editorial process
 
 A journal must have an editor and an editorial board. You must list the current editorial board on the journal site and include the name and affiliation of all editors and board members.
@@ -113,7 +108,6 @@ Journals run by a student body must have an advisory board. At least two members
 
 ---
 
-{:.anchor}
 ### Copyright and licensing
 
 Copyright and licensing are two distinct legal terms.
@@ -122,7 +116,6 @@ Copyright declares who owns the rights to the website’s content (for example, 
 
 Licensing describes the terms under which the website’s readers are allowed to use or re-use the copyrighted content.
 
-{:.anchor}
 #### Copyright
 
 The terms of copyright applied to the published content must be clearly stated and be separate from any copyright terms applied to the website.
@@ -136,7 +129,6 @@ Sometimes, even though the author retains copyright, restrictions are imposed by
 - The publisher requires **exclusive** publishing rights. The author no longer holds the copyright without restrictions.
 - The publisher requires **a transfer of commercial rights or an exclusive grant of commercial rights** for the articles. The author no longer retains copyright without restrictions.
 
-{:.anchor}
 #### Licensing
 
 1. The licensing terms for use and re-use of the published content must be clearly stated on the website.
@@ -149,7 +141,6 @@ Sometimes, even though the author retains copyright, restrictions are imposed by
   - For example, a journal shouldn’t write ‘[Other conditions] will apply and prevail over all conflicting provisions of the [open access] license’ model.
   - Creative Commons states clearly that “For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply”.
 
-{:.anchor}
 #### The difficult bit
 
 The terms of the user license always apply to readers and NOT to the copyright holder.
@@ -159,7 +150,6 @@ The terms of the user license always apply to readers and NOT to the copyright h
 3. When the author retains copyright, but commercial rights are transferred to the publisher, and a non-commercial license is used, the license applies to the reader and the author.
 4. When the author retains copyright, but exclusive publishing rights are granted to the publisher, this is equivalent to the transfer of commercial rights to the publisher.
 
-{:.anchor}
 #### Fair use
 
 An open access journal cannot restrict the rights of the author to fair use only.
@@ -172,7 +162,6 @@ Fair use alone is not open access and DOAJ will not accept a journal with these 
 
 ---
 
-{:.anchor}
 ## The application process
 
 1. Once you have submitted your application, you will see a _Thank You_ screen and will be sent an automated confirmation email.
@@ -187,7 +176,6 @@ Fair use alone is not open access and DOAJ will not accept a journal with these 
     - You may not submit another application for the same journal for six months.
     - If you re-apply, we expect the journal to demonstrate very clearly that our recommendations have been implemented.
 
-{:.anchor}
 ### Time from submission to decision
 
 The time from submission to decision varies greatly and is dependent on the responsiveness of the journal contact and/or applicant. It can take up to six months for a decision to be reached but often a decision is reached within three months.
@@ -195,7 +183,6 @@ We cannot provide a status update for applications which are less than three mon
 
 ---
 
-{:.anchor}
 ## Editorial disclaimer
 
 The applicant is responsible for providing accurate information when submitting an application. If the information provided is not sufficient or is incomplete, the application will be rejected.

@@ -1,24 +1,13 @@
 ---
-layout: sidenav
+layout: data
 title: Sponsors
 toc: true
 highlight: false
 ---
 
-The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis. 
+The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.
 
 Sponsorship levels are tiered and have accompanying benefits. To discuss your sponsorship options with us, send an email to [dom@doaj.org](mailto:dom@doaj.org).
-
-## Sponsors by tier
-
-### Gold
-
-### Silver
-![Norwegian Center for Research Data logo silver sponsor](../../img/nsd.svg "Norwegian Center for Research Data logo silver sponsor")
-
-### Bronze
-
----
 
 ## Rates and benefits
 
