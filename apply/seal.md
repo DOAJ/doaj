@@ -9,6 +9,10 @@ highlight: false
 
 There are extra criteria which may make the journal eligible for the DOAJ Seal for best practice. The Seal is awarded to journals that meet additional best practice recommendations based on seven criteria relating to accessibility, openness, discoverability, reuse, and authors rights.
 
+---
+
+## Criteria
+
 All seven criteria must be met to be awarded the Seal:
 
 {:.tabular-list}
