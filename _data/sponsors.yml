@@ -69,7 +69,7 @@ bronze:
 
 - name: eLife
   url: https://elifesciences.org/
-  logo: elife.png
+  logo: elife.svg
 
 - name: Emerald Publishing
   url: https://emeraldpublishing.com/
@@ -85,7 +85,7 @@ bronze:
 
 - name: ISSN
   url: https://www.issn.org/
-  logo: issn.jpg
+  logo: issn.svg
 
 - name: Karger
   url: https://www.karger.com/
@@ -93,7 +93,7 @@ bronze:
 
 - name: Lund University
   url: https://www.lunduniversity.lu.se/
-  logo: lund.jpg
+  logo: lu.png
 
 - name: Pensoft
   url: https://pensoft.net/
@@ -101,11 +101,11 @@ bronze:
 
 - name: PLOS
   url: https://plos.org/
-  logo: plos.png
+  logo: plos.svg
 
 - name: Royal Society of Chemistry
   url: https://www.rsc.org/
-  logo: rsc.jpg
+  logo: rsc.png
 
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
