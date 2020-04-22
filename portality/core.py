@@ -148,5 +148,6 @@ def setup_jinja(app):
         return ''
     app.jinja_env.filters['debug']=jinja_debug
 
+    # app.jinja_env.template_search_path = ["templates", "static_content/templates"]
 
 app = create_app()

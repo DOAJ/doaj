@@ -21,6 +21,25 @@ import os
 
 blueprint = Blueprint('doaj', __name__)
 
+## Put these into their own views
+
+STATIC_PAGES = [
+    ("/one", "one.html"),
+    ("/two", "two.html")
+]
+
+for PAGE in STATIC_PAGES:
+    @blueprint.route(PAGE[0])
+    def some_static_page():
+        render_template("generic_static_page.html", page_frag=PAGE[1])
+
+
+LEGACY = [
+    "/frequently-asked-questions", "/faq"
+]
+
+# as above ...
+
 
 @blueprint.route("/")
 def home():
