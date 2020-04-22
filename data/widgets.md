@@ -57,7 +57,7 @@ There are a handful of options available, all are optional; omit them from `QUER
 
   <dt><code>query_field</code></dt>
   <dd>
-    The field to query. Omit for any field, or specify one of these below:
+    The field to query. Omit to search in any field, or specify one of these:
     <ul>
       <li>
         <code>bibjson.title</code>: title
