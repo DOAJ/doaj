@@ -1,6 +1,10 @@
 /* Adjust content in grid’scolumns */
 
 @media (min-width: 769px) {
+  .col-md-2:nth-child(6n+1) {
+    clear: both;
+  }
+
   .col-md-3:nth-child(4n+1) {
     clear: both;
   }
