@@ -15,7 +15,7 @@
         content: counter(row-number);
         vertical-align: baseline;
         font-weight: 400;
-        @include typescale-04;
+        @include typescale-05;
         @include font-serif;
       }
 
@@ -29,7 +29,7 @@
 .numbered-table--labels {
   td {
     &:nth-child(2) {
-      @include typescale-04;
+      @include typescale-05;
       @include font-serif;
     }
   }
