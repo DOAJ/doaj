@@ -2,12 +2,21 @@
 
 .sidenav-page {
 
-  .page-content h2 {
-    // add padding to compensate for fixed header
-    padding-top: 70px;
+  .page-content {
 
-    @media (max-width: 768px) {
+    h2, h3, h4, h5 {
+     // add padding to compensate for fixed header
+     padding-top: 70px;
+
+     @media (max-width: 768px) {
+       padding-top: 0;
+     }
+   }
+
+    h1 + h2,
+    h2 + h3 {
       padding-top: 0;
     }
+
   }
 }

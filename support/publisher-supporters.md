@@ -38,4 +38,4 @@ Publisher supporters have chosen to make a contribution that is relative to the 
   <button name="submit" type="submit">Support</button>
 </form>
 
---- 
+---
