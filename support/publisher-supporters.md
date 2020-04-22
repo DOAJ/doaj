@@ -37,3 +37,5 @@ Publisher supporters have chosen to make a contribution that is relative to the 
   <input name="currency_code" type="hidden" value="GBP"/>
   <button name="submit" type="submit">Support</button>
 </form>
+
+--- 
