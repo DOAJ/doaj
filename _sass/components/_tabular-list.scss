@@ -13,9 +13,14 @@
   &:last-of-type {
     border: 0;
   }
+
+  a {
+    text-decoration: none;
+  }
 }
 
-.tabular-list__link {
+.tabular-list__link,
+.tabular-list__item {
   padding: $spacing-03 0;
   display: block;
   text-decoration: none;

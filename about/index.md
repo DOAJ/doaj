@@ -7,7 +7,7 @@ highlight: false
 
 The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open access journals. Today, the independent database contains ca. 14500 open access journals covering all areas of science, technology, medicine, social science and humanities. Journals from all countries and in all languages as welcome.
 
-DOAJ is a community-curated list of open access journals and aims to be the starting point for all information searches for quality, peer reviewed open access material. 
+DOAJ is a community-curated list of open access journals and aims to be the starting point for all information searches for quality, peer reviewed open access material.
 
 DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) which provide the skeleton to the [DOAJ criteria](/apply/guide).
 
@@ -28,19 +28,20 @@ DOAJ has a global network of Ambassadors who are also bound by an Agreement and 
 ## Partnerships and collaborations
 DOAJ partners with many organisations. The nature of the partnership varies and may include membership, contracts for work, exchanges of information or services, initiative signatories or access to information resources that assist DOAJ with its application review process.
 
-+ [Creative Commons Global Network](https://network.creativecommons.org/)
-+ [COPE](https://publicationethics.org/) We are a member of and subscribe to the principles of COPE.
-+ [Cottage Labs LLP](https://cottagelabs.com/)
-+ [Érudit](https://www.erudit.org/en/)
-+ [Federation of Finnish Learned Societies](https://tsv.fi/en)
-+ [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
-+ [ISSN](https://www.issn.org/)
-+ [Library Publishing Coalition](https://librarypublishing.org/)
-+ [OASPA](https://oaspa.org/)
-+ [OCLC](https://www.oclc.org/en/home.html)
-+ [Redalyc](http://www.redalyc.org/home.oa)
-+ [Research4Life](https://www.research4life.org/)
-+ [SciELO](http://www.scielo.org/)
-+ [Think. Check. Submit.](https://thinkchecksubmit.org/)
+{:.tabular-list}
++ {:.tabular-list__item} [Creative Commons Global Network](https://network.creativecommons.org/)
++ {:.tabular-list__item} [COPE](https://publicationethics.org/): We are a member of and subscribe to the principles of COPE.
++ {:.tabular-list__item} [Cottage Labs LLP](https://cottagelabs.com/)
++ {:.tabular-list__item} [Érudit](https://www.erudit.org/en/)
++ {:.tabular-list__item} [Federation of Finnish Learned Societies](https://tsv.fi/en)
++ {:.tabular-list__item} [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
++ {:.tabular-list__item} [ISSN](https://www.issn.org/)
++ {:.tabular-list__item} [Library Publishing Coalition](https://librarypublishing.org/)
++ {:.tabular-list__item} [OASPA](https://oaspa.org/)
++ {:.tabular-list__item} [OCLC](https://www.oclc.org/en/home.html)
++ {:.tabular-list__item} [Redalyc](http://www.redalyc.org/home.oa)
++ {:.tabular-list__item} [Research4Life](https://www.research4life.org/)
++ {:.tabular-list__item} [SciELO](http://www.scielo.org/)
++ {:.tabular-list__item} [Think. Check. Submit.](https://thinkchecksubmit.org/)
 
 DOAJ is [an adopting organisation](https://c4disc.org/about/adopting-organizations/) of [the C4DISC Joint Statement of Principles](https://c4disc.org/principles/). Adopting the Joint Statement of Principles is a show of support for improving diversity and inclusion in scholarly communications.
