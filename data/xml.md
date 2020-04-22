@@ -21,21 +21,21 @@ Here is a table of each possible element in the DOAJ XML file. It shows you whet
 |--------------------|-----------------------------------------------------------------------------|
 | Language, ISO code | Optional, max 1                                                             |
 | Publisher          | Optional, max 1                                                             |
-| Journal title      | Required, only 1                                                            |
+| **Journal title**  | Required, only 1                                                            |
 | ISSN               | Optional, max. 1 <br>Either the ISSN or the EISSN must be present, or both  |
 | EISSN              | Optional, max. 1  <br>Either the ISSN or the EISSN must be present, or both |
-| Publication Date   | Required, only 1                                                            |
+| **Publication date** | Required, only 1                                                            |
 | Volume number      | Optional, max. 1                                                            |
 | Issue number       | Optional, max. 1                                                            |
 | Start page         | Optional, max. 1                                                            |
 | End page           | Optional, max. 1                                                            |
 | DOI                | Optional, max. 1                                                            |
 | Document type      | Optional, max. 1                                                            |
-| Title              | Required, 1 or more                                                         |
+| **Title**          | Required, 1 or more                                                         |
 | Authors            | Optional                                                                    |
 | Affiliations       | Optional                                                                    |
 | Abstracts          | Optional                                                                    |
-| Full-text URL      | Required, only 1                                                            |
+| **Full-text URL**  | Required, only 1                                                            |
 | Keywords           | Optional                                                                    |
 
 There are [European Union restrictions](https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en) on how you distribute personal data, such as email addresses. DOAJ doesn’t have any need for or display author email addresses so please don’t send them to us in the XML.
