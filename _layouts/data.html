@@ -94,15 +94,40 @@
             {% elsif page.name == 'volunteers.md' %}
               <!-- About section: volunteers -->
               <h2>Editors</h2>
-              {% for i in site.data.volunteers.ed %}
-              <p>{{ i.name }}, {{ i.area }}</p>
-              {% endfor %}
+              <ul class="row title-list">
+                {% for i in site.data.volunteers.ed %}
+                {% if i.city %}
+                <li class="col-md-6">
+                  <div class="title-list__text">
+                    <p class="label">{{ i.area }}</p>
+                    <h3 class="title-list__heading">{{ i.name }}</h3>
+                    <p>
+                      {{ i.city }}, {{ i.country }}<br/>
+                      {{ i.language }}<br/>
+                    </p>
+                  </div>
+                </li>
+                {% endif %}
+                {% endfor %}
+              </ul>
 
               <h2>Associate editors</h2>
-              {% for i in site.data.volunteers.ass_ed %}
-              <p>{{ i.name }}, {{ i.area }}</p>
-              {% endfor %}
-
+              <ul class="row bleed title-list">
+                {% for i in site.data.volunteers.ass_ed %}
+                {% if i.city %}
+                <li class="col-md-4">
+                  <div class="title-list__text">
+                    <p class="label">{{ i.area }}</p>
+                    <h3 class="title-list__heading">{{ i.name }}</h3>
+                    <p>
+                      {{ i.city }}, {{ i.country }}<br/>
+                      {{ i.language }}<br/>
+                    </p>
+                  </div>
+                </li>
+                {% endif %}
+                {% endfor %}
+              </ul>
             {% endif %}
           </section>
         </div>

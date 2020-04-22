@@ -3,9 +3,9 @@
 @media (min-width: 992px) {
   .promo {
     margin: $spacing-06 0;
-    padding-top: $spacing-03;
+    padding: $spacing-03;
     color: $warm-black;
-    border-top: 1px dashed $grapefruit;
+    background-color: $fair-pink;
   }
 
   .promo__heading {
