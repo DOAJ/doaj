@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include head.html %}
+
+  <body>
+    {% include header.html %}
+
+    <main class="container">
+      <div class="row">
+        <div class="col-md-8">
+           <section class="page-content">
+            <h1>{{ page.title }}</h1>
+            {{ content }}
+
+            <!-- TODO: make this more elegant -->
+
+            {% if page.name == 'sponsors.md' %}
+              <!-- Support section: sponsors -->
+              <h2>Gold sponsor</h2>
+              <div class="row">
+                {% for i in site.data.sponsors.gold %}
+                <div class="col-xs-6 sponsor">
+                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+
+              <h2>Silver sponsors</h2>
+              <div class="row">
+                {% for i in site.data.sponsors.silver %}
+                <div class="col-xs-4 sponsor">
+                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+
+              <h2>Bronze sponsors</h2>
+              <div class="row">
+                {% for i in site.data.sponsors.bronze %}
+                <div class="col-xs-4 sponsor">
+                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+
+            {% elsif page.name == 'publisher-supporters.md' %}
+              <!-- Support section: publisher supporters -->
+              <h2>Current publisher supporters</h2>
+              <ul class="row title-list">
+                {% for i in site.data.publisher-supporters %}
+                  <li class="col-md-3">
+                    <a href="{{ i.url }}" target="_blank" class="title-list__link">{{ i.name }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+
+            {% elsif page.name == 'supporters.md' %}
+              <!-- Support section: supporters -->
+              {% for i in site.data.supporters %}
+                <p>{{ i.name }}, {{ i.url }}</p>
+              {% endfor %}
+
+            {% elsif page.name == 'team-ambassadors.md' %}
+              <!-- About section: team & ambassadors -->
+              <h2>Team members</h2>
+              {% for i in site.data.team-ambassadors.team %}
+                <h3>{{ i.name }}</h3>
+                <p>{{ i.role }}</p>
+                <p>{{ i.bio }}</p>
+                {% for i in site.data.team-ambassadors.team.coi %}
+                  {{ i }}
+                {% endfor%}
+                <hr/>
+              {% endfor %}
+
+              <h2>Ambassadors</h2>
+              {% for i in site.data.team-ambassadors.ambassadors %}
+                <p>{{ i.name }}, {{ i.role }}, {{ i.bio }}</p>
+              {% endfor %}
+
+            {% elsif page.name == 'advisory-board-council.md' %}
+              <!-- About section: advisory board & council -->
+              {% for i in site.data.advisory-board-council %}
+                <p>{{ i.name }}, {{ i.role }}, {{ i.bio }}</p>
+              {% endfor %}
+
+            {% elsif page.name == 'volunteers.md' %}
+              <!-- About section: volunteers -->
+              <h2>Editors</h2>
+              {% for i in site.data.volunteers.ed %}
+              <p>{{ i.name }}, {{ i.area }}</p>
+              {% endfor %}
+
+              <h2>Associate editors</h2>
+              {% for i in site.data.volunteers.ass_ed %}
+              <p>{{ i.name }}, {{ i.area }}</p>
+              {% endfor %}
+
+            {% endif %}
+          </section>
+        </div>
+
+        <div class="col-md-4">
+          <nav class="page-nav">
+            AD SPACE HERE
+          </nav>
+        </div>
+
+      </div>
+    </main>
+
+    {% include footer.html %}
+  </body>
+
+</html>

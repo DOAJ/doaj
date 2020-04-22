@@ -1,0 +1,132 @@
+# List of sponsors separated by tiers (gold, silver, bronze)
+
+gold:
+- name: IEEE
+  url: https://www.ieee.org/
+  logo: ieee.png
+
+silver:
+- name: Copernicus Publications
+  url: https://www.ieee.org/
+  logo: copernicus.svg
+
+- name: Elsevier
+  url: https://www.elsevier.com/
+  logo: elsevier.svg
+
+- name: Federation of Finnish Learned Societies
+  url: https://tsv.fi/en/frontpage
+  logo: tsv.svg
+
+- name: Frontiers
+  url: https://www.frontiersin.org/
+  logo: frontiers.png
+
+- name: National Library of Sweden
+  url: https://www.kb.se/
+  logo: kbse.svg
+
+- name: MDPI
+  url: https://www.mdpi.com/
+  logo: mdpi.svg
+
+- name: Norwegian Centre for Research Data (NSD)
+  url: https://www.nsd.uib.no/nsd/english/index.html
+  logo: nsd.svg
+
+- name: OCLC
+  url: https://www.oclc.org/
+  logo: oclc.svg
+
+- name: Swedish Research Council
+  url: https://vr.se/english.html
+  logo: vr.svg
+
+- name: Danish Agency for Science and Higher Education
+  url: https://ufm.dk/
+  logo: ufm.svg
+
+bronze:
+- name: Physical Review Journals
+  url: https://journals.aps.org/
+  logo: aps.gif
+
+- name: Cambridge University Press
+  url: https://www.cambridge.org/
+  logo: cambridge.png
+
+- name: Cottage Labs
+  url: https://cottagelabs.com/
+  logo: cl.svg
+
+- name: EBSCO
+  url: https://www.ebsco.com/
+  logo: ebsco.svg
+
+- name: EDP Sciences
+  url: https://www.edpsciences.org/
+  logo: edp.gif
+
+- name: eLife
+  url: https://elifesciences.org/
+  logo: elife.png
+
+- name: Emerald Publishing
+  url: https://emeraldpublishing.com/
+  logo: emerald.svg
+
+- name: The Institution of Engineering and Technology (IET)
+  url: https://www.theiet.org/
+  logo: iet.png
+
+- name: IOP Publishing
+  url: http://ioppublishing.org/
+  logo: iop.jpg
+
+- name: ISSN
+  url: https://www.issn.org/
+  logo: issn.jpg
+
+- name: Karger
+  url: https://www.karger.com/
+  logo: karger.png
+
+- name: Lund University
+  url: https://www.lunduniversity.lu.se/
+  logo: lund.jpg
+
+- name: Pensoft
+  url: https://pensoft.net/
+  logo: pensoft.svg
+
+- name: PLOS
+  url: https://plos.org/
+  logo: plos.png
+
+- name: Royal Society of Chemistry
+  url: https://www.rsc.org/
+  logo: rsc.jpg
+
+- name: SAGE Publishing
+  url: https://www.sagepublications.com/
+  logo: sage.svg
+
+- name: SciELO
+  url: https://www.scielo.br/
+  logo: scielo.svg
+
+- name: Springer Nature
+  url: https://www.springernature.com/gp/group/aboutus
+  logo: springer.svg
+
+- name: Taylor & Francis Group
+  url: https://www.taylorandfrancisgroup.com/
+  logo: tf.svg
+
+- name: Ubiquity Press
+  url: https://www.ubiquitypress.com/
+  logo: ubiquity.svg
+
+- name: Wiley
+  url: https://wiley.com/
+  logo: wiley.svg
