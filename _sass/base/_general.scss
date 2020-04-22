@@ -179,6 +179,10 @@ table {
   th {
     font-weight: 400;
   }
+
+  td:last-child {
+    width: 50%;
+  }
 }
 
 /* Main */
