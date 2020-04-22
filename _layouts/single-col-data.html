@@ -63,7 +63,7 @@
           <h2>Advisory Board</h2>
           <p>The DOAJ Advisory Board was elected by the community. All board members started in August 2019.</p>
           <ul class="row title-list">
-            {% for i in site.data.advisory-board-council.advisory_board %}
+            {% for i in site.data.advisory-board %}
             <li class="col-xs-6 col-md-4">
               <div class="title-list__text">
                 <p class="label">{{ i.country }}</p>
@@ -87,7 +87,7 @@
           <h2>Council</h2>
           <p>The DOAJ Council was elected by the community. All Council members started in September 2019 unless otherwise stated.</p>
           <ul class="row bleed title-list">
-            {% for i in site.data.advisory-board-council.council %}
+            {% for i in site.data.council %}
             <li class="col-xs-6 col-md-4">
               <div class="title-list__text">
                 <p class="label">{{ i.country }}</p>
