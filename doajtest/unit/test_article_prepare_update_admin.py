@@ -41,9 +41,6 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
     @parameterized.expand(prepare_update_admin_load_cases)
     def test_prepare_update_admin(self, value, kwargs):
 
-        with self.assertRaises(exceptions.ConfigurationException):
-            self.svc._prepare_update_admin(None, None, None, None)
-
         Article.merge = BLLArticleMockFactory.merge_mock
         Article.pull = BLLArticleMockFactory.pull_mock
 
