@@ -74,8 +74,10 @@ We are currently using `YAML` (`.yml`).
 
 The following information is represented in data files:
 - _About_ section
-  - Advisory Board & council: `advisory-board-council.yml`
-  - Team & ambassadors: `team-ambassadors.yml`
+  - Advisory Board: `advisory-board.yml`
+  - Council: `council.yml`
+  - Team: `team.yml`
+  - Ambassadors: `ambassadors.yml`
   - Volunteers: `volunteers.yml`
 - _Support_ section
   - Publisher supporters: `publisher-supporters.yml`
