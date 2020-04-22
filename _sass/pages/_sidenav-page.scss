@@ -1,0 +1,13 @@
+/* Styles specific to pages with a sidenav */
+
+.sidenav-page {
+
+  h2 {
+    // add padding to compensate for fixed header
+    padding-top: 70px;
+
+    @media (max-width: 768px) {
+      padding-top: 0;
+    }
+  }
+}

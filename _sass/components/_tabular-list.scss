@@ -1,0 +1,23 @@
+/* Lists laid out like a simple table */
+
+.tabular-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.tabular-list__item {
+  padding: 0;
+  border-bottom: 1px solid $grapefruit;
+
+  &:last-of-type {
+    border: 0;
+  }
+}
+
+.tabular-list__link {
+  padding: $spacing-03 0;
+  display: block;
+  text-decoration: none;
+  @include typescale-06;
+}

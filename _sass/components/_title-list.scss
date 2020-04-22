@@ -12,6 +12,7 @@
   padding: $spacing-03 0;
   border-top: 1px dashed $sanguine;
   text-decoration: none;
+  @include typescale-06;
 
   &:hover,
   &:focus,
