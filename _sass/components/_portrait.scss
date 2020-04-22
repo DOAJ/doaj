@@ -3,11 +3,15 @@
 
 .portrait {
   position: relative;
-  margin: 1rem $spacing-05 $spacing-04 0;
-  width: 300px;
+  margin: $spacing-02 0 $spacing-04 0;
   background-color: rgba($sanguine, 0.25);
 }
 
 .portrait__img {
   mix-blend-mode: multiply;
+  max-height: 200px;
+}
+
+.portrait__img--is-empty {
+  height: 220px;
 }
