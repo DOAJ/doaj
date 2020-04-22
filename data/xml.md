@@ -94,7 +94,7 @@ The example file below contains only one record.
 | `issn`  <br>`eissn` |                                                                                                                                                                                                                       |
 | `title language=""` | If the title occurs in more than one language, then you may include those in your XML. However we can only display one language. The title tag’s language attribute must be set according to the ISO 639-2b standard. |
 | `name`              | The author name should be formatted First Name, Middle Name, Last Name                                                                                                                                                |
-| `affiliationId`     | Note that the `affilitationId` numbers denote the affilitations in the `affiliationslist` below.                                                                                                                      |
+| `affiliationId`     | Note that the `affilitationId` numbers denote the affilitations in the `affiliationslist` further down.                                                                                                               |
 
 
 ---
