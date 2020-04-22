@@ -1,12 +1,12 @@
 /* Lists laid out like a simple table */
 
-.tabular-list {
+.full-width-list {
   padding: 0;
   margin: 0 0 $spacing-04 0;
   list-style: none;
 }
 
-.tabular-list__item {
+.full-width-list__item {
   padding: 0;
   border-bottom: 1px solid $grapefruit;
 
@@ -19,8 +19,8 @@
   }
 }
 
-.tabular-list__link,
-.tabular-list__item {
+.full-width-list__link,
+.full-width-list__item {
   padding: $spacing-03 0;
   display: block;
   text-decoration: none;

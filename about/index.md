@@ -28,20 +28,20 @@ DOAJ has a global network of Ambassadors who are also bound by an Agreement and 
 ## Partnerships and collaborations
 DOAJ partners with many organisations. The nature of the partnership varies and may include membership, contracts for work, exchanges of information or services, initiative signatories or access to information resources that assist DOAJ with its application review process.
 
-{:.tabular-list}
-+ {:.tabular-list__item} [Creative Commons Global Network](https://network.creativecommons.org/)
-+ {:.tabular-list__item} [COPE](https://publicationethics.org/): We are a member of and subscribe to the principles of COPE.
-+ {:.tabular-list__item} [Cottage Labs LLP](https://cottagelabs.com/)
-+ {:.tabular-list__item} [Érudit](https://www.erudit.org/en/)
-+ {:.tabular-list__item} [Federation of Finnish Learned Societies](https://tsv.fi/en)
-+ {:.tabular-list__item} [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
-+ {:.tabular-list__item} [ISSN](https://www.issn.org/)
-+ {:.tabular-list__item} [Library Publishing Coalition](https://librarypublishing.org/)
-+ {:.tabular-list__item} [OASPA](https://oaspa.org/)
-+ {:.tabular-list__item} [OCLC](https://www.oclc.org/en/home.html)
-+ {:.tabular-list__item} [Redalyc](http://www.redalyc.org/home.oa)
-+ {:.tabular-list__item} [Research4Life](https://www.research4life.org/)
-+ {:.tabular-list__item} [SciELO](http://www.scielo.org/)
-+ {:.tabular-list__item} [Think. Check. Submit.](https://thinkchecksubmit.org/)
+{:.full-width-list}
++ {:.full-width-list__item} [Creative Commons Global Network](https://network.creativecommons.org/)
++ {:.full-width-list__item} [COPE](https://publicationethics.org/): We are a member of and subscribe to the principles of COPE.
++ {:.full-width-list__item} [Cottage Labs LLP](https://cottagelabs.com/)
++ {:.full-width-list__item} [Érudit](https://www.erudit.org/en/)
++ {:.full-width-list__item} [Federation of Finnish Learned Societies](https://tsv.fi/en)
++ {:.full-width-list__item} [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
++ {:.full-width-list__item} [ISSN](https://www.issn.org/)
++ {:.full-width-list__item} [Library Publishing Coalition](https://librarypublishing.org/)
++ {:.full-width-list__item} [OASPA](https://oaspa.org/)
++ {:.full-width-list__item} [OCLC](https://www.oclc.org/en/home.html)
++ {:.full-width-list__item} [Redalyc](http://www.redalyc.org/home.oa)
++ {:.full-width-list__item} [Research4Life](https://www.research4life.org/)
++ {:.full-width-list__item} [SciELO](http://www.scielo.org/)
++ {:.full-width-list__item} [Think. Check. Submit.](https://thinkchecksubmit.org/)
 
 DOAJ is [an adopting organisation](https://c4disc.org/about/adopting-organizations/) of [the C4DISC Joint Statement of Principles](https://c4disc.org/principles/). Adopting the Joint Statement of Principles is a show of support for improving diversity and inclusion in scholarly communications.
