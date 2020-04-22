@@ -13,6 +13,10 @@
     @include typescale-04;
   }
 
+  .promo__text {
+    margin-bottom: 0;
+  }
+
   .promo__link {
     display: block;
     margin-top: $spacing-04;
