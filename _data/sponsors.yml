@@ -49,11 +49,11 @@ silver:
 bronze:
 - name: Physical Review Journals
   url: https://journals.aps.org/
-  logo: aps.gif
+  logo: aps.svg
 
 - name: Cambridge University Press
   url: https://www.cambridge.org/
-  logo: cambridge.png
+  logo: cambridge.svg
 
 - name: Cottage Labs
   url: https://cottagelabs.com/
@@ -65,7 +65,7 @@ bronze:
 
 - name: EDP Sciences
   url: https://www.edpsciences.org/
-  logo: edp.gif
+  logo: edp.svg
 
 - name: eLife
   url: https://elifesciences.org/
