@@ -15,7 +15,7 @@ Ruby is required.
 2. `cd doaj-static`
 3. `jekyll s`
 4. Navigate to `http://127.0.0.1:4000` in your browser
-5. You must make changes locally (and not via Github) to see them. 
+5. You must make changes locally (and not via Github) to see them.
 
 ## Building the site
 
@@ -81,3 +81,5 @@ The following information is represented in data files:
   - Publisher supporters: `publisher-supporters.yml`
   - Sponsors: `sponsors.yml`
   - Supporters: `supporters.yml`
+- Other
+  - Promotional snippet (in page sidebar): `promo.yml`
