@@ -67,24 +67,6 @@
                 <p>{{ i.name }}, {{ i.url }}</p>
               {% endfor %}
 
-            {% elsif page.name == 'team-ambassadors.md' %}
-              <!-- About section: team & ambassadors -->
-              <h2>Team members</h2>
-              {% for i in site.data.team-ambassadors.team %}
-                <h3>{{ i.name }}</h3>
-                <p>{{ i.role }}</p>
-                <p>{{ i.bio }}</p>
-                {% for i in site.data.team-ambassadors.team.coi %}
-                  {{ i }}
-                {% endfor%}
-                <hr/>
-              {% endfor %}
-
-              <h2>Ambassadors</h2>
-              {% for i in site.data.team-ambassadors.ambassadors %}
-                <p>{{ i.name }}, {{ i.role }}, {{ i.bio }}</p>
-              {% endfor %}
-
             {% endif %}
           </section>
         </div>
