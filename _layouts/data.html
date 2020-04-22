@@ -135,12 +135,12 @@
         <div class="col-md-4">
           <aside class="promo">
             <p class="label">Just so you know&hellip;</p>
-            
-            {% capture time_seed %}
-              {{ 'now' | date: "%s" }}
-            {% endcapture %}
-            {% assign random = time_seed | times: 1103515245 | plus: 12345 | divided_by: 65536 | modulo: 32768 | modulo: site.data.promo.size %}
 
+            {% assign min = 0 %}
+            {% assign max = site.data.promo.size %}
+            {% assign diff = max | minus: min %}
+            {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
+            
             <h2 class="promo__heading">{{ site.data.promo[random].title }}</h2>
             <p class="promo__text">
               {{ site.data.promo[random].summary }}
