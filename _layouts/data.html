@@ -17,7 +17,7 @@
 
             {% if page.name == 'sponsors.md' %}
               <!-- Support section: sponsors -->
-              <h2>Gold sponsor</h2>
+              <h2><span data-feather="award" class="stroke-gold"></span> Gold sponsor</h2>
               <div class="row">
                 {% for i in site.data.sponsors.gold %}
                 <div class="col-xs-6 sponsor">
@@ -28,7 +28,7 @@
                 {% endfor %}
               </div>
 
-              <h2>Silver sponsors</h2>
+              <h2><span data-feather="award" class="stroke-silver"></span> Silver sponsors</h2>
               <div class="row">
                 {% for i in site.data.sponsors.silver %}
                 <div class="col-xs-4 sponsor">
@@ -39,7 +39,7 @@
                 {% endfor %}
               </div>
 
-              <h2>Bronze sponsors</h2>
+              <h2><span data-feather="award" class="stroke-bronze"></span> Bronze sponsors</h2>
               <div class="row">
                 {% for i in site.data.sponsors.bronze %}
                 <div class="col-xs-4 sponsor">
