@@ -9,7 +9,7 @@
                     <div class="row">
                         <div class="col-md-11">
 
-                            {% for subfield in f.group_subfields() %}
+                            {% for subfield in f.list_subfields() %}
                                 {% set f = subfield %}
                                 {% set field_template = subfield.template %}
                                 {%  include field_template %}
@@ -21,6 +21,13 @@
                             {% if f.help("doaj_criteria") %}<span title="{{ f.help("doaj_criteria") }}">DOAJ</span>&nbsp;{% endif %}
                             {% if f.help("seal_criteria") %}<span title="{{ f.help("seal_criteria") }}">SEAL</span>{% endif %}
                             {% if f.help("long_help") %}<span title="{{ f.help("long_help") }}">HELP</span>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <button name="field__add_{{ f.name }}" value="{{ f.name }}" class="formulaic-add" type="submit">Add Another</button>
+                            <button name="field__remove_{{ f.name }}" value="{{ f.name }} 1" class="formulaic-remove" type="submit">Remove This One</button>
                         </div>
                     </div>
                 </fieldset>
