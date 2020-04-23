@@ -171,10 +171,42 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         self._add_struct(INCOMING_ARTICLE_REQUIRED)
         super(IncomingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_ARTICLE_COERCE, swagger_trans=BASE_ARTICLE_SWAGGER_TRANS)
 
+    def _trim_empty_strings(self):
+
+        def _remove_element_if_empty_data(field):
+            if field in bibjson and bibjson[field] == "":
+                del bibjson[field]
+
+        def _remove_from_the_list_if_empty_data(bibjson_element, field=None):
+            if bibjson_element in bibjson:
+                for i in range(len(bibjson[bibjson_element]) - 1, -1, -1):
+                    ide = bibjson[bibjson_element][i]
+                    if field is not None:
+                        if ide[field] == "":
+                            bibjson[bibjson_element].remove(ide)
+                    else:
+                        if ide == "":
+                            bibjson[bibjson_element].remove(ide)
+
+        bibjson = self.data["bibjson"]
+
+        _remove_element_if_empty_data("title")
+        _remove_element_if_empty_data("year")
+        _remove_element_if_empty_data("month")
+        _remove_element_if_empty_data("abstract")
+        _remove_from_the_list_if_empty_data("author", "name")
+        _remove_from_the_list_if_empty_data("subject", "term")
+        _remove_from_the_list_if_empty_data("identifier", "id")
+        _remove_from_the_list_if_empty_data("link", "url")
+        _remove_from_the_list_if_empty_data("keywords")
+
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
         if len(list(self.data.keys())) == 0:
             return
+
+        # remove all fields with empty data ""
+        self._trim_empty_strings()
 
         # at least one of print issn / e-issn, and they must be different
         #
@@ -215,7 +247,6 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         for author in self.bibjson.author:
             if author.orcid_id is not None and regex.ORCID_COMPILED.match(author.orcid_id) is None:
                 raise dataobj.DataStructureException("Invalid ORCID iD format. Please use url format, eg: https://orcid.org/0001-1111-1111-1111")
-
 
     def to_article_model(self, existing=None):
         dat = deepcopy(self.data)

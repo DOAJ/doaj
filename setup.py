@@ -3,12 +3,13 @@ import sys
 
 setup(
     name='doaj',
-    version='3.1.3',
+    version='3.1.5',
     packages=find_packages(),
     install_requires=[
         "Werkzeug==0.16.0",
         "Flask==1.1.1",
         "Flask-Login==0.4.1",
+        "WTForms==2.2.1",
         "Flask-WTF==0.14.2",
         "Flask-Mail==0.9.1",
         "requests==2.22.0",

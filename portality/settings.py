@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "3.1.3"
+DOAJ_VERSION = "3.1.5"
 
 OFFLINE_MODE = False
 
@@ -127,7 +127,7 @@ PUBLIC_ACCESSIBLE_JSON = True
 # Settings for Flask-Mail. Set in app.cfg
 MAIL_SERVER = None          # default localhost
 MAIL_PORT = 25              # default 25
-#MAIL_USE_TLS               # default False
+#MAIL_USE_TLS               # default FalseW
 #MAIL_USE_SSL               # default False
 #MAIL_DEBUG                 # default app.debug
 #MAIL_USERNAME              # default None

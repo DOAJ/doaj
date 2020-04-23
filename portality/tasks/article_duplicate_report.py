@@ -82,7 +82,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
                 # Get the global duplicates
                 try:
-                    global_duplicates = articleService.discover_duplicates(article, owner=None, results_per_match_type=10000)
+                    global_duplicates = articleService.discover_duplicates(article, results_per_match_type=10000, include_article = False)
                 except exceptions.DuplicateArticleException:
                     # this means the article did not have any ids that could be used for deduplication
                     owner = self._lookup_owner(article)
@@ -97,7 +97,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
                     # Deduplicate the DOI and fulltext duplicate lists
                     s = set([article.id] + [d.id for d in global_duplicates.get('doi', []) + global_duplicates.get('fulltext', [])])
-                    dupcount = len(s) - 1
+                    # remove article's own id from global_duplicates
+                    dupcount = len(s)-1
                     if s not in global_matches:
                         self._write_rows_from_duplicates(article, owner, global_duplicates, global_report)
                         global_matches.append(s)

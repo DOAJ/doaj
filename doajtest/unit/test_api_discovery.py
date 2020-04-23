@@ -455,10 +455,11 @@ class TestArticleMatch(DoajTestCase):
         from portality.api.v1.discovery import escape
 
         test_tuples = [
-            ('issn:1111-2222&publisher:cheese/biscuits', 'issn:1111-2222&publisher:cheese\\/biscuits'),
-            ('issn:1111-2222&doi:10.1234/this_has_a:colon&start_page:3000', 'issn:1111-2222&doi:10.1234\\/this_has_a\\:colon&start_page:3000'),
+            ('issn:1111-2222 AND publisher:cheese/biscuits', 'issn:1111-2222 AND publisher:cheese\\/biscuits'),
+            ('issn:1111-2222 AND doi:10.1234/this_has_a:colon AND start_page:3000',
+             'issn:1111-2222 AND doi:10.1234\\/this_has_a\\:colon AND start_page:3000'),
             ('abundance/of//slashes', 'abundance\\/of\\/\\/slashes'),
-            ('colon:colons:galore&more:more:more', 'colon:colons\\:galore&more:more\\:more')
+            ('colon:colons:galore AND more:more:more', 'colon:colons\\:galore AND more:more\\:more')
         ]
 
         for t in test_tuples:

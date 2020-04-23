@@ -48,7 +48,8 @@ app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
 if 'api' in app.config['FEATURES']:
     app.register_blueprint(api_v1, url_prefix='/api/v1')
-app.register_blueprint(status, url_prefix='/status')
+app.register_blueprint(status, url_prefix='/_status')
+app.register_blueprint(status, url_prefix='/status')   # TODO: remove duplicate route once uptimerobot has been informed
 
 app.register_blueprint(oaipmh)
 app.register_blueprint(openurl)
@@ -80,7 +81,7 @@ SPONSORS = {
         'finnish-learned-soc': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-tsvlogo.svg', 'url': 'https://tsv.fi/en/frontpage'},
         'nsd': {'name': 'NSD (Norwegian Centre for Research Data)', 'logo': 'nsd.svg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
         'swedish-research': {'name': 'Swedish Research Council', 'logo': 'swedish-research.svg', 'url': 'https://vr.se/english.html'},
-        'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
+        #'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://publications.copernicus.org/'},
         'elsevier': {'name': 'Elsevier', 'logo': 'elsevier.svg', 'url': 'https://www.elsevier.com/'}
 
@@ -88,7 +89,7 @@ SPONSORS = {
     'bronze': {
         'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'},
         'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
-        '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
+        #'1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
         'aps': {'name': 'American Physical Society', 'logo': 'aps.gif', 'url': 'https://journals.aps.org/'},
         #'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'},
         'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.svg', 'url': 'https://cottagelabs.com'},
@@ -99,20 +100,21 @@ SPONSORS = {
         'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.svg', 'url': 'http://www.taylorandfrancisgroup.com/'},
         'wiley': {'name': 'Wiley', 'logo': 'wiley.svg', 'url': 'https://wiley.com'},
         'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.svg', 'url': 'http://emeraldpublishing.com/'},
-        'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.svg', 'url': 'https://www.thieme.com'},
+        #'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.svg', 'url': 'https://www.thieme.com'},
         #'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tec-mx.png', 'url': 'https://tec.mx/es'},
         #'brill': {'name': 'BRILL', 'logo': 'brill.jpg', 'url': 'https://brill.com/'},
         'ubiquity': {'name': 'Ubiquity Press', 'logo': 'ubiquity_press.svg', 'url': 'https://www.ubiquitypress.com/'},
         #'openedition': {'name': 'Open Edition', 'logo': 'open_edition.svg', 'url': 'https://www.openedition.org'},
         'iop': {"name": "IOP Publishing", "logo": "iop.jpg", "url": "http://ioppublishing.org/"},
-        'degruyter': {'name': 'De Gruyter', 'logo': 'degruyter.jpg', 'url': 'https://www.degruyter.com/dg/page/open-access'},
+        #'degruyter': {'name': 'De Gruyter', 'logo': 'degruyter.jpg', 'url': 'https://www.degruyter.com/dg/page/open-access'},
         'rsc': {'name': 'Royal Society of Chemistry', 'logo': 'rsc.jpg', 'url': 'https://www.rsc.org'},
         'edp': {'name': 'EDP Sciences', 'logo': 'edp.gif', 'url': 'https://www.edpsciences.org'},
         'elife': {'name': 'eLife', 'logo': 'elife.png', 'url': 'https://elifesciences.org/'},
         'karger': {'name': 'Karger', 'logo': 'karger.png', 'url': 'https://www.karger.com/'},
         'cambridge': {'name': 'Cambridge University Press', 'logo': 'cambridge.png', 'url': 'https://www.cambridge.org/'},
         'iet': {'name': 'IET (Institution of Engineering and Technology)', 'logo': 'iet.png', 'url': 'https://www.theiet.org/'},
-        'pensoft': {'name': 'Pensoft', 'logo': 'pensoftlogo.svg', 'url': 'https://pensoft.net/'}
+        'pensoft': {'name': 'Pensoft', 'logo': 'pensoftlogo.svg', 'url': 'https://pensoft.net/'},
+        'plos': {'name': 'PLOS', 'logo': 'plos.png', 'url': 'https://plos.org/'}
     },
     'patron': {
         #'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
