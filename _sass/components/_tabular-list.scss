@@ -16,14 +16,12 @@
     width: 100%;
     border-bottom: 1px solid rgba($dark-grey, 0.25);
     counter-increment: row-number;
-    @include typescale-05;
     @include font-serif;
 
     &::before {
       vertical-align: baseline;
       font-weight: 400;
       content: counter(row-number) '. ';
-      @include typescale-05;
       @include font-serif;
     }
 
@@ -32,7 +30,6 @@
       padding: 0 0 0 $spacing-05;
       list-style: none;
       width: 50%;
-      @include typescale-06;
       @include font-sans;
     }
   }
