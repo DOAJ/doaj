@@ -439,7 +439,7 @@ class DomainObject(UserDict, object):
             return
 
         if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-            return esprit.raw.delete_index_by_prefix(es_connection, app.config['ELASTIC_SEARCH_DB_PREFIX'])
+            return esprit.raw.delete_index_by_prefix(es_connection, app.config['ELASTIC_SEARCH_DB_PREFIX'] + '-')
         else:
             return esprit.raw.delete_index(es_connection)
 
