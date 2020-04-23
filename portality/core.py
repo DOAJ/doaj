@@ -137,7 +137,7 @@ def mutate_mapping(conn, type, mapping):
             pass
 
         # Add the index prefix to the mapping as we create the type
-        type = app.config['ELASTIC_SEARCH_DB_PREFIX'] + '-' + type
+        type = app.config['ELASTIC_SEARCH_DB_PREFIX'] + type
     return type
 
 
