@@ -1,0 +1,10 @@
+/* Cards */
+
+.card {
+  @include typescale-06;
+}
+
+.card__desc {
+  color: $dark-grey;
+  margin-bottom: $spacing-01;
+}

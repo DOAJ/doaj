@@ -1,0 +1,21 @@
+/* Navigation bar */
+
+.nav-bar {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  height: 50px;
+  @include typescale-06;
+
+  .feather {
+    top: 0.125em;
+    height: 15px;
+  }
+}
+
+.nav-bar__link {
+  display: block;
+  line-height: 50px;
+}

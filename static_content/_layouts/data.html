@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include head.html %}
+
+  <body>
+    {% include header.html %}
+
+    <main class="container">
+      <div class="row">
+        <div class="col-md-8">
+           <section class="page-content">
+            <h1>{{ page.title }}</h1>
+            {{ content }}
+
+            <!-- TODO: make this more elegant -->
+
+            {% if page.name == 'sponsors.md' %}
+              <!-- Support section: sponsors -->
+              <h2><span data-feather="award" class="stroke-gold"></span> Gold sponsor</h2>
+              <div class="row">
+                {% for i in site.data.sponsors.gold %}
+                <div class="col-xs-6 sponsor">
+                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+
+              <h2><span data-feather="award" class="stroke-silver"></span> Silver sponsors</h2>
+              <div class="row">
+                {% for i in site.data.sponsors.silver %}
+                <div class="col-xs-4 sponsor">
+                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+
+              <h2><span data-feather="award" class="stroke-bronze"></span> Bronze sponsors</h2>
+              <div class="row">
+                {% for i in site.data.sponsors.bronze %}
+                <div class="col-xs-4 sponsor">
+                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+
+            {% elsif page.name == 'publisher-supporters.md' %}
+              <!-- Support section: publisher supporters -->
+              <h2>Current publisher supporters</h2>
+              <ul class="row title-list">
+                {% for i in site.data.publisher-supporters %}
+                  <li class="col-md-3">
+                    <a href="{{ i.url }}" target="_blank" class="title-list__link">{{ i.name }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+
+            {% elsif page.name == 'supporters.md' %}
+              <!-- Support section: supporters -->
+              {% for i in site.data.supporters %}
+                <p>{{ i.name }}, {{ i.url }}</p>
+              {% endfor %}
+
+            {% endif %}
+          </section>
+        </div>
+
+        <div class="col-md-4">
+          <aside class="promo">
+            <p class="label">Just so you know&hellip;</p>
+
+            {% assign min = 0 %}
+            {% assign max = site.data.promo.size %}
+            {% assign diff = max | minus: min %}
+            {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
+
+            <h2 class="promo__heading">{{ site.data.promo[random].title }}</h2>
+            <p class="promo__text">
+              {{ site.data.promo[random].summary }}
+              <a href="{{ site.data.promo[random].url }}" target="_blank" class="promo__link">Learn more</a>
+            </p>
+          </aside>
+        </div>
+
+      </div>
+    </main>
+
+    {% include footer.html %}
+  </body>
+
+</html>

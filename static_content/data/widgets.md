@@ -1,0 +1,156 @@
+---
+layout: sidenav
+title: Widgets
+toc: true
+highlight: false
+---
+
+Widgets are tools that allow you to embed DOAJ into your site. There are two widgets available:
+
+1. A Simple Search widget which embeds a search box on your page. Upon submitting the search, the user is taken to their search results on DOAJ.
+2. A Fixed Query widget which allows you to embed, into your site, a specific set of results from a predefined DOAJ search.
+
+## Simple Search
+
+Copy and paste the code below into your page where you want the search box to be displayed.
+
+```html
+<script src="https://doaj.org/static/widget/simple_search.js" type="text/javascript"></script>
+<div id="doaj-simple-search-widget"></div>
+```
+
+## Fixed Query
+
+Copy and paste the code below into your page where you want the widget to be displayed.
+
+```html
+<script type="text/javascript">
+    !window.jQuery && document.write("<scr" + "ipt type=\"text/javascript\" src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js\"></scr" + "ipt>");
+</script>
+
+<script type="text/javascript">
+var doaj_url = "https://doaj.org";
+var QUERY_OPTIONS = {
+    query_string : 'medicine',                   // The plain-text query string
+    query_field: 'bibjson.title',                // The field we are querying
+    sort_field: 'index.unpunctitle.exact',       // Field to order results by
+    sort_direction:  'asc',                      // Direction of sort "asc" | "desc"
+    search_operator : 'AND',                     // Which sort operator to use "AND" | "OR"
+    search_type: 'journal',                      // Which type to search upon (omit for both) "article" | "journal"
+    page_size : 5,                               // How many results to show per widget page
+    page_from : 0                                // Which result to start from
+    }
+</script>
+<script src="https://doaj.org/static/widget/fixed_query.js" type="text/javascript"></script>
+<div id="doaj-fixed-query-widget"></div>
+```
+
+### Configuring via `QUERY_OPTIONS`
+
+There are a handful of options available, all are optional; omit them from `QUERY_OPTIONS` for the default behaviour.
+
+<dl>
+  <dt><code>query_string</code></dt>
+  <dd>
+    Accepts plain text: any text you might put in the search box
+  </dd>
+
+  <dt><code>query_field</code></dt>
+  <dd>
+    The field to query. Omit to search in any field, or specify one of these:
+    <ul>
+      <li>
+        <code>bibjson.title</code>: title
+      </li>
+      <li>
+        <code>bibjson.keywords</code>: keywords
+      </li>
+      <li>
+        <code>index.classification</code>: subject
+      </li>
+      <li>
+        <code>index.issn.exact</code>: ISSN
+      </li>
+      <li>
+        <code>bibjson.identifier.id</code>: DOI
+      </li>
+      <li>
+        <code>index.country</code>: country of publisher
+      </li>
+      <li>
+        <code>index.language</code>: journal language
+      </li>
+      <li>
+        <code>index.publisher</code>: publisher name
+      </li>
+    </ul>
+  </dd>
+
+  <dt><code>sort_field</code></dt>
+  <dd>
+    <ul>
+      <li>
+        <code>created_date</code>: sort by date added to DOAJ (default)
+      </li>
+      <li>
+        <code>index.unpunctitle.exact</code>: sort by title
+      </li>
+    </ul>
+  </dd>
+
+  <dt><code>sort_direction</code></dt>
+  <dd>
+    <ul>
+      <li>
+        <code>asc</code>: ascending (default)
+      </li>
+      <li>
+        <code>desc</code>: descending
+      </li>
+    </ul>
+  </dd>
+
+  <dt><code>search_operator</code></dt>
+  <dd>
+    <ul>
+      <li>
+        <code>AND</code>: use AND for the terms in the query string (default)
+      </li>
+      <li>
+        <code>OR</code>: use OR for the terms in the query string
+      </li>
+    </ul>
+  </dd>
+
+  <dt><code>search_type</code></dt>
+  <dd>
+    The type of result to show. Omit this property to show results of both type
+    <ul>
+      <li>
+        <code>journal</code>: only show journals
+      </li>
+      <li>
+        <code>article</code>: only show articles
+      </li>
+    </ul></dd>
+
+  <dt><code>page_size</code></dt>
+  <dd>
+    <code>integer</code>: how many results to show per page, 1 or more (default: 10)
+  </dd>
+
+  <dt><code>page_from</code></dt>
+  <dd>
+    <code>integer</code>: which result to start from initially, 0 or higher, (default 0)
+  </dd>
+</dl>
+
+The parameter `QUERY_OPTIONS` takes a subset of fields to define which results to retrieve. The example above displays the journals containing the word `medicine` in the title and in alphabetical order. Configuration via these `QUERY_OPTIONS` provides a simplified way to display results by keyword.
+
+For more control over which results to display, we recommend configuring your query via the _Search_ page. Use the controls to find the results you want to show then click the _Share_ button and copy the text provided in the box below _Embed this search_ for inclusion on your page.
+
+The widget can be resized to fit within available horizontal space. Use the `page_size` property to minimise its vertical requirement by reducing the number of results per page.
+
+Note: the vertical size can change depending on the number of results shown on each page.
+
+You can only embed one fixed query widget per page. If you see strange characters in the results, try declaring the encoding in the `<head>` element of your HTML page by adding `<meta charset="utf-8">`.

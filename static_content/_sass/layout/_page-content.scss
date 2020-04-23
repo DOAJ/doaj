@@ -1,0 +1,9 @@
+/* Main page content */
+
+.page-content {
+  padding-right: $spacing-04;
+
+  @media (max-width: 768px) {
+    padding-right: 0;
+  }
+}
