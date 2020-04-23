@@ -3,6 +3,9 @@
 /* Footer */
 
 .page-footer {
+  position: absolute;
+  z-index: 100;
+  width: 100%;
   background-color: $warm-black;
   color: $warm-white;
   @include typescale-06;

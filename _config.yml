@@ -33,3 +33,4 @@ toc:
   sublist_class: page-nav__sublist
   item_class: page-nav__item
   item_prefix: item-
+  max_level: 3
