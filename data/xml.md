@@ -7,7 +7,7 @@ highlight: false
 
 When you upload your article metadata to us, it must be in one of two XML formats.
 
-Article metadata is provided to us on the understanding that it will then be available for free, to be distributed to any third party who wants it LINK TO TERMS AND CONDITIONS.
+Article metadata is provided to us on the understanding that it will then be available for free, to be distributed to any third party who wants it.
 
 We do not check the metadata's quality or correctness as we ingest it—this is your responsibility—so any errors (for example, typos in author names, URLs, or DOI) will be uploaded as is. From time to time, a user of our metadata may contact us and ask us to make a correction to your metadata.
 
