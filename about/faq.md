@@ -73,16 +73,6 @@ Send the information to [feedback@doaj.org](mailto:feedback@doaj.org). If you ar
 
 ## Metadata
 
-### What code is DOAJ built with?
-
-DOAJ is a Python web app with a JSON document store. The code is open source and can be found in [our GitHub repository](https://github.com/DOAJ/doaj).
-
-DOAJ uses Bootstrap which is the framework used to build the DOAJ website. This contains some Javascript for some of its features.
-
-### Why do some journals have no or very little article metadata in DOAJ?
-
-We do not yet crawl publisher sites to collect article metadata. Instead, we ask publishers to upload the metadata to us. If a journal in DOAJ has no articles, it is because the metadata hasn't been sent to us.
-
 ### How can I get journal metadata from DOAJ?
 
 #### API
@@ -102,26 +92,36 @@ You may crawl DOAJ as long as you follow our good behaviour guidelines for crawl
 
 If your crawler hits our servers too often, or your crawler starts to affect DOAJ's performance in any way, then your access will be restricted or even blocked. (It's actually faster and easier for you to collect our medata if you connect via the API.)
 
-#### Data dumps
-
-You can [download all of our journal and article metadata]() as two static files. They are refreshed weekly.
-
-#### Journals CSV file
+#### CSV file
 
 You can download the list of journals as a CSV (comma-separated) file. This can be imported into any compatible analysis program. The CSV file is updated every 30 minutes.
   + Download the file to your computer
   + Import the file into a spreadsheet processing program (like Excel or OpenOffice)
   +  Make sure you choose Unicode (UTF-8) as the file origin.
 
+#### Data dumps
+
+You can [download all of our journal and article metadata]() as two static files. They are refreshed weekly.
+
 #### OAI-PMH
 
 DOAJ supports the OAI protocol for metadata harvesting (OAI-PMH). Any OAI compatible service can obtain records from DOAJ. The base URL is: http://www.doaj.org/oai. You can add most OAI verbs and other commands directly on to that. There is a full description of this service on the [OAI-PMH documentation page](). Our current OAI offering is standardised around Dublin Core.
+
+### Why do some journals have no or very little article metadata in DOAJ?
+
+We do not yet crawl publisher sites to collect article metadata. Instead, we ask publishers to upload the metadata to us. If a journal in DOAJ has no articles, it is because the metadata hasn't been sent to us.
 
 ## Do you have any restrictions on the reuse of your metadata?
 
 The data in DOAJ is currently licensed to you under a [Creative Commons Attribution-ShareAlike License (CC BY-SA)](https://creativecommons.org/licenses/by-sa/4.0/). You should familiarise yourself with [the legal code](https://creativecommons.org/licenses/by-sa/4.0/legalcode) for this license.
 
 The rights of the site-generated metadata in the Atom feed are listed in the feed.
+
+## What code is DOAJ built with?
+
+DOAJ is a Python web app with a JSON document store. The code is open source and can be found in [our GitHub repository](https://github.com/DOAJ/doaj).
+
+DOAJ uses Bootstrap which is the framework used to build the DOAJ website. This contains some Javascript for some of its features.
 
 ## Finding content in DOAJ
 
