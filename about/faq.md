@@ -113,15 +113,28 @@ You can download the list of journals as a CSV (comma-separated) file. This can 
   + Import the file into a spreadsheet processing program (like Excel or OpenOffice)
   +  Make sure you choose Unicode (UTF-8) as the file origin.
 
+#### OAI-PMH
+
+DOAJ supports the OAI protocol for metadata harvesting (OAI-PMH). Any OAI compatible service can obtain records from DOAJ. The base URL is: http://www.doaj.org/oai. You can add most OAI verbs and other commands directly on to that. There is a full description of this service on the [OAI-PMH documentation page](). Our current OAI offering is standardised around Dublin Core.
+
 ## Do you have any restrictions on the reuse of your metadata?
 
 The data in DOAJ is currently licensed to you under a [Creative Commons Attribution-ShareAlike License (CC BY-SA)](https://creativecommons.org/licenses/by-sa/4.0/). You should familiarise yourself with [the legal code](https://creativecommons.org/licenses/by-sa/4.0/legalcode) for this license.
 
 The rights of the site-generated metadata in the Atom feed are listed in the feed.
 
-#### OAI-PMH
+## Finding content in DOAJ
 
-DOAJ supports the OAI protocol for metadata harvesting (OAI-PMH). Any OAI compatible service can obtain records from DOAJ. The base URL is: http://www.doaj.org/oai. You can add most OAI verbs and other commands directly on to that. There is a full description of this service on the [OAI-PMH documentation page](). Our current OAI offering is standardised around Dublin Core.
+### Browsing by subject
 
+The subject classifications used to [Browse by subject]() page are structured as follows:
 
-## Searching DOAJ
++ subjects separated by a full stop (.) are part of the same category. For example: 'Philosophy. Psychology. Religion' is one category.
++ where two subjects are separated by a colon (:), the second subject is a subcategory of the first. For example: 'Philosophy. Psychology. Religion: Philosophy (General)'. This journal has been categorised as General Philosophy.
++ where subjects are separated by a pipe (|), the second category has no relation to the first. For example: 'Philosophy. Psychology. Religion: Philosophy (General) | Social Sciences: Social sciences (General)' means that this journal has been categorised both as General Philosophy and General Social Sciences.
+
+### Searching by keyword
+
+You can choose to filter your search results by ‘keyword’.
+
+Journal keywords are chosen by the person submitting an application for a journal. They are reviewed and edited by the DOAJ Team. They are more arbitrary than the subject classification.
