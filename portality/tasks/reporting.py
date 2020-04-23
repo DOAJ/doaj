@@ -302,7 +302,7 @@ class ContentByDate(object):
                     "aggs": {
                         "countries": {
                             "terms": {
-                                "field": "bibjson.country.exact",
+                                "field": "bibjson.publisher.country.exact",
                                 "size": 1000
                             }
                         }

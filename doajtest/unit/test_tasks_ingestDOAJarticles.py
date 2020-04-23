@@ -1495,7 +1495,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.P_ISSN, "2222-2222")
+        bj1.add_identifier(bj1.E_ISSN, "2222-2222")
         j1.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1541,7 +1541,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.P_ISSN, "9876-5432")
+        bj1.add_identifier(bj1.E_ISSN, "9876-5432")
         bj1.add_subject("LCC", "Whatever", "WHATEVA")
         bj1.add_subject("LCC", "Aquaculture. Fisheries. Angling", "SH1-691")
         j1.save()

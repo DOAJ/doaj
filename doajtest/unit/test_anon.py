@@ -46,10 +46,12 @@ class TestAnon(DoajTestCase):
             }],
             'notes': [
                 {
+                    "id" : "note1",
                     'note': 'Test note',
                     'date': '2017-02-23T00:00:00Z'
                 },
                 {
+                    "id" : "note2",
                     'note': 'Test note 2',
                     'date': '2017-02-23T00:00:00Z'
                 }
@@ -70,10 +72,12 @@ class TestAnon(DoajTestCase):
             }],
             'notes': [
                 {
+                    "id" : "note1",
                     'note': 'f4007b0953d4a9ecb7e31820b5d481d96ee5d74a0a059a54f07a326d357ed895',
                     'date': '2017-02-23T00:00:00Z'
                 },
                 {
+                    "id" : "note2",
                     'note': '772cf6f91219db969e4aa28e4fd606b92316948545ad528fd34feb1b9b12a3ad',
                     'date': '2017-02-23T00:00:00Z'
                 }
@@ -118,8 +122,8 @@ class TestAnon(DoajTestCase):
 
     def test_09_anonymise_suggestion(self):
         asug = anon_export.anonymise_suggestion(ApplicationFixtureFactory.make_application_source())
-        assert asug['suggestion']['suggester']['name'] == 'Jon Cole', asug['suggestion']['suggester']['name']
-        assert asug['suggestion']['suggester']['email'] == '5224a2ac2278eeb77400bf5d35e518a1627a7fb10bf0108171542c6af81988a7@example.com', asug['suggestion']['suggester']['email']
+        assert asug['admin']['applicant']['name'] == 'Jon Cole', asug['suggestion']['suggester']['name']
+        assert asug['admin']['applicant']['email'] == '5224a2ac2278eeb77400bf5d35e518a1627a7fb10bf0108171542c6af81988a7@example.com', asug['suggestion']['suggester']['email']
 
     def test_10_anonymise_background_job(self):
         bgjob = BackgroundFixtureFactory.example()

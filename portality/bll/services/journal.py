@@ -53,16 +53,15 @@ class JournalService(object):
 
         # copy all the relevant information from the journal to the application
         bj = journal.bibjson()
-        contacts = journal.contacts()
+        contact = journal.contact
         notes = journal.notes
         first_contact = None
 
         application = models.Suggestion()
         application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
-        for c in contacts:
-            application.add_contact(c.get("name"), c.get("email"))
-            if first_contact is None:
-                first_contact = c
+        application.add_contact(contact.get("name"), contact.get("email"))
+        if first_contact is None:
+            first_contact = contact
         application.set_current_journal(journal.id)
         if keep_editors is True:
             if journal.editor is not None:
@@ -70,7 +69,10 @@ class JournalService(object):
             if journal.editor_group is not None:
                 application.set_editor_group(journal.editor_group)
         for n in notes:
-            application.add_note(n.get("note"), n.get("date"))
+            # NOTE: we keep the same id for notes between journal and application, since ids only matter within
+            # the scope of a record there are no id clashes, and at the same time it may be useful in future to
+            # check the origin of some journal notes by comparing ids to application notes.
+            application.add_note(n.get("note"), n.get("date"), n.get("id"))
         application.set_owner(journal.owner)
         application.set_seal(journal.has_seal())
         application.set_bibjson(bj)

@@ -19,8 +19,9 @@ class ModelJournalMockFactory(object):
                 journal = Journal(**source)
                 journal.set_owner(owner)
 
-                journal.bibjson().remove_identifiers("eissn")
-                journal.bibjson().remove_identifiers("pissn")
+                jbj = journal.bibjson()
+                del jbj.eissn
+                del jbj.pissn
                 if eissn is not None:
                     journal.bibjson().add_identifier("eissn", eissn)
                 if pissn is not None:

@@ -129,6 +129,66 @@ def suggestion():
         else:
             return fc.render_template(edit_suggestion_page=True)
 
+############################################
+# Experimental
+
+#from portality.lib.formulaic import Formulaic
+#from portality.formcontext.form_definitions import FORMS, PYTHON_FUNCTIONS, JAVASCRIPT_FUNCTIONS
+
+from portality.formcontext.form_definitions import application_form as ApplicationFormFactory
+
+
+@blueprint.route("/application/newnew", methods=["GET", "POST"])
+@blueprint.route("/application/newnew/<draft_id>", methods=["GET", "POST"])
+@write_required()
+@login_required
+def public_application(draft_id=None):
+
+    draft_application = None
+    if draft_id is not None:
+        draft_application = models.DraftApplication.pull(draft_id)
+        if draft_application is None:
+            abort(404)
+        if draft_application.owner != current_user.id:
+            abort(404)
+
+    if request.method == "GET":
+        fc = ApplicationFormFactory.context("public")
+        if draft_application is not None:
+            fc.processor(source=draft_application)
+        return fc.render_template(obj=draft_application)
+
+    elif request.method == "POST":
+        draft = request.form.get("draft")
+        async_def = request.form.get("async")
+        draft_id = request.form.get("id") if draft_id is None else draft_id
+
+        if draft_id is not None:
+            draft_application = models.DraftApplication.pull(draft_id)
+            if draft_application is None:
+                abort(404)
+            if draft_application.owner != current_user.id:
+                abort(404)
+
+        fc = ApplicationFormFactory.context("public")
+        processor = fc.processor(formdata=request.form)
+
+        if draft is not None:
+            the_draft = processor.draft(current_user._get_current_object(), id=draft_id)
+            if async_def is not None:
+                return make_response(json.dumps({"id" : the_draft.id}), 200)
+            else:
+                return redirect(url_for('doaj.suggestion_thanks', _anchor='draft'))
+
+        else:
+            if processor.validate():
+                processor.finalise()
+                return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
+            else:
+                return fc.render_template()
+
+
+#############################################
 
 @blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
 @login_required

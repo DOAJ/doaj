@@ -15,8 +15,8 @@ DOAJ_VERSION = "3.1.3"
 OFFLINE_MODE = False
 
 # List the features we want to be active
-FEATURES = ['api']
-VALID_FEATURES = ['api']
+FEATURES = ['api1','api2']
+VALID_FEATURES = ['api1','api2']
 
 # ========================
 # MAIN SETTINGS
@@ -31,7 +31,8 @@ elif BASE_URL.startswith('http://'):
     BASE_DOMAIN = BASE_URL[7:]
 else:
     BASE_DOMAIN = BASE_URL
-API_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
+API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
+API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
 
 # Used when generating external links, e.g. in the API docs
 PREFERRED_URL_SCHEME = 'https'
@@ -298,6 +299,80 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
+    "unicode_lower": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "isolang": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "isolang_2letter": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "country_code": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "currency_code": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "issn": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "url": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "utcdatetimemicros": {
+        "type": "date",
+        "format": "dateOptionalTime"
+    },
     "utcdatetime": {
         "type": "date",
         "format": "dateOptionalTime"
@@ -504,9 +579,8 @@ QUERY_FILTERS = {
 UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"
 
 AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
-    "bibjson.publisher" : "index.publisher_ac",
-    "bibjson.institution" : "index.institution_ac",
-    "bibjson.provider" : "index.provider_ac"
+    "bibjson.publisher.name" : "index.publisher_ac",
+    "bibjson.institution.name" : "index.institution_ac"
 }
 
 # ========================
@@ -924,7 +998,8 @@ DOAJ_QUERY_ENDPOINT = "query"
 
 DOAJ_SEARCH_TYPE = "journal,article"
 
-DOAJ_API_BASE_URL = "https://doaj.org/api/v1/"
+DOAJ_API1_BASE_URL = "https://doaj.org/api/v1/"
+DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
 
 
 ## EPMC Client configuration

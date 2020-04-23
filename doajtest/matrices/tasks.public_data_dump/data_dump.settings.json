@@ -1,20 +1,17 @@
 {
   "parameters": [
     {
-      "name": "test_id",
-      "type": "index"
+      "type": "index",
+      "name": "test_id"
     },
     {
-      "name": "clean",
-      "type": "generated",
       "values": {
-        "yes": {},
         "no": {},
         "-": {
           "constraints": {
-            "journals": {
+            "tmp_write": {
               "or": [
-                "0"
+                "success"
               ]
             },
             "articles": {
@@ -22,9 +19,9 @@
                 "0"
               ]
             },
-            "tmp_write": {
+            "journals": {
               "or": [
-                "success"
+                "0"
               ]
             },
             "store_write": {
@@ -33,20 +30,20 @@
               ]
             }
           }
-        }
-      }
+        },
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "clean"
     },
     {
-      "name": "prune",
-      "type": "generated",
       "values": {
-        "yes": {},
         "no": {},
         "-": {
           "constraints": {
-            "journals": {
+            "tmp_write": {
               "or": [
-                "0"
+                "success"
               ]
             },
             "articles": {
@@ -54,9 +51,9 @@
                 "0"
               ]
             },
-            "tmp_write": {
+            "journals": {
               "or": [
-                "success"
+                "0"
               ]
             },
             "store_write": {
@@ -65,14 +62,38 @@
               ]
             }
           }
-        }
-      }
+        },
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "prune"
     },
     {
-      "name": "types",
-      "type": "generated",
       "values": {
-        "all": {},
+        "-": {
+          "constraints": {
+            "tmp_write": {
+              "or": [
+                "success"
+              ]
+            },
+            "articles": {
+              "or": [
+                "0"
+              ]
+            },
+            "journals": {
+              "or": [
+                "0"
+              ]
+            },
+            "store_write": {
+              "or": [
+                "success"
+              ]
+            }
+          }
+        },
         "journal": {
           "constraints": {
             "articles": {
@@ -82,6 +103,7 @@
             }
           }
         },
+        "all": {},
         "article": {
           "constraints": {
             "journals": {
@@ -90,61 +112,37 @@
               ]
             }
           }
-        },
-        "-": {
-          "constraints": {
-            "journals": {
-              "or": [
-                "0"
-              ]
-            },
-            "articles": {
-              "or": [
-                "0"
-              ]
-            },
-            "tmp_write": {
-              "or": [
-                "success"
-              ]
-            },
-            "store_write": {
-              "or": [
-                "success"
-              ]
-            }
-          }
         }
-      }
+      },
+      "type": "generated",
+      "name": "types"
     },
     {
-      "name": "journals",
-      "type": "generated",
       "values": {
-        "0": {},
         "2": {},
+        "0": {},
         "4": {}
-      }
+      },
+      "type": "generated",
+      "name": "journals"
     },
     {
-      "name": "articles",
-      "type": "generated",
       "values": {
-        "0": {},
         "2": {},
+        "0": {},
         "4": {}
-      }
+      },
+      "type": "generated",
+      "name": "articles"
     },
     {
-      "name": "batch_size",
-      "type": "generated",
       "values": {
         "3": {}
-      }
+      },
+      "type": "generated",
+      "name": "batch_size"
     },
     {
-      "name": "tmp_write",
-      "type": "generated",
       "values": {
         "success": {},
         "fail": {
@@ -156,11 +154,11 @@
             }
           }
         }
-      }
+      },
+      "type": "generated",
+      "name": "tmp_write"
     },
     {
-      "name": "store_write",
-      "type": "generated",
       "values": {
         "success": {},
         "fail": {
@@ -172,14 +170,12 @@
             }
           }
         }
-      }
+      },
+      "type": "generated",
+      "name": "store_write"
     },
     {
-      "name": "status",
-      "type": "conditional",
-      "default": "complete",
       "values": {
-        "complete": {},
         "error": {
           "conditions": [
             {
@@ -197,8 +193,12 @@
               }
             }
           ]
-        }
-      }
+        },
+        "complete": {}
+      },
+      "type": "conditional",
+      "default": "complete",
+      "name": "status"
     }
   ]
 }

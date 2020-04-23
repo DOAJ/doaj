@@ -138,7 +138,6 @@ class TestBLLObjectConversions(DoajTestCase):
             assert journal.is_in_doaj() is True
 
             jbj = journal.bibjson().data
-            del jbj["active"]
             assert jbj == application.bibjson().data
 
             if current_journal == "present":

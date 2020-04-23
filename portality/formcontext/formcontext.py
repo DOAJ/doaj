@@ -12,6 +12,9 @@ from portality.formcontext import forms, xwalk, render, choices, emails, FormCon
 from portality.lcc import lcc_jstree
 from portality.ui.messages import Messages
 
+from portality.lib.formulaic import Formulaic
+from portality.formcontext.form_definitions import FORMS, PYTHON_FUNCTIONS, JAVASCRIPT_FUNCTIONS
+
 ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
             'account permissions to edit applications which are {0}.'
@@ -19,8 +22,9 @@ SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this applicati
 FIELDS_WITH_DESCRIPTION = ["publisher", "society_institution", "platform", "title", "alternative_title"]
 URL_FIELDS = ["url", "processing_charges_url", "submission_charges_url", "articles_last_year_url", "digital_archiving_policy_url", "editorial_board_url", "review_process_url", "instructions_authors_url", "oa_statement_url", "license_url", "waiver_policy_url", "download_statistics_url", "copyright_url", "publishing_rights_url", "plagiarism_screening_url", "license_embedded_url", "aims_scope_url"]
 
+
 class FormContext(object):
-    def __init__(self, form_data=None, source=None):
+    def __init__(self, form_data=None, source=None, formulaic_context=None):
         # initialise our core properties
         self._source = source
         self._target = None
@@ -30,6 +34,7 @@ class FormContext(object):
         self._template = None
         self._alert = []
         self._info = ''
+        self._formulaic = formulaic_context
 
         # initialise the renderer (falling back to a default if necessary)
         self.make_renderer()
@@ -191,8 +196,6 @@ class FormContext(object):
             for field in self.form:
                 if field.errors:
                     error_fields.append(field.short_name)
-            if self.renderer is not None:
-                self.renderer.set_error_fields(error_fields)
 
         return valid
 
@@ -206,12 +209,21 @@ class FormContext(object):
     def render_template(self, **kwargs):
         return render_template(self.template, form_context=self, **kwargs)
 
-    def render_field_group(self, field_group_name=None, **kwargs):
-        return self.renderer.render_field_group(self, field_group_name, **kwargs)
+    #def render_field_group(self, field_group_name=None, **kwargs):
+    #    return self.renderer.render_field_group(self, field_group_name, **kwargs)
+
+    def fieldset(self, fieldset_name=None):
+        return self._formulaic.fieldset(fieldset_name)
+
+    def fieldsets(self):
+        return self._formulaic.fieldsets()
 
     def check_field_group_exists(self, field_group_name):
         return self.renderer.check_field_group_exists(field_group_name)
 
+    @property
+    def ui_settings(self):
+        return self._formulaic.ui_settings
 
 class PrivateContext(FormContext):
     def _expand_descriptions(self, fields):
@@ -563,6 +575,7 @@ class ApplicationContext(PrivateContext):
         return super(ApplicationContext, self).render_template(
             form_diff=diff,
             current_journal=cj,
+            js_functions=JAVASCRIPT_FUNCTIONS,
             **kwargs)
 
     def _form_diff(self, journal_form, application_form):
@@ -1154,7 +1167,7 @@ class PublisherUpdateRequest(ApplicationContext):
 
         # carry forward the disabled fields
         bj = self.source.bibjson()
-        contacts = self.source.contacts()
+        contact = self.source.contact
 
         self.form.title.data = bj.title
         self.form.alternative_title.data = bj.alternative_title
@@ -1167,13 +1180,12 @@ class PublisherUpdateRequest(ApplicationContext):
         if eissn == "": eissn = None
         self.form.eissn.data = eissn
 
-        if len(contacts) == 0:
+        if len(contact) == 0:
             # this will cause a validation failure if the form does not provide them
             return
 
         # we copy across the contacts if they are necessary.  The contact details are conditionally
         # disabled, so they /may/ be set
-        contact = contacts[0]
         if "contact_name" in self.renderer.disabled_fields:
             self.form.contact_name.data = contact.get("name")
         if "contact_email" in self.renderer.disabled_fields:
@@ -1267,13 +1279,11 @@ class PublisherUpdateRequest(ApplicationContext):
         disable = ["title", "alternative_title", "pissn", "eissn"] # these are always disabled
 
         # contact fields are only disabled if they already have content in source
-        contacts = self.source.contacts()
-        if len(contacts) > 0:
-            c = contacts[0]
-            if c.get("name"):
-                disable.append("contact_name")
-            if c.get("email"):
-                disable += ["contact_email", "confirm_contact_email"]
+        contact = self.source.contact
+        if contact.get("name"):
+            disable.append("contact_name")
+        if contact.get("email"):
+            disable += ["contact_email", "confirm_contact_email"]
 
         self.renderer.set_disabled_fields(disable)
 
@@ -1305,8 +1315,9 @@ class PublisherUpdateRequest(ApplicationContext):
             app.logger.error(magic + "\n" + repr(e))
             raise e
 
+from portality.lib.formulaic import FormProcessor
 
-class PublicApplication(ApplicationContext):
+class PublicApplication(FormProcessor):
     """
     Public Application Form Context.  This is also a sort of demonstrator as to how to implement
     one, so it will do unnecessary things like override methods that don't actually need to be overridden.
@@ -1318,44 +1329,40 @@ class PublicApplication(ApplicationContext):
     by the editors
     """
 
-    def __init__(self, form_data=None, source=None):
-        #  initialise the object through the superclass
-        super(PublicApplication, self).__init__(form_data=form_data, source=source)
-
     ############################################################
-    # PublicApplicationForm versions of FormContext lifecycle functions
+    # PublicApplicationForm versions of FormProcessor lifecycle functions
     ############################################################
 
-    def make_renderer(self):
-        self.renderer = render.PublicApplicationRenderer()
+    def draft(self, account, id=None, *args, **kwargs):
+        # check for validity
+        valid = self.validate()
 
-    def set_template(self):
-        self.template = "formcontext/public_application_form.html"
+        # if not valid, then remove all fields which have validation errors
+        if not valid:
+            for field in self.form:
+                if field.errors:
+                    field.data = field.default
+
+        self.form2target()
+        draft_application = models.DraftApplication(**self.target.data)
+        if id is not None:
+            draft_application.set_id(id)
+        draft_application.set_owner(account.id)
+        draft_application.save()
+        return draft_application
 
     def pre_validate(self):
         # no pre-validation requirements
         pass
 
-    def blank_form(self):
-        self.form = forms.PublicApplicationForm()
-
-    def data2form(self):
-        self.form = forms.PublicApplicationForm(formdata=self.form_data)
-
-    def source2form(self):
-        self.form = forms.PublicApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
-
-    def form2target(self):
-        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
-
     def patch_target(self):
         if self.source is not None:
-            self._carry_fixed_aspects()
-            self._merge_notes_forward()
+            #self._carry_fixed_aspects()
+            #self._merge_notes_forward()
             self.target.set_owner(self.source.owner)
             self.target.set_editor_group(self.source.editor_group)
             self.target.set_editor(self.source.editor)
-            self._carry_continuations()
+            #self._carry_continuations()
 
             # we carry this over for completeness, although it will be overwritten in the finalise() method
             self.target.set_application_status(self.source.application_status)
@@ -1365,11 +1372,12 @@ class PublicApplication(ApplicationContext):
 
         # set some administrative data
         now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        self.target.suggested_on = now
+        self.target.date_applied = now
         self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
 
         # Finally save the target
         self.target.set_last_manual_update()
+        self.target.set_applicant(self.form.applicant_name.data, self.form.applicant_email.data)
         if save_target:
             self.target.save()
 

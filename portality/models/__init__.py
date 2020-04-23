@@ -1,11 +1,17 @@
-from portality.models.bibjson import GenericBibJSON
+# import the versioned objects, so that the current version is the default one
+from portality.models.v2 import shared_structs
+from portality.models.v2.bibjson import JournalLikeBibJSON
+from portality.models.v2.journal import Journal, JournalQuery, IssnQuery, PublisherQuery, TitleQuery, ContinuationException
+from portality.models.v2.application import Application, SuggestionQuery, OwnerStatusQuery, DraftApplication
+
+from portality.models.v2.application import Application as Suggestion
+
+# non versioned imports for convenience and consistency
 from portality.models.lcc import LCC
 from portality.models.account import Account
 from portality.models.editors import EditorGroup, EditorGroupMemberQuery, EditorGroupQuery
 from portality.models.uploads import FileUpload, ExistsFileQuery, OwnerFileQuery, ValidFileQuery
 from portality.models.lock import Lock
-from portality.models.journal import Journal, JournalBibJSON, JournalQuery, IssnQuery, PublisherQuery, TitleQuery, ContinuationException
-from portality.models.suggestion import Suggestion, SuggestionQuery, OwnerStatusQuery
 from portality.models.history import ArticleHistory, JournalHistory
 from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery, NoJournalException
 from portality.models.oaipmh import OAIPMHRecord, OAIPMHJournal, OAIPMHArticle

@@ -1,5 +1,5 @@
-from .journals import JournalFixtureFactory
-from .applications import ApplicationFixtureFactory
+from doajtest.fixtures.v2.journals import JournalFixtureFactory
+from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
 from .editors import EditorGroupFixtureFactory
 from .accounts import AccountFixtureFactory
 from .article import ArticleFixtureFactory
