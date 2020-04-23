@@ -21,7 +21,7 @@
             <div class="title-list__text">
               <figure class="portrait">
                 {% if i.photo %}
-                  <img src="../../img/team/{{ i.photo }}" alt="Portrait of {{ i.name }}" class="portrait__img portrait__img--is-3d"/><br/><br/>
+                  <div class="portrait__bg-img--is-3d" style="background-image: url('../../img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                 {% else %}
                   <div class="portrait__img--is-empty"></div>
                 {% endif %}

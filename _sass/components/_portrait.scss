@@ -12,17 +12,20 @@
 }
 
 .portrait__img--is-empty {
-  height: 220px;
+  height: $spacing-06 * 2;
 }
 
-.portrait__img--is-3d {
+.portrait__bg-img--is-3d {
   position: relative;
+  width:  100%;
+  height: $spacing-06 * 2;
+  background-size: cover;
+  background-position: center;
   border: 1px solid $sanguine;
   top: 0.5em;
   bottom: -0.5em;
   right: -0.5em;
   left: 0.5em;
-  transition: all 90ms ease-in;
   background-color: $sanguine;
   color: $warm-white;
 
@@ -32,12 +35,9 @@
     content: "";
     width: 100%;
     height: 100%;
-    position: absolute;
     top: -0.5em;
     bottom: 0.5em;
     right: 0.5em;
     left: -0.5em;
-    z-index: -5;
-    transition: all 90ms ease-in;
   }
 }
