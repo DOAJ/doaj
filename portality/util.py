@@ -2,6 +2,7 @@ import json
 from functools import wraps
 from flask import request, current_app, flash, make_response
 from urllib.parse import urlparse, urljoin
+from portality.core import app
 
 
 def is_safe_url(target):
@@ -122,3 +123,11 @@ def batch_up(long_list, batch_size):
     # http://stackoverflow.com/a/312464/1154882
     for i in range(0, len(long_list), batch_size):
         yield long_list[i:i + batch_size]
+
+
+def ipt_prefix(type):
+    """ For IPT connections, prepend the index prefix to the type so we connect to the right index-per-type index. """
+    if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+        return app.config['ELASTIC_SEARCH_DB_PREFIX'] + '-' + type
+    else:
+        return type
