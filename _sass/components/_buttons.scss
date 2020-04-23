@@ -2,7 +2,7 @@
 
 input[type="submit"],
 button[type="submit"] {
-  padding: 0.5em $spacing-03;
+  padding: $spacing-02 $spacing-03;
   background-color: $grapefruit;
   border-color: $grapefruit;
   color: $warm-black;

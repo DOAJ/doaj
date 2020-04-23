@@ -16,10 +16,10 @@
   position: relative;
   padding: $spacing-06 $spacing-05;
   border: 1px solid $sanguine;
-  top: 0.5em;
-  bottom: -0.5em;
-  right: -0.5em;
-  left: 0.5em;
+  top: $spacing-02;
+  bottom: -$spacing-02;
+  right: -$spacing-02;
+  left: $spacing-02;
   transition: all 90ms ease-in;
   background-color: $sanguine;
   color: $warm-white;
@@ -31,10 +31,10 @@
     width: 100%;
     height: 100%;
     position: absolute;
-    top: -0.5em;
-    bottom: 0.5em;
-    right: 0.5em;
-    left: -0.5em;
+    top: -$spacing-02;
+    bottom: $spacing-02;
+    right: $spacing-02;
+    left: -$spacing-02;
     z-index: -5;
     transition: all 90ms ease-in;
   }
