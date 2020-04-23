@@ -26,6 +26,8 @@ Ruby is required.
 
 ## Updating static content & data
 
+Each static page is represented by a single `.md` file.
+
 Most of the content of doaj.org’s static pages can be written in Markdown (`.md`) and modified in the following directories (representing a section of the site):
 - `about/`
   - `index.md`: the main About section page (_Mission_, _History_)
@@ -44,18 +46,16 @@ Most of the content of doaj.org’s static pages can be written in Markdown (`.m
   - `widgets.md`
   - `xml.md`
 - `support/`
-  - `index.md`: the main Support section page
+  - `index.md`: the main Support section page (_Support DOAJ_)
   - `publisher-supporters.md`
   - `sponsors.md`
   - `supporters.md`
 
-Each `.md` file represents a single page.
-
 ### Static page contents
 
-Static content is usually longer-form texts.
+Static content is usually long-form, unstructured texts (Data documentation, About...).
 
-Each static page includes YAML front matter which indicates:
+Each static page includes YAML front matter at the top of the document which indicates:
 - `layout`:
   - the layout to be used for that page
   - for now, we only have `sidenav`
@@ -68,9 +68,11 @@ Each static page includes YAML front matter which indicates:
 
 ### Data files
 
-Whenever we have structured content that could be stored in a database (e.g. records of people or organisations with metadata), we use Jekyll’s data files which can be in `CSV`, `YAML`, or `JASON` files and are uploaded in the **`_data/`** directory (not to be confused with the `data/` section).
+Whenever we have structured content that could be stored in a database (e.g. records of people or organisations with metadata), we use Jekyll’s _data files_. 
 
-We are currently using `YAML` (`.yml`).
+Data files can be in `CSV`, `YAML`, or `JSON` and are uploaded in the **`_data/`** directory (not to be confused with the `data/` section).
+
+We are currently using the `YAML` (`.yml`) format, but are not restricted to it.
 
 The following information is represented in data files:
 - _About_ section
@@ -85,3 +87,5 @@ The following information is represented in data files:
   - Supporters: `supporters.yml`
 - Other
   - Promotional snippet (in page sidebar): `promo.yml`
+
+**Make sure** to follow the indentation and line breaks of already-existing records when adding a new line or entry.
