@@ -112,8 +112,9 @@ Advanced tools:
 - [ ] Rename and harmonise base templates (`sidenav`, `data`) 
 - [ ] Add a promo post category so we can target content for specific pages
 - [ ] Finish inputting data in `volunteers.yml`
-- [ ] Add & style bio photos for `team.yml` + `team-ambassadors.md`
+- [x] Add & style bio photos for `team.yml` + `team-ambassadors.md`
 - [ ] Add appropriate Paypal forms for each page of the Support section 
+- [ ] Make menu responsive
 - [ ] Create Footer content pages (legal / admin pages)
 - [ ] Create Thank you pages (application form, Paypal support form) 
 - [ ] Check content for broken or missing links, typos
