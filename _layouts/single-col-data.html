@@ -48,12 +48,16 @@
 
 
         <h2>Ambassadors</h2>
-        <p>Since 2016 DOAJ has been running an Ambassador program that targets regions of the world that benefit from greater awareness of the issues surrounding open access and the importance of best practice and high publishing standards.</p>
-        <p>In 2016 and 2017, DOAJ employed 12 Ambassadors from around the world to do this work with us.</p>
-        <p>The program has since been expanded to include ambassadors from Indonesia (September 2017), Korea (December 2017), North America (2020) and Japan (2020).</p>
+        <div class="row">
+          <div class="col-md-8">
+            <p>Since 2016 DOAJ has been running an Ambassador program that targets regions of the world that benefit from greater awareness of the issues surrounding open access and the importance of best practice and high publishing standards.</p>
+            <p>In 2016 and 2017, DOAJ employed 12 Ambassadors from around the world to do this work with us.</p>
+            <p>The program has since been expanded to include ambassadors from Indonesia (September 2017), Korea (December 2017), North America (2020) and Japan (2020).</p>
+          </div>
+        </div>
         <ul class="row title-list">
           {% for i in site.data.ambassadors %}
-          <li class="col-xs-4 col-md-2">
+          <li class="col-xs-6 col-md-2">
             <div class="title-list__text">
               <p class="label">{{ i.region }}</p>
               <h3 class="title-list__heading">{{ i.name }}</h3>
@@ -73,7 +77,7 @@
           <p>The DOAJ Advisory Board was elected by the community. All board members started in August 2019.</p>
           <ul class="row title-list">
             {% for i in site.data.advisory-board %}
-            <li class="col-xs-4">
+            <li class="col-xs-6 col-md-4">
               <div class="title-list__text">
                 <p class="label">{{ i.country }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
@@ -97,7 +101,7 @@
           <p>The DOAJ Council was elected by the community. All Council members started in September 2019 unless otherwise stated.</p>
           <ul class="row bleed title-list">
             {% for i in site.data.council %}
-            <li class="col-xs-4">
+            <li class="col-xs-6 col-md-4">
               <div class="title-list__text">
                 <p class="label">{{ i.country }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
@@ -123,7 +127,7 @@
           <ul class="row title-list">
             {% for i in site.data.volunteers.ed %}
             {% if i.city %}
-            <li class="col-xs-4">
+            <li class="col-xs-6 col-md-4">
               <div class="title-list__text">
                 <p class="label">{{ i.area }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
@@ -141,7 +145,7 @@
           <ul class="row bleed title-list">
             {% for i in site.data.volunteers.ass_ed %}
             {% if i.city %}
-            <li class="col-xs-4">
+            <li class="col-xs-6 col-md-4">
               <div class="title-list__text">
                 <p class="label">{{ i.area }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
