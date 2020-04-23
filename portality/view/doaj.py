@@ -21,25 +21,6 @@ import os
 
 blueprint = Blueprint('doaj', __name__)
 
-## Put these into their own views
-
-STATIC_PAGES = [
-    ("/one", "one.html"),
-    ("/two", "two.html")
-]
-
-for PAGE in STATIC_PAGES:
-    @blueprint.route(PAGE[0])
-    def some_static_page():
-        render_template("generic_static_page.html", page_frag=PAGE[1])
-
-
-LEGACY = [
-    "/frequently-asked-questions", "/faq"
-]
-
-# as above ...
-
 
 @blueprint.route("/")
 def home():
@@ -482,36 +463,6 @@ def get_site_key():
 # The various static endpoints
 ###############################################################
 
-
-@blueprint.route("/about")
-def about():
-    return render_template('doaj/about.html')
-
-@blueprint.route("/publishers")
-def publishers():
-    return render_template('doaj/publishers.html')
-
-
-@blueprint.route("/faq")
-def faq():
-    return render_template("doaj/faq.html")
-
-
-@blueprint.route("/features")
-def features():
-    return render_template("doaj/features.html")
-
-
-@blueprint.route("/features/oai_doaj/1.0/")
-def doajArticles_oai_namespace_page():
-    return render_template("doaj/doajArticles_oai_namespace.html")
-
-
-@blueprint.route("/oainfo")
-def oainfo():
-    return render_template("doaj/oainfo.html")
-
-
 @blueprint.route("/<cc>/mejorespracticas")
 @blueprint.route("/<cc>/boaspraticas")
 @blueprint.route("/<cc>/bestpractice")
@@ -528,49 +479,9 @@ def bestpractice(cc=None):
     return render_template("doaj/bestpractice.html")
 
 
-@blueprint.route("/members")
-def members():
-    return render_template("doaj/members.html")
-
-
-@blueprint.route("/membership")
-def membership():
-    return render_template("doaj/membership.html")
-
-
-@blueprint.route("/sponsors")
-def sponsors():
-    return render_template("doaj/our_sponsors.html")
-
-
-@blueprint.route("/volunteers")
-def volunteers():
-    return render_template("doaj/volunteers.html")
-
-
-@blueprint.route("/support")
-def support():
-    return render_template("doaj/support.html")
-
-
-@blueprint.route("/publishermembers")
-def publishermembers():
-    return render_template("doaj/publishermembers.html")
-
-
 @blueprint.route("/suggest", methods=['GET'])
 def suggest():
     return redirect(url_for('.suggestion'), code=301)
-
-
-@blueprint.route("/support_thanks")
-def support_doaj_thanks():
-    return render_template("doaj/support_thanks.html")
-
-
-@blueprint.route("/translated")
-def translated():
-    return render_template("doaj/translated.html")
 
 
 @blueprint.route("/googlebdb21861de30fe30.html")
@@ -578,19 +489,39 @@ def google_webmaster_tools():
     return 'google-site-verification: googlebdb21861de30fe30.html'
 
 
-# an informational page about content licensing rights
-@blueprint.route('/rights')
-def rights():
-    return render_template('doaj/rights.html')
+###############################################################
+# static pages refactored
+###############################################################
 
 
-# A page about the SCOSS partnership
-@blueprint.route('/scoss')
-def scoss():
-    return render_template('doaj/scoss.html')
+STATIC_PAGES = [
+    ("/support", "support.html"),
+    ("/sponsors", "our_sponsors.html"),
+    ("/publishers", "publishers.html"),
+    ("/about", "about.html"),
+    ("/faq", "faq.html"),
+    ("/features", "features.html"),
+    ("/features/oai_doaj/1.0/", "doajArticles_oai_namespace.html"),
+    ("/oainfo", "oainfo.html"),
+    ("/members", "members.html"),
+    ("/membership", "membership.html"),
+    ("/volunteers", "volunteers.html"),
+    ("/publishermembers", "publishermembers.html"),
+    ("/support_thanks", "support_thanks.html"),
+    ("/translated", "translated.html"),
+    ('/rights', 'rights.html'),
+    ('/scoss', 'scoss.html'),
+    ('/privacy', 'privacy.html')
+]
 
+for PAGE in STATIC_PAGES:
+    @blueprint.route(PAGE[0])
+    def static_page():
+        render_template("doaj/static_page.html", page_frag=PAGE[1])
 
-# A page about privacy information
-@blueprint.route('/privacy')
-def privacy():
-    return render_template('doaj/privacy.html')
+#
+# LEGACY = [
+#     "/frequently-asked-questions", "/faq"
+# ]
+#
+# # as above ...
