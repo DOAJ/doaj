@@ -96,6 +96,17 @@ The following information is represented in data files:
 
 ---
 
+# Tools for writing in Markdown 
+
+- [Table generator](https://www.tablesgenerator.com/markdown_tables)
+- [Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) 
+
+Advanced tools: 
+- [StackEdit](https://stackedit.io/), an in-browser Markdown editor (might be useful for much longer text and helps with the creation of UML diagrams) 
+- [Typora](https://typora.io/), a downloadable Markdown editor app
+
+---
+
 # TODO
 
 - [ ] Rename and harmonise base templates (`sidenav`, `data`) 
