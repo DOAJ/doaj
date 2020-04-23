@@ -28,7 +28,14 @@ Ruby is required.
 
 Each static page is represented by a single `.md` file.
 
-Most of the content of doaj.org’s static pages can be written in Markdown (`.md`) and modified in the following directories (representing a section of the site):
+Most of the content of doaj.org’s pages can be edited in either Markdown (`.md`) or input into a database-like YAML file (`.yml`). 
+
+### Markdown static pages
+
+Static content is usually long-form, unstructured texts, as seen in the Data documentation and About pages.
+
+This content is found in the following directories (each representing a section of the site):
+
 - `about/`
   - `index.md`: the main About section page (_Mission_, _History_)
   - `advisory-board-council.md`
@@ -51,18 +58,15 @@ Most of the content of doaj.org’s static pages can be written in Markdown (`.m
   - `sponsors.md`
   - `supporters.md`
 
-### Static page contents
+Each static Markdown page includes YAML front matter at the top of the document which indicates:
 
-Static content is usually long-form, unstructured texts (Data documentation, About...).
-
-Each static page includes YAML front matter at the top of the document which indicates:
 - `layout`:
   - the layout to be used for that page
-  - for now, we only have `sidenav`
+  - for now, we only have `sidenav`, `data`, `two-col-data`: **TO BE RENAMED**
 - `title`:
   - the page title displayed in `<h1>` and `<title>` tags
 - `toc` (`true` or `false`):
-  - whether or not we want a table of contents on the side
+  - whether or not we want a table of contents on the side, for in-page navigation
 - `highlight` (`true` or `false`):
   - whether or not the page should start with a highlight section (slightly darker background, as seen in the homepage’s search box)
 
@@ -89,3 +93,19 @@ The following information is represented in data files:
   - Promotional snippet (in page sidebar): `promo.yml`
 
 **Make sure** to follow the indentation and line breaks of already-existing records when adding a new line or entry.
+
+---
+
+# TODO
+
+- [ ] Rename and harmonise base templates (`sidenav`, `data`) 
+- [ ] Add a promo post category so we can target content for specific pages
+- [ ] Finish inputting data in `volunteers.yml`
+- [ ] Add & style bio photos for `team.yml` + `team-ambassadors.md`
+- [ ] Add appropriate Paypal forms for each page of the Support section 
+- [ ] Create Footer content pages (legal / admin pages)
+- [ ] Create Thank you pages (application form, Paypal support form) 
+- [ ] Check content for broken or missing links, typos
+- [ ] Review all content with the team with Hypothesis & update text
+- [ ] Run HTML5 validator on all pages & fix errors 
+- [ ] Run Lighthouse’s automated a11y tests on all pages & fix errors
