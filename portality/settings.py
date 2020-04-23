@@ -77,8 +77,8 @@ ELASTIC_SEARCH_TEST_DB = "doajtest"
 
 # e.g. host:port/type/doc/id
 ELASTIC_SEARCH_INDEX_PER_TYPE = True
-ELASTIC_SEARCH_DB_PREFIX = "doaj"
-ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest"
+ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
+ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "1.7.5"

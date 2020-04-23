@@ -128,6 +128,6 @@ def batch_up(long_list, batch_size):
 def ipt_prefix(type):
     """ For IPT connections, prepend the index prefix to the type so we connect to the right index-per-type index. """
     if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-        return app.config['ELASTIC_SEARCH_DB_PREFIX'] + '-' + type
+        return app.config['ELASTIC_SEARCH_DB_PREFIX'] + type
     else:
         return type
