@@ -6,13 +6,14 @@ highlight: false
 ---
 
 ## Accessibility
-ADD ACCESSIBILITY STATEMENTS HERE
 
-If you disable all Javascript, searchingthe DOAJ won't work properly because some of the code that is required is served by Google's Javascript library hosting. Once disabled, search fails.
+If you disable all Javascript, searching DOAJ won't work properly because some of the code that is required is served by Google's Javascript library hosting. Once disabled, search fails.
 
 If you can select which components can be switched off, then you can continue to use DOAJ.
 
 Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is the framework used to build the DOAJ website. This contains some Javascript for some of its features.
+
+---
 
 ## Contribute
 
@@ -71,6 +72,8 @@ Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is 
 
 Send the information to [feedback@doaj.org](mailto:feedback@doaj.org). If you are familiar with GitHub, you can [create the bug ticket](https://github.com/DOAJ/doaj/issues/new/choose) yourself. Don’t send us your passwords or API keys.
 
+---
+
 ## Metadata
 
 ### How can I get journal metadata from DOAJ?
@@ -111,17 +114,23 @@ DOAJ supports the OAI protocol for metadata harvesting (OAI-PMH). Any OAI compat
 
 We do not yet crawl publisher sites to collect article metadata. Instead, we ask publishers to upload the metadata to us. If a journal in DOAJ has no articles, it is because the metadata hasn't been sent to us.
 
+---
+
 ## Do you have any restrictions on the reuse of your metadata?
 
 The data in DOAJ is currently licensed to you under a [Creative Commons Attribution-ShareAlike License (CC BY-SA)](https://creativecommons.org/licenses/by-sa/4.0/). You should familiarise yourself with [the legal code](https://creativecommons.org/licenses/by-sa/4.0/legalcode) for this license.
 
 The rights of the site-generated metadata in the Atom feed are listed in the feed.
 
+---
+
 ## What code is DOAJ built with?
 
-DOAJ is a Python web app with a JSON document store. The code is open source and can be found in [our GitHub repository](https://github.com/DOAJ/doaj).
+DOAJ is a Python/Flask web app with a JSON document store. The code is open source and can be found in [our GitHub repository](https://github.com/DOAJ/doaj).
 
 DOAJ uses Bootstrap which is the framework used to build the DOAJ website. This contains some Javascript for some of its features.
+
+---
 
 ## Finding content in DOAJ
 
@@ -131,7 +140,7 @@ The subject classifications used to [Browse by subject]() page are structured as
 
 + subjects separated by a full stop (.) are part of the same category. For example: 'Philosophy. Psychology. Religion' is one category.
 + where two subjects are separated by a colon (:), the second subject is a subcategory of the first. For example: 'Philosophy. Psychology. Religion: Philosophy (General)'. This journal has been categorised as General Philosophy.
-+ where subjects are separated by a pipe (|), the second category has no relation to the first. For example: 'Philosophy. Psychology. Religion: Philosophy (General) | Social Sciences: Social sciences (General)' means that this journal has been categorised both as General Philosophy and General Social Sciences.
++ where subjects are separated by a pipe (\|), the second category has no relation to the first. For example: 'Philosophy. Psychology. Religion: Philosophy (General) \| Social Sciences: Social sciences (General)' means that this journal has been categorised both as General Philosophy and General Social Sciences.
 
 ### Searching by keyword
 
