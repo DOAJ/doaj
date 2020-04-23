@@ -2,7 +2,7 @@
 layout: apply
 title: Application form
 toc: true
-highlight: true
+highlight: false
 ---
 
 Read our Guide to applying first. It will help you understand the basic criteria that your journal should meet. If you need help with the application form, please [contact us].
