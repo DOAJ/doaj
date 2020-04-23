@@ -12,9 +12,6 @@ highlight: false
   <option value="es">Español</option>
 </select>
 
-Watch our video series for an introduction to DOAJ and best practice:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLgsj-CNPbicMgBrdzA4jfevecibpl_a1G" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-
 Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them.
 
 ## Basic criteria for inclusion in DOAJ
@@ -53,6 +50,8 @@ Journals included in DOAJ **can** also:
   - academic, governmental, commercial, non-profit, private, and so on.
 
 **Journals do not need to meet the Seal criteria to be accepted into DOAJ.**
+
+You might like to [watch our video series](https://www.youtube.com/embed/videoseries?list=PLgsj-CNPbicMgBrdzA4jfevecibpl_a1G) which introduces DOAJ and gives some context to our criteria and some of the terms we use.
 
 ---
 
