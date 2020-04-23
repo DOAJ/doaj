@@ -27,23 +27,23 @@ Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is 
 4. Become a volunteer
   + From time to time, we put out a call for volunteers. Follow us on [Twitter](https://twitter.com/doajplus) or [our blog](https://blog.doaj.org/) to be alertedfind out when the next call is published.
   
-  ### I have found a broken link. What should I do?
+### I have found a broken link. What should I do?
   
   [Contact us]() with the details. For broken links in articles, include the journal's ISSN, title and the title of the article.
   
-  ### I think that a questionable journal is indexed in DOAJ. What should I do?
+### I think that a questionable journal is indexed in DOAJ. What should I do?
   
   Please [contact us]() with the details, including the ISSN, and we will investigate. Information shared with DOAJ is done so in confidence.
   
-  ### I know a journal which should be in DOAJ but isn’t. What should I do?
+### I know a journal which should be in DOAJ but isn’t. What should I do?
   
   [Submit an application]() or contact the journal and ask them to submit an application to us. You can also send us the details of the journal—title and ISSN—and we will contact them.
   
-  ### The journal I am looking for isn't in DOAJ. Why? What should I do?
+### The journal I am looking for isn't in DOAJ. Why? What should I do?
   
   May be the journal hasn't applied to us or its application is still in progress. It may be that the journal was removed from DOAJ. [Contact us]() to see if the journal has a pending application.
   
-  ### How do I report a bug or ask for technical help?
+### How do I report a bug or ask for technical help?
   
   There is a specific set of information that you need to provide to us. You may not be able to provide the details for all of these but fill in as many as you can:
   
