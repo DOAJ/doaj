@@ -1,6 +1,7 @@
 ---
 layout: sidenav
 title: OpenURL
+section: Documentation
 toc: true
 highlight: false
 ---

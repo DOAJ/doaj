@@ -1,6 +1,7 @@
 ---
 layout: sidenav
 title: Public data dump
+section: Documentation
 toc: true
 highlight: false
 ---

@@ -1,6 +1,7 @@
 ---
 layout: sidenav
 title: FAQs
+section: About
 toc: true
 highlight: false
 ---
@@ -27,32 +28,32 @@ Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is 
   + We are always grateful when our users are our eyes and ears.
 4. Become a volunteer
   + From time to time, we put out a call for volunteers. Follow us on [Twitter](https://twitter.com/doajplus) or [our blog](https://blog.doaj.org/) to be alertedfind out when the next call is published.
-  
+
 ### I have found a broken link. What should I do?
-  
+
   [Contact us]() with the details. For broken links in articles, include the journal's ISSN, title and the title of the article.
-  
+
 ### I think that a questionable journal is indexed in DOAJ. What should I do?
-  
+
   Please [contact us]() with the details, including the ISSN, and we will investigate. Information shared with DOAJ is done so in confidence.
-  
+
 ### I know a journal which should be in DOAJ but isn’t. What should I do?
-  
+
   [Submit an application]() or contact the journal and ask them to submit an application to us. You can also send us the details of the journal—title and ISSN—and we will contact them.
-  
+
 ### The journal I am looking for isn't in DOAJ. Why? What should I do?
-  
+
   May be the journal hasn't applied to us or its application is still in progress. It may be that the journal was removed from DOAJ. [Contact us]() to see if the journal has a pending application.
-  
+
 ### How do I report a bug or ask for technical help?
-  
+
   There is a specific set of information that you need to provide to us. You may not be able to provide the details for all of these but fill in as many as you can:
-  
+
   1. The contact details for the person reporting the bug (or a proxy for them) so that we can request more detail if needed.
     + That might be you or someone working on your behalf.
   2. The user account you are logged in to when the problem occurred.
   3. Tell us which area of the system this happened in. Generally: in the UI/API/OAI; and ideally specifically:
-    + which URL were you on when it happened, or 
+    + which URL were you on when it happened, or
     + which URL were you trying to access?
   4. At what date and time the incident occurred.
     + If it happened several times, then all dates/times that were recorded, or a range.
@@ -65,7 +66,7 @@ Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is 
     + Was the problem repeatable?
     + Did you try several times with the same result?
   7. What environment are you in?
-    + Specifically which browser or, 
+    + Specifically which browser or,
     + If not in the browser, any useful information about your API client such as the user agent.
   8. Send copies of any data you sent to the system.
     + For example, article XML files uploaded, or payloads sent to the API.
@@ -84,7 +85,7 @@ A [search API]() is available. Some functions require an API key. To get your AP
 
 #### Atom feed
 
-We have [an Atom feed](/feed) of journals which is updated every time a new journal is added to DOAJ. 
+We have [an Atom feed](/feed) of journals which is updated every time a new journal is added to DOAJ.
 
 #### Crawling
 
