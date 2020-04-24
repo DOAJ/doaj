@@ -1,0 +1,213 @@
+## TEMPOPRARY FILE for application form fields
+## to be removed once merged with core sit’s dynamic form
+
+login:
+- label: "E-mail address or username"
+  input: email
+  required: true
+
+- label: "Password"
+  input: password
+  required: true
+
+oa_compliance:
+- label: "Does the journal adhere to this definition of open access?"
+  input: radio
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+
+- label: "Link to the journal’s open access statement"
+  input: url
+  required: true
+
+about:
+- label: "Journal title"
+  input: text
+  required: true
+  short_help: "Ma revue"
+
+- label: "Alternative title (includes translation of the title)"
+  input: text
+  required: true
+
+- label: "Link to the journal’s homepage"
+  input: url
+  required: true
+
+- label: "ISSN (print)"
+  input: text
+  required: true
+
+- label: "ISSN (online)"
+  input: text
+  required: true
+
+- label: "Up to 6 subject keywords in English"
+  input: text
+  required: true
+
+- label: "Languages in which the journal accepts manuscripts"
+  input: text
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+copyright_licensing:
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+editorial:
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+business_model:
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+best_practice:
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
+
+- label:
+  input:
+  required: true
