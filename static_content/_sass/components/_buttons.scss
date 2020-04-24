@@ -10,7 +10,8 @@ button[type="submit"] {
 }
 
 button:disabled,
-button[disabled] {
+button[disabled],
+input[disabled] {
   background-color: $fair-pink;
   border-color: $fair-pink;
   color: $dark-grey;
