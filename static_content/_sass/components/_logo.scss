@@ -1,0 +1,16 @@
+/* Logo */
+
+.logo {
+  display: block;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  height: 50px;
+
+  svg {
+    height: 30px;
+  }
+
+  path {
+    fill: $warm-black;
+  }
+}
