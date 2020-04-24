@@ -1,0 +1,36 @@
+/* Tables with large numbers in 1st cell of rows
+   Numbered tables require a first empty cell on each row */
+
+.numbered-table {
+  counter-reset: row-number;
+
+  tbody tr {
+    counter-increment: row-number;
+
+    td {
+      @include typescale-06;
+
+      &:first-child::before {
+        padding-right: $spacing-03;
+        content: counter(row-number);
+        vertical-align: baseline;
+        font-weight: 400;
+        @include typescale-05;
+        @include font-serif;
+      }
+
+      &:nth-child(2) {
+        min-width: 25%;
+      }
+    }
+  }
+}
+
+.numbered-table--labels {
+  td {
+    &:nth-child(2) {
+      @include typescale-05;
+      @include font-serif;
+    }
+  }
+}
