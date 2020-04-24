@@ -497,27 +497,29 @@ def google_webmaster_tools():
 STATIC_PAGES = [
     ("/support", "support.html"),
     ("/sponsors", "our_sponsors.html"),
-    ("/publishers", "publishers.html"),
-    ("/about", "about.html"),
-    ("/faq", "faq.html"),
-    ("/features", "features.html"),
-    ("/features/oai_doaj/1.0/", "doajArticles_oai_namespace.html"),
-    ("/oainfo", "oainfo.html"),
-    ("/members", "members.html"),
-    ("/membership", "membership.html"),
-    ("/volunteers", "volunteers.html"),
-    ("/publishermembers", "publishermembers.html"),
-    ("/support_thanks", "support_thanks.html"),
-    ("/translated", "translated.html"),
-    ('/rights', 'rights.html'),
-    ('/scoss', 'scoss.html'),
-    ('/privacy', 'privacy.html')
+    ("/support/publisher-supporters", "publishers.html"),
+    ("/support/supporters", "about.html"),
+    ("/apply", "faq.html"),
+    ("/apply/seal", "features.html"),
+    ("/apply/transparency", "doajArticles_oai_namespace.html"),
+    ("/apply/why-index", "oainfo.html"),
+    ("/data/api", "members.html"),
+    ("/data/oai-pmh", "membership.html"),
+    ("/data/xml", "volunteers.html"),
+    ("/data/widgets", "publishermembers.html"),
+    ("/data/public-data-dump", "support_thanks.html"),
+    ("/data/openurl", "translated.html"),
+    ('/about', 'rights.html'),
+    ('/about/team-ambassadors', 'scoss.html'),
+    ('/about/advisory-board-council', 'privacy.html'),
+    ('/about/volunteers',),
+    ('/about/faq',)
 ]
 
 for PAGE in STATIC_PAGES:
     @blueprint.route(PAGE[0])
     def static_page():
-        render_template("doaj/static_page.html", page_frag=PAGE[1])
+        render_template("static_page.html", page_frag=PAGE[1])
 
 #
 # LEGACY = [
