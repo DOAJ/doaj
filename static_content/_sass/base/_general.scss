@@ -206,11 +206,11 @@ aside a {
 
 form {
   margin-bottom: $spacing-04;
-}
 
-label {
-  display: block;
-  margin: $spacing-04 0 $spacing-02 0;
+  label, p {
+    display: block;
+    margin: $spacing-03 0;
+  }
 }
 
 input, select, button {
@@ -247,10 +247,16 @@ input[type="radio"] {
   position: absolute;
   clip: rect(0, 0, 0, 0);
 
+  + label {
+    margin: 0 0 $spacing-03 0;
+    line-height: 1;
+    @include typescale-06;
+  }
+
   + label::before {
     content: '\a0';
     display: inline-block;
-    margin: 0.2em 0.5em;
+    margin: 0 $spacing-02 0 0;
     width: 0.8em;
     height: 0.8em;
     line-height: 0.75em;
@@ -267,7 +273,7 @@ input[type="radio"] {
 }
 
 input[type="radio"] + label {
-  margin-right: $spacing-04;
+  margin: 0 $spacing-04 $spacing-02 0;
 
   &::before {
     border-radius: 50%;

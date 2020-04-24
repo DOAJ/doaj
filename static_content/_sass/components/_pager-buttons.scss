@@ -1,6 +1,8 @@
 /* Previous / next buttons on the same line */
 
 .pager-buttons {
+  margin-top: $spacing-05;
+  padding-bottom: $spacing-05;
   width: 100%;
 }
 
