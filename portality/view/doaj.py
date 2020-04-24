@@ -45,12 +45,12 @@ def news():
     return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
 
 
-@blueprint.route("/widgets")
-def widgets():
-    return render_template('doaj/widgets.html',
-                           env=app.config.get("DOAJENV"),
-                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
-                           )
+# @blueprint.route("/widgets")
+# def widgets():
+#     return render_template('doaj/widgets.html',
+#                            env=app.config.get("DOAJENV"),
+#                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+#                           )
 
 @blueprint.route("/ssw_demo")
 def ssw_demo():
@@ -248,18 +248,18 @@ def sitemap():
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
 
 
-@blueprint.route("/public-data-dump")
-def public_data_dump():
-    data_dump = models.Cache.get_public_data_dump()
-    show_article = data_dump.get("article", {}).get("url") is not None
-    article_size = data_dump.get("article", {}).get("size")
-    show_journal = data_dump.get("journal", {}).get("url") is not None
-    journal_size = data_dump.get("journal", {}).get("size")
-    return render_template("doaj/public_data_dump.html",
-                           show_article=show_article,
-                           article_size=article_size,
-                           show_journal=show_journal,
-                           journal_size=journal_size)
+# @blueprint.route("/public-data-dump")
+# def public_data_dump():
+#     data_dump = models.Cache.get_public_data_dump()
+#     show_article = data_dump.get("article", {}).get("url") is not None
+#     article_size = data_dump.get("article", {}).get("size")
+#     show_journal = data_dump.get("journal", {}).get("url") is not None
+#     journal_size = data_dump.get("journal", {}).get("size")
+#     return render_template("doaj/public_data_dump.html",
+#                            show_article=show_article,
+#                            article_size=article_size,
+#                            show_journal=show_journal,
+#                            journal_size=journal_size)
 
 
 @blueprint.route("/public-data-dump/<record_type>")
@@ -494,32 +494,133 @@ def google_webmaster_tools():
 ###############################################################
 
 
-STATIC_PAGES = [
-    ("/support", "support.html"),
-    ("/sponsors", "our_sponsors.html"),
-    ("/support/publisher-supporters", "publishers.html"),
-    ("/support/supporters", "about.html"),
-    ("/apply", "faq.html"),
-    ("/apply/seal", "features.html"),
-    ("/apply/transparency", "doajArticles_oai_namespace.html"),
-    ("/apply/why-index", "oainfo.html"),
-    ("/data/api", "members.html"),
-    ("/data/oai-pmh", "membership.html"),
-    ("/data/xml", "volunteers.html"),
-    ("/data/widgets", "publishermembers.html"),
-    ("/data/public-data-dump", "support_thanks.html"),
-    ("/data/openurl", "translated.html"),
-    ('/about', 'rights.html'),
-    ('/about/team-ambassadors', 'scoss.html'),
-    ('/about/advisory-board-council', 'privacy.html'),
-    ('/about/volunteers',),
-    ('/about/faq',)
-]
+# STATIC_PAGES = [
+#     ("/support", "/fragment-support"),
+#     ("/sponsors", "/fragment-sponsors"),
+#     ("/support/publisher-supporters", "/support/fragment-publisher-supporters"),
+#     ("/support/supporters", "/support/fragment-supporters"),
+#     ("/apply", "/fragment-apply"),
+#     ("/apply/seal", "/apply/fragment-seal"),
+#     ("/apply/transparency", "/apply/fragment-transparency"),
+#     ("/apply/why-index", "/apply/fragment-why-index"),
+#     ("/data/api", "/data/fragment-api"),
+#     ("/data/oai-pmh", "/data/fragment-oai-pmh"),
+#     ("/data/xml", "/data/fragment-xml"),
+#     ("/data/widgets", "/data/fragment-widgets"),
+#     ("/data/public-data-dump", "/data/fragment-public-data-dump"),
+#     ("/data/openurl", "/data/fragment-openurl"),
+#     ('/about', "/fragment-about"),
+#     ('/about/team-ambassadors', '/about/fragment-team-ambassadors'),
+#     ('/about/advisory-board-council', '/about/fragment-advisory-board-council'),
+#     ('/about/volunteers', '/about/fragment-volunteers'),
+#     ('/about/faq', '/about/fragment-faq')
+# ]
+#
+#
+# def static_page(frag):
+#     print(frag)
+#     render_template("static_page.html", page_frag=frag)
+#
+#
+# for PAGE in STATIC_PAGES:
+#     blueprint.add_url_rule(PAGE[0], "static_page", static_page(PAGE[1]))
 
-for PAGE in STATIC_PAGES:
-    @blueprint.route(PAGE[0])
-    def static_page():
-        render_template("static_page.html", page_frag=PAGE[1])
+
+@blueprint.route("/support")
+def support():
+    render_template("static_page.html", page_frag="/fragment-support")
+
+
+@blueprint.route("/sponsors")
+def sponsors():
+    render_template("static_page.html", page_frag="/fragment-sponsors")
+
+
+@blueprint.route("/support/publisher-supporters")
+def publisher_supporters():
+    render_template("static_page.html", page_frag="/support/fragment-publisher-supporters")
+
+
+@blueprint.route("/support/supporters")
+def supporters():
+    render_template("static_page.html", page_frag="/support/fragment-supporters")
+
+
+@blueprint.route("/apply")
+def apply():
+    render_template("static_page.html", page_frag="/fragment-apply")
+
+
+@blueprint.route("/apply/seal")
+def seal():
+    render_template("static_page.html", page_frag="/apply/fragment-seal")
+
+
+@blueprint.route("/apply/transparency")
+def transparency():
+    render_template("static_page.html", page_frag="/apply/fragment-transparency")
+
+
+@blueprint.route("/apply/why-index")
+def why_index():
+    render_template("static_page.html", page_frag="/apply/fragment-why-index")
+
+
+@blueprint.route("/data/api")
+def api():
+    render_template("static_page.html", page_frag="/data/fragment-api")
+
+
+@blueprint.route("/data/oai-pmh")
+def oai_pmh():
+    render_template("static_page.html", page_frag="/data/fragment-oai-pmh")
+
+
+@blueprint.route("/data/xml")
+def xml():
+    render_template("static_page.html", page_frag="/data/fragment-xml")
+
+
+@blueprint.route("/data/widgets")
+def widgets():
+    render_template("static_page.html", page_frag="/data/fragment-widgets")
+
+
+@blueprint.route("/data/public-data-dump")
+def public_data_dump():
+    render_template("static_page.html", page_frag="/data/fragment-public-data-dump")
+
+
+@blueprint.route("/data/openurl")
+def openurl():
+    render_template("static_page.html", page_frag="/data/fragment-openurl")
+
+
+@blueprint.route("/about")
+def about():
+    render_template("static_page.html", page_frag="/fragment-about")
+
+
+@blueprint.route("/about/team-ambassadors")
+def ambassadors():
+    render_template("static_page.html", page_frag="/about/fragment-team-ambassadors")
+
+
+@blueprint.route("/about/advisory-board-council")
+def abc():
+    render_template("static_page.html", page_frag="/about/fragment-advisory-board-council")
+
+
+@blueprint.route("/about/volunteers")
+def volunteers():
+    render_template("static_page.html", page_frag="/about/fragment-volunteers")
+
+
+@blueprint.route("/about/faq'")
+def faq():
+    render_template("static_page.html", page_frag="/about/fragment-faq")
+
+
 
 #
 # LEGACY = [

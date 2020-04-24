@@ -727,13 +727,13 @@ STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 TOC_CHANGEFREQ = "monthly"
 
 STATIC_PAGES = [
-    ("", "monthly"), # home page
+    # ("", "monthly"), # home page
     # ("/search", "daily"),  # taken out since javascript-enabled bots were spidering this, causing enormous load - there should be other ways to present a list of all journals to them if we need to
     ("/toc", "monthly"),
     ("/application/new", "monthly"),
-    ("/about", "monthly"),
+    # ("/about", "monthly"),
     ("/publishers", "monthly"),
-    ("/support", "monthly"),
+    # ("/support", "monthly"),
     ("/contact", "yearly"),
     ("/members", "monthly"),
     ("/membership", "monthly"),
@@ -741,7 +741,7 @@ STATIC_PAGES = [
     ("/faq", "monthly"),
     ("/features", "monthly"),
     ("/oainfo", "monthly"),
-    ("/sponsors", "monthly")
+    # ("/sponsors", "monthly")
 ]
 
 
