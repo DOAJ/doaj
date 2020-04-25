@@ -3,6 +3,7 @@
 
 - label: License(s) permitted by the journal
   id: license
+  subgroup: "Licensing"
   input: checkbox
   required: true
   choices:
@@ -18,6 +19,7 @@
 
 - label: Select all the attributes that your license has
   id: license_attributes
+  subgroup: "Licensing"
   input: checkbox
   required: true
   choices:
@@ -28,11 +30,13 @@
 
 - label: Link to the page where the license terms are stated
   id: license_terms_url
+  subgroup: "Licensing"
   input: url
   required: true
 
 - label: Does the journal embed and/or display licensing information in its articles?
   id: license_display
+  subgroup: "Licensing"
   input: checkbox
   required: true
   choices:
@@ -42,11 +46,13 @@
 
 - label: Link to a recent article displaying or embedding a license in the full text
   id: license_display_example_url
+  subgroup: "Licensing"
   input: url
   required: true
 
 - label: For all the licenses you have indicated above, do authors or their institutions retain the copyright and full publishing rights without restrictions?
   id: copyright_author_retains
+  subgroup: "Copyright"
   input: radio
   required: true
   choices:
@@ -54,6 +60,7 @@
     2: "No"
 
 - label: Link to the journal’s copyright terms
-  input: url
   id: copyright_url
+  subgroup: "Copyright"
+  input: url
   required: true

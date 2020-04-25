@@ -47,11 +47,13 @@
 
 - label: "Name"
   id: publisher-name
+  subgroup: "Publisher"
   input: text
   required: true
 
 - label: "Country"
   id: publisher-country
+  subgroup: "Publisher"
   input: select
   required: true
   choices:
@@ -61,11 +63,13 @@
 
 - label: "Name"
   id: society-name
+  subgroup: "Society or institution, if applicable"
   input: text
   required: true
 
 - label: "Country"
   id: society-country
+  subgroup: "Society or institution, if applicable"
   input: select
   required: true
   choices:
