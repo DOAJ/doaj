@@ -114,7 +114,7 @@ Advanced tools:
 - [ ] Finish inputting data in `volunteers.yml`
 - [x] Add & style bio photos for `team.yml` + `team-ambassadors.md`
 - [ ] Add appropriate Paypal forms for each page of the Support section 
-- [ ] Make menu responsive
+- [x] Make menu responsive
 - [ ] Create Footer content pages (legal / admin pages)
 - [ ] Create Thank you pages (application form, Paypal support form) 
 - [ ] Check content for broken or missing links, typos
