@@ -19,4 +19,12 @@
 
 .form-question {
   margin: $spacing-05 0;
+
+  > p, > label {
+    @include typescale-04;
+  }
+
+  input, select {
+    width: 75%;
+  }
 }

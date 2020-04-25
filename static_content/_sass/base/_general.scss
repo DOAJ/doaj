@@ -69,9 +69,8 @@ h1 sup a:after, h2 sup a:after, h3 sup a:after, h4 sup a:after, h5 sup a:after, 
   color: $sanguine;
 }
 
-p {
-  margin-top: 0;
-  margin-bottom: $spacing-04;
+p, blockquote {
+  margin: 0 0 $spacing-04 0;
 }
 
 ul, ol {
@@ -116,7 +115,6 @@ section aside {
 }
 
 blockquote {
-  margin: $spacing-05 0;
   padding-left: 1.5em;
   border-left: 1px dashed $sanguine;
   font-style: italic;
@@ -268,6 +266,7 @@ input[type="radio"] {
 }
 
 input[type="radio"] + label {
+  display: inline-block;
   margin: 0 $spacing-04 $spacing-02 0;
 
   &::before {
