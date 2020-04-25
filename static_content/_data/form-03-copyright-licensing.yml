@@ -47,8 +47,11 @@
 
 - label: For all the licenses you have indicated above, do authors or their institutions retain the copyright and full publishing rights without restrictions?
   id: copyright_author_retains
-  input: checkbox
+  input: radio
   required: true
+  choices:
+    1: "Yes"
+    2: "No"
 
 - label: Link to the journal’s copyright terms
   input: url

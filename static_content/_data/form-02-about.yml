@@ -5,26 +5,31 @@
   id: title
   input: text
   required: true
+  short_help: "My journal"
 
 - label: "Alternative title (includes translation of the title)"
   id: alternative_title
   input: text
   required: true
+  short_help: "Ma revue"
 
 - label: "Link to the journal’s homepage"
   id: journal_url
   input: url
   required: true
+  short_help: "https://www.my-journal.com"
 
 - label: "ISSN (print)"
   id: pissn
   input: text
   required: true
+  short_help: "2049-3630"
 
 - label: "ISSN (online)"
   id: eissn
   input: text
   required: true
+  short_help: "0378-5955"
 
 - label: "Up to 6 subject keywords in English"
   id: keywords
@@ -33,25 +38,37 @@
 
 - label: "Languages in which the journal accepts manuscripts"
   id: language
+  input: select
+  required: true
+  choices:
+    1: English
+    2: French
+    3: Spanish
+
+- label: "Name"
+  id: publisher-name
   input: text
   required: true
 
-- label:
-  id:
-  input:
+- label: "Country"
+  id: publisher-country
+  input: select
+  required: true
+  choices:
+    1: United Kingdom
+    2: Sweden
+    3: Indonesia
+
+- label: "Name"
+  id: society-name
+  input: text
   required: true
 
-- label:
-  id:
-  input:
+- label: "Country"
+  id: society-country
+  input: select
   required: true
-
-- label:
-  id:
-  input:
-  required: true
-
-- label:
-  id:
-  input:
-  required: true
+  choices:
+    1: United Kingdom
+    2: Sweden
+    3: Indonesia

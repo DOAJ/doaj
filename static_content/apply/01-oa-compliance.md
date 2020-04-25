@@ -7,6 +7,14 @@ previous: index
 next: 02-about
 ---
 
+Your account has been created and you are now logged in. When you submit your application, it will be registered to this account.
+
+Your progress is automatically saved and you can return to this application at any time.
+
+The application form takes approximately 45 minutes to complete.
+
+---
+
 DOAJ adheres to the [BOAI’s definition of open access](https://legacy.earlham.edu/~peters/fos/boaifaq.htm#openaccess).
 
 This means that users are permitted

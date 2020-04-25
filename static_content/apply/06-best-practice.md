@@ -6,3 +6,9 @@ highlight: false
 previous: 05-business-model
 next: 07-review
 ---
+
+The best practices in this section adhere to publishing standards based around findability, preserving the content and ethical publishing practices.
+
+We encourage journals to adopt these best practices as far as possible but they are **not** mandatory for DOAJ indexing.
+
+---
