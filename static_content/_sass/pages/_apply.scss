@@ -8,7 +8,7 @@
 
 @media (min-width: 992px) {
   .application-nav {
-    margin: $spacing-05 0;
+    margin: $spacing-05 0 0 0;
     padding-left: $spacing-04;
     width: 264px; // fixed page element: needs absolute width to avoid overflowing from cols
     border-left: 1px dashed $grapefruit;
