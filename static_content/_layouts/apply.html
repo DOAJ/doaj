@@ -32,7 +32,7 @@
                 <label for="{{ question.id }}">{{ question.label }}</label>
                 <select id="{{ question.id }}">
                   {% for choice in question.choices %}
-                  <option>{{ choice }}</option>
+                  <option id="{{ question.id }}-{{ choice[0] }}">{{ choice[1] }}</option>
                   {% endfor %}
                 </select>
 
