@@ -1,0 +1,46 @@
+## TEMPOPRARY FILE for application form fields
+## to be removed once merged with core sit’s dynamic form
+
+- label: "Does the journal require payment of article processing charges (APCs)?"
+  id: apc
+  input: radio
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+
+- label: "Link to the page where this is stated"
+  id: apc_url
+  input:
+  required: true
+
+- label: "Highest APC charged"
+  id: apc_max
+  input: number
+  required: true
+
+- label: "Does the journal provide APC waivers or discounts for authors?"
+  id: has_waiver
+  input: radio
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+
+- label: "Link to the journal’s waiver information"
+  id: waiver_url
+  input: url
+  required: true
+
+- label: "Does the journal charge any other fees to authors?"
+  id: has_other_charges
+  input: radio
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+
+- label: "Link to the journal’s fees information"
+  id: other_charges_url
+  input: url
+  required: true

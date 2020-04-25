@@ -1,0 +1,56 @@
+## TEMPOPRARY FILE for application form fields
+## to be removed once merged with core sit’s dynamic form
+
+- label: License(s) permitted by the journal
+  id: license
+  input: checkbox
+  required: true
+  choices:
+    1: "CC BY"
+    2: "CC BY-SA"
+    3: "CC BY-ND"
+    4: "CC BY-NC"
+    5: "CC BY-NC-SA"
+    6: "CC BY-NC-ND"
+    7: "CC0"
+    8: "Public domain"
+    9: "Publisher’s own license"
+
+- label: Select all the attributes that your license has
+  id: license_attributes
+  input: checkbox
+  required: true
+  choices:
+    1: "Attribution"
+    2: "Share Alike"
+    3: "No Derivatives"
+    4: "No Commercial Usage"
+
+- label: Link to the page where the license terms are stated
+  id: license_terms_url
+  input: url
+  required: true
+
+- label: Does the journal embed and/or display licensing information in its articles?
+  id: license_display
+  input: checkbox
+  required: true
+  choices:
+    1: "Embed"
+    2: "Display"
+    3: "The journal does not embed or display this information"
+
+- label: Link to a recent article displaying or embedding a license in the full text
+  id: license_display_example_url
+  input: url
+  required: true
+
+- label: For all the licenses you have indicated above, do authors or their institutions retain the copyright and full publishing rights without restrictions?
+  id: copyright_author_retains
+  input: checkbox
+  required: true
+
+- label: Link to the journal’s copyright terms
+  input: url
+  id: copyright_url
+  required: true

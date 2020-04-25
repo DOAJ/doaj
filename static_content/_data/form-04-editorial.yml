@@ -1,0 +1,53 @@
+## TEMPOPRARY FILE for application form fields
+## to be removed once merged with core sit’s dynamic form
+
+- label: "DOAJ only accepts peer-reviewed journals. <br/>Which type(s) of peer review does this journal use?"
+  id: review_process
+  input: checkbox
+  required: true
+  choices:
+    1: "Editorial review"
+    2: "Peer review"
+    3: "Blind peer review"
+    4: "Double blind peer review"
+    5: "Post-publication peer review"
+    6: "Open peer review"
+    7: "Other"
+
+- label: "Link to the journal’s peer review policy"
+  id: review_url
+  input: url
+  required: true
+
+- label: "Does the journal routinely screen article submissions for plagiarism?"
+  id: plagiarism_detection
+  input: radio
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+
+- label: "Link to the journal’s plagiarism policy"
+  id: plagiarism_url
+  input: url
+  required: true
+
+- label: "Link to the journal’s Aims & Scope"
+  id: aims_scope_url
+  input: url
+  required: true
+
+- label: "Link to the journal’s editorial board"
+  id: editorial_board_url
+  input: url
+  required: true
+
+- label: "Link to the journal’s Instructions for Author"
+  id: author_instructions_url
+  input: url
+  required: true
+
+- label: "Average number of weeks between article submission & publication"
+  id: publication_time_weeks
+  input: number
+  required: true

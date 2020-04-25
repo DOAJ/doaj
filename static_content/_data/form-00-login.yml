@@ -1,0 +1,12 @@
+## TEMPOPRARY FILE for application form fields
+## to be removed once merged with core site’s dynamic form
+
+- label: "E-mail address or username"
+  id: email
+  input: email
+  required: true
+
+- label: "Password"
+  id: password
+  input: password
+  required: true

@@ -1,0 +1,15 @@
+## TEMPOPRARY FILE for application form fields
+## to be removed once merged with core sit’s dynamic form
+
+- label: "Does the journal adhere to this definition of open access?"
+  id: boai
+  input: radio
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+
+- label: "Link to the journal’s open access statement"
+  id: oa_statement_url
+  input: url
+  required: true
