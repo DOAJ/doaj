@@ -6,10 +6,30 @@
   width: 100%;
 }
 
+.pager-buttons__left,
+.pager-buttons__right {
+  padding: 0.5em $spacing-03;
+  border: 1px solid;
+  text-decoration: none;
+}
+
 .pager-buttons__left {
   float: left;
+  border-color: $dark-grey;
+  background: $fair-pink;
 }
 
 .pager-buttons__right {
   float: right;
+  border-color: $grapefruit;
+  background: $grapefruit;
+  color: $warm-black;
+
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: $sanguine;
+    background: $sanguine;
+    color: $warm-white;
+  }
 }
