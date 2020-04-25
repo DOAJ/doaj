@@ -1,56 +1,72 @@
 /* Application form page styles */
 
-@media (max-width: 991px) {
-  .application-nav {
-    display: none;
-  }
-}
-
-@media (min-width: 992px) {
-  .application-nav {
-    margin: $spacing-05 0 0 0;
-    padding-left: $spacing-04;
-    width: 264px; // fixed page element: needs absolute width to avoid overflowing from cols
-    border-left: 1px dashed $grapefruit;
-    @include typescale-06;
+#apply {
+  @media (max-width: 991px) {
+    .application-nav {
+      display: none;
+    }
   }
 
-  .application-nav__heading {
-    margin: 0;
-    font-size: 1em;
-    text-transform: uppercase;
-    @include font-sans;
+  @media (min-width: 992px) {
+    .application-nav {
+      margin: $spacing-05 0 0 0;
+      padding-left: $spacing-04;
+      width: 264px; // fixed page element: needs absolute width to avoid overflowing from cols
+      border-left: 1px dashed $grapefruit;
+      @include typescale-06;
+    }
+
+    .application-nav__heading {
+      margin: 0;
+      font-size: 1em;
+      text-transform: uppercase;
+      @include font-sans;
+    }
+
+    .application-nav__list {
+      margin: 0;
+      padding: $spacing-02 0 0 0;
+      list-style: none;
+    }
+
+    .application-nav__list-item a {
+      display: block;
+      padding: $spacing-02 0;
+      text-decoration: none;
+    }
   }
 
-  .application-nav__list {
-    margin: 0;
-    padding: $spacing-02 0 0 0;
-    list-style: none;
+  @media (min-width: 1200px) {
+    .page-nav {
+      width: 330px;
+    }
   }
 
-  .application-nav__list-item a {
-    display: block;
-    padding: $spacing-02 0;
-    text-decoration: none;
-  }
-}
-
-@media (min-width: 1200px) {
-  .page-nav {
-    width: 330px;
-  }
-}
-
-
-.form-question {
-  margin: $spacing-05 0;
-
-  > p, > label {
-    margin-bottom: $spacing-04;
-    @include typescale-04;
+  .form-header {
+    padding-bottom: $spacing-03;
+    border-bottom: 1px solid rgba($dark-grey, 0.5);
   }
 
-  input, select {
-    width: 75%;
+
+  .form-question {
+    margin: $spacing-05 0;
+
+    p, label {
+      margin-bottom: $spacing-04;
+      @include typescale-04;
+    }
+
+    input, select {
+      width: 75%;
+    }
+
+    input[type="checkbox"] + label,
+    input[type="radio"] + label {
+      font-size: 1rem;
+    }
+  }
+
+  hr {
+    background-color: $grapefruit;
   }
 }
