@@ -5,11 +5,13 @@ toc: true
 highlight: false
 ---
 
-Read our Guide to applying first. It will help you understand the basic criteria that your journal should meet. If you need help with the application form, please [contact us].
+Read our [Guide to applying](guide) first. It will help you understand the basic criteria that your journal should meet. If you need help with the application form, please [contact us](../contact).
 
 Please log in to your account before you submit your application.
 
-Don’t have an account? [Register here].
+Don’t have an account? [Register here](../register).
+
+---
 
 ## Log in to your account
 
