@@ -185,12 +185,6 @@ table {
   }
 }
 
-/* Main */
-
-main > section:first-of-type {
-  padding-top: $spacing-05;
-}
-
 /* Aside */
 
 aside {
@@ -250,6 +244,7 @@ input[type="radio"] {
   + label {
     margin: 0 0 $spacing-03 0;
     line-height: 1;
+    color: $dark-grey;
     @include typescale-06;
   }
 
