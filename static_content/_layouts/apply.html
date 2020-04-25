@@ -19,6 +19,14 @@
               {% assign form_page = page.name | prepend: "form-" | remove: ".md" %}
 
               {% for question in site.data[form_page] %}
+
+              {% assign prev = forloop.index0 | minus: 1 %}
+              {% assign prev_q_subgroup = site.data[form_page][prev].subgroup %}
+
+              {% if question.subgroup and question.subgroup != prev_q_subgroup  %}
+              <h2 class="form-header">{{ question.subgroup }}</h2>
+              {% endif %}
+
               <div class="form-question">
 
                 {% if question.input == 'radio' or question.input == 'checkbox' %}
@@ -68,25 +76,25 @@
               <h2 class="application-nav__heading">Application progress</h2>
               <ol class="application-nav__list">
                 <li class="application-nav__list-item">
-                  <a href="">Open access compliance</a>
+                  <a href="{{ site.baseurl }}{% link apply/01-oa-compliance.md %}">Open access compliance</a>
                 </li>
                 <li class="application-nav__list-item">
-                  <a href="">About</a>
+                  <a href="{{ site.baseurl }}{% link apply/02-about.md %}">About</a>
                 </li>
                 <li class="application-nav__list-item">
-                  <a href="">Copyright & licensing</a>
+                  <a href="{{ site.baseurl }}{% link apply/03-copyright-licensing.md %}">Copyright & licensing</a>
                 </li>
                 <li class="application-nav__list-item">
-                  <a href="">Editorial</a>
+                  <a href="{{ site.baseurl }}{% link apply/04-editorial.md %}">Editorial</a>
                 </li>
                 <li class="application-nav__list-item">
-                  <a href="">Business model</a>
+                  <a href="{{ site.baseurl }}{% link apply/05-business-model.md %}">Business model</a>
                 </li>
                 <li class="application-nav__list-item">
-                  <a href="">Best practice</a>
+                  <a href="{{ site.baseurl }}{% link apply/06-best-practice.md %}">Best practice</a>
                 </li>
                 <li class="application-nav__list-item">
-                  <a href="">Review your answers</a>
+                  <a href="{{ site.baseurl }}{% link apply/07-review.md %}">Review your answers</a>
                 </li>
               </ol>
             </nav>
@@ -95,16 +103,16 @@
               <h2>Related help</h2>
               <ul class="full-width-list">
                 <li class="full-width-list__item">
-                  <a href="">Guide to applying</a>
+                  <a href="{{ site.baseurl }}{% link apply/guide.md %}">Guide to applying</a>
                 </li>
                 <li class="full-width-list__item">
-                  <a href="">The DOAJ Seal</a>
+                  <a href="{{ site.baseurl }}{% link apply/seal.md %}">The DOAJ Seal</a>
                 </li>
                 <li class="full-width-list__item">
-                  <a href="">Transparency & best practice</a>
+                  <a href="{{ site.baseurl }}{% link apply/transparency.md %}">Transparency & best practice</a>
                 </li>
                 <li class="full-width-list__item">
-                  <a href="">Why index your journal in DOAJ?</a>
+                  <a href="{{ site.baseurl }}{% link apply/why-index.md %}">Why index your journal in DOAJ?</a>
                 </li>
               </ul>
             </aside>
