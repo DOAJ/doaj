@@ -10,23 +10,64 @@
       <div class="row">
 
         <div class="col-md-8">
-           <section class="page-content">
+          <section class="page-content">
             <h1>{{ page.title }}</h1>
 
             {{ content }}
 
-            <a href="" class="button secondary-button">Previous</a>
-            <a href="{{ form-01-oa-compliance }}" class="button secondary-button">Next</a>
+            <form>
+              {% assign form_page = page.name | prepend: "form-" | remove: ".md" %}
+
+              {% for question in site.data[form_page] %}
+              <div class="form-question">
+
+                {% if question.input == 'radio' or question.input == 'checkbox' %}
+                <p>{{ question.label }}</p>
+                {% for choice in question.choices %}
+                <input id="{{ question.id }}-{{ choice[0] }}" type="{{ question.input }}" name="{{ question.id }}"/>
+                <label for="{{ question.id }}-{{ choice[0] }}">{{ choice[1] }}</label>
+                {% endfor %}
+
+                {% elsif question.input == 'select' %}
+                <label for="{{ question.id }}">{{ question.label }}</label>
+                <select id="{{ question.id }}">
+                  {% for choice in question.choices %}
+                  <option>{{ choice }}</option>
+                  {% endfor %}
+                </select>
+
+                {% elsif question.input == 'textarea' %}
+                <label for="{{ question.id }}">{{ question.label }}</label>
+                <textarea id="{{ question.id }}"></textarea>
+
+                {% else %}
+                <label for="{{ question.id }}">{{ question.label }}</label>
+                <input id="{{ question.id }}" type="{{ question.input }}" {% if question.short_help %}placeholder="{{ question.short_help }}"{% endif %}/>
+                {% endif %}
+
+              </div>
+              {% endfor %}
+
+              <p class="pager-buttons">
+                {% if page.previous %}
+                <a href="../{{ page.previous }}" class="pager-buttons__left">Previous</a>
+                {% endif %}
+
+                {% if page.next %}
+                <a href="../{{ page.next }}" class="pager-buttons__right">Next</a>
+                {% endif %}
+              </p>
+            </form>
 
           </section>
         </div>
+      </div>
 
         <div class="col-md-4">
           <nav class="page-nav" data-spy="affix">
             <h2 class="page-nav__heading">Application progress:</h2>
           </nav>
         </div>
-
       </div>
     </main>
 
