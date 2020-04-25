@@ -50,7 +50,7 @@
   input: url
   required: true
 
-- label: For all the licenses you have indicated above, do authors or their institutions retain the copyright and full publishing rights without restrictions?
+- label: For all the licenses you have indicated above, do authors or their institutions retain the copyright <strong>and</strong> full publishing rights without restrictions?
   id: copyright_author_retains
   subgroup: "Copyright"
   input: radio

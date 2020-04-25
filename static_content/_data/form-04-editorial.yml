@@ -3,6 +3,7 @@
 
 - label: "DOAJ only accepts peer-reviewed journals. <br/>Which type(s) of peer review does this journal use?"
   id: review_process
+  subgroup: "Peer review"
   input: checkbox
   required: true
   choices:
@@ -16,11 +17,13 @@
 
 - label: "Link to the journal’s peer review policy"
   id: review_url
+  subgroup: "Peer review"
   input: url
   required: true
 
 - label: "Does the journal routinely screen article submissions for plagiarism?"
   id: plagiarism_detection
+  subgroup: "Peer review"
   input: radio
   required: true
   choices:
@@ -29,25 +32,30 @@
 
 - label: "Link to the journal’s plagiarism policy"
   id: plagiarism_url
+  subgroup: "Peer review"
   input: url
   required: true
 
 - label: "Link to the journal’s Aims & Scope"
   id: aims_scope_url
+  subgroup: "Editorial information"
   input: url
   required: true
 
 - label: "Link to the journal’s editorial board"
   id: editorial_board_url
+  subgroup: "Editorial information"
   input: url
   required: true
 
 - label: "Link to the journal’s Instructions for Author"
   id: author_instructions_url
+  subgroup: "Editorial information"
   input: url
   required: true
 
 - label: "Average number of weeks between article submission & publication"
   id: publication_time_weeks
+  subgroup: "Editorial information"
   input: number
   required: true

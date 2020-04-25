@@ -3,6 +3,7 @@
 
 - label: "Long-term preservation service(s) with which the journal is currently archived"
   id: preservation_service
+  subgroup: "Archiving policy"
   input: checkbox
   required: true
   choices:
@@ -19,11 +20,13 @@
 
 - label: "Link to the preservation and archiving information on the journal’s site"
   id: preservation_url
+  subgroup: "Archiving policy"
   input: url
   required: true
 
 - label: "Where is the journal’s policy allowing authors to deposit the AAM or VOR registered?"
   id: deposit_registration
+  subgroup: "Repository policy"
   input: checkbox
   required: true
   choices:
@@ -37,11 +40,13 @@
 
 - label: "Link to the policy on the journal’s site"
   id: deposit_url
+  subgroup: "Repository policy"
   input: url
   required: true
 
 - label: "Persistent article identifiers used by the journal"
   id: persistent_id
+  subgroup: "Unique identifiers & structured data"
   input: checkbox
   required: true
   choices:
@@ -54,6 +59,7 @@
 
 - label: "Does the journal allow for ORCID iDs to be present in article metadata?"
   id: orcid_id
+  subgroup: "Unique identifiers & structured data"
   input: radio
   required: true
   choices:
@@ -62,6 +68,7 @@
 
 - label: "Does the journal comply with I4OC standards for open citations?"
   id: i4oc
+  subgroup: "Unique identifiers & structured data"
   input: radio
   required: true
   choices:
