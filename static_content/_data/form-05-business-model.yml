@@ -4,6 +4,7 @@
 - label: "Does the journal require payment of article processing charges (APCs)?"
   id: apc
   input: radio
+  subgroup: "Article processing charges"
   required: true
   choices:
     1: "Yes"
@@ -11,17 +12,20 @@
 
 - label: "Link to the page where this is stated"
   id: apc_url
-  input:
+  input: url
+  subgroup: "Article processing charges"
   required: true
 
 - label: "Highest APC charged"
   id: apc_max
   input: number
+  subgroup: "Article processing charges"
   required: true
 
 - label: "Does the journal provide APC waivers or discounts for authors?"
   id: has_waiver
   input: radio
+  subgroup: "Waivers"
   required: true
   choices:
     1: "Yes"
@@ -30,11 +34,13 @@
 - label: "Link to the journal’s waiver information"
   id: waiver_url
   input: url
+  subgroup: "Waivers"
   required: true
 
 - label: "Does the journal charge any other fees to authors?"
   id: has_other_charges
   input: radio
+  subgroup: "Other fees"
   required: true
   choices:
     1: "Yes"
@@ -42,5 +48,6 @@
 
 - label: "Link to the journal’s fees information"
   id: other_charges_url
+  subgroup: "Other fees"
   input: url
   required: true
