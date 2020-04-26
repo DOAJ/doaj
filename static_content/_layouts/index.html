@@ -83,20 +83,20 @@
             <h2 class="sr-only">About</h2>
             <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.</p>
             <p>All DOAJ services are free of charge including being indexed. All data is freely available.</p>
-            <p><a href="apply/why-index">Why index your journal in DOAJ?</a></p>
+            <p><a href="{{ site.baseurl }}{% link apply/why-index.md %}">Why index your journal in DOAJ?</a></p>
           </div>
 
           <aside class="col-sm-6">
             <p>
               DOAJ is independent. All funding is via donations, 22% of which comes from sponsors and 78% from supporters.
             </p>
-            <a href="" class="button primary-button">Support DOAJ</a>
+            <a href="{{ site.baseurl }}{% link support/index.md %}" class="button primary-button">Support DOAJ</a>
             <p>
               Journal publishers don’t need to donate to be part of DOAJ.
             </p>
             <p>
-              <a href="" class="button secondary-button">Apply now</a>
-              <br><a href="apply/guide/">How to apply</a>
+              <a href="{{ site.baseurl }}{% link apply/index.md %}" class="button secondary-button">Apply now</a>
+              <br><a href="{{ site.baseurl }}{% link apply/guide.md %}">How to apply</a>
             </p>
           </aside>
         </div>
@@ -104,7 +104,7 @@
 
       <!-- Blog -->
       <section class="container">
-        <h2>From the blog <sup><a href="">See all</a></sup></h2>
+        <h2>From the blog <sup><a href="https://blog.doaj.org">See all</a></sup></h2>
         <div class="row">
           <div class="col-sm-6">
             <article class="blog-post blog-post--featured">
@@ -175,7 +175,7 @@
                 <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
               </div>
               <div class="col-sm-4">
-                <p class="intro__cta"><a href="about/volunteers/" class="button primary-button">See all</a></p>
+                <p class="intro__cta"><a href="{{ site.baseurl }}{% link about/volunteers.md %}" class="button primary-button">See all</a></p>
               </div>
             </div>
             <div class="row mobile-scrollable-row volunteers">
@@ -236,7 +236,7 @@
                 <p>The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.</p>
               </div>
               <div class="col-sm-4">
-                <p class="intro__cta"><a href="support/sponsors/" class="button primary-button">Learn more</a></p>
+                <p class="intro__cta"><a href="{{ site.baseurl }}{% link support/sponsors.md %}" class="button primary-button">Learn more</a></p>
               </div>
             </div>
 
@@ -257,12 +257,12 @@
                 <p>Some organisations and publishers support DOAJ with either a one-off payment or an annual payment.</p>
               </div>
               <div class="col-sm-4">
-                <p class="intro__cta"><a href="support/" class="button primary-button">Support us</a></p>
+                <p class="intro__cta"><a href="{{ site.baseurl }}{% link support/index.md %}" class="button primary-button">Support us</a></p>
               </div>
             </div>
             <ul class="row title-list">
               <li class="col-sm-6">
-                <a class="title-list__link title-list__link--is-highlighted">
+                <a href="{{ site.baseurl }}{% link support/supporters.md %}" class="title-list__link title-list__link--is-highlighted">
                   <h4 class="title-list__heading">Supporters</h4>
                   <p>DOAJ Membership is recommended for those who can support us with a long-term annual fixed contribution.</p>
                   <p>Learn more</p>
@@ -270,7 +270,7 @@
               </li>
 
               <li class="col-sm-6">
-                <a class="title-list__link title-list__link--is-highlighted">
+                <a href="{{ site.baseurl }}{% link support/publisher-supporters.md %}" class="title-list__link title-list__link--is-highlighted">
                   <h4 class="title-list__heading">Publisher supporters</h4>
                   <p>If you publish or own an Open Access journal, you may prefer to become a Publisher Supporter with DOAJ.</p>
                   <p>Learn more</p>
