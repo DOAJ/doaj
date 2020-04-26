@@ -11,7 +11,7 @@
 
         <div class="col-md-8">
           <section class="page-content">
-            <p class="label">Page {{ page.number }} of 7</p>
+            {% if page.name != "index.md" %}<p class="label">Page {{ page.number }} of 7</p>{% endif %}
             <h1>{{ page.title }}</h1>
 
             {{ content }}
@@ -25,10 +25,10 @@
               {% assign prev_q_subgroup = site.data[form_page][prev].subgroup %}
 
               {% if question.subgroup and question.subgroup != prev_q_subgroup  %}
-              <h2 class="form-header">{{ question.subgroup }}</h2>
+              <h2 class="form__header">{{ question.subgroup }}</h2>
               {% endif %}
 
-              <div class="form-question">
+              <div class="form__question">
 
                 {% if question.input == 'radio' or question.input == 'checkbox' %}
                 <p>{{ question.label }}</p>
@@ -51,7 +51,7 @@
 
                 {% else %}
                 <label for="{{ question.id }}">{{ question.label }}</label>
-                <input id="{{ question.id }}" type="{{ question.input }}" {% if question.short_help %}placeholder="{{ question.short_help }}"{% endif %}/>
+                <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}/>
                 {% endif %}
 
               </div>

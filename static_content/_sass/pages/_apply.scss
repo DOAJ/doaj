@@ -97,30 +97,6 @@
     }
   }
 
-  .form-header {
-    padding-bottom: $spacing-03;
-    border-bottom: 1px solid rgba($dark-grey, 0.5);
-
-  }
-
-  .form-question {
-    margin: $spacing-05 0;
-
-    p, label {
-      margin-bottom: $spacing-04;
-      @include typescale-04;
-    }
-
-    input, select {
-      width: 75%;
-    }
-
-    input[type="checkbox"] + label,
-    input[type="radio"] + label {
-      font-size: 1rem;
-    }
-  }
-
   hr {
     background-color: $grapefruit;
   }

@@ -1,0 +1,26 @@
+/* General form styles
+   Question = groups paragraph text, label, input for a single question */
+
+.form__header {
+ padding-bottom: $spacing-03;
+ border-bottom: 1px solid rgba($dark-grey, 0.5);
+
+}
+
+.form__question {
+ margin: $spacing-05 0;
+
+ p, label {
+   margin-bottom: $spacing-04;
+   @include typescale-04;
+ }
+
+ input, select {
+   width: 75%;
+ }
+
+ input[type="checkbox"] + label,
+ input[type="radio"] + label {
+   font-size: 1rem;
+ }
+}
