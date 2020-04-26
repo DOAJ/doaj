@@ -40,6 +40,7 @@
   input: url
   subgroup: "Waivers"
   required: true
+  placeholder: "https://www.my-journal.com/about#waiver"
 
 - label: "Does the journal charge any other fees to authors?"
   id: has_other_charges
@@ -57,3 +58,4 @@
   subgroup: "Other fees"
   input: url
   required: true
+  placeholder: "https://www.my-journal.com/about#fees"

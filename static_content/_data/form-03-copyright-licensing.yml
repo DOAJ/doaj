@@ -35,6 +35,7 @@
   subgroup: "Licensing"
   input: url
   required: true
+  placeholder: "https://www.my-journal.com/about#licensing"
 
 - label: Does the journal embed and/or display licensing information in its articles?
   id: license_display
@@ -68,3 +69,4 @@
   subgroup: "Copyright"
   input: url
   required: true
+  placeholder: "https://www.my-journal.com/about#copyright"

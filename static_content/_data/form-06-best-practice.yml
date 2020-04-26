@@ -26,6 +26,7 @@
   subgroup: "Archiving policy"
   input: url
   required: true
+  placeholder: "https://www.my-journal.com/about#archiving"
 
 - label: "Where is the journal’s policy allowing authors to deposit the AAM or VOR registered?"
   id: deposit_registration
@@ -49,6 +50,7 @@
   subgroup: "Repository policy"
   input: url
   required: true
+  placeholder: "https://www.my-journal.com/about#repository-policy"
 
 - label: "Persistent article identifiers used by the journal"
   id: persistent_id

@@ -21,6 +21,7 @@
   subgroup: "Peer review"
   input: url
   required: true
+  placeholder: "https://www.my-journal.com/about#peer-review"
 
 - label: "Does the journal routinely screen article submissions for plagiarism?"
   id: plagiarism_detection
@@ -37,24 +38,28 @@
   id: plagiarism_urls
   input: url
   required: true
+  placeholder: "https://www.my-journal.com/about#plagiarism"
 
 - label: "Link to the journal’s <strong>Aims & Scope</strong>"
   id: aims_scope_url
   subgroup: "Editorial information"
   input: url
   required: true
+  placeholder: "https://www.my-journal.com/about#aims"
 
 - label: "Link to the journal’s <strong>editorial board</strong>"
   id: editorial_board_url
   subgroup: "Editorial information"
   input: url
   required: true
+  placeholder: "https://www.my-journal.com/about#board"
 
 - label: "Link to the journal’s <strong>Instructions for Author</strong>"
   id: author_instructions_url
   subgroup: "Editorial information"
   input: url
   required: true
+  placeholder: "https://www.my-journal.com/for-authors"
 
 - label: "Average number of weeks between article submission & publication"
   id: publication_time_weeks
