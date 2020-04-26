@@ -7,7 +7,6 @@
 .highlight--is-aside {
   margin: $spacing-05 0 0 0;
   padding: $spacing-03;
-  width: 264px; // fixed page element: needs absolute width to avoid overflowing from cols
 
   h2, h3, h4 {
     margin: 0 0 $spacing-03 0;
@@ -17,9 +16,5 @@
 
   ul, ol {
     margin: 0;
-  }
-
-  @media (min-width: 1200px) {
-    width: 330px;
   }
 }
