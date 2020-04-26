@@ -33,7 +33,9 @@
                 {% if question.input == 'radio' or question.input == 'checkbox' %}
                 <p>
                   {{ question.label }}
-                  {% if question.long_help %}<span data-feather="help-circle"></span>{% endif %}
+                  {% if question.long_help %}
+                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
+                  {% endif %}
                 </p>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% for choice in question.choices %}
@@ -44,7 +46,9 @@
                 {% elsif question.input == 'select' %}
                 <label for="{{ question.id }}">
                   {{ question.label }}
-                  {% if question.long_help %}<span data-feather="help-circle"></span>{% endif %}
+                  {% if question.long_help %}
+                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
+                  {% endif %}
                 </label>
                 <select id="{{ question.id }}">
                   {% for choice in question.choices %}
@@ -56,7 +60,9 @@
                 {% elsif question.input == 'textarea' %}
                 <label for="{{ question.id }}">
                   {{ question.label }}
-                  {% if question.long_help %}<span data-feather="help-circle"></span>{% endif %}
+                  {% if question.long_help %}
+                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
+                  {% endif %}
                 </label>
                 <textarea id="{{ question.id }}"></textarea>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
@@ -64,13 +70,29 @@
                 {% else %}
                 <label for="{{ question.id }}">
                   {{ question.label }}
-                  {% if question.long_help %}<span data-feather="help-circle"></span>{% endif %}
+                  {% if question.long_help %}
+                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
+                  {% endif %}
                 </label>
                 <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}/>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% endif %}
 
               </div>
+
+              {% if question.long_help %}
+              <!-- Long help in modal -->
+              <div class="modal" id="modal-{{ question.id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel-{{ question.id }}">
+                <div class="modal__dialog" role="document">
+                  <h3 class="modal__title" id="modalLabel-{{ question.id }}">
+                    {{ question.label }}
+                  </h3>
+                  {{ question.long_help }}
+                  <button type="button" data-dismiss="modal" class="modal__close">Close</button>
+                </div>
+              </div>
+              {% endif %}
+
               {% endfor %}
 
               <p class="pager-buttons">
@@ -83,6 +105,8 @@
                 {% endif %}
               </p>
             </form>
+
+
 
           </section>
         </div>

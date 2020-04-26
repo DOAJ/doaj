@@ -542,7 +542,7 @@ if (typeof jQuery === 'undefined') {
     this.options = options
     this.$body = $(document.body)
     this.$element = $(element)
-    this.$dialog = this.$element.find('.modal-dialog')
+    this.$dialog = this.$element.find('.modal__dialog')
     this.$backdrop = null
     this.isShown = null
     this.originalBodyPad = null
@@ -716,7 +716,7 @@ if (typeof jQuery === 'undefined') {
       var doAnimate = $.support.transition && animate
 
       this.$backdrop = $(document.createElement('div'))
-        .addClass('modal-backdrop ' + animate)
+        .addClass('modal__backdrop ' + animate)
         .appendTo(this.$body)
 
       this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
