@@ -33,9 +33,9 @@
 
       &:before {
         content: ' ';
-        border-left: 1px solid rgba($dark-grey, 0.25);
+        border-left: 1px solid $dark-grey;
         position: absolute;
-        height: 40px;
+        height: 60px;
         margin-left: 17px;
         margin-top: 13px;
         z-index: -10;
@@ -47,16 +47,17 @@
 
       a {
         display: block;
-        padding: $spacing-02 $spacing-01;
+        padding: $spacing-03 $spacing-01;
         text-decoration: none;
 
         &:before {
           display: inline-block;
+          margin-right: $spacing-01;
           content:  counter(step);
           background: $fair-pink;
           width: 30px;
           height: 30px;
-          border: 1px solid rgba($dark-grey, 0.25);
+          border: 1px solid rgba($dark-grey, 0.5);
           border-radius: 50%;
           line-height: 30px;
           text-align: center;
@@ -82,6 +83,10 @@
         background: $grapefruit;
         color: $warm-black;
         border-color: $grapefruit;
+      }
+
+      &:before, ~ li:before {
+        border: 1px dashed rgba($dark-grey, 0.25);
       }
     }
   }
