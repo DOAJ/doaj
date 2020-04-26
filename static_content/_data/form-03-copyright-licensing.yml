@@ -28,7 +28,8 @@
     3: "No Derivatives"
     4: "No Commercial Usage"
 
-- label: Link to the page where the license terms are stated
+- label: Where can we find this information?
+  short_help: "Link to the page where the license terms are stated"
   id: license_terms_url
   subgroup: "Licensing"
   input: url
@@ -36,7 +37,7 @@
 
 - label: Does the journal embed and/or display licensing information in its articles?
   id: license_display
-  subgroup: "Licensing"
+  subgroup: "Embedded licenses"
   input: checkbox
   required: true
   choices:
@@ -46,7 +47,7 @@
 
 - label: Link to a recent article displaying or embedding a license in the full text
   id: license_display_example_url
-  subgroup: "Licensing"
+  subgroup: "Embedded licenses"
   input: url
   required: true
 
@@ -59,7 +60,8 @@
     1: "Yes"
     2: "No"
 
-- label: Link to the journal’s copyright terms
+- label: Where can we find this information?
+  short_help: "Link to the journal’s copyright terms"
   id: copyright_url
   subgroup: "Copyright"
   input: url

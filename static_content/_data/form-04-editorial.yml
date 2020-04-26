@@ -15,7 +15,8 @@
     6: "Open peer review"
     7: "Other"
 
-- label: "Link to the journal’s peer review policy"
+- label: "Where can we find this information?"
+  short_help: "Link to the journal’s peer review policy"
   id: review_url
   subgroup: "Peer review"
   input: url
@@ -23,16 +24,17 @@
 
 - label: "Does the journal routinely screen article submissions for plagiarism?"
   id: plagiarism_detection
-  subgroup: "Peer review"
+  subgroup: Plagiarism
   input: radio
   required: true
   choices:
     1: "Yes"
     2: "No"
 
-- label: "Link to the journal’s plagiarism policy"
-  id: plagiarism_url
-  subgroup: "Peer review"
+- label: "Where can we find this information?"
+  short_help: "Link to the journal’s plagiarism policy"
+  subgroup: Plagiarism
+  id: plagiarism_urls
   input: url
   required: true
 

@@ -11,6 +11,7 @@
     2: "No"
 
 - label: "Link to the page where this is stated"
+  short_help: "The page must declare whether or not APCs are charged"
   id: apc_url
   input: url
   subgroup: "Article processing charges"

@@ -3,6 +3,7 @@
 
 - label: "Long-term preservation service(s) with which the journal is currently archived"
   id: preservation_service
+  short_help: "Select at least one:"
   subgroup: "Archiving policy"
   input: checkbox
   required: true
@@ -26,6 +27,7 @@
 
 - label: "Where is the journal’s policy allowing authors to deposit the AAM or VOR registered?"
   id: deposit_registration
+  short_help: "Select at least one:"
   subgroup: "Repository policy"
   input: checkbox
   required: true
@@ -46,6 +48,7 @@
 
 - label: "Persistent article identifiers used by the journal"
   id: persistent_id
+  short_help: "Select at least one:"
   subgroup: "Unique identifiers & structured data"
   input: checkbox
   required: true
