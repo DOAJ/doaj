@@ -71,34 +71,76 @@
         </div>
 
         <div class="col-md-4">
-          <div data-spy="affix">
+          <div>
+            {% assign step1 = '01-oa-compliance.md' %}
+            {% assign step2 = '02-about.md' %}
+            {% assign step3 = '03-copyright-licensing.md' %}
+            {% assign step4 = '04-editorial.md' %}
+            {% assign step5 = '05-business-model.md' %}
+            {% assign step6 = '06-best-practice.md' %}
+            {% assign step7 = '07-review.md' %}
+
+            {% if page.name != "index.md" %}
             <nav class="application-nav">
               <h2 class="application-nav__heading">Application progress</h2>
               <ol class="application-nav__list">
-                <li class="application-nav__list-item">
-                  <a href="{{ site.baseurl }}{% link apply/01-oa-compliance.md %}">Open access compliance</a>
+                <li class="application-nav__list-item
+                  {% if page.name == step1 %} application-nav__list-item--active
+                  {% elsif page.name == step2 or page.name == step3 or page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% endif %}">
+                  <a href="{{ site.baseurl }}{% link apply/01-oa-compliance.md %}">
+                    Open access compliance
+                  </a>
                 </li>
-                <li class="application-nav__list-item">
-                  <a href="{{ site.baseurl }}{% link apply/02-about.md %}">About</a>
+                <li class="application-nav__list-item
+                  {% if page.name == step2 %} application-nav__list-item--active
+                  {% elsif page.name == step3 or page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% endif %}">
+                  <a href="{{ site.baseurl }}{% link apply/02-about.md %}">
+                    About
+                  </a>
                 </li>
-                <li class="application-nav__list-item">
-                  <a href="{{ site.baseurl }}{% link apply/03-copyright-licensing.md %}">Copyright & licensing</a>
+                <li class="application-nav__list-item
+                  {% if page.name == step3 %} application-nav__list-item--active
+                  {% elsif page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% endif %}">
+                  <a href="{{ site.baseurl }}{% link apply/03-copyright-licensing.md %}">
+                    Copyright & licensing
+                  </a>
                 </li>
-                <li class="application-nav__list-item">
-                  <a href="{{ site.baseurl }}{% link apply/04-editorial.md %}">Editorial</a>
+                <li class="application-nav__list-item
+                  {% if page.name == step4 %} application-nav__list-item--active
+                  {% elsif page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% endif %}">
+                  <a href="{{ site.baseurl }}{% link apply/04-editorial.md %}">
+                    Editorial
+                  </a>
                 </li>
-                <li class="application-nav__list-item">
-                  <a href="{{ site.baseurl }}{% link apply/05-business-model.md %}">Business model</a>
+                <li class="application-nav__list-item
+                  {% if page.name == step5 %} application-nav__list-item--active
+                  {% elsif page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% endif %}">
+                  <a href="{{ site.baseurl }}{% link apply/05-business-model.md %}">
+                    Business model
+                  </a>
                 </li>
-                <li class="application-nav__list-item">
-                  <a href="{{ site.baseurl }}{% link apply/06-best-practice.md %}">Best practice</a>
+                <li class="application-nav__list-item
+                  {% if page.name == step6 %} application-nav__list-item--active
+                  {% elsif page.name == step7 %} application-nav__list-item--is-done
+                  {% endif %}">
+                  <a href="{{ site.baseurl }}{% link apply/06-best-practice.md %}">
+                    Best practice
+                  </a>
                 </li>
-                <li class="application-nav__list-item">
-                  <a href="{{ site.baseurl }}{% link apply/07-review.md %}">Review your answers</a>
+                <li class="application-nav__list-item
+                  {% if page.name == step7 %} application-nav__list-item--active{% endif %}">
+                  <a href="{{ site.baseurl }}{% link apply/07-review.md %}">
+                    Review your answers
+                  </a>
                 </li>
               </ol>
             </nav>
-
+            {% endif %}
             <aside class="highlight highlight--is-aside">
               <h2>Related help</h2>
               <ul class="full-width-list">
