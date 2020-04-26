@@ -5,13 +5,14 @@ toc: true
 highlight: false
 previous: index
 next: 02-about
+number: 1
 ---
 
 Your account has been created and you are now logged in. When you submit your application, it will be registered to this account.
 
 Your progress is automatically saved and you can return to this application at any time.
 
-The application form takes approximately 45 minutes to complete.
+The application form takes approximately **45 minutes** to complete.
 
 ---
 
