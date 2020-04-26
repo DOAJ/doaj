@@ -36,6 +36,7 @@
                   {% if question.long_help %}
                   <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
                   {% endif %}
+                  {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </p>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% for choice in question.choices %}
@@ -49,6 +50,7 @@
                   {% if question.long_help %}
                   <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
                   {% endif %}
+                  {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
                 <select id="{{ question.id }}">
                   {% for choice in question.choices %}
@@ -63,6 +65,7 @@
                   {% if question.long_help %}
                   <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
                   {% endif %}
+                  {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
                 <textarea id="{{ question.id }}"></textarea>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
@@ -73,6 +76,7 @@
                   {% if question.long_help %}
                   <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
                   {% endif %}
+                  {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
                 <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}/>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
