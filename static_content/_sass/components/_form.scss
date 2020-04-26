@@ -24,6 +24,10 @@
 
  input, select {
    width: 75%;
+
+   &[type="number"] {
+     width: 25%;
+   }
  }
 
  input[type="checkbox"] + label,

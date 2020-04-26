@@ -20,7 +20,7 @@ Please review your answers before submitting your application.
     <td>{{ question.label }}</td>
     <td>
       {% if question.input == 'url' %}<a href='https://www.example.com' target='_blank'>{% endif %}
-      Lorem ipsum sit amet
+      Lorem ipsum dolor sit amet
       {% if question.input == 'url' %}</a>{% endif %}
     </td>
   </tr>
@@ -37,7 +37,7 @@ Please review your answers before submitting your application.
   {% for question in site.data.form-02-about %}
   <tr>
     <td>{{ question.label }}</td>
-    <td>Lorem ipsum sit amet</td>
+    <td>Lorem ipsum dolor sit amet</td>
   </tr>
   {% endfor %}
 </table>
@@ -54,7 +54,7 @@ Please review your answers before submitting your application.
     <td>{{ question.label }}</td>
     <td>
       {% if question.input == 'url' %}<a href='https://www.example.com' target='_blank'>{% endif %}
-      Lorem ipsum sit amet
+      Lorem ipsum dolor sit amet
       {% if question.input == 'url' %}</a>{% endif %}
     </td>
   </tr>
@@ -73,7 +73,7 @@ Please review your answers before submitting your application.
     <td>{{ question.label }}</td>
     <td>
       {% if question.input == 'url' %}<a href='https://www.example.com' target='_blank'>{% endif %}
-      Lorem ipsum sit amet
+      Lorem ipsum dolor sit amet
       {% if question.input == 'url' %}</a>{% endif %}
     </td>
   </tr>
@@ -92,7 +92,7 @@ Please review your answers before submitting your application.
     <td>{{ question.label }}</td>
     <td>
       {% if question.input == 'url' %}<a href='https://www.example.com' target='_blank'>{% endif %}
-      Lorem ipsum sit amet
+      Lorem ipsum dolor sit amet
       {% if question.input == 'url' %}</a>{% endif %}
     </td>
   </tr>
@@ -111,7 +111,7 @@ Please review your answers before submitting your application.
     <td>{{ question.label }}</td>
     <td>
       {% if question.input == 'url' %}<a href='https://www.example.com' target='_blank'>{% endif %}
-      Lorem ipsum sit amet
+      Lorem ipsum dolor sit amet
       {% if question.input == 'url' %}</a>{% endif %}
     </td>
   </tr>

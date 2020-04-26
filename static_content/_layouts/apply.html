@@ -88,8 +88,9 @@
               <!-- Long help in modal -->
               <div class="modal" id="modal-{{ question.id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel-{{ question.id }}">
                 <div class="modal__dialog" role="document">
+                  {% if question.subgroup %}<p class="label">{{ question.subgroup }}</p>{% endif %}
                   <h3 class="modal__title" id="modalLabel-{{ question.id }}">
-                    {{ question.label }}
+                    “{{ question.label }}”
                   </h3>
                   {{ question.long_help }}
                   <button type="button" data-dismiss="modal" class="modal__close">Close</button>

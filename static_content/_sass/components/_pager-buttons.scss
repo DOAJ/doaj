@@ -18,6 +18,13 @@
   border: 1px solid $dark-grey;
   background: $dark-grey;
   color: $fair-pink;
+
+  &:hover,
+  &:focus,
+  &:active {
+    border-color: $warm-black;
+    background: $warm-black;
+  }
 }
 
 .pager-buttons__right {

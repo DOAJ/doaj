@@ -53,7 +53,7 @@
   required: true
   placeholder: "https://www.my-journal.com/about#aims"
 
-- label: "Link to the journal’s <strong>editorial board</strong>"
+- label: "Link to the journal’s <strong>Editorial Board</strong>"
   id: editorial_board_url
   subgroup: "Editorial information"
   input: url
