@@ -31,27 +31,43 @@
               <div class="form__question">
 
                 {% if question.input == 'radio' or question.input == 'checkbox' %}
-                <p>{{ question.label }}</p>
+                <p>
+                  {{ question.label }}
+                  {% if question.long_help %}<span data-feather="help-circle"></span>{% endif %}
+                </p>
+                {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% for choice in question.choices %}
                 <input id="{{ question.id }}-{{ choice[0] }}" type="{{ question.input }}" name="{{ question.id }}"/>
                 <label for="{{ question.id }}-{{ choice[0] }}">{{ choice[1] }}</label>
                 {% endfor %}
 
                 {% elsif question.input == 'select' %}
-                <label for="{{ question.id }}">{{ question.label }}</label>
+                <label for="{{ question.id }}">
+                  {{ question.label }}
+                  {% if question.long_help %}<span data-feather="help-circle"></span>{% endif %}
+                </label>
                 <select id="{{ question.id }}">
                   {% for choice in question.choices %}
                   <option id="{{ question.id }}-{{ choice[0] }}">{{ choice[1] }}</option>
                   {% endfor %}
                 </select>
+                {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
 
                 {% elsif question.input == 'textarea' %}
-                <label for="{{ question.id }}">{{ question.label }}</label>
+                <label for="{{ question.id }}">
+                  {{ question.label }}
+                  {% if question.long_help %}<span data-feather="help-circle"></span>{% endif %}
+                </label>
                 <textarea id="{{ question.id }}"></textarea>
+                {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
 
                 {% else %}
-                <label for="{{ question.id }}">{{ question.label }}</label>
+                <label for="{{ question.id }}">
+                  {{ question.label }}
+                  {% if question.long_help %}<span data-feather="help-circle"></span>{% endif %}
+                </label>
                 <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}/>
+                {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% endif %}
 
               </div>
