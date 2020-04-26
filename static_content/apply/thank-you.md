@@ -18,12 +18,4 @@ Check your spam folder for emails from us. It’s important that you respond to 
 
 We don’t reply to requests for status updates on applications that are less than three months old.
 
-It may take up to six **months** before you get a final decision. Most applications are processed in three months.
-
----
-
-### Editorial disclaimer
-
-You are responsible for providing accurate information when submitting your application. If the information provided is not sufficient or is incomplete, the application may be rejected.
-
-[Read our full disclaimer](../guide/#editorial-disclaimer)
+It may take **up to six months** before you get a final decision. Most applications are processed in three months.

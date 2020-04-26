@@ -175,7 +175,10 @@ table {
   }
 
   th {
+    text-align: left;
     font-weight: 400;
+    color: $dark-grey;
+    @include typescale-06;
   }
 
   td:last-child {

@@ -125,7 +125,7 @@
             {% assign step6 = '06-best-practice.md' %}
             {% assign step7 = '07-review.md' %}
 
-            {% if page.name != "index.md" %}
+            {% if page.name != "index.md" and page.name != "thank-you.md" %}
             <nav class="application-nav">
               <h2 class="application-nav__heading">Application progress</h2>
               <ol class="application-nav__list">
@@ -186,6 +186,8 @@
               </ol>
             </nav>
             {% endif %}
+
+            {% if page.name != "thank-you.md" %}
             <aside class="highlight highlight--is-aside">
               <h2>Related help</h2>
               <ul class="full-width-list">
@@ -203,6 +205,18 @@
                 </li>
               </ul>
             </aside>
+            {% endif %}
+
+            {% if page.name == "thank-you.md" %}
+            <aside class="promo">
+              <p class="label">Just so you know&hellip;</p>
+              <h2 class="promo__heading">Editorial disclaimer</h2>
+              <p class="promo__text">
+                You are responsible for providing accurate information when submitting your application. If the information provided is not sufficient or is incomplete, the application may be rejected.
+                <a href="{{ site.baseurl }}{% link apply/guide.md %}#editorial-disclaimer" class="promo__link">Read our full disclaimer</a>
+              </p>
+            </aside>
+            {% endif %}
           </div>
         </div>
       </div>
