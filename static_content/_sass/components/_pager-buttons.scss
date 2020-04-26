@@ -15,8 +15,9 @@
 
 .pager-buttons__left {
   float: left;
-  border-color: $dark-grey;
-  background: $fair-pink;
+  border: 1px solid $dark-grey;
+  background: $dark-grey;
+  color: $fair-pink;
 }
 
 .pager-buttons__right {

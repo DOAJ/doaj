@@ -10,9 +10,7 @@
   @media (min-width: 992px) {
     .application-nav {
       margin: $spacing-05 0 0 0;
-      padding-left: $spacing-04;
       width: 264px; // fixed page element: needs absolute width to avoid overflowing from cols
-      border-left: 1px dashed $grapefruit;
       @include typescale-06;
     }
 
@@ -27,12 +25,64 @@
       margin: 0;
       padding: $spacing-02 0 0 0;
       list-style: none;
+      counter-reset: step;
     }
 
-    .application-nav__list-item a {
-      display: block;
-      padding: $spacing-02 0;
-      text-decoration: none;
+    .application-nav__list-item {
+      counter-increment: step;
+
+      &:before {
+        content: ' ';
+        border-left: 1px solid rgba($dark-grey, 0.25);
+        position: absolute;
+        height: 40px;
+        margin-left: 17px;
+        margin-top: 13px;
+        z-index: -10;
+      }
+
+      &:last-child:before {
+        border: 0;
+      }
+
+      a {
+        display: block;
+        padding: $spacing-02 $spacing-01;
+        text-decoration: none;
+
+        &:before {
+          display: inline-block;
+          content:  counter(step);
+          background: $fair-pink;
+          width: 30px;
+          height: 30px;
+          border: 1px solid rgba($dark-grey, 0.25);
+          border-radius: 50%;
+          line-height: 30px;
+          text-align: center;
+          color: rgba($dark-grey, 0.75);
+          font-weight: bold;
+        }
+      }
+    }
+
+    .application-nav__list-item--is-done a:before {
+      content: '\00a0';
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-check'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 15px;
+      background-color: $dark-grey;
+      border-color: $dark-grey;
+    }
+
+    .application-nav__list-item--active {
+
+      a:before {
+        background: $grapefruit;
+        color: $warm-black;
+        border-color: $grapefruit;
+      }
     }
   }
 
@@ -45,8 +95,8 @@
   .form-header {
     padding-bottom: $spacing-03;
     border-bottom: 1px solid rgba($dark-grey, 0.5);
-  }
 
+  }
 
   .form-question {
     margin: $spacing-05 0;
