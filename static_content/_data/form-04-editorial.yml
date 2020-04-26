@@ -38,19 +38,19 @@
   input: url
   required: true
 
-- label: "Link to the journal’s Aims & Scope"
+- label: "Link to the journal’s <strong>Aims & Scope</strong>"
   id: aims_scope_url
   subgroup: "Editorial information"
   input: url
   required: true
 
-- label: "Link to the journal’s editorial board"
+- label: "Link to the journal’s <strong>editorial board</strong>"
   id: editorial_board_url
   subgroup: "Editorial information"
   input: url
   required: true
 
-- label: "Link to the journal’s Instructions for Author"
+- label: "Link to the journal’s <strong>Instructions for Author</strong>"
   id: author_instructions_url
   subgroup: "Editorial information"
   input: url

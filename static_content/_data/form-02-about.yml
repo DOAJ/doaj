@@ -13,7 +13,7 @@
   input: text
   required: true
   placeholder: "Ma revue"
-  long_help: "<p>The journal title must match what is displayed on the website and what is registered at the <a href='https://portal.issn.org/' target='_blank'>ISSN Portal</a>.</p> p>For translated titles, you may add the translation as an alternative title.</p>"
+  long_help: "<p>The journal title must match what is displayed on the website and what is registered at the <a href='https://portal.issn.org/' target='_blank'>ISSN Portal</a>.</p> <p>For translated titles, you may add the translation as an alternative title.</p>"
 
 - label: "Link to the journal’s homepage"
   id: journal_url
@@ -40,6 +40,7 @@
   id: keywords
   input: text
   required: true
+  long_help: "<p>Only 6 keywords are allowed. Choose words that describe the subject matter of the journal and not the journal’s qualities.</p><p>Keywords must be in English and separated by a comma.</p>"
 
 - label: "Languages in which the journal accepts manuscripts"
   id: language
@@ -72,6 +73,7 @@
   subgroup: "Society or institution, if applicable"
   input: text
   required: true
+  long_help: "<p>Some societies or institutions are linked to a journal in some way but are not responsible for publishing it. The publisher can be a separate organisation. If your journal is linked to a society or other type of institution, enter that here.</p>"
 
 - label: "Country"
   short_help: "The country in which the society or institution is based"

@@ -10,8 +10,8 @@
     1: "Yes"
     2: "No"
 
-- label: "Link to the page where this is stated"
-  short_help: "The page must declare whether or not APCs are charged"
+- label: "Where can we find this information?"
+  short_help: "Link to the page where this is stated. The page must declare <strong>whether or not</strong> APCs are charged."
   id: apc_url
   input: url
   subgroup: "Article processing charges"
@@ -22,6 +22,7 @@
   input: number
   subgroup: "Article processing charges"
   required: true
+  long_help: "<p>If the journal charges different APCs, you must enter the highest APC charged. If more than one currency is used, add a new line.</p>"
 
 - label: "Does the journal provide APC waivers or discounts for authors?"
   id: has_waiver
@@ -31,8 +32,10 @@
   choices:
     1: "Yes"
     2: "No"
+  long_help: "<p>Answer <em>Yes</em> if the journal provides APC waivers for authors from low-income economies, discounts for authors from lower middle-income economies, and/or waivers and discounts for other authors with demonstrable needs.</p>"
 
-- label: "Link to the journal’s waiver information"
+- label: "Where can we find this information?"
+  short_help: "Link to the journal’s waiver information"
   id: waiver_url
   input: url
   subgroup: "Waivers"
@@ -46,8 +49,10 @@
   choices:
     1: "Yes"
     2: "No"
+  long_help: "<p>Declare all other charges: editorial processing charges, colour charges, submission fees, page charges, membership fees, print subscription costs, other supplementary charges.</p>"
 
-- label: "Link to the journal’s fees information"
+- label: "Where can we find this information?"
+  short_help: "Link to the journal’s fees information"
   id: other_charges_url
   subgroup: "Other fees"
   input: url
