@@ -15,12 +15,12 @@ Please log in to your account before you submit your application.
 
 &rarr; Don’t have an account? [Register here]({{ site.baseurl }}{% link register.md %}).
 
-<form action="01-oa-compliance">
-  <div class="form-question">
+<form action="{{ site.baseurl }}{% link apply/01-oa-compliance.md %}">
+  <div class="form__question">
     <label for="email">E-mail address or username</label>
     <input id="email" type="email">
   </div>
-  <div class="form-question">
+  <div class="form__question">
     <label for="password">Password</label>
     <input id="password" type="password">
   </div>

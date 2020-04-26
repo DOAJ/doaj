@@ -15,6 +15,13 @@
    @include typescale-04;
  }
 
+ small {
+   display: block;
+   margin-top: -$spacing-02;
+   color: $dark-grey;
+   font-size: 1rem;
+ }
+
  input, select {
    width: 75%;
  }
