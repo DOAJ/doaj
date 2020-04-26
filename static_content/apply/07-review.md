@@ -18,7 +18,11 @@ Please review your answers before submitting your application.
   {% for question in site.data.form-01-oa-compliance %}
   <tr>
     <td>{{ question.label }}</td>
-    <td>Lorem ipsum sit amet</td>
+    <td>
+      {% if question.input == 'url' %}<a href='https://www.example.com' target='_blank'>{% endif %}
+      Lorem ipsum sit amet
+      {% if question.input == 'url' %}</a>{% endif %}
+    </td>
   </tr>
   {% endfor %}
 </table>
@@ -48,7 +52,11 @@ Please review your answers before submitting your application.
   {% for question in site.data.form-03-copyright-licensing %}
   <tr>
     <td>{{ question.label }}</td>
-    <td>Lorem ipsum sit amet</td>
+    <td>
+      {% if question.input == 'url' %}<a href='https://www.example.com' target='_blank'>{% endif %}
+      Lorem ipsum sit amet
+      {% if question.input == 'url' %}</a>{% endif %}
+    </td>
   </tr>
   {% endfor %}
 </table>
@@ -63,7 +71,11 @@ Please review your answers before submitting your application.
   {% for question in site.data.form-04-editorial %}
   <tr>
     <td>{{ question.label }}</td>
-    <td>Lorem ipsum sit amet</td>
+    <td>
+      {% if question.input == 'url' %}<a href='https://www.example.com' target='_blank'>{% endif %}
+      Lorem ipsum sit amet
+      {% if question.input == 'url' %}</a>{% endif %}
+    </td>
   </tr>
   {% endfor %}
 </table>
@@ -78,7 +90,11 @@ Please review your answers before submitting your application.
   {% for question in site.data.form-05-business-model %}
   <tr>
     <td>{{ question.label }}</td>
-    <td>Lorem ipsum sit amet</td>
+    <td>
+      {% if question.input == 'url' %}<a href='https://www.example.com' target='_blank'>{% endif %}
+      Lorem ipsum sit amet
+      {% if question.input == 'url' %}</a>{% endif %}
+    </td>
   </tr>
   {% endfor %}
 </table>
@@ -93,7 +109,11 @@ Please review your answers before submitting your application.
   {% for question in site.data.form-06-best-practice %}
   <tr>
     <td>{{ question.label }}</td>
-    <td>Lorem ipsum sit amet</td>
+    <td>
+      {% if question.input == 'url' %}<a href='https://www.example.com' target='_blank'>{% endif %}
+      Lorem ipsum sit amet
+      {% if question.input == 'url' %}</a>{% endif %}
+    </td>
   </tr>
   {% endfor %}
 </table>
