@@ -1,6 +1,6 @@
 ---
 layout: apply
-title: About the journal
+title: <span data-feather="edit-3"></span> About the journal
 toc: true
 highlight: false
 previous: 01-oa-compliance

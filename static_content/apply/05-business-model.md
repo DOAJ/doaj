@@ -1,6 +1,6 @@
 ---
 layout: apply
-title: Business model
+title: <span data-feather="dollar-sign"></span> Business model
 toc: true
 highlight: false
 previous: 04-editorial

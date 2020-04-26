@@ -1,6 +1,6 @@
 ---
 layout: apply
-title: Best practice
+title: <span data-feather="archive"></span> Best practice
 toc: true
 highlight: false
 previous: 05-business-model

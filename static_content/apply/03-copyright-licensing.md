@@ -1,6 +1,6 @@
 ---
 layout: apply
-title: Copyright & licensing
+title: © Copyright & licensing
 toc: true
 highlight: false
 previous: 02-about

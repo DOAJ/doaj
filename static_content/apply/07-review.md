@@ -1,6 +1,6 @@
 ---
 layout: apply
-title: Review your answers
+title: <span data-feather="eye"></span> Review your answers
 toc: true
 highlight: false
 number: 7

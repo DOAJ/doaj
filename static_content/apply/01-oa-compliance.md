@@ -1,6 +1,6 @@
 ---
 layout: apply
-title: Open access compliance
+title: <span data-feather="unlock"></span> Open access compliance
 toc: true
 highlight: false
 previous: index
