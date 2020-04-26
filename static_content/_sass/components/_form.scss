@@ -32,6 +32,11 @@
  }
 }
 
+.form__question--is-optional {
+  color: rgba($dark-grey, 0.5);
+  font-size: 1rem;
+}
+
 .form__long-help {
   cursor: pointer;
 
