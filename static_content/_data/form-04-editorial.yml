@@ -15,6 +15,12 @@
     6: "Open peer review"
     7: "Other"
 
+- label: "Other type of peer review:"
+  id: review_process_other
+  subgroup: "Peer review"
+  input: text
+  depends_on: review_process-7
+
 - label: "Where can we find this information?"
   short_help: "Link to the journal’s peer review policy"
   id: review_url

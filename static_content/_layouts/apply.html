@@ -28,7 +28,7 @@
               <h2 class="form__header">{{ question.subgroup }}</h2>
               {% endif %}
 
-              <div class="form__question">
+              <div class="form__question{% if question.depends_on %} form__subquestion{% endif %}">
 
                 {% if question.input == 'radio' or question.input == 'checkbox' %}
                 <p>
@@ -109,9 +109,6 @@
                 {% endif %}
               </p>
             </form>
-
-
-
           </section>
         </div>
 

@@ -21,6 +21,7 @@
 - label: Select all the attributes that your license has
   id: license_attributes
   subgroup: "Licensing"
+  depends_on: license-9
   input: checkbox
   required: true
   choices:
@@ -48,7 +49,8 @@
     3: "The journal does not embed or display this information"
   long_help: "<p>Licensing information must be displayed or embedded on every PDF or in the full text of the HTML articles.</p><p>We do not accept licensing information that is only displayed in other parts of the site.</p>"
 
-- label: Link to a recent article displaying or embedding a license in the full text
+- label: Recent article displaying or embedding a license in the full text
+  short_help: "Link to an example article"
   id: license_display_example_url
   subgroup: "Embedded licenses"
   input: url
