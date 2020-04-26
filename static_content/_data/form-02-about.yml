@@ -72,7 +72,7 @@
   id: society-name
   subgroup: "Society or institution, if applicable"
   input: text
-  required: true
+  required: false
   long_help: "<p>Some societies or institutions are linked to a journal in some way but are not responsible for publishing it. The publisher can be a separate organisation. If your journal is linked to a society or other type of institution, enter that here.</p>"
 
 - label: "Country"
@@ -80,7 +80,7 @@
   id: society-country
   subgroup: "Society or institution, if applicable"
   input: select
-  required: true
+  required: false
   choices:
     1: United Kingdom
     2: Sweden

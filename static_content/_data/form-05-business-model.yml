@@ -16,6 +16,7 @@
   input: url
   subgroup: "Article processing charges"
   required: true
+  placeholder: "https://www.my-journal.com/about#apc"
 
 - label: "Highest APC charged"
   id: apc_max
