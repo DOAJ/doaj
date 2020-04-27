@@ -23,7 +23,7 @@ exclude:
 permalink:
   pretty
 sass:
-    style: :compact
+    style: compressed
 plugins_dir:
   - jekyll-toc
 
