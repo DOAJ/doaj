@@ -100,6 +100,7 @@
 
               {% endfor %}
 
+              {% if page.name != "index.md" and page.name != "thank-you.md" and page.name != "07-review.md" %}
               <p class="pager-buttons">
                 {% if page.previous %}
                 <a href="../{{ page.previous }}" class="pager-buttons__left">Previous</a>
@@ -107,6 +108,7 @@
 
                 <button type="submit" class="pager-buttons__right">Next</button>
               </p>
+              {% endif %}
             </form>
           </section>
         </div>
