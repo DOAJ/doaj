@@ -3,6 +3,7 @@ layout: sidenav
 title: OpenURL
 section: Documentation
 toc: true
+sticky_sidenav: true
 highlight: false
 ---
 

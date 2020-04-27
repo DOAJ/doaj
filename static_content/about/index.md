@@ -3,6 +3,7 @@ layout: sidenav
 title: About DOAJ
 section: About
 toc: true
+sticky_sidenav: true
 highlight: false
 ---
 

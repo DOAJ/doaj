@@ -3,6 +3,7 @@ layout: sidenav
 title: FAQs
 section: About
 toc: true
+sticky_sidenav: false
 highlight: false
 ---
 
