@@ -621,6 +621,18 @@ def faq():
     render_template("static_page.html", page_frag="/about/fragment-faq")
 
 
+# LEGACY ROUTES
+@blueprint.route('/privacy')
+def privacy():
+    return render_template('doaj/dummy.html')
+
+@blueprint.route('/publishers')
+def publishers():
+    return render_template('doaj/dummy.html')
+
+@blueprint.route('/members')
+def members():
+    return render_template('doaj/dummy.html')
 
 #
 # LEGACY = [

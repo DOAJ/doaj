@@ -60,6 +60,7 @@
                     </li>
 
                     <li{% if request.path == url_for('doaj.publishers') %} class="active"{% endif %}>
+                        <!-- LEGACY ROUTE -->
                         <a href="{{url_for('doaj.publishers')}}" alt="Publishers info and metadata upload" title="Publishers info and metadata upload">
                             For Publishers
                             {% if request.path == url_for('doaj.publishers') %} <span class="sr-only">(current)</span>{% endif %}
