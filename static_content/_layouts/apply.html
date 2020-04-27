@@ -16,7 +16,7 @@
 
             {{ content }}
 
-            <form>
+            <form action="../{{ page.next }}">
               {% assign form_page = page.name | prepend: "form-" | remove: ".md" %}
 
               {% for question in site.data[form_page] %}
@@ -40,7 +40,7 @@
                 </p>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% for choice in question.choices %}
-                <input id="{{ question.id }}-{{ choice[0] }}" type="{{ question.input }}" name="{{ question.id }}"/>
+                <input id="{{ question.id }}-{{ choice[0] }}" type="{{ question.input }}" name="{{ question.id }}"{% if question.required %} required{% endif %}/>
                 <label for="{{ question.id }}-{{ choice[0] }}">{{ choice[1] }}</label>
                 {% endfor %}
 
@@ -52,7 +52,7 @@
                   {% endif %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
-                <select id="{{ question.id }}">
+                <select id="{{ question.id }}"{% if question.required %} required{% endif %}>
                   {% for choice in question.choices %}
                   <option id="{{ question.id }}-{{ choice[0] }}">{{ choice[1] }}</option>
                   {% endfor %}
@@ -67,7 +67,7 @@
                   {% endif %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
-                <textarea id="{{ question.id }}"></textarea>
+                <textarea id="{{ question.id }}"{% if question.required %} required{% endif %}></textarea>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
 
                 {% else %}
@@ -78,7 +78,7 @@
                   {% endif %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
-                <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}/>
+                <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}{% if question.required %} required{% endif %}/>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% endif %}
 
@@ -105,9 +105,7 @@
                 <a href="../{{ page.previous }}" class="pager-buttons__left">Previous</a>
                 {% endif %}
 
-                {% if page.next %}
-                <a href="../{{ page.next }}" class="pager-buttons__right">Next</a>
-                {% endif %}
+                <button type="submit" class="pager-buttons__right">Next</button>
               </p>
             </form>
           </section>

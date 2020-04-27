@@ -18,11 +18,11 @@ Please log in to your account before you submit your application.
 <form action="{{ site.baseurl }}{% link apply/01-oa-compliance.md %}">
   <div class="form__question">
     <label for="email">E-mail address or username</label>
-    <input id="email" type="email">
+    <input id="email" type="email" required>
   </div>
   <div class="form__question">
     <label for="password">Password</label>
-    <input id="password" type="password">
+    <input id="password" type="password" required>
   </div>
   <input type="submit" value="Start now">
   <p>
