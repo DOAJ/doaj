@@ -69,9 +69,8 @@ h1 sup a:after, h2 sup a:after, h3 sup a:after, h4 sup a:after, h5 sup a:after, 
   color: $sanguine;
 }
 
-p {
-  margin-top: 0;
-  margin-bottom: $spacing-04;
+p, blockquote {
+  margin: 0 0 $spacing-04 0;
 }
 
 ul, ol {
@@ -116,7 +115,6 @@ section aside {
 }
 
 blockquote {
-  margin: $spacing-05 0;
   padding-left: 1.5em;
   border-left: 1px dashed $sanguine;
   font-style: italic;
@@ -177,7 +175,10 @@ table {
   }
 
   th {
+    text-align: left;
     font-weight: 400;
+    color: $dark-grey;
+    @include typescale-06;
   }
 
   td:last-child {
@@ -185,12 +186,10 @@ table {
   }
 }
 
-/* Main */
-
-main > section:first-of-type {
-  padding-top: $spacing-05;
+::placeholder {
+  font-style: italic;
+  color: rgba($dark-grey, 0.5);
 }
-
 /* Aside */
 
 aside {
@@ -206,11 +205,11 @@ aside a {
 
 form {
   margin-bottom: $spacing-04;
-}
 
-label {
-  display: block;
-  margin-bottom: $spacing-02;
+  label, p {
+    display: block;
+    margin: $spacing-03 0;
+  }
 }
 
 input, select, button {
@@ -247,10 +246,17 @@ input[type="radio"] {
   position: absolute;
   clip: rect(0, 0, 0, 0);
 
+  + label {
+    margin: 0 0 $spacing-03 0;
+    line-height: 1;
+    color: $dark-grey;
+    font-size: 1rem;
+  }
+
   + label::before {
     content: '\a0';
     display: inline-block;
-    margin: 0.2em 0.5em;
+    margin: 0 $spacing-02 0 0;
     width: 0.8em;
     height: 0.8em;
     line-height: 0.75em;
@@ -267,7 +273,8 @@ input[type="radio"] {
 }
 
 input[type="radio"] + label {
-  margin-right: $spacing-04;
+  display: inline-block;
+  margin: 0 $spacing-04 $spacing-02 0;
 
   &::before {
     border-radius: 50%;

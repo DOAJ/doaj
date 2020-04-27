@@ -46,13 +46,11 @@
 .dropdown__link--is-disabled {
   cursor: not-allowed;
   color: rgba($warm-black, 0.45);
-  background-color: $fair-pink;
 
   &:hover,
   &:active,
   &:focus {
     color: rgba($warm-black, 0.45);
-    background-color: $fair-pink;
   }
 }
 
@@ -77,6 +75,7 @@
     position: static;
     float: none;
     border: 0;
+    background-color: $warm-white;
   }
 
   .dropdown__item a {

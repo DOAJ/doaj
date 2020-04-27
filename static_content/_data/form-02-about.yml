@@ -1,0 +1,87 @@
+## TEMPOPRARY FILE for application form fields
+## to be removed once merged with core sit’s dynamic form
+
+- label: "Journal title"
+  id: title
+  input: text
+  required: true
+  placeholder: "My journal"
+  long_help: "<p>The journal title must match what is displayed on the website and what is registered at the <a href='https://portal.issn.org/' target='_blank'>ISSN Portal</a>.</p> <p>For translated titles, you may add the translation as an alternative title.</p>"
+
+- label: "Alternative title (includes translation of the title)"
+  id: alternative_title
+  input: text
+  required: true
+  placeholder: "Ma revue"
+  long_help: "<p>The journal title must match what is displayed on the website and what is registered at the <a href='https://portal.issn.org/' target='_blank'>ISSN Portal</a>.</p> <p>For translated titles, you may add the translation as an alternative title.</p>"
+
+- label: "Link to the journal’s homepage"
+  id: journal_url
+  input: url
+  required: true
+  placeholder: "https://www.my-journal.com"
+
+- label: "ISSN (print)"
+  id: pissn
+  input: text
+  required: true
+  placeholder: "2049-3630"
+  long_help: "<p>Must be a valid ISSN, fully registered and confirmed at the <a href='https://portal.issn.org/' target='_blank'>ISSN Portal</a>.</p><p>The ISSN must match what is given on the journal website.</p>"
+
+
+- label: "ISSN (online)"
+  id: eissn
+  input: text
+  required: true
+  placeholder: "0378-5955"
+  long_help: "<p>Must be a valid ISSN, fully registered and confirmed at the <a href='https://portal.issn.org/' target='_blank'>ISSN Portal</a>.</p><p>The ISSN must match what is given on the journal website.</p>"
+
+- label: "Up to 6 subject keywords in English"
+  id: keywords
+  input: text
+  required: true
+  long_help: "<p>Only 6 keywords are allowed. Choose words that describe the subject matter of the journal and not the journal’s qualities.</p><p>Keywords must be in English and separated by a comma.</p>"
+
+- label: "Languages in which the journal accepts manuscripts"
+  id: language
+  input: select
+  required: true
+  choices:
+    1: English
+    2: French
+    3: Spanish
+
+- label: "Name"
+  id: publisher-name
+  subgroup: "Publisher"
+  input: text
+  required: true
+
+- label: "Country"
+  id: publisher-country
+  subgroup: "Publisher"
+  input: select
+  required: true
+  choices:
+    1: United Kingdom
+    2: Sweden
+    3: Indonesia
+
+- label: "Name"
+  short_help: "The society or institution responsible for the journal"
+  id: society-name
+  subgroup: "Society or institution, if applicable"
+  input: text
+  required: false
+  long_help: "<p>Some societies or institutions are linked to a journal in some way but are not responsible for publishing it. The publisher can be a separate organisation. If your journal is linked to a society or other type of institution, enter that here.</p>"
+
+- label: "Country"
+  short_help: "The country in which the society or institution is based"
+  id: society-country
+  subgroup: "Society or institution, if applicable"
+  input: select
+  required: false
+  choices:
+    1: United Kingdom
+    2: Sweden
+    3: Indonesia

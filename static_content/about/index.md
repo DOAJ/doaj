@@ -1,6 +1,7 @@
 ---
 layout: sidenav
 title: About DOAJ
+section: About
 toc: true
 highlight: false
 ---

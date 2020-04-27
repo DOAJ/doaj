@@ -1,0 +1,74 @@
+## TEMPOPRARY FILE for application form fields
+## to be removed once merged with core sit’s dynamic form
+
+- label: License(s) permitted by the journal
+  id: license
+  subgroup: "Licensing"
+  input: checkbox
+  required: true
+  choices:
+    1: "CC BY"
+    2: "CC BY-SA"
+    3: "CC BY-ND"
+    4: "CC BY-NC"
+    5: "CC BY-NC-SA"
+    6: "CC BY-NC-ND"
+    7: "CC0"
+    8: "Public domain"
+    9: "Publisher’s own license"
+  long_help: "<p>The journal must use some form of licensing to be considered for indexing in DOAJ.</p><p>If Creative Commons licensing is not used, then select <em>Publisher's own license</em> and enter more details below.</p>"
+
+- label: Select all the attributes that your license has
+  id: license_attributes
+  subgroup: "Licensing"
+  depends_on: license-9
+  input: checkbox
+  required: true
+  choices:
+    1: "Attribution"
+    2: "Share Alike"
+    3: "No Derivatives"
+    4: "No Commercial Usage"
+
+- label: Where can we find this information?
+  short_help: "Link to the page where the license terms are stated"
+  id: license_terms_url
+  subgroup: "Licensing"
+  input: url
+  required: true
+  placeholder: "https://www.my-journal.com/about#licensing"
+
+- label: Does the journal embed and/or display licensing information in its articles?
+  id: license_display
+  subgroup: "Embedded licenses"
+  input: checkbox
+  required: true
+  choices:
+    1: "Embed"
+    2: "Display"
+    3: "The journal does not embed or display this information"
+  long_help: "<p>Licensing information must be displayed or embedded on every PDF or in the full text of the HTML articles.</p><p>We do not accept licensing information that is only displayed in other parts of the site.</p>"
+
+- label: Recent article displaying or embedding a license in the full text
+  short_help: "Link to an example article"
+  id: license_display_example_url
+  subgroup: "Embedded licenses"
+  input: url
+  required: true
+
+- label: For all the licenses you have indicated above, do authors or their institutions retain the copyright <strong>and</strong> full publishing rights without restrictions?
+  id: copyright_author_retains
+  subgroup: "Copyright"
+  input: radio
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+
+- label: Where can we find this information?
+  short_help: "Link to the journal’s copyright terms"
+  id: copyright_url
+  subgroup: "Copyright"
+  input: url
+  required: true
+  placeholder: "https://www.my-journal.com/about#copyright"

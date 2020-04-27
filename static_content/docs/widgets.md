@@ -1,6 +1,7 @@
 ---
 layout: sidenav
 title: Widgets
+section: Documentation
 toc: true
 highlight: false
 ---

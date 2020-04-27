@@ -1,0 +1,19 @@
+## TEMPOPRARY FILE for application form fields
+## to be removed once merged with core sit’s dynamic form
+
+- label: "Does the journal adhere to this definition of open access?"
+  id: boai
+  input: radio
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+
+- label: "Where can we find this information?"
+  short_help: "Link to the journal’s open access statement"
+  long_help: "<p>Here is an example of a suitable Open Access statement that meets our criteria:</p>
+              <blockquote>This is an open access journal which means that all content is freely available without charge to the user or his/her institution. Users are allowed to read, download, copy, distribute, print, search, or link to the full texts of the articles, or use them for any other lawful purpose, without asking prior permission from the publisher or the author. This is in accordance with the BOAI definition of open access.</blockquote>"
+  id: oa_statement_url
+  input: url
+  placeholder: "https://www.my-journal.com/open-access"
+  required: true

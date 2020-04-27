@@ -91,3 +91,8 @@ local_store/main/*
 !local_store/main/README.md
 local_store/tmp/*
 !local_store/tmp/README.md
+
+# Static site / Jekyll
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata

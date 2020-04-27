@@ -1,0 +1,113 @@
+## TEMPOPRARY FILE for application form fields
+## to be removed once merged with core sit’s dynamic form
+
+- label: "Long-term preservation service(s) with which the journal is currently archived"
+  id: preservation_service
+  short_help: "Select at least one:"
+  subgroup: "Archiving policy"
+  input: checkbox
+  required: true
+  choices:
+    1: CINES
+    2: CLOCKSS
+    3: LOCKSS
+    4: Internet Archive
+    5: PKP PN
+    6: PubMed Central (PMC)
+    7: Portico
+    8: A national library
+    9: The journal content isn’t archived with a long-term preservation service
+    10: Other
+  long_help: "<p>Only active archiving is accepted; content must be actively deposited in each of the options you choose. If the journal is registered with a service but archiving is not yet active, choose <em>No</em>.</p><p>PubMed Central covers PMC U.S.A., PMC Canada, and PMC Europe (Wellcome Trust).</p>"
+
+- label: "A national library:"
+  short_help: "Name of the national library"
+  id: preservation_service_national_library
+  subgroup: "Archiving policy"
+  input: text
+  depends_on: preservation_service-8
+
+- label: "Other archiving policy:"
+  id: preservation_service_other
+  subgroup: "Archiving policy"
+  input: text
+  depends_on: preservation_service-10
+
+- label: "Where can we find this information?"
+  short_help: "Link to the preservation and archiving information on the journal’s site"
+  id: preservation_url
+  subgroup: "Archiving policy"
+  input: url
+  required: true
+  placeholder: "https://www.my-journal.com/about#archiving"
+
+- label: "Where is the journal’s policy allowing authors to deposit the AAM or VOR registered?"
+  id: deposit_registration
+  short_help: "Select at least one:"
+  subgroup: "Repository policy"
+  input: checkbox
+  required: true
+  choices:
+    1: SHERPA/RoMEO
+    2: Dulcinea
+    3: Héloïse
+    4: Diadorim
+    5: The journal has a policy but it isn’t registered anywhere
+    6: The journal has no repository policy
+    7: Other
+  long_help: "<p>AAM stands for <strong>Author Accepted Manuscript</strong>. VOR is the <strong>Version of Record</strong>.</p><p>This questions ask whether or not the journal allows authors to deposit a copy of their work in an institutional repository.</p><p>If the journal allows authors to do this, is that policy registered in a policy directory?</p>"
+
+- label: "Other repository:"
+  id: deposit_registration_other
+  subgroup: "Repository policy"
+  input: text
+  depends_on: deposit_registration-7
+
+- label: "Where can we find this information?"
+  short_help: "Link to the repository policy on the journal’s site"
+  id: deposit_url
+  subgroup: "Repository policy"
+  input: url
+  required: true
+  placeholder: "https://www.my-journal.com/about#repository-policy"
+
+- label: "Persistent article identifiers used by the journal"
+  id: persistent_id
+  short_help: "Select at least one:"
+  subgroup: "Unique identifiers & structured data"
+  input: checkbox
+  required: true
+  choices:
+    1: DOIs
+    2: ARKs
+    3: Handles
+    4: PURLs
+    5: The journal does not use persistent article identifiers
+    6: Other
+  long_help: "A persistent article identifier (PID) is used to find the article no matter where it is located. The most common type of PID is the digital object identifier (DOI).</p><p><a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank'> Read more about PIDs</a>."
+
+- label: "Other identifier:"
+  id: persistent_id_other
+  subgroup: "Unique identifiers & structured data"
+  input: text
+  depends_on: persistent_id-6
+
+- label: "Does the journal allow for ORCID iDs to be present in article metadata?"
+  id: orcid_id
+  subgroup: "Unique identifiers & structured data"
+  input: radio
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+  long_help: "An <a href='https://orcid.org/' target='blank'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify authors."
+
+- label: "Does the journal comply with I4OC standards for open citations?"
+  id: i4oc
+  subgroup: "Unique identifiers & structured data"
+  input: radio
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+  long_help: "The <a href='https://i4oc.org/#goals' target='_blank'>I4OC standards</a> ask that citations are structured, separable, and open."
