@@ -6,7 +6,7 @@
   short_help: "Select at least one:"
   subgroup: "Archiving policy"
   input: checkbox
-  required: true
+  required: false
   choices:
     1: CINES
     2: CLOCKSS
@@ -46,7 +46,7 @@
   short_help: "Select at least one:"
   subgroup: "Repository policy"
   input: checkbox
-  required: true
+  required: false
   choices:
     1: SHERPA/RoMEO
     2: Dulcinea
@@ -76,7 +76,7 @@
   short_help: "Select at least one:"
   subgroup: "Unique identifiers & structured data"
   input: checkbox
-  required: true
+  required: false
   choices:
     1: DOIs
     2: ARKs

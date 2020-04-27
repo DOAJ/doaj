@@ -5,7 +5,7 @@
   id: license
   subgroup: "Licensing"
   input: checkbox
-  required: true
+  required: false
   choices:
     1: "CC BY"
     2: "CC BY-SA"
@@ -23,7 +23,7 @@
   subgroup: "Licensing"
   depends_on: license-9
   input: checkbox
-  required: true
+  required: false
   choices:
     1: "Attribution"
     2: "Share Alike"
