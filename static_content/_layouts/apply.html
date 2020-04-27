@@ -11,7 +11,7 @@
 
         <div class="col-md-8">
           <section class="page-content">
-            {% if page.name != "index.md" %}<p class="label">Page {{ page.number }} of 7</p>{% endif %}
+            {% if page.name != "index.md" and page.name != "thank-you.md" %}<p class="label">Page {{ page.number }} of 7</p>{% endif %}
             <h1>{{ page.title }}</h1>
 
             {{ content }}
