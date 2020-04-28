@@ -30,7 +30,20 @@
 
               <div class="form__question{% if question.depends_on %} form__subquestion{% endif %}">
 
-                {% if question.input == 'radio' or question.input == 'checkbox' %}
+                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
+                {% if question.id == 'apc_max'%}
+                <label for="question.id">{{ question.label }}&nbsp;{% include form_long_help.html %}</label>
+                <div class="input-group" style="width: 75%;">
+                  <label for="apc_currency" class="sr-only"></label>
+                  <select id="apc_currency" require style="width: 25%;">
+                    <option id="{{ question.id }}-usd">$ USD</option>
+                    <option id="{{ question.id }}-eur">€ EUR</option>
+                    <option id="{{ question.id }}-gbp">£ GBP</option>
+                  </select>
+                  <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}{% if question.required %} required{% endif %} style="width: 75%;"/>
+                </div>
+
+                {% elsif question.input == 'radio' or question.input == 'checkbox' %}
                 <p>{{ question.label }}&nbsp;{% include form_long_help.html %}</p>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% for choice in question.choices %}
@@ -63,7 +76,7 @@
                   {{ question.label }}&nbsp;{% include form_long_help.html %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
-                <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}{% if question.required %} required{% endif %}/>
+                <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}{% if question.required %} required{% endif %}{% if question.input == 'number' %} min="1"{% endif %}/>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% endif %}
 

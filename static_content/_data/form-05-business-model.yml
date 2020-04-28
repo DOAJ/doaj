@@ -22,13 +22,14 @@
   id: apc_max
   input: number
   subgroup: "Article processing charges"
+  input_group: apc_max
   required: true
   long_help: "<p>If the journal charges different APCs, you must enter the highest APC charged. If more than one currency is used, add a new line.</p>"
 
 - label: "Does the journal provide APC waivers or discounts for authors?"
   id: has_waiver
   input: radio
-  subgroup: "Waivers"
+  subgroup: "APC waivers"
   required: true
   choices:
     1: "Yes"
@@ -39,7 +40,7 @@
   short_help: "Link to the journal’s waiver information"
   id: waiver_url
   input: url
-  subgroup: "Waivers"
+  subgroup: "APC waivers"
   required: true
   placeholder: "https://www.my-journal.com/about#waiver"
 
