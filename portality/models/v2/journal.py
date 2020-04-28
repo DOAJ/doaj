@@ -197,33 +197,27 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def contact(self):
         return self.__seamless__.get_single("admin.contact")
 
+    @property
     def contact_name(self):
         return self.__seamless__.get_single("admin.contact.name")
 
+    @contact_name.setter
+    def contact_name(self, name):
+        self.__seamless__.set_with_struct("admin.contact.name", name)
+
+    @property
     def contact_email(self):
         return self.__seamless__.get_single("admin.contact.email")
 
-    def set_contact(self):
-        return self.__seamless__.set_with_struct()
+    @contact_email.setter
+    def contact_email(self, email):
+        self.__seamless__.set_with_struct("admin.contact.email", email)
 
-    def get_latest_contact_name(self):
-        try:
-            contact = self.contacts()[-1]
-        except IndexError as e:
-            return ""
-        return contact.get("name", "")
+    def set_contact(self, name, email):
+        self.contact_name = name
+        self.contact_email = email
 
-    def get_latest_contact_email(self):
-        try:
-            contact = self.contacts()[-1]
-        except IndexError as e:
-            return ""
-        return contact.get("email", "")
-
-    def add_contact(self, name, email):
-        self.__seamless__.set_with_struct("admin.contact", {"name": name, "email": email})
-
-    def remove_contacts(self):
+    def remove_contact(self):
         self.__seamless__.delete("admin.contact")
 
     def add_note(self, note, date=None, id=None):
@@ -290,6 +284,18 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         Now this is just a proxy for self.bibjson().issns()
         """
         return self.bibjson().issns()
+
+    def get_latest_contact_name(self):
+        return self.contact_name
+
+    def get_latest_contact_email(self):
+        return self.contact_email
+
+    def add_contact(self, name, email):
+        self.set_contact(name, email)
+
+    def remove_contacts(self):
+        self.remove_contact()
 
     ######################################################
     ## internal utility methods
