@@ -93,10 +93,11 @@ JOURNAL_SOURCE = {
             "max": [
                 {"currency": "GBP", "price": 2}
             ],
-            "url": "http://apc.com"
+            "url": "http://apc.com",
+            "has_apc": True
         },
         "article": {
-            "license_display": ["embed"],
+            "license_display": ["embed", "display"],
             "license_display_example_url": "http://licence.embedded",
             "orcid": True,
             "i4oc_open_citations": True
@@ -107,7 +108,8 @@ JOURNAL_SOURCE = {
             "url": "http://copyright.com"
         },
         "deposit_policy": {
-           "is_registered": True,
+            "has_policy" : True,
+            "is_registered": True,
             "service": ["Sherpa/Romeo", "Store it"],
             "url": "http://deposit.policy"
         },
@@ -136,6 +138,7 @@ JOURNAL_SOURCE = {
             }
         ],
         "other_charges": {
+            "has_other_charges" : True,
             "url": "http://other.charges"
         },
         "pid_scheme": {
@@ -148,7 +151,7 @@ JOURNAL_SOURCE = {
         },
         "preservation": {
             "service": ["LOCKSS", "CLOCKSS", "A safe place"],
-            "national_library": "Trinity",
+            "national_library": ["Trinity", "Imperial"],
             "url": "http://digital.archiving.policy"
         },
         "publication_time_weeks": 8,
@@ -171,6 +174,7 @@ JOURNAL_SOURCE = {
         ],
         "title": "The Title",
         "waiver": {
+            "has_waiver" : True,
             "url": "http://waiver.policy"
         }
     }
@@ -414,10 +418,10 @@ JOURNAL_APIDO_STRUCT = {
                 },
                 "preservation": {
                     "fields": {
-                        "national_library": {"coerce": "unicode"},
                         "url": {"coerce": "url"}
                     },
                     "lists": {
+                        "national_library": {"coerce": "unicode"},
                         "service": {"coerce": "unicode", "contains": "field"},
                     },
                     "structs": {

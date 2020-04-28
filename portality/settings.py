@@ -263,7 +263,8 @@ FACET_FIELD = ".exact"
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal",
-    "portality.models.Suggestion",
+    "portality.models.Application",
+    "portality.models.DraftApplication",
     "portality.models.harvester.HarvestState"
 ]
 

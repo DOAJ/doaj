@@ -155,6 +155,7 @@ def string_canonicalise(canon, allow_fail=False):
 
 class SeamlessException(Exception):
     def __init__(self, message, *args, **kwargs):
+        self.message = message
         super(SeamlessException, self).__init__(message, *args, **kwargs)
 
 

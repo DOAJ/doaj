@@ -262,7 +262,6 @@ class JournalLikeBibJSON(SeamlessMixin):
     @copyright_url.setter
     def copyright_url(self, url):
         self.__seamless__.set_with_struct("copyright.url", url)
-        self.__seamless__.set_with_struct("copyright.author_retains", True)
 
     @property
     def deposit_policy(self):
@@ -336,11 +335,11 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.set_with_struct("editorial.board_url", url)
 
     @property
-    def institution(self):
+    def institution_name(self):
         return self.__seamless__.get_single("institution.name")
 
-    @institution.setter
-    def institution(self, val):
+    @institution_name.setter
+    def institution_name(self, val):
         self.__seamless__.set_with_struct("institution.name", val)
 
     @property
@@ -387,7 +386,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def plagiarism_detection(self):
-        return self.__seamless__.get_single("plagiarism.detection", default={})
+        return self.__seamless__.get_single("plagiarism.detection", default=False)
 
     @property
     def plagiarism_url(self):
@@ -410,12 +409,25 @@ class JournalLikeBibJSON(SeamlessMixin):
             return None
 
     @property
-    def preservation_library (self):
+    def preservation_library(self):
         pres = self.preservation
         if "national_library" in pres:
             return pres["national_library"]
         return None
 
+    @property
+    def preservation_summary(self):
+        summary = []
+        summary += self.preservation_services
+        libs = self.preservation_library
+        if libs is not None:
+            for lib in libs:
+                summary.append(["A national library", lib])
+        return summary
+
+    def add_preservation_library(self, library):
+        self.__seamless__.add_to_list_with_struct("preservation.national_library", library)
+        self.has_preservation = True
 
     def set_preservation(self, services, policy_url):
         obj = {}
@@ -435,14 +447,20 @@ class JournalLikeBibJSON(SeamlessMixin):
         if policy_url is not None:
             obj["url"] = policy_url
 
+        obj["has_preservation"] = True
         self.__seamless__.set_with_struct("preservation", obj)
 
-    def add_preservation(self, service, library):
-        if service is not None:
-            for s in service:
+    def add_preservation(self, services=None, libraries=None):
+        if services is not None:
+            if not isinstance(services, list):
+                services = [services]
+            for s in services:
                 self.__seamless__.add_to_list_with_struct("preservation.service", s)
-        if library is not None:
-            self.__seamless__.set_with_struct("preservation.national_library", library)
+        if libraries is not None:
+            if not isinstance(libraries, list):
+                libraries = [libraries]
+            for l in libraries:
+                self.__seamless__.add_to_list_with_struct("preservation.national_library", l)
         if self.preservation_services is not None or self.preservation_library is not None:
             self.has_preservation = True
 
@@ -452,7 +470,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @has_preservation.setter
     def has_preservation(self, has_preservation):
-        return self.__seamless__.set_single("preservation.has_preservation", has_preservation)
+        self.__seamless__.set_single("preservation.has_preservation", has_preservation)
 
     @property
     def preservation_url(self):
@@ -550,10 +568,6 @@ class JournalLikeBibJSON(SeamlessMixin):
     def waiver_url(self, url):
         self.__seamless__.set_with_struct("waiver.url", url)
 
-    def add_waiver_url(self, url):
-        self.has_waiver = True
-        self.waiver_url = url
-
     #####################################################
     ## External utility functions
 
@@ -639,6 +653,14 @@ class JournalLikeBibJSON(SeamlessMixin):
     def publisher(self, val):
         self.publisher_name = val
 
+    @property
+    def institution(self):
+        return self.institution_name
+
+    @institution.setter
+    def institution(self, val):
+        self.institution_name = val
+
     def set_keywords(self, keywords):
         self.keywords = keywords
 
@@ -673,7 +695,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def flattened_archiving_policies(self):
-        return [": ".join(p) if isinstance(p, list) else p for p in self.preservation_services]
+        return [": ".join(p) if isinstance(p, list) else p for p in self.preservation_summary]
 
     # vocab of known identifier types
     P_ISSN = "pissn"
