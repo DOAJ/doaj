@@ -31,13 +31,7 @@
               <div class="form__question{% if question.depends_on %} form__subquestion{% endif %}">
 
                 {% if question.input == 'radio' or question.input == 'checkbox' %}
-                <p>
-                  {{ question.label }}
-                  {% if question.long_help %}
-                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
-                  {% endif %}
-                  {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
-                </p>
+                <p>{{ question.label }}&nbsp;{% include form_long_help.html %}</p>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% for choice in question.choices %}
                 <input id="{{ question.id }}-{{ choice[0] }}" type="{{ question.input }}" name="{{ question.id }}"{% if question.required %} required{% endif %}/>
@@ -46,10 +40,7 @@
 
                 {% elsif question.input == 'select' %}
                 <label for="{{ question.id }}">
-                  {{ question.label }}
-                  {% if question.long_help %}
-                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
-                  {% endif %}
+                  {{ question.label }}&nbsp;{% include form_long_help.html %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
                 <select id="{{ question.id }}"{% if question.required %} required{% endif %}>
@@ -61,10 +52,7 @@
 
                 {% elsif question.input == 'textarea' %}
                 <label for="{{ question.id }}">
-                  {{ question.label }}
-                  {% if question.long_help %}
-                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
-                  {% endif %}
+                  {{ question.label }}&nbsp;{% include form_long_help.html %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
                 <textarea id="{{ question.id }}"{% if question.required %} required{% endif %}></textarea>
@@ -72,10 +60,7 @@
 
                 {% else %}
                 <label for="{{ question.id }}">
-                  {{ question.label }}
-                  {% if question.long_help %}
-                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
-                  {% endif %}
+                  {{ question.label }}&nbsp;{% include form_long_help.html %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
                 <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}{% if question.required %} required{% endif %}/>
