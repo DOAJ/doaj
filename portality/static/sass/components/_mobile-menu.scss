@@ -1,0 +1,28 @@
+/* Mobile menu  */
+
+@media (max-width: 768px) {
+  // .secondary-nav__menu {
+  //   max-height: 0;
+  //   overflow: hidden;
+  //   display: block;
+  // }
+  //
+  // .secondary-nav__menu-toggle--is-active {
+  //   max-height: 100%;
+  //   height: auto;
+  // }
+
+  .secondary-nav .nav-bar li {
+    margin-left: 0;
+  }
+
+  .secondary-nav .nav-bar li a {
+    padding: $spacing-02 0;
+    display: block;
+    line-height: 1;
+  }
+
+  .feather-chevron-down {
+    display: none;
+  }
+}
