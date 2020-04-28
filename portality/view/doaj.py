@@ -45,13 +45,6 @@ def news():
     return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
 
 
-# @blueprint.route("/widgets")
-# def widgets():
-#     return render_template('doaj/widgets.html',
-#                            env=app.config.get("DOAJENV"),
-#                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
-#                           )
-
 @blueprint.route("/ssw_demo")
 def ssw_demo():
     return render_template('doaj/ssw_demo.html',
@@ -133,8 +126,7 @@ def suggestion():
 
 from portality.forms.application_forms import ApplicationFormFactory
 
-@blueprint.route("/application/new", methods=["GET", "POST"])
-@blueprint.route("/application/new/<draft_id>", methods=["GET", "POST"])
+@blueprint.route("/apply", methods=["GET", "POST"])
 @write_required()
 @login_required
 def public_application(draft_id=None):
@@ -201,6 +193,12 @@ def public_application(draft_id=None):
                 return fc.render_template()
 
 
+@blueprint.route("/application/new", methods=["GET", "POST"])
+@blueprint.route("/application/new/<draft_id>", methods=["GET", "POST"])
+def old_application(draft_id=None):
+    redirect(url_for("doaj.public_application", **request.args), code=308)
+
+
 #############################################
 
 @blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
@@ -246,30 +244,6 @@ def sitemap():
     sitemap_file = models.Cache.get_latest_sitemap()
     sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
-
-
-# @blueprint.route("/public-data-dump")
-# def public_data_dump():
-#     data_dump = models.Cache.get_public_data_dump()
-#     show_article = data_dump.get("article", {}).get("url") is not None
-#     article_size = data_dump.get("article", {}).get("size")
-#     show_journal = data_dump.get("journal", {}).get("url") is not None
-#     journal_size = data_dump.get("journal", {}).get("size")
-#     return render_template("doaj/public_data_dump.html",
-#                            show_article=show_article,
-#                            article_size=article_size,
-#                            show_journal=show_journal,
-#                            journal_size=journal_size)
-
-
-@blueprint.route("/public-data-dump/<record_type>")
-def public_data_dump_redirect(record_type):
-    store_url = models.Cache.get_public_data_dump().get(record_type, {}).get("url")
-    if store_url is None:
-        abort(404)
-    if store_url.startswith("/"):
-        store_url = "/store" + store_url
-    return redirect(store_url, code=307)
 
 
 @blueprint.route("/store/<container>/<filename>")
@@ -463,180 +437,177 @@ def get_site_key():
 # The various static endpoints
 ###############################################################
 
-@blueprint.route("/<cc>/mejorespracticas")
-@blueprint.route("/<cc>/boaspraticas")
-@blueprint.route("/<cc>/bestpractice")
-@blueprint.route("/<cc>/editionsavante")
-@blueprint.route("/bestpractice")
-def bestpractice(cc=None):
-    # FIXME: if we go for full multilingual support, it would be better to put this in the template
-    # loader and have it check for templates in the desired language, and provide fall-back
-    if cc is not None:
-        try:
-            return render_template("doaj/i18n/" + cc + "/bestpractice.html")
-        except TemplateNotFound:
-            pass
-    return render_template("doaj/bestpractice.html")
-
-
-@blueprint.route("/suggest", methods=['GET'])
-def suggest():
-    return redirect(url_for('.suggestion'), code=301)
-
 
 @blueprint.route("/googlebdb21861de30fe30.html")
 def google_webmaster_tools():
     return 'google-site-verification: googlebdb21861de30fe30.html'
 
 
-###############################################################
-# static pages refactored
-###############################################################
-
-
-# STATIC_PAGES = [
-#     ("/support", "/fragment-support"),
-#     ("/sponsors", "/fragment-sponsors"),
-#     ("/support/publisher-supporters", "/support/fragment-publisher-supporters"),
-#     ("/support/supporters", "/support/fragment-supporters"),
-#     ("/apply", "/fragment-apply"),
-#     ("/apply/seal", "/apply/fragment-seal"),
-#     ("/apply/transparency", "/apply/fragment-transparency"),
-#     ("/apply/why-index", "/apply/fragment-why-index"),
-#     ("/data/api", "/data/fragment-api"),
-#     ("/data/oai-pmh", "/data/fragment-oai-pmh"),
-#     ("/data/xml", "/data/fragment-xml"),
-#     ("/data/widgets", "/data/fragment-widgets"),
-#     ("/data/public-data-dump", "/data/fragment-public-data-dump"),
-#     ("/data/openurl", "/data/fragment-openurl"),
-#     ('/about', "/fragment-about"),
-#     ('/about/team-ambassadors', '/about/fragment-team-ambassadors'),
-#     ('/about/advisory-board-council', '/about/fragment-advisory-board-council'),
-#     ('/about/volunteers', '/about/fragment-volunteers'),
-#     ('/about/faq', '/about/fragment-faq')
-# ]
-#
-#
-# def static_page(frag):
-#     print(frag)
-#     render_template("static_page.html", page_frag=frag)
-#
-#
-# for PAGE in STATIC_PAGES:
-#     blueprint.add_url_rule(PAGE[0], "static_page", static_page(PAGE[1]))
-
-
 @blueprint.route("/support")
 def support():
-    render_template("static_page.html", page_frag="/fragment-support")
+    return render_template("static_page.html", page_frag="/support/index.html")
 
 
-@blueprint.route("/sponsors")
+@blueprint.route("/support/sponsors")
 def sponsors():
-    render_template("static_page.html", page_frag="/fragment-sponsors")
+    return render_template("static_page.html", page_frag="/fragment-sponsors")
 
 
 @blueprint.route("/support/publisher-supporters")
 def publisher_supporters():
-    render_template("static_page.html", page_frag="/support/fragment-publisher-supporters")
+    return render_template("static_page.html", page_frag="/support/fragment-publisher-supporters")
 
 
 @blueprint.route("/support/supporters")
 def supporters():
-    render_template("static_page.html", page_frag="/support/fragment-supporters")
+    return render_template("static_page.html", page_frag="/support/fragment-supporters")
 
 
 @blueprint.route("/apply")
 def apply():
-    render_template("static_page.html", page_frag="/fragment-apply")
+    return render_template("static_page.html", page_frag="/fragment-apply")
+
+@blueprint.route("/apply")
+def guide():
+    return render_template("static_page.html", page_frag="/apply/fragment-guide")
 
 
 @blueprint.route("/apply/seal")
 def seal():
-    render_template("static_page.html", page_frag="/apply/fragment-seal")
+    return render_template("static_page.html", page_frag="/apply/fragment-seal")
 
 
 @blueprint.route("/apply/transparency")
 def transparency():
-    render_template("static_page.html", page_frag="/apply/fragment-transparency")
+    return render_template("static_page.html", page_frag="/apply/fragment-transparency")
 
 
 @blueprint.route("/apply/why-index")
 def why_index():
-    render_template("static_page.html", page_frag="/apply/fragment-why-index")
+    return render_template("static_page.html", page_frag="/apply/fragment-why-index")
 
 
-@blueprint.route("/data/api")
+@blueprint.route("/docs/api")
 def api():
-    render_template("static_page.html", page_frag="/data/fragment-api")
+    return render_template("static_page.html", page_frag="/docs/fragment-api")
 
 
-@blueprint.route("/data/oai-pmh")
+@blueprint.route("/docs/oai-pmh")
 def oai_pmh():
-    render_template("static_page.html", page_frag="/data/fragment-oai-pmh")
+    return render_template("static_page.html", page_frag="/docs/fragment-oai-pmh")
 
 
-@blueprint.route("/data/xml")
+@blueprint.route("/docs/xml")
 def xml():
-    render_template("static_page.html", page_frag="/data/fragment-xml")
+    return render_template("static_page.html", page_frag="/docs/fragment-xml/index.html")
 
 
-@blueprint.route("/data/widgets")
+@blueprint.route("/docs/widgets")
 def widgets():
-    render_template("static_page.html", page_frag="/data/fragment-widgets")
+    return render_template("static_page.html", page_frag="/docs/fragment-widgets")
 
 
-@blueprint.route("/data/public-data-dump")
+@blueprint.route("/docs/public-data-dump")
 def public_data_dump():
-    render_template("static_page.html", page_frag="/data/fragment-public-data-dump")
+    return render_template("static_page.html", page_frag="/docs/fragment-public-data-dump")
 
 
-@blueprint.route("/data/openurl")
+@blueprint.route("/docs/openurl")
 def openurl():
-    render_template("static_page.html", page_frag="/data/fragment-openurl")
+    return render_template("static_page.html", page_frag="/docs/fragment-openurl")
 
 
 @blueprint.route("/about")
 def about():
-    render_template("static_page.html", page_frag="/fragment-about")
+    return render_template("static_page.html", page_frag="/fragment-about")
 
 
 @blueprint.route("/about/team-ambassadors")
 def ambassadors():
-    render_template("static_page.html", page_frag="/about/fragment-team-ambassadors")
+    return render_template("static_page.html", page_frag="/about/fragment-team-ambassadors")
 
 
 @blueprint.route("/about/advisory-board-council")
 def abc():
-    render_template("static_page.html", page_frag="/about/fragment-advisory-board-council")
+    return render_template("static_page.html", page_frag="/about/fragment-advisory-board-council")
 
 
 @blueprint.route("/about/volunteers")
 def volunteers():
-    render_template("static_page.html", page_frag="/about/fragment-volunteers")
+    return render_template("static_page.html", page_frag="/about/fragment-volunteers")
 
 
 @blueprint.route("/about/faq'")
 def faq():
-    render_template("static_page.html", page_frag="/about/fragment-faq")
+    return render_template("static_page.html", page_frag="/about/fragment-faq")
 
 
 # LEGACY ROUTES
-@blueprint.route('/privacy')
-def privacy():
-    return render_template('doaj/dummy.html')
+@blueprint.route("/<cc>/mejorespracticas")
+@blueprint.route("/<cc>/boaspraticas")
+@blueprint.route("/<cc>/bestpractice")
+@blueprint.route("/<cc>/editionsavante")
+@blueprint.route("/bestpractice")
+@blueprint.route("/oainfo")
+def bestpractice(cc=None):
+    return redirect(url_for("doaj.transparency", **request.args), code=308)
 
-@blueprint.route('/publishers')
-def publishers():
-    return render_template('doaj/dummy.html')
 
-@blueprint.route('/members')
+@blueprint.route("/suggest", methods=['GET'])
+def suggest():
+    return redirect(url_for('.suggestion', **request.args), code=301)
+
+
+@blueprint.route("/membership")
+def membership():
+    return redirect(url_for("doaj.support", **request.args), code=308)
+
+
+@blueprint.route("/publishermembers")
+def old_sponsors():
+    return redirect(url_for("doaj.sponsors", **request.args), code=308)
+
+
+@blueprint.route("/members")
 def members():
-    return render_template('doaj/dummy.html')
+    return redirect(url_for("doaj.supporters", **request.args), code=308)
 
-#
-# LEGACY = [
-#     "/frequently-asked-questions", "/faq"
-# ]
-#
-# # as above ...
+
+@blueprint.route('/api/docs')
+def docs():
+    return render_template('api/v2/api_docs.html')
+
+
+@blueprint.route('/features')
+def features():
+    return redirect(url_for("doaj.xml", **request.args), code=308)
+
+
+@blueprint.route('/widgets')
+def old_widgets():
+    return redirect(url_for("doaj.widgets", **request.args), code=308)
+
+
+@blueprint.route("/public-data-dump/<record_type>")
+def old_public_data_dump(record_type):
+    return redirect(url_for("doaj.public_data_dump", **request.args), code=308)
+
+
+@blueprint.route("/openurl/help")
+def old_openurl():
+    return redirect(url_for("doaj.openurl", **request.args), code=308)
+
+
+@blueprint.route("/faq")
+def old_faq():
+    return redirect(url_for("doaj.faq", **request.args), code=308)
+
+
+@blueprint.route("/privacy")
+def privacy():
+    return render_template("static_page.html")
+
+
+@blueprint.route("/publishers")
+def publishers():
+    return render_template("static_page.html")

@@ -28,6 +28,11 @@ def api_v2_root():
     return redirect(url_for('.api_spec'))
 
 
+@blueprint.route('/docs')
+def docs():
+    return redirect(url_for('doaj.docs'))
+
+
 @blueprint.route('/search/articles/<path:search_query>')
 def search_articles(search_query):
     return redirect(url_for('api_v2.search_articles', search_query=search_query))
@@ -38,7 +43,6 @@ def search_articles(search_query):
 @write_required(api=True)
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('create_article', 'Create article'))
 def create_article():
-    print(request.args["api_key"])
     return redirect(url_for('api_v2.create_article', **request.args), code=301)
 
 

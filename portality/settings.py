@@ -1,5 +1,4 @@
 import os
-
 from portality import constants
 
 # Use these options to place the application into READ ONLY mode
@@ -727,21 +726,6 @@ STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 TOC_CHANGEFREQ = "monthly"
 
 STATIC_PAGES = [
-    # ("", "monthly"), # home page
-    # ("/search", "daily"),  # taken out since javascript-enabled bots were spidering this, causing enormous load - there should be other ways to present a list of all journals to them if we need to
-    ("/toc", "monthly"),
-    ("/application/new", "monthly"),
-    # ("/about", "monthly"),
-    ("/publishers", "monthly"),
-    # ("/support", "monthly"),
-    ("/contact", "yearly"),
-    ("/members", "monthly"),
-    ("/membership", "monthly"),
-    ("/publishermembers", "monthly"),
-    ("/faq", "monthly"),
-    ("/features", "monthly"),
-    ("/oainfo", "monthly"),
-    # ("/sponsors", "monthly")
 ]
 
 
