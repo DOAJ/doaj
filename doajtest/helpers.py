@@ -17,8 +17,7 @@ class DoajTestCase(TestCase):
     app_test = app
 
     def init_index(self):
-        conn = core.create_es_connection(self.app_test)
-        core.initialise_index(self.app_test, conn)
+        core.initialise_index(self.app_test, core.es_connection)
 
     def destroy_index(self):
         dao.DomainObject.destroy_index()
