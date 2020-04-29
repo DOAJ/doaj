@@ -277,12 +277,10 @@
 
               <div class="form__question">
 
+                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
                 
-                <p>
-                  Does the journal require payment of article processing charges (APCs)?
-                  
-                  
-                </p>
+                <p>Does the journal require payment of article processing charges (APCs)?&nbsp;
+</p>
                 
                 
                 <input id="apc-1" type="radio" name="apc" required/>
@@ -307,10 +305,11 @@
 
               <div class="form__question">
 
+                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
                 
                 <label for="apc_url">
-                  Where can we find this information?
-                  
+                  Where can we find this information?&nbsp;
+
                   
                 </label>
                 <input id="apc_url" type="url" placeholder="https://www.my-journal.com/about#apc" required/>
@@ -330,16 +329,20 @@
 
               <div class="form__question">
 
+                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
                 
-                <label for="apc_max">
-                  Highest APC charged
-                  
-                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-apc_max"></span>
-                  
-                  
-                </label>
-                <input id="apc_max" type="number"  required/>
-                
+                <label for="question.id">Highest APC charged&nbsp;<span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-apc_max"></span>
+</label>
+                <div class="input-group" style="width: 75%;">
+                  <label for="apc_currency" class="sr-only"></label>
+                  <select id="apc_currency" require style="width: 25%;">
+                    <option id="apc_max-usd">$ USD</option>
+                    <option id="apc_max-eur">€ EUR</option>
+                    <option id="apc_max-gbp">£ GBP</option>
+                  </select>
+                  <input id="apc_max" type="number"  required style="width: 75%;"/>
+                </div>
+
                 
 
               </div>
@@ -364,19 +367,15 @@
               
 
               
-              <h2 class="form__header">Waivers</h2>
+              <h2 class="form__header">APC waivers</h2>
               
 
               <div class="form__question">
 
+                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
                 
-                <p>
-                  Does the journal provide APC waivers or discounts for authors?
-                  
-                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-has_waiver"></span>
-                  
-                  
-                </p>
+                <p>Does the journal provide APC waivers or discounts for authors?&nbsp;<span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-has_waiver"></span>
+</p>
                 
                 
                 <input id="has_waiver-1" type="radio" name="has_waiver" required/>
@@ -394,7 +393,7 @@
               <!-- Long help in modal -->
               <div class="modal" id="modal-has_waiver" tabindex="-1" role="dialog" aria-labelledby="modalLabel-has_waiver">
                 <div class="modal__dialog" role="document">
-                  <p class="label">Waivers</p>
+                  <p class="label">APC waivers</p>
                   <h3 class="modal__title" id="modalLabel-has_waiver">
                     “Does the journal provide APC waivers or discounts for authors?”
                   </h3>
@@ -413,10 +412,11 @@
 
               <div class="form__question">
 
+                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
                 
                 <label for="waiver_url">
-                  Where can we find this information?
-                  
+                  Where can we find this information?&nbsp;
+
                   
                 </label>
                 <input id="waiver_url" type="url" placeholder="https://www.my-journal.com/about#waiver" required/>
@@ -438,14 +438,10 @@
 
               <div class="form__question">
 
+                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
                 
-                <p>
-                  Does the journal charge any other fees to authors?
-                  
-                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-has_other_charges"></span>
-                  
-                  
-                </p>
+                <p>Does the journal charge any other fees to authors?&nbsp;<span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-has_other_charges"></span>
+</p>
                 
                 
                 <input id="has_other_charges-1" type="radio" name="has_other_charges" required/>
@@ -482,10 +478,11 @@
 
               <div class="form__question">
 
+                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
                 
                 <label for="other_charges_url">
-                  Where can we find this information?
-                  
+                  Where can we find this information?&nbsp;
+
                   
                 </label>
                 <input id="other_charges_url" type="url" placeholder="https://www.my-journal.com/about#fees" required/>

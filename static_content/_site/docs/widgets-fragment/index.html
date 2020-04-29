@@ -1,0 +1,178 @@
+<main class="container">
+  <div class="row">
+
+    <div class="col-md-8">
+       <section class="page-content">
+        <h1>Widgets</h1>
+
+        <p>Widgets are tools that allow you to embed DOAJ into your site. There are two widgets available:</p>
+
+<ol>
+  <li>A Simple Search widget which embeds a search box on your page. Upon submitting the search, the user is taken to their search results on DOAJ.</li>
+  <li>A Fixed Query widget which allows you to embed, into your site, a specific set of results from a predefined DOAJ search.</li>
+</ol>
+
+<h2 id="simple-search">Simple Search</h2>
+
+<p>Copy and paste the code below into your page where you want the search box to be displayed.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://doaj.org/static/widget/simple_search.js"</span> <span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"doaj-simple-search-widget"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<h2 id="fixed-query">Fixed Query</h2>
+
+<p>Copy and paste the code below into your page where you want the widget to be displayed.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+    <span class="o">!</span><span class="nb">window</span><span class="p">.</span><span class="nx">jQuery</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="dl">"</span><span class="s2">&lt;scr</span><span class="dl">"</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">ipt type=</span><span class="se">\"</span><span class="s2">text/javascript</span><span class="se">\"</span><span class="s2"> src=</span><span class="se">\"</span><span class="s2">https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js</span><span class="se">\"</span><span class="s2">&gt;&lt;/scr</span><span class="dl">"</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">ipt&gt;</span><span class="dl">"</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+<span class="kd">var</span> <span class="nx">doaj_url</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://doaj.org</span><span class="dl">"</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">QUERY_OPTIONS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">query_string</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">medicine</span><span class="dl">'</span><span class="p">,</span>                   <span class="c1">// The plain-text query string</span>
+    <span class="na">query_field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">bibjson.title</span><span class="dl">'</span><span class="p">,</span>                <span class="c1">// The field we are querying</span>
+    <span class="na">sort_field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">index.unpunctitle.exact</span><span class="dl">'</span><span class="p">,</span>       <span class="c1">// Field to order results by</span>
+    <span class="na">sort_direction</span><span class="p">:</span>  <span class="dl">'</span><span class="s1">asc</span><span class="dl">'</span><span class="p">,</span>                      <span class="c1">// Direction of sort "asc" | "desc"</span>
+    <span class="na">search_operator</span> <span class="p">:</span> <span class="dl">'</span><span class="s1">AND</span><span class="dl">'</span><span class="p">,</span>                     <span class="c1">// Which sort operator to use "AND" | "OR"</span>
+    <span class="na">search_type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">journal</span><span class="dl">'</span><span class="p">,</span>                      <span class="c1">// Which type to search upon (omit for both) "article" | "journal"</span>
+    <span class="na">page_size</span> <span class="p">:</span> <span class="mi">5</span><span class="p">,</span>                               <span class="c1">// How many results to show per widget page</span>
+    <span class="na">page_from</span> <span class="p">:</span> <span class="mi">0</span>                                <span class="c1">// Which result to start from</span>
+    <span class="p">}</span>
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://doaj.org/static/widget/fixed_query.js"</span> <span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"doaj-fixed-query-widget"</span><span class="nt">&gt;&lt;/div&gt;</span>
+</code></pre></div></div>
+
+<h3 id="configuring-via-query_options">Configuring via <code class="highlighter-rouge">QUERY_OPTIONS</code></h3>
+
+<p>There are a handful of options available, all are optional; omit them from <code class="highlighter-rouge">QUERY_OPTIONS</code> for the default behaviour.</p>
+
+<dl>
+  <dt><code>query_string</code></dt>
+  <dd>
+    Accepts plain text: any text you might put in the search box
+  </dd>
+
+  <dt><code>query_field</code></dt>
+  <dd>
+    The field to query. Omit to search in any field, or specify one of these:
+    <ul>
+      <li>
+        <code>bibjson.title</code>: title
+      </li>
+      <li>
+        <code>bibjson.keywords</code>: keywords
+      </li>
+      <li>
+        <code>index.classification</code>: subject
+      </li>
+      <li>
+        <code>index.issn.exact</code>: ISSN
+      </li>
+      <li>
+        <code>bibjson.identifier.id</code>: DOI
+      </li>
+      <li>
+        <code>index.country</code>: country of publisher
+      </li>
+      <li>
+        <code>index.language</code>: journal language
+      </li>
+      <li>
+        <code>index.publisher</code>: publisher name
+      </li>
+    </ul>
+  </dd>
+
+  <dt><code>sort_field</code></dt>
+  <dd>
+    <ul>
+      <li>
+        <code>created_date</code>: sort by date added to DOAJ (default)
+      </li>
+      <li>
+        <code>index.unpunctitle.exact</code>: sort by title
+      </li>
+    </ul>
+  </dd>
+
+  <dt><code>sort_direction</code></dt>
+  <dd>
+    <ul>
+      <li>
+        <code>asc</code>: ascending (default)
+      </li>
+      <li>
+        <code>desc</code>: descending
+      </li>
+    </ul>
+  </dd>
+
+  <dt><code>search_operator</code></dt>
+  <dd>
+    <ul>
+      <li>
+        <code>AND</code>: use AND for the terms in the query string (default)
+      </li>
+      <li>
+        <code>OR</code>: use OR for the terms in the query string
+      </li>
+    </ul>
+  </dd>
+
+  <dt><code>search_type</code></dt>
+  <dd>
+    The type of result to show. Omit this property to show results of both type
+    <ul>
+      <li>
+        <code>journal</code>: only show journals
+      </li>
+      <li>
+        <code>article</code>: only show articles
+      </li>
+    </ul></dd>
+
+  <dt><code>page_size</code></dt>
+  <dd>
+    <code>integer</code>: how many results to show per page, 1 or more (default: 10)
+  </dd>
+
+  <dt><code>page_from</code></dt>
+  <dd>
+    <code>integer</code>: which result to start from initially, 0 or higher, (default 0)
+  </dd>
+</dl>
+
+<p>The parameter <code class="highlighter-rouge">QUERY_OPTIONS</code> takes a subset of fields to define which results to retrieve. The example above displays the journals containing the word <code class="highlighter-rouge">medicine</code> in the title and in alphabetical order. Configuration via these <code class="highlighter-rouge">QUERY_OPTIONS</code> provides a simplified way to display results by keyword.</p>
+
+<p>For more control over which results to display, we recommend configuring your query via the <em>Search</em> page. Use the controls to find the results you want to show then click the <em>Share</em> button and copy the text provided in the box below <em>Embed this search</em> for inclusion on your page.</p>
+
+<p>The widget can be resized to fit within available horizontal space. Use the <code class="highlighter-rouge">page_size</code> property to minimise its vertical requirement by reducing the number of results per page.</p>
+
+<p>Note: the vertical size can change depending on the number of results shown on each page.</p>
+
+<p>You can only embed one fixed query widget per page. If you see strange characters in the results, try declaring the encoding in the <code class="highlighter-rouge">&lt;head&gt;</code> element of your HTML page by adding <code class="highlighter-rouge">&lt;meta charset="utf-8"&gt;</code>.</p>
+
+
+      </section>
+    </div>
+
+    <div class="col-md-4">
+      <nav class="page-nav" data-spy="affix">
+        <h2 class="page-nav__heading">Jump to:</h2>
+        <a href="#" class="page-nav__top">Top of the page</a>
+        <ul class="page-nav__list">
+<li class="page-nav__item item-h2"><a href="#simple-search">Simple Search</a></li>
+<li class="page-nav__item item-h2"><a href="#fixed-query">Fixed Query</a>
+<ul class="page-nav__sublist">
+<li class="page-nav__item item-h3"><a href="#configuring-via-query_options">Configuring via QUERY_OPTIONS</a></li>
+</ul>
+</li>
+</ul>
+      </nav>
+    </div>
+
+  </div>
+</main>
