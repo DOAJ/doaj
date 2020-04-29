@@ -1,5 +1,5 @@
 ---
-layout: sidenav
+layout: sidenav-fragment
 title: Publisher supporters
 support-type: publisher-supporters
 toc: true
