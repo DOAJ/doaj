@@ -1,5 +1,5 @@
 ---
-layout: sidenav
+layout: sidenav-fragment
 title: Why index your journal in DOAJ?
 toc: true
 sticky_sidenav: true
