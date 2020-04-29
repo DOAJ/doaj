@@ -142,7 +142,10 @@ def setup_jinja(app):
     app.jinja_env.add_extension('jinja2.ext.loopcontrols')
     app.jinja_env.globals['getattr'] = getattr
     app.jinja_env.globals['type'] = type
-    app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates', os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_site', os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_includes'])
+    app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates',
+                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_site',
+                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_includes',
+                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_layouts'])
 
     # a jinja filter that prints to the Flask log
     def jinja_debug(text):

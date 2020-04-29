@@ -1,5 +1,5 @@
 ---
-layout: single-col-data
+layout: no-sidenav
 title: Login
 toc: true
 highlight: false

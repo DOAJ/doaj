@@ -43,7 +43,7 @@
                   <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}{% if question.required %} required{% endif %} style="width: 75%;"/>
                 </div>
 
-                {% elsif question.input == 'radio' or question.input == 'checkbox' %}
+                {% elif question.input == 'radio' or question.input == 'checkbox' %}
                 <p>{{ question.label }}&nbsp;{% include form_long_help.html %}</p>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% for choice in question.choices %}
@@ -51,7 +51,7 @@
                 <label for="{{ question.id }}-{{ choice[0] }}">{{ choice[1] }}</label>
                 {% endfor %}
 
-                {% elsif question.input == 'select' %}
+                {% elif question.input == 'select' %}
                 <label for="{{ question.id }}">
                   {{ question.label }}&nbsp;{% include form_long_help.html %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
@@ -63,7 +63,7 @@
                 </select>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
 
-                {% elsif question.input == 'textarea' %}
+                {% elif question.input == 'textarea' %}
                 <label for="{{ question.id }}">
                   {{ question.label }}&nbsp;{% include form_long_help.html %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
@@ -127,7 +127,7 @@
               <ol class="application-nav__list">
                 <li class="application-nav__list-item
                   {% if page.name == step1 %} application-nav__list-item--active
-                  {% elsif page.name == step2 or page.name == step3 or page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% elif page.name == step2 or page.name == step3 or page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/01-oa-compliance.md %}">
                     Open access compliance
@@ -135,7 +135,7 @@
                 </li>
                 <li class="application-nav__list-item
                   {% if page.name == step2 %} application-nav__list-item--active
-                  {% elsif page.name == step3 or page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% elif page.name == step3 or page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/02-about.md %}">
                     About
@@ -143,7 +143,7 @@
                 </li>
                 <li class="application-nav__list-item
                   {% if page.name == step3 %} application-nav__list-item--active
-                  {% elsif page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% elif page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/03-copyright-licensing.md %}">
                     Copyright & licensing
@@ -151,7 +151,7 @@
                 </li>
                 <li class="application-nav__list-item
                   {% if page.name == step4 %} application-nav__list-item--active
-                  {% elsif page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% elif page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/04-editorial.md %}">
                     Editorial
@@ -159,7 +159,7 @@
                 </li>
                 <li class="application-nav__list-item
                   {% if page.name == step5 %} application-nav__list-item--active
-                  {% elsif page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% elif page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/05-business-model.md %}">
                     Business model
@@ -167,7 +167,7 @@
                 </li>
                 <li class="application-nav__list-item
                   {% if page.name == step6 %} application-nav__list-item--active
-                  {% elsif page.name == step7 %} application-nav__list-item--is-done
+                  {% elif page.name == step7 %} application-nav__list-item--is-done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/06-best-practice.md %}">
                     Best practice

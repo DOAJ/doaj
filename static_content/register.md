@@ -1,5 +1,5 @@
 ---
-layout: single-col-data
+layout: no-sidenav
 title: Register for a DOAJ account
 toc: true
 highlight: false

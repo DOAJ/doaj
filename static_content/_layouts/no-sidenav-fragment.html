@@ -1,0 +1,159 @@
+<main class="container">
+  <section class="page-content">
+    {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
+    <h1>{{ page.title }}</h1>
+    <div class="row">
+      <div class="col-md-8">
+        {{ content }}
+      </div>
+    </div>
+
+    <!-- TODO: make this more elegant -->
+    {% if page.name == 'team.md' %}
+    <!-- About section: team and ambassadors -->
+    <ul class="row title-list">
+      {% for i in site.data.team %}
+      <li class="col-sm-6 col-md-4">
+        <div class="title-list__text">
+          <figure class="portrait">
+            {% if i.photo %}
+              <div class="portrait__bg-img--is-3d" style="background-image: url('../../img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+            {% else %}
+              <div class="portrait__img--is-empty"></div>
+            {% endif %}
+          </figure>
+          <p class="label">{{ i.role }}</p>
+          <h2 class="title-list__heading">{{ i.name }}</h2>
+          <p class="title-list__para">
+            {{ i.bio }}
+          </p>
+          {% if i.coi %}
+          <p class="title-list__para">
+            Conflict of interest statement(s):
+            <ul>
+              {% for j in i.coi %}
+              <li><a href="{{ j[1] }}" target="_blank">{{ j[0] }}</a></li>
+              {% endfor %}
+            </ul>
+          </p>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if page.name == 'ambassadors.md' %}
+    <div class="row">
+      <div class="col-md-8">
+        <p>Since 2016 DOAJ has been running an Ambassador program that targets regions of the world that benefit from greater awareness of the issues surrounding open access and the importance of best practice and high publishing standards.</p>
+        <p>In 2016 and 2017, DOAJ employed 12 Ambassadors from around the world to do this work with us.</p>
+        <p>The program has since been expanded to include ambassadors from Indonesia (September 2017), Korea (December 2017), North America (2020) and Japan (2020).</p>
+      </div>
+    </div>
+    <ul class="row title-list">
+      {% for i in site.data.ambassadors %}
+      <li class="col-sm-6 col-md-4">
+        <div class="title-list__text">
+          <p class="label">{{ i.region }}</p>
+          <h2 class="title-list__heading">{{ i.name }}</h2>
+          {% if i.bio %}
+          <p class="title-list__para">
+            {{ i.bio }}
+          </p>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    {% elif page.name == 'advisory-board-council.md' %}
+      <!-- About section: advisory board & council -->
+      <h2>Advisory Board</h2>
+      <p>The DOAJ Advisory Board was elected by the community. All board members started in August 2019.</p>
+      <ul class="row title-list">
+        {% for i in site.data.advisory-board %}
+        <li class="col-xs-6 col-md-4">
+          <div class="title-list__text">
+            <p class="label">{{ i.country }}</p>
+            <h3 class="title-list__heading">{{ i.name }}</h3>
+            <p class="title-list__para">
+              {{ i.institution }}<br/>
+            </p>
+            {% if i.coi %}
+            <p class="title-list__para">
+              Conflict of interest statement(s):
+              {% for j in i.coi %}
+              <a href="{{ j[1] }}" target="_blank">{{ j[0] }}</a>
+              {% endfor %}
+            </p>
+            {% endif %}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+
+      <h2>Council</h2>
+      <p>The DOAJ Council was elected by the community. All Council members started in September 2019 unless otherwise stated.</p>
+      <ul class="row bleed title-list">
+        {% for i in site.data.council %}
+        <li class="col-xs-6 col-md-4">
+          <div class="title-list__text">
+            <p class="label">{{ i.country }}</p>
+            <h3 class="title-list__heading">{{ i.name }}</h3>
+            <p class="title-list__para">
+              {{ i.institution }}<br/>
+            </p>
+            {% if i.coi %}
+            <p class="title-list__para">
+              Conflict of interest statement(s):
+              {% for j in i.coi %}
+              <a href="{{ j[1] }}" target="_blank">{{ j[0] }}</a>
+              {% endfor %}
+            </p>
+            {% endif %}
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+
+    {% elif page.name == 'volunteers.md' %}
+      <!-- About section: volunteers -->
+      <h2>Editors</h2>
+      <ul class="row title-list">
+        {% for i in site.data.volunteers.ed %}
+        {% if i.city %}
+        <li class="col-xs-6 col-md-4">
+          <div class="title-list__text">
+            <p class="label">{{ i.area }}</p>
+            <h3 class="title-list__heading">{{ i.name }}</h3>
+            <p>
+              {{ i.city }}, {{ i.country }}<br/>
+              {{ i.language }}<br/>
+            </p>
+          </div>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+
+      <h2>Associate editors</h2>
+      <ul class="row bleed title-list">
+        {% for i in site.data.volunteers.ass_ed %}
+        {% if i.city %}
+        <li class="col-xs-6 col-md-4">
+          <div class="title-list__text">
+            <p class="label">{{ i.area }}</p>
+            <h3 class="title-list__heading">{{ i.name }}</h3>
+            <p>
+              {{ i.city }}, {{ i.country }}<br/>
+              {{ i.language }}<br/>
+            </p>
+          </div>
+        </li>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </section>
+</main>

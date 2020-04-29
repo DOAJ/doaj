@@ -1,4 +1,6 @@
-{% extends "base.html" %}
+{% with page={title: "base page", section: "section"} %}
+    {% extends "base.html" %}
+{% endwith %}
 
 {% block content %}
 
