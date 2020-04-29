@@ -7,4 +7,4 @@ sticky_sidenav: true
 highlight: false
 ---
 
-{% include_relative content-xml.md %}
+{% include_relative content/xml.md %}

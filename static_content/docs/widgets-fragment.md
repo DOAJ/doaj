@@ -1,10 +1,10 @@
 ---
-layout: sidenav
-title: OpenURL
+layout: fragment
+title: Widgets
 section: Documentation
 toc: true
 sticky_sidenav: true
 highlight: false
 ---
 
-{% include_relative content/openurl.md %}
+{% include_relative content/widgets.md %}
