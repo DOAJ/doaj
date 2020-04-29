@@ -1,5 +1,5 @@
 ---
-layout: fragment
+layout: sidenav-fragment
 title: OpenURL
 section: Documentation
 toc: true

@@ -1,5 +1,5 @@
 ---
-layout: fragment
+layout: sidenav-fragment
 title: XML
 toc: true
 highlight: false

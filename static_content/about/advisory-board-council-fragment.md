@@ -1,5 +1,5 @@
 ---
-layout: no-sidenav
+layout: no-sidenav-fragment
 title: Advisory Board & Council
 section: About
 toc: true

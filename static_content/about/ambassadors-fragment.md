@@ -1,5 +1,5 @@
 ---
-layout: no-sidenav
+layout: no-sidenav-fragment
 title: Ambassadors
 section: About
 toc: true
