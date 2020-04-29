@@ -4,7 +4,7 @@
   "description": "A directory that indexes and provides access to quality open access, peer-reviewed journals and articles.",
   "icons": [
     {
-      "src": "/img/favicon/192.png",
+      "src": "/img/favicon/icon-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
@@ -16,7 +16,7 @@
   ],
   "start_url": "https://doaj-static.netlify.app/",
   "background_color": "#FD5A3B",
-  "display": "standalone",
+  "display": "minimal-ui",
   "scope": "/",
   "theme_color": "#F8F3EF"
 }
