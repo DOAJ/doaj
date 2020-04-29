@@ -20,24 +20,6 @@ APPLICATION_STRUCT = {
                 "application_status" : {"coerce" : "unicode"},
                 "date_applied" : {"coerce" : "utcdatetime"},
                 "last_manual_update": {"coerce": "utcdatetime"}
-            },
-            "objects" : [
-                "applicant",
-                "contact"
-            ],
-            "structs" : {
-                "applicant" : {
-                    "fields" : {
-                        "email" : {"coerce" : "unicode"},
-                        "name" : {"coerce" : "unicode"}
-                    }
-                },
-                "contact": {
-                    "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "email": {"coerce" : "unicode"}
-                    }
-                }
             }
         },
         "index" : {
@@ -133,14 +115,6 @@ class Application(JournalLikeObject):
     def date_applied(self, val):
         self.__seamless__.set_with_struct("admin.date_applied", val)
 
-    @property
-    def applicant(self):
-        return self.__seamless__.get_single("admin.applicant", default={})
-
-    def set_applicant(self, name, email):
-        self.__seamless__.set_with_struct("admin.applicant.name", name)
-        self.__seamless__.set_with_struct("admin.applicant.email", email)
-
     def _sync_owner_to_journal(self):
         if self.current_journal is None:
             return
@@ -160,9 +134,10 @@ class Application(JournalLikeObject):
         else:
             self.__seamless__.set_with_struct("index.application_type", constants.APPLICATION_TYPE_NEW_APPLICATION)
 
-    def prep(self):
+    def prep(self, is_update=True):
         self._generate_index()
-        self.set_last_updated()
+        if is_update:
+            self.set_last_updated()
 
     def save(self, sync_owner=True, **kwargs):
         self.prep()

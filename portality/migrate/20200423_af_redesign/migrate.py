@@ -1,8 +1,12 @@
 from portality.core import app, es_connection, initialise_index
+
 from portality.models.v1.suggestion import Suggestion as SuggestionV1
 from portality.models.v1.journal import JournalBibJSON as JournalBibJSONV1
 from portality.models.v2.application import Application as ApplicationV2
 from portality.models.v2.journal import JournalLikeBibJSON as JournalLikeBibJSONV2
+
+from portality.models.v1.journal import Journal as JournalV1
+from portality.models.v2.journal import Journal as JournalV2
 
 import esprit
 from datetime import datetime, timedelta
@@ -20,8 +24,8 @@ permissive_bibjson_struct = {
     "fields" : {
         "alternative_title" : {"coerce" : "unicode"},
         "boai" : {"coerce" : "bool"},
-        "eissn" : {"coerce" : "issn"},
-        "pissn" : {"coerce" : "issn"},
+        "eissn" : {"coerce" : "unicode"},
+        "pissn" : {"coerce" : "unicode"},
         "discontinued_date" : {"coerce" : "bigenddate"},
         "publication_time_weeks" : {"coerce" : "integer"},
         "title" : {"coerce" : "unicode"}
@@ -29,7 +33,7 @@ permissive_bibjson_struct = {
     "lists" : {
         "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
         "keywords" : {"contains" : "field", "coerce" : "unicode_lower"},
-        "language" : {"contains" : "field", "coerce" : "isolang_2letter"},
+        "language" : {"contains" : "field", "coerce" : "unicode"},
         "license" : {"contains" : "object"},
         "replaces" : {"contains" : "field", "coerce" : "issn"},
         "subject" : {"contains" : "object"}
@@ -159,7 +163,7 @@ permissive_bibjson_struct = {
         "publisher" : {
             "fields" : {
                 "name" : {"coerce" : "unicode"},
-                "country" : {"coerce" : "country_code"}
+                "country" : {"coerce" : "unicode"}
             }
         },
         "ref" : {
@@ -197,6 +201,7 @@ def permissive_bibjson(self):
 
 
 ApplicationV2.bibjson = permissive_bibjson
+JournalV2.bibjson = permissive_bibjson
 
 
 def application_migration(source, target):
@@ -251,9 +256,8 @@ def journal_like_migration(source, target):
     if source.bulk_upload_id:
         target.set_bulk_upload_id(source.bulk_upload_id)
 
-    # FIXME: what to do about contact migration
-    #if source.contacts():
-    #    target.set_contact(source.contacts())
+    if source.contacts() and len(source.contacts()) > 0:
+        target.set_contact(**source.contacts()[0])
 
     # editor
     if source.editor:
@@ -272,11 +276,10 @@ def journal_like_migration(source, target):
         target.set_owner(source.owner)
 
     # seal
-    if source.has_seal():
-        target.set_seal(source.has_seal())
+    target.set_seal(source.has_seal())
 
     # created date
-    target.set_last_updated(source.last_updated)
+    target.set_created(source.created_date)
 
     # last manual update
     if source.last_manual_update is not None:
@@ -284,8 +287,6 @@ def journal_like_migration(source, target):
 
     # last updated
     target.set_last_updated(source.last_updated)
-
-
 
 
 def bibjson_migration(source, target):
@@ -304,6 +305,8 @@ def bibjson_migration(source, target):
     apc_curr = sbj.apc.get("currency")
     if apc_avg is not None and apc_curr is not None:
         tbj.add_apc(apc_curr, apc_avg)
+    else:
+        tbj.has_apc = False
 
     # apc url
     if sbj.apc_url:
@@ -397,7 +400,7 @@ def bibjson_migration(source, target):
         ltype = lic.get("type")
 
         typeurl = None
-        if lurl.startswith("https://creativecommons.org/"):
+        if lurl is not None and lurl.startswith("https://creativecommons.org/"):
             typeurl = lurl
         if typeurl is None:
             typeurl = CC_URLS.get(lurl)
@@ -446,7 +449,7 @@ def bibjson_migration(source, target):
         tbj.has_waiver = False
 
     # persistent identifier scheme
-    if sbj.persistent_identifier_scheme is not None:
+    if sbj.persistent_identifier_scheme is not None and len(sbj.persistent_identifier_scheme) > 0:
         tbj.pid_scheme = sbj.persistent_identifier_scheme
     else:
         tbj.has_pid_scheme = False
@@ -464,7 +467,7 @@ def bibjson_migration(source, target):
 
     # publisher name
     if sbj.publisher is not None:
-        tbj.publisher_name = tbj.publisher
+        tbj.publisher_name = sbj.publisher
 
     # replaces
     if sbj.replaces is not None:
@@ -487,7 +490,6 @@ def bibjson_migration(source, target):
         tbj.title = sbj.title
 
 
-
 # initialise the index, so that we know we are working with a suitable index
 initialise_index(app, es_connection)
 
@@ -496,23 +498,23 @@ tconn = esprit.raw.Connection(app.config.get("ELASTIC_SEARCH_HOST"), "")
 prefix = app.config.get("ELASTIC_SEARCH_DB_PREFIX")
 
 migrate_types = [
-    ("suggestion", "application")
-#    ("journal", "journal")
+    ("suggestion", "application", SuggestionV1, ApplicationV2, application_migration),
+    ("journal", "journal", JournalV1, JournalV2, journal_migration)
 ]
 
 copy_types = [
-#    "news",
-#    "editor_group",
-#    "lcc",
-#    "provenance",
-#    "harvester_state",
-#    "bulk_upload", # I'm not sure we actually use this anywhere now
-#    "article",
-#    "lock",
-#    "account",
-#    "upload",
-#    "background_job",
-#    "cache"
+    "news",
+    "editor_group",
+    "lcc",
+    "provenance",
+    "harvester_state",
+    "bulk_upload", # I'm not sure we actually use this anywhere now
+    "article",
+    "lock",
+    "account",
+    "upload",
+    "background_job",
+    "cache"
 ]
 
 batch_size = 1000
@@ -561,6 +563,8 @@ for ct in copy_types:
                   "of", max)
             esprit.raw.bulk(tconn, batch, idkey="id", type_=tt, bulk_type="create")
             batch = []
+        else:
+            print("Scroll timed out, and nothing to finalise")
 
     # Write the last part-batch to index
     if len(batch) > 0:
@@ -571,7 +575,7 @@ for ct in copy_types:
 
 
 # now do the hard migrations
-for smt, tmt in migrate_types:
+for smt, tmt, source_model, target_model, processor in migrate_types:
     tt = prefix + "-" + tmt
     print("Migrating", smt, "to", tt)
     batch = []
@@ -585,12 +589,18 @@ for smt, tmt in migrate_types:
     }
 
     try:
-        for result in esprit.tasks.scroll(sconn, smt, q=default_query, keepalive="1m", page_size=1000, scan=True):
+        for result in esprit.tasks.scroll(sconn, smt, q=default_query, keepalive="2m", page_size=1000, scan=True):
 
-            source = SuggestionV1(**result)
-            target = ApplicationV2()
-            application_migration(source, target)
-            target.prep()   # in order to regenerate all the index fields, etc
+            source = source_model(**result)
+            try:
+                source.snapshot()   # FIXME: is this what we should actually do?  It means that the history system has a copy of the record at final stage, which seems sensible
+            except AttributeError:
+                # this type doesn't support snapshotting
+                pass
+
+            target = target_model()
+            processor(source, target)
+            target.prep(is_update=False)   # in order to regenerate all the index fields, etc
 
             batch.append(target.data)
             if len(batch) >= batch_size:
@@ -614,6 +624,8 @@ for smt, tmt in migrate_types:
                   "of", max)
             esprit.raw.bulk(tconn, batch, idkey="id", type_=tt, bulk_type="create")
             batch = []
+        else:
+            print("Scroll timed out, no more to write")
 
     # Write the last part-batch to index
     if len(batch) > 0:

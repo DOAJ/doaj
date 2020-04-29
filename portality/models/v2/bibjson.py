@@ -212,6 +212,10 @@ class JournalLikeBibJSON(SeamlessMixin):
     def has_apc(self):
         return self.__seamless__.get_single("apc.has_apc")
 
+    @has_apc.setter
+    def has_apc(self, val):
+        self.__seamless__.set_with_struct("apc.has_apc", val)
+
     @property
     def article_license_display(self):
         return self.__seamless__.get_list("article.license_display")
@@ -379,6 +383,14 @@ class JournalLikeBibJSON(SeamlessMixin):
     def add_pid_scheme(self, scheme):
         self.__seamless__.add_to_list_with_struct("pid_scheme.scheme", scheme)
         self.__seamless__.set_with_struct("pid_scheme.has_pid_scheme", True)
+
+    @property
+    def has_pid_scheme(self):
+        return self.__seamless__.get_single("pid_scheme.has_pid_scheme", False)
+
+    @has_pid_scheme.setter
+    def has_pid_scheme(self, val):
+        self.__seamless__.set_with_struct("pid_scheme.has_pid_scheme", val)
 
     def set_plagiarism_detection(self, url, has_detection=True):
         self.__seamless__.set_with_struct("plagiarism.detection", has_detection)
