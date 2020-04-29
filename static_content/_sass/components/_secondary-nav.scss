@@ -27,11 +27,25 @@
     max-height: 0;
     overflow: hidden;
     display: block;
+
+    li {
+      margin-left: 0;
+
+      a {
+        padding: $spacing-02 0;
+        display: block;
+        line-height: 1;
+      }
+    }
+  }
+
+  .feather-chevron-down {
+    display: none;
   }
 
   .secondary-nav__menu-toggle {
     display: inline-block;
-    padding: $spacing-03 0;
+    padding: $spacing-04 $spacing-03;
     color: $warm-black;
     stroke: $warm-black;
 
