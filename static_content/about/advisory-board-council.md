@@ -1,5 +1,5 @@
 ---
-layout: single-col-data
+layout: no-sidenav
 title: Advisory Board & Council
 section: About
 toc: true

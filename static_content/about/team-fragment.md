@@ -1,5 +1,5 @@
 ---
-layout: single-col-data
+layout: no-sidenav
 title: DOAJ team
 section: About
 toc: true

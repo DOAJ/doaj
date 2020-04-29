@@ -1,5 +1,5 @@
 ---
-layout: single-col-data
+layout: no-sidenav
 title: Volunteers
 section: About
 toc: true

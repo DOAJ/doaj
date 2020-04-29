@@ -1,5 +1,5 @@
 ---
-layout: data
+layout: sidenav
 title: Publisher supporters
 support-type: publisher-supporters
 toc: true

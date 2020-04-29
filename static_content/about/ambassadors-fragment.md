@@ -1,5 +1,5 @@
 ---
-layout: single-col-data
+layout: no-sidenav
 title: Ambassadors
 section: About
 toc: true

@@ -1,5 +1,5 @@
 ---
-layout: data
+layout: sidenav
 title: Thank you for your support
 support-type: supporters
 toc: true
