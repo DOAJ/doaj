@@ -1,5 +1,5 @@
 ---
-layout: sidenav
+layout: sidenav-fragment
 title: Supporters
 support-type: supporters
 toc: true

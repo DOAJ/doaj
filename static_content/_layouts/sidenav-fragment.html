@@ -10,7 +10,7 @@
 
         <!-- TODO: make this more elegant -->
         <!-- Display data pages -->
-        {% if page.name == 'sponsors.md' %}
+        {% if page.name == 'sponsors-fragment.md' %}
           <!-- Support section: sponsors -->
           <h2><span data-feather="award" class="stroke-gold"></span> Gold sponsor</h2>
           <div class="row">
@@ -45,7 +45,7 @@
             {% endfor %}
           </div>
 
-        {% elsif page.name == 'publisher-supporters.md' %}
+        {% elsif page.name == 'publisher-supporters-fragment.md' %}
           <!-- Support section: publisher supporters -->
           <h2>Current publisher supporters</h2>
           <ul class="row title-list">
@@ -56,7 +56,7 @@
             {% endfor %}
           </ul>
 
-        {% elsif page.name == 'supporters.md' %}
+        {% elsif page.name == 'supporters-fragment.md' %}
           <!-- Support section: supporters -->
           {% for i in site.data.supporters %}
             <p>{{ i.name }}, {{ i.url }}</p>

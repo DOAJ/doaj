@@ -1,5 +1,5 @@
 ---
-layout: sidenav
+layout: sidenav-fragment
 title: Thank you for your support
 support-type: supporters
 toc: true
