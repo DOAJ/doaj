@@ -1,4 +1,4 @@
-When you upload your article metadata to us, it must be in one of two XML formats. BLALBA
+When you upload your article metadata to us, it must be in one of two XML formats. 
 
 Article metadata is provided to us on the understanding that it will then be available for free, to be distributed to any third party who wants it.
 
