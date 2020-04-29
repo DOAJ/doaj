@@ -16,7 +16,7 @@
   ],
   "start_url": "https://doaj-static.netlify.app/",
   "background_color": "#FD5A3B",
-  "display": "minimal-ui",
+  "display": "standalone",
   "scope": "/",
   "theme_color": "#F8F3EF"
 }
