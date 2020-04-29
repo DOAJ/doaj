@@ -1,6 +1,6 @@
 # List of supporters
 
-- name: Australian Catholic University
+- name: "Australian Catholic University"
   annual: true
   sustainable: true
   consortium_name:
@@ -8,7 +8,7 @@
   long: 144.97789
   country: Australia
 
-- name: Nord University
+- name: "Nord University"
   annual: true
   sustainable: true
   consortium_name:
@@ -16,27 +16,26 @@
   long: 14.56054
   country: Norway
 
-- name: University of Alberta Libraries: Bibliothèque Saint-Jean
+- name: "University of Alberta Libraries: Bibliothèque Saint-Jean"
   annual: true
   sustainable: true
-  consortium_name: CRKN (Canadian Research Knowledge Network)
+  consortium_name: "CRKN (Canadian Research Knowledge Network)"
   lat: 53.52027
   long: -113.46805
   country: Canada
-  
-- name: Universitätsbibliothek Passau
+
+- name: "Universitätsbibliothek Passau"
   annual: true
   sustainable: false
-  consortium_name: Bayern Konsortium
+  consortium_name: "Bayern Konsortium"
   lat: 48.56852
   long: 13.4534
   country: Germany
-  
- - name: Corvinus University of Budapest
+
+ - name: "Corvinus University of Budapest"
   annual: true
   sustainable: false
-  consortium_name: Hungarian Library Consortium
+  consortium_name: "Hungarian Library Consortium"
   lat: 47.48689
   long: 19.05751
   country: Hungary
-
