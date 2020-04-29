@@ -5,7 +5,7 @@
   id: review_process
   subgroup: "Peer review"
   input: checkbox
-  required: true
+  required: false
   choices:
     1: "Editorial review"
     2: "Peer review"

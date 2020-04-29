@@ -17,9 +17,8 @@
         </div>
 
         <!-- TODO: make this more elegant -->
-        {% if page.name == 'team-ambassadors.md' %}
+        {% if page.name == 'team.md' %}
         <!-- About section: team and ambassadors -->
-        <h2>DOAJ team</h2>
         <ul class="row title-list">
           {% for i in site.data.team %}
           <li class="col-sm-6 col-md-4">
@@ -32,7 +31,7 @@
                 {% endif %}
               </figure>
               <p class="label">{{ i.role }}</p>
-              <h3 class="title-list__heading">{{ i.name }}</h3>
+              <h2 class="title-list__heading">{{ i.name }}</h2>
               <p class="title-list__para">
                 {{ i.bio }}
               </p>
@@ -50,9 +49,9 @@
           </li>
           {% endfor %}
         </ul>
+        {% endif %}
 
-
-        <h2>Ambassadors</h2>
+        {% if page.name == 'ambassadors.md' %}
         <div class="row">
           <div class="col-md-8">
             <p>Since 2016 DOAJ has been running an Ambassador program that targets regions of the world that benefit from greater awareness of the issues surrounding open access and the importance of best practice and high publishing standards.</p>
@@ -62,10 +61,10 @@
         </div>
         <ul class="row title-list">
           {% for i in site.data.ambassadors %}
-          <li class="col-xs-6 col-md-2">
+          <li class="col-sm-6 col-md-4">
             <div class="title-list__text">
               <p class="label">{{ i.region }}</p>
-              <h3 class="title-list__heading">{{ i.name }}</h3>
+              <h2 class="title-list__heading">{{ i.name }}</h2>
               {% if i.bio %}
               <p class="title-list__para">
                 {{ i.bio }}

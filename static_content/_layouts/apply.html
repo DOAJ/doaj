@@ -11,12 +11,12 @@
 
         <div class="col-md-8">
           <section class="page-content">
-            {% if page.name != "index.md" %}<p class="label">Page {{ page.number }} of 7</p>{% endif %}
+            {% if page.name != "index.md" and page.name != "thank-you.md" %}<p class="label">Page {{ page.number }} of 7</p>{% endif %}
             <h1>{{ page.title }}</h1>
 
             {{ content }}
 
-            <form>
+            <form action="../{{ page.next }}">
               {% assign form_page = page.name | prepend: "form-" | remove: ".md" %}
 
               {% for question in site.data[form_page] %}
@@ -30,29 +30,33 @@
 
               <div class="form__question{% if question.depends_on %} form__subquestion{% endif %}">
 
-                {% if question.input == 'radio' or question.input == 'checkbox' %}
-                <p>
-                  {{ question.label }}
-                  {% if question.long_help %}
-                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
-                  {% endif %}
-                  {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
-                </p>
+                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
+                {% if question.id == 'apc_max'%}
+                <label for="question.id">{{ question.label }}&nbsp;{% include form_long_help.html %}</label>
+                <div class="input-group" style="width: 75%;">
+                  <label for="apc_currency" class="sr-only"></label>
+                  <select id="apc_currency" require style="width: 25%;">
+                    <option id="{{ question.id }}-usd">$ USD</option>
+                    <option id="{{ question.id }}-eur">€ EUR</option>
+                    <option id="{{ question.id }}-gbp">£ GBP</option>
+                  </select>
+                  <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}{% if question.required %} required{% endif %} style="width: 75%;"/>
+                </div>
+
+                {% elsif question.input == 'radio' or question.input == 'checkbox' %}
+                <p>{{ question.label }}&nbsp;{% include form_long_help.html %}</p>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% for choice in question.choices %}
-                <input id="{{ question.id }}-{{ choice[0] }}" type="{{ question.input }}" name="{{ question.id }}"/>
+                <input id="{{ question.id }}-{{ choice[0] }}" type="{{ question.input }}" name="{{ question.id }}"{% if question.required %} required{% endif %}/>
                 <label for="{{ question.id }}-{{ choice[0] }}">{{ choice[1] }}</label>
                 {% endfor %}
 
                 {% elsif question.input == 'select' %}
                 <label for="{{ question.id }}">
-                  {{ question.label }}
-                  {% if question.long_help %}
-                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
-                  {% endif %}
+                  {{ question.label }}&nbsp;{% include form_long_help.html %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
-                <select id="{{ question.id }}">
+                <select id="{{ question.id }}"{% if question.required %} required{% endif %}>
                   {% for choice in question.choices %}
                   <option id="{{ question.id }}-{{ choice[0] }}">{{ choice[1] }}</option>
                   {% endfor %}
@@ -61,24 +65,18 @@
 
                 {% elsif question.input == 'textarea' %}
                 <label for="{{ question.id }}">
-                  {{ question.label }}
-                  {% if question.long_help %}
-                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
-                  {% endif %}
+                  {{ question.label }}&nbsp;{% include form_long_help.html %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
-                <textarea id="{{ question.id }}"></textarea>
+                <textarea id="{{ question.id }}"{% if question.required %} required{% endif %}></textarea>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
 
                 {% else %}
                 <label for="{{ question.id }}">
-                  {{ question.label }}
-                  {% if question.long_help %}
-                  <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ question.id }}"></span>
-                  {% endif %}
+                  {{ question.label }}&nbsp;{% include form_long_help.html %}
                   {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
                 </label>
-                <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}/>
+                <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}{% if question.required %} required{% endif %}{% if question.input == 'number' %} min="1"{% endif %}/>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
                 {% endif %}
 
@@ -100,15 +98,15 @@
 
               {% endfor %}
 
+              {% if page.name != "index.md" and page.name != "thank-you.md" and page.name != "07-review.md" %}
               <p class="pager-buttons">
                 {% if page.previous %}
                 <a href="../{{ page.previous }}" class="pager-buttons__left">Previous</a>
                 {% endif %}
 
-                {% if page.next %}
-                <a href="../{{ page.next }}" class="pager-buttons__right">Next</a>
-                {% endif %}
+                <button type="submit" class="pager-buttons__right">Next</button>
               </p>
+              {% endif %}
             </form>
           </section>
         </div>

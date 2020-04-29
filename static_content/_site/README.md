@@ -1,6 +1,6 @@
 # doaj-templates
 
-A static Jekyll site for doaj.org
+Jekyll-based static pages for the new doaj.org. 
 
 
 ## Install Jekyll
@@ -11,16 +11,17 @@ Ruby is required.
 
 ## Running the site locally
 
-1. `git clone https://github.com/DOAJ/doaj-static.git`
-2. `cd doaj-static`
-3. `jekyll s`
-4. Navigate to `http://127.0.0.1:4000` in your browser
-5. You must make changes locally (and not via Github) to see them.
+1. `git clone https://github.com/DOAJ/doaj.git`
+2. `git checkout feature/af_redesign__static_content`
+3. `cd doaj/static_content/`
+4. `jekyll s`
+5. Navigate to `http://127.0.0.1:4000` in your browser
+6. You must make changes locally (and not via Github) to see them.
 
 ## Building the site
 
-1. `git clone https://github.com/DOAJ/doaj-static.git`
-2. `cd doaj-static`
+1. `git clone https://github.com/DOAJ/doaj.git`
+2. `cd doaj/static_content/`
 3. `jekyll build`
 4. Compiled static HTML, CSS, & JS will be found in `_site/`
 
@@ -47,7 +48,7 @@ This content is found in the following directories (each representing a section 
   - `seal.md`
   - `transparency.md`
   - `why-index.md`
-- `data/`
+- `docs/`
   - `openurl.md`
   - `public-data-dump.md`
   - `widgets.md`

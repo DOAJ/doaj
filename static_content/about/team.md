@@ -1,6 +1,6 @@
 ---
 layout: single-col-data
-title: Team & ambassadors
+title: DOAJ team
 section: About
 toc: true
 highlight: false
