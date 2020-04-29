@@ -61,7 +61,7 @@
 {% endif %}
 
 
-{% include 'header.html' %}
+{% include 'header_reference.html' %}
 
 <div class="container">
 
@@ -75,12 +75,12 @@
     </div>
     {% endblock %}
 
-    {% include 'footer.html' %}
+</div> <!-- /container -->
+
+{% include 'footer_reference.html' %}
     {% include '_js_includes.html' %}
 
     {% block extra_js_bottom %}{% endblock extra_js_bottom %}
-
-</div> <!-- /container -->
 
 {% if not request.cookies.get("doaj-consent") %}
 

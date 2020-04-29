@@ -12,7 +12,10 @@
   position: relative;
   z-index: 2;
   float: left;
-  width: 100%;
   margin-bottom: 0;
   display: table-cell;
+
+  &:not(:first-child) {
+    margin-left: -1px;
+  }
 }

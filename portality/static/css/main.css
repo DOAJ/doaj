@@ -1027,7 +1027,7 @@ pre {
   padding: 0.375rem; }
 
 code {
-  background: #F9F1EC; }
+  background: #F8F3EF; }
 
 a {
   text-decoration: underline;
@@ -1400,8 +1400,8 @@ button[type="submit"] {
 button:disabled,
 button[disabled],
 input[disabled] {
-  background-color: #F9F1EC;
-  border-color: #F9F1EC;
+  background-color: #F8F3EF;
+  border-color: #F8F3EF;
   color: #5C5956;
   font-style: italic; }
 
@@ -1608,7 +1608,7 @@ button svg {
   list-style: none;
   padding: 0;
   margin: 0;
-  background-color: #F9F1EC;
+  background-color: #F8F3EF;
   border: 1px solid #282624;
   -webkit-background-clip: padding-box;
   background-clip: padding-box; }
@@ -1716,7 +1716,7 @@ button svg {
 
 /* Highlight sections */
 .highlight {
-  background-color: #F9F1EC; }
+  background-color: #F8F3EF; }
 
 .highlight--is-aside {
   margin: 3rem 0 0 0;
@@ -1773,9 +1773,11 @@ button svg {
   position: relative;
   z-index: 2;
   float: left;
-  width: 100%;
   margin-bottom: 0;
   display: table-cell; }
+  .input-group input:not(:first-child),
+  .input-group select:not(:first-child) {
+    margin-left: -1px; }
 
 /* Introduction paragraphs */
 .intro {
@@ -1955,7 +1957,7 @@ button svg {
   float: left;
   border: 1px solid #5C5956;
   background: #5C5956;
-  color: #F9F1EC; }
+  color: #F8F3EF; }
   .pager-buttons__left:hover, .pager-buttons__left:focus, .pager-buttons__left:active {
     border-color: #282624;
     background: #282624; }
@@ -2005,7 +2007,7 @@ button svg {
   z-index: 10;
   height: 50px;
   font-weight: 600;
-  background-color: #F9F1EC; }
+  background-color: #F8F3EF; }
   @media (max-width: 768px) {
     .primary-nav .feather-chevron-down,
     .primary-nav .dropdown__menu {
@@ -2024,7 +2026,7 @@ button svg {
     margin: 6rem 0;
     padding: 0.75rem;
     color: #282624;
-    background-color: #F9F1EC; }
+    background-color: #F8F3EF; }
 
   .promo__heading {
     margin: 0.75rem 0 1.5rem;
@@ -2047,7 +2049,7 @@ button svg {
     border-bottom: 1px solid #5C5956; }
 
 .secondary-nav--precedes-highlight {
-  background-color: #F9F1EC; }
+  background-color: #F8F3EF; }
 
 .secondary-nav__login {
   margin-left: 40%; }
@@ -2177,7 +2179,7 @@ button svg {
 
 /* Sponsors page */
 .sponsor {
-  margin-top: 0.75rem;
+  margin-top: 3rem;
   margin-bottom: 3rem; }
   .sponsor:nth-child(3n+1) {
     clear: both; }
@@ -2246,7 +2248,7 @@ button svg {
         display: inline-block;
         margin-right: 0.1875rem;
         content: counter(step);
-        background: #F9F1EC;
+        background: #F8F3EF;
         width: 30px;
         height: 30px;
         border: 1px solid rgba(92, 89, 86, 0.5);

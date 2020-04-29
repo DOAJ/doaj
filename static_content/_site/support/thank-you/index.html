@@ -26,7 +26,7 @@
 </head>
 
 
-  <body id="apply">
+  <body>
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -254,195 +254,36 @@
 
     <main class="container">
       <div class="row">
-
         <div class="col-md-8">
-          <section class="page-content">
-            <p class="label">Page 1 of 7</p>
-            <h1><span data-feather="unlock"></span> Open access compliance</h1>
-
-            <p>Your account has been created and you are now logged in. When you submit your application, it will be registered to this account.</p>
-
-<p>Your progress is automatically saved and you can return to this application at any time.</p>
-
-<p>The application form takes approximately <strong>45 minutes</strong> to complete.</p>
-
-<hr />
-
-<p>DOAJ adheres to the <a href="https://legacy.earlham.edu/~peters/fos/boaifaq.htm#openaccess">BOAI’s definition of open access</a>.</p>
-
-<p>This means that users are permitted</p>
-
-<blockquote>
-  <p>to read, download, copy, distribute, print, search, or link to the full texts of articles, or use them for any other lawful purpose, without financial, legal, or technical barriers other than those inseparable from gaining access to the internet itself.</p>
-</blockquote>
+           <section class="page-content">
+            
+            <h1>Thank you for your support</h1>
+            
 
 
-            <form action="../02-about">
-              
+            <!-- TODO: make this more elegant -->
 
-              
-
-              
-              
-
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <p>Does the journal adhere to this definition of open access?&nbsp;
-</p>
-                
-                
-                <input id="boai-1" type="radio" name="boai" required/>
-                <label for="boai-1">Yes</label>
-                
-                <input id="boai-2" type="radio" name="boai" required/>
-                <label for="boai-2">No</label>
-                
-
-                
-
-              </div>
-
-              
-
-              
-
-              
-              
-
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="oa_statement_url">
-                  Where can we find this information?&nbsp;<span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-oa_statement_url"></span>
-
-                  
-                </label>
-                <input id="oa_statement_url" type="url" placeholder="https://www.my-journal.com/open-access" required/>
-                <p><small>Link to the journal’s open access statement</small></p>
-                
-
-              </div>
-
-              
-              <!-- Long help in modal -->
-              <div class="modal" id="modal-oa_statement_url" tabindex="-1" role="dialog" aria-labelledby="modalLabel-oa_statement_url">
-                <div class="modal__dialog" role="document">
-                  
-                  <h3 class="modal__title" id="modalLabel-oa_statement_url">
-                    “Where can we find this information?”
-                  </h3>
-                  <p>Here is an example of a suitable Open Access statement that meets our criteria:</p> <blockquote>This is an open access journal which means that all content is freely available without charge to the user or his/her institution. Users are allowed to read, download, copy, distribute, print, search, or link to the full texts of the articles, or use them for any other lawful purpose, without asking prior permission from the publisher or the author. This is in accordance with the BOAI definition of open access.</blockquote>
-                  <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-                </div>
-              </div>
-              
-
-              
-
-              
-              <p class="pager-buttons">
-                
-                <a href="../index" class="pager-buttons__left">Previous</a>
-                
-
-                <button type="submit" class="pager-buttons__right">Next</button>
-              </p>
-              
-            </form>
+            
           </section>
         </div>
 
         <div class="col-md-4">
-          <div>
-            
-            
-            
+          <aside class="promo">
+            <p class="label">Just so you know&hellip;</p>
+
             
             
             
             
 
-            
-            <nav class="application-nav">
-              <h2 class="application-nav__heading">Application progress</h2>
-              <ol class="application-nav__list">
-                <li class="application-nav__list-item
-                   application-nav__list-item--active
-                  ">
-                  <a href="/apply/01-oa-compliance/">
-                    Open access compliance
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/02-about/">
-                    About
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/03-copyright-licensing/">
-                    Copyright & licensing
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/04-editorial/">
-                    Editorial
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/05-business-model/">
-                    Business model
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/06-best-practice/">
-                    Best practice
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/07-review/">
-                    Review your answers
-                  </a>
-                </li>
-              </ol>
-            </nav>
-            
-
-            
-            <aside class="highlight highlight--is-aside">
-              <h2>Related help</h2>
-              <ul class="full-width-list">
-                <li class="full-width-list__item">
-                  <a href="/apply/guide/">Guide to applying</a>
-                </li>
-                <li class="full-width-list__item">
-                  <a href="/apply/seal/">The DOAJ Seal</a>
-                </li>
-                <li class="full-width-list__item">
-                  <a href="/apply/transparency/">Transparency & best practice</a>
-                </li>
-                <li class="full-width-list__item">
-                  <a href="/apply/why-index/">Why index your journal in DOAJ?</a>
-                </li>
-              </ul>
-            </aside>
-            
-
-            
-          </div>
+            <h2 class="promo__heading">Understanding copyright and licensing</h2>
+            <p class="promo__text">
+              Copyright declares who owns the rights to the website’s content and its published academic content. Licensing describes the terms under which the website’s readers are allowed to use or re-use the copyrighted content.
+              <a href="https://doaj-static.netlify.app/apply/guide/#copyright-and-licensing" target="_blank" class="promo__link">Learn more</a>
+            </p>
+          </aside>
         </div>
+
       </div>
     </main>
 
