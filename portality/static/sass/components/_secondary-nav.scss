@@ -27,6 +27,21 @@
     max-height: 0;
     overflow: hidden;
     display: block;
+
+    li {
+      margin-left: 0;
+
+      a {
+        padding: $spacing-04 0;
+        display: block;
+        line-height: 1;
+        border-bottom: 1px solid rgba($dark-grey, 0.5);
+      }
+
+      &:last-child a {
+        border: 0;
+      }
+    }
   }
 
   .secondary-nav__menu-toggle {
@@ -49,5 +64,32 @@
 
   .secondary-nav__login {
     margin-left: 0;
+  }
+
+
+  // Dropdown
+  .open {
+    > .dropdown__menu {
+    position: static;
+    float: none;
+    width: 100%;
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid $dark-grey;
+   }
+
+   > .dropdown__trigger {
+     font-weight: 600;
+   }
+
+   a {
+     text-transform: uppeercase;
+     font-weight: 600;
+   }
+  }
+
+
+  .dropdown__link:before {
+    content: "— ";
   }
 }
