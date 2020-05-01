@@ -21,6 +21,10 @@
   -webkit-overflow-scrolling: touch;
   outline: 0;
 
+  h2, h3, h4 {
+    margin-top: 0;
+  }
+
   &.fade .modal__dialog {
     -webkit-transform: translate(0, -25%);
     -ms-transform: translate(0, -25%);
