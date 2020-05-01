@@ -8,6 +8,14 @@
   }
 }
 
+.secondary-nav__header {
+  display: inline-block;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: normal;
+  @include font-sans;
+}
+
 .secondary-nav--precedes-highlight {
   background-color: $fair-pink;
 }

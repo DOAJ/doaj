@@ -8,10 +8,12 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
+            <h1 class="sr-only">The Directory of Open Access Journals</h1>
             {% include logo.svg %}
           </a>
         </div>
         <nav class="col-xs-8 col-sm-6">
+          <h2 class="sr-only">Main actions</h2>
           <ul class="nav-bar">
             <li class="dropdown">
               <a href="{{ site.baseurl }}{% link support/index.md %}" class="dropdown__trigger nav-bar__link" id="menu-support" type="button" aria-haspopup="true" aria-expanded="false">
@@ -87,7 +89,7 @@
   <nav class="secondary-nav {% if page.highlight != false %}secondary-nav--precedes-highlight{%endif%}">
     <div class="container">
       <a href="#" class="secondary-nav__menu-toggle" aria-label="Click to open menu">
-        <span data-feather="menu"></span> Menu
+        <span data-feather="menu"></span> <h2 class="secondary-nav__header">Menu</h2>
       </a>
       <ul class="nav-bar secondary-nav__menu">
         <li class="dropdown">
