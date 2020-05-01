@@ -4,7 +4,7 @@ fragment: true
 title: Ambassadors
 section: About
 toc: true
-highlight: false
+highlight: true
 ---
 
 {% include_relative content/ambassadors.md %}
