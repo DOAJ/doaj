@@ -1,10 +1,12 @@
+{% if page.fragment == false %}
 <!DOCTYPE html>
 <html lang="en">
 
   {% include head.html %}
 
-  <body>
+  <body class="no-sidenav-page">
     {% include header.html %}
+{% endif %}
 
     <main class="container">
       <section class="page-content">
@@ -17,7 +19,7 @@
         </div>
 
         <!-- TODO: make this more elegant -->
-        {% if page.name == 'team.md' %}
+        {% if page.name == 'team.md' or page.name == 'team-fragment.md' %}
         <!-- About section: team and ambassadors -->
         <ul class="row title-list">
           {% for i in site.data.team %}
@@ -51,7 +53,7 @@
         </ul>
         {% endif %}
 
-        {% if page.name == 'ambassadors.md' %}
+        {% if page.name == 'ambassadors.md' or page.name == 'ambassadors-fragment.md' %}
         <div class="row">
           <div class="col-md-8">
             <p>Since 2016 DOAJ has been running an Ambassador program that targets regions of the world that benefit from greater awareness of the issues surrounding open access and the importance of best practice and high publishing standards.</p>
@@ -75,7 +77,7 @@
           {% endfor %}
         </ul>
 
-        {% elsif page.name == 'advisory-board-council.md' %}
+        {% elsif page.name == 'advisory-board-council.md' or page.name == 'advisory-board-council-fragment.md' %}
           <!-- About section: advisory board & council -->
           <h2>Advisory Board</h2>
           <p>The DOAJ Advisory Board was elected by the community. All board members started in August 2019.</p>
@@ -125,7 +127,7 @@
             {% endfor %}
           </ul>
 
-        {% elsif page.name == 'volunteers.md' %}
+        {% elsif page.name == 'volunteers.md' or page.name == 'volunteers-fragment.md' %}
           <!-- About section: volunteers -->
           <h2>Editors</h2>
           <ul class="row title-list">
@@ -166,7 +168,9 @@
       </section>
     </main>
 
+{% if page.fragment == false %}
     {% include footer.html %}
   </body>
 
 </html>
+{% endif %}
