@@ -1,5 +1,6 @@
 ---
 layout: sidenav
+fragment: false
 title: XML
 section: Documentation
 toc: true

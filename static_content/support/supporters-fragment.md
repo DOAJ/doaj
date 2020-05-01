@@ -1,8 +1,10 @@
 ---
-layout: sidenav-fragment
+layout: sidenav
+fragment: true
 title: Supporters
 support-type: supporters
 toc: true
+sticky_sidenav: true
 highlight: false
 ---
 

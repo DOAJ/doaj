@@ -1,5 +1,6 @@
 ---
 layout: sidenav
+fragment: false
 title: About DOAJ
 section: About
 toc: true

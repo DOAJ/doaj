@@ -1,3 +1,4 @@
+{% if page.fragment == false %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,6 +6,7 @@
 
   <body class="sidenav-page">
     {% include header.html %}
+{% endif %}
 
     <main class="container">
       <div class="row">
@@ -18,9 +20,9 @@
 
             <!-- TODO: make this more elegant -->
             <!-- Display data pages -->
-            {% if page.name == 'sponsors.md' %}
+            {% if page.name == 'sponsors.md' or page.name == 'sponsors-fragment.md' %}
               <!-- Support section: sponsors -->
-              <h2><span data-feather="award" class="stroke-gold"></span> Gold sponsor</h2>
+              <h3><span data-feather="award" class="stroke-gold"></span> Gold sponsor</h3>
               <div class="row">
                 {% for i in site.data.sponsors.gold %}
                 <div class="col-xs-6 sponsor">
@@ -31,7 +33,7 @@
                 {% endfor %}
               </div>
 
-              <h2><span data-feather="award" class="stroke-silver"></span> Silver sponsors</h2>
+              <h3><span data-feather="award" class="stroke-silver"></span> Silver sponsors</h3>
               <div class="row">
                 {% for i in site.data.sponsors.silver %}
                 <div class="col-xs-4 sponsor">
@@ -42,7 +44,7 @@
                 {% endfor %}
               </div>
 
-              <h2><span data-feather="award" class="stroke-bronze"></span> Bronze sponsors</h2>
+              <h3><span data-feather="award" class="stroke-bronze"></span> Bronze sponsors</h3>
               <div class="row">
                 {% for i in site.data.sponsors.bronze %}
                 <div class="col-xs-4 sponsor">
@@ -53,9 +55,8 @@
                 {% endfor %}
               </div>
 
-            {% elsif page.name == 'publisher-supporters.md' %}
+            {% elsif page.name == 'publisher-supporters.md' or page.name == 'publisher-supporters-fragment.md' %}
               <!-- Support section: publisher supporters -->
-              <h2>Current publisher supporters</h2>
               <ul class="row title-list">
                 {% for i in site.data.publisher-supporters %}
                   <li class="col-md-3">
@@ -64,7 +65,7 @@
                 {% endfor %}
               </ul>
 
-            {% elsif page.name == 'supporters.md' %}
+            {% elsif page.name == 'supporters.md' or page.name == 'supporters-fragment.md' %}
               <!-- Support section: supporters -->
               {% for i in site.data.supporters %}
                 <p>{{ i.name }}, {{ i.url }}</p>
@@ -102,7 +103,9 @@
       </div>
     </main>
 
+{% if page.fragment == false %}
     {% include footer.html %}
   </body>
 
 </html>
+{% endif %}

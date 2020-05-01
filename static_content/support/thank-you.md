@@ -1,8 +1,9 @@
 ---
 layout: sidenav
+fragment: false
 title: Thank you for your support
 support-type: supporters
-toc: true
+toc: false
 highlight: false
 ---
 
