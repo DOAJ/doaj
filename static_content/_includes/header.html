@@ -15,7 +15,7 @@
         <nav class="col-xs-8 col-sm-6">
           <h2 class="sr-only">Main actions</h2>
           <ul class="nav-bar">
-            <li class="dropdown">
+            <li class="dropdown primary-nav__item_desktop">
               <a href="{{ site.baseurl }}{% link support/index.md %}" class="dropdown__trigger nav-bar__link" id="menu-support" type="button" aria-haspopup="true" aria-expanded="false">
                 <span data-feather="heart"></span>
                 Support
@@ -44,7 +44,7 @@
                 </li>
               </ul>
             </li>
-            <li class="dropdown">
+            <li class="dropdown primary-nav__item_desktop">
               <a href="{{ site.baseurl }}{% link apply/index.md %}" class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
                 Apply
                 <span data-feather="chevron-down"></span>
@@ -197,6 +197,67 @@
             <li>
               <a href="{{ site.baseurl }}{% link about/faq.md %}" class="dropdown__link">
                 FAQs
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="dropdown secondary-nav__item_mobile">
+          <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <strong>Support</strong>
+            <span data-feather="chevron-down"></span>
+          </a>
+          <ul class="dropdown__menu" aria-labelledby="menu-support">
+            <li>
+              <a href="{{ site.baseurl }}{% link support/index.md %}" class="dropdown__link">
+                Support DOAJ
+              </a>
+            </li>
+            <li>
+              <a href="{{ site.baseurl }}{% link support/sponsors.md %}" class="dropdown__link">
+                Sponsors
+              </a>
+            </li>
+            <li>
+              <a href="{{ site.baseurl }}{% link support/publisher-supporters.md %}" class="dropdown__link">
+                Publisher supporters
+              </a>
+            </li>
+            <li>
+              <a href="{{ site.baseurl }}{% link support/supporters.md %}" class="dropdown__link">
+                Supporters
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="dropdown secondary-nav__item_mobile">
+          <a class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <strong>Apply</strong>
+            <span data-feather="chevron-down"></span>
+          </a>
+          <ul class="dropdown__menu" aria-labelledby="menu-apply">
+            <li>
+              <a href="{{ site.baseurl }}{% link apply/index.md %}" class="dropdown__link">
+                Application form
+              </a>
+            </li>
+            <li>
+              <a href="{{ site.baseurl }}{% link apply/guide.md %}" class="dropdown__link">
+                Guide to applying
+              </a>
+            </li>
+            <li>
+              <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="dropdown__link">
+                The DOAJ seal
+              </a>
+            </li>
+            <li>
+              <a href="{{ site.baseurl }}{% link apply/transparency.md %}" class="dropdown__link">
+                Transparency & best practice
+              </a>
+            </li>
+            <li>
+              <a href="{{ site.baseurl }}{% link apply/why-index.md %}" class="dropdown__link">
+                Why index your journal in DOAJ?
               </a>
             </li>
           </ul>

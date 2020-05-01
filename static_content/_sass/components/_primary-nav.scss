@@ -9,9 +9,13 @@
   background-color: $fair-pink;
 
   @media (max-width: 768px) {
+    .nav-bar {
+      float: right;
+    }
+
     .feather-chevron-down,
     .feather-heart,
-    .dropdown__menu {
+    .primary-nav__item_desktop {
       display: none !important;
     }
   }

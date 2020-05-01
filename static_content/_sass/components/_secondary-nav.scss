@@ -103,3 +103,9 @@
     content: "— ";
   }
 }
+
+.secondary-nav__item_mobile {
+  @media (min-width: 769px) {
+    display: none;
+  }
+}
