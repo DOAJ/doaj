@@ -76,7 +76,7 @@
 
         <div class="col-md-4">
           {% if page.toc %}
-          <nav class="page-nav"{% if page.sticky_sidenav %} data-spy="affix{% endif %}">
+          <nav class="page-nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
             <h2 class="page-nav__heading">Jump to:</h2>
             <a href="#" class="page-nav__top">Top of the page</a>
             {{ content | toc_only }}
