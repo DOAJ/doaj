@@ -1,0 +1,18 @@
+/* Back to top button */
+
+.back-to-top {
+  display: none;
+  position: fixed;
+  align-items: center;
+  width: 35px;
+  height: 35px;
+  bottom: 35px;
+  right: 50px;
+  background-color: $grapefruit;
+
+  svg {
+    display: block;
+    margin: 0 auto;
+    stroke: $warm-black;
+  }
+}
