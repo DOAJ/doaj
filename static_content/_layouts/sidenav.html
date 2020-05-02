@@ -11,7 +11,32 @@
     <main class="container">
       <div class="row">
 
-        <div class="col-md-8">
+        <div class="col-md-4 col-md-push-8">
+          {% if page.toc %}
+          <nav class="page-nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
+            <h2 class="page-nav__heading">Jump to:</h2>
+            <a href="#" class="page-nav__top">Top of the page</a>
+            {{ content | toc_only }}
+          </nav>
+          {% else %}
+          <aside class="promo">
+            <p class="label">Just so you know&hellip;</p>
+
+            {% assign min = 0 %}
+            {% assign max = site.data.promo.size %}
+            {% assign diff = max | minus: min %}
+            {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
+
+            <h2 class="promo__heading">{{ site.data.promo[random].title }}</h2>
+            <p class="promo__text">
+              {{ site.data.promo[random].summary }}
+              <a href="{{ site.data.promo[random].url }}" target="_blank" class="promo__link">Learn more</a>
+            </p>
+          </aside>
+          {% endif %}
+        </div>
+
+        <div class="col-md-8 col-md-pull-4">
            <section class="page-content">
             {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
             <h1>{{ page.title }}</h1>
@@ -73,31 +98,6 @@
 
             {% endif %}
           </section>
-        </div>
-
-        <div class="col-md-4">
-          {% if page.toc %}
-          <nav class="page-nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
-            <h2 class="page-nav__heading">Jump to:</h2>
-            <a href="#" class="page-nav__top">Top of the page</a>
-            {{ content | toc_only }}
-          </nav>
-          {% else %}
-          <aside class="promo">
-            <p class="label">Just so you know&hellip;</p>
-
-            {% assign min = 0 %}
-            {% assign max = site.data.promo.size %}
-            {% assign diff = max | minus: min %}
-            {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
-
-            <h2 class="promo__heading">{{ site.data.promo[random].title }}</h2>
-            <p class="promo__text">
-              {{ site.data.promo[random].summary }}
-              <a href="{{ site.data.promo[random].url }}" target="_blank" class="promo__link">Learn more</a>
-            </p>
-          </aside>
-          {% endif %}
         </div>
 
       </div>
