@@ -21,14 +21,7 @@
     text-transform: uppercase;
     @include font-sans;
   }
-
-  .page-nav__top {
-    display: block;
-    margin: $spacing-03 0 $spacing-02 0;
-    text-decoration: none;
-    color: $dark-grey;
-  }
-
+  
   .page-nav__list {
     margin: 0 0 $spacing-03 0;
     padding-left: 0;
