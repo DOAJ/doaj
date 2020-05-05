@@ -53,7 +53,7 @@
                 {% endfor %}
               </div>
 
-            {% elif page.name == 'publisher-supporters.md' %}
+            {% elsif page.name == 'publisher-supporters.md' %}
               <!-- Support section: publisher supporters -->
               <h2>Current publisher supporters</h2>
               <ul class="row title-list">
@@ -64,7 +64,7 @@
                 {% endfor %}
               </ul>
 
-            {% elif page.name == 'supporters.md' %}
+            {% elsif page.name == 'supporters.md' %}
               <!-- Support section: supporters -->
               {% for i in site.data.supporters %}
                 <p>{{ i.name }}, {{ i.url }}</p>

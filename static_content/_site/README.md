@@ -110,7 +110,7 @@ Advanced tools:
 
 # TODO
 
-- [ ] Rename and harmonise base templates (`sidenav`, `data`) 
+- [x] Rename and harmonise base templates (`sidenav`, `data`) 
 - [ ] Add a promo post category so we can target content for specific pages
 - [ ] Finish inputting data in `volunteers.yml`
 - [x] Add & style bio photos for `team.yml` + `team-ambassadors.md`

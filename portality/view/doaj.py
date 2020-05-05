@@ -443,103 +443,108 @@ def google_webmaster_tools():
     return 'google-site-verification: googlebdb21861de30fe30.html'
 
 
-@blueprint.route("/support")
+@blueprint.route("/support/")
 def support():
-    return render_template("static_page.html", page_frag="/support/index.html")
+    return render_template("layouts/static_page.html", page_frag="/support-fragment/index.html")
 
 
-@blueprint.route("/support/sponsors")
+@blueprint.route("/support/sponsors/")
 def sponsors():
-    return render_template("static_page.html", page_frag="/fragment-sponsors")
+    return render_template("layouts/static_page.html", page_frag="support/sponsors-fragment/index.html")
 
 
-@blueprint.route("/support/publisher-supporters")
+@blueprint.route("/support/publisher-supporters/")
 def publisher_supporters():
-    return render_template("static_page.html", page_frag="/support/fragment-publisher-supporters")
+    return render_template("layouts/static_page.html", page_frag="/support/publisher-supporters-fragment/index.html")
 
 
-@blueprint.route("/support/supporters")
+@blueprint.route("/support/supporters/")
 def supporters():
-    return render_template("static_page.html", page_frag="/support/fragment-supporters")
+    return render_template("layouts/static_page.html", page_frag="/support/supporters-fragment/index.html")
 
 
-@blueprint.route("/apply")
+@blueprint.route("/apply/")
 def apply():
-    return render_template("static_page.html", page_frag="/fragment-apply")
+    return render_template("layouts/static_page.html", page_frag="/apply-fragment/index.html")
 
-@blueprint.route("/apply")
+@blueprint.route("/apply/guide/")
 def guide():
-    return render_template("static_page.html", page_frag="/apply/fragment-guide")
+    return render_template("layouts/static_page.html", page_frag="/apply/guide-fragment/index.html")
 
 
-@blueprint.route("/apply/seal")
+@blueprint.route("/apply/seal/")
 def seal():
-    return render_template("static_page.html", page_frag="/apply/fragment-seal")
+    return render_template("layouts/static_page.html", page_frag="/apply/seal-fragment/index.html")
 
 
-@blueprint.route("/apply/transparency")
+@blueprint.route("/apply/transparency/")
 def transparency():
-    return render_template("static_page.html", page_frag="/apply/fragment-transparency")
+    return render_template("layouts/static_page.html", page_frag="/apply/transparency-fragment/index.html")
 
 
-@blueprint.route("/apply/why-index")
+@blueprint.route("/apply/why-index/")
 def why_index():
-    return render_template("static_page.html", page_frag="/apply/fragment-why-index")
+    return render_template("layouts/static_page.html", page_frag="/apply/why-index-fragment/index.html")
 
 
-@blueprint.route("/docs/api")
+@blueprint.route("/docs/api/")
 def api():
-    return render_template("static_page.html", page_frag="/docs/fragment-api")
+    return render_template("layouts/static_page.html", page_frag="/docs/api-fragment/index.html")
 
 
-@blueprint.route("/docs/oai-pmh")
+@blueprint.route("/docs/oai-pmh/")
 def oai_pmh():
-    return render_template("static_page.html", page_frag="/docs/fragment-oai-pmh")
+    return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh-fragment/index.html")
 
 
-@blueprint.route("/docs/xml")
+@blueprint.route("/docs/xml/")
 def xml():
-    return render_template("static_page.html", page_frag="/docs/fragment-xml/index.html")
+    return render_template("layouts/static_page.html", page_frag="/docs/xml-fragment/index.html")
 
 
-@blueprint.route("/docs/widgets")
+@blueprint.route("/docs/widgets/")
 def widgets():
-    return render_template("static_page.html", page_frag="/docs/fragment-widgets")
+    return render_template("layouts/static_page.html", page_frag="/docs/widgets-fragment/index.html")
 
 
-@blueprint.route("/docs/public-data-dump")
+@blueprint.route("/docs/public-data-dump/")
 def public_data_dump():
-    return render_template("static_page.html", page_frag="/docs/fragment-public-data-dump")
+    return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump-fragment/index.html")
 
 
-@blueprint.route("/docs/openurl")
+@blueprint.route("/docs/openurl/")
 def openurl():
-    return render_template("static_page.html", page_frag="/docs/fragment-openurl")
+    return render_template("layouts/static_page.html", page_frag="/docs/openurl-fragment/index.html")
 
 
-@blueprint.route("/about")
+@blueprint.route("/about/")
 def about():
-    return render_template("static_page.html", page_frag="/fragment-about")
+    return render_template("layouts/static_page.html", page_frag="/about-fragment/index.html")
 
 
-@blueprint.route("/about/team-ambassadors")
+@blueprint.route("/about/team-ambassadors/")
 def ambassadors():
-    return render_template("static_page.html", page_frag="/about/fragment-team-ambassadors")
+    return render_template("layouts/static_page.html", page_frag="/about/team-ambassadors-fragment/index.html")
 
 
-@blueprint.route("/about/advisory-board-council")
+@blueprint.route("/about/advisory-board-council/")
 def abc():
-    return render_template("static_page.html", page_frag="/about/fragment-advisory-board-council")
+    return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council-fragment/index.html")
 
 
-@blueprint.route("/about/volunteers")
+@blueprint.route("/about/volunteers/")
 def volunteers():
-    return render_template("static_page.html", page_frag="/about/fragment-volunteers")
+    return render_template("layouts/static_page.html", page_frag="/about/volunteers-fragment/index.html")
 
 
-@blueprint.route("/about/faq'")
+@blueprint.route("/about/faq/")
 def faq():
-    return render_template("static_page.html", page_frag="/about/fragment-faq")
+    return render_template("layouts/static_page.html", page_frag="/about/faq-fragment/index.html")
+
+
+@blueprint.route("/about/team/")
+def team():
+    return render_template("layouts/static_page.html", page_frag="/about/team-fragment/index.html")
 
 
 # LEGACY ROUTES
@@ -605,9 +610,9 @@ def old_faq():
 
 @blueprint.route("/privacy")
 def privacy():
-    return render_template("static_page.html")
+    return render_template("layouts/static_page.html")
 
 
 @blueprint.route("/publishers")
 def publishers():
-    return render_template("static_page.html")
+    return render_template("layouts/static_page.html")

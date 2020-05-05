@@ -10,10 +10,10 @@ class JournalArticle(DomainObject):
 
     @classmethod
     def site_statistics(cls):
-        # first check the cache
-        stats = Cache.get_site_statistics()
-        if stats is not None:
-            return stats
+        # TODO: remove cache below to actully use it
+        # stats = Cache.get_site_statistics()
+        # if stats is not None:
+        #     return stats
 
         # we didn't get anything from the cache, so we need to generate and
         # cache a new set
@@ -21,17 +21,21 @@ class JournalArticle(DomainObject):
         # prep the query and result objects
         q = JournalArticleQuery()
         stats = {           # Note these values all have to be strings
-            "articles" : "0",
             "journals" : "0",
             "countries" : "0",
-            "searchable" : "0"
+            "abstracts" : "0",
+            "last_updated" : "0",
+            "no_apc" : "0"
         }
 
         # do the query
         res = cls.query(q=q.site_statistics())
+        res2 = cls.query(q=q.site_statistics(looked_for="last_updated"))
+        res3 = cls.query(q=q.site_statistics(looked_for="no_apc"))
 
         # pull the journal and article facets out
         terms = res.get("facets", {}).get("type", {}).get("terms", [])
+
 
         # can't use the Python , option when formatting numbers since we
         # need to be compatible with Python 2.6
@@ -46,10 +50,12 @@ class JournalArticle(DomainObject):
                     stats["articles"] = locale.format("%d", t.get("count", 0), grouping=True)
 
             # count the size of the countries facet
-            stats["countries"] = locale.format("%d", len(res.get("facets", {}).get("countries", {}).get("terms", [])), grouping=True)
-
-            # count the size of the journals facet (which tells us how many journals have articles)
-            stats["searchable"] = locale.format("%d", len(res.get("facets", {}).get("journals", {}).get("terms", [])), grouping=True)
+            stats["countries"] = locale.format("%d", len(res.get("facets", {}).get("countries", {}).get("terms", [])),
+                                               grouping=True)
+            stats["abstracts"] = locale.format("%d", len(res.get("facets", {}).get("abstracts", {}).get("terms", [])),
+                                               grouping=True)
+            stats["last_updated"] = locale.format("%d", len(res2.get("hits", {})))
+            stats["no_apc"] = locale.format("%d", len(res3.get("hits", {})))
 
             locale.resetlocale()
         else:
@@ -62,8 +68,10 @@ class JournalArticle(DomainObject):
             # count the size of the countries facet
             stats["countries"] = "{0:,}".format(len(res.get("facets", {}).get("countries", {}).get("terms", [])))
 
-            # count the size of the journals facet (which tells us how many journals have articles)
-            stats["searchable"] = "{0:,}".format(len(res.get("facets", {}).get("journals", {}).get("terms", [])))
+            # count the size of article abstract's
+            stats["abstracts"] = "{0:,}".format(len(res.get("facets", {}).get("abstracts", {}).get("terms", [])))
+            stats["last_updated"] = "{0:,}".format(len(res2.get("hits", {}).get("hits", [])))
+            stats["no_apc"] = "{0:,}".format(len(res3.get("hits", {}).get("hits", [])))
 
         # now cache and return
         Cache.cache_site_statistics(stats)
@@ -90,9 +98,45 @@ class JournalArticleQuery(object):
             },
             "journals" : {
                 "terms" : {"field" : "bibjson.journal.title.exact", "size" : 15000 }
+            },
+            "abstracts" : {
+                "terms" : {"field" : "bibjson.abstract.exact", "size" : 10000000}
             }
         }
     }
 
-    def site_statistics(self):
+    last_updated_stats = {
+        "query": {
+            "filtered" : {
+                "query" : {
+                    "term": {"in_doaj" : True}
+                },
+                "filter": {
+                    "range": {
+                        "last_manual_update": {
+                            "gte": "now-25y",   # TODO: change to the correct value
+                            "lt": "now"
+                        }
+                    }
+                }
+            }
+        }
+    }
+    # TODO: look for journals only
+    no_apc = {
+        "query": {
+            "bool": {
+                "must": [
+                    {"term": {"bibsjon.apc.has_apc": True}},        # TODO: check if looks for journals only
+                    {"term": {"in_doaj": True}}
+                ]
+            }
+        }
+    }
+
+    def site_statistics(self, looked_for=None):
+        if looked_for == "last_updated":
+            return deepcopy(self.last_updated_stats)
+        if looked_for == "no_apc":
+            return deepcopy(self.no_apc)
         return deepcopy(self.stats)

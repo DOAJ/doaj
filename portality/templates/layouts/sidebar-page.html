@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "layouts/base.html" %}
 
 {% block main_panel %}
 <div class="content">
@@ -6,7 +6,7 @@
         <div class="col-xs-12 col-md-9">
             {% block content %}{% endblock %}
         </div>
-        {% include 'sidebar.html' %}
+        {% include 'includes/sidebar.html' %}
     </div>
 </div>
 {% endblock %}

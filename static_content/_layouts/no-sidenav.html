@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  {% include "head.html" %}
+  {% include head.html %}
 
   <body>
-    {% include "header.html" %}
+    {% include header.html %}
 
     <main class="container">
       <section class="page-content">
@@ -75,7 +75,7 @@
           {% endfor %}
         </ul>
 
-        {% elif page.name == 'advisory-board-council.md' %}
+        {% elsif page.name == 'advisory-board-council.md' %}
           <!-- About section: advisory board & council -->
           <h2>Advisory Board</h2>
           <p>The DOAJ Advisory Board was elected by the community. All board members started in August 2019.</p>
@@ -125,7 +125,7 @@
             {% endfor %}
           </ul>
 
-        {% elif page.name == 'volunteers.md' %}
+        {% elsif page.name == 'volunteers.md' %}
           <!-- About section: volunteers -->
           <h2>Editors</h2>
           <ul class="row title-list">

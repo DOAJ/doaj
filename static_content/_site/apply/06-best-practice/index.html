@@ -7,8 +7,29 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 
-  <!-- <link rel="manifest" href="site.webmanifest">
-  <link rel="apple-touch-icon" href="icon.png"> -->
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- generics -->
+  <link rel="icon" href="/img/favicon/32.png" sizes="32x32">
+  <link rel="icon" href="/img/favicon/57.png" sizes="57x57">
+  <link rel="icon" href="/img/favicon/76.png" sizes="76x76">
+  <link rel="icon" href="/img/favicon/96.png" sizes="96x96">
+  <link rel="icon" href="/img/favicon/128.png" sizes="128x128">
+  <link rel="icon" href="/img/favicon/192.png" sizes="192x192">
+  <link rel="icon" href="/img/favicon/228.png" sizes="228x228">
+
+  <!-- Android -->
+  <link rel="shortcut icon" sizes="196x196" href=“/img/favicon/196.png">
+
+  <!-- iOS -->
+  <link rel="apple-touch-icon" href="/img/favicon/120.png" sizes="120x120">
+  <link rel="apple-touch-icon" href="/img/favicon/152.png" sizes="152x152">
+  <link rel="apple-touch-icon" href="/img/favicon/180.png" sizes="180x180">
+
+  <!-- Windows 8 IE 10-->
+  <meta name="msapplication-TileColor" content="#F8F3EF">
+  <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
 
@@ -19,7 +40,7 @@
 
   <script src="../../js/vendors/bootstrap.js"></script>
 
-  <meta name="theme-color" content="#982E0A">
+  <meta name="theme-color" content="#F8F3EF">
 
   <!-- Feather icons -->
   <script src="https://unpkg.com/feather-icons"></script>
@@ -53,7 +74,7 @@
         <nav class="col-xs-8 col-sm-6">
           <ul class="nav-bar">
             <li class="dropdown">
-              <a href="/support/" class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a href="/support/" class="dropdown__trigger nav-bar__link" id="menu-support" type="button" aria-haspopup="true" aria-expanded="false">
                 <span data-feather="heart"></span>
                 Support
                 <span data-feather="chevron-down"></span>
@@ -82,7 +103,7 @@
               </ul>
             </li>
             <li class="dropdown">
-              <a href="/apply/" class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a href="/apply/" class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
                 Apply
                 <span data-feather="chevron-down"></span>
               </a>
@@ -133,7 +154,7 @@
       <ul class="nav-bar secondary-nav__menu">
         <li class="dropdown">
           <a class="dropdown__trigger nav-bar__link" id="menu-journals-articles" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Journals & articles
+            Search
             <span data-feather="chevron-down"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-journals-articles">
@@ -793,7 +814,7 @@
       </div>
 
       <div class="col-sm-2">
-        <h2>Journals & articles</h2>
+        <h2>Search</h2>
         <ul>
           <li><a href="">Journals</a></li>
           <li><a href="">Articles</a></li>
@@ -862,7 +883,7 @@
           </li>
           <li>
             <a href="">
-              <span data-feather="rss"></span> Journals RSS</a>
+              <span data-feather="rss"></span> Atom feed</a>
             </li>
         </ul>
       </div>

@@ -23,7 +23,8 @@ def load_account_for_login_manager(userid):
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path='',
+                static_folder=os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
     configure_app(app)
     setup_error_logging(app)
     setup_jinja(app)
@@ -146,6 +147,7 @@ def setup_jinja(app):
                                              os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_site',
                                              os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_includes',
                                              os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_layouts'])
+
 
     # a jinja filter that prints to the Flask log
     def jinja_debug(text):
