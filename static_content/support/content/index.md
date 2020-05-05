@@ -5,23 +5,19 @@ We reserve the right to deny membership.
 
 You can support us:
 
-+ with an annual fixed contribution (annual automatic payment);
++ with an [annual fixed contribution]() (annual automatic payment);
 + with a longer-term contribution, often over a three-year period, having a greater impact on the future of DOAJ and allowing for more sustainable development;
-+ with a one-time contribution made via Paypal;
-as a publisher supporter, if you publish, own or are the editor of an open access journal;
-+ via a [sponsorship](/sponsorship/);
-  + for more information email dom@doaj.org.
++ with a [one-time contribution](#make-a-one-time-donation) made via Paypal (on this page);
++ as a [publisher supporter](/support/publisher-supporter/), if you publish, own or are the editor of an open access journal;
++ via a [sponsorship](/support/sponsors/);
+  + for more information email [dom@doaj.org](mailto:dom@doaj.org?subject=DOAJ Sponsorship).
 
 All supporters will have their name listed on our site, and can use their supporter status and a DOAJ logo for marketing activities.
 
 ## Make a one-time donation
 
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-  <input name="cmd" type="hidden" value="_s-xclick"/>
-	<input name="hosted_button_id" type="hidden" value="M4PM4R9PSJ63G"/>
-  <input type="hidden" name="item_name" value="Donation">
-  <input type="hidden" name="item_number" value="Donation">
-  <input type="hidden" name="currency_code" value="GBP" />
-  <input type="hidden" name="amount" value="50" />
-	<button alt="PayPal – The safer, easier way to pay online." name="submit" type="submit">Donate</button>
+  <input type="hidden" name="cmd" value="_s-xclick" />
+  <input type="hidden" name="hosted_button_id" value="GM4QG3MTBFTBQ" />
+  <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
 </form>
