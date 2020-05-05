@@ -1,0 +1,20 @@
+/* Highlight sections */
+
+.highlight {
+  background-color: $fair-pink;
+}
+
+.highlight--is-aside {
+  margin: $spacing-05 0 0 0;
+  padding: $spacing-03;
+
+  h2, h3, h4 {
+    margin: 0 0 $spacing-03 0;
+    font-size: 1em;
+    @include font-sans;
+  }
+
+  ul, ol {
+    margin: 0;
+  }
+}

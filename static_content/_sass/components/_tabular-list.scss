@@ -1,0 +1,36 @@
+/* Lists laid out like a table */
+/* First-level item is emphasised */
+
+.tabular-list {
+  display: table;
+  padding: 0;
+  list-style: none;
+  border-collapse: separate;
+  border-spacing: 0 $spacing-04;
+  counter-reset: row-number;
+
+  > li,
+  &__row {
+    display: table-row;
+    vertical-align: top;
+    width: 100%;
+    border-bottom: 1px solid rgba($dark-grey, 0.25);
+    counter-increment: row-number;
+    @include font-serif;
+
+    &::before {
+      vertical-align: baseline;
+      font-weight: 400;
+      content: counter(row-number) '. ';
+      @include font-serif;
+    }
+
+    > ul {
+      display: table-cell;
+      padding: 0 0 0 $spacing-05;
+      list-style: none;
+      width: 50%;
+      @include font-sans;
+    }
+  }
+}

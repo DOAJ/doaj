@@ -1,0 +1,70 @@
+/* On-hover dropdown menus adapted from Bootstrap
+ * Bootstrap v3.4.1 (https://getbootstrap.com/)
+ * Copyright 2011-2019 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+
+.dropdown {
+ position: relative;
+ cursor: pointer;
+}
+
+.dropdown__menu {
+ display: none;
+ position: absolute;
+ top: 100%;
+ left: 0;
+ z-index: 1000;
+ float: left;
+ list-style: none;
+ padding: 0;
+ margin: 0;
+ background-color: $fair-pink;
+ border: 1px solid $warm-black;
+ -webkit-background-clip: padding-box;
+ background-clip: padding-box;
+}
+
+.dropdown__link {
+ display: block;
+ padding: $spacing-04;
+ clear: both;
+ white-space: nowrap;
+ color: $warm-black;
+ font-weight: 400;
+ text-transform: none;
+
+ &:hover,
+ &:active,
+ &:focus {
+   color: $warm-black;
+   text-decoration: none;
+   background-color: $grapefruit;
+ }
+}
+
+.dropdown__link--is-disabled {
+  cursor: not-allowed;
+  color: rgba($warm-black, 0.45);
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: rgba($warm-black, 0.45);
+  }
+}
+
+.dropdown__trigger {
+  color: $dark-grey;
+}
+
+.open > .dropdown__menu {
+  display: block;
+}
+
+@media (min-width: 769px) {
+  // Only display dropdown menu on hover in desktop
+  .dropdown:hover .dropdown__menu {
+   display: block;
+  }
+}
