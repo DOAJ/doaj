@@ -1,5 +1,6 @@
 from portality import models
-from portality.core import app
+from portality.core import es_connection
+from portality.util import ipt_prefix
 import esprit
 import csv
 
@@ -26,13 +27,13 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+    conn = es_connection
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID", "Journal Name", "E-ISSN", "P-ISSN", "Article Count"])
 
-        for j in esprit.tasks.scroll(conn, models.Journal.__type__, q=NOT_IN_DOAJ, page_size=100, keepalive='5m'):
+        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=NOT_IN_DOAJ, page_size=100, keepalive='5m'):
             journal = models.Journal(_source=j)
             bibjson = journal.bibjson()
             issns = bibjson.issns()
@@ -40,7 +41,3 @@ if __name__ == "__main__":
 
             if count > 0:
                 writer.writerow([journal.id, bibjson.title, bibjson.get_one_identifier(bibjson.E_ISSN), bibjson.get_one_identifier(bibjson.P_ISSN), count])
-
-
-
-

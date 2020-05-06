@@ -3,13 +3,15 @@ import re
 from copy import deepcopy
 import esprit
 import string
-from portality.core import app
+from portality.core import es_connection
+from portality.util import ipt_prefix
 from portality import models
 from unidecode import unidecode
 
-INPUT = "/home/richard/tmp/doaj/titlematch.csv"
-OUT = "/home/richard/tmp/doaj/matchedtitles-live.csv"
-
+#INPUT = "/home/richard/tmp/doaj/titlematch.csv"
+#OUT = "/home/richard/tmp/doaj/matchedtitles-live.csv"
+INPUT = "/home/steve/tmp/doajtitlematch.csv"
+OUT = "/home/steve/tmp/doajmatchedtitles-live.csv"
 
 APPS_NOT_ACCEPTED = {
     "query" : {
@@ -34,11 +36,10 @@ def list_by_title(input, out):
     # first read in and prep the search data
     terms = _prep_search_terms(input)
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None,
-                                      app.config["ELASTIC_SEARCH_DB"])
+    conn = es_connection
 
     application_rows = []
-    for a in esprit.tasks.scroll(conn, models.Suggestion.__type__, q=APPS_NOT_ACCEPTED, page_size=1000, keepalive='5m'):
+    for a in esprit.tasks.scroll(conn, ipt_prefix(models.Suggestion.__type__), q=APPS_NOT_ACCEPTED, page_size=1000, keepalive='5m'):
         application = models.Suggestion(_source=a)
         title = application.bibjson().title
         alt = application.bibjson().alternative_title

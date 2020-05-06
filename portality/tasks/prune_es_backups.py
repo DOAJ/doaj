@@ -10,6 +10,7 @@ from esprit.raw import Connection
 from esprit.snapshot import ESSnapshotsClient
 
 from datetime import datetime, timedelta
+# FIXME: update for index-per-type
 
 
 class PruneESBackupsBackgroundTask(BackgroundTask):

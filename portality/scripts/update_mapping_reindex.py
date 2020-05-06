@@ -1,4 +1,5 @@
 """ This script runs an esprit reindex operation, to be used if you have changed the mappings."""
+# FIXME: update for index-per-type
 
 import esprit
 from portality.lib import es_data_mapping
