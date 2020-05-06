@@ -1,9 +1,10 @@
 ---
-layout: no-sidenav-fragment
+layout: no-sidenav
+fragment: true
 title: Volunteers
 section: About
 toc: true
-highlight: false
+highlight: true
 ---
 
 {% include_relative content/volunteers.md %}

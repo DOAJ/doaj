@@ -1,5 +1,6 @@
 ---
 layout: sidenav
+fragment: false
 title: The DOAJ Seal
 toc: true
 sticky_sidenav: true

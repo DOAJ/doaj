@@ -9,69 +9,69 @@
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
             <h1 class="sr-only">The Directory of Open Access Journals</h1>
-            {% include logo.svg %}
+            {% include "includes/logo.svg" %}
           </a>
         </div>
         <nav class="col-xs-8 col-sm-6">
           <h2 class="sr-only">Main actions</h2>
           <ul class="nav-bar">
             <li class="dropdown primary-nav__item_desktop">
-              <a href="{{ site.baseurl }}{% link support/index.md %}" class="dropdown__trigger nav-bar__link" id="action-menu-support" type="button" aria-haspopup="true" aria-expanded="false">
+              <a href="/support" class="dropdown__trigger nav-bar__link" id="action-menu-support" type="button" aria-haspopup="true" aria-expanded="false">
                 <span data-feather="heart"></span>
                 Support
                 <span data-feather="chevron-down"></span>
               </a>
               <ul class="dropdown__menu" aria-labelledby="action-menu-support">
                 <li>
-                  <a href="{{ site.baseurl }}{% link support/index.md %}" class="dropdown__link">
+                  <a href="/support" class="dropdown__link">
                     Support DOAJ
                   </a>
                 </li>
                 <li>
-                  <a href="{{ site.baseurl }}{% link support/sponsors.md %}" class="dropdown__link">
+                  <a href="/sponsorship" class="dropdown__link">
                     Sponsors
                   </a>
                 </li>
                 <li>
-                  <a href="{{ site.baseurl }}{% link support/publisher-supporters.md %}" class="dropdown__link">
+                  <a href="/support/publisher-supporters" class="dropdown__link">
                     Publisher supporters
                   </a>
                 </li>
                 <li>
-                  <a href="{{ site.baseurl }}{% link support/supporters.md %}" class="dropdown__link">
+                  <a href="/support/supporters" class="dropdown__link">
                     Supporters
                   </a>
                 </li>
               </ul>
             </li>
             <li class="dropdown primary-nav__item_desktop">
-              <a href="{{ site.baseurl }}{% link apply/index.md %}" class="dropdown__trigger nav-bar__link" id="action-menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
+              <a href="/apply/" class="dropdown__trigger nav-bar__link" id="action-menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
                 Apply
                 <span data-feather="chevron-down"></span>
               </a>
               <ul class="dropdown__menu" aria-labelledby="action-menu-apply">
                 <li>
-                  <a href="{{ site.baseurl }}{% link apply/index.md %}" class="dropdown__link">
+                  <a href="/apply/" class="dropdown__link">
                     Application form
                   </a>
                 </li>
                 <li>
-                  <a href="{{ site.baseurl }}{% link apply/guide.md %}" class="dropdown__link">
+                  <a href="/apply/guide" class="dropdown__link">
                     Guide to applying
                   </a>
                 </li>
                 <li>
-                  <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="dropdown__link">
+                  <a href="/apply/seal" class="dropdown__link">
                     The DOAJ seal
                   </a>
                 </li>
-                <li>
-                  <a href="{{ site.baseurl }}{% link apply/transparency.md %}" class="dropdown__link">
+                <li>`
+                  <a href="/apply/transparency" class="dropdown__link">
                     Transparency & best practice
                   </a>
                 </li>
                 <li>
-                  <a href="{{ site.baseurl }}{% link apply/why-index.md %}" class="dropdown__link">
+                  <a href="/apply/why-index" class="dropdown__link">
                     Why index your journal in DOAJ?
                   </a>
                 </li>
@@ -86,7 +86,8 @@
       </div>
     </div>
   </div>
-  <nav class="secondary-nav {% if page.highlight != false %}secondary-nav--precedes-highlight{%endif%}">
+    <!-- class secondary-nav-... should depend on if page.highlight != false -->
+  <nav class="secondary-nav secondary-nav--precedes-highlight">
     <div class="container">
       <a href="#" class="secondary-nav__menu-toggle" aria-label="Click to open menu">
         <span data-feather="menu"></span> <h2 class="secondary-nav__header">Menu</h2>
@@ -137,22 +138,22 @@
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link docs/xml.md %}" class="dropdown__link">
+              <a href="/docs/xml" class="dropdown__link">
                 XML
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link docs/widgets.md %}" class="dropdown__link">
+              <a href="/docs/widgets" class="dropdown__link">
                 Widgets
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link docs/public-data-dump.md %}" class="dropdown__link">
+              <a href="/docs/public-data-dump" class="dropdown__link">
                 Public data dump
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link docs/openurl.md %}" class="dropdown__link">
+              <a href="/docs/openurl" class="dropdown__link">
                 OpenURL
               </a>
             </li>
@@ -165,27 +166,27 @@
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-about">
             <li>
-              <a href="{{ site.baseurl }}{% link about/index.md %}" class="dropdown__link">
+              <a href="/about/" class="dropdown__link">
                 About DOAJ
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link about/team.md %}" class="dropdown__link">
+              <a href="/about/team" class="dropdown__link">
                 Team
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link about/ambassadors.md %}" class="dropdown__link">
+              <a href="/about/ambassadors" class="dropdown__link">
                 Ambassadors
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link about/advisory-board-council.md %}" class="dropdown__link">
+              <a href="/about/advisory-board-council" class="dropdown__link">
                 Advisory Board & Council
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link about/volunteers.md %}" class="dropdown__link">
+              <a href="/about/volunteers" class="dropdown__link">
                 Volunteers
               </a>
             </li>
@@ -195,7 +196,7 @@
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link about/faq.md %}" class="dropdown__link">
+              <a href="/about/faq" class="dropdown__link">
                 FAQs
               </a>
             </li>
@@ -208,22 +209,22 @@
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-support">
             <li>
-              <a href="{{ site.baseurl }}{% link support/index.md %}" class="dropdown__link">
+              <a href="/support/" class="dropdown__link">
                 Support DOAJ
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link support/sponsors.md %}" class="dropdown__link">
+              <a href="/support/sponsors" class="dropdown__link">
                 Sponsors
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link support/publisher-supporters.md %}" class="dropdown__link">
+              <a href="/support/publisher-supporters" class="dropdown__link">
                 Publisher supporters
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link support/supporters.md %}" class="dropdown__link">
+              <a href="/support/supporters" class="dropdown__link">
                 Supporters
               </a>
             </li>
@@ -236,34 +237,34 @@
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-apply">
             <li>
-              <a href="{{ site.baseurl }}{% link apply/index.md %}" class="dropdown__link">
+              <a href="/apply/" class="dropdown__link">
                 Application form
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link apply/guide.md %}" class="dropdown__link">
+              <a href="/apply/guide" class="dropdown__link">
                 Guide to applying
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="dropdown__link">
+              <a href="/apply/seal" class="dropdown__link">
                 The DOAJ seal
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link apply/transparency.md %}" class="dropdown__link">
+              <a href="/apply/transparency" class="dropdown__link">
                 Transparency & best practice
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link apply/why-index.md %}" class="dropdown__link">
+              <a href="/apply/why-index" class="dropdown__link">
                 Why index your journal in DOAJ?
               </a>
             </li>
           </ul>
         </li>
         <li class="secondary-nav__login">
-          <a href="{{ site.baseurl }}{% link login.md %}" class="nav-bar__link">
+          <a href="/login" class="nav-bar__link">
             Login
             <span data-feather="log-in"></span>
           </a>

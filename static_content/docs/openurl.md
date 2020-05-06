@@ -1,5 +1,6 @@
 ---
 layout: sidenav
+fragment: false
 title: OpenURL
 section: Documentation
 toc: true

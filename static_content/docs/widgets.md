@@ -1,5 +1,6 @@
 ---
 layout: sidenav
+fragment: false
 title: Widgets
 section: Documentation
 toc: true

@@ -445,10 +445,10 @@ def google_webmaster_tools():
 
 @blueprint.route("/support/")
 def support():
-    return render_template("layouts/static_page.html", page_frag="/support-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/support/index-fragment/index.html")
 
 
-@blueprint.route("/support/sponsors/")
+@blueprint.route("/sponsorship/")
 def sponsors():
     return render_template("layouts/static_page.html", page_frag="support/sponsors-fragment/index.html")
 
@@ -465,7 +465,7 @@ def supporters():
 
 @blueprint.route("/apply/")
 def apply():
-    return render_template("layouts/static_page.html", page_frag="/apply-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/apply/index-fragment/index.html")
 
 @blueprint.route("/apply/guide/")
 def guide():
@@ -519,7 +519,7 @@ def openurl():
 
 @blueprint.route("/about/")
 def about():
-    return render_template("layouts/static_page.html", page_frag="/about-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/about/index-fragment/index.html")
 
 
 @blueprint.route("/about/team-ambassadors/")

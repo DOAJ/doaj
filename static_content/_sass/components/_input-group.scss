@@ -3,8 +3,10 @@
 .input-group {
   margin: 1rem 0;
   position: relative;
-  display: table;
+  display: flex;
+  flex-flow: row wrap;
   border-collapse: separate;
+  width: 100%;
 }
 
 .input-group input,
@@ -13,7 +15,6 @@
   z-index: 2;
   float: left;
   margin-bottom: 0;
-  display: table-cell;
 
   &:not(:first-child) {
     margin-left: -1px;

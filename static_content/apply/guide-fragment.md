@@ -1,5 +1,6 @@
 ---
-layout: sidenav-fragment
+layout: sidenav
+fragment: true
 title: Guide to applying
 toc: true
 sticky_sidenav: true

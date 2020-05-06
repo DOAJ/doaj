@@ -6,11 +6,9 @@
 {% endif %}
 <body>
 
-
-<!-- TODO: add header when done -->
+{% include "includes/header.html" %}
 
     {% block main_panel %}
-        {% include "includes/header_reference.html" %}
         {% block content %}{% endblock %}
     {% endblock %}
 
@@ -18,7 +16,7 @@
 
     {% block extra_js_bottom %}{% endblock extra_js_bottom %}
 
-{% include "footer_reference.html" %}
+{% include "includes/footer.html" %}
 
 {% if not request.cookies.get("doaj-consent") %}
 

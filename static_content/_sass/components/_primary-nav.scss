@@ -9,9 +9,13 @@
   background-color: $fair-pink;
 
   @media (max-width: 768px) {
+    .nav-bar {
+      float: right;
+    }
+
     .feather-chevron-down,
     .feather-heart,
-    .dropdown__menu {
+    .primary-nav__item_desktop {
       display: none !important;
     }
   }
@@ -20,6 +24,7 @@
 .primary-nav__search {
   padding: 0 $spacing-03;
   background-color: $grapefruit;
+  cursor: pointer;
 
   .feather-search {
     top: $spacing-01;

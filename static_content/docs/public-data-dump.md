@@ -1,5 +1,6 @@
 ---
 layout: sidenav
+fragment: false
 title: Public data dump
 section: Documentation
 toc: true

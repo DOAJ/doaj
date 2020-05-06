@@ -1,5 +1,6 @@
 ---
 layout: sidenav
+fragment: false
 title: FAQs
 section: About
 toc: true

@@ -1,5 +1,6 @@
 ---
-layout: sidenav-fragment
+layout: sidenav
+fragment: true
 title: Transparency & best practice
 toc: true
 sticky_sidenav: true

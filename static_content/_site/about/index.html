@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
   <meta charset="utf-8">
   <title>Directory of Open Access Journals</title>
-  <meta name="description" content="">
+  <meta name="description" content="DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 
   <!-- PWA -->
@@ -58,6 +59,7 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
+            <h1 class="sr-only">The Directory of Open Access Journals</h1>
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewBox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -72,14 +74,15 @@
           </a>
         </div>
         <nav class="col-xs-8 col-sm-6">
+          <h2 class="sr-only">Main actions</h2>
           <ul class="nav-bar">
-            <li class="dropdown">
-              <a href="/support/" class="dropdown__trigger nav-bar__link" id="menu-support" type="button" aria-haspopup="true" aria-expanded="false">
+            <li class="dropdown primary-nav__item_desktop">
+              <a href="/support/" class="dropdown__trigger nav-bar__link" id="action-menu-support" type="button" aria-haspopup="true" aria-expanded="false">
                 <span data-feather="heart"></span>
                 Support
                 <span data-feather="chevron-down"></span>
               </a>
-              <ul class="dropdown__menu" aria-labelledby="menu-support">
+              <ul class="dropdown__menu" aria-labelledby="action-menu-support">
                 <li>
                   <a href="/support/" class="dropdown__link">
                     Support DOAJ
@@ -102,12 +105,12 @@
                 </li>
               </ul>
             </li>
-            <li class="dropdown">
-              <a href="/apply/" class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
+            <li class="dropdown primary-nav__item_desktop">
+              <a href="/apply/" class="dropdown__trigger nav-bar__link" id="action-menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
                 Apply
                 <span data-feather="chevron-down"></span>
               </a>
-              <ul class="dropdown__menu" aria-labelledby="menu-apply">
+              <ul class="dropdown__menu" aria-labelledby="action-menu-apply">
                 <li>
                   <a href="/apply/" class="dropdown__link">
                     Application form
@@ -135,11 +138,9 @@
                 </li>
               </ul>
             </li>
-            <li>
-              <a href="" class="nav-bar__link primary-nav__search">
-                <span data-feather="search"></span>
-                <span class="sr-only"> Search</span>
-              </a>
+            <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search">
+              <span data-feather="search"></span>
+              <span class="sr-only"> Search</span>
             </li>
           </ul>
         </nav>
@@ -149,7 +150,7 @@
   <nav class="secondary-nav ">
     <div class="container">
       <a href="#" class="secondary-nav__menu-toggle" aria-label="Click to open menu">
-        <span data-feather="menu"></span> Menu
+        <span data-feather="menu"></span> <h2 class="secondary-nav__header">Menu</h2>
       </a>
       <ul class="nav-bar secondary-nav__menu">
         <li class="dropdown">
@@ -261,6 +262,67 @@
             </li>
           </ul>
         </li>
+        <li class="dropdown secondary-nav__item_mobile">
+          <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <strong>Support</strong>
+            <span data-feather="chevron-down"></span>
+          </a>
+          <ul class="dropdown__menu" aria-labelledby="menu-support">
+            <li>
+              <a href="/support/" class="dropdown__link">
+                Support DOAJ
+              </a>
+            </li>
+            <li>
+              <a href="/support/sponsors/" class="dropdown__link">
+                Sponsors
+              </a>
+            </li>
+            <li>
+              <a href="/support/publisher-supporters/" class="dropdown__link">
+                Publisher supporters
+              </a>
+            </li>
+            <li>
+              <a href="/support/supporters/" class="dropdown__link">
+                Supporters
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="dropdown secondary-nav__item_mobile">
+          <a class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <strong>Apply</strong>
+            <span data-feather="chevron-down"></span>
+          </a>
+          <ul class="dropdown__menu" aria-labelledby="menu-apply">
+            <li>
+              <a href="/apply/" class="dropdown__link">
+                Application form
+              </a>
+            </li>
+            <li>
+              <a href="/apply/guide/" class="dropdown__link">
+                Guide to applying
+              </a>
+            </li>
+            <li>
+              <a href="/apply/seal/" class="dropdown__link">
+                The DOAJ seal
+              </a>
+            </li>
+            <li>
+              <a href="/apply/transparency/" class="dropdown__link">
+                Transparency & best practice
+              </a>
+            </li>
+            <li>
+              <a href="/apply/why-index/" class="dropdown__link">
+                Why index your journal in DOAJ?
+              </a>
+            </li>
+          </ul>
+        </li>
         <li class="secondary-nav__login">
           <a href="/login/" class="nav-bar__link">
             Login
@@ -272,11 +334,56 @@
   </nav>
 </header>
 
+<!-- Quick search modal -->
+<section class="modal" id="modal-search" tabindex="-1" role="dialog">
+  <div class="modal__dialog" role="document">
+    <form class="quick-search__form">
+      <h2 class="modal__title">Quick search</h2>
+      <div class="inline-fields">
+        <input type="radio" id="quick-search-journals" name="content-type" value="journals" checked>
+        <label for="quick-search-journals">Journals</label>
+        <input type="radio" id="quick-search-articles" name="content-type" value="articles">
+        <label for="quick-search-articles">Articles</label>
+      </div>
+      <div class="input-group">
+        <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
+        <input type="text" name="keywords" id="quick-search-keywords" required>
+
+        <label for="quick-search-fields" class="sr-only">In the field:</label>
+        <select name="fields" id="quick-search-fields">
+          <option value="all">In all fields</option>
+          <option value="title">Title</option>
+          <option value="abstract">Abstract</option>
+          <option value="subject">Subject</option>
+          <option value="subject">Author</option>
+        </select>
+        <button type="submit">
+          <span data-feather="search"></span><span class="sr-only"> Search</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+
 
     <main class="container">
       <div class="row">
 
-        <div class="col-md-8">
+        <div class="col-md-4 col-md-push-8">
+          
+          <nav class="page-nav" data-spy="affix">
+            <h2 class="page-nav__heading">Jump to:</h2>
+            <ul class="page-nav__list">
+<li class="page-nav__item item-h2"><a href="#our-mission">Our mission</a></li>
+<li class="page-nav__item item-h2"><a href="#constitution">Constitution</a></li>
+<li class="page-nav__item item-h2"><a href="#partnerships-and-collaborations">Partnerships and collaborations</a></li>
+</ul>
+          </nav>
+          
+        </div>
+
+        <div class="col-md-8 col-md-pull-4">
            <section class="page-content">
             <p class="label">About</p>
             <h1>About DOAJ</h1>
@@ -331,27 +438,15 @@
           </section>
         </div>
 
-        <div class="col-md-4">
-          
-          <nav class="page-nav" data-spy="affix">
-            <h2 class="page-nav__heading">Jump to:</h2>
-            <a href="#" class="page-nav__top">Top of the page</a>
-            <ul class="page-nav__list">
-<li class="page-nav__item item-h2"><a href="#our-mission">Our mission</a></li>
-<li class="page-nav__item item-h2"><a href="#constitution">Constitution</a></li>
-<li class="page-nav__item item-h2"><a href="#partnerships-and-collaborations">Partnerships and collaborations</a></li>
-</ul>
-          </nav>
-          
-        </div>
-
       </div>
     </main>
 
+
     <footer class="page-footer">
   <div class="container">
+    <a href="#" id="top" class="back-to-top" data-spy="affix"><span data-feather="arrow-up"></span></a>
     <section class="row">
-      <div class="col-sm-2">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Apply</h2>
         <ul>
           <li><a href="/apply">Application form</a></li>
@@ -362,7 +457,7 @@
         </ul>
       </div>
 
-      <div class="col-sm-2">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Search</h2>
         <ul>
           <li><a href="">Journals</a></li>
@@ -372,7 +467,7 @@
         </ul>
       </div>
 
-      <div class="col-sm-2">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Documentation</h2>
         <ul>
           <li><a href="">API</a></li>
@@ -384,7 +479,7 @@
         </ul>
       </div>
 
-      <div class="col-sm-2">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>About</h2>
         <ul>
           <li><a href="/about">History & mission</a></li>
@@ -397,7 +492,7 @@
         </ul>
       </div>
 
-      <div class="col-sm-2">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Support</h2>
         <ul>
           <li><a href="/support">Support DOAJ</a></li>
@@ -407,7 +502,7 @@
         </ul>
       </div>
 
-      <div class="col-sm-2">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Stay up to date</h2>
         <ul>
           <li>
@@ -453,7 +548,7 @@
 </footer>
 
 <script>
-  // User Feather icons
+  // Use Feather icons
   feather.replace()
 
   // Responsive menu
@@ -463,8 +558,28 @@
   openMenu.addEventListener('click', function() {
     nav.classList.toggle("secondary-nav__menu-toggle--is-active");
   }, false);
+
+  // Back-to-top button
+  topBtn = document.getElementById("top");
+
+  window.onscroll = function() {scrollFunction()};
+
+  function scrollFunction() {
+    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+      topBtn.style.display = "flex";
+    } else {
+      topBtn.style.display = "none";
+    }
+  }
+
+  // When the user clicks on the button, scroll to the top of the document
+  function topFunction() {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+  }
 </script>
 
   </body>
 
 </html>
+

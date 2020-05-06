@@ -1,3 +1,4 @@
+{% if page.fragment == false %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,80 +6,15 @@
 
   <body class="sidenav-page">
     {% include header.html %}
+{% endif %}
 
     <main class="container">
       <div class="row">
 
-        <div class="col-md-8">
-           <section class="page-content">
-            {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
-            <h1>{{ page.title }}</h1>
-
-            {{ content }}
-
-            <!-- TODO: make this more elegant -->
-            <!-- Display data pages -->
-            {% if page.name == 'sponsors.md' %}
-              <!-- Support section: sponsors -->
-              <h2><span data-feather="award" class="stroke-gold"></span> Gold sponsor</h2>
-              <div class="row">
-                {% for i in site.data.sponsors.gold %}
-                <div class="col-xs-6 sponsor">
-                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
-                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
-                  </a>
-                </div>
-                {% endfor %}
-              </div>
-
-              <h2><span data-feather="award" class="stroke-silver"></span> Silver sponsors</h2>
-              <div class="row">
-                {% for i in site.data.sponsors.silver %}
-                <div class="col-xs-4 sponsor">
-                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
-                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
-                  </a>
-                </div>
-                {% endfor %}
-              </div>
-
-              <h2><span data-feather="award" class="stroke-bronze"></span> Bronze sponsors</h2>
-              <div class="row">
-                {% for i in site.data.sponsors.bronze %}
-                <div class="col-xs-4 sponsor">
-                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
-                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
-                  </a>
-                </div>
-                {% endfor %}
-              </div>
-
-            {% elsif page.name == 'publisher-supporters.md' %}
-              <!-- Support section: publisher supporters -->
-              <h2>Current publisher supporters</h2>
-              <ul class="row title-list">
-                {% for i in site.data.publisher-supporters %}
-                  <li class="col-md-3">
-                    <a href="{{ i.url }}" target="_blank" class="title-list__link">{{ i.name }}</a>
-                  </li>
-                {% endfor %}
-              </ul>
-
-            {% elsif page.name == 'supporters.md' %}
-              <!-- Support section: supporters -->
-              {% for i in site.data.supporters %}
-                <p>{{ i.name }}, {{ i.url }}</p>
-              {% endfor %}
-
-            {% endif %}
-          </section>
-        </div>
-
-        <div class="col-md-4">
+        <div class="col-md-4 col-md-push-8">
           {% if page.toc %}
-          <nav class="page-nav"{% if page.sticky_sidenav %} data-spy="affix{% endif %}">
+          <nav class="page-nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
             <h2 class="page-nav__heading">Jump to:</h2>
-            <a href="#" class="page-nav__top">Top of the page</a>
             {{ content | toc_only }}
           </nav>
           {% else %}
@@ -99,10 +35,76 @@
           {% endif %}
         </div>
 
+        <div class="col-md-8 col-md-pull-4">
+           <section class="page-content">
+            {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
+            <h1>{{ page.title }}</h1>
+
+            {{ content }}
+
+            <!-- TODO: make this more elegant -->
+            <!-- Display data pages -->
+            {% if page.name == 'sponsors.md' or page.name == 'sponsors-fragment.md' %}
+              <!-- Support section: sponsors -->
+              <h3><span data-feather="award" class="stroke-gold"></span> Gold sponsor</h3>
+              <div class="row">
+                {% for i in site.data.sponsors.gold %}
+                <div class="col-xs-6 sponsor">
+                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+
+              <h3><span data-feather="award" class="stroke-silver"></span> Silver sponsors</h3>
+              <div class="row">
+                {% for i in site.data.sponsors.silver %}
+                <div class="col-xs-4 sponsor">
+                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+
+              <h3><span data-feather="award" class="stroke-bronze"></span> Bronze sponsors</h3>
+              <div class="row">
+                {% for i in site.data.sponsors.bronze %}
+                <div class="col-xs-4 sponsor">
+                  <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+
+            {% elsif page.name == 'publisher-supporters.md' or page.name == 'publisher-supporters-fragment.md' %}
+              <!-- Support section: publisher supporters -->
+              <ul class="row title-list">
+                {% for i in site.data.publisher-supporters %}
+                  <li class="col-md-3">
+                    <a href="{{ i.url }}" target="_blank" class="title-list__link">{{ i.name }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+
+            {% elsif page.name == 'supporters.md' or page.name == 'supporters-fragment.md' %}
+              <!-- Support section: supporters -->
+              {% for i in site.data.supporters %}
+                <p>{{ i.name }}, {{ i.url }}</p>
+              {% endfor %}
+
+            {% endif %}
+          </section>
+        </div>
+
       </div>
     </main>
 
+{% if page.fragment == false %}
     {% include footer.html %}
   </body>
 
 </html>
+{% endif %}

@@ -13,3 +13,5 @@ Sponsorship levels are tiered and have accompanying benefits. To discuss your sp
 |   | Bronze        | £6,000          | £3,000              | Your logo on our Sponsors page.  A Tweet welcoming you as a DOAJ Sponsor.                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 ---
+
+## List of sponsors

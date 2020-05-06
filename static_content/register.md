@@ -1,5 +1,6 @@
 ---
 layout: no-sidenav
+fragment: false
 title: Register for a DOAJ account
 toc: true
 highlight: false

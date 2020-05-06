@@ -1,5 +1,6 @@
 ---
 layout: no-sidenav
+fragment: false
 title: DOAJ team
 section: About
 toc: true

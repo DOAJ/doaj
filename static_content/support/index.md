@@ -1,5 +1,6 @@
 ---
 layout: sidenav
+fragment: false
 title: Support DOAJ
 toc: true
 sticky_sidenav: true
