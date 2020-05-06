@@ -1,11 +1,11 @@
 import esprit, csv
 
-from portality.core import app
+from portality.core import es_connection
+from portality.util import ipt_prefix
 
 
 def query_result_generator(query, type, page_size=1000, keepalive="1m", wrap=None):
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-    for result in esprit.tasks.scroll(conn, type, q=query, page_size=page_size, keepalive=keepalive):
+    for result in esprit.tasks.scroll(es_connection, ipt_prefix(type), q=query, page_size=page_size, keepalive=keepalive):
         if wrap is not None:
             result = wrap(result)
         yield result
