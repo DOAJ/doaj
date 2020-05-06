@@ -39,10 +39,10 @@ def cookie_consent():
     return resp
 
 
-@blueprint.route("/news")
-def news():
-    news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))
-    return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
+# @blueprint.route("/news")
+# def news():
+#     news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))
+#     return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
 
 
 @blueprint.route("/ssw_demo")
@@ -487,11 +487,6 @@ def why_index():
     return render_template("layouts/static_page.html", page_frag="/apply/why-index-fragment/index.html")
 
 
-@blueprint.route("/docs/api/")
-def api():
-    return render_template("layouts/static_page.html", page_frag="/docs/api-fragment/index.html")
-
-
 @blueprint.route("/docs/oai-pmh/")
 def oai_pmh():
     return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh-fragment/index.html")
@@ -522,9 +517,9 @@ def about():
     return render_template("layouts/static_page.html", page_frag="/about/index-fragment/index.html")
 
 
-@blueprint.route("/about/team-ambassadors/")
+@blueprint.route("/about/ambassadors/")
 def ambassadors():
-    return render_template("layouts/static_page.html", page_frag="/about/team-ambassadors-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/about/ambassadors-fragment/index.html")
 
 
 @blueprint.route("/about/advisory-board-council/")

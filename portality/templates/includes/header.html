@@ -1,7 +1,9 @@
 <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
-
+{% set url_list = request.url.split("/") %}
+{% set endpoint = url_list[2:url_list|length-1] %}
+{% set highlighted = ["ambassadors", "volunteers"] %}
 <header class="page-header">
   <div class="primary-nav">
     <div class="container">
@@ -87,7 +89,7 @@
     </div>
   </div>
     <!-- class secondary-nav-... should depend on if page.highlight != false -->
-  <nav class="secondary-nav secondary-nav--precedes-highlight">
+  <nav class="secondary-nav {% if endpoint|length == 1 or endpoint[endpoint|length-1] in highlighted %} secondary-nav--precedes-highlight {% endif %}">
     <div class="container">
       <a href="#" class="secondary-nav__menu-toggle" aria-label="Click to open menu">
         <span data-feather="menu"></span> <h2 class="secondary-nav__header">Menu</h2>
@@ -128,12 +130,12 @@
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-data">
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="/api/docs" class="dropdown__link dropdown__link--is-disabled">
                 API
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="/docs/oai-pmh" class="dropdown__link dropdown__link--is-disabled">
                 OAI-PMH
               </a>
             </li>
@@ -191,7 +193,7 @@
               </a>
             </li>
             <li>
-              <a class="dropdown__link dropdown__link--is-disabled">
+              <a href="/news" class="dropdown__link dropdown__link--is-disabled">
                 News
               </a>
             </li>
