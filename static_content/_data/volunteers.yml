@@ -36,14 +36,14 @@ ed:
   area: Humanities, Social Sciences
   year_since:
   city: Lawrence
-  country: Kansas, USA
+  country: USA
   language: Russian, German, English
 
 - name: Lut Tamam
   area: Medicine
   year_since:
   city: Adana
-  country:Turkey
+  country: Turkey
   language: Turkish, English
 
 - name: Natalia Pamuła-Cieślak
@@ -225,39 +225,39 @@ ass_ed:
   language:
 
 - name: Ben Catt
-  area:
+  area: Librarianship, Research Support
   year_since:
-  city:
-  country:
-  language:
+  city: York
+  country: United Kingdom
+  language: English
 
 - name: Chitu Okoli
-  area:
+  area: Technology
   year_since:
-  city:
-  country:
-  language:
+  city: Paris
+  country: France
+  language: English, French
 
 - name: Christine Davidian
-  area:
+  area: Technology
   year_since:
-  city:
-  country:
-  language:
+  city: Glassboro, NJ
+  country: USA
+  language: English, French
 
 - name: Concha Diez Pastor
-  area:
+  area: Social Sciences, Technology
   year_since:
-  city:
-  country:
-  language:
+  city: Madrid
+  country: Spain
+  language: Spanish, English, Italian
 
 - name: Deborah Lins e Nóbrega
-  area:
+  area: Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Brasilia 
+  country: Brazil
+  language: Portuguese, English
 
 - name: Dedi Rahman Nur
   area: Social Sciences
@@ -274,11 +274,11 @@ ass_ed:
   language:
 
 - name: Dr. Eko Supraptono
-  area:
+  area: Technology
   year_since:
-  city:
-  country:
-  language:
+  city: Indonesia
+  country: Semarang
+  language: Indonesian, English
 
 - name: Dr. Ir. Dyah Rini Indriyanti
   area:
@@ -316,18 +316,18 @@ ass_ed:
   language: Serbo-Croat-Bosnian, English, Turkish
 
 - name: Enver Ahmet Demir
-  area:
+  area: Medicine
   year_since:
-  city:
-  country:
-  language:
+  city: Hatay
+  country: Turkey
+  language: Turkish, English
 
 - name: Francesca Soldati
-  area:
+  area: Science
   year_since:
-  city:
-  country:
-  language:
+  city: Lincoln
+  country: United Kingdom
+  language: Italian, English, Spanish
 
 - name: Francesco Cavinato
   area:
