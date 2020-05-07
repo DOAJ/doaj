@@ -126,7 +126,7 @@ def suggestion():
 
 from portality.forms.application_forms import ApplicationFormFactory
 
-@blueprint.route("/apply", methods=["GET", "POST"])
+@blueprint.route("/apply/", methods=["GET", "POST"])
 @write_required()
 @login_required
 def public_application(draft_id=None):
@@ -461,11 +461,6 @@ def publisher_supporters():
 @blueprint.route("/support/supporters/")
 def supporters():
     return render_template("layouts/static_page.html", page_frag="/support/supporters-fragment/index.html")
-
-
-@blueprint.route("/apply/")
-def apply():
-    return render_template("layouts/static_page.html", page_frag="/apply/index-fragment/index.html")
 
 @blueprint.route("/apply/guide/")
 def guide():
