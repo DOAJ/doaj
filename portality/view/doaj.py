@@ -492,6 +492,11 @@ def oai_pmh():
     return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh-fragment/index.html")
 
 
+@blueprint.route('/docs/api/')
+def docs():
+    return render_template('api/v2/api_docs.html')
+
+
 @blueprint.route("/docs/xml/")
 def xml():
     return render_template("layouts/static_page.html", page_frag="/docs/xml-fragment/index.html")
@@ -571,11 +576,6 @@ def old_sponsors():
 @blueprint.route("/members")
 def members():
     return redirect(url_for("doaj.supporters", **request.args), code=308)
-
-
-@blueprint.route('/api/docs')
-def docs():
-    return render_template('api/v2/api_docs.html')
 
 
 @blueprint.route('/features')

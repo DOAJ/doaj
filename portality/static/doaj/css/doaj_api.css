@@ -1,0 +1,11 @@
+/****************************************
+ * API Docs Styles
+ */
+
+.swagger-section .swagger-ui-wrap {
+    max-width: inherit;
+}
+
+.swagger-section .swagger-ui-wrap ul#resources {
+    padding-left: 0;
+}

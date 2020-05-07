@@ -28,18 +28,12 @@ def api_v2_root():
 @blueprint.route('/swagger.json')
 def api_spec():
     swag = swagger(app)
-    swag['info']['title'] = "DOAJ API documentation"
+    swag['info']['title'] = ""
 
     # Generate the swagger description from the Jinja template
     account_url = None
     if current_user.is_authenticated:
         account_url = url_for('account.username', username=current_user.id, _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
-
-    swag['info']['description'] = render_template('api/v2/swagger_description.html',
-                                                  api_version=API_VERSION_NUMBER,
-                                                  base_url=url_for('.api_v2_root', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
-                                                  contact_us_url=url_for('doaj.contact'),
-                                                  account_url=account_url)
     swag['info']['version'] = API_VERSION_NUMBER
 
     return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
@@ -51,11 +45,6 @@ def missing_resource(invalid_path):
     docs_url = app.config.get("BASE_URL", "") + url_for('.docs')
     spec_url = app.config.get("BASE_URL", "") + url_for('.api_spec')
     raise Api404Error("No endpoint at {0}. See {1} for valid paths or read the documentation at {2}.".format(invalid_path, spec_url, docs_url))
-
-
-@blueprint.route('/docs')
-def docs():
-    return redirect(url_for('doaj.docs'))
 
 
 @swag(swag_summary='Search your applications <span class="red">[Authenticated, not public]</span>', swag_spec=DiscoveryApi.get_application_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.

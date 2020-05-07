@@ -27,12 +27,13 @@
   <!-- Windows 8 IE 10-->
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
+{% block extra_meta_tags %}{% endblock %}
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
 
   <!-- TODO: that should depend on page.payout, needs to be improved - see how it's done in static_content -->
-  <link rel="stylesheet" href="/static_content/_site/css/main.css">
-
+  {% block extra_stylesheets %}{% endblock %}
+    <link rel="stylesheet" href="/static_content/_site/css/main.css">
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
 
