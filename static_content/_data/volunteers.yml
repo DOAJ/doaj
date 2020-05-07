@@ -54,11 +54,11 @@ ed:
   language: Polish, English
 
 - name: Paola Galimberti
-  area:
+  area: Research Evaluation
   year_since:
-  city:
-  country:
-  language:
+  city: Milan
+  country: Italy
+  language: Italian, German, English
 
 - name: Rasoul Zavaraqi
   area:
@@ -106,7 +106,7 @@ ass_ed:
   language: Tamil, Urdu, Hindi, English
 
 - name: Aji Prasetya Wibawa
-  area:
+  area: 
   year_since:
   city:
   country:
@@ -148,25 +148,25 @@ ass_ed:
   language:
 
 - name: Amir Aidun
-  area:
+  area: Science, Technology, Engineering
   year_since:
-  city:
-  country:
-  language:
+  city: Tehran
+  country: Iran
+  language: Persian, English
 
 - name: Ana Fresco-Santalla
-  area:
+  area: Humanities
   year_since:
-  city:
-  country:
-  language:
+  city: Granada
+  country: Spain
+  language: Galician, Portuguese, Spanish, English
 
 - name: Andista Candra Yusro
-  area:
+  area: Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Madiun
+  country: Indonesia
+  language: Indonesian, English
 
 - name: Andrea Imre
   area:
@@ -176,11 +176,11 @@ ass_ed:
   language:
 
 - name: Andrea Marchitelli
-  area:
+  area: Librarianship
   year_since:
-  city:
-  country:
-  language:
+  city: Rome
+  country: Italy
+  language: Italian, English
 
 - name: Andrea Wright
   area:
@@ -190,32 +190,32 @@ ass_ed:
   language:
 
 - name: Andri Pranolo
-  area:
+  area: 
   year_since:
-  city:
-  country:
+  city: 
+  country: 
   language:
 
 - name: Andronic Octavian
-  area:
+  area: Medicine
   year_since:
-  city:
-  country:
-  language:
+  city: Bucharest
+  country: Romania
+  language: Romanian, English
 
 - name: Anna Wolodko
-  area:
+  area: Library Science
   year_since:
-  city:
-  country:
-  language:
+  city: Warsaw
+  country: Poland
+  language: Polish, English
 
 - name: Annarita Barbaro
-  area:
+  area: Humanities
   year_since:
-  city:
-  country:
-  language:
+  city: Rome
+  country: Italy
+  language: Italian, English
 
 - name: Anne Lahey
   area:
