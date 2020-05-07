@@ -2,10 +2,25 @@
  * API Docs Styles
  */
 
+.swagger-section .heading h3 {
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 400;
+}
+
 .swagger-section .swagger-ui-wrap {
     max-width: inherit;
 }
 
 .swagger-section .swagger-ui-wrap ul#resources {
     padding-left: 0;
+}
+
+.swagger-section h4 {
+  font-family: 'Source Sans Pro', sans-serif;
+  letter-spacing: 0.01em;
+}
+
+ul,
+ol {
+  list-style: initial;
 }
