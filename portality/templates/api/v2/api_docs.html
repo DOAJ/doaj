@@ -11,16 +11,49 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-    <main class="page-content">
-        <section class="container">
-            <p class="label">Documentation</p>
-            <h1> DOAJ API documentation </h1>
-            {% include "api/v2/swagger_description.html" %}
-            <div class="swagger-section">
-                    <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+    <main class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-push-8">
+
+              <nav class="page-nav" data-spy="affix">
+
+                <h2 class="page-nav__heading">Jump to:</h2>
+                <ul class="page-nav__list">
+                    <li class="page-nav__item item-h2"><a href="#intro_auth">Using this live documentation page</a></li>
+                    <li class="page-nav__item item-h2"><a href="#intro_help">Help and support</a></li>
+                    <li class="page-nav__item item-h2"><a href='#swagger-section'>Try it out!</a></li>
+                    <li class="page-nav__item item-h2"><a href="#search_api">Search API</a></li>
+                    <ul class="page-nav__sublist">
+                        <li class="page-nav__item item-h3"><a href="#query_syntax">Query string syntax</a></li>
+                        <li class="page-nav__item item-h3"><a href="#default_query_operator">Default handling of phrases</a></li>
+                        <li class="page-nav__item item-h3"><a href="#specific_field_search">Searching inside a specific field</a></li>
+                        <li class="page-nav__item item-h3"><a href="#special_characters">Special characters</a></li>
+                        <li class="page-nav__item item-h3"><a href="#short_field_names">Short field names</a></li>
+                        <li class="page-nav__item item-h3"><a href="#sorting">Sorting of results</a></li>
+                        <li class="page-nav__item item-h3"><a href="#query_string_advanced_usage">The query string - advanced usage</a></li>
+                    </ul>
+                    <li class="page-nav__item item-h2"><a href="#crud_api">CRUD API</a></li>
+                    <ul class="page-nav__sublist">
+                        <li class="page-nav__item item-h3"><a href="#creating_articles">Creating articles</a></li>
+                        <li class="page-nav__item item-h3"><a href="#update_requests">Applications - Update Requests</a></li>
+                    </ul>
+
+                </ul>
+              </nav>
             </div>
-            {% include "api/v2/extra_docs.html" %}
-        </section>
+
+            <div class="col-md-8 col-md-pull-4">
+                <section class="page-content">
+                    <p class="label">Documentation</p>
+                    <h1> DOAJ API documentation </h1>
+                    {% include "api/v2/swagger_description.html" %}
+                    <div id="swagger-section" class="swagger-section">
+                            <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+                    </div>
+                    {% include "api/v2/extra_docs.html" %}
+                </section>
+            </div>
+        </div>
     </main>
 {% endblock %}
 
