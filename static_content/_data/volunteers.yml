@@ -5,26 +5,26 @@
 
 ed:
 - name: Alicia Aparicio
-  area:
+  area: Humanities, Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Buenos Aires
+  country: Argentina
+  language: Spanish
 
 - name: David Scherer
   area:
   year_since:
-  city:
-  country:
+  city: 
+  country: 
   language:
 
 - name: Emilie Champagne
-  area:
+  area: Science
   year_since:
-  city:
-  country:
-  language:
-
+  city: Québec
+  country: Canada
+  language: French, English
+  
 - name: Fei Yu
   area: Librarianship, sholarly publishing, data management
   year_since:
@@ -33,25 +33,25 @@ ed:
   language: Chinese, English
 
 - name: Geoff Husic
-  area:
+  area: Humanities, Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Lawrence
+  country: Kansas, USA
+  language: Russian, German, English
 
 - name: Lut Tamam
-  area:
+  area: Medicine
   year_since:
-  city:
-  country:
-  language:
+  city: Adana
+  country:Turkey
+  language: Turkish, English
 
 - name: Natalia Pamuła-Cieślak
-  area:
+  area: Humanities, Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Toruń
+  country: Poland
+  language: Polish, English
 
 - name: Paola Galimberti
   area:
