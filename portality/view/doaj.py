@@ -131,8 +131,10 @@ from portality.forms.application_forms import ApplicationFormFactory
 
 @blueprint.route("/apply/", methods=["GET", "POST"])
 @write_required()
-@login_required
 def public_application(draft_id=None):
+
+    if not current_user.is_authenticated:
+        return render_template("account/login_to_apply.html")
 
     draft_application = None
     if draft_id is not None:

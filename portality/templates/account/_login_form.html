@@ -1,0 +1,20 @@
+{% block login_form %}
+
+    {% from "_formhelpers.html" import render_field %}
+
+    <form method="post" action="">
+        <div class="form__question">
+      {{ render_field(form.username, placeholder="your username") }}
+        </div>
+        <div class="form__question">
+      {{ render_field(form.password, placeholder="********") }}
+        </div>
+        <div class="form__question">
+      {{ render_field(form.next) }}
+        </div>
+    <div class="actions">
+      <input type="submit" value="Login"" />
+    </div>
+    </form>
+
+{% endblock %}
