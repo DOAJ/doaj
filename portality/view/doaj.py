@@ -27,6 +27,10 @@ def home():
     news = blog.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     return render_template('doaj/index.html', news=news)
 
+@blueprint.route('/login/')
+def login():
+    return redirect(url_for('account.login'))
+
 @blueprint.route("/cookie_consent")
 def cookie_consent():
     cont = request.values.get("continue")
