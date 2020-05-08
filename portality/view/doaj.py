@@ -75,7 +75,6 @@ def fqw_hit():
     # No content response, whether data there or not.
     return '', 204
 
-
 @blueprint.route("/search", methods=['GET'])
 def search():
     return render_template('doaj/search.html')

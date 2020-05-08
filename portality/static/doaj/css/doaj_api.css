@@ -24,3 +24,7 @@ ul,
 ol {
   list-style: initial;
 }
+
+.swagger-section .swagger-ui-wrap .footer {
+    visibility: hidden;
+}

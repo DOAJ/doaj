@@ -17,6 +17,8 @@ OFFLINE_MODE = False
 FEATURES = ['api1','api2']
 VALID_FEATURES = ['api1','api2']
 
+API_VERSION = "2.0.0"
+
 # ========================
 # MAIN SETTINGS
 
@@ -30,6 +32,8 @@ elif BASE_URL.startswith('http://'):
     BASE_DOMAIN = BASE_URL[7:]
 else:
     BASE_DOMAIN = BASE_URL
+
+BASE_API_URL = "http://doaj.org/api/v2/"
 API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
 API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
 

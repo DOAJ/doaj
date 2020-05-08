@@ -35,6 +35,7 @@ def api_spec():
     if current_user.is_authenticated:
         account_url = url_for('account.username', username=current_user.id, _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
     swag['info']['version'] = API_VERSION_NUMBER
+    swag['info']['base_url'] = app.config.get("BASE_URL")
 
     return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
 
