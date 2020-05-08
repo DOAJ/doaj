@@ -330,11 +330,11 @@ ass_ed:
   language: Italian, English, Spanish
 
 - name: Francesco Cavinato
-  area:
+  area: Humanities, Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Bologna
+  country: Italy
+  language: Italian, English
 
 - name: Geoff Husic
   area:
@@ -351,11 +351,11 @@ ass_ed:
   language:
 
 - name: Gerald Langhanke
-  area:
+  area: Science, Technology
   year_since:
-  city:
-  country:
-  language:
+  city: Darmstadt
+  country: Germany
+  language: German, Swedish, English
 
 - name: Gertrud Pluskwik
   area:
@@ -372,11 +372,11 @@ ass_ed:
   language:
 
 - name: Iryna Kuchma
-  area:
+  area: Humanities, Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Kyiv
+  country: Ukraine
+  language: Ukranian, English, French, Polish
 
 - name: Isabel Margalejo Ferrández
   area:
@@ -393,39 +393,39 @@ ass_ed:
   language: Spanish, English
 
 - name: Jamila Jaber
-  area:
+  area: Library and Information Science
   year_since:
-  city:
-  country:
-  language:
+  city: Beirut
+  country: Lebanon
+  language: Arabic, French, English
 
 - name: Juan Sebastian Gonzalez
-  area:
+  area: Science, Technology
   year_since:
-  city:
-  country:
-  language:
+  city: Bogota
+  country: Colombia
+  language: Spanish, English
 
 - name: Kamil B. Varınca
-  area:
+  area: 
   year_since:
   city:
   country:
   language:
 
 - name: Karima Akool Al-Sahili
-  area:
+  area: Medicine
   year_since:
-  city:
-  country:
-  language:
+  city: Baghdad
+  country: Iraq
+  language: Arabic, English, Swedish
 
 - name: Katharine Dunn
-  area:
+  area: Scholarly Publishing
   year_since:
-  city:
-  country:
-  language:
+  city: Cambridge
+  country: USA
+  language: English
 
 - name: Kimberly Mears
   area:
