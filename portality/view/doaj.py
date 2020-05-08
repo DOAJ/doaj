@@ -129,12 +129,13 @@ def suggestion():
 
 from portality.forms.application_forms import ApplicationFormFactory
 
+
 @blueprint.route("/apply/", methods=["GET", "POST"])
 @write_required()
 def public_application(draft_id=None):
 
     if not current_user.is_authenticated:
-        return render_template("account/login_to_apply.html")
+        return redirect(url_for("account.login",  redirected="apply"))
 
     draft_application = None
     if draft_id is not None:
