@@ -1,0 +1,27 @@
+/* Admin edit button */
+
+.admin-edit {
+  position: fixed;
+  z-index: 2000;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  top: 50px;
+  left: 0;
+  background-color: $warm-black;
+
+  svg {
+    display: block;
+    margin: 10px auto;
+    height: 30px;
+    stroke: $warm-white;
+  }
+
+  + .admin-edit {
+    left: 50px;
+  }
+
+  &:hover {
+    background-color: $sanguine;
+  }
+}
