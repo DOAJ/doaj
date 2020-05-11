@@ -526,8 +526,6 @@ class FormulaicField(object):
             for k, v in custom_args.items():
                 kwargs[k] = v
 
-        # kwargs["name"] = "mycustomformname-" + self._definition.get("name")
-
         wtf = self.wtfield
         return wtf(**kwargs)
 

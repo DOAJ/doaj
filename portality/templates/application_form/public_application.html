@@ -1,3 +1,9 @@
+{% block extra_stylesheets %}
+<!-- get Swagger UI css -->
+    <link href='/portality/static/doaj/css/application_form.css' media='screen' rel='stylesheet' type='text/css' />
+
+{% endblock %}
+
 {% extends "layouts/base.html" %}
 
 {% set form_id = "public_application" %}
@@ -7,7 +13,7 @@
 {% set auto_save = 0 %}
 
 {% block content scoped %}
-    {% include "application_form/_form.html" %}
+    {% include "application_form/01-oa-compliance/index.html" %}
 {% endblock %}
 
 {% block extra_js_bottom scoped %}

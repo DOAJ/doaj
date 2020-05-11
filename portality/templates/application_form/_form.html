@@ -5,8 +5,9 @@
       data-formulaic-after="{{ formulaic_after }}">
 
 {% for fs in formulaic_context.fieldsets() %}
+    <p>{{ formulaic_context.fieldsets() }}</p>
     <h1>{{ fs.label }}</h1>
-    <fieldset id="{{ fs.name }}" class="form_page">
+    <fieldset id="{{ fs.name }}" class="for m_page">
     {% for field in fs.fields() %}
         {% set f = field %}
         {% set field_template = f.template %}

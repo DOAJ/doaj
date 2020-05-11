@@ -1,0 +1,9 @@
+ul#boai {
+    list-style-type: none;
+    padding: 0;
+    display: inline;
+}
+
+ul#boai > li {
+    display:inline;
+}
