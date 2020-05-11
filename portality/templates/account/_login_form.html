@@ -3,6 +3,7 @@
     {% from "_formhelpers.html" import render_field %}
 
     <form method="post" action="">
+    <input type="hidden" name="next" value="/apply" />
         <div class="form__question">
       {{ render_field(form.username, placeholder="your username") }}
         </div>
