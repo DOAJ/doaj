@@ -266,10 +266,17 @@
           </ul>
         </li>
         <li class="secondary-nav__login">
-          <a href="/login" class="nav-bar__link">
+        {% if current_user.is_anonymous %}
+          <a href="{{ url_for('account.login') }}" class="nav-bar__link">
             Login
             <span data-feather="log-in"></span>
           </a>
+        {% else %}
+            <a href="{{ url_for('account.logout') }}" class="nav-bar__link">
+                Logout
+                <span data-feather="log-out"></span>
+            </a>
+        {% endif %}
         </li>
       </ul>
     </div>
