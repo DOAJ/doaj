@@ -2,7 +2,7 @@
 layout: sidenav
 fragment: false
 title: Public data dump
-section: Documentation
+section: Docs
 toc: true
 sticky_sidenav: true
 highlight: false

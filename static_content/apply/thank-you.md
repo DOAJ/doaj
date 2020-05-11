@@ -1,6 +1,7 @@
 ---
 layout: apply
 title: Application form
+section: Apply
 toc: false
 highlight: false
 ---

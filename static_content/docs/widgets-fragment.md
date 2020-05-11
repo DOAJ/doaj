@@ -2,7 +2,7 @@
 layout: sidenav
 fragment: true
 title: Widgets
-section: Documentation
+section: Docs
 toc: true
 sticky_sidenav: true
 highlight: false

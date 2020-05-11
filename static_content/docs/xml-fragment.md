@@ -2,7 +2,7 @@
 layout: sidenav
 fragment: true
 title: XML
-section: Documentation
+section: Docs
 toc: true
 highlight: false
 ---

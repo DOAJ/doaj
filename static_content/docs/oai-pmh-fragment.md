@@ -2,7 +2,7 @@
 layout: sidenav
 fragment: true
 title: OAI-PMH
-section: Documentation
+section: Docs
 toc: true
 highlight: false
 ---
