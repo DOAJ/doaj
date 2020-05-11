@@ -273,9 +273,17 @@
   </nav>
 </header>
 
+{% if page.fragment == false %}
 <!-- Admin-only edit buttons -->
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/{{ page.section|downcase }}/content/{{ page.name }}" target="_blank"><span data-feather="edit-3"></span></a>
-<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/{{ page.section|downcase }}/content/{{ page.name }}" target="_blank"><span data-feather="database"></span></a>
+
+{% assign current_page = page.name %}
+{% assign size = current_page | size | minus: 3 %}
+
+{% if page.name == 'ambassadors.md' or page.name == 'publisher-supporters.md' or page.name == 'sponsors.md' or page.name == 'supporters.md' or page.name == 'team.md' or page.name == 'volunteers.md' %}
+<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/_data/{{ current_page | slice: 0, size }}.yml" target="_blank"><span data-feather="database"></span></a>
+{% endif %}
+{% endif %}
 
 <!-- Quick search modal -->
 <section class="modal" id="modal-search" tabindex="-1" role="dialog">
