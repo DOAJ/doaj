@@ -114,9 +114,9 @@ def load_crossref_schema(app):
 
 
 def create_es_connection(app):
-    # FIXME: temporary logging config for debugging index-per-type
-    import logging
-    esprit.raw.configure_logging(logging.DEBUG)
+    # temporary logging config for debugging index-per-type
+    #import logging
+    #esprit.raw.configure_logging(logging.DEBUG)
 
     # make a connection to the index
     if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
