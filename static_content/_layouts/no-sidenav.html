@@ -23,57 +23,62 @@
 
       <div class="container">
         <!-- TODO: make this more elegant -->
-        {% if page.name == 'team.md' or page.name == 'team-fragment.md' %}
-        <!-- About section: team and ambassadors -->
-        <ul class="row title-list">
-          {% for i in site.data.team %}
-          <li class="col-sm-6 col-md-4">
-            <div class="title-list__text">
-              <figure class="portrait">
-                {% if i.photo %}
-                  <div class="portrait__bg-img--is-3d" style="background-image: url('../../img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
-                {% else %}
-                  <div class="portrait__img--is-empty"></div>
-                {% endif %}
-              </figure>
-              <p class="label">{{ i.role }}</p>
-              <h2 class="title-list__heading">{{ i.name }}</h2>
-              <p class="title-list__para">
-                {{ i.bio }}
-              </p>
-              {% if i.coi %}
-              <p class="title-list__para">
-                Conflict of interest statement(s):
-                <ul>
-                  {% for j in i.coi %}
-                  <li><a href="{{ j[1] }}" target="_blank">{{ j[0] }}</a></li>
-                  {% endfor %}
-                </ul>
-              </p>
-              {% endif %}
-            </div>
-          </li>
-          {% endfor %}
-        </ul>
+        {% if page.name == 'subjects.md' %}
+          <!-- Search section: subjects -->
         {% endif %}
 
-        {% if page.name == 'ambassadors.md' or page.name == 'ambassadors-fragment.md' %}
-        <h2>Current ambassadors</h2>
-        <ul class="row title-list">
-          {% for i in site.data.ambassadors %}
-          <li class="col-sm-6 col-md-4">
-            <div class="title-list__text">
-              <p class="label">{{ i.region }}</p>
-              <h2 class="title-list__heading">{{ i.name }}</h2>
-              {% if i.bio %}
-              <p class="title-list__para">
-                {{ i.bio }}
-              </p>
-              {% endif %}
-            </div>
-          </li>
-          {% endfor %}
-        </ul>
+
+        {% if page.name == 'team.md' or page.name == 'team-fragment.md' %}
+          <!-- About section: team -->
+          <ul class="row title-list">
+            {% for i in site.data.team %}
+            <li class="col-sm-6 col-md-4">
+              <div class="title-list__text">
+                <figure class="portrait">
+                  {% if i.photo %}
+                    <div class="portrait__bg-img--is-3d" style="background-image: url('../../img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                  {% else %}
+                    <div class="portrait__img--is-empty"></div>
+                  {% endif %}
+                </figure>
+                <p class="label">{{ i.role }}</p>
+                <h2 class="title-list__heading">{{ i.name }}</h2>
+                <p class="title-list__para">
+                  {{ i.bio }}
+                </p>
+                {% if i.coi %}
+                <p class="title-list__para">
+                  Conflict of interest statement(s):
+                  <ul>
+                    {% for j in i.coi %}
+                    <li><a href="{{ j[1] }}" target="_blank">{{ j[0] }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </p>
+                {% endif %}
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+
+        {% elsif page.name == 'ambassadors.md' or page.name == 'ambassadors-fragment.md' %}
+          <!-- About section: ambassadors -->
+          <h2>Current ambassadors</h2>
+          <ul class="row title-list">
+            {% for i in site.data.ambassadors %}
+            <li class="col-sm-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">{{ i.region }}</p>
+                <h2 class="title-list__heading">{{ i.name }}</h2>
+                {% if i.bio %}
+                <p class="title-list__para">
+                  {{ i.bio }}
+                </p>
+                {% endif %}
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
 
         {% elsif page.name == 'advisory-board-council.md' or page.name == 'advisory-board-council-fragment.md' %}
           <!-- About section: advisory board & council -->
