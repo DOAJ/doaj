@@ -5,7 +5,7 @@
   display: table;
   padding: 0;
   list-style: none;
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0 $spacing-04;
   counter-reset: row-number;
 
@@ -27,7 +27,7 @@
 
     > ul {
       display: table-cell;
-      padding: 0 0 0 $spacing-05;
+      padding: $spacing-03 0 $spacing-03 $spacing-05;
       list-style: none;
       width: 50%;
       @include font-sans;
