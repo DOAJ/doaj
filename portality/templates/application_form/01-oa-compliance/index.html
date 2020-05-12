@@ -27,18 +27,18 @@
                     {% set fs = formulaic_context.fieldset("basic_compliance") %}
                         {% for f in fs.fields() %}
                             {% set field_template = f.template %}
-                            <div class="form__question">
-                                {%  include field_template %}
-                            </div>
+                            {%  include field_template %}
                         {% endfor %}
 
                     <p class="pager-buttons">
 
                     <a href="../index" class="pager-buttons__left">Previous</a>
-
-
                     <button type="submit" class="pager-buttons__right">Next</button>
                     </p>
+
+                    {% if obj %}
+                        <input type="hidden" name="id" value="{{ obj.id }}">
+                    {% endif %}
 
                     </form>
                 </section>

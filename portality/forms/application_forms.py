@@ -79,12 +79,12 @@ class FieldDefinitions:
         "label": "Your website must display its open access statement.<br> Where can we find this information?",
         "input": "text",
         "help": {
-            "long_help": "<p>Here is an example of a suitable Open Access statement that meets our criteria: </p> <blockquote>" 
+            "long_help": ["Here is an example of a suitable Open Access statement that meets our criteria:<blockquote>" 
                          "This is an open access journal which means that all content is freely available without charge"
                           "to the user or his/her institution. Users are allowed to read, download, copy, distribute,"
                           "print, search, or link to the full texts of the articles, or use them for any other lawful"
                           "purpose, without asking prior permission from the publisher or the author. This is in accordance"
-                          "with the BOAI definition of open access.</blockquote>",
+                          "with the BOAI definition of open access.</blockquote>"],
             "short_help": "Link to the journal’s open access statement",
         },
         "validate": [
@@ -104,9 +104,10 @@ class FieldDefinitions:
         "label" : "Journal title",
         "input" : "text",
         "help" : {
-            "long_help" : "The journal title must match what is displayed on the website and what is registered at the "
-                            "ISSN Portal (https://portal.issn.org/).  For translated titles, you may add the "
-                            "translation as an alternative title.",
+            "long_help" : ["The journal title must match what is displayed on the website and what is registered at the "
+                          "<a href='https://portal.issn.org/'> ISSN Portal</a>.",
+                          "For translated titles, you may add the "
+                          "translation as an alternative title."],
             "doaj_criteria" : "Title in application form, title at ISSN and website must all match"
         },
         "validate": [
@@ -130,9 +131,10 @@ class FieldDefinitions:
         "label" : "Alternative title (including translation of the title)",
         "input" : "text",
         "help" : {
-            "long_help" : "The journal title must match what is displayed on the website and what is registered at the "
-                            "ISSN Portal (https://portal.issn.org/).  For translated titles, you may add the "
-                            "translation as an alternative title.",
+            "long_help" :[ "The journal title must match what is displayed on the website and what is registered at the "
+                          "<a href='https://portal.issn.org/'> ISSN Portal</a>.",
+                          "For translated titles, you may add the "
+                          "translation as an alternative title."]
         },
         "validate": [
             "required"
@@ -179,8 +181,9 @@ class FieldDefinitions:
         "label" : "ISSN (print)",
         "input" : "text",
         "help" : {
-            "long_help" : "Must be a valid ISSN, fully registered and confirmed at the ISSN Portal (https://portal.issn.org/)"
-                        "The ISSN must match what is given on the journal website.",
+            "long_help" : ["Must be a valid ISSN, fully registered and confirmed at the "
+                          "<a href='https://portal.issn.org/'> ISSN Portal.</a>",
+                        "The ISSN must match what is given on the journal website."],
             "doaj_criteria" : "ISSN must be provided"
         },
         "validate" : [
@@ -212,8 +215,9 @@ class FieldDefinitions:
         "label": "ISSN (online)",
         "input": "text",
         "help": {
-            "long_help": "Must be a valid ISSN, fully registered and confirmed at the ISSN Portal (https://portal.issn.org/)"
-                         "The ISSN must match what is given on the journal website.",
+            "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
+                          "<a href='https://portal.issn.org/'> ISSN Portal</a>",
+                        "The ISSN must match what is given on the journal website."],
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
@@ -243,11 +247,11 @@ class FieldDefinitions:
 
     KEYWORDS = {
         "name" : "keywords",
-        "label" : "Up to six subject keywords in English",
+        "label" : "Up to 6 subject keywords in English",
         "input" : "taglist",
         "help": {
-            "long_help": "Only 6 keywords are allowed. Choose words that describe the subject matter of the journal "
-                         "and not the journal's qualities. Keywords must be in English and separated by a comma.",
+            "long_help": ["Only 6 keywords are allowed. Choose words that describe the subject matter of the journal "
+                         "and not the journal's qualities.","Keywords must be in English and separated by a comma."],
         },
         "validate" : [
             "required",
@@ -295,19 +299,17 @@ class FieldDefinitions:
         }
     }
 
-    PUBLISHER = {
-        "name" : "publisher",
-        "label" : "Publisher",
-        "input" : "group",
-        "subfields" : [
-            "publisher_name",
-            "publisher_country"
-        ]
-    }
+    # PUBLISHER = {
+    #     "name" : "publisher",
+    #     "label" : "Publisher",
+    #     "input" : "group",
+    #     "subfields" : [
+    #         "publisher_name",
+    #         "publisher_country"
+    #     ]
+    # }
 
     PUBLISHER_NAME = {
-        "subfield": True,
-        "group" : "publisher",
         "name" : "publisher_name",
         "label" : "Name",
         "input" : "text",
@@ -320,14 +322,12 @@ class FieldDefinitions:
     }
 
     PUBLISHER_COUNTRY = {
-        "subfield": True,
-        "group" : "publisher",
         "name": "publisher_country",
         "label": "Country",
         "input": "select",
         "options_fn": "iso_country_list",
         "help" : {
-            "long_help" : "The country where the publisher carries out its business operations and is registered.",
+            "long_help" : ["The country where the publisher carries out its business operations and is registered."],
             "doaj_criteria" : "You must provide a publisher country"
         },
         "validate": [
@@ -349,39 +349,38 @@ class FieldDefinitions:
         }
     }
 
-    INSTITUTION = {
-        "name": "institution",
-        "label": "Society or institution, if applicable",
-        "input": "group",
-        "subfields": [
-            "institution_name",
-            "institution_country"
-        ]
-    }
+    # INSTITUTION = {
+    #     "name": "institution",
+    #     "label": "Society or institution, if applicable",
+    #     "input": "group",
+    #     "subfields": [
+    #         "institution_name",
+    #         "institution_country"
+    #     ]
+    # }
 
     INSTITUTION_NAME = {
-        "subfield": True,
-        "group" : "institution",
         "name": "institution_name",
         "label": "Name",
         "input": "text",
+        "help" : {
+            "long_help": ["Some societies or institutions are linked to a journal in some way but are not responsible "
+                         "for publishing it. The publisher can be a separate organisation. If your journal is linked "
+                         "to a society or other type of institution, enter that here."],
+            "short_help": "The society or institution responsible for the journal"
+        },
         "widgets": [
             {"autocomplete": {"field": "institution_name"}}
         ]
     }
 
     INSTITUTION_COUNTRY = {
-        "subfield": True,
-        "group" : "institution",
         "name": "institution_country",
         "label": "Country",
         "input": "select",
         "options_fn": "iso_country_list",
         "help": {
             "short_help" : "The society or institution responsible for the journal",
-            "long_help": "Some societies or institutions are linked to a journal in some way but are not responsible "
-                        "for publishing it. The publisher can be a separate organisation. If your journal is linked to "
-                        "a society or other type of institution, enter that here."
         },
         "widgets": [
             {"select": {}}
@@ -416,9 +415,9 @@ class FieldDefinitions:
             {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True},
         ],
         "help": {
-            "long_help": "The journal must use some form of licensing to be considered for indexing in DOAJ. "
+            "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. "
                        "If Creative Commons licensing is not used, then select 'Publisher's own license' and enter "
-                       "more details below.",
+                       "more details below."],
             "doaj_criteria": "Content must be licenced",
             "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
         },
@@ -468,9 +467,9 @@ class FieldDefinitions:
         "input" : "checkbox",
         "multiple" : True,
         "help" : {
-            "long_help" : "Licensing information must be displayed or embedded on every PDF or in the full text of the "
+            "long_help" : ["Licensing information must be displayed or embedded on every PDF or in the full text of the "
                         "HTML articles. We do not accept licensing information that is only displayed in other parts of "
-                        "the site.",
+                        "the site."],
             "seal_criteria" : "If the answer is Embed"
         },
         "options": [
@@ -730,8 +729,8 @@ class FieldDefinitions:
         "input" : "select",
         "options_fn" : "iso_currency_list",
         "help" : {
-            "long_help" : "If the journal charges different APCs, you must enter the highest APC charged. If more than "
-                            "one currency is used, add a new line"
+            "long_help" : ["If the journal charges different APCs, you must enter the highest APC charged. If more than "
+                            "one currency is used, add a new line"]
         },
         "widgets" : [
             {"select" : {}}
@@ -759,9 +758,9 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help" : {
-            "long_help" : "Answer Yes if the journal provides APC waivers for authors from low-income economies, "
+            "long_help" : ["Answer Yes if the journal provides APC waivers for authors from low-income economies, "
                         "discounts for authors from lower middle-income economies, and/or waivers and discounts for "
-                        "other authors with demonstrable needs. "
+                        "other authors with demonstrable needs. "]
         },
         "validate" : [
             "required"
@@ -797,8 +796,8 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
-            "long_help": "Declare all other charges: editorial processing charges, colour charges, submission fees, "
-                        "page charges, membership fees, print subscription costs, other supplementary charges",
+            "long_help": ["Declare all other charges: editorial processing charges, colour charges, submission fees, "
+                        "page charges, membership fees, print subscription costs, other supplementary charges"],
             "doaj_criteria" : "You must declare any other charges if they exist"
         },
         "validate": [
@@ -838,10 +837,10 @@ FIELDS = {
     FieldDefinitions.EISSN["name"] : FieldDefinitions.EISSN,
     FieldDefinitions.KEYWORDS["name"] : FieldDefinitions.KEYWORDS,
     FieldDefinitions.LANGUAGE["name"] : FieldDefinitions.LANGUAGE,
-    FieldDefinitions.PUBLISHER["name"] : FieldDefinitions.PUBLISHER,
+    # FieldDefinitions.PUBLISHER["name"] : FieldDefinitions.PUBLISHER,
     FieldDefinitions.PUBLISHER_NAME["name"] : FieldDefinitions.PUBLISHER_NAME,
     FieldDefinitions.PUBLISHER_COUNTRY["name"] : FieldDefinitions.PUBLISHER_COUNTRY,
-    FieldDefinitions.INSTITUTION["name"] : FieldDefinitions.INSTITUTION,
+    # FieldDefinitions.INSTITUTION["name"] : FieldDefinitions.INSTITUTION,
     FieldDefinitions.INSTITUTION_NAME["name"] : FieldDefinitions.INSTITUTION_NAME,
     FieldDefinitions.INSTITUTION_COUNTRY["name"] : FieldDefinitions.INSTITUTION_COUNTRY,
 
@@ -892,7 +891,7 @@ class FieldSetDefinitions:
 
     ABOUT_THE_JOURNAL = {
         "name" : "about_the_journal",
-        "label" : "About the Journal",
+        "label" : "About the journal",
         "fields" : [
             FieldDefinitions.TITLE["name"],
             FieldDefinitions.ALTERNATIVE_TITLE["name"],
@@ -900,11 +899,23 @@ class FieldSetDefinitions:
             FieldDefinitions.PISSN["name"],
             FieldDefinitions.EISSN["name"],
             FieldDefinitions.KEYWORDS["name"],
-            FieldDefinitions.LANGUAGE["name"],
-            FieldDefinitions.PUBLISHER["name"],
+            FieldDefinitions.LANGUAGE["name"]
+        ]
+    }
+
+    PUBLISHER = {
+        "name" : "publisher",
+        "label" : "Publisher",
+        "fields" : [
             FieldDefinitions.PUBLISHER_NAME["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],
-            FieldDefinitions.INSTITUTION["name"],
+        ]
+    }
+
+    SOCIETY_OR_INSTITUTION = {
+        "name" : "society_or_institution",
+        "label" : "Society or institution, if applicable",
+        "fields" : [
             FieldDefinitions.INSTITUTION_NAME["name"],
             FieldDefinitions.INSTITUTION_COUNTRY["name"]
         ]
@@ -981,6 +992,8 @@ class ContextDefinitions:
         "fieldsets" : [
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
             FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
+            FieldSetDefinitions.PUBLISHER["name"],
+            FieldSetDefinitions.SOCIETY_OR_INSTITUTION["name"],
             FieldSetDefinitions.LICENSING["name"],
             FieldSetDefinitions.COPYRIGHT["name"],
             FieldSetDefinitions.PEER_REVIEW["name"],
@@ -1011,6 +1024,8 @@ FORMS = {
     "fieldsets" : {
         FieldSetDefinitions.BASIC_COMPLIANCE["name"] : FieldSetDefinitions.BASIC_COMPLIANCE,
         FieldSetDefinitions.ABOUT_THE_JOURNAL["name"] : FieldSetDefinitions.ABOUT_THE_JOURNAL,
+        FieldSetDefinitions.PUBLISHER["name"] : FieldSetDefinitions.PUBLISHER,
+        FieldSetDefinitions.SOCIETY_OR_INSTITUTION["name"] : FieldSetDefinitions.SOCIETY_OR_INSTITUTION,
         FieldSetDefinitions.LICENSING["name"] : FieldSetDefinitions.LICENSING,
         FieldSetDefinitions.COPYRIGHT["name"] : FieldSetDefinitions.COPYRIGHT,
         FieldSetDefinitions.PEER_REVIEW["name"] : FieldSetDefinitions.PEER_REVIEW,

@@ -1,28 +1,34 @@
-<div id="{{ f.name }}__container" {# {% if f.has_conditional %}style="display:none"{% endif %} #}>
-    <label>
-        {% autoescape off %}{{ f.label }}{% endautoescape %}
-        {% if f.help("long_help") %} <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ f.name }}"></span> {% endif %}
-    </label>
-    {{ f.render_form_control() }}
+<div class="form__question">
+    <div id="{{ f.name }}__container" {# {% if f.has_conditional %}style="display:none"{% endif %} #}>
+        <label>
+            {% autoescape off %}{{ f.label }}{% endautoescape %}
+            {% if f.help("long_help") %} <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ f.name }}"></span> {% endif %}
+        </label>
+        {{ f.render_form_control() }}
 
-    {% if f.help("short_help") %}
-       <p><small>{{ f.help("short_help") }}</small></p>
-    {% endif %}
+        {% if f.help("short_help") %}
+           <p><small>{{ f.help("short_help") }}</small></p>
+        {% endif %}
 
-    {% if f.has_errors() %}
-        {% for error in f.errors() %}
-        <li>{{ error }}</li>
-        {% endfor %}
-    {% endif %}
+        {% if f.has_errors() %}
+            {% for error in f.errors() %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        {% endif %}
 
-    <div class="modal" id="modal-{{ f.name }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel-{{ f.name }}">
+    </div>
+</div>
+
+<div class="modal" id="modal-{{ f.name }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel-{{ f.name }}">
         <div class="modal__dialog" role="document">
             <h3 class="modal__title" id="modalLabel-{{ f.name }}">
-                "{{ f.label }}"
+                "{{ f.label | safe }}"
             </h3>
-            {{ f.help("long_help") | safe}}
+            {% if f.help("long_help") %}
+                {% for p in f.help("long_help") %}
+                    <p>{{ p | safe}}</p>
+                {% endfor %}
+            {% endif %}
             <button type="button" data-dismiss="modal" class="modal__close">Close</button>
         </div>
     </div>
-
-</div>
