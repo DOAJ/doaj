@@ -4,7 +4,7 @@
 
   {% include head.html %}
 
-  <body class="sidenav-page">
+  <body class="sidenav-page"{% if page.toc %} data-spy="scroll" style="position: relative;"{% endif %}>
     {% include header.html %}
 {% endif %}
 
@@ -13,7 +13,7 @@
 
         <div class="col-md-4 col-md-push-8">
           {% if page.toc %}
-          <nav class="page-nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
+          <nav class="page-nav nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
             <h2 class="page-nav__heading">Jump to:</h2>
             {{ content | toc_only }}
           </nav>
