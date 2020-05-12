@@ -174,7 +174,7 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
 </record>
 ```
 
-##### Revision history
+#### Revision history
 
 | Date changes were made live                                                                                                                                                                                                                       | Changes         |
 |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------|
@@ -271,7 +271,7 @@ The following fields are available (not every article will have all the informat
 </record>
 ```
 
-##### Revision history
+#### Revision history
 
 | Date changes were made live | Changes         |
 |-----------------------------|-----------------|
