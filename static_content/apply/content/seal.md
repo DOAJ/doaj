@@ -35,4 +35,5 @@ All seven criteria must be met to be awarded the Seal:
         - Héloïse
         - Diadorim
     - (2) Or stated on the website but not registered.
-7. Authors must retain unrestricted copyright and publishing rights.
+7. Copyright and publishing rights
+    -  Authors must retain unrestricted rights.
