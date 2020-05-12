@@ -533,18 +533,18 @@ ass_ed:
   language:
 
 - name: Nour El Houda Belhamel
-  area:
+  area: Science, Technology, Medicine
   year_since:
-  city:
-  country:
-  language:
+  city: Bejaia
+  country: Algeria
+  language: Arabic, French, Engish, Kabyle
 
 - name: Oleksii Vasyliev
-  area:
+  area: Science, Technology
   year_since:
-  city:
-  country:
-  language:
+  city: Kyiv
+  country: Ukraine
+  language: Ukranian, Russian, English, Polish
 
 - name: Pentti Nieminen
   area:
@@ -568,11 +568,11 @@ ass_ed:
   language: Spanish, English, Italian, Catalan
 
 - name: Rhonda Marker
-  area:
+  area: Humanities, Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: New Brunswick, NJ
+  country: USA
+  language: English
 
 - name: Ricardo Peres do Souto
   area:
@@ -582,11 +582,11 @@ ass_ed:
   language:
 
 - name: Richard James
-  area:
+  area: Medicine
   year_since:
-  city:
-  country:
-  language:
+  city: Philadelphia
+  country: USA
+  language: English
 
 - name: Ruslan
   area:
@@ -596,11 +596,11 @@ ass_ed:
   language:
 
 - name: S. Mohammad Amini
-  area:
+  area: Science
   year_since:
-  city:
-  country:
-  language:
+  city: Esfahan
+  country: Iran
+  language: Farsi, English
 
 - name: Sara Ricetto
   area:
@@ -624,11 +624,11 @@ ass_ed:
   language:
 
 - name: Stewart C Baker
-  area:
+  area: Humanities, Library Science
   year_since:
-  city:
-  country:
-  language:
+  city: Monmouth
+  country: USA
+  language: English, Japanese
 
 - name: Sudarmawan Samidi
   area:
@@ -645,39 +645,39 @@ ass_ed:
   language:
 
 - name: Teodor Mihaela
-  area:
+  area: Humanities, Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Bucharest
+  country: Romania
+  language: Romanian, English, French
 
 - name: Tereza Simandlová
-  area:
-  year_since:
-  city:
-  country:
-  language:
+  area: Humanities
+  year_since: 
+  city: Prague
+  country: Czech Republic
+  language: Czech, Slovak, English
 
 - name: Umar Khasan
-  area:
+  area: Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Bangkalan
+  country: Indonesia
+  language: Indonesian, English
 
 - name: Victor Freitas de Azeredo Barros
-  area:
+  area: Technology
   year_since:
-  city:
-  country:
-  language:
+  city: Braga
+  country: Portugal
+  language: Portuguese, English, Spanish
 
 - name: Weronika Kortas
-  area:
+  area: Humanities, Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Toruń
+  country: Poland
+  language: Polish, English
 
 - name: Yaping Liu
   area:
@@ -687,8 +687,8 @@ ass_ed:
   language:
 
 - name: Yoonhee Cho
-  area:
+  area: Medicine
   year_since:
-  city:
-  country:
-  language:
+  city: Chungju
+  country: Republic of Korea
+  language: Korean, English
