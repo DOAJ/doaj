@@ -428,18 +428,18 @@ ass_ed:
   language: English
 
 - name: Kimberly Mears
-  area:
+  area: Medicine
   year_since:
-  city:
-  country:
-  language:
+  city: Charlottetown
+  country: Canada
+  language: English
 
 - name: Liana Penabad Camacho
-  area:
+  area: Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: San José
+  country: Costa Rica
+  language: Spanish, English
 
 - name: Lin Zhu
   area:
@@ -449,11 +449,11 @@ ass_ed:
   language:
 
 - name: Lorri Peters
-  area:
+  area: Science
   year_since:
-  city:
-  country:
-  language:
+  city: College Station
+  country: USA
+  language: English
 
 - name: Malgorzata Zajac
   area:
@@ -463,32 +463,32 @@ ass_ed:
   language:
 
 - name: Marcau Flavius-Cristian
-  area:
+  area: Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Târgu jiu
+  country: Romania
+  language: Romanian, English
 
 - name: Marco Tullney
-  area:
+  area: Social Sciences, Technology
   year_since:
-  city:
-  country:
-  language:
+  city: Hannover
+  country: Germany
+  language: German, English
 
 - name: Maria Chiara Pievatolo
-  area:
+  area: Humanities, Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Pisa
+  country: Italy
+  language: Italian, English, German
 
 - name: Maria Manuel Borges
-  area:
+  area: Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: V.N Gaia
+  country: Portugal
+  language: Portuguese, Spanish, English
 
 - name: Mariana Solano Hernandez
   area: Science
@@ -505,11 +505,11 @@ ass_ed:
   language:
 
 - name: Miguel-Ángel Vera-Baceta
-  area:
+  area: Social Sciences
   year_since:
-  city:
-  country:
-  language:
+  city: Murcia
+  country: Spain
+  language: Spanish, English
 
 - name: Mohsen Fazeli
   area:
@@ -519,11 +519,11 @@ ass_ed:
   language:
 
 - name: Muhamad Ratodi
-  area:
+  area: Public Health
   year_since:
-  city:
-  country:
-  language:
+  city: Surabaya
+  country: Indonesia
+  language: Indonesian, English
 
 - name: Niamh Ennis
   area:
