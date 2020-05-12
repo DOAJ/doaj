@@ -4,7 +4,7 @@ fragment: true
 title: FAQs
 section: About
 toc: true
-sticky_sidenav: false
+sticky_sidenav: true
 highlight: false
 ---
 
