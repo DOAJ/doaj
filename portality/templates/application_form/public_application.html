@@ -7,13 +7,21 @@
 {% extends "layouts/base.html" %}
 
 {% set form_id = "public_application" %}
-{% set form_action = url_for("doaj.public_application") %}
+{% set form_action = url_for("apply.public_application") %}
 {% set formulaic_after = url_for("doaj.suggestion_thanks", _anchor='thanks') %}
 {% set js_validation = False %}
 {% set auto_save = 0 %}
 
+
+
 {% block content scoped %}
-    {% include "application_form/01-oa-compliance/index.html" %}
+    {% set page = request.path.split("/")[2] %}
+    <div {% if page != "01-oa-compliance" %}style="display: none" {% endif %}>
+        {% include "application_form/01-oa-compliance/index.html" %}
+    </div>
+    <div {% if page != "02-about" %}style="display: none" {% endif %}>
+        <p>02-about</p>
+    </div>
 {% endblock %}
 
 {% block extra_js_bottom scoped %}

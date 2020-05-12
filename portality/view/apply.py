@@ -4,7 +4,6 @@ from flask import Blueprint, render_template, abort, redirect, url_for, request,
 from flask_login import current_user
 
 from portality import models
-from portality.formcontext import formcontext
 from portality.decorators import write_required
 
 from portality.forms.application_forms import ApplicationFormFactory
@@ -13,11 +12,16 @@ blueprint = Blueprint('apply', __name__)
 
 
 @blueprint.route("/", methods=["GET", "POST"])
+@blueprint.route("/01-oa-compliance/", methods=["GET", "POST"])
+@blueprint.route("/02-about/", methods=["GET", "POST"])
 @write_required()
 def public_application(draft_id=None):
 
     if not current_user.is_authenticated:
         return redirect(url_for("account.login",  redirected="apply"))
+
+    if request.path == "/apply/":
+        return redirect("/apply/01-oa-compliance/")
 
     draft_application = None
     if draft_id is not None:
@@ -60,7 +64,6 @@ def public_application(draft_id=None):
             if draft_application.owner != current_user.id:
                 abort(404)
 
-
         processor = fc.processor(formdata=request.form)
 
         if draft is not None:
@@ -76,4 +79,3 @@ def public_application(draft_id=None):
                 return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
             else:
                 return fc.render_template()
-

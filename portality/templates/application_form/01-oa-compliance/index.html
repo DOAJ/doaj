@@ -24,43 +24,13 @@
                     </blockquote>
                     <form action="../02-about">
 
-                    <div class="form__question">
-
-                    {% set f = formulaic_context.get("boai") %}
+                    {% set fs = formulaic_context.fieldset("basic_compliance") %}
+                        {% for f in fs.fields() %}
                             {% set field_template = f.template %}
-                            {%  include field_template %}
-
-                    <div class="form__question">
-
-                    <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-
-                    <label for="oa_statement_url">
-                    Where can we find this information?&nbsp;<span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-oa_statement_url"></span>
-
-
-                    </label>
-                    <input id="oa_statement_url" type="url" placeholder="https://www.my-journal.com/open-access" required/>
-                    <p><small>Link to the journal’s open access statement</small></p>
-
-
-                    </div>
-
-
-                    <!-- Long help in modal -->
-                    <div class="modal" id="modal-oa_statement_url" tabindex="-1" role="dialog" aria-labelledby="modalLabel-oa_statement_url">
-                    <div class="modal__dialog" role="document">
-
-                    <h3 class="modal__title" id="modalLabel-oa_statement_url">
-                    “Where can we find this information?”
-                    </h3>
-                    <p>Here is an example of a suitable Open Access statement that meets our criteria:</p> <blockquote>This is an open access journal which means that all content is freely available without charge to the user or his/her institution. Users are allowed to read, download, copy, distribute, print, search, or link to the full texts of the articles, or use them for any other lawful purpose, without asking prior permission from the publisher or the author. This is in accordance with the BOAI definition of open access.</blockquote>
-                    <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-                    </div>
-                    </div>
-
-
-
-
+                            <div class="form__question">
+                                {%  include field_template %}
+                            </div>
+                        {% endfor %}
 
                     <p class="pager-buttons">
 
