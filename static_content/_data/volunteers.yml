@@ -82,11 +82,11 @@ ed:
   language: English, French
 
 - name: Souheil Houissa
-  area:
+  area: Library and Information Science
   year_since:
-  city:
-  country:
-  language:
+  city: Tunis
+  country: Tunisia
+  language: Arabic, French, English
 
 - name: Xiaotian Chen
   area: Librarianship
@@ -596,11 +596,11 @@ ass_ed:
   language: Polish, English
 
 - name: Yaping Liu
-  area:
+  area: Medical and Healthcare management
   year_since:
-  city:
-  country:
-  language:
+  city: Sydney
+  country: Australia
+  language: Chinese, English
 
 - name: Yoonhee Cho
   area: Medicine
