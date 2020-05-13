@@ -61,11 +61,11 @@ ed:
   language: Italian, German, English
 
 - name: Rasoul Zavaraqi
-  area:
+  area: Knowledge and Information Science
   year_since:
-  city:
-  country:
-  language:
+  city: Tabriz
+  country: Iran
+  language: Persian, English, Azeri
 
 - name: S.Suharto
   area: Humanities, social sciences
@@ -204,11 +204,11 @@ ass_ed:
   language: Italian, English
 
 - name: Anne Lahey
-  area:
+  area: Libraries, Scholarly communication 
   year_since:
-  city:
-  country:
-  language:
+  city: Canberra
+  country: Australia
+  language: English
 
 - name: Ben Catt
   area: Librarianship, Research Support
@@ -575,11 +575,11 @@ ass_ed:
   language:
 
 - name: Sergiy Nazarovets
-  area:
+  area: Scientometrics; Library Science
   year_since:
-  city:
-  country:
-  language:
+  city: Kyiv
+  country: Ukraine
+  language: Ukranian, English
 
 - name: Simone Rosenkranz
   area:
@@ -603,7 +603,7 @@ ass_ed:
   language:
 
 - name: Sumi Kang
-  area: 
+  area: Social Sciences
   year_since:
   city: Sejong
   country: Korea
