@@ -1,0 +1,126 @@
+{% if page.fragment == false %}
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include head.html %}
+
+  <body>
+    {% include header.html %}
+{% endif %}
+
+    <main class="container">
+      <section class="page-content">
+        {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
+        <h1>{{ page.title }}</h1>
+
+        {% assign min = 0 %}
+        {% assign max = site.data.promo.size %}
+        {% assign diff = max | minus: min %}
+        {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
+
+        <p class="alert">
+          <span data-feather="alert-circle"></span> <em>Search tip:</em> {{ site.data.search-tips[random].text }}
+        </p>
+
+        <div class="row">
+
+          {% if page.name == 'journals.md' %}
+          <div class="col-md-2">
+            <aside class="filters">
+              <h2 class="filters__heading">Refine search</h2>
+              <ul class="unstyled-list">
+                <li class="filter">
+                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-subjects" aria-expanded="false">
+                    Subjects
+                    <span data-feather="chevron-down"></span>
+                  </h3>
+                  <ul class="unstyled-list collapse filter__choices" id="filter-subjects" aria-expanded="false">
+                    {% for i in site.data.search-filters.subjects %}
+                    <li>
+                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+
+                <li class="filter">
+                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-apc" aria-expanded="false">
+                    APCs
+                    <span data-feather="chevron-down"></span>
+                  </h3>
+                  <ul class="unstyled-list collapse filter__choices" id="filter-apc" aria-expanded="false">
+                    {% for i in site.data.search-filters.apc %}
+                    <li>
+                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              </ul>
+            </aside>
+          </div>
+
+          <div class="col-md-10">
+            <h2>Showing 14,576 indexed journals</h2>
+            <ol class="search-results">
+              {% for i in site.data.journals %}
+              <li class="search-results__record">
+                <article class="row">
+                  <div class="col-xs-8">
+                    <p class="label">
+                      <small>{{ i.lcc }}</small>
+                    </p>
+                    <h3 class="search-results__heading">
+                      {{ i.title }}
+                      {% if i.paral_title %}<br/><span class="search-results__secondary-heading">{{ i.paral_title }}</span>{% endif %}
+                    </h3>
+                    <ul class="unstyled-list search-results__body">
+                      <li>
+                        Publishes <strong>{{ i.formats }}</strong> articles in <strong>{{ i.lang }}</strong>
+                      </li>
+                      <li>
+                        Based {% if i.institution %}at <em>{{ i.institution }}</em>{% endif %} in <strong>{{ i.country }}</strong>
+                      </li>
+                      <li>
+                        {% if i.apc %}{{ i.apc }} processing fee{% else %}No charges{% endif %};
+                        {{ i.processing_time }} weeks to publication
+                      </li>
+                    </ul>
+                  </div>
+                  <aside class="col-xs-4">
+                    <ul class="unstyled-list">
+                      <li>
+                        <a href="{{ i.url }}" target="_blank">Website</a>
+                      </li>
+                      <li>
+                        <a href="{{ i.license_url }}" target="_blank">{{ i.license }}</a>
+                      </li>
+                      <li>
+                        {% if i.articles %}{{ i.articles }} articles indexed since {{ i.oa_since }}
+                        {% else %}<em>No articles indexed yet</em>{% endif %}
+                      </li>
+                      <li>
+                        {% if i.updated %}Last updated on {{ i.updated }}
+                        {% else %}Added on {{ i.added }}{% endif %}
+                      </li>
+                    </ul>
+                  </aside>
+                </article>
+              </li>
+              {% endfor %}
+            </ol>
+          </div>
+          {% endif %}
+
+        </div>
+      </section>
+    </main>
+
+{% if page.fragment == false %}
+    {% include footer.html %}
+  </body>
+
+</html>
+{% endif %}

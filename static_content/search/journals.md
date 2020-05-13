@@ -1,9 +1,9 @@
 ---
-layout: no-sidenav
+layout: filters
 fragment: false
-title: Open access journals
+title: Journals
 section: Search
 toc: false
 sticky_sidenav: false
-highlight: true
+highlight: false
 ---

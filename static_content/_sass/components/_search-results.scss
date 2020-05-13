@@ -1,0 +1,31 @@
+/* SERP / search result pages */
+
+.search-results {
+  padding-left: 0;
+  margin-left: 0;
+  list-style: none;
+}
+
+.search-results__record {
+  display: block;
+  padding: $spacing-05 0;
+  border-top: 1px solid rgba($dark-grey, 0.25);
+
+  &:first-of-type {
+    padding-top: 0;
+    border: 0;
+  }
+}
+
+.search-results__heading {
+  margin: $spacing-03 0;
+}
+
+.search-results__secondary-heading {
+  display: block;
+  color: $dark-grey;
+  font-style: italic;
+}
+
+.search-results__body {
+}

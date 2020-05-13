@@ -1,0 +1,42 @@
+/* List of filters for search results */
+
+.filters {
+  border: 0;
+  @include typescale-06;
+}
+
+.filters__heading {
+  font-size: 1em;
+  color: $dark-grey;
+}
+
+.filter {
+  margin: $spacing-04 0;
+}
+
+.filter__heading {
+  margin: $spacing-03 0;
+  font-size: 1em;
+  color: $warm-black;
+  @include font-sans;
+
+  svg {
+    float: right;
+    height: 1em;
+    width: auto;
+  }
+}
+
+.filter__choices {
+  padding-top: $spacing-03;
+  border-top: 1px dashed $grapefruit;
+
+  li {
+    margin-bottom: $spacing-02;
+    line-height: 1.35;
+  }
+}
+
+.filter__label {
+  font-size: 1em !important;
+}

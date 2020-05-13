@@ -79,6 +79,10 @@ ul, ol {
   ul, ol {
     margin-left: $spacing-03;
   }
+
+  li {
+    line-height: 1.5;
+  }
 }
 
 pre, code {
@@ -279,4 +283,8 @@ input[type="radio"] + label {
   &::before {
     border-radius: 50%;
   }
+}
+
+[type="button"] {
+  cursor: pointer;
 }

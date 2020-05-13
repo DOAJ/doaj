@@ -1,0 +1,92 @@
+subjects:
+- name: Medicine
+  total: 781
+
+- name: Social Sciences
+  total: 602
+
+- name: Education
+  total: 579
+
+- name: Social sciences
+  total: 557
+
+- name: Education
+  total: 550
+
+- name: Medicine
+  total: 521
+
+- name: Special aspects of education
+  total: 456
+
+- name: Business
+  total: 410
+
+- name: Language and Literature
+  total: 353
+
+- name: Science
+  total: 333
+
+- name: Biology
+  total: 329
+
+- name: Philology. Linguistics
+  total: 298
+
+- name: Psychology
+  total: 297
+
+- name: Public aspects of medicine
+  total: 291
+
+- name: Technology
+  total: 279
+
+- name: Law
+  total: 272
+
+- name: Mathematics
+  total: 259
+
+- name: Engineering. Civil engineering
+  total: 258
+
+- name: Economics as a science
+  total: 254
+
+- name: Environmental sciences
+  total: 238
+
+apc:
+- name: Yes
+  total: 10565
+
+- name: No
+  total: 3970
+
+seal:
+- name: Yes
+  total: 13197
+
+- name: No
+  total: 1,381
+
+license:
+
+publisher:
+
+publisher_country:
+
+institution:
+
+institution_country:
+
+language:
+
+peer_review:
+
+date_added:
+
+last_updated:
