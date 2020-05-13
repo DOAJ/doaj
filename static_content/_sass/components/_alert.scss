@@ -6,6 +6,10 @@
   margin: 0 0 $spacing-04 0;
   background-color: $fair-pink;
 
+  code {
+    background-color: rgba($dark-grey, 0.1);
+  }
+
   svg {
     height: 1em;
     vertical-align: middle;
