@@ -603,11 +603,11 @@ ass_ed:
   language:
 
 - name: Sumi Kang
-  area:
+  area: 
   year_since:
-  city:
-  country:
-  language:
+  city: Sejong
+  country: Korea
+  language: Korean, English
 
 - name: Teodor Mihaela
   area: Humanities, Social Sciences
