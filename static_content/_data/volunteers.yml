@@ -358,11 +358,11 @@ ass_ed:
   language: Ukranian, English, French, Polish
 
 - name: Isabel Margalejo Ferrández
-  area:
+  area: Librarianship
   year_since:
-  city:
-  country:
-  language:
+  city: Valencia
+  country: Spain
+  language: Spanish, English
 
 - name: Jacinto Dávila
   area: Technology
