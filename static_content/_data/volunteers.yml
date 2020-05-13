@@ -175,13 +175,6 @@ ass_ed:
   country:
   language:
 
-- name: Andri Pranolo
-  area: 
-  year_since:
-  city: 
-  country: 
-  language:
-
 - name: Andronic Octavian
   area: Medicine
   year_since:
@@ -281,13 +274,6 @@ ass_ed:
   language: 
 
 - name: Elli Papadopoulou
-  area:
-  year_since:
-  city:
-  country:
-  language:
-
-- name: Enerel Dambiinyam
   area:
   year_since:
   city:
@@ -504,13 +490,6 @@ ass_ed:
   country: Ukraine
   language: Ukranian, Russian, English, Polish
 
-- name: Pentti Nieminen
-  area:
-  year_since:
-  city:
-  country:
-  language:
-
 - name: Prof. Dr. Sudarmin
   area:
   year_since:
@@ -545,13 +524,6 @@ ass_ed:
   city: Philadelphia
   country: USA
   language: English
-
-- name: Ruslan
-  area:
-  year_since:
-  city:
-  country:
-  language:
 
 - name: S. Mohammad Amini
   area: Science
