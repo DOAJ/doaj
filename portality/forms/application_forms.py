@@ -845,7 +845,7 @@ class FieldDefinitions:
             {"display": "Portico", "value": "portico"},
             {"display": "A national library", "value": "national_library", "subfields": ["archiving_policy_library"]},
             {"display": "The journal content isn't archived with a long-term preservation service",
-             "value": "no_archive", "exclusive": True},
+             "value": "none", "exclusive": True},
             {"display": "Other", "value": "other", "subfields": ["archiving_policy_other"]}
         ],
         "help": {
@@ -890,6 +890,156 @@ class FieldDefinitions:
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
+        ]
+    }
+
+    ARCHIVING_POLICY_URL = {
+        "name": "archiving_policy_url",
+        "label": "Link to the preservation and archiving information on the journal's site",
+        "input": "text",
+        "help": {
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate": [
+            {"optional_if": {"field": "archiving_policy", "value": "none"}},
+            "is_url"
+        ],
+        "widgets": [
+            "clickable_url"
+        ]
+    }
+
+    REPOSITORY_POLICY = {
+        "name": "repository_policy",
+        "label": "Where is the journal's policy allowing authors to deposit the AAM or VOR registered?",
+        "input": "checkbox",
+        "multiple": True,
+        "options": [
+            {"display": "SHERPA/RoMEO", "value": "sherpa_romeo"},
+            {"display": "Dulcinea", "value": "dulcinea"},
+            {"display": "Héloïse", "value": "heloise"},
+            {"display": "Diadorim", "value": "diadorim"},
+            {"display": "The journal has a policy but it isn't registered anywhere", "value": "unregistered"},
+            {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
+            {"display": "Other", "value": "other", "subfields": ["repository_policy_other"]}
+        ],
+        "help": {
+            "short_help": "Select at least one",
+            "long_help": "AAM stands for Author Accepted Manuscript. VOR is the Version of Record.\n\n"
+                         "This questions ask whether or not the journal allows authors to deposit a copy of their "
+                         "work in an institutional repository.\n\n If the journal allows authors to do this, "
+                         "is that policy registered in a policy directory?"
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    REPOSITORY_POLICY_OTHER = {
+        "name": "repository_policy_other",
+        "subfield": True,
+        # "label": "Other",
+        "input": "text",
+        "help": {
+            "placeholder": "Other repository policy"
+        },
+        "conditional": [{"field": "repository_policy", "value": "other"}],
+        "validate": [
+            {"required_if": {"field": "repository_policy", "value": "other"}}
+        ],
+        "asynchronous_warning": [
+            {"warn_on_value": {"value": "None"}}
+        ]
+    }
+
+    REPOSITORY_POLICY_URL = {
+        "name": "repository_policy_url",
+        "label": "Link to the policy on the journal's site",
+        "input": "text",
+        "help": {
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate": [
+            {"required_if": {"field": "repository_policy", "value": "unregistered"}},
+            "is_url"
+        ],
+        "widgets": [
+            "clickable_url"
+        ]
+    }
+
+    PERSISTENT_IDENTIFIERS = {
+        "name": "persistent_identifiers",
+        "label": "Persistent article identifiers used by the journal",
+        "input": "checkbox",
+        "multiple": True,
+        "options": [
+            {"display": "DOIs", "value": "doi"},
+            {"display": "ARKs", "value": "ark"},
+            {"display": "Handles", "value": "handle"},
+            {"display": "PURLs", "value": "purl"},
+            {"display": "The journal does not use persistent article identifiers", "value": "none", "exclusive": True},
+            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]}
+        ],
+        "help": {
+            "short_help": "Select at least one",
+            "long_help": "A persistent article identifier (PID) is used to find the article no matter where it is "
+                         "located. The most common type of PID is the digital object identifier (DOI). "
+                         "Read more about PIDs. [Link https://en.wikipedia.org/wiki/Persistent_identifier]"
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    PERSISTENT_IDENTIFIERS_OTHER = {
+        "name": "persistent_identifiers_other",
+        "subfield": True,
+        # "label": "Other",
+        "input": "text",
+        "help": {
+            "placeholder": "Other persistent identifier"
+        },
+        "conditional": [{"field": "persistent_identifiers", "value": "other"}],
+        "validate": [
+            {"required_if": {"field": "persistent_identifiers", "value": "other"}}
+        ],
+        "asynchronous_warning": [
+            {"warn_on_value": {"value": "None"}}
+        ]
+    }
+
+    ORCID_IDS = {
+        "name": "orcid_ids",
+        "label": "Does the journal allow for ORCID iDs to be present in article metadata?",
+        "input": "radio",
+        "options": [
+            {"display": "Yes", "value": "y"},
+            {"display": "No", "value": "n"}
+        ],
+        "help": {
+            "long_help": "An ORCID (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
+                         "authors. [link https://orcid.org/]",
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    OPEN_CITATIONS = {
+        "name": "open_citations",
+        "label": "Does the journal comply with I4OC standards for open citations?",
+        "input": "radio",
+        "options": [
+            {"display": "Yes", "value": "y"},
+            {"display": "No", "value": "n"}
+        ],
+        "help": {
+            "long_help": "The I4OC standards ask that citations are structured, separable, and open. "
+                         "https://i4oc.org/#goals",
+        },
+        "validate": [
+            "required"
         ]
     }
 
@@ -944,7 +1094,17 @@ FIELDS = {
 
     FieldDefinitions.ARCHIVING_POLICY["name"]: FieldDefinitions.ARCHIVING_POLICY,
     FieldDefinitions.ARCHIVING_POLICY_LIBRARY["name"]: FieldDefinitions.ARCHIVING_POLICY_LIBRARY,
-    FieldDefinitions.ARCHIVING_POLICY_OTHER["name"]: FieldDefinitions.ARCHIVING_POLICY_OTHER
+    FieldDefinitions.ARCHIVING_POLICY_OTHER["name"]: FieldDefinitions.ARCHIVING_POLICY_OTHER,
+    FieldDefinitions.ARCHIVING_POLICY_URL["name"]: FieldDefinitions.ARCHIVING_POLICY_URL,
+    
+    FieldDefinitions.REPOSITORY_POLICY["name"]: FieldDefinitions.REPOSITORY_POLICY,
+    FieldDefinitions.REPOSITORY_POLICY_OTHER["name"]: FieldDefinitions.REPOSITORY_POLICY_OTHER,
+    FieldDefinitions.REPOSITORY_POLICY_URL["name"]: FieldDefinitions.REPOSITORY_POLICY_URL,
+
+    FieldDefinitions.PERSISTENT_IDENTIFIERS["name"]: FieldDefinitions.PERSISTENT_IDENTIFIERS,
+    FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"]: FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER,
+    FieldDefinitions.ORCID_IDS["name"]: FieldDefinitions.ORCID_IDS,
+    FieldDefinitions.OPEN_CITATIONS["name"]: FieldDefinitions.OPEN_CITATIONS
 }
 
 # todo: Have discussion with RJ about whether we can do this instead of the verbose code above:
@@ -1045,13 +1205,35 @@ class FieldSetDefinitions:
         ]
     }
 
-    BEST_PRACTICE = {
-        "name": "best_practice",
-        "label": "Best Practice",
+    ARCHIVING_POLICY = {
+        "name": "archiving_policy",
+        "label": "Archiving Policy",
         "fields": [
             FieldDefinitions.ARCHIVING_POLICY["name"],
             FieldDefinitions.ARCHIVING_POLICY_LIBRARY["name"],
-            FieldDefinitions.ARCHIVING_POLICY_OTHER["name"]
+            FieldDefinitions.ARCHIVING_POLICY_OTHER["name"],
+            FieldDefinitions.ARCHIVING_POLICY_URL["name"]
+        ]
+    }
+
+    REPOSITORY_POLICY = {
+        "name": "repository_policy",
+        "label": "Repository Policy",
+        "fields": [
+            FieldDefinitions.REPOSITORY_POLICY["name"],
+            FieldDefinitions.REPOSITORY_POLICY_OTHER["name"],
+            FieldDefinitions.REPOSITORY_POLICY_URL["name"]
+        ]
+    }
+
+    UNIQUE_IDENTIFIERS = {
+        "name": "unique_identifiers",
+        "label": "Unique Identifiers & Structured Data",
+        "fields": [
+            FieldDefinitions.PERSISTENT_IDENTIFIERS["name"],
+            FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"],
+            FieldDefinitions.ORCID_IDS["name"],
+            FieldDefinitions.OPEN_CITATIONS["name"]
         ]
     }
 
@@ -1071,7 +1253,9 @@ class ContextDefinitions:
             FieldSetDefinitions.PEER_REVIEW["name"],
             FieldSetDefinitions.EDITORIAL["name"],
             FieldSetDefinitions.BUSINESS_MODEL["name"],
-            FieldSetDefinitions.BEST_PRACTICE["name"]
+            FieldSetDefinitions.ARCHIVING_POLICY["name"],
+            FieldSetDefinitions.REPOSITORY_POLICY["name"],
+            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
         ],
         "asynchronous_warnings": [
             "all_urls_the_same"
@@ -1102,7 +1286,9 @@ FORMS = {
         FieldSetDefinitions.PEER_REVIEW["name"]: FieldSetDefinitions.PEER_REVIEW,
         FieldSetDefinitions.EDITORIAL["name"]: FieldSetDefinitions.EDITORIAL,
         FieldSetDefinitions.BUSINESS_MODEL["name"]: FieldSetDefinitions.BUSINESS_MODEL,
-        FieldSetDefinitions.BEST_PRACTICE["name"]: FieldSetDefinitions.BEST_PRACTICE
+        FieldSetDefinitions.ARCHIVING_POLICY["name"]: FieldSetDefinitions.ARCHIVING_POLICY,
+        FieldSetDefinitions.REPOSITORY_POLICY["name"]: FieldSetDefinitions.REPOSITORY_POLICY,
+        FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]: FieldSetDefinitions.UNIQUE_IDENTIFIERS
     },
     "fields": FIELDS
 }
