@@ -223,6 +223,7 @@ input, select, button {
   -moz-appearance: none;
   appearance: none;
 
+  display: block;
   padding: 0.5em;
   background-color: $warm-white;
   border: 1px solid $warm-black;

@@ -82,6 +82,28 @@
 
           <div class="col-md-10">
             <h2>Showing 14,576 indexed journals</h2>
+            <div class="row">
+              <div class="col-xs-6">
+                <label for="sort-by">Sort by</label>
+                <select name="sort-by" id="sort-by">
+                  <option value="">Added to DOAJ (newest first)</option>
+                  <option value="">Added to DOAJ (oldest first)</option>
+                  <option value="">Last updated (most recent first)</option>
+                  <option value="">Last updated (less recent first)</option>
+                  <option value="">Title (A-Z)</option>
+                  <option value="">Title (Z-A)</option>
+                  <option value="">Relevance</option>
+                </select>
+              </div>
+              <div class="col-xs-6">
+                <label for="sort-fields">Results per page</label>
+                <select name="fields" id="fields">
+                  <option value="all">50</option>
+                  <option value="all">100</option>
+                  <option value="all">200</option>
+                </select>
+              </div>
+            </div>
             <ol class="search-results">
               {% for i in site.data.journals %}
               <li class="search-results__record">
@@ -99,11 +121,11 @@
                         Publishes <strong>{{ i.formats }}</strong> articles in <strong>{{ i.lang }}</strong>
                       </li>
                       <li>
-                        Based {% if i.institution %}at <em>{{ i.institution }}</em>{% endif %} in <strong>{{ i.country }}</strong>
+                        Published {% if i.institution %}by <em>{{ i.institution }}</em>{% endif %} in <strong>{{ i.country }}</strong>
                       </li>
                       <li>
-                        {% if i.apc %}{{ i.apc }} processing fee{% else %}No charges{% endif %};
-                        {{ i.processing_time }} weeks to publication
+                        <small>{% if i.apc %}{{ i.apc }} processing fee{% else %}No charges{% endif %};
+                        {{ i.processing_time }} weeks to publication</small>
                       </li>
                     </ul>
                   </div>
@@ -132,6 +154,58 @@
           </div>
           {% endif %}
 
+          {% if page.name == 'articles.md' %}
+          <div class="col-md-10">
+            <h2>Showing 4,873,612 indexed articles</h2>
+            <ol class="search-results">
+              {% for i in site.data.articles %}
+              <li class="search-results__record">
+                <article class="row">
+                  <div class="col-xs-8">
+                    <p class="label">
+                      <small>{{ i.lcc }}</small>
+                    </p>
+                    <h3 class="search-results__heading">
+                      {{ i.title }}
+                      {% if i.paral_title %}<br/><span class="search-results__secondary-heading">{{ i.paral_title }}</span>{% endif %}
+                    </h3>
+                    <ul class="unstyled-list search-results__body">
+                      <li>
+                        Publishes <strong>{{ i.formats }}</strong> articles in <strong>{{ i.lang }}</strong>
+                      </li>
+                      <li>
+                        Based {% if i.institution %}at <em>{{ i.institution }}</em>{% endif %} in <strong>{{ i.country }}</strong>
+                      </li>
+                      <li>
+                        <small>{% if i.apc %}{{ i.apc }} processing fee{% else %}No charges{% endif %};
+                        {{ i.processing_time }} weeks to publication</small>
+                      </li>
+                    </ul>
+                  </div>
+                  <aside class="col-xs-4">
+                    <ul class="unstyled-list">
+                      <li>
+                        <a href="{{ i.url }}" target="_blank">Website</a>
+                      </li>
+                      <li>
+                        <a href="{{ i.license_url }}" target="_blank">{{ i.license }}</a>
+                      </li>
+                      <li>
+                        {% if i.articles %}{{ i.articles }} articles dating back to {{ i.oa_since }}
+                        {% else %}<em>No articles indexed yet</em>{% endif %}
+                      </li>
+                      <li>
+                        {% if i.updated %}Last updated on {{ i.updated }}
+                        {% else %}Added on {{ i.added }}{% endif %}
+                      </li>
+                    </ul>
+                  </aside>
+                </article>
+              </li>
+              {% endfor %}
+            </ol>
+          </div>
+          {% endif %}
         </div>
       </section>
     </main>
