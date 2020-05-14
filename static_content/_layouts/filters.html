@@ -43,23 +43,36 @@
         <div class="row">
 
           {% if page.name == 'journals.md' %}
-          <div class="col-md-2">
+          <div class="col-md-3">
             <aside class="filters">
-              <h2 class="filters__heading">Refine search</h2>
+              <h2 class="filters__heading">Refine search results</h2>
               <ul class="unstyled-list">
                 <li class="filter">
                   <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-subjects" aria-expanded="false">
                     Subjects
                     <span data-feather="chevron-down"></span>
                   </h3>
-                  <ul class="unstyled-list collapse filter__choices" id="filter-subjects" aria-expanded="false">
-                    {% for i in site.data.search-filters.subjects %}
-                    <li>
-                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
-                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
-                    </li>
-                    {% endfor %}
-                  </ul>
+                  <div id="filter-subjects" class="collapse" aria-expanded="false">
+                    <ul class="unstyled-list filter__choices">
+                      {% for i in site.data.search-filters.subjects limit:10 %}
+                      <li>
+                        <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                        <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                    <!-- <span type="button" data-toggle="collapse" data-target="#filter-subjects-more" aria-expanded="false">
+                      More <span data-feather="plus"></span>
+                    </span>
+                    <ul id="#filter-subjects-more" class="collapse" aria-expanded="false">
+                      {% for i in site.data.search-filters.subjects offset:10 %}
+                      <li>
+                        <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                        <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                      </li>
+                      {% endfor %}
+                    </ul> -->
+                  </div>
                 </li>
 
                 <li class="filter">
@@ -80,7 +93,7 @@
             </aside>
           </div>
 
-          <div class="col-md-10">
+          <div class="col-md-9">
             <h2>Showing 14,576 indexed journals</h2>
             <div class="row">
               <div class="col-xs-6">
@@ -137,10 +150,11 @@
                       <li>
                         <a href="{{ i.license_url }}" target="_blank">{{ i.license }}</a>
                       </li>
+                      {% if i.articles %}
                       <li>
-                        {% if i.articles %}{{ i.articles }} articles dating back to {{ i.oa_since }}
-                        {% else %}<em>No articles indexed yet</em>{% endif %}
+                        {{ i.articles }} articles dating back to {{ i.oa_since }}
                       </li>
+                      {% endif %}
                       <li>
                         {% if i.updated %}Last updated on {{ i.updated }}
                         {% else %}Added on {{ i.added }}{% endif %}
