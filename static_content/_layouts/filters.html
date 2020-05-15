@@ -48,11 +48,28 @@
               <h2 class="filters__heading">Refine search results</h2>
               <ul class="unstyled-list">
                 <li class="filter">
-                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-subjects" aria-expanded="false">
+                  <h3 class="filter__heading">
+                    See journals&hellip;
+                  </h3>
+                  <ul class="unstyled-list filter__choices">
+                    <li>
+                      <input id="filter-seal" type="checkbox" name="filter-seal"/>
+                      <label for="filter-seal" class="filter__label">With a DOAJ Seal&nbsp;&nbsp;<span data-feather="check-circle"></span></label>
+                    </li>
+                    <li>
+                      <input id="filter-apc" type="checkbox" name="filter-apc"/>
+                      <label for="filter-apc" class="filter__label">Without APCs or other fees</label>
+                    </li>
+                  </ul>
+                </li>
+
+                <!-- Subject filter -->
+                <li class="filter">
+                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-subjects" aria-expanded="true">
                     Subjects
                     <span data-feather="chevron-down"></span>
                   </h3>
-                  <div id="filter-subjects" class="collapse" aria-expanded="false">
+                  <div id="filter-subjects" aria-expanded="true">
                     <ul class="unstyled-list filter__choices">
                       {% for i in site.data.search-filters.subjects limit:10 %}
                       <li>
@@ -75,13 +92,14 @@
                   </div>
                 </li>
 
+                <!-- Language -->
                 <li class="filter">
-                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-apc" aria-expanded="false">
-                    APCs
+                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-language" aria-expanded="false">
+                    Languages
                     <span data-feather="chevron-down"></span>
                   </h3>
-                  <ul class="unstyled-list collapse filter__choices" id="filter-apc" aria-expanded="false">
-                    {% for i in site.data.search-filters.apc %}
+                  <ul class="unstyled-list collapse filter__choices" id="filter-language" aria-expanded="false">
+                    {% for i in site.data.search-filters.language %}
                     <li>
                       <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
                       <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
@@ -89,34 +107,120 @@
                     {% endfor %}
                   </ul>
                 </li>
+
+                <!-- Licenses -->
+                <li class="filter">
+                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-license" aria-expanded="false">
+                    Licenses
+                    <span data-feather="chevron-down"></span>
+                  </h3>
+                  <ul class="unstyled-list collapse filter__choices" id="filter-license" aria-expanded="false">
+                    {% for i in site.data.search-filters.license %}
+                    <li>
+                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+
+                <!-- Publisher -->
+                <li class="filter">
+                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-publisher" aria-expanded="false">
+                    Publishers
+                    <span data-feather="chevron-down"></span>
+                  </h3>
+                  <ul class="unstyled-list collapse filter__choices" id="filter-publisher" aria-expanded="false">
+                    {% for i in site.data.search-filters.publisher %}
+                    <li>
+                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+
+                <!-- Publisher country -->
+                <li class="filter">
+                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-publisher-country" aria-expanded="false">
+                    Publishers’ country
+                    <span data-feather="chevron-down"></span>
+                  </h3>
+                  <ul class="unstyled-list collapse filter__choices" id="filter-publisher-country" aria-expanded="false">
+                    {% for i in site.data.search-filters.publisher_country %}
+                    <li>
+                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+
+                <!-- Peer review -->
+                <li class="filter">
+                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-peer-review" aria-expanded="false">
+                    Peer review types
+                    <span data-feather="chevron-down"></span>
+                  </h3>
+                  <ul class="unstyled-list collapse filter__choices" id="filter-peer-review" aria-expanded="false">
+                    {% for i in site.data.search-filters.peer_review %}
+                    <li>
+                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+
+
+                <!-- Date added -->
+                <li class="filter">
+                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-date-added" aria-expanded="false">
+                    Date added
+                    <span data-feather="chevron-down"></span>
+                  </h3>
+                  <ul class="unstyled-list collapse filter__choices" id="filter-date-added" aria-expanded="false">
+                    {% for i in site.data.search-filters.date_added %}
+                    <li>
+                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+
+
               </ul>
             </aside>
           </div>
 
           <div class="col-md-9">
             <h2>Showing 14,576 indexed journals</h2>
-            <div class="row">
-              <div class="col-xs-6">
-                <label for="sort-by">Sort by</label>
-                <select name="sort-by" id="sort-by">
-                  <option value="">Added to DOAJ (newest first)</option>
-                  <option value="">Added to DOAJ (oldest first)</option>
-                  <option value="">Last updated (most recent first)</option>
-                  <option value="">Last updated (less recent first)</option>
-                  <option value="">Title (A-Z)</option>
-                  <option value="">Title (Z-A)</option>
-                  <option value="">Relevance</option>
-                </select>
+            <nav class="search-results__display">
+              <h3 class="sr-only">Display options</h3>
+              <div class="row">
+                <div class="col-xs-6">
+                  <label for="sort-by">Sort by</label>
+                  <select name="sort-by" id="sort-by">
+                    <option value="">Added to DOAJ (newest first)</option>
+                    <option value="">Added to DOAJ (oldest first)</option>
+                    <option value="">Last updated (most recent first)</option>
+                    <option value="">Last updated (less recent first)</option>
+                    <option value="">Title (A-Z)</option>
+                    <option value="">Title (Z-A)</option>
+                    <option value="">Relevance</option>
+                  </select>
+                </div>
+                <div class="col-xs-6">
+                  <label for="sort-fields">Results per page</label>
+                  <select name="fields" id="fields">
+                    <option value="all">50</option>
+                    <option value="all">100</option>
+                    <option value="all">200</option>
+                  </select>
+                </div>
               </div>
-              <div class="col-xs-6">
-                <label for="sort-fields">Results per page</label>
-                <select name="fields" id="fields">
-                  <option value="all">50</option>
-                  <option value="all">100</option>
-                  <option value="all">200</option>
-                </select>
-              </div>
-            </div>
+            </nav>
             <ol class="search-results">
               {% for i in site.data.journals %}
               <li class="search-results__record">
@@ -126,29 +230,46 @@
                       <small>{{ i.lcc }}</small>
                     </p>
                     <h3 class="search-results__heading">
-                      {{ i.title }}
-                      {% if i.paral_title %}<br/><span class="search-results__secondary-heading">{{ i.paral_title }}</span>{% endif %}
+                      <a href="#" class="">
+                        {{ i.title }}
+                        {% if i.paral_title %}<br/><span class="search-results__secondary-heading">{{ i.paral_title }}</span>{% endif %}
+                      </a>
                     </h3>
-                    <ul class="unstyled-list search-results__body">
-                      <li>
-                        Publishes <strong>{{ i.formats }}</strong> articles in <strong>{{ i.lang }}</strong>
-                      </li>
-                      <li>
-                        Published {% if i.institution %}by <em>{{ i.institution }}</em>{% endif %} in <strong>{{ i.country }}</strong>
-                      </li>
-                      <li>
-                        <small>{% if i.apc %}{{ i.apc }} processing fee{% else %}No charges{% endif %};
-                        {{ i.processing_time }} weeks to publication</small>
-                      </li>
-                    </ul>
+                    <div class="search-results__body">
+                      <ul class="unstyled-list">
+                        <li>
+                          Published {% if i.institution %}by <em>{{ i.institution }}</em>{% endif %} in <strong>{{ i.country }}</strong>
+                        </li>
+                        <li>
+                          Accepts manuscripts in <strong>{{ i.lang }}</strong>
+                        </li>
+                      </ul>
+                      <ul class="unstyled-list">
+                        <li>
+                          <strong>{{ i.processing_time }}</strong> weeks to publication
+                        </li>
+                        <li>
+                          {% if i.apc %}<strong>{{ i.apc }}</strong> processing fee{% else %}No charges{% endif %}
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                   <aside class="col-xs-4">
-                    <ul class="unstyled-list">
+                    <ul class="unstyled-list search-results__aside">
+                      {% if i.seal %}
+                      <li>
+                        <span class="sr-only">DOAJ Seal</span>
+                        <span data-feather="check-circle"></span>
+                      </li>
+                      {% endif %}
                       <li>
                         <a href="{{ i.url }}" target="_blank">Website</a>
                       </li>
                       <li>
                         <a href="{{ i.license_url }}" target="_blank">{{ i.license }}</a>
+                      </li>
+                      <li>
+                        {{ i.formats }} articles
                       </li>
                       {% if i.articles %}
                       <li>
@@ -191,8 +312,8 @@
                         Based {% if i.institution %}at <em>{{ i.institution }}</em>{% endif %} in <strong>{{ i.country }}</strong>
                       </li>
                       <li>
-                        <small>{% if i.apc %}{{ i.apc }} processing fee{% else %}No charges{% endif %};
-                        {{ i.processing_time }} weeks to publication</small>
+                        {% if i.apc %}{{ i.apc }} processing fee{% else %}<strong>No charges</strong>{% endif %};
+                        {{ i.processing_time }} weeks to publication
                       </li>
                     </ul>
                   </div>

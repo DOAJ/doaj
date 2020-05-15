@@ -11,10 +11,10 @@ subjects:
 - name: Social sciences
   total: 557
 
-- name: Education
+- name: Education (General)
   total: 550
 
-- name: Medicine
+- name: Medicine (General)
   total: 521
 
 - name: Special aspects of education
@@ -74,19 +74,202 @@ seal:
   total: 1,381
 
 license:
+- name: CC BY
+  total: 5993
+
+- name: CC BY-NC-ND
+  total: 3189
+
+- name: CC BY-NC
+  total: 2626
+
+- name: CC BY-NC-SA
+  total: 1251
+
+- name: CC BY-SA
+  total: 953
+
+- name: Publisher's own license
+  total: 372
+
+- name: CC BY-ND
+  total: 168
+
+- name: AJAP Licence
+  total: 1
+
+- name: Public Domain
+  total: 1
 
 publisher:
+- name: Elsevier
+  total: 343
+
+- name: BMC
+  total: 322
+
+- name: Sciendo
+  total: 309
+
+- name: Hindawi Limited
+  total: 238
+
+- name: MDPI AG
+  total: 201
+
+- name: SpringerOpen
+  total: 198
+
+- name: Wolters Kluwer Medknow Publications
+  total: 198
+
+- name: Taylor & Francis Group
+  total: 163
+
+- name: SAGE Publishing
+  total: 159
+
+- name: Wiley
+  total: 119
 
 publisher_country:
+- name: Indonesia
+  total: 1646
+
+- name: United Kingdom
+  total: 1635
+
+- name: Brazil
+  total: 1459
+
+- name: United States
+  total: 772
+
+- name: Spain
+  total: 767
+
+- name: Poland
+  total: 622
+
+- name: Iran, Islamic Republic of
+  total: 542
+
+- name: Turkey
+  total: 413
+
+- name: Italy
+  total: 411
+
+- name: Russian Federation
+  total: 398
 
 institution:
 
 institution_country:
 
 language:
+- name: English
+  total: 11084
+
+- name: Spanish
+  total: 2789
+
+- name: Portuguese
+  total: 1940
+
+- name: Indonesian
+  total: 1349
+
+- name: French
+  total: 1006
+
+- name: Russian
+  total: 742
+
+- name: Italian
+  total: 531
+
+- name: German
+  total: 422
+
+- name: Turkish
+  total: 302
+
+- name: Ukrainian
+  total: 296
 
 peer_review:
+- name: Double blind peer review
+  total: 7638
+
+- name: Blind peer review
+  total: 4084
+
+- name: Peer review
+  total: 2550
+
+- name: Open peer review
+  total: 136
+
+- name: Editorial review
+  total: 128
 
 date_added:
+- name: 2020
+  total: 805
+
+- name: 2019
+  total: 1951
+
+- name: 2018
+  total: 2240
+
+- name: 2017
+  total: 2450
+
+- name: 2016
+  total: 1628
+
+- name: 2015
+  total: 1250
+
+- name: 2014
+  total: 378
+
+- name: 2013
+  total: 855
+
+- name: 2012
+  total: 521
+
+- name: 2011
+  total: 508
+
+- name: 2010
+  total: 554
+
+- name: 2009
+  total: 297
+
+- name: 2008
+  total: 276
+
+- name: 2007
+  total: 176
+
+- name: 2006
+  total: 154
+
+- name: 2005
+  total: 161
+
+- name: 2004
+  total: 189
+
+- name: 2003
+  total: 161
+
+- name: 2002
+  total: 22
 
 last_updated:

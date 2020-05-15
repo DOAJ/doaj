@@ -8,6 +8,8 @@
 .filters__heading {
   font-size: 1em;
   color: $dark-grey;
+  text-transform: uppercase;
+  @include font-sans;
 }
 
 .filter {
@@ -39,4 +41,8 @@
 
 .filter__label {
   font-size: 1em !important;
+}
+
+input[type="checkbox"]:checked + .filter__label {
+  color: $sanguine;
 }

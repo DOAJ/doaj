@@ -53,7 +53,7 @@
       }
     }
 
-    > a {
+    &:last-of-type > a {
       font-weight: 600;
     }
   }

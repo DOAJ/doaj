@@ -16,6 +16,7 @@
   oa_since: 2005
   processing_time: 9
   articles: 602
+  seal: true
 
 - title: "Yeni Üroloji Dergisi"
   paral_title: "The New Journal of Urology"
@@ -33,6 +34,7 @@
   oa_since: 2011
   processing_time: 3
   articles:
+  seal: false
 
 - title: "Linguagem & Ensino"
   paral_title: "Linguagem e Ensino"
@@ -50,6 +52,7 @@
   oa_since: 1998
   processing_time: 8
   articles:
+  seal: false
 
 - title: "Access Microbiology"
   paral_title:
@@ -67,6 +70,7 @@
   oa_since: 2019
   processing_time: 12
   articles:
+  seal: false
 
 - title: "M@n@gement"
   paral_title: "Management"
@@ -84,6 +88,7 @@
   oa_since: 1998
   processing_time: 70
   articles:
+  seal: false
 
 - title: "Entomological Communications"
   paral_title:
@@ -101,6 +106,7 @@
   oa_since: 2019
   processing_time: 6
   articles: 0
+  seal: false
 
 - title: "Biología Acuática"
   paral_title:
@@ -118,6 +124,7 @@
   oa_since: 2014
   processing_time: 28
   articles:
+  seal: false
 
 - title: "Медицина катастроф"
   paral_title: "Disaster Medicine"
@@ -135,6 +142,7 @@
   oa_since: 2014
   processing_time: 4
   articles:
+  seal: false
 
 - title: "Acta Sting"
   paral_title:
@@ -152,6 +160,7 @@
   oa_since: 2012
   processing_time: 12
   articles:
+  seal: false
 
 - title: "Inform: Jurnal Ilmiah Bidang Teknologi Informasi dan Komunikasi"
   paral_title:
@@ -169,6 +178,7 @@
   oa_since: 2016
   processing_time: 10
   articles:
+  seal: false
 
 - title: "Indonesia Accounting Journal"
   paral_title:
@@ -186,3 +196,4 @@
   oa_since: 2019
   processing_time: 4
   articles:
+  seal: false
