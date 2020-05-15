@@ -408,6 +408,10 @@ class FormulaicField(object):
         return self._definition.get("help", {}).get(key)
 
     @property
+    def optional(self):
+        return self._definition.get("optional", False)
+
+    @property
     def wtforms_builders(self):
         return self._formulaic_fieldset.wtforms_builders
 

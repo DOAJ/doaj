@@ -25,6 +25,10 @@
     <div {% if page != "03-copyright-licensing" %}style="display: none" {% endif %}>
         {% include "application_form/03-copyright-licensing/index.html" %}
     </div>
+    <div {% if page != "04-editorial" %}style="display: none" {% endif %}>
+        {% include "application_form/04-editorial/index.html" %}
+    </div>
+
 {% endblock %}
 
 {% block extra_js_bottom scoped %}

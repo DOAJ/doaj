@@ -88,6 +88,7 @@ class FieldDefinitions:
                           "purpose, without asking prior permission from the publisher or the author. This is in accordance"
                           "with the BOAI definition of open access.</blockquote>"],
             "short_help": "Link to the journal’s open access statement",
+            "placeholder": "https://www.my-journal.com/open-access"
         },
         "validate": [
             "required",
@@ -110,6 +111,7 @@ class FieldDefinitions:
                           "<a href='https://portal.issn.org/'> ISSN Portal</a>.",
                           "For translated titles, you may add the "
                           "translation as an alternative title."],
+            "placeholder": "Journal title",
             "doaj_criteria": "Title in application form, title at ISSN and website must all match"
         },
         "validate": [
@@ -136,7 +138,8 @@ class FieldDefinitions:
             "long_help": ["The journal title must match what is displayed on the website and what is registered at the "
                           "<a href='https://portal.issn.org/'> ISSN Portal</a>.",
                           "For translated titles, you may add the "
-                          "translation as an alternative title."]
+                          "translation as an alternative title."],
+            "placeholder": "Ma revue"
         },
         "validate": [
             "required"
@@ -163,6 +166,9 @@ class FieldDefinitions:
         "widgets": [
             "clickable_url"
         ],
+        "help": {
+            "placeholder": "https://www.my-journal.com"
+        },
         "contexts": {
             "editor": {
                 "disabled": True
@@ -188,6 +194,7 @@ class FieldDefinitions:
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/'> ISSN Portal.</a>",
                           "The ISSN must match what is given on the journal website."],
+            "placeholder": "2049-3630",
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
@@ -223,6 +230,7 @@ class FieldDefinitions:
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/'> ISSN Portal</a>",
                           "The ISSN must match what is given on the journal website."],
+            "placeholder": "0378-5955",
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
@@ -374,6 +382,13 @@ class FieldDefinitions:
         "name": "institution_name",
         "label": "Name",
         "input": "text",
+        "optional": True,
+        "help": {
+            "short_help": "The society or institution responsible for the journal",
+            "long_help": ["Some societies or institutions are linked to a journal in some way but are not responsible "
+                          "for publishing it. The publisher can be a separate organisation. If your journal is linked to "
+                          "a society or other type of institution, enter that here."]
+        },
         "widgets": [
             {"autocomplete": {"field": "institution_name"}}
         ]
@@ -386,11 +401,9 @@ class FieldDefinitions:
         "label": "Country",
         "input": "select",
         "options_fn": "iso_country_list",
+        "optional": True,
         "help": {
-            "short_help": "The society or institution responsible for the journal",
-            "long_help": ["Some societies or institutions are linked to a journal in some way but are not responsible "
-                         "for publishing it. The publisher can be a separate organisation. If your journal is linked to "
-                         "a society or other type of institution, enter that here."]
+            "short_help": "The country in which the society or institution is based"
         },
         "widgets": [
             {"select": {}}
@@ -434,7 +447,7 @@ class FieldDefinitions:
             {"display": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
             {"display": "CC0", "value": "CC0"},
             {"display": "Public domain", "value": "Public domain"},
-            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True},
+            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True, "subfields": ["license_attributes"]},
         ],
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
@@ -477,6 +490,7 @@ class FieldDefinitions:
             "required",
             "is_url"
         ],
+        "placeholder": "https://www.my-journal.com/about#licensing",
         "help": {
             "short_help": "Link to the page where the license terms are stated",
             "doaj_criteria": "You must provide a link to your license terms"
@@ -575,6 +589,7 @@ class FieldDefinitions:
         "help": {
             "short_help": "Link to the journal's copyright terms"
         },
+        "placeholder": "https://www.my-journal.com/about#licensing",
         "validate": [
             "required",
             "is_url"
@@ -584,7 +599,19 @@ class FieldDefinitions:
         ]
     }
 
+    PEER_REVIEW = {
+        "name": "peer_review",
+        "label": "Peer review",
+        "input": "group",
+        "subfields": [
+            "review_process",
+            "review_process_other",
+            "review_url"
+        ]
+    }
+
     REVIEW_PROCESS = {
+        "subfield": True,
         "name": "review_process",
         "label": "DOAJ only accepts peer-reviewed journals."
                  "Which type(s) of peer review does this journal use?",
@@ -608,9 +635,9 @@ class FieldDefinitions:
     }
 
     REVIEW_PROCESS_OTHER = {
-        "name": "review_process_other",
         "subfield": True,
-        "label": "Other",
+        "name": "review_process_other",
+        "label": "Other peer review",
         "input": "text",
         "help": {
             "placeholder": "Other peer review"
@@ -625,11 +652,13 @@ class FieldDefinitions:
     }
 
     REVIEW_URL = {
+        "subfield": True,
         "name": "review_url",
-        "label": "Link to the journal's peer review policy",
+        "label": "Where can we find this information?",
         "input": "text",
         "help": {
-            "doaj_criteria": "You must provide a URL"
+            "doaj_criteria": "You must provide a URL",
+            "short_help": "Link to the journal's peer review policy"
         },
         "validate": [
             "required",
@@ -640,7 +669,18 @@ class FieldDefinitions:
         ]
     }
 
+    PLAGIARISM = {
+        "name": "plagiarism",
+        "label": "Plagiarism",
+        "input": "group",
+        "subfields": [
+            "plagiarism_detection",
+            "plagiarism_url"
+        ]
+    }
+
     PLAGIARISM_DETECTION = {
+        "subfield": True,
         "name": "plagiarism_detection",
         "label": "Does the journal routinely screen article submissions for plagiarism?",
         "input": "radio",
@@ -654,12 +694,15 @@ class FieldDefinitions:
     }
 
     PLAGIARISM_URL = {
+        "subfield": True,
         "name": "plagiarism_url",
-        "label": "Link to the journal's plagiarism policy",
+        "label": "Where can we find this information?",
         "input": "text",
         "conditional": [{"field": "plagiarism_detection", "value": "y"}],
         "help": {
-            "doaj_criteria": "You must provide a URL"
+            "doaj_criteria": "You must provide a URL",
+            "placeholder": "https://www.my-journal.com/about#plagiarism",
+            "short_help": "Link to the journal's plagiarism policy"
         },
         "validate": [
             {"required_if": {"field": "plagiarism_detection", "value": "y"}},
@@ -670,12 +713,26 @@ class FieldDefinitions:
         ]
     }
 
+    EDITORIAL_INFORMATION = {
+        "name": "editorial_information",
+        "label": "Editorial Information",
+        "input": "group",
+        "subfields": [
+            "aims_scope_url",
+            "editorial_board_url",
+            "author_instructions_url",
+            "publication_time_weeks"
+        ]
+    }
+
     AIMS_SCOPE_URL = {
+        "subfield": True,
         "name": "aims_scope_url",
-        "label": "Link to the journal's Aims & Scope",
+        "label": "Link to the journal's <b>Aims & Scope</b>",
         "input": "text",
         "help": {
-            "doaj_criteria": "You must provide a URL"
+            "doaj_criteria": "You must provide a URL",
+            "placeholder": "https://www.my-journal.com/about#aims"
         },
         "validate": [
             "required",
@@ -687,11 +744,13 @@ class FieldDefinitions:
     }
 
     EDITORIAL_BOARD_URL = {
+        "subfield": True,
         "name": "editorial_board_url",
-        "label": "Link to the journal's editorial board",
+        "label": "Link to the journal's <b>Editorial board</b>",
         "input": "text",
         "help": {
-            "doaj_criteria": "You must provide a URL"
+            "doaj_criteria": "You must provide a URL",
+            "placeholder": "https://www.my-journal.com/about#board"
         },
         "validate": [
             "required",
@@ -703,11 +762,13 @@ class FieldDefinitions:
     }
 
     AUTHOR_INSTRUCTIONS_URL = {
+        "subfield": True,
         "name": "author_instructions_url",
-        "label": "Link to the journal's Instructions for Author",
+        "label": "Link to the journal's <b>Instructions for Author</b>",
         "input": "text",
         "help": {
-            "doaj_criteria": "You must provide a URL"
+            "doaj_criteria": "You must provide a URL",
+            "placeholder": "https://www.my-journal.com/for_authors"
         },
         "validate": [
             "required",
@@ -719,6 +780,7 @@ class FieldDefinitions:
     }
 
     PUBLICATION_TIME_WEEKS = {
+        "subfield": True,
         "name": "publication_time_weeks",
         "label": "Average number of <strong>weeks</strong> between article submission & publication",
         "input": "number",
@@ -916,12 +978,16 @@ FIELDS = {
     FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"]: FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS,
     FieldDefinitions.COPYRIGHT_URL["name"]: FieldDefinitions.COPYRIGHT_URL,
 
+    FieldDefinitions.PEER_REVIEW["name"]: FieldDefinitions.PEER_REVIEW,
     FieldDefinitions.REVIEW_PROCESS["name"]: FieldDefinitions.REVIEW_PROCESS,
     FieldDefinitions.REVIEW_PROCESS_OTHER["name"]: FieldDefinitions.REVIEW_PROCESS_OTHER,
     FieldDefinitions.REVIEW_URL["name"]: FieldDefinitions.REVIEW_URL,
+
+    FieldDefinitions.PLAGIARISM["name"]: FieldDefinitions.PLAGIARISM,
     FieldDefinitions.PLAGIARISM_DETECTION["name"]: FieldDefinitions.PLAGIARISM_DETECTION,
     FieldDefinitions.PLAGIARISM_URL["name"]: FieldDefinitions.PLAGIARISM_URL,
 
+    FieldDefinitions.EDITORIAL_INFORMATION["name"]: FieldDefinitions.EDITORIAL_INFORMATION,
     FieldDefinitions.AIMS_SCOPE_URL["name"]: FieldDefinitions.AIMS_SCOPE_URL,
     FieldDefinitions.EDITORIAL_BOARD_URL["name"]: FieldDefinitions.EDITORIAL_BOARD_URL,
     FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"]: FieldDefinitions.AUTHOR_INSTRUCTIONS_URL,
@@ -996,9 +1062,9 @@ class FieldSetDefinitions:
         ]
     }
 
-    EMBEDED_LICENSING = {
-        "name": "embeded_licensing",
-        "label": "Embeded licences",
+    EMBEDDED_LICENSING = {
+        "name": "embedded_licensing",
+        "label": "Embedded licences",
         "fields": [
             FieldDefinitions.EMBEDDED_LICENSES["name"],
             FieldDefinitions.LICENSE_DISPLAY["name"],
@@ -1020,9 +1086,18 @@ class FieldSetDefinitions:
         "name": "peer_review",
         "label": "Peer Review",
         "fields": [
+            FieldDefinitions.PEER_REVIEW["name"],
             FieldDefinitions.REVIEW_PROCESS["name"],
             FieldDefinitions.REVIEW_PROCESS_OTHER["name"],
-            FieldDefinitions.REVIEW_URL["name"],
+            FieldDefinitions.REVIEW_URL["name"]
+        ]
+    }
+
+    PLAGIARISM = {
+        "name": "plagiarism",
+        "label": "Plagiarism",
+        "fields": [
+            FieldDefinitions.PLAGIARISM["name"],
             FieldDefinitions.PLAGIARISM_DETECTION["name"],
             FieldDefinitions.PLAGIARISM_URL["name"]
         ]
@@ -1032,6 +1107,7 @@ class FieldSetDefinitions:
         "name": "editorial",
         "label": "Editorial",
         "fields": [
+            FieldDefinitions.EDITORIAL_INFORMATION["name"],
             FieldDefinitions.AIMS_SCOPE_URL["name"],
             FieldDefinitions.EDITORIAL_BOARD_URL["name"],
             FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"],
@@ -1069,9 +1145,10 @@ class ContextDefinitions:
             FieldSetDefinitions.PUBLISHER["name"],
             FieldSetDefinitions.SOCIETY_OR_INSTITUTION["name"],
             FieldSetDefinitions.LICENSING["name"],
-            FieldSetDefinitions.EMBEDED_LICENSING["name"],
+            FieldSetDefinitions.EMBEDDED_LICENSING["name"],
             FieldSetDefinitions.COPYRIGHT["name"],
             FieldSetDefinitions.PEER_REVIEW["name"],
+            FieldSetDefinitions.PLAGIARISM["name"],
             FieldSetDefinitions.EDITORIAL["name"],
             FieldSetDefinitions.BUSINESS_MODEL["name"]
         ],
@@ -1102,9 +1179,10 @@ FORMS = {
         FieldSetDefinitions.PUBLISHER["name"]: FieldSetDefinitions.PUBLISHER,
         FieldSetDefinitions.SOCIETY_OR_INSTITUTION["name"]: FieldSetDefinitions.SOCIETY_OR_INSTITUTION,
         FieldSetDefinitions.LICENSING["name"]: FieldSetDefinitions.LICENSING,
-        FieldSetDefinitions.EMBEDED_LICENSING["name"]: FieldSetDefinitions.EMBEDED_LICENSING,
+        FieldSetDefinitions.EMBEDDED_LICENSING["name"]: FieldSetDefinitions.EMBEDDED_LICENSING,
         FieldSetDefinitions.COPYRIGHT["name"]: FieldSetDefinitions.COPYRIGHT,
         FieldSetDefinitions.PEER_REVIEW["name"]: FieldSetDefinitions.PEER_REVIEW,
+        FieldSetDefinitions.PLAGIARISM["name"]: FieldSetDefinitions.PLAGIARISM,
         FieldSetDefinitions.EDITORIAL["name"]: FieldSetDefinitions.EDITORIAL,
         FieldSetDefinitions.BUSINESS_MODEL["name"]: FieldSetDefinitions.BUSINESS_MODEL
     },

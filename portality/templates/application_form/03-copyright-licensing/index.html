@@ -14,7 +14,7 @@
                             {% set field_template = f.template %}
                             {%  include field_template %}
                         {% endfor %}
-                    {% set fs = formulaic_context.fieldset("embeded_licensing") %}
+                    {% set fs = formulaic_context.fieldset("embedded_licensing") %}
                         {% for f in fs.fields() %}
                             {% set field_template = f.template %}
                             {%  include field_template %}
@@ -39,12 +39,12 @@
                 </section>
             </div>
 
-        <div class="col-md-4">
-        <div>
-        {% include "application_form/pagination_menu.html" %}
-        {% include "application_form/aside_menu.html" %}
-        </div>
-        </div>
+            <div class="col-md-4">
+                <div>
+                    {% include "application_form/pagination_menu.html" %}
+                    {% include "application_form/aside_menu.html" %}
+                </div>
+            </div>
         </div>
     </main>
 </body>
