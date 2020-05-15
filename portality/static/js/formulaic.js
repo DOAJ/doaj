@@ -302,14 +302,15 @@ var formulaic = {
                         }
 
                         // bind a change event for checking conditionals
-                        var element = this.controlSelect.input({name: condField});
-                        edges.on(element, "change.Conditional", this, "checkConditional");
+                        var element = this.controlSelect.input({id: condField});
+                        edges.on(element, "click", this, "checkConditional");
                     }
                 }
             }
         };
 
         this.checkConditional = function(element) {
+            console.log("this should be called")
             var name = this.getElementName($(element));
             var downstream = this.conditionals[name];
             for (var i = 0; i < downstream.length; i++) {
@@ -611,9 +612,9 @@ var formulaic = {
 
             this.init = function() {
                 this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                this.elements.select2({
-                    allowClear: true
-                });
+                // this.elements.select2({  //TODO: select2 is not a function
+                //     allowClear: true
+                // });
             };
 
             this.init();
@@ -637,18 +638,18 @@ var formulaic = {
                 var stopWords = edges.getParam(this.args.stopWords, []);
 
                 this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                this.elements.select2({
-                    minimumInputLength: minInputLength,
-                    tags: [],
-                    tokenSeparators: tokenSeparators,
-                    maximumSelectionSize: maximumSelectionSize,
-                    createSearchChoice : function(term) {   // NOTE: if we update select2, this has to change
-                        if ($.inArray(term, stopWords) !== -1) {
-                            return null;
-                        }
-                        return {id: $.trim(term), text: $.trim(term)};
-                    }
-                });
+                // this.elements.select2({      //TODO: select2 is not a function
+                //     minimumInputLength: minInputLength,
+                //     tags: [],
+                //     tokenSeparators: tokenSeparators,
+                //     maximumSelectionSize: maximumSelectionSize,
+                //     createSearchChoice : function(term) {   // NOTE: if we update select2, this has to change
+                //         if ($.inArray(term, stopWords) !== -1) {
+                //             return null;
+                //         }
+                //         return {id: $.trim(term), text: $.trim(term)};
+                //     }
+                // });
             };
 
             this.init();

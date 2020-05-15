@@ -1,6 +1,6 @@
-<script type="text/javascript" src="/static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/portality/static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/portality/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/portality/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript">
     jQuery(document).ready(function($) {
         formulaic.active = formulaic.newFormulaic({
@@ -10,5 +10,6 @@
             autoSave: {{ auto_save }},
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
-    });
+});
+
 </script>

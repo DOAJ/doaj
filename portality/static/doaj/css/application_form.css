@@ -1,9 +1,9 @@
-ul#boai {
+.form__question > ul {
     list-style-type: none;
     padding: 0;
     display: inline;
 }
 
-ul#boai > li {
+.form__question > ul > li {
     display:inline;
 }

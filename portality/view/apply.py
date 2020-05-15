@@ -14,6 +14,7 @@ blueprint = Blueprint('apply', __name__)
 @blueprint.route("/", methods=["GET", "POST"])
 @blueprint.route("/01-oa-compliance/", methods=["GET", "POST"])
 @blueprint.route("/02-about/", methods=["GET", "POST"])
+@blueprint.route("/03-copyright-licensing/", methods=["GET", "POST"])
 @write_required()
 def public_application(draft_id=None):
 

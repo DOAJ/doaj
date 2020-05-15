@@ -22,6 +22,9 @@
     <div {% if page != "02-about" %}style="display: none" {% endif %}>
         {% include "application_form/02-about/index.html" %}
     </div>
+    <div {% if page != "03-copyright-licensing" %}style="display: none" {% endif %}>
+        {% include "application_form/03-copyright-licensing/index.html" %}
+    </div>
 {% endblock %}
 
 {% block extra_js_bottom scoped %}

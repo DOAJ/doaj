@@ -1,6 +1,7 @@
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
-from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, Form, FormField, FieldList
+from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, Form, \
+    FormField, FieldList
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 from portality.formcontext.fields import TagListField
@@ -42,13 +43,14 @@ STOP_WORDS = [
     "research journal"
 ]
 
+
 ########################################################
 # Define all our individual fields
 ########################################################
 
 class FieldDefinitions:
     BOAI = {
-        "name" : "boai",
+        "name": "boai",
         "label": "Does the journal adhere to this definition of open access?",
         "input": "radio",
         "options": [
@@ -59,28 +61,28 @@ class FieldDefinitions:
             "doaj_criteria": "You must answer 'Yes'"
         },
         "validate": [
-            {"required" : {"message" : "You must answer YES to continue"}}
+            {"required": {"message": "You must answer YES to continue"}}
         ],
-        "contexts" : {
-            "editor" : {
-                "disabled" : True
+        "contexts": {
+            "editor": {
+                "disabled": True
             },
-            "associate_editor" : {
-                "disabled" : True
+            "associate_editor": {
+                "disabled": True
             }
         },
         "asynchronous_warnings": [
-            {"value_must_be" : {"value" : "y"}}
+            {"value_must_be": {"value": "y"}}
         ]
     }
 
     OA_STATEMENT_URL = {
-        "name" : "oa_statement_url",
+        "name": "oa_statement_url",
         "label": "Your website must display its open access statement.<br> Where can we find this information?",
         "input": "text",
         "help": {
-            "long_help": ["Here is an example of a suitable Open Access statement that meets our criteria:<blockquote>" 
-                         "This is an open access journal which means that all content is freely available without charge"
+            "long_help": ["Here is an example of a suitable Open Access statement that meets our criteria:<blockquote>"
+                          "This is an open access journal which means that all content is freely available without charge"
                           "to the user or his/her institution. Users are allowed to read, download, copy, distribute,"
                           "print, search, or link to the full texts of the articles, or use them for any other lawful"
                           "purpose, without asking prior permission from the publisher or the author. This is in accordance"
@@ -100,15 +102,15 @@ class FieldDefinitions:
     }
 
     TITLE = {
-        "name" : "title",
-        "label" : "Journal title",
-        "input" : "text",
-        "help" : {
-            "long_help" : ["The journal title must match what is displayed on the website and what is registered at the "
+        "name": "title",
+        "label": "Journal title",
+        "input": "text",
+        "help": {
+            "long_help": ["The journal title must match what is displayed on the website and what is registered at the "
                           "<a href='https://portal.issn.org/'> ISSN Portal</a>.",
                           "For translated titles, you may add the "
                           "translation as an alternative title."],
-            "doaj_criteria" : "Title in application form, title at ISSN and website must all match"
+            "doaj_criteria": "Title in application form, title at ISSN and website must all match"
         },
         "validate": [
             "required"
@@ -120,18 +122,18 @@ class FieldDefinitions:
             "associate_editor": {
                 "disabled": True
             },
-            "update_request" : {
-                "disabled" : True
+            "update_request": {
+                "disabled": True
             }
         }
     }
 
     ALTERNATIVE_TITLE = {
-        "name" : "alternative_title",
-        "label" : "Alternative title (including translation of the title)",
-        "input" : "text",
-        "help" : {
-            "long_help" :[ "The journal title must match what is displayed on the website and what is registered at the "
+        "name": "alternative_title",
+        "label": "Alternative title (including translation of the title)",
+        "input": "text",
+        "help": {
+            "long_help": ["The journal title must match what is displayed on the website and what is registered at the "
                           "<a href='https://portal.issn.org/'> ISSN Portal</a>.",
                           "For translated titles, you may add the "
                           "translation as an alternative title."]
@@ -150,15 +152,15 @@ class FieldDefinitions:
     }
 
     JOURNAL_URL = {
-        "name" : "journal_url",
-        "label" : "Link to the journal's homepage",
-        "input" : "text",
+        "name": "journal_url",
+        "label": "Link to the journal's homepage",
+        "input": "text",
         "validate": [
             "required",
             "is_url",
-            "in_public_doaj"    # Check whether the journal url is already in a public DOAJ record
+            "in_public_doaj"  # Check whether the journal url is already in a public DOAJ record
         ],
-        "widgets" : [
+        "widgets": [
             "clickable_url"
         ],
         "contexts": {
@@ -170,27 +172,30 @@ class FieldDefinitions:
             }
         },
         "asynchronous_warnings": [
-            {"in_public_doaj" : {"field" : "bibjson.ref.journal.exact"}},   # check whether the journal url is already in a public DOAJ record
-            {"rejected_application" : {"age" : "6 months"}},     # check that the journal does not have a rejection less than 6 months ago
-            "active_application"    # Check that the URL is not related to an active application
+            {"in_public_doaj": {"field": "bibjson.ref.journal.exact"}},
+            # check whether the journal url is already in a public DOAJ record
+            {"rejected_application": {"age": "6 months"}},
+            # check that the journal does not have a rejection less than 6 months ago
+            "active_application"  # Check that the URL is not related to an active application
         ]
     }
 
     PISSN = {
-        "name" : "pissn",
-        "label" : "ISSN (print)",
-        "input" : "text",
-        "help" : {
-            "long_help" : ["Must be a valid ISSN, fully registered and confirmed at the "
+        "name": "pissn",
+        "label": "ISSN (print)",
+        "input": "text",
+        "help": {
+            "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/'> ISSN Portal.</a>",
-                        "The ISSN must match what is given on the journal website."],
-            "doaj_criteria" : "ISSN must be provided"
+                          "The ISSN must match what is given on the journal website."],
+            "doaj_criteria": "ISSN must be provided"
         },
-        "validate" : [
-            {"optional_if" : {"field" : "eissn", "message" : "You must provide one or both of an online ISSN or a print ISSN"}},
+        "validate": [
+            {"optional_if": {"field": "eissn",
+                             "message": "You must provide one or both of an online ISSN or a print ISSN"}},
             "in_public_doaj",
-            {"is_issn" : {"message" : "This is not a valid ISSN"}},
-            {"different_to" : {"field" : "eissn"}}
+            {"is_issn": {"message": "This is not a valid ISSN"}},
+            {"different_to": {"field": "eissn"}}
         ],
         "contexts": {
             "editor": {
@@ -217,7 +222,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/'> ISSN Portal</a>",
-                        "The ISSN must match what is given on the journal website."],
+                          "The ISSN must match what is given on the journal website."],
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
@@ -246,98 +251,31 @@ class FieldDefinitions:
     }
 
     KEYWORDS = {
-        "name" : "keywords",
-        "label" : "Up to 6 subject keywords in English",
-        "input" : "taglist",
+        "name": "keywords",
+        "label": "Up to 6 subject keywords in English",
+        "input": "taglist",
         "help": {
             "long_help": ["Only 6 keywords are allowed. Choose words that describe the subject matter of the journal "
-                         "and not the journal's qualities.","Keywords must be in English and separated by a comma."],
+                          "and not the journal's qualities.", "Keywords must be in English and separated by a comma."],
         },
-        "validate" : [
+        "validate": [
             "required",
-            {"stop_words" : {"disallowed" : STOP_WORDS}},
-            {"max_tags" : { "max" : 6 }}
+            {"stop_words": {"disallowed": STOP_WORDS}},
+            {"max_tags": {"max": 6}}
         ],
-        "postprocessing" : [
+        "postprocessing": [
             "to_lower"  # FIXME: this might just be a feature of the crosswalk
         ],
-        "widgets" : [
+        "widgets": [
             {
-                "taglist" : {
-                    "maximumSelectionSize" : 6,
-                    "stopWords" : STOP_WORDS
+                "taglist": {
+                    "maximumSelectionSize": 6,
+                    "stopWords": STOP_WORDS
                 }
             }
         ],
-        "attr" : {
-            "class" : "input-xlarge"
-        },
-        "contexts" : {
-            "editor" : {
-                "disabled" : True
-            },
-            "associate_editor" : {
-                "disabled" : True
-            }
-        }
-    }
-
-    LANGUAGE = {
-        "name" : "language",
-        "label" : "Languages in which the journal accepts manuscripts",
-        "input" : "select",
-        "multiple" : True,
-        "options_fn" : "iso_language_list",
-        "validate" : [
-            "required"
-        ],
-        "widgets" : [
-            {"select" : {}}
-        ],
-        "attr" : {
-            "class" : "input-xlarge"
-        }
-    }
-
-    # PUBLISHER = {
-    #     "name" : "publisher",
-    #     "label" : "Publisher",
-    #     "input" : "group",
-    #     "subfields" : [
-    #         "publisher_name",
-    #         "publisher_country"
-    #     ]
-    # }
-
-    PUBLISHER_NAME = {
-        "name" : "publisher_name",
-        "label" : "Name",
-        "input" : "text",
-        "validate": [
-            "required"
-        ],
-        "widgets" : [
-            {"autocomplete" : {"field" : "publisher_name"}}
-        ]
-    }
-
-    PUBLISHER_COUNTRY = {
-        "name": "publisher_country",
-        "label": "Country",
-        "input": "select",
-        "options_fn": "iso_country_list",
-        "help" : {
-            "long_help" : ["The country where the publisher carries out its business operations and is registered."],
-            "doaj_criteria" : "You must provide a publisher country"
-        },
-        "validate": [
-            "required"
-        ],
-        "widgets": [
-            {"select": {}}
-        ],
-        "attr" : {
-            "class" : "input-xlarge"
+        "attr": {
+            "class": "input-xlarge"
         },
         "contexts": {
             "editor": {
@@ -349,44 +287,116 @@ class FieldDefinitions:
         }
     }
 
-    # INSTITUTION = {
-    #     "name": "institution",
-    #     "label": "Society or institution, if applicable",
-    #     "input": "group",
-    #     "subfields": [
-    #         "institution_name",
-    #         "institution_country"
-    #     ]
-    # }
+    LANGUAGE = {
+        "name": "language",
+        "label": "Languages in which the journal accepts manuscripts",
+        "input": "select",
+        "multiple": True,
+        "options_fn": "iso_language_list",
+        "validate": [
+            "required"
+        ],
+        "widgets": [
+            {"select": {}}
+        ],
+        "attr": {
+            "class": "input-xlarge"
+        }
+    }
+
+    PUBLISHER = {
+        "name": "publisher",
+        "label": "Publisher",
+        "input": "group",
+        "subfields": [
+            "publisher_name",
+            "publisher_country"
+        ]
+    }
+
+    PUBLISHER_NAME = {
+        "subfield": True,
+        "group": "publisher",
+        "name": "publisher_name",
+        "label": "Name",
+        "input": "text",
+        "validate": [
+            "required"
+        ],
+        "widgets": [
+            {"autocomplete": {"field": "publisher_name"}}
+        ]
+    }
+
+    PUBLISHER_COUNTRY = {
+        "subfield": True,
+        "group": "publisher",
+        "name": "publisher_country",
+        "label": "Country",
+        "input": "select",
+        "options_fn": "iso_country_list",
+        "help": {
+            "long_help": ["The country where the publisher carries out its business operations and is registered."],
+            "doaj_criteria": "You must provide a publisher country"
+        },
+        "validate": [
+            "required"
+        ],
+        "widgets": [
+            {"select": {}}
+        ],
+        "attr": {
+            "class": "input-xlarge"
+        },
+        "contexts": {
+            "editor": {
+                "disabled": True
+            },
+            "associate_editor": {
+                "disabled": True
+            }
+        }
+    }
+
+    INSTITUTION = {
+        "name": "institution",
+        "label": "Society or institution, if applicable",
+        "input": "group",
+        "subfields": [
+            "institution_name",
+            "institution_country"
+        ]
+    }
 
     INSTITUTION_NAME = {
+        "subfield": True,
+        "group": "institution",
         "name": "institution_name",
         "label": "Name",
         "input": "text",
-        "help" : {
-            "long_help": ["Some societies or institutions are linked to a journal in some way but are not responsible "
-                         "for publishing it. The publisher can be a separate organisation. If your journal is linked "
-                         "to a society or other type of institution, enter that here."],
-            "short_help": "The society or institution responsible for the journal"
-        },
         "widgets": [
             {"autocomplete": {"field": "institution_name"}}
         ]
     }
 
     INSTITUTION_COUNTRY = {
+        "subfield": True,
+        "group": "institution",
         "name": "institution_country",
         "label": "Country",
         "input": "select",
         "options_fn": "iso_country_list",
         "help": {
-            "short_help" : "The society or institution responsible for the journal",
+            "short_help": "The society or institution responsible for the journal",
+            "long_help": ["Some societies or institutions are linked to a journal in some way but are not responsible "
+                         "for publishing it. The publisher can be a separate organisation. If your journal is linked to "
+                         "a society or other type of institution, enter that here."]
         },
         "widgets": [
             {"select": {}}
         ],
-        "attr" : {
-            "class" : "input-xlarge"
+        "attr": {
+            "class": "input-xlarge"
         },
         "contexts": {
             "editor": {
@@ -398,11 +408,23 @@ class FieldDefinitions:
         }
     }
 
+    LICENSING = {
+        "name": "licensing",
+        "label": "Licensing",
+        "input": "group",
+        "subfields": [
+            "license",
+            "license_attributes",
+            "license_terms_url"
+        ]
+    }
+
     LICENSE = {
-        "name" : "license",
+        "subfield": True,
+        "name": "license",
         "label": "License(s) permitted by the journal",
         "input": "checkbox",
-        "multiple" : True,
+        "multiple": True,
         "options": [
             {"display": "CC BY", "value": "CC BY"},
             {"display": "CC BY-SA", "value": "CC BY-SA"},
@@ -415,9 +437,9 @@ class FieldDefinitions:
             {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True},
         ],
         "help": {
-            "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. "
-                       "If Creative Commons licensing is not used, then select 'Publisher's own license' and enter "
-                       "more details below."],
+            "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
+                          "If Creative Commons licensing is not used, then select <i>Publisher's own license</i> and enter "
+                          "more details below."],
             "doaj_criteria": "Content must be licenced",
             "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
         },
@@ -427,18 +449,19 @@ class FieldDefinitions:
     }
 
     LICENSE_ATTRIBUTES = {
-        "name" : "license_attributes",
-        "label" : "Select all the attributes that your license has",
-        "input" : "checkbox",
-        "multiple" : True,
-        "conditional" : [
-            {"field" : "license", "value" : "Publisher's own license"}
+        "subfield": True,
+        "name": "license_attributes",
+        "label": "Select all the attributes that your license has",
+        "input": "checkbox",
+        "multiple": True,
+        "conditional": [
+            {"field": "license", "value": "Publisher's own license"}
         ],
-        "options" : [
-            {"display" : "Attribution", "value" : "BY"},
-            {"display" : "Share Alike", "value" : "SA"},
-            {"display" : "No Derivatives", "value" : "ND"},
-            {"display" : "No Commercial Usage", "value" : "NC"}
+        "options": [
+            {"display": "Attribution", "value": "BY"},
+            {"display": "Share Alike", "value": "SA"},
+            {"display": "No Derivatives", "value": "ND"},
+            {"display": "No Commercial Usage", "value": "NC"}
         ],
         "help": {
             "doaj_criteria": "Content must be licenced"
@@ -446,90 +469,127 @@ class FieldDefinitions:
     }
 
     LICENSE_TERMS_URL = {
-        "name" : "license_terms_url",
-        "label" : "Link to the page where the license terms are stated",
-        "input" : "text",
-        "validate" : [
+        "subfield": True,
+        "name": "license_terms_url",
+        "label": "Where can we find this information?",
+        "input": "text",
+        "validate": [
             "required",
             "is_url"
         ],
         "help": {
+            "short_help": "Link to the page where the license terms are stated",
             "doaj_criteria": "You must provide a link to your license terms"
         },
-        "widgets" : [
+        "widgets": [
             "clickable_url"
         ]
     }
 
+    EMBEDDED_LICENSES = {
+        "name": "embedded_liceses",
+        "label": "Embedded licenses",
+        "input": "group",
+        "subfields": [
+            "license_display",
+            "license_display_example_url"
+        ]
+    }
+
     LICENSE_DISPLAY = {
-        "name" : "license_display",
-        "label" : "Does the journal embed and/or display licensing information in its articles?",
-        "input" : "checkbox",
-        "multiple" : True,
-        "help" : {
-            "long_help" : ["Licensing information must be displayed or embedded on every PDF or in the full text of the "
-                        "HTML articles. We do not accept licensing information that is only displayed in other parts of "
-                        "the site."],
-            "seal_criteria" : "If the answer is Embed"
+        "subfield": True,
+        "name": "license_display",
+        "label": "Does the journal embed and/or display licensing information in its articles?",
+        "input": "checkbox",
+        "multiple": True,
+        "help": {
+            "long_help": ["Licensing information must be displayed or embedded on every PDF or in the full text of the "
+                          "HTML articles.",
+                          "We do not accept licensing information that is only displayed in other parts of "
+                          "the site."],
+            "seal_criteria": "If the answer is Embed"
         },
         "options": [
             {"display": "Embed", "value": "Embed"},
             {"display": "Display", "value": "Display"},
-            {"display": "No", "value": "No", "exclusive" : True}
+            {"display": "No", "value": "No", "exclusive": True}
         ],
-        "validate" : [
+        "validate": [
             "required"
         ]
     }
 
     LICENSE_DISPLAY_EXAMPLE_URL = {
-        "name" : "license_display_example_url",
-        "label" : "Link to a recent article displaying or embedding a license in the full text",
-        "input" : "text",
-        "validate" : [
+        "subfield": True,
+        "name": "license_display_example_url",
+        "label": "Recent article displaying or embedding a license in the full text",
+        "input": "text",
+        "help": {
+            "short_help": "Link to an example article"
+        },
+        "validate": [
             "required",
             "is_url"
         ],
-        "widgets" : [
+        "widgets": [
             "clickable_url"
         ]
     }
 
+    COPYRIGHT = {
+        "name": "copyright",
+        "label": "Copyright",
+        "input": "group",
+        "subfields": [
+            "copyright_author_retains",
+            "copyright_url"
+        ]
+    }
+
     COPYRIGHT_AUTHOR_RETAINS = {
-        "name" : "copyright_author_retains",
-        "label" : "For all the licenses you have indicated above, do authors or their institutions retain the copyright "
-                  "and full publishing rights without restrictions?",
-        "input" : "checkbox",
-        "validate" : [
+        "subfield": True,
+        "name": "copyright_author_retains",
+        "label": "For all the licenses you have indicated above, do authors or their institutions retain the copyright "
+                 "<b>and</b> full publishing rights without restrictions?",
+        "input": "radio",
+        "options": [
+            {"display": "Yes", "value": "y"},
+            {"display": "No", "value": "n"}
+        ],
+        "validate": [
             "required"
         ],
-        "help" : {
-            "seal_criteria" : "The author must retain the copyright"
+        "help": {
+            "seal_criteria": "The author must retain the copyright"
         },
-        "asynchronous_warnings" : [
-            {"required_value" : {"value" : "y"}}
+        "asynchronous_warnings": [
+            {"required_value": {"value": "y"}}
         ]
     }
 
     COPYRIGHT_URL = {
-        "name" : "copyright_url",
-        "label" : "Link to the journal's copyright terms",
-        "input" : "text",
-        "validate" : [
+        "subfield": True,
+        "name": "copyright_url",
+        "label": "Where can we find this information?",
+        "input": "text",
+        "help": {
+            "short_help": "Link to the journal's copyright terms"
+        },
+        "validate": [
             "required",
             "is_url"
         ],
-        "widgets" : [
+        "widgets": [
             "clickable_url"
         ]
     }
 
     REVIEW_PROCESS = {
-        "name" : "review_process",
+        "name": "review_process",
         "label": "DOAJ only accepts peer-reviewed journals."
-                    "Which type(s) of peer review does this journal use?",
+                 "Which type(s) of peer review does this journal use?",
         "input": "checkbox",
-        "multiple" : True,
+        "multiple": True,
         "options": [
             {"display": "Editorial review", "value": "editorial_review"},
             {"display": "Peer review", "value": "peer_review"},
@@ -548,16 +608,16 @@ class FieldDefinitions:
     }
 
     REVIEW_PROCESS_OTHER = {
-        "name" : "review_process_other",
+        "name": "review_process_other",
         "subfield": True,
-        "label" : "Other",
+        "label": "Other",
         "input": "text",
         "help": {
             "placeholder": "Other peer review"
         },
         "conditional": [{"field": "review_process", "value": "other"}],
-        "validate" : [
-            {"required_if" : {"field" : "review_process", "value" : "other"}}
+        "validate": [
+            {"required_if": {"field": "review_process", "value": "other"}}
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -565,79 +625,79 @@ class FieldDefinitions:
     }
 
     REVIEW_URL = {
-        "name" : "review_url",
-        "label" : "Link to the journal's peer review policy",
-        "input" : "text",
-        "help" : {
-            "doaj_criteria" : "You must provide a URL"
+        "name": "review_url",
+        "label": "Link to the journal's peer review policy",
+        "input": "text",
+        "help": {
+            "doaj_criteria": "You must provide a URL"
         },
-        "validate" : [
+        "validate": [
             "required",
             "is_url"
         ],
-        "widgets" : [
+        "widgets": [
             "clickable_url"
         ]
     }
 
     PLAGIARISM_DETECTION = {
-        "name" : "plagiarism_detection",
-        "label" : "Does the journal routinely screen article submissions for plagiarism?",
-        "input" : "radio",
-        "options" : [
-            {"display" : "Yes", "value" : "y"},
-            {"display" : "No", "value" : "n"}
+        "name": "plagiarism_detection",
+        "label": "Does the journal routinely screen article submissions for plagiarism?",
+        "input": "radio",
+        "options": [
+            {"display": "Yes", "value": "y"},
+            {"display": "No", "value": "n"}
         ],
-        "validate" : [
+        "validate": [
             "required"
         ]
     }
 
     PLAGIARISM_URL = {
-        "name" : "plagiarism_url",
-        "label" : "Link to the journal's plagiarism policy",
-        "input" : "text",
+        "name": "plagiarism_url",
+        "label": "Link to the journal's plagiarism policy",
+        "input": "text",
         "conditional": [{"field": "plagiarism_detection", "value": "y"}],
         "help": {
             "doaj_criteria": "You must provide a URL"
         },
-        "validate" : [
-            {"required_if" : {"field" : "plagiarism_detection", "value" : "y"}},
+        "validate": [
+            {"required_if": {"field": "plagiarism_detection", "value": "y"}},
             "is_url"
         ],
-        "widgets" : [
+        "widgets": [
             "clickable_url"
         ]
     }
 
     AIMS_SCOPE_URL = {
-        "name" : "aims_scope_url",
-        "label" : "Link to the journal's Aims & Scope",
-        "input" : "text",
+        "name": "aims_scope_url",
+        "label": "Link to the journal's Aims & Scope",
+        "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL"
         },
-        "validate" : [
+        "validate": [
             "required",
             "is_url"
         ],
-        "widgets" : [
+        "widgets": [
             "clickable_url"
         ]
     }
 
     EDITORIAL_BOARD_URL = {
-        "name" : "editorial_board_url",
-        "label" : "Link to the journal's editorial board",
-        "input" : "text",
+        "name": "editorial_board_url",
+        "label": "Link to the journal's editorial board",
+        "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL"
         },
-        "validate" : [
+        "validate": [
             "required",
             "is_url"
         ],
-        "widgets" : [
+        "widgets": [
             "clickable_url"
         ]
     }
@@ -659,7 +719,7 @@ class FieldDefinitions:
     }
 
     PUBLICATION_TIME_WEEKS = {
-        "name" : "publication_time_weeks",
+        "name": "publication_time_weeks",
         "label": "Average number of <strong>weeks</strong> between article submission & publication",
         "input": "number",
         "datatype": "integer",
@@ -677,9 +737,9 @@ class FieldDefinitions:
     }
 
     APC = {
-        "name" : "apc",
-        "label" : "Does the journal require payment of article processing charges (APCs)?",
-        "input" : "radio",
+        "name": "apc",
+        "label": "Does the journal require payment of article processing charges (APCs)?",
+        "input": "radio",
         "options": [
             {"display": "Yes", "value": "y"},
             {"display": "No", "value": "n"}
@@ -693,11 +753,11 @@ class FieldDefinitions:
     }
 
     APC_URL = {
-        "name" : "apc_url",
-        "label" : "Link to the page where this is stated",
+        "name": "apc_url",
+        "label": "Link to the page where this is stated",
         "input": "text",
         "help": {
-            "short_help" : "The page must declare whether or not APCs are charged.",
+            "short_help": "The page must declare whether or not APCs are charged.",
             "doaj_criteria": "You must provide a URL"
         },
         "validate": [
@@ -710,59 +770,59 @@ class FieldDefinitions:
     }
 
     APC_CHARGES = {
-        "name" : "apc_charges",
-        "input" : "group",
+        "name": "apc_charges",
+        "input": "group",
         # "repeatable" : True,
-        "conditional" : [
-            {"field" : "apc", "value" : "y"}
+        "conditional": [
+            {"field": "apc", "value": "y"}
         ],
-        "subfields" : [
+        "subfields": [
             "apc_currency",
             "apc_max"
         ]
     }
 
     APC_CURRENCY = {
-        "subfield" : True,
-        "group" : "apc_charges",
-        "name" : "apc_currency",
-        "input" : "select",
-        "options_fn" : "iso_currency_list",
-        "help" : {
-            "long_help" : ["If the journal charges different APCs, you must enter the highest APC charged. If more than "
-                            "one currency is used, add a new line"]
+        "subfield": True,
+        "group": "apc_charges",
+        "name": "apc_currency",
+        "input": "select",
+        "options_fn": "iso_currency_list",
+        "help": {
+            "long_help": ["If the journal charges different APCs, you must enter the highest APC charged. If more than "
+                          "one currency is used, add a new line"]
         },
-        "widgets" : [
-            {"select" : {}}
+        "widgets": [
+            {"select": {}}
         ],
-        "attr" : {
-            "class" : "input-xlarge"
+        "attr": {
+            "class": "input-xlarge"
         }
     }
 
     APC_MAX = {
-        "subfield" : True,
-        "group" : "apc_charges",
-        "name" : "apc_max",
-        "label" : "Highest APC Charged",
-        "input" : "number",
-        "datatype" : "integer",
+        "subfield": True,
+        "group": "apc_charges",
+        "name": "apc_max",
+        "label": "Highest APC Charged",
+        "input": "number",
+        "datatype": "integer",
     }
 
     HAS_WAIVER = {
-        "name" : "has_waiver",
-        "label" : "Does the journal provide APC waivers or discounts for authors?",
-        "input" : "radio",
+        "name": "has_waiver",
+        "label": "Does the journal provide APC waivers or discounts for authors?",
+        "input": "radio",
         "options": [
             {"display": "Yes", "value": "y"},
             {"display": "No", "value": "n"}
         ],
-        "help" : {
-            "long_help" : ["Answer Yes if the journal provides APC waivers for authors from low-income economies, "
-                        "discounts for authors from lower middle-income economies, and/or waivers and discounts for "
-                        "other authors with demonstrable needs. "]
+        "help": {
+            "long_help": ["Answer Yes if the journal provides APC waivers for authors from low-income economies, "
+                          "discounts for authors from lower middle-income economies, and/or waivers and discounts for "
+                          "other authors with demonstrable needs. "]
         },
-        "validate" : [
+        "validate": [
             "required"
         ]
     }
@@ -771,15 +831,15 @@ class FieldDefinitions:
         "name": "waiver_url",
         "label": "Link to the journal's waiver information",
         "input": "text",
-        "conditional" : [
-            {"field" : "has_waiver", "value" : "y"}
+        "conditional": [
+            {"field": "has_waiver", "value": "y"}
         ],
         "help": {
             "short_help": "The page must declare whether or not APCs are charged.",
             "doaj_criteria": "You must provide a URL"
         },
         "validate": [
-            {"required_if" : {"field" : "has_waiver", "value" : "y"}},
+            {"required_if": {"field": "has_waiver", "value": "y"}},
             "is_url"
         ],
         "widgets": [
@@ -797,8 +857,8 @@ class FieldDefinitions:
         ],
         "help": {
             "long_help": ["Declare all other charges: editorial processing charges, colour charges, submission fees, "
-                        "page charges, membership fees, print subscription costs, other supplementary charges"],
-            "doaj_criteria" : "You must declare any other charges if they exist"
+                          "page charges, membership fees, print subscription costs, other supplementary charges"],
+            "doaj_criteria": "You must declare any other charges if they exist"
         },
         "validate": [
             "required"
@@ -827,53 +887,57 @@ class FieldDefinitions:
 
 
 FIELDS = {
-    FieldDefinitions.BOAI["name"] : FieldDefinitions.BOAI,
-    FieldDefinitions.OA_STATEMENT_URL["name"] : FieldDefinitions.OA_STATEMENT_URL,
+    FieldDefinitions.BOAI["name"]: FieldDefinitions.BOAI,
+    FieldDefinitions.OA_STATEMENT_URL["name"]: FieldDefinitions.OA_STATEMENT_URL,
 
-    FieldDefinitions.TITLE["name"] : FieldDefinitions.TITLE,
-    FieldDefinitions.ALTERNATIVE_TITLE["name"] : FieldDefinitions.ALTERNATIVE_TITLE,
-    FieldDefinitions.JOURNAL_URL["name"] : FieldDefinitions.JOURNAL_URL,
-    FieldDefinitions.PISSN["name"] : FieldDefinitions.PISSN,
-    FieldDefinitions.EISSN["name"] : FieldDefinitions.EISSN,
-    FieldDefinitions.KEYWORDS["name"] : FieldDefinitions.KEYWORDS,
-    FieldDefinitions.LANGUAGE["name"] : FieldDefinitions.LANGUAGE,
-    # FieldDefinitions.PUBLISHER["name"] : FieldDefinitions.PUBLISHER,
-    FieldDefinitions.PUBLISHER_NAME["name"] : FieldDefinitions.PUBLISHER_NAME,
-    FieldDefinitions.PUBLISHER_COUNTRY["name"] : FieldDefinitions.PUBLISHER_COUNTRY,
-    # FieldDefinitions.INSTITUTION["name"] : FieldDefinitions.INSTITUTION,
-    FieldDefinitions.INSTITUTION_NAME["name"] : FieldDefinitions.INSTITUTION_NAME,
-    FieldDefinitions.INSTITUTION_COUNTRY["name"] : FieldDefinitions.INSTITUTION_COUNTRY,
+    FieldDefinitions.TITLE["name"]: FieldDefinitions.TITLE,
+    FieldDefinitions.ALTERNATIVE_TITLE["name"]: FieldDefinitions.ALTERNATIVE_TITLE,
+    FieldDefinitions.JOURNAL_URL["name"]: FieldDefinitions.JOURNAL_URL,
+    FieldDefinitions.PISSN["name"]: FieldDefinitions.PISSN,
+    FieldDefinitions.EISSN["name"]: FieldDefinitions.EISSN,
+    FieldDefinitions.KEYWORDS["name"]: FieldDefinitions.KEYWORDS,
+    FieldDefinitions.LANGUAGE["name"]: FieldDefinitions.LANGUAGE,
+    FieldDefinitions.PUBLISHER["name"]: FieldDefinitions.PUBLISHER,
+    FieldDefinitions.PUBLISHER_NAME["name"]: FieldDefinitions.PUBLISHER_NAME,
+    FieldDefinitions.PUBLISHER_COUNTRY["name"]: FieldDefinitions.PUBLISHER_COUNTRY,
+    FieldDefinitions.INSTITUTION["name"]: FieldDefinitions.INSTITUTION,
+    FieldDefinitions.INSTITUTION_NAME["name"]: FieldDefinitions.INSTITUTION_NAME,
+    FieldDefinitions.INSTITUTION_COUNTRY["name"]: FieldDefinitions.INSTITUTION_COUNTRY,
 
-    FieldDefinitions.LICENSE["name"] : FieldDefinitions.LICENSE,
-    FieldDefinitions.LICENSE_ATTRIBUTES["name"] : FieldDefinitions.LICENSE_ATTRIBUTES,
-    FieldDefinitions.LICENSE_TERMS_URL["name"] : FieldDefinitions.LICENSE_TERMS_URL,
-    FieldDefinitions.LICENSE_DISPLAY["name"] : FieldDefinitions.LICENSE_DISPLAY,
-    FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"] : FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL,
+    FieldDefinitions.LICENSING["name"]: FieldDefinitions.LICENSING,
+    FieldDefinitions.LICENSE["name"]: FieldDefinitions.LICENSE,
+    FieldDefinitions.LICENSE_ATTRIBUTES["name"]: FieldDefinitions.LICENSE_ATTRIBUTES,
+    FieldDefinitions.LICENSE_TERMS_URL["name"]: FieldDefinitions.LICENSE_TERMS_URL,
+    FieldDefinitions.EMBEDDED_LICENSES["name"]: FieldDefinitions.EMBEDDED_LICENSES,
+    FieldDefinitions.LICENSE_DISPLAY["name"]: FieldDefinitions.LICENSE_DISPLAY,
+    FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]: FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL,
 
-    FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"] : FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS,
-    FieldDefinitions.COPYRIGHT_URL["name"] : FieldDefinitions.COPYRIGHT_URL,
+    FieldDefinitions.COPYRIGHT["name"]: FieldDefinitions.COPYRIGHT,
+    FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"]: FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS,
+    FieldDefinitions.COPYRIGHT_URL["name"]: FieldDefinitions.COPYRIGHT_URL,
 
-    FieldDefinitions.REVIEW_PROCESS["name"] : FieldDefinitions.REVIEW_PROCESS,
-    FieldDefinitions.REVIEW_PROCESS_OTHER["name"] : FieldDefinitions.REVIEW_PROCESS_OTHER,
-    FieldDefinitions.REVIEW_URL["name"] : FieldDefinitions.REVIEW_URL,
-    FieldDefinitions.PLAGIARISM_DETECTION["name"] : FieldDefinitions.PLAGIARISM_DETECTION,
-    FieldDefinitions.PLAGIARISM_URL["name"] : FieldDefinitions.PLAGIARISM_URL,
+    FieldDefinitions.REVIEW_PROCESS["name"]: FieldDefinitions.REVIEW_PROCESS,
+    FieldDefinitions.REVIEW_PROCESS_OTHER["name"]: FieldDefinitions.REVIEW_PROCESS_OTHER,
+    FieldDefinitions.REVIEW_URL["name"]: FieldDefinitions.REVIEW_URL,
+    FieldDefinitions.PLAGIARISM_DETECTION["name"]: FieldDefinitions.PLAGIARISM_DETECTION,
+    FieldDefinitions.PLAGIARISM_URL["name"]: FieldDefinitions.PLAGIARISM_URL,
 
-    FieldDefinitions.AIMS_SCOPE_URL["name"] : FieldDefinitions.AIMS_SCOPE_URL,
-    FieldDefinitions.EDITORIAL_BOARD_URL["name"] : FieldDefinitions.EDITORIAL_BOARD_URL,
-    FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"] : FieldDefinitions.AUTHOR_INSTRUCTIONS_URL,
-    FieldDefinitions.PUBLICATION_TIME_WEEKS["name"] : FieldDefinitions.PUBLICATION_TIME_WEEKS,
+    FieldDefinitions.AIMS_SCOPE_URL["name"]: FieldDefinitions.AIMS_SCOPE_URL,
+    FieldDefinitions.EDITORIAL_BOARD_URL["name"]: FieldDefinitions.EDITORIAL_BOARD_URL,
+    FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"]: FieldDefinitions.AUTHOR_INSTRUCTIONS_URL,
+    FieldDefinitions.PUBLICATION_TIME_WEEKS["name"]: FieldDefinitions.PUBLICATION_TIME_WEEKS,
 
-    FieldDefinitions.APC["name"] : FieldDefinitions.APC,
-    FieldDefinitions.APC_URL["name"] : FieldDefinitions.APC_URL,
-    FieldDefinitions.APC_CHARGES["name"] : FieldDefinitions.APC_CHARGES,
-    FieldDefinitions.APC_CURRENCY["name"] : FieldDefinitions.APC_CURRENCY,
-    FieldDefinitions.APC_MAX["name"] : FieldDefinitions.APC_MAX,
-    FieldDefinitions.HAS_WAIVER["name"] : FieldDefinitions.HAS_WAIVER,
-    FieldDefinitions.WAIVER_URL["name"] : FieldDefinitions.WAIVER_URL,
-    FieldDefinitions.HAS_OTHER_CHARGES["name"] : FieldDefinitions.HAS_OTHER_CHARGES,
-    FieldDefinitions.OTHER_CHARGES_URL["name"] : FieldDefinitions.OTHER_CHARGES_URL
+    FieldDefinitions.APC["name"]: FieldDefinitions.APC,
+    FieldDefinitions.APC_URL["name"]: FieldDefinitions.APC_URL,
+    FieldDefinitions.APC_CHARGES["name"]: FieldDefinitions.APC_CHARGES,
+    FieldDefinitions.APC_CURRENCY["name"]: FieldDefinitions.APC_CURRENCY,
+    FieldDefinitions.APC_MAX["name"]: FieldDefinitions.APC_MAX,
+    FieldDefinitions.HAS_WAIVER["name"]: FieldDefinitions.HAS_WAIVER,
+    FieldDefinitions.WAIVER_URL["name"]: FieldDefinitions.WAIVER_URL,
+    FieldDefinitions.HAS_OTHER_CHARGES["name"]: FieldDefinitions.HAS_OTHER_CHARGES,
+    FieldDefinitions.OTHER_CHARGES_URL["name"]: FieldDefinitions.OTHER_CHARGES_URL
 }
+
 
 ##########################################################
 # Define our fieldsets
@@ -881,18 +945,16 @@ FIELDS = {
 
 class FieldSetDefinitions:
     BASIC_COMPLIANCE = {
-        "name" : "basic_compliance",
-        "label" : "Basic Compliance",
-        "fields" : [
+        "name": "basic_compliance",
+        "fields": [
             FieldDefinitions.BOAI["name"],
             FieldDefinitions.OA_STATEMENT_URL["name"]
         ]
     }
 
     ABOUT_THE_JOURNAL = {
-        "name" : "about_the_journal",
-        "label" : "About the journal",
-        "fields" : [
+        "name": "about_the_journal",
+        "fields": [
             FieldDefinitions.TITLE["name"],
             FieldDefinitions.ALTERNATIVE_TITLE["name"],
             FieldDefinitions.JOURNAL_URL["name"],
@@ -904,48 +966,60 @@ class FieldSetDefinitions:
     }
 
     PUBLISHER = {
-        "name" : "publisher",
-        "label" : "Publisher",
-        "fields" : [
+        "name": "publisher",
+        "label": "Publisher",
+        "fields": [
+            FieldDefinitions.PUBLISHER["name"],
             FieldDefinitions.PUBLISHER_NAME["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],
         ]
     }
 
     SOCIETY_OR_INSTITUTION = {
-        "name" : "society_or_institution",
-        "label" : "Society or institution, if applicable",
-        "fields" : [
+        "name": "society_or_institution",
+        "label": "Society or institution, if applicable",
+        "fields": [
+            FieldDefinitions.INSTITUTION["name"],
             FieldDefinitions.INSTITUTION_NAME["name"],
             FieldDefinitions.INSTITUTION_COUNTRY["name"]
         ]
     }
 
     LICENSING = {
-        "name" : "licensing",
-        "label" : "Licensing",
-        "fields" : [
+        "name": "licensing",
+        "label": "Licensing",
+        "fields": [
+            FieldDefinitions.LICENSING["name"],
             FieldDefinitions.LICENSE["name"],
             FieldDefinitions.LICENSE_ATTRIBUTES["name"],
-            FieldDefinitions.LICENSE_TERMS_URL["name"],
+            FieldDefinitions.LICENSE_TERMS_URL["name"]
+        ]
+    }
+
+    EMBEDED_LICENSING = {
+        "name": "embeded_licensing",
+        "label": "Embeded licences",
+        "fields": [
+            FieldDefinitions.EMBEDDED_LICENSES["name"],
             FieldDefinitions.LICENSE_DISPLAY["name"],
             FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]
         ]
     }
 
     COPYRIGHT = {
-        "name" : "copyright",
-        "label" : "Copyright",
-        "fields" : [
+        "name": "copyright",
+        "label": "Copyright",
+        "fields": [
+            FieldDefinitions.COPYRIGHT["name"],
             FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"],
             FieldDefinitions.COPYRIGHT_URL["name"]
         ]
     }
 
     PEER_REVIEW = {
-        "name" : "peer_review",
-        "label" : "Peer Review",
-        "fields" : [
+        "name": "peer_review",
+        "label": "Peer Review",
+        "fields": [
             FieldDefinitions.REVIEW_PROCESS["name"],
             FieldDefinitions.REVIEW_PROCESS_OTHER["name"],
             FieldDefinitions.REVIEW_URL["name"],
@@ -955,9 +1029,9 @@ class FieldSetDefinitions:
     }
 
     EDITORIAL = {
-        "name" : "editorial",
-        "label" : "Editorial",
-        "fields" : [
+        "name": "editorial",
+        "label": "Editorial",
+        "fields": [
             FieldDefinitions.AIMS_SCOPE_URL["name"],
             FieldDefinitions.EDITORIAL_BOARD_URL["name"],
             FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"],
@@ -966,9 +1040,9 @@ class FieldSetDefinitions:
     }
 
     BUSINESS_MODEL = {
-        "name" : "business_model",
-        "label" : "Business Model",
-        "fields" : [
+        "name": "business_model",
+        "label": "Business Model",
+        "fields": [
             FieldDefinitions.APC["name"],
             FieldDefinitions.APC_URL["name"],
             FieldDefinitions.APC_CHARGES["name"],
@@ -988,13 +1062,14 @@ class FieldSetDefinitions:
 
 class ContextDefinitions:
     PUBLIC = {
-        "name" : "public",
-        "fieldsets" : [
+        "name": "public",
+        "fieldsets": [
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
             FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
             FieldSetDefinitions.PUBLISHER["name"],
             FieldSetDefinitions.SOCIETY_OR_INSTITUTION["name"],
             FieldSetDefinitions.LICENSING["name"],
+            FieldSetDefinitions.EMBEDED_LICENSING["name"],
             FieldSetDefinitions.COPYRIGHT["name"],
             FieldSetDefinitions.PEER_REVIEW["name"],
             FieldSetDefinitions.EDITORIAL["name"],
@@ -1004,35 +1079,36 @@ class ContextDefinitions:
             "all_urls_the_same"
         ],
         "templates": {
-            "form" : "application_form/public_application.html",
-            "default_field" : "application_form/_field.html",
-            "default_group" : "application_form/_group.html",
-            "default_list" : "application_form/_list.html"
+            "form": "application_form/public_application.html",
+            "default_field": "application_form/_field.html",
+            "default_group": "application_form/_group.html",
+            "default_list": "application_form/_list.html"
         },
         "crosswalks": {
-            "obj2form" : ApplicationFormXWalk.obj2form,
-            "form2obj" : ApplicationFormXWalk.form2obj
+            "obj2form": ApplicationFormXWalk.obj2form,
+            "form2obj": ApplicationFormXWalk.form2obj
         },
         "processor": application_processors.PublicApplication,
     }
 
 
 FORMS = {
-    "contexts" : {
-        ContextDefinitions.PUBLIC["name"] : ContextDefinitions.PUBLIC
+    "contexts": {
+        ContextDefinitions.PUBLIC["name"]: ContextDefinitions.PUBLIC
     },
-    "fieldsets" : {
-        FieldSetDefinitions.BASIC_COMPLIANCE["name"] : FieldSetDefinitions.BASIC_COMPLIANCE,
-        FieldSetDefinitions.ABOUT_THE_JOURNAL["name"] : FieldSetDefinitions.ABOUT_THE_JOURNAL,
-        FieldSetDefinitions.PUBLISHER["name"] : FieldSetDefinitions.PUBLISHER,
-        FieldSetDefinitions.SOCIETY_OR_INSTITUTION["name"] : FieldSetDefinitions.SOCIETY_OR_INSTITUTION,
-        FieldSetDefinitions.LICENSING["name"] : FieldSetDefinitions.LICENSING,
-        FieldSetDefinitions.COPYRIGHT["name"] : FieldSetDefinitions.COPYRIGHT,
-        FieldSetDefinitions.PEER_REVIEW["name"] : FieldSetDefinitions.PEER_REVIEW,
-        FieldSetDefinitions.EDITORIAL["name"] : FieldSetDefinitions.EDITORIAL,
-        FieldSetDefinitions.BUSINESS_MODEL["name"] : FieldSetDefinitions.BUSINESS_MODEL
+    "fieldsets": {
+        FieldSetDefinitions.BASIC_COMPLIANCE["name"]: FieldSetDefinitions.BASIC_COMPLIANCE,
+        FieldSetDefinitions.ABOUT_THE_JOURNAL["name"]: FieldSetDefinitions.ABOUT_THE_JOURNAL,
+        FieldSetDefinitions.PUBLISHER["name"]: FieldSetDefinitions.PUBLISHER,
+        FieldSetDefinitions.SOCIETY_OR_INSTITUTION["name"]: FieldSetDefinitions.SOCIETY_OR_INSTITUTION,
+        FieldSetDefinitions.LICENSING["name"]: FieldSetDefinitions.LICENSING,
+        FieldSetDefinitions.EMBEDED_LICENSING["name"]: FieldSetDefinitions.EMBEDED_LICENSING,
+        FieldSetDefinitions.COPYRIGHT["name"]: FieldSetDefinitions.COPYRIGHT,
+        FieldSetDefinitions.PEER_REVIEW["name"]: FieldSetDefinitions.PEER_REVIEW,
+        FieldSetDefinitions.EDITORIAL["name"]: FieldSetDefinitions.EDITORIAL,
+        FieldSetDefinitions.BUSINESS_MODEL["name"]: FieldSetDefinitions.BUSINESS_MODEL
     },
-    "fields" : FIELDS
+    "fields": FIELDS
 }
 
 
@@ -1043,14 +1119,14 @@ FORMS = {
 def iso_country_list(field):
     cl = []
     for v, d in country_options:
-        cl.append({"display" : d, "value" : v})
+        cl.append({"display": d, "value": v})
     return cl
 
 
 def iso_language_list(field):
     cl = []
     for v, d in language_options:
-        cl.append({"display" : d, "value" : v})
+        cl.append({"display": d, "value": v})
     return cl
 
 
@@ -1059,6 +1135,7 @@ def iso_currency_list(field):
     for v, d in currency_options:
         cl.append({"display": d, "value": v})
     return cl
+
 
 #######################################################
 # Validation features
@@ -1112,7 +1189,8 @@ class MaxTagsBuilder:
     @staticmethod
     def wtforms(field, settings):
         max = settings.get("max")
-        message = settings.get("message") if "message" in settings else 'You can only enter up to {x} keywords.'.format(x=max)
+        message = settings.get("message") if "message" in settings else 'You can only enter up to {x} keywords.'.format(
+            x=max)
         return MaxLen(max, message=message)
 
 
@@ -1132,6 +1210,7 @@ class InPublicDOAJBuilder:
     @staticmethod
     def wtforms(field, settings):
         return InPublicDOAJ(settings.get("field"), message=settings.get("message"))
+
 
 class OptionalIfBuilder:
     @staticmethod
@@ -1181,56 +1260,54 @@ class RequiredIfBuilder:
 #########################################################
 
 PYTHON_FUNCTIONS = {
-    "options" : {
-        "iso_country_list" : iso_country_list,
-        "iso_language_list" : iso_language_list,
-        "iso_currency_list" : iso_currency_list
+    "options": {
+        "iso_country_list": iso_country_list,
+        "iso_language_list": iso_language_list,
+        "iso_currency_list": iso_currency_list
     },
-    "validate" : {
-        "render" : {
-            "required" : RequiredBuilder.render,
-            "is_url" : IsURLBuilder.render,
-            "int_range" : IntRangeBuilder.render,
-            "in_public_doaj" : InPublicDOAJBuilder.render,
-            "optional_if" : OptionalIfBuilder.render,
+    "validate": {
+        "render": {
+            "required": RequiredBuilder.render,
+            "is_url": IsURLBuilder.render,
+            "int_range": IntRangeBuilder.render,
+            "in_public_doaj": InPublicDOAJBuilder.render,
+            "optional_if": OptionalIfBuilder.render,
             "is_issn": IsISSNBuilder.render,
-            "different_to" : DifferentToBuilder.render,
-            "required_if" : RequiredIfBuilder.render,
+            "different_to": DifferentToBuilder.render,
+            "required_if": RequiredIfBuilder.render,
         },
-        "wtforms" : {
-            "required" : RequiredBuilder.wtforms,
-            "is_url" : IsURLBuilder.wtforms,
-            "max_tags" : MaxTagsBuilder.wtforms,
-            "int_range" : IntRangeBuilder.wtforms,
-            "stop_words" : StopWordsBuilder.wtforms,
-            "in_public_doaj" : InPublicDOAJBuilder.wtforms,
-            "optional_if" : OptionalIfBuilder.wtforms,
-            "is_issn" : IsISSNBuilder.wtforms,
-            "different_to" : DifferentToBuilder.wtforms,
-            "required_if" : RequiredIfBuilder.wtforms
+        "wtforms": {
+            "required": RequiredBuilder.wtforms,
+            "is_url": IsURLBuilder.wtforms,
+            "max_tags": MaxTagsBuilder.wtforms,
+            "int_range": IntRangeBuilder.wtforms,
+            "stop_words": StopWordsBuilder.wtforms,
+            "in_public_doaj": InPublicDOAJBuilder.wtforms,
+            "optional_if": OptionalIfBuilder.wtforms,
+            "is_issn": IsISSNBuilder.wtforms,
+            "different_to": DifferentToBuilder.wtforms,
+            "required_if": RequiredIfBuilder.wtforms
         }
     },
 
-
-    #"all_urls_the_same" : "portality.formcontext.validators.all_urls_the_same",
-    #"to_lower" : "portality.formcontext.postprocessing.to_lower",
-    #"warn_on_value" : "portality.formcontext.validators.warn_on_value",
-    #"clickable_url" : "portality.formcontext.widgets.clickable_url",
+    # "all_urls_the_same" : "portality.formcontext.validators.all_urls_the_same",
+    # "to_lower" : "portality.formcontext.postprocessing.to_lower",
+    # "warn_on_value" : "portality.formcontext.validators.warn_on_value",
+    # "clickable_url" : "portality.formcontext.widgets.clickable_url",
 }
 
-
 JAVASCRIPT_FUNCTIONS = {
-    #"required_value" : "doaj.forms.validators.requiredValue",
-    #"required" : "doaj.forms..validators.required",
-    #"is_url" : "doaj.forms.validators.isUrl",
-    #"max_tags" : "doaj.forms.validators.maxTags",
-    #"stop_words" : "doaj.forms.validators.stopWords",
-    #"int_range" : "doaj.forms.validators.intRange",
-    #"autocomplete" : "doaj.forms.widgets.autocomplete",
+    # "required_value" : "doaj.forms.validators.requiredValue",
+    # "required" : "doaj.forms..validators.required",
+    # "is_url" : "doaj.forms.validators.isUrl",
+    # "max_tags" : "doaj.forms.validators.maxTags",
+    # "stop_words" : "doaj.forms.validators.stopWords",
+    # "int_range" : "doaj.forms.validators.intRange",
+    # "autocomplete" : "doaj.forms.widgets.autocomplete",
 
-    "clickable_url" : "formulaic.widgets.newClickableUrl",
-    "select" : "formulaic.widgets.newSelect",
-    "taglist" : "formulaic.widgets.newTagList"
+    "clickable_url": "formulaic.widgets.newClickableUrl",
+    "select": "formulaic.widgets.newSelect",
+    "taglist": "formulaic.widgets.newTagList"
 }
 
 
@@ -1255,6 +1332,7 @@ class ListWidgetWithSubfields(object):
     otherwise afterwards. The latter is useful for iterating radios or
     checkboxes.
     """
+
     def __init__(self, html_tag='ul', prefix_label=False):
         assert html_tag in ('ol', 'ul')
         self.html_tag = html_tag
@@ -1276,7 +1354,7 @@ class ListWidgetWithSubfields(object):
                     style = ""
                     if sf.has_conditional:
                         style = " style=display:none "
-                    html.append('<span class="{x}_container" {y}>'.format(x=sf.name, y=style))
+                    html.append('<span class="{x}__container" {y}>'.format(x=sf.name, y=style))
                     html.append(sf.render_form_control())
                     html.append("</span>")
 
@@ -1316,7 +1394,8 @@ class MultiCheckboxBuilder(WTFormsBuilder):
 class SingleCheckboxBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
-        return field.get("input") == "checkbox" and len(field.get("options", [])) == 0 and field.get("options_fn") is None
+        return field.get("input") == "checkbox" and len(field.get("options", [])) == 0 and field.get(
+            "options_fn") is None
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
@@ -1410,4 +1489,5 @@ WTFORMS_BUILDERS = [
     GroupListBuilder
 ]
 
-ApplicationFormFactory = Formulaic(FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
+ApplicationFormFactory = Formulaic(FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS,
+                                   javascript_functions=JAVASCRIPT_FUNCTIONS)
