@@ -24,7 +24,7 @@
 
         <div class="input-group">
           <label for="keywords" class="sr-only">Search by keywords:</label>
-          <input type="text" name="keywords" id="keywords" required>
+          <input type="text" name="keywords" id="keywords">
 
           <label for="fields" class="sr-only">In the field:</label>
           <select name="fields" id="fields">
@@ -69,59 +69,68 @@
                     Subjects
                     <span data-feather="chevron-down"></span>
                   </h3>
-                  <div id="filter-subjects" aria-expanded="true">
+                  <div id="filter-subjects" class="collapse in filter__body" aria-expanded="true">
+
+                    {% if site.data.search-filters.subjects.size > 10 %}
+                    <label for="search-subjects" class="sr-only">Search {{ site.data.search-filters.subjects.size }} subjects</label>
+                    <input type="text" name="search-subjects" id="search-subjects" class="filter__search" placeholder="Search {{ site.data.search-filters.subjects.size }} subjects">
+                    {% endif %}
+
                     <ul class="unstyled-list filter__choices">
-                      {% for i in site.data.search-filters.subjects limit:10 %}
+                      {% for i in site.data.search-filters.subjects %}
                       <li>
                         <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
                         <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
                       </li>
                       {% endfor %}
                     </ul>
-                    <!-- <span type="button" data-toggle="collapse" data-target="#filter-subjects-more" aria-expanded="false">
-                      More <span data-feather="plus"></span>
-                    </span>
-                    <ul id="#filter-subjects-more" class="collapse" aria-expanded="false">
-                      {% for i in site.data.search-filters.subjects offset:10 %}
+                  </div>
+                </li>
+
+                <!-- Languages -->
+                <li class="filter">
+                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-languages" aria-expanded="false">
+                    Languages
+                    <span data-feather="chevron-down"></span>
+                  </h3>
+                  <div id="filter-languages" class="collapse filter__body" aria-expanded="false">
+
+                    {% if site.data.search-filters.languages.size > 10 %}
+                    <label for="search-languages" class="sr-only">Search {{ site.data.search-filters.languages.size }} languages</label>
+                    <input type="text" name="search-languages" class="filter__search" placeholder="Search {{ site.data.search-filters.languages.size }} languages">
+                    {% endif %}
+
+                    <ul class="unstyled-list filter__choices">
+                      {% for i in site.data.search-filters.languages %}
                       <li>
                         <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
                         <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
                       </li>
                       {% endfor %}
-                    </ul> -->
-                  </div>
-                </li>
-
-                <!-- Language -->
-                <li class="filter">
-                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-language" aria-expanded="false">
-                    Languages
-                    <span data-feather="chevron-down"></span>
-                  </h3>
-                  <ul class="unstyled-list collapse filter__choices" id="filter-language" aria-expanded="false">
-                    {% for i in site.data.search-filters.language %}
-                    <li>
-                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
-                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
-                    </li>
-                    {% endfor %}
-                  </ul>
+                    </ul>
                 </li>
 
                 <!-- Licenses -->
                 <li class="filter">
-                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-license" aria-expanded="false">
+                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-licenses" aria-expanded="false">
                     Licenses
                     <span data-feather="chevron-down"></span>
                   </h3>
-                  <ul class="unstyled-list collapse filter__choices" id="filter-license" aria-expanded="false">
-                    {% for i in site.data.search-filters.license %}
-                    <li>
-                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
-                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
-                    </li>
-                    {% endfor %}
-                  </ul>
+                  <div id="filter-licenses" class="collapse filter__body" aria-expanded="false">
+                    {% if site.data.search-filters.licenses.size > 10 %}
+                    <label for="search-licenses" class="sr-only">Search {{ site.data.search-filters.licenses.size }} licenses</label>
+                    <input type="text" name="search-licenses" class="filter__search" placeholder="Search {{ site.data.search-filters.licenses.size }} licenses">
+                    {% endif %}
+
+                    <ul class="unstyled-list filter__choices">
+                      {% for i in site.data.search-filters.licenses %}
+                      <li>
+                        <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                        <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
                 </li>
 
                 <!-- Publisher -->
@@ -130,30 +139,44 @@
                     Publishers
                     <span data-feather="chevron-down"></span>
                   </h3>
-                  <ul class="unstyled-list collapse filter__choices" id="filter-publisher" aria-expanded="false">
-                    {% for i in site.data.search-filters.publisher %}
-                    <li>
-                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
-                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
-                    </li>
-                    {% endfor %}
-                  </ul>
+                  <div id="filter-publisher" class="collapse filter__body" aria-expanded="false">
+                    {% if site.data.search-filters.publisher.size > 10 %}
+                    <label for="search-publisher" class="sr-only">Search {{ site.data.search-filters.publisher.size }} publishers</label>
+                    <input type="text" name="search-publisher" class="filter__search" placeholder="Search {{ site.data.search-filters.publisher.size }} publishers">
+                    {% endif %}
+
+                    <ul class="unstyled-list filter__choices">
+                      {% for i in site.data.search-filters.publisher %}
+                      <li>
+                        <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                        <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
                 </li>
 
                 <!-- Publisher country -->
                 <li class="filter">
                   <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-publisher-country" aria-expanded="false">
-                    Publishers’ country
+                    Publishers’ countries
                     <span data-feather="chevron-down"></span>
                   </h3>
-                  <ul class="unstyled-list collapse filter__choices" id="filter-publisher-country" aria-expanded="false">
-                    {% for i in site.data.search-filters.publisher_country %}
-                    <li>
-                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
-                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
-                    </li>
-                    {% endfor %}
-                  </ul>
+                  <div id="filter-publisher-country" class="collapse filter__body" aria-expanded="false">
+                    {% if site.data.search-filters.publisher_country.size > 10 %}
+                    <label for="search-publisher-country" class="sr-only">Search {{ site.data.search-filters.publisher_country.size }} countries</label>
+                    <input type="text" name="search-publisher-country" class="filter__search" placeholder="Search {{ site.data.search-filters.publisher_country.size }} countries">
+                    {% endif %}
+
+                    <ul class="unstyled-list filter__choices">
+                      {% for i in site.data.search-filters.publisher_country %}
+                      <li>
+                        <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                        <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
                 </li>
 
                 <!-- Peer review -->
@@ -162,14 +185,16 @@
                     Peer review types
                     <span data-feather="chevron-down"></span>
                   </h3>
-                  <ul class="unstyled-list collapse filter__choices" id="filter-peer-review" aria-expanded="false">
-                    {% for i in site.data.search-filters.peer_review %}
-                    <li>
-                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
-                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
-                    </li>
-                    {% endfor %}
-                  </ul>
+                  <div id="filter-peer-review" class="collapse filter__body" aria-expanded="false">
+                    <ul class="unstyled-list filter__choices">
+                      {% for i in site.data.search-filters.peer_review %}
+                      <li>
+                        <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                        <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
                 </li>
 
 
@@ -179,14 +204,21 @@
                     Date added
                     <span data-feather="chevron-down"></span>
                   </h3>
-                  <ul class="unstyled-list collapse filter__choices" id="filter-date-added" aria-expanded="false">
-                    {% for i in site.data.search-filters.date_added %}
-                    <li>
-                      <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
-                      <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
-                    </li>
-                    {% endfor %}
-                  </ul>
+                  <div id="filter-date-added" class="collapse filter__body" aria-expanded="false">
+                    {% if site.data.search-filters.date_added.size > 10 %}
+                    <label for="search-date-added" class="sr-only">Search {{ site.data.search-filters.date_added.size }} years</label>
+                    <input type="text" name="search-date-added" class="filter__search" placeholder="Search {{ site.data.search-filters.date_added.size }} years">
+                    {% endif %}
+
+                    <ul class="unstyled-list filter__choices">
+                      {% for i in site.data.search-filters.date_added %}
+                      <li>
+                        <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+                        <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
                 </li>
 
 
