@@ -46,12 +46,12 @@
           <div class="col-md-3">
             <aside class="filters">
               <h2 class="filters__heading">Refine search results</h2>
-              <ul class="unstyled-list">
+              <ul class="filters__list">
                 <li class="filter">
                   <h3 class="filter__heading">
                     See journals&hellip;
                   </h3>
-                  <ul class="unstyled-list filter__choices">
+                  <ul class="filter__choices">
                     <li>
                       <input id="filter-seal" type="checkbox" name="filter-seal"/>
                       <label for="filter-seal" class="filter__label">With a DOAJ Seal&nbsp;&nbsp;<span data-feather="check-circle"></span></label>
@@ -76,7 +76,7 @@
                     <input type="text" name="search-subjects" id="search-subjects" class="filter__search" placeholder="Search {{ site.data.search-filters.subjects.size }} subjects">
                     {% endif %}
 
-                    <ul class="unstyled-list filter__choices">
+                    <ul class="filter__choices">
                       {% for i in site.data.search-filters.subjects %}
                       <li>
                         <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
@@ -100,7 +100,7 @@
                     <input type="text" name="search-languages" class="filter__search" placeholder="Search {{ site.data.search-filters.languages.size }} languages">
                     {% endif %}
 
-                    <ul class="unstyled-list filter__choices">
+                    <ul class="filter__choices">
                       {% for i in site.data.search-filters.languages %}
                       <li>
                         <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
@@ -122,7 +122,7 @@
                     <input type="text" name="search-licenses" class="filter__search" placeholder="Search {{ site.data.search-filters.licenses.size }} licenses">
                     {% endif %}
 
-                    <ul class="unstyled-list filter__choices">
+                    <ul class="filter__choices">
                       {% for i in site.data.search-filters.licenses %}
                       <li>
                         <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
@@ -145,7 +145,7 @@
                     <input type="text" name="search-publisher" class="filter__search" placeholder="Search {{ site.data.search-filters.publisher.size }} publishers">
                     {% endif %}
 
-                    <ul class="unstyled-list filter__choices">
+                    <ul class="filter__choices">
                       {% for i in site.data.search-filters.publisher %}
                       <li>
                         <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
@@ -168,7 +168,7 @@
                     <input type="text" name="search-publisher-country" class="filter__search" placeholder="Search {{ site.data.search-filters.publisher_country.size }} countries">
                     {% endif %}
 
-                    <ul class="unstyled-list filter__choices">
+                    <ul class="filter__choices">
                       {% for i in site.data.search-filters.publisher_country %}
                       <li>
                         <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
@@ -186,7 +186,7 @@
                     <span data-feather="chevron-down"></span>
                   </h3>
                   <div id="filter-peer-review" class="collapse filter__body" aria-expanded="false">
-                    <ul class="unstyled-list filter__choices">
+                    <ul class="filter__choices">
                       {% for i in site.data.search-filters.peer_review %}
                       <li>
                         <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
@@ -210,7 +210,7 @@
                     <input type="text" name="search-date-added" class="filter__search" placeholder="Search {{ site.data.search-filters.date_added.size }} years">
                     {% endif %}
 
-                    <ul class="unstyled-list filter__choices">
+                    <ul class="filter__choices">
                       {% for i in site.data.search-filters.date_added %}
                       <li>
                         <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
@@ -268,7 +268,7 @@
                       </a>
                     </h3>
                     <div class="search-results__body">
-                      <ul class="unstyled-list">
+                      <ul>
                         <li>
                           Published {% if i.institution %}by <em>{{ i.institution }}</em>{% endif %} in <strong>{{ i.country }}</strong>
                         </li>
@@ -276,7 +276,7 @@
                           Accepts manuscripts in <strong>{{ i.lang }}</strong>
                         </li>
                       </ul>
-                      <ul class="unstyled-list">
+                      <ul>
                         <li>
                           <strong>{{ i.processing_time }}</strong> weeks to publication
                         </li>
@@ -287,7 +287,7 @@
                     </div>
                   </div>
                   <aside class="col-sm-4 search-results__aside">
-                    <ul class="unstyled-list">
+                    <ul>
                       {% if i.seal %}
                       <li>
                         <span class="sr-only">DOAJ Seal</span>
@@ -336,7 +336,7 @@
                       {{ i.title }}
                       {% if i.paral_title %}<br/><span class="search-results__secondary-heading">{{ i.paral_title }}</span>{% endif %}
                     </h3>
-                    <ul class="unstyled-list search-results__body">
+                    <ul class="search-results__body">
                       <li>
                         Publishes <strong>{{ i.formats }}</strong> articles in <strong>{{ i.lang }}</strong>
                       </li>
@@ -350,7 +350,7 @@
                     </ul>
                   </div>
                   <aside class="col-xs-4">
-                    <ul class="unstyled-list">
+                    <ul>
                       <li>
                         <a href="{{ i.url }}" target="_blank">Website</a>
                       </li>

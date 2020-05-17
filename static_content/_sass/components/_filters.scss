@@ -12,6 +12,10 @@
   @include font-sans;
 }
 
+.filters__list {
+  @include unstyled-list;
+}
+
 .filter {
   margin: $spacing-04 0;
 }
@@ -32,6 +36,10 @@
 .filter__body {
   padding-top: $spacing-03;
   border-top: 1px dashed $grapefruit;
+
+  ul {
+    @include unstyled-list;
+  }
 }
 
 .filter__search {

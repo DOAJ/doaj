@@ -56,10 +56,18 @@
 
 .search-results__body {
   font-size: smaller;
+
+  ul {
+    @include unstyled-list;
+  }
 }
 
 .search-results__aside {
   color: $dark-grey;
+
+  ul {
+    @include unstyled-list;
+  }
 
   a {
     color: $dark-grey;
