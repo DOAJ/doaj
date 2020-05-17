@@ -205,11 +205,6 @@
                     <span data-feather="chevron-down"></span>
                   </h3>
                   <div id="filter-date-added" class="collapse filter__body" aria-expanded="false">
-                    {% if site.data.search-filters.date_added.size > 10 %}
-                    <label for="search-date-added" class="sr-only">Search {{ site.data.search-filters.date_added.size }} years</label>
-                    <input type="text" name="search-date-added" class="filter__search" placeholder="Search {{ site.data.search-filters.date_added.size }} years">
-                    {% endif %}
-
                     <ul class="filter__choices">
                       {% for i in site.data.search-filters.date_added %}
                       <li>
