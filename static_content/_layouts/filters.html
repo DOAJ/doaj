@@ -262,6 +262,12 @@
                         {% if i.paral_title %}<br/><span class="search-results__secondary-heading">{{ i.paral_title }}</span>{% endif %}
                       </a>
                     </h3>
+                    {% if i.seal %}
+                    <p class="search-results__seal">
+                      <span data-feather="check-circle"></span>
+                      DOAJ Seal
+                    </p>
+                    {% endif %}
                     <div class="search-results__body">
                       <ul>
                         <li>
@@ -283,12 +289,6 @@
                   </div>
                   <aside class="col-sm-4 search-results__aside">
                     <ul>
-                      {% if i.seal %}
-                      <li>
-                        <span class="sr-only">DOAJ Seal</span>
-                        <span data-feather="check-circle"></span>
-                      </li>
-                      {% endif %}
                       <li>
                         <a href="{{ i.url }}" target="_blank">Website</a>
                       </li>
