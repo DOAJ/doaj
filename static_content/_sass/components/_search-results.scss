@@ -4,6 +4,10 @@
   padding-left: 0;
   margin-left: 0;
   list-style: none;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
 }
 
 .search-results__display {
@@ -62,6 +66,6 @@
   }
 
   @media (max-width: 768px) {
-    margin-top: $spacing-02;
+    margin-top: $spacing-03;
   }
 }
