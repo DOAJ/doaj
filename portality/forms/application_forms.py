@@ -1,10 +1,11 @@
+from copy import deepcopy
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
 from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, Form, FormField, FieldList
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
-from portality.formcontext.fields import TagListField
 
+from portality.formcontext.fields import TagListField
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.forms import application_processors
 from portality.forms.validate import (
@@ -1043,6 +1044,43 @@ class FieldDefinitions:
         ]
     }
 
+    DOAJ_SEAL = {
+        "name": "doaj_seal",
+        "label": "The journal has fulfilled all the criteria for the Seal. Award the Seal?",
+        "input": "checkbox",
+        "options": [
+            {"display": "Yes", "value": "yes"}
+        ],
+        "validate": []  # certain questions must be answered for the seal to be awarded
+    }
+
+    QUICK_REJECT = {
+        "name": "quick_reject",
+        "label": "Select the reason for rejection",
+        "input": "select",
+        "options": [
+            {"display": "Quick reject reason 1", "value": "qr1"},
+            {"display": "Quick reject reason 2", "value": "qr2"},
+            {"display": "Other", "value": "other"}
+        ],
+        "widgets": [
+            {"select": {}}
+        ],
+    }
+
+    QUICK_REJECT_DETAILS = {
+        "name": "quick_reject_details",
+        "label": "Enter additional information to be sent to the publisher",
+        "input": "text",
+        "help": {
+            "long_help": "The selected reason for rejection, and any additional information you include, "
+                         "are sent to the journal contact with the rejection email."
+        },
+        "validate": [
+            {"required_if": {"field": "quick_reject", "value": "other"}}
+        ],
+    }
+
 
 FIELDS = {
     FieldDefinitions.BOAI["name"]: FieldDefinitions.BOAI,
@@ -1104,7 +1142,12 @@ FIELDS = {
     FieldDefinitions.PERSISTENT_IDENTIFIERS["name"]: FieldDefinitions.PERSISTENT_IDENTIFIERS,
     FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"]: FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER,
     FieldDefinitions.ORCID_IDS["name"]: FieldDefinitions.ORCID_IDS,
-    FieldDefinitions.OPEN_CITATIONS["name"]: FieldDefinitions.OPEN_CITATIONS
+    FieldDefinitions.OPEN_CITATIONS["name"]: FieldDefinitions.OPEN_CITATIONS,
+
+    FieldDefinitions.DOAJ_SEAL["name"]: FieldDefinitions.DOAJ_SEAL,
+
+    FieldDefinitions.QUICK_REJECT["name"]: FieldDefinitions.QUICK_REJECT,
+    FieldDefinitions.QUICK_REJECT_DETAILS["name"]: FieldDefinitions.QUICK_REJECT_DETAILS
 }
 
 # todo: Have discussion with RJ about whether we can do this instead of the verbose code above:
@@ -1237,6 +1280,23 @@ class FieldSetDefinitions:
         ]
     }
 
+    SEAL = {
+        "name": "seal",
+        "label": "DOAJ Seal",
+        "fields": [
+            FieldDefinitions.DOAJ_SEAL["name"]
+        ]
+    }
+
+    QUICK_REJECT = {
+        "name": "quick_reject",
+        "Label": "Quick Reject",
+        "fields": [
+            FieldDefinitions.QUICK_REJECT["name"],
+            FieldDefinitions.QUICK_REJECT_DETAILS["name"]
+    ]
+}
+
 
 ###########################################################
 # Define our Contexts
@@ -1273,10 +1333,18 @@ class ContextDefinitions:
         "processor": application_processors.PublicApplication,
     }
 
+    ADMIN = deepcopy(PUBLIC)
+    ADMIN["name"] = "admin"
+    ADMIN["fieldsets"] += [
+        FieldSetDefinitions.SEAL["name"],
+        FieldSetDefinitions.QUICK_REJECT["name"]
+    ]
+
 
 FORMS = {
     "contexts": {
-        ContextDefinitions.PUBLIC["name"]: ContextDefinitions.PUBLIC
+        ContextDefinitions.PUBLIC["name"]: ContextDefinitions.PUBLIC,
+        ContextDefinitions.ADMIN["name"]: ContextDefinitions.ADMIN
     },
     "fieldsets": {
         FieldSetDefinitions.BASIC_COMPLIANCE["name"]: FieldSetDefinitions.BASIC_COMPLIANCE,
@@ -1288,254 +1356,11 @@ FORMS = {
         FieldSetDefinitions.BUSINESS_MODEL["name"]: FieldSetDefinitions.BUSINESS_MODEL,
         FieldSetDefinitions.ARCHIVING_POLICY["name"]: FieldSetDefinitions.ARCHIVING_POLICY,
         FieldSetDefinitions.REPOSITORY_POLICY["name"]: FieldSetDefinitions.REPOSITORY_POLICY,
-        FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]: FieldSetDefinitions.UNIQUE_IDENTIFIERS
+        FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]: FieldSetDefinitions.UNIQUE_IDENTIFIERS,
+        FieldSetDefinitions.SEAL["name"]: FieldSetDefinitions.SEAL,
+        FieldSetDefinitions.QUICK_REJECT["name"]: FieldSetDefinitions.QUICK_REJECT
     },
     "fields": FIELDS
-}
-
-_FORMS = {
-    "contexts": {
-        "public": {
-            "fieldsets": [
-                "public_priority",
-                "oac",
-                "about",
-                "editorial"
-            ],
-            "asynchronous_warnings": [
-                "all_urls_the_same"
-            ],
-            "template": "application_form/public_application.html",
-            "crosswalks": {
-                "obj2form": "portality.formcontext.form_definitions.application_obj2form",
-                "form2obj": "portality.formcontext.form_definitions.application_form2obj"
-            },
-            "processor": "portality.formcontext.formcontext.PublicApplication"
-        }
-    },
-    "fieldsets": {
-        "oac": {
-            "label": "Open access compliance",
-            "fields": [
-                "boai",
-                "oa_statement_url"
-            ]
-        },
-        "about": {
-            "label": "About the journal",
-            "fields": [
-                "country",
-                "keywords",
-                "licensing"
-            ]
-        },
-        "editorial": {
-            "label": "Editorial",
-            "fields": [
-                "submission_time",
-                "peer_review",
-                "peer_review_other"
-            ]
-        },
-        "public_priority": {
-            "label": "Pre-Qualification Questions",
-            "fields": [
-                "boai"
-            ],
-        }
-    },
-    "fields": {
-        "boai": {
-            "label": "DOAJ adheres to the BOAI [definition of open access LINK].  This means that users are"
-                     "permitted 'to read, download, copy, distribute, print, search, or link to the full texts of articles,"
-                     "or use them for any other lawful purpose, without financial, legal, or technical barriers other than"
-                     "those inseparable from gaining access to the internet itself.' Does the journal adhere to this"
-                     "definition of open access?",
-            "input": "checkbox",
-            "help": {
-                "description": "",
-                "tooltip": "For a journal to be indexed in DOAJ, it must fulfil the BOAI definition of open access",
-                "doaj_criteria": "You must answer 'Yes'"
-            },
-            "validate": [
-                {"required": {"message": "You must check this box to continue"}}
-            ],
-            "contexts": {
-                "editor": {
-                    "disabled": True
-                },
-                "associate_editor": {
-                    "disabled": True
-                }
-            }
-        },
-        "oa_statement_url": {
-            "label": "What is the URL for the journal's open access statement?",
-            "input": "text",
-            "conditional": [{"field": "boai", "value": "y"}],
-            "help": {
-                "placeholder": "OA Statement URL",
-                "description": "Must start with https://, http://, or www.",
-                "tooltip": "Here is an example of a suitable Open Access statement that meets our criteria: "
-                           "This is an open access journal which means that all content is freely available without charge"
-                           "to the user or his/her institution. Users are allowed to read, download, copy, distribute,"
-                           "print, search, or link to the full texts of the articles, or use them for any other lawful"
-                           "purpose, without asking prior permission from the publisher or the author. This is in accordance"
-                           "with the BOAI definition of open access.",
-                "doaj_criteria": "You must provide a URL"
-            },
-            "validate": [
-                "required",
-                "is_url"
-            ],
-            "widgets": [
-                "clickable_url"
-            ],
-            "attr": {
-                "type": "url"
-            }
-        },
-        "country": {
-            "label": "Country of Publisher",
-            "input": "select",
-            "options_fn": "iso_country_list",
-            "multiple": False,
-            "help": {
-                "description": "",
-                "tooltip": """The country where the publisher carries out its business operations and is registered.""",
-            },
-            "validate": [
-                "required"
-            ],
-            "widgets": [
-                {"select": {}}
-            ],
-            "contexts": {
-                "editor": {
-                    "disabled": True
-                },
-                "associate_editor": {
-                    "disabled": True
-                }
-            },
-            "attr": {
-                "class": "input-xlarge"
-            }
-        },
-        "keywords": {
-            "label": "Add 6 keywords that describe the subject matter of the journal",
-            "input": "taglist",
-            "help": {
-                "description": "Up to 6 keywords, separated with a comma; must be in English",
-                "tooltip": "Only 6 keywords are allowed. Choose words that describe the subject matter of the"
-                           "journal and not the journal's qualities. All keywords must be in English.",
-            },
-            "validate": [
-                "required",
-                {"stop_words": {"disallowed": ["a", "and"]}},
-                {"max_tags": {"max": 6}}
-            ],
-            "postprocessing": [
-                "to_lower"
-            ],
-            "widgets": [
-                {
-                    "taglist": {
-                        "maximumSelectionSize": 6,
-                        "stopWords": ["a", "and"]
-                    }
-                }
-            ],
-            "attr": {
-                "class": "input-xlarge"
-            },
-            "contexts": {
-                "editor": {
-                    "disabled": True
-                },
-                "associate_editor": {
-                    "disabled": True
-                }
-            }
-        },
-        "licensing": {
-            "label": "Indicate which licenses may be applied to the journal content.",
-            "input": "checkbox",
-            "options": [
-                {"display": "CC BY", "value": "CC BY"},
-                {"display": "CC BY-SA", "value": "CC BY-SA"},
-                {"display": "CC BY-ND", "value": "CC BY-ND"},
-                {"display": "CC BY-NC", "value": "CC BY-NC"},
-                {"display": "CC BY-NC-SA", "value": "CC BY-NC-SA"},
-                {"display": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
-                {"display": "CC0", "value": "CC0"},
-                {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True},
-            ],
-            "help": {
-                "description": "Select all licenses permitted by this journal.",
-                "tooltip": "The journal must use some form of licensing to be considered for indexing in DOAJ. "
-                           "If Creative Commons licensing is not used, then select 'Publisher's own license' and enter "
-                           "more details below.",
-                "doaj_criteria": "Content must be licenced",
-                "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
-            },
-            "validate": [
-                "required"
-            ]
-        },
-        "submission_time": {
-            "label": "Average number of weeks between article submission & publication",
-            "input": "number",
-            "datatype": "integer",
-            "help": {
-                "description": "Enter a number"
-            },
-            "validate": [
-                "required",
-                {"int_range": {"gte": 1, "lte": 100}}
-            ],
-            "asynchronous_warning": [
-                {"int_range": {"lte": 2}}
-            ],
-            "attr": {
-                "min": "1",
-                "max": "100"
-            }
-        },
-        "peer_review": {
-            "label": "What type of peer review is used by the journal?",
-            "input": "checkbox",
-            "options": [
-                {"display": "Editorial review", "value": "editorial_review"},
-                {"display": "Peer review", "value": "peer_review"},
-                {"display": "Blind peer review", "value": "blind_peer_review"},
-                {"display": "Double blind peer review", "value": "double_blind_peer_review"},
-                {"display": "Post-publication peer review", "value": "post_publication_peer_review"},
-                {"display": "Open peer review", "value": "open_peer_review"},
-                {"display": "Other", "value": "other", "subfields": ["peer_review_other"]}
-            ],
-            "help": {
-                "description": "Select all that apply",
-                "tooltip": """'Editorial review' is only valid for journals in the Humanities""",
-                "doaj_criteria": "Peer review must be carried out"
-            },
-            "validate": [
-                "required"
-            ]
-        },
-        "peer_review_other": {
-            "subfield": True,
-            "input": "text",
-            "help": {
-                "placeholder": "Other peer review"
-            },
-            "conditional": [{"field": "peer_review", "value": "other"}],
-            "asynchronous_warning": [
-                {"warn_on_value": {"value": "None"}}
-            ]
-        }
-    }
-
 }
 
 
@@ -1546,14 +1371,14 @@ _FORMS = {
 def iso_country_list(field):
     cl = []
     for v, d in country_options:
-        cl.append({"display" : d, "value" : v})
+        cl.append({"display": d, "value": v})
     return cl
 
 
 def iso_language_list(field):
     cl = []
     for v, d in language_options:
-        cl.append({"display" : d, "value" : v})
+        cl.append({"display": d, "value": v})
     return cl
 
 
