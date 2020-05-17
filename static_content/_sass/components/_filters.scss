@@ -36,10 +36,6 @@
 .filter__body {
   padding-top: $spacing-03;
   border-top: 1px dashed $grapefruit;
-
-  ul {
-    @include unstyled-list;
-  }
 }
 
 .filter__search {
@@ -58,6 +54,7 @@
   max-height: $spacing-07;
   height: auto;
   overflow-y: scroll;
+  @include unstyled-list;
 
   li {
     padding: 0 $spacing-01;
