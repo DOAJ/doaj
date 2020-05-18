@@ -1,8 +1,24 @@
-<div class="{{ fs.name }}__container">
-<h2 class="form__header"> {{ fs.label }}</h2>
-    {% for subfield in f.group_subfields() %}
-        {% set f = subfield %}
-        {% set field_template = subfield.template %}
-        {%  include field_template %}
-    {% endfor %}
+<div class="form__question">
+    <label>
+        {% autoescape off %}{{ f.label }}{% endautoescape%}
+        {% if f.help("long_help") %}
+            <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ f.name }}"></span> {% endif %}
+        {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
+    </label>
+    <div class="input-group">
+        {% for subfield in f.group_subfields() %}
+            {% set f = subfield %}
+            {{ f.render_form_control() }}
+            {% if f.help("short_help") %}
+                <p><small>{{ f.help("short_help") }}</small></p>
+            {% endif %}
+            {% if f.has_errors() %}
+                {% for error in f.errors() %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
 </div>
+
+{% include "application_form/modal.html" %}

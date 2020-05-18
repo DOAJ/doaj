@@ -312,19 +312,7 @@ class FieldDefinitions:
         }
     }
 
-    PUBLISHER = {
-        "name": "publisher",
-        "label": "Publisher",
-        "input": "group",
-        "subfields": [
-            "publisher_name",
-            "publisher_country"
-        ]
-    }
-
     PUBLISHER_NAME = {
-        "subfield": True,
-        "group": "publisher",
         "name": "publisher_name",
         "label": "Name",
         "input": "text",
@@ -337,8 +325,6 @@ class FieldDefinitions:
     }
 
     PUBLISHER_COUNTRY = {
-        "subfield": True,
-        "group": "publisher",
         "name": "publisher_country",
         "label": "Country",
         "input": "select",
@@ -366,19 +352,7 @@ class FieldDefinitions:
         }
     }
 
-    INSTITUTION = {
-        "name": "institution",
-        "label": "Society or institution, if applicable",
-        "input": "group",
-        "subfields": [
-            "institution_name",
-            "institution_country"
-        ]
-    }
-
     INSTITUTION_NAME = {
-        "subfield": True,
-        "group": "institution",
         "name": "institution_name",
         "label": "Name",
         "input": "text",
@@ -395,8 +369,6 @@ class FieldDefinitions:
     }
 
     INSTITUTION_COUNTRY = {
-        "subfield": True,
-        "group": "institution",
         "name": "institution_country",
         "label": "Country",
         "input": "select",
@@ -421,19 +393,7 @@ class FieldDefinitions:
         }
     }
 
-    LICENSING = {
-        "name": "licensing",
-        "label": "Licensing",
-        "input": "group",
-        "subfields": [
-            "license",
-            "license_attributes",
-            "license_terms_url"
-        ]
-    }
-
     LICENSE = {
-        "subfield": True,
         "name": "license",
         "label": "License(s) permitted by the journal",
         "input": "checkbox",
@@ -462,7 +422,6 @@ class FieldDefinitions:
     }
 
     LICENSE_ATTRIBUTES = {
-        "subfield": True,
         "name": "license_attributes",
         "label": "Select all the attributes that your license has",
         "input": "checkbox",
@@ -482,7 +441,6 @@ class FieldDefinitions:
     }
 
     LICENSE_TERMS_URL = {
-        "subfield": True,
         "name": "license_terms_url",
         "label": "Where can we find this information?",
         "input": "text",
@@ -500,18 +458,7 @@ class FieldDefinitions:
         ]
     }
 
-    EMBEDDED_LICENSES = {
-        "name": "embedded_liceses",
-        "label": "Embedded licenses",
-        "input": "group",
-        "subfields": [
-            "license_display",
-            "license_display_example_url"
-        ]
-    }
-
     LICENSE_DISPLAY = {
-        "subfield": True,
         "name": "license_display",
         "label": "Does the journal embed and/or display licensing information in its articles?",
         "input": "checkbox",
@@ -534,7 +481,6 @@ class FieldDefinitions:
     }
 
     LICENSE_DISPLAY_EXAMPLE_URL = {
-        "subfield": True,
         "name": "license_display_example_url",
         "label": "Recent article displaying or embedding a license in the full text",
         "input": "text",
@@ -550,18 +496,7 @@ class FieldDefinitions:
         ]
     }
 
-    COPYRIGHT = {
-        "name": "copyright",
-        "label": "Copyright",
-        "input": "group",
-        "subfields": [
-            "copyright_author_retains",
-            "copyright_url"
-        ]
-    }
-
     COPYRIGHT_AUTHOR_RETAINS = {
-        "subfield": True,
         "name": "copyright_author_retains",
         "label": "For all the licenses you have indicated above, do authors or their institutions retain the copyright "
                  "<b>and</b> full publishing rights without restrictions?",
@@ -582,7 +517,6 @@ class FieldDefinitions:
     }
 
     COPYRIGHT_URL = {
-        "subfield": True,
         "name": "copyright_url",
         "label": "Where can we find this information?",
         "input": "text",
@@ -599,19 +533,7 @@ class FieldDefinitions:
         ]
     }
 
-    PEER_REVIEW = {
-        "name": "peer_review",
-        "label": "Peer review",
-        "input": "group",
-        "subfields": [
-            "review_process",
-            "review_process_other",
-            "review_url"
-        ]
-    }
-
     REVIEW_PROCESS = {
-        "subfield": True,
         "name": "review_process",
         "label": "DOAJ only accepts peer-reviewed journals."
                  "Which type(s) of peer review does this journal use?",
@@ -635,7 +557,6 @@ class FieldDefinitions:
     }
 
     REVIEW_PROCESS_OTHER = {
-        "subfield": True,
         "name": "review_process_other",
         "label": "Other peer review",
         "input": "text",
@@ -652,7 +573,6 @@ class FieldDefinitions:
     }
 
     REVIEW_URL = {
-        "subfield": True,
         "name": "review_url",
         "label": "Where can we find this information?",
         "input": "text",
@@ -669,18 +589,7 @@ class FieldDefinitions:
         ]
     }
 
-    PLAGIARISM = {
-        "name": "plagiarism",
-        "label": "Plagiarism",
-        "input": "group",
-        "subfields": [
-            "plagiarism_detection",
-            "plagiarism_url"
-        ]
-    }
-
     PLAGIARISM_DETECTION = {
-        "subfield": True,
         "name": "plagiarism_detection",
         "label": "Does the journal routinely screen article submissions for plagiarism?",
         "input": "radio",
@@ -694,7 +603,6 @@ class FieldDefinitions:
     }
 
     PLAGIARISM_URL = {
-        "subfield": True,
         "name": "plagiarism_url",
         "label": "Where can we find this information?",
         "input": "text",
@@ -713,20 +621,7 @@ class FieldDefinitions:
         ]
     }
 
-    EDITORIAL_INFORMATION = {
-        "name": "editorial_information",
-        "label": "Editorial Information",
-        "input": "group",
-        "subfields": [
-            "aims_scope_url",
-            "editorial_board_url",
-            "author_instructions_url",
-            "publication_time_weeks"
-        ]
-    }
-
     AIMS_SCOPE_URL = {
-        "subfield": True,
         "name": "aims_scope_url",
         "label": "Link to the journal's <b>Aims & Scope</b>",
         "input": "text",
@@ -744,7 +639,6 @@ class FieldDefinitions:
     }
 
     EDITORIAL_BOARD_URL = {
-        "subfield": True,
         "name": "editorial_board_url",
         "label": "Link to the journal's <b>Editorial board</b>",
         "input": "text",
@@ -762,7 +656,6 @@ class FieldDefinitions:
     }
 
     AUTHOR_INSTRUCTIONS_URL = {
-        "subfield": True,
         "name": "author_instructions_url",
         "label": "Link to the journal's <b>Instructions for Author</b>",
         "input": "text",
@@ -780,7 +673,6 @@ class FieldDefinitions:
     }
 
     PUBLICATION_TIME_WEEKS = {
-        "subfield": True,
         "name": "publication_time_weeks",
         "label": "Average number of <strong>weeks</strong> between article submission & publication",
         "input": "number",
@@ -816,11 +708,13 @@ class FieldDefinitions:
 
     APC_URL = {
         "name": "apc_url",
-        "label": "Link to the page where this is stated",
+        "label": "Where can we find this information?",
         "input": "text",
         "help": {
-            "short_help": "The page must declare whether or not APCs are charged.",
-            "doaj_criteria": "You must provide a URL"
+            "short_help": "Link to the page where this is stated. The page must declare <b>whether or not</b> APCs "
+                          "are charged.",
+            "doaj_criteria": "You must provide a URL",
+            "placeholder": "https://www.my-journal.com/about#apc"
         },
         "validate": [
             "required",
@@ -835,9 +729,14 @@ class FieldDefinitions:
         "name": "apc_charges",
         "input": "group",
         # "repeatable" : True,
+        "label": "Highest APC Charged",
         "conditional": [
             {"field": "apc", "value": "y"}
         ],
+        "help": {
+            "long_help": ["If the journal charges different APCs, you must enter the highest APC charged. If more than "
+                          "one currency is used, add a new line"]
+        },
         "subfields": [
             "apc_currency",
             "apc_max"
@@ -850,10 +749,6 @@ class FieldDefinitions:
         "name": "apc_currency",
         "input": "select",
         "options_fn": "iso_currency_list",
-        "help": {
-            "long_help": ["If the journal charges different APCs, you must enter the highest APC charged. If more than "
-                          "one currency is used, add a new line"]
-        },
         "widgets": [
             {"select": {}}
         ],
@@ -866,7 +761,6 @@ class FieldDefinitions:
         "subfield": True,
         "group": "apc_charges",
         "name": "apc_max",
-        "label": "Highest APC Charged",
         "input": "number",
         "datatype": "integer",
     }
@@ -891,13 +785,13 @@ class FieldDefinitions:
 
     WAIVER_URL = {
         "name": "waiver_url",
-        "label": "Link to the journal's waiver information",
+        "label": "Where can we find this information?",
         "input": "text",
         "conditional": [
             {"field": "has_waiver", "value": "y"}
         ],
         "help": {
-            "short_help": "The page must declare whether or not APCs are charged.",
+            "short_help": "Link to the journal's waiver information.",
             "doaj_criteria": "You must provide a URL"
         },
         "validate": [
@@ -929,13 +823,13 @@ class FieldDefinitions:
 
     OTHER_CHARGES_URL = {
         "name": "other_charges_url",
-        "label": "Link to the journal's fees information",
+        "label": "Where can we find this information?",
         "input": "text",
         "conditional": [
             {"field": "has_other_charges", "value": "y"}
         ],
         "help": {
-            "short_help": "The page must declare whether or not APCs are charged.",
+            "short_help": "Link to the journal's fees information",
             "doaj_criteria": "You must provide a URL"
         },
         "validate": [
@@ -959,35 +853,28 @@ FIELDS = {
     FieldDefinitions.EISSN["name"]: FieldDefinitions.EISSN,
     FieldDefinitions.KEYWORDS["name"]: FieldDefinitions.KEYWORDS,
     FieldDefinitions.LANGUAGE["name"]: FieldDefinitions.LANGUAGE,
-    FieldDefinitions.PUBLISHER["name"]: FieldDefinitions.PUBLISHER,
     FieldDefinitions.PUBLISHER_NAME["name"]: FieldDefinitions.PUBLISHER_NAME,
     FieldDefinitions.PUBLISHER_COUNTRY["name"]: FieldDefinitions.PUBLISHER_COUNTRY,
-    FieldDefinitions.INSTITUTION["name"]: FieldDefinitions.INSTITUTION,
     FieldDefinitions.INSTITUTION_NAME["name"]: FieldDefinitions.INSTITUTION_NAME,
     FieldDefinitions.INSTITUTION_COUNTRY["name"]: FieldDefinitions.INSTITUTION_COUNTRY,
 
-    FieldDefinitions.LICENSING["name"]: FieldDefinitions.LICENSING,
     FieldDefinitions.LICENSE["name"]: FieldDefinitions.LICENSE,
     FieldDefinitions.LICENSE_ATTRIBUTES["name"]: FieldDefinitions.LICENSE_ATTRIBUTES,
     FieldDefinitions.LICENSE_TERMS_URL["name"]: FieldDefinitions.LICENSE_TERMS_URL,
-    FieldDefinitions.EMBEDDED_LICENSES["name"]: FieldDefinitions.EMBEDDED_LICENSES,
+
     FieldDefinitions.LICENSE_DISPLAY["name"]: FieldDefinitions.LICENSE_DISPLAY,
     FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]: FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL,
 
-    FieldDefinitions.COPYRIGHT["name"]: FieldDefinitions.COPYRIGHT,
     FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"]: FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS,
     FieldDefinitions.COPYRIGHT_URL["name"]: FieldDefinitions.COPYRIGHT_URL,
 
-    FieldDefinitions.PEER_REVIEW["name"]: FieldDefinitions.PEER_REVIEW,
     FieldDefinitions.REVIEW_PROCESS["name"]: FieldDefinitions.REVIEW_PROCESS,
     FieldDefinitions.REVIEW_PROCESS_OTHER["name"]: FieldDefinitions.REVIEW_PROCESS_OTHER,
     FieldDefinitions.REVIEW_URL["name"]: FieldDefinitions.REVIEW_URL,
 
-    FieldDefinitions.PLAGIARISM["name"]: FieldDefinitions.PLAGIARISM,
     FieldDefinitions.PLAGIARISM_DETECTION["name"]: FieldDefinitions.PLAGIARISM_DETECTION,
     FieldDefinitions.PLAGIARISM_URL["name"]: FieldDefinitions.PLAGIARISM_URL,
 
-    FieldDefinitions.EDITORIAL_INFORMATION["name"]: FieldDefinitions.EDITORIAL_INFORMATION,
     FieldDefinitions.AIMS_SCOPE_URL["name"]: FieldDefinitions.AIMS_SCOPE_URL,
     FieldDefinitions.EDITORIAL_BOARD_URL["name"]: FieldDefinitions.EDITORIAL_BOARD_URL,
     FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"]: FieldDefinitions.AUTHOR_INSTRUCTIONS_URL,
@@ -1035,7 +922,6 @@ class FieldSetDefinitions:
         "name": "publisher",
         "label": "Publisher",
         "fields": [
-            FieldDefinitions.PUBLISHER["name"],
             FieldDefinitions.PUBLISHER_NAME["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],
         ]
@@ -1045,7 +931,6 @@ class FieldSetDefinitions:
         "name": "society_or_institution",
         "label": "Society or institution, if applicable",
         "fields": [
-            FieldDefinitions.INSTITUTION["name"],
             FieldDefinitions.INSTITUTION_NAME["name"],
             FieldDefinitions.INSTITUTION_COUNTRY["name"]
         ]
@@ -1055,7 +940,6 @@ class FieldSetDefinitions:
         "name": "licensing",
         "label": "Licensing",
         "fields": [
-            FieldDefinitions.LICENSING["name"],
             FieldDefinitions.LICENSE["name"],
             FieldDefinitions.LICENSE_ATTRIBUTES["name"],
             FieldDefinitions.LICENSE_TERMS_URL["name"]
@@ -1066,7 +950,6 @@ class FieldSetDefinitions:
         "name": "embedded_licensing",
         "label": "Embedded licences",
         "fields": [
-            FieldDefinitions.EMBEDDED_LICENSES["name"],
             FieldDefinitions.LICENSE_DISPLAY["name"],
             FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]
         ]
@@ -1076,7 +959,6 @@ class FieldSetDefinitions:
         "name": "copyright",
         "label": "Copyright",
         "fields": [
-            FieldDefinitions.COPYRIGHT["name"],
             FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"],
             FieldDefinitions.COPYRIGHT_URL["name"]
         ]
@@ -1086,7 +968,6 @@ class FieldSetDefinitions:
         "name": "peer_review",
         "label": "Peer Review",
         "fields": [
-            FieldDefinitions.PEER_REVIEW["name"],
             FieldDefinitions.REVIEW_PROCESS["name"],
             FieldDefinitions.REVIEW_PROCESS_OTHER["name"],
             FieldDefinitions.REVIEW_URL["name"]
@@ -1097,7 +978,6 @@ class FieldSetDefinitions:
         "name": "plagiarism",
         "label": "Plagiarism",
         "fields": [
-            FieldDefinitions.PLAGIARISM["name"],
             FieldDefinitions.PLAGIARISM_DETECTION["name"],
             FieldDefinitions.PLAGIARISM_URL["name"]
         ]
@@ -1107,7 +987,6 @@ class FieldSetDefinitions:
         "name": "editorial",
         "label": "Editorial",
         "fields": [
-            FieldDefinitions.EDITORIAL_INFORMATION["name"],
             FieldDefinitions.AIMS_SCOPE_URL["name"],
             FieldDefinitions.EDITORIAL_BOARD_URL["name"],
             FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"],
@@ -1115,17 +994,31 @@ class FieldSetDefinitions:
         ]
     }
 
-    BUSINESS_MODEL = {
-        "name": "business_model",
-        "label": "Business Model",
+    APC = {
+        "name": "apc",
+        "label": "Article Processing Charges",
         "fields": [
             FieldDefinitions.APC["name"],
             FieldDefinitions.APC_URL["name"],
             FieldDefinitions.APC_CHARGES["name"],
             FieldDefinitions.APC_CURRENCY["name"],
             FieldDefinitions.APC_MAX["name"],
+        ]
+    }
+
+    APC_WAIVERS = {
+        "name": "apc_waivers",
+        "label": "APC waivers",
+        "fields": [
             FieldDefinitions.HAS_WAIVER["name"],
             FieldDefinitions.WAIVER_URL["name"],
+        ]
+    }
+
+    OTHER_FEES = {
+        "name": "other_fees",
+        "label": "Other fees",
+        "fields": [
             FieldDefinitions.HAS_OTHER_CHARGES["name"],
             FieldDefinitions.OTHER_CHARGES_URL["name"]
         ]
@@ -1150,7 +1043,9 @@ class ContextDefinitions:
             FieldSetDefinitions.PEER_REVIEW["name"],
             FieldSetDefinitions.PLAGIARISM["name"],
             FieldSetDefinitions.EDITORIAL["name"],
-            FieldSetDefinitions.BUSINESS_MODEL["name"]
+            FieldSetDefinitions.APC["name"],
+            FieldSetDefinitions.APC_WAIVERS["name"],
+            FieldSetDefinitions.OTHER_FEES["name"]
         ],
         "asynchronous_warnings": [
             "all_urls_the_same"
@@ -1184,7 +1079,9 @@ FORMS = {
         FieldSetDefinitions.PEER_REVIEW["name"]: FieldSetDefinitions.PEER_REVIEW,
         FieldSetDefinitions.PLAGIARISM["name"]: FieldSetDefinitions.PLAGIARISM,
         FieldSetDefinitions.EDITORIAL["name"]: FieldSetDefinitions.EDITORIAL,
-        FieldSetDefinitions.BUSINESS_MODEL["name"]: FieldSetDefinitions.BUSINESS_MODEL
+        FieldSetDefinitions.APC["name"]: FieldSetDefinitions.APC,
+        FieldSetDefinitions.APC_WAIVERS["name"]: FieldSetDefinitions.APC_WAIVERS,
+        FieldSetDefinitions.OTHER_FEES["name"]: FieldSetDefinitions.OTHER_FEES
     },
     "fields": FIELDS
 }

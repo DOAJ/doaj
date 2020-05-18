@@ -1,0 +1,14 @@
+<div class="modal" id="modal-{{ f.name }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel-{{ f.name }}">
+    <div class="modal__dialog" role="document">
+    {% if(fs.label != None) %}<p class="label">{{ fs.label }}</p> {% endif %}
+        <h3 class="modal__title" id="modalLabel-{{ f.name }}">
+            "{{ f.label | safe }}"
+        </h3>
+        {% if f.help("long_help") %}
+            {% for p in f.help("long_help") %}
+                <p>{{ p | safe}}</p>
+            {% endfor %}
+        {% endif %}
+        <button type="button" data-dismiss="modal" class="modal__close">Close</button>
+    </div>
+</div>

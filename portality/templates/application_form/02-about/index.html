@@ -13,16 +13,19 @@
                     <form action="../03-copyright-licensing">
 
                     {% set fs = formulaic_context.fieldset("about_the_journal") %}
+                    <h2 class="form__header"> {{ fs.label }}</h2>
                         {% for f in fs.fields() %}
                             {% set field_template = f.template %}
                             {%  include field_template %}
                         {% endfor %}
                     {% set fs = formulaic_context.fieldset("publisher") %}
+                    <h2 class="form__header"> {{ fs.label }}</h2>
                         {% for f in fs.fields() %}
                             {% set field_template = f.template %}
                             {%  include field_template %}
                         {% endfor %}
                     {% set fs = formulaic_context.fieldset("society_or_institution") %}
+                    <h2 class="form__header"> {{ fs.label }}</h2>
                         {% for f in fs.fields() %}
                             {% set field_template = f.template %}
                             {%  include field_template %}

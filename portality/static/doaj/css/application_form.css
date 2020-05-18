@@ -7,3 +7,15 @@
 .form__question > ul > li {
     display:inline;
 }
+
+.form__question > div.input-group {
+    width: 75%
+}
+
+#apc_charges-apc_currency {
+    width: 25%
+}
+
+#apc_charges-apc_max {
+    width: 75%
+}

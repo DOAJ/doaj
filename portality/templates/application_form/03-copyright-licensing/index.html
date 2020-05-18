@@ -10,16 +10,19 @@
                     <form action="../04-editorial">
 
                     {% set fs = formulaic_context.fieldset("licensing") %}
+                    <h2 class="form__header"> {{ fs.label }}</h2>
                         {% for f in fs.fields() %}
                             {% set field_template = f.template %}
                             {%  include field_template %}
                         {% endfor %}
                     {% set fs = formulaic_context.fieldset("embedded_licensing") %}
+                    <h2 class="form__header"> {{ fs.label }}</h2>
                         {% for f in fs.fields() %}
                             {% set field_template = f.template %}
                             {%  include field_template %}
                         {% endfor %}
                     {% set fs = formulaic_context.fieldset("copyright") %}
+                    <h2 class="form__header"> {{ fs.label }}</h2>
                         {% for f in fs.fields() %}
                             {% set field_template = f.template %}
                             {%  include field_template %}
