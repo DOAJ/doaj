@@ -12,4 +12,32 @@
         });
 });
 
+    let fields = document.getElementsByClassName("form__question");
+    for (let f of fields) {
+        let dependant = document.getElementById(f.getAttribute("dependant_field")+"__container")
+        if (dependant) {
+            console.log(dependant);
+            let inputs = document.getElementsByName(f.getAttribute("id").replace("__container", ""))
+            for (let i = 0; i < inputs.length; i++){
+                inputs[i].addEventListener("click", function (e) {
+                    if (inputs[i].checked) {
+                        if (inputs[i].value === f.getAttribute("dependant_value")){
+                            console.log("show")
+                            dependant.style.display = '';
+                        }
+                        else {
+                            console.log("hide")
+                            dependant.style.display = 'none';
+                        }
+                    }
+                })
+            }
+            }
+    }
+
+            {#element.addEventListener("click", function (e) {#}
+            {#    console.log(this);#}
+
+
+
 </script>

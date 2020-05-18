@@ -812,6 +812,7 @@ class FieldDefinitions:
             {"display": "Yes", "value": "y"},
             {"display": "No", "value": "n"}
         ],
+        "dependant": {"field": "other_charges_url", "value": "y"},
         "help": {
             "long_help": ["Declare all other charges: editorial processing charges, colour charges, submission fees, "
                           "page charges, membership fees, print subscription costs, other supplementary charges"],
@@ -1651,16 +1652,6 @@ class ListWidgetWithSubfields(object):
                 html.append('<li>%s %s' % (subfield.label, subfield(**kwargs)))
             else:
                 html.append('<li>%s %s' % (subfield(**kwargs), subfield.label))
-
-            if fl is not None:
-                sfs = fl.get_subfields(subfield._value())
-                for sf in sfs:
-                    style = ""
-                    # if sf.has_conditional:
-                    #     style = " style=display:none "
-                    html.append('<div class="{x}__container" {y}>'.format(x=sf.name, y=style))
-                    html.append(sf.render_form_control())
-                    html.append("</div>")
 
             html.append("</li>")
 

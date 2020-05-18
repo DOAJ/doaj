@@ -1,14 +1,14 @@
 /*
-Error: File to import not found or unreadable: /static_content/_sass/vendors/normalize.
+Error: File to import not found or unreadable: /portality/static/doaj/_sass/vendors/_normalize.
         on line 2 of main.scss
 
 1: @import
-2:   "/static_content/_sass/vendors/normalize",
-3:   "/static_content/_sass/vendors/bootstrap",
+2:   "/portality/static/doaj/_sass/vendors/_normalize",
+3:   "/portality/static/doaj/_sass/vendors/_bootstrap",
 4: 
-5:   "/static_content/_sass/base/palette",
-6:   "/static_content/_sass/base/spacing",
-7:   "/static_content/_sass/base/typescale",
+5:   "/portality/static/doaj/_sass/base/palette",
+6:   "/portality/static/doaj/_sass/base/spacing",
+7:   "/portality/static/doaj/_sass/base/typescale",
 
 Backtrace:
 main.scss:2
@@ -47,4 +47,4 @@ main.scss:2
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: File to import not found or unreadable: /static_content/_sass/vendors/normalize.\A         on line 2 of main.scss\A \A 1: @import\A 2:   \"/static_content/_sass/vendors/normalize\",\A 3:   \"/static_content/_sass/vendors/bootstrap\",\A 4: \A 5:   \"/static_content/_sass/base/palette\",\A 6:   \"/static_content/_sass/base/spacing\",\A 7:   \"/static_content/_sass/base/typescale\","; }
+  content: "Error: File to import not found or unreadable: /portality/static/doaj/_sass/vendors/_normalize.\A         on line 2 of main.scss\A \A 1: @import\A 2:   \"/portality/static/doaj/_sass/vendors/_normalize\",\A 3:   \"/portality/static/doaj/_sass/vendors/_bootstrap\",\A 4: \A 5:   \"/portality/static/doaj/_sass/base/palette\",\A 6:   \"/portality/static/doaj/_sass/base/spacing\",\A 7:   \"/portality/static/doaj/_sass/base/typescale\","; }

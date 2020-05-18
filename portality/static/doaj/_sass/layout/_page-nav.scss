@@ -1,0 +1,48 @@
+/* In-page fixed navigation */
+
+@media (max-width: 991px) {
+  .page-nav {
+    display: none;
+  }
+}
+
+@media (min-width: 992px) {
+  .page-nav {
+    margin: $spacing-05 0;
+    padding-left: $spacing-04;
+    width: 264px; // fixed page element: needs absolute width to avoid overflowing from cols
+    border-left: 1px dashed $grapefruit;
+    @include typescale-06;
+  }
+
+  .page-nav__heading {
+    margin: 0 0 $spacing-03 0;
+    font-size: 1em;
+    text-transform: uppercase;
+    @include font-sans;
+  }
+
+  .page-nav__list {
+    margin: 0 0 $spacing-03 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .page-nav__sublist {
+    margin: 0;
+    padding-left: $spacing-03;
+    list-style: none;
+  }
+
+  .page-nav__item a {
+    display: block;
+    margin-bottom: $spacing-02;
+    text-decoration: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .page-nav {
+    width: 330px;
+  }
+}
