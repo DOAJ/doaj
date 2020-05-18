@@ -1,3 +1,4 @@
+from copy import deepcopy
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
 from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, Form, \
@@ -841,6 +842,256 @@ class FieldDefinitions:
         ]
     }
 
+    ARCHIVING_POLICY = {
+        "name": "archiving_policy",
+        "label": "Long-term preservation service(s) with which the journal is currently archived",
+        "input": "checkbox",
+        "multiple": True,
+        "options": [
+            {"display": "CINES", "value": "cines"},
+            {"display": "CLOCKSS", "value": "clockss"},
+            {"display": "LOCKSS", "value": "lockss"},
+            {"display": "Internet Archive", "value": "internet_archive"},
+            {"display": "PKP PN", "value": "pkp_pn"},
+            {"display": "PubMed Central (PMC)", "value": "pmc"},
+            {"display": "Portico", "value": "portico"},
+            {"display": "A national library", "value": "national_library", "subfields": ["archiving_policy_library"]},
+            {"display": "The journal content isn't archived with a long-term preservation service",
+             "value": "none", "exclusive": True},
+            {"display": "Other", "value": "other", "subfields": ["archiving_policy_other"]}
+        ],
+        "help": {
+            "short_help": "Select at least one",
+            "long_help": "Only active archiving is accepted; content must be actively deposited in each of the options "
+                         "you choose. If the journal is registered with a service but archiving is not yet active, "
+                         "choose 'No'.\n\nPubMed Central covers PMC U.S.A., PMC Canada, and PMC Europe (Wellcome Trust)."
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    ARCHIVING_POLICY_LIBRARY = {
+        "name": "archiving_policy_library",
+        "subfield": True,
+        #"label": "A national library",
+        "input": "text",
+        "help": {
+            "placeholder": "A national library"
+        },
+        "conditional": [{"field": "archiving_policy", "value": "national_library"}],
+        "validate": [
+            {"required_if": {"field": "archiving_policy", "value": "national_library"}}
+        ],
+        "asynchronous_warning": [
+            {"warn_on_value": {"value": "None"}}
+        ]
+    }
+
+    ARCHIVING_POLICY_OTHER = {
+        "name": "archiving_policy_other",
+        "subfield": True,
+        #"label": "Other",
+        "input": "text",
+        "help": {
+            "placeholder": "Other archiving policy"
+        },
+        "conditional": [{"field": "archiving_policy", "value": "other"}],
+        "validate": [
+            {"required_if": {"field": "archiving_policy", "value": "other"}}
+        ],
+        "asynchronous_warning": [
+            {"warn_on_value": {"value": "None"}}
+        ]
+    }
+
+    ARCHIVING_POLICY_URL = {
+        "name": "archiving_policy_url",
+        "label": "Link to the preservation and archiving information on the journal's site",
+        "input": "text",
+        "help": {
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate": [
+            {"optional_if": {"field": "archiving_policy", "value": "none"}},
+            "is_url"
+        ],
+        "widgets": [
+            "clickable_url"
+        ]
+    }
+
+    REPOSITORY_POLICY = {
+        "name": "repository_policy",
+        "label": "Where is the journal's policy allowing authors to deposit the AAM or VOR registered?",
+        "input": "checkbox",
+        "multiple": True,
+        "options": [
+            {"display": "SHERPA/RoMEO", "value": "sherpa_romeo"},
+            {"display": "Dulcinea", "value": "dulcinea"},
+            {"display": "Héloïse", "value": "heloise"},
+            {"display": "Diadorim", "value": "diadorim"},
+            {"display": "The journal has a policy but it isn't registered anywhere", "value": "unregistered"},
+            {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
+            {"display": "Other", "value": "other", "subfields": ["repository_policy_other"]}
+        ],
+        "help": {
+            "short_help": "Select at least one",
+            "long_help": "AAM stands for Author Accepted Manuscript. VOR is the Version of Record.\n\n"
+                         "This questions ask whether or not the journal allows authors to deposit a copy of their "
+                         "work in an institutional repository.\n\n If the journal allows authors to do this, "
+                         "is that policy registered in a policy directory?"
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    REPOSITORY_POLICY_OTHER = {
+        "name": "repository_policy_other",
+        "subfield": True,
+        # "label": "Other",
+        "input": "text",
+        "help": {
+            "placeholder": "Other repository policy"
+        },
+        "conditional": [{"field": "repository_policy", "value": "other"}],
+        "validate": [
+            {"required_if": {"field": "repository_policy", "value": "other"}}
+        ],
+        "asynchronous_warning": [
+            {"warn_on_value": {"value": "None"}}
+        ]
+    }
+
+    REPOSITORY_POLICY_URL = {
+        "name": "repository_policy_url",
+        "label": "Link to the policy on the journal's site",
+        "input": "text",
+        "help": {
+            "doaj_criteria": "You must provide a URL"
+        },
+        "validate": [
+            {"required_if": {"field": "repository_policy", "value": "unregistered"}},
+            "is_url"
+        ],
+        "widgets": [
+            "clickable_url"
+        ]
+    }
+
+    PERSISTENT_IDENTIFIERS = {
+        "name": "persistent_identifiers",
+        "label": "Persistent article identifiers used by the journal",
+        "input": "checkbox",
+        "multiple": True,
+        "options": [
+            {"display": "DOIs", "value": "doi"},
+            {"display": "ARKs", "value": "ark"},
+            {"display": "Handles", "value": "handle"},
+            {"display": "PURLs", "value": "purl"},
+            {"display": "The journal does not use persistent article identifiers", "value": "none", "exclusive": True},
+            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]}
+        ],
+        "help": {
+            "short_help": "Select at least one",
+            "long_help": "A persistent article identifier (PID) is used to find the article no matter where it is "
+                         "located. The most common type of PID is the digital object identifier (DOI). "
+                         "Read more about PIDs. [Link https://en.wikipedia.org/wiki/Persistent_identifier]"
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    PERSISTENT_IDENTIFIERS_OTHER = {
+        "name": "persistent_identifiers_other",
+        "subfield": True,
+        # "label": "Other",
+        "input": "text",
+        "help": {
+            "placeholder": "Other persistent identifier"
+        },
+        "conditional": [{"field": "persistent_identifiers", "value": "other"}],
+        "validate": [
+            {"required_if": {"field": "persistent_identifiers", "value": "other"}}
+        ],
+        "asynchronous_warning": [
+            {"warn_on_value": {"value": "None"}}
+        ]
+    }
+
+    ORCID_IDS = {
+        "name": "orcid_ids",
+        "label": "Does the journal allow for ORCID iDs to be present in article metadata?",
+        "input": "radio",
+        "options": [
+            {"display": "Yes", "value": "y"},
+            {"display": "No", "value": "n"}
+        ],
+        "help": {
+            "long_help": "An ORCID (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
+                         "authors. [link https://orcid.org/]",
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    OPEN_CITATIONS = {
+        "name": "open_citations",
+        "label": "Does the journal comply with I4OC standards for open citations?",
+        "input": "radio",
+        "options": [
+            {"display": "Yes", "value": "y"},
+            {"display": "No", "value": "n"}
+        ],
+        "help": {
+            "long_help": "The I4OC standards ask that citations are structured, separable, and open. "
+                         "https://i4oc.org/#goals",
+        },
+        "validate": [
+            "required"
+        ]
+    }
+
+    DOAJ_SEAL = {
+        "name": "doaj_seal",
+        "label": "The journal has fulfilled all the criteria for the Seal. Award the Seal?",
+        "input": "checkbox",
+        "options": [
+            {"display": "Yes", "value": "yes"}
+        ],
+        "validate": []  # certain questions must be answered for the seal to be awarded
+    }
+
+    QUICK_REJECT = {
+        "name": "quick_reject",
+        "label": "Select the reason for rejection",
+        "input": "select",
+        "options": [
+            {"display": "Quick reject reason 1", "value": "qr1"},
+            {"display": "Quick reject reason 2", "value": "qr2"},
+            {"display": "Other", "value": "other"}
+        ],
+        "widgets": [
+            {"select": {}}
+        ],
+    }
+
+    QUICK_REJECT_DETAILS = {
+        "name": "quick_reject_details",
+        "label": "Enter additional information to be sent to the publisher",
+        "input": "text",
+        "help": {
+            "long_help": "The selected reason for rejection, and any additional information you include, "
+                         "are sent to the journal contact with the rejection email."
+        },
+        "validate": [
+            {"required_if": {"field": "quick_reject", "value": "other"}}
+        ],
+    }
+
 
 FIELDS = {
     FieldDefinitions.BOAI["name"]: FieldDefinitions.BOAI,
@@ -888,8 +1139,31 @@ FIELDS = {
     FieldDefinitions.HAS_WAIVER["name"]: FieldDefinitions.HAS_WAIVER,
     FieldDefinitions.WAIVER_URL["name"]: FieldDefinitions.WAIVER_URL,
     FieldDefinitions.HAS_OTHER_CHARGES["name"]: FieldDefinitions.HAS_OTHER_CHARGES,
-    FieldDefinitions.OTHER_CHARGES_URL["name"]: FieldDefinitions.OTHER_CHARGES_URL
+    FieldDefinitions.OTHER_CHARGES_URL["name"]: FieldDefinitions.OTHER_CHARGES_URL,
+
+    FieldDefinitions.ARCHIVING_POLICY["name"]: FieldDefinitions.ARCHIVING_POLICY,
+    FieldDefinitions.ARCHIVING_POLICY_LIBRARY["name"]: FieldDefinitions.ARCHIVING_POLICY_LIBRARY,
+    FieldDefinitions.ARCHIVING_POLICY_OTHER["name"]: FieldDefinitions.ARCHIVING_POLICY_OTHER,
+    FieldDefinitions.ARCHIVING_POLICY_URL["name"]: FieldDefinitions.ARCHIVING_POLICY_URL,
+
+    FieldDefinitions.REPOSITORY_POLICY["name"]: FieldDefinitions.REPOSITORY_POLICY,
+    FieldDefinitions.REPOSITORY_POLICY_OTHER["name"]: FieldDefinitions.REPOSITORY_POLICY_OTHER,
+    FieldDefinitions.REPOSITORY_POLICY_URL["name"]: FieldDefinitions.REPOSITORY_POLICY_URL,
+
+    FieldDefinitions.PERSISTENT_IDENTIFIERS["name"]: FieldDefinitions.PERSISTENT_IDENTIFIERS,
+    FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"]: FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER,
+    FieldDefinitions.ORCID_IDS["name"]: FieldDefinitions.ORCID_IDS,
+    FieldDefinitions.OPEN_CITATIONS["name"]: FieldDefinitions.OPEN_CITATIONS,
+
+    FieldDefinitions.DOAJ_SEAL["name"]: FieldDefinitions.DOAJ_SEAL,
+
+    FieldDefinitions.QUICK_REJECT["name"]: FieldDefinitions.QUICK_REJECT,
+    FieldDefinitions.QUICK_REJECT_DETAILS["name"]: FieldDefinitions.QUICK_REJECT_DETAILS
 }
+
+# todo: Have discussion with RJ about whether we can do this instead of the verbose code above:
+# FIELDS = {v['name']: v for k,v in FieldDefinitions.__dict__.items() if not k.startswith('_')}
+
 
 
 ##########################################################
@@ -1024,6 +1298,55 @@ class FieldSetDefinitions:
         ]
     }
 
+    ARCHIVING_POLICY = {
+        "name": "archiving_policy",
+        "label": "Archiving Policy",
+        "fields": [
+            FieldDefinitions.ARCHIVING_POLICY["name"],
+            FieldDefinitions.ARCHIVING_POLICY_LIBRARY["name"],
+            FieldDefinitions.ARCHIVING_POLICY_OTHER["name"],
+            FieldDefinitions.ARCHIVING_POLICY_URL["name"]
+        ]
+    }
+
+    REPOSITORY_POLICY = {
+        "name": "repository_policy",
+        "label": "Repository Policy",
+        "fields": [
+            FieldDefinitions.REPOSITORY_POLICY["name"],
+            FieldDefinitions.REPOSITORY_POLICY_OTHER["name"],
+            FieldDefinitions.REPOSITORY_POLICY_URL["name"]
+        ]
+    }
+
+    UNIQUE_IDENTIFIERS = {
+        "name": "unique_identifiers",
+        "label": "Unique Identifiers & Structured Data",
+        "fields": [
+            FieldDefinitions.PERSISTENT_IDENTIFIERS["name"],
+            FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"],
+            FieldDefinitions.ORCID_IDS["name"],
+            FieldDefinitions.OPEN_CITATIONS["name"]
+        ]
+    }
+
+    SEAL = {
+        "name": "seal",
+        "label": "DOAJ Seal",
+        "fields": [
+            FieldDefinitions.DOAJ_SEAL["name"]
+        ]
+    }
+
+    QUICK_REJECT = {
+        "name": "quick_reject",
+        "Label": "Quick Reject",
+        "fields": [
+            FieldDefinitions.QUICK_REJECT["name"],
+            FieldDefinitions.QUICK_REJECT_DETAILS["name"]
+    ]
+}
+
 
 ###########################################################
 # Define our Contexts
@@ -1045,7 +1368,10 @@ class ContextDefinitions:
             FieldSetDefinitions.EDITORIAL["name"],
             FieldSetDefinitions.APC["name"],
             FieldSetDefinitions.APC_WAIVERS["name"],
-            FieldSetDefinitions.OTHER_FEES["name"]
+            FieldSetDefinitions.OTHER_FEES["name"],
+            FieldSetDefinitions.ARCHIVING_POLICY["name"],
+            FieldSetDefinitions.REPOSITORY_POLICY["name"],
+            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
         ],
         "asynchronous_warnings": [
             "all_urls_the_same"
@@ -1063,10 +1389,18 @@ class ContextDefinitions:
         "processor": application_processors.PublicApplication,
     }
 
+    ADMIN = deepcopy(PUBLIC)
+    ADMIN["name"] = "admin"
+    ADMIN["fieldsets"] += [
+        FieldSetDefinitions.SEAL["name"],
+        FieldSetDefinitions.QUICK_REJECT["name"]
+    ]
+
 
 FORMS = {
     "contexts": {
-        ContextDefinitions.PUBLIC["name"]: ContextDefinitions.PUBLIC
+        ContextDefinitions.PUBLIC["name"]: ContextDefinitions.PUBLIC,
+        ContextDefinitions.ADMIN["name"]: ContextDefinitions.ADMIN
     },
     "fieldsets": {
         FieldSetDefinitions.BASIC_COMPLIANCE["name"]: FieldSetDefinitions.BASIC_COMPLIANCE,
@@ -1081,7 +1415,12 @@ FORMS = {
         FieldSetDefinitions.EDITORIAL["name"]: FieldSetDefinitions.EDITORIAL,
         FieldSetDefinitions.APC["name"]: FieldSetDefinitions.APC,
         FieldSetDefinitions.APC_WAIVERS["name"]: FieldSetDefinitions.APC_WAIVERS,
-        FieldSetDefinitions.OTHER_FEES["name"]: FieldSetDefinitions.OTHER_FEES
+        FieldSetDefinitions.OTHER_FEES["name"]: FieldSetDefinitions.OTHER_FEES,
+        FieldSetDefinitions.ARCHIVING_POLICY["name"]: FieldSetDefinitions.ARCHIVING_POLICY,
+        FieldSetDefinitions.REPOSITORY_POLICY["name"]: FieldSetDefinitions.REPOSITORY_POLICY,
+        FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]: FieldSetDefinitions.UNIQUE_IDENTIFIERS,
+        FieldSetDefinitions.SEAL["name"]: FieldSetDefinitions.SEAL,
+        FieldSetDefinitions.QUICK_REJECT["name"]: FieldSetDefinitions.QUICK_REJECT
     },
     "fields": FIELDS
 }
@@ -1287,8 +1626,8 @@ JAVASCRIPT_FUNCTIONS = {
 
 
 ##############################################################
-## Additional WTForms bits, that will probably need to be
-## moved out to the correct modules before wrapping up
+# Additional WTForms bits, that will probably need to be
+# moved out to the correct modules before wrapping up
 ##############################################################
 
 class NumberWidget(widgets.Input):
@@ -1340,7 +1679,7 @@ class ListWidgetWithSubfields(object):
 
 
 ##########################################################
-## Mapping from configurations to WTForms builders
+# Mapping from configurations to WTForms builders
 ##########################################################
 
 class RadioBuilder(WTFormsBuilder):
