@@ -1,0 +1,27 @@
+/* Tags */
+
+.tag {
+  display: inline-block;
+  margin-bottom: $spacing-03;
+  padding: $spacing-01 $spacing-02;
+  background: $grapefruit;
+  color: $warm-black;
+  text-decoration: none;
+  @include typescale-06;
+
+  svg {
+    position: relative;
+    padding-right: $spacing-01;
+    top: 2px;
+    stroke: $warm-black;
+  }
+
+  &:hover, &:focus, &active {
+    background: $sanguine;
+    color: $warm-white;
+
+    svg {
+      stroke: $warm-white;
+    }
+  }
+}

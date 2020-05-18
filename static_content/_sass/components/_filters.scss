@@ -61,6 +61,10 @@
     margin-bottom: $spacing-02;
     line-height: 1.35;
   }
+
+  svg {
+    vertical-align: middle;
+  }
 }
 
 .filter__label {
