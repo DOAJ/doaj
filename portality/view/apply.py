@@ -17,6 +17,8 @@ blueprint = Blueprint('apply', __name__)
 @blueprint.route("/03-copyright-licensing/", methods=["GET", "POST"])
 @blueprint.route("/04-editorial/", methods=["GET", "POST"])
 @blueprint.route("/05-business-model/", methods=["GET", "POST"])
+@blueprint.route("/06-best-practice/", methods=["GET", "POST"])
+@blueprint.route("/07-review", methods=["GET", "POST"])
 @write_required()
 def public_application(draft_id=None):
 

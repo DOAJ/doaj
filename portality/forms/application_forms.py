@@ -408,7 +408,7 @@ class FieldDefinitions:
             {"display": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
             {"display": "CC0", "value": "CC0"},
             {"display": "Public domain", "value": "Public domain"},
-            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True, "subfields": ["license_attributes"]},
+            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True},
         ],
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
@@ -547,7 +547,7 @@ class FieldDefinitions:
             {"display": "Double blind peer review", "value": "double_blind_peer_review"},
             {"display": "Post-publication peer review", "value": "post_publication_peer_review"},
             {"display": "Open peer review", "value": "open_peer_review"},
-            {"display": "Other", "value": "other", "subfields": ["review_process_other"]}
+            {"display": "Other", "value": "other"}
         ],
         "help": {
             "doaj_criteria": "Peer review must be carried out"
@@ -847,6 +847,7 @@ class FieldDefinitions:
         "label": "Long-term preservation service(s) with which the journal is currently archived",
         "input": "checkbox",
         "multiple": True,
+        "hint": "Select at least one:",
         "options": [
             {"display": "CINES", "value": "cines"},
             {"display": "CLOCKSS", "value": "clockss"},
@@ -855,16 +856,16 @@ class FieldDefinitions:
             {"display": "PKP PN", "value": "pkp_pn"},
             {"display": "PubMed Central (PMC)", "value": "pmc"},
             {"display": "Portico", "value": "portico"},
-            {"display": "A national library", "value": "national_library", "subfields": ["archiving_policy_library"]},
+            {"display": "A national library", "value": "national_library"},
+            {"display": "Other service", "value": "other"},
             {"display": "The journal content isn't archived with a long-term preservation service",
              "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other", "subfields": ["archiving_policy_other"]}
         ],
         "help": {
-            "short_help": "Select at least one",
-            "long_help": "Only active archiving is accepted; content must be actively deposited in each of the options "
-                         "you choose. If the journal is registered with a service but archiving is not yet active, "
-                         "choose 'No'.\n\nPubMed Central covers PMC U.S.A., PMC Canada, and PMC Europe (Wellcome Trust)."
+            "long_help": [
+                "Only active archiving is accepted; content must be actively deposited in each of the options "
+                "you choose. If the journal is registered with a service but archiving is not yet active, "
+                "choose <i>No</i>.", "PubMed Central covers PMC U.S.A., PMC Canada, and PMC Europe (Wellcome Trust)."]
         },
         "validate": [
             "required"
@@ -873,11 +874,10 @@ class FieldDefinitions:
 
     ARCHIVING_POLICY_LIBRARY = {
         "name": "archiving_policy_library",
-        "subfield": True,
-        #"label": "A national library",
+        "label": "A national library:",
         "input": "text",
         "help": {
-            "placeholder": "A national library"
+            "short_help": "Name of national library"
         },
         "conditional": [{"field": "archiving_policy", "value": "national_library"}],
         "validate": [
@@ -890,12 +890,8 @@ class FieldDefinitions:
 
     ARCHIVING_POLICY_OTHER = {
         "name": "archiving_policy_other",
-        "subfield": True,
-        #"label": "Other",
+        "label": "Other archiving policy:",
         "input": "text",
-        "help": {
-            "placeholder": "Other archiving policy"
-        },
         "conditional": [{"field": "archiving_policy", "value": "other"}],
         "validate": [
             {"required_if": {"field": "archiving_policy", "value": "other"}}
@@ -907,10 +903,12 @@ class FieldDefinitions:
 
     ARCHIVING_POLICY_URL = {
         "name": "archiving_policy_url",
-        "label": "Link to the preservation and archiving information on the journal's site",
+        "label": "Where can we find this information",
         "input": "text",
         "help": {
-            "doaj_criteria": "You must provide a URL"
+            "short_help": "Link to the preservation and archiving information on the journal's site",
+            "doaj_criteria": "You must provide a URL",
+            "placeholder": "https://www.my-journal.com/about#archiving"
         },
         "validate": [
             {"optional_if": {"field": "archiving_policy", "value": "none"}},
@@ -933,14 +931,13 @@ class FieldDefinitions:
             {"display": "Diadorim", "value": "diadorim"},
             {"display": "The journal has a policy but it isn't registered anywhere", "value": "unregistered"},
             {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other", "subfields": ["repository_policy_other"]}
+            {"display": "Other", "value": "other"}
         ],
         "help": {
-            "short_help": "Select at least one",
-            "long_help": "AAM stands for Author Accepted Manuscript. VOR is the Version of Record.\n\n"
-                         "This questions ask whether or not the journal allows authors to deposit a copy of their "
-                         "work in an institutional repository.\n\n If the journal allows authors to do this, "
-                         "is that policy registered in a policy directory?"
+            "long_help": ["AAM stands for <b>Author Accepted Manuscript</b>. VOR is the <b>Version of Record</b>.",
+                          "This questions ask whether or not the journal allows authors to deposit a copy of their "
+                          "work in an institutional repository.", "If the journal allows authors to do this, "
+                                                                  "is that policy registered in a policy directory?"],
         },
         "validate": [
             "required"
@@ -949,12 +946,8 @@ class FieldDefinitions:
 
     REPOSITORY_POLICY_OTHER = {
         "name": "repository_policy_other",
-        "subfield": True,
-        # "label": "Other",
+        "label": "Other repository",
         "input": "text",
-        "help": {
-            "placeholder": "Other repository policy"
-        },
         "conditional": [{"field": "repository_policy", "value": "other"}],
         "validate": [
             {"required_if": {"field": "repository_policy", "value": "other"}}
@@ -966,10 +959,12 @@ class FieldDefinitions:
 
     REPOSITORY_POLICY_URL = {
         "name": "repository_policy_url",
-        "label": "Link to the policy on the journal's site",
+        "label": "Where can we find this information",
         "input": "text",
         "help": {
-            "doaj_criteria": "You must provide a URL"
+            "doaj_criteria": "You must provide a URL",
+            "short_help": "Link to the policy on the journal's site",
+            "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
         "validate": [
             {"required_if": {"field": "repository_policy", "value": "unregistered"}},
@@ -985,19 +980,19 @@ class FieldDefinitions:
         "label": "Persistent article identifiers used by the journal",
         "input": "checkbox",
         "multiple": True,
+        "hint": "Select at least one",
         "options": [
             {"display": "DOIs", "value": "doi"},
             {"display": "ARKs", "value": "ark"},
             {"display": "Handles", "value": "handle"},
             {"display": "PURLs", "value": "purl"},
             {"display": "The journal does not use persistent article identifiers", "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]}
+            {"display": "Other", "value": "other"}
         ],
         "help": {
-            "short_help": "Select at least one",
-            "long_help": "A persistent article identifier (PID) is used to find the article no matter where it is "
-                         "located. The most common type of PID is the digital object identifier (DOI). "
-                         "Read more about PIDs. [Link https://en.wikipedia.org/wiki/Persistent_identifier]"
+            "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
+                         "located. The most common type of PID is the digital object identifier (DOI). ",
+                         "<a href='https://en.wikipedia.org/wiki/Persistent_identifier'>Read more about PIDs.</a>"],
         },
         "validate": [
             "required"
@@ -1006,12 +1001,8 @@ class FieldDefinitions:
 
     PERSISTENT_IDENTIFIERS_OTHER = {
         "name": "persistent_identifiers_other",
-        "subfield": True,
-        # "label": "Other",
+        "label": "Other identifier",
         "input": "text",
-        "help": {
-            "placeholder": "Other persistent identifier"
-        },
         "conditional": [{"field": "persistent_identifiers", "value": "other"}],
         "validate": [
             {"required_if": {"field": "persistent_identifiers", "value": "other"}}
@@ -1030,8 +1021,8 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
-            "long_help": "An ORCID (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
-                         "authors. [link https://orcid.org/]",
+            "long_help": ["An <a href='https://orcid.org/'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
+                         "authors."],
         },
         "validate": [
             "required"
@@ -1047,8 +1038,7 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
-            "long_help": "The I4OC standards ask that citations are structured, separable, and open. "
-                         "https://i4oc.org/#goals",
+            "long_help": ["The <a href='https://i4oc.org/#goals'>I4OC standards</a> ask that citations are structured, separable, and open. "],
         },
         "validate": [
             "required"
@@ -1161,9 +1151,9 @@ FIELDS = {
     FieldDefinitions.QUICK_REJECT_DETAILS["name"]: FieldDefinitions.QUICK_REJECT_DETAILS
 }
 
+
 # todo: Have discussion with RJ about whether we can do this instead of the verbose code above:
 # FIELDS = {v['name']: v for k,v in FieldDefinitions.__dict__.items() if not k.startswith('_')}
-
 
 
 ##########################################################
@@ -1321,7 +1311,7 @@ class FieldSetDefinitions:
 
     UNIQUE_IDENTIFIERS = {
         "name": "unique_identifiers",
-        "label": "Unique Identifiers & Structured Data",
+        "label": "Unique Identifiers & structured Data",
         "fields": [
             FieldDefinitions.PERSISTENT_IDENTIFIERS["name"],
             FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"],
@@ -1344,8 +1334,8 @@ class FieldSetDefinitions:
         "fields": [
             FieldDefinitions.QUICK_REJECT["name"],
             FieldDefinitions.QUICK_REJECT_DETAILS["name"]
-    ]
-}
+        ]
+    }
 
 
 ###########################################################
@@ -1666,11 +1656,11 @@ class ListWidgetWithSubfields(object):
                 sfs = fl.get_subfields(subfield._value())
                 for sf in sfs:
                     style = ""
-                    if sf.has_conditional:
-                        style = " style=display:none "
-                    html.append('<span class="{x}__container" {y}>'.format(x=sf.name, y=style))
+                    # if sf.has_conditional:
+                    #     style = " style=display:none "
+                    html.append('<div class="{x}__container" {y}>'.format(x=sf.name, y=style))
                     html.append(sf.render_form_control())
-                    html.append("</span>")
+                    html.append("</div>")
 
             html.append("</li>")
 

@@ -5,6 +5,7 @@
         <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ f.name }}"></span> {% endif %}
         {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
     </label>
+    {% if f.get("hint") %}<p><small>{{ f.hint }}</small></p>{% endif %}
     {{ f.render_form_control() }}
 
     {% if f.help("short_help") %}
