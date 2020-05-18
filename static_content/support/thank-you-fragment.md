@@ -4,7 +4,7 @@ fragment: true
 title: Thank you for your support
 section: Support
 support-type: supporters
-toc: true
+toc: false
 sticky_sidenav: true
 highlight: false
 ---
