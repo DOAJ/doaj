@@ -1,1526 +1,1526 @@
 subjects:
-- name: Medicine
-  total: 782
+- name: "Medicine "
+  total: 783
 
-- name: Social Sciences
-  total: 605
+- name: "Social Sciences "
+  total: 606
 
-- name: Education
+- name: "Education "
   total: 580
 
-- name: Social sciences (General)
-  total: 559
+- name: "Social sciences (General) "
+  total: 560
 
-- name: Education (General)
+- name: "Education (General) "
   total: 550
 
-- name: Medicine (General)
+- name: "Medicine (General) "
   total: 521
 
-- name: Special aspects of education
+- name: "Special aspects of education "
   total: 457
 
-- name: Business
+- name: "Business "
   total: 409
 
-- name: Language and Literature
+- name: "Language and Literature "
   total: 353
 
-- name: Science
+- name: "Science "
   total: 333
 
-- name: Biology (General)
+- name: "Biology (General) "
   total: 330
 
-- name: Philology. Linguistics
+- name: "Philology. Linguistics "
   total: 298
 
-- name: Psychology
+- name: "Psychology "
   total: 296
 
-- name: Public aspects of medicine
-  total: 292
+- name: "Public aspects of medicine "
+  total: 294
 
-- name: Technology
+- name: "Technology "
   total: 279
 
-- name: Law
+- name: "Law "
   total: 274
 
-- name: Engineering (General). Civil engineering (General)
+- name: "Mathematics "
   total: 258
 
-- name: Mathematics
-  total: 258
+- name: "Engineering (General). Civil engineering (General) "
+  total: 257
 
-- name: Economics as a science
+- name: "Economics as a science "
   total: 255
 
-- name: Environmental sciences
+- name: "Environmental sciences "
   total: 239
 
-- name: Communication. Mass media
+- name: "Communication. Mass media "
   total: 227
 
-- name: Agriculture (General)
+- name: "Agriculture (General) "
   total: 224
 
-- name: Agriculture
+- name: "Agriculture "
   total: 214
 
-- name: Law in general. Comparative and uniform law. Jurisprudence
+- name: "Law in general. Comparative and uniform law. Jurisprudence "
   total: 212
 
-- name: Philosophy (General)
+- name: "Philosophy (General) "
   total: 206
 
-- name: Theory and practice of education
+- name: "Theory and practice of education "
   total: 196
 
-- name: Geography (General)
+- name: "Geography (General) "
   total: 190
 
-- name: Electronic computers. Computer science
+- name: "Electronic computers. Computer science "
   total: 189
 
-- name: Islam
-  total: 187
+- name: "Islam "
+  total: 188
 
-- name: Science (General)
-  total: 181
+- name: "Science (General) "
+  total: 180
 
-- name: Sociology (General)
-  total: 176
+- name: "Sociology (General) "
+  total: 178
 
-- name: Political science
+- name: "Political science "
   total: 167
 
-- name: History of scholarship and learning. The humanities
+- name: "History of scholarship and learning. The humanities "
   total: 166
 
-- name: Bibliography. Library science. Information resources
+- name: "Bibliography. Library science. Information resources "
   total: 154
 
-- name: French literature - Italian literature - Spanish literature - Portuguese literature
+- name: "French literature - Italian literature - Spanish literature - Portuguese literature "
   total: 153
 
-- name: Philosophy. Psychology. Religion
+- name: "Philosophy. Psychology. Religion "
   total: 150
 
-- name: History (General)
+- name: "History (General) "
   total: 146
 
-- name: Finance
+- name: "Finance "
   total: 145
 
-- name: Literature (General)
+- name: "Literature (General) "
   total: 142
 
-- name: Neoplasms. Tumors. Oncology. Including cancer and carcinogens
+- name: "Neoplasms. Tumors. Oncology. Including cancer and carcinogens "
   total: 140
 
-- name: Information technology
+- name: "Information technology "
   total: 136
 
-- name: Chemistry
+- name: "Chemistry "
   total: 134
 
-- name: Therapeutics. Pharmacology
+- name: "Therapeutics. Pharmacology "
   total: 134
 
-- name: Technology (General)
+- name: "Technology (General) "
   total: 133
 
-- name: Geography. Anthropology. Recreation
+- name: "Geography. Anthropology. Recreation "
   total: 128
 
-- name: Dentistry
+- name: "Surgery "
   total: 124
 
-- name: Surgery
-  total: 124
+- name: "Dentistry "
+  total: 123
 
-- name: Diseases of the circulatory (Cardiovascular) system
+- name: "Diseases of the circulatory (Cardiovascular) system "
   total: 118
 
-- name: Latin America. Spanish America
+- name: "Latin America. Spanish America "
   total: 116
 
-- name: Political science (General)
+- name: "Political science (General) "
   total: 116
 
-- name: Arts in general
+- name: "Arts in general "
   total: 115
 
-- name: Nursing
+- name: "Nursing "
   total: 113
 
-- name: Physics
+- name: "Physics "
   total: 113
 
-- name: Geology
+- name: "Geology "
   total: 112
 
-- name: General Works
+- name: "General Works "
   total: 111
 
-- name: Fine Arts
+- name: "Fine Arts "
   total: 110
 
-- name: Anthropology
+- name: "Anthropology "
   total: 109
 
-- name: Architecture
+- name: "Architecture "
   total: 109
 
-- name: Management. Industrial management
+- name: "Management. Industrial management "
   total: 109
 
-- name: Sports
+- name: "Sports "
   total: 108
 
-- name: History (General) and history of Europe
+- name: "History (General) and history of Europe "
   total: 103
 
-- name: Archaeology
+- name: "Archaeology "
   total: 101
 
-- name: Ecology
+- name: "Ecology "
   total: 100
 
-- name: Zoology
+- name: "Neurosciences. Biological psychiatry. Neuropsychiatry "
   total: 100
 
-- name: International relations
+- name: "Zoology "
+  total: 100
+
+- name: "International relations "
   total: 99
 
-- name: Neurosciences. Biological psychiatry. Neuropsychiatry
+- name: "Veterinary medicine "
   total: 99
 
-- name: Veterinary medicine
-  total: 99
-
-- name: Ethnology. Social and cultural anthropology
+- name: "Ethnology. Social and cultural anthropology "
   total: 96
 
-- name: Botany
-  total: 92
+- name: "Botany "
+  total: 93
 
-- name: Political institutions and public administration (General)
+- name: "Political institutions and public administration (General) "
   total: 91
 
-- name: Infectious and parasitic diseases
+- name: "Infectious and parasitic diseases "
+  total: 89
+
+- name: "Language. Linguistic theory. Comparative grammar "
   total: 88
 
-- name: Language. Linguistic theory. Comparative grammar
+- name: "Neurology. Diseases of the nervous system "
   total: 88
 
-- name: Neurology. Diseases of the nervous system
-  total: 88
-
-- name: Pediatrics
+- name: "Pediatrics "
   total: 87
 
-- name: Accounting. Bookkeeping
+- name: "Accounting. Bookkeeping "
   total: 86
 
-- name: Electrical engineering. Electronics. Nuclear engineering
+- name: "Electrical engineering. Electronics. Nuclear engineering "
   total: 86
 
-- name: Economic theory. Demography
+- name: "Economic theory. Demography "
   total: 85
 
-- name: Genetics
+- name: "Genetics "
   total: 83
 
-- name: Plant culture
+- name: "Plant culture "
   total: 83
 
-- name: Biotechnology
+- name: "Biotechnology "
   total: 80
 
-- name: Internal medicine
+- name: "Internal medicine "
   total: 80
 
-- name: Animal culture
+- name: "Animal culture "
   total: 78
 
-- name: Gynecology and obstetrics
+- name: "Gynecology and obstetrics "
   total: 77
 
-- name: Nutrition. Foods and food supply
+- name: "Nutrition. Foods and food supply "
   total: 76
 
-- name: Economic growth, development, planning
+- name: "Economic growth, development, planning "
   total: 74
 
-- name: Commerce
+- name: "Commerce "
   total: 73
 
-- name: Forestry
+- name: "Forestry "
   total: 72
 
-- name: Microbiology
+- name: "Microbiology "
   total: 72
 
-- name: Pharmacy and materia medica
+- name: "Pharmacy and materia medica "
   total: 70
 
-- name: Mechanical engineering and machinery
+- name: "Mechanical engineering and machinery "
   total: 67
 
-- name: Social pathology. Social and public welfare. Criminology
+- name: "Social pathology. Social and public welfare. Criminology "
   total: 65
 
-- name: Psychiatry
+- name: "Psychiatry "
   total: 64
 
-- name: Visual arts
+- name: "Visual arts "
   total: 64
 
-- name: Materials of engineering and construction. Mechanics of materials
+- name: "Materials of engineering and construction. Mechanics of materials "
   total: 63
 
-- name: Medical emergencies. Critical care. Intensive care. First aid
+- name: "Medical emergencies. Critical care. Intensive care. First aid "
   total: 63
 
-- name: Diseases of the genitourinary system. Urology
+- name: "Diseases of the genitourinary system. Urology "
   total: 62
 
-- name: English language
+- name: "English language "
   total: 61
 
-- name: Environmental technology. Sanitary engineering
-  total: 61
-
-- name: Computer applications to medicine. Medical informatics
+- name: "Computer applications to medicine. Medical informatics "
   total: 60
 
-- name: Medical physics. Medical radiology. Nuclear medicine
+- name: "Environmental technology. Sanitary engineering "
+  total: 60
+
+- name: "Medical physics. Medical radiology. Nuclear medicine "
   total: 59
 
-- name: Aquaculture. Fisheries. Angling
+- name: "Aquaculture. Fisheries. Angling "
   total: 57
 
-- name: Computer engineering. Computer hardware
+- name: "Computer engineering. Computer hardware "
   total: 57
 
-- name: Diseases of the digestive system. Gastroenterology
+- name: "Diseases of the digestive system. Gastroenterology "
   total: 56
 
-- name: Immunologic diseases. Allergy
+- name: "Immunologic diseases. Allergy "
   total: 56
 
-- name: Social history and conditions. Social problems. Social reform
+- name: "Social history and conditions. Social problems. Social reform "
   total: 56
 
-- name: Romanic languages
+- name: "Romanic languages "
   total: 53
 
-- name: Sports medicine
+- name: "Sports medicine "
   total: 53
 
-- name: Food processing and manufacture
+- name: "Food processing and manufacture "
   total: 52
 
-- name: Diseases of the endocrine glands. Clinical endocrinology
+- name: "Diseases of the endocrine glands. Clinical endocrinology "
   total: 50
 
-- name: Industrial engineering. Management engineering
+- name: "Industrial engineering. Management engineering "
   total: 49
 
-- name: Ophthalmology
+- name: "Ophthalmology "
   total: 49
 
-- name: Orthopedic surgery
+- name: "Orthopedic surgery "
   total: 49
 
-- name: Economic history and conditions
+- name: "Economic history and conditions "
   total: 48
 
-- name: Religion (General)
+- name: "Religion (General) "
   total: 47
 
-- name: Urban groups. The city. Urban sociology
+- name: "Urban groups. The city. Urban sociology "
   total: 47
 
-- name: Diseases of the musculoskeletal system
+- name: "Diseases of the musculoskeletal system "
   total: 46
 
-- name: Medical technology
+- name: "Medical technology "
   total: 46
 
-- name: Chemical technology
+- name: "Chemical technology "
   total: 44
 
-- name: Diseases of the respiratory system
+- name: "Diseases of the respiratory system "
   total: 43
 
-- name: History of the arts
+- name: "History of the arts "
   total: 43
 
-- name: Biochemistry
+- name: "Biochemistry "
   total: 42
 
-- name: Islam. Bahai Faith. Theosophy, etc.
+- name: "Islam. Bahai Faith. Theosophy, etc. "
   total: 42
 
-- name: Recreation. Leisure
+- name: "Recreation. Leisure "
   total: 42
 
-- name: Women. Feminism
+- name: "Women. Feminism "
   total: 42
 
-- name: Building construction
+- name: "Military Science "
+  total: 40
+
+- name: "Building construction "
   total: 39
 
-- name: Dermatology
+- name: "Dermatology "
   total: 39
 
-- name: Meteorology. Climatology
+- name: "Meteorology. Climatology "
   total: 39
 
-- name: Military Science
-  total: 39
-
-- name: Applied mathematics. Quantitative methods
+- name: "Applied mathematics. Quantitative methods "
   total: 37
 
-- name: Computer software
+- name: "Computer software "
   total: 37
 
-- name: Ethics
+- name: "Ethics "
   total: 37
 
-- name: Music
+- name: "Music "
   total: 36
 
-- name: Cytology
+- name: "Cytology "
   total: 35
 
-- name: Mining engineering. Metallurgy
+- name: "Mining engineering. Metallurgy "
   total: 35
 
-- name: Motor vehicles. Aeronautics. Astronautics
+- name: "Motor vehicles. Aeronautics. Astronautics "
   total: 35
 
-- name: Oceanography
+- name: "Oceanography "
   total: 34
 
-- name: Anesthesiology
+- name: "Anesthesiology "
   total: 33
 
-- name: Transportation engineering
+- name: "Transportation engineering "
   total: 33
 
-- name: English literature
+- name: "English literature "
   total: 32
 
-- name: Geriatrics
+- name: "Geriatrics "
   total: 32
 
-- name: Pathology
+- name: "Pathology "
   total: 32
 
-- name: Telecommunication
+- name: "Telecommunication "
   total: 32
 
-- name: Electronics
+- name: "Electronics "
   total: 31
 
-- name: Medieval history
+- name: "Medieval history "
   total: 31
 
-- name: Otorhinolaryngology
+- name: "Otorhinolaryngology "
   total: 31
 
-- name: Aesthetics of cities. City planning and beautifying
+- name: "Aesthetics of cities. City planning and beautifying "
   total: 30
 
-- name: Diseases of the blood and blood-forming organs
+- name: "Diseases of the blood and blood-forming organs "
   total: 30
 
-- name: Human ecology. Anthropogeography
+- name: "Human ecology. Anthropogeography "
   total: 30
 
-- name: Renewable energy sources
+- name: "Renewable energy sources "
   total: 29
 
-- name: Environmental engineering
+- name: "Environmental engineering "
   total: 28
 
-- name: Physical geography
+- name: "Physical geography "
   total: 28
 
-- name: Drawing. Design. Illustration
+- name: "Drawing. Design. Illustration "
   total: 27
 
-- name: Chemical engineering
+- name: "Chemical engineering "
   total: 26
 
-- name: Criminal law and procedure
+- name: "Criminal law and procedure "
   total: 26
 
-- name: Islamic law
+- name: "Islamic law "
   total: 26
 
-- name: Practical Theology
+- name: "Practical Theology "
   total: 26
 
-- name: The family. Marriage. Woman
+- name: "The family. Marriage. Woman "
   total: 26
 
-- name: Communities. Classes. Races
+- name: "Communities. Classes. Races "
   total: 25
 
-- name: Jurisprudence. Philosophy and theory of law
+- name: "Jurisprudence. Philosophy and theory of law "
   total: 25
 
-- name: Physiology
+- name: "Physiology "
   total: 25
 
-- name: Auxiliary sciences of history
+- name: "Auxiliary sciences of history "
   total: 24
 
-- name: Colonies and colonization. Emigration and immigration. International migration
+- name: "Colonies and colonization. Emigration and immigration. International migration "
   total: 24
 
-- name: Demography. Population. Vital events
+- name: "Demography. Population. Vital events "
   total: 24
 
-- name: Doctrinal Theology
+- name: "Doctrinal Theology "
   total: 24
 
-- name: General. Including nature conservation, geographical distribution
+- name: "General. Including nature conservation, geographical distribution "
   total: 24
 
-- name: Optics. Light
+- name: "Optics. Light "
   total: 24
 
-- name: Cities. Urban geography
+- name: "Cities. Urban geography "
   total: 23
 
-- name: Modern history, 1453-
+- name: "Modern history, 1453- "
   total: 23
 
-- name: Nutritional diseases. Deficiency diseases
+- name: "Nutritional diseases. Deficiency diseases "
   total: 23
 
-- name: Philosophy of religion. Psychology of religion. Religion in relation to other subjects
+- name: "Philosophy of religion. Psychology of religion. Religion in relation to other subjects "
   total: 23
 
-- name: Religions. Mythology. Rationalism
+- name: "Religions. Mythology. Rationalism "
   total: 23
 
-- name: Applied optics. Photonics
+- name: "Applied optics. Photonics "
   total: 22
 
-- name: Arctic medicine. Tropical medicine
+- name: "Arctic medicine. Tropical medicine "
   total: 22
 
-- name: History of education
+- name: "History of education "
   total: 22
 
-- name: Marketing. Distribution of products
+- name: "Marketing. Distribution of products "
   total: 22
 
-- name: Other systems of medicine
+- name: "Other systems of medicine "
   total: 22
 
-- name: Slavic languages. Baltic languages. Albanian languages
+- name: "Slavic languages. Baltic languages. Albanian languages "
   total: 22
 
-- name: Statistics
+- name: "Statistics "
   total: 22
 
-- name: Translating and interpreting
+- name: "Translating and interpreting "
   total: 22
 
-- name: Regional economics. Space in economics
+- name: "Regional economics. Space in economics "
   total: 21
 
-- name: Greek language and literature. Latin language and literature
+- name: "Greek language and literature. Latin language and literature "
   total: 20
 
-- name: Museums. Collectors and collecting
+- name: "Museums. Collectors and collecting "
   total: 20
 
-- name: Ancient history
+- name: "Nuclear and particle physics. Atomic energy. Radioactivity "
+  total: 20
+
+- name: "Ancient history "
   total: 19
 
-- name: History of Spain
+- name: "History of Spain "
   total: 19
 
-- name: Information resources (General)
+- name: "Information resources (General) "
   total: 19
 
-- name: Law of Europe
+- name: "Law of Europe "
   total: 19
 
-- name: Mechanics of engineering. Applied mechanics
+- name: "Mechanics of engineering. Applied mechanics "
   total: 19
 
-- name: Medical philosophy. Medical ethics
+- name: "Medical philosophy. Medical ethics "
   total: 19
 
-- name: Nuclear and particle physics. Atomic energy. Radioactivity
+- name: "Political theory "
   total: 19
 
-- name: Political theory
+- name: "Probabilities. Mathematical statistics "
   total: 19
 
-- name: Probabilities. Mathematical statistics
+- name: "Toxicology. Poisons "
   total: 19
 
-- name: Toxicology. Poisons
+- name: "Transportation and communications "
   total: 19
 
-- name: Transportation and communications
-  total: 19
-
-- name: Analysis
+- name: "Analysis "
   total: 18
 
-- name: Christianity
+- name: "Christianity "
   total: 18
 
-- name: History America
+- name: "History America "
   total: 18
 
-- name: History of Asia
+- name: "History of Asia "
   total: 18
 
-- name: Labor. Work. Working class
+- name: "Labor. Work. Working class "
   total: 18
 
-- name: Production of electric energy or power. Powerplants. Central stations
+- name: "Production of electric energy or power. Powerplants. Central stations "
   total: 18
 
-- name: Specialties of internal medicine
+- name: "Specialties of internal medicine "
   total: 18
 
-- name: City planning
+- name: "City planning "
   total: 17
 
-- name: Hospitality industry. Hotels, clubs, restaurants, etc. Food service
+- name: "Hospitality industry. Hotels, clubs, restaurants, etc. Food service "
   total: 17
 
-- name: Music and books on Music
+- name: "Music and books on Music "
   total: 17
 
-- name: Political institutions and public administration - Asia (Asian studies only)
+- name: "Political institutions and public administration - Asia (Asian studies only) "
   total: 17
 
-- name: Geophysics. Cosmic physics
+- name: "Geophysics. Cosmic physics "
   total: 16
 
-- name: Industries. Land use. Labor
+- name: "Industries. Land use. Labor "
   total: 16
 
-- name: Neurophysiology and neuropsychology
+- name: "Neurophysiology and neuropsychology "
   total: 16
 
-- name: Water supply for domestic and industrial purposes
+- name: "Water supply for domestic and industrial purposes "
   total: 16
 
-- name: Agricultural industries
+- name: "Agricultural industries "
   total: 15
 
-- name: Consciousness. Cognition
+- name: "Consciousness. Cognition "
   total: 15
 
-- name: Energy industries. Energy policy. Fuel trade
+- name: "Energy industries. Energy policy. Fuel trade "
   total: 15
 
-- name: Environmental pollution
+- name: "Environmental pollution "
   total: 15
 
-- name: Evolution
+- name: "Evolution "
   total: 15
 
-- name: Geodesy
+- name: "Geodesy "
   total: 15
 
-- name: Naval architecture. Shipbuilding. Marine engineering
+- name: "Naval architecture. Shipbuilding. Marine engineering "
   total: 15
 
-- name: Recreation leadership. Administration of recreation services
+- name: "Recreation leadership. Administration of recreation services "
   total: 15
 
-- name: Speculative philosophy
+- name: "Speculative philosophy "
   total: 15
 
-- name: Therapeutics. Psychotherapy
+- name: "Therapeutics. Psychotherapy "
   total: 15
 
-- name: Astronomy
+- name: "Astronomy "
   total: 14
 
-- name: History of Africa
+- name: "History of Africa "
   total: 14
 
-- name: History of the Greco-Roman World
+- name: "History of the Greco-Roman World "
   total: 14
 
-- name: Hydraulic engineering
+- name: "Hydraulic engineering "
   total: 14
 
-- name: Journalism. The periodical press, etc.
+- name: "Journalism. The periodical press, etc. "
   total: 14
 
-- name: Miscellaneous systems and treatments
+- name: "Miscellaneous systems and treatments "
   total: 14
 
-- name: Personnel management. Employment management
+- name: "Personnel management. Employment management "
   total: 14
 
-- name: Production management. Operations management
+- name: "Production management. Operations management "
   total: 14
 
-- name: Aesthetics
+- name: "Aesthetics "
   total: 13
 
-- name: Architectural engineering. Structural engineering of buildings
+- name: "Architectural engineering. Structural engineering of buildings "
   total: 13
 
-- name: Comparative law. International uniform law
+- name: "Comparative law. International uniform law "
   total: 13
 
-- name: Discourse analysis
+- name: "Discourse analysis "
   total: 13
 
-- name: Folklore
+- name: "Folklore "
   total: 13
 
-- name: History of Civilization
+- name: "History of Civilization "
   total: 13
 
-- name: Naval Science
+- name: "Naval Science "
   total: 13
 
-- name: Nuclear engineering. Atomic power
+- name: "Nuclear engineering. Atomic power "
   total: 13
 
-- name: Oriental languages and literatures
+- name: "Oriental languages and literatures "
   total: 13
 
-- name: Plant ecology
+- name: "Plant ecology "
   total: 13
 
-- name: History of Eastern Europe
+- name: "History of Eastern Europe "
   total: 12
 
-- name: Human settlements. Communities
+- name: "Human settlements. Communities "
   total: 12
 
-- name: Management information systems
+- name: "Management information systems "
   total: 12
 
-- name: Regional planning
+- name: "Regional planning "
   total: 12
 
-- name: River, lake, and water-supply engineering (General)
+- name: "River, lake, and water-supply engineering (General) "
   total: 12
 
-- name: Social sciences and state - Asia (Asian studies only)
+- name: "Social sciences and state - Asia (Asian studies only) "
   total: 12
 
-- name: Technological innovations. Automation
+- name: "Technological innovations. Automation "
   total: 12
 
-- name: Analytical chemistry
+- name: "Analytical chemistry "
   total: 11
 
-- name: Industrial medicine. Industrial hygiene
+- name: "Industrial medicine. Industrial hygiene "
   total: 11
 
-- name: Industrial safety. Industrial accident prevention
+- name: "Industrial safety. Industrial accident prevention "
   total: 11
 
-- name: Manufactures
+- name: "Manufactures "
   total: 11
 
-- name: Organic chemistry
+- name: "Organic chemistry "
   total: 11
 
-- name: Polymers and polymer manufacture
+- name: "Polymers and polymer manufacture "
   total: 11
 
-- name: Prehistoric archaeology
+- name: "Prehistoric archaeology "
   total: 11
 
-- name: Special situations and conditions
+- name: "Special situations and conditions "
   total: 11
 
-- name: Urbanization. City and country
+- name: "Urbanization. City and country "
   total: 11
 
-- name: Engineering geology. Rock mechanics. Soil mechanics. Underground construction
+- name: "Engineering geology. Rock mechanics. Soil mechanics. Underground construction "
   total: 10
 
-- name: Human anatomy
+- name: "Human anatomy "
   total: 10
 
-- name: Industrial psychology
+- name: "Industrial psychology "
   total: 10
 
-- name: Motion pictures
+- name: "Motion pictures "
   total: 10
 
-- name: Ocean engineering
+- name: "Ocean engineering "
   total: 10
 
-- name: The performing arts. Show business
+- name: "The performing arts. Show business "
   total: 10
 
-- name: Architectural drawing and design
+- name: "Architectural drawing and design "
   total: 9
 
-- name: Banking
+- name: "Banking "
   total: 9
 
-- name: Cartography
+- name: "Cartography "
   total: 9
 
-- name: Computational linguistics. Natural language processing
+- name: "Computational linguistics. Natural language processing "
   total: 9
 
-- name: Control engineering systems. Automatic machinery (General)
+- name: "Control engineering systems. Automatic machinery (General) "
   total: 9
 
-- name: Disasters and engineering
+- name: "Disasters and engineering "
   total: 9
 
-- name: Environmental law
+- name: "Environmental law "
   total: 9
 
-- name: Germanic languages. Scandinavian languages
+- name: "Germanic languages. Scandinavian languages "
   total: 9
 
-- name: Homeopathy
+- name: "Homeopathy "
   total: 9
 
-- name: Land use
+- name: "Land use "
   total: 9
 
-- name: Languages and literature of Eastern Asia, Africa, Oceania
+- name: "Languages and literature of Eastern Asia, Africa, Oceania "
   total: 9
 
-- name: Musical instruction and study
+- name: "Musical instruction and study "
   total: 9
 
-- name: Petroleum refining. Petroleum products
+- name: "Petroleum refining. Petroleum products "
   total: 9
 
-- name: Private international law. Conflict of laws
+- name: "Private international law. Conflict of laws "
   total: 9
 
-- name: African languages and literature
+- name: "African languages and literature "
   total: 8
 
-- name: American literature
+- name: "American literature "
   total: 8
 
-- name: Automation
+- name: "Automation "
   total: 8
 
-- name: Civil law
+- name: "Civil law "
   total: 8
 
-- name: Clay industries. Ceramics. Glass
+- name: "Clay industries. Ceramics. Glass "
   total: 8
 
-- name: Environmental protection
+- name: "Environmental protection "
   total: 8
 
-- name: Epistemology. Theory of knowledge
+- name: "Epistemology. Theory of knowledge "
   total: 8
 
-- name: General works
+- name: "General works "
   total: 8
 
-- name: History of medicine. Medical expeditions
+- name: "History of medicine. Medical expeditions "
   total: 8
 
-- name: Judaism
+- name: "Judaism "
   total: 8
 
-- name: Paleontology
+- name: "Paleontology "
   total: 8
 
-- name: Practical religion. The Christian life
+- name: "Practical religion. The Christian life "
   total: 8
 
-- name: Public finance
+- name: "Public finance "
   total: 8
 
-- name: Reproduction
+- name: "Reproduction "
   total: 8
 
-- name: Textile bleaching, dyeing, printing, etc.
+- name: "Textile bleaching, dyeing, printing, etc. "
   total: 8
 
-- name: The Bible
+- name: "The Bible "
   total: 8
 
-- name: Vocational rehabilitation. Employment of people with disabilities
+- name: "Vocational rehabilitation. Employment of people with disabilities "
   total: 8
 
-- name: Acoustics. Sound
+- name: "Acoustics. Sound "
   total: 7
 
-- name: Animal biochemistry
+- name: "Animal biochemistry "
   total: 7
 
-- name: City population. Including children in cities, immigration
+- name: "City population. Including children in cities, immigration "
   total: 7
 
-- name: Crystallography
+- name: "Crystallography "
   total: 7
 
-- name: Drama
+- name: "Drama "
   total: 7
 
-- name: History of Italy
+- name: "History of Italy "
   total: 7
 
-- name: History of Russia. Soviet Union. Former Soviet Republics
+- name: "History of Russia. Soviet Union. Former Soviet Republics "
   total: 7
 
-- name: Industrial hygiene. Industrial welfare
+- name: "Industrial hygiene. Industrial welfare "
   total: 7
 
-- name: Information theory
+- name: "Information theory "
   total: 7
 
-- name: Inorganic chemistry
+- name: "Inorganic chemistry "
   total: 7
 
-- name: Japanese language and literature
+- name: "Japanese language and literature "
   total: 7
 
-- name: Language acquisition
+- name: "Language acquisition "
   total: 7
 
-- name: Law of nations
+- name: "Law of nations "
   total: 7
 
-- name: Life
+- name: "Life "
   total: 7
 
-- name: Logic
+- name: "Logic "
   total: 7
 
-- name: Mathematical geography. Cartography
+- name: "Mathematical geography. Cartography "
   total: 7
 
-- name: Metaphysics
+- name: "Metaphysics "
   total: 7
 
-- name: Microbial ecology
+- name: "Microbial ecology "
   total: 7
 
-- name: Organizational behaviour, change and effectiveness. Corporate culture
+- name: "Organizational behaviour, change and effectiveness. Corporate culture "
   total: 7
 
-- name: Systems engineering
+- name: "Systems engineering "
   total: 7
 
-- name: 1789-
+- name: "1789- "
   total: 6
 
-- name: Advertising
+- name: "Advertising "
   total: 6
 
-- name: Business ethics
+- name: "Business ethics "
   total: 6
 
-- name: Business mathematics. Commercial arithmetic. Including tables, etc.
+- name: "Business mathematics. Commercial arithmetic. Including tables, etc. "
   total: 6
 
-- name: Cybernetics
+- name: "Cybernetics "
   total: 6
 
-- name: Dancing
+- name: "Dancing "
   total: 6
 
-- name: Descriptive and experimental mechanics
+- name: "Descriptive and experimental mechanics "
   total: 6
 
-- name: Dramatic representation. The theater
+- name: "Dramatic representation. The theater "
   total: 6
 
-- name: Engineering design
+- name: "Engineering design "
   total: 6
 
-- name: German literature
+- name: "German literature "
   total: 6
 
-- name: History and principles of religions
+- name: "History and principles of religions "
   total: 6
 
-- name: History of Balkan Peninsula
+- name: "History of Balkan Peninsula "
   total: 6
 
-- name: Industry
+- name: "Industry "
   total: 6
 
-- name: Medical legislation
+- name: "Medical legislation "
   total: 6
 
-- name: Mental healing
+- name: "Mental healing "
   total: 6
 
-- name: Natural history (General)
+- name: "Natural history (General) "
   total: 6
 
-- name: Physical and theoretical chemistry
+- name: "Physical and theoretical chemistry "
   total: 6
 
-- name: Risk in industry. Risk management
+- name: "Risk in industry. Risk management "
   total: 6
 
-- name: Stratigraphy
+- name: "Stratigraphy "
   total: 6
 
-- name: Astrophysics
+- name: "Astrophysics "
   total: 5
 
-- name: Atomic physics. Constitution and properties of matter
+- name: "Atomic physics. Constitution and properties of matter "
   total: 5
 
-- name: Commercial geography. Economic geography
+- name: "Commercial geography. Economic geography "
   total: 5
 
-- name: Diplomatics. Archives. Seals
+- name: "Diplomatics. Archives. Seals "
   total: 5
 
-- name: Energy conservation
+- name: "Energy conservation "
   total: 5
 
-- name: Engineering economy
+- name: "Engineering economy "
   total: 5
 
-- name: Greek philology and language
+- name: "Greek philology and language "
   total: 5
 
-- name: History of Central Europe
+- name: "History of Central Europe "
   total: 5
 
-- name: History of Greece
+- name: "History of Greece "
   total: 5
 
-- name: Literature on music
+- name: "Literature on music "
   total: 5
 
-- name: Machine design and drawing
+- name: "Machine design and drawing "
   total: 5
 
-- name: Moral theology
+- name: "Moral theology "
   total: 5
 
-- name: Oral communication. Speech
+- name: "Oral communication. Speech "
   total: 5
 
-- name: Public law
+- name: "Public law "
   total: 5
 
-- name: Socialism. Communism. Anarchism
+- name: "Socialism. Communism. Anarchism "
   total: 5
 
-- name: Transportation and communication
+- name: "Transportation and communication "
   total: 5
 
-- name: Applications of electric power
+- name: "Applications of electric power "
   total: 4
 
-- name: Cadastral mapping
+- name: "Cadastral mapping "
   total: 4
 
-- name: Commercial law
+- name: "Commercial law "
   total: 4
 
-- name: Construction industry
+- name: "Construction industry "
   total: 4
 
-- name: Dynamic and structural geology
+- name: "Dynamic and structural geology "
   total: 4
 
-- name: Electricity and magnetism
+- name: "Electricity and magnetism "
   total: 4
 
-- name: Europe (General)
+- name: "Europe (General) "
   total: 4
 
-- name: Gas industry
+- name: "Gas industry "
   total: 4
 
-- name: Health Sciences
+- name: "Health Sciences "
   total: 4
 
-- name: History of Great Britain
+- name: "History of Great Britain "
   total: 4
 
-- name: History of Law
+- name: "History of Law "
   total: 4
 
-- name: Indo-Iranian languages and literature
+- name: "Indo-Iranian languages and literature "
   total: 4
 
-- name: Labor market. Labor supply. Labor demand
+- name: "Labor market. Labor supply. Labor demand "
   total: 4
 
-- name: Labor policy. Labor and the state
+- name: "Labor policy. Labor and the state "
   total: 4
 
-- name: Lexicography
+- name: "Lexicography "
   total: 4
 
-- name: Men
+- name: "Men "
   total: 4
 
-- name: Mineralogy
+- name: "Mineralogy "
   total: 4
 
-- name: Modern
+- name: "Modern "
   total: 4
 
-- name: Osteopathy
+- name: "Osteopathy "
   total: 4
 
-- name: Pharmaceutical industry
+- name: "Pharmaceutical industry "
   total: 4
 
-- name: Public relations. Industrial publicity
+- name: "Public relations. Industrial publicity "
   total: 4
 
-- name: Semantics
+- name: "Semantics "
   total: 4
 
-- name: Style. Composition. Rhetoric
+- name: "Style. Composition. Rhetoric "
   total: 4
 
-- name: America
+- name: "America "
   total: 3
 
-- name: Business and Economics
+- name: "Business and Economics "
   total: 3
 
-- name: Business records management
+- name: "Business records management "
   total: 3
 
-- name: Engineering machinery, tools, and implements
+- name: "Engineering machinery, tools, and implements "
   total: 3
 
-- name: Environmental effects of industries and plants
+- name: "Environmental effects of industries and plants "
   total: 3
 
-- name: Fermentation industries. Beverages. Alcohol
+- name: "Fermentation industries. Beverages. Alcohol "
   total: 3
 
-- name: Finnic. Baltic-Finnic
+- name: "Finnic. Baltic-Finnic "
   total: 3
 
-- name: History
+- name: "History "
   total: 3
 
-- name: History of Poland
+- name: "History of Poland "
   total: 3
 
-- name: Home economics
+- name: "Home economics "
   total: 3
 
-- name: Human evolution
+- name: "Human evolution "
   total: 3
 
-- name: Industrial electrochemistry
+- name: "Industrial electrochemistry "
   total: 3
 
-- name: Insurance
+- name: "Insurance "
   total: 3
 
-- name: Large industry. Factory system. Big business
+- name: "Large industry. Factory system. Big business "
   total: 3
 
-- name: Management of special enterprises
+- name: "Management of special enterprises "
   total: 3
 
-- name: Microscopy
+- name: "Microscopy "
   total: 3
 
-- name: Oils, fats, and waxes
+- name: "Oils, fats, and waxes "
   total: 3
 
-- name: Petrology
+- name: "Petrology "
   total: 3
 
-- name: Photography
+- name: "Photography "
   total: 3
 
-- name: Physical anthropology. Somatology
+- name: "Physical anthropology. Somatology "
   total: 3
 
-- name: Production capacity. Manufacturing capacity
+- name: "Production capacity. Manufacturing capacity "
   total: 3
 
-- name: Rural industries
+- name: "Rural industries "
   total: 3
 
-- name: Shipment of goods. Delivery of goods
+- name: "Shipment of goods. Delivery of goods "
   total: 3
 
-- name: Small and medium-sized businesses, artisans, handicrafts, trades
+- name: "Small and medium-sized businesses, artisans, handicrafts, trades "
   total: 3
 
-- name: Social insurance. Social security. Pension
+- name: "Social insurance. Social security. Pension "
   total: 3
 
-- name: "Societies: secret, benevolent, etc."
+- name: "Societies: secret, benevolent, etc. "
   total: 3
 
-- name: Special industries and trades
+- name: "Special industries and trades "
   total: 3
 
-- name: Structural engineering (General)
+- name: "Structural engineering (General) "
   total: 3
 
-- name: Thermodynamics
+- name: "Thermodynamics "
   total: 3
 
-- name: United States
+- name: "United States "
   total: 3
 
-- name: Urban renewal. Urban redevelopment
+- name: "Urban renewal. Urban redevelopment "
   total: 3
 
-- name: Vocational guidance. Career development
+- name: "Vocational guidance. Career development "
   total: 3
 
-- name: Analytic mechanics
+- name: "Analytic mechanics "
   total: 2
 
-- name: Asia and Eurasia, Africa, Pacific Area, and Antarctica
+- name: "Asia and Eurasia, Africa, Pacific Area, and Antarctica "
   total: 2
 
-- name: Bibliography
+- name: "Bibliography "
   total: 2
 
-- name: Bridge engineering
+- name: "Bridge engineering "
   total: 2
 
-- name: Business communication. Including business report writing, business correspondence
+- name: "Business communication. Including business report writing, business correspondence "
   total: 2
 
-- name: Chemical industries
+- name: "Chemical industries "
   total: 2
 
-- name: "Chemicals: Manufacture, use, etc."
+- name: "Chemicals: Manufacture, use, etc. "
   total: 2
 
-- name: Chinese language and literature
+- name: "Chinese language and literature "
   total: 2
 
-- name: Chiropractic
+- name: "Chiropractic "
   total: 2
 
-- name: Christian Denominations
+- name: "Christian Denominations "
   total: 2
 
-- name: Comparative grammar
+- name: "Comparative grammar "
   total: 2
 
-- name: Conservation and restoration of prints
+- name: "Conservation and restoration of prints "
   total: 2
 
-- name: Decorative arts
+- name: "Decorative arts "
   total: 2
 
-- name: Distribution or transmission of electric power
+- name: "Distribution or transmission of electric power "
   total: 2
 
-- name: Economics
+- name: "Economics "
   total: 2
 
-- name: Electricity
+- name: "Electricity "
   total: 2
 
-- name: Elementary particle physics
+- name: "Elementary particle physics "
   total: 2
 
-- name: Fossil man. Human paleontology
+- name: "Fossil man. Human paleontology "
   total: 2
 
-- name: Fuel
+- name: "Fuel "
   total: 2
 
-- name: General. Including alchemy
+- name: "General. Including alchemy "
   total: 2
 
-- name: Heat
+- name: "Heat "
   total: 2
 
-- name: Highway engineering. Roads and pavements
+- name: "Highway engineering. Roads and pavements "
   total: 2
 
-- name: History of France
+- name: "History of France "
   total: 2
 
-- name: History of Low Countries - Benelux Countries
+- name: "History of Low Countries - Benelux Countries "
   total: 2
 
-- name: History of Oceania (South Seas)
+- name: "History of Oceania (South Seas) "
   total: 2
 
-- name: History of Portugal
+- name: "History of Portugal "
   total: 2
 
-- name: Labor in politics. Political activity of the working class
+- name: "Labor in politics. Political activity of the working class "
   total: 2
 
-- name: Mechanical drawing. Engineering graphics
+- name: "Mechanical drawing. Engineering graphics "
   total: 2
 
-- name: North Germanic. Scandinavian
+- name: "North Germanic. Scandinavian "
   total: 2
 
-- name: Office management
+- name: "Office management "
   total: 2
 
-- name: Oratory. Elocution, etc.
+- name: "Oratory. Elocution, etc. "
   total: 2
 
-- name: Periodicals
+- name: "Periodicals "
   total: 2
 
-- name: Print media
+- name: "Print media "
   total: 2
 
-- name: Professions (General). Professional employees
+- name: "Professions (General). Professional employees "
   total: 2
 
-- name: Railroad engineering and operation
+- name: "Railroad engineering and operation "
   total: 2
 
-- name: Real estate business
+- name: "Real estate business "
   total: 2
 
-- name: Regulation of industry, trade, and commerce. Occupational law
+- name: "Regulation of industry, trade, and commerce. Occupational law "
   total: 2
 
-- name: Religions of the world
+- name: "Religions of the world "
   total: 2
 
-- name: Religious ethics
+- name: "Religious ethics "
   total: 2
 
-- name: Revenue. Taxation. Internal revenue
+- name: "Revenue. Taxation. Internal revenue "
   total: 2
 
-- name: Social legislation
+- name: "Social legislation "
   total: 2
 
-- name: Social responsibility of business
+- name: "Social responsibility of business "
   total: 2
 
-- name: South Asia. Southeast Asia. East Asia
+- name: "South Asia. Southeast Asia. East Asia "
   total: 2
 
-- name: United States local history
+- name: "United States local history "
   total: 2
 
-- name: Academies and learned societies
+- name: "Academies and learned societies "
   total: 1
 
-- name: Balance of trade
+- name: "Balance of trade "
   total: 1
 
-- name: Biography
+- name: "Biography "
   total: 1
 
-- name: Buddhism
+- name: "Buddhism "
   total: 1
 
-- name: Business and Management
+- name: "Business and Management "
   total: 1
 
-- name: By period
+- name: "By period "
   total: 1
 
-- name: Canals and inland navigation. Waterways
+- name: "Canals and inland navigation. Waterways "
   total: 1
 
-- name: Cattle
+- name: "Cattle "
   total: 1
 
-- name: Cellular telephone services industry. Wireless telephone industry
+- name: "Cellular telephone services industry. Wireless telephone industry "
   total: 1
 
-- name: Competition
+- name: "Competition "
   total: 1
 
-- name: Dairy processing. Dairy products
+- name: "Dairy processing. Dairy products "
   total: 1
 
-- name: Dairying
+- name: "Dairying "
   total: 1
 
-- name: Details in building design and construction. Including walls, roofs
+- name: "Details in building design and construction. Including walls, roofs "
   total: 1
 
-- name: Dictionaries and other general reference works
+- name: "Dictionaries and other general reference works "
   total: 1
 
-- name: Earth and Environmental Sciences
+- name: "Earth and Environmental Sciences "
   total: 1
 
-- name: Earthwork. Foundations
+- name: "Earthwork. Foundations "
   total: 1
 
-- name: Economic biology
+- name: "Economic biology "
   total: 1
 
-- name: Economic geography of the oceans (General)
+- name: "Economic geography of the oceans (General) "
   total: 1
 
-- name: Electric apparatus and materials. Electric circuits. Electric networks
+- name: "Electric apparatus and materials. Electric circuits. Electric networks "
   total: 1
 
-- name: Employee participation in management. Employee ownership. Industrial democracy. Works councils
+- name: "Employee participation in management. Employee ownership. Industrial democracy. Works councils "
   total: 1
 
-- name: Ethnology
+- name: "Ethnology "
   total: 1
 
-- name: Geography
+- name: "Geography "
   total: 1
 
-- name: Geomagnetism
+- name: "Geomagnetism "
   total: 1
 
-- name: Handicrafts. Arts and crafts
+- name: "Handicrafts. Arts and crafts "
   total: 1
 
-- name: Harbors and coast protective works. Coastal engineering. Lighthouses
+- name: "Harbors and coast protective works. Coastal engineering. Lighthouses "
   total: 1
 
-- name: History of Austria. Liechtenstein. Hungary. Czechoslovakia
+- name: "History of Austria. Liechtenstein. Hungary. Czechoslovakia "
   total: 1
 
-- name: History of Germany
+- name: "History of Germany "
   total: 1
 
-- name: History of Northern Europe. Scandinavia
+- name: "History of Northern Europe. Scandinavia "
   total: 1
 
-- name: History of specific doctrines and movements. Heresies and schisms
+- name: "History of specific doctrines and movements. Heresies and schisms "
   total: 1
 
-- name: Hungary
+- name: "Hungary "
   total: 1
 
-- name: Industrial arbitration. Meditation and conciliation
+- name: "Industrial arbitration. Meditation and conciliation "
   total: 1
 
-- name: Industrial directories
+- name: "Industrial directories "
   total: 1
 
-- name: Instruments and machines
+- name: "Instruments and machines "
   total: 1
 
-- name: Irrigation engineering. Reclamation of wasteland. Drainage
+- name: "Irrigation engineering. Reclamation of wasteland. Drainage "
   total: 1
 
-- name: Labor systems
+- name: "Labor systems "
   total: 1
 
-- name: Land tenure
+- name: "Land tenure "
   total: 1
 
-- name: Library and Information Science
+- name: "Library and Information Science "
   total: 1
 
-- name: Low temperature engineering. Cryogenic engineering. Refrigeration
+- name: "Low temperature engineering. Cryogenic engineering. Refrigeration "
   total: 1
 
-- name: Manners and customs (General)
+- name: "Manners and customs (General) "
   total: 1
 
-- name: Maps
+- name: "Maps "
   total: 1
 
-- name: Markets. Fairs
+- name: "Markets. Fairs "
   total: 1
 
-- name: Mathematics and Statistics
+- name: "Mathematics and Statistics "
   total: 1
 
-- name: Metropolitan areas
+- name: "Metropolitan areas "
   total: 1
 
-- name: Mineral industries. Metal trade
+- name: "Mineral industries. Metal trade "
   total: 1
 
-- name: Multidisciplinary
+- name: "Multidisciplinary "
   total: 1
 
-- name: Municipal refuse. Solid wastes
+- name: "Municipal refuse. Solid wastes "
   total: 1
 
-- name: Norway
+- name: "Norway "
   total: 1
 
-- name: Norwegian literature
+- name: "Norwegian literature "
   total: 1
 
-- name: Packaging
+- name: "Packaging "
   total: 1
 
-- name: Painting
+- name: "Painting "
   total: 1
 
-- name: Plasma physics. Ionized gases
+- name: "Plasma physics. Ionized gases "
   total: 1
 
-- name: Printmaking and engraving
+- name: "Printmaking and engraving "
   total: 1
 
-- name: Protection of buildings. Including protection from dampness, fire, burglary
+- name: "Protection of buildings. Including protection from dampness, fire, burglary "
   total: 1
 
-- name: Public Health
+- name: "Public Health "
   total: 1
 
-- name: Radioactivity and radioactive substances
+- name: "Radioactivity and radioactive substances "
   total: 1
 
-- name: River protective works. Regulation. Flood control
+- name: "River protective works. Regulation. Flood control "
   total: 1
 
-- name: Settlements
+- name: "Settlements "
   total: 1
 
-- name: Sewage collection and disposal systems. Sewerage
+- name: "Sewage collection and disposal systems. Sewerage "
   total: 1
 
-- name: Special types of environment
+- name: "Special types of environment "
   total: 1
 
-- name: Standardization. Simplification. Waste
+- name: "Standardization. Simplification. Waste "
   total: 1
 
-- name: Systems of building construction. Including fireproof construction, concrete construction
+- name: "Systems of building construction. Including fireproof construction, concrete construction "
   total: 1
 
-- name: The city as an economic factor. City promotion
+- name: "The city as an economic factor. City promotion "
   total: 1
 
-- name: Trade unions. Labor unions. Workers associations
+- name: "Trade unions. Labor unions. Workers associations "
   total: 1
 
-- name: Ural-Altaic languages
+- name: "Ural-Altaic languages "
   total: 1
 
-- name: Work groups. Team work in industry. Quality circles
+- name: "Work groups. Team work in industry. Quality circles "
   total: 1
 
 apc:
