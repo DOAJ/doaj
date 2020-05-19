@@ -133,4 +133,14 @@
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
   }
+
+  // Tabs
+  $("[role='tab']").click(function(e) {
+    e.preventDefault();
+    $(this).attr("aria-selected", "true");
+    $(this).parent().siblings().children().attr("aria-selected", "false");
+    var tabpanelShow = $(this).attr("href");
+    $(tabpanelShow).attr("aria-hidden", "false");
+    $(tabpanelShow).siblings().attr("aria-hidden", "true");
+  });
 </script>

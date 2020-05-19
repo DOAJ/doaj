@@ -60,44 +60,63 @@
           <aside class="highlight highlight--is-aside">
             <h2>Become a yearly supporter</h2>
             <p>Please select your currency and organisation type for an annually-recurring payment.</p>
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-            <input type="hidden" name="cmd" value="_s-xclick">
-              <input type="hidden" name="hosted_button_id" value="PDKWBTFHT9JMN">
-              <input type="hidden" name="on0" value="Please select your organisation type">
-              <label for="support-yearly">In £ (GBP):</label>
-              <select name="os0">
-                <option value="Academic Library">Academic Library: £540.00 GBP (yearly)</option>
-                <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): £5,400.00 GBP (yearly)</option>
-              </select>
-              <input type="hidden" name="currency_code" value="GBP">
-              <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-            </form>
 
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-            <input type="hidden" name="cmd" value="_s-xclick">
-              <input type="hidden" name="hosted_button_id" value="LNYVLCWX8GNKJ">
-              <input type="hidden" name="on0" value="Please select your organisation type">
-              <label for="support-yearly">In € (EUR):</label>
-              <select name="os0">
-                <option value="Academic Library">Academic Library: €585.00 EUR (yearly)</option>
-                <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): €5,850.0 GBP (yearly)</option>
-              </select>
-              <input type="hidden" name="currency_code" value="EUR">
-              <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-            </form>
+            <div class="tabs">
+              <nav class="tabs__menu">
+                <ul class="tabs__list" role="tablist">
+                  <li class="tabs__item">
+                    <a href="#supporters-gbp" role="tab" aria-selected="true">£ (GBP)</a>
+                  </li>
+                  <li class="tabs__item"role="presentation">
+                    <a href="#supporters-eur" role="tab" aria-selected="false">€ (EUR)</a>
+                  </li>
+                  <li class="tabs__item" role="presentation">
+                    <a href="#supporters-usd" role="tab" aria-selected="false">$ (USD)</a>
+                  </li>
+                </ul>
+              </nav>
 
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-            <input type="hidden" name="cmd" value="_s-xclick">
-              <input type="hidden" name="hosted_button_id" value="GH72VHCDRDW9A">
-              <input type="hidden" name="on0" value="Please select your organisation type">
-              <label for="support-yearly">In $ (USD):</label>
-              <select name="os0">
-                <option value="Academic Library">Academic Library: $675.00 USD (yearly)</option>
-                <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): $6,750.00 USD (yearly)</option>
-              </select>
-              <input type="hidden" name="currency_code" value="EUR">
-              <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-            </form>
+              <div class="tabs__content">
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-gbp" class="tabs__panel" role="tabpanel" aria-hidden="false">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="hosted_button_id" value="PDKWBTFHT9JMN">
+                  <input type="hidden" name="on0" value="Please select your organisation type">
+                  <label for="support-yearly">Please select your organisation type</label>
+                  <select name="os0">
+                    <option value="Academic Library">Academic Library: £540.00 GBP (yearly)</option>
+                    <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): £5,400.00 GBP (yearly)</option>
+                  </select>
+                  <input type="hidden" name="currency_code" value="GBP">
+                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                </form>
+
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-eur" class="tabs__panel" role="tabpanel" aria-hidden="true">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="hosted_button_id" value="LNYVLCWX8GNKJ">
+                  <input type="hidden" name="on0" value="Please select your organisation type">
+                  <label for="support-yearly">Please select your organisation type</label>
+                  <select name="os0">
+                    <option value="Academic Library">Academic Library: €585.00 EUR (yearly)</option>
+                    <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): €5,850.0 GBP (yearly)</option>
+                  </select>
+                  <input type="hidden" name="currency_code" value="EUR">
+                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                </form>
+
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-usd" class="tabs__panel" role="tabpanel" aria-hidden="true">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="hosted_button_id" value="GH72VHCDRDW9A">
+                  <input type="hidden" name="on0" value="Please select your organisation type">
+                  <label for="support-yearly">Please select your organisation type</label>
+                  <select name="os0">
+                    <option value="Academic Library">Academic Library: $675.00 USD (yearly)</option>
+                    <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): $6,750.00 USD (yearly)</option>
+                  </select>
+                  <input type="hidden" name="currency_code" value="EUR">
+                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                </form>
+              </div>
+            </div>
           </aside>
           {% endif %}
 
