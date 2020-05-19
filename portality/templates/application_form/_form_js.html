@@ -12,27 +12,35 @@
         });
 });
 
-    let fields = document.getElementsByClassName("form__question");
+    let fields = document.getElementsByClassName("conditional");
     for (let f of fields) {
-        let dependant = document.getElementById(f.getAttribute("dependant_field")+"__container")
-        if (dependant) {
-            console.log(dependant);
-            let inputs = document.getElementsByName(f.getAttribute("id").replace("__container", ""))
-            for (let i = 0; i < inputs.length; i++){
+        let inputs = document.getElementsByName(f.getAttribute("name"))
+        let conditionValue = f.getAttribute("value")
+        let fieldToHide = document.getElementById(f.getAttribute("id").replace("__conditional","")+"__container")
+        for (let i = 0; i < inputs.length; i++){
+            if (inputs[i].type === "radio") {
                 inputs[i].addEventListener("click", function (e) {
                     if (inputs[i].checked) {
-                        if (inputs[i].value === f.getAttribute("dependant_value")){
-                            console.log("show")
-                            dependant.style.display = '';
-                        }
-                        else {
-                            console.log("hide")
-                            dependant.style.display = 'none';
+                        if (inputs[i].value === conditionValue) {
+                            fieldToHide.style.display = '';
+                        } else {
+                            fieldToHide.style.display = 'none';
                         }
                     }
                 })
             }
+            else {
+                inputs[i].addEventListener("click", function (e) {
+                    if (inputs[i].value === conditionValue) {
+                        if (inputs[i].checked) {
+                            fieldToHide.style.display = '';
+                        } else {
+                            fieldToHide.style.display = 'none';
+                        }
+                    }
+                })
             }
+        }
     }
 
             {#element.addEventListener("click", function (e) {#}
