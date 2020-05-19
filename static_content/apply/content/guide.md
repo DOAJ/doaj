@@ -15,18 +15,19 @@ Journals applying to DOAJ **must** meet the following criteria:
 |   | Criteria                                                                                                      | Details                                                                                                                             |
 |---|---------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
 |   | make all content available for free and [open access](#type-of-open-access) without delay (no embargo period) | the journal must be ‘gold’ (non-APC or APC) open access <br>the journal’s open access policy must be stated on the journal web site |
-|   | be actively publishing scholarly research                                                                     | its primary target audience should be researchers                                                                                   |
-|   | publish at least five (5) scholarly articles per year                                                         | ⅓ of all content must be peer-reviewed original research and/or review papers                                                       |
+|   | be actively publishing scholarly research                                                                     | its primary target audience should be researchers or practitioners                                                                    |
+|   | publish at least five (5) scholarly articles per year                                                         |                                                       |
 |   | have a dedicated [homepage or website](#journal-website)                                                      | the URL is stable and reliable                                                                                                      |
 |   | make their articles available as individual, [full-text articles](#full-text-articles)                        | each article has its own page with a unique URL                                                                                     |
 |   | have an editor and an [editorial board](#editorial-process)                                                   | the journal must be peer-reviewed <br>we accept a form of editorial review for Arts and Humanities journals                         |
-|   | have at least one current ISSN registered and confirmed at issn.org                                           | provisional ISSNs are not accepted <br>the name of the journal in the application must match what is registered at issn.org and on the website                             |
+|   | have at least one current ISSN registered and confirmed at issn.org and displayed on the website              | the name of the journal in the application must match what is registered at issn.org and on the website                             |
 |   | clearly indicate the [terms of copyright](#copyright) on the website                                          | it can not restrict authors’ rights to fair use only                                                                                |
 |   | clearly indicate its [licensing terms](#licensing) on the website                                             | licensing terms must be available and clearly stated on the journal website, preferably on the full text of every article           |
 
 Furthermore, please make sure that:
 
 - the journal hasn’t had an application rejected within the last six months;
+  - journals that are rejected must wait 6 months from the date of rejection before applying again, unless otherwise advised by DOAJ.
 - the journal isn’t in DOAJ already;
 - the journal doesn’t have another application already in progress;
   - duplicate applications are rejected immediately;
@@ -39,8 +40,6 @@ Journals included in DOAJ **can** also:
 - discuss any research subject areas;
 - be published in any language:
   - there is no requirement to publish in English;
-- be of any origin:
-  - academic, governmental, commercial, non-profit, private, and so on.
 
 **Journals do not need to meet the Seal criteria to be accepted into DOAJ.**
 
