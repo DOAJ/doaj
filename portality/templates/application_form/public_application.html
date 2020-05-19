@@ -17,7 +17,7 @@
 {% block content scoped %}
     {% set page = request.path.split("/")[2] %}
     {% if page == "01-oa-compliance" %}
-        <div >
+        <div>
             {% include "application_form/01-oa-compliance/index.html" %}
         </div>
     {% elif page == "02-about" %}

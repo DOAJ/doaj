@@ -19,7 +19,7 @@
         let fieldToHide = document.getElementById(f.getAttribute("id").replace("__conditional","")+"__container")
         for (let i = 0; i < inputs.length; i++){
             if (inputs[i].type === "radio") {
-                inputs[i].addEventListener("click", function (e) {
+                inputs[i].addEventListener("click", function () {
                     if (inputs[i].checked) {
                         if (inputs[i].value === conditionValue) {
                             fieldToHide.style.display = '';
@@ -30,7 +30,7 @@
                 })
             }
             else {
-                inputs[i].addEventListener("click", function (e) {
+                inputs[i].addEventListener("click", function () {
                     if (inputs[i].value === conditionValue) {
                         if (inputs[i].checked) {
                             fieldToHide.style.display = '';
@@ -42,10 +42,4 @@
             }
         }
     }
-
-            {#element.addEventListener("click", function (e) {#}
-            {#    console.log(this);#}
-
-
-
 </script>
