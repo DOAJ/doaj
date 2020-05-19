@@ -457,18 +457,6 @@ class FormulaicField(object):
         return condition[0].get("value", None) if len(condition) > 0 else None
 
     @property
-    def has_dependant(self):
-        return self._definition.get("dependant", None) is not None
-
-    @property
-    def dependant_field(self):
-        return self._definition.get("dependant", None).get("field", None)
-
-    @property
-    def dependant_value(self):
-        return self._definition.get("dependant", None).get("value", None)
-
-    @property
     def template(self):
         local = self._definition.get("template")
         if local is not None:

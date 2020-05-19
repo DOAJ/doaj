@@ -410,7 +410,6 @@ class FieldDefinitions:
             {"display": "Public domain", "value": "Public domain"},
             {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True},
         ],
-        "dependant": {"field": "license_attributes", "value": "Publisher's own license"},
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
                           "If Creative Commons licensing is not used, then select <i>Publisher's own license</i> and enter "
@@ -550,7 +549,6 @@ class FieldDefinitions:
             {"display": "Open peer review", "value": "open_peer_review"},
             {"display": "Other", "value": "other"}
         ],
-        "dependant": {"field": "review_process_other", "value": "other"},
         "help": {
             "doaj_criteria": "Peer review must be carried out"
         },
@@ -602,8 +600,7 @@ class FieldDefinitions:
         ],
         "validate": [
             "required"
-        ],
-        "dependant": {"field": "plagiarism_url", "value": "y"}
+        ]
     }
 
     PLAGIARISM_URL = {
@@ -707,8 +704,7 @@ class FieldDefinitions:
         },
         "validate": [
             "required"
-        ],
-        "dependant": {"field": "apc_url", "value": "y"}
+        ]
     }
 
     APC_URL = {
@@ -786,8 +782,7 @@ class FieldDefinitions:
         },
         "validate": [
             "required"
-        ],
-        "dependant": {"field": "waiver_url", "value": "y"}
+        ]
     }
 
     WAIVER_URL = {
@@ -818,7 +813,6 @@ class FieldDefinitions:
             {"display": "Yes", "value": "y"},
             {"display": "No", "value": "n"}
         ],
-        "dependant": {"field": "other_charges_url", "value": "y"},
         "help": {
             "long_help": ["Declare all other charges: editorial processing charges, colour charges, submission fees, "
                           "page charges, membership fees, print subscription costs, other supplementary charges"],
