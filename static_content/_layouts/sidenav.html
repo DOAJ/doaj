@@ -22,37 +22,65 @@
 
           {% if page.name == 'publisher-supporters.md' %}
           <aside class="highlight highlight--is-aside">
-            <h2>Become a yearly publisher supporter</h2>
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-              <input type="hidden" name="cmd" value="_s-xclick">
-              <input type="hidden" name="hosted_button_id" value="T8RHKSMJ2JN7S">
-              <input type="hidden" name="on0" value="Please select a yearly contribution based on your size">
-              <label for="support-publishers-yearly">Please select a yearly contribution based on your size</label>
-              <select id="support-publishers-yearly" name="os0">
-                <option value="Extra large">Extra large: £3,000.00 GBP (yearly)</option>
-                <option value="Large">Large: £1,000.00 GBP (yearly)</option>
-                <option value="Medium">Medium: £500.00 GBP (yearly)</option>
-                <option value="Small">Small: £200.00 GBP (yearly)</option>
-              </select>
-              <input type="hidden" name="currency_code" value="GBP">
-              <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-            </form>
+            <h2>Become a publisher supporter</h2>
 
-            <h2>Make a one-time donation as a publisher</h2>
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-              <input type="hidden" name="cmd" value="_s-xclick">
-              <input type="hidden" name="hosted_button_id" value="7JEXFR4S7X2VN">
-              <input type="hidden" name="on0" value="Please select your business size">
-              <label for="support-publishers-yearly">Please select your business size</label>
-              <select name="os0">
-                <option value="Extra large">Extra large: £3,000.00 GBP</option>
-                <option value="Large">Large: £1,000.00 GBP</option>
-                <option value="Medium">Medium: £500.00 GBP</option>
-                <option value="Small">Small: £200.00 GBP</option>
-              </select>
-              <input type="hidden" name="currency_code" value="GBP">
-              <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-            </form>
+            <div class="tabs">
+              <nav class="tabs__menu">
+                <ul class="tabs__list" role="tablist">
+                  <li class="tabs__item">
+                    <a href="#pub-supporters-yearly" role="tab" aria-selected="true">Yearly</a>
+                  </li>
+                  <li class="tabs__item"role="presentation">
+                    <a href="#pub-supporters-one-time" role="tab" aria-selected="false">One-time donation</a>
+                  </li>
+                </ul>
+              </nav>
+
+              <div class="tabs__content">
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="pub-supporters-yearly" class="tabs__panel" role="tabpanel" aria-hidden="false">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="hosted_button_id" value="T8RHKSMJ2JN7S">
+                  <input type="hidden" name="on0" value="Please select a yearly contribution based on your size">
+                  <label for="support-publishers-yearly">Please select a yearly contribution based on your size.</label>
+                  <select id="support-publishers-yearly" name="os0">
+                    <option value="Extra large">Extra large: £3,000.00 GBP (yearly)</option>
+                    <option value="Large">Large: £1,000.00 GBP (yearly)</option>
+                    <option value="Medium">Medium: £500.00 GBP (yearly)</option>
+                    <option <div class="tabs">
+                      <nav class="tabs__menu">
+                        <ul class="tabs__list" role="tablist">
+                          <li class="tabs__item">
+                            <a href="#supporters-gbp" role="tab" aria-selected="true">£ (GBP)</a>
+                          </li>
+                          <li class="tabs__item"role="presentation">
+                            <a href="#supporters-eur" role="tab" aria-selected="false">€ (EUR)</a>
+                          </li>
+                          <li class="tabs__item" role="presentation">
+                            <a href="#supporters-usd" role="tab" aria-selected="false">$ (USD)</a>
+                          </li>
+                        </ul>
+                      </nav>value="Small">Small: £200.00 GBP (yearly)</option>
+                  </select>
+                  <input type="hidden" name="currency_code" value="GBP">
+                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                </form>
+
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="pub-supporters-one-time" class="tabs__panel" role="tabpanel" aria-hidden="true">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="hosted_button_id" value="7JEXFR4S7X2VN">
+                  <input type="hidden" name="on0" value="Please select your business size">
+                  <label for="support-publishers-yearly">Please select your business size for a one-time donation.</label>
+                  <select name="os0">
+                    <option value="Extra large">Extra large: £3,000.00 GBP</option>
+                    <option value="Large">Large: £1,000.00 GBP</option>
+                    <option value="Medium">Medium: £500.00 GBP</option>
+                    <option value="Small">Small: £200.00 GBP</option>
+                  </select>
+                  <input type="hidden" name="currency_code" value="GBP">
+                  <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                </form>
+              </div>
+            </div>
           </aside>
           {% endif %}
 
