@@ -192,9 +192,26 @@
 
             {% elsif page.name == 'supporters.md' or page.name == 'supporters-fragment.md' %}
               <!-- Support section: supporters -->
-              {% for i in site.data.supporters %}
-                <p>{{ i.name }}, {{ i.url }}</p>
-              {% endfor %}
+              <ul class="row bleed title-list">
+                {% for i in site.data.supporters %}
+                <li class="col-sm-6 col-md-3">
+                  <div class="title-list__text">
+                    <p class="label">{{ i.country }}</p>
+                    <h2 class="title-list__heading">{{ i.name }}</h2>
+                    {% if i.consortium_name %}
+                    <p class="title-list__para">
+                      <em>Part of the</em> {{ i.consortium_name }}
+                    </p>
+                    {% endif %}
+                    <p class="title-list__para">
+                      {% if i.annual %}<a href="{{ site.baseurl }}{% link support/index.md %}" class="tag"><span data-feather="calendar"></span> Annual</a>{% endif %}
+                      {% if i.sustainable %}<a href="{{ site.baseurl }}{% link support/index.md %}" class="tag"><span data-feather="repeat"></span> Sustainable</a>{% endif %}
+                    </p>
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+              </ul>
 
             {% endif %}
           </section>
