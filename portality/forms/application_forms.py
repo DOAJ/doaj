@@ -1054,8 +1054,8 @@ class FieldDefinitions:
         "validate": []  # certain questions must be answered for the seal to be awarded
     }
 
-    QUICK_REJECT = {
-        "name": "quick_reject",
+    DOAJ_QUICK_REJECT = {
+        "name": "doaj_quick_reject",
         "label": "Select the reason for rejection",
         "input": "select",
         "options": [
@@ -1068,8 +1068,8 @@ class FieldDefinitions:
         ],
     }
 
-    QUICK_REJECT_DETAILS = {
-        "name": "quick_reject_details",
+    DOAJ_QUICK_REJECT_DETAILS = {
+        "name": "doaj_quick_reject_details",
         "label": "Enter additional information to be sent to the publisher",
         "input": "text",
         "help": {
@@ -1077,8 +1077,110 @@ class FieldDefinitions:
                          "are sent to the journal contact with the rejection email."
         },
         "validate": [
-            {"required_if": {"field": "quick_reject", "value": "other"}}
+            {"required_if": {"field": "doaj_quick_reject", "value": "other"}}
         ],
+    }
+
+    DOAJ_PUBLISHER_ACCOUNT = {
+        "name": "doaj_publisher_account",
+        "label": "DOAJ Account",
+        "input": "text",
+        # will be pre-populated with the initial applicant's account no
+        "validate": [
+            {"required_if": {"field": "doaj_status", "value": "accepted", "message": "You must confirm the account number"}}
+            # When Accepted selected display: 'This journal is currently assigned to its applicant account XXXXXX. Is this the correct account for this journal?'
+        ],
+        "widgets": [
+            {"autocomplete": {"field": "account"}}
+        ]
+    }
+
+    DOAJ_STATUS = {
+        "name": "doaj_status",
+        "label": "Select status",
+        "input": "select",
+        # will be pre-populated with 'pending' for new applications
+        "options_fn": None,  # List of available statuses changes based on role of viewer
+        "validate": [
+            "required"
+        ],
+        "help": {
+            "short_help": ""  # Varies according to role  todo: we may need a help function
+        }
+    }
+
+    DOAJ_REVIEW_GROUP = {
+        "name": "doaj_review_group",
+        "label": "Assign to editor group",
+        "input": "select",
+        "options_fn": None      # List of Editor Groups
+    }
+
+    DOAJ_REVIEW_USER = {
+        "name": "doaj_review_user",
+        "label": "Assign to individual",
+        "input": "select",
+        "options_fn": None      # List of users in the selected group
+        # todo: clear this field if group is changed?
+    }
+
+    DOAJ_DISCONTINUED_DATE = {
+        "name": "doaj_discontinued_date",
+        "label": "This journal was discontinued on",
+        "input": ""  # todo: Date picker
+    }
+
+    DOAJ_CONTINUES = {
+        "name": "doaj_continues",
+        "label": "This journal continues an older journal with the ISSN(s)",    # todo: can we really accept both ISSNs?
+        "input": "text",
+        "validate": [
+            {"is_issn": {"message": "This is not a valid ISSN"}},
+            {"different_to": {"field": "doaj_continued_by"}}
+        ],
+        "contexts": {  # fixme: requirements in spreadsheet unclear for this
+            "associate_editor": {
+                "disabled": True
+            },
+        },
+        "asynchronous_warnings": [
+            "in_public_doaj",  # check whether issn corresponds to a public DOAJ record todo: check collision with pissn
+        ]
+    }
+
+    DOAJ_CONTINUED_BY = {
+        "name": "doaj_continued_by",
+        "label": "This journal is continued by a newer version of the journal with the ISSN(s)",
+        "input": "text",
+        "validate": [
+            {"is_issn": {"message": "This is not a valid ISSN"}},
+            {"different_to": {"field": "doaj_continues"}}
+        ],
+        "contexts": {
+            "associate_editor": {
+                "disabled": True
+            },
+        },
+        "asynchronous_warnings": [
+            "in_public_doaj",  # todo: as above
+        ]
+    }
+
+    DOAJ_SUBJECT = {
+        "name": "doaj_subject",
+        "label": "Assign one or a maximum of two subject classifications",
+        "input": "select",
+        "help": {
+            "short_help": "Selecting a subject will not automatically select its sub-categories"
+        },
+        "validate": [
+            "required",
+            {"max_tags": {"max": 2}}        # required and max 2 should mean [min 1 max 2] to as per spec
+        ],
+        "widget": [
+            {"autocomplete": ""}  # autocomplete on subject tree
+            # todo: expandable subject tree feature
+        ]
     }
 
 
@@ -1146,12 +1248,24 @@ FIELDS = {
 
     FieldDefinitions.DOAJ_SEAL["name"]: FieldDefinitions.DOAJ_SEAL,
 
-    FieldDefinitions.QUICK_REJECT["name"]: FieldDefinitions.QUICK_REJECT,
-    FieldDefinitions.QUICK_REJECT_DETAILS["name"]: FieldDefinitions.QUICK_REJECT_DETAILS
+    FieldDefinitions.DOAJ_QUICK_REJECT["name"]: FieldDefinitions.DOAJ_QUICK_REJECT,
+    FieldDefinitions.DOAJ_QUICK_REJECT_DETAILS["name"]: FieldDefinitions.DOAJ_QUICK_REJECT_DETAILS,
+
+    FieldDefinitions.DOAJ_PUBLISHER_ACCOUNT["name"]: FieldDefinitions.DOAJ_PUBLISHER_ACCOUNT,
+    FieldDefinitions.DOAJ_STATUS["name"]: FieldDefinitions.DOAJ_STATUS,
+
+    FieldDefinitions.DOAJ_REVIEW_GROUP["name"]: FieldDefinitions.DOAJ_REVIEW_GROUP,
+    FieldDefinitions.DOAJ_REVIEW_USER["name"]: FieldDefinitions.DOAJ_REVIEW_USER,
+
+    FieldDefinitions.DOAJ_DISCONTINUED_DATE["name"]: FieldDefinitions.DOAJ_DISCONTINUED_DATE,
+    FieldDefinitions.DOAJ_CONTINUES["name"]: FieldDefinitions.DOAJ_CONTINUES,
+    FieldDefinitions.DOAJ_CONTINUED_BY["name"]: FieldDefinitions.DOAJ_CONTINUED_BY,
+
+    FieldDefinitions.DOAJ_SUBJECT["name"]: FieldDefinitions.DOAJ_SUBJECT
 }
 
 # todo: Have discussion with RJ about whether we can do this instead of the verbose code above:
-# FIELDS = {v['name']: v for k,v in FieldDefinitions.__dict__.items() if not k.startswith('_')}
+# FIELDS = {v['name']: v for k, v in FieldDefinitions.__dict__.items() if not k.startswith('_')}
 
 
 ##########################################################
@@ -1290,13 +1404,57 @@ class FieldSetDefinitions:
 
     QUICK_REJECT = {
         "name": "quick_reject",
-        "Label": "Quick Reject",
+        "label": "Quick Reject",
         "fields": [
-            FieldDefinitions.QUICK_REJECT["name"],
-            FieldDefinitions.QUICK_REJECT_DETAILS["name"]
-    ]
-}
+            FieldDefinitions.DOAJ_QUICK_REJECT["name"],
+            FieldDefinitions.DOAJ_QUICK_REJECT_DETAILS["name"]
+        ]
+    }
 
+    REASSIGN = {
+        "name": "reassign",
+        "label": "Re-assign publisher account",
+        "fields": [
+            FieldDefinitions.DOAJ_PUBLISHER_ACCOUNT["name"]
+        ]
+    }
+
+    STATUS = {
+        "name": "status",
+        "label": "Status",
+        "fields": [
+            FieldDefinitions.DOAJ_STATUS["name"]
+        ]
+    }
+
+    REVIEWERS = {
+        "name": "reviewers",
+        "label": "Assign for review",
+        "fields": [
+            FieldDefinitions.DOAJ_REVIEW_GROUP["name"],
+            FieldDefinitions.DOAJ_REVIEW_USER["name"]
+        ]
+    }
+
+    CONTINUATIONS = {
+        "name": "continuations",
+        "label": "Continuations",
+        "fields": [
+            FieldDefinitions.DOAJ_DISCONTINUED_DATE["name"],
+            FieldDefinitions.DOAJ_CONTINUES["name"],
+            FieldDefinitions.DOAJ_CONTINUED_BY["name"]
+        ]
+    }
+
+    SUBJECT = {
+        "name": "subject",
+        "label": "Subject classification",
+        "fields": [
+            FieldDefinitions.DOAJ_SUBJECT["name"]
+        ]
+    }
+
+# todo: we could do another FIELDSETS dictionary comprehension here
 
 ###########################################################
 # Define our Contexts
@@ -1333,18 +1491,23 @@ class ContextDefinitions:
         "processor": application_processors.PublicApplication,
     }
 
-    ADMIN = deepcopy(PUBLIC)
-    ADMIN["name"] = "admin"
-    ADMIN["fieldsets"] += [
+    MANED = deepcopy(PUBLIC)
+    MANED["name"] = "admin"
+    MANED["fieldsets"] += [
         FieldSetDefinitions.SEAL["name"],
-        FieldSetDefinitions.QUICK_REJECT["name"]
+        FieldSetDefinitions.QUICK_REJECT["name"],
+        FieldSetDefinitions.REASSIGN["name"],
+        FieldSetDefinitions.STATUS["name"],
+        FieldSetDefinitions.REASSIGN["name"],
+        FieldSetDefinitions.CONTINUATIONS["name"],
+        FieldSetDefinitions.SUBJECT["name"]
     ]
 
 
 FORMS = {
     "contexts": {
         ContextDefinitions.PUBLIC["name"]: ContextDefinitions.PUBLIC,
-        ContextDefinitions.ADMIN["name"]: ContextDefinitions.ADMIN
+        ContextDefinitions.MANED["name"]: ContextDefinitions.MANED
     },
     "fieldsets": {
         FieldSetDefinitions.BASIC_COMPLIANCE["name"]: FieldSetDefinitions.BASIC_COMPLIANCE,
@@ -1358,7 +1521,12 @@ FORMS = {
         FieldSetDefinitions.REPOSITORY_POLICY["name"]: FieldSetDefinitions.REPOSITORY_POLICY,
         FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]: FieldSetDefinitions.UNIQUE_IDENTIFIERS,
         FieldSetDefinitions.SEAL["name"]: FieldSetDefinitions.SEAL,
-        FieldSetDefinitions.QUICK_REJECT["name"]: FieldSetDefinitions.QUICK_REJECT
+        FieldSetDefinitions.QUICK_REJECT["name"]: FieldSetDefinitions.QUICK_REJECT,
+        FieldSetDefinitions.REASSIGN["name"]: FieldSetDefinitions.REASSIGN,
+        FieldSetDefinitions.STATUS["name"]: FieldSetDefinitions.STATUS,
+        FieldSetDefinitions.REASSIGN["name"]: FieldSetDefinitions.REASSIGN,
+        FieldSetDefinitions.CONTINUATIONS["name"]: FieldSetDefinitions.CONTINUATIONS,
+        FieldSetDefinitions.SUBJECT["name"]: FieldSetDefinitions.SUBJECT
     },
     "fields": FIELDS
 }
