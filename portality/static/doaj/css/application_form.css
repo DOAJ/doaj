@@ -19,3 +19,8 @@
 #apc_charges-apc_max {
     width: 75%
 }
+
+.tab {
+  display: none;
+}
+

@@ -15,33 +15,24 @@
 
 
 {% block content scoped %}
-    {% set page = request.path.split("/")[2] %}
-    {% if page == "01-oa-compliance" %}
-        <div>
-            {% include "application_form/01-oa-compliance/index.html" %}
-        </div>
-    {% elif page == "02-about" %}
-        <div>
-            {% include "application_form/02-about/index.html" %}
-        </div>
-    {% elif page == "03-copyright-licensing" %}
-        <div>
-            {% include "application_form/03-copyright-licensing/index.html" %}
-        </div>
-    {% elif page == "04-editorial" %}
-        <div>
-            {% include "application_form/04-editorial/index.html" %}
-        </div>
-    {% elif page == "05-business-model" %}
-        <div>
-            {% include "application_form/05-business-model/index.html" %}
-        </div>
-    {% elif page == "06-best-practice" %}
-        <div>
-            {% include "application_form/06-best-practice/index.html" %}
-        </div>
-    {% endif %}
-
+    <div class="tab">
+        {% include "application_form/01-oa-compliance/index.html" %}
+    </div>
+    <div class="tab">
+        {% include "application_form/02-about/index.html" %}
+    </div>
+    <div class="tab>
+        {% include "application_form/03-copyright-licensing/index.html" %}
+    </div>
+    <div class="tab>
+        {% include "application_form/04-editorial/index.html" %}
+    </div>
+    <div class="tab>
+        {% include "application_form/05-business-model/index.html" %}`
+    </div>
+    <div class="tab>
+        {% include "application_form/06-best-practice/index.html" %}
+    </div>
 {% endblock %}
 
 {% block extra_js_bottom scoped %}

@@ -31,11 +31,7 @@
                             {%  include field_template %}
                         {% endfor %}
 
-                    <p class="pager-buttons">
-
-                    <a href="../index" class="pager-buttons__left">Previous</a>
-                    <button type="submit" class="pager-buttons__right">Next</button>
-                    </p>
+                    {% include "application_form/_buttons.html" %}
 
                     {% if obj %}
                         <input type="hidden" name="id" value="{{ obj.id }}">
