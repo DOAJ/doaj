@@ -15,24 +15,51 @@
 
 
 {% block content scoped %}
-    <div class="tab">
-        {% include "application_form/01-oa-compliance/index.html" %}
-    </div>
-    <div class="tab">
-        {% include "application_form/02-about/index.html" %}
-    </div>
-    <div class="tab>
-        {% include "application_form/03-copyright-licensing/index.html" %}
-    </div>
-    <div class="tab>
-        {% include "application_form/04-editorial/index.html" %}
-    </div>
-    <div class="tab>
-        {% include "application_form/05-business-model/index.html" %}`
-    </div>
-    <div class="tab>
-        {% include "application_form/06-best-practice/index.html" %}
-    </div>
+<form id="{{ form_id }}"
+      novalidate
+      action="{{ form_action }}"
+      method="post"
+      data-formulaic-after="{{ formulaic_after }}">
+<body id="apply">
+
+    <main class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <section class="page-content">
+                    <div class="tab">
+                        {% include "application_form/01-oa-compliance/index.html" %}
+                    </div>
+                    <div class="tab">
+                        {% include "application_form/02-about/index.html" %}
+                    </div>
+                    <div class="tab">
+                        {% include "application_form/03-copyright-licensing/index.html" %}
+                    </div>
+                    <div class="tab">
+                        {% include "application_form/04-editorial/index.html" %}
+                    </div>
+                    <div class="tab">
+                        {% include "application_form/05-business-model/index.html" %}`
+                    </div>
+                    <div class="tab">
+                        {% include "application_form/06-best-practice/index.html" %}
+                    </div>
+
+                    {% include "application_form/_buttons.html" %}
+
+                </section>
+            </div>
+
+            <div class="col-md-4">
+                <div>
+                    {% include "application_form/pagination_menu.html" %}
+                    {% include "application_form/aside_menu.html" %}
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</form>
 {% endblock %}
 
 {% block extra_js_bottom scoped %}

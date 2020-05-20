@@ -1,49 +1,27 @@
-<body id="apply">
+<p class="label">Page 3 of 7</p>
+<h1>© Copyright & licensing</h1>
 
-    <main class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <section class="page-content">
-                    <p class="label">Page 3 of 7</p>
-                    <h1>© Copyright & licensing</h1>
+<form action="../04-editorial">
 
-                    <form action="../04-editorial">
+{% set fs = formulaic_context.fieldset("licensing") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
+{% set fs = formulaic_context.fieldset("embedded_licensing") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
+{% set fs = formulaic_context.fieldset("copyright") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
 
-                    {% set fs = formulaic_context.fieldset("licensing") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-                    {% set fs = formulaic_context.fieldset("embedded_licensing") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-                    {% set fs = formulaic_context.fieldset("copyright") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-
-                    {% include "application_form/_buttons.html" %}
-
-                    {% if obj %}
-                        <input type="hidden" name="id" value="{{ obj.id }}">
-                    {% endif %}
-
-                    </form>
-                </section>
-            </div>
-
-            <div class="col-md-4">
-                <div>
-                    {% include "application_form/pagination_menu.html" %}
-                    {% include "application_form/aside_menu.html" %}
-                </div>
-            </div>
-        </div>
-    </main>
-</body>
+{% if obj %}
+    <input type="hidden" name="id" value="{{ obj.id }}">
+{% endif %}

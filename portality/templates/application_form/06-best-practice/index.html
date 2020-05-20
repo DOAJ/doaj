@@ -1,54 +1,30 @@
-<body id="apply">
+<p class="label">Page 6 of 7</p>
+<h1><span data-feather="archive"></span> Best practice</h1>
 
-    <main class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <section class="page-content">
-                    <p class="label">Page 6 of 7</p>
-                    <h1><span data-feather="archive"></span> Best practice</h1>
+<p>The best practices in this section adhere to publishing standards based around findability, preserving the content and ethical publishing practices.</p>
 
-                <p>The best practices in this section adhere to publishing standards based around findability, preserving the content and ethical publishing practices.</p>
+<p>We encourage journals to adopt these best practices as far as possible but they are <strong>not</strong> mandatory for DOAJ indexing.</p>
 
-                <p>We encourage journals to adopt these best practices as far as possible but they are <strong>not</strong> mandatory for DOAJ indexing.</p>
+<hr />
+{% set fs = formulaic_context.fieldset("archiving_policy") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
+{% set fs = formulaic_context.fieldset("repository_policy") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
+{% set fs = formulaic_context.fieldset("unique_identifiers") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
 
-                <hr />
-
-                    <form action="../07-review">
-
-                    {% set fs = formulaic_context.fieldset("archiving_policy") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-                    {% set fs = formulaic_context.fieldset("repository_policy") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-                    {% set fs = formulaic_context.fieldset("unique_identifiers") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-
-                    <p class="pager-buttons">
-
-                    <a href="../apply/" class="pager-buttons__left">Previous</a>
-                    <button type="submit" class="pager-buttons__right">Next</button>
-                    </p>
-
-                    {% if obj %}
-                        <input type="hidden" name="id" value="{{ obj.id }}">
-                    {% endif %}
-
-                    </form>
-                </section>
-            </div>
-
-            {% include "application_form/_buttons.html" %}
-        </div>
-    </main>
-</body>
+{% if obj %}
+    <input type="hidden" name="id" value="{{ obj.id }}">
+{% endif %}
