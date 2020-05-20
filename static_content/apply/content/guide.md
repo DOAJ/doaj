@@ -27,7 +27,7 @@ Journals applying to DOAJ **must** meet the following criteria:
 Furthermore, please make sure that:
 
 - the journal hasn’t had an application rejected within the last six months;
-  - journals that are rejected must wait 6 months from the date of rejection before applying again, unless otherwise advised by DOAJ.
+  - journals that are rejected must wait 6 months from the date of rejection before applying again unless otherwise advised by DOAJ.
 - the journal isn’t in DOAJ already;
 - the journal doesn’t have another application already in progress;
   - duplicate applications are rejected immediately;
@@ -176,6 +176,6 @@ We cannot provide a status update for applications which are less than three mon
 
 ## Editorial disclaimer
 
-The applicant is responsible for providing accurate information when submitting an application. If the information provided is not sufficient or is incomplete, the application will be rejected.
+The applicant is responsible for providing accurate information when applying. If the information provided is not sufficient or is incomplete, the application will be rejected.
 In cases where the information provided is found to be untrue, either during review or after admission, we reserve the right to reject the application or remove the journal and to not accept new applications for a period of one year.
 In cases where a single publisher has submitted more than five applications with false information, we reserve the right to reject all associated applications and remove all associated journals. We will not accept any more applications for a maximum period of three years, depending on the number of journals for which false information was provided and the eventual number of repeated incidents.
