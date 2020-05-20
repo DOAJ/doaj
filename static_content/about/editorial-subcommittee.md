@@ -7,4 +7,4 @@ toc: true
 highlight: false
 ---
 
-{% include_relative content/advisory-board-council.md %}
+{% include_relative content/editorial-subcomittee.md %}
