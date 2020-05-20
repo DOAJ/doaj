@@ -15,38 +15,36 @@
 
 
 {% block content scoped %}
-<form id="{{ form_id }}"
-      novalidate
-      action="{{ form_action }}"
-      method="post"
-      data-formulaic-after="{{ formulaic_after }}">
 <body id="apply">
-
     <main class="container">
         <div class="row">
             <div class="col-md-8">
                 <section class="page-content">
-                    <div class="tab">
+                    <form id="{{ form_id }}"
+                      action="{{ form_action }}"
+                      method="post"
+                      data-formulaic-after="{{ formulaic_after }}">
+                    <div id="tab0">
                         {% include "application_form/01-oa-compliance/index.html" %}
                     </div>
-                    <div class="tab">
+                    <div id="tab1">
                         {% include "application_form/02-about/index.html" %}
                     </div>
-                    <div class="tab">
+                    <div id="tab2">
                         {% include "application_form/03-copyright-licensing/index.html" %}
                     </div>
-                    <div class="tab">
+                    <div id="tab3">
                         {% include "application_form/04-editorial/index.html" %}
                     </div>
-                    <div class="tab">
+                    <div id="tab4">
                         {% include "application_form/05-business-model/index.html" %}`
                     </div>
-                    <div class="tab">
+                    <div id="tab5">
                         {% include "application_form/06-best-practice/index.html" %}
                     </div>
 
                     {% include "application_form/_buttons.html" %}
-
+                </form>
                 </section>
             </div>
 
@@ -58,8 +56,7 @@
             </div>
         </div>
     </main>
-</body>
-</form>
+ </body>
 {% endblock %}
 
 {% block extra_js_bottom scoped %}

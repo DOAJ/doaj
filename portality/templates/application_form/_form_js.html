@@ -44,26 +44,25 @@
     }
 
     let currentTab = 0; // Current tab is set to be the first tab (0)
+    let tabs = document.querySelectorAll('[id^="tab"]');
     showTab(currentTab); // Display the current tab
     usePaginationMenu()
 
 function showTab(n) {
   // This function will display the specified tab of the form ...
-  let x = document.getElementsByClassName("tab");
-
   //hide all other tabs
-  for (let i = 0; i < x.length; i++){
-      x[i].style.display = "none";
+  for (let i = 0; i < tabs.length; i++){
+      tabs[i].style.display = "none";
   }
 
-  x[n].style.display = "block";
+  tabs[n].style.display = "block";
   // ... and fix the Previous/Next buttons:
   if (n === 0) {
     document.getElementById("prevBtn").style.display = "none";
   } else {
     document.getElementById("prevBtn").style.display = "inline";
   }
-  if (n === (x.length - 1)) {
+  if (n === (tabs.length - 1)) {
     document.getElementById("nextBtn").innerHTML = "Submit";
   } else {
     document.getElementById("nextBtn").innerHTML = "Next";
@@ -74,22 +73,23 @@ function showTab(n) {
 
 function nextPrev(n) {
   // This function will figure out which tab to display
-  var x = document.getElementsByClassName("tab");
   // Exit the function if any field in the current tab is invalid:
     // TODO: submit to save the draft
   // if you have reached the end of the form... :
     //TODO: submit
-  if (currentTab >= x.length - 1) {
+  if (currentTab >= tabs.length - 1) {
       //...the form gets submitted:
       document.getElementById("{{ form_id }}").submit();
       return false;
   }
     // Hide the current tab:
-  x[currentTab].style.display = "none";
+  tabs[currentTab].style.display = "none";
   // Increase or decrease the current tab by 1:
   currentTab = currentTab + n;
   // Otherwise, display the correct tab:
+//TODO: for test purposes submit instead of show
   showTab(currentTab);
+// document.getElementById("{{ form_id }}").submit();
 }
 
 function fixStepIndicator(n) {
@@ -106,7 +106,6 @@ function usePaginationMenu(){
     let x = document.getElementsByClassName("page_link");
     for(let i = 0; i < x.length; i++){
         x[i].addEventListener("click", function(){
-            console.log("click!")
             currentTab = i
             showTab(currentTab)
         })
