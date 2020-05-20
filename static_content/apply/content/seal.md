@@ -20,7 +20,7 @@ All seven criteria must be met to be awarded the Seal:
         - Portico
         - A national library
 2. Permanent identifiers
-    - For example: DOI, ARK, Handle
+    - For example, DOI, ARK, Handle
     - Identifiers must be deposited regularly and must resolve.
 3. Metadata supply to DOAJ
     - Article metadata must be upload to DOAJ regularly and within three months of receiving the Seal.
