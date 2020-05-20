@@ -79,6 +79,18 @@
             {% endfor %}
           </ul>
 
+        {% elsif page.name == 'editorial-subcommittee.d' or page.name == 'editorial-subcommittee-fragment.md' %}
+          <!-- About section: editorial subcommittee -->
+          <h2>Members</h2>
+          <ul class="row title-list">
+            {% for i in site.data.editorial-subcommittee %}
+            <li class="col-sm-6 col-md-4">
+              <div class="title-list__text">
+                {{ i }}
+            </li>
+            {% endfor %}
+          </ul>
+
         {% elsif page.name == 'advisory-board-council.md' or page.name == 'advisory-board-council-fragment.md' %}
           <!-- About section: advisory board & council -->
           <h2>Advisory Board</h2>

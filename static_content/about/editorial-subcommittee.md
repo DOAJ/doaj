@@ -7,4 +7,4 @@ toc: true
 highlight: false
 ---
 
-{% include_relative content/editorial-subcomittee.md %}
+{% include_relative content/editorial-subcommittee.md %}
