@@ -6,13 +6,13 @@ We reserve the right to deny membership.
 You can support us:
 
 + with an [annual fixed contribution]() (annual automatic payment);
-+ with a longer-term contribution, often over a three-year period, having a greater impact on the future of DOAJ and allowing for more sustainable development;
++ with a longer-term contribution, often over three years, having a greater impact on the future of DOAJ and allowing for more sustainable development;
 + with a [one-time contribution](#make-a-one-time-donation) made via Paypal (on this page);
 + as a [publisher supporter](/support/publisher-supporter/), if you publish, own or are the editor of an open access journal;
 + via a [sponsorship](/support/sponsors/);
   + for more information email [dom@doaj.org](mailto:dom@doaj.org?subject=DOAJ Sponsorship).
 
-All supporters will have their name listed on our site, and can use their supporter status and a DOAJ logo for marketing activities.
+All supporters will have their name listed on our site and can use their supporter status and a DOAJ logo for marketing activities.
 
 ## Make a one-time donation
 
