@@ -2,9 +2,9 @@ The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open 
 
 DOAJ is a community-curated list of open access journals and aims to be the starting point for all information searches for quality, peer reviewed open access material.
 
-DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) which provide the skeleton to the [DOAJ criteria](/apply/guide).
+DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) which provide the basis of the [DOAJ criteria](/apply/guide) for inclusion.
 
-DOAJ is a membership organisation. A DOAJ Membership is a clear statement of intent and proves a commitment to quality, peer-reviewed open access.
+DOAJ is a membership organisation. DOAJ Membership is a clear statement of intent and proves a commitment to quality, peer-reviewed open access.
 
 ## Our mission
 
@@ -18,7 +18,7 @@ DOAJ has [an Advisory Board and a Council](/board-council/), the members of whic
 
 DOAJ uses the services of approximately 100 voluntary editorial staff who review applications. All volunteers are bound by an Agreement. Two references are requested from everyone who volunteers. All volunteers must declare any conflicts of interest to the Managing Editors.
 
-DOAJ has a global network of Ambassadors who are also bound by an Agreement and must declare all conflicts of interest,
+DOAJ has a global network of Ambassadors who are also bound by an Agreement and must declare all conflicts of interest.
 
 ## Partnerships and collaborations
 
