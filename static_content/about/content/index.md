@@ -7,9 +7,11 @@ DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scho
 DOAJ is a membership organisation. A DOAJ Membership is a clear statement of intent and proves a commitment to quality, peer-reviewed open access.
 
 ## Our mission
+
 DOAJ's mission is to increase the visibility, accessibility, reputation, usage and impact of quality, peer-reviewed, open access scholarly research journals globally, regardless of discipline, geography or language. DOAJ will work with editors, publishers and journal owners to help them understand the value of best practice publishing and standards and apply those to their own operations. DOAJ is committed to being 100% independent and maintaining all of its services and metadata as free to use or reuse for everyone.
 
 ## Constitution
+
 DOAJ is a non-profit organisation managed by [Infrastructure Services for Open Access C.I.C.](http://is4oa.org/) ([community interest company](https://en.wikipedia.org/wiki/Community_interest_company)) based in the United Kingdom. DOAJ relies entirely on the voluntary donations of its members and sponsors. Neither DOAJ or IS4OA receives grants or funding from any other source.
 
 DOAJ has [an Advisory Board and a Council](/board-council/), the members of which carry out their duties voluntarily.
@@ -19,6 +21,7 @@ DOAJ uses the services of approximately 100 voluntary editorial staff who review
 DOAJ has a global network of Ambassadors who are also bound by an Agreement and must declare all conflicts of interest,
 
 ## Partnerships and collaborations
+
 DOAJ partners with many organisations. The nature of the partnership varies and may include membership, contracts for work, exchanges of information or services, initiative signatories or access to information resources that assist DOAJ with its application review process.
 
 {:.full-width-list}
