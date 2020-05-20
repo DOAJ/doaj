@@ -177,5 +177,5 @@ We cannot provide a status update for applications which are less than three mon
 ## Editorial disclaimer
 
 The applicant is responsible for providing accurate information when applying. If the information provided is not sufficient or is incomplete, the application will be rejected.
-In cases where the information provided is found to be untrue, either during review or after admission, we reserve the right to reject the application or remove the journal and to not accept new applications for a period of one year.
+In cases where the information provided is found to be untrue, either during review or after admission, we reserve the right to reject the application or remove the journal and to not accept new applications for one year.
 In cases where a single publisher has submitted more than five applications with false information, we reserve the right to reject all associated applications and remove all associated journals. We will not accept any more applications for a maximum period of three years, depending on the number of journals for which false information was provided and the eventual number of repeated incidents.
