@@ -143,4 +143,41 @@
     $(tabpanelShow).attr("aria-hidden", "false");
     $(tabpanelShow).siblings().attr("aria-hidden", "true");
   });
+
+  // Offset when clicking on anchor link or sidenav link to compensate for fixed header
+  var headerHeight = 70;
+
+  // When on the same page
+  jQuery (function($) {
+    $('a[href*="#"]:not([href="#"])').click(function() {
+      var target = $(this.hash);
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight
+      }, 50, 'linear');
+    });
+    if (location.hash){
+      var id = $(location.hash);
+    }
+
+    $(window).load(function() {
+      if (location.hash){
+        $('html,body').animate({
+          scrollTop: id.offset().top - headerHeight
+        }, 50, 'linear')
+      };
+    });
+  });
+
+  // Coming from another page
+  jQuery (document).ready (function($) {
+    var hash= window.location.hash
+    if ( hash == '' || hash == '#' || hash == undefined ) return false;
+    var target = $(hash);
+    target = target.length ? target : $('[name=' + hash.slice(1) +']');
+    if (target.length) {
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight //offsets for fixed header
+      }, 50, 'linear');
+    }
+  } );
 </script>
