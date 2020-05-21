@@ -153,27 +153,6 @@ Fair use alone is not open access and DOAJ will not accept a journal with these 
 
 ---
 
-## The application process
-
-1. Once you have submitted your application, you will see a _Thank You_ screen and will be sent an automated confirmation email.
-  - If you do not receive that email, contact us.
-2. You will receive another automated email telling you when your application has been picked up for review. Every application goes through up to four rounds of assessment.
-3. One of our Associate Editors might contact you during the review process.
-  - We will automatically reject the application if we receive no response to our emails after one month. Check your spam folder frequently.
-  - Be aware that the Associate Editor who is reviewing your application is a volunteer and may not be emailing you from a doaj.org email address.
-4. You will receive a third email informing you that a decision has been made:
-  - If your application is accepted, another email is sent with your account details. You need these to upload article metadata and to send us updates about your journal.
-  - If your application is rejected, the email will detail on what grounds the application failed our review.
-    - You may not submit another application for the same journal for six months.
-    - If you re-apply, we expect the journal to demonstrate very clearly that our recommendations have been implemented.
-
-### Time from submission to decision
-
-The time from submission to decision varies greatly and is dependent on the responsiveness of the journal contact and/or applicant. It can take up to six months for a decision to be reached but often a decision is reached within three months.
-We cannot provide a status update for applications which are less than three months old.
-
----
-
 ## Specific cases: exceptions and conditions
 
 {:.tabular-list}
@@ -198,6 +177,25 @@ We cannot provide a status update for applications which are less than three mon
 
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it has a different ISSN. DOAJ will currently accept mirror journals if they meet the usual inclusion criteria.
+
+## The application process
+
+1. Once you have submitted your application, you will see a _Thank You_ screen and will be sent an automated confirmation email.
+  - If you do not receive that email, contact us.
+2. You will receive another automated email telling you when your application has been picked up for review. Every application goes through up to four rounds of assessment.
+3. One of our Associate Editors might contact you during the review process.
+  - We will automatically reject the application if we receive no response to our emails after one month. Check your spam folder frequently.
+  - Be aware that the Associate Editor who is reviewing your application is a volunteer and may not be emailing you from a doaj.org email address.
+4. You will receive a third email informing you that a decision has been made:
+  - If your application is accepted, another email is sent with your account details. You need these to upload article metadata and to send us updates about your journal.
+  - If your application is rejected, the email will detail on what grounds the application failed our review.
+    - You may not submit another application for the same journal for six months.
+    - If you re-apply, we expect the journal to demonstrate very clearly that our recommendations have been implemented.
+
+### Time from submission to decision
+
+The time from submission to decision varies greatly and is dependent on the responsiveness of the journal contact and/or applicant. It can take up to six months for a decision to be reached but often a decision is reached within three months.
+We cannot provide a status update for applications which are less than three months old.
 
 ---
 
