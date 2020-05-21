@@ -1,9 +1,4 @@
-<body id="apply">
 
-    <main class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <section class="page-content">
                     <p class="label">Page 6 of 7</p>
                     <h1><span data-feather="archive"></span> Best practice</h1>
 
@@ -13,7 +8,7 @@
 
                 <hr />
 
-                    <form action="../07-review">
+
 
                     {% set fs = formulaic_context.fieldset("archiving_policy") %}
                     <h2 class="form__header"> {{ fs.label }}</h2>
@@ -34,21 +29,9 @@
                             {%  include field_template %}
                         {% endfor %}
 
-                    <p class="pager-buttons">
 
-                    <a href="../apply/" class="pager-buttons__left">Previous</a>
-                    <button type="submit" class="pager-buttons__right">Next</button>
-                    </p>
 
                     {% if obj %}
                         <input type="hidden" name="id" value="{{ obj.id }}">
                     {% endif %}
 
-                    </form>
-                </section>
-            </div>
-
-            {% include "application_form/_buttons.html" %}
-        </div>
-    </main>
-</body>

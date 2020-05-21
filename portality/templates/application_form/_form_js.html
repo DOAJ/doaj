@@ -63,7 +63,9 @@ function showTab(n) {
     document.getElementById("prevBtn").style.display = "inline";
   }
   if (n === (tabs.length - 1)) {
-    document.getElementById("nextBtn").innerHTML = "Submit";
+      let button  = document.getElementById("nextBtn")
+    button.innerHTML = "Submit";
+    button.type = "submit"
   } else {
     document.getElementById("nextBtn").innerHTML = "Next";
   }
@@ -79,15 +81,15 @@ function nextPrev(n) {
     //TODO: submit
   if (currentTab >= tabs.length - 1) {
       //...the form gets submitted:
-      document.getElementById("{{ form_id }}").submit();
-      return false;
+      console.log("submit!")
+      //document.getElementById("form_id").submit();
+      //return false;
   }
     // Hide the current tab:
   tabs[currentTab].style.display = "none";
   // Increase or decrease the current tab by 1:
   currentTab = currentTab + n;
   // Otherwise, display the correct tab:
-//TODO: for test purposes submit instead of show
   showTab(currentTab);
 // document.getElementById("{{ form_id }}").submit();
 }
@@ -106,6 +108,7 @@ function usePaginationMenu(){
     let x = document.getElementsByClassName("page_link");
     for(let i = 0; i < x.length; i++){
         x[i].addEventListener("click", function(){
+            console.log(i)
             currentTab = i
             showTab(currentTab)
         })

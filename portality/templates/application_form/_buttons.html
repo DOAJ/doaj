@@ -1,6 +1,6 @@
 {% block buttons %}
     <p class="pager-buttons">
-        <a href="../index" id="prevBtn" class="pager-buttons__left">Previous</a>
-        <button type="submit" id="nextBtn" class="pager-buttons__right">Next</button>
+        <button type="button" id="prevBtn" class="pager-buttons__left" onclick="nextPrev(-1)">Previous</button>
+        <button type="button" id="nextBtn" class="pager-buttons__right" onclick="nextPrev(1)">Next</button>
     </p>
 {% endblock %}

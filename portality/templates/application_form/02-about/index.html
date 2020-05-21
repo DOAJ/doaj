@@ -1,19 +1,8 @@
-<body id="apply">
 
-    <main class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <section class="page-content">
                     <p class="label">Page 2 of 7</p>
                     <h1><span data-feather="edit-3"></span> About the journal</h1>
 
-
-
-
-                    <form action="../03-copyright-licensing">
-
                     {% set fs = formulaic_context.fieldset("about_the_journal") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
                         {% for f in fs.fields() %}
                             {% set field_template = f.template %}
                             {%  include field_template %}
@@ -30,23 +19,6 @@
                             {% set field_template = f.template %}
                             {%  include field_template %}
                         {% endfor %}
-
-                    {% include "application_form/_buttons.html" %}
-
-                    {% if obj %}
+{% if obj %}
                         <input type="hidden" name="id" value="{{ obj.id }}">
                     {% endif %}
-
-                    </form>
-                </section>
-            </div>
-
-        <div class="col-md-4">
-        <div>
-        {% include "application_form/pagination_menu.html" %}
-        {% include "application_form/aside_menu.html" %}
-        </div>
-        </div>
-        </div>
-    </main>
-</body>

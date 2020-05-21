@@ -1,13 +1,6 @@
-<body id="apply">
 
-    <main class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <section class="page-content">
                     <p class="label">Page 5 of 7</p>
                     <h1><span data-feather="dollar-sign"></span>Business Model</h1>
-
-                    <form action="../06-best-practice">
 
                     {% set fs = formulaic_context.fieldset("apc") %}
                     <h2 class="form__header"> {{ fs.label }}</h2>
@@ -28,22 +21,6 @@
                             {%  include field_template %}
                         {% endfor %}
 
-                    {% include "application_form/_buttons.html" %}
-
                     {% if obj %}
                         <input type="hidden" name="id" value="{{ obj.id }}">
                     {% endif %}
-
-                    </form>
-                </section>
-            </div>
-
-            <div class="col-md-4">
-                <div>
-                    {% include "application_form/pagination_menu.html" %}
-                    {% include "application_form/aside_menu.html" %}
-                </div>
-            </div>
-        </div>
-    </main>
-</body>

@@ -1,9 +1,4 @@
-<body id="apply">
 
-    <main class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <section class="page-content">
                     <p class="label">Page 4 of 7</p>
                     <h1><span data-feather="user-check"></span> Editorial</h1>
 
@@ -28,22 +23,7 @@
                             {%  include field_template %}
                         {% endfor %}
 
-                    {% include "application_form/_buttons.html" %}
 
                     {% if obj %}
                         <input type="hidden" name="id" value="{{ obj.id }}">
                     {% endif %}
-
-                    </form>
-                </section>
-            </div>
-
-            <div class="col-md-4">
-                <div>
-                    {% include "application_form/pagination_menu.html" %}
-                    {% include "application_form/aside_menu.html" %}
-                </div>
-            </div>
-        </div>
-    </main>
-</body>
