@@ -176,6 +176,7 @@ We cannot provide a status update for applications which are less than three mon
 
 ## Specific cases: exceptions and conditions
 
+{:.tabular-list}
 - ### Arts and humanities journals
    - For these subjects only, DOAJ can accept journals that undertake editorial review, rather than peer review.  Editorial review must be handled with a minimum of two editors.
 
