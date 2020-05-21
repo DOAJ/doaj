@@ -10,7 +10,7 @@
 
     <main class="page-content">
       {% if page.highlight %}<div class="highlight">{% endif %}
-        <section class="container">
+        <header class="container">
           {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
           <h1>{{ page.title }}</h1>
           <div class="row">
@@ -18,7 +18,7 @@
               {{ content }}
             </div>
           </div>
-        </section>
+        </header>
       {% if page.highlight %}</div>{% endif %}
 
       <div class="container">
