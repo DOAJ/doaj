@@ -34,6 +34,7 @@ def public_application(draft_id=None):
 
     elif request.method == "POST":
 
+        print("submitted!")
         fc = ApplicationFormFactory.context("public")
 
         # find out if we're being asked to modify the form, rather than submit it

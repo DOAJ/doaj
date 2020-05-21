@@ -44,7 +44,7 @@
     }
 
     let currentTab = 0; // Current tab is set to be the first tab (0)
-    let tabs = document.querySelectorAll('[id^="tab"]');
+    let tabs = document.getElementsByClassName("tab");
     showTab(currentTab); // Display the current tab
     usePaginationMenu()
 
@@ -56,16 +56,24 @@ function showTab(n) {
   }
 
   tabs[n].style.display = "block";
+  document.getElementById("submitBtn").innerHTML = "Save draft"
   // ... and fix the Previous/Next buttons:
   if (n === 0) {
     document.getElementById("prevBtn").style.display = "none";
-  } else {
+
+  }
+  else {
     document.getElementById("prevBtn").style.display = "inline";
   }
+
   if (n === (tabs.length - 1)) {
-    document.getElementById("nextBtn").innerHTML = "Submit";
-  } else {
+    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("submitBtn").innerHTML = "Submit"
+  }
+  else {
+    document.getElementById("nextBtn").style.display = "inline";
     document.getElementById("nextBtn").innerHTML = "Next";
+    document.getElementById("submitBtn").innerHTML = "Save draft"
   }
   // ... and run a function that displays the correct step indicator:
   fixStepIndicator(n)
@@ -77,19 +85,14 @@ function nextPrev(n) {
     // TODO: submit to save the draft
   // if you have reached the end of the form... :
     //TODO: submit
-  if (currentTab >= tabs.length - 1) {
-      //...the form gets submitted:
-      document.getElementById("{{ form_id }}").submit();
-      return false;
-  }
-    // Hide the current tab:
+
+     // Hide the current tab:
   tabs[currentTab].style.display = "none";
   // Increase or decrease the current tab by 1:
   currentTab = currentTab + n;
+
   // Otherwise, display the correct tab:
-//TODO: for test purposes submit instead of show
   showTab(currentTab);
-// document.getElementById("{{ form_id }}").submit();
 }
 
 function fixStepIndicator(n) {

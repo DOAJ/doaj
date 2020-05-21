@@ -2,7 +2,6 @@
 <nav class="application-nav">
               <h2 class="application-nav__heading">Application progress</h2>
               <ol class="application-nav__list">
-              {% set page = request.path.split("/")[2] %}
                 <li class="application-nav__list-item">
                   <a href=#  class="page_link">Open access compliance</a>
                 </li>
@@ -21,9 +20,9 @@
                 <li class="application-nav__list-item">
                   <a href=#  class="page_link">Best practice</a>
                 </li>
-                <li class="application-nav__list-item">
-                  <a href=#  class="page_link">Review your answers</a>
-                </li>
+{#                <li class="application-nav__list-item">#}
+{#                  <a href=#  class="page_link">Review your answers</a>#}
+{#                </li>#}
               </ol>
             </nav>
 {% endblock %}

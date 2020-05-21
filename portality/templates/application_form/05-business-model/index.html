@@ -1,25 +1,26 @@
-<p class="label">Page 5 of 7</p>
-<h1><span data-feather="dollar-sign"></span>Business Model</h1>
 
-{% set fs = formulaic_context.fieldset("apc") %}
-<h2 class="form__header"> {{ fs.label }}</h2>
-    {% for f in fs.fields() %}
-        {% set field_template = f.template %}
-        {%  include field_template %}
-    {% endfor %}
-{% set fs = formulaic_context.fieldset("apc_waivers") %}
-<h2 class="form__header"> {{ fs.label }}</h2>
-    {% for f in fs.fields() %}
-        {% set field_template = f.template %}
-        {%  include field_template %}
-    {% endfor %}
-{% set fs = formulaic_context.fieldset("other_fees") %}
-<h2 class="form__header"> {{ fs.label }}</h2>
-{% for f in fs.fields() %}
-    {% set field_template = f.template %}
-    {% include field_template %}
-{% endfor %}
+                    <p class="label">Page 5 of 7</p>
+                    <h1><span data-feather="dollar-sign"></span>Business Model</h1>
 
-{% if obj %}
-    <input type="hidden" name="id" value="{{ obj.id }}">
-{% endif %}
+                    {% set fs = formulaic_context.fieldset("apc") %}
+                    <h2 class="form__header"> {{ fs.label }}</h2>
+                        {% for f in fs.fields() %}
+                            {% set field_template = f.template %}
+                            {%  include field_template %}
+                        {% endfor %}
+                    {% set fs = formulaic_context.fieldset("apc_waivers") %}
+                    <h2 class="form__header"> {{ fs.label }}</h2>
+                        {% for f in fs.fields() %}
+                            {% set field_template = f.template %}
+                            {%  include field_template %}
+                        {% endfor %}
+                    {% set fs = formulaic_context.fieldset("other_fees") %}
+                    <h2 class="form__header"> {{ fs.label }}</h2>
+                        {% for f in fs.fields() %}
+                            {% set field_template = f.template %}
+                            {%  include field_template %}
+                        {% endfor %}
+
+                    {% if obj %}
+                        <input type="hidden" name="id" value="{{ obj.id }}">
+                    {% endif %}
