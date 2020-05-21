@@ -211,7 +211,9 @@ Journals already accepted into DOAJ may also be removed if they are found to be 
 
 Please ensure that, if you do apply again after the exclusion period, the journal meets the DOAJ criteria for inclusion and any necessary changes have been made to the journal website or policies.
 
-### Appeals
+---
+
+## Appeals
 
 If you would like to appeal against a decision to reject your application or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, [managing-editors@doaj.org](mailto:managing-editors@doaj.org).
 
