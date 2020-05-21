@@ -199,8 +199,29 @@ We cannot provide a status update for applications which are less than three mon
 
 ---
 
-## Editorial disclaimer
+## If your application is rejected
 
-The applicant is responsible for providing accurate information when applying. If the information provided is not sufficient or is incomplete, the application will be rejected.
-In cases where the information provided is found to be untrue, either during review or after admission, we reserve the right to reject the application or remove the journal and to not accept new applications for one year.
-In cases where a single publisher has submitted more than five applications with false information, we reserve the right to reject all associated applications and remove all associated journals. We will not accept any more applications for a maximum period of three years, depending on the number of journals for which false information was provided and the eventual number of repeated incidents.
+You will receive an email giving the reasons for rejection of the application. Unless otherwise advised by DOAJ staff, you may not submit another application for the same journal until 6 months after the date of the notification of rejection.
+
+You are responsible for providing accurate information when submitting an application. In cases where journal information is found to be untrue or misleading, DOAJ may decide not to allow further applications from the publisher for a period of up to three years.
+
+DOAJ accepts only journals that follow good publishing practice. If our review finds a publisher is not adhering to best practice, or has questionable publishing practices, DOAJ will not allow further applications from that publisher for a period of up to three years.
+
+Journals already accepted into DOAJ may also be removed if they are found to be no longer adhering to DOAJ criteria or publishing best practice.
+
+Please ensure that, if you do apply again after the exclusion period, the journal meets the DOAJ criteria for inclusion and any necessary changes have been made to the journal website or policies.
+
+### Appeals
+
+If you would like to appeal against a decision to reject your application or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, [managing-editors@doaj.org](mailto:managing-editors@doaj.org).
+
+The appeal should contain the following information:
+- Journal title
+- Journal ISSN
+- Reason for appeal
+- Evidence for the DOAJ Appeals Committee to consider
+- The original notification of rejection/removal
+
+Appeals are considered by the DOAJ Appeals Committee, consisting of the Editor-in-Chief and members of the editorial team. Committee meetings are held monthly. After your case is discussed a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
+
+No further communication will be entered into after the appeal is heard and the Committee has made their decision.
