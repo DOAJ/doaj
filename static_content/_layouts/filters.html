@@ -19,7 +19,7 @@
         {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
 
         <p class="alert">
-          <span data-feather="alert-circle"></span> <em>Search tip:</em> {{ site.data.search-tips[random].text }}
+          <span data-feather="alert-circle" aria-hidden="true"></span> <em>Search tip:</em> {{ site.data.search-tips[random].text }}
         </p>
 
         {% if page.name == 'journals.md' %}
@@ -42,7 +42,7 @@
           </select>
 
           <button type="submit">
-            <span data-feather="search"></span><span class="sr-only"> Search</span>
+            <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
           </button>
         </div>
 
@@ -61,7 +61,7 @@
                   <ul class="filter__choices">
                     <li>
                       <input id="filter-seal" type="checkbox" name="filter-seal"/>
-                      <label for="filter-seal" class="filter__label">With a DOAJ Seal&nbsp;&nbsp;<span data-feather="check-circle"></span></label>
+                      <label for="filter-seal" class="filter__label">With a DOAJ Seal&nbsp;&nbsp;<span data-feather="check-circle" aria-hidden="true"></span></label>
                     </li>
                     <li>
                       <input id="filter-apc" type="checkbox" name="filter-apc"/>
@@ -97,7 +97,7 @@
                 <li class="filter">
                   <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-languages" aria-expanded="false">
                     Languages
-                    <span data-feather="chevron-down"></span>
+                    <span data-feather="chevron-down" aria-hidden="true"></span>
                   </h3>
                   <div id="filter-languages" class="collapse filter__body" aria-expanded="false">
 
@@ -121,7 +121,7 @@
                 <li class="filter">
                   <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-licenses" aria-expanded="false">
                     Licenses
-                    <span data-feather="chevron-down"></span>
+                    <span data-feather="chevron-down" aria-hidden="true"></span>
                   </h3>
                   <div id="filter-licenses" class="collapse filter__body" aria-expanded="false">
                     {% if site.data.search-filters.licenses.size > 10 %}
@@ -144,7 +144,7 @@
                 <li class="filter">
                   <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-publisher" aria-expanded="false">
                     Publishers
-                    <span data-feather="chevron-down"></span>
+                    <span data-feather="chevron-down" aria-hidden="true"></span>
                   </h3>
                   <div id="filter-publisher" class="collapse filter__body" aria-expanded="false">
                     {% if site.data.search-filters.publisher.size > 10 %}
@@ -167,7 +167,7 @@
                 <li class="filter">
                   <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-publisher-country" aria-expanded="false">
                     Publishers’ countries
-                    <span data-feather="chevron-down"></span>
+                    <span data-feather="chevron-down" aria-hidden="true"></span>
                   </h3>
                   <div id="filter-publisher-country" class="collapse filter__body" aria-expanded="false">
                     {% if site.data.search-filters.publisher_country.size > 10 %}
@@ -190,7 +190,7 @@
                 <li class="filter">
                   <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-peer-review" aria-expanded="false">
                     Peer review types
-                    <span data-feather="chevron-down"></span>
+                    <span data-feather="chevron-down" aria-hidden="true"></span>
                   </h3>
                   <div id="filter-peer-review" class="collapse filter__body" aria-expanded="false">
                     <ul class="filter__choices">
@@ -209,7 +209,7 @@
                 <li class="filter">
                   <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-date-added" aria-expanded="false">
                     Date added
-                    <span data-feather="chevron-down"></span>
+                    <span data-feather="chevron-down" aria-hidden="true"></span>
                   </h3>
                   <div id="filter-date-added" class="collapse filter__body" aria-expanded="false">
                     <ul class="filter__choices">
@@ -274,7 +274,7 @@
                     </h3>
                     {% if i.seal %}
                     <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag">
-                      <span data-feather="check-circle"></span>
+                      <span data-feather="check-circle" aria-hidden="true"></span>
                       DOAJ Seal
                     </a>
                     {% endif %}
@@ -300,7 +300,7 @@
                   <aside class="col-sm-4 search-results__aside">
                     <ul>
                       <li>
-                        <a href="{{ i.url }}" target="_blank">Website <span data-feather="external-link"></span></a>
+                        <a href="{{ i.url }}" target="_blank">Website <span data-feather="external-link" aria-hidden="true"></span></a>
                       </li>
                       <li>
                         <a href="{{ i.license_url }}" target="_blank">{{ i.license }}</a>

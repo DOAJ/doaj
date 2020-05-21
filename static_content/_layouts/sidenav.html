@@ -162,7 +162,7 @@
             <!-- Display data pages -->
             {% if page.name == 'sponsors.md' or page.name == 'sponsors-fragment.md' %}
               <!-- Support section: sponsors -->
-              <h3><span data-feather="award" class="stroke-gold"></span> Gold sponsor</h3>
+              <h3><span data-feather="award" aria-hidden="true" class="stroke-gold"></span> Gold sponsor</h3>
               <div class="row">
                 {% for i in site.data.sponsors.gold %}
                 <div class="col-xs-6 sponsor">
@@ -173,7 +173,7 @@
                 {% endfor %}
               </div>
 
-              <h3><span data-feather="award" class="stroke-silver"></span> Silver sponsors</h3>
+              <h3><span data-feather="award" aria-hidden="true" class="stroke-silver"></span> Silver sponsors</h3>
               <div class="row">
                 {% for i in site.data.sponsors.silver %}
                 <div class="col-xs-4 sponsor">
@@ -184,7 +184,7 @@
                 {% endfor %}
               </div>
 
-              <h3><span data-feather="award" class="stroke-bronze"></span> Bronze sponsors</h3>
+              <h3><span data-feather="award" aria-hidden="true" class="stroke-bronze"></span> Bronze sponsors</h3>
               <div class="row">
                 {% for i in site.data.sponsors.bronze %}
                 <div class="col-xs-4 sponsor">
@@ -219,8 +219,8 @@
                     </p>
                     {% endif %}
                     <p class="title-list__para">
-                      {% if i.annual %}<a href="{{ site.baseurl }}{% link support/index.md %}" class="tag"><span data-feather="calendar"></span> Annual</a>{% endif %}
-                      {% if i.sustainable %}<a href="{{ site.baseurl }}{% link support/index.md %}" class="tag"><span data-feather="repeat"></span> Sustainable</a>{% endif %}
+                      {% if i.annual %}<a href="{{ site.baseurl }}{% link support/index.md %}" class="tag"><span data-feather="calendar" aria-hidden="true"></span> Annual</a>{% endif %}
+                      {% if i.sustainable %}<a href="{{ site.baseurl }}{% link support/index.md %}" class="tag"><span data-feather="repeat" aria-hidden="true"></span> Sustainable</a>{% endif %}
                     </p>
                   </div>
                 </li>
