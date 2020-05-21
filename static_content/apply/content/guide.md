@@ -174,6 +174,32 @@ We cannot provide a status update for applications which are less than three mon
 
 ---
 
+## Specific cases: exceptions and conditions
+
+- ### Arts and humanities journals
+   - For these subjects only, DOAJ can accept journals that undertake editorial review, rather than peer review.  Editorial review must be handled with a minimum of two editors.
+
+- ### Case reports journals
+   - DOAJ only considers case reports as research if they include the retrospective analysis of more than three clinical cases and/or a literature review. Before applying, make sure that the journal has published at least five articles per year that meet this definition.
+
+- ### Law journals
+   - Law journals must undertake a peer review process to be included in DOAJ. However, an exception is made for US law journals where editorial review is an accepted practice in this field and has been traditionally used for over a century.
+
+- ### Student-run journals
+   - If a journal is run by a student body, there must be an advisory board for the journal where at least two members have a PhD or equivalent qualification.
+
+- ### Journals that have flipped to open access
+   - Where a journal was previously published as a subscription or hybrid journal and has now flipped to a fully open access model, this information must be clearly displayed:
+      - The date of the change to fully open access
+      - The availability of the archive material (open access, free, or paywalled)
+      - Reuse rights of the archive material (all rights reserved or open license)
+   - For a journal to be included in DOAJ, the latest volume must be completely open access. DOAJ does not accept journals where the current material is a mixture of open and restricted licenses.
+
+- ### Mirror journals
+   - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it has a different ISSN. DOAJ will currently accept mirror journals if they meet the usual inclusion criteria.
+
+---
+
 ## Editorial disclaimer
 
 The applicant is responsible for providing accurate information when applying. If the information provided is not sufficient or is incomplete, the application will be rejected.
