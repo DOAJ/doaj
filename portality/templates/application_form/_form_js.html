@@ -1,6 +1,5 @@
 <script type="text/javascript" src="/portality/static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/portality/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/portality/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript">
     jQuery(document).ready(function($) {
         formulaic.active = formulaic.newFormulaic({
@@ -10,7 +9,7 @@
             autoSave: {{ auto_save }},
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
-});
+    });
 
     let fields = document.getElementsByClassName("conditional");
     for (let f of fields) {
@@ -45,74 +44,93 @@
 
     let currentTab = 0; // Current tab is set to be the first tab (0)
     let tabs = document.getElementsByClassName("tab");
+    let sections = document.getElementsByClassName("form-section")
     showTab(currentTab); // Display the current tab
-    usePaginationMenu()
+    usePaginationMenu();
+    prepareSections();
 
-function showTab(n) {
-  // This function will display the specified tab of the form ...
-  //hide all other tabs
-  for (let i = 0; i < tabs.length; i++){
-      tabs[i].style.display = "none";
-  }
+    function showTab(n) {
+      // This function will display the specified tab of the form ...
+      //hide all other tabs
+      for (let i = 0; i < tabs.length; i++){
+          tabs[i].style.display = "none";
+      }
 
-  tabs[n].style.display = "block";
-  document.getElementById("submitBtn").innerHTML = "Save draft"
-  // ... and fix the Previous/Next buttons:
-  if (n === 0) {
-    document.getElementById("prevBtn").style.display = "none";
+      tabs[n].style.display = "block";
+      document.getElementById("submitBtn").innerHTML = "Save draft"
+      // ... and fix the Previous/Next buttons:
+      if (n === 0) {
+        document.getElementById("prevBtn").style.display = "none";
 
-  }
-  else {
-    document.getElementById("prevBtn").style.display = "inline";
-  }
+      }
+      else {
+        document.getElementById("prevBtn").style.display = "inline";
+      }
 
-  if (n === (tabs.length - 1)) {
-    document.getElementById("nextBtn").style.display = "none";
-    document.getElementById("submitBtn").innerHTML = "Submit"
-  }
-  else {
-    document.getElementById("nextBtn").style.display = "inline";
-    document.getElementById("nextBtn").innerHTML = "Next";
-    document.getElementById("submitBtn").innerHTML = "Save draft"
-  }
-  // ... and run a function that displays the correct step indicator:
-  fixStepIndicator(n)
-}
-
-function nextPrev(n) {
-  // This function will figure out which tab to display
-  // Exit the function if any field in the current tab is invalid:
-    // TODO: submit to save the draft
-  // if you have reached the end of the form... :
-    //TODO: submit
-
-     // Hide the current tab:
-  tabs[currentTab].style.display = "none";
-  // Increase or decrease the current tab by 1:
-  currentTab = currentTab + n;
-
-  // Otherwise, display the correct tab:
-  showTab(currentTab);
-}
-
-function fixStepIndicator(n) {
-  // This function removes the "active" class of all steps...
-  let x = document.getElementsByClassName("application-nav__list-item");
-  for (let i = 0; i < x.length; i++) {
-    x[i].className = "application-nav__list-item";
-  }
-  //... and adds the "active" class to the current step:
-  x[n].className += " application-nav__list-item--active";
-}
-
-function usePaginationMenu(){
-    let x = document.getElementsByClassName("page_link");
-    for(let i = 0; i < x.length; i++){
-        x[i].addEventListener("click", function(){
-            currentTab = i
-            showTab(currentTab)
-        })
+      if (n === (tabs.length - 1)) {
+        document.getElementById("nextBtn").style.display = "none";
+        document.getElementById("submitBtn").innerHTML = "Submit"
+      }
+      else {
+        document.getElementById("nextBtn").style.display = "inline";
+        document.getElementById("nextBtn").innerHTML = "Next";
+        document.getElementById("submitBtn").innerHTML = "Save draft"
+      }
+      // ... and run a function that displays the correct step indicator:
+      fixStepIndicator(n)
     }
-}
+
+    function navigate(n){
+        // Hide the current tab:
+      tabs[currentTab].style.display = "none";
+      // Increase or decrease the current tab by 1:
+      currentTab = currentTab+n;
+      // Otherwise, display the correct tab:
+      showTab(currentTab);
+    }
+
+    function prev() {
+         navigate(-1)
+    }
+
+    function next() {
+        let form = document.getElementById('{{ form_id }}')
+        $('#'+'{{ form_id }}').parsley().whenValidate({
+            group: 'block-' + currentTab
+        }).done(function() {
+            navigate(1)
+        });
+        //navigate(1)
+    }
+
+    function fixStepIndicator(n) {
+      // This function removes the "active" class of all steps...
+      let x = document.getElementsByClassName("application-nav__list-item");
+      for (let i = 0; i < x.length; i++) {
+        x[i].className = "application-nav__list-item";
+      }
+      //... and adds the "active" class to the current step:
+      x[n].className += " application-nav__list-item--active";
+    }
+
+    function usePaginationMenu(){
+        let x = document.getElementsByClassName("page_link");
+        for(let i = 0; i < x.length; i++){
+            x[i].addEventListener("click", function(){
+                currentTab = i
+                showTab(currentTab)
+            })
+        }
+    }
+
+    function prepareSections(){
+        for(let i = 0; i < sections.length; i++){
+
+            let inputs = sections[i].getElementsByTagName("input");
+            for (let j = 0; j < inputs.length; j++){
+                inputs[j].setAttribute('data-parsley-group', 'block-' + i);
+            }
+        }
+    }
 
 </script>
