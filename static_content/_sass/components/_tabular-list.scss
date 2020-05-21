@@ -8,8 +8,7 @@
   border-collapse: collapse;
   border-spacing: 0 $spacing-04;
 
-  > li,
-  &__row {
+  > li {
     display: table-row;
     vertical-align: top;
     width: 100%;
@@ -23,6 +22,12 @@
       list-style: none;
       width: 60%;
       @include font-sans;
+    }
+
+    h3 {
+      padding-top: 0;
+      font-size: 1em;
+      font-weight: 400;
     }
   }
 }
