@@ -14,6 +14,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Directory of Open Access Journals
+url: https://doaj-static.netlify.app/
 
 # Build settings
 markdown: kramdown
