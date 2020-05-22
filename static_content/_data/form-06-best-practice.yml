@@ -84,7 +84,7 @@
     4: PURLs
     5: The journal does not use persistent article identifiers
     6: Other
-  long_help: "A persistent article identifier (PID) is used to find the article no matter where it is located. The most common type of PID is the digital object identifier (DOI).</p><p><a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank'> Read more about PIDs</a>."
+  long_help: "A persistent article identifier (PID) is used to find the article no matter where it is located. The most common type of PID is the digital object identifier (DOI).</p><p><a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'> Read more about PIDs</a>."
 
 - label: "Other identifier:"
   id: persistent_id_other
@@ -100,7 +100,7 @@
   choices:
     1: "Yes"
     2: "No"
-  long_help: "An <a href='https://orcid.org/' target='blank'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify authors."
+  long_help: "An <a href='https://orcid.org/' target='blank' rel='noopener'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify authors."
 
 - label: "Does the journal comply with I4OC standards for open citations?"
   id: i4oc
@@ -110,4 +110,4 @@
   choices:
     1: "Yes"
     2: "No"
-  long_help: "The <a href='https://i4oc.org/#goals' target='_blank'>I4OC standards</a> ask that citations are structured, separable, and open."
+  long_help: "The <a href='https://i4oc.org/#goals' target='_blank' rel='noopener'>I4OC standards</a> ask that citations are structured, separable, and open."

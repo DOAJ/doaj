@@ -6,14 +6,14 @@
   input: text
   required: true
   placeholder: "My journal"
-  long_help: "<p>The journal title must match what is displayed on the website and what is registered at the <a href='https://portal.issn.org/' target='_blank'>ISSN Portal</a>.</p> <p>For translated titles, you may add the translation as an alternative title.</p>"
+  long_help: "<p>The journal title must match what is displayed on the website and what is registered at the <a href='https://portal.issn.org/' target='_blank' rel='noopener'>ISSN Portal</a>.</p> <p>For translated titles, you may add the translation as an alternative title.</p>"
 
 - label: "Alternative title (includes translation of the title)"
   id: alternative_title
   input: text
   required: true
   placeholder: "Ma revue"
-  long_help: "<p>The journal title must match what is displayed on the website and what is registered at the <a href='https://portal.issn.org/' target='_blank'>ISSN Portal</a>.</p> <p>For translated titles, you may add the translation as an alternative title.</p>"
+  long_help: "<p>The journal title must match what is displayed on the website and what is registered at the <a href='https://portal.issn.org/' target='_blank' rel='noopener'>ISSN Portal</a>.</p> <p>For translated titles, you may add the translation as an alternative title.</p>"
 
 - label: "Link to the journal’s homepage"
   id: journal_url
@@ -26,7 +26,7 @@
   input: text
   required: true
   placeholder: "2049-3630"
-  long_help: "<p>Must be a valid ISSN, fully registered and confirmed at the <a href='https://portal.issn.org/' target='_blank'>ISSN Portal</a>.</p><p>The ISSN must match what is given on the journal website.</p>"
+  long_help: "<p>Must be a valid ISSN, fully registered and confirmed at the <a href='https://portal.issn.org/' target='_blank' rel='noopener'>ISSN Portal</a>.</p><p>The ISSN must match what is given on the journal website.</p>"
 
 
 - label: "ISSN (online)"
@@ -34,7 +34,7 @@
   input: text
   required: true
   placeholder: "0378-5955"
-  long_help: "<p>Must be a valid ISSN, fully registered and confirmed at the <a href='https://portal.issn.org/' target='_blank'>ISSN Portal</a>.</p><p>The ISSN must match what is given on the journal website.</p>"
+  long_help: "<p>Must be a valid ISSN, fully registered and confirmed at the <a href='https://portal.issn.org/' target='_blank' rel='noopener'>ISSN Portal</a>.</p><p>The ISSN must match what is given on the journal website.</p>"
 
 - label: "Up to 6 subject keywords in English"
   id: keywords
