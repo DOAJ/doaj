@@ -1,6 +1,6 @@
 ---
 layout: apply
-title: <span data-feather="eye"></span> Review your answers
+title: <span data-feather="eye" aria-hidden="true"></span> Review your answers
 toc: true
 hightrght: false
 number: 7

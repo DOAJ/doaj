@@ -1,6 +1,6 @@
 ---
 layout: apply
-title: © Copyright & licensing
+title: <span aria-hidden="true">©</span> Copyright & licensing
 toc: true
 highlight: false
 previous: 02-about
