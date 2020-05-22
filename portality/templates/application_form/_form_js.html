@@ -13,9 +13,9 @@
 
     let fields = document.getElementsByClassName("conditional");
     for (let f of fields) {
-        let inputs = document.getElementsByName(f.getAttribute("name"))
-        let conditionValue = f.getAttribute("value")
-        let fieldToHide = document.getElementById(f.getAttribute("id").replace("__conditional","")+"__container")
+        let inputs = document.getElementsByName(f.getAttribute("name"));
+        let conditionValue = f.getAttribute("value");
+        let fieldToHide = document.getElementById(f.getAttribute("id").replace("__conditional","")+"__container");
         for (let i = 0; i < inputs.length; i++){
             if (inputs[i].type === "radio") {
                 inputs[i].addEventListener("click", function () {
@@ -44,7 +44,7 @@
 
     let currentTab = 0; // Current tab is set to be the first tab (0)
     let tabs = document.getElementsByClassName("tab");
-    let sections = document.getElementsByClassName("form-section")
+    let sections = document.getElementsByClassName("form-section");
     showTab(currentTab); // Display the current tab
     usePaginationMenu();
     prepareSections();
@@ -55,29 +55,40 @@
       for (let i = 0; i < tabs.length; i++){
           tabs[i].style.display = "none";
       }
-
+      let submitButton = document.getElementById("submitBtn");
       tabs[n].style.display = "block";
-      document.getElementById("submitBtn").innerHTML = "Save draft"
+      document.getElementById("submitBtn").innerHTML = "Save draft";
       // ... and fix the Previous/Next buttons:
       if (n === 0) {
         document.getElementById("prevBtn").style.display = "none";
-
       }
       else {
         document.getElementById("prevBtn").style.display = "inline";
       }
 
       if (n === (tabs.length - 1)) {
+          //show submit button only if all tabs are validated
         document.getElementById("nextBtn").style.display = "none";
-        document.getElementById("submitBtn").innerHTML = "Submit"
+        submitButton.innerHTML = "Submit";
+        submitButton.disabled = !form_validated();
+
       }
       else {
         document.getElementById("nextBtn").style.display = "inline";
         document.getElementById("nextBtn").innerHTML = "Next";
-        document.getElementById("submitBtn").innerHTML = "Save draft"
+        document.getElementById("submitBtn").innerHTML = "Save draft";
+        submitButton.disabled = false;
       }
       // ... and run a function that displays the correct step indicator:
       fixStepIndicator(n)
+    }
+
+    function form_validated() {
+        let validation_inputs = document.getElementsByName("validated");
+        for (let i = 0; i < validation_inputs.length; i++){
+            if (validation_inputs[i].value === 'False') return false;
+        }
+        return true;
     }
 
     function navigate(n){
@@ -90,19 +101,19 @@
     }
 
     function prev() {
-         navigate(-1)
+         navigate(-1);
     }
 
     function next() {
         $('#'+'{{ form_id }}').parsley().whenValidate({
             group: 'block-' + currentTab
         }).done(function() {
-            let hiddenField = document.getElementById("validated-" + currentTab)
-            hiddenField.value = "True"
-            navigate(1)
+            let hiddenField = document.getElementById("validated-" + currentTab);
+            hiddenField.value = "True";
+            navigate(1);
         }).fail(function() {
-            let hiddenField = document.getElementById("validated-" + currentTab)
-            hiddenField.value = "False"
+            let hiddenField = document.getElementById("validated-" + currentTab);
+            hiddenField.value = "False";
         });
     }
 
@@ -120,8 +131,8 @@
         let x = document.getElementsByClassName("page_link");
         for(let i = 0; i < x.length; i++){
             x[i].addEventListener("click", function(){
-                currentTab = i
-                showTab(currentTab)
+                currentTab = i;
+                showTab(currentTab);
             })
         }
     }
@@ -134,8 +145,8 @@
                 inputs[j].setAttribute('data-parsley-group', 'block-' + i);
             }
 
-            let hiddenField = document.getElementsByName("validated")
-            hiddenField[i].setAttribute('id', 'validated-' + i)
+            let hiddenField = document.getElementsByName("validated");
+            hiddenField[i].setAttribute('id', 'validated-' + i);
         }
     }
 
