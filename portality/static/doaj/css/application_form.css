@@ -23,3 +23,12 @@
 .tab {
   display: none;
 }
+
+.parsley-error {
+    border-color: #982E0A;;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px #982E0A;;
+}
+
+li.parsley-required {
+    display: none !important;
+}

@@ -15,12 +15,6 @@
     {% if f.help("short_help") %}
        <p><small>{{ f.help("short_help") }}</small></p>
     {% endif %}
-
-    {% if f.has_errors() %}
-        {% for error in f.errors() %}
-        <li>{{ error }}</li>
-        {% endfor %}
-    {% endif %}
 </div>
 
 {% include "application_form/modal.html" %}
