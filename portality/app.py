@@ -68,7 +68,6 @@ initialise_index(app)
 # the other tiers' logos.
 SPONSORS = {
     'gold': {
-        'ieee': {'name' : 'IEEE', 'logo':'ieee.png', 'url':'https://www.ieee.org/'}
     },
     'silver': {
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'https://www.frontiersin.org'},
@@ -115,7 +114,8 @@ SPONSORS = {
         'iet': {'name': 'IET (Institution of Engineering and Technology)', 'logo': 'iet.png', 'url': 'https://www.theiet.org/'},
         'pensoft': {'name': 'Pensoft', 'logo': 'pensoftlogo.svg', 'url': 'https://pensoft.net/'},
         'plos': {'name': 'PLOS', 'logo': 'plos.png', 'url': 'https://plos.org/'},
-        'apa': {'name': 'APA', 'logo': 'apa.png', 'url': 'https://www.apaopen.org/'}
+        'apa': {'name': 'APA', 'logo': 'apa.png', 'url': 'https://www.apaopen.org/'},
+        'ieee': {'name': 'IEEE', 'logo': 'ieee.png', 'url': 'https://www.ieee.org/'},
     },
     'patron': {
         #'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
