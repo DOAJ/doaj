@@ -1,25 +1,26 @@
-                    <p class="label">Page 3 of 7</p>
-                    <h1>© Copyright & licensing</h1>
+<input type="hidden" name="validated" value="False">
+<p class="label">Page 3 of 7</p>
+<h1>© Copyright & licensing</h1>
 
-                    {% set fs = formulaic_context.fieldset("licensing") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-                    {% set fs = formulaic_context.fieldset("embedded_licensing") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-                    {% set fs = formulaic_context.fieldset("copyright") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
+{% set fs = formulaic_context.fieldset("licensing") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
+{% set fs = formulaic_context.fieldset("embedded_licensing") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
+{% set fs = formulaic_context.fieldset("copyright") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
 
 {% if obj %}
-                        <input type="hidden" name="id" value="{{ obj.id }}">
-                    {% endif %}
+    <input type="hidden" name="id" value="{{ obj.id }}">
+{% endif %}

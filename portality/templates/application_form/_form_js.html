@@ -94,13 +94,16 @@
     }
 
     function next() {
-        let form = document.getElementById('{{ form_id }}')
         $('#'+'{{ form_id }}').parsley().whenValidate({
             group: 'block-' + currentTab
         }).done(function() {
+            let hiddenField = document.getElementById("validated-" + currentTab)
+            hiddenField.value = "True"
             navigate(1)
+        }).fail(function() {
+            let hiddenField = document.getElementById("validated-" + currentTab)
+            hiddenField.value = "False"
         });
-        //navigate(1)
     }
 
     function fixStepIndicator(n) {
@@ -130,6 +133,9 @@
             for (let j = 0; j < inputs.length; j++){
                 inputs[j].setAttribute('data-parsley-group', 'block-' + i);
             }
+
+            let hiddenField = document.getElementsByName("validated")
+            hiddenField[i].setAttribute('id', 'validated-' + i)
         }
     }
 

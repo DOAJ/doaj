@@ -1,29 +1,29 @@
+<input type="hidden" name="validated" value="False">
+<p class="label">Page 4 of 7</p>
+<h1><span data-feather="user-check"></span> Editorial</h1>
 
-                    <p class="label">Page 4 of 7</p>
-                    <h1><span data-feather="user-check"></span> Editorial</h1>
+<form action="../05-business-model">
 
-                    <form action="../05-business-model">
-
-                    {% set fs = formulaic_context.fieldset("peer_review") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-                    {% set fs = formulaic_context.fieldset("plagiarism") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-                    {% set fs = formulaic_context.fieldset("editorial") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
+{% set fs = formulaic_context.fieldset("peer_review") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
+{% set fs = formulaic_context.fieldset("plagiarism") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
+{% set fs = formulaic_context.fieldset("editorial") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
 
 
-                    {% if obj %}
-                        <input type="hidden" name="id" value="{{ obj.id }}">
-                    {% endif %}
+{% if obj %}
+    <input type="hidden" name="id" value="{{ obj.id }}">
+{% endif %}
