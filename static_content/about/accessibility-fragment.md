@@ -1,7 +1,7 @@
 ---
 layout: sidenav
 fragment: true
-title: Accessibility Statement
+title: Accessibility statement for doaj.org
 section: About
 toc: true
 sticky_sidenav: true
