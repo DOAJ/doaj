@@ -7,6 +7,7 @@
 }
 
 .pager-buttons__left,
+.pager-buttons__center,
 .pager-buttons__right {
   padding: 0.5em $spacing-03;
   border: 1px solid;
@@ -24,6 +25,21 @@
   &:active {
     border-color: $warm-black;
     background: $warm-black;
+  }
+}
+
+.pager-buttons__center {
+  float: right;
+  margin-right: $spacing-02;
+  border: 1px solid $warm-black;
+  background: transparent;
+  color: $warm-black;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: $warm-black;
+    color: $warm-white;
   }
 }
 
