@@ -26,11 +26,16 @@ sass:
     style: compressed
 plugins_dir:
   - jekyll-toc
+  - jekyll-target-blank
 
-# TOC settings s
+# TOC settings
 toc:
   list_class: page-nav__list
   sublist_class: page-nav__sublist
   item_class: page-nav__item
   item_prefix: item-
   max_level: 4
+
+# Target-blank settings
+target-blank:
+   noreferrer: false
