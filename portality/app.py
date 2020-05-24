@@ -68,7 +68,6 @@ initialise_index(app, es_connection)
 # the other tiers' logos.
 SPONSORS = {
     'gold': {
-        'ieee': {'name' : 'IEEE', 'logo':'ieee.png', 'url':'https://www.ieee.org/'}
     },
     'silver': {
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'https://www.frontiersin.org'},
@@ -97,7 +96,7 @@ SPONSORS = {
         'lund': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'https://www.lunduniversity.lu.se/'},
         'sage': {'name': 'SAGE Publications', 'logo': 'sage.svg', 'url': 'http://www.sagepublications.com/'},
         'scielo': {'name': 'SciELO (Scientific Electronic Library Online)', 'logo': 'scielo.svg', 'url': 'http://www.scielo.br/'},
-        'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.svg', 'url': 'http://www.taylorandfrancisgroup.com/'},
+        #'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.svg', 'url': 'http://www.taylorandfrancisgroup.com/'},
         'wiley': {'name': 'Wiley', 'logo': 'wiley.svg', 'url': 'https://wiley.com'},
         'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.svg', 'url': 'http://emeraldpublishing.com/'},
         #'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.svg', 'url': 'https://www.thieme.com'},
@@ -114,7 +113,9 @@ SPONSORS = {
         'cambridge': {'name': 'Cambridge University Press', 'logo': 'cambridge.png', 'url': 'https://www.cambridge.org/'},
         'iet': {'name': 'IET (Institution of Engineering and Technology)', 'logo': 'iet.png', 'url': 'https://www.theiet.org/'},
         'pensoft': {'name': 'Pensoft', 'logo': 'pensoftlogo.svg', 'url': 'https://pensoft.net/'},
-        'plos': {'name': 'PLOS', 'logo': 'plos.png', 'url': 'https://plos.org/'}
+        'plos': {'name': 'PLOS', 'logo': 'plos.png', 'url': 'https://plos.org/'},
+        'apa': {'name': 'APA', 'logo': 'apa.png', 'url': 'https://www.apaopen.org/'},
+        'ieee': {'name': 'IEEE', 'logo': 'ieee.png', 'url': 'https://www.ieee.org/'},
     },
     'patron': {
         #'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
