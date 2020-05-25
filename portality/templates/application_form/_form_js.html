@@ -125,16 +125,16 @@
     }
 
     function next() {
+        console.log("click next")
         $('#' + '{{ form_id }}').parsley().whenValidate({
             group: 'block-' + currentTab
         }).done(function () {
             document.getElementById("validated-" + currentTab).value = "True";
             navigate(1);
         }).fail(function () {
-            console.log("validated-" + currentTab)
             document.getElementById("validated-" + currentTab).value = "False";
             //only for tests
-            navigate(1);
+            //navigate(1);
         });
     }
 
@@ -142,7 +142,6 @@
         // This function removes the "active" class of all steps...
         let x = document.getElementsByClassName("application-nav__list-item");
         for (let i = 0; i < x.length-1; i++) {
-            console.log(i)
             let hiddenField = document.getElementById("validated-" + i);
             if (hiddenField.value === "True") {
                 x[i].className = "application-nav__list-item application-nav__list-item--done"
@@ -188,7 +187,6 @@
             }
 
             let hiddenField = document.getElementsByName("validated");
-            console.log(hiddenField, sections.length)
             if (i < sections.length-1){
                 hiddenField[i].setAttribute('id', 'validated-' + i);
             }
