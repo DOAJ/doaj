@@ -14,30 +14,30 @@
 
     let fields = document.getElementsByClassName("conditional");
     for (let f of fields) {
-        let inputs = document.getElementsByName(f.getAttribute("name"));
-        let conditionValue = f.getAttribute("value");
-        let fieldToHide = document.getElementById(f.getAttribute("id").replace("__conditional","")+"__container");
-        for (let i = 0; i < inputs.length; i++){
+    let inputs = document.getElementsByName(f.getAttribute("name"));
+    let conditionValue = f.getAttribute("value");
+    let fieldToHide = document.getElementById(f.getAttribute("id").replace("__conditional","")+"__container");
+    for (let i = 0; i < inputs.length; i++){
             if (inputs[i].type === "radio") {
                 inputs[i].addEventListener("click", function () {
-                    if (inputs[i].checked) {
-                        if (inputs[i].value === conditionValue) {
-                            fieldToHide.style.display = '';
-                        } else {
-                            fieldToHide.style.display = 'none';
-                        }
+                if (inputs[i].checked) {
+                    if (inputs[i].value === conditionValue) {
+                        fieldToHide.style.display = '';
+                    } else {
+                        fieldToHide.style.display = 'none';
                     }
+                }
                 })
             }
             else {
                 inputs[i].addEventListener("click", function () {
-                    if (inputs[i].value === conditionValue) {
-                        if (inputs[i].checked) {
-                            fieldToHide.style.display = '';
-                        } else {
-                            fieldToHide.style.display = 'none';
-                        }
+                if (inputs[i].value === conditionValue) {
+                    if (inputs[i].checked) {
+                        fieldToHide.style.display = '';
+                    } else {
+                        fieldToHide.style.display = 'none';
                     }
+                }
                 })
             }
         }
@@ -52,67 +52,52 @@
     showTab(currentTab); // Display the current tab
 
     function showTab(n) {
-      // This function will display the specified tab of the form ...
-      //hide all other tabs
-        let hiddenField = document.getElementById("validated-"+n)
+        // This function will display the specified tab of the form ...
+        //hide all other tabs
+        let hiddenField = document.getElementById("validated-" + n)
         if (hiddenField.value === "") {
             hiddenField.value = 'False';
         }
 
-      for (let i = 0; i < tabs.length; i++){
-          tabs[i].style.display = "none";
-      }
-      let submitButton = document.getElementById("submitBtn");
-      tabs[n].style.display = "block";
-      document.getElementById("submitBtn").innerHTML = "Save draft";
-      // ... and fix the Previous/Next buttons:
-      if (n === 0) {
-        document.getElementById("prevBtn").style.display = "none";
-      }
-      else {
-        document.getElementById("prevBtn").style.display = "inline";
-      }
-
-      if (n === (tabs.length - 1)) {
-          //show submit button only if all tabs are validated
-        document.getElementById("nextBtn").style.display = "none";
-        submitButton.innerHTML = "Submit";
-        let validated = form_validated()
-        submitButton.disabled = !validated;
-        if (!validated){
-            document.getElementById("cannot-submit").display = "inline"
+        for (let i = 0; i < tabs.length; i++) {
+            tabs[i].style.display = "none";
         }
-        else{
-             document.getElementById("cannot-submit").display = "none"
-        }
-
-      }
-      else {
-        document.getElementById("nextBtn").style.display = "inline";
-        document.getElementById("nextBtn").innerHTML = "Next";
+        let submitButton = document.getElementById("submitBtn");
+        tabs[n].style.display = "block";
         document.getElementById("submitBtn").innerHTML = "Save draft";
-        submitButton.disabled = false;
-      }
-      // ... and run a function that displays the correct step indicator:
-      fixStepIndicator(n)
+        // ... and fix the Previous/Next buttons:
+        if (n === 0) {
+            document.getElementById("prevBtn").style.display = "none";
+        } else {
+            document.getElementById("prevBtn").style.display = "inline";
+        }
 
-      {#  console.log("validated-" + currentTab)#}
-      {#if(document.getElementById("validated-" + currentTab).value === "False"){#}
-      {#    let menuItems = document.getElementsByClassName(".application-nav__list-item")#}
-      {#    let item = menuItems[currentTab]#}
-      {#    console.log(item)#}
-      {#    item.style.border = "2px solid #982E0A";#}
-      {#    item.style.boxShadow = "#982E0A 3px";#}
-      {#    item.style.color = "#982E0A";#}
-      {##}
-      {#
-      #}
+        if (n === (tabs.length - 1)) {
+            //show submit button only if all tabs are validated
+            document.getElementById("nextBtn").style.display = "none";
+            submitButton.innerHTML = "Submit";
+            let validated = form_validated()
+            submitButton.disabled = !validated;
+            if (!validated) {
+                document.getElementById("cannot-submit").display = "inline"
+            } else {
+                document.getElementById("cannot-submit").display = "none"
+            }
+
+        } else {
+            document.getElementById("nextBtn").style.display = "inline";
+            document.getElementById("nextBtn").innerHTML = "Next";
+            document.getElementById("submitBtn").innerHTML = "Save draft";
+            submitButton.disabled = false;
+        }
+        // ... and run a function that displays the correct step indicator:
+        fixStepIndicator(n)
 
     }
 
     function form_validated() {
         let validation_inputs = document.getElementsByName("validated");
-        for (let i = 0; i < validation_inputs.length; i++){
+        for (let i = 0; i < validation_inputs.length; i++) {
             if (validation_inputs[i].value === 'False') return false;
         }
         return true;
@@ -123,70 +108,64 @@
         form.noValidate = true
     }
 
-    function navigate(n){
+    function navigate(n) {
         // Hide the current tab:
-      tabs[currentTab].style.display = "none";
-      // Increase or decrease the current tab by 1:
+        tabs[currentTab].style.display = "none";
+        // Increase or decrease the current tab by 1:
         previousTab = currentTab
-      currentTab = currentTab+n;
-      // Otherwise, display the correct tab:
-      showTab(currentTab);
+        currentTab = currentTab + n;
+        // Otherwise, display the correct tab:
+        showTab(currentTab);
     }
 
     function prev() {
-         navigate(-1);
+        navigate(-1);
     }
 
     function next() {
-        $('#'+'{{ form_id }}').parsley().whenValidate({
+        $('#' + '{{ form_id }}').parsley().whenValidate({
             group: 'block-' + currentTab
-        }).done(function() {
+        }).done(function () {
             document.getElementById("validated-" + currentTab).value = "True";
             let pageMenu = document.getElementsByClassName("application-nav__list-item")
             navigate(1);
-        }).fail(function() {
+        }).fail(function () {
             let hiddenField = document.getElementById("validated-" + currentTab);
             hiddenField.value = "False";
         });
     }
 
     function fixStepIndicator(n) {
-      // This function removes the "active" class of all steps...
-      let x = document.getElementsByClassName("application-nav__list-item");
-      for (let i = 0; i < x.length-1; i++) {
-          let hiddenField = document.getElementById("validated-" + i);
-          if (hiddenField.value === "True"){
-              console.log("true " + i)
+        // This function removes the "active" class of all steps...
+        let x = document.getElementsByClassName("application-nav__list-item");
+        for (let i = 0; i < x.length - 1; i++) {
+            let hiddenField = document.getElementById("validated-" + i);
+            if (hiddenField.value === "True") {
                 x[i].className = "application-nav__list-item application-nav__list-item--done"
-          }
-          else if (hiddenField.value === "False") {
-              console.log("false " + i)
-              x[i].className = "application-nav__list-item application-nav__list-item--invalid"
-          }
-      }
-      //... and adds the "active" class to the current step:
-      x[n].className = "application-nav__list-item application-nav__list-item--active";
-      document.getElementById("page_link-"+n).className= "page_link";
+            } else if (hiddenField.value === "False") {
+                x[i].className = "application-nav__list-item application-nav__list-item--invalid"
+            }
+        }
+        //... and adds the "active" class to the current step:
+        x[n].className = "application-nav__list-item application-nav__list-item--active";
+        document.getElementById("page_link-" + n).className = "page_link";
     }
 
-    function usePaginationMenu(){
+    function usePaginationMenu() {
         let x = document.querySelectorAll('[id^="page_link-"]');
-        for(let i = 0; i < x.length; i++){
-            x[i].addEventListener("click", function(){
+        for (let i = 0; i < x.length; i++) {
+            x[i].addEventListener("click", function () {
                 previousTab = currentTab
                 currentTab = i;
-                if (document.getElementById("validated-" + i).value === ''){
-                   return false;
-                }
-                else{
-                    $('#'+'{{ form_id }}').parsley().whenValidate({
+                if (document.getElementById("validated-" + i).value === '') {
+                    return false;
+                } else {
+                    $('#' + '{{ form_id }}').parsley().whenValidate({
                         group: 'block-' + previousTab
-                    }).done(function() {
-                        console.log("change to true" + previousTab)
+                    }).done(function () {
                         document.getElementById("validated-" + previousTab).value = "True";
                         showTab(currentTab);
-                    }).fail(function() {
-                        console.log("change to false" + previousTab)
+                    }).fail(function () {
                         document.getElementById("validated-" + previousTab).value = "False";
                         showTab(currentTab);
                     });
@@ -196,11 +175,11 @@
         }
     }
 
-    function prepareSections(){
-        for(let i = 0; i < sections.length-1; i++){
+    function prepareSections() {
+        for (let i = 0; i < sections.length - 1; i++) {
 
             let inputs = sections[i].getElementsByTagName("input");
-            for (let j = 0; j < inputs.length; j++){
+            for (let j = 0; j < inputs.length; j++) {
                 inputs[j].setAttribute('data-parsley-group', 'block-' + i);
             }
 
@@ -209,7 +188,7 @@
         }
 
         let menus = document.querySelectorAll('[id^="page_link-"]');
-        for (let k = 0; k < menus.length; k++){
+        for (let k = 0; k < menus.length; k++) {
             menus[k].className = "page_link--disabled";
         }
     }
