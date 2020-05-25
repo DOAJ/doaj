@@ -66,7 +66,7 @@
     <script type="text/javascript">
     $.extend(true, doaj, {
         adminApplicationsSearchConfig : {
-            applicationEditUrl : "{{ url_for('admin.suggestion_page', suggestion_id='') }}",
+            applicationEditUrl : "{{ url_for('admin.application', application_id='') }}",
             journalsUrl : "{{ url_for('admin.journals') }}",
             readOnlyJournalUrl: "{{ url_for('doaj.journal_readonly', journal_id="") }}",
             searchPath : '/admin_query/suggestion/_search'
