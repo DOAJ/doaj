@@ -54,9 +54,11 @@
     function showTab(n) {
         // This function will display the specified tab of the form ...
         //hide all other tabs
-        let hiddenField = document.getElementById("validated-" + n)
-        if (hiddenField.value === "") {
-            hiddenField.value = 'False';
+        if (n < sections.length-1){
+            let hiddenField = document.getElementById("validated-" + n)
+            if (hiddenField.value === "") {
+                hiddenField.value = 'False';
+            }
         }
 
         for (let i = 0; i < tabs.length; i++) {
@@ -127,18 +129,20 @@
             group: 'block-' + currentTab
         }).done(function () {
             document.getElementById("validated-" + currentTab).value = "True";
-            let pageMenu = document.getElementsByClassName("application-nav__list-item")
             navigate(1);
         }).fail(function () {
-            let hiddenField = document.getElementById("validated-" + currentTab);
-            hiddenField.value = "False";
+            console.log("validated-" + currentTab)
+            document.getElementById("validated-" + currentTab).value = "False";
+            //only for tests
+            navigate(1);
         });
     }
 
     function fixStepIndicator(n) {
         // This function removes the "active" class of all steps...
         let x = document.getElementsByClassName("application-nav__list-item");
-        for (let i = 0; i < x.length - 1; i++) {
+        for (let i = 0; i < x.length-1; i++) {
+            console.log(i)
             let hiddenField = document.getElementById("validated-" + i);
             if (hiddenField.value === "True") {
                 x[i].className = "application-nav__list-item application-nav__list-item--done"
@@ -176,7 +180,7 @@
     }
 
     function prepareSections() {
-        for (let i = 0; i < sections.length - 1; i++) {
+        for (let i = 0; i < sections.length; i++) {
 
             let inputs = sections[i].getElementsByTagName("input");
             for (let j = 0; j < inputs.length; j++) {
@@ -184,7 +188,11 @@
             }
 
             let hiddenField = document.getElementsByName("validated");
-            hiddenField[i].setAttribute('id', 'validated-' + i);
+            console.log(hiddenField, sections.length)
+            if (i < sections.length-1){
+                hiddenField[i].setAttribute('id', 'validated-' + i);
+            }
+
         }
 
         let menus = document.querySelectorAll('[id^="page_link-"]');
