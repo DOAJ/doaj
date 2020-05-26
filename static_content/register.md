@@ -19,6 +19,10 @@ You only need an account if you have a journal in DOAJ or you are a volunteer.
     <label for="password">Password</label>
     <input id="password" type="password">
   </div>
+  <div class="form__question">
+    <label for="password-2">Repeat password</label>
+    <input id="password-2" type="password">
+  </div>
   <p>
     <input type="submit" value="Register">
   </p>

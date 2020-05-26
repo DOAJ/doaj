@@ -1,6 +1,6 @@
 ---
 layout: apply
-title: <span data-feather="user-check"></span> Editorial
+title: <span data-feather="user-check" aria-hidden="true"></span> Editorial
 toc: true
 highlight: false
 previous: 03-copyright-licensing

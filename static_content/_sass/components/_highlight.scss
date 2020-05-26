@@ -1,12 +1,15 @@
 /* Highlight sections */
 
 .highlight {
+  margin-top: -$spacing-04;
+  padding-top: $spacing-04;
   background-color: $fair-pink;
 }
 
-.highlight--is-aside {
+.highlight--aside {
   margin: $spacing-05 0 0 0;
   padding: $spacing-03;
+  color: $warm-black;
 
   h2, h3, h4 {
     margin: 0 0 $spacing-03 0;
@@ -16,5 +19,27 @@
 
   ul, ol {
     margin: 0;
+  }
+
+  form {
+    margin-bottom: $spacing-04;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  select {
+    padding: $spacing-02 30px $spacing-02 $spacing-02;
+  }
+
+  input, select {
+    margin-bottom: $spacing-03;
+    max-width: 100%;
+    font-size: 1em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }

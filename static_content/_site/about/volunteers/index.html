@@ -36,15 +36,8 @@
 
   <link rel="stylesheet" href="../../css/main.css">
 
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-
-  <script src="../../js/vendors/bootstrap.js"></script>
-
   <meta name="theme-color" content="#F8F3EF">
 
-  <!-- Feather icons -->
-  <script src="https://unpkg.com/feather-icons"></script>
 </head>
 
 
@@ -61,7 +54,7 @@
           <a href="/" class="logo">
             <h1 class="sr-only">The Directory of Open Access Journals</h1>
             <?xml version="1.0" encoding="UTF-8"?>
-<svg height="30px" viewBox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
   <g id="logotype" fill="#FEFBF8" fill-rule="nonzero">
     <path d="M0,0.4219 L17.9297,0.4219 C24.8672,0.4688 30.0703,3.3516 33.5391,9.0703 C34.7812,10.9922 35.5664,13.0078 35.8945,15.1172 C36.1523,17.2266 36.2812,20.8711 36.2812,26.0508 C36.2812,31.5586 36.082,35.4023 35.6836,37.582 C35.4961,38.6836 35.2148,39.668 34.8398,40.5352 C34.4414,41.3789 33.9609,42.2578 33.3984,43.1719 C31.8984,45.5859 29.8125,47.5781 27.1406,49.1484 C24.4922,50.8359 21.2461,51.6797 17.4023,51.6797 L0,51.6797 L0,0.4219 Z M7.7695,44.332 L17.0508,44.332 C21.4102,44.332 24.5742,42.8438 26.543,39.8672 C27.4102,38.7656 27.9609,37.3711 28.1953,35.6836 C28.4062,34.0195 28.5117,30.9023 28.5117,26.332 C28.5117,21.8789 28.4062,18.6914 28.1953,16.7695 C27.9141,14.8477 27.2461,13.2891 26.1914,12.0938 C24.0352,9.1172 20.9883,7.6758 17.0508,7.7695 L7.7695,7.7695 L7.7695,44.332 Z"></path>
@@ -78,9 +71,9 @@
           <ul class="nav-bar">
             <li class="dropdown primary-nav__item_desktop">
               <a href="/support/" class="dropdown__trigger nav-bar__link" id="action-menu-support" type="button" aria-haspopup="true" aria-expanded="false">
-                <span data-feather="heart"></span>
+                <span data-feather="heart" aria-hidden="true"></span>
                 Support
-                <span data-feather="chevron-down"></span>
+                <span data-feather="chevron-down" aria-hidden="true"></span>
               </a>
               <ul class="dropdown__menu" aria-labelledby="action-menu-support">
                 <li>
@@ -108,7 +101,7 @@
             <li class="dropdown primary-nav__item_desktop">
               <a href="/apply/" class="dropdown__trigger nav-bar__link" id="action-menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
                 Apply
-                <span data-feather="chevron-down"></span>
+                <span data-feather="chevron-down" aria-hidden="true"></span>
               </a>
               <ul class="dropdown__menu" aria-labelledby="action-menu-apply">
                 <li>
@@ -128,7 +121,7 @@
                 </li>
                 <li>
                   <a href="/apply/transparency/" class="dropdown__link">
-                    Transparency & best practice
+                    Transparency &amp; best practice
                   </a>
                 </li>
                 <li>
@@ -138,8 +131,8 @@
                 </li>
               </ul>
             </li>
-            <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search">
-              <span data-feather="search"></span>
+            <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0">
+              <span data-feather="search" aria-hidden="true"></span>
               <span class="sr-only"> Search</span>
             </li>
           </ul>
@@ -150,50 +143,45 @@
   <nav class="secondary-nav secondary-nav--precedes-highlight">
     <div class="container">
       <a href="#" class="secondary-nav__menu-toggle" aria-label="Click to open menu">
-        <span data-feather="menu"></span> <h2 class="secondary-nav__header">Menu</h2>
+        <span data-feather="menu" aria-hidden="true"></span> <h2 class="secondary-nav__header">Menu</h2>
       </a>
       <ul class="nav-bar secondary-nav__menu">
         <li class="dropdown">
-          <a class="dropdown__trigger nav-bar__link" id="menu-journals-articles" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown__trigger nav-bar__link" id="menu-journals-articles" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             Search
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-journals-articles">
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="/search/journals/" class="dropdown__link">
                 Journals
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="/search/articles/" class="dropdown__link">
                 Articles
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
-                Browse by subject
-              </a>
-            </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="#" class="dropdown__link dropdown__link--disabled">
                 Open Knowledge Maps
               </a>
             </li>
           </ul>
         </li>
         <li class="dropdown">
-          <a class="dropdown__trigger nav-bar__link" id="menu-data" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown__trigger nav-bar__link" id="menu-data" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             Documentation
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-data">
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="#" class="dropdown__link dropdown__link--disabled">
                 API
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="/docs/oai-pmh/" class="dropdown__link">
                 OAI-PMH
               </a>
             </li>
@@ -220,9 +208,9 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a class="dropdown__trigger nav-bar__link" id="menu-about" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown__trigger nav-bar__link" id="menu-about" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             About
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-about">
             <li>
@@ -242,7 +230,7 @@
             </li>
             <li>
               <a href="/about/advisory-board-council/" class="dropdown__link">
-                Advisory Board & Council
+                Advisory Board &amp; Council
               </a>
             </li>
             <li>
@@ -251,7 +239,7 @@
               </a>
             </li>
             <li>
-              <a class="dropdown__link dropdown__link--is-disabled">
+              <a class="dropdown__link dropdown__link--disabled">
                 News
               </a>
             </li>
@@ -265,7 +253,7 @@
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Support</strong>
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-support">
             <li>
@@ -293,7 +281,7 @@
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Apply</strong>
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-apply">
             <li>
@@ -313,7 +301,7 @@
             </li>
             <li>
               <a href="/apply/transparency/" class="dropdown__link">
-                Transparency & best practice
+                Transparency &amp; best practice
               </a>
             </li>
             <li>
@@ -326,7 +314,7 @@
         <li class="secondary-nav__login">
           <a href="/login/" class="nav-bar__link">
             Login
-            <span data-feather="log-in"></span>
+            <span data-feather="log-in" aria-hidden="true"></span>
           </a>
         </li>
       </ul>
@@ -334,10 +322,22 @@
   </nav>
 </header>
 
+
+<!-- Admin-only edit buttons -->
+<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/about/content/volunteers.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
+
+
+
+
+
+<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/_data/volunteers.yml" target="_blank" rel="noopener"><span class="sr-only">Edit data content</span><span data-feather="database" aria-hidden="true"></span></a>
+
+
+
 <!-- Quick search modal -->
 <section class="modal" id="modal-search" tabindex="-1" role="dialog">
   <div class="modal__dialog" role="document">
-    <form class="quick-search__form">
+    <form class="quick-search__form" role="search">
       <h2 class="modal__title">Quick search</h2>
       <div class="inline-fields">
         <input type="radio" id="quick-search-journals" name="content-type" value="journals" checked>
@@ -358,7 +358,7 @@
           <option value="subject">Author</option>
         </select>
         <button type="submit">
-          <span data-feather="search"></span><span class="sr-only"> Search</span>
+          <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
     </form>
@@ -369,7 +369,7 @@
 
     <main class="page-content">
       <div class="highlight">
-        <section class="container">
+        <header class="container">
           <p class="label">About</p>
           <h1>Volunteers</h1>
           <div class="row">
@@ -377,17 +377,17 @@
               <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers. We are grateful for the hours that our volunteers contribute by reviewing new applications. With their consent, we have published their names below, as a way of thanks.
 DOAJ volunteers come from all walks of life, from all over the globe. Every now and then we put out a call for more volunteers, often fluent in a specific language.</p>
 
-<p>Follow <a href="https://blog.doaj.org/">our blog</a> or our <a href="http://twitter.com/doajplus">Twitter feed</a> to be alerted when the next call is published.</p>
+<p>Follow <a href="https://blog.doaj.org/" target="_blank" rel="noopener">our blog</a> or our <a href="http://twitter.com/doajplus" target="_blank" rel="noopener">Twitter feed</a> to be alerted when the next call is published.</p>
 
 
             </div>
           </div>
-        </section>
+        </header>
       </div>
 
       <div class="container">
-        <!-- TODO: make this more elegant -->
         
+
 
         
           <!-- About section: volunteers -->
@@ -395,19 +395,13 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
           <ul class="row title-list">
             
             
-            
-            
-            
-            
-            
-            
             <li class="col-xs-6 col-md-4">
               <div class="title-list__text">
-                <p class="label">Librarianship, sholarly publishing, data management</p>
-                <h3 class="title-list__heading">Fei Yu</h3>
+                <p class="label">Humanities, Social Sciences</p>
+                <h3 class="title-list__heading">Alicia Aparicio</h3>
                 <p>
-                  Brisbane, Australia<br/>
-                  Chinese, English<br/>
+                  Buenos Aires, Argentina<br>
+                  Spanish<br>
                 </p>
               </div>
             </li>
@@ -416,11 +410,94 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Science</p>
+                <h3 class="title-list__heading">Emilie Champagne</h3>
+                <p>
+                  Québec, Canada<br>
+                  French, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Librarianship, sholarly publishing, data management</p>
+                <h3 class="title-list__heading">Fei Yu</h3>
+                <p>
+                  Brisbane, Australia<br>
+                  Chinese, English<br>
+                </p>
+              </div>
+            </li>
             
             
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities, Social Sciences</p>
+                <h3 class="title-list__heading">Geoff Husic</h3>
+                <p>
+                  Lawrence, USA<br>
+                  Russian, German, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Medicine</p>
+                <h3 class="title-list__heading">Lut Tamam</h3>
+                <p>
+                  Adana, Turkey<br>
+                  Turkish, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities, Social Sciences</p>
+                <h3 class="title-list__heading">Natalia Pamuła-Cieślak</h3>
+                <p>
+                  Toruń, Poland<br>
+                  Polish, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Research Evaluation</p>
+                <h3 class="title-list__heading">Paola Galimberti</h3>
+                <p>
+                  Milan, Italy<br>
+                  Italian, German, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Knowledge and Information Science</p>
+                <h3 class="title-list__heading">Rasoul Zavaraqi</h3>
+                <p>
+                  Tabriz, Iran<br>
+                  Persian, English, Azeri<br>
+                </p>
+              </div>
+            </li>
             
             
             
@@ -429,8 +506,8 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
                 <p class="label">Humanities, social sciences</p>
                 <h3 class="title-list__heading">S.Suharto</h3>
                 <p>
-                  Semarang, Indonesia<br/>
-                  Indonesian, English<br/>
+                  Semarang, Indonesia<br>
+                  Indonesian, English<br>
                 </p>
               </div>
             </li>
@@ -442,13 +519,24 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
                 <p class="label">Humanities, social sciences, technology</p>
                 <h3 class="title-list__heading">Scott Richard St. Louis</h3>
                 <p>
-                  Ann Arbor, United States<br/>
-                  English, French<br/>
+                  Ann Arbor, United States<br>
+                  English, French<br>
                 </p>
               </div>
             </li>
             
             
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Library and Information Science</p>
+                <h3 class="title-list__heading">Souheil Houissa</h3>
+                <p>
+                  Tunis, Tunisia<br>
+                  Arabic, French, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
@@ -464,8 +552,8 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
                 <p class="label">Social Sciences</p>
                 <h3 class="title-list__heading">A. Sulthan</h3>
                 <p>
-                  Coimbatore, India<br/>
-                  Tamil, Urdu, Hindi, English<br/>
+                  Coimbatore, India<br>
+                  Tamil, Urdu, Hindi, English<br>
                 </p>
               </div>
             </li>
@@ -479,8 +567,8 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
                 <p class="label">Humanities</p>
                 <h3 class="title-list__heading">Alessandro Pierno</h3>
                 <p>
-                  Florence, Italy<br/>
-                  Italian, English, Spanish<br/>
+                  Florence, Italy<br>
+                  Italian, English, Spanish<br>
                 </p>
               </div>
             </li>
@@ -489,41 +577,174 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities</p>
+                <h3 class="title-list__heading">Ana Fresco-Santalla</h3>
+                <p>
+                  Granada, Spain<br>
+                  Galician, Portuguese, Spanish, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Social Sciences</p>
+                <h3 class="title-list__heading">Andista Candra Yusro</h3>
+                <p>
+                  Madiun, Indonesia<br>
+                  Indonesian, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Library Science, Music, General</p>
+                <h3 class="title-list__heading">Andrea Imre</h3>
+                <p>
+                  Carbondale, IL, USA<br>
+                  Hungarian, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Librarianship</p>
+                <h3 class="title-list__heading">Andrea Marchitelli</h3>
+                <p>
+                  Rome, Italy<br>
+                  Italian, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Medicine</p>
+                <h3 class="title-list__heading">Andronic Octavian</h3>
+                <p>
+                  Bucharest, Romania<br>
+                  Romanian, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Library Science</p>
+                <h3 class="title-list__heading">Anna Wolodko</h3>
+                <p>
+                  Warsaw, Poland<br>
+                  Polish, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities</p>
+                <h3 class="title-list__heading">Annarita Barbaro</h3>
+                <p>
+                  Rome, Italy<br>
+                  Italian, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Libraries, Scholarly communication</p>
+                <h3 class="title-list__heading">Anne Lahey</h3>
+                <p>
+                  Canberra, Australia<br>
+                  English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Librarianship, Research Support</p>
+                <h3 class="title-list__heading">Ben Catt</h3>
+                <p>
+                  York, United Kingdom<br>
+                  English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Technology</p>
+                <h3 class="title-list__heading">Chitu Okoli</h3>
+                <p>
+                  Paris, France<br>
+                  English, French<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Technology</p>
+                <h3 class="title-list__heading">Christine Davidian</h3>
+                <p>
+                  Glassboro, NJ, USA<br>
+                  English, French<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Social Sciences, Technology</p>
+                <h3 class="title-list__heading">Concha Diez Pastor</h3>
+                <p>
+                  Madrid, Spain<br>
+                  Spanish, English, Italian<br>
+                </p>
+              </div>
+            </li>
             
             
             
-            
-            
-            
-            
-            
-            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Social Sciences</p>
+                <h3 class="title-list__heading">Deborah Lins e Nóbrega</h3>
+                <p>
+                  Brasilia, Brazil<br>
+                  Portuguese, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
@@ -532,8 +753,8 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
                 <p class="label">Social Sciences</p>
                 <h3 class="title-list__heading">Dedi Rahman Nur</h3>
                 <p>
-                  Samarinda, Indonesia<br/>
-                  Bahasa Indonesia, English<br/>
+                  Samarinda, Indonesia<br>
+                  Bahasa Indonesia, English<br>
                 </p>
               </div>
             </li>
@@ -542,11 +763,31 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Technology</p>
+                <h3 class="title-list__heading">Dr. Eko Supraptono</h3>
+                <p>
+                  Indonesia, Semarang<br>
+                  Indonesian, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Gerontology</p>
+                <h3 class="title-list__heading">Elisangela Gisele do Carmo</h3>
+                <p>
+                  Rio Claro- São Paulo, Brazil<br>
+                  Portuguese, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
@@ -557,8 +798,62 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
                 <p class="label">Science</p>
                 <h3 class="title-list__heading">Enes Sukic</h3>
                 <p>
-                  Novi Pazar, Serbia<br/>
-                  Serbo-Croat-Bosnian, English, Turkish<br/>
+                  Novi Pazar, Serbia<br>
+                  Serbo-Croat-Bosnian, English, Turkish<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Medicine</p>
+                <h3 class="title-list__heading">Enver Ahmet Demir</h3>
+                <p>
+                  Hatay, Turkey<br>
+                  Turkish, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Science</p>
+                <h3 class="title-list__heading">Francesca Soldati</h3>
+                <p>
+                  Lincoln, United Kingdom<br>
+                  Italian, English, Spanish<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities, Social Sciences</p>
+                <h3 class="title-list__heading">Francesco Cavinato</h3>
+                <p>
+                  Bologna, Italy<br>
+                  Italian, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Science, Technology</p>
+                <h3 class="title-list__heading">Gerald Langhanke</h3>
+                <p>
+                  Darmstadt, Germany<br>
+                  German, Swedish, English<br>
                 </p>
               </div>
             </li>
@@ -569,19 +864,29 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities, Social Sciences</p>
+                <h3 class="title-list__heading">Iryna Kuchma</h3>
+                <p>
+                  Kyiv, Ukraine<br>
+                  Ukranian, English, French, Polish<br>
+                </p>
+              </div>
+            </li>
             
             
             
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Librarianship</p>
+                <h3 class="title-list__heading">Isabel Margalejo Ferrández</h3>
+                <p>
+                  Valencia, Spain<br>
+                  Spanish, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
@@ -590,37 +895,102 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
                 <p class="label">Technology</p>
                 <h3 class="title-list__heading">Jacinto Dávila</h3>
                 <p>
-                  Mérida, Venezuela<br/>
-                  Spanish, English<br/>
+                  Mérida, Venezuela<br>
+                  Spanish, English<br>
                 </p>
               </div>
             </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Library and Information Science</p>
+                <h3 class="title-list__heading">Jamila Jaber</h3>
+                <p>
+                  Beirut, Lebanon<br>
+                  Arabic, French, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Science, Technology</p>
+                <h3 class="title-list__heading">Juan Sebastian Gonzalez</h3>
+                <p>
+                  Bogota, Colombia<br>
+                  Spanish, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Science</p>
+                <h3 class="title-list__heading">Kamil B. Varınca</h3>
+                <p>
+                  Adiyaman, Turkey<br>
+                  Turkish, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Medicine</p>
+                <h3 class="title-list__heading">Karima Akool Al-Sahili</h3>
+                <p>
+                  Baghdad, Iraq<br>
+                  Arabic, English, Swedish<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Scholarly Publishing</p>
+                <h3 class="title-list__heading">Katharine Dunn</h3>
+                <p>
+                  Cambridge, USA<br>
+                  English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Medicine</p>
+                <h3 class="title-list__heading">Kimberly Mears</h3>
+                <p>
+                  Charlottetown, Canada<br>
+                  English<br>
+                </p>
+              </div>
+            </li>
             
             
             
-            
-            
-            
-            
-            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Social Sciences</p>
+                <h3 class="title-list__heading">Liana Penabad Camacho</h3>
+                <p>
+                  San José, Costa Rica<br>
+                  Spanish, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
@@ -629,10 +999,75 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
             <li class="col-xs-6 col-md-4">
               <div class="title-list__text">
                 <p class="label">Science</p>
+                <h3 class="title-list__heading">Lorri Peters</h3>
+                <p>
+                  College Station, USA<br>
+                  English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Social Sciences</p>
+                <h3 class="title-list__heading">Marcau Flavius-Cristian</h3>
+                <p>
+                  Târgu jiu, Romania<br>
+                  Romanian, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Social Sciences, Technology</p>
+                <h3 class="title-list__heading">Marco Tullney</h3>
+                <p>
+                  Hannover, Germany<br>
+                  German, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities, Social Sciences</p>
+                <h3 class="title-list__heading">Maria Chiara Pievatolo</h3>
+                <p>
+                  Pisa, Italy<br>
+                  Italian, English, German<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Social Sciences</p>
+                <h3 class="title-list__heading">Maria Manuel Borges</h3>
+                <p>
+                  V.N Gaia, Portugal<br>
+                  Portuguese, Spanish, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Science</p>
                 <h3 class="title-list__heading">Mariana Solano Hernandez</h3>
                 <p>
-                  Cartago, Costa Rica<br/>
-                  Spanish, English<br/>
+                  Cartago, Costa Rica<br>
+                  Spanish, English<br>
                 </p>
               </div>
             </li>
@@ -641,19 +1076,55 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Social Sciences</p>
+                <h3 class="title-list__heading">Miguel-Ángel Vera-Baceta</h3>
+                <p>
+                  Murcia, Spain<br>
+                  Spanish, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Public Health</p>
+                <h3 class="title-list__heading">Muhamad Ratodi</h3>
+                <p>
+                  Surabaya, Indonesia<br>
+                  Indonesian, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Science, Technology, Medicine</p>
+                <h3 class="title-list__heading">Nour El Houda Belhamel</h3>
+                <p>
+                  Bejaia, Algeria<br>
+                  Arabic, French, Engish, Kabyle<br>
+                </p>
+              </div>
+            </li>
             
             
             
-            
-            
-            
-            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Science, Technology</p>
+                <h3 class="title-list__heading">Oleksii Vasyliev</h3>
+                <p>
+                  Kyiv, Ukraine<br>
+                  Ukranian, Russian, English, Polish<br>
+                </p>
+              </div>
+            </li>
             
             
             
@@ -664,8 +1135,73 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
                 <p class="label">Social Sciences</p>
                 <h3 class="title-list__heading">Remedios Melero (Reme)</h3>
                 <p>
-                  Valencia, Spain<br/>
-                  Spanish, English, Italian, Catalan<br/>
+                  Valencia, Spain<br>
+                  Spanish, English, Italian, Catalan<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities, Social Sciences</p>
+                <h3 class="title-list__heading">Rhonda Marker</h3>
+                <p>
+                  New Brunswick, NJ, USA<br>
+                  English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Medicine</p>
+                <h3 class="title-list__heading">Richard James</h3>
+                <p>
+                  Philadelphia, USA<br>
+                  English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Science</p>
+                <h3 class="title-list__heading">S. Mohammad Amini</h3>
+                <p>
+                  Esfahan, Iran<br>
+                  Farsi, English<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Open Access, Open Science</p>
+                <h3 class="title-list__heading">Sara Ricetto</h3>
+                <p>
+                  Milan, Italy<br>
+                  Italian, English, German<br>
+                </p>
+              </div>
+            </li>
+            
+            
+            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Scientometrics; Library Science</p>
+                <h3 class="title-list__heading">Sergiy Nazarovets</h3>
+                <p>
+                  Kyiv, Ukraine<br>
+                  Ukranian, English<br>
                 </p>
               </div>
             </li>
@@ -674,37 +1210,120 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities, Library Science</p>
+                <h3 class="title-list__heading">Stewart C Baker</h3>
+                <p>
+                  Monmouth, USA<br>
+                  English, Japanese<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Social Sciences</p>
+                <h3 class="title-list__heading">Sumi Kang</h3>
+                <p>
+                  Sejong, Korea<br>
+                  Korean, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities, Social Sciences</p>
+                <h3 class="title-list__heading">Teodor Mihaela</h3>
+                <p>
+                  Bucharest, Romania<br>
+                  Romanian, English, French<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities</p>
+                <h3 class="title-list__heading">Tereza Simandlová</h3>
+                <p>
+                  Prague, Czech Republic<br>
+                  Czech, Slovak, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Social Sciences</p>
+                <h3 class="title-list__heading">Umar Khasan</h3>
+                <p>
+                  Bangkalan, Indonesia<br>
+                  Indonesian, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Technology</p>
+                <h3 class="title-list__heading">Victor Freitas de Azeredo Barros</h3>
+                <p>
+                  Braga, Portugal<br>
+                  Portuguese, English, Spanish<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Humanities, Social Sciences</p>
+                <h3 class="title-list__heading">Weronika Kortas</h3>
+                <p>
+                  Toruń, Poland<br>
+                  Polish, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Medical and Healthcare management</p>
+                <h3 class="title-list__heading">Yaping Liu</h3>
+                <p>
+                  Sydney, Australia<br>
+                  Chinese, English<br>
+                </p>
+              </div>
+            </li>
             
             
             
-            
-            
-            
-            
-            
-            
-            
+            <li class="col-xs-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">Medicine</p>
+                <h3 class="title-list__heading">Yoonhee Cho</h3>
+                <p>
+                  Chungju, Republic of Korea<br>
+                  Korean, English<br>
+                </p>
+              </div>
+            </li>
             
             
           </ul>
@@ -715,16 +1334,16 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
 
     <footer class="page-footer">
   <div class="container">
-    <a href="#" id="top" class="back-to-top" data-spy="affix"><span data-feather="arrow-up"></span></a>
+    <a href="#" id="top" class="back-to-top" data-spy="affix"><span data-feather="arrow-up" aria-hidden="true"></span><span class="sr-only">Back to top</span></a>
     <section class="row">
       <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Apply</h2>
         <ul>
-          <li><a href="/apply">Application form</a></li>
-          <li><a href="/apply/guide">Guide to applying</a></li>
-          <li><a href="/apply/seal">The DOAJ seal</a></li>
-          <li><a href="/apply/transparency">Transparency & best practice</a></li>
-          <li><a href="/apply/why-index">Why index your journal in DOAJ?</a></li>
+          <li><a href="/apply/">Application form</a></li>
+          <li><a href="/apply/guide/">Guide to applying</a></li>
+          <li><a href="/apply/seal/">The DOAJ seal</a></li>
+          <li><a href="/apply/transparency/">Transparency &amp; best practice</a></li>
+          <li><a href="/apply/why-index/">Why index your journal in DOAJ?</a></li>
         </ul>
       </div>
 
@@ -742,34 +1361,34 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
         <h2>Documentation</h2>
         <ul>
           <li><a href="">API</a></li>
-          <li><a href="">OAI-PMH</a></li>
-          <li><a href="/docs/xml">XML</a></li>
-          <li><a href="/docs/widgets">Widgets</a></li>
-          <li><a href="/docs/public-data-dump">Public data dump</a></li>
-          <li><a href="/docs/openurl">OpenURL</a></li>
+          <li><a href="/docs/oai-pmh/">OAI-PMH</a></li>
+          <li><a href="/docs/xml/">XML</a></li>
+          <li><a href="/docs/widgets/">Widgets</a></li>
+          <li><a href="/docs/public-data-dump/">Public data dump</a></li>
+          <li><a href="/docs/openurl/">OpenURL</a></li>
         </ul>
       </div>
 
       <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>About</h2>
         <ul>
-          <li><a href="/about">History & mission</a></li>
-          <li><a href="/about/team">Team</a></li>
-          <li><a href="/about/ambassadors">Ambassadors</a></li>
-          <li><a href="/about/advisory-board-council">Advisory Board & Council</a></li>
-          <li><a href="/about/volunteers">Volunteers</a></li>
+          <li><a href="/about/">History &amp; mission</a></li>
+          <li><a href="/about/team/">Team</a></li>
+          <li><a href="/about/ambassadors/">Ambassadors</a></li>
+          <li><a href="/about/advisory-board-council/">Advisory Board &amp; Council</a></li>
+          <li><a href="/about/volunteers/">Volunteers</a></li>
           <li><a href="">News</a></li>
-          <li><a href="/about/faq">FAQs</a></li>
+          <li><a href="/about/faq/">FAQs</a></li>
         </ul>
       </div>
 
       <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Support</h2>
         <ul>
-          <li><a href="/support">Support DOAJ</a></li>
-          <li><a href="/support/sponsors">Sponsors</a></li>
-          <li><a href="/support/publisher-supporters">Publisher supporters</a></li>
-          <li><a href="/support/supporters">Supporters</a></li>
+          <li><a href="/support/">Support DOAJ</a></li>
+          <li><a href="/support/sponsors/">Sponsors</a></li>
+          <li><a href="/support/publisher-supporters/">Publisher supporters</a></li>
+          <li><a href="/support/supporters/">Supporters</a></li>
         </ul>
       </div>
 
@@ -777,46 +1396,55 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
         <h2>Stay up to date</h2>
         <ul>
           <li>
-            <a href="https://twitter.com/DOAJplus" target="_blank">
-              <span data-feather="twitter"></span> Twitter
+            <a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">
+              <span data-feather="twitter" aria-hidden="true"></span> Twitter
             </a>
           </li>
           <li>
-            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank">
-              <span data-feather="facebook"></span> Facebook
+            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank" rel="noopener">
+              <span data-feather="facebook" aria-hidden="true"></span> Facebook
             </a>
           </li>
           <li>
-            <a href="https://github.com/DOAJ" target="_blank">
-              <span data-feather="github"></span> Github
+            <a href="https://github.com/DOAJ" target="_blank" rel="noopener">
+              <span data-feather="github" aria-hidden="true"></span> Github
             </a>
           </li>
           <li>
-            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank">
-              <span data-feather="linkedin"></span> Linkedin
+            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank" rel="noopener">
+              <span data-feather="linkedin" aria-hidden="true"></span> Linkedin
             </a>
           </li>
           <li>
             <a href="">
-              <span data-feather="rss"></span> Atom feed</a>
+              <span data-feather="rss" aria-hidden="true"></span> Atom feed</a>
             </li>
         </ul>
       </div>
     </section>
 
     <section class="row legal">
-      <div class="col-sm-6">
+      <h2 class="sr-only">Legal &amp; admin</h2>
+      <div class="col-sm-8">
         <ul>
-          <li><a href="">Privacy</a></li>
-          <li><a href="">Contact us</a></li>
-          <li><a href="">IS4OA</a></li>
-          <li><a href="">Cottage Labs LLP</a></li>
+          <li><a href="/about/accessibility/">Accessibility statement</a></li>
+            <li><a href="/about/privacy/">Privacy</a></li>
+          <li><a href="/contact/">Contact us</a></li>
+          <li><a href="https://is4oa.org/" target="_blank" rel="noopener">IS4OA</a></li>
+          <li><a href="https://cottagelabs.com/" target="_blank" rel="noopener">Cottage Labs LLP</a></li>
         </ul>
       </div>
-      <p class="col-sm-6">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
+      <p class="col-sm-4">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
     </section>
   </div>
 </footer>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+<script src="../../js/vendors/bootstrap.js"></script>
+
+<!-- Feather icons -->
+<script src="https://unpkg.com/feather-icons"></script>
 
 <script>
   // Use Feather icons
@@ -827,7 +1455,7 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
   var nav = document.querySelector(".secondary-nav__menu");
 
   openMenu.addEventListener('click', function() {
-    nav.classList.toggle("secondary-nav__menu-toggle--is-active");
+    nav.classList.toggle("secondary-nav__menu-toggle--active");
   }, false);
 
   // Back-to-top button
@@ -848,6 +1476,53 @@ DOAJ volunteers come from all walks of life, from all over the globe. Every now 
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
   }
+
+  // Tabs
+  $("[role='tab']").click(function(e) {
+    e.preventDefault();
+    $(this).attr("aria-selected", "true");
+    $(this).parent().siblings().children().attr("aria-selected", "false");
+    var tabpanelShow = $(this).attr("href");
+    $(tabpanelShow).attr("aria-hidden", "false");
+    $(tabpanelShow).siblings().attr("aria-hidden", "true");
+  });
+
+  // Offset when clicking on anchor link or sidenav link to compensate for fixed header
+  var headerHeight = 70;
+
+  // When on the same page
+  jQuery (function($) {
+    $('a[href*="#"]:not([href="#"])').click(function() {
+      var target = $(this.hash);
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight
+      }, 50, 'linear');
+    });
+    if (location.hash){
+      var id = $(location.hash);
+    }
+
+    $(window).load(function() {
+      if (location.hash){
+        $('html,body').animate({
+          scrollTop: id.offset().top - headerHeight
+        }, 50, 'linear')
+      };
+    });
+  });
+
+  // Coming from another page
+  jQuery (document).ready (function($) {
+    var hash= window.location.hash
+    if ( hash == '' || hash == '#' || hash == undefined ) return false;
+    var target = $(hash);
+    target = target.length ? target : $('[name=' + hash.slice(1) +']');
+    if (target.length) {
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight //offsets for fixed header
+      }, 50, 'linear');
+    }
+  } );
 </script>
 
   </body>

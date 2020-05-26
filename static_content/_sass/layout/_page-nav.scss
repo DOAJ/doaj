@@ -9,7 +9,7 @@
 @media (min-width: 992px) {
   .page-nav {
     margin: $spacing-05 0;
-    padding-left: $spacing-04;
+    padding-left: $spacing-03;
     width: 264px; // fixed page element: needs absolute width to avoid overflowing from cols
     border-left: 1px dashed $grapefruit;
     @include typescale-06;
@@ -29,6 +29,7 @@
   }
 
   .page-nav__sublist {
+    display: none;
     margin: 0;
     padding-left: $spacing-03;
     list-style: none;
@@ -36,8 +37,25 @@
 
   .page-nav__item a {
     display: block;
-    margin-bottom: $spacing-02;
+    margin: $spacing-02;
     text-decoration: none;
+  }
+
+  // Bootstrap scrollspy adds .active to nav item
+  .active {
+    background-color: $fair-pink;
+
+    .page-nav__sublist {
+      display: block;
+
+      .active {
+        border: 0;
+      }
+    }
+
+    > a {
+      font-weight: 600;
+    }
   }
 }
 

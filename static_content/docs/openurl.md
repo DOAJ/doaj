@@ -2,7 +2,7 @@
 layout: sidenav
 fragment: false
 title: OpenURL
-section: Documentation
+section: Docs
 toc: true
 sticky_sidenav: true
 highlight: false

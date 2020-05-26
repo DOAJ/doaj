@@ -5,7 +5,7 @@
 
         <div class="col-md-4 col-md-push-8">
           
-          <nav class="page-nav">
+          <nav class="page-nav nav">
             <h2 class="page-nav__heading">Jump to:</h2>
             <ul class="page-nav__list">
 <li class="page-nav__item item-h2"><a href="#uploading-an-xml-file">Uploading an XML file</a></li>
@@ -14,30 +14,31 @@
 <li class="page-nav__item item-h2"><a href="#the-doajarticlesxsd-schema-file">The doajArticles.xsd schema file</a></li>
 </ul>
           </nav>
+
           
         </div>
 
         <div class="col-md-8 col-md-pull-4">
            <section class="page-content">
-            
+            <p class="label">Docs</p>
             <h1>XML</h1>
 
             <p>When you upload your article metadata to us, it must be in one of two XML formats.</p>
 
 <p>Article metadata is provided to us on the understanding that it will then be available for free, to be distributed to any third party who wants it.</p>
 
-<p>We do not check the metadata’s quality or correctness as we ingest it—this is your responsibility—so any errors (for example, typos in author names, URLs, or DOI) will be uploaded as is. From time to time, a user of our metadata may contact us and ask us to make a correction to your metadata.</p>
+<p>We do not check the metadata’s quality or correctness as we ingest it—this is your responsibility—so any errors (for example, typos in author names, URLs, or DOI) will be uploaded as-is. From time to time, a user of our metadata may contact us and ask us to correct your metadata.</p>
 
 <h2 id="uploading-an-xml-file">Uploading an XML file</h2>
 
 <ul>
   <li>First convert your article metadata into an accepted XML format: DOAJ or Crossref.
     <ul>
-      <li>It is important that it is structured correctly.</li>
-      <li>Its format must follow a set of rules laid out in the <a href="/static/doaj/doajArticles.xsd">DOAJ XML schema file</a>, or the rules laid out in <a href="https://support.crossref.org/hc/en-us/articles/214530063-Crossref-XSD-schema-quick-reference">Crossref’s schema file</a>.</li>
+      <li>It must be structured correctly.</li>
+      <li>Its format must follow a set of rules laid out in the <a href="/static/doaj/doajArticles.xsd">DOAJ XML schema file</a>, or the rules laid out in <a href="https://support.crossref.org/hc/en-us/articles/214530063-Crossref-XSD-schema-quick-reference" target="_blank" rel="noopener">Crossref’s schema file</a>.</li>
     </ul>
   </li>
-  <li>If you are creating DOAJ XML manually, try <a href="https://jsonformatter.org/xml-formatter">formatting</a> and <a href="https://www.xmlvalidation.com/">validating</a> the file before you upload it to us.</li>
+  <li>If you are creating DOAJ XML manually, try <a href="https://jsonformatter.org/xml-formatter" target="_blank" rel="noopener">formatting</a> and <a href="https://www.xmlvalidation.com/" target="_blank" rel="noopener">validating</a> the file before you upload it to us.</li>
   <li>If you are exporting XML from an OJS plugin, you can <a href="/publisher/uploadfile">upload the file</a> immediately.</li>
 </ul>
 
@@ -67,11 +68,11 @@
     </tr>
     <tr>
       <td>ISSN</td>
-      <td>Optional, max. 1 <br />Either the ISSN or the EISSN must be present, or both</td>
+      <td>Optional, max. 1 <br>Either the ISSN or the EISSN must be present, or both</td>
     </tr>
     <tr>
       <td>EISSN</td>
-      <td>Optional, max. 1  <br />Either the ISSN or the EISSN must be present, or both</td>
+      <td>Optional, max. 1  <br>Either the ISSN or the EISSN must be present, or both</td>
     </tr>
     <tr>
       <td><strong>Publication date</strong></td>
@@ -128,7 +129,7 @@
   </tbody>
 </table>
 
-<p>There are <a href="https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en">European Union restrictions</a> on how you distribute personal data, such as email addresses. DOAJ doesn’t have any need for or display author email addresses so please don’t send them to us in the XML.</p>
+<p>There are <a href="https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en" target="_blank" rel="noopener">European Union restrictions</a> on how you distribute personal data, such as email addresses. DOAJ doesn’t have any need for or display author email addresses so please don’t send them to us in the XML.</p>
 
 <h2 id="example-doaj-xml-file">Example DOAJ XML File</h2>
 
@@ -190,15 +191,17 @@
     </tr>
     <tr>
       <td><code class="highlighter-rouge">language</code></td>
-      <td>The language tag content must conform to the ISO 639-2b standard. <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes">Find the correct language code</a>.</td>
+      <td>The language tag content must conform to the ISO 639-2b standard. <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes" target="_blank" rel="noopener">Find the correct language code</a>.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">issn</code>  <br /><code class="highlighter-rouge">eissn</code></td>
+      <td>
+<code class="highlighter-rouge">issn</code>  <br><code class="highlighter-rouge">eissn</code>
+</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">title language=""</code></td>
-      <td>If the title occurs in more than one language, then you may include those in your XML. However we can only display one language. The title tag’s language attribute must be set according to the ISO 639-2b standard.</td>
+      <td>If the title occurs in more than one language, then you may include those in your XML. However, we can only display one language. The title tag’s language attribute must be set according to the ISO 639-2b standard.</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">name</code></td>
@@ -206,16 +209,16 @@
     </tr>
     <tr>
       <td><code class="highlighter-rouge">affiliationId</code></td>
-      <td>Note that the <code class="highlighter-rouge">affilitationId</code> numbers denote the affilitations in the <code class="highlighter-rouge">affiliationslist</code> further down.</td>
+      <td>Note that the <code class="highlighter-rouge">affiliationId</code> numbers denote the affiliations in the <code class="highlighter-rouge">affiliationslist</code> further down.</td>
     </tr>
   </tbody>
 </table>
 
-<hr />
+<hr>
 
 <h2 id="the-doajarticlesxsd-schema-file">The doajArticles.xsd schema file</h2>
 
-<p>The <a href="http://www.doaj.org/static/doaj/doajArticles.xsd">doajArticles.xsd</a> file specifies what may or may not be uploaded to the database.</p>
+<p>The <a href="http://www.doaj.org/static/doaj/doajArticles.xsd" target="_blank" rel="noopener">doajArticles.xsd</a> file specifies what may or may not be uploaded to the database.</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="nt">&lt;xs:schema</span> <span class="na">xmlns:xs=</span><span class="s">"http://www.w3.org/2001/XMLSchema"</span> <span class="na">xmlns:iso_639-2b=</span><span class="s">"https://doaj.org/schemas/iso_639-2b/1.0"</span><span class="nt">&gt;</span>
@@ -347,7 +350,6 @@
 
 
 
-            <!-- TODO: make this more elegant -->
             <!-- Display data pages -->
             
           </section>

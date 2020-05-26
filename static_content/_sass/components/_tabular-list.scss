@@ -5,12 +5,10 @@
   display: table;
   padding: 0;
   list-style: none;
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0 $spacing-04;
-  counter-reset: row-number;
 
-  > li,
-  &__row {
+  > li {
     display: table-row;
     vertical-align: top;
     width: 100%;
@@ -18,19 +16,34 @@
     counter-increment: row-number;
     @include font-serif;
 
+    > ul {
+      display: table-cell;
+      padding: $spacing-03 0 $spacing-03 $spacing-05;
+      list-style: none;
+      width: 60%;
+      @include font-sans;
+    }
+
+    h3 {
+      padding-top: 0;
+      font-size: 1em;
+      font-weight: 400;
+    }
+  }
+}
+
+.tabular-list--ordered {
+  counter-reset: row-number;
+
+  > li,
+  &__row {
+    counter-increment: row-number;
+
     &::before {
       vertical-align: baseline;
       font-weight: 400;
       content: counter(row-number) '. ';
       @include font-serif;
-    }
-
-    > ul {
-      display: table-cell;
-      padding: 0 0 0 $spacing-05;
-      list-style: none;
-      width: 50%;
-      @include font-sans;
     }
   }
 }

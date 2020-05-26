@@ -1,4 +1,4 @@
-Since 2016 DOAJ has been running an Ambassador program that target regions of the Global South that could benefit from greater awareness of the issues surrounding open access and the importance of best practice and high publishing standards.
+Since 2016 DOAJ has been running an Ambassador program that targets regions of the Global South that could benefit from greater awareness of the issues surrounding open access and the importance of best practice and high publishing standards.
 
 In 2016 and 2017 DOAJ employed 12 Ambassadors from around the world to do this work for us.
 

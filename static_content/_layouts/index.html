@@ -6,13 +6,13 @@
   <body id="homepage">
     {% include header.html %}
 
-    <main>
+    <main class="page-content">
       <!-- Search bar -->
       <section class="highlight">
         <div class="container">
           <p class="label">The Directory of Open Access Journals</p>
           <h1>Find open access journals & articles.</h1>
-          <form class="row">
+          <form class="row" role="search">
             <div class="col-xs-12 col-md-8">
               <div class="inline-fields">
                 <input type="radio" id="journals" name="content-type" value="journals" checked>
@@ -37,7 +37,7 @@
                 </select>
 
                 <button type="submit">
-                  <span data-feather="search"></span><span class="sr-only"> Search</span>
+                  <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
                 </button>
               </div>
             </div>
@@ -45,6 +45,24 @@
 
           <section class="row mobile-scrollable-row">
             <h2 class="sr-only">DOAJ in numbers</h2>
+            <p class="col-md-2 stat">
+              <a href="#">
+                <span class="stat__number">130</span>
+                <span class="stat__description">countries represented</span>
+              </a>
+            </p>
+            <p class="col-md-2 stat">
+              <a href="#">
+                <span class="stat__number">736</span>
+                <span class="stat__description">new journals</span>
+              </a>
+            </p>
+            <p class="col-md-2 stat">
+              <a href="#">
+                <span class="stat__number">10,474</span>
+                <span class="stat__description">journals without APCs</span>
+              </a>
+            </p>
             <p class="col-md-2 stat">
               <a href="#">
                 <span class="stat__number">13,886</span>
@@ -55,24 +73,6 @@
               <a href="#">
                 <span class="stat__number">4,398,818</span>
                 <span class="stat__description">article abstracts</span>
-              </a>
-            </p>
-            <p class="col-md-2 stat">
-              <a href="#">
-                <span class="stat__number">130</span>
-                <span class="stat__description">countries represented</span>
-              </a>
-            </p>
-            <p class="col-md-2 stat">
-              <a href="#">
-                <span class="stat__number">10,961</span>
-                <span class="stat__description">recently-updated journals</span>
-              </a>
-            </p>
-            <p class="col-md-2 stat">
-              <a href="#">
-                <span class="stat__number">10,474</span>
-                <span class="stat__description">journals without APCs</span>
               </a>
             </p>
           </section>
@@ -86,7 +86,13 @@
             <h2 class="sr-only">About</h2>
             <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.</p>
             <p>All DOAJ services are free of charge including being indexed. All data is freely available.</p>
-            <p><a href="{{ site.baseurl }}{% link apply/why-index.md %}">Why index your journal in DOAJ?</a></p>
+            <p>
+              <a href="{{ site.baseurl }}{% link apply/why-index.md %}">Why index your journal in DOAJ?</a> <br>
+              <a href="{{ site.baseurl }}{% link apply/guide.md %}">How to apply</a>
+            </p>
+            <p>
+              <a href="{{ site.baseurl }}{% link apply/index.md %}" class="button secondary-button">Apply now</a>
+            </p>
           </div>
 
           <aside class="col-sm-6">
@@ -97,10 +103,6 @@
             <a href="{{ site.baseurl }}{% link support/index.md %}" class="button primary-button">Support DOAJ</a>
             <p>
               Journal publishers don’t need to donate to be part of DOAJ.
-            </p>
-            <p>
-              <a href="{{ site.baseurl }}{% link apply/index.md %}" class="button secondary-button">Apply now</a>
-              <br><a href="{{ site.baseurl }}{% link apply/guide.md %}">How to apply</a>
             </p>
           </aside>
         </div>
@@ -186,7 +188,7 @@
               <article class="col-md-4 card">
                 <h4>Karina Menegaldo</h4>
                 <figure class="portrait">
-                  <img src="https://images.generated.photos/ggaWl1zseN8sJNmJZ9rVZuAoc17In0C1qb7na6AGuHE/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zL3Yy/XzA1MzUyMDAuanBn.jpg" alt="Portrait of Karina Megaldo" height="150" width="150" class="portrait__img"/>
+                  <img src="https://images.generated.photos/ggaWl1zseN8sJNmJZ9rVZuAoc17In0C1qb7na6AGuHE/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zL3Yy/XzA1MzUyMDAuanBn.jpg" class="portrait__img portrait__img--split" alt="Portrait of Karina Megaldo"></img>
                 </figure>
                 <p class="label">
                   Linguistics and computation
@@ -202,8 +204,9 @@
               <article class="col-md-4 card">
                 <h4>Marco Tullney</h4>
                 <figure class="portrait">
-                  <img src="https://images.generated.photos/PYqJjdWKLiLWW3R0pVQGZRQ6oZWQ5qdPMLkwLCttkJs/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zLzA5/OTUwMjkuanBn.jpg" alt="Portrait of Marco Tullney" height="150" width="150" class="portrait__img"/>
+                  <img src="https://images.generated.photos/PYqJjdWKLiLWW3R0pVQGZRQ6oZWQ5qdPMLkwLCttkJs/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zLzA5/OTUwMjkuanBn.jpg" class="portrait__img portrait__img--split" alt="Portrait of Marco Tullney"></img>
                 </figure>
+
                 <p class="label">
                   Social sciences
                 </p>
@@ -218,7 +221,7 @@
               <article class="col-md-4 card">
                 <h4>Karima Akool Al Salihi</h4>
                 <figure class="portrait">
-                  <img src="https://images.generated.photos/hoWxGiF0Ha-1RMoWzL3GqouXZf2fSxU3dYY9G8EyP3k/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zLzA5/OTkyMjAuanBn.jpg" alt="Portrait of Karima Akool Al Salihi" height="150" width="150" class="portrait__img"/>
+                  <img src="https://images.generated.photos/hoWxGiF0Ha-1RMoWzL3GqouXZf2fSxU3dYY9G8EyP3k/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zLzA5/OTkyMjAuanBn.jpg" class="portrait__img portrait__img--split" alt="Portrait of Karima Akool Al Salihi"></img>
                 </figure>
                 <p class="label">
                   Medicine
@@ -240,18 +243,14 @@
                 <p>The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.</p>
               </div>
               <div class="col-sm-4">
-                <p class="intro__cta"><a href="{{ site.baseurl }}{% link support/sponsors.md %}" class="button primary-button">Learn more</a></p>
+                <p class="intro__cta"><a href="{{ site.baseurl }}{% link support/sponsors.md %}" class="button primary-button">See sponsors</a></p>
               </div>
             </div>
 
             <h4>Gold sponsor</h4>
-            <div class="row">
-              <div class="col-xs-6 col-md-4">
-                <a href="https://www.ieee.org/" target="_blank">
-                  <img src="img/sponsors/ieee.png" alt="IEEE logo" height="35"/>
-                </a>
-              </div>
-            </div>
+            <a href="https://www.ieee.org/" class="gold-sponsor" target="_blank" rel="noopener noreferrer">
+              <img src="img/sponsors/ieee.png" alt="IEEE logo"/>
+            </a>
           </section>
 
           <section>
@@ -266,7 +265,7 @@
             </div>
             <ul class="row title-list">
               <li class="col-sm-6">
-                <a href="{{ site.baseurl }}{% link support/supporters.md %}" class="title-list__link title-list__link--is-highlighted">
+                <a href="{{ site.baseurl }}{% link support/supporters.md %}" class="title-list__link title-list__link--highlighted">
                   <h4 class="title-list__heading">Supporters</h4>
                   <p>DOAJ Membership is recommended for those who can support us with a long-term annual fixed contribution.</p>
                   <p>Learn more</p>
@@ -274,7 +273,7 @@
               </li>
 
               <li class="col-sm-6">
-                <a href="{{ site.baseurl }}{% link support/publisher-supporters.md %}" class="title-list__link title-list__link--is-highlighted">
+                <a href="{{ site.baseurl }}{% link support/publisher-supporters.md %}" class="title-list__link title-list__link--highlighted">
                   <h4 class="title-list__heading">Publisher supporters</h4>
                   <p>If you publish or own an Open Access journal, you may prefer to become a Publisher Supporter with DOAJ.</p>
                   <p>Learn more</p>
@@ -286,65 +285,63 @@
       </section>
 
       <!-- New journals -->
-      <section>
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-4">
-              <h2>Recently-added journals</h2>
-              <p><a href="">See all</a></p>
-            </div>
-            <div class="col-sm-8">
-              <ul class="row mobile-scrollable-row title-list">
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Journal of Electrical, Electronics and Informatics</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Journal of Pure and Applied Microbiology</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Çocuk ve Gençlik Ruh Sağlığı Dergisi</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">transLogos: Translation Studies Journal</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Amasya İlahiyat Dergisi</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Computational Methods for Differential Equations</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Танцювальні студії</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Научный журнал Российского НИИ проблем мелиорации</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Ciencia y Educación</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Iranian Journal of Pathology</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Environmental Pollutants & Bioavailability</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Journal of the Egyptian National Cancer Institute</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Известия Томского политехнического университета: Инжиниринг георесурсов</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Curricula: Journal of Teaching and Learning</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Pengarah</a>
-                </li>
-                <li class="col-md-3">
-                  <a href="" class="title-list__link">Journal of Innovation Management</a>
-                </li>
-              </ul>
-            </div>
+      <section class="container">
+        <div class="row">
+          <div class="col-sm-4">
+            <h2>Recently-added journals</h2>
+            <p><a href="">See all</a></p>
+          </div>
+          <div class="col-sm-8">
+            <ul class="row mobile-scrollable-row title-list">
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Journal of Electrical, Electronics and Informatics</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Journal of Pure and Applied Microbiology</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Çocuk ve Gençlik Ruh Sağlığı Dergisi</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">transLogos: Translation Studies Journal</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Amasya İlahiyat Dergisi</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Computational Methods for Differential Equations</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Танцювальні студії</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Научный журнал Российского НИИ проблем мелиорации</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Ciencia y Educación</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Iranian Journal of Pathology</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Environmental Pollutants & Bioavailability</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Journal of the Egyptian National Cancer Institute</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Известия Томского политехнического университета: Инжиниринг георесурсов</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Curricula: Journal of Teaching and Learning</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Pengarah</a>
+              </li>
+              <li class="col-md-3">
+                <a href="" class="title-list__link">Journal of Innovation Management</a>
+              </li>
+            </ul>
           </div>
         </div>
       </section>

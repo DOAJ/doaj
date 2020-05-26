@@ -54,7 +54,7 @@
                 {% elsif question.input == 'select' %}
                 <label for="{{ question.id }}">
                   {{ question.label }}&nbsp;{% include form_long_help.html %}
-                  {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
+                  {% if question.required == false %}<span class="form__question--optional">(Optional)</span>{% endif %}
                 </label>
                 <select id="{{ question.id }}"{% if question.required %} required{% endif %}>
                   {% for choice in question.choices %}
@@ -66,7 +66,7 @@
                 {% elsif question.input == 'textarea' %}
                 <label for="{{ question.id }}">
                   {{ question.label }}&nbsp;{% include form_long_help.html %}
-                  {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
+                  {% if question.required == false %}<span class="form__question--optional">(Optional)</span>{% endif %}
                 </label>
                 <textarea id="{{ question.id }}"{% if question.required %} required{% endif %}></textarea>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
@@ -74,7 +74,7 @@
                 {% else %}
                 <label for="{{ question.id }}">
                   {{ question.label }}&nbsp;{% include form_long_help.html %}
-                  {% if question.required == false %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
+                  {% if question.required == false %}<span class="form__question--optional">(Optional)</span>{% endif %}
                 </label>
                 <input id="{{ question.id }}" type="{{ question.input }}" {% if question.placeholder %}placeholder="{{ question.placeholder }}"{% endif %}{% if question.required %} required{% endif %}{% if question.input == 'number' %} min="1"{% endif %}/>
                 {% if question.short_help %}<p><small>{{ question.short_help }}</small></p>{% endif %}
@@ -105,6 +105,8 @@
                 {% endif %}
 
                 <button type="submit" class="pager-buttons__right">Next</button>
+
+                <a href="#" class="pager-buttons__center">Save draft</a>
               </p>
               {% endif %}
             </form>
@@ -127,7 +129,7 @@
               <ol class="application-nav__list">
                 <li class="application-nav__list-item
                   {% if page.name == step1 %} application-nav__list-item--active
-                  {% elsif page.name == step2 or page.name == step3 or page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% elsif page.name == step2 or page.name == step3 or page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/01-oa-compliance.md %}">
                     Open access compliance
@@ -135,7 +137,7 @@
                 </li>
                 <li class="application-nav__list-item
                   {% if page.name == step2 %} application-nav__list-item--active
-                  {% elsif page.name == step3 or page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% elsif page.name == step3 or page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/02-about.md %}">
                     About
@@ -143,7 +145,7 @@
                 </li>
                 <li class="application-nav__list-item
                   {% if page.name == step3 %} application-nav__list-item--active
-                  {% elsif page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% elsif page.name == step4 or page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/03-copyright-licensing.md %}">
                     Copyright & licensing
@@ -151,7 +153,7 @@
                 </li>
                 <li class="application-nav__list-item
                   {% if page.name == step4 %} application-nav__list-item--active
-                  {% elsif page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% elsif page.name == step5 or page.name == step6 or page.name == step7 %} application-nav__list-item--done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/04-editorial.md %}">
                     Editorial
@@ -159,7 +161,7 @@
                 </li>
                 <li class="application-nav__list-item
                   {% if page.name == step5 %} application-nav__list-item--active
-                  {% elsif page.name == step6 or page.name == step7 %} application-nav__list-item--is-done
+                  {% elsif page.name == step6 or page.name == step7 %} application-nav__list-item--done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/05-business-model.md %}">
                     Business model
@@ -167,7 +169,7 @@
                 </li>
                 <li class="application-nav__list-item
                   {% if page.name == step6 %} application-nav__list-item--active
-                  {% elsif page.name == step7 %} application-nav__list-item--is-done
+                  {% elsif page.name == step7 %} application-nav__list-item--done
                   {% endif %}">
                   <a href="{{ site.baseurl }}{% link apply/06-best-practice.md %}">
                     Best practice
@@ -184,7 +186,7 @@
             {% endif %}
 
             {% if page.name != "thank-you.md" %}
-            <aside class="highlight highlight--is-aside">
+            <aside class="highlight highlight--aside">
               <h2>Related help</h2>
               <ul class="full-width-list">
                 <li class="full-width-list__item">

@@ -1,6 +1,6 @@
 ---
 layout: apply
-title: <span data-feather="dollar-sign"></span> Business model
+title: <span data-feather="dollar-sign" aria-hidden="true"></span> Business model
 toc: true
 highlight: false
 previous: 04-editorial

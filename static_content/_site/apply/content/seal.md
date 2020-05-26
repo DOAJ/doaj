@@ -8,7 +8,7 @@ There are extra criteria which may make the journal eligible for the DOAJ Seal f
 
 All seven criteria must be met to be awarded the Seal:
 
-{:.tabular-list}
+{:.tabular-list .tabular-list--ordered}
 1. [Digital archiving and preservation](https://blog.doaj.org/2015/01/28/applications-a-note-about-archiving-and-preservation/)
     - The journal content must be actively deposited in one of the DOAJ-approved services:
         - CINES
@@ -20,19 +20,21 @@ All seven criteria must be met to be awarded the Seal:
         - Portico
         - A national library
 2. Permanent identifiers
-    - For example: DOI, ARK, Handle
+    - For example, DOI, ARK, Handle
     - Identifiers must be deposited regularly and must resolve.
 3. Metadata supply to DOAJ
     - Article metadata must be upload to DOAJ regularly and within three months of receiving the Seal.
-4. Embedded CC license information in full-text articles
+4. Embedded CC license information
     - The licensing information must be visible in all full-text formats.
-5. Use of CC BY, CC BY-SA or CC BY-NC license
+5. License type
+    - The journal must use a CC BY, CC BY-SA or CC BY-NC license
     - Allows the creation of derivative products.
-6. A repository policy —allowing authors to deposit a copy of their work— indicated in one of the following ways:
+6. A repository policy &ndash;allowing authors to deposit a copy of their work&ndash; indicated in one of the following ways:
     - (1) Registered with one of these services:
         - SHERPA/RoMEO
         - Dulcinea
         - Héloïse
         - Diadorim
     - (2) Or stated on the website but not registered.
-7. Authors must retain unrestricted copyright and publishing rights.
+7. Copyright and publishing rights
+    -  Authors must retain unrestricted rights.

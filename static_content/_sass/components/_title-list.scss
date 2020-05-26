@@ -31,12 +31,12 @@
   }
 }
 
-.title-list__link--is-highlighted {
+.title-list__link--highlighted {
   border-top: 1px dashed $grapefruit;
 }
 
 .title-list__heading {
-  padding-top: 0;
+  padding-top: 0 !important;
   margin-top: $spacing-02;
   margin-bottom: $spacing-03;
   font-weight: 400;

@@ -14,6 +14,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Directory of Open Access Journals
+url: https://doaj-static.netlify.app/
 
 # Build settings
 markdown: kramdown
@@ -26,11 +27,16 @@ sass:
     style: compressed
 plugins_dir:
   - jekyll-toc
+  - jekyll-target-blank
 
-# TOC settings s
+# TOC settings
 toc:
   list_class: page-nav__list
   sublist_class: page-nav__sublist
   item_class: page-nav__item
   item_prefix: item-
-  max_level: 3
+  max_level: 4
+
+# Target-blank settings
+target-blank:
+   noreferrer: false

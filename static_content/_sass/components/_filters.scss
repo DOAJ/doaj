@@ -1,0 +1,76 @@
+/* List of filters for search results */
+
+.filters {
+  border: 0;
+  @include typescale-06;
+}
+
+.filters__heading {
+  font-size: 1em;
+  color: $dark-grey;
+  text-transform: uppercase;
+  @include font-sans;
+}
+
+.filters__list {
+  @include unstyled-list;
+}
+
+.filter {
+  margin: $spacing-04 0;
+}
+
+.filter__heading {
+  margin: $spacing-03 0;
+  font-size: 1em;
+  color: $warm-black;
+  @include font-sans;
+
+  svg {
+    float: right;
+    height: 1em;
+    width: auto;
+  }
+}
+
+.filter__body {
+  padding-top: $spacing-03;
+  border-top: 1px dashed $grapefruit;
+}
+
+.filter__search {
+  margin-bottom: $spacing-03;
+  width: 100%;
+  font-size: smaller;
+  border-color: rgba($dark-grey, 0.75);
+  color: $warm-black;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-search'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+  background-size: 1em;
+  background-position: calc(100% - 0.5em) center;
+  background-repeat: no-repeat;
+}
+
+.filter__choices {
+  max-height: $spacing-07;
+  height: auto;
+  overflow-y: scroll;
+  @include unstyled-list;
+
+  li {
+    padding: 0 $spacing-01;
+    margin-bottom: $spacing-02;
+    line-height: 1.35;
+  }
+
+  svg {
+    vertical-align: middle;
+  }
+}
+
+.filter__label {
+  font-size: 1em !important;
+}
+
+input[type="checkbox"]:checked + .filter__label {
+  color: $sanguine;
+}

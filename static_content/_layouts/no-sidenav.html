@@ -10,7 +10,7 @@
 
     <main class="page-content">
       {% if page.highlight %}<div class="highlight">{% endif %}
-        <section class="container">
+        <header class="container">
           {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
           <h1>{{ page.title }}</h1>
           <div class="row">
@@ -18,69 +18,85 @@
               {{ content }}
             </div>
           </div>
-        </section>
+        </header>
       {% if page.highlight %}</div>{% endif %}
 
       <div class="container">
-        <!-- TODO: make this more elegant -->
-        {% if page.name == 'team.md' or page.name == 'team-fragment.md' %}
-        <!-- About section: team and ambassadors -->
-        <ul class="row title-list">
-          {% for i in site.data.team %}
-          <li class="col-sm-6 col-md-4">
-            <div class="title-list__text">
-              <figure class="portrait">
-                {% if i.photo %}
-                  <div class="portrait__bg-img--is-3d" style="background-image: url('../../img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
-                {% else %}
-                  <div class="portrait__img--is-empty"></div>
-                {% endif %}
-              </figure>
-              <p class="label">{{ i.role }}</p>
-              <h2 class="title-list__heading">{{ i.name }}</h2>
-              <p class="title-list__para">
-                {{ i.bio }}
-              </p>
-              {% if i.coi %}
-              <p class="title-list__para">
-                Conflict of interest statement(s):
-                <ul>
-                  {% for j in i.coi %}
-                  <li><a href="{{ j[1] }}" target="_blank">{{ j[0] }}</a></li>
-                  {% endfor %}
-                </ul>
-              </p>
-              {% endif %}
-            </div>
-          </li>
-          {% endfor %}
-        </ul>
+        {% if page.name == 'subjects.md' %}
+          <!-- Search section: subjects -->
         {% endif %}
 
-        {% if page.name == 'ambassadors.md' or page.name == 'ambassadors-fragment.md' %}
-        <h2>Current ambassadors</h2>
-        <ul class="row title-list">
-          {% for i in site.data.ambassadors %}
-          <li class="col-sm-6 col-md-4">
-            <div class="title-list__text">
-              <p class="label">{{ i.region }}</p>
-              <h2 class="title-list__heading">{{ i.name }}</h2>
-              {% if i.bio %}
-              <p class="title-list__para">
-                {{ i.bio }}
-              </p>
-              {% endif %}
-            </div>
-          </li>
-          {% endfor %}
-        </ul>
+
+        {% if page.name == 'team.md' or page.name == 'team-fragment.md' %}
+          <!-- About section: team -->
+          <ul class="row title-list">
+            {% for i in site.data.team %}
+            <li class="col-sm-6 col-md-4">
+              <div class="title-list__text">
+                <figure class="portrait">
+                  {% if i.photo %}
+                    <div class="portrait__bg-img--3d" style="background-image: url('../../img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                  {% else %}
+                    <div class="portrait__img--empty"></div>
+                  {% endif %}
+                </figure>
+                <p class="label">{{ i.role }}</p>
+                <h2 class="title-list__heading">{{ i.name }}</h2>
+                <p class="title-list__para">
+                  {{ i.bio }}
+                </p>
+                {% if i.coi %}
+                <p class="title-list__para">
+                  Conflict of interest statement(s):
+                  <ul>
+                    {% for j in i.coi %}
+                    <li><a href="{{ j[1] }}" target="_blank">{{ j[0] }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </p>
+                {% endif %}
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+
+        {% elsif page.name == 'ambassadors.md' or page.name == 'ambassadors-fragment.md' %}
+          <!-- About section: ambassadors -->
+          <h2>Current ambassadors</h2>
+          <ul class="row title-list">
+            {% for i in site.data.ambassadors %}
+            <li class="col-sm-6 col-md-4">
+              <div class="title-list__text">
+                <p class="label">{{ i.region }}</p>
+                <h2 class="title-list__heading">{{ i.name }}</h2>
+                {% if i.bio %}
+                <p class="title-list__para">
+                  {{ i.bio }}
+                </p>
+                {% endif %}
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+
+        {% elsif page.name == 'editorial-subcommittee.d' or page.name == 'editorial-subcommittee-fragment.md' %}
+          <!-- About section: editorial subcommittee -->
+          <h2>Members</h2>
+          <ul class="row title-list">
+            {% for i in site.data.editorial-subcommittee %}
+            <li class="col-sm-6 col-md-4">
+              <div class="title-list__text">
+                {{ i }}
+            </li>
+            {% endfor %}
+          </ul>
 
         {% elsif page.name == 'advisory-board-council.md' or page.name == 'advisory-board-council-fragment.md' %}
           <!-- About section: advisory board & council -->
           <h2>Advisory Board</h2>
           <p>The DOAJ Advisory Board was elected by the community. All board members started in August 2019.</p>
           <ul class="row title-list">
-            {% for i in site.data.advisory-board %}
+            {% for i in site.data.advisory-board-council.board %}
             <li class="col-xs-6 col-md-4">
               <div class="title-list__text">
                 <p class="label">{{ i.country }}</p>
@@ -104,7 +120,7 @@
           <h2>Council</h2>
           <p>The DOAJ Council was elected by the community. All Council members started in September 2019 unless otherwise stated.</p>
           <ul class="row bleed title-list">
-            {% for i in site.data.council %}
+            {% for i in site.data.advisory-board-council.council %}
             <li class="col-xs-6 col-md-4">
               <div class="title-list__text">
                 <p class="label">{{ i.country }}</p>

@@ -15,18 +15,19 @@ Journals applying to DOAJ **must** meet the following criteria:
 |   | Criteria                                                                                                      | Details                                                                                                                             |
 |---|---------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
 |   | make all content available for free and [open access](#type-of-open-access) without delay (no embargo period) | the journal must be ‘gold’ (non-APC or APC) open access <br>the journal’s open access policy must be stated on the journal web site |
-|   | be actively publishing scholarly research                                                                     | its primary target audience should be researchers                                                                                   |
-|   | publish at least five (5) scholarly articles per year                                                         | ⅓ of all content must be peer-reviewed original research and/or review papers                                                       |
+|   | be actively publishing scholarly research                                                                     | its primary target audience should be researchers or practitioners                                                                    |
+|   | publish at least five (5) scholarly articles per year                                                         |                                                       |
 |   | have a dedicated [homepage or website](#journal-website)                                                      | the URL is stable and reliable                                                                                                      |
 |   | make their articles available as individual, [full-text articles](#full-text-articles)                        | each article has its own page with a unique URL                                                                                     |
 |   | have an editor and an [editorial board](#editorial-process)                                                   | the journal must be peer-reviewed <br>we accept a form of editorial review for Arts and Humanities journals                         |
-|   | have at least one current ISSN registered and confirmed at issn.org                                           | provisional ISSNs are not accepted <br>the name of the journal in the application must match what is registered at issn.org and on the website                             |
+|   | have at least one current ISSN registered and confirmed at issn.org and displayed on the website              | the name of the journal in the application must match what is registered at issn.org and on the website                             |
 |   | clearly indicate the [terms of copyright](#copyright) on the website                                          | it can not restrict authors’ rights to fair use only                                                                                |
 |   | clearly indicate its [licensing terms](#licensing) on the website                                             | licensing terms must be available and clearly stated on the journal website, preferably on the full text of every article           |
 
 Furthermore, please make sure that:
 
 - the journal hasn’t had an application rejected within the last six months;
+  - journals that are rejected must wait 6 months from the date of rejection before applying again unless otherwise advised by DOAJ.
 - the journal isn’t in DOAJ already;
 - the journal doesn’t have another application already in progress;
   - duplicate applications are rejected immediately;
@@ -39,8 +40,6 @@ Journals included in DOAJ **can** also:
 - discuss any research subject areas;
 - be published in any language:
   - there is no requirement to publish in English;
-- be of any origin:
-  - academic, governmental, commercial, non-profit, private, and so on.
 
 **Journals do not need to meet the Seal criteria to be accepted into DOAJ.**
 
@@ -154,6 +153,31 @@ Fair use alone is not open access and DOAJ will not accept a journal with these 
 
 ---
 
+## Specific cases: exceptions and conditions
+
+{:.tabular-list}
+- ### Arts and humanities journals
+   - For these subjects only, DOAJ can accept journals that undertake editorial review, rather than peer review.  Editorial review must be handled with a minimum of two editors.
+
+- ### Case reports journals
+   - DOAJ only considers case reports as research if they include the retrospective analysis of more than three clinical cases and/or a literature review. Before applying, make sure that the journal has published at least five articles per year that meet this definition.
+
+- ### Law journals
+   - Law journals must undertake a peer review process to be included in DOAJ. However, an exception is made for US law journals where editorial review is an accepted practice in this field and has been traditionally used for over a century.
+
+- ### Student-run journals
+   - If a journal is run by a student body, there must be an advisory board for the journal where at least two members have a PhD or equivalent qualification.
+
+- ### Journals that have flipped to open access
+   - Where a journal was previously published as a subscription or hybrid journal and has now flipped to a fully open access model, this information must be clearly displayed:
+      - The date of the change to fully open access
+      - The availability of the archive material (open access, free, or paywalled)
+      - Reuse rights of the archive material (all rights reserved or open license)
+   - For a journal to be included in DOAJ, the latest volume must be completely open access. DOAJ does not accept journals where the current material is a mixture of open and restricted licenses.
+
+- ### Mirror journals
+   - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it has a different ISSN. DOAJ will currently accept mirror journals if they meet the usual inclusion criteria.
+
 ## The application process
 
 1. Once you have submitted your application, you will see a _Thank You_ screen and will be sent an automated confirmation email.
@@ -175,8 +199,31 @@ We cannot provide a status update for applications which are less than three mon
 
 ---
 
-## Editorial disclaimer
+## If your application is rejected
 
-The applicant is responsible for providing accurate information when submitting an application. If the information provided is not sufficient or is incomplete, the application will be rejected.
-In cases where the information provided is found to be untrue, either during review or after admission, we reserve the right to reject the application or remove the journal and to not accept new applications for a period of one year.
-In cases where a single publisher has submitted more than five applications with false information, we reserve the right to reject all associated applications and remove all associated journals. We will not accept any more applications for a maximum period of three years, depending on the number of journals for which false information was provided and the eventual number of repeated incidents.
+You will receive an email giving the reasons for rejection of the application. Unless otherwise advised by DOAJ staff, you may not submit another application for the same journal until 6 months after the date of the notification of rejection.
+
+You are responsible for providing accurate information when submitting an application. In cases where journal information is found to be untrue or misleading, DOAJ may decide not to allow further applications from the publisher for a period of up to three years.
+
+DOAJ accepts only journals that follow good publishing practice. If our review finds a publisher is not adhering to best practice, or has questionable publishing practices, DOAJ will not allow further applications from that publisher for a period of up to three years.
+
+Journals already accepted into DOAJ may also be removed if they are found to be no longer adhering to DOAJ criteria or publishing best practice.
+
+Please ensure that, if you do apply again after the exclusion period, the journal meets the DOAJ criteria for inclusion and any necessary changes have been made to the journal website or policies.
+
+---
+
+## Appeals
+
+If you would like to appeal against a decision to reject your application or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, [managing-editors@doaj.org](mailto:managing-editors@doaj.org).
+
+The appeal should contain the following information:
+- Journal title
+- Journal ISSN
+- Reason for appeal
+- Evidence for the DOAJ Appeals Committee to consider
+- The original notification of rejection/removal
+
+Appeals are considered by the DOAJ Appeals Committee, consisting of the Editor-in-Chief and members of the editorial team. Committee meetings are held monthly. After your case is discussed a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
+
+No further communication will be entered into after the appeal is heard and the Committee has made their decision.

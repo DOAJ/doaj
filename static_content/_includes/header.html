@@ -17,9 +17,9 @@
           <ul class="nav-bar">
             <li class="dropdown primary-nav__item_desktop">
               <a href="{{ site.baseurl }}{% link support/index.md %}" class="dropdown__trigger nav-bar__link" id="action-menu-support" type="button" aria-haspopup="true" aria-expanded="false">
-                <span data-feather="heart"></span>
+                <span data-feather="heart" aria-hidden="true"></span>
                 Support
-                <span data-feather="chevron-down"></span>
+                <span data-feather="chevron-down" aria-hidden="true"></span>
               </a>
               <ul class="dropdown__menu" aria-labelledby="action-menu-support">
                 <li>
@@ -47,7 +47,7 @@
             <li class="dropdown primary-nav__item_desktop">
               <a href="{{ site.baseurl }}{% link apply/index.md %}" class="dropdown__trigger nav-bar__link" id="action-menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
                 Apply
-                <span data-feather="chevron-down"></span>
+                <span data-feather="chevron-down" aria-hidden="true"></span>
               </a>
               <ul class="dropdown__menu" aria-labelledby="action-menu-apply">
                 <li>
@@ -77,8 +77,8 @@
                 </li>
               </ul>
             </li>
-            <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search">
-              <span data-feather="search"></span>
+            <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0">
+              <span data-feather="search" aria-hidden="true"></span>
               <span class="sr-only"> Search</span>
             </li>
           </ul>
@@ -89,50 +89,45 @@
   <nav class="secondary-nav {% if page.highlight != false %}secondary-nav--precedes-highlight{%endif%}">
     <div class="container">
       <a href="#" class="secondary-nav__menu-toggle" aria-label="Click to open menu">
-        <span data-feather="menu"></span> <h2 class="secondary-nav__header">Menu</h2>
+        <span data-feather="menu" aria-hidden="true"></span> <h2 class="secondary-nav__header">Menu</h2>
       </a>
       <ul class="nav-bar secondary-nav__menu">
         <li class="dropdown">
-          <a class="dropdown__trigger nav-bar__link" id="menu-journals-articles" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown__trigger nav-bar__link" id="menu-journals-articles" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             Search
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-journals-articles">
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="{{ site.baseurl }}{% link search/journals.md %}" class="dropdown__link">
                 Journals
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="{{ site.baseurl }}{% link search/articles.md %}" class="dropdown__link">
                 Articles
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
-                Browse by subject
-              </a>
-            </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="#" class="dropdown__link dropdown__link--disabled">
                 Open Knowledge Maps
               </a>
             </li>
           </ul>
         </li>
         <li class="dropdown">
-          <a class="dropdown__trigger nav-bar__link" id="menu-data" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown__trigger nav-bar__link" id="menu-data" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             Documentation
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-data">
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="#" class="dropdown__link dropdown__link--disabled">
                 API
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="{{ site.baseurl }}{% link docs/oai-pmh.md %}" class="dropdown__link">
                 OAI-PMH
               </a>
             </li>
@@ -159,9 +154,9 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a class="dropdown__trigger nav-bar__link" id="menu-about" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown__trigger nav-bar__link" id="menu-about" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             About
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-about">
             <li>
@@ -190,7 +185,7 @@
               </a>
             </li>
             <li>
-              <a class="dropdown__link dropdown__link--is-disabled">
+              <a class="dropdown__link dropdown__link--disabled">
                 News
               </a>
             </li>
@@ -204,7 +199,7 @@
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Support</strong>
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-support">
             <li>
@@ -232,7 +227,7 @@
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Apply</strong>
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-apply">
             <li>
@@ -265,7 +260,7 @@
         <li class="secondary-nav__login">
           <a href="{{ site.baseurl }}{% link login.md %}" class="nav-bar__link">
             Login
-            <span data-feather="log-in"></span>
+            <span data-feather="log-in" aria-hidden="true"></span>
           </a>
         </li>
       </ul>
@@ -273,10 +268,22 @@
   </nav>
 </header>
 
+{% if page.fragment == false %}
+<!-- Admin-only edit buttons -->
+<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/{{ page.section|downcase }}/content/{{ page.name }}" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
+
+{% assign current_page = page.name %}
+{% assign size = current_page | size | minus: 3 %}
+
+{% if page.name == 'ambassadors.md' or page.name == 'advisory-board-council.md' or page.name == 'publisher-supporters.md' or page.name == 'sponsors.md' or page.name == 'supporters.md' or page.name == 'team.md' or page.name == 'volunteers.md' %}
+<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/_data/{{ current_page | slice: 0, size }}.yml" target="_blank" rel="noopener"><span class="sr-only">Edit data content</span><span data-feather="database" aria-hidden="true"></span></a>
+{% endif %}
+{% endif %}
+
 <!-- Quick search modal -->
 <section class="modal" id="modal-search" tabindex="-1" role="dialog">
   <div class="modal__dialog" role="document">
-    <form class="quick-search__form">
+    <form class="quick-search__form" role="search">
       <h2 class="modal__title">Quick search</h2>
       <div class="inline-fields">
         <input type="radio" id="quick-search-journals" name="content-type" value="journals" checked>
@@ -297,7 +304,7 @@
           <option value="subject">Author</option>
         </select>
         <button type="submit">
-          <span data-feather="search"></span><span class="sr-only"> Search</span>
+          <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
     </form>

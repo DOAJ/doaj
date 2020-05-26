@@ -2,8 +2,9 @@
 layout: sidenav
 fragment: true
 title: Publisher supporters
+section: Support
 support-type: publisher-supporters
-toc: true
+toc: false
 sticky_sidenav: true
 highlight: false
 ---

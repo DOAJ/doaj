@@ -4,7 +4,7 @@
 
   {% include head.html %}
 
-  <body class="sidenav-page">
+  <body class="sidenav-page"{% if page.toc %} data-spy="scroll" data-offset="70" style="position: relative;"{% endif %}>
     {% include header.html %}
 {% endif %}
 
@@ -13,11 +13,128 @@
 
         <div class="col-md-4 col-md-push-8">
           {% if page.toc %}
-          <nav class="page-nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
+          <nav class="page-nav nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
             <h2 class="page-nav__heading">Jump to:</h2>
             {{ content | toc_only }}
           </nav>
+
           {% else %}
+
+          {% if page.name == 'publisher-supporters.md' %}
+          <aside class="highlight highlight--aside">
+            <h2>Become a publisher supporter</h2>
+
+            <div class="tabs">
+              <nav class="tabs__menu">
+                <ul class="tabs__list" role="tablist">
+                  <li class="tabs__item">
+                    <a href="#pub-supporters-yearly" role="tab" aria-selected="true">Yearly</a>
+                  </li>
+                  <li class="tabs__item"role="presentation">
+                    <a href="#pub-supporters-one-time" role="tab" aria-selected="false">One-time donation</a>
+                  </li>
+                </ul>
+              </nav>
+
+              <div class="tabs__content">
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="pub-supporters-yearly" class="tabs__panel" role="tabpanel" aria-hidden="false">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="hosted_button_id" value="T8RHKSMJ2JN7S">
+                  <input type="hidden" name="on0" value="Please select a yearly contribution based on your size">
+                  <label for="support-publishers-yearly">Please select a yearly contribution based on your size.</label>
+                  <select id="support-publishers-yearly" name="os0">
+                    <option value="Extra large">Extra large: £3,000.00 GBP (yearly)</option>
+                    <option value="Large">Large: £1,000.00 GBP (yearly)</option>
+                    <option value="Medium">Medium: £500.00 GBP (yearly)</option>
+                    <option value="Small">Small: £200.00 GBP (yearly)</option>
+                  </select>
+                  <input type="hidden" name="currency_code" value="GBP">
+                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                </form>
+
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="pub-supporters-one-time" class="tabs__panel" role="tabpanel" aria-hidden="true">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="hosted_button_id" value="7JEXFR4S7X2VN">
+                  <input type="hidden" name="on0" value="Please select your business size">
+                  <label for="support-publishers-yearly">Please select your business size for a one-time donation.</label>
+                  <select name="os0">
+                    <option value="Extra large">Extra large: £3,000.00 GBP</option>
+                    <option value="Large">Large: £1,000.00 GBP</option>
+                    <option value="Medium">Medium: £500.00 GBP</option>
+                    <option value="Small">Small: £200.00 GBP</option>
+                  </select>
+                  <input type="hidden" name="currency_code" value="GBP">
+                  <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                </form>
+              </div>
+            </div>
+          </aside>
+          {% endif %}
+
+          {% if page.name == 'supporters.md' %}
+          <aside class="highlight highlight--aside">
+            <h2>Become a yearly supporter</h2>
+            <p>Please select your currency and organisation type for an annually-recurring payment.</p>
+
+            <div class="tabs">
+              <nav class="tabs__menu">
+                <ul class="tabs__list" role="tablist">
+                  <li class="tabs__item">
+                    <a href="#supporters-gbp" role="tab" aria-selected="true">£ (GBP)</a>
+                  </li>
+                  <li class="tabs__item"role="presentation">
+                    <a href="#supporters-eur" role="tab" aria-selected="false">€ (EUR)</a>
+                  </li>
+                  <li class="tabs__item" role="presentation">
+                    <a href="#supporters-usd" role="tab" aria-selected="false">$ (USD)</a>
+                  </li>
+                </ul>
+              </nav>
+
+              <div class="tabs__content">
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-gbp" class="tabs__panel" role="tabpanel" aria-hidden="false">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="hosted_button_id" value="PDKWBTFHT9JMN">
+                  <input type="hidden" name="on0" value="Please select your organisation type">
+                  <label for="support-yearly">Please select your organisation type</label>
+                  <select name="os0">
+                    <option value="Academic Library">Academic Library: £540.00 GBP (yearly)</option>
+                    <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): £5,400.00 GBP (yearly)</option>
+                  </select>
+                  <input type="hidden" name="currency_code" value="GBP">
+                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                </form>
+
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-eur" class="tabs__panel" role="tabpanel" aria-hidden="true">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="hosted_button_id" value="LNYVLCWX8GNKJ">
+                  <input type="hidden" name="on0" value="Please select your organisation type">
+                  <label for="support-yearly">Please select your organisation type</label>
+                  <select name="os0">
+                    <option value="Academic Library">Academic Library: €585.00 EUR (yearly)</option>
+                    <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): €5,850.0 GBP (yearly)</option>
+                  </select>
+                  <input type="hidden" name="currency_code" value="EUR">
+                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                </form>
+
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-usd" class="tabs__panel" role="tabpanel" aria-hidden="true">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="hosted_button_id" value="GH72VHCDRDW9A">
+                  <input type="hidden" name="on0" value="Please select your organisation type">
+                  <label for="support-yearly">Please select your organisation type</label>
+                  <select name="os0">
+                    <option value="Academic Library">Academic Library: $675.00 USD (yearly)</option>
+                    <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): $6,750.00 USD (yearly)</option>
+                  </select>
+                  <input type="hidden" name="currency_code" value="EUR">
+                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                </form>
+              </div>
+            </div>
+          </aside>
+          {% endif %}
+
           <aside class="promo">
             <p class="label">Just so you know&hellip;</p>
 
@@ -42,11 +159,10 @@
 
             {{ content }}
 
-            <!-- TODO: make this more elegant -->
             <!-- Display data pages -->
             {% if page.name == 'sponsors.md' or page.name == 'sponsors-fragment.md' %}
               <!-- Support section: sponsors -->
-              <h3><span data-feather="award" class="stroke-gold"></span> Gold sponsor</h3>
+              <h3><span data-feather="award" aria-hidden="true" class="stroke-gold"></span> Gold sponsor</h3>
               <div class="row">
                 {% for i in site.data.sponsors.gold %}
                 <div class="col-xs-6 sponsor">
@@ -57,7 +173,7 @@
                 {% endfor %}
               </div>
 
-              <h3><span data-feather="award" class="stroke-silver"></span> Silver sponsors</h3>
+              <h3><span data-feather="award" aria-hidden="true" class="stroke-silver"></span> Silver sponsors</h3>
               <div class="row">
                 {% for i in site.data.sponsors.silver %}
                 <div class="col-xs-4 sponsor">
@@ -68,7 +184,7 @@
                 {% endfor %}
               </div>
 
-              <h3><span data-feather="award" class="stroke-bronze"></span> Bronze sponsors</h3>
+              <h3><span data-feather="award" aria-hidden="true" class="stroke-bronze"></span> Bronze sponsors</h3>
               <div class="row">
                 {% for i in site.data.sponsors.bronze %}
                 <div class="col-xs-4 sponsor">
@@ -91,9 +207,26 @@
 
             {% elsif page.name == 'supporters.md' or page.name == 'supporters-fragment.md' %}
               <!-- Support section: supporters -->
-              {% for i in site.data.supporters %}
-                <p>{{ i.name }}, {{ i.url }}</p>
-              {% endfor %}
+              <ul class="row bleed title-list">
+                {% for i in site.data.supporters %}
+                <li class="col-sm-6 col-md-3">
+                  <div class="title-list__text">
+                    <p class="label">{{ i.country }}</p>
+                    <h2 class="title-list__heading">{{ i.name }}</h2>
+                    {% if i.consortium_name %}
+                    <p class="title-list__para">
+                      <em>Part of the</em> {{ i.consortium_name }}
+                    </p>
+                    {% endif %}
+                    <p class="title-list__para">
+                      {% if i.annual %}<a href="{{ site.baseurl }}{% link support/index.md %}" class="tag"><span data-feather="calendar" aria-hidden="true"></span> Annual</a>{% endif %}
+                      {% if i.sustainable %}<a href="{{ site.baseurl }}{% link support/index.md %}" class="tag"><span data-feather="repeat" aria-hidden="true"></span> Sustainable</a>{% endif %}
+                    </p>
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+              </ul>
 
             {% endif %}
           </section>

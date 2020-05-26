@@ -36,19 +36,12 @@
 
   <link rel="stylesheet" href="../../css/main.css">
 
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-
-  <script src="../../js/vendors/bootstrap.js"></script>
-
   <meta name="theme-color" content="#F8F3EF">
 
-  <!-- Feather icons -->
-  <script src="https://unpkg.com/feather-icons"></script>
 </head>
 
 
-  <body class="sidenav-page">
+  <body class="sidenav-page" data-spy="scroll" data-offset="70" style="position: relative;">
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -61,7 +54,7 @@
           <a href="/" class="logo">
             <h1 class="sr-only">The Directory of Open Access Journals</h1>
             <?xml version="1.0" encoding="UTF-8"?>
-<svg height="30px" viewBox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
   <g id="logotype" fill="#FEFBF8" fill-rule="nonzero">
     <path d="M0,0.4219 L17.9297,0.4219 C24.8672,0.4688 30.0703,3.3516 33.5391,9.0703 C34.7812,10.9922 35.5664,13.0078 35.8945,15.1172 C36.1523,17.2266 36.2812,20.8711 36.2812,26.0508 C36.2812,31.5586 36.082,35.4023 35.6836,37.582 C35.4961,38.6836 35.2148,39.668 34.8398,40.5352 C34.4414,41.3789 33.9609,42.2578 33.3984,43.1719 C31.8984,45.5859 29.8125,47.5781 27.1406,49.1484 C24.4922,50.8359 21.2461,51.6797 17.4023,51.6797 L0,51.6797 L0,0.4219 Z M7.7695,44.332 L17.0508,44.332 C21.4102,44.332 24.5742,42.8438 26.543,39.8672 C27.4102,38.7656 27.9609,37.3711 28.1953,35.6836 C28.4062,34.0195 28.5117,30.9023 28.5117,26.332 C28.5117,21.8789 28.4062,18.6914 28.1953,16.7695 C27.9141,14.8477 27.2461,13.2891 26.1914,12.0938 C24.0352,9.1172 20.9883,7.6758 17.0508,7.7695 L7.7695,7.7695 L7.7695,44.332 Z"></path>
@@ -78,9 +71,9 @@
           <ul class="nav-bar">
             <li class="dropdown primary-nav__item_desktop">
               <a href="/support/" class="dropdown__trigger nav-bar__link" id="action-menu-support" type="button" aria-haspopup="true" aria-expanded="false">
-                <span data-feather="heart"></span>
+                <span data-feather="heart" aria-hidden="true"></span>
                 Support
-                <span data-feather="chevron-down"></span>
+                <span data-feather="chevron-down" aria-hidden="true"></span>
               </a>
               <ul class="dropdown__menu" aria-labelledby="action-menu-support">
                 <li>
@@ -108,7 +101,7 @@
             <li class="dropdown primary-nav__item_desktop">
               <a href="/apply/" class="dropdown__trigger nav-bar__link" id="action-menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
                 Apply
-                <span data-feather="chevron-down"></span>
+                <span data-feather="chevron-down" aria-hidden="true"></span>
               </a>
               <ul class="dropdown__menu" aria-labelledby="action-menu-apply">
                 <li>
@@ -128,7 +121,7 @@
                 </li>
                 <li>
                   <a href="/apply/transparency/" class="dropdown__link">
-                    Transparency & best practice
+                    Transparency &amp; best practice
                   </a>
                 </li>
                 <li>
@@ -138,8 +131,8 @@
                 </li>
               </ul>
             </li>
-            <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search">
-              <span data-feather="search"></span>
+            <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0">
+              <span data-feather="search" aria-hidden="true"></span>
               <span class="sr-only"> Search</span>
             </li>
           </ul>
@@ -150,50 +143,45 @@
   <nav class="secondary-nav ">
     <div class="container">
       <a href="#" class="secondary-nav__menu-toggle" aria-label="Click to open menu">
-        <span data-feather="menu"></span> <h2 class="secondary-nav__header">Menu</h2>
+        <span data-feather="menu" aria-hidden="true"></span> <h2 class="secondary-nav__header">Menu</h2>
       </a>
       <ul class="nav-bar secondary-nav__menu">
         <li class="dropdown">
-          <a class="dropdown__trigger nav-bar__link" id="menu-journals-articles" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown__trigger nav-bar__link" id="menu-journals-articles" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             Search
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-journals-articles">
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="/search/journals/" class="dropdown__link">
                 Journals
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="/search/articles/" class="dropdown__link">
                 Articles
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
-                Browse by subject
-              </a>
-            </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="#" class="dropdown__link dropdown__link--disabled">
                 Open Knowledge Maps
               </a>
             </li>
           </ul>
         </li>
         <li class="dropdown">
-          <a class="dropdown__trigger nav-bar__link" id="menu-data" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown__trigger nav-bar__link" id="menu-data" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             Documentation
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-data">
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="#" class="dropdown__link dropdown__link--disabled">
                 API
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="/docs/oai-pmh/" class="dropdown__link">
                 OAI-PMH
               </a>
             </li>
@@ -220,9 +208,9 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a class="dropdown__trigger nav-bar__link" id="menu-about" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown__trigger nav-bar__link" id="menu-about" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             About
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-about">
             <li>
@@ -242,7 +230,7 @@
             </li>
             <li>
               <a href="/about/advisory-board-council/" class="dropdown__link">
-                Advisory Board & Council
+                Advisory Board &amp; Council
               </a>
             </li>
             <li>
@@ -251,7 +239,7 @@
               </a>
             </li>
             <li>
-              <a class="dropdown__link dropdown__link--is-disabled">
+              <a class="dropdown__link dropdown__link--disabled">
                 News
               </a>
             </li>
@@ -265,7 +253,7 @@
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Support</strong>
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-support">
             <li>
@@ -293,7 +281,7 @@
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Apply</strong>
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-apply">
             <li>
@@ -313,7 +301,7 @@
             </li>
             <li>
               <a href="/apply/transparency/" class="dropdown__link">
-                Transparency & best practice
+                Transparency &amp; best practice
               </a>
             </li>
             <li>
@@ -326,7 +314,7 @@
         <li class="secondary-nav__login">
           <a href="/login/" class="nav-bar__link">
             Login
-            <span data-feather="log-in"></span>
+            <span data-feather="log-in" aria-hidden="true"></span>
           </a>
         </li>
       </ul>
@@ -334,10 +322,20 @@
   </nav>
 </header>
 
+
+<!-- Admin-only edit buttons -->
+<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/docs/content/xml.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
+
+
+
+
+
+
+
 <!-- Quick search modal -->
 <section class="modal" id="modal-search" tabindex="-1" role="dialog">
   <div class="modal__dialog" role="document">
-    <form class="quick-search__form">
+    <form class="quick-search__form" role="search">
       <h2 class="modal__title">Quick search</h2>
       <div class="inline-fields">
         <input type="radio" id="quick-search-journals" name="content-type" value="journals" checked>
@@ -358,7 +356,7 @@
           <option value="subject">Author</option>
         </select>
         <button type="submit">
-          <span data-feather="search"></span><span class="sr-only"> Search</span>
+          <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
     </form>
@@ -372,7 +370,7 @@
 
         <div class="col-md-4 col-md-push-8">
           
-          <nav class="page-nav" data-spy="affix">
+          <nav class="page-nav nav" data-spy="affix">
             <h2 class="page-nav__heading">Jump to:</h2>
             <ul class="page-nav__list">
 <li class="page-nav__item item-h2"><a href="#uploading-an-xml-file">Uploading an XML file</a></li>
@@ -381,30 +379,31 @@
 <li class="page-nav__item item-h2"><a href="#the-doajarticlesxsd-schema-file">The doajArticles.xsd schema file</a></li>
 </ul>
           </nav>
+
           
         </div>
 
         <div class="col-md-8 col-md-pull-4">
            <section class="page-content">
-            <p class="label">Documentation</p>
+            <p class="label">Docs</p>
             <h1>XML</h1>
 
             <p>When you upload your article metadata to us, it must be in one of two XML formats.</p>
 
 <p>Article metadata is provided to us on the understanding that it will then be available for free, to be distributed to any third party who wants it.</p>
 
-<p>We do not check the metadata’s quality or correctness as we ingest it—this is your responsibility—so any errors (for example, typos in author names, URLs, or DOI) will be uploaded as is. From time to time, a user of our metadata may contact us and ask us to make a correction to your metadata.</p>
+<p>We do not check the metadata’s quality or correctness as we ingest it—this is your responsibility—so any errors (for example, typos in author names, URLs, or DOI) will be uploaded as-is. From time to time, a user of our metadata may contact us and ask us to correct your metadata.</p>
 
 <h2 id="uploading-an-xml-file">Uploading an XML file</h2>
 
 <ul>
   <li>First convert your article metadata into an accepted XML format: DOAJ or Crossref.
     <ul>
-      <li>It is important that it is structured correctly.</li>
-      <li>Its format must follow a set of rules laid out in the <a href="/static/doaj/doajArticles.xsd">DOAJ XML schema file</a>, or the rules laid out in <a href="https://support.crossref.org/hc/en-us/articles/214530063-Crossref-XSD-schema-quick-reference">Crossref’s schema file</a>.</li>
+      <li>It must be structured correctly.</li>
+      <li>Its format must follow a set of rules laid out in the <a href="/static/doaj/doajArticles.xsd">DOAJ XML schema file</a>, or the rules laid out in <a href="https://support.crossref.org/hc/en-us/articles/214530063-Crossref-XSD-schema-quick-reference" target="_blank" rel="noopener">Crossref’s schema file</a>.</li>
     </ul>
   </li>
-  <li>If you are creating DOAJ XML manually, try <a href="https://jsonformatter.org/xml-formatter">formatting</a> and <a href="https://www.xmlvalidation.com/">validating</a> the file before you upload it to us.</li>
+  <li>If you are creating DOAJ XML manually, try <a href="https://jsonformatter.org/xml-formatter" target="_blank" rel="noopener">formatting</a> and <a href="https://www.xmlvalidation.com/" target="_blank" rel="noopener">validating</a> the file before you upload it to us.</li>
   <li>If you are exporting XML from an OJS plugin, you can <a href="/publisher/uploadfile">upload the file</a> immediately.</li>
 </ul>
 
@@ -434,11 +433,11 @@
     </tr>
     <tr>
       <td>ISSN</td>
-      <td>Optional, max. 1 <br />Either the ISSN or the EISSN must be present, or both</td>
+      <td>Optional, max. 1 <br>Either the ISSN or the EISSN must be present, or both</td>
     </tr>
     <tr>
       <td>EISSN</td>
-      <td>Optional, max. 1  <br />Either the ISSN or the EISSN must be present, or both</td>
+      <td>Optional, max. 1  <br>Either the ISSN or the EISSN must be present, or both</td>
     </tr>
     <tr>
       <td><strong>Publication date</strong></td>
@@ -495,7 +494,7 @@
   </tbody>
 </table>
 
-<p>There are <a href="https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en">European Union restrictions</a> on how you distribute personal data, such as email addresses. DOAJ doesn’t have any need for or display author email addresses so please don’t send them to us in the XML.</p>
+<p>There are <a href="https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en" target="_blank" rel="noopener">European Union restrictions</a> on how you distribute personal data, such as email addresses. DOAJ doesn’t have any need for or display author email addresses so please don’t send them to us in the XML.</p>
 
 <h2 id="example-doaj-xml-file">Example DOAJ XML File</h2>
 
@@ -557,15 +556,17 @@
     </tr>
     <tr>
       <td><code class="highlighter-rouge">language</code></td>
-      <td>The language tag content must conform to the ISO 639-2b standard. <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes">Find the correct language code</a>.</td>
+      <td>The language tag content must conform to the ISO 639-2b standard. <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes" target="_blank" rel="noopener">Find the correct language code</a>.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">issn</code>  <br /><code class="highlighter-rouge">eissn</code></td>
+      <td>
+<code class="highlighter-rouge">issn</code>  <br><code class="highlighter-rouge">eissn</code>
+</td>
       <td> </td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">title language=""</code></td>
-      <td>If the title occurs in more than one language, then you may include those in your XML. However we can only display one language. The title tag’s language attribute must be set according to the ISO 639-2b standard.</td>
+      <td>If the title occurs in more than one language, then you may include those in your XML. However, we can only display one language. The title tag’s language attribute must be set according to the ISO 639-2b standard.</td>
     </tr>
     <tr>
       <td><code class="highlighter-rouge">name</code></td>
@@ -573,16 +574,16 @@
     </tr>
     <tr>
       <td><code class="highlighter-rouge">affiliationId</code></td>
-      <td>Note that the <code class="highlighter-rouge">affilitationId</code> numbers denote the affilitations in the <code class="highlighter-rouge">affiliationslist</code> further down.</td>
+      <td>Note that the <code class="highlighter-rouge">affiliationId</code> numbers denote the affiliations in the <code class="highlighter-rouge">affiliationslist</code> further down.</td>
     </tr>
   </tbody>
 </table>
 
-<hr />
+<hr>
 
 <h2 id="the-doajarticlesxsd-schema-file">The doajArticles.xsd schema file</h2>
 
-<p>The <a href="http://www.doaj.org/static/doaj/doajArticles.xsd">doajArticles.xsd</a> file specifies what may or may not be uploaded to the database.</p>
+<p>The <a href="http://www.doaj.org/static/doaj/doajArticles.xsd" target="_blank" rel="noopener">doajArticles.xsd</a> file specifies what may or may not be uploaded to the database.</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="nt">&lt;xs:schema</span> <span class="na">xmlns:xs=</span><span class="s">"http://www.w3.org/2001/XMLSchema"</span> <span class="na">xmlns:iso_639-2b=</span><span class="s">"https://doaj.org/schemas/iso_639-2b/1.0"</span><span class="nt">&gt;</span>
@@ -714,7 +715,6 @@
 
 
 
-            <!-- TODO: make this more elegant -->
             <!-- Display data pages -->
             
           </section>
@@ -726,16 +726,16 @@
 
     <footer class="page-footer">
   <div class="container">
-    <a href="#" id="top" class="back-to-top" data-spy="affix"><span data-feather="arrow-up"></span></a>
+    <a href="#" id="top" class="back-to-top" data-spy="affix"><span data-feather="arrow-up" aria-hidden="true"></span><span class="sr-only">Back to top</span></a>
     <section class="row">
       <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Apply</h2>
         <ul>
-          <li><a href="/apply">Application form</a></li>
-          <li><a href="/apply/guide">Guide to applying</a></li>
-          <li><a href="/apply/seal">The DOAJ seal</a></li>
-          <li><a href="/apply/transparency">Transparency & best practice</a></li>
-          <li><a href="/apply/why-index">Why index your journal in DOAJ?</a></li>
+          <li><a href="/apply/">Application form</a></li>
+          <li><a href="/apply/guide/">Guide to applying</a></li>
+          <li><a href="/apply/seal/">The DOAJ seal</a></li>
+          <li><a href="/apply/transparency/">Transparency &amp; best practice</a></li>
+          <li><a href="/apply/why-index/">Why index your journal in DOAJ?</a></li>
         </ul>
       </div>
 
@@ -753,34 +753,34 @@
         <h2>Documentation</h2>
         <ul>
           <li><a href="">API</a></li>
-          <li><a href="">OAI-PMH</a></li>
-          <li><a href="/docs/xml">XML</a></li>
-          <li><a href="/docs/widgets">Widgets</a></li>
-          <li><a href="/docs/public-data-dump">Public data dump</a></li>
-          <li><a href="/docs/openurl">OpenURL</a></li>
+          <li><a href="/docs/oai-pmh/">OAI-PMH</a></li>
+          <li><a href="/docs/xml/">XML</a></li>
+          <li><a href="/docs/widgets/">Widgets</a></li>
+          <li><a href="/docs/public-data-dump/">Public data dump</a></li>
+          <li><a href="/docs/openurl/">OpenURL</a></li>
         </ul>
       </div>
 
       <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>About</h2>
         <ul>
-          <li><a href="/about">History & mission</a></li>
-          <li><a href="/about/team">Team</a></li>
-          <li><a href="/about/ambassadors">Ambassadors</a></li>
-          <li><a href="/about/advisory-board-council">Advisory Board & Council</a></li>
-          <li><a href="/about/volunteers">Volunteers</a></li>
+          <li><a href="/about/">History &amp; mission</a></li>
+          <li><a href="/about/team/">Team</a></li>
+          <li><a href="/about/ambassadors/">Ambassadors</a></li>
+          <li><a href="/about/advisory-board-council/">Advisory Board &amp; Council</a></li>
+          <li><a href="/about/volunteers/">Volunteers</a></li>
           <li><a href="">News</a></li>
-          <li><a href="/about/faq">FAQs</a></li>
+          <li><a href="/about/faq/">FAQs</a></li>
         </ul>
       </div>
 
       <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Support</h2>
         <ul>
-          <li><a href="/support">Support DOAJ</a></li>
-          <li><a href="/support/sponsors">Sponsors</a></li>
-          <li><a href="/support/publisher-supporters">Publisher supporters</a></li>
-          <li><a href="/support/supporters">Supporters</a></li>
+          <li><a href="/support/">Support DOAJ</a></li>
+          <li><a href="/support/sponsors/">Sponsors</a></li>
+          <li><a href="/support/publisher-supporters/">Publisher supporters</a></li>
+          <li><a href="/support/supporters/">Supporters</a></li>
         </ul>
       </div>
 
@@ -788,46 +788,55 @@
         <h2>Stay up to date</h2>
         <ul>
           <li>
-            <a href="https://twitter.com/DOAJplus" target="_blank">
-              <span data-feather="twitter"></span> Twitter
+            <a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">
+              <span data-feather="twitter" aria-hidden="true"></span> Twitter
             </a>
           </li>
           <li>
-            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank">
-              <span data-feather="facebook"></span> Facebook
+            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank" rel="noopener">
+              <span data-feather="facebook" aria-hidden="true"></span> Facebook
             </a>
           </li>
           <li>
-            <a href="https://github.com/DOAJ" target="_blank">
-              <span data-feather="github"></span> Github
+            <a href="https://github.com/DOAJ" target="_blank" rel="noopener">
+              <span data-feather="github" aria-hidden="true"></span> Github
             </a>
           </li>
           <li>
-            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank">
-              <span data-feather="linkedin"></span> Linkedin
+            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank" rel="noopener">
+              <span data-feather="linkedin" aria-hidden="true"></span> Linkedin
             </a>
           </li>
           <li>
             <a href="">
-              <span data-feather="rss"></span> Atom feed</a>
+              <span data-feather="rss" aria-hidden="true"></span> Atom feed</a>
             </li>
         </ul>
       </div>
     </section>
 
     <section class="row legal">
-      <div class="col-sm-6">
+      <h2 class="sr-only">Legal &amp; admin</h2>
+      <div class="col-sm-8">
         <ul>
-          <li><a href="">Privacy</a></li>
-          <li><a href="">Contact us</a></li>
-          <li><a href="">IS4OA</a></li>
-          <li><a href="">Cottage Labs LLP</a></li>
+          <li><a href="/about/accessibility/">Accessibility statement</a></li>
+            <li><a href="/about/privacy/">Privacy</a></li>
+          <li><a href="/contact/">Contact us</a></li>
+          <li><a href="https://is4oa.org/" target="_blank" rel="noopener">IS4OA</a></li>
+          <li><a href="https://cottagelabs.com/" target="_blank" rel="noopener">Cottage Labs LLP</a></li>
         </ul>
       </div>
-      <p class="col-sm-6">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
+      <p class="col-sm-4">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
     </section>
   </div>
 </footer>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+<script src="../../js/vendors/bootstrap.js"></script>
+
+<!-- Feather icons -->
+<script src="https://unpkg.com/feather-icons"></script>
 
 <script>
   // Use Feather icons
@@ -838,7 +847,7 @@
   var nav = document.querySelector(".secondary-nav__menu");
 
   openMenu.addEventListener('click', function() {
-    nav.classList.toggle("secondary-nav__menu-toggle--is-active");
+    nav.classList.toggle("secondary-nav__menu-toggle--active");
   }, false);
 
   // Back-to-top button
@@ -859,6 +868,53 @@
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
   }
+
+  // Tabs
+  $("[role='tab']").click(function(e) {
+    e.preventDefault();
+    $(this).attr("aria-selected", "true");
+    $(this).parent().siblings().children().attr("aria-selected", "false");
+    var tabpanelShow = $(this).attr("href");
+    $(tabpanelShow).attr("aria-hidden", "false");
+    $(tabpanelShow).siblings().attr("aria-hidden", "true");
+  });
+
+  // Offset when clicking on anchor link or sidenav link to compensate for fixed header
+  var headerHeight = 70;
+
+  // When on the same page
+  jQuery (function($) {
+    $('a[href*="#"]:not([href="#"])').click(function() {
+      var target = $(this.hash);
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight
+      }, 50, 'linear');
+    });
+    if (location.hash){
+      var id = $(location.hash);
+    }
+
+    $(window).load(function() {
+      if (location.hash){
+        $('html,body').animate({
+          scrollTop: id.offset().top - headerHeight
+        }, 50, 'linear')
+      };
+    });
+  });
+
+  // Coming from another page
+  jQuery (document).ready (function($) {
+    var hash= window.location.hash
+    if ( hash == '' || hash == '#' || hash == undefined ) return false;
+    var target = $(hash);
+    target = target.length ? target : $('[name=' + hash.slice(1) +']');
+    if (target.length) {
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight //offsets for fixed header
+      }, 50, 'linear');
+    }
+  } );
 </script>
 
   </body>

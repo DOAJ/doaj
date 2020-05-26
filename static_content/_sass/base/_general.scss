@@ -79,6 +79,10 @@ ul, ol {
   ul, ol {
     margin-left: $spacing-03;
   }
+
+  li {
+    line-height: 1.5;
+  }
 }
 
 pre, code {
@@ -219,6 +223,7 @@ input, select, button {
   -moz-appearance: none;
   appearance: none;
 
+  display: block;
   padding: 0.5em;
   background-color: $warm-white;
   border: 1px solid $warm-black;
@@ -279,4 +284,15 @@ input[type="radio"] + label {
   &::before {
     border-radius: 50%;
   }
+}
+
+[type="button"] {
+  cursor: pointer;
+}
+
+/* Feather icons */
+
+.feather {
+  height: 1em;
+  width: auto;
 }

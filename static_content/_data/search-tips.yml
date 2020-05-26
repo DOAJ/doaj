@@ -1,0 +1,5 @@
+- text: "To search on full titles, use quotation marks (<code>\" \"</code>) around the title."
+
+- text: "If you write more than one word in your search query it will be treated as a phrase."
+
+- text: "Refine your search by using the facets and filters on the left, or by sorting the results using the dropdowns at the top."
