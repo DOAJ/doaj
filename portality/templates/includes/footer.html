@@ -1,6 +1,6 @@
 <footer class="page-footer">
   <div class="container">
-    <a href="#" id="top" class="back-to-top" data-spy="affix"><span data-feather="arrow-up"></span></a>
+    <a href="#" id="top" class="back-to-top" data-spy="affix"><span data-feather="arrow-up" aria-hidden="true"></span><span class="sr-only">Back to top</span></a>
     <section class="row">
       <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Apply</h2>
@@ -62,46 +62,55 @@
         <h2>Stay up to date</h2>
         <ul>
           <li>
-            <a href="https://twitter.com/DOAJplus" target="_blank">
-              <span data-feather="twitter"></span> Twitter
+            <a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener noreferrer">
+              <span data-feather="twitter" aria-hidden="true"></span> Twitter
             </a>
           </li>
           <li>
-            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank">
-              <span data-feather="facebook"></span> Facebook
+            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank" rel="noopener noreferrer">
+              <span data-feather="facebook" aria-hidden="true"></span> Facebook
             </a>
           </li>
           <li>
-            <a href="https://github.com/DOAJ" target="_blank">
-              <span data-feather="github"></span> Github
+            <a href="https://github.com/DOAJ" target="_blank" rel="noopener noreferrer">
+              <span data-feather="github" aria-hidden="true"></span> Github
             </a>
           </li>
           <li>
-            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank">
-              <span data-feather="linkedin"></span> Linkedin
+            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank" rel="noopener noreferrer">
+              <span data-feather="linkedin" aria-hidden="true"></span> Linkedin
             </a>
           </li>
           <li>
             <a href="">
-              <span data-feather="rss"></span> Atom feed</a>
+              <span data-feather="rss" aria-hidden="true"></span> Atom feed</a>
             </li>
         </ul>
       </div>
     </section>
 
     <section class="row legal">
-      <div class="col-sm-6">
+      <h2 class="sr-only">Legal & admin</h2>
+      <div class="col-sm-8">
         <ul>
-          <li><a href="">Privacy</a></li>
-          <li><a href="">Contact us</a></li>
-          <li><a href="">IS4OA</a></li>
-          <li><a href="">Cottage Labs LLP</a></li>
+          <li><a href="about/accessibility">Accessibility statement</a></li>
+            <li><a href="about/privacy">Privacy</a></li>
+          <li><a href="/contact">Contact us</a></li>
+          <li><a href="https://is4oa.org/" target="_blank" rel="noopener noreferrer">IS4OA</a></li>
+          <li><a href="https://cottagelabs.com/" target="_blank" rel="noopener noreferrer">Cottage Labs LLP</a></li>
         </ul>
       </div>
-      <p class="col-sm-6">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
+      <p class="col-sm-4">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
     </section>
   </div>
 </footer>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+<script src="/static_content/js/vendors/bootstrap.js"></script>
+
+<!-- Feather icons -->
+<script src="https://unpkg.com/feather-icons"></script>
 
 <script>
   // Use Feather icons
@@ -112,7 +121,7 @@
   var nav = document.querySelector(".secondary-nav__menu");
 
   openMenu.addEventListener('click', function() {
-    nav.classList.toggle("secondary-nav__menu-toggle--is-active");
+    nav.classList.toggle("secondary-nav__menu-toggle--active");
   }, false);
 
   // Back-to-top button
@@ -134,4 +143,50 @@
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
   }
 
+  // Tabs
+  $("[role='tab']").click(function(e) {
+    e.preventDefault();
+    $(this).attr("aria-selected", "true");
+    $(this).parent().siblings().children().attr("aria-selected", "false");
+    var tabpanelShow = $(this).attr("href");
+    $(tabpanelShow).attr("aria-hidden", "false");
+    $(tabpanelShow).siblings().attr("aria-hidden", "true");
+  });
+
+  // Offset when clicking on anchor link or sidenav link to compensate for fixed header
+  var headerHeight = 70;
+
+  // When on the same page
+  jQuery (function($) {
+    $('a[href*="#"]:not([href="#"])').click(function() {
+      var target = $(this.hash);
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight
+      }, 50, 'linear');
+    });
+    if (location.hash){
+      var id = $(location.hash);
+    }
+
+    $(window).load(function() {
+      if (location.hash){
+        $('html,body').animate({
+          scrollTop: id.offset().top - headerHeight
+        }, 50, 'linear')
+      };
+    });
+  });
+
+  // Coming from another page
+  jQuery (document).ready (function($) {
+    var hash= window.location.hash
+    if ( hash == '' || hash == '#' || hash == undefined ) return false;
+    var target = $(hash);
+    target = target.length ? target : $('[name=' + hash.slice(1) +']');
+    if (target.length) {
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight //offsets for fixed header
+      }, 50, 'linear');
+    }
+  } );
 </script>
