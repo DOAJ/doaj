@@ -526,3 +526,33 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(Api400Error):
             ArticlesCrudApi.create(data, account)
 
+    def test_13_trim_empty_string_data(self):
+
+        data = ArticleFixtureFactory.make_article_source()
+        data["bibjson"]["title"] = ""
+        data["bibjson"]["year"] = ""
+        data["bibjson"]["month"] = ""
+        data["bibjson"]["abstract"] = ""
+        authors_nr = len(data["bibjson"]["author"][0])
+        data["bibjson"]["author"][0]["name"] = ""
+        subject_nr = len(data["bibjson"]["subject"])
+        data["bibjson"]["subject"][0]["term"] = ""
+        ids_nr = len(data["bibjson"]["identifier"])
+        data["bibjson"]["identifier"][0]["id"] = ""
+        links_nr = len(data["bibjson"]["link"])
+        data["bibjson"]["link"][0]["url"] = ""
+        keywords_nr = len(data["bibjson"]["keywords"])
+        data["bibjson"]["keywords"][0] = ""
+
+        ia = IncomingArticleDO(data)
+        bibjson = ia.data["bibjson"]
+        assert not "title" in "bibjson"
+        assert not "year" in "bibjson"
+        assert not "month" in "bibjson"
+        assert not "abstract" in "bibjson"
+        assert not "author" in "bibjson"
+        assert len(bibjson["subject"]) == subject_nr-1
+        assert len(bibjson["identifier"]) == ids_nr-1
+        assert len(bibjson["link"]) == links_nr-1
+        assert len(bibjson["keywords"]) == keywords_nr-1
+

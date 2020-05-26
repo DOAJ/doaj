@@ -211,7 +211,7 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "publisher",
                     category: "facet",
-                    field: "index.publisher.exact",
+                    field: "bibjson.publisher.exact",
                     display: "Publisher",
                     deactivateThreshold : 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
@@ -267,7 +267,7 @@ $.extend(true, doaj, {
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal Language','field':'index.language'},
-                        {'display':'Publisher','field':'index.publisher'},
+                        {'display':'Publisher','field':'bibjson.publisher'},
 
                         {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
                         {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'}
@@ -481,7 +481,7 @@ $.extend(true, doaj, {
                         'index.language.exact' : 'Journal Language',
                         'index.country.exact' : 'Country of publisher',
                         'index.subject.exact' : 'Subject',
-                        'index.publisher.exact' : 'Publisher',
+                        'bibjson.publisher.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
                         'bibjson.author_pays.exact' : 'Publication charges?',
                         'index.license.exact' : 'Journal License'

@@ -1,4 +1,5 @@
-from portality.core import app
+from portality.core import app, es_connection
+from portality.util import ipt_prefix
 from portality.bll import exceptions
 from portality.lib import plugin
 from copy import deepcopy
@@ -141,14 +142,7 @@ class QueryService(object):
         limit = cfg.get("limit", None)
         keepalive = cfg.get("keepalive", "1m")
 
-        # Initialize esprit
-        source = {
-            "host": app.config.get("ELASTIC_SEARCH_HOST"),
-            "index": app.config.get("ELASTIC_SEARCH_DB")
-        }
-        conn = esprit.raw.Connection(source.get("host"), source.get("index"))
-
-        for result in esprit.tasks.scroll(conn, dao_klass.__type__, q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive, scan=scan):
+        for result in esprit.tasks.scroll(es_connection, ipt_prefix(dao_klass.__type__), q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive, scan=scan):
             res = self._post_filter_search_results(cfg, result, unpacked=True)
             yield res
 

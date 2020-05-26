@@ -35,6 +35,9 @@ class DOAJXWalk(object):
             doc = etree.parse(file_handle)
         except etree.XMLSyntaxError as e:   # although the treatment is the same, pulling this out so we remember what the primary kind of exception should be
             raise CrosswalkException(message="Unable to parse XML file", inner=e)
+        except UnicodeDecodeError as e:
+            msg = 'Text decode failed, expected utf-8 encoded XML.'
+            raise CrosswalkException(message='Unable to parse XML file', inner=e, inner_message=msg)
         except Exception as e:
             raise CrosswalkException(message="Unable to parse XML file", inner=e)
 

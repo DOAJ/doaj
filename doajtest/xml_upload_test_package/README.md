@@ -3,7 +3,7 @@ upload interface.
 
 duplicate_in_file.xml - a file with 2 duplicate articles - one should be ignored.
 
-fulltext_invalid.xml - check the DOAJ schema rejects an invalid fulltext URL.
+fulltext_invalid.xml - check the DOAJ schema rejects an invalid fulltext URL (applies only to the DOAJ XSD).
 
 not_xml.xml - a file which claims to be XML but isn't.
 

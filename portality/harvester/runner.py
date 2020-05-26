@@ -1,5 +1,5 @@
 from portality.harvester import workflow
-from portality.core import app, initialise_index
+from portality.core import app, es_connection, initialise_index
 from portality.models.harvester import HarvesterProgressReport as Report
 import flask.logging
 
@@ -53,7 +53,7 @@ def run_only_once():
 
 if __name__ == "__main__":
     run_only_once()
-    initialise_index(app)
+    initialise_index(app, es_connection)
     sub_prefix = app.config.get('HARVESTER_EMAIL_SUBJECT_PREFIX', '')
 
     # Send an email when the harvester starts.

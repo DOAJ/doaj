@@ -1,5 +1,6 @@
 from portality import models
-from portality.core import app
+from portality.core import es_connection
+from portality.util import ipt_prefix
 import esprit
 import re
 import csv
@@ -33,13 +34,13 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+    conn = es_connection
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID", "Article Title", "URL", "In Doaj", "Created Date"])
 
-        for j in esprit.tasks.scroll(conn, models.Article.__type__, q=INVALID_URLS, page_size=100, keepalive='5m'):
+        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Article.__type__), q=INVALID_URLS, page_size=100, keepalive='5m'):
             article = models.Article(_source=j)
             bibjson = article.bibjson()
             fulltext = bibjson.get_single_url("fulltext")
