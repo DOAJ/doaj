@@ -125,7 +125,6 @@
     }
 
     function next() {
-        console.log("click next")
         $('#' + '{{ form_id }}').parsley().whenValidate({
             group: 'block-' + currentTab
         }).done(function () {

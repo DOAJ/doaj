@@ -44,3 +44,8 @@ li.parsley-required {
 #cannot-submit {
     color: #982E0A;
 }
+
+.formulaic-clickableurl-visit {
+    color: #982E0A;
+    text-decoration: #982E0A;
+}
