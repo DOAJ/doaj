@@ -280,7 +280,7 @@
 {% assign current_page = page.name %}
 {% assign size = current_page | size | minus: 3 %}
 
-{% if page.name == 'ambassadors.md' or page.name == 'advisory-board-council.md' or page.name == 'publisher-supporters.md' or page.name == 'sponsors.md' or page.name == 'supporters.md' or page.name == 'team.md' or page.name == 'volunteers.md' %}
+{% if page.name == 'ambassadors.md' or page.name == 'advisory-board-council.md' or page.name == 'publisher-supporters.md' or page.name == 'sponsors.md' or page.name == 'supporters.md' or page.name == 'team.md' or page.name == 'volunteers.md' or page.name == 'editorial-subcommittee.md' %}
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/_data/{{ current_page | slice: 0, size }}.yml" target="_blank" rel="noopener"><span class="sr-only">Edit data content</span><span data-feather="database" aria-hidden="true"></span></a>
 {% endif %}
 {% endif %}
