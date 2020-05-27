@@ -62,13 +62,13 @@
 
         {% elsif page.name == 'ambassadors.md' or page.name == 'ambassadors-fragment.md' %}
           <!-- About section: ambassadors -->
-          <h2>Current ambassadors</h2>
+          <h2>Ambassadors</h2>
           <ul class="row title-list">
             {% for i in site.data.ambassadors %}
             <li class="col-sm-6 col-md-4">
               <div class="title-list__text">
                 <p class="label">{{ i.region }}</p>
-                <h2 class="title-list__heading">{{ i.name }}</h2>
+                <h3 class="title-list__heading">{{ i.name }}</h3>
                 {% if i.bio %}
                 <p class="title-list__para">
                   {{ i.bio }}
@@ -79,14 +79,19 @@
             {% endfor %}
           </ul>
 
-        {% elsif page.name == 'editorial-subcommittee.d' or page.name == 'editorial-subcommittee-fragment.md' %}
+        {% elsif page.name == 'editorial-subcommittee.md' or page.name == 'editorial-subcommittee-fragment.md' %}
           <!-- About section: editorial subcommittee -->
           <h2>Members</h2>
           <ul class="row title-list">
             {% for i in site.data.editorial-subcommittee %}
             <li class="col-sm-6 col-md-4">
               <div class="title-list__text">
-                {{ i }}
+                <p class="label">{{ i.region }}</p>
+                <h3 class="title-list__heading">{{ i.name }}</h3>
+                <p class="title-list__para">
+                  {{ i.bio }}
+                </p>
+              </div>
             </li>
             {% endfor %}
           </ul>

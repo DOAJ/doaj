@@ -175,6 +175,11 @@
               </a>
             </li>
             <li>
+              <a href="{{ site.baseurl }}{% link about/editorial-subcommittee.md %}" class="dropdown__link">
+                Editorial Subcommittee
+              </a>
+            </li>
+            <li>
               <a href="{{ site.baseurl }}{% link about/advisory-board-council.md %}" class="dropdown__link">
                 Advisory Board & Council
               </a>
@@ -269,7 +274,7 @@
 </header>
 
 {% if page.fragment == false %}
-<!-- Admin-only edit buttons -->
+<!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/{{ page.section|downcase }}/content/{{ page.name }}" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
 {% assign current_page = page.name %}
