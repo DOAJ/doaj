@@ -1,4 +1,4 @@
-Publisher supporters can choose to make a contribution that is relative to the size of their business, or an amount of their choice, as a one-off or recurring annual payment.
+Publisher supporters can choose to make a contribution that is relative to the size of their business, or an amount of their choice. This can be a one-off or recurring annual payment.
 
 {:.tabular-list}
 - Extra large
