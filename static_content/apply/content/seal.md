@@ -32,11 +32,11 @@ All of these seven criteria must be met for a journal to be awarded the Seal:
     - The journal must permit use of a CC BY, CC BY-SA, CC BY-NC or CC BY-NC-SA license
     - Allows the creation of derivative products.
 6. A repository policy &ndash;allowing authors to deposit a copy of their work&ndash; indicated in one of the following ways:
-    - (1) Registered with one of these services:
+    - a) Registered with one of these services:
         - SHERPA/RoMEO
         - Dulcinea
         - Héloïse
         - Diadorim
-    - (2) Or stated on the journal website
+    - b) Or stated on the journal website
 7. Copyright and publishing rights
-    -  Authors must retain unrestricted rights.
+    -  Authors must retain unrestricted rights when publishing under any license permitted by the journal.
