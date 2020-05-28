@@ -1,5 +1,5 @@
-Some organisations support DOAJ with an annual payment.
-Others commit larger amounts of funding, which has a greater impact on DOAJ’s future and allows for more sustainable development. Some committed to a funding model as recommended by [SCOSS](https://scoss.org/). (The funding initiative ran from 2018 to 2020.)
+Many organisations support DOAJ with an annual payment to fund our essential work.
+Some donors are able to commit larger amounts of funding, which has a greater impact on DOAJ’s future and allows for more sustainable development. A number of organisationa committed to a sustainable funding model as recommended by [SCOSS](https://scoss.org/) (this funding initiative ran from 2018 to 2020).
 
 ---
 
