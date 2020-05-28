@@ -1,12 +1,14 @@
+The DOAJ Seal may be awarded to journals that demonstrate best practice in open access publishing. Currently around 10% of journals listed in DOAJ have been awarded the Seal.
+
 **Journals do not need to meet the Seal criteria to be accepted into DOAJ.**
 
-There are extra criteria which may make the journal eligible for the DOAJ Seal for best practice. The Seal is awarded to journals that meet additional best practice recommendations based on seven criteria relating to accessibility, openness, discoverability, reuse, and authors rights.
+There are seven criteria which a journal must meet to be eligible for the DOAJ Seal. These relate to best practice in long term preservation, permanent identifiers, discoverability, reuse policies and authors' rights.
 
 ---
 
 ## Criteria
 
-All seven criteria must be met to be awarded the Seal:
+All of these seven criteria must be met for a journal to be awarded the Seal:
 
 {:.tabular-list .tabular-list--ordered}
 1. [Digital archiving and preservation](https://blog.doaj.org/2015/01/28/applications-a-note-about-archiving-and-preservation/)
