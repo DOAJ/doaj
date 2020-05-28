@@ -1,10 +1,8 @@
-The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open access journals. Today, this independent database contains over 14 500 open access journals covering all areas of science, technology, medicine, social science and humanities. Journals from all countries and in all languages are welcome to apply for inclusion.
+The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open access journals. Today, this independent database contains over 14 500 peer-reviewed open access journals covering all areas of science, technology, medicine, social science and humanities. Journals from all countries and in all languages are welcome to apply for inclusion.
 
-DOAJ is a community-curated list of open access journals that aims to be the starting point for information searches for quality, peer reviewed open access material.
+DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) which provide the basis of the [DOAJ basic criteria](/apply/guide) for inclusion.
 
-DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) which provide the basis of the [DOAJ criteria](/apply/guide) for inclusion.
-
-DOAJ is a membership organisation. DOAJ Membership is a clear statement of intent and proves a commitment to quality, peer-reviewed open access.
+DOAJ is a membership organisation. DOAJ membership is a clear statement of intent for our supporters and demonstrates a commitment to open access. Membership is not required in order to apply for journals to be indexed.
 
 ## Our mission
 
@@ -16,13 +14,13 @@ DOAJ is a non-profit organisation managed by [Infrastructure Services for Open A
 
 DOAJ has [an Advisory Board and a Council](/board-council/), the members of which carry out their duties voluntarily.
 
-DOAJ uses the services of approximately 100 voluntary editorial staff who review applications. All volunteers are bound by an Agreement. Two references are requested from everyone who volunteers. All volunteers must declare any conflicts of interest to the Managing Editors.
+DOAJ uses the services of approximately 100 voluntary editorial staff who review applications for journals to be indexed. All volunteers are bound by an Agreement and must declare any conflicts of interest.
 
 DOAJ has a global network of Ambassadors who are also bound by an Agreement and must declare all conflicts of interest.
 
 ## Partnerships and collaborations
 
-DOAJ partners with many organisations. The nature of the partnership varies and may include membership, contracts for work, exchanges of information or services, initiative signatories or access to information resources that assist DOAJ with its application review process.
+DOAJ partners with many organisations. The nature of the partnerships vary and may include membership, contracts for work, exchanges of information or services, initiative signatories or access to information resources that assist DOAJ with its application review process.
 
 {:.full-width-list}
 + {:.full-width-list__item} [Creative Commons Global Network](https://network.creativecommons.org/)
