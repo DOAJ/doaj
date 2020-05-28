@@ -14,7 +14,7 @@ We do not check metadata quality as we ingest it — this is the publisher's res
 
 ## List of DOAJ XML elements
 
-Here is a table of each possible element in the DOAJ XML file. It shows you whether or not the element is required by the DOAJ schema. Providing as much information in the metadata as possible ensures a more complete record in our database and allows the record to be distributed more easily to other services.
+Here is a table of each element in the DOAJ XML file. It shows you whether or not the element is required by the DOAJ schema. Providing as much information in the metadata as possible ensures a more complete record in our database and allows the record to be distributed more easily to other services.
 
 | Element            | Requirement                                                                 |
 |--------------------|-----------------------------------------------------------------------------|
