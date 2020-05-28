@@ -1,4 +1,4 @@
-Thank you for you for supporting DOAJ.
+Thank you very much for supporting DOAJ!
 
 Your payment has been made and the transaction is complete.
 
