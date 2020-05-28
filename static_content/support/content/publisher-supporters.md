@@ -5,10 +5,10 @@ Publisher supporters can choose to make a contribution that is relative to the s
   - Publishing more than **2,000** articles/year
   - GBP £3,000 per year
 - Large
-  - Publishing between **500-2,000** articles/year
+  - Publishing **500-2,000** articles/year
   - GBP £1,000 per year
 - Medium
-  - Publishing between **200-500** articles/year
+  - Publishing **200-500** articles/year
   - GBP £500 per year
 - Small
   - Publishing less than **200** articles/year
