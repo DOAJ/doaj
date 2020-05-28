@@ -16,7 +16,7 @@ DOAJ has [an Advisory Board and a Council](/board-council/), the members of whic
 
 DOAJ uses the services of approximately 100 voluntary editorial staff who review applications for journals to be indexed. All volunteers are bound by an Agreement and must declare any conflicts of interest.
 
-DOAJ has a global network of Ambassadors who are also bound by an Agreement and must declare all conflicts of interest.
+DOAJ has a global network of Ambassadors who promote open access and best practice in their regions. Our Ambassadors are also bound by an Agreement and must declare all conflicts of interest.
 
 ## Partnerships and collaborations
 
