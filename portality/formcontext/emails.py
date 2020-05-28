@@ -5,6 +5,7 @@ from portality import models, app_email
 from portality.core import app
 from portality.dao import Facetview2
 from portality.ui.messages import Messages
+from portality.lib import dates
 
 def send_admin_ready_email(application, editor_id):
     """ send email to the managing editors when an application is ready """
@@ -373,6 +374,7 @@ def send_publisher_update_request_revisions_required(application):
 def send_publisher_reject_email(application, note=None, update_request=False, send_to_owner=True, send_to_suggester=False):
     """Tell the publisher their application was rejected"""
     journal_title = application.bibjson().title
+    date_applied = dates.reformat(application.suggested_on, out_format='%Y-%m-%d')
 
     send_instructions = []
     if send_to_owner:
@@ -419,6 +421,7 @@ def send_publisher_reject_email(application, note=None, update_request=False, se
                                 template_name="email/publisher_application_rejected.txt",
                                 publisher_name=instructions["name"],
                                 journal_title=journal_title,
+                                date_applied=date_applied,
                                 note=note)
 
     return send_instructions
