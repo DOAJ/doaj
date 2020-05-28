@@ -37,7 +37,7 @@ Here is a table of each possible element in the DOAJ XML file. It shows you whet
 | **Full-text URL**  | Required, only 1                                                            |
 | Keywords           | Optional                                                                    |
 
-There are [European Union restrictions](https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en) on how you distribute personal data, such as email addresses. DOAJ doesn’t have any need for or display author email addresses so please don’t send them to us in the XML.
+There are [European Union restrictions](https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en) on distribution of personal data, such as email addresses. DOAJ doesn’t need or display author email addresses so please don’t send them to us in the XML.
 
 ## Example DOAJ XML File
 
