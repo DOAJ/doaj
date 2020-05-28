@@ -1,6 +1,6 @@
-The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open access journals. Today, this independent database contains over 14500 open access journals covering all areas of science, technology, medicine, social science and humanities. Journals from all countries and in all languages are welcome.
+The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open access journals. Today, this independent database contains over 14 500 open access journals covering all areas of science, technology, medicine, social science and humanities. Journals from all countries and in all languages are welcome to apply for inclusion.
 
-DOAJ is a community-curated list of open access journals and aims to be the starting point for all information searches for quality, peer reviewed open access material.
+DOAJ is a community-curated list of open access journals that aims to be the starting point for information searches for quality, peer reviewed open access material.
 
 DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) which provide the basis of the [DOAJ criteria](/apply/guide) for inclusion.
 
