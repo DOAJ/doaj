@@ -12,23 +12,23 @@ All of these seven criteria must be met for a journal to be awarded the Seal:
 
 {:.tabular-list .tabular-list--ordered}
 1. [Digital archiving and preservation](https://blog.doaj.org/2015/01/28/applications-a-note-about-archiving-and-preservation/)
-    - The journal content must be deposited in one of these archiving services:
+    - The journal content must be continously deposited in one of these archiving services:
         - any service included in Keepers Registry
         - Internet Archive
         - PubMed Central
 2. Permanent article identifiers
-    - Such as DOI, ARK, Handle
-    - Identifiers must be deposited regularly and must resolve correctly
+    - Such as DOI, ARK, Handle.
+    - Identifiers must be deposited regularly and must resolve correctly.
 3. Metadata supply to DOAJ
-    - Article metadata must be uploaded to DOAJ regularly and within three months of receiving the Seal
+    - Article metadata must be uploaded to DOAJ regularly and within three months of receiving the Seal.
 4. Embedded CC license information
-    - Creative Commons licensing information must be visible in all full-text article formats
+    - Creative Commons licensing information must be visible in all full-text article formats.
 5. CC license type
-    - The journal must permit use of a CC BY, CC BY-SA, CC BY-NC or CC BY-NC-SA license
-    - Allows the creation of derivative products.
+    - The journal must permit use of a CC BY, CC BY-SA, CC BY-NC or CC BY-NC-SA license.
+    - Allow the creation of derivative products.
 6. Self-archiving policy
-    - Authors must be allowed to deposit a version of their paper in an institutional or subject repository
-    - Preprint, Author's Accepted Manuscript or published Version of Record 
-    - No embargo should apply
+    - Authors must be permitted to deposit a version of their paper in an institutional or subject repository.
+    - Preprint, Author's Accepted Manuscript and published Version of Record are allowed.
+    - No embargo can apply.
 7. Copyright and publishing rights
-    -  Authors must retain unrestricted rights when publishing under any license permitted by the journal
+    -  Authors must retain unrestricted rights when publishing under any license permitted by the journal.
