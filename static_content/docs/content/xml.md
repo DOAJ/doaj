@@ -1,6 +1,4 @@
-When publishers upload article metadata to DOAJ, the data must be in one of two accepted XML formats. 
-
-Article metadata is provided to us on the understanding that it will then be available for free, to be distributed to any third party who wants it.
+Article metadata is provided to DOAJ by publishers on the understanding that the data will then be available for free, to be distributed to any third party who wants it.
 
 We do not check metadata quality as we ingest it — this is the publisher's responsibility — so any errors (for example, typos in author names, URLs, or DOI) will not be corrected. Users of our metadata may contact us to ask for metadata to be  corrected.
 
