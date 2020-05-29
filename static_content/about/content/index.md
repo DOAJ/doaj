@@ -24,7 +24,7 @@ DOAJ partners with many organisations. The nature of the partnerships vary and m
 
 {:.full-width-list}
 + {:.full-width-list__item} [Creative Commons Global Network](https://network.creativecommons.org/)
-+ {:.full-width-list__item} [COPE](https://publicationethics.org/): We are a member of and subscribe to the principles of COPE.
++ {:.full-width-list__item} [COPE](https://publicationethics.org/)
 + {:.full-width-list__item} [Cottage Labs LLP](https://cottagelabs.com/)
 + {:.full-width-list__item} [Érudit](https://www.erudit.org/en/)
 + {:.full-width-list__item} [Federation of Finnish Learned Societies](https://tsv.fi/en)
