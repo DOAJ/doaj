@@ -96,6 +96,7 @@ class TestXwalk(DoajTestCase):
         del csource['created_date']
         del csource["admin"]["current_journal"]
         del csource["admin"]["related_journal"]
+        del csource["suggestion"]["suggested_on"]
         #diff_dicts(csource, obj, 'csource', 'modelobj')
         #diff_dicts(csource["bibjson"], obj["bibjson"])
         assert obj == csource
