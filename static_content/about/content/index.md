@@ -2,7 +2,7 @@ The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open 
 
 DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) which provide the basis of the [DOAJ basic criteria](/apply/guide) for inclusion.
 
-DOAJ is a membership organisation. DOAJ membership is a clear statement of support from libraries, publishers and others and demonstrates a commitment to open access. Membership is not required in order to apply for journals to be indexed.
+DOAJ is a membership organisation. DOAJ membership is a clear statement of support from libraries, publishers and others, and demonstrates a commitment to open access. Membership is not required in order to apply for journals to be indexed.
 
 ## Our mission
 
