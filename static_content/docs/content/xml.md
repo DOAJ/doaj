@@ -1,4 +1,4 @@
-When publishers upload article metadata to DOAJ, the data must be in one of two XML formats. 
+When publishers upload article metadata to DOAJ, the data must be in one of two accepted XML formats. 
 
 Article metadata is provided to us on the understanding that it will then be available for free, to be distributed to any third party who wants it.
 
