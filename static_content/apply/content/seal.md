@@ -21,7 +21,7 @@ All of these seven criteria must be met for a journal to be awarded the Seal:
     - Identifiers must be deposited regularly and must resolve correctly.
 3. Metadata supply to DOAJ
     - Article metadata must be uploaded to DOAJ regularly and within three months of receiving the Seal.
-4. Embedded CC license information
+4. Display license information on articles
     - Creative Commons licensing information must be visible in all full-text article formats.
 5. CC license type
     - The journal must permit use of a CC BY, CC BY-SA, CC BY-NC or CC BY-NC-SA license.
