@@ -126,7 +126,8 @@ APPLICATION_SOURCE = {
             "count" : 16,
             "url" : "http://articles.last.year"
         },
-        "article_metadata" : True
+        "article_metadata" : True,
+        "suggested_on": "2000-01-01T00:00:00Z"
     },
     "admin" : {
         "application_status" : constants.APPLICATION_STATUS_PENDING,
