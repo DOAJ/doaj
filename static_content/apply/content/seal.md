@@ -17,13 +17,13 @@ All of these seven criteria must be met for a journal to be awarded the Seal:
         - Internet Archive
         - PubMed Central
 2. Permanent article identifiers
-    - Such as DOI, ARK, Handle.
-    - Identifiers must be deposited regularly and must resolve correctly.
+    - Identifiers include DOI, ARK and Handle.
+    - Must be applied to current content and resolve correctly.
 3. Metadata supply to DOAJ
     - Article metadata must be uploaded to DOAJ regularly and within three months of receiving the Seal.
 4. CC license type
     - The journal must permit use of a CC BY, CC BY-SA, CC BY-NC or CC BY-NC-SA license.
-    - Allow the creation of derivative products.
+    - These allow the creation of derivative products.
 5. License information in articles
     - Creative Commons licensing information must be displayed in all full-text article formats.
 6. Copyright and publishing rights
