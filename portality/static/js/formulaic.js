@@ -632,7 +632,8 @@ var formulaic = {
                     var previousInput = $('.removable_field__' + params.fieldDef["name"]).find('input').filter(':first')
                     var newInput = $(previousInput)
                         .clone(true)
-                        .attr('id', params.fieldDef["name"] + '--id_' + cloneCount);
+                        .attr('id', params.fieldDef["name"] + '--id_' + cloneCount)
+                        .removeAttr('required');
                     newInput.appendTo($(div));
                     var previousRemoveBtn = $("[id^=remove_field__"+params.fieldDef["name"] + '--id_').filter(':first')
                     newInput.after(
@@ -644,7 +645,12 @@ var formulaic = {
                 })
                 $("[id^=remove_field__"+this.fieldDef["name"] + "--id_").click(function(event){
                     var number = $(this).attr('id').slice(-1)
-                    $('#' + params.fieldDef["name"] + '--id_' + number).parent().remove()
+                    var input = $('#' + params.fieldDef["name"] + '--id_' + number)
+                    //var moveRequiredAttr = input.hasAttribute("required")
+                    input.parent().remove()
+                    // if (moveRequiredAttr){
+                    //     $('.removable_field__' + params.fieldDef["name"]).find('input').filter(':first').attr("required", "")
+                    // }
                     cloneCount--;
                     if (cloneCount === 1) {
                         $("[id^=remove_field__"+params.fieldDef["name"] + "--id_").hide()
