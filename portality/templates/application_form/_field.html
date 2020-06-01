@@ -13,7 +13,7 @@
     {% if f.get("hint") %}<p><small>{{ f.hint }}</small></p>{% endif %}
     {% if "multiple_field" in f.get("widgets", []) %}
         <div style="display: flex; flex-direction: row">
-            <div style="display: flex; flex-direction: column; flex-grow: 5" class="removable_field">
+            <div style="display: flex; flex-direction: column; flex-grow: 5" class="removable_field__{{ f.name }}">
                 <div class= 'multiple_input'>
                     {{ f.render_form_control() }}
                     <button type="button" id="remove_field__{{ f.name }}--id_0" class="remove_field__button"><span data-feather="x"></span></button>

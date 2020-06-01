@@ -621,17 +621,20 @@ var formulaic = {
                 that.attr('id', params.fieldDef["name"] + '--id_0')
                 $("#remove_field__"+params.fieldDef["name"]).attr('id', "remove_field__"+this.fieldDef["name"] + "--id_0")
 
-                var cloneCount = 0
+                var cloneCount = 1
                 $("#add_field__"+params.fieldDef["name"]).click(function(){
-                    cloneCount += 1;
+                    cloneCount++;
+                    if (cloneCount > 1) {
+                        $("[id^=remove_field__"+params.fieldDef["name"] + "--id_").show()
+                    }
                     var div = document.createElement('div');
                     div.className = 'multiple_input';
-                    var previousInput = document.getElementById(params.fieldDef["name"] + '--id_' + (cloneCount-1))
+                    var previousInput = $('.removable_field__' + params.fieldDef["name"]).find('input').filter(':first')
                     var newInput = $(previousInput)
                         .clone(true)
                         .attr('id', params.fieldDef["name"] + '--id_' + cloneCount);
                     newInput.appendTo($(div));
-                    var previousRemoveBtn = document.getElementById("remove_field__"+params.fieldDef["name"] + '--id_' + (cloneCount-1))
+                    var previousRemoveBtn = $("[id^=remove_field__"+params.fieldDef["name"] + '--id_').filter(':first')
                     newInput.after(
                         $(previousRemoveBtn)
                         .clone(true)
@@ -639,11 +642,13 @@ var formulaic = {
                     );
                     $(previousInput).parent().after($(div));
                 })
-                $("#remove_field__"+this.fieldDef["name"] + "--id").click(function(event){
-                    numberOfFields--;
-                    console.log($(this).prev("input[name="+ params.fieldDef["name"] + "]"))
-                    //$(this).prev('#'+ params.fieldDef["name"]).remove()
-                    //updateRemoveBtns()
+                $("[id^=remove_field__"+this.fieldDef["name"] + "--id_").click(function(event){
+                    var number = $(this).attr('id').slice(-1)
+                    $('#' + params.fieldDef["name"] + '--id_' + number).parent().remove()
+                    cloneCount--;
+                    if (cloneCount === 1) {
+                        $("[id^=remove_field__"+params.fieldDef["name"] + "--id_").hide()
+                    }
                 })
             }
             this.init()
