@@ -17,7 +17,7 @@ All of these seven criteria must be met for a journal to be awarded the Seal:
         - Internet Archive
         - PubMed Central
 2. Permanent article identifiers
-    - Identifiers include DOI, ARK and Handle.
+    - DOI, ARK or Handle are most commonly used.
     - Must be applied to current content and resolve correctly.
 3. Metadata supply to DOAJ
     - Article metadata must be uploaded to DOAJ regularly and within three months of receiving the Seal.
