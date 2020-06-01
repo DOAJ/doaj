@@ -11,8 +11,8 @@ There are seven criteria which a journal must meet to be eligible for the DOAJ S
 All of these seven criteria must be met for a journal to be awarded the Seal:
 
 {:.tabular-list .tabular-list--ordered}
-1. Digital archiving and preservation
-    - The journal content must be continously deposited in one of these archiving services:
+1. Digital preservation
+    - The journal content must be continously deposited in one of these archives:
         - any service included in [Keepers Registry](https://keepers.issn.org)
         - Internet Archive
         - PubMed Central
