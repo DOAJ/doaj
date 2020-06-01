@@ -8,7 +8,7 @@ There are seven criteria which a journal must meet to be eligible for the DOAJ S
 
 ## Criteria
 
-All of these seven criteria must be met for a journal to be awarded the Seal:
+All of these seven criteria must be met for a journal to be awarded the Seal. Note that failure to maintain best practice may lead to removal of the Seal.
 
 {:.tabular-list .tabular-list--ordered}
 1. Digital preservation
