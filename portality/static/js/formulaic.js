@@ -599,6 +599,56 @@ var formulaic = {
             this.init();
         },
 
+        newMultipleField : function(params) {
+            return edges.instantiate(formulaic.widgets.multipleField, params)
+        },
+        multipleField: function(params){
+            this.fieldDef = params.fieldDef
+            var thatQuery = '#' + this.fieldDef["name"]
+            var that = $(thatQuery);
+            var numberOfFields = 1;
+
+            var updateRemoveBtns = function() {
+                if (numberOfFields === 1){
+                    //correctbutons.hide();
+                }
+                else {
+                    //correctbuttons.show();
+                }
+            }
+
+            this.init = function() {
+                that.attr('id', params.fieldDef["name"] + '--id_0')
+                $("#remove_field__"+params.fieldDef["name"]).attr('id', "remove_field__"+this.fieldDef["name"] + "--id_0")
+
+                var cloneCount = 0
+                $("#add_field__"+params.fieldDef["name"]).click(function(){
+                    cloneCount += 1;
+                    var div = document.createElement('div');
+                    div.className = 'multiple_input';
+                    var previousInput = document.getElementById(params.fieldDef["name"] + '--id_' + (cloneCount-1))
+                    var newInput = $(previousInput)
+                        .clone(true)
+                        .attr('id', params.fieldDef["name"] + '--id_' + cloneCount);
+                    newInput.appendTo($(div));
+                    var previousRemoveBtn = document.getElementById("remove_field__"+params.fieldDef["name"] + '--id_' + (cloneCount-1))
+                    newInput.after(
+                        $(previousRemoveBtn)
+                        .clone(true)
+                        .attr('id', "remove_field__"+params.fieldDef["name"] + '--id_' + cloneCount)
+                    );
+                    $(previousInput).parent().after($(div));
+                })
+                $("#remove_field__"+this.fieldDef["name"] + "--id").click(function(event){
+                    numberOfFields--;
+                    console.log($(this).prev("input[name="+ params.fieldDef["name"] + "]"))
+                    //$(this).prev('#'+ params.fieldDef["name"]).remove()
+                    //updateRemoveBtns()
+                })
+            }
+            this.init()
+        },
+
         newSelect : function(params) {
             return edges.instantiate(formulaic.widgets.Select, params);
         },

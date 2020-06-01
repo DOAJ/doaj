@@ -24,6 +24,8 @@
 
  input, select {
    width: 75%;
+    margin: 5px 0 5px 0;
+    padding: 0px;
 
    &[type="number"] {
      width: 25%;

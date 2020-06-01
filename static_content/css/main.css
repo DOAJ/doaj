@@ -1810,7 +1810,9 @@ input[type="checkbox"]:checked + .filter__label {
     color: #5C5956;
     font-size: 1rem; }
   .form__question input, .form__question select {
-    width: 75%; }
+    width: 75%;
+    margin: 5px 0 5px 0;
+    padding: 0px; }
     .form__question input[type="number"], .form__question select[type="number"] {
       width: 25%; }
   .form__question input[type="checkbox"] + label,
@@ -2627,5 +2629,11 @@ input[type="checkbox"]:checked + .filter__label {
     width: 330px; } }
 #apply hr {
   background-color: #FD5A3B; }
+#apply .add_field__button {
+  margin: 5px; }
+#apply .remove_field__button {
+  color: #5C5956;
+  border: none;
+  margin: 5px 0 5px 0; }
 
 /*# sourceMappingURL=main.css.map */

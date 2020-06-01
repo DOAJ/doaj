@@ -123,4 +123,14 @@
   hr {
     background-color: $grapefruit;
   }
+
+  .add_field__button{
+    margin: 5px;
+  }
+
+  .remove_field__button {
+    color: $dark-grey;
+    border: none;
+    margin: 5px 0 5px 0;
+  }
 }

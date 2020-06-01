@@ -49,3 +49,8 @@ li.parsley-required {
     color: #982E0A;
     text-decoration: #982E0A;
 }
+
+.multiple_input {
+    display: flex;
+    flex-direction: row
+}

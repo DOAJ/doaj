@@ -96,7 +96,9 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
-            "clickable_url"
+            "clickable_url",
+            "multiple_field"
+
         ],
         "attr": {
             "type": "url"
@@ -306,7 +308,8 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
-            {"select": {}}
+            {"select": {}},
+            "multiple_field"
         ],
         "attr": {
             "class": "input-xlarge"
@@ -1612,7 +1615,8 @@ JAVASCRIPT_FUNCTIONS = {
 
     "clickable_url": "formulaic.widgets.newClickableUrl",
     "select": "formulaic.widgets.newSelect",
-    "taglist": "formulaic.widgets.newTagList"
+    "taglist": "formulaic.widgets.newTagList",
+    "multiple_field": "formulaic.widgets.newMultipleField"
 }
 
 
