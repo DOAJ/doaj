@@ -6,6 +6,8 @@ from wtforms.compat import string_types
 from portality.formcontext.choices import Choices
 from portality.core import app
 
+from portality.models import Journal
+
 class DataOptional(object):
     """
     Allows empty input and stops the validation chain from continuing.
@@ -36,7 +38,7 @@ class DataOptional(object):
 
 
 class OptionalIf(DataOptional):
-    # A validator which makes a field optional if # another field is set
+    # A validator which makes a field optional if another field is set
     # and has a truthy value.
 
     # Additionally, a list of values (optvals) can be specified - if any
@@ -297,16 +299,30 @@ class ReservedUsernames(object):
         return cls().__validate(username)
 
 
-class InPublicDOAJ(object):
-    def __init__(self, search_field, message=None):
-        self.search_field = search_field
+class ISSNInPublicDOAJ(object):
+    def __init__(self, message=None):
         if not message:
-            message = "You may not enter '{stop_word}' in this field"
+            message = "This ISSN already appears in the public DOAJ database"
         self.message = message
 
-    def __call__(self, *args, **kwargs):
-        return True
-        raise NotImplementedError("You need to implement this validator")
+    def __call__(self, form, field):
+        if field.data is not None:
+            existing = Journal.find_by_issn(field.data, in_doaj=True, max=1)
+            if len(existing) > 0:
+                raise validators.ValidationError(self.message)
+
+
+class JournalURLInPublicDOAJ(object):
+    def __init__(self, message=None):
+        if not message:
+            message = "This ISSN already appears in the public DOAJ database"
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data is not None:
+            existing = Journal.find_by_journal_url(field.data, in_doaj=True, max=1)
+            if len(existing) > 0:
+                raise validators.ValidationError(self.message)
 
 
 class StopWords(object):

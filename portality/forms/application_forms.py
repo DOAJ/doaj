@@ -17,7 +17,8 @@ from portality.forms.validate import (
     RegexpOnTagList,
     ReservedUsernames,
     StopWords,
-    InPublicDOAJ,
+    ISSNInPublicDOAJ,
+    JournalURLInPublicDOAJ,
     DifferentTo,
     RequiredIfOtherValue
 )
@@ -155,7 +156,7 @@ class FieldDefinitions:
         "validate": [
             "required",
             "is_url",
-            "in_public_doaj"  # Check whether the journal url is already in a public DOAJ record
+            "journal_url_in_public_doaj"  # Check whether the journal url is already in a public DOAJ record
         ],
         "widgets": [
             "clickable_url"
@@ -169,8 +170,7 @@ class FieldDefinitions:
             }
         },
         "asynchronous_warnings": [
-            {"in_public_doaj": {"field": "bibjson.ref.journal.exact"}},
-            # check whether the journal url is already in a public DOAJ record
+            "journal_url_in_public_doaj",  # Check whether the journal url is already in a public DOAJ record
             {"rejected_application": {"age": "6 months"}},
             # check that the journal does not have a rejection less than 6 months ago
             "active_application"  # Check that the URL is not related to an active application
@@ -189,7 +189,7 @@ class FieldDefinitions:
         "validate": [
             {"optional_if": {"field": "eissn",
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
-            "in_public_doaj",
+            "issn_in_public_doaj",
             {"is_issn": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "eissn"}}
         ],
@@ -205,7 +205,7 @@ class FieldDefinitions:
             }
         },
         "asynchronous_warnings": [
-            "in_public_doaj",  # check whether the journal url is already in a public DOAJ record
+            "issn_in_public_doaj",  # check whether the journal url is already in a public DOAJ record
             {"rejected_application": {"age": "6 months"}},
             "active_application"  # Check that the ISSN is not related to an active application
         ]
@@ -223,7 +223,7 @@ class FieldDefinitions:
         "validate": [
             {"optional_if": {"field": "pissn",
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
-            "in_public_doaj",
+            "issn_in_public_doaj",
             {"is_issn": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "pissn"}}
         ],
@@ -239,7 +239,7 @@ class FieldDefinitions:
             }
         },
         "asynchronous_warnings": [
-            "in_public_doaj",  # check whether the journal url is already in a public DOAJ record
+            "issn_in_public_doaj",  # check whether the journal url is already in a public DOAJ record
             {"rejected_application": {"age": "6 months"}},
             "active_application"  # Check that the ISSN is not related to an active application
         ]
@@ -1143,7 +1143,7 @@ class FieldDefinitions:
             },
         },
         "asynchronous_warnings": [
-            "in_public_doaj",  # check whether issn corresponds to a public DOAJ record todo: check collision with pissn
+            "issn_in_public_doaj",  # check whether issn corresponds to a public DOAJ record todo: check collision with pissn
         ]
     }
 
@@ -1161,7 +1161,7 @@ class FieldDefinitions:
             },
         },
         "asynchronous_warnings": [
-            "in_public_doaj",  # todo: as above
+            "issn_in_public_doaj",  # todo: as above
         ]
     }
 
@@ -1619,15 +1619,26 @@ class StopWordsBuilder:
         return StopWords(stopwords)
 
 
-class InPublicDOAJBuilder:
+class ISSNInPublicDOAJBuilder:
     @staticmethod
     def render(settings, html_attrs):
         # FIXME: not yet implemented in the front end, so setting here is speculative
-        html_attrs["data-parsley-in-public-doaj"] = settings.get("field")
+        html_attrs["data-parsley-issn-in-public-doaj"] = ""
 
     @staticmethod
     def wtforms(field, settings):
-        return InPublicDOAJ(settings.get("field"), message=settings.get("message"))
+        return ISSNInPublicDOAJ(message=settings.get("message"))
+
+
+class JournalURLInPublicDOAJBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        # FIXME: not yet implemented in the front end, so setting here is speculative
+        html_attrs["data-parsley-journal-url-in-public-doaj"] = ""
+
+    @staticmethod
+    def wtforms(field, settings):
+        return JournalURLInPublicDOAJ(message=settings.get("message"))
 
 
 class OptionalIfBuilder:
@@ -1688,7 +1699,8 @@ PYTHON_FUNCTIONS = {
             "required": RequiredBuilder.render,
             "is_url": IsURLBuilder.render,
             "int_range": IntRangeBuilder.render,
-            "in_public_doaj": InPublicDOAJBuilder.render,
+            "issn_in_public_doaj": ISSNInPublicDOAJBuilder.render,
+            "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder,
             "optional_if": OptionalIfBuilder.render,
             "is_issn": IsISSNBuilder.render,
             "different_to": DifferentToBuilder.render,
@@ -1700,7 +1712,8 @@ PYTHON_FUNCTIONS = {
             "max_tags": MaxTagsBuilder.wtforms,
             "int_range": IntRangeBuilder.wtforms,
             "stop_words": StopWordsBuilder.wtforms,
-            "in_public_doaj": InPublicDOAJBuilder.wtforms,
+            "issn_in_public_doaj": ISSNInPublicDOAJBuilder.wtforms,
+            "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder,
             "optional_if": OptionalIfBuilder.wtforms,
             "is_issn": IsISSNBuilder.wtforms,
             "different_to": DifferentToBuilder.wtforms,
