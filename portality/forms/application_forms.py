@@ -189,9 +189,9 @@ class FieldDefinitions:
         "validate": [
             {"optional_if": {"field": "eissn",
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
-            "issn_in_public_doaj",
             {"is_issn": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "eissn"}}
+            {"different_to": {"field": "eissn", "message" : "This field must contain a different value to 'ISSN (online)'"}},
+            "issn_in_public_doaj"
         ],
         "contexts": {
             "editor": {
@@ -223,9 +223,9 @@ class FieldDefinitions:
         "validate": [
             {"optional_if": {"field": "pissn",
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
-            "issn_in_public_doaj",
             {"is_issn": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "pissn"}}
+            {"different_to": {"field": "pissn", "message" : "This field must contain a different value to 'ISSN (print)'"}},
+            "issn_in_public_doaj"
         ],
         "contexts": {
             "editor": {
@@ -1670,7 +1670,7 @@ class DifferentToBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return DifferentTo(settings.get("field"))
+        return DifferentTo(settings.get("field"), settings.get("ignore_empty", True), settings.get("message"))
 
 
 class RequiredIfBuilder:
@@ -1700,7 +1700,7 @@ PYTHON_FUNCTIONS = {
             "is_url": IsURLBuilder.render,
             "int_range": IntRangeBuilder.render,
             "issn_in_public_doaj": ISSNInPublicDOAJBuilder.render,
-            "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder,
+            "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder.render,
             "optional_if": OptionalIfBuilder.render,
             "is_issn": IsISSNBuilder.render,
             "different_to": DifferentToBuilder.render,
@@ -1713,7 +1713,7 @@ PYTHON_FUNCTIONS = {
             "int_range": IntRangeBuilder.wtforms,
             "stop_words": StopWordsBuilder.wtforms,
             "issn_in_public_doaj": ISSNInPublicDOAJBuilder.wtforms,
-            "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder,
+            "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder.wtforms,
             "optional_if": OptionalIfBuilder.wtforms,
             "is_issn": IsISSNBuilder.wtforms,
             "different_to": DifferentToBuilder.wtforms,

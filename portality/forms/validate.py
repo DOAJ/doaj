@@ -58,6 +58,10 @@ class OptionalIf(DataOptional):
             # ... just make this field optional if the other is truthy
             if bool(other_field.data):
                 super(OptionalIf, self).__call__(form, field)
+            else:
+                # otherwise it is required
+                dr = validators.DataRequired(self.message)
+                dr(form, field)
         else:
             # if such values are specified, check for them
             no_optval_matched = True
@@ -336,8 +340,9 @@ class StopWords(object):
 
 
 class DifferentTo(object):
-    def __init__(self, other_field_name, message=None):
+    def __init__(self, other_field_name, ignore_empty=True, message=None):
         self.other_field_name = other_field_name
+        self.ignore_empty = ignore_empty
         if not message:
             message = "This field must contain a different value to the field '{x}'".format(x=other_field_name)
         self.message = message
@@ -346,6 +351,8 @@ class DifferentTo(object):
         other_field = self.get_other_field(form)
 
         if other_field.data == field.data:
+            if self.ignore_empty and (not other_field.data or not field.data):
+                return
             raise validators.ValidationError(self.message)
 
     def get_other_field(self, form):
@@ -367,7 +374,12 @@ class RequiredIfOtherValue(object):
 
     def __call__(self, form, field):
         other_field = self.get_other_field(form)
-        if other_field.data == self.other_value:
+        match = False
+        if isinstance(other_field.data, list):
+            match = self.other_value in other_field.data
+        else:
+            match = other_field.data == self.other_value
+        if match:
             dr = validators.DataRequired()
             dr(form, field)
 
