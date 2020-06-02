@@ -1184,90 +1184,6 @@ class FieldDefinitions:
     }
 
 
-FIELDS = {
-    FieldDefinitions.BOAI["name"]: FieldDefinitions.BOAI,
-    FieldDefinitions.OA_STATEMENT_URL["name"]: FieldDefinitions.OA_STATEMENT_URL,
-
-    FieldDefinitions.TITLE["name"]: FieldDefinitions.TITLE,
-    FieldDefinitions.ALTERNATIVE_TITLE["name"]: FieldDefinitions.ALTERNATIVE_TITLE,
-    FieldDefinitions.JOURNAL_URL["name"]: FieldDefinitions.JOURNAL_URL,
-    FieldDefinitions.PISSN["name"]: FieldDefinitions.PISSN,
-    FieldDefinitions.EISSN["name"]: FieldDefinitions.EISSN,
-    FieldDefinitions.KEYWORDS["name"]: FieldDefinitions.KEYWORDS,
-    FieldDefinitions.LANGUAGE["name"]: FieldDefinitions.LANGUAGE,
-    FieldDefinitions.PUBLISHER["name"]: FieldDefinitions.PUBLISHER,
-    FieldDefinitions.PUBLISHER_NAME["name"]: FieldDefinitions.PUBLISHER_NAME,
-    FieldDefinitions.PUBLISHER_COUNTRY["name"]: FieldDefinitions.PUBLISHER_COUNTRY,
-    FieldDefinitions.INSTITUTION["name"]: FieldDefinitions.INSTITUTION,
-    FieldDefinitions.INSTITUTION_NAME["name"]: FieldDefinitions.INSTITUTION_NAME,
-    FieldDefinitions.INSTITUTION_COUNTRY["name"]: FieldDefinitions.INSTITUTION_COUNTRY,
-
-    FieldDefinitions.LICENSE["name"]: FieldDefinitions.LICENSE,
-    FieldDefinitions.LICENSE_ATTRIBUTES["name"]: FieldDefinitions.LICENSE_ATTRIBUTES,
-    FieldDefinitions.LICENSE_TERMS_URL["name"]: FieldDefinitions.LICENSE_TERMS_URL,
-    FieldDefinitions.LICENSE_DISPLAY["name"]: FieldDefinitions.LICENSE_DISPLAY,
-    FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]: FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL,
-
-    FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"]: FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS,
-    FieldDefinitions.COPYRIGHT_URL["name"]: FieldDefinitions.COPYRIGHT_URL,
-
-    FieldDefinitions.REVIEW_PROCESS["name"]: FieldDefinitions.REVIEW_PROCESS,
-    FieldDefinitions.REVIEW_PROCESS_OTHER["name"]: FieldDefinitions.REVIEW_PROCESS_OTHER,
-    FieldDefinitions.REVIEW_URL["name"]: FieldDefinitions.REVIEW_URL,
-    FieldDefinitions.PLAGIARISM_DETECTION["name"]: FieldDefinitions.PLAGIARISM_DETECTION,
-    FieldDefinitions.PLAGIARISM_URL["name"]: FieldDefinitions.PLAGIARISM_URL,
-
-    FieldDefinitions.AIMS_SCOPE_URL["name"]: FieldDefinitions.AIMS_SCOPE_URL,
-    FieldDefinitions.EDITORIAL_BOARD_URL["name"]: FieldDefinitions.EDITORIAL_BOARD_URL,
-    FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"]: FieldDefinitions.AUTHOR_INSTRUCTIONS_URL,
-    FieldDefinitions.PUBLICATION_TIME_WEEKS["name"]: FieldDefinitions.PUBLICATION_TIME_WEEKS,
-
-    FieldDefinitions.APC["name"]: FieldDefinitions.APC,
-    FieldDefinitions.APC_URL["name"]: FieldDefinitions.APC_URL,
-    FieldDefinitions.APC_CHARGES["name"]: FieldDefinitions.APC_CHARGES,
-    FieldDefinitions.APC_CURRENCY["name"]: FieldDefinitions.APC_CURRENCY,
-    FieldDefinitions.APC_MAX["name"]: FieldDefinitions.APC_MAX,
-    FieldDefinitions.HAS_WAIVER["name"]: FieldDefinitions.HAS_WAIVER,
-    FieldDefinitions.WAIVER_URL["name"]: FieldDefinitions.WAIVER_URL,
-    FieldDefinitions.HAS_OTHER_CHARGES["name"]: FieldDefinitions.HAS_OTHER_CHARGES,
-    FieldDefinitions.OTHER_CHARGES_URL["name"]: FieldDefinitions.OTHER_CHARGES_URL,
-
-    FieldDefinitions.ARCHIVING_POLICY["name"]: FieldDefinitions.ARCHIVING_POLICY,
-    FieldDefinitions.ARCHIVING_POLICY_LIBRARY["name"]: FieldDefinitions.ARCHIVING_POLICY_LIBRARY,
-    FieldDefinitions.ARCHIVING_POLICY_OTHER["name"]: FieldDefinitions.ARCHIVING_POLICY_OTHER,
-    FieldDefinitions.ARCHIVING_POLICY_URL["name"]: FieldDefinitions.ARCHIVING_POLICY_URL,
-    
-    FieldDefinitions.REPOSITORY_POLICY["name"]: FieldDefinitions.REPOSITORY_POLICY,
-    FieldDefinitions.REPOSITORY_POLICY_OTHER["name"]: FieldDefinitions.REPOSITORY_POLICY_OTHER,
-    FieldDefinitions.REPOSITORY_POLICY_URL["name"]: FieldDefinitions.REPOSITORY_POLICY_URL,
-
-    FieldDefinitions.PERSISTENT_IDENTIFIERS["name"]: FieldDefinitions.PERSISTENT_IDENTIFIERS,
-    FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"]: FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER,
-    FieldDefinitions.ORCID_IDS["name"]: FieldDefinitions.ORCID_IDS,
-    FieldDefinitions.OPEN_CITATIONS["name"]: FieldDefinitions.OPEN_CITATIONS,
-
-    FieldDefinitions.DOAJ_SEAL["name"]: FieldDefinitions.DOAJ_SEAL,
-
-    FieldDefinitions.DOAJ_QUICK_REJECT["name"]: FieldDefinitions.DOAJ_QUICK_REJECT,
-    FieldDefinitions.DOAJ_QUICK_REJECT_DETAILS["name"]: FieldDefinitions.DOAJ_QUICK_REJECT_DETAILS,
-
-    FieldDefinitions.DOAJ_PUBLISHER_ACCOUNT["name"]: FieldDefinitions.DOAJ_PUBLISHER_ACCOUNT,
-    FieldDefinitions.DOAJ_STATUS["name"]: FieldDefinitions.DOAJ_STATUS,
-
-    FieldDefinitions.DOAJ_REVIEW_GROUP["name"]: FieldDefinitions.DOAJ_REVIEW_GROUP,
-    FieldDefinitions.DOAJ_REVIEW_USER["name"]: FieldDefinitions.DOAJ_REVIEW_USER,
-
-    FieldDefinitions.DOAJ_DISCONTINUED_DATE["name"]: FieldDefinitions.DOAJ_DISCONTINUED_DATE,
-    FieldDefinitions.DOAJ_CONTINUES["name"]: FieldDefinitions.DOAJ_CONTINUES,
-    FieldDefinitions.DOAJ_CONTINUED_BY["name"]: FieldDefinitions.DOAJ_CONTINUED_BY,
-
-    FieldDefinitions.DOAJ_SUBJECT["name"]: FieldDefinitions.DOAJ_SUBJECT
-}
-
-# todo: Have discussion with RJ about whether we can do this instead of the verbose code above:
-# FIELDS = {v['name']: v for k, v in FieldDefinitions.__dict__.items() if not k.startswith('_')}
-
-
 ##########################################################
 # Define our fieldsets
 ##########################################################
@@ -1454,7 +1370,6 @@ class FieldSetDefinitions:
         ]
     }
 
-# todo: we could do another FIELDSETS dictionary comprehension here
 
 ###########################################################
 # Define our Contexts
@@ -1504,31 +1419,17 @@ class ContextDefinitions:
     ]
 
 
+#######################################################
+# Gather all of our form information in one place
+#######################################################
+
 FORMS = {
     "contexts": {
         ContextDefinitions.PUBLIC["name"]: ContextDefinitions.PUBLIC,
         ContextDefinitions.MANED["name"]: ContextDefinitions.MANED
     },
-    "fieldsets": {
-        FieldSetDefinitions.BASIC_COMPLIANCE["name"]: FieldSetDefinitions.BASIC_COMPLIANCE,
-        FieldSetDefinitions.ABOUT_THE_JOURNAL["name"]: FieldSetDefinitions.ABOUT_THE_JOURNAL,
-        FieldSetDefinitions.LICENSING["name"]: FieldSetDefinitions.LICENSING,
-        FieldSetDefinitions.COPYRIGHT["name"]: FieldSetDefinitions.COPYRIGHT,
-        FieldSetDefinitions.PEER_REVIEW["name"]: FieldSetDefinitions.PEER_REVIEW,
-        FieldSetDefinitions.EDITORIAL["name"]: FieldSetDefinitions.EDITORIAL,
-        FieldSetDefinitions.BUSINESS_MODEL["name"]: FieldSetDefinitions.BUSINESS_MODEL,
-        FieldSetDefinitions.ARCHIVING_POLICY["name"]: FieldSetDefinitions.ARCHIVING_POLICY,
-        FieldSetDefinitions.REPOSITORY_POLICY["name"]: FieldSetDefinitions.REPOSITORY_POLICY,
-        FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]: FieldSetDefinitions.UNIQUE_IDENTIFIERS,
-        FieldSetDefinitions.SEAL["name"]: FieldSetDefinitions.SEAL,
-        FieldSetDefinitions.QUICK_REJECT["name"]: FieldSetDefinitions.QUICK_REJECT,
-        FieldSetDefinitions.REASSIGN["name"]: FieldSetDefinitions.REASSIGN,
-        FieldSetDefinitions.STATUS["name"]: FieldSetDefinitions.STATUS,
-        FieldSetDefinitions.REASSIGN["name"]: FieldSetDefinitions.REASSIGN,
-        FieldSetDefinitions.CONTINUATIONS["name"]: FieldSetDefinitions.CONTINUATIONS,
-        FieldSetDefinitions.SUBJECT["name"]: FieldSetDefinitions.SUBJECT
-    },
-    "fields": FIELDS
+    "fieldsets": {v['name']: v for k, v in FieldSetDefinitions.__dict__.items() if not k.startswith('_')},
+    "fields": {v['name']: v for k, v in FieldDefinitions.__dict__.items() if not k.startswith('_')}
 }
 
 
