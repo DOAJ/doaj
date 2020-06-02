@@ -336,16 +336,23 @@ class StopWords(object):
 
 
 class DifferentTo(object):
-    def __init__(self, other_field, message=None):
-        self.other_field = other_field
+    def __init__(self, other_field_name, message=None):
+        self.other_field_name = other_field_name
         if not message:
-            message = "This field must contain different text to the field '{x}'".format(x=other_field)
+            message = "This field must contain a different value to the field '{x}'".format(x=other_field_name)
         self.message = message
 
     def __call__(self, form, field):
-        return True
-        raise NotImplementedError("You need to implement this validator")
+        other_field = self.get_other_field(form)
 
+        if other_field.data == field.data:
+            raise validators.ValidationError(self.message)
+
+    def get_other_field(self, form):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        return other_field
 
 class RequiredIfOtherValue(object):
     '''

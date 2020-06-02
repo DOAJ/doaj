@@ -901,7 +901,7 @@ class FieldDefinitions:
             "doaj_criteria": "You must provide a URL"
         },
         "validate": [
-            {"optional_if": {"field": "archiving_policy", "value": "none"}},
+            {"optional_if": {"field": "archiving_policy", "values": ["none"]}},
             "is_url"
         ],
         "widgets": [
@@ -1648,7 +1648,7 @@ class OptionalIfBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return OptionalIf(settings.get("field"), settings.get("message"))
+        return OptionalIf(settings.get("field"), settings.get("message"), settings.get("values", []))
 
 
 class IsISSNBuilder:
