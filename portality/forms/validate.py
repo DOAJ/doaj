@@ -354,21 +354,25 @@ class DifferentTo(object):
             raise Exception('no field named "%s" in form' % self.other_field_name)
         return other_field
 
+
 class RequiredIfOtherValue(object):
     '''
     Makes a field required, if the user has selected a specific value in another field
     '''
 
-    def __init__(self, other_name, other_value, *args, **kwargs):
-        self.other_name = other_name
+    def __init__(self, other_field_name, other_value, *args, **kwargs):
+        self.other_field_name = other_field_name
         self.other_value = other_value
         super(RequiredIfOtherValue, self).__init__(*args, **kwargs)
 
     def __call__(self, form, field):
-        return True
-        raise NotImplementedError("You need to implement this validator")
-        # we can't extend DataRequired as that makes the front-end set the `required` attribute
-        # which makes the field always required by the UI.  So instead we should somehow call
-        # DataRequired, or just copy it.
-        dr = validators.DataRequired()
-        dr()
+        other_field = self.get_other_field(form)
+        if other_field.data == self.other_value:
+            dr = validators.DataRequired()
+            dr(form, field)
+
+    def get_other_field(self, form):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        return other_field
