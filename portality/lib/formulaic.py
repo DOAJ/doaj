@@ -127,9 +127,12 @@ UI_CONFIG_FIELDS = [
 
 
 class FormulaicException(Exception):
-    def __init__(self, message):
-        self.message = message
-        super(FormulaicException, self).__init__()
+    def __init__(self, *args):
+        try:
+            self.message = args[0]
+        except IndexError:
+            self.message = ''
+        super(FormulaicException, self).__init__(*args)
 
 
 class Formulaic(object):

@@ -15,12 +15,14 @@ from portality.lib.es_query_http import remove_search_limits
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.core import app
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, article_bulk_delete
-from portality.bll.doaj import DOAJ
+from portality.bll import DOAJ, exceptions
+
 # from portality.formcontext import emails
 import portality.notifications.application_emails as emails
 from portality.ui.messages import Messages
 
 from portality.view.forms import EditorGroupForm, MakeContinuation
+from portality.forms.application_forms import ApplicationFormFactory
 from portality.background import BackgroundSummary
 
 blueprint = Blueprint('admin', __name__)
@@ -277,7 +279,8 @@ def suggestions():
                            admin_page=True,
                            application_status_choices=choices.Choices.application_status("admin"))
 
-
+# OLD ADMIN APPLICATION FORM
+"""
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
@@ -312,6 +315,61 @@ def suggestion_page(suggestion_id):
                 return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
+"""
+
+
+@blueprint.route("/application/<application_id>", methods=["GET", "POST"])
+@write_required()
+@login_required
+@ssl_required
+def application(application_id):
+    ap = models.Suggestion.pull(application_id)
+
+    if ap is None:
+        abort(404)
+
+    auth_svc = DOAJ.authorisationService()
+    try:
+        auth_svc.can_edit_application(current_user, ap)
+    except exceptions.AuthoriseException:
+        abort(401)
+
+    if request.method == "GET":
+        fc = ApplicationFormFactory.context("admin")
+        fc.processor(source=ap)
+        return fc.render_template(obj=ap)
+
+    elif request.method == "POST":
+        fc = ApplicationFormFactory.context("admin")
+
+        # find out if we're being asked to modify the form, rather than submit it
+        for key in request.form.keys():
+            if key.startswith("field__add"):
+                val = request.form.get(key)
+                processor = fc.processor(formdata=request.form)
+                field = fc.get(val)
+                wtf = field.wtfield
+                wtf.append_entry()
+                return fc.render_template()
+            elif key.startswith("field__remove"):
+                val = request.form.get(key)
+
+        async_def = request.form.get("async")
+
+        processor = fc.processor(formdata=request.form)
+
+        if processor.validate():
+            try:
+                processor.finalise()
+                flash('Application updated.', 'success')
+                for a in fc.alert:
+                    flash_with_url(a, "success")
+                return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='done'))
+            except Exception as e: #fixme - what does this raise?
+                flash(str(e))
+                return fc.render_template()
+        else:
+            return fc.render_template()
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])

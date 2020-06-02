@@ -136,7 +136,7 @@ var formulaic = {
             return function() {
                 that.save({validate: false, additional : {"draft" : "true", "async" : "true"}, complete: false});
                 setTimeout(that.backgroundSaveClosure(), that.autoSave);
-            }
+            };
         };
 
         this.saveComplete = function(element, event) {
@@ -144,11 +144,11 @@ var formulaic = {
         };
 
         this.saveDraftAndComplete = function(element, event) {
-            this.save({validate: false, additional : {"draft" : "true", "async" : "true"}, event: event})
+            this.save({validate: false, additional : {"draft" : "true", "async" : "true"}, event: event});
         };
 
         this.save = function(params) {
-            if (!params) { params = {}}
+            if (!params) { params = {};}
             var validate = edges.getParam(params.validate, this.doValidation);
             var additional_params = edges.getParam(params.additional, {});
             var complete = edges.getParam(params.complete, true);
@@ -298,7 +298,7 @@ var formulaic = {
                                 this.conditionals[condField].push(field.name);
                             }
                         } else {
-                            this.conditionals[condField] = [field.name]
+                            this.conditionals[condField] = [field.name];
                         }
 
                         // bind a change event for checking conditionals
@@ -553,7 +553,7 @@ var formulaic = {
             var context = this.get_context(params);
             var name = params.name || params.syncName;
             var selector = "." + this.containerClassTemplate.replace("{name}", name);
-            return $(selector, context)
+            return $(selector, context);
         };
     },
 
