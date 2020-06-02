@@ -724,8 +724,7 @@ class FieldDefinitions:
         "subfields": [
             "apc_currency",
             "apc_max"
-        ],
-        # "template" : "application_form/_group.html"
+        ]
     }
 
     APC_CURRENCY = {
@@ -1394,10 +1393,10 @@ class ContextDefinitions:
             "all_urls_the_same"
         ],
         "templates": {
-            "form": "application_form/public_application.html",
-            "default_field": "application_form/_field.html",
-            "default_group": "application_form/_group.html"
-            # "default_group" : "application_form/_field.html"
+            "form" : "application_form/public_application.html",
+            "default_field" : "application_form/_field.html",
+            "default_group" : "application_form/_group.html",
+            "default_list" : "application_form/_list.html"
         },
         "crosswalks": {
             "obj2form": ApplicationFormXWalk.obj2form,
@@ -1776,16 +1775,24 @@ class IntegerBuilder(WTFormsBuilder):
 class GroupBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
-        return field.get("input") == "group"
+        return field.get("input") == "group" and not field.get("repeatable", False)
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
         fields = [formulaic_context.get(subfield) for subfield in field.get("subfields", [])]
         klazz = formulaic_context.make_wtform_class(fields)
-        ff = FormField(klazz)
-        if field.get("repeatable", False):
-            return FieldList(ff)
-        return ff
+        return FormField(klazz)
+
+
+class GroupListBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "group" and field.get("repeatable", False)
+
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        ff = GroupBuilder.wtform(formulaic_context, field, wtfargs)
+        return FieldList(ff)
 
 
 WTFORMS_BUILDERS = [
@@ -1797,7 +1804,8 @@ WTFORMS_BUILDERS = [
     TextBuilder,
     TagListBuilder,
     IntegerBuilder,
-    GroupBuilder
+    GroupBuilder,
+    GroupListBuilder
 ]
 
 ApplicationFormFactory = Formulaic(FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
