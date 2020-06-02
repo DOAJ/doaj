@@ -153,7 +153,7 @@ Fair use alone is not open access and DOAJ will not accept a journal with these 
 
 ---
 
-## Specific cases: exceptions and conditions
+## Additional criteria for some journal types
 
 {:.tabular-list}
 - ### Arts and humanities journals
