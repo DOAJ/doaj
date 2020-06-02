@@ -41,14 +41,11 @@ class OptionalIf(DataOptional):
     # A validator which makes a field optional if another field is set
     # and has a truthy value.
 
-    # Additionally, a list of values (optvals) can be specified - if any
-    # of those values are present in the other field, this field becomes
-    # optional. The other field having a truthy value is then no longer
-    # sufficient.
-    field_flags = ('display_required_star', )
-
-    def __init__(self, other_field_name, optvals=None, *args, **kwargs):
+    def __init__(self, other_field_name, message=None, optvals=None, *args, **kwargs):
         self.other_field_name = other_field_name
+        if not message:
+            message = "This field is required in the current circumstances"
+        self.message = message
         self.optvals = optvals if optvals is not None else []
         super(OptionalIf, self).__init__(*args, **kwargs)
 

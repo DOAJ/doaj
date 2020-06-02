@@ -1648,7 +1648,7 @@ class OptionalIfBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return OptionalIf(settings.get("field"))
+        return OptionalIf(settings.get("field"), settings.get("message"))
 
 
 class IsISSNBuilder:
