@@ -150,7 +150,7 @@ def put_mappings(conn, mappings):
         altered_key = mutate_mapping(conn, key, mapping)
         if not esprit.raw.type_exists(conn, altered_key, es_version=es_version):
             r = esprit.raw.put_mapping(conn, altered_key, mapping, es_version=es_version)
-            print("Creating ES Type + Mapping for", key, "; status:", r.status_code)
+            print("Creating ES Type + Mapping for", altered_key, "; status:", r.status_code)
         else:
             print("ES Type + Mapping already exists for", key)
 

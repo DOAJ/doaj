@@ -1,3 +1,15 @@
+"""
+Migrate the DOAJ to index-per-type; migrating application and journal types, copies others directly.
+Source index (sconn) MUST be index-per-project, based on config from settings.py (or overrides):
+    ELASTIC_SEARCH_HOST
+    ELASTIC_SEARCH_DB
+
+Target index (tconn) will require the app to be configured to use a new index-per-type connection:
+    ELASTIC_SEARCH_HOST
+    ELASTIC_SEARCH_INDEX_PER_TYPE = True
+    ELASTIC_SEARCH_DB_PREFIX
+"""
+
 from portality.core import app, es_connection, initialise_index
 
 from portality.models.v1.suggestion import Suggestion as SuggestionV1
@@ -12,33 +24,33 @@ import esprit
 from datetime import datetime, timedelta
 
 CC_URLS = {
-    "CC BY" : "https://creativecommons.org/licenses/by/4.0/",
-    "CC BY-NC" : "https://creativecommons.org/licenses/by-nc/4.0/",
-    "CC BY-NC-ND" : "https://creativecommons.org/licenses/by-nc-nd/4.0/",
-    "CC BY-NC-SA" : "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-    "CC BY-ND" : "https://creativecommons.org/licenses/by-nd/4.0/",
-    "CC BY-SA" : "https://creativecommons.org/licenses/by-sa/4.0/"
+    "CC BY": "https://creativecommons.org/licenses/by/4.0/",
+    "CC BY-NC": "https://creativecommons.org/licenses/by-nc/4.0/",
+    "CC BY-NC-ND": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "CC BY-NC-SA": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "CC BY-ND": "https://creativecommons.org/licenses/by-nd/4.0/",
+    "CC BY-SA": "https://creativecommons.org/licenses/by-sa/4.0/"
 }
 
 permissive_bibjson_struct = {
-    "fields" : {
-        "alternative_title" : {"coerce" : "unicode"},
-        "boai" : {"coerce" : "bool"},
-        "eissn" : {"coerce" : "unicode"},
-        "pissn" : {"coerce" : "unicode"},
-        "discontinued_date" : {"coerce" : "bigenddate"},
-        "publication_time_weeks" : {"coerce" : "integer"},
-        "title" : {"coerce" : "unicode"}
+    "fields": {
+        "alternative_title": {"coerce": "unicode"},
+        "boai": {"coerce": "bool"},
+        "eissn": {"coerce": "unicode"},
+        "pissn": {"coerce": "unicode"},
+        "discontinued_date": {"coerce": "bigenddate"},
+        "publication_time_weeks": {"coerce": "integer"},
+        "title": {"coerce": "unicode"}
     },
-    "lists" : {
-        "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
-        "keywords" : {"contains" : "field", "coerce" : "unicode_lower"},
-        "language" : {"contains" : "field", "coerce" : "unicode"},
-        "license" : {"contains" : "object"},
-        "replaces" : {"contains" : "field", "coerce" : "issn"},
-        "subject" : {"contains" : "object"}
+    "lists": {
+        "is_replaced_by": {"coerce": "issn", "contains": "field"},
+        "keywords": {"contains": "field", "coerce": "unicode_lower"},
+        "language": {"contains": "field", "coerce": "unicode"},
+        "license": {"contains": "object"},
+        "replaces": {"contains": "field", "coerce": "issn"},
+        "subject": {"contains": "object"}
     },
-    "objects" : [
+    "objects": [
         "apc",
         "article",
         "copyright",
@@ -53,139 +65,140 @@ permissive_bibjson_struct = {
         "ref",
         "waiver"
     ],
-    "structs" : {
-        "apc" : {
-            "fields" : {
-                "has_apc" : {"coerce" : "bool"},
-                "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
+    "structs": {
+        "apc": {
+            "fields": {
+                "has_apc": {"coerce": "bool"},
+                "url": {"coerce": "url", "set__allow_coerce_failure": True}
             },
-            "lists" : {
-                "max" : {"contains" : "object"}
+            "lists": {
+                "max": {"contains": "object"}
             },
-            "structs" : {
-                "max" : {
-                    "fields" : {
-                        "currency" : {"coerce" : "currency_code"},
-                        "price" : {"coerce" : "integer"}
+            "structs": {
+                "max": {
+                    "fields": {
+                        "currency": {"coerce": "currency_code"},
+                        "price": {"coerce": "integer"}
                     }
                 }
             }
         },
-        "article" : {
-            "fields" : {
-                "license_display_example_url" : {"coerce" : "url", "set__allow_coerce_failure" : True},
-                "orcid" : {"coerce" : "bool"},
-                "i4oc_open_citations" : {"coerce" : "bool"}
+        "article": {
+            "fields": {
+                "license_display_example_url": {"coerce": "url", "set__allow_coerce_failure": True},
+                "orcid": {"coerce": "bool"},
+                "i4oc_open_citations": {"coerce": "bool"}
             },
-            "lists" : {
-                "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["embed", "display", "no"]},
+            "lists": {
+                "license_display": {"contains": "field", "coerce": "unicode",
+                                    "allowed_values": ["embed", "display", "no"]},
             }
         },
-        "copyright" : {
-            "fields" : {
-                "author_retains" : {"coerce" : "bool"},
-                "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
+        "copyright": {
+            "fields": {
+                "author_retains": {"coerce": "bool"},
+                "url": {"coerce": "url", "set__allow_coerce_failure": True}
             }
         },
-        "deposit_policy" : {
-            "fields" : {
-                "has_policy" : {"coerce" : "bool"},
-                "is_registered" : {"coerce" : "bool"},
-                "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
+        "deposit_policy": {
+            "fields": {
+                "has_policy": {"coerce": "bool"},
+                "is_registered": {"coerce": "bool"},
+                "url": {"coerce": "url", "set__allow_coerce_failure": True}
             },
-            "lists" : {
-                "service" : {"contains" : "field", "coerce" : "unicode"}
+            "lists": {
+                "service": {"contains": "field", "coerce": "unicode"}
             }
         },
-        "editorial" : {
-            "fields" : {
-                "review_url" : {"coerce" : "url", "set__allow_coerce_failure" : True},
-                "board_url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
+        "editorial": {
+            "fields": {
+                "review_url": {"coerce": "url", "set__allow_coerce_failure": True},
+                "board_url": {"coerce": "url", "set__allow_coerce_failure": True}
             },
-            "lists" : {
-                "review_process" : {"contains" : "field", "coerce" : "unicode"}
+            "lists": {
+                "review_process": {"contains": "field", "coerce": "unicode"}
             }
         },
-        "institution" : {
-            "fields" : {
-                "name" : {"coerce" : "unicode"},
-                "country" : {"coerce" : "country_code"}
+        "institution": {
+            "fields": {
+                "name": {"coerce": "unicode"},
+                "country": {"coerce": "country_code"}
             }
         },
-        "license" : {
-            "fields" : {
-                "type" : {"coerce" : "unicode"},
-                "BY" : {"coerce" : "bool"},
-                "NC" : {"coerce" : "bool"},
-                "ND" : {"coerce" : "bool"},
-                "SA" : {"coerce" : "bool"},
-                "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
+        "license": {
+            "fields": {
+                "type": {"coerce": "unicode"},
+                "BY": {"coerce": "bool"},
+                "NC": {"coerce": "bool"},
+                "ND": {"coerce": "bool"},
+                "SA": {"coerce": "bool"},
+                "url": {"coerce": "url", "set__allow_coerce_failure": True}
             }
         },
-        "other_charges" : {
-            "fields" :{
-                "has_other_charges" : {"coerce" : "bool"},
-                "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
+        "other_charges": {
+            "fields": {
+                "has_other_charges": {"coerce": "bool"},
+                "url": {"coerce": "url", "set__allow_coerce_failure": True}
             }
         },
-        "pid_scheme" : {
-            "fields" : {
-                "has_pid_scheme" : {"coerce" : "bool"},
+        "pid_scheme": {
+            "fields": {
+                "has_pid_scheme": {"coerce": "bool"},
             },
-            "lists" : {
-                "scheme" : {"coerce" : "unicode", "contains" : "field"}
+            "lists": {
+                "scheme": {"coerce": "unicode", "contains": "field"}
             }
         },
-        "plagiarism" : {
-            "fields" : {
-                "detection" : {"coerce" : "bool"},
-                "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
+        "plagiarism": {
+            "fields": {
+                "detection": {"coerce": "bool"},
+                "url": {"coerce": "url", "set__allow_coerce_failure": True}
             }
         },
         "preservation": {
             "fields": {
                 "has_preservation": {"coerce": "unicode"},
-                "url": {"coerce": "unicode", "set__allow_coerce_failure" : True}
+                "url": {"coerce": "unicode", "set__allow_coerce_failure": True}
             },
             "lists": {
-                "national_library": {"contains" : "field", "coerce": "unicode"},
+                "national_library": {"contains": "field", "coerce": "unicode"},
                 "service": {"coerce": "unicode", "contains": "field"},
             },
-            "structs" : {
-                "policy" : {
-                    "fields" : {
-                        "name" : {"coerce": "unicode"},
-                        "domain" : {"coerce" : "unicode"}
+            "structs": {
+                "policy": {
+                    "fields": {
+                        "name": {"coerce": "unicode"},
+                        "domain": {"coerce": "unicode"}
                     }
                 }
             }
         },
-        "publisher" : {
-            "fields" : {
-                "name" : {"coerce" : "unicode"},
-                "country" : {"coerce" : "unicode"}
+        "publisher": {
+            "fields": {
+                "name": {"coerce": "unicode"},
+                "country": {"coerce": "unicode"}
             }
         },
-        "ref" : {
-            "fields" : {
-                "oa_statement" : {"coerce" : "url", "set__allow_coerce_failure" : True},
-                "journal" : {"coerce" : "url", "set__allow_coerce_failure" : True},
-                "aims_scope" : {"coerce" : "url", "set__allow_coerce_failure" : True},
-                "author_instructions" : {"coerce" : "url", "set__allow_coerce_failure" : True},
-                "license_terms" : {"coerce" : "url", "set__allow_coerce_failure" : True},
+        "ref": {
+            "fields": {
+                "oa_statement": {"coerce": "url", "set__allow_coerce_failure": True},
+                "journal": {"coerce": "url", "set__allow_coerce_failure": True},
+                "aims_scope": {"coerce": "url", "set__allow_coerce_failure": True},
+                "author_instructions": {"coerce": "url", "set__allow_coerce_failure": True},
+                "license_terms": {"coerce": "url", "set__allow_coerce_failure": True},
             }
         },
-        "subject" : {
-            "fields" : {
-                "code" : {"coerce" : "unicode"},
-                "scheme" : {"coerce" : "unicode"},
-                "term" : {"coerce" : "unicode"}
+        "subject": {
+            "fields": {
+                "code": {"coerce": "unicode"},
+                "scheme": {"coerce": "unicode"},
+                "term": {"coerce": "unicode"}
             }
         },
-        "waiver" : {
-            "fields" : {
-                "has_waiver" : {"coerce" : "bool"},
-                "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
+        "waiver": {
+            "fields": {
+                "has_waiver": {"coerce": "bool"},
+                "url": {"coerce": "url", "set__allow_coerce_failure": True}
             }
         }
     }
@@ -490,11 +503,11 @@ def bibjson_migration(source, target):
         tbj.title = sbj.title
 
 
-# initialise the index, so that we know we are working with a suitable index
+# Since we are running a migration, assume the source index has been initialised already, but the target may not have.
 initialise_index(app, es_connection)
 
 sconn = esprit.raw.Connection(app.config.get("ELASTIC_SEARCH_HOST"), app.config.get("ELASTIC_SEARCH_DB"))
-tconn = esprit.raw.Connection(app.config.get("ELASTIC_SEARCH_HOST"), "")
+tconn = es_connection
 prefix = app.config.get("ELASTIC_SEARCH_DB_PREFIX")
 
 migrate_types = [
@@ -508,7 +521,7 @@ copy_types = [
     "lcc",
     "provenance",
     "harvester_state",
-    "bulk_upload", # I'm not sure we actually use this anywhere now
+    "bulk_upload",  # I'm not sure we actually use this anywhere now
     "article",
     "lock",
     "account",
@@ -527,7 +540,7 @@ batch_size = 1000
 
 # Start with the straight copy operations
 for ct in copy_types:
-    tt = prefix + "-" + ct
+    tt = prefix + ct
     print("Copying", ct, "to", tt)
     batch = []
     total = 0
@@ -573,10 +586,9 @@ for ct in copy_types:
               "of", max)
         esprit.raw.bulk(tconn, batch, idkey="id", type_=tt, bulk_type="create")
 
-
 # now do the hard migrations
 for smt, tmt, source_model, target_model, processor in migrate_types:
-    tt = prefix + "-" + tmt
+    tt = prefix + tmt
     print("Migrating", smt, "to", tt)
     batch = []
     total = 0
@@ -593,14 +605,14 @@ for smt, tmt, source_model, target_model, processor in migrate_types:
 
             source = source_model(**result)
             try:
-                source.snapshot()   # FIXME: is this what we should actually do?  It means that the history system has a copy of the record at final stage, which seems sensible
+                source.snapshot()  # FIXME: is this what we should actually do?  It means that the history system has a copy of the record at final stage, which seems sensible
             except AttributeError:
                 # this type doesn't support snapshotting
                 pass
 
             target = target_model()
             processor(source, target)
-            target.prep(is_update=False)   # in order to regenerate all the index fields, etc
+            target.prep(is_update=False)  # in order to regenerate all the index fields, etc
 
             batch.append(target.data)
             if len(batch) >= batch_size:
@@ -630,6 +642,5 @@ for smt, tmt, source_model, target_model, processor in migrate_types:
     # Write the last part-batch to index
     if len(batch) > 0:
         total += len(batch)
-        print(datetime.now(), "final result set / writing ", len(batch), "to", tt, ";", total,
-              "of", max)
+        print(datetime.now(), "final result set / writing ", len(batch), "to", tt, ";", total, "of", max)
         esprit.raw.bulk(tconn, batch, idkey="id", type_=tt, bulk_type="create")
