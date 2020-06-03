@@ -1,8 +1,8 @@
 The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open access journals. Today, this independent database contains over 14 500 peer-reviewed open access journals covering all areas of science, technology, medicine, social sciences, arts and humanities. Open access journals from all countries and in all languages are welcome to apply for inclusion.
 
-DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) which provide the basis of the [DOAJ basic criteria](/apply/guide) for inclusion.
+DOAJ is supported by many libraries, publishers and other organisations. Supporting DOAJ demonstrates a firm commitment to our vital work for open access.
 
-DOAJ is a membership organisation. DOAJ membership is a clear statement of support from libraries, publishers and others for our vital work, and demonstrates a firm commitment to open access. However, membership is not required in order to apply for journals to be indexed.
+DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) which provide the basis of the [DOAJ basic criteria](/apply/guide) for inclusion.
 
 ## Our mission
 
@@ -10,7 +10,7 @@ DOAJ's mission is to increase the visibility, accessibility, reputation, usage a
 
 ## Constitution
 
-DOAJ is a non-profit organisation managed by [Infrastructure Services for Open Access C.I.C.](http://is4oa.org/) (IS4OA), a  [community interest company](https://en.wikipedia.org/wiki/Community_interest_company) based in the United Kingdom. DOAJ relies entirely on the voluntary donations of its members and sponsors. Neither DOAJ or IS4OA receives grants or funding from any other source.
+DOAJ is a non-profit organisation managed by [Infrastructure Services for Open Access C.I.C.](http://is4oa.org/) (IS4OA), a  [community interest company](https://en.wikipedia.org/wiki/Community_interest_company) based in the United Kingdom. DOAJ relies entirely on the voluntary donations of its supporters and sponsors. Neither DOAJ or IS4OA receives grants or funding from any other source.
 
 DOAJ has [an Advisory Board and a Council](/board-council/), the members of which carry out their duties voluntarily.
 
