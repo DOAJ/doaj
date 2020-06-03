@@ -1,7 +1,4 @@
-Supporting DOAJ is the only way to ensure that we can continue to provide you and the academic community with the best service.
-
-We accept membership requests from publishers, libraries, private individuals, industry-related organisations and government organisations.
-We reserve the right to deny membership.
+Supporting DOAJ is the only way to ensure that we can continue to provide you and the academic community with this vital open access resource. 
 
 You can support us:
 
