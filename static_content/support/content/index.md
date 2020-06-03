@@ -1,4 +1,4 @@
-Supporting DOAJ is the only way to ensure that we can continue to provide you and the academic community with this vital open access resource. 
+Supporting DOAJ is the only way to ensure that we can continue to provide you and the academic community with this vital open access resource. We are very grateful to all our supporters in libraries, publishers and other organisations around the world.
 
 You can support us:
 
