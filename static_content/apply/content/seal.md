@@ -33,5 +33,7 @@ All of these seven criteria must be met for a journal to be awarded the Seal. No
     -  Authors must retain unrestricted copyright and all publishing rights when publishing under any license permitted by the journal.
 7. Self-archiving policy
     - Authors must be permitted to deposit all versions of their paper in an institutional or subject repository.
-    - This covers the Preprint, Author's Accepted Manuscript and published Version of Record.
+        - Preprint
+        - Author's Accepted Manuscript
+        - Version of Record
     - An embargo may not be applied.
