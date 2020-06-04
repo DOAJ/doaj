@@ -83,7 +83,7 @@ class JournalArticleQuery(object):
         "size" : 0,
         "facets" : {
             "type" : {
-                "terms" : {"field" : "_type"}
+                "terms": {"field": "es_type"}
             },
             "countries" : {
                 "terms" : {"field" : "index.country.exact", "size" : 10000 }

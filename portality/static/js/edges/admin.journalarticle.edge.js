@@ -5,7 +5,7 @@ $.extend(true, doaj, {
 
         journalSelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
                 // var type = doaj.currentFVOptions.active_filters._type;
                 if (type && type.length > 0) {
                     type = type[0];
@@ -22,7 +22,7 @@ $.extend(true, doaj, {
 
         anySelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
                 if (!type || type.length === 0) {
                     return {
                         valid: false,
@@ -35,7 +35,7 @@ $.extend(true, doaj, {
 
         typeSelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
                 if (type && type.length > 0) {
                     return type[0].value;
                 }
@@ -111,7 +111,7 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "journals_articles",
                     category: "facet",
-                    field: "_type",
+                    field: "es_type",
                     display: "Journals vs Articles",
                     valueMap : {
                         "journal" : "Journals",
@@ -562,7 +562,7 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "_type": "Showing",
+                        "es_type": "Showing",
                         "admin.in_doaj" : "In DOAJ?",
                         "index.language.exact" : "Journal Language",
                         "bibjson.publisher.exact" : "Publisher",
@@ -576,7 +576,7 @@ $.extend(true, doaj, {
                         "bibjson.journal.title.exact" : "Journal title"
                     },
                     valueMaps : {
-                        "_type" : {
+                        "es_type" : {
                             "journal" : "Journals",
                             "article" : "Articles"
                         },

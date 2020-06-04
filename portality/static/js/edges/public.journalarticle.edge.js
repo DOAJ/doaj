@@ -50,7 +50,7 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id : "journal_article",
                     category: "facet",
-                    field: "_type",
+                    field: "es_type",
                     display: "Journals vs. Articles",
                     deactivateThreshold: 1,
                     size: 2,
@@ -317,7 +317,7 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays : {
-                        "_type" : "Showing",
+                        "es_type" : "Showing",
                         "index.classification.exact" : "Subject",
                         "index.has_apc.exact" : "Article processing charges (APCs)",
                         "index.has_seal.exact" : "DOAJ Seal",
@@ -331,7 +331,7 @@ $.extend(true, doaj, {
                         "index.date" : "Year of publication"
                     },
                     valueMaps : {
-                        "_type" : {
+                        "es_type" : {
                             "journal" : "Journals",
                             "article" : "Articles"
                         }
