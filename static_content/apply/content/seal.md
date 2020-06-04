@@ -13,7 +13,7 @@ All of these seven criteria must be met for a journal to be awarded the Seal. No
 {:.tabular-list .tabular-list--ordered}
 1. Digital preservation
     - The journal content must be continously deposited in one of these archives:
-        - any service included in [Keepers Registry](https://keepers.issn.org)
+        - any archiving agency included in [Keepers Registry](https://keepers.issn.org/keepers)
         - Internet Archive
         - PubMed Central
 2. Permanent article identifiers
@@ -21,14 +21,17 @@ All of these seven criteria must be met for a journal to be awarded the Seal. No
     - All permanent links must resolve correctly.
 3. Metadata supply to DOAJ
     - Article metadata must be uploaded to DOAJ regularly.
-4. CC license type
-    - The journal must permit use of a CC BY, CC BY-SA, CC BY-NC or CC BY-NC-SA license.
-    - These allow the creation of derivative products.
+4. License type
+    - The journal must permit use of a Creative Commons license that allows the creation of derivative products.
+        - CC BY
+        - CC BY-SA
+        - CC BY-NC
+        - CC BY-NC-SA
 5. License information in articles
     - Creative Commons licensing information must be displayed in all full-text article formats.
 6. Copyright and publishing rights
     -  Authors must retain unrestricted copyright and all publishing rights when publishing under any license permitted by the journal.
 7. Self-archiving policy
-    - Authors must be permitted to deposit any version of their paper in an institutional or subject repository.
+    - Authors must be permitted to deposit all versions of their paper in an institutional or subject repository.
     - This covers the Preprint, Author's Accepted Manuscript and published Version of Record.
     - An embargo may not be applied.
