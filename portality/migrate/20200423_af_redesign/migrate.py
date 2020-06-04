@@ -131,7 +131,7 @@ permissive_bibjson_struct = {
         },
         "license": {
             "fields": {
-                "es_type": {"coerce": "unicode"},
+                "type": {"coerce": "unicode"},
                 "BY": {"coerce": "bool"},
                 "NC": {"coerce": "bool"},
                 "ND": {"coerce": "bool"},
@@ -541,7 +541,6 @@ batch_size = 1000
 # * article_history
 # * journal_history
 # * toc
-
 # Start with the straight copy operations
 for ct in copy_types:
     tt = ipt_prefix(ct)
@@ -608,7 +607,6 @@ for smt, tmt, source_model, target_model, processor in migrate_types:
     try:
         for result in esprit.tasks.scroll(sconn, smt, q=default_query, keepalive="2m", page_size=1000, scan=True):
             source = source_model(**result)
-            source.data['es_type'] = tmt
             try:
                 source.snapshot()  # FIXME: is this what we should actually do?  It means that the history system has a copy of the record at final stage, which seems sensible
             except AttributeError:
@@ -618,7 +616,7 @@ for smt, tmt, source_model, target_model, processor in migrate_types:
             target = target_model()
             processor(source, target)
             target.prep(is_update=False)  # in order to regenerate all the index fields, etc
-
+            target.data['es_type'] = tmt
             batch.append(target.data)
             if len(batch) >= batch_size:
                 total += len(batch)
