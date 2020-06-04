@@ -619,7 +619,9 @@ var formulaic = {
 
             this.init = function() {
 
+                that.attr("data-parsley-validate-multiple", "");
                 that.attr('id', params.fieldDef["name"] + '--id_0')
+                var type = that.prop('tagName').toLowerCase()
                 $("#remove_field__"+params.fieldDef["name"]).attr('id', "remove_field__"+this.fieldDef["name"] + "--id_0")
 
                 var cloneCount = 1
@@ -630,7 +632,7 @@ var formulaic = {
                     }
                     var div = document.createElement('div');
                     div.className = 'multiple_input';
-                    var previousInput = $('.removable_field__' + params.fieldDef["name"]).find('input').filter(':first')
+                    var previousInput = $('.removable_field__' + params.fieldDef["name"]).find(type).filter(':first')
                     var newInput = $(previousInput)
                         .clone(true)
                         .attr('id', params.fieldDef["name"] + '--id_' + cloneCount)

@@ -96,8 +96,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
-            "clickable_url",
-            "multiple_field"
+            "clickable_url"
 
         ],
         "attr": {
@@ -324,7 +323,8 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
-            {"autocomplete": {"field": "publisher_name"}}
+            {"autocomplete": {"field": "publisher_name"}},
+            "multiple_field"
         ]
     }
 
@@ -341,7 +341,8 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
-            {"select": {}}
+            {"select": {}},
+            "multiple_field"
         ],
         "attr": {
             "class": "input-xlarge"
@@ -368,7 +369,8 @@ class FieldDefinitions:
                           "a society or other type of institution, enter that here."]
         },
         "widgets": [
-            {"autocomplete": {"field": "institution_name"}}
+            {"autocomplete": {"field": "institution_name"}},
+            "multiple_field"
         ]
     }
 
@@ -382,7 +384,8 @@ class FieldDefinitions:
             "short_help": "The country in which the society or institution is based"
         },
         "widgets": [
-            {"select": {}}
+            {"select": {}},
+            "multiple_field"
         ],
         "attr": {
             "class": "input-xlarge"

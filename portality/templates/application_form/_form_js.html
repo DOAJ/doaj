@@ -11,16 +11,16 @@
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
 
-        window.Parsley.addValidator('multipleFieldRequired', {
-            validateDate: function(value, parsleyInstance) {
-                console.log(parsleyInstance.$element)
+        window.Parsley.addValidator('validateMultiple', {
+            validateString: function(value, requirement, parsleyField) {
+                console.log(parsleyField.$element[0].name)
                 return false;
             },
             messages: {
                 en: 'This string is not the reverse of itself',
                 fr: "Cette valeur n'est pas l'inverse d'elle même."
             }
-        });
+});
 
     });
 
@@ -144,8 +144,8 @@
             navigate(1);
         }).fail(function () {
             document.getElementById("validated-" + currentTab).value = "False";
-            //only for tests
-            //navigate(1);
+            //only for dev!!
+            navigate(1);
         });
     }
 
