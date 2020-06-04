@@ -10,6 +10,18 @@
             autoSave: {{ auto_save }},
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
+
+        window.Parsley.addValidator('multipleFieldRequired', {
+            validateDate: function(value, parsleyInstance) {
+                console.log(parsleyInstance.$element)
+                return false;
+            },
+            messages: {
+                en: 'This string is not the reverse of itself',
+                fr: "Cette valeur n'est pas l'inverse d'elle même."
+            }
+        });
+
     });
 
     let fields = document.getElementsByClassName("conditional");

@@ -618,6 +618,7 @@ var formulaic = {
             }
 
             this.init = function() {
+
                 that.attr('id', params.fieldDef["name"] + '--id_0')
                 $("#remove_field__"+params.fieldDef["name"]).attr('id', "remove_field__"+this.fieldDef["name"] + "--id_0")
 

@@ -11,6 +11,7 @@
         {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
     </label>
     {% if f.get("hint") %}<p><small>{{ f.hint }}</small></p>{% endif %}
+    <input type="text" data-parsley-multiple-field-required="">
     {% if "multiple_field" in f.get("widgets", []) %}
         <div style="display: flex; flex-direction: row">
             <div style="display: flex; flex-direction: column; flex-grow: 5" class="removable_field__{{ f.name }}">
