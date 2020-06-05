@@ -618,10 +618,15 @@ var formulaic = {
             }
 
             this.init = function() {
-
-                that.attr("data-parsley-validate-multiple", "");
-                that.attr('id', params.fieldDef["name"] + '--id_0')
-                var type = that.prop('tagName').toLowerCase()
+                console.log("init!")
+                //validation must be here, not as custom validation
+                that.attr('id', params.fieldDef["name"] + '--id_0');
+                if (that.attr('required')) {
+                    that.removeAttr('required');
+                    that.attr("data-parsley-validate-multiple", "")
+                    that.attr("data-parsley-validate-if-empty","true");
+                }
+                var type = that.prop('tagName').toLowerCase();
                 $("#remove_field__"+params.fieldDef["name"]).attr('id', "remove_field__"+this.fieldDef["name"] + "--id_0")
 
                 var cloneCount = 1
@@ -635,8 +640,7 @@ var formulaic = {
                     var previousInput = $('.removable_field__' + params.fieldDef["name"]).find(type).filter(':first')
                     var newInput = $(previousInput)
                         .clone(true)
-                        .attr('id', params.fieldDef["name"] + '--id_' + cloneCount)
-                        .removeAttr('required');
+                        .attr('id', params.fieldDef["name"] + '--id_' + cloneCount);
                     newInput.appendTo($(div));
                     var previousRemoveBtn = $("[id^=remove_field__"+params.fieldDef["name"] + '--id_').filter(':first')
                     newInput.after(

@@ -25,20 +25,22 @@
 }
 
 .parsley-error {
-    border-color: #982E0A;;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px #982E0A;
+    border-color: #982E0A;
+    border-width: 3px;
 }
 
 ul.parsley-errors-list {
-    display: none !important;
+    color: #982E0A;
+    list-style-type: none;
+    margin-left: 0;
 }
 
 li.parsley-required {
-    display: none !important;
+    color: #982E0A;
 }
 
 li.parsley-type {
-    display: none !important;
+    color: #982E0A;
 }
 
 #submitBtn.pager-buttons__right {

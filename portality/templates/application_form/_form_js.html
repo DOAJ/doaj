@@ -11,19 +11,34 @@
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
 
-        window.Parsley.addValidator('validateMultiple', {
-            validateString: function(value, requirement, parsleyField) {
-                console.log(parsleyField.$element[0].name)
-                return false;
+    });
+    window.Parsley.addValidator('validateMultiple', {
+            validate: function(value, requirement, parsleyField) {
+                var inputs;
+                inputs = $(document).find("select[name='" + parsleyField.$element[0].name + "']");
+                if (inputs.length === 0){
+                    inputs = $(document).find("input[name='" + parsleyField.$element[0].name + "']");
+                }
+                var ret = false;
+                inputs.each(function(idx, obj){
+                    if ($(obj).val() !== '' && $(obj).val() !== ' ' && $(obj).val() !== undefined) {
+                        ret = true;
+                        //break the loop
+                        return false;
+                    }
+                });
+                if (ret){
+                    inputs.each(function(idx, obj){
+                        $(obj).parsley().reset()
+                    });
+                }
+
+                return ret;
             },
             messages: {
-                en: 'This string is not the reverse of itself',
-                fr: "Cette valeur n'est pas l'inverse d'elle même."
+                en: 'At least one value required',
             }
-});
-
     });
-
     let fields = document.getElementsByClassName("conditional");
     for (let f of fields) {
     let inputs = document.getElementsByName(f.getAttribute("name"));
@@ -137,7 +152,8 @@
     }
 
     function next() {
-        $('#' + '{{ form_id }}').parsley().whenValidate({
+        var form = $('#' + '{{ form_id }}');
+        form.parsley().whenValidate({
             group: 'block-' + currentTab
         }).done(function () {
             document.getElementById("validated-" + currentTab).value = "True";
@@ -145,7 +161,7 @@
         }).fail(function () {
             document.getElementById("validated-" + currentTab).value = "False";
             //only for dev!!
-            navigate(1);
+            //navigate(1);
         });
     }
 
