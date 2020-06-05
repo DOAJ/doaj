@@ -6,6 +6,6 @@
   line-height: 1.15;
   font-weight: 600;
   color: $sanguine;
-  font-size: smaller;
   letter-spacing: 0.05em;
+  @include typescale-06;
 }

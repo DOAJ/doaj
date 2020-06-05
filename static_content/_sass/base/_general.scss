@@ -47,7 +47,7 @@ h5 {
   @include typescale-05;
 }
 
-h6, small {
+h6 {
   @include typescale-06;
 }
 
@@ -58,10 +58,6 @@ h1 sup a, h2 sup a, h3 sup a, h4 sup a, h5 sup a, h6 sup a {
   text-decoration: none;
   color: $sanguine;
   @include font-sans;
-}
-
-h1 sup a, h2 sup a, h3 sup a, h4 sup a, h5 sup a, h6 sup a {
-  color: $sanguine;
 }
 
 h1 sup a:after, h2 sup a:after, h3 sup a:after, h4 sup a:after, h5 sup a:after, h6 sup a:after {
@@ -199,10 +195,10 @@ table {
 aside {
   font-size: smaller;
   color: $sanguine;
-}
 
-aside a {
-  color: $sanguine;
+  a {
+    color: $sanguine;
+  }
 }
 
 /* Forms */

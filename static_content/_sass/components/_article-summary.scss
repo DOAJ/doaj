@@ -1,0 +1,27 @@
+/* Abstracts in accordions */
+
+.article-summary {
+  margin-bottom: $spacing-03;
+
+  ul {
+    @include unstyled-list($inline: true);
+  }
+}
+
+.article-summary__authors {
+  color: $dark-grey;
+}
+
+.article-summary__abstract-heading {
+  margin-bottom: 0;
+  font-size: 1rem;
+
+  .feather {
+    height: 0.65em;
+    width: auto;
+  }
+}
+
+.article-summary__abstract-body {
+  margin-top: $spacing-03;
+}

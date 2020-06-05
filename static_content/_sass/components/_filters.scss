@@ -6,6 +6,7 @@
 }
 
 .filters__heading {
+  margin-bottom: 0;
   font-size: 1em;
   color: $dark-grey;
   text-transform: uppercase;
@@ -68,4 +69,19 @@
 
 input[type="checkbox"]:checked + .filter__label {
   color: $sanguine;
+}
+
+// Mobile-only accordion
+
+@media (min-width: 992px) {
+  .filters {
+    
+    .filters__heading .feather {
+      display: none;
+    }
+
+    .filters__list {
+      display: block;
+    }
+  }
 }
