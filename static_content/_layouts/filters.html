@@ -1,4 +1,3 @@
-{% if page.fragment == false %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +5,6 @@
 
   <body>
     {% include header.html %}
-{% endif %}
 
     <main class="container">
       <section class="page-content">
@@ -271,7 +269,7 @@
                         {% endfor %}
                       </p>
                       <h3 class="search-results__heading">
-                        <a href="#" class="">
+                        <a href="{{ site.baseurl }}{% link search/journal-details.md %}" class="">
                           {{ i.title }}
                           {% if i.paral_title %}<br/><span class="search-results__secondary-heading">{{ i.paral_title }}</span>{% endif %}
                         </a>
@@ -510,7 +508,7 @@
                         <small>From <em>{{ i.journal }}</em></small>
                       </p>
                       <h3 class="search-results__heading">
-                        <a href="#" class="">
+                        <a href="{{ site.baseurl }}{% link search/article-details.md %}" class="">
                           {{ i.title }}
                         </a>
                       </h3>
@@ -564,13 +562,8 @@
                         Published by <em>{{ i.publisher }}</em> in <strong>{{ i.country }}</strong>
                       </li>
                       <li>
-                        Published in {{ i.issue_pub_date }}
+                        {{ i.issue_pub_date }}
                       </li>
-                      {% if i.updated %}
-                      <li>
-                        Last updated on {{ i.updated }}
-                      </li>
-                      {% endif %}
                     </ul>
                   </aside>
                 </article>
@@ -585,9 +578,7 @@
       </section>
     </main>
 
-{% if page.fragment == false %}
     {% include footer.html %}
   </body>
 
 </html>
-{% endif %}
