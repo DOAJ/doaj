@@ -1,0 +1,54 @@
+# Temporary articles list
+
+- title: "IL-12 Signaling Contributes to the Reprogramming of Neonatal CD8+ T Cells"
+  url: "https://www.frontiersin.org/article/10.3389/fimmu.2020.01089/full"
+  doi: "10.3389/fimmu.2020.01089"
+  abstract: "Neonates are highly susceptible to intracellular pathogens, leading to high morbidity and mortality rates. CD8+ T lymphocytes are responsible for the elimination of infected cells. Understanding the response of these cells to normal and high stimulatory conditions is important to propose better treatments and vaccine formulations for neonates. We have previously shown that human neonatal CD8+ T cells overexpress innate inflammatory genes and have a low expression of cytotoxic and cell signaling genes. To investigate the activation potential of these cells, we evaluated the transcriptome of human neonatal and adult naïve CD8+ T cells after TCR/CD28 signals ± IL-12. We found that in neonatal cells, IL-12 signals contribute to the adult-like expression of genes associated with cell-signaling, T-cell cytokines, metabolism, and cell division. Additionally, IL-12 signals contributed to the downregulation of the neutrophil signature transcription factor CEBPE and other immaturity related genes. To validate the transcriptome results, we evaluated the expression of a series of genes by RT-qPCR and the promoter methylation status on independent samples. We found that in agreement with the transcriptome, IL-12 signals contributed to the chromatin closure of neutrophil-like genes and the opening of cytotoxicity genes, suggesting that IL-12 signals contribute to the epigenetic reprogramming of neonatal lymphocytes. Furthermore, high expression of some inflammatory genes was observed in naïve and stimulated neonatal cells, in agreement with the high inflammatory profile of neonates to infections. Altogether our results point to an important contribution of IL-12 signals to the reprogramming of the neonatal CD8+ T cells."
+  keywords:
+    - "neonatal T cells"
+    - "CD8+ T cells"
+    - "RNA-sequencing"
+    - "IL-12"
+    - "T cell activation"
+    - "neonatal immunity"
+  authors:
+    - "Stephanie Kullmann"
+    - "Vera Valenta"
+    - "Robert Wagner"
+    - "Otto Tschritter"
+    - "Jürgen Machann"
+    - "Hans-Ulrich Häring"
+    - "Hubert Preissl"
+    - "Andreas Fritsche"
+    - "Martin Heni"
+  issue_pub_date: "June 2020"
+  volume: 11
+  country: "Switzerland"
+  issn: "1664-3224 (Online)"
+  journal: "Frontiers in Immunology"
+  lang: English
+  publisher: "Frontiers Media S.A."
+  journal_url: "http://journal.frontiersin.org/journal/immunology"
+  lcc: "Medicine: Internal medicine: Specialties of internal medicine: Immunologic diseases. Allergy"
+
+- title: "On the interconnections among major climate modes and their common driving factors"
+  url: "https://www.earth-syst-dynam.net/11/525/2020/esd-11-525-2020.pdf"
+  doi: "10.5194/esd-11-525-2020"
+  abstract: "<p>The variations in oceanic and atmospheric modes on various timescales play important roles in generating global and regional climate variability. Many efforts have been devoted to identifying the relationships between the variations in climate modes and regional climate variability, but these have rarely explored the interconnections among these climate modes. Here we use climate indices to represent the variations in major climate modes and examine the harmonic relationship among the driving forces of climate modes using slow feature analysis (SFA) and wavelet analysis. We find that all of the significant peak periods of driving-force signals in the climate indices can be represented as harmonics of four base periods: 2.32, 3.90, 6.55, and 11.02 years. We infer that the period of 2.32 years is associated with the signal of the quasi-biennial oscillation (QBO). The periods of 3.90 and 6.55 years are linked to the intrinsic variability of the El Niño–Southern Oscillation (ENSO), and the period of 11.02 years arises from the sunspot cycle. Results suggest that the base periods and their harmonic oscillations related to QBO, ENSO, and solar activities act as key connections among the climatic modes with synchronous behaviors, highlighting the important roles of these three oscillations in the variability of the Earth's climate. <br/><br/><strong>Highlights.</strong> <br/> </p><ul><li>i.<p>The harmonic relationship among the driving forces of climate modes was investigated by using slow feature analysis and wavelet analysis.</p></li><li><span>ii.</span> <p>All of the significant peak periods of driving-force signals in climate indices can be represented as the harmonics of four base periods.</p></li><li><span>iii.</span> <p>The four base periods related to QBO, ENSO, and solar activities act as the key linkages among different climatic modes with synchronous behaviors.</p></li></ul>"
+  authors:
+    - "X. Pan"
+    - "G. Wang"
+    - "P. Yang"
+    - "J. Wang"
+    - "A. A. Tsonis"
+    - "A. A. Tsonis"
+  pages: "525–535"
+  issue_pub_date: "June 2020"
+  volume: 11
+  country: "Germany"
+  lang: English
+  issn: "2190-4979 (Print); 2190-4987 (Online)"
+  journal: "Earth System Dynamics"
+  publisher: "Copernicus Publications"
+  journal_url: "http://www.earth-system-dynamics.net/"
+  lcc: "Science: Geology: Dynamic and structural geology"
