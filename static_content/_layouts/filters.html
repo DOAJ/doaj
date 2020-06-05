@@ -23,31 +23,34 @@
         </p>
 
         {% if page.name == 'journals.md' %}
-        <div class="input-group">
-          <label for="keywords" class="sr-only">Search by keywords:</label>
-          <input type="text" name="keywords" id="keywords">
+        <div class="row">
+          <form class="col-md-9">
+            <div class="input-group">
+              <label for="keywords" class="sr-only">Search by keywords:</label>
+              <input type="text" name="keywords" id="keywords">
 
-          <label for="fields" class="sr-only">In the field:</label>
-          <select name="fields" id="fields">
-            <option value="">All fields</option>
-            <option value="">Title</option>
-            <option value="">Keywords</option>
-            <option value="">Subject</option>
-            <option value="">Author</option>
-            <option value="">ISSN</option>
-            <option value="">DOI</option>
-            <option value="">Publisher</option>
-            <option value="">Country of publisher</option>
-            <option value="">Language</option>
-          </select>
+              <label for="fields" class="sr-only">In the field:</label>
+              <select name="fields" id="fields">
+                <option value="">All fields</option>
+                <option value="">Title</option>
+                <option value="">Keywords</option>
+                <option value="">Subject</option>
+                <option value="">Author</option>
+                <option value="">ISSN</option>
+                <option value="">DOI</option>
+                <option value="">Publisher</option>
+                <option value="">Country of publisher</option>
+                <option value="">Language</option>
+              </select>
 
-          <button type="submit">
-            <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
-          </button>
+              <button type="submit">
+                <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
+              </button>
+            </div>
+          </form>
         </div>
 
         <div class="row">
-
           <div class="col-md-3">
             <aside class="filters">
               <h2 class="filters__heading">Refine search results</h2>
@@ -330,28 +333,31 @@
         </div>
 
         {% else page.name == 'articles.md' %}
-        <div class="input-group">
-          <label for="keywords" class="sr-only">Search by keywords:</label>
-          <input type="text" name="keywords" id="keywords">
+        <div class="row">
+          <form class="col-md-9">
+            <div class="input-group">
+              <label for="keywords" class="sr-only">Search by keywords:</label>
+              <input type="text" name="keywords" id="keywords">
 
-          <label for="fields" class="sr-only">In the field:</label>
-          <select name="fields" id="fields">
-            <option value="">All fields</option>
-            <option value="">Title</option>
-            <option value="">Abstract</option>
-            <option value="">Keywords</option>
-            <option value="">Author</option>
-            <option value="">DOI</option>
-            <option value="">Language</option>
-          </select>
+              <label for="fields" class="sr-only">In the field:</label>
+              <select name="fields" id="fields">
+                <option value="">All fields</option>
+                <option value="">Title</option>
+                <option value="">Abstract</option>
+                <option value="">Keywords</option>
+                <option value="">Author</option>
+                <option value="">DOI</option>
+                <option value="">Language</option>
+              </select>
 
-          <button type="submit">
-            <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
-          </button>
+              <button type="submit">
+                <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
+              </button>
+            </div>
+          </form>
         </div>
 
         <div class="row">
-
           <div class="col-md-3">
             <aside class="filters">
               <h2 class="filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">

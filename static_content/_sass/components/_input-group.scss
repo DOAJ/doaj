@@ -12,8 +12,8 @@
 .input-group input,
 .input-group select {
   position: relative;
+  flex-grow: 1;
   z-index: 2;
-  float: left;
   margin-bottom: 0;
 
   &:not(:first-child) {

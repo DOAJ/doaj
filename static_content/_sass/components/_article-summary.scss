@@ -1,7 +1,6 @@
 /* Abstracts in accordions */
 
 .article-summary {
-  margin-bottom: $spacing-03;
 
   ul {
     @include unstyled-list($inline: true);
