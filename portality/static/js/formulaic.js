@@ -604,52 +604,45 @@ var formulaic = {
         },
         multipleField: function(params){
             this.fieldDef = params.fieldDef
-            var thatQuery = '#' + this.fieldDef["name"]
-            var that = $(thatQuery);
-            var numberOfFields = 1;
+            this.field = $('#' + this.fieldDef["name"]);
 
-            this.init = function() {
-                that.attr('id', params.fieldDef["name"] + '--id_0');
-                if (that.attr('required')) {
-                    that.removeAttr('required');
-                    that.attr("data-parsley-validate-multiple", "")
-                    that.attr("data-parsley-validate-if-empty","true");
+            this.init = () => {
+                this.field.attr('id', this.fieldDef["name"] + '--id_0');
+                if (this.field.attr('required')) {
+                    this.field.removeAttr('required');
+                    this.field.attr("data-parsley-validate-multiple", "")
+                    this.field.attr("data-parsley-validate-if-empty","true");
                 }
-                var type = that.prop('tagName').toLowerCase();
-                $("#remove_field__"+params.fieldDef["name"]).attr('id', "remove_field__"+this.fieldDef["name"] + "--id_0")
+                let type = this.field.prop('tagName').toLowerCase();
+                $("#remove_field__"+this.fieldDef["name"]).attr('id', "remove_field__"+this.fieldDef["name"] + "--id_0")
 
-                var cloneCount = 1
-                $("#add_field__"+params.fieldDef["name"]).click(function(){
+                let cloneCount = 1
+                $("#add_field__" + this.fieldDef["name"]).on("click", () => {
                     cloneCount++;
                     if (cloneCount > 1) {
-                        $("[id^=remove_field__"+params.fieldDef["name"] + "--id_").show()
+                        $("[id^=remove_field__"+this.fieldDef["name"] + "--id_").show()
                     }
-                    var div = document.createElement('div');
-                    div.className = 'multiple_input';
-                    var previousInput = $('.removable_field__' + params.fieldDef["name"]).find(type).filter(':first')
-                    var newInput = $(previousInput)
+                    let div = $("<div>").addClass('multiple_input');
+                    let previousInput = $('.removable_field__' + this.fieldDef["name"]).find(type).filter(':first')
+                    let newInput = $(previousInput)
                         .clone(true)
-                        .attr('id', params.fieldDef["name"] + '--id_' + cloneCount);
+                        .attr('id', params.fieldDef["name"] + '--id_' + cloneCount)
                     newInput.appendTo($(div));
-                    var previousRemoveBtn = $("[id^=remove_field__"+params.fieldDef["name"] + '--id_').filter(':first')
+                    let previousRemoveBtn = $("[id^=remove_field__"+this.fieldDef["name"] + '--id_').filter(':first')
                     newInput.after(
                         $(previousRemoveBtn)
                         .clone(true)
-                        .attr('id', "remove_field__"+params.fieldDef["name"] + '--id_' + cloneCount)
+                        .attr('id', "remove_field__"+this.fieldDef["name"] + '--id_' + cloneCount)
                     );
                     $(previousInput).parent().after($(div));
                 })
-                $("[id^=remove_field__"+this.fieldDef["name"] + "--id_").click(function(event){
-                    var number = $(this).attr('id').slice(-1)
-                    var input = $('#' + params.fieldDef["name"] + '--id_' + number)
-                    //var moveRequiredAttr = input.hasAttribute("required")
+                $("[id^=remove_field__" + this.fieldDef["name"] + "--id_").on("click", (event) => {
+                    let number = $(event.target.closest('button')).attr('id').slice(-1)
+                    let input = $('#' + this.fieldDef["name"] + '--id_' + number)
                     input.parent().remove()
-                    // if (moveRequiredAttr){
-                    //     $('.removable_field__' + params.fieldDef["name"]).find('input').filter(':first').attr("required", "")
-                    // }
                     cloneCount--;
                     if (cloneCount === 1) {
-                        $("[id^=remove_field__"+params.fieldDef["name"] + "--id_").hide()
+                        $("[id^=remove_field__"+this.fieldDef["name"] + "--id_").hide()
                     }
                 })
             }

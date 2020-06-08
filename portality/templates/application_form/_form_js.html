@@ -39,11 +39,7 @@
                 en: 'At least one value required',
             }
     });
-    //TODO: this does not work
-    $.listen('parsley:field:error', function (fieldInstance) {
-        console.log("called!")
-        fieldInstance.$element.className ="parsley-error";
-    });
+
     $(".conditional").each((idx,field) => {
         let conditionValue = $(field).attr("value");
         let fieldToHide = $("#" + $(field).attr("id").replace("__conditional","") + "__container");
@@ -156,7 +152,6 @@
     }
 
     function next() {
-        console.log(currentTab)
         var form = $('#' + '{{ form_id }}');
         form.parsley().whenValidate({
             group: 'block-' + currentTab
