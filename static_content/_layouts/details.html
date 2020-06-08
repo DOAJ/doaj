@@ -6,16 +6,71 @@
   <body>
     {% include header.html %}
 
-    <main class="container">
-      <section class="page-content">
-        <p class="label">
-          <small>From <em>Frontiers in Immunology</em></small>
-        </p>
-        <h1>
-          {{ page.title }}
-        </h1>
+    <main class="page-content article-summary">
+      <div class="highlight">
+        <header class="container">
+          <p class="label">
+            <small>From <em>{{ page.journal }}</em></small>
+          </p>
+          <h1>{{ page.title }}</h1>
+          {% if page.authors %}
+          <ul>
+            {% for j in page.authors %}
+            <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </header>
+      </div>
 
-      </section>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            {% if page.keywords %}
+            <h2>Keywords</h2>
+            <ul>
+              {% for j in page.keywords %}
+              <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+            <h2>Abstract</h2>
+            {% if page.abstract %}
+            <p>{{ page.abstract }}</p>
+            {% else %}
+            <em>No abstracts available.</em>
+            {% endif %}
+          </div>
+
+          <aside class="col-md-4">
+            <h2>Published in <em>{{ page.journal }}</em></h2>
+            <dl>
+              <dt>ISSN</dt>
+              <dd>{{ page.issn }}</dd>
+
+              <dt>Publisher</dt>
+              <dd>{{ page.publisher }}</dd>
+
+              <dt>Country of publisher</dt>
+              <dd>{{ page.country }}</dd>
+
+              <dt>Language</dt>
+              <dd>{{ page.lang }}</dd>
+
+              <dt>LCC Subject Category</dt>
+              <dd>{{ page.lcc }}</dd>
+            </dl>
+
+            <p><a href="#">More about this journal</a></p>
+          </aside>
+        </div>
+
+        <footer>
+          <h2>More articles like this&hellip;</h2>
+
+        </footer>
+      </div>
     </main>
 
     {% include footer.html %}
