@@ -9,12 +9,14 @@
   width: 100%;
 }
 
-.input-group input,
-.input-group select {
+.input-group__input {
   position: relative;
-  flex-grow: 1;
   z-index: 2;
   margin-bottom: 0;
+
+  &:not([type="submit"]) {
+    flex-grow: 1;
+  }
 
   &:not(:first-child) {
     margin-left: -1px;
