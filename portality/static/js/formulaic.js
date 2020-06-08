@@ -608,18 +608,7 @@ var formulaic = {
             var that = $(thatQuery);
             var numberOfFields = 1;
 
-            var updateRemoveBtns = function() {
-                if (numberOfFields === 1){
-                    //correctbutons.hide();
-                }
-                else {
-                    //correctbuttons.show();
-                }
-            }
-
             this.init = function() {
-                console.log("init!")
-                //validation must be here, not as custom validation
                 that.attr('id', params.fieldDef["name"] + '--id_0');
                 if (that.attr('required')) {
                     that.removeAttr('required');

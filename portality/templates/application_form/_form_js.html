@@ -32,48 +32,51 @@
                         $(obj).parsley().reset()
                     });
                 }
-
+                console.log(parsleyField.getErrorsMessages())
                 return ret;
             },
             messages: {
                 en: 'At least one value required',
             }
     });
-    let fields = document.getElementsByClassName("conditional");
-    for (let f of fields) {
-    let inputs = document.getElementsByName(f.getAttribute("name"));
-    let conditionValue = f.getAttribute("value");
-    let fieldToHide = document.getElementById(f.getAttribute("id").replace("__conditional","")+"__container");
-    for (let i = 0; i < inputs.length; i++){
-            if (inputs[i].type === "radio") {
-                inputs[i].addEventListener("click", function () {
-                if (inputs[i].checked) {
-                    if (inputs[i].value === conditionValue) {
-                        fieldToHide.style.display = '';
-                    } else {
-                        fieldToHide.style.display = 'none';
+    //TODO: this does not work
+    $.listen('parsley:field:error', function (fieldInstance) {
+        console.log("called!")
+        fieldInstance.$element.className ="parsley-error";
+    });
+    $(".conditional").each((idx,field) => {
+        let conditionValue = $(field).attr("value");
+        let fieldToHide = $("#" + $(field).attr("id").replace("__conditional","") + "__container");
+        $('[name="' + $(field).attr("name") + '"]').each((idx, input) => {
+            if ($(input).type === "radio") {
+                $(input).on("click", () => {
+                    if ($(input).is(':checked')) {
+                        if ($(input).val() === conditionValue) {
+                            fieldToHide.show();
+                        } else {
+                            fieldToHide.hide();
+                        }
                     }
-                }
                 })
             }
             else {
-                inputs[i].addEventListener("click", function () {
-                if (inputs[i].value === conditionValue) {
-                    if (inputs[i].checked) {
-                        fieldToHide.style.display = '';
-                    } else {
-                        fieldToHide.style.display = 'none';
+                $(input).on("click", () => {
+                    if ($(input).val() === conditionValue) {
+                        if ($(input).is(':checked')) {
+                            fieldToHide.show();
+                        } else {
+                            fieldToHide.hide();
+                        }
                     }
-                }
                 })
             }
-        }
-    }
+        });
+    });
 
     let currentTab = 0; // Current tab is set to be the first tab (0)
     let previousTab = 0;
-    let tabs = document.getElementsByClassName("tab");
-    let sections = document.getElementsByClassName("form-section");
+    let tabs = $(".tab");
+    let sections = $(".form-section");
     prepareSections();
     usePaginationMenu();
     showTab(currentTab); // Display the current tab
@@ -82,41 +85,43 @@
         // This function will display the specified tab of the form ...
         //hide all other tabs
         if (n < sections.length-1){
-            let hiddenField = document.getElementById("validated-" + n)
-            if (hiddenField.value === "") {
-                hiddenField.value = 'False';
+            let hiddenField = $("#validated-" + n)
+            if (hiddenField.val() === "") {
+                hiddenField.val("False");
             }
         }
 
-        for (let i = 0; i < tabs.length; i++) {
-            tabs[i].style.display = "none";
-        }
-        let submitButton = document.getElementById("submitBtn");
-        tabs[n].style.display = "block";
-        document.getElementById("submitBtn").innerHTML = "Save draft";
+        tabs.each((idx, tab) => {
+            $(tab).hide();
+        });
+
+        let submitButton = $("#submitBtn");
+        $(tabs[n]).show();
+        submitButton.innerHTML = "Save draft";
         // ... and fix the Previous/Next buttons:
         if (n === 0) {
-            document.getElementById("prevBtn").style.display = "none";
+            $("#prevBtn").hide();
         } else {
-            document.getElementById("prevBtn").style.display = "inline";
+            $("#prevBtn").show();
         }
 
         if (n === (tabs.length - 1)) {
             //show submit button only if all tabs are validated
-            document.getElementById("nextBtn").style.display = "none";
+            $("#nextBtn").hide();
             submitButton.innerHTML = "Submit";
-            let validated = form_validated()
+            let validated = form_validated();
             submitButton.disabled = !validated;
             if (!validated) {
-                document.getElementById("cannot-submit").display = "inline"
+                $("#cannot-submit").show();
             } else {
-                document.getElementById("cannot-submit").display = "none"
+                $("#cannot-submit").hide();
             }
 
         } else {
-            document.getElementById("nextBtn").style.display = "inline";
-            document.getElementById("nextBtn").innerHTML = "Next";
-            document.getElementById("submitBtn").innerHTML = "Save draft";
+            let nextBtn = $("#nextBtn")
+            nextBtn.show();
+            nextBtn.innerHTML = "Next";
+            submitButton.innerHTML = "Save draft";
             submitButton.disabled = false;
         }
         // ... and run a function that displays the correct step indicator:
@@ -125,21 +130,20 @@
     }
 
     function form_validated() {
-        let validation_inputs = document.getElementsByName("validated");
-        for (let i = 0; i < validation_inputs.length; i++) {
-            if (validation_inputs[i].value === 'False') return false;
-        }
+        $("[name='validated']").each((idx, input) => {
+            if ($(input).val() === 'False') return false;
+        });
         return true;
     }
 
     function onSubmit() {
-        let form = document.getElementsByTagName("form");
+        let form = $("form");
         form.noValidate = true
     }
 
     function navigate(n) {
         // Hide the current tab:
-        tabs[currentTab].style.display = "none";
+        $(tabs[currentTab]).hide();
         // Increase or decrease the current tab by 1:
         previousTab = currentTab
         currentTab = currentTab + n;
@@ -152,14 +156,15 @@
     }
 
     function next() {
+        console.log(currentTab)
         var form = $('#' + '{{ form_id }}');
         form.parsley().whenValidate({
             group: 'block-' + currentTab
         }).done(function () {
-            document.getElementById("validated-" + currentTab).value = "True";
+            $("#validated-" + currentTab).val("True");
             navigate(1);
         }).fail(function () {
-            document.getElementById("validated-" + currentTab).value = "False";
+            $("#validated-" + currentTab).val("False");
             //only for dev!!
             //navigate(1);
         });
@@ -167,63 +172,59 @@
 
     function fixStepIndicator(n) {
         // This function removes the "active" class of all steps...
-        let x = document.getElementsByClassName("application-nav__list-item");
-        for (let i = 0; i < x.length-1; i++) {
-            let hiddenField = document.getElementById("validated-" + i);
-            if (hiddenField.value === "True") {
-                x[i].className = "application-nav__list-item application-nav__list-item--done"
-            } else if (hiddenField.value === "False") {
-                x[i].className = "application-nav__list-item application-nav__list-item--invalid"
+        $(".application-nav__list-item").each((idx, x) => {
+            let hiddenField = $("#validated-" + idx);
+            if (hiddenField.val() === "True") {
+                $(x).className = "application-nav__list-item application-nav__list-item--done"
+            } else if (hiddenField.val() === "False") {
+                $(x).className = "application-nav__list-item application-nav__list-item--invalid"
             }
-        }
+        });
         //... and adds the "active" class to the current step:
-        x[n].className = "application-nav__list-item application-nav__list-item--active";
-        document.getElementById("page_link-" + n).className = "page_link";
+        $(tabs[n]).className = "application-nav__list-item application-nav__list-item--active";
+        $("#page_link-" + n).className = "page_link";
     }
 
     function usePaginationMenu() {
-        let x = document.querySelectorAll('[id^="page_link-"]');
-        for (let i = 0; i < x.length; i++) {
-            x[i].addEventListener("click", function () {
+        $('[id^="page_link-"]').each((idx, x) => {
+            $(x).on("click", () => {
                 previousTab = currentTab
                 currentTab = i;
-                if (document.getElementById("validated-" + i).value === '') {
+                if ($("#validated-" + i).value === '') {
                     return false;
                 } else {
                     $('#' + '{{ form_id }}').parsley().whenValidate({
                         group: 'block-' + previousTab
                     }).done(function () {
-                        document.getElementById("validated-" + previousTab).value = "True";
+                        $("#validated-" + previousTab).val("True");
                         showTab(currentTab);
                     }).fail(function () {
-                        document.getElementById("validated-" + previousTab).value = "False";
+                        $("#validated-" + previousTab).val("False");
                         showTab(currentTab);
                     });
                 }
 
-            })
-        }
+            });
+        });
     }
 
     function prepareSections() {
-        for (let i = 0; i < sections.length; i++) {
+        sections.each((idx, section) => {
 
-            let inputs = sections[i].getElementsByTagName("input");
-            for (let j = 0; j < inputs.length; j++) {
-                inputs[j].setAttribute('data-parsley-group', 'block-' + i);
+            $(section).find("input").each((i, input) => {
+                $(input).attr('data-parsley-group', 'block-' + idx);
+            });
+
+            if (idx < sections.length-1){
+                let hiddenInputs = $("[name='validated']");
+                $(hiddenInputs[idx]).attr('id', 'validated-' + idx);
             }
 
-            let hiddenField = document.getElementsByName("validated");
-            if (i < sections.length-1){
-                hiddenField[i].setAttribute('id', 'validated-' + i);
-            }
+        });
 
-        }
-
-        let menus = document.querySelectorAll('[id^="page_link-"]');
-        for (let k = 0; k < menus.length; k++) {
-            menus[k].className = "page_link--disabled";
-        }
+        $('[id^="page_link-"]').each((i, menu) =>  {
+            $(menu).className = "page_link--disabled";
+        });
     }
 
 </script>
