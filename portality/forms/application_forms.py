@@ -1470,7 +1470,7 @@ class RequiredBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return validators.DataRequired(message=settings.get("message"))
+        return validators.InputRequired(message=settings.get("message"))
 
 
 class IsURLBuilder:
