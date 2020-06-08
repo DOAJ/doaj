@@ -52,10 +52,23 @@ $.extend(true, doaj, {
                 // if it's not a suggestion or a journal .. (it's an article!)
                 // we really need to expose _type ...
                 var result = '<a class="delete_article_link" href="';
-                result += "/admin/article/";
+                result += "/admin/delete/article/";
                 result += resultobj['id'];
                 result += '" target="_blank"';
                 result += '>Delete this article</a>';
+                return result;
+            }
+            return false;
+        },
+
+        editArticle : function (val, resultobj, renderer) {
+            if (!resultobj.suggestion && resultobj.bibjson.journal) {
+                var result = ' | '
+                result += '<a class="edit_article_link" href="';
+                result += doaj.adminJournalArticleSearchConfig.articleEditUrl;
+                result += resultobj['id'];
+                result += '" target="_blank"';
+                result += '>Edit this article</a>';
                 return result;
             }
             return false;
@@ -147,7 +160,7 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "publisher",
                     category: "facet",
-                    field: "index.publisher.exact",
+                    field: "bibjson.publisher.exact",
                     display: "Publisher",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
@@ -296,7 +309,7 @@ $.extend(true, doaj, {
                         {'display':'DOI', 'field' : 'bibjson.identifier.id'},
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal Language','field':'index.language'},
-                        {'display':'Publisher','field':'index.publisher'},
+                        {'display':'Publisher','field':'bibjson.publisher'},
 
                         {'display':'Article: Abstract','field':'bibjson.abstract'},
                         {'display':'Article: Author\'s name','field':'bibjson.author.name'},
@@ -535,6 +548,9 @@ $.extend(true, doaj, {
                                 },
                                 {
                                     "valueFunction": doaj.adminJournalArticleSearch.deleteArticle
+                                },
+                                {
+                                    "valueFunction": doaj.adminJournalArticleSearch.editArticle
                                 }
                             ]
                         ]
@@ -549,7 +565,7 @@ $.extend(true, doaj, {
                         "_type": "Showing",
                         "admin.in_doaj" : "In DOAJ?",
                         "index.language.exact" : "Journal Language",
-                        "index.publisher.exact" : "Publisher",
+                        "bibjson.publisher.exact" : "Publisher",
                         "bibjson.provider.exact" : "Platform, Host, Aggregator",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",

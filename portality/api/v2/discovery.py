@@ -86,10 +86,10 @@ def escape(query):
 
     def colon_escaper(q):
         # we need to escape every colon that is not after keyword and is not already escaped
-        # colons after keywords are: first one and every first one after & or |
+        # colons after keywords are: first one and every first after AND or OR
         parts = q.split(":")
         for i in range(1, len(parts)-1):
-            if '&' not in parts[i] and '|' not in parts[i] and not parts[i].endswith('\\'):
+            if not parts[i].endswith('\\') and ' AND ' not in parts[i] and ' OR ' not in parts[i]:
                 parts[i] = parts[i] + "\\"
         query = ":".join(parts)
         return query

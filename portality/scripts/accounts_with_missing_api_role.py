@@ -8,7 +8,7 @@ python accounts_with_missing_api_role.py -o accounts.csv
 """
 import csv
 import esprit
-from portality.core import app
+from portality.core import es_connection
 from portality import models
 
 MISSING_API_ROLE = {
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+    conn = es_connection
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)

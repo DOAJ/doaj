@@ -1,0 +1,64 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "doi",
+      "type": "generated",
+      "values": {
+        "exists": {},
+        "none": {}
+      }
+    },
+    {
+      "name": "fulltext_url",
+      "type": "generated",
+      "values": {
+        "exists": {},
+        "none": {}
+      }
+    },
+    {
+      "name": "is_acceptable",
+      "type": "conditional",
+      "values": {
+        "yes": {
+          "conditions": [
+            {
+              "doi": {
+                "or": [
+                  "exists"
+                ]
+              }
+            },
+            {
+              "fulltext_url": {
+                "or": [
+                  "exists"
+                ]
+              }
+            }
+          ]
+        },
+        "no": {
+          "conditions": [
+            {
+              "doi": {
+                "or": [
+                  "none"
+                ]
+              },
+              "fulltext_url": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

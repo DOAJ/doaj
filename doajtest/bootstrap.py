@@ -8,6 +8,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 
 def prepare_for_test():
     core.app.config['ELASTIC_SEARCH_DB'] = core.app.config['ELASTIC_SEARCH_TEST_DB']
+    core.app.config['ELASTIC_SEARCH_DB_PREFIX'] = core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX']
 
     # Ensure all features are enabled so we don't fail feature-specific tests
     core.app.config['FEATURES'] = core.app.config['VALID_FEATURES']

@@ -19,18 +19,15 @@ import csv
 import esprit
 
 from portality import constants
-from portality.core import app
+from portality.core import es_connection
+from portality.util import ipt_prefix
 from portality.models import Suggestion, Provenance, Journal, Account
 
 APP_TIMEZONE_CUTOFF = datetime.strptime("2017-05-18T14:02:08Z", "%Y-%m-%dT%H:%M:%SZ")
 JOURNAL_TIMEZONE_CUTOFF = datetime.strptime("2017-09-21T08:54:05Z", "%Y-%m-%dT%H:%M:%SZ")
 THRESHOLD = 20.0
 
-source = {
-    "host": app.config.get("ELASTIC_SEARCH_HOST"),
-    "index": app.config.get("ELASTIC_SEARCH_DB")
-}
-local = esprit.raw.Connection(source.get("host"), source.get("index"))
+local = es_connection
 
 #live = esprit.raw.Connection(app.config.get("DOAJGATE_URL"), "doaj", auth=requests.auth.HTTPBasicAuth(app.config.get("DOAJGATE_UN"), app.config.get("DOAJGATE_PW")), verify_ssl=False, port=app.config.get("DOAJGATE_PORT"))
 
@@ -114,7 +111,7 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, out
         out_reapps.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Created", "Application Last Updated", "Application Last Manual Update", "Application Status", "Published Diff"])
 
         counter = 0
-        for result in esprit.tasks.scroll(conn, "journal", keepalive="45m"):
+        for result in esprit.tasks.scroll(conn, ipt_prefix("journal"), keepalive="45m"):
             counter += 1
             journal = Journal(**result)
             print(counter, journal.id)

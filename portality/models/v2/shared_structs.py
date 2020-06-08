@@ -128,19 +128,11 @@ JOURNAL_BIBJSON = {
                 "preservation": {
                     "fields": {
                         "has_preservation": {"coerce": "unicode"},
-                        "national_library": {"coerce": "unicode"},
                         "url": {"coerce": "unicode"}
                     },
                     "lists": {
+                        "national_library": {"contains" : "field", "coerce": "unicode"},
                         "service": {"coerce": "unicode", "contains": "field"},
-                    },
-                    "structs" : {
-                        "policy" : {
-                            "fields" : {
-                                "name" : {"coerce": "unicode"},
-                                "domain" : {"coerce" : "unicode"}
-                            }
-                        }
                     }
                 },
                 "publisher" : {

@@ -145,7 +145,7 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id : "publisher",
                     category: "facet",
-                    field: "index.publisher.exact",
+                    field: "bibjson.publisher.exact",
                     display: "Publisher",
                     deactivateThreshold: 1,
                     renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
@@ -263,7 +263,7 @@ $.extend(true, doaj, {
                         {'display':'DOI', 'field' : 'bibjson.identifier.id'},
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal Language','field':'index.language'},
-                        {'display':'Publisher','field':'index.publisher'},
+                        {'display':'Publisher','field':'bibjson.publisher'},
 
                         {'display':'Article: Abstract','field':'bibjson.abstract'},
                         {'display':'Article: Year','field':'bibjson.year'},
@@ -322,7 +322,7 @@ $.extend(true, doaj, {
                         "index.has_apc.exact" : "Article processing charges (APCs)",
                         "index.has_seal.exact" : "DOAJ Seal",
                         "index.license.exact" : "Journal license",
-                        "index.publisher.exact" : "Publisher",
+                        "bibjson.publisher.exact" : "Publisher",
                         "index.country.exact" : "Country of Publisher",
                         "index.language.exact" : "Fulltext Language",
                         "bibjson.editorial_review.process.exact" : "Peer review",

@@ -102,20 +102,20 @@ class TestArticleCleanupSync(DoajTestCase):
 
         # an article source which is already synchronised with its journal
         source2 = fixtures.ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, with_journal_info=False,
-                                                                     with_id=False)
+                                                                            with_id=False)
         a1 = models.Article(**source2)
         a1.add_journal_metadata(j)
         a1.save()
 
         # do not add any journal metadata
         source3 = fixtures.ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, with_journal_info=False,
-                                                                     with_id=False)
+                                                                            with_id=False)
         a2 = models.Article(**source3)
         a2.save()
 
         # Add an article which is not connected to an existing journal, so will be cleaned up
         source4 = fixtures.ArticleFixtureFactory.make_article_source(eissn="xxxx-xxxx", pissn="xxxx-xxxx",
-                                                                     with_journal_info=False, with_id=False)
+                                                                            with_journal_info=False, with_id=False)
         a3 = models.Article(**source4)
         a3.save(blocking=True)
 
@@ -183,28 +183,28 @@ class TestArticleCleanupSync(DoajTestCase):
 
         # an article source which is already synchronised with both journals j and k
         source = fixtures.ArticleFixtureFactory.make_article_source(eissn=jk_eissn, pissn=jk_pissn, with_journal_info=False,
-                                                                     with_id=False)
+                                                                           with_id=False)
         a1 = models.Article(**source)
         a1.add_journal_metadata(j)
         a1.save()
 
         # an article without metadata, but whose ISSNs match both j and k
         source2 = fixtures.ArticleFixtureFactory.make_article_source(eissn=jk_eissn, pissn=jk_pissn, with_journal_info=False,
-                                                                     with_id=False)
+                                                                            with_id=False)
         a2 = models.Article(**source2)
         a2.save()
 
         # an article that matches two different journal ISSNs
         source3 = fixtures.ArticleFixtureFactory.make_article_source(eissn=l_eissn, pissn=m_pissn,
-                                                                     with_journal_info=False,
-                                                                     with_id=False)
+                                                                            with_journal_info=False,
+                                                                            with_id=False)
         a3 = models.Article(**source3)
         a3.save()
 
         # an article without metadata, but whose ISSNs match both j and k
         source4 = fixtures.ArticleFixtureFactory.make_article_source(eissn=l_eissn, pissn=l_pissn,
-                                                                     with_journal_info=False,
-                                                                     with_id=False)
+                                                                            with_journal_info=False,
+                                                                            with_id=False)
         a4 = models.Article(**source4)
         a4.save(blocking=True)
 

@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "3.1.3"
+DOAJ_VERSION = "3.1.5"
 
 OFFLINE_MODE = False
 
@@ -71,8 +71,17 @@ VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
-ELASTIC_SEARCH_DB = "doaj_apitest"
+
+# 2 sets of elasticsearch DB settings - index-per-project and index-per-type. Keep both for now so we can migrate.
+# e.g. host:port/index/type/id
+ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
+
+# e.g. host:port/type/doc/id
+ELASTIC_SEARCH_INDEX_PER_TYPE = True
+ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
+ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
+
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "1.7.5"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
@@ -255,7 +264,8 @@ FACET_FIELD = ".exact"
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal",
-    "portality.models.Suggestion",
+    "portality.models.Application",
+    "portality.models.DraftApplication",
     "portality.models.harvester.HarvestState"
 ]
 
@@ -410,15 +420,12 @@ MAPPINGS = {
     }
 }
 MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['suggestion'] = {'suggestion': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['article_history'] = {'article_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['journal_history'] = {'journal_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
 
@@ -683,12 +690,18 @@ FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "
 # crosswalks available
 
 SCHEMAS = {
-    "doaj" : os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd")
+    "doaj": os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd"),
+    "crossref": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd")
 }
+
+DOAJ_SCHEMA = None
+CROSSREF_SCHEMA = None
+LOAD_CROSSREF_THREAD = None
 
 # mapping of format names to modules which implement the crosswalks
 ARTICLE_CROSSWALKS = {
-    "doaj" : "portality.crosswalks.article_doaj_xml.DOAJXWalk"
+    "doaj": "portality.crosswalks.article_doaj_xml.DOAJXWalk",
+    "crossref": "portality.crosswalks.article_crossref_xml.CrossrefXWalk"
 }
 
 # maximum size of files that can be provided by-reference (the default value is 250Mb)
@@ -771,7 +784,7 @@ BACKGROUND_TASK_LOCK_TIMEOUT = 3600
 # Search query shortening settings
 
 # bit,ly api shortening service
-BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v3/shorten"
+BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v4/shorten"
 
 # bitly oauth token
 # ENTER YOUR OWN TOKEN IN APPROPRIATE .cfg FILE

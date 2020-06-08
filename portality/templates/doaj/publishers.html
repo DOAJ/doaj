@@ -150,7 +150,7 @@ for the electronic version.</p>
 service</a>, sometimes referred to as Long Term Preservation and Archiving (LTPA).
 <a href="http://en.wikipedia.org/wiki/List_of_digital_preservation_initiatives">You can find a list some of these 
 services here.</a> We prefer that journals belong to one of these services, although it is not a requirement for 
-entry into DOAJ. We check all preservation statuses in <a href="http://thekeepers.org/thekeepers/keepers.asp">the 
+entry into DOAJ. We check all preservation statuses in <a href="https://keepers.issn.org/">the 
 Keepers' Registry</a> and at PubMed Central. If your journal is hosted on the Open Journal Systems (OJS) software and you have selected to be part of the PKP Private LOCKSS network, we must first see that content has actually been deposited by confirming its preservation status with the Keepers Registry.</p>
 
 <p><a id="content"></a><b>Organisation of content</b><br>
@@ -563,8 +563,15 @@ please <a href="{{ url_for('doaj.contact') }}">contact us</a> with the following
 
 <ol>
     <li>Your user account</li>
-    <li>When the incident occurred</li>
-    <li>Information about your environment, such as which browser you were using</li>
+    <li>The contact details for the person reporting the bug (or at least a proxy for them, so that we can request more details). That might be you or someone working on your behalf.</li>
+    <li>Was the problem repeatable? Did you try several times with the same result?</li>
+    <li>What environment are you in? Specifically browser, or if not in the browser then any useful information about your API client such as the user agent.</li>
+    <li>At what time the incident occurred. Both date and time ideally. If it happened several times, then all dates/times that were recorded, or a range.</li>
+    <li>What were you trying to do? As much detail and context as possible. Send a screenshot! An image helps.</li>
+    <lki>What happened, what error message was received? Provide the exact error message, don't paraphrase. A screenshot could be provided here.</li>
+    <li>Which area of the system did this happen in. Generally, in the UI/API/OAI, and ideally specifically: which URL were you on when it happened, or which URL were you trying to access?</li>
+    <li>Send copies of any data you sent to the system. For example, article XML files uploaded, or payloads send to the API, if available.</li>
+    <li>What had you expected to happen?</li>
 </ol>
 
 <p>We may also ask you to supply the file that you tried to upload, so please keep a copy of it until the issue is resolved.</p>

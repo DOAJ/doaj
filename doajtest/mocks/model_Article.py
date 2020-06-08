@@ -33,3 +33,4 @@ class ModelArticleMockFactory(object):
                     return j["instance"]
 
         return mock
+

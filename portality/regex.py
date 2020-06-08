@@ -9,6 +9,8 @@ ORCID_COMPILED = re.compile(ORCID)
 ISSN = r'^\d{4}-\d{3}(\d|X|x){1}$'
 ISSN_COMPILED = re.compile(ISSN)
 
+BIG_END_DATE = r'^\d{4}-\d{2}-\d{2}$'
+BIG_END_DATE_COMPILED = re.compile(BIG_END_DATE)
 
 def is_match(pattern, string, *args, **kwargs):
     match = re.match(pattern, string, *args, **kwargs)

@@ -2,18 +2,14 @@
 
 import os, csv
 import esprit
-from portality.core import app
+from portality.core import es_connection
 from portality.models import Account, Journal
 from portality.lib import dates
+from portality.util import ipt_prefix
 
 from portality.app_email import email_archive
 
-source = {
-    "host": app.config.get("ELASTIC_SEARCH_HOST"),
-    "index": app.config.get("ELASTIC_SEARCH_DB")
-}
-
-conn = esprit.raw.Connection(source.get("host"), source.get("index"))
+conn = es_connection
 
 publisher_query = {
     'query': {
@@ -26,7 +22,7 @@ publisher_query = {
 
 def publishers_with_journals():
     """ Get accounts for all publishers with journals in the DOAJ """
-    for acc in esprit.tasks.scroll(conn, 'account', q=publisher_query):
+    for acc in esprit.tasks.scroll(conn, ipt_prefix(Account.__type__), q=publisher_query):
         account = Account(**acc)
         journal_ids = account.journal
         if journal_ids is not None:

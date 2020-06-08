@@ -7,6 +7,7 @@ from esprit.snapshot import ESSnapshotsClient
 from portality.tasks.redis_huey import main_queue, schedule
 from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi
+# FIXME: update for index-per-type
 
 
 class RequestESBackupBackgroundTask(BackgroundTask):
