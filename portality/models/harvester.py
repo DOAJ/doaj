@@ -227,6 +227,7 @@ HARVEST_STATE_STRUCT = {
         "issn" : {"coerce" : "unicode"},
         "status" : {"coerce" : "unicode", "allowed_values" : [u"suspended", u"active"]},
         "account" : {"coerce" : "unicode"},
+        "es_type": {"coerce": "unicode"}
     },
     "lists" : {
         "last_harvest" : {"contains" : "object"}

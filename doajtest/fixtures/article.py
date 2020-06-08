@@ -187,7 +187,8 @@ ARTICLE_STRUCT = {
     "fields": {
         "id": {"coerce": "unicode"},  # Note that we'll leave these in for ease of use by the
         "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
-        "last_updated": {"coerce": "utcdatetime"}  # to the real object
+        "last_updated": {"coerce": "utcdatetime"},  # to the real object
+        "es_type": {"coerce": "unicode"}
     },
     "objects": ["admin", "bibjson"],
 
