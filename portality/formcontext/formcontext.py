@@ -6,8 +6,8 @@ from flask import render_template, url_for, request
 from flask_login import current_user
 
 import portality.formcontext.forms
-import portality.formcontext.xwalks.journal_form
-import portality.formcontext.xwalks.metadata_article_form
+import crosswalks.journal_form
+from portality.crosswalks.article_form import ArticleFormXWalk
 from portality import constants
 from portality import models, app_email, util
 from portality.bll import DOAJ
@@ -18,7 +18,7 @@ from portality.lcc import lcc_jstree
 from portality.ui.messages import Messages
 import portality.notifications.application_emails as emails
 
-from portality.forms.application_forms import FORMS, PYTHON_FUNCTIONS, JAVASCRIPT_FUNCTIONS
+from portality.forms.application_forms import JAVASCRIPT_FUNCTIONS
 
 ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
@@ -569,7 +569,7 @@ class ApplicationContext(PrivateContext):
             if current_journal is not None:
                 cj = models.Journal.pull(current_journal)
                 if cj is not None:
-                    jform = portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(cj)
+                    jform = crosswalks.journal_form.JournalFormXWalk.obj2form(cj)
                     if "notes" in jform:
                         del jform["notes"]
                     aform = suggestion_form.SuggestionFormXWalk.obj2form(self.source)
@@ -1346,7 +1346,7 @@ class PublisherUpdateRequestReadOnly(PrivateContext):
         self.renderer.disable_all_fields(False)
 
     def source2form(self):
-        self.form = forms.PublisherUpdateRequestForm(data=portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.PublisherUpdateRequestForm(data=crosswalks.journal_form.JournalFormXWalk.obj2form(self.source))
         # self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -1411,7 +1411,7 @@ class ManEdJournalReview(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.ManEdJournalReviewForm(data=portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.ManEdJournalReviewForm(data=crosswalks.journal_form.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -1421,7 +1421,7 @@ class ManEdJournalReview(PrivateContext):
         self._validate_editor_field()
 
     def form2target(self):
-        self.target = portality.formcontext.xwalks.journal_form.JournalFormXWalk.form2obj(self.form)
+        self.target = crosswalks.journal_form.JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1452,8 +1452,8 @@ class ManEdJournalReview(PrivateContext):
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         # If we have changed the editors assinged to this application, let them know.
-        is_editor_group_changed = portality.formcontext.xwalks.journal_form.JournalFormXWalk.is_new_editor_group(self.form, self.source)
-        is_associate_editor_changed = portality.formcontext.xwalks.journal_form.JournalFormXWalk.is_new_editor(self.form, self.source)
+        is_editor_group_changed = crosswalks.journal_form.JournalFormXWalk.is_new_editor_group(self.form, self.source)
+        is_associate_editor_changed = crosswalks.journal_form.JournalFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1536,13 +1536,13 @@ class EditorJournalReview(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.EditorJournalReviewForm(data=portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.EditorJournalReviewForm(data=crosswalks.journal_form.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
 
     def form2target(self):
-        self.target = portality.formcontext.xwalks.journal_form.JournalFormXWalk.form2obj(self.form)
+        self.target = crosswalks.journal_form.JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1614,13 +1614,13 @@ class AssEdJournalReview(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.AssEdJournalReviewForm(data=portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.AssEdJournalReviewForm(data=crosswalks.journal_form.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
 
     def form2target(self):
-        self.target = portality.formcontext.xwalks.journal_form.JournalFormXWalk.form2obj(self.form)
+        self.target = crosswalks.journal_form.JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1683,7 +1683,7 @@ class ReadOnlyJournal(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.ReadOnlyJournalForm(data=portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.ReadOnlyJournalForm(data=crosswalks.journal_form.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -1784,7 +1784,7 @@ class MetadataForm(FormContext):
 
     def source2form(self):
         self.form = portality.formcontext.forms.ArticleForm()
-        portality.formcontext.xwalks.metadata_article_form.MetadataArticleFormXwalk.obj2form(self.form, article=self.source)
+        ArticleFormXWalk.obj2form(self.form, article=self.source)
         self._set_choices()
 
     def data2form(self):
@@ -1792,7 +1792,7 @@ class MetadataForm(FormContext):
         self._set_choices()
 
     def form2target(self):
-        self.target = portality.formcontext.xwalks.metadata_article_form.MetadataArticleFormXwalk.form2obj(form=self.form)
+        self.target = ArticleFormXWalk.form2obj(form=self.form)
 
     def validate(self):
         if not self._validate_authors():

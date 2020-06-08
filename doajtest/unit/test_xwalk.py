@@ -1,4 +1,4 @@
-import portality.formcontext.xwalks.journal_form
+import crosswalks.journal_form
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, diff_dicts
@@ -39,12 +39,12 @@ class TestXwalk(DoajTestCase):
         lcc.lookup_code = self.old_lookup_code
 
     def test_01_journal(self):
-        forminfo = portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))
+        forminfo = crosswalks.journal_form.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))
         #diff_dicts(JOURNAL_FORMINFO, forminfo)
         assert forminfo == JOURNAL_FORMINFO
 
         form = forms.ManEdJournalReviewForm(formdata=MultiDict(JOURNAL_FORM))
-        obj = portality.formcontext.xwalks.journal_form.JournalFormXWalk.form2obj(form)
+        obj = crosswalks.journal_form.JournalFormXWalk.form2obj(form)
 
         onotes = obj["admin"]["notes"]
         del obj["admin"]["notes"]
