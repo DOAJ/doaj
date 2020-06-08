@@ -717,14 +717,22 @@ class FieldDefinitions:
     APC_CHARGES = {
         "name": "apc_charges",
         "input": "group",
-        # "repeatable" : True,
+        "repeatable" : {
+            "initial" : 5
+        },
+        "help": {
+            "long_help": "If the journal charges different APCs, you must enter the highest APC charged. If more than "
+                         "one currency is used, add a new line"
+        },
         "conditional": [
             {"field": "apc", "value": "y"}
         ],
         "subfields": [
             "apc_currency",
             "apc_max"
-        ]
+        ],
+        "template" : "application_form/_list.html",
+        "entry_template" : "application_form/_entry_group_horizontal.html"
     }
 
     APC_CURRENCY = {
@@ -733,10 +741,6 @@ class FieldDefinitions:
         "name": "apc_currency",
         "input": "select",
         "options_fn": "iso_currency_list",
-        "help": {
-            "long_help": "If the journal charges different APCs, you must enter the highest APC charged. If more than "
-                         "one currency is used, add a new line"
-        },
         "widgets": [
             {"select": {}}
         ],
@@ -752,6 +756,9 @@ class FieldDefinitions:
         "label": "Highest APC Charged",
         "input": "number",
         "datatype": "integer",
+        "help" : {
+            "placeholder" : "Highest APC Charged"
+        }
     }
 
     HAS_WAIVER = {
@@ -862,8 +869,11 @@ class FieldDefinitions:
     ARCHIVING_POLICY_LIBRARY = {
         "name": "archiving_policy_library",
         "subfield": True,
-        #"label": "A national library",
+        "label": "A national library",
         "input": "text",
+        "repeatable" : {
+            "initial" : 2
+        },
         "help": {
             "placeholder": "A national library"
         },
@@ -1395,8 +1405,8 @@ class ContextDefinitions:
         "templates": {
             "form" : "application_form/public_application.html",
             "default_field" : "application_form/_field.html",
-            "default_group" : "application_form/_group.html",
-            "default_list" : "application_form/_list.html"
+            "default_group" : "application_form/_group.html"#,
+            #"default_list" : "application_form/_list.html"
         },
         "crosswalks": {
             "obj2form": ApplicationFormXWalk.obj2form,
@@ -1451,7 +1461,7 @@ def iso_language_list(field):
 
 
 def iso_currency_list(field):
-    cl = []
+    cl = [{"display" : "Currency", "value" : ""}]
     for v, d in currency_options:
         cl.append({"display": d, "value": v})
     return cl
@@ -1761,7 +1771,10 @@ class TextBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
-        return StringField(**wtfargs)
+        sf = StringField(**wtfargs)
+        if "repeatable" in field:
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+        return sf
 
 
 class TagListBuilder(WTFormsBuilder):
@@ -1800,12 +1813,13 @@ class GroupBuilder(WTFormsBuilder):
 class GroupListBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
-        return field.get("input") == "group" and field.get("repeatable", False)
+        return field.get("input") == "group" and field.get("repeatable") is not None
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
         ff = GroupBuilder.wtform(formulaic_context, field, wtfargs)
-        return FieldList(ff)
+        repeat_cfg = field.get("repeatable", {})
+        return FieldList(ff, min_entries=repeat_cfg.get("initial", 1))
 
 
 WTFORMS_BUILDERS = [
