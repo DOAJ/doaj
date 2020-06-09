@@ -1619,7 +1619,8 @@ JAVASCRIPT_FUNCTIONS = {
     "clickable_url": "formulaic.widgets.newClickableUrl",
     "select": "formulaic.widgets.newSelect",
     "taglist": "formulaic.widgets.newTagList",
-    "multiple_field": "formulaic.widgets.newMultipleField"
+    "multiple_field": "formulaic.widgets.newMultipleField",
+    "autocomplete": "formulaic.widgets.newAutocomplete"
 }
 
 
