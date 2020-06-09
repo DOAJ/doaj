@@ -51,20 +51,6 @@ h6 {
   @include typescale-06;
 }
 
-h1 sup a, h2 sup a, h3 sup a, h4 sup a, h5 sup a, h6 sup a {
-  font-weight: 400;
-  font-size: 0.75em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: $sanguine;
-  @include font-sans;
-}
-
-h1 sup a:after, h2 sup a:after, h3 sup a:after, h4 sup a:after, h5 sup a:after, h6 sup a:after {
-  content: ' →';
-  color: $sanguine;
-}
-
 p, blockquote {
   margin: 0 0 $spacing-04 0;
 }
