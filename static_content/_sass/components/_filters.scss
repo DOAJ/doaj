@@ -10,6 +10,7 @@
   font-size: 1em;
   color: $dark-grey;
   text-transform: uppercase;
+  letter-spacing: normal;
   @include font-sans;
 }
 
@@ -75,7 +76,7 @@ input[type="checkbox"]:checked + .filter__label {
 
 @media (min-width: 992px) {
   .filters {
-    
+
     .filters__heading .feather {
       display: none;
     }

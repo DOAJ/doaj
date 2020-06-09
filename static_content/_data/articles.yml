@@ -52,3 +52,17 @@
   publisher: "Copernicus Publications"
   journal_url: "http://www.earth-system-dynamics.net/"
   lcc: "Science: Geology: Dynamic and structural geology"
+
+- title: "Editorial"
+  url: "http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0104-44782007000100001"
+  doi: "10.1590/S0104-44782007000100001"
+  pages: "5-6"
+  issue_pub_date: "January 2007"
+  issue_number: 28
+  country: "Brazil"
+  lang: "Portuguese, Spanish, English"
+  issn: "0104-4478 (Print); 1678-9873 (Online)"
+  journal: "Revista de Sociologia e Política"
+  publisher: "Universidade Federal do Paraná"
+  journal_url: "http://www.scielo.br/rsocp"
+  lcc: "Political science: Political science (General) | Social Sciences: Sociology (General)"

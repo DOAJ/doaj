@@ -512,11 +512,14 @@
                           {{ i.title }}
                         </a>
                       </h3>
+                      {% if i.authors %}
                       <ul class="article-summary__authors">
                         {% for j in i.authors %}
                         <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
                         {% endfor %}
                       </ul>
+                      {% endif %}
+                      
                       {% if i.seal %}
                       <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag">
                         <span data-feather="check-circle" aria-hidden="true"></span>
@@ -538,6 +541,7 @@
                           {% endfor %}
                         {% endif %}
                       </ul>
+                      {% if i.abstract %}
                       <h4 class="article-summary__abstract-heading" type="button" data-toggle="collapse" data-target="#abstract-{{ count }}" aria-expanded="false">
                         Abstract
                         <span data-feather="plus" aria-hidden="true"></span>
@@ -545,6 +549,7 @@
                       <p id="abstract-{{ count }}" class="collapse article-summary__abstract-body" aria-expanded="false">
                         {{ i.abstract|strip_html }}
                       </p>
+                      {% endif %}
                     </div>
                   </div>
                   <aside class="col-sm-4 search-results__aside">
