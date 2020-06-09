@@ -7,6 +7,7 @@
 
 @mixin font-sans {
   font-family: 'Source Sans Pro', sans-serif;
+  letter-spacing: normal;
 }
 
 @mixin font-monospace {
