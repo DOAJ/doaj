@@ -265,7 +265,7 @@
                       <p class="label">
                         {% assign lcc_codes = i.lcc | split: "|" %}
                         {% for i in lcc_codes %}
-                        <small>{{ i }}</small>{% if forloop.last %}{% else %}<br/>{% endif %}
+                        {{ i }}{% if forloop.last %}{% else %}<br/>{% endif %}
                         {% endfor %}
                       </p>
                       <h3 class="search-results__heading">
@@ -505,7 +505,7 @@
                   <div class="col-sm-8 search-results__main article-summary">
                     <header>
                       <p class="label">
-                        <small>From <em>{{ i.journal }}</em></small>
+                        From <em>{{ i.journal }}</em>
                       </p>
                       <h3 class="search-results__heading">
                         <a href="{{ site.baseurl }}{% link search/article-details.md %}" class="">
@@ -519,7 +519,7 @@
                         {% endfor %}
                       </ul>
                       {% endif %}
-                      
+
                       {% if i.seal %}
                       <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag">
                         <span data-feather="check-circle" aria-hidden="true"></span>

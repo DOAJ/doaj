@@ -81,6 +81,22 @@ ul, ol {
   }
 }
 
+dl {
+
+  dt {
+    @include font-monospace;
+    @include typescale-06;
+  }
+
+  dd {
+    margin: 0 0 $spacing-04 0;
+
+    &:last-child {
+      margin: 0;
+    }
+  }
+}
+
 pre, code {
   @include font-monospace;
   @include typescale-06;
