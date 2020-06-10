@@ -1,2 +1,3 @@
-- name: Name #1
+- name: "Name #1"
   region: North America
+  bio: "Lorem ipsum dolor sit amet."

@@ -40,7 +40,7 @@ var QUERY_OPTIONS = {
 
 ### Configuring via `QUERY_OPTIONS`
 
-There are a handful of options available, all are optional; omit them from `QUERY_OPTIONS` for the default behaviour.
+There are a handful of options available. All are optional; omit them from `QUERY_OPTIONS` for the default behaviour.
 
 {:.tabular-list}
 - `query_string`

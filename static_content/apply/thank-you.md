@@ -1,5 +1,6 @@
 ---
 layout: apply
+fragment: false
 title: Application form
 section: Apply
 toc: false

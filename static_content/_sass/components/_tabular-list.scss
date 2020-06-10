@@ -15,6 +15,11 @@
     border-bottom: 1px solid rgba($dark-grey, 0.25);
     counter-increment: row-number;
     @include font-serif;
+    @include typescale-05;
+
+    &:last-child {
+      border-bottom: 0;
+    }
 
     > ul {
       display: table-cell;
@@ -22,6 +27,7 @@
       list-style: none;
       width: 60%;
       @include font-sans;
+      @include typescale-06;
     }
 
     h3 {

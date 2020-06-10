@@ -1,16 +1,13 @@
-Supporting DOAJ is the only way to ensure that we can continue to provide you and the academic community with the best service.
-
-We accept membership requests from publishers, libraries, private individuals, industry-related organisations and government organisations.
-We reserve the right to deny membership.
+Supporting DOAJ is the only way to ensure that we can continue to provide you and the academic community with this vital open access resource. We are very grateful to all our supporters in libraries, publishers and other organisations around the world.
 
 You can support us:
 
-+ with an [annual fixed contribution]() (annual automatic payment);
-+ with a longer-term contribution, often over three years, having a greater impact on the future of DOAJ and allowing for more sustainable development;
-+ with a [one-time contribution](#make-a-one-time-donation) made via Paypal (on this page);
-+ as a [publisher supporter](/support/publisher-supporter/), if you publish, own or are the editor of an open access journal;
-+ via a [sponsorship](/support/sponsors/);
-  + for more information email [dom@doaj.org](mailto:dom@doaj.org?subject=DOAJ Sponsorship).
++ with an [annual fixed contribution]() (annual automatic payment)
++ with a longer-term contribution, often over three years, having a greater impact on the future of DOAJ and allowing for more sustainable development
++ with a [one-time contribution](#make-a-one-time-donation) made via Paypal (on this page)
++ as a [publisher supporter](/support/publisher-supporter/), if you publish, own or are the editor of an open access journal
++ via [sponsorship](/support/sponsors/)
+  + for more information email [dom@doaj.org](mailto:dom@doaj.org?subject=DOAJ Sponsorship)
 
 All supporters will have their name listed on our site and can use their supporter status and a DOAJ logo for marketing activities.
 

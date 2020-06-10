@@ -1,8 +1,6 @@
-When you upload your article metadata to us, it must be in one of two XML formats. 
+Article metadata is provided to DOAJ by publishers on the understanding that the data will then be available for free, to be distributed to any third party who wants it.
 
-Article metadata is provided to us on the understanding that it will then be available for free, to be distributed to any third party who wants it.
-
-We do not check the metadata's quality or correctness as we ingest it—this is your responsibility—so any errors (for example, typos in author names, URLs, or DOI) will be uploaded as-is. From time to time, a user of our metadata may contact us and ask us to correct your metadata.
+We do not check metadata quality as we ingest it — this is the publisher's responsibility — so any errors (for example, typos in author names, URLs, or DOI) will not be corrected. Users of our metadata may contact us to ask for metadata to be  corrected.
 
 ## Uploading an XML file
 
@@ -14,7 +12,7 @@ We do not check the metadata's quality or correctness as we ingest it—this is 
 
 ## List of DOAJ XML elements
 
-Here is a table of each possible element in the DOAJ XML file. It shows you whether or not the element is required by the DOAJ schema. Providing as much information in the metadata as possible ensures a more complete record in our database and allows the record to be distributed more easily to other services.
+Here is a table of each element in the DOAJ XML file. It shows you whether or not the element is required by the DOAJ schema. Providing as much information in the metadata as possible ensures a more complete record in our database and allows the record to be distributed more easily to other services.
 
 | Element            | Requirement                                                                 |
 |--------------------|-----------------------------------------------------------------------------|
@@ -37,7 +35,7 @@ Here is a table of each possible element in the DOAJ XML file. It shows you whet
 | **Full-text URL**  | Required, only 1                                                            |
 | Keywords           | Optional                                                                    |
 
-There are [European Union restrictions](https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en) on how you distribute personal data, such as email addresses. DOAJ doesn’t have any need for or display author email addresses so please don’t send them to us in the XML.
+There are [European Union restrictions](https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en) on distribution of personal data, such as email addresses. DOAJ doesn’t need or display author email addresses so please don’t send them to us in the XML.
 
 ## Example DOAJ XML File
 

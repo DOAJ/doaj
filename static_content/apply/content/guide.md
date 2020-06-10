@@ -12,21 +12,23 @@ Before you start the application process, you will be asked to log in or registe
 Journals applying to DOAJ **must** meet the following criteria:
 
 {:.numbered-table}
-|   | Criteria                                                                                                      | Details                                                                                                                             |
-|---|---------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-|   | make all content available for free and [open access](#type-of-open-access) without delay (no embargo period) | the journal must be ‘gold’ (non-APC or APC) open access <br>the journal’s open access policy must be stated on the journal web site |
-|   | be actively publishing scholarly research                                                                     | its primary target audience should be researchers or practitioners                                                                    |
-|   | publish at least five (5) scholarly articles per year                                                         |                                                       |
-|   | have a dedicated [homepage or website](#journal-website)                                                      | the URL is stable and reliable                                                                                                      |
-|   | make their articles available as individual, [full-text articles](#full-text-articles)                        | each article has its own page with a unique URL                                                                                     |
-|   | have an editor and an [editorial board](#editorial-process)                                                   | the journal must be peer-reviewed <br>we accept a form of editorial review for Arts and Humanities journals                         |
-|   | have at least one current ISSN registered and confirmed at issn.org and displayed on the website              | the name of the journal in the application must match what is registered at issn.org and on the website                             |
-|   | clearly indicate the [terms of copyright](#copyright) on the website                                          | it can not restrict authors’ rights to fair use only                                                                                |
-|   | clearly indicate its [licensing terms](#licensing) on the website                                             | licensing terms must be available and clearly stated on the journal website, preferably on the full text of every article           |
+|   | Criteria                                                                                                                                                | Details                                                                                                                             |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|   | The journal must be actively publishing scholarly research                                                                                              | All research subject areas are accepted<br>Should publish at least five (5) research articles a year<br>Can publish in any language<br> Read about the [additional criteria for some journal types](#additional-criteria-for-some-journal-types).                  |
+|   | The primary target audience should be researchers or practitioners                                                                                      |                                                                                                                                                                                                                                                                    |
+|   | The journal must be fully [Open Access](#type-of-open-access).                                                                                          | The full text of all content must be available for free and open access without delay (i.e. no embargo)<br>Requiring users to register to read is not acceptable.<br>A charge for the print version of the journal is permitted.                                   |
+|   | The journal's open access policy must be clearly stated on the journal web site (and not just the publisher's own site).                                | Ideally it will follow the BOAI definition of open access.                                                                                                                                                                                                         |
+|   | The journal must have its own dedicated URL and [homepage or website](#journal-website) that is accessible from any location.                           | The website must be clear and easy to navigate.<br>The website should adhere to the guidelines described in the Principles of Transparency and Best Practice in Scholarly Publishing                                                                               |
+|   | Each article must be available as an individual, [full-text article](#full-text-articles)                                                               | One unique URL per article<br>As an HTML file or a PDF, as a minimum                                                                                                                                                                                               |
+|   | A journal must have at least one ISSN (International Standard Serial Number) which is registered and confirmed at issn.org.                             | The ISSN(s) must be displayed on the website.<br>The name of the journal in the application and on the website must match what is shown at ISSN.org                                                                                                                |
+|   | A journal must have an editor and an [editorial board](#editorial-process)                                                                              | The editorial board must be listed on the website.<br>The name and affiliation of all editors and board members must be included.<br>If a journal is run by a student body, it must have an advisory board of which at least two members have a PhD or equivalent. |
+|   | All articles must pass through a quality control system (peer review) before publication.                                                               | The type and details of the peer review process must be stated clearly on the website.                                                                                                                                                                             |
+|   | The [copyright terms](#copyright) applied to the published content must be clearly stated and separate from the copyright terms applied to the website. | Copyright terms must not contradict the licensing terms or the terms of the Open Access policy.<br>"All rights reserved" is not appropriate for open access content.                                                                                               |
+|   | The [licensing terms](#licensing) for use and re-use of the published content must be clearly stated on the website.                                    | We recommends the use of Creative Commons licenses for this purpose.<br>If Creative Commons licensing is not used, similar terms and conditions should be applied                                                                                                  |
 
-Furthermore, please make sure that:
+Please make sure that:
 
-- the journal hasn’t had an application rejected within the last six months;
+- the journal hasn't had an application rejected within the last six months;
   - journals that are rejected must wait 6 months from the date of rejection before applying again unless otherwise advised by DOAJ.
 - the journal isn’t in DOAJ already;
 - the journal doesn’t have another application already in progress;
@@ -34,12 +36,6 @@ Furthermore, please make sure that:
 - the application doesn’t contain information that is inaccurate or wrong, or isn’t missing any answers;
 - the country in the application, and on the journal website, is the country where the publisher is registered and carries out its business activities;
 - the contact details provided in the application include a real name and a valid email address.
-
-Journals included in DOAJ **can** also:
-
-- discuss any research subject areas;
-- be published in any language:
-  - there is no requirement to publish in English;
 
 **Journals do not need to meet the Seal criteria to be accepted into DOAJ.**
 
@@ -153,7 +149,7 @@ Fair use alone is not open access and DOAJ will not accept a journal with these 
 
 ---
 
-## Specific cases: exceptions and conditions
+## Additional criteria for some journal types
 
 {:.tabular-list}
 - ### Arts and humanities journals
