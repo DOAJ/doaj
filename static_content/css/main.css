@@ -2301,7 +2301,7 @@ input[type="checkbox"]:checked + .filter__label {
     display: block; }
     .secondary-nav__menu li {
       margin-left: 0;
-      -webkit-tap-highlight-color: transparent;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
       -webkit-tap-highlight-color: transparent; }
       .secondary-nav__menu li a {
         padding: 1.5rem 0;
