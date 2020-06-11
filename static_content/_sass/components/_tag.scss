@@ -4,6 +4,7 @@
   display: inline-block;
   margin-bottom: $spacing-03;
   padding: $spacing-01 $spacing-02;
+  border-radius: 9999px; // hack-y way to create pill shape
   background: $grapefruit;
   color: $warm-black;
   text-decoration: none;

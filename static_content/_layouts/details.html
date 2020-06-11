@@ -50,18 +50,6 @@
             {% else %}
             <em>No abstracts available.</em>
             {% endif %}
-
-            <h2>Cite this article</h2>
-            <dl class="row">
-              <dt class="col-xs-6">APA</dt>
-              <dd class="col-xs-6"></dd>
-
-              <dt class="col-xs-6">MLA</dt>
-              <dd class="col-xs-6"></dd>
-
-              <dt class="col-xs-6">Chicago</dt>
-              <dd class="col-xs-6"></dd>
-            </dl>
           </div>
 
           <aside class="col-md-4">
@@ -83,7 +71,9 @@
               <dd>{{ page.lcc }}</dd>
             </dl>
 
-            <p><a href="#">More about this journal</a></p>
+            <p>
+              <a href="{{ site.baseurl }}{% link search/journal-details.md %}" class="button secondary-button">About the journal</a>
+            </p>
           </aside>
         </div>
 

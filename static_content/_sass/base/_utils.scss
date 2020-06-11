@@ -5,8 +5,11 @@
   margin: 0 0 $spacing-03 0;
   list-style: none;
   @if $inline {
+  line-height: 1.35;
+
     li {
       display: inline-block;
+      line-height: 1;
     }
   }
 }
