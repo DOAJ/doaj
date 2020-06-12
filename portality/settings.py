@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "3.1.5"
+DOAJ_VERSION = "3.1.7"
 
 OFFLINE_MODE = False
 
@@ -942,23 +942,23 @@ ANON_SALT = 'changeme'
 # ========================================
 # Quick Reject Feature Config
 QUICK_REJECT_REASONS = [
-    "No research content has been published in the journal in the last calendar year",
-    "The ISSN is incorrect and/or is not recognised by issn.org",
-    "The ISSN is listed as provisional by issn.org",
-    "The ISSN is not yet registered at issn.org",
-    "The URL(s) or the web site do/does not work",
-    "The contact details provided are not real names of individuals",
-    "The journal is already in DOAJ",
-    "The journal is not Open Access",
-    "The journal or publisher has been rejected or removed from DOAJ recently",
-    "The journal title in the application doesn't match the title at issn.org",
-    "The journal title on the web site doesn't match what is registered at issn.org",
-    "The license type selected was 'Other' but no further information was provided",
-    "The same URL has been provided for all the questions which require a URL answer",
-    "There are answers in the application which are incomplete or missing",
-    "There is no mention of peer review or a review process being carried out",
-    "This application is a duplicate",
-    "You already have another application in progress for this journal"
+    "The journal has not published enough research content to qualify for DOAJ inclusion.",
+    "The ISSN is incorrect, provisional or not registered with issn.org.",
+    "The URL(s) provided in the application do not work.",
+    "The contact details provided are not real names of individuals.",
+    "The journal is already in DOAJ.",
+    "The journal is not Open Access.",
+    "The journal title in the application and/or website does not match the title at issn.org.",
+    "The application has incomplete answers or the URLs given do not provide the required information.",
+    "This application is a duplicate.",
+    "The full-text articles are not available article by article with individual links.",
+    "The information in the journal implies that it does not employ a fair & robust peer review process.",
+    "The journal or publisher has been previously rejected or removed from DOAJ.",
+    "The journal's copyright policy is not available or unclear.",
+    "The journal's licensing policy is not available or unclear.",
+    "The information about the journal is in different languages.",
+    "The journal makes a false claim to be indexed in DOAJ or other databases or displays non-standard Impact Factors.",
+    "The journal does not employ good publishing practices."
 ]
 
 # ========================================
