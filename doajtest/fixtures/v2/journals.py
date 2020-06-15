@@ -142,6 +142,7 @@ JOURNAL_SOURCE = {
             "url": "http://other.charges"
         },
         "pid_scheme": {
+            "has_pid_scheme" : True,
             "scheme": ["DOI", "ARK", "PURL", "PIDMachine"],
         },
         "pissn": "1234-5678",
@@ -150,6 +151,7 @@ JOURNAL_SOURCE = {
             "url": "http://plagiarism.screening"
         },
         "preservation": {
+            "has_preservation" : True,
             "service": ["LOCKSS", "CLOCKSS", "A safe place"],
             "national_library": ["Trinity", "Imperial"],
             "url": "http://digital.archiving.policy"
@@ -190,7 +192,7 @@ JOURNAL_INFO = {
         }
     ],
     "apc_url" : "http://apc.com",
-    "preservation_service" : ["LOCKSS", "CLOCKSS"],
+    "preservation_service" : ["LOCKSS", "CLOCKSS", "other", "national_library"],
     "preservation_service_other" : "A safe place",
     "preservation_service_library" : ["Trinity", "Imperial"],
     "preservation_service_url" : "http://digital.archiving.policy",
@@ -200,9 +202,9 @@ JOURNAL_INFO = {
         "publisher_country" : "US",
         "publisher_name" : "The Publisher"
     },
-    "deposit_policy" : ["Sherpa/Romeo"],
+    "deposit_policy" : ["Sherpa/Romeo", "other"],
     "deposit_policy_other" : "Store it",
-    "review_process" : ["Open peer review"],
+    "review_process" : ["Open peer review", "other"],
     "review_process_other" : "some bloke checks it out",
     "review_url" : "http://review.process",
     "pissn": "1234-5678",
@@ -225,7 +227,7 @@ JOURNAL_INFO = {
     "editorial_board_url" : "http://editorial.board",
     "author_instructions_url" : "http://author.instructions.com",
     "waiver_url" : "http://waiver.policy",
-    "persistent_identifiers" : ["DOI", "ARK", "PURL"],
+    "persistent_identifiers" : ["DOI", "ARK", "PURL", "other"],
     "persistent_identifiers_other" : "PIDMachine",
     "plagiarism_detection" : "y",
     "plagiarism_url" : "http://plagiarism.screening",
@@ -295,6 +297,14 @@ for a in apcs:
     maxkey = "apc_charges-" + str(i) + "-apc_max"
     JOURNAL_FORM[currkey] = a.get("apc_currency")
     JOURNAL_FORM[maxkey] = a.get("apc_max")
+    i += 1
+
+library = JOURNAL_FORM["preservation_service_library"]
+del JOURNAL_FORM["preservation_service_library"]
+i = 0
+for l in library:
+    key = "preservation_service_library-" + str(i)
+    JOURNAL_FORM[key] = l
     i += 1
 
 

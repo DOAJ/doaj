@@ -62,7 +62,7 @@ class JournalGenericXWalk(object):
 
         if form.review_process.data or form.review_process_url.data:
             processes = [e for e in form.review_process.data if e not in ["other"]]
-            if "other" in processes and form.review_process_other.data:
+            if "other" in form.review_process.data and form.review_process_other.data:
                 processes.append(form.review_process_other.data)
             bibjson.set_editorial_review(processes, form.review_url.data, form.editorial_board_url.data)
 

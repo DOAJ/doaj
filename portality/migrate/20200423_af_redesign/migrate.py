@@ -157,7 +157,7 @@ permissive_bibjson_struct = {
         },
         "preservation": {
             "fields": {
-                "has_preservation": {"coerce": "unicode"},
+                "has_preservation": {"coerce": "bool"},
                 "url": {"coerce": "unicode", "set__allow_coerce_failure": True}
             },
             "lists": {

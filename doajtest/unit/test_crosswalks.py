@@ -43,10 +43,22 @@ class TestCrosswalks(DoajTestCase):
     def test_01_journal_form2obj(self):
         pc = ApplicationFormFactory.context("public")
         form = pc.wtform(MultiDict(JOURNAL_FORM))
-        # form = forms.ManEdJournalReviewForm(formdata=MultiDict(JOURNAL_FORM))
+
         obj = crosswalks.journal_form.JournalFormXWalk.form2obj(form)
 
         assert isinstance(obj, Journal)
+
+        xwalked = obj.bibjson().data
+        compare = deepcopy(JOURNAL_SOURCE.get("bibjson"))
+
+        # remove fields the crosswalk currently doesn't cover
+        del compare["replaces"]
+        del compare["is_replaced_by"]
+        del compare["subject"]
+        del compare["discontinued_date"]
+
+        assert xwalked == compare, diff_dicts(xwalked, compare, 'xwalked', 'fixture')
+
 
     def test_01_journal(self):
         forminfo = crosswalks.journal_form.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))

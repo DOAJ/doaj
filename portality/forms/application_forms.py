@@ -1750,7 +1750,7 @@ class SingleCheckboxBuilder(WTFormsBuilder):
 class SelectBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
-        return field.get("input") == "select"
+        return field.get("input") == "select" and not field.get("multiple", False)
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
