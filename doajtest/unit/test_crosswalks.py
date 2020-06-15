@@ -10,6 +10,8 @@ from portality import models
 from werkzeug.datastructures import MultiDict
 from copy import deepcopy
 from portality import lcc
+from portality.models import Journal
+from portality.forms.application_forms import ApplicationFormFactory
 
 from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
 
@@ -30,13 +32,21 @@ def mock_lookup_code(code):
     if code == "HB1-3840": return "Economic theory. Demography"
     return None
 
-class TestXwalk(DoajTestCase):
+class TestCrosswalks(DoajTestCase):
     def setUp(self):
         self.old_lookup_code = lcc.lookup_code
         lcc.lookup_code = mock_lookup_code
 
     def tearDown(self):
         lcc.lookup_code = self.old_lookup_code
+
+    def test_01_journal_form2obj(self):
+        pc = ApplicationFormFactory.context("public")
+        form = pc.wtform(MultiDict(JOURNAL_FORM))
+        # form = forms.ManEdJournalReviewForm(formdata=MultiDict(JOURNAL_FORM))
+        obj = crosswalks.journal_form.JournalFormXWalk.form2obj(form)
+
+        assert isinstance(obj, Journal)
 
     def test_01_journal(self):
         forminfo = crosswalks.journal_form.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))

@@ -61,7 +61,7 @@ JOURNAL_BIBJSON = {
                         "i4oc_open_citations" : {"coerce" : "bool"}
                     },
                     "lists" : {
-                        "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["embed", "display", "no"]},
+                        "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["Embed", "Display", "No"]},
                     }
                 },
                 "copyright" : {

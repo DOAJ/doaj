@@ -97,10 +97,10 @@ JOURNAL_SOURCE = {
             "has_apc": True
         },
         "article": {
-            "license_display": ["embed", "display"],
+            "license_display": ["Embed", "Display"],
             "license_display_example_url": "http://licence.embedded",
             "orcid": True,
-            "i4oc_open_citations": True
+            "i4oc_open_citations": False
         },
         "boai": True,
         "copyright": {
@@ -115,7 +115,7 @@ JOURNAL_SOURCE = {
         },
         "discontinued_date": "2010-01-01",
         "editorial": {
-            "review_process": ["Open peer review"],
+            "review_process": ["Open peer review", "some bloke checks it out"],
             "review_url": "http://review.process",
             "board_url": "http://editorial.board"
         },
@@ -129,7 +129,7 @@ JOURNAL_SOURCE = {
         "language": ["EN", "FR"],
         "license": [
             {
-                "type": "CC MY",
+                "type": "Publisher's own license",
                 "BY": True,
                 "NC": True,
                 "ND": False,
@@ -142,7 +142,7 @@ JOURNAL_SOURCE = {
             "url": "http://other.charges"
         },
         "pid_scheme": {
-            "scheme": ["DOI", "ARK", "PURL"],
+            "scheme": ["DOI", "ARK", "PURL", "PIDMachine"],
         },
         "pissn": "1234-5678",
         "plagiarism": {
@@ -164,7 +164,7 @@ JOURNAL_SOURCE = {
             "journal": "http://journal.url",
             "aims_scope": "http://aims.scope",
             "author_instructions": "http://author.instructions.com",
-            "license_terms": "http://license.terms"
+            "license_terms": "http://licence.url"
         },
         "replaces": ["1111-1111"],
         "subject": [
@@ -181,68 +181,69 @@ JOURNAL_SOURCE = {
 }
 
 JOURNAL_INFO = {
-    "title": "The Title",
-    "url": "http://journal.url",
     "alternative_title": "Alternative Title",
+    "apc" : "y",
+    "apc_charges" : [
+        {
+            "apc_max" : 2,
+            "apc_currency" : "GBP"
+        }
+    ],
+    "apc_url" : "http://apc.com",
+    "preservation_service" : ["LOCKSS", "CLOCKSS"],
+    "preservation_service_other" : "A safe place",
+    "preservation_service_library" : ["Trinity", "Imperial"],
+    "preservation_service_url" : "http://digital.archiving.policy",
+    "copyright_author_retains" : "y",
+    "copyright_url" : "http://copyright.com",
+    "publisher" : {
+        "publisher_country" : "US",
+        "publisher_name" : "The Publisher"
+    },
+    "deposit_policy" : ["Sherpa/Romeo"],
+    "deposit_policy_other" : "Store it",
+    "review_process" : ["Open peer review"],
+    "review_process_other" : "some bloke checks it out",
+    "review_url" : "http://review.process",
     "pissn": "1234-5678",
     "eissn": "9876-5432",
-    "publisher": "The Publisher",
-    "institution": "Society Institution",
-    "institution_country": "US",
-    "platform": "Platform Host Aggregator",
-    "contact_name": "Contact Name",
-    "contact_email": "contact@email.com",
-    "confirm_contact_email": "contact@email.com",
-    "country": "US",
-    "processing_charges": "True",
-    "processing_charges_url": "http://apc.com",
-    "processing_charges_amount": 2,
-    "processing_charges_currency": "GBP",
-    "submission_charges": "True",
-    "submission_charges_url": "http://submission.com",
-    "submission_charges_amount": 4,
-    "submission_charges_currency": "USD",
-    "waiver_policy_url": "http://waiver.policy",
-    "digital_archiving_policy": ["LOCKSS", "CLOCKSS",
-                                 "A national library", "Other"],
-    "digital_archiving_policy_other": "A safe place",
-    "digital_archiving_policy_library": "Trinity",
-    "digital_archiving_policy_url": "http://digital.archiving.policy",
-    "crawl_permission": "True",
-    "article_identifiers": ["DOI", "ARK", "Other"],
-    "article_identifiers_other": "PURL",
-    "download_statistics": "True",
-    "download_statistics_url": "http://download.stats",
-    "first_fulltext_oa_year": 1980,
-    "fulltext_format": ["HTML", "XML", "Other"],
-    "fulltext_format_other": "Wordperfect",
+    "institution" : {
+        "institution_name" : "Society Institution",
+        "institution_country" : "US"
+    },
     "keywords": ["word", "key"],
-    "languages": ["EN", "FR"],
-    "editorial_board_url": "http://editorial.board",
-    "review_process": "Open peer review",
-    "review_process_url": "http://review.process",
-    "aims_scope_url": "http://aims.scope",
-    "instructions_authors_url": "http://author.instructions.com",
-    "plagiarism_screening": "True",
-    "plagiarism_screening_url": "http://plagiarism.screening",
-    "publication_time": 8,
-    "oa_statement_url": "http://oa.statement",
-    "license_embedded": "True",
-    "license_embedded_url": "http://licence.embedded",
-    "license": "Other",
-    "license_other": "CC MY",
-    "license_checkbox": ["BY", "NC"],
-    "license_url": "http://licence.url",
-    "open_access": "True",
-    "deposit_policy": ["Sherpa/Romeo", "Other"],
-    "deposit_policy_other": "Store it",
-    "copyright": "True",
-    "copyright_url": "http://copyright.com",
-    "publishing_rights": "True",
-    "publishing_rights_url": "http://publishing.rights",
-    "replaces": ["1111-1111"],
-    "is_replaced_by": ["2222-2222"],
-    "discontinued_date": "2001-01-01"
+    "language": ["EN", "FR"],
+    "license_attributes" : ["BY", "NC"],
+    "license_display" : ["Embed", "Display"],
+    "license_display_example_url": "http://licence.embedded",
+    "boai": True,
+    "license": "Publisher's own license",
+    "license_terms_url" : "http://licence.url",
+    "oa_statement_url" : "http://oa.statement",
+    "journal_url" : "http://journal.url",
+    "aims_scope_url" : "http://aims.scope",
+    "editorial_board_url" : "http://editorial.board",
+    "author_instructions_url" : "http://author.instructions.com",
+    "waiver_url" : "http://waiver.policy",
+    "persistent_identifiers" : ["DOI", "ARK", "PURL"],
+    "persistent_identifiers_other" : "PIDMachine",
+    "plagiarism_detection" : "y",
+    "plagiarism_url" : "http://plagiarism.screening",
+    "publication_time_weeks" : 8,
+    "other_charges_url" : "http://other.charges",
+    "title": "The Title",
+    "has_other_charges" : "y",
+    "has_waiver" : "y",
+    "orcid_ids" : "y",
+    "open_citations" : "n",
+    "deposit_policy_url" : "http://deposit.policy"
+
+    #"contact_name": "Contact Name",
+    #"contact_email": "contact@email.com",
+    #"confirm_contact_email": "contact@email.com",
+    #"replaces": ["1111-1111"],
+    #"is_replaced_by": ["2222-2222"],
+    #"discontinued_date": "2001-01-01"
 }
 
 JOURNAL_LEGACY = {
@@ -251,6 +252,8 @@ JOURNAL_LEGACY = {
     "oa_end_year": 1991
 }
 
+# assemble the form as a regular object
+
 JOURNAL_FORMINFO = deepcopy(JOURNAL_INFO)
 JOURNAL_FORMINFO.update(EDITORIAL)
 JOURNAL_FORMINFO.update(SEAL)
@@ -258,6 +261,8 @@ JOURNAL_FORMINFO.update(SUBJECT)
 JOURNAL_FORMINFO.update(NOTES)
 JOURNAL_FORMINFO.update(OWNER)
 JOURNAL_FORMINFO.update(JOURNAL_LEGACY)
+
+# restructure the form as the text would be returned from the site
 
 JOURNAL_FORM = deepcopy(JOURNAL_FORMINFO)
 JOURNAL_FORM["keywords"] = ",".join(JOURNAL_FORM["keywords"])
@@ -271,6 +276,27 @@ for n in notes:
     JOURNAL_FORM[notekey] = n.get("note")
     JOURNAL_FORM[datekey] = n.get("date")
     i += 1
+
+inst = JOURNAL_FORM["institution"]
+del JOURNAL_FORM["institution"]
+JOURNAL_FORM["institution-institution_name"] = inst["institution_name"]
+JOURNAL_FORM["institution-institution_country"] = inst["institution_country"]
+
+pub = JOURNAL_FORM["publisher"]
+del JOURNAL_FORM["publisher"]
+JOURNAL_FORM["publisher-publisher_name"] = pub["publisher_name"]
+JOURNAL_FORM["publisher-publisher_country"] = pub["publisher_country"]
+
+apcs = JOURNAL_FORM["apc_charges"]
+del JOURNAL_FORM["apc_charges"]
+i = 0
+for a in apcs:
+    currkey = "apc_charges-" + str(i) + "-apc_currency"
+    maxkey = "apc_charges-" + str(i) + "-apc_max"
+    JOURNAL_FORM[currkey] = a.get("apc_currency")
+    JOURNAL_FORM[maxkey] = a.get("apc_max")
+    i += 1
+
 
 JOURNAL_APIDO_STRUCT = {
     "objects": ["bibjson", "admin"],

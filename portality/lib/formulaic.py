@@ -567,7 +567,7 @@ class FormulaicField(object):
             "description": field.get("help", {}).get("description"),
         }
         if "default" in field:
-            wtargs["default"] = field["default"]
+            wtargs["default"] = field.get("default")
         if "options" in field or "options_fn" in field:
             wtargs["choices"] = cls._options2choices(field, formulaic_context.function_map.get("options", {}))
 

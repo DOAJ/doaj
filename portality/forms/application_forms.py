@@ -179,7 +179,6 @@ class FieldDefinitions:
 
     PISSN = {
         "name": "pissn",
-        "label": "ISSN (print)",
         "input": "text",
         "help": {
             "long_help": "Must be a valid ISSN, fully registered and confirmed at the ISSN Portal (https://portal.issn.org/)"
@@ -536,12 +535,12 @@ class FieldDefinitions:
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "Editorial review", "value": "editorial_review"},
-            {"display": "Peer review", "value": "peer_review"},
-            {"display": "Blind peer review", "value": "blind_peer_review"},
-            {"display": "Double blind peer review", "value": "double_blind_peer_review"},
-            {"display": "Post-publication peer review", "value": "post_publication_peer_review"},
-            {"display": "Open peer review", "value": "open_peer_review"},
+            {"display": "Editorial review", "value": "Editorial review"},
+            {"display": "Peer review", "value": "Peer review"},
+            {"display": "Blind peer review", "value": "Blind peer review"},
+            {"display": "Double blind peer review", "value": "Double blind peer review"},
+            {"display": "Post-publication peer review", "value": "Post-publication peer review"},
+            {"display": "Open peer review", "value": "Open peer review"},
             {"display": "Other", "value": "other", "subfields": ["review_process_other"]}
         ],
         "help": {
@@ -741,6 +740,7 @@ class FieldDefinitions:
         "name": "apc_currency",
         "input": "select",
         "options_fn": "iso_currency_list",
+        "default" : "",
         "widgets": [
             {"select": {}}
         ],
@@ -837,23 +837,23 @@ class FieldDefinitions:
         ]
     }
 
-    ARCHIVING_POLICY = {
-        "name": "archiving_policy",
+    PRESERVATION_SERVICE = {
+        "name": "preservation_service",
         "label": "Long-term preservation service(s) with which the journal is currently archived",
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "CINES", "value": "cines"},
-            {"display": "CLOCKSS", "value": "clockss"},
-            {"display": "LOCKSS", "value": "lockss"},
-            {"display": "Internet Archive", "value": "internet_archive"},
-            {"display": "PKP PN", "value": "pkp_pn"},
-            {"display": "PubMed Central (PMC)", "value": "pmc"},
-            {"display": "Portico", "value": "portico"},
-            {"display": "A national library", "value": "national_library", "subfields": ["archiving_policy_library"]},
+            {"display": "CINES", "value": "CINES"},
+            {"display": "CLOCKSS", "value": "CLOCKSS"},
+            {"display": "LOCKSS", "value": "LOCKSS"},
+            {"display": "Internet Archive", "value": "Internet Archive"},
+            {"display": "PKP PN", "value": "PKP PN"},
+            {"display": "PubMed Central (PMC)", "value": "PMC/Europe PMC/PMC Canada"},
+            {"display": "Portico", "value": "Portico"},
+            {"display": "A national library", "value": "national_library", "subfields": ["preservation_service_library"]},
             {"display": "The journal content isn't archived with a long-term preservation service",
              "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other", "subfields": ["archiving_policy_other"]}
+            {"display": "Other", "value": "other", "subfields": ["preservation_service_other"]}
         ],
         "help": {
             "short_help": "Select at least one",
@@ -866,8 +866,8 @@ class FieldDefinitions:
         ]
     }
 
-    ARCHIVING_POLICY_LIBRARY = {
-        "name": "archiving_policy_library",
+    PRESERVATION_SERVICE_LIBRARY = {
+        "name": "preservation_service_library",
         "subfield": True,
         "label": "A national library",
         "input": "text",
@@ -877,41 +877,41 @@ class FieldDefinitions:
         "help": {
             "placeholder": "A national library"
         },
-        "conditional": [{"field": "archiving_policy", "value": "national_library"}],
+        "conditional": [{"field": "preservation_service", "value": "national_library"}],
         "validate": [
-            {"required_if": {"field": "archiving_policy", "value": "national_library"}}
+            {"required_if": {"field": "preservation_service", "value": "national_library"}}
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
         ]
     }
 
-    ARCHIVING_POLICY_OTHER = {
-        "name": "archiving_policy_other",
+    PRESERVATION_SERVICE_OTHER = {
+        "name": "preservation_service_other",
         "subfield": True,
-        #"label": "Other",
+        "label": "Other",
         "input": "text",
         "help": {
             "placeholder": "Other archiving policy"
         },
-        "conditional": [{"field": "archiving_policy", "value": "other"}],
+        "conditional": [{"field": "preservation_service", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "archiving_policy", "value": "other"}}
+            {"required_if": {"field": "preservation_service", "value": "other"}}
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
         ]
     }
 
-    ARCHIVING_POLICY_URL = {
-        "name": "archiving_policy_url",
+    PRESERVATION_SERVICE_URL = {
+        "name": "preservation_service_url",
         "label": "Link to the preservation and archiving information on the journal's site",
         "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL"
         },
         "validate": [
-            {"optional_if": {"field": "archiving_policy", "values": ["none"]}},
+            {"optional_if": {"field": "preservation_service", "values": ["none"]}},
             "is_url"
         ],
         "widgets": [
@@ -919,19 +919,19 @@ class FieldDefinitions:
         ]
     }
 
-    REPOSITORY_POLICY = {
-        "name": "repository_policy",
+    DEPOSIT_POLICY = {
+        "name": "deposit_policy",
         "label": "Where is the journal's policy allowing authors to deposit the AAM or VOR registered?",
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "SHERPA/RoMEO", "value": "sherpa_romeo"},
-            {"display": "Dulcinea", "value": "dulcinea"},
-            {"display": "Héloïse", "value": "heloise"},
-            {"display": "Diadorim", "value": "diadorim"},
-            {"display": "The journal has a policy but it isn't registered anywhere", "value": "unregistered"},
+            {"display": "SHERPA/RoMEO", "value": "SHERPA/RoMEO"},
+            {"display": "Dulcinea", "value": "Dulcinea"},
+            {"display": "Héloïse", "value": "Héloïse"},
+            {"display": "Diadorim", "value": "Diadorim"},
+            {"display": "The journal has a policy but it isn't registered anywhere", "value": "Unregistered", "exclusive" : True},
             {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other", "subfields": ["repository_policy_other"]}
+            {"display": "Other", "value": "other", "subfields": ["deposit_policy_other"]}
         ],
         "help": {
             "short_help": "Select at least one",
@@ -945,32 +945,32 @@ class FieldDefinitions:
         ]
     }
 
-    REPOSITORY_POLICY_OTHER = {
-        "name": "repository_policy_other",
+    DEPOSIT_POLICY_OTHER = {
+        "name": "deposit_policy_other",
         "subfield": True,
-        # "label": "Other",
+        "label": "Other",
         "input": "text",
         "help": {
             "placeholder": "Other repository policy"
         },
-        "conditional": [{"field": "repository_policy", "value": "other"}],
+        "conditional": [{"field": "deposit_policy", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "repository_policy", "value": "other"}}
+            {"required_if": {"field": "deposit_policy", "value": "other"}}
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
         ]
     }
 
-    REPOSITORY_POLICY_URL = {
-        "name": "repository_policy_url",
+    DEPOSIT_POLICY_URL = {
+        "name": "deposit_policy_url",
         "label": "Link to the policy on the journal's site",
         "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL"
         },
         "validate": [
-            {"required_if": {"field": "repository_policy", "value": "unregistered"}},
+            {"required_if": {"field": "deposit_policy", "value": "unregistered"}},
             "is_url"
         ],
         "widgets": [
@@ -984,10 +984,10 @@ class FieldDefinitions:
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "DOIs", "value": "doi"},
-            {"display": "ARKs", "value": "ark"},
-            {"display": "Handles", "value": "handle"},
-            {"display": "PURLs", "value": "purl"},
+            {"display": "DOIs", "value": "DOI"},
+            {"display": "ARKs", "value": "ARK"},
+            {"display": "Handles", "value": "Handles"},
+            {"display": "PURLs", "value": "PURL"},
             {"display": "The journal does not use persistent article identifiers", "value": "none", "exclusive": True},
             {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]}
         ],
@@ -1052,6 +1052,9 @@ class FieldDefinitions:
             "required"
         ]
     }
+
+    #######################################
+    ## Ediorial fields
 
     DOAJ_SEAL = {
         "name": "doaj_seal",
@@ -1291,20 +1294,20 @@ class FieldSetDefinitions:
         "name": "archiving_policy",
         "label": "Archiving Policy",
         "fields": [
-            FieldDefinitions.ARCHIVING_POLICY["name"],
-            FieldDefinitions.ARCHIVING_POLICY_LIBRARY["name"],
-            FieldDefinitions.ARCHIVING_POLICY_OTHER["name"],
-            FieldDefinitions.ARCHIVING_POLICY_URL["name"]
+            FieldDefinitions.PRESERVATION_SERVICE["name"],
+            FieldDefinitions.PRESERVATION_SERVICE_LIBRARY["name"],
+            FieldDefinitions.PRESERVATION_SERVICE_OTHER["name"],
+            FieldDefinitions.PRESERVATION_SERVICE_URL["name"]
         ]
     }
 
     REPOSITORY_POLICY = {
-        "name": "repository_policy",
+        "name": "deposit_policy",
         "label": "Repository Policy",
         "fields": [
-            FieldDefinitions.REPOSITORY_POLICY["name"],
-            FieldDefinitions.REPOSITORY_POLICY_OTHER["name"],
-            FieldDefinitions.REPOSITORY_POLICY_URL["name"]
+            FieldDefinitions.DEPOSIT_POLICY["name"],
+            FieldDefinitions.DEPOSIT_POLICY_OTHER["name"],
+            FieldDefinitions.DEPOSIT_POLICY_URL["name"]
         ]
     }
 
