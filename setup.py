@@ -26,9 +26,10 @@ setup(
         "Flask-Swagger==0.2.13",
         "Flask-Cors==3.0.8",
         "LinkHeader==0.4.3",
-#        "universal-analytics-python",                                          # No Python 3 support
+        # "universal-analytics-python", # No Python 3 support
+        "openpyxl~=3.0.3",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
         "psutil==5.6.3",
-        "huey==1.10.5",                                                          # upgrading to 1.11 / 2.x requires work
+        "huey==1.10.5",  # upgrading to 1.11 / 2.x requires work
         "redis==3.3.11",
         "rstr==2.2.6",
         "freezegun==0.3.12",
