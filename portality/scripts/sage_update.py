@@ -7,14 +7,9 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--infile", help="path to SAGE spreadsheet")
-    parser.add_argument("-o", "--out", help="output file path")
+    parser.add_argument("-i", "--infile", help="path to SAGE spreadsheet", required=True)
+    parser.add_argument("-o", "--out", help="output file path", required=True)
     args = parser.parse_args()
-
-    if not args.out or args.infile:
-        print("Please specify input and output file paths with the -i and -o options")
-        parser.print_help()
-        exit()
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -22,11 +17,12 @@ if __name__ == "__main__":
         wb = load_workbook(args.infile)
         sheet = wb['sage_journals']
 
-        for r in range(1, sheet.max_row+1):
+        # Loop through all rows of the spreadsheet and update the journals (skipping row 1, the heading row)
+        for r in range(2, sheet.max_row+1):
             j = Journal.pull(sheet.cell(row=r, column=1).value)
             if j is not None:
                 if sheet.cell(row=r, column=1).value != j.id or sheet.cell(row=r, column=2).value != j.bibjson().title:
-                    #if title of the journal in the sheet and in the system do not match - ignore
+                    # if title of the journal in the sheet and in the system do not match - ignore
                     writer.writerow(["Id of requested journal does not match its title. Id: " +
                                     sheet.cell(row=r, column=1).value + ", journal ignored"])
                 else:
@@ -93,5 +89,5 @@ if __name__ == "__main__":
                 # if journal's id is not found in the system
                 writer.writerow(["Journal not found: " + sheet.cell(row=r, column=1).value])
 
-    # finished
-    writer.writerow(["Finished."])
+        # finished
+        writer.writerow(["Finished."])
