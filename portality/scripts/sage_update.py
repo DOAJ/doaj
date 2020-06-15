@@ -7,19 +7,19 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--infile", help="path to SAGE spreadsheet")
     parser.add_argument("-o", "--out", help="output file path")
     args = parser.parse_args()
 
-    if not args.out:
-        print("Please specify an output file path with the -o option")
+    if not args.out or args.infile:
+        print("Please specify input and output file paths with the -i and -o options")
         parser.print_help()
         exit()
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
 
-        file = './resources/SAGE_jnls_in_DOAJ.edited.xlsx'
-        wb = load_workbook(file)
+        wb = load_workbook(args.infile)
         sheet = wb['sage_journals']
 
         for r in range(1, sheet.max_row+1):
