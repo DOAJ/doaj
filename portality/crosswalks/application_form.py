@@ -80,7 +80,10 @@ class ApplicationFormXWalk(JournalGenericXWalk):
 
     @classmethod
     def obj2form(cls, obj):
-        return None
+        forminfo = {}
+        bibjson = obj.bibjson()
+
+        cls.bibjson2form(bibjson, forminfo)
 """
         from portality.formcontext.form_definitions import application_form as ApplicationFormFactory
 

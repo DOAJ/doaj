@@ -1,10 +1,5 @@
 from portality import models, lcc
 from portality.datasets import licenses
-from portality.formcontext.choices import Choices
-from crosswalks.interpreting_methods import interpret_special, interpret_other, reverse_interpret_special, \
-    reverse_interpret_other
-from portality.util import listpop
-
 
 class JournalGenericXWalk(object):
     @classmethod
@@ -47,6 +42,11 @@ class JournalGenericXWalk(object):
 
         if form.copyright_url.data:
             bibjson.copyright_url = form.copyright_url.data
+
+        if "publisher_name" in form.publisher.data:
+            bibjson.publisher_name = form.publisher.data["publisher_name"]
+        if "publisher_country" in form.publisher.data:
+            bibjson.publisher_country = form.publisher.data["publisher_country"]
 
         dep_services = []
         if len(form.deposit_policy.data) > 0:
@@ -138,11 +138,6 @@ class JournalGenericXWalk(object):
         if form.publication_time_weeks.data:
             bibjson.publication_time_weeks = form.publication_time_weeks.data
 
-        if "publisher_name" in form.publisher.data:
-            bibjson.publisher_name = form.publisher.data["publisher_name"]
-        if "publisher_country" in form.publisher.data:
-            bibjson.publisher_country = form.publisher.data["publisher_country"]
-
         if form.other_charges_url.data:
             bibjson.other_charges_url = form.other_charges_url.data
 
@@ -171,6 +166,120 @@ class JournalGenericXWalk(object):
 
         if form.deposit_policy_url.data:
             bibjson.deposit_policy_url = form.deposit_policy_url.data
+
+    @classmethod
+    def bibjson2form(cls, bibjson, forminfo):
+        from portality.models import JournalLikeBibJSON
+        from portality.forms.application_forms import ApplicationFormFactory
+        assert isinstance(bibjson, JournalLikeBibJSON)
+
+        forminfo['alternative_title'] = bibjson.alternative_title
+
+        forminfo["apc_charges"] = []
+        for apc_record in bibjson.apc:
+            forminfo["apc_charges"].append({
+                "apc_currency" : apc_record.get("currency"),
+                "apc_max" : apc_record.get("price")
+            })
+
+        forminfo["apc_url"] = bibjson.apc_url
+
+        pres_choices = [x for x, y in ApplicationFormFactory.choices_for("preservation_service")]
+        if bibjson.preservation_services is not None:
+            forminfo["preservation_service"] = [x for x in bibjson.preservation_services if x in pres_choices]
+            forminfo["preservation_service_other"] = " ".join([x for x in bibjson.preservation_services if x not in pres_choices])
+            if len(forminfo["preservation_service_other"]) > 0:
+                forminfo["preservation_service"].append("other")
+        if "preservation_service" not in forminfo:
+            forminfo["preservation_service"] = []
+        if bibjson.preservation_library:
+            forminfo["preservation_service_library"] = bibjson.preservation_library
+            forminfo["preservation_service"].append("national_library")
+        if len(forminfo["preservation_service"]) == 0 and not bibjson.has_preservation:
+            forminfo["preservation_service"].append("none")
+
+        forminfo["preservation_service_url"] = bibjson.preservation_url
+        forminfo["copyright_author_retains"] = "y" if bibjson.author_retains_copyright else "n"
+        forminfo["copyright_url"] = bibjson.copyright_url
+
+        forminfo["publisher"] = {}
+        forminfo["publisher"]["publisher_name"] = bibjson.publisher_name
+        forminfo["publisher"]["publisher_country"] = bibjson.publisher_country
+
+        dep_choices = [x for x, y in ApplicationFormFactory.choices_for("deposit_policy")]
+        if bibjson.deposit_policy:
+            forminfo["deposit_policy"] = [x for x in bibjson.deposit_policy if x in dep_choices]
+            forminfo["deposit_policy_other"] = " ".join([x for x in bibjson.deposit_policy if x not in dep_choices])
+            if len(forminfo["deposit_policy_other"]) > 0:
+                forminfo["deposit_policy"].append("other")
+        if "deposit_policy" not in forminfo:
+            forminfo["deposit_policy"] = []
+        if not bibjson.deposit_policy_registered and len(forminfo["deposit_policy"]) == 0:
+            forminfo["deposit_policy"].append("Unregistered")
+
+        review_choices = [x for x, y in ApplicationFormFactory.choices_for("review_process")]
+        if bibjson.editorial_review_process:
+            forminfo["review_process"] = [x for x in bibjson.editorial_review_process if x in review_choices]
+            forminfo["review_process_other"] = " ".join([x for x in bibjson.editorial_review_process if x not in review_choices])
+            if len(forminfo["review_process_other"]) > 0:
+                forminfo["review_process"].append("other")
+
+        forminfo["review_url"] = bibjson.editorial_review_url
+        forminfo["pissn"] = bibjson.pissn
+        forminfo["eissn"] = bibjson.eissn
+
+        forminfo["institution"] = {}
+        forminfo["institution"]["institution_name"] = bibjson.institution_name
+        forminfo["institution"]["institution_country"] = bibjson.institution_country
+
+        forminfo['keywords'] = bibjson.keywords
+        forminfo['language'] = bibjson.language
+
+        license_attributes = []
+        ltypes = []
+        for l in bibjson.licenses:
+            ltypes.append(l.get("type"))
+            if l.get("type") == "Publisher's own license":
+                if l.get("BY"): license_attributes.append("BY")
+                if l.get("SA"): license_attributes.append("SA")
+                if l.get("NC"): license_attributes.append("NC")
+                if l.get("ND"): license_attributes.append("ND")
+        forminfo["license_attributes"] = license_attributes
+        forminfo["license"] = ltypes
+
+        forminfo["license_display"] = bibjson.article_license_display
+        forminfo["license_display_example_url"] = bibjson.article_license_display_example_url
+        forminfo["boai"] = bibjson.boai
+        forminfo["license_terms_url"] = bibjson.license_terms_url
+        forminfo["oa_statement_url"] = bibjson.oa_statement_url
+        forminfo["journal_url"] = bibjson.journal_url
+        forminfo["aims_scope_url"] = bibjson.aims_scope_url
+        forminfo["editorial_board_url"] = bibjson.editorial_board_url
+        forminfo["author_instructions_url"] = bibjson.author_instructions_url
+        forminfo["waiver_url"] = bibjson.waiver_url
+
+        pid_choices = [x for x, y in ApplicationFormFactory.choices_for("persistent_identifiers")]
+        if bibjson.pid_scheme:
+            forminfo["persistent_identifiers"] = [x for x in bibjson.pid_scheme if x in pid_choices]
+            forminfo["persistent_identifiers_other"] = " ".join([x for x in bibjson.pid_scheme if x not in pid_choices])
+            if len(forminfo["persistent_identifiers_other"]) > 0:
+                forminfo["persistent_identifiers"].append("other")
+
+        forminfo["plagiarism_detection"] = "y" if bibjson.plagiarism_detection else "n"
+        forminfo["plagiarism_url"] = bibjson.plagiarism_url
+        forminfo["publication_time_weeks"] = bibjson.publication_time_weeks
+        forminfo["other_charges_url"] = bibjson.other_charges_url
+        forminfo['title'] = bibjson.title
+
+        # FIXME: these translations don't handle partial records (i.e. drafts)
+        # we may want to add some methods to allow the settedness of these fields to be checked
+        forminfo["apc"] = "y" if bibjson.has_apc else "n"
+        forminfo["has_other_charges"] = "y" if bibjson.has_other_charges else "n"
+        forminfo["has_waiver"] = "y" if bibjson.has_waiver else "n"
+        forminfo["orcid_ids"] = "y" if bibjson.article_orcid else "n"
+        forminfo["open_citations"] = "y" if bibjson.article_i4oc_open_citations else "n"
+
+        forminfo["deposit_policy_url"] = bibjson.deposit_policy_url
 
 
 class JournalFormXWalk(JournalGenericXWalk):
@@ -236,139 +345,15 @@ class JournalFormXWalk(JournalGenericXWalk):
         forminfo = {}
         bibjson = obj.bibjson()
 
-        forminfo['title'] = bibjson.title
-        forminfo['url'] = bibjson.get_single_url(urltype='homepage')
-        forminfo['alternative_title'] = bibjson.alternative_title
-        forminfo['pissn'] = listpop(bibjson.get_identifiers(idtype=bibjson.P_ISSN))
-        forminfo['eissn'] = listpop(bibjson.get_identifiers(idtype=bibjson.E_ISSN))
-        forminfo['publisher'] = bibjson.publisher
-        forminfo['society_institution'] = bibjson.institution
-        forminfo['platform'] = bibjson.provider
+        cls.bibjson2form(bibjson, forminfo)
+
+        """
         forminfo['contact_name'] = listpop(obj.contacts(), {}).get('name')
         forminfo['contact_email'] = listpop(obj.contacts(), {}).get('email')
         forminfo['confirm_contact_email'] = forminfo['contact_email']
-        forminfo['country'] = bibjson.country
         forminfo["replaces"] = bibjson.replaces
         forminfo["is_replaced_by"] = bibjson.is_replaced_by
         forminfo["discontinued_date"] = bibjson.discontinued_date
-
-        apc = bibjson.apc
-        if apc:
-            forminfo['processing_charges'] = reverse_interpret_special(True)
-            forminfo['processing_charges_currency'] = apc.get('currency')
-            forminfo['processing_charges_amount'] = apc.get('average_price')
-        else:
-            forminfo['processing_charges'] = reverse_interpret_special(False)
-
-        forminfo['processing_charges_url'] = bibjson.apc_url
-
-        submission_charges = bibjson.submission_charges
-        if submission_charges:
-            forminfo['submission_charges'] = reverse_interpret_special(True)
-            forminfo['submission_charges_currency'] = submission_charges.get('currency')
-            forminfo['submission_charges_amount'] = submission_charges.get('average_price')
-        else:
-            forminfo['submission_charges'] = reverse_interpret_special(False)
-
-        forminfo['submission_charges_url'] = bibjson.submission_charges_url
-
-        forminfo['waiver_policy_url'] = bibjson.get_single_url(urltype='waiver_policy')
-        forminfo['waiver_policy'] = reverse_interpret_special(forminfo['waiver_policy_url'] is not None and forminfo['waiver_policy_url'] != '')
-
-        #archiving_policies = reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
-        #substitutions = [
-        #    {"default": Choices.digital_archiving_policy_val("library"), "field" : "digital_archiving_policy_library" },
-        #    {"default": Choices.digital_archiving_policy_val("other"), "field" : "digital_archiving_policy_other"}
-        #]
-        #archiving_policies, special_fields = interpret_list(
-        #    archiving_policies, # current values
-        #    Choices.digital_archiving_policy_list(), # allowed values
-        #    substitutions # substitution instructions
-        #)
-        #forminfo.update(special_fields)
-
-        # checkboxes
-        archiving_policies = reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
-
-        # for backwards compatibility we keep the "Other" field first in the reverse xwalk
-        # previously we didn't store which free text value was which (Other, or specific national library)
-        # so in those cases, just put it in "Other", it'll be correct most of the time
-        archiving_policies, forminfo['digital_archiving_policy_other'] = \
-            reverse_interpret_other(archiving_policies, Choices.digital_archiving_policy_list())
-
-        archiving_policies, forminfo['digital_archiving_policy_library'] = \
-            reverse_interpret_other(
-                archiving_policies,
-                Choices.digital_archiving_policy_list(),
-                other_value=Choices.digital_archiving_policy_val("library"),
-                replace_label=Choices.digital_archiving_policy_label("library")
-            )
-
-        forminfo['digital_archiving_policy'] = archiving_policies
-        forminfo['digital_archiving_policy_url'] = bibjson.archiving_policy.get('url')
-
-        forminfo['crawl_permission'] = reverse_interpret_special(bibjson.allows_fulltext_indexing)
-
-        # checkboxes
-        article_ids = reverse_interpret_special(bibjson.persistent_identifier_scheme)
-        article_ids, forminfo['article_identifiers_other'] = \
-            reverse_interpret_other(article_ids, Choices.article_identifiers_list())
-
-        forminfo['article_identifiers'] = article_ids
-
-        forminfo['download_statistics'] = reverse_interpret_special(bibjson.article_statistics.get('statistics'))
-        forminfo['download_statistics_url'] = bibjson.article_statistics.get('url')
-
-        forminfo['first_fulltext_oa_year'] = bibjson.oa_start.get('year')
-
-        # checkboxes
-        forminfo['fulltext_format'], forminfo['fulltext_format_other'] = \
-            reverse_interpret_other(bibjson.format, Choices.fulltext_format_list())
-
-        forminfo['keywords'] = bibjson.keywords
-
-        forminfo['languages'] = bibjson.language
-
-        forminfo['editorial_board_url'] = bibjson.get_single_url('editorial_board')
-
-        forminfo['review_process'] = bibjson.editorial_review.get('process', '')
-        forminfo['review_process_url'] = bibjson.editorial_review.get('url')
-
-        forminfo['aims_scope_url'] = bibjson.get_single_url('aims_scope')
-        forminfo['instructions_authors_url'] = bibjson.get_single_url('author_instructions')
-
-        forminfo['plagiarism_screening'] = reverse_interpret_special(bibjson.plagiarism_detection.get('detection'))
-        forminfo['plagiarism_screening_url'] = bibjson.plagiarism_detection.get('url')
-
-        forminfo['publication_time'] = bibjson.publication_time
-
-        forminfo['oa_statement_url'] = bibjson.get_single_url('oa_statement')
-
-        license = bibjson.get_license()
-        license = license if license else {}  # reinterpret the None val
-        forminfo['license'], forminfo['license_other'] = reverse_interpret_other(license.get('type'), Choices.licence_list())
-
-        if forminfo['license_other']:
-            forminfo['license_checkbox'] = []
-            if license.get('BY'): forminfo['license_checkbox'].append('BY')
-            if license.get('SA'): forminfo['license_checkbox'].append('SA')
-            if license.get('NC'): forminfo['license_checkbox'].append('NC')
-            if license.get('ND'): forminfo['license_checkbox'].append('ND')
-
-        forminfo['license_url'] = license.get('url')
-        forminfo['open_access'] = reverse_interpret_special(license.get('open_access'))
-        forminfo['license_embedded'] = reverse_interpret_special(license.get('embedded'))
-        forminfo['license_embedded_url'] = license.get('embedded_example_url')
-
-        # checkboxes
-        forminfo['deposit_policy'], forminfo['deposit_policy_other'] = \
-            reverse_interpret_other(reverse_interpret_special(bibjson.deposit_policy), Choices.deposit_policy_list())
-
-        forminfo['copyright'] = reverse_interpret_special(bibjson.author_copyright.get('copyright', ''))
-        forminfo['copyright_url'] = bibjson.author_copyright.get('url')
-
-        forminfo['publishing_rights'] = reverse_interpret_special(bibjson.author_publishing_rights.get('publishing_rights', ''))
-        forminfo['publishing_rights_url'] = bibjson.author_publishing_rights.get('url')
 
         forminfo['notes'] = obj.ordered_notes
 
@@ -384,13 +369,6 @@ class JournalFormXWalk(JournalGenericXWalk):
             forminfo['editor'] = obj.editor
 
         forminfo['doaj_seal'] = obj.has_seal()
-
-        # old fields - only show them if the values actually exist in the journal record
-        if bibjson.author_pays:
-            forminfo['author_pays'] = bibjson.author_pays
-        if bibjson.author_pays_url:
-            forminfo['author_pays_url'] = bibjson.author_pays_url
-        if bibjson.oa_end:
-            forminfo['oa_end_year'] = bibjson.oa_end.get('year')
+        """
 
         return forminfo

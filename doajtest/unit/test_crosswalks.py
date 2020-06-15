@@ -59,6 +59,21 @@ class TestCrosswalks(DoajTestCase):
 
         assert xwalked == compare, diff_dicts(xwalked, compare, 'xwalked', 'fixture')
 
+    def test_02_journal_obj2form(self):
+        j = models.Journal(**JOURNAL_SOURCE)
+        form = crosswalks.journal_form.JournalFormXWalk.obj2form(j)
+
+        # remove fields from the fixture that the crosswalk currently doesn't cover
+        compare = deepcopy(JOURNAL_FORMINFO)
+        del compare["editor"]
+        del compare["subject"]
+        del compare["doaj_seal"]
+        del compare["owner"]
+        del compare["editor_group"]
+        del compare["notes"]
+
+        assert form == compare, diff_dicts(form, compare, 'xwalked', 'fixture')
+
 
     def test_01_journal(self):
         forminfo = crosswalks.journal_form.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))

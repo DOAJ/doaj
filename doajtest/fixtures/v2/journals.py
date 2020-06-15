@@ -219,7 +219,7 @@ JOURNAL_INFO = {
     "license_display" : ["Embed", "Display"],
     "license_display_example_url": "http://licence.embedded",
     "boai": True,
-    "license": "Publisher's own license",
+    "license": ["Publisher's own license"],
     "license_terms_url" : "http://licence.url",
     "oa_statement_url" : "http://oa.statement",
     "journal_url" : "http://journal.url",
@@ -248,12 +248,6 @@ JOURNAL_INFO = {
     #"discontinued_date": "2001-01-01"
 }
 
-JOURNAL_LEGACY = {
-    "author_pays": "Y",
-    "author_pays_url": "http://author.pays",
-    "oa_end_year": 1991
-}
-
 # assemble the form as a regular object
 
 JOURNAL_FORMINFO = deepcopy(JOURNAL_INFO)
@@ -262,7 +256,6 @@ JOURNAL_FORMINFO.update(SEAL)
 JOURNAL_FORMINFO.update(SUBJECT)
 JOURNAL_FORMINFO.update(NOTES)
 JOURNAL_FORMINFO.update(OWNER)
-JOURNAL_FORMINFO.update(JOURNAL_LEGACY)
 
 # restructure the form as the text would be returned from the site
 

@@ -925,7 +925,7 @@ class FieldDefinitions:
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "SHERPA/RoMEO", "value": "SHERPA/RoMEO"},
+            {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo"},
             {"display": "Dulcinea", "value": "Dulcinea"},
             {"display": "Héloïse", "value": "Héloïse"},
             {"display": "Diadorim", "value": "Diadorim"},
