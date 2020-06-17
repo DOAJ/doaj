@@ -25,10 +25,6 @@ class ApplicationFormXWalk(JournalGenericXWalk):
 
         cls.form2bibjson(form, bibjson)
 
-
-        if form.contact_name.data or form.contact_email.data:
-            application.add_contact(form.contact_name.data, form.contact_email.data)
-
         # admin stuff
         if getattr(form, 'application_status', None):
             application.set_application_status(form.application_status.data)
@@ -77,13 +73,14 @@ class ApplicationFormXWalk(JournalGenericXWalk):
 
         return application
 
-
     @classmethod
     def obj2form(cls, obj):
         forminfo = {}
         bibjson = obj.bibjson()
 
         cls.bibjson2form(bibjson, forminfo)
+
+        return forminfo
 """
         from portality.formcontext.form_definitions import application_form as ApplicationFormFactory
 

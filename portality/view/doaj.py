@@ -115,22 +115,6 @@ def subjects():
     return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
 
 
-"""
-@blueprint.route("/application/new", methods=["GET", "POST"])
-@write_required()
-def suggestion():
-    if request.method == "GET":
-        fc = formcontext.ApplicationFormFactory.get_form_context()
-        return fc.render_template(edit_suggestion_page=True)
-    elif request.method == "POST":
-        fc = formcontext.ApplicationFormFactory.get_form_context(form_data=request.form)
-        if fc.validate():
-            fc.finalise()
-            return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
-        else:
-            return fc.render_template(edit_suggestion_page=True)
-"""
-
 from portality.forms.application_forms import ApplicationFormFactory
 
 @blueprint.route("/application/new", methods=["GET", "POST"])
@@ -138,65 +122,42 @@ from portality.forms.application_forms import ApplicationFormFactory
 @write_required()
 @login_required
 def public_application(draft_id=None):
+    fc = ApplicationFormFactory.context("public")
 
-    draft_application = None
-    if draft_id is not None:
+    if request.method == "GET":
+        if draft_id is None:
+            return fc.render_template()
         draft_application = models.DraftApplication.pull(draft_id)
         if draft_application is None:
             abort(404)
         if draft_application.owner != current_user.id:
             abort(404)
-
-    if request.method == "GET":
-        fc = ApplicationFormFactory.context("public")
-        if draft_application is not None:
-            fc.processor(source=draft_application)
+        fc.processor(source=draft_application)
         return fc.render_template(obj=draft_application)
 
     elif request.method == "POST":
-
-        fc = ApplicationFormFactory.context("public")
-
-        # find out if we're being asked to modify the form, rather than submit it
-        for key in request.form.keys():
-            if key.startswith("field__add"):
-                val = request.form.get(key)
-                processor = fc.processor(formdata=request.form)
-                field = fc.get(val)
-                wtf = field.wtfield
-                wtf.append_entry()
-                return fc.render_template()
-            elif key.startswith("field__remove"):
-                val = request.form.get(key)
-
-
-
-
         draft = request.form.get("draft")
         async_def = request.form.get("async")
-        draft_id = request.form.get("id") if draft_id is None else draft_id
-
-        if draft_id is not None:
-            draft_application = models.DraftApplication.pull(draft_id)
-            if draft_application is None:
-                abort(404)
-            if draft_application.owner != current_user.id:
-                abort(404)
-
-
         processor = fc.processor(formdata=request.form)
 
         if draft is not None:
-            the_draft = processor.draft(current_user._get_current_object(), id=draft_id)
-            if async_def is not None:
-                return make_response(json.dumps({"id" : the_draft.id}), 200)
-            else:
-                return redirect(url_for('doaj.suggestion_thanks', _anchor='draft'))
+            draft_application = None
+            if draft_id is not None:
+                draft_application = models.DraftApplication.pull(draft_id)
+                if draft_application is None:
+                    abort(404)
+                if draft_application.owner != current_user.id:
+                    abort(404)
 
+            draft_application = processor.draft(current_user._get_current_object(), id=draft_id)
+            if async_def is not None:
+                return make_response(json.dumps({"id": draft_application.id}), 200)
+            else:
+                return redirect(url_for('doaj.draft_saved'))
         else:
             if processor.validate():
                 processor.finalise()
-                return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
+                return redirect(url_for('doaj.application_thanks'))
             else:
                 return fc.render_template()
 
@@ -223,9 +184,14 @@ def journal_readonly(journal_id):
 
 
 @blueprint.route("/application/thanks", methods=["GET"])
-def suggestion_thanks():
-    return render_template('doaj/suggest_thanks.html')
-    
+def application_thanks():
+    return render_template('doaj/application_thanks.html')
+
+
+@blueprint.route("/application/draft", methods=["GET"])
+def draft_saved():
+    return render_template("doaj/draft_saved.html")
+
 
 @blueprint.route("/csv")
 @analytics.sends_ga_event(event_category=app.config.get('GA_CATEGORY_JOURNALCSV', 'JournalCSV'), event_action=app.config.get('GA_ACTION_JOURNALCSV', 'Download'))

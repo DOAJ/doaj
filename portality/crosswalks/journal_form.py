@@ -27,15 +27,18 @@ class JournalGenericXWalk(object):
         if form.apc_url.data:
             bibjson.apc_url = form.apc_url.data
 
-        pres_services = []
-        if len(form.preservation_service.data) > 0:
-            pres_services = [e for e in form.preservation_service.data if
-                             e not in ["national_library", "none", "other"]]
-        if "other" in form.preservation_service.data and form.preservation_service_other.data:
-            pres_services.append(form.preservation_service_other.data)
-        bibjson.set_preservation(pres_services, form.preservation_service_url.data)
-        if "national_library" in form.preservation_service.data and form.preservation_service_library.data:
-            bibjson.add_preservation(libraries=form.preservation_service_library.data)
+        if form.preservation_service.data:
+            pres_services = [e for e in form.preservation_service.data if e not in ["national_library", "none", "other"]]
+            if "other" in form.preservation_service.data and form.preservation_service_other.data:
+                pres_services.append(form.preservation_service_other.data)
+            bibjson.set_preservation(pres_services, None)
+            if "national_library" in form.preservation_service.data and form.preservation_service_library.data:
+                bibjson.add_preservation_library(form.preservation_service_library.data)
+            if "none" in form.preservation_service.data:
+                bibjson.has_preservation = False
+
+        if form.preservation_service_url.data:
+            bibjson.preservation_url = form.preservation_service_url.data
 
         if form.copyright_author_retains.data:
             bibjson.author_retains_copyright = form.copyright_author_retains.data
@@ -43,24 +46,23 @@ class JournalGenericXWalk(object):
         if form.copyright_url.data:
             bibjson.copyright_url = form.copyright_url.data
 
-        if "publisher_name" in form.publisher.data:
+        if "publisher_name" in form.publisher.data and form.publisher.data["publisher_name"]:
             bibjson.publisher_name = form.publisher.data["publisher_name"]
-        if "publisher_country" in form.publisher.data:
+        if "publisher_country" in form.publisher.data and form.publisher.data["publisher_country"]:
             bibjson.publisher_country = form.publisher.data["publisher_country"]
 
-        dep_services = []
-        if len(form.deposit_policy.data) > 0:
+        if form.deposit_policy.data:
             dep_services = [e for e in form.deposit_policy.data if e not in ["Unregistered", "none", "other"]]
-        if "other" in form.deposit_policy.data and form.deposit_policy_other.data:
-            dep_services.append(form.deposit_policy_other.data)
-        if dep_services:
-            bibjson.deposit_policy = dep_services
-        if "Unregistered" in form.deposit_policy.data:
-            bibjson.deposit_policy_registered = False
-        elif len(dep_services) > 0:
-            bibjson.deposit_policy_registered = True
+            if "other" in form.deposit_policy.data and form.deposit_policy_other.data:
+                dep_services.append(form.deposit_policy_other.data)
+            if dep_services:
+                bibjson.deposit_policy = dep_services
+            if "Unregistered" in form.deposit_policy.data:
+                bibjson.deposit_policy_registered = False
+            elif len(dep_services) > 0:
+                bibjson.deposit_policy_registered = True
 
-        if form.review_process.data or form.review_process_url.data:
+        if form.review_process.data or form.review_url.data:
             processes = [e for e in form.review_process.data if e not in ["other"]]
             if "other" in form.review_process.data and form.review_process_other.data:
                 processes.append(form.review_process_other.data)
@@ -72,9 +74,9 @@ class JournalGenericXWalk(object):
         if form.eissn.data:
             bibjson.eissn = form.eissn.data
 
-        if "institution_name" in form.institution.data:
+        if "institution_name" in form.institution.data and form.institution.data["institution_name"]:
             bibjson.institution_name = form.institution.data["institution_name"]
-        if "institution_country" in form.institution.data:
+        if "institution_country" in form.institution.data and form.institution.data["institution_country"]:
             bibjson.institution_country = form.institution.data["institution_country"]
 
         if form.keywords.data:
@@ -86,20 +88,21 @@ class JournalGenericXWalk(object):
         lurl = form.license_terms_url.data
         if lurl:
             bibjson.license_terms_url = lurl
-        for ltype in form.license.data:
-            by, nc, nd, sa = None, None, None, None
-            if ltype in licenses:
-                by = licenses[ltype]['BY']
-                nc = licenses[ltype]['NC']
-                nd = licenses[ltype]['ND']
-                sa = licenses[ltype]['SA']
-                lurl = licenses[type]["url"]
-            elif form.license_attributes.data:
-                by = True if 'BY' in form.license_attributes.data else False
-                nc = True if 'NC' in form.license_attributes.data else False
-                nd = True if 'ND' in form.license_attributes.data else False
-                sa = True if 'SA' in form.license_attributes.data else False
-            bibjson.add_license(ltype, url=lurl, by=by, nc=nc, nd=nd, sa=sa)
+        if form.license.data:
+            for ltype in form.license.data:
+                by, nc, nd, sa = None, None, None, None
+                if ltype in licenses:
+                    by = licenses[ltype]['BY']
+                    nc = licenses[ltype]['NC']
+                    nd = licenses[ltype]['ND']
+                    sa = licenses[ltype]['SA']
+                    lurl = licenses[type]["url"]
+                elif form.license_attributes.data:
+                    by = True if 'BY' in form.license_attributes.data else False
+                    nc = True if 'NC' in form.license_attributes.data else False
+                    nd = True if 'ND' in form.license_attributes.data else False
+                    sa = True if 'SA' in form.license_attributes.data else False
+                bibjson.add_license(ltype, url=lurl, by=by, nc=nc, nd=nd, sa=sa)
 
         if form.license_display.data:
             bibjson.article_license_display = form.license_display.data
@@ -125,11 +128,12 @@ class JournalGenericXWalk(object):
         if form.waiver_url.data:
             bibjson.waiver_url = form.waiver_url.data
 
-        schemes = [e for e in form.persistent_identifiers.data if e not in ["none", "other"]]
-        if "other" in form.persistent_identifiers.data and form.persistent_identifiers_other.data:
-            schemes.append(form.persistent_identifiers_other.data)
-        if len(schemes) > 0:
-            bibjson.pid_scheme = schemes
+        if form.persistent_identifiers.data:
+            schemes = [e for e in form.persistent_identifiers.data if e not in ["none", "other"]]
+            if "other" in form.persistent_identifiers.data and form.persistent_identifiers_other.data:
+                schemes.append(form.persistent_identifiers_other.data)
+            if len(schemes) > 0:
+                bibjson.pid_scheme = schemes
 
         if form.plagiarism_detection.data:
             has_detection = form.plagiarism_detection.data == "y"
@@ -195,11 +199,12 @@ class JournalGenericXWalk(object):
         if bibjson.preservation_library:
             forminfo["preservation_service_library"] = bibjson.preservation_library
             forminfo["preservation_service"].append("national_library")
-        if len(forminfo["preservation_service"]) == 0 and not bibjson.has_preservation:
+        if bibjson.has_preservation is False and len(forminfo["preservation_service"]) == 0:
             forminfo["preservation_service"].append("none")
 
         forminfo["preservation_service_url"] = bibjson.preservation_url
-        forminfo["copyright_author_retains"] = "y" if bibjson.author_retains_copyright else "n"
+        if bibjson.author_retains_copyright is not None:
+            forminfo["copyright_author_retains"] = "y" if bibjson.author_retains_copyright else "n"
         forminfo["copyright_url"] = bibjson.copyright_url
 
         forminfo["publisher"] = {}
@@ -214,7 +219,7 @@ class JournalGenericXWalk(object):
                 forminfo["deposit_policy"].append("other")
         if "deposit_policy" not in forminfo:
             forminfo["deposit_policy"] = []
-        if not bibjson.deposit_policy_registered and len(forminfo["deposit_policy"]) == 0:
+        if bibjson.deposit_policy_registered is False and len(forminfo["deposit_policy"]) == 0:
             forminfo["deposit_policy"].append("Unregistered")
 
         review_choices = [x for x, y in ApplicationFormFactory.choices_for("review_process")]
@@ -265,7 +270,8 @@ class JournalGenericXWalk(object):
             if len(forminfo["persistent_identifiers_other"]) > 0:
                 forminfo["persistent_identifiers"].append("other")
 
-        forminfo["plagiarism_detection"] = "y" if bibjson.plagiarism_detection else "n"
+        if bibjson.plagiarism_detection is not None:
+            forminfo["plagiarism_detection"] = "y" if bibjson.plagiarism_detection else "n"
         forminfo["plagiarism_url"] = bibjson.plagiarism_url
         forminfo["publication_time_weeks"] = bibjson.publication_time_weeks
         forminfo["other_charges_url"] = bibjson.other_charges_url
@@ -273,11 +279,16 @@ class JournalGenericXWalk(object):
 
         # FIXME: these translations don't handle partial records (i.e. drafts)
         # we may want to add some methods to allow the settedness of these fields to be checked
-        forminfo["apc"] = "y" if bibjson.has_apc else "n"
-        forminfo["has_other_charges"] = "y" if bibjson.has_other_charges else "n"
-        forminfo["has_waiver"] = "y" if bibjson.has_waiver else "n"
-        forminfo["orcid_ids"] = "y" if bibjson.article_orcid else "n"
-        forminfo["open_citations"] = "y" if bibjson.article_i4oc_open_citations else "n"
+        if bibjson.has_apc is not None:
+            forminfo["apc"] = "y" if bibjson.has_apc else "n"
+        if bibjson.has_other_charges is not None:
+            forminfo["has_other_charges"] = "y" if bibjson.has_other_charges else "n"
+        if bibjson.has_waiver is not None:
+            forminfo["has_waiver"] = "y" if bibjson.has_waiver else "n"
+        if bibjson.article_orcid is not None:
+            forminfo["orcid_ids"] = "y" if bibjson.article_orcid else "n"
+        if bibjson.article_i4oc_open_citations is not None:
+            forminfo["open_citations"] = "y" if bibjson.article_i4oc_open_citations else "n"
 
         forminfo["deposit_policy_url"] = bibjson.deposit_policy_url
 

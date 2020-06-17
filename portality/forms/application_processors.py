@@ -5,7 +5,7 @@ from portality import models, constants, app_email
 from portality.lib.formulaic import FormProcessor
 import portality.notifications.application_emails as emails
 
-from wtforms import FormField
+from wtforms import FormField, FieldList
 
 
 class PublicApplication(FormProcessor):
@@ -33,6 +33,12 @@ class PublicApplication(FormProcessor):
                 if field.errors:
                     if isinstance(field, FormField):
                         _resetDefaults(field.form)
+                    elif isinstance(field, FieldList):
+                        for sub in field:
+                            if isinstance(sub, FormField):
+                                _resetDefaults(sub)
+                            else:
+                                sub.data = sub.default
                     else:
                         field.data = field.default
 

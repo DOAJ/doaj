@@ -398,7 +398,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def plagiarism_detection(self):
-        return self.__seamless__.get_single("plagiarism.detection", default=False)
+        return self.__seamless__.get_single("plagiarism.detection")
 
     @property
     def plagiarism_url(self):
@@ -415,6 +415,8 @@ class JournalLikeBibJSON(SeamlessMixin):
     @property
     def preservation_services(self):
         pres = self.preservation
+        if pres is None:
+            return None
         if "service" in pres:
             return pres["service"]
         else:
@@ -423,6 +425,8 @@ class JournalLikeBibJSON(SeamlessMixin):
     @property
     def preservation_library(self):
         pres = self.preservation
+        if pres is None:
+            return None
         if "national_library" in pres:
             return pres["national_library"]
         return None
