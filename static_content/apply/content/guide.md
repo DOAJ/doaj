@@ -11,7 +11,6 @@ Before you start the application process, you will be asked to log in or registe
 
 Journals applying to DOAJ **must** meet the following criteria:
 
-{:.tabular-list .tabular-list--ordered}   
 1. The journal must be [actively publishing scholarly research](#the-type-of-journal-that-can-apply)
 2. The journal must be [fully Open Access](#type-of-open-access).
 3. The journal must have its own dedicated URL and [homepage or website](#journal-website) that is accessible from any location.
