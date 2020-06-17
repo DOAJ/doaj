@@ -11,20 +11,14 @@ Before you start the application process, you will be asked to log in or registe
 
 Journals applying to DOAJ **must** meet the following criteria:
 
-{:.numbered-table}
-|   | Criteria                                                                                                                                                | Details                                                                                                                             |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|   | The journal must be actively publishing scholarly research                                                                                              | All research subject areas are accepted<br>Should publish at least five (5) research articles a year<br>Can publish in any language<br> Read about the [additional criteria for some journal types](#additional-criteria-for-some-journal-types).                  |
-|   | The primary target audience should be researchers or practitioners                                                                                      |                                                                                                                                                                                                                                                                    |
-|   | The journal must be fully [Open Access](#type-of-open-access).                                                                                          | The full text of all content must be available for free and open access without delay (i.e. no embargo)<br>Requiring users to register to read is not acceptable.<br>A charge for the print version of the journal is permitted.                                   |
-|   | The journal's open access policy must be clearly stated on the journal web site (and not just the publisher's own site).                                | Ideally it will follow the BOAI definition of open access.                                                                                                                                                                                                         |
-|   | The journal must have its own dedicated URL and [homepage or website](#journal-website) that is accessible from any location.                           | The website must be clear and easy to navigate.<br>The website should adhere to the guidelines described in the Principles of Transparency and Best Practice in Scholarly Publishing                                                                               |
-|   | Each article must be available as an individual, [full-text article](#full-text-articles)                                                               | One unique URL per article<br>As an HTML file or a PDF, as a minimum                                                                                                                                                                                               |
-|   | A journal must have at least one ISSN (International Standard Serial Number) which is registered and confirmed at issn.org.                             | The ISSN(s) must be displayed on the website.<br>The name of the journal in the application and on the website must match what is shown at ISSN.org                                                                                                                |
-|   | A journal must have an editor and an [editorial board](#editorial-process)                                                                              | The editorial board must be listed on the website.<br>The name and affiliation of all editors and board members must be included.<br>If a journal is run by a student body, it must have an advisory board of which at least two members have a PhD or equivalent. |
-|   | All articles must pass through a quality control system (peer review) before publication.                                                               | The type and details of the peer review process must be stated clearly on the website.                                                                                                                                                                             |
-|   | The [copyright terms](#copyright) applied to the published content must be clearly stated and separate from the copyright terms applied to the website. | Copyright terms must not contradict the licensing terms or the terms of the Open Access policy.<br>"All rights reserved" is not appropriate for open access content.                                                                                               |
-|   | The [licensing terms](#licensing) for use and re-use of the published content must be clearly stated on the website.                                    | We recommends the use of Creative Commons licenses for this purpose.<br>If Creative Commons licensing is not used, similar terms and conditions should be applied                                                                                                  |
+{:.tabular-list .tabular-list--ordered}   
+1. The journal must be [actively publishing scholarly research](#the-type-of-journal-that-can-apply)
+2. The journal must be [fully Open Access](#type-of-open-access).
+3. The journal must have its own dedicated URL and [homepage or website](#journal-website) that is accessible from any location.
+4. A journal must have at least one [ISSN (International Standard Serial Number)](#issn) which is registered and confirmed at issn.org.
+5. A journal must have an [editor and an editorial board](#editorial-process)
+6. The [licensing terms](#licensing) for use and re-use of the published content must be clearly stated on the website.
+11. The [copyright terms](#copyright) applied to the published content must be clearly stated and separate from the copyright terms applied to the website.
 
 Please make sure that:
 
@@ -40,6 +34,19 @@ Please make sure that:
 **Journals do not need to meet the Seal criteria to be accepted into DOAJ.**
 
 You might like to [watch our video series](https://www.youtube.com/embed/videoseries?list=PLgsj-CNPbicMgBrdzA4jfevecibpl_a1G) which introduces DOAJ and gives some context to our criteria and some of the terms we use.
+
+---
+
+### The type of journal that can apply
+
+Journals published in any language may apply.
+
+- The journal must be actively publishing scholarly research
+  - All research subject areas are accepted
+  - Should publish at least 5 research articles per year
+- The primary target audience should be researchers or practitioners
+
+Read about the [additional criteria for some journal types](#additional-criteria-for-some-journal-types).
 
 ---
 
@@ -59,93 +66,75 @@ The journal's open access policy must be stated on the journal web site and not 
 
 ### Journal website
 
-The journal must be linkable (it must have a URL) and have its own dedicated website.
+- The journal must have its own dedicated URL and homepage that is accessible from any location
+- The website must be clear and easy to navigate
+- The journal  should adhere to the guidelines described in the Principles of Transparency and Best Practice in Scholarly Publishing
+- Each article must be available as an individual, full-text article
+  - one unique URL per article
+  - HTML or PDF, as a minimum
 
-The website must be clear and easy to navigate. It must demonstrate that it adheres to high ethical and professional standards, according to the Principles of Transparency and Best Practice in Scholarly Publishing.
-
-The following information must be available on the journal site:
-
-- Open access policy
+The following information must be available online, and easily accessible from the journal homepage:
+- Open Access policy
 - Aims and scope
 - Editorial board (including institutional affiliations of all members)
 - Instructions for authors
-- Editorial process (peer review or editorial review)
-- Plagiarism policy (if any)
-- Copyright and licensing terms
-- Author charges (must be stated, even if there is none)
+- Editorial process (peer review)
+- Licensing terms
+- Copyright terms
+- Author charges
+  - If a journal doesn’t have any charges then this must be stated
+  - Must include all fees that may be charged to the author, from submission to publication, including:
+    - submission fees
+    - editorial processing charges
+    - article processing charges (APCs)
+    - page charges
+    - colour charges
 - Contact details
-
-Information on author charges must include all fees that an author might have to pay—from submission to publication—including submission fees, article processing charges (APCs), page charges, colour charges, etc.
-
-It must be clearly stated if a journal doesn’t have any charges.
-
-#### Full-text articles
-
-The journal content must be available as individual full-text articles: one unique URL per article. Each article must be downloadable as HTML or a PDF, as a minimum.
-
-### Editorial process
-
-A journal must have an editor and an editorial board. You must list the current editorial board on the journal site and include the name and affiliation of all editors and board members.
-
-All articles must pass through a quality control system (editorial review or peer review) before publication and the exact type of review must be stated clearly on the website.
-
-Arts & Humanities journals only: we will accept a form of editorial review using two editors and no editorial board.
-
-Journals run by a student body must have an advisory board. At least two members of the Board must have a PhD or equivalent.
+  - The contact details must include a real name and the journal’s dedicated email address
+  - The country in the application and on the journal website must be the country where the publisher is registered and carries out its business activities
 
 ---
 
-### Copyright and licensing
+### ISSN
 
-Copyright and licensing are two distinct legal terms.
+- A journal must have at least one ISSN (International Standard Serial Number) which is registered and confirmed at [issn.org](https://portal.issn.org/).
+- The ISSN(s) must be displayed on the website.
+- The name of the journal in the application and on the website must match what is shown at [issn.org](https://portal.issn.org/).
 
-Copyright declares who owns the rights to the website’s content (for example, the about pages and the blog) and its published academic content (that is, articles and figures).
+---
 
-Licensing describes the terms under which the website’s readers are allowed to use or re-use the copyrighted content.
+### Editorial process
 
-#### Copyright
+- A journal must have an editor and an editorial board.
+  - The editorial board must be listed on the website.
+  - The name and affiliation of all editors and board members must be included.
+  - If the journal is run by a student body, it must have an advisory board of which at least two members have a PhD or equivalent.
+- All articles must pass through a quality control system (peer review) before publication.
+  - The type and details of the peer review process must be stated clearly on the website.
 
-The terms of copyright applied to the published content must be clearly stated and be separate from any copyright terms applied to the website.
+---
 
-Copyright terms mustn’t contradict the licensing terms or the terms of the open access policy.
+### Licensing
 
-Our preference is that the author retains copyright, without restrictions, but DOAJ does accept journals where copyright is transferred. Authors may then grant the publishers **non-exclusive** publishing rights to publish the articles.
+- The licensing terms for use and re-use of the published content must be clearly stated on the website.
+- DOAJ recommends the use of [Creative Commons](https://creativecommons.org/) licenses for this purpose.
+- If Creative Commons licensing is not used, similar terms and conditions should be applied.
+  - Extra care must be taken to state these terms clearly.
 
-Sometimes, even though the author retains copyright, restrictions are imposed by the publisher:
+---
 
-- The publisher requires **exclusive** publishing rights. The author no longer holds the copyright without restrictions.
-- The publisher requires **a transfer of commercial rights or an exclusive grant of commercial rights** for the articles. The author no longer retains copyright without restrictions.
+### Copyright
 
-#### Licensing
+- The copyright terms applied to the published content must be clearly stated and separate from the copyright terms applied to the website.
+- Copyright terms must not contradict the licensing terms or the terms of the Open Access policy.
+  - “All rights reserved” is not appropriate for open access content.
 
-1. The licensing terms for use and re-use of the published content must be clearly stated on the website.
-  - Preferably they will also be stated on the full text of every article.
-2. DOAJ recommends the use of Creative Commons licenses for this purpose
-  - This ensures that readers know what they can and can’t do with the content.
-3. In some cases, DOAJ will accept a publisher’s own license
-  - But only if it is broadly equivalent to one of the Creative Commons licenses.
-4. The terms of a Creative Commons license may not be added to or changed in any way.
-  - For example, a journal shouldn’t write ‘[Other conditions] will apply and prevail over all conflicting provisions of the [open access] license’ model.
-  - Creative Commons states clearly that “For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply”.
+---
 
-#### The difficult bit
+### Footnote
 
-The terms of the user license always apply to readers and NOT to the copyright holder.
-
-1. When copyright is retained by the author without restrictions, the license applies to the readers and the publisher.
-2. When copyright is transferred to the publisher or publishing rights are exclusively licensed, the license applies to the author as well as the readers.
-3. When the author retains copyright, but commercial rights are transferred to the publisher, and a non-commercial license is used, the license applies to the reader and the author.
-4. When the author retains copyright, but exclusive publishing rights are granted to the publisher, this is equivalent to the transfer of commercial rights to the publisher.
-
-#### Fair use
-
-An open access journal cannot restrict the rights of the author to fair use only.
-
-Fair use alone is not open access and DOAJ will not accept a journal with these restrictions. A common example of fair use is when a journal allows authors only to retain the rights to:
-
-- use the substance of the article in future works, including lectures and books;
-- reproduce the article for one’s own purposes, provided that copies are not offered for sale;
-- self-archive the article.
+- Applications that contain information that is inaccurate or wrong, or that have answers missing, are automatically rejected.
+- Journals that are rejected must wait 6 months from the date of rejection before applying again unless otherwise advised by DOAJ.
 
 ---
 
