@@ -848,7 +848,7 @@ class FieldDefinitions:
             {"display": "LOCKSS", "value": "LOCKSS"},
             {"display": "Internet Archive", "value": "Internet Archive"},
             {"display": "PKP PN", "value": "PKP PN"},
-            {"display": "PubMed Central (PMC)", "value": "PMC/Europe PMC/PMC Canada"},
+            {"display": "PubMed Central (PMC)", "value": "PMC"},
             {"display": "Portico", "value": "Portico"},
             {"display": "A national library", "value": "national_library", "subfields": ["preservation_service_library"]},
             {"display": "The journal content isn't archived with a long-term preservation service",
