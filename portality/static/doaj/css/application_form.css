@@ -114,6 +114,11 @@ li.parsley-type {
 }
 
 .select2-results .select2-highlighted {
-    background: #982E0A;
-    color: #FEFBF8;
+    background: #F8F3EF;
+    color: #282624;
+}
+
+.select2-container .select2-choice > .select2-chosen {
+    display: inline;
+    vertical-align: -moz-middle-with-baseline;
 }
