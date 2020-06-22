@@ -1,12 +1,3 @@
-from portality import models, lcc
-from portality.datasets import licenses
-from crosswalks.interpreting_methods import interpret_special, reverse_interpret_special, interpret_other, \
-    reverse_interpret_other
-from crosswalks.journal_form import JournalGenericXWalk
-from portality.util import listpop
-from portality.formcontext.choices import Choices
-
-
 class SuggestionFormXWalk(object):
 
     _formFields2objectFields = {

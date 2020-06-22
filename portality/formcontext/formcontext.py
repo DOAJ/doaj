@@ -6,14 +6,14 @@ from flask import render_template, url_for, request
 from flask_login import current_user
 
 import portality.formcontext.forms
-import crosswalks.journal_form
+from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.crosswalks.article_form import ArticleFormXWalk
+from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality import constants
 from portality import models, app_email, util
 from portality.bll import DOAJ
 from portality.core import app
 from portality.formcontext import forms, render, choices, FormContextException
-from portality.formcontext.xwalks import suggestion_form
 from portality.lcc import lcc_jstree
 from portality.ui.messages import Messages
 import portality.notifications.application_emails as emails
@@ -569,10 +569,10 @@ class ApplicationContext(PrivateContext):
             if current_journal is not None:
                 cj = models.Journal.pull(current_journal)
                 if cj is not None:
-                    jform = crosswalks.journal_form.JournalFormXWalk.obj2form(cj)
+                    jform = JournalFormXWalk.obj2form(cj)
                     if "notes" in jform:
                         del jform["notes"]
-                    aform = suggestion_form.SuggestionFormXWalk.obj2form(self.source)
+                    aform = ApplicationFormXWalk.obj2form(self.source)
                     if "notes" in aform:
                         del aform["notes"]
                     diff = self._form_diff(jform, aform)
@@ -661,7 +661,7 @@ class ManEdApplicationReview(ApplicationContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.ManEdApplicationReviewForm(data=suggestion_form.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.ManEdApplicationReviewForm(data=ApplicationFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -673,7 +673,7 @@ class ManEdApplicationReview(ApplicationContext):
         self._validate_editor_field()
 
     def form2target(self):
-        self.target = suggestion_form.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -700,8 +700,8 @@ class ManEdApplicationReview(ApplicationContext):
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         # If we have changed the editors assinged to this application, let them know.
-        is_editor_group_changed = suggestion_form.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
-        is_associate_editor_changed = suggestion_form.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        is_editor_group_changed = ApplicationFormXWalk.is_new_editor_group(self.form, self.source)
+        is_associate_editor_changed = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # record the event in the provenance tracker
         models.Provenance.make(current_user, "edit", self.target)
@@ -885,7 +885,7 @@ class EditorApplicationReview(ApplicationContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.EditorApplicationReviewForm(data=suggestion_form.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.EditorApplicationReviewForm(data=ApplicationFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -902,7 +902,7 @@ class EditorApplicationReview(ApplicationContext):
             self.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
     def form2target(self):
-        self.target = suggestion_form.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -929,7 +929,7 @@ class EditorApplicationReview(ApplicationContext):
         choices.Choices.validate_status_change('editor', self.source.application_status, self.target.application_status)
 
         # FIXME: may want to factor this out of the suggestionformxwalk
-        new_associate_assigned = suggestion_form.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        new_associate_assigned = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1044,7 +1044,7 @@ class AssEdApplicationReview(ApplicationContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.AssEdApplicationReviewForm(data=suggestion_form.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.AssEdApplicationReviewForm(data=ApplicationFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -1061,7 +1061,7 @@ class AssEdApplicationReview(ApplicationContext):
             self.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
     def form2target(self):
-        self.target = suggestion_form.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1162,7 +1162,7 @@ class PublisherUpdateRequest(ApplicationContext):
         self._disable_fields()
 
     def source2form(self):
-        self.form = forms.PublisherUpdateRequestForm(data=suggestion_form.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.PublisherUpdateRequestForm(data=ApplicationFormXWalk.obj2form(self.source))
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
         self._disable_fields()
@@ -1200,7 +1200,7 @@ class PublisherUpdateRequest(ApplicationContext):
             self.form.confirm_contact_email.data = contact.get("email")
 
     def form2target(self):
-        self.target = suggestion_form.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1346,7 +1346,7 @@ class PublisherUpdateRequestReadOnly(PrivateContext):
         self.renderer.disable_all_fields(False)
 
     def source2form(self):
-        self.form = forms.PublisherUpdateRequestForm(data=crosswalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.PublisherUpdateRequestForm(data=JournalFormXWalk.obj2form(self.source))
         # self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -1411,7 +1411,7 @@ class ManEdJournalReview(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.ManEdJournalReviewForm(data=crosswalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.ManEdJournalReviewForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -1421,7 +1421,7 @@ class ManEdJournalReview(PrivateContext):
         self._validate_editor_field()
 
     def form2target(self):
-        self.target = crosswalks.journal_form.JournalFormXWalk.form2obj(self.form)
+        self.target = JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1452,8 +1452,8 @@ class ManEdJournalReview(PrivateContext):
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         # If we have changed the editors assinged to this application, let them know.
-        is_editor_group_changed = crosswalks.journal_form.JournalFormXWalk.is_new_editor_group(self.form, self.source)
-        is_associate_editor_changed = crosswalks.journal_form.JournalFormXWalk.is_new_editor(self.form, self.source)
+        is_editor_group_changed = JournalFormXWalk.is_new_editor_group(self.form, self.source)
+        is_associate_editor_changed = JournalFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1536,13 +1536,13 @@ class EditorJournalReview(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.EditorJournalReviewForm(data=crosswalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.EditorJournalReviewForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
 
     def form2target(self):
-        self.target = crosswalks.journal_form.JournalFormXWalk.form2obj(self.form)
+        self.target = JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1576,7 +1576,7 @@ class EditorJournalReview(PrivateContext):
         super(EditorJournalReview, self).finalise()
 
         # FIXME: may want to factor this out of the suggestionformxwalk
-        email_associate = suggestion_form.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        email_associate = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1614,13 +1614,13 @@ class AssEdJournalReview(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.AssEdJournalReviewForm(data=crosswalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.AssEdJournalReviewForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
 
     def form2target(self):
-        self.target = crosswalks.journal_form.JournalFormXWalk.form2obj(self.form)
+        self.target = JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1683,7 +1683,7 @@ class ReadOnlyJournal(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.ReadOnlyJournalForm(data=crosswalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.ReadOnlyJournalForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
