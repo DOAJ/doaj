@@ -1415,7 +1415,7 @@ class ContextDefinitions:
             "obj2form": ApplicationFormXWalk.obj2form,
             "form2obj": ApplicationFormXWalk.form2obj
         },
-        "processor": application_processors.PublicApplication,
+        "processor": application_processors.NewApplication,
     }
 
     MANED = deepcopy(PUBLIC)

@@ -160,10 +160,17 @@ class Application(JournalLikeObject):
 
     @property
     def suggester(self):
-        return self.applicant
-
-    def set_suggester(self, name, email):
-        self.set_applicant(name, email)
+        owner = self.owner
+        if owner is None:
+            return None
+        from portality.models import Account
+        oacc = Account.pull(owner)
+        if oacc is None:
+            return None
+        return {
+            "name" : owner,
+            "email" : oacc.email
+        }
 
 
 class DraftApplication(Application):
