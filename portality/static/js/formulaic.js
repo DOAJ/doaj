@@ -713,7 +713,13 @@ var formulaic = {
         Autocomplete: function(params){
             this.fieldDef = params.fieldDef;
             this.init = () => {
-                return autocomplete("[name='" + this.fieldDef.name + "']", 'bibjson.publisher.name', "journal", 1, true, false);
+                let field = params.fieldDef.widgets.find(element => {
+                    if ("autocomplete" in element){
+                        return element;
+                    }
+                })["autocomplete"]["field"];
+
+                return autocomplete("[name='" + this.fieldDef.name + "']", field, "journal", 1, true, false);
             }
             this.init()
         }
@@ -747,7 +753,6 @@ function autocomplete(selector, doc_field, doc_type, mininput, include_input, al
 
     if (include_input) {
         // apply the create search choice
-        console.log($(selector))
         $(selector).select2({
             minimumInputLength: mininput,
             ajax: ajax,

@@ -323,7 +323,7 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
-            {"autocomplete": {"field": "publisher_name"}},
+            {"autocomplete": {"field": "bibjson.publisher.name"}},
             "multiple_field"
         ]
     }
@@ -369,7 +369,7 @@ class FieldDefinitions:
                           "a society or other type of institution, enter that here."]
         },
         "widgets": [
-            {"autocomplete": {"field": "institution_name"}},
+            {"autocomplete": {"field": "bibjson.institution.name"}},
             "multiple_field"
         ]
     }
