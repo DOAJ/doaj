@@ -713,7 +713,7 @@ var formulaic = {
         Autocomplete: function(params){
             this.fieldDef = params.fieldDef;
             this.init = () => {
-                // return autocomplete("[name='" + this.fieldDef.name + "']", 'bibjson.publisher.name', "journal", 1, true, false);
+                return autocomplete("[name='" + this.fieldDef.name + "']", 'bibjson.publisher.name', "journal", 1, true, false);
             }
             this.init()
         }
