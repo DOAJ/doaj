@@ -77,11 +77,11 @@ class ArticlesCrudApi(CrudApi):
         try:
             result = articleService.create_article(am, account, add_journal_info=True)
         except ArticleMergeConflict as e:
-            raise Api400Error(str(e))
+            raise Api400Error("Merge conflict, " + str(e))
         except ArticleNotAcceptable as e:
             raise Api400Error("; ".join(e.errors))
         except exceptions.DuplicateArticleException as e:
-            raise Api403Error(str(e))
+            raise Api403Error("Duplicate article, " + str(e))
 
         # Check we are allowed to create an article for this journal
         if result.get("fail", 0) == 1:
