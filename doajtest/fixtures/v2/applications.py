@@ -120,11 +120,11 @@ APPLICATION_SOURCE = {
     "admin": {
         "application_status" : constants.APPLICATION_STATUS_PENDING,
         "bulk_upload": "bulk123456789",
-        "contact" :
-            {
-                "email" : "contact@email.com",
-                "name" : "Contact Name"
-            },
+        #"contact" :
+        #    {
+        #        "email" : "contact@email.com",
+        #        "name" : "Contact Name"
+        #    },
         "current_journal" : "poiuytrewq",
         "editor" : "associate",
         "editor_group" : "editorgroup",
@@ -135,11 +135,7 @@ APPLICATION_SOURCE = {
         "owner" : "Owner",
         "related_journal" : "987654321123456789",
         "seal": True,
-        "date_applied" : "2003-01-01T00:00:00Z",
-        "applicant": {
-            "name" : "Suggester",
-            "email" : "suggester@email.com"
-        }
+        "date_applied" : "2003-01-01T00:00:00Z"
     },
     "bibjson" : JOURNAL_LIKE_BIBJSON
 }
