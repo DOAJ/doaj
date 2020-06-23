@@ -2602,6 +2602,8 @@ input[type="checkbox"]:checked + .filter__label {
       display: block;
       padding: 0.75rem 0.1875rem;
       text-decoration: none; }
+      #apply .application-nav__list-item a:hover {
+        color: #282624; }
       #apply .application-nav__list-item a:before {
         display: inline-block;
         margin-right: 0.1875rem;
@@ -2623,16 +2625,25 @@ input[type="checkbox"]:checked + .filter__label {
     background-size: 15px;
     background-color: #5C5956;
     border-color: #5C5956; }
+    #apply .application-nav__list-item--done a:before a:hover {
+      color: #982E0A;
+      cursor: pointer; }
   #apply .application-nav__list-item--active a:before {
     background: #FD5A3B;
     color: #282624;
     border-color: #FD5A3B; }
+  #apply .application-nav__list-item--active a:hover {
+    cursor: pointer;
+    color: #982E0A; }
   #apply .application-nav__list-item--active:before, #apply .application-nav__list-item--active ~ li:before {
     border: 1px dashed rgba(92, 89, 86, 0.25); }
   #apply .application-nav__list-item--invalid a:before {
     color: #982E0A;
     border-color: #982E0A;
     border-width: 2px; }
+  #apply .application-nav__list-item--invalid a:hover {
+    color: #982E0A;
+    cursor: pointer; }
   #apply .application-nav__list-item--invalid:before, #apply .application-nav__list-item--invalid ~ li:before {
     border: 1px dashed rgba(92, 89, 86, 0.25); }
   #apply .page_link--disabled {

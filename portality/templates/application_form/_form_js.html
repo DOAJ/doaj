@@ -173,25 +173,30 @@
         // This function removes the "active" class of all steps...
         $(".application-nav__list-item").each((idx, x) => {
             let hiddenField = $("#validated-" + idx);
-            if (hiddenField.val() === "True") {
-                $(x).className = "application-nav__list-item application-nav__list-item--done"
-            } else if (hiddenField.val() === "False") {
-                $(x).className = "application-nav__list-item application-nav__list-item--invalid"
+            if (idx === n) {
+                x.className = "application-nav__list-item application-nav__list-item--active";
+            }
+            else {
+                if (hiddenField.val() === "True") {
+                    x.className = "application-nav__list-item application-nav__list-item--done"
+                } else if (hiddenField.val() === "False") {
+                    x.className = "application-nav__list-item application-nav__list-item--invalid"
+                }
             }
         });
         //... and adds the "active" class to the current step:
-        $(tabs[n]).className = "application-nav__list-item application-nav__list-item--active";
+
         $("#page_link-" + n).className = "page_link";
     }
 
     function usePaginationMenu() {
-        $('[id^="page_link-"]').each((idx, x) => {
+        $('[id^="page_link-"]').each((i, x) => {
             $(x).on("click", () => {
-                previousTab = currentTab
-                currentTab = i;
-                if ($("#validated-" + i).value === '') {
+                if ($("#validated-" + i).val() === '') {
                     return false;
                 } else {
+                    previousTab = currentTab
+                    currentTab = i;
                     $('#' + '{{ form_id }}').parsley().whenValidate({
                         group: 'block-' + previousTab
                     }).done(function () {
