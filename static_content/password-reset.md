@@ -1,5 +1,5 @@
 ---
-layout: sidenav
+layout: no-sidenav
 fragment: false
 title: Forgot your password
 toc: true
