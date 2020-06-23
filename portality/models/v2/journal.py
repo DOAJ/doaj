@@ -455,8 +455,8 @@ class Journal(JournalLikeObject):
             bib["apc"]["has_apc"] = len(bib["apc"]["max"]) != 0
         else:
             bib["apc"] = {"has_apc": False}
-        if "deposit_policy" in bib and bib["deposit_policy"] != '':
-            bib["deposit_policy"]["has_policy"] = bib["deposit_policy"]["url"] is not None
+        if "deposit_policy" in bib and bib["deposit_policy"] != []:
+            bib["deposit_policy"]["has_policy"] = True
         else:
             bib["deposit_policy"] = {"has_policy": False}
         if "other_charges" in bib and bib["other_charges"] != '':
