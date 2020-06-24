@@ -458,6 +458,7 @@ class Journal(JournalLikeObject):
         if "deposit_policy" in bib and bib["deposit_policy"] != []:
             bib["deposit_policy"]["has_policy"] = True
         else:
+            ##change made in https://github.com/DOAJ/doaj/commit/e507123f423fe16fd270744055da0129e2b32005
             bib["deposit_policy"] = {"has_policy": False}
         if "other_charges" in bib and bib["other_charges"] != '':
             bib["other_charges"]["has_other_charges"] = bib["other_charges"]["url"] is not None
