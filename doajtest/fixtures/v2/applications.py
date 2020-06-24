@@ -4,12 +4,12 @@ from datetime import datetime
 import rstr
 
 from portality import constants
-from doajtest.fixtures.v2.common import expanded2compact, JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED
+from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED
 from doajtest.fixtures.v2.journals import JOURNAL_SOURCE, JOURNAL_FORM_EXPANDED
 from portality.formcontext import forms
 from portality.lib import dates
 from portality.models.v2.application import Application
-
+from portality.forms.utils import expanded2compact
 
 class ApplicationFixtureFactory(object):
     @staticmethod
@@ -158,11 +158,7 @@ INCOMING_SOURCE = {
             "email" : "contact@email.com",
             "name" : "Contact Name"
         },
-        "current_journal" : "1234567890",
-        "applicant" : {
-            "name" : "Applicant",
-            "email" : "applicant@email.com"
-        }
+        "current_journal" : "1234567890"
     }
 }
 

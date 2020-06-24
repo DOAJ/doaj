@@ -3,8 +3,9 @@ from copy import deepcopy
 import rstr
 
 from doajtest.fixtures.v2.common import EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, \
-    OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED, expanded2compact
+    OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED
 
+from portality.forms.utils import expanded2compact
 from portality.formcontext import forms
 
 class JournalFixtureFactory(object):
@@ -100,50 +101,6 @@ JOURNAL_FORM_EXPANDED.update(OWNER_FORM_EXPANDED)
 
 
 JOURNAL_FORM = expanded2compact(JOURNAL_FORM_EXPANDED, {"keywords" : ","})
-
-# restructure the form as the text would be returned from the site
-"""
-JOURNAL_FORM = deepcopy(JOURNAL_FORMINFO)
-JOURNAL_FORM["keywords"] = ",".join(JOURNAL_FORM["keywords"])
-
-notes = JOURNAL_FORM["notes"]
-del JOURNAL_FORM["notes"]
-i = 0
-for n in notes:
-    notekey = "notes-" + str(i) + "-note"
-    datekey = "notes-" + str(i) + "-date"
-    JOURNAL_FORM[notekey] = n.get("note")
-    JOURNAL_FORM[datekey] = n.get("date")
-    i += 1
-
-inst = JOURNAL_FORM["institution"]
-del JOURNAL_FORM["institution"]
-JOURNAL_FORM["institution-institution_name"] = inst["institution_name"]
-JOURNAL_FORM["institution-institution_country"] = inst["institution_country"]
-
-pub = JOURNAL_FORM["publisher"]
-del JOURNAL_FORM["publisher"]
-JOURNAL_FORM["publisher-publisher_name"] = pub["publisher_name"]
-JOURNAL_FORM["publisher-publisher_country"] = pub["publisher_country"]
-
-apcs = JOURNAL_FORM["apc_charges"]
-del JOURNAL_FORM["apc_charges"]
-i = 0
-for a in apcs:
-    currkey = "apc_charges-" + str(i) + "-apc_currency"
-    maxkey = "apc_charges-" + str(i) + "-apc_max"
-    JOURNAL_FORM[currkey] = a.get("apc_currency")
-    JOURNAL_FORM[maxkey] = a.get("apc_max")
-    i += 1
-
-library = JOURNAL_FORM["preservation_service_library"]
-del JOURNAL_FORM["preservation_service_library"]
-i = 0
-for l in library:
-    key = "preservation_service_library-" + str(i)
-    JOURNAL_FORM[key] = l
-    i += 1
-"""
 
 
 JOURNAL_APIDO_STRUCT = {

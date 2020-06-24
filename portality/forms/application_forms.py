@@ -328,6 +328,7 @@ class FieldDefinitions:
         "name": "publisher_country",
         "label": "Country",
         "input": "select",
+        "default" : "",
         "options_fn": "iso_country_list",
         "help": {
             "long_help": "The country where the publisher carries out its business operations and is registered.",
@@ -379,6 +380,7 @@ class FieldDefinitions:
         "name": "institution_country",
         "label": "Country",
         "input": "select",
+        "default" : "",
         "options_fn": "iso_country_list",
         "help": {
             "short_help": "The society or institution responsible for the journal",
