@@ -73,15 +73,7 @@
         });
     });
 
-    let currentTab = 0; // Current tab is set to be the first tab (0)
-    let previousTab = 0;
-    let tabs = $(".tab");
-    let sections = $(".form-section");
-    prepareSections();
-    usePaginationMenu();
-    showTab(currentTab); // Display the current tab
-
-    function showTab(n) {
+    let showTab = (n) => {
         // This function will display the specified tab of the form ...
         //hide all other tabs
         if (n < sections.length-1){
@@ -125,23 +117,41 @@
             submitButton.disabled = false;
         }
         // ... and run a function that displays the correct step indicator:
+        if(n === 6) {
+            prepareReview()
+        }
         fixStepIndicator(n)
 
     }
 
-    function form_validated() {
+    let prepareReview = () => {
+        let divs = $("[id$='__container']")
+        divs.each((i, div) => {
+            let input = $(div).find('input')
+            let name = input.attr("name")
+            if (input.attr("type") !== "radio" && input.attr("type") !== "checkbox"){
+                $("#" + name + "__review_value").html(input.val())
+            }
+            else {
+                $("#" + name + "__review_value:checked").html(input.val())
+            }
+
+        })
+    }
+
+    let form_validated = () => {
         $("[name='validated']").each((idx, input) => {
             if ($(input).val() === 'False') return false;
         });
         return true;
     }
 
-    function onSubmit() {
+    let onSubmit = () => {
         let form = $("form");
         form.noValidate = true
     }
 
-    function navigate(n) {
+    let navigate = (n) => {
         // Hide the current tab:
         $(tabs[currentTab]).hide();
         // Increase or decrease the current tab by 1:
@@ -151,11 +161,11 @@
         showTab(currentTab);
     }
 
-    function prev() {
+    let prev = () => {
         navigate(-1);
     }
 
-    function next() {
+    let next = () => {
         var form = $('#' + '{{ form_id }}');
         form.parsley().whenValidate({
             group: 'block-' + currentTab
@@ -169,7 +179,7 @@
         });
     }
 
-    function fixStepIndicator(n) {
+    let fixStepIndicator = (n) => {
         // This function removes the "active" class of all steps...
         $(".application-nav__list-item").each((idx, x) => {
             let hiddenField = $("#validated-" + idx);
@@ -189,7 +199,7 @@
         $("#page_link-" + n).className = "page_link";
     }
 
-    function usePaginationMenu() {
+    let usePaginationMenu = () => {
         $('[id^="page_link-"]').each((i, x) => {
             $(x).on("click", () => {
                 if ($("#validated-" + i).val() === '') {
@@ -212,7 +222,7 @@
         });
     }
 
-    function prepareSections() {
+    let prepareSections = () => {
         sections.each((idx, section) => {
 
             $(section).find("input").each((i, input) => {
@@ -230,5 +240,13 @@
             $(menu).className = "page_link--disabled";
         });
     }
+
+    let currentTab = 0; // Current tab is set to be the first tab (0)
+    let previousTab = 0;
+    let tabs = $(".tab");
+    let sections = $(".form-section");
+    prepareSections();
+    usePaginationMenu();
+    showTab(currentTab); // Display the current tab
 
 </script>
