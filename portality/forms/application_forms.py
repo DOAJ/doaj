@@ -79,7 +79,7 @@ class FieldDefinitions:
 
     OA_STATEMENT_URL = {
         "name": "oa_statement_url",
-        "label": "Your website must display its open access statement.<br> Where can we find this information?",
+        "label": "Your website must display its open access statement. Where can we find this information?",
         "input": "text",
         "help": {
             "long_help": ["Here is an example of a suitable Open Access statement that meets our criteria:<blockquote>"
@@ -1170,6 +1170,7 @@ FIELDS = {
 class FieldSetDefinitions:
     BASIC_COMPLIANCE = {
         "name": "basic_compliance",
+        "label": "Open access compliance",
         "fields": [
             FieldDefinitions.BOAI["name"],
             FieldDefinitions.OA_STATEMENT_URL["name"]
@@ -1178,6 +1179,7 @@ class FieldSetDefinitions:
 
     ABOUT_THE_JOURNAL = {
         "name": "about_the_journal",
+        "label": "About the journal",
         "fields": [
             FieldDefinitions.TITLE["name"],
             FieldDefinitions.ALTERNATIVE_TITLE["name"],

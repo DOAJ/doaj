@@ -5,6 +5,28 @@
 
 <hr />
 
+    {% set fieldsets = formulaic_context.fieldsets() %}
+    {% for fs in fieldsets %}
+        <table>
+            <tbody>
+                <tr>
+                    <th>{{ fs.label }}</th>
+                    <th><a href=#>Edit this section</a></th>
+                </tr>
+            {% for f in fs.fields() %}
+                        <tr>
+                            <td id="{{ f.name }}__review_label">{{ f.label }}</td>
+                            <td id="{{ f.name  }}__review_value"></td>
+                        </tr>
+            {% endfor %}
+                        </tbody>
+
+            </table>
+            <hr />
+    {% endfor %}
+
+
+
 <input type="checkbox" id="reviewed" name="reviewed" value="reviewed">
 <label for="reviewed">I’ve reviewed the answers to my application and confirm that the information provided is accurate and true.</label>
 
