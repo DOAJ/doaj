@@ -1062,24 +1062,25 @@ class FieldDefinitions:
         "name": "doaj_seal",
         "label": "The journal has fulfilled all the criteria for the Seal. Award the Seal?",
         "input": "checkbox",
-        "options": [
-            {"display": "Yes", "value": "yes"}
-        ],
-        "validate": []  # certain questions must be answered for the seal to be awarded
+        "validate": [
+            {
+                "only_if" : {"fields" : [
+                    {"field" : "license_display", "value" : "Embed"},
+                    {"field" : "copyright_author_retains", "value" : "y"},
+                    {"field" : "preservation_service", "not" : "none"},
+                    {"field" : "preservation_service_url", "not" : ""},
+                    {"field" : "deposit_policy", "not" : "none"},
+                    {"field" : "persistent_identifiers", "value" : "DOI"}
+                ]}
+            }
+        ]
     }
 
     DOAJ_QUICK_REJECT = {
         "name": "doaj_quick_reject",
         "label": "Select the reason for rejection",
         "input": "select",
-        "options": [
-            {"display": "Quick reject reason 1", "value": "qr1"},
-            {"display": "Quick reject reason 2", "value": "qr2"},
-            {"display": "Other", "value": "other"}
-        ],
-        "widgets": [
-            {"select": {}}
-        ],
+        "options_fn": "quick_reject"
     }
 
     DOAJ_QUICK_REJECT_DETAILS = {
@@ -1095,14 +1096,12 @@ class FieldDefinitions:
         ],
     }
 
-    DOAJ_PUBLISHER_ACCOUNT = {
-        "name": "doaj_publisher_account",
+    DOAJ_OWNER = {
+        "name": "doaj_owner",
         "label": "DOAJ Account",
         "input": "text",
-        # will be pre-populated with the initial applicant's account no
         "validate": [
-            {"required_if": {"field": "doaj_status", "value": "accepted", "message": "You must confirm the account number"}}
-            # When Accepted selected display: 'This journal is currently assigned to its applicant account XXXXXX. Is this the correct account for this journal?'
+            {"required" : {"message" : "You must confirm the account id"}}
         ],
         "widgets": [
             {"autocomplete": {"field": "account"}}
@@ -1113,87 +1112,120 @@ class FieldDefinitions:
         "name": "doaj_status",
         "label": "Select status",
         "input": "select",
-        # will be pre-populated with 'pending' for new applications
-        "options_fn": None,  # List of available statuses changes based on role of viewer
+        "options_fn": "application_statuses",
         "validate": [
             "required"
         ],
-        "help": {
-            "short_help": ""  # Varies according to role  todo: we may need a help function
+        "contexts" : {
+            "associate_editor" : {
+                "help" : {
+                    "short_help" : "Set the status to 'In Progress' to signal to the applicant that you have started your review."
+                                    "Set the status to 'Ready' to alert the Editor that you have completed your review."
+                }
+            },
+            "editor" : {
+                "help" : {
+                    "short_help" : "Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed."
+                                    "Set the status to 'Completed' to alert the Managing Editor that you have completed your review."
+                }
+            }
+        },
+        "widgets" : [
+            # When Accepted selected display. 'This journal is currently assigned to its applicant account XXXXXX. Is this the correct account for this journal?'
+            "owner_review"
+        ]
+    }
+
+    DOAJ_EDITOR_GROUP = {
+        "name": "doaj_editor_group",
+        "label": "Assign to editor group",
+        "input": "text",
+        "widgets": [
+            {"autocomplete": {"field": "editor_group"}}
+        ],
+        "contexts" : {
+            "editor" : {
+                "disabled" : True
+            }
         }
     }
 
-    DOAJ_REVIEW_GROUP = {
-        "name": "doaj_review_group",
-        "label": "Assign to editor group",
-        "input": "select",
-        "options_fn": None      # List of Editor Groups
-    }
-
-    DOAJ_REVIEW_USER = {
-        "name": "doaj_review_user",
+    DOAJ_EDITOR = {
+        "name": "doaj_editor",
         "label": "Assign to individual",
         "input": "select",
-        "options_fn": None      # List of users in the selected group
-        # todo: clear this field if group is changed?
+        "options": [],
+        "validate" : [
+            { "group_member" : {"group_field" : "doaj_editor_group"}}
+        ],
+        "widgets" : [
+            # show the members of the selected editor group
+            # clear the field if the group is changed
+            { "editor_select" : {"group_field" : "doaj_editor_group"}}
+        ]
     }
 
     DOAJ_DISCONTINUED_DATE = {
         "name": "doaj_discontinued_date",
         "label": "This journal was discontinued on",
-        "input": ""  # todo: Date picker
+        "input": "text",
+        "validate" : [
+            "bigenddate",
+            {
+                "not_if" : {
+                    "fields" : [
+                        {"field" : "doaj_continues"},
+                        {"field" : "doaj_continued_by"}
+                    ],
+                    "message" : "You cannot enter a discontinued date and continuation information."
+                }
+            }
+        ],
+        "help" : {
+            "short_help" : "If the day of the month is not known, please use '01'"
+        },
+        "widgets" : [
+            "datepicker"
+        ]
     }
 
     DOAJ_CONTINUES = {
         "name": "doaj_continues",
-        "label": "This journal continues an older journal with the ISSN(s)",    # todo: can we really accept both ISSNs?
-        "input": "text",
+        "label": "This journal continues an older journal with the ISSN(s)",
+        "input": "taglist",
         "validate": [
-            {"is_issn": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "doaj_continued_by"}}
-        ],
-        "contexts": {  # fixme: requirements in spreadsheet unclear for this
-            "associate_editor": {
-                "disabled": True
-            },
-        },
-        "asynchronous_warnings": [
-            "issn_in_public_doaj",  # check whether issn corresponds to a public DOAJ record todo: check collision with pissn
+            {"is_issn": {"message": "This is not a valid ISSN"}},   # FIXME: might have to think about how the validators work with a taglist
+            {"different_to": {"field": "doaj_continued_by"}},       # FIXME: as above
+            {"not_if" : { "fields" : {"field" : "doaj_discontinued_date"}}},
+            "issn_in_public_doaj"                                   # FIXME: is this right?
         ]
     }
 
     DOAJ_CONTINUED_BY = {
         "name": "doaj_continued_by",
         "label": "This journal is continued by a newer version of the journal with the ISSN(s)",
-        "input": "text",
+        "input": "taglist",
         "validate": [
-            {"is_issn": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "doaj_continues"}}
-        ],
-        "contexts": {
-            "associate_editor": {
-                "disabled": True
-            },
-        },
-        "asynchronous_warnings": [
-            "issn_in_public_doaj",  # todo: as above
+            {"is_issn": {"message": "This is not a valid ISSN"}}, # FIXME: might have to think about how the validators work with a taglist
+            {"different_to": {"field": "doaj_continues"}},  # FIXME: as above
+            {"not_if": {"fields": {"field": "doaj_discontinued_date"}}},
+            "issn_in_public_doaj"  # FIXME: is this right?
         ]
     }
 
     DOAJ_SUBJECT = {
         "name": "doaj_subject",
         "label": "Assign one or a maximum of two subject classifications",
-        "input": "select",
+        "input": "text",
         "help": {
             "short_help": "Selecting a subject will not automatically select its sub-categories"
         },
         "validate": [
             "required",
-            {"max_tags": {"max": 2}}        # required and max 2 should mean [min 1 max 2] to as per spec
+            {"max_tags": {"max": 2, "message" : "You have chosen too many"}}        # required and max 2 should mean [min 1 max 2] to as per spec
         ],
         "widget": [
-            {"autocomplete": ""}  # autocomplete on subject tree
-            # todo: expandable subject tree feature
+            "subject_tree"
         ]
     }
 
@@ -1345,7 +1377,7 @@ class FieldSetDefinitions:
         "name": "reassign",
         "label": "Re-assign publisher account",
         "fields": [
-            FieldDefinitions.DOAJ_PUBLISHER_ACCOUNT["name"]
+            FieldDefinitions.DOAJ_OWNER["name"]
         ]
     }
 
@@ -1361,8 +1393,8 @@ class FieldSetDefinitions:
         "name": "reviewers",
         "label": "Assign for review",
         "fields": [
-            FieldDefinitions.DOAJ_REVIEW_GROUP["name"],
-            FieldDefinitions.DOAJ_REVIEW_USER["name"]
+            FieldDefinitions.DOAJ_EDITOR_GROUP["name"],
+            FieldDefinitions.DOAJ_EDITOR["name"]
         ]
     }
 
@@ -1420,6 +1452,23 @@ class ContextDefinitions:
         "processor": application_processors.NewApplication,
     }
 
+    # TODO - define the update request context
+    UPDATE = deepcopy(PUBLIC)
+    UPDATE["name"] = "update_request"
+
+    ASSOCIATE = deepcopy(PUBLIC)
+    ASSOCIATE["name"] = "associate_editor"
+    ASSOCIATE["fieldsets"] += [
+        FieldSetDefinitions.STATUS["name"]
+    ]
+
+    EDITOR = deepcopy(PUBLIC)
+    EDITOR["name"] = "editor"
+    EDITOR["fieldsets"] += [
+        FieldSetDefinitions.STATUS["name"],
+        FieldSetDefinitions.REASSIGN["name"],
+    ]
+
     MANED = deepcopy(PUBLIC)
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
@@ -1431,6 +1480,7 @@ class ContextDefinitions:
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"]
     ]
+    MANED["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
 
 
 #######################################################
@@ -1470,6 +1520,14 @@ def iso_currency_list(field):
     for v, d in currency_options:
         cl.append({"display": d, "value": v})
     return cl
+
+
+def quick_reject(field):
+    raise NotImplementedError()
+
+
+def application_statuses(field):
+    raise NotImplementedError()
 
 
 #######################################################
@@ -1600,6 +1658,35 @@ class RequiredIfBuilder:
         return RequiredIfOtherValue(settings.get("field"), settings.get("value"))
 
 
+class OnlyIfBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        raise NotImplementedError()
+
+    @staticmethod
+    def wtforms(field, settings):
+        raise NotImplementedError()
+
+
+class GroupMemberBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        raise NotImplementedError()
+
+    @staticmethod
+    def wtforms(field, settings):
+        raise NotImplementedError()
+
+class NotIfBuildier:
+    @staticmethod
+    def render(settings, html_attrs):
+        raise NotImplementedError()
+
+    @staticmethod
+    def wtforms(field, settings):
+        raise NotImplementedError()
+
+
 #########################################################
 # Crosswalks
 #########################################################
@@ -1608,7 +1695,9 @@ PYTHON_FUNCTIONS = {
     "options": {
         "iso_country_list": iso_country_list,
         "iso_language_list": iso_language_list,
-        "iso_currency_list": iso_currency_list
+        "iso_currency_list": iso_currency_list,
+        "quick_reject" : quick_reject,
+        "application_statuses" : application_statuses
     },
     "validate": {
         "render": {
@@ -1621,6 +1710,9 @@ PYTHON_FUNCTIONS = {
             "is_issn": IsISSNBuilder.render,
             "different_to": DifferentToBuilder.render,
             "required_if": RequiredIfBuilder.render,
+            "only_if" : OnlyIfBuilder.render,
+            "group_member" : GroupMemberBuilder.render,
+            "not_if" : NotIfBuildier.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -1633,7 +1725,10 @@ PYTHON_FUNCTIONS = {
             "optional_if": OptionalIfBuilder.wtforms,
             "is_issn": IsISSNBuilder.wtforms,
             "different_to": DifferentToBuilder.wtforms,
-            "required_if": RequiredIfBuilder.wtforms
+            "required_if": RequiredIfBuilder.wtforms,
+            "only_if" : OnlyIfBuilder.wtforms,
+            "group_member" : GroupMemberBuilder.wtforms,
+            "not_if" : NotIfBuildier.wtforms
         }
     },
 
