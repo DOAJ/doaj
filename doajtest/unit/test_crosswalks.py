@@ -1,4 +1,4 @@
-import crosswalks.journal_form
+from portality.crosswalks.journal_form import JournalFormXWalk
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, diff_dicts
@@ -44,7 +44,7 @@ class TestCrosswalks(DoajTestCase):
         pc = ApplicationFormFactory.context("public")
         form = pc.wtform(MultiDict(JOURNAL_FORM))
 
-        obj = crosswalks.journal_form.JournalFormXWalk.form2obj(form)
+        obj = JournalFormXWalk.form2obj(form)
 
         assert isinstance(obj, Journal)
 
@@ -61,7 +61,7 @@ class TestCrosswalks(DoajTestCase):
 
     def test_02_journal_obj2form(self):
         j = models.Journal(**JOURNAL_SOURCE)
-        form = crosswalks.journal_form.JournalFormXWalk.obj2form(j)
+        form = JournalFormXWalk.obj2form(j)
 
         # remove fields from the fixture that the crosswalk currently doesn't cover
         compare = deepcopy(JOURNAL_FORMINFO)
@@ -76,12 +76,12 @@ class TestCrosswalks(DoajTestCase):
 
 
     def test_01_journal(self):
-        forminfo = crosswalks.journal_form.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))
+        forminfo = JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))
         #diff_dicts(JOURNAL_FORMINFO, forminfo)
         assert forminfo == JOURNAL_FORMINFO
 
         form = forms.ManEdJournalReviewForm(formdata=MultiDict(JOURNAL_FORM))
-        obj = crosswalks.journal_form.JournalFormXWalk.form2obj(form)
+        obj = JournalFormXWalk.form2obj(form)
 
         onotes = obj["admin"]["notes"]
         del obj["admin"]["notes"]
