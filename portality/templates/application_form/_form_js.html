@@ -89,7 +89,7 @@
 
         let submitButton = $("#submitBtn");
         $(tabs[n]).show();
-        submitButton.innerHTML = "Save draft";
+        submitButton.html("Save draft");
         // ... and fix the Previous/Next buttons:
         if (n === 0) {
             $("#prevBtn").hide();
@@ -100,21 +100,21 @@
         if (n === (tabs.length - 1)) {
             //show submit button only if all tabs are validated
             $("#nextBtn").hide();
-            submitButton.innerHTML = "Submit";
+            submitButton.html("Submit");
             let validated = form_validated();
-            submitButton.disabled = !validated;
+            submitButton.prop("disabled", !validated);
             if (!validated) {
                 $("#cannot-submit").show();
             } else {
                 $("#cannot-submit").hide();
             }
 
-        } else {
+        } else {"Save draft"
             let nextBtn = $("#nextBtn")
             nextBtn.show();
-            nextBtn.innerHTML = "Next";
-            submitButton.innerHTML = "Save draft";
-            submitButton.disabled = false;
+            nextBtn.html("Next");
+            submitButton.html("Save draft");
+            submitButton.prop("disabled",false);
         }
         // ... and run a function that displays the correct step indicator:
         if(n === 6) {
@@ -140,10 +140,15 @@
     }
 
     let form_validated = () => {
-        $("[name='validated']").each((idx, input) => {
-            if ($(input).val() === 'False') return false;
+        let result = true;
+        $("[name^='validated']").each((idx, input) => {
+            console.log($(input).val())
+            if ($(input).val() !== "True") {
+                result = false;
+                return false;
+            }
         });
-        return true;
+        return result;
     }
 
     let onSubmit = () => {
@@ -188,9 +193,12 @@
             }
             else {
                 if (hiddenField.val() === "True") {
-                    x.className = "application-nav__list-item application-nav__list-item--done"
+                    x.className = "application-nav__list-item application-nav__list-item--done";
                 } else if (hiddenField.val() === "False") {
-                    x.className = "application-nav__list-item application-nav__list-item--invalid"
+                    x.className = "application-nav__list-item application-nav__list-item--invalid";
+                }
+                else {
+                    x.className = "application-nav__list-item";
                 }
             }
         });
