@@ -42,3 +42,7 @@
   font-weight: 400;
   @include typescale-04;
 }
+
+.title-list--large {
+  @include typescale-05;
+}
