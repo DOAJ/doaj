@@ -1,12 +1,11 @@
-from portality.crosswalks.journal_form import JournalFormXWalk
-from portality.crosswalks.application_form import ApplicationFormXWalk
+import crosswalks.journal_form
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, diff_dicts
 from portality.crosswalks.article_doaj_xml import DOAJXWalk
 from portality.crosswalks.article_crossref_xml import CrossrefXWalk
 from portality.formcontext import forms
-
+from portality.formcontext.xwalks import suggestion_form
 from portality import models
 from werkzeug.datastructures import MultiDict
 from copy import deepcopy
@@ -33,7 +32,6 @@ def mock_lookup_code(code):
     if code == "HB1-3840": return "Economic theory. Demography"
     return None
 
-
 class TestCrosswalks(DoajTestCase):
     def setUp(self):
         self.old_lookup_code = lcc.lookup_code
@@ -43,52 +41,102 @@ class TestCrosswalks(DoajTestCase):
         lcc.lookup_code = self.old_lookup_code
 
     def test_01_journal_form2obj(self):
-        pc = ApplicationFormFactory.context("admin")
+        pc = ApplicationFormFactory.context("public")
         form = pc.wtform(MultiDict(JOURNAL_FORM))
 
-        obj = JournalFormXWalk.form2obj(form)
+        obj = crosswalks.journal_form.JournalFormXWalk.form2obj(form)
 
         assert isinstance(obj, Journal)
 
         xwalked = obj.bibjson().data
         compare = deepcopy(JOURNAL_SOURCE.get("bibjson"))
 
+        # remove fields the crosswalk currently doesn't cover
+        del compare["replaces"]
+        del compare["is_replaced_by"]
+        del compare["subject"]
+        del compare["discontinued_date"]
+
         assert xwalked == compare, diff_dicts(xwalked, compare, 'xwalked', 'fixture')
 
     def test_02_journal_obj2form(self):
         j = models.Journal(**JOURNAL_SOURCE)
-        form = JournalFormXWalk.obj2form(j)
+        form = crosswalks.journal_form.JournalFormXWalk.obj2form(j)
 
+        # remove fields from the fixture that the crosswalk currently doesn't cover
         compare = deepcopy(JOURNAL_FORMINFO)
+        del compare["editor"]
+        del compare["subject"]
+        del compare["doaj_seal"]
+        del compare["owner"]
+        del compare["editor_group"]
+        del compare["notes"]
+
         assert form == compare, diff_dicts(form, compare, 'xwalked', 'fixture')
 
 
-    def test_03_application_form2obj(self):
-        pc = ApplicationFormFactory.context("admin")
-        form = pc.wtform(MultiDict(APPLICATION_FORM))
+    def test_01_journal(self):
+        forminfo = crosswalks.journal_form.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))
+        #diff_dicts(JOURNAL_FORMINFO, forminfo)
+        assert forminfo == JOURNAL_FORMINFO
 
-        obj = ApplicationFormXWalk.form2obj(form)
+        form = forms.ManEdJournalReviewForm(formdata=MultiDict(JOURNAL_FORM))
+        obj = crosswalks.journal_form.JournalFormXWalk.form2obj(form)
 
-        assert isinstance(obj, Journal)
+        onotes = obj["admin"]["notes"]
+        del obj["admin"]["notes"]
 
-        xwalked = obj.bibjson().data
-        compare = deepcopy(APPLICATION_SOURCE.get("bibjson"))
+        cnotes = JOURNAL_SOURCE["admin"]["notes"]
+        csource = deepcopy(JOURNAL_SOURCE)
+        del csource["admin"]["notes"]
 
-        assert xwalked == compare, diff_dicts(xwalked, compare, 'xwalked', 'fixture')
+        otext = [n.get("note") for n in onotes]
+        ctext = [n.get("note") for n in cnotes]
+        assert otext == ctext
 
-    def test_04_application_obj2form(self):
-        j = models.Application(**APPLICATION_SOURCE)
-        form = ApplicationFormXWalk.obj2form(j)
+        # get rid of the id and created_date in the ready-made fixture journal for comparison
+        # the model object is not going to have an id or created_date since it's not been saved yet
+        del csource['id']
+        del csource['created_date']
+        del csource["admin"]["current_application"]
+        del csource["admin"]["related_applications"]
+        assert obj == csource, diff_dicts(csource, obj, 'csource', 'modelobj')
 
-        compare = deepcopy(APPLICATION_FORMINFO)
-        assert form == compare, diff_dicts(form, compare, 'xwalked', 'fixture')
-        
+    def test_02_application(self):
+        forminfo = suggestion_form.SuggestionFormXWalk.obj2form(models.Suggestion(**APPLICATION_SOURCE))
+        #diff_dicts(APPLICATION_FORMINFO, forminfo)
+        assert forminfo == APPLICATION_FORMINFO
+
+        form = forms.ManEdApplicationReviewForm(formdata=MultiDict(APPLICATION_FORM))
+        obj = suggestion_form.SuggestionFormXWalk.form2obj(form)
+
+        onotes = obj["admin"]["notes"]
+        del obj["admin"]["notes"]
+
+        cnotes = APPLICATION_SOURCE["admin"]["notes"]
+        csource = deepcopy(APPLICATION_SOURCE)
+        del csource["admin"]["notes"]
+
+        otext = [n.get("note") for n in onotes]
+        ctext = [n.get("note") for n in cnotes]
+        assert otext == ctext
+
+        # get rid of the id and created_date in the ready-made fixture application for comparison
+        # the model object is not going to have an id or created_date since it's not been saved yet
+        del csource['id']
+        del csource['created_date']
+        del csource["admin"]["current_journal"]
+        del csource["admin"]["related_journal"]
+        #diff_dicts(csource, obj, 'csource', 'modelobj')
+        #diff_dicts(csource["bibjson"], obj["bibjson"])
+        assert obj == csource
+
     def test_04_application_license_other_text_broken(self):
         af = APPLICATION_FORM
         af["license_other"] = "None",
 
         form = forms.ManEdApplicationReviewForm(formdata=MultiDict(af))
-        obj = ApplicationFormXWalk.form2obj(form)
+        obj = suggestion_form.SuggestionFormXWalk.form2obj(form)
 
         assert obj.bibjson().get_license_type() == "None"
 

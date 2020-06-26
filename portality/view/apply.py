@@ -67,12 +67,12 @@ def public_application(draft_id=None):
             if async_def is not None:
                 return make_response(json.dumps({"id" : the_draft.id}), 200)
             else:
-                return redirect(url_for('doaj.suggestion_thanks', _anchor='draft'))
+                return redirect(url_for('doaj.application_thanks', _anchor='draft'))
 
         else:
             if processor.validate():
                 processor.finalise()
-                return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
+                return redirect(url_for('doaj.application_thanks', _anchor='thanks'))
             else:
                 return fc.render_template()
 

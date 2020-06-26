@@ -7,7 +7,13 @@
 
 {% set form_id = "public_application" %}
 {% set form_action = url_for("apply.public_application") %}
-{% set formulaic_after = url_for("doaj.suggestion_thanks", _anchor='thanks') %}
+{% set formulaic_after = url_for("doaj.application_thanks", _anchor='thanks') %}
+{% if obj %}
+    {% set form_action = url_for("doaj.public_application", draft_id=obj.id) %}
+{% else %}
+    {% set form_action = url_for("doaj.public_application") %}
+{% endif %}
+{% set formulaic_after = url_for("doaj.application_thanks") %}
 {% set js_validation = False %}
 {% set auto_save = 0 %}
 

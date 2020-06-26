@@ -467,6 +467,10 @@ class FormulaicField(object):
 
         return self._formulaic_fieldset.default_field_template
 
+    @property
+    def entry_template(self):
+        return self._definition.get("entry_template")
+
     def has_validator(self, validator_name):
         for validator in self._definition.get("validate", []):
             if isinstance(validator, str) and validator == validator_name:
@@ -522,7 +526,7 @@ class FormulaicField(object):
         wtf = self.wtfield
         return wtf.errors
 
-    def render_form_control(self, custom_args=None):
+    def render_form_control(self, custom_args=None, wtfinst=None):
         kwargs = deepcopy(self._definition.get("attr", {}))
         if "placeholder" in self._definition.get("help", {}):
             kwargs["placeholder"] = self._definition["help"]["placeholder"]
@@ -543,7 +547,11 @@ class FormulaicField(object):
             for k, v in custom_args.items():
                 kwargs[k] = v
 
-        wtf = self.wtfield
+        wtf = None
+        if wtfinst is not None:
+            wtf = wtfinst
+        else:
+            wtf = self.wtfield
         return wtf(**kwargs)
 
     @classmethod
@@ -573,7 +581,7 @@ class FormulaicField(object):
             "description": field.get("help", {}).get("description"),
         }
         if "default" in field:
-            wtargs["default"] = field["default"]
+            wtargs["default"] = field.get("default")
         if "options" in field or "options_fn" in field:
             wtargs["choices"] = cls._options2choices(field, formulaic_context.function_map.get("options", {}))
 

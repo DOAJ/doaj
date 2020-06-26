@@ -171,50 +171,6 @@ class JournalGenericXWalk(object):
         if form.deposit_policy_url.data:
             bibjson.deposit_policy_url = form.deposit_policy_url.data
 
-        # continuations information
-        if getattr(form, "continues", None):
-            bibjson.replaces = form.replaces.data
-        if getattr(form, "continued_by", None):
-            bibjson.is_replaced_by = form.is_replaced_by.data
-        if getattr(form, "discontinued_date", None):
-            bibjson.discontinued_date = form.discontinued_date.data
-
-        # subject information
-        if getattr(form, "subject", None):
-            new_subjects = []
-            for code in form.subject.data:
-                sobj = {"scheme": 'LCC', "term": lcc.lookup_code(code), "code": code}
-                new_subjects.append(sobj)
-            bibjson.subjects = new_subjects
-
-    @classmethod
-    def form2admin(cls, form, obj):
-        # FIXME: notes have IDs and dates, these need to be taken into account
-        #for formnote in form.notes.data:
-        #    if formnote["note"]:
-        #        obj.add_note(formnote["note"])
-
-        if getattr(form, 'owner', None):
-            owner = form.owner.data
-            if owner:
-                owner = owner.strip()
-                obj.set_owner(owner)
-
-        if getattr(form, 'editor_group', None):
-            editor_group = form.editor_group.data
-            if editor_group:
-                editor_group = editor_group.strip()
-                obj.set_editor_group(editor_group)
-
-        if getattr(form, "editor", None):
-            editor = form.editor.data
-            if editor:
-                editor = editor.strip()
-                obj.set_editor(editor)
-
-        if getattr(form, "doaj_seal", None):
-            obj.set_seal(form.doaj_seal.data)
-
     @classmethod
     def bibjson2form(cls, bibjson, forminfo):
         from portality.models import JournalLikeBibJSON
@@ -336,30 +292,6 @@ class JournalGenericXWalk(object):
 
         forminfo["deposit_policy_url"] = bibjson.deposit_policy_url
 
-        # continuation information
-        forminfo["continues"] = bibjson.replaces
-        forminfo["continued_by"] = bibjson.is_replaced_by
-        forminfo["discontinued_date"] = bibjson.discontinued_date
-
-        # subject classifications
-        forminfo['subject'] = []
-        for s in bibjson.subject:
-            if "code" in s:
-                forminfo['subject'].append(s['code'])
-
-    @classmethod
-    def admin2form(cls, obj, forminfo):
-        # FIXME: make sure we are treating note dates and ids correctly
-        # forminfo['notes'] = obj.ordered_notes
-
-        forminfo['owner'] = obj.owner
-        if obj.editor_group is not None:
-            forminfo['editor_group'] = obj.editor_group
-        if obj.editor is not None:
-            forminfo['editor'] = obj.editor
-
-        forminfo['doaj_seal'] = obj.has_seal()
-
 
 class JournalFormXWalk(JournalGenericXWalk):
 
@@ -371,10 +303,53 @@ class JournalFormXWalk(JournalGenericXWalk):
         # first do the generic crosswalk to bibjson
         cls.form2bibjson(form, bibjson)
 
-        # then do the admin fields
-        cls.form2admin(form, bibjson)
+        ################################################
+
+        # admin fields we haven't thought about yet
+
+        """
+        for formnote in form.notes.data:
+            if formnote["note"]:
+                journal.add_note(formnote["note"])
+
+        new_subjects = []
+        for code in form.subject.data:
+            sobj = {"scheme": 'LCC', "term": lcc.lookup_code(code), "code": code}
+            new_subjects.append(sobj)
+        bibjson.set_subjects(new_subjects)
+
+        if getattr(form, 'owner', None):
+            owner = form.owner.data
+            if owner:
+                owner = owner.strip()
+                journal.set_owner(owner)
+
+        if getattr(form, 'editor_group', None):
+            editor_group = form.editor_group.data
+            if editor_group:
+                editor_group = editor_group.strip()
+                journal.set_editor_group(editor_group)
+
+        if getattr(form, "editor", None):
+            editor = form.editor.data
+            if editor:
+                editor = editor.strip()
+                journal.set_editor(editor)
+
+        if getattr(form, "doaj_seal", None):
+            journal.set_seal(form.doaj_seal.data)
+
+        # continuations information
+        if getattr(form, "replaces", None):
+            bibjson.replaces = form.replaces.data
+        if getattr(form, "is_replaced_by", None):
+            bibjson.is_replaced_by = form.is_replaced_by.data
+        if getattr(form, "discontinued_date", None):
+            bibjson.discontinued_date = form.discontinued_date.data
+        """
 
         return journal
+
 
     @classmethod
     def obj2form(cls, obj):
@@ -382,6 +357,29 @@ class JournalFormXWalk(JournalGenericXWalk):
         bibjson = obj.bibjson()
 
         cls.bibjson2form(bibjson, forminfo)
-        cls.admin2form(obj, forminfo)
+
+        """
+        forminfo['contact_name'] = listpop(obj.contacts(), {}).get('name')
+        forminfo['contact_email'] = listpop(obj.contacts(), {}).get('email')
+        forminfo['confirm_contact_email'] = forminfo['contact_email']
+        forminfo["replaces"] = bibjson.replaces
+        forminfo["is_replaced_by"] = bibjson.is_replaced_by
+        forminfo["discontinued_date"] = bibjson.discontinued_date
+
+        forminfo['notes'] = obj.ordered_notes
+
+        forminfo['subject'] = []
+        for s in bibjson.subjects():
+            if "code" in s:
+                forminfo['subject'].append(s['code'])
+
+        forminfo['owner'] = obj.owner
+        if obj.editor_group is not None:
+            forminfo['editor_group'] = obj.editor_group
+        if obj.editor is not None:
+            forminfo['editor'] = obj.editor
+
+        forminfo['doaj_seal'] = obj.has_seal()
+        """
 
         return forminfo

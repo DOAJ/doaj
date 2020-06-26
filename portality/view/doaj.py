@@ -43,11 +43,18 @@ def cookie_consent():
     return resp
 
 
-# @blueprint.route("/news")
-# def news():
-#     news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))
-#     return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
+@blueprint.route("/news")
+def news():
+    news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))
+    return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
 
+
+# @blueprint.route("/widgets")
+# def widgets():
+#     return render_template('doaj/widgets.html',
+#                            env=app.config.get("DOAJENV"),
+#                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+#                            )
 
 @blueprint.route("/ssw_demo")
 def ssw_demo():
@@ -122,19 +129,56 @@ def suggestion():
         fc = formcontext.ApplicationFormFactory.get_form_context(form_data=request.form)
         if fc.validate():
             fc.finalise()
-            return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
+            return redirect(url_for('doaj.application_thanks', _anchor='thanks'))
         else:
             return fc.render_template(edit_suggestion_page=True)
 """
 
 from portality.forms.application_forms import ApplicationFormFactory
 
-
-
 @blueprint.route("/application/new", methods=["GET", "POST"])
 @blueprint.route("/application/new/<draft_id>", methods=["GET", "POST"])
-def old_application(draft_id=None):
-    redirect(url_for("doaj.public_application", **request.args), code=308)
+@write_required()
+@login_required
+def public_application(draft_id=None):
+    fc = ApplicationFormFactory.context("public")
+
+    if request.method == "GET":
+        if draft_id is None:
+            return fc.render_template()
+        draft_application = models.DraftApplication.pull(draft_id)
+        if draft_application is None:
+            abort(404)
+        if draft_application.owner != current_user.id:
+            abort(404)
+        fc.processor(source=draft_application)
+        return fc.render_template(obj=draft_application)
+
+    elif request.method == "POST":
+        draft = request.form.get("draft")
+        async_def = request.form.get("async")
+        processor = fc.processor(formdata=request.form)
+
+        if draft is not None:
+            draft_application = None
+            if draft_id is not None:
+                draft_application = models.DraftApplication.pull(draft_id)
+                if draft_application is None:
+                    abort(404)
+                if draft_application.owner != current_user.id:
+                    abort(404)
+
+            draft_application = processor.draft(current_user._get_current_object(), id=draft_id)
+            if async_def is not None:
+                return make_response(json.dumps({"id": draft_application.id}), 200)
+            else:
+                return redirect(url_for('doaj.draft_saved'))
+        else:
+            if processor.validate():
+                processor.finalise(current_user._get_current_object())
+                return redirect(url_for('doaj.application_thanks'))
+            else:
+                return fc.render_template()
 
 
 #############################################
@@ -159,9 +203,14 @@ def journal_readonly(journal_id):
 
 
 @blueprint.route("/application/thanks", methods=["GET"])
-def suggestion_thanks():
-    return render_template('doaj/suggest_thanks.html')
-    
+def application_thanks():
+    return render_template('doaj/application_thanks.html')
+
+
+@blueprint.route("/application/draft", methods=["GET"])
+def draft_saved():
+    return render_template("doaj/draft_saved.html")
+
 
 @blueprint.route("/csv")
 @analytics.sends_ga_event(event_category=app.config.get('GA_CATEGORY_JOURNALCSV', 'JournalCSV'), event_action=app.config.get('GA_ACTION_JOURNALCSV', 'Download'))
@@ -182,6 +231,30 @@ def sitemap():
     sitemap_file = models.Cache.get_latest_sitemap()
     sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
+
+
+# @blueprint.route("/public-data-dump")
+# def public_data_dump():
+#     data_dump = models.Cache.get_public_data_dump()
+#     show_article = data_dump.get("article", {}).get("url") is not None
+#     article_size = data_dump.get("article", {}).get("size")
+#     show_journal = data_dump.get("journal", {}).get("url") is not None
+#     journal_size = data_dump.get("journal", {}).get("size")
+#     return render_template("doaj/public_data_dump.html",
+#                            show_article=show_article,
+#                            article_size=article_size,
+#                            show_journal=show_journal,
+#                            journal_size=journal_size)
+
+
+@blueprint.route("/public-data-dump/<record_type>")
+def public_data_dump_redirect(record_type):
+    store_url = models.Cache.get_public_data_dump().get(record_type, {}).get("url")
+    if store_url is None:
+        abort(404)
+    if store_url.startswith("/"):
+        store_url = "/store" + store_url
+    return redirect(store_url, code=307)
 
 
 @blueprint.route("/store/<container>/<filename>")
@@ -516,9 +589,9 @@ def features():
     return redirect(url_for("doaj.xml", **request.args), code=308)
 
 
-@blueprint.route('/widgets')
-def old_widgets():
-    return redirect(url_for("doaj.widgets", **request.args), code=308)
+# @blueprint.route('/widgets')
+# def old_widgets():
+#     return redirect(url_for("doaj.widgets", **request.args), code=308)
 
 
 @blueprint.route("/public-data-dump/<record_type>")
