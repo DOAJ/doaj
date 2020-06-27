@@ -26,13 +26,10 @@
 
 .search-results__record {
   display: block;
-  padding: $spacing-04 0;
-  border-top: 1px solid rgba($warm-black, 0.5);
+  padding: $spacing-04;
+  margin-bottom: $spacing-04;
+  background-color: $fair-pink;
   @include typescale-06;
-
-  &:first-of-type {
-    border: 0;
-  }
 }
 
 .search-results__main {
@@ -40,7 +37,7 @@
 }
 
 .search-results__heading {
-  margin: $spacing-03 0;
+  margin: 0 0 $spacing-03 0;
 
   svg {
     margin-left: $spacing-01;
@@ -57,7 +54,7 @@
       font-weight: 400;
     }
   }
-  
+
   a {
     display: block;
     text-decoration: none;

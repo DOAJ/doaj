@@ -2,6 +2,7 @@
 
 .tag {
   display: inline-block;
+  margin: 0 $spacing-03 $spacing-03 0;
   padding: $spacing-01 $spacing-02;
   border-radius: 9999px; // hack-y way to create pill shape
   background: $grapefruit;
