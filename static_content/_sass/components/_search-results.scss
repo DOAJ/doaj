@@ -26,7 +26,7 @@
 
 .search-results__record {
   display: block;
-  padding: $spacing-05 0;
+  padding: $spacing-04 0;
   border-top: 1px solid rgba($warm-black, 0.5);
   @include typescale-06;
 
@@ -42,23 +42,29 @@
 .search-results__heading {
   margin: $spacing-03 0;
 
-  a {
-    text-decoration: none;
-  }
-
   svg {
     margin-left: $spacing-01;
     vertical-align: middle;
   }
-}
 
-.search-results__secondary-heading {
-  display: block;
-  color: $dark-grey;
-  font-style: italic;
+  span {
+    &:nth-of-type(1) {
+      font-weight: 600;
+    }
 
-  &:hover, &:focus, &:active {
-    color: $sanguine;
+    &:nth-of-type(2) {
+      color: rgba($warm-black, 0.65);
+      font-weight: 400;
+    }
+  }
+  
+  a {
+    display: block;
+    text-decoration: none;
+
+    &:hover, &:active, &:focus {
+      color: $grapefruit;
+    }
   }
 }
 

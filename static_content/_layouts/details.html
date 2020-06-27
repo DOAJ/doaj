@@ -35,20 +35,21 @@
       <div class="container">
         <div class="row">
           <div class="col-md-8">
-            {% if page.keywords %}
-            <h2>Keywords</h2>
-            <ul>
-              {% for j in page.keywords %}
-              <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
-              {% endfor %}
-            </ul>
-            {% endif %}
 
             <h2>Abstract <sup><a href="{{ page.url }}" target="_blank" rel="noopener">Full text</sup></h2>
             {% if page.abstract %}
             <p>{{ page.abstract }}</p>
             {% else %}
             <em>No abstracts available.</em>
+            {% endif %}
+
+            {% if page.keywords %}
+            <h2 class="sr-only">Keywords</h2>
+            <ul>
+              {% for j in page.keywords %}
+              <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
+              {% endfor %}
+            </ul>
             {% endif %}
           </div>
 
@@ -91,12 +92,6 @@
               <a href="#" class="title-list__link">
                 <p class="label">Human Immunology (1999)</p>
                 <h3 class="title-list__heading">Expression of the costimulator molecules, CD80, CD86, CD28, and CD152 on lymphocytes from neonates and young children</h3>
-                <ul>
-                  <li>S. Elliott,</li>
-                  <li>P. Macardle,</li>
-                  <li>D. Roberton,</li>
-                  <li>H. Zola</li>
-                </ul>
               </a>
             </article>
 
@@ -104,14 +99,6 @@
               <a href="#" class="title-list__link">
                 <p class="label">Molecular Metabolism (2017)</p>
                 <h3 class="title-list__heading">Neonatal pancreatic pericytes support β-cell proliferation</h3>
-                <ul>
-                  <li>Alona Epshtein,</li>
-                  <li>Eleonor Rachi,</li>
-                  <li>Lina Sakhneny,</li>
-                  <li>Shani Mizrachi,</li>
-                  <li>Daria Baer,</li>
-                  <li>Limor Landsmanf</li>
-                </ul>
               </a>
             </article>
 
@@ -119,14 +106,6 @@
               <a href="#" class="title-list__link">
                 <p class="label">Frontiers in Immunology (2014)</p>
                 <h3 class="title-list__heading">The unique neonatal NK cells: a critical component required for neonatal autoimmune disease induction by maternal autoantibody</h3>
-                <ul>
-                  <li>Alona Epshtein,</li>
-                  <li>Eleonor Rachi,</li>
-                  <li>Lina Sakhneny,</li>
-                  <li>Shani Mizrachi,</li>
-                  <li>Daria Baer,</li>
-                  <li>Limor Landsmanf</li>
-                </ul>
               </a>
             </article>
 
@@ -134,14 +113,6 @@
               <a href="#" class="title-list__link">
                 <p class="label">Immunology & Cell Biology (2016)</p>
                 <h3 class="title-list__heading">Modeling the dynamics of neonatal CD8+ T-cell responses</h3>
-                <ul>
-                  <li>Alona Epshtein,</li>
-                  <li>Eleonor Rachi,</li>
-                  <li>Lina Sakhneny,</li>
-                  <li>Shani Mizrachi,</li>
-                  <li>Daria Baer,</li>
-                  <li>Limor Landsmanf</li>
-                </ul>
               </a>
             </article>
 
@@ -149,12 +120,6 @@
               <a href="#" class="title-list__link">
                 <p class="label">Human Immunology (1999)</p>
                 <h3 class="title-list__heading">Expression of the costimulator molecules, CD80, CD86, CD28, and CD152 on lymphocytes from neonates and young children</h3>
-                <ul>
-                  <li>S. Elliott,</li>
-                  <li>P. Macardle,</li>
-                  <li>D. Roberton,</li>
-                  <li>H. Zola</li>
-                </ul>
               </a>
             </article>
 
@@ -162,14 +127,6 @@
               <a href="#" class="title-list__link">
                 <p class="label">Molecular Metabolism (2017)</p>
                 <h3 class="title-list__heading">Neonatal pancreatic pericytes support β-cell proliferation</h3>
-                <ul>
-                  <li>Alona Epshtein,</li>
-                  <li>Eleonor Rachi,</li>
-                  <li>Lina Sakhneny,</li>
-                  <li>Shani Mizrachi,</li>
-                  <li>Daria Baer,</li>
-                  <li>Limor Landsmanf</li>
-                </ul>
               </a>
             </article>
 
@@ -177,14 +134,6 @@
               <a href="#" class="title-list__link">
                 <p class="label">Frontiers in Immunology (2014)</p>
                 <h3 class="title-list__heading">The unique neonatal NK cells: a critical component required for neonatal autoimmune disease induction by maternal autoantibody</h3>
-                <ul>
-                  <li>Alona Epshtein,</li>
-                  <li>Eleonor Rachi,</li>
-                  <li>Lina Sakhneny,</li>
-                  <li>Shani Mizrachi,</li>
-                  <li>Daria Baer,</li>
-                  <li>Limor Landsmanf</li>
-                </ul>
               </a>
             </article>
 
@@ -192,14 +141,6 @@
               <a href="#" class="title-list__link">
                 <p class="label">Immunology & Cell Biology (2016)</p>
                 <h3 class="title-list__heading">Modeling the dynamics of neonatal CD8+ T-cell responses</h3>
-                <ul>
-                  <li>Alona Epshtein,</li>
-                  <li>Eleonor Rachi,</li>
-                  <li>Lina Sakhneny,</li>
-                  <li>Shani Mizrachi,</li>
-                  <li>Daria Baer,</li>
-                  <li>Limor Landsmanf</li>
-                </ul>
               </a>
             </article>
           </div>

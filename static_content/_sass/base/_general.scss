@@ -19,16 +19,18 @@ body {
   @include font-sans;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h2, h3, h4, h5, h6 {
   margin: $spacing-04 0;
   line-height: 1.05;
-  font-weight: 600;
-  @include font-serif;
+  font-weight: 400;
 }
 
 h1 {
   margin: $spacing-04 0 $spacing-05;
+  font-weight: 700;
+  line-height: 1.05;
   @include typescale-01;
+  @include font-serif;
 }
 
 h2 {
@@ -94,6 +96,10 @@ pre {
 
 code {
   background: $fair-pink;
+}
+
+strong, b {
+  font-weight: 600;
 }
 
 a {

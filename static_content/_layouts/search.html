@@ -262,29 +262,23 @@
                 <article class="row">
                   <div class="col-sm-8 search-results__main">
                     <header>
-                      <p class="label">
-                        {% assign lcc_codes = i.lcc | split: "|" %}
-                        {% for i in lcc_codes %}
-                        {{ i }}{% if forloop.last %}{% else %}<br/>{% endif %}
-                        {% endfor %}
-                      </p>
-                      <h3 class="search-results__heading">
-                        <a href="{{ site.baseurl }}{% link search/journal-details.md %}" class="">
-                          {{ i.title }}
-                          {% if i.paral_title %}<br/><span class="search-results__secondary-heading">{{ i.paral_title }}</span>{% endif %}
-                        </a>
-                      </h3>
                       {% if i.seal %}
                       <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag">
                         <span data-feather="check-circle" aria-hidden="true"></span>
                         DOAJ Seal
                       </a>
                       {% endif %}
+                      <h3 class="search-results__heading">
+                        <a href="{{ site.baseurl }}{% link search/journal-details.md %}">
+                          <span>{{ i.title }}</span>
+                          {% if i.paral_title %}<br/><span>{{ i.paral_title }}</span>{% endif %}
+                        </a>
+                      </h3>
                     </header>
                     <div class="search-results__body">
                       <ul>
                         <li>
-                          Published {% if i.institution %}by <em>{{ i.institution }}</em>{% endif %} in <strong>{{ i.country }}</strong>
+                          Published {% if i.publisher %}by <em>{{ i.publisher }}</em>{% endif %} in <strong>{{ i.country }}</strong>
                         </li>
                         <li>
                           Accepts manuscripts in <strong>{{ i.lang }}</strong>
@@ -292,33 +286,38 @@
                       </ul>
                       <ul>
                         <li>
-                          <strong>{{ i.processing_time }}</strong> weeks to publication
-                        </li>
-                        <li>
                           {% if i.apc %}<strong>{{ i.apc }}</strong> processing fee{% else %}No charges{% endif %}
                         </li>
                       </ul>
+                      <ul>
+                        <li>
+                          {% assign lcc_codes = i.lcc | split: "|" %}
+                          {% for i in lcc_codes %}
+                          <li>{{ i }}</li>
+                          {% endfor %}
+                        </li>
+                      <ul>
                     </div>
                   </div>
                   <aside class="col-sm-4 search-results__aside">
                     <ul>
                       <li>
+                        {{ i.formats }} articles
+                      </li>
+                      <li>
+                        {% if i.updated %}Last updated on {{ i.updated }}
+                        {% else %}Added on {{ i.added }}{% endif %}
+                      </li>
+                      {% if i.articles %}
+                      <li>
+                        {{ i.articles }} articles indexed
+                      </li>
+                      {% endif %}
+                      <li>
                         <a href="{{ i.url }}" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
                       </li>
                       <li>
                         <a href="{{ i.license_url }}" target="_blank" rel="noopener">{{ i.license }}</a>
-                      </li>
-                      <li>
-                        {{ i.formats }} articles
-                      </li>
-                      {% if i.articles %}
-                      <li>
-                        {{ i.articles }} articles dating back to {{ i.oa_since }}
-                      </li>
-                      {% endif %}
-                      <li>
-                        {% if i.updated %}Last updated on {{ i.updated }}
-                        {% else %}Added on {{ i.added }}{% endif %}
                       </li>
                     </ul>
                   </aside>
@@ -505,7 +504,7 @@
                   <div class="col-sm-8 search-results__main article-summary">
                     <header>
                       <p class="label">
-                        From <em>{{ i.journal }}</em>
+                        {{ i.journal }}
                       </p>
                       <h3 class="search-results__heading">
                         <a href="{{ site.baseurl }}{% link search/article-details.md %}" class="">
