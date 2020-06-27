@@ -1,0 +1,106 @@
+<h2>Showing 4,926,886 indexed articles</h2>
+<nav class="search-results__display">
+  <h3 class="sr-only">Display options</h3>
+  <div class="row">
+    <div class="col-xs-6">
+      <label for="sort-by">Sort by</label>
+      <select name="sort-by" id="sort-by">
+        <option value="">Added to DOAJ (newest first)</option>
+        <option value="">Added to DOAJ (oldest first)</option>
+        <option value="">Publication date (most recent first)</option>
+        <option value="">Publication date (less recent first)</option>
+        <option value="">Title (A-Z)</option>
+        <option value="">Title (Z-A)</option>
+        <option value="">Relevance</option>
+      </select>
+    </div>
+    <div class="col-xs-6">
+      <label for="results-per-page">Results per page</label>
+      <select name="results-per-page" id="results-per-page">
+        <option value="all">50</option>
+        <option value="all">100</option>
+        <option value="all">200</option>
+      </select>
+    </div>
+  </div>
+</nav>
+<ol class="search-results">
+  {% assign count = 0 %}
+
+  {% for i in site.data.articles %}
+  {% assign count = count | plus: 1 %}
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main article-summary">
+        <header>
+          <p class="label">
+            {{ i.journal }}
+          </p>
+          <h3 class="search-results__heading">
+            <a href="{{ site.baseurl }}{% link search/article-details.md %}" class="">
+              {{ i.title }}
+            </a>
+          </h3>
+          {% if i.authors %}
+          <ul class="article-summary__authors">
+            {% for j in i.authors %}
+            <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+
+          {% if i.seal %}
+          <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag">
+            <span data-feather="check-circle" aria-hidden="true"></span>
+            DOAJ Seal
+          </a>
+          {% endif %}
+        </header>
+        <div class="search-results__body">
+          <ul>
+            {% if i.keywords %}
+              {% for j in i.keywords %}
+              <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
+              {% endfor %}
+            {% else %}
+              {% assign lcc_codes = i.lcc | split: "|" %}
+
+              {% for i in lcc_codes %}
+              <li>{{ i }}{% if forloop.last %}{% else %}<br/>{% endif %}</li>
+              {% endfor %}
+            {% endif %}
+          </ul>
+          {% if i.abstract %}
+          <h4 class="article-summary__abstract-heading" type="button" data-toggle="collapse" data-target="#abstract-{{ count }}" aria-expanded="false">
+            Abstract
+            <span data-feather="plus" aria-hidden="true"></span>
+          </h4>
+          <p id="abstract-{{ count }}" class="collapse article-summary__abstract-body" aria-expanded="false">
+            {{ i.abstract|strip_html }}
+          </p>
+          {% endif %}
+        </div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            <a href="{{ i.url }}" target="_blank" rel="noopener">Full-text article <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            <a href="{{ i.journal_url }}" target="_blank" rel="noopener">Journal’s website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            <a href="{{ i.license_url }}" target="_blank" rel="noopener">{{ i.license }}</a>
+          </li>
+          <li>
+            Published by <em>{{ i.publisher }}</em> in <strong>{{ i.country }}</strong>
+          </li>
+          <li>
+            {{ i.issue_pub_date }}
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  {% endfor %}
+</ol>

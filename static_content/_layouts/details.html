@@ -11,16 +11,10 @@
       <div class="highlight">
         <header class="container">
           <p class="label">
-            From <em>{{ page.journal }}</em> ({{ page.issue_pub_date }})
+            {{ page.journal }} ({{ page.issue_pub_date }})
           </p>
 
           <h1>{{ page.title }}</h1>
-
-          {% if page.doi %}
-          <p>
-            <a href="https://doi.org/{{ page.doi }}" target="_blank" rel="noopener">https://doi.org/{{ page.doi }}</a>
-          </p>
-          {% endif %}
 
           {% if page.authors %}
           <ul>
@@ -29,6 +23,12 @@
             {% endfor %}
           </ul>
           {% endif %}
+
+          {% if page.doi %}
+          <p>
+            <a href="https://doi.org/{{ page.doi }}" target="_blank" rel="noopener">https://doi.org/{{ page.doi }}</a>
+          </p>
+          {% endif %}
         </header>
       </div>
 
@@ -36,7 +36,7 @@
         <div class="row">
           <div class="col-md-8">
 
-            <h2>Abstract <sup><a href="{{ page.url }}" target="_blank" rel="noopener">Full text</sup></h2>
+            <h2>Abstract</h2>
             {% if page.abstract %}
             <p>{{ page.abstract }}</p>
             {% else %}
@@ -172,13 +172,16 @@
 
       <div class="container">
         <div class="row">
-          <div class="col-md-8">
+          <section class="col-md-4">
+            <h2>Journal metadata</h2>
+          </section>
 
-          </div>
+          <section class="col-md-4">
+            <h2>Publishing with this journal</h2>
+          </section>
 
-          <section>
-            <h2>Table of contents</h2>
-
+          <section class="col-md-4">
+            <h2>Best practice</h2>
           </section>
         </div>
 
