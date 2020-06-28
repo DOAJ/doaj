@@ -260,11 +260,14 @@ class RegisterForm(Form):
 
 
 @blueprint.route('/register', methods=['GET', 'POST'])
-@login_required
 @ssl_required
 @write_required()
 def register():
-    if not app.config.get('PUBLIC_REGISTER', False) and not current_user.has_role("create_user"):
+    if current_user.is_authenticated and current_user.has_role("create_user"):
+        # Admin user is already logged in
+        # todo: check if 3rd party creation should be supported
+        pass
+    if not app.config.get('PUBLIC_REGISTER', False):
         abort(401)
     form = RegisterForm(request.form, csrf_enabled=False, roles='api')
     if request.method == 'POST' and form.validate():

@@ -136,6 +136,11 @@ STATIC_PATHS = [
 
 
 # =======================
+# Account settings
+
+PUBLIC_REGISTER = False
+
+# =======================
 # email settings
 
 # Settings for Flask-Mail. Set in app.cfg
