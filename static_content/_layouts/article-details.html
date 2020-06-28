@@ -6,7 +6,6 @@
   <body>
     {% include header.html %}
 
-    {% if page.name == 'article-details.md' %}
     <main class="page-content article-summary">
       <div class="highlight">
         <header class="container">
@@ -147,47 +146,6 @@
         </footer>
       </div>
     </main>
-    {% endif %}
-
-    {% if page.name == 'journal-details.md' %}
-    <main class="page-content article-summary">
-      <div class="highlight">
-        <header class="container">
-          <p>
-            Added {{ page.added }}
-          </p>
-
-          <h1>{{ page.title }}</h1>
-
-          {% if page.issn %}
-          <p>
-            {{ page.issn }}
-          </p>
-          {% endif %}
-
-          <p><a href="{{ page.url }}" target="_blank" rel="noopeener">Website <span data-feather="external-link" aria-hidden="true"></span></a></p>
-
-        </header>
-      </div>
-
-      <div class="container">
-        <div class="row">
-          <section class="col-md-4">
-            <h2>Journal metadata</h2>
-          </section>
-
-          <section class="col-md-4">
-            <h2>Publishing with this journal</h2>
-          </section>
-
-          <section class="col-md-4">
-            <h2>Best practice</h2>
-          </section>
-        </div>
-
-      </div>
-    </main>
-    {% endif %}
 
     {% include footer.html %}
   </body>

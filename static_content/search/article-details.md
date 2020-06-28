@@ -1,5 +1,5 @@
 ---
-layout: details
+layout: article-details
 section: Search
 title: "IL-12 Signaling Contributes to the Reprogramming of Neonatal CD8+ T Cells"
 url: "https://www.frontiersin.org/article/10.3389/fimmu.2020.01089/full"

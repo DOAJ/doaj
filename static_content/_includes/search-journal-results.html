@@ -1,4 +1,4 @@
-<h2>Showing 14,576 indexed journals</h2>
+<h2>14,576 indexed journals</h2>
 <nav class="search-results__display">
   <h3 class="sr-only">Display options</h3>
   <div class="row">
@@ -41,9 +41,9 @@
           {% endif %}
           <h3 class="search-results__heading">
             <a href="{{ site.baseurl }}{% link search/journal-details.md %}">
-              <span>{{ i.title }}</span>
-              {% if i.paral_title %}<br/><span>{{ i.paral_title }}</span>{% endif %}
+              {{ i.title }}
             </a>
+            {% if i.subtitle %}<span class="search-results__subheading">{{ i.subtitle }}</span>{% endif %}
           </h3>
         </header>
         <div class="search-results__body">
@@ -61,12 +61,10 @@
             </li>
           </ul>
           <ul>
-            <li>
-              {% assign lcc_codes = i.lcc | split: "|" %}
-              {% for i in lcc_codes %}
-              <li>{{ i }}</li>
-              {% endfor %}
-            </li>
+            {% assign lcc_codes = i.lcc | split: "|" %}
+            {% for i in lcc_codes %}
+            <li>{{ i }}</li>
+            {% endfor %}
           <ul>
         </div>
       </div>

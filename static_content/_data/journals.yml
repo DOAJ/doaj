@@ -1,15 +1,22 @@
 # Temporary journals list
 
 - title: "Innovative Marketing"
-  paral_title: "Інноваційний маркетинг"
+  subtitle: "Інноваційний маркетинг"
   url: "https://businessperspectives.org/journals/innovative-marketing?category_id=30"
   lcc: "Social Sciences. Marketing. Distribution of products"
+  keywords:
+    - methods and tools of marketing
+    - corporate culture and innovative marketing
+    - marketing of financial services
+    - property rights for innovations and inventions
+    - innovation management
+    - big data analysis
   formats: PDF
   lang: English
   publisher: 'LLC "CPC "Business Perspectives"'
   country: Ukraine
   added: 13 May 2020
-  updated:
+  updated: 5 June 2020
   apc: "€595 (EUR)"
   license: "CC BY"
   license_url: "https://creativecommons.org/licenses/by/2.0/"
@@ -17,9 +24,10 @@
   processing_time: 9
   articles: 602
   seal: true
+  issn: "1814-2427 (Print); 1816-6326 (Online)"
 
 - title: "Yeni Üroloji Dergisi"
-  paral_title: "The New Journal of Urology"
+  subtitle: "The New Journal of Urology"
   url: "https://dergipark.org.tr/en/pub/yud"
   lcc: "Medicine. Diseases of the genitourinary system. Urology"
   formats: PDF
@@ -37,7 +45,7 @@
   seal: false
 
 - title: "Linguagem & Ensino"
-  paral_title: "Linguagem e Ensino"
+  subtitle: "Linguagem e Ensino"
   url: "https://periodicos.ufpel.edu.br/ojs2/index.php/rle"
   lcc: "Language and Literature. Linguistics | Literature (General)"
   formats: PDF
@@ -55,7 +63,7 @@
   seal: false
 
 - title: "Access Microbiology"
-  paral_title:
+  subtitle:
   url: "https://www.microbiologyresearch.org/content/journal/acmi"
   lcc: "Science: Microbiology"
   formats: PDF, HTML, XML
@@ -73,7 +81,7 @@
   seal: false
 
 - title: "M@n@gement"
-  paral_title: "Management"
+  subtitle: "Management"
   url: "https://management-aims.com/index.php/mgmt"
   lcc: "Social Sciences. Industries. Land use. Management. Industrial management | Business"
   formats: PDF, HTML, EPUB, XML
@@ -91,7 +99,7 @@
   seal: false
 
 - title: "Entomological Communications"
-  paral_title:
+  subtitle:
   url: "https://www.entomologicalcommunications.org/"
   lcc: "Science: Zoology"
   formats: PDF
@@ -109,7 +117,7 @@
   seal: false
 
 - title: "Biología Acuática"
-  paral_title:
+  subtitle:
   url: "https://revistas.unlp.edu.ar/bacuatica/"
   lcc: "Agriculture: Aquaculture. Fisheries. Angling | Science: Biology (General) | Science: Physiology: Animal biochemistry"
   formats: PDF
@@ -127,7 +135,7 @@
   seal: false
 
 - title: "Медицина катастроф"
-  paral_title: "Disaster Medicine"
+  subtitle: "Disaster Medicine"
   url: "http://medkatjorn.vcmk.ru/en/"
   lcc: "Medicine: Internal medicine: Medical emergencies. Critical care. Intensive care. First aid"
   formats: PDF
@@ -145,7 +153,7 @@
   seal: false
 
 - title: "Acta Sting"
-  paral_title:
+  subtitle:
   url: "https://www.sting.cz/acta-sting-en/"
   lcc: "Social Sciences: Economic history and conditions | Social Sciences: Finance"
   formats: PDF
@@ -163,7 +171,7 @@
   seal: false
 
 - title: "Inform: Jurnal Ilmiah Bidang Teknologi Informasi dan Komunikasi"
-  paral_title:
+  subtitle:
   url: "https://ejournal.unitomo.ac.id/index.php/inform/index"
   lcc: "Technology: Electrical engineering. Electronics. Nuclear engineering: Electronics: Computer engineering. Computer hardware"
   formats: PDF
@@ -181,7 +189,7 @@
   seal: false
 
 - title: "Indonesia Accounting Journal"
-  paral_title:
+  subtitle:
   url: "https://ejournal.unsrat.ac.id/index.php/iaj/index"
   lcc: "Social Sciences: Finance"
   formats: PDF

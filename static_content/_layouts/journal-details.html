@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include head.html %}
+
+  <body>
+    {% include header.html %}
+
+    {% assign journal = site.data.journals[0] %}
+
+    <main class="page-content">
+      <div class="highlight">
+        <header class="container">
+
+          {% if journal.seal %}
+          <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag tag--featured">
+            <span data-feather="check-circle" aria-hidden="true"></span>
+            DOAJ Seal
+          </a>
+          {% endif %}
+
+          <a class="tag">
+            <span data-feather="check-circle" aria-hidden="true"></span>
+            Updated recently
+          </a>
+
+          <h1>
+            {{ journal.title }}
+            {% if journal.subtitle %}<span>{{ journal.subtitle }}</span>{% endif %}
+          </h1>
+
+          {% if journal.issn %}
+          <p>
+            {{ journal.issn }}
+          </p>
+          {% endif %}
+
+          <p><a href="{{ journal.url }}" target="_blank" rel="noopeener">Website <span data-feather="external-link" aria-hidden="true"></span></a></p>
+        </header>
+      </div>
+
+      <div class="container">
+        <div class="row">
+          <section class="col-md-4">
+            <h2 class="sr-only">Journal metadata</h2>
+            <dl>
+              <dt>Manuscript accepted in</dt>
+              <dd>{{ journal.lang }}</dd>
+
+              <dt>Article formats</dt>
+              <dd>{{ journal.issn }}</dd>
+
+              <dt>Publisher</dt>
+              <dd>{{ journal.publisher }}</dd>
+
+              <dt>Country of publisher</dt>
+              <dd>{{ journal.country }}</dd>
+
+              <dt>LCC subjects</dt>
+              {% assign lcc_codes = journal.lcc | split: "|" %}
+              {% for i in lcc_codes %}
+              <dd>{{ i }}</dd>
+              {% endfor %}
+
+              <dt>Publisher’s keywords</dt>
+              {% for keyword in journal.keywords %}
+              <dd>{{ keyword }}{% if forloop.last %}{% else %}, {% endif %}</dd>
+              {% endfor %}
+
+              <dt>Article formats</dt>
+              <dd>{{ journal.formats }}</dd>
+            </dl>
+          </section>
+
+          <section class="col-md-4">
+            <h2 class="sr-only">Publishing with this journal</h2>
+
+          </section>
+
+          <section class="col-md-4">
+            <h2 class="sr-only">Best practice</h2>
+          </section>
+        </div>
+
+        <p>
+          Added {{ journal.added }}
+        </p>
+
+        <p>
+          Updated {{ journal.updated }}
+        </p>
+
+
+        <hr/>
+
+        <div class="row">
+          <div class="col-md-9">
+            {% include search-article-results.html %}
+          </div>
+
+          <div class="col-md-3">
+            {% include search-article-filters.html %}
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    {% include footer.html %}
+  </body>
+
+</html>

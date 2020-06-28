@@ -5,8 +5,8 @@
   margin: 0 $spacing-03 $spacing-03 0;
   padding: $spacing-01 $spacing-02;
   border-radius: 9999px; // hack-y way to create pill shape
-  background: $grapefruit;
-  color: $warm-black;
+  background: $sanguine;
+  color: $warm-white;
   text-decoration: none;
   @include typescale-06;
 
@@ -14,7 +14,7 @@
     position: relative;
     padding-right: $spacing-01;
     top: 2px;
-    stroke: $warm-black;
+    stroke: $warm-white;
   }
 
   &:hover, &:focus, &active {
@@ -24,5 +24,14 @@
     svg {
       stroke: $warm-white;
     }
+  }
+}
+
+.tag--featured {
+  background: $grapefruit;
+  color: $warm-black;
+
+  svg {
+    stroke: $warm-black;
   }
 }

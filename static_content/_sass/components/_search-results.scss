@@ -38,21 +38,12 @@
 
 .search-results__heading {
   margin: 0 0 $spacing-03 0;
+  font-weight: 600;
+  @include typescale-02;
 
   svg {
     margin-left: $spacing-01;
     vertical-align: middle;
-  }
-
-  span {
-    &:nth-of-type(1) {
-      font-weight: 600;
-    }
-
-    &:nth-of-type(2) {
-      color: rgba($warm-black, 0.65);
-      font-weight: 400;
-    }
   }
 
   a {
@@ -63,6 +54,11 @@
       color: $grapefruit;
     }
   }
+}
+
+.search-results__subheading {
+  color: rgba($warm-black, 0.65);
+  font-weight: 400;
 }
 
 .search-results__body {

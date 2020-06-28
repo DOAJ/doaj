@@ -72,14 +72,14 @@ ul, ol {
 dl {
 
   dt {
-    @include font-monospace;
+    color: $dark-grey;
     @include typescale-06;
   }
 
   dd {
     margin: 0 0 $spacing-04 0;
 
-    &:last-child {
+    &:last-of-type {
       margin: 0;
     }
   }
