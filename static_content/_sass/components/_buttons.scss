@@ -9,6 +9,10 @@ button[type="submit"] {
   color: $warm-black;
 }
 
+[role="button"] {
+  cursor: pointer;
+}
+
 button:disabled,
 button[disabled],
 input[disabled] {
