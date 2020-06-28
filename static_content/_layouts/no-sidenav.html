@@ -31,7 +31,7 @@
           <!-- About section: team -->
           <ul class="row title-list">
             {% for i in site.data.team %}
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   {% if i.photo %}
@@ -65,7 +65,7 @@
           <h2>Ambassadors</h2>
           <ul class="row title-list">
             {% for i in site.data.ambassadors %}
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">{{ i.region }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
@@ -84,7 +84,7 @@
           <h2>Members</h2>
           <ul class="row title-list">
             {% for i in site.data.editorial-subcommittee %}
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">{{ i.region }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
@@ -102,7 +102,7 @@
           <p>The DOAJ Advisory Board was elected by the community. All board members started in August 2019.</p>
           <ul class="row title-list">
             {% for i in site.data.advisory-board-council.board %}
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">{{ i.country }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
@@ -124,9 +124,9 @@
 
           <h2>Council</h2>
           <p>The DOAJ Council was elected by the community. All Council members started in September 2019 unless otherwise stated.</p>
-          <ul class="row bleed title-list">
+          <ul class="row title-list">
             {% for i in site.data.advisory-board-council.council %}
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">{{ i.country }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
@@ -152,7 +152,7 @@
           <ul class="row title-list">
             {% for i in site.data.volunteers.ed %}
             {% if i.city %}
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">{{ i.area }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
@@ -167,10 +167,10 @@
           </ul>
 
           <h2>Associate editors</h2>
-          <ul class="row bleed title-list">
+          <ul class="row title-list">
             {% for i in site.data.volunteers.ass_ed %}
             {% if i.city %}
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">{{ i.area }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
