@@ -199,7 +199,6 @@ table {
 
 aside {
   font-size: smaller;
-  color: $sanguine;
 
   h2 {
     @include typescale-03;
@@ -207,10 +206,6 @@ aside {
 
   h2 {
     @include typescale-04;
-  }
-
-  a {
-    color: $sanguine;
   }
 }
 
