@@ -8,11 +8,11 @@
     font-weight: 400;
   }
 
+  .tabs {
+    margin-top: $spacing-04;
+  }
+
   .tabs__content {
-    margin-top: -1px;
-    padding: $spacing-04 $spacing-04 0 $spacing-04;
-    background-color: $fair-pink;
-    border: 1px solid $sanguine;
 
     h2,
     h3,
@@ -23,20 +23,33 @@
     }
   }
 
-  .search-results__record {
-    padding: $spacing-04 0;
-  }
-
   .tabs__item a {
+    margin: 0 $spacing-04 $spacing-05 0;
+    padding: 0 0 $spacing-02 0;
+    border: 0;
+    color: $dark-grey;
 
     &[aria-selected="true"] {
-      background-color: $fair-pink;
-      color: $sanguine;
+      border-bottom: 2px solid $grapefruit;
+      background: transparent;
+      color: $warm-black;
       font-weight: 700;
+    }
+
+    &:hover, &:focus, &:active {
+      background: none;
+      border-bottom: 2px solid $grapefruit;
+      color: $warm-black;
     }
   }
 
   #about-journal .label {
     margin-bottom: $spacing-04;
+    padding-bottom: $spacing-03;
+    border-bottom: 1px dashed;
+  }
+
+  #all-articles {
+
   }
 }

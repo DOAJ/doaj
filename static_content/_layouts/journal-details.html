@@ -10,6 +10,14 @@
 
     <main class="container page-content">
       <header>
+        <p class="label">
+          {{ journal.issn }}
+        </p>
+
+        <h1>
+          {{ journal.title }}
+          {% if journal.subtitle %}<span aria-hidden="true">{{ journal.subtitle }}</span>{% endif %}
+        </h1>
 
         {% if journal.seal %}
         <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag tag--featured">
@@ -23,18 +31,11 @@
           Updated recently
         </a>
 
-        <h1>
-          {{ journal.title }}
-          {% if journal.subtitle %}<span aria-hidden="true">{{ journal.subtitle }}</span>{% endif %}
-        </h1>
+        <a href="{{ journal.url }}" target="_blank" rel="noopeener" class="tag">
+          <span data-feather="external-link" aria-hidden="true"></span>
+          See website
+        </a>
 
-        {% if journal.issn %}
-        <p>
-          {{ journal.issn }}
-        </p>
-        {% endif %}
-
-        <p><a href="{{ journal.url }}" target="_blank" rel="noopeener">Website <span data-feather="external-link" aria-hidden="true"></span></a></p>
       </header>
 
       <div class="tabs">
@@ -54,63 +55,94 @@
             <h2 class="sr-only">About</h2>
             <section class="col-md-4">
               <h3 class="label">Journal metadata</h3>
-              <dl>
-                <dt>Manuscripts accepted in</dt>
-                <dd>{{ journal.lang }}</dd>
 
-                <dt>Country of publisher</dt>
-                <dd>{{ journal.country }}</dd>
+              <article class="card card--with-icon">
+                <span data-feather="map-pin" aria-hidden="true"></span>
+                <dl>
+                  <dt>Country of publisher</dt>
+                  <dd>{{ journal.country }}</dd>
 
-                <dt>Publisher</dt>
-                <dd>{{ journal.publisher }}</dd>
+                  <dt>Publisher</dt>
+                  <dd>{{ journal.publisher }}</dd>
 
-                <dt>LCC subjects</dt>
-                {% assign lcc_codes = journal.lcc | split: "|" %}
-                <dd>
-                  {% for code in lcc_codes %}
-                  {{ code }}{% if forloop.last %}{% else %}, {% endif %}
-                  {% endfor %}
-                </dd>
+                  <dt>Manuscripts accepted in</dt>
+                  <dd>{{ journal.lang }}</dd>
+                </dl>
+              </article>
 
-                <dt>Publisher’s keywords</dt>
-                <dd>
-                  {% for keyword in journal.keywords %}
-                  {{ keyword }}{% if forloop.last %}{% else %}, {% endif %}
-                  {% endfor %}
-                </dd>
-              </dl>
+              <article class="card card--with-icon">
+                <span data-feather="tag" aria-hidden="true"></span>
+                <dl>
+                  <dt>LCC subjects</dt>
+                  {% assign lcc_codes = journal.lcc | split: "|" %}
+                  <dd>
+                    {% for code in lcc_codes %}
+                    {{ code }}{% if forloop.last %}{% else %}, {% endif %}
+                    {% endfor %}
+                  </dd>
+
+                  <dt>Publisher’s keywords</dt>
+                  <dd>
+                    {% for keyword in journal.keywords %}
+                    {{ keyword }}{% if forloop.last %}{% else %}, {% endif %}
+                    {% endfor %}
+                  </dd>
+                </dl>
+              </article>
             </section>
 
             <section class="col-md-4">
               <h3 class="label">Publishing with this journal</h3>
 
-              <p>Expect <strong>35 weeks</strong> from submission to publication.  There are <strong>no APCs</strong> (article processing charges) and <strong>no submission charges</strong>. This journal checks for plagiarism.</p>
+              <article class="card card--with-icon">
+                <span data-feather="user-check" aria-hidden="true"></span>
+                <p>Expect <strong>35 weeks</strong> from submission to publication.  There are <strong>no APCs</strong> (article processing charges) and <strong>no submission charges</strong>. This journal checks for plagiarism.</p>
+              </article>
 
-              <p>Articles are digitally archived in:</p>
-              <ul>
-                <li> CLOCKSS; </li>
-                <li>Portico;</li>
-                <li>Koninklijke Bibliotheek, a national library.</li>
-              </ul>
+              <article class="card card--with-icon">
+                <span data-feather="archive" aria-hidden="true"></span>
+                <div>
+                  <p>Articles are digitally archived in:</p>
+                  <ul>
+                    <li> CLOCKSS; </li>
+                    <li>Portico;</li>
+                    <li>Koninklijke Bibliotheek, a national library.</li>
+                  </ul>
+                </div>
+              </article>
 
-              <p>More from the journal’s website:</p>
-              <ul>
-                <li><a href="">Double blind peer review</a></li>
-                <li><a href=""> Editorial Board</a></li>
-                <li> <a href="">Aims & scope </a></li>
-                <li><a href="">Instructions for authors</a></li>
-              </ul>
+              <article class="card card--with-icon">
+                <span data-feather="link" aria-hidden="true"></span>
+                <div>
+                  <p>More from the journal’s website:</p>
+                  <ul>
+                    <li><a href="">Double blind peer review</a></li>
+                    <li><a href=""> Editorial Board</a></li>
+                    <li> <a href="">Aims & scope </a></li>
+                    <li><a href="">Instructions for authors</a></li>
+                  </ul>
+                </div>
+              </article>
             </section>
 
             <section class="col-md-4">
               <h3 class="label">Best practice</h3>
-              <p>This journal has been in <strong>open access since 2015</strong>. It uses a <strong>CC BY-NC-ND</strong> license.  The author does not retain unrestricted copyrights and publishing rights.</p>
+              <article class="card card--with-icon">
+                <span data-feather="unlock" aria-hidden="true"></span>
+                <p>This journal has been in <strong>open access since 2015</strong>.  It uses a <strong>CC BY-NC-ND</strong> license.  The author does not retain unrestricted copyrights and publishing rights.</p>
+              </article>
 
-              <p>More from the journal’s website:</p>
-              <ul>
-                <li><a href="">License terms</a></li>
-                <li><a href=""> Open access statement</a></li>
-              </ul>
+              <article class="card card--with-icon">
+                <span data-feather="link" aria-hidden="true"></span>
+                <div>
+                  <p>More from the journal’s website:</p>
+                  <ul>
+                    <li><a href="">License terms</a></li>
+                    <li><a href=""> Open access statement</a></li>
+                  </ul>
+                </div>
+              </article>
+
             </section>
 
 
@@ -128,7 +160,7 @@
         </div>
       </div>
 
-      <footer class="page-content__footer">
+      <footer id="updated" class="page-content__footer">
         <p>
           Added {{ journal.added }} &bull; Updated {{ journal.updated }}
         </p>

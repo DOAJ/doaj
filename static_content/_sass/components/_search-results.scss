@@ -33,7 +33,9 @@
 }
 
 .search-results__main {
-  border-right: 1px dashed rgba($dark-grey, 0.25);
+  @media (min-width: 769px) {
+    border-right: 1px dashed rgba($dark-grey, 0.25);
+  }
 }
 
 .search-results__heading {

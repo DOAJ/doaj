@@ -53,10 +53,6 @@ h6 {
   @include typescale-06;
 }
 
-p, blockquote {
-  margin: 0 0 $spacing-04 0;
-}
-
 ul, ol {
   padding-left: $spacing-04;
 
@@ -76,13 +72,13 @@ dl {
     color: $dark-grey;
     @include typescale-06;
   }
+}
 
-  dd {
-    margin: 0 0 $spacing-04 0;
+p, blockquote, dd, ul, ol {
+  margin: 0 0 $spacing-04 0;
 
-    &:last-child {
-      margin-bottom: 0;
-    }
+  &:last-child {
+    margin-bottom: 0;
   }
 }
 
