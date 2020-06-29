@@ -51,7 +51,6 @@
 .tabs__panel {
   display: inline-block;
   padding: $spacing-03 0;
-  width: 100%;
 
   &[aria-hidden="true"] {
     display: none;

@@ -16,15 +16,6 @@
     top: 2px;
     stroke: $warm-white;
   }
-
-  &:hover, &:focus, &active {
-    background: $sanguine;
-    color: $warm-white;
-
-    svg {
-      stroke: $warm-white;
-    }
-  }
 }
 
 .tag--featured {

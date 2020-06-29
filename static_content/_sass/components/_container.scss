@@ -11,15 +11,7 @@
   }
 }
 
-@media screen and (max-width: 1023px) and (min-width: 768px) {
-  .container {
-    width: auto;
-    padding-left: 30px;
-    padding-right: 30px;
-  }
-}
-
-@media screen and (max-width: 1279px) and (min-width: 1024px) {
+@media screen and (max-width: 1279px) and (min-width: 768px) {
   .container {
     width: auto;
     padding-left: 30px;
