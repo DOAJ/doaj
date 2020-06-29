@@ -3,7 +3,7 @@
 
   {% include head.html %}
 
-  <body>
+  <body class="search">
     {% include header.html %}
 
     <main class="container">
@@ -27,6 +27,8 @@
 
         {% include search-journal-bar.html %}
 
+        <h2>14,576 indexed journals</h2>
+
         <div class="row">
           <div class="col-md-3">
             {% include search-journal-filters.html %}
@@ -41,6 +43,8 @@
         {% else page.name == 'articles.md' %}
 
         {% include search-article-bar.html %}
+        
+        <h2>4,926,886 indexed articles</h2>
 
         <div class="row">
           <div class="col-md-3">
