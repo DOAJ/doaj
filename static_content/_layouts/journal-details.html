@@ -20,7 +20,7 @@
           {% endif %}
 
           <a class="tag">
-            <span data-feather="check-circle" aria-hidden="true"></span>
+            <span data-feather="clock" aria-hidden="true"></span>
             Updated recently
           </a>
 
@@ -39,71 +39,82 @@
         </header>
       </div>
 
-      <div class="container">
-        <div class="row">
-          <section class="col-md-4">
-            <h2 class="sr-only">Journal metadata</h2>
-            <dl>
-              <dt>Manuscript accepted in</dt>
-              <dd>{{ journal.lang }}</dd>
-
-              <dt>Article formats</dt>
-              <dd>{{ journal.issn }}</dd>
-
-              <dt>Publisher</dt>
-              <dd>{{ journal.publisher }}</dd>
-
-              <dt>Country of publisher</dt>
-              <dd>{{ journal.country }}</dd>
-
-              <dt>LCC subjects</dt>
-              {% assign lcc_codes = journal.lcc | split: "|" %}
-              {% for i in lcc_codes %}
-              <dd>{{ i }}</dd>
-              {% endfor %}
-
-              <dt>Publisher’s keywords</dt>
-              {% for keyword in journal.keywords %}
-              <dd>{{ keyword }}{% if forloop.last %}{% else %}, {% endif %}</dd>
-              {% endfor %}
-
-              <dt>Article formats</dt>
-              <dd>{{ journal.formats }}</dd>
-            </dl>
-          </section>
-
-          <section class="col-md-4">
-            <h2 class="sr-only">Publishing with this journal</h2>
-
-          </section>
-
-          <section class="col-md-4">
-            <h2 class="sr-only">Best practice</h2>
-          </section>
+      <div class="tabs">
+        <div class="highlight">
+          <nav class="container tabs__menu">
+            <ul class="tabs__list" role="tablist">
+              <li class="tabs__item">
+                <a href="#about-journal" role="tab" aria-selected="true">About the journal</a>
+              </li>
+              <li class="tabs__item"role="presentation">
+                <a href="#all-articles" role="tab" aria-selected="false">Articles</a>
+              </li>
+            </ul>
+          </nav>
         </div>
 
-        <p>
-          Added {{ journal.added }}
-        </p>
+        <div class="container tabs__content">
+          <section id="about-journal" class="row tabs__panel" role="tabpanel" aria-hidden="false">
+            <h2 class="sr-only">About the journal</h2>
+            <section class="col-md-4">
+              <h3 class="sr-only">Journal metadata</h3>
+              <dl>
+                <dt>Manuscript accepted in</dt>
+                <dd>{{ journal.lang }}</dd>
 
-        <p>
-          Updated {{ journal.updated }}
-        </p>
+                <dt>Article formats</dt>
+                <dd>{{ journal.issn }}</dd>
 
+                <dt>Publisher</dt>
+                <dd>{{ journal.publisher }}</dd>
 
-        <hr/>
+                <dt>Country of publisher</dt>
+                <dd>{{ journal.country }}</dd>
 
-        <div class="row">
-          <div class="col-md-9">
-            {% include search-article-results.html %}
-          </div>
+                <dt>LCC subjects</dt>
+                {% assign lcc_codes = journal.lcc | split: "|" %}
+                {% for i in lcc_codes %}
+                <dd>{{ i }}</dd>
+                {% endfor %}
 
-          <div class="col-md-3">
-            {% include search-article-filters.html %}
-          </div>
+                <dt>Publisher’s keywords</dt>
+                {% for keyword in journal.keywords %}
+                <dd>{{ keyword }}{% if forloop.last %}{% else %}, {% endif %}</dd>
+                {% endfor %}
+
+                <dt>Article formats</dt>
+                <dd>{{ journal.formats }}</dd>
+              </dl>
+            </section>
+
+            <section class="col-md-4">
+              <h3 class="sr-only">Publishing with this journal</h3>
+
+            </section>
+
+            <section class="col-md-4">
+              <h3 class="sr-only">Best practice</h3>
+            </section>
+          </section>
+
+          <section id="all-articles" class="row tabs__panel" role="tabpanel" aria-hidden="true">
+            <div class="col-md-9">
+              {% include search-article-results.html %}
+            </div>
+
+            <div class="col-md-3">
+              {% include search-article-filters.html %}
+            </div>
+          </section>
         </div>
-
       </div>
+
+      <footer class="container">
+        <p>
+          Added {{ journal.added }} &bull; Updated {{ journal.updated }}
+        </p>
+      </footer>
+
     </main>
 
     {% include footer.html %}
