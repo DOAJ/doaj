@@ -6,16 +6,22 @@
   <body class="journal-details">
     {% include header.html %}
 
+    {% if page.name == "journal-details.md" %}
     {% assign journal = site.data.journals[0] %}
+    {% else %}
+    {% assign journal = site.data.journals[1] %}
+    {% endif %}
 
     <main class="container page-content">
       <header>
 
         <p>
+          {% if journal.updated %}
           <span class="label label--secondary">
             <span data-feather="clock" aria-hidden="true"></span>
             Updated recently
           </span>
+          {% endif %}
           <span class="label">
             <span data-feather="book-open" aria-hidden="true"></span>
             {{ journal.issn }}
@@ -68,6 +74,11 @@
                   <dt>Publisher</dt>
                   <dd>{{ journal.publisher }}</dd>
 
+                  {% if journal.institution %}
+                  <dt>Society or institution</dt>
+                  <dd>{{ journal.institution }}</dd>
+                  {% endif %}
+
                   <dt>Manuscripts accepted in</dt>
                   <dd>{{ journal.lang }}</dd>
                 </dl>
@@ -84,12 +95,14 @@
                     {% endfor %}
                   </dd>
 
+                  {% if journal.keywords %}
                   <dt>Publisher’s keywords</dt>
                   <dd>
                     {% for keyword in journal.keywords %}
                     {{ keyword }}{% if forloop.last %}{% else %}, {% endif %}
                     {% endfor %}
                   </dd>
+                  {% endif %}
                 </dl>
               </article>
             </section>
@@ -117,7 +130,7 @@
                     {% if journal.apc %}
                     It costs <strong class="label label--large">{{ journal.apc }}</strong> for APCs (article processing charges)
                     {% else %}
-                    There are <strong class="label label--large">No APCs</strong> (article processing charges) to publish with this journal
+                    There are <strong class="label label--large">No APC<span style="text-transform: lowercase;">s</span></strong> (article processing charges) to publish with this journal
                     {% endif %}
                     and
                     {% if journal.apc %}
@@ -125,9 +138,11 @@
                     {% endif %}
                     <strong>no submission charges</strong>.
                   </p>
+                  {% if journal.waiver %}
                   <p>
                     &rarr; There is a <a href="https://businessperspectives.org/journals/innovative-marketing#article-processing-charge" target="_blank" rel="noopener">waiver policy</a> for these charges.
                   </p>
+                  {% endif %}
                 </div>
               </article>
 
@@ -148,7 +163,18 @@
               <h3 class="label label--underlined">Best practice</h3>
               <article class="card card--with-icon">
                 <span data-feather="unlock" aria-hidden="true"></span>
-                <p>This journal has been in <strong>open access since 2015</strong>.  It uses a <strong>CC BY-NC-ND</strong> license.  The author does not retain unrestricted copyrights and publishing rights.</p>
+                <div>
+                  <p>This journal has been in <strong>open access since {{ journal.oa_since }}</strong>.  It uses a <strong>{{ journal.license }}</strong> license.  The author does not retain unrestricted copyrights and publishing rights.</p>
+                  <p>
+                    <a href="{{ journal.license_url }}" target="_blank" rel="noopener" style="text-decoration: none;">
+                    {% if journal.license == "CC BY" %}
+                    {% include svg/cc.svg %} {% include svg/by.svg %}
+                    {% elsif journal.license == "CC BY-NC" %}
+                    {% include svg/cc.svg %} {% include svg/by.svg %} {% include svg/nc.svg %}
+                    {% endif %}
+                    </a>
+                  </p>
+                </div>
               </article>
 
               <article class="card card--with-icon">
@@ -198,7 +224,10 @@
 
       <footer id="updated" class="page-content__footer">
         <p>
-          Added {{ journal.added }} &bull; Updated {{ journal.updated }}
+          Added {{ journal.added }}
+          {% if journal.updated %}
+          &bull; Updated {{ journal.updated }}
+          {% endif %}
         </p>
       </footer>
 
