@@ -27,6 +27,8 @@
   issn: "Online ISSN: 1816-6326 / Print ISSN: 1814-2427"
   plagiarism_check: true
   waiver: true
+  unrestricted_copyright: true
+  publishing_rights: true
 
 - title: "Yeni Üroloji Dergisi"
   subtitle: "The New Journal of Urology"
@@ -47,6 +49,10 @@
   articles:
   seal: false
   issn: "Online ISSN: 2687-1955 / Print ISSN: 1305-2489"
+  plagiarism_check: false
+  waiver: false
+  unrestricted_copyright: false
+  publishing_rights: false
 
 - title: "Linguagem & Ensino"
   subtitle: "Linguagem e Ensino"
