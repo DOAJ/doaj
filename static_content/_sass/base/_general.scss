@@ -70,6 +70,7 @@ ul, ol {
 }
 
 dl {
+  margin-bottom: 0;
 
   dt {
     color: $dark-grey;
@@ -79,8 +80,8 @@ dl {
   dd {
     margin: 0 0 $spacing-04 0;
 
-    &:last-of-type {
-      margin: 0;
+    &:last-child {
+      margin-bottom: 0;
     }
   }
 }

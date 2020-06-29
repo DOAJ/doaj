@@ -1,0 +1,35 @@
+/* Specific to journal detail pages */
+
+.journal-details {
+
+  .tabs__content {
+    margin-top: -1px;
+    padding: $spacing-04 $spacing-04 0 $spacing-04;
+    background-color: $fair-pink;
+    border: 1px solid $sanguine;
+
+    h2,
+    section,
+    dl {
+      margin-top: 0;
+      padding-top: 0;
+    }
+
+    .label {
+      margin: 0 0 $spacing-04 0;
+    }
+  }
+
+  .search-results__record {
+    padding: $spacing-04 0;
+  }
+
+  .tabs__item a {
+
+    &[aria-selected="true"] {
+      background-color: $fair-pink;
+      color: $sanguine;
+      font-weight: 700;
+    }
+  }
+}

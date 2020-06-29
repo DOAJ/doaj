@@ -3,16 +3,30 @@
     Refine search results <span data-feather="chevron-down" aria-hidden="true"></span>
   </h2>
   <ul class="collapse filters__list" id="filters" aria-expanded="false">
+    
+    <!-- General journal settings -->
     <li class="filter">
       <h3 class="filter__heading">
         See articles&hellip;
       </h3>
-
-      <!-- General journal settings -->
       <ul class="filter__choices">
         <li>
           <input id="filter-seal" type="checkbox" name="filter-seal"/>
           <label for="filter-seal" class="filter__label">With a DOAJ Seal&nbsp;&nbsp;<span data-feather="check-circle" aria-hidden="true"></span></label>
+        </li>
+      </ul>
+    </li>
+
+    <!--  Search within these results -->
+    <li class="filter">
+      <h3 class="filter__heading">
+        Search within the results
+      </h3>
+
+      <ul class="filter__choices">
+        <li>
+          <label for="search-keywords" class="sr-only">Search {{ site.data.search-filters.subjects.size }} subjects</label>
+          <input type="text" name="search-keywords" id="search-keywords" class="filter__search" placeholder="Add keywords">
         </li>
       </ul>
     </li>

@@ -3,66 +3,62 @@
 
   {% include head.html %}
 
-  <body>
+  <body class="journal-details">
     {% include header.html %}
 
     {% assign journal = site.data.journals[0] %}
 
-    <main class="page-content">
-      <div class="highlight">
-        <header class="container">
+    <main class="container page-content">
+      <header>
 
-          {% if journal.seal %}
-          <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag tag--featured">
-            <span data-feather="check-circle" aria-hidden="true"></span>
-            DOAJ Seal
-          </a>
-          {% endif %}
+        {% if journal.seal %}
+        <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag tag--featured">
+          <span data-feather="check-circle" aria-hidden="true"></span>
+          DOAJ Seal
+        </a>
+        {% endif %}
 
-          <a class="tag">
-            <span data-feather="clock" aria-hidden="true"></span>
-            Updated recently
-          </a>
+        <a class="tag">
+          <span data-feather="clock" aria-hidden="true"></span>
+          Updated recently
+        </a>
 
-          <h1>
-            {{ journal.title }}
-            {% if journal.subtitle %}<span>{{ journal.subtitle }}</span>{% endif %}
-          </h1>
+        <h1>
+          {{ journal.title }}
+          {% if journal.subtitle %}<span>{{ journal.subtitle }}</span>{% endif %}
+        </h1>
 
-          {% if journal.issn %}
-          <p>
-            {{ journal.issn }}
-          </p>
-          {% endif %}
+        {% if journal.issn %}
+        <p>
+          {{ journal.issn }}
+        </p>
+        {% endif %}
 
-          <p><a href="{{ journal.url }}" target="_blank" rel="noopeener">Website <span data-feather="external-link" aria-hidden="true"></span></a></p>
-        </header>
-      </div>
+        <p><a href="{{ journal.url }}" target="_blank" rel="noopeener">Website <span data-feather="external-link" aria-hidden="true"></span></a></p>
+      </header>
 
       <div class="tabs">
-        <div class="highlight">
-          <nav class="container tabs__menu">
-            <ul class="tabs__list" role="tablist">
-              <li class="tabs__item">
-                <a href="#about-journal" role="tab" aria-selected="true">About the journal</a>
-              </li>
-              <li class="tabs__item"role="presentation">
-                <a href="#all-articles" role="tab" aria-selected="false">Articles</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
+        <nav class="tabs__menu">
+          <ul class="tabs__list" role="tablist">
+            <li class="tabs__item">
+              <a href="#about-journal" role="tab" aria-selected="true">About</a>
+            </li>
+            <li class="tabs__item"role="presentation">
+              <a href="#all-articles" role="tab" aria-selected="false">Articles</a>
+            </li>
+          </ul>
+        </nav>
 
-        <div class="container tabs__content">
+        <div class="tabs__content">
           <section id="about-journal" class="row tabs__panel" role="tabpanel" aria-hidden="false">
-            <h2 class="sr-only">About the journal</h2>
+            <h2 class="sr-only">About</h2>
             <section class="col-md-4">
-              <h3 class="sr-only">Journal metadata</h3>
+              <h3 class="label">Journal metadata</h3>
               <dl>
                 <dt>Manuscript accepted in</dt>
                 <dd>{{ journal.lang }}</dd>
 
-                <dt>Article formats</dt>
+                <dt>ISSN</dt>
                 <dd>{{ journal.issn }}</dd>
 
                 <dt>Publisher</dt>
@@ -73,14 +69,18 @@
 
                 <dt>LCC subjects</dt>
                 {% assign lcc_codes = journal.lcc | split: "|" %}
-                {% for i in lcc_codes %}
-                <dd>{{ i }}</dd>
-                {% endfor %}
+                <dd>
+                  {% for code in lcc_codes %}
+                  {{ code }}{% if forloop.last %}{% else %}, {% endif %}
+                  {% endfor %}
+                </dd>
 
                 <dt>Publisher’s keywords</dt>
-                {% for keyword in journal.keywords %}
-                <dd>{{ keyword }}{% if forloop.last %}{% else %}, {% endif %}</dd>
-                {% endfor %}
+                <dd>
+                  {% for keyword in journal.keywords %}
+                  {{ keyword }}{% if forloop.last %}{% else %}, {% endif %}
+                  {% endfor %}
+                </dd>
 
                 <dt>Article formats</dt>
                 <dd>{{ journal.formats }}</dd>
@@ -88,28 +88,52 @@
             </section>
 
             <section class="col-md-4">
-              <h3 class="sr-only">Publishing with this journal</h3>
+              <h3 class="label">Publishing with this journal</h3>
 
+              <p>Expect <strong>35 weeks</strong> from submission to publication.  There are <strong>no APCs</strong> (article processing charges) and <strong>no submission charges</strong>. This journal checks for plagiarism.</p>
+
+              <p>Articles are digitally archived in:</p>
+              <ul>
+                <li> CLOCKSS; </li>
+                <li>Portico;</li>
+                <li>Koninklijke Bibliotheek, a national library.</li>
+              </ul>
+
+              <p>More from the journal’s website:</p>
+              <ul>
+                <li><a href="">Double blind peer review</a></li>
+                <li><a href=""> Editorial Board</a></li>
+                <li> <a href="">Aims & scope </a></li>
+                <li><a href="">Instructions for authors</a></li>
+              </ul>
             </section>
 
             <section class="col-md-4">
-              <h3 class="sr-only">Best practice</h3>
+              <h3 class="label">Best practice</h3>
+              <p>This journal has been in <strong>open access since 2015</strong>. It uses a <strong>CC BY-NC-ND</strong> license which is electronically-embedded.  The author does not retain unrestricted copyrights and publishing rights.</p>
+
+              <ul>
+                <li><a href="">License terms</a></li>
+                <li><a href=""> Open access statement</a></li>
+              </ul>
             </section>
+
+
           </section>
 
           <section id="all-articles" class="row tabs__panel" role="tabpanel" aria-hidden="true">
-            <div class="col-md-9">
-              {% include search-article-results.html %}
-            </div>
-
             <div class="col-md-3">
               {% include search-article-filters.html %}
+            </div>
+
+            <div class="col-md-9">
+              {% include search-article-results.html %}
             </div>
           </section>
         </div>
       </div>
 
-      <footer class="container">
+      <footer class="page-content__footer">
         <p>
           Added {{ journal.added }} &bull; Updated {{ journal.updated }}
         </p>
