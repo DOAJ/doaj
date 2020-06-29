@@ -1,0 +1,24 @@
+{% block register_form %}
+
+    {% from "_formhelpers.html" import render_field %}
+
+    <form method="post" action="">
+        <input type="hidden" name="next" value="/register" />
+            <div class="form__question">
+          {{ render_field(form.name, placeholder="Firstname Lastname") }}
+            </div>
+            <div class="form__question">
+          {{ render_field(form.email, placeholder="user@example.com") }}
+            </div>
+            <div class="form__question">
+          {{ render_field(form.password, placeholder="********") }}
+            </div>
+            <div class="form__question">
+          {{ render_field(form.password_confirm, placeholder="********") }}
+            </div>
+        <div class="actions">
+          <input type="submit" value="Register" />
+        </div>
+    </form>
+
+{% endblock %}

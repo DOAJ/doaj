@@ -245,18 +245,20 @@ def existscheck(form, field):
         raise ValidationError('Taken! Please try another.')
 
 
-class RegisterForm(Form):
-    w = StringField('Username', [ReservedUsernames(), validators.Length(min=3, max=25), existscheck])
-    n = StringField('Email Address', [
+class RegisterForm(RedirectForm):
+    name = StringField('Name', [validators.Length(min=3, max=64)])
+    email = StringField('Email Address', [
+        validators.DataRequired(),
         validators.Length(min=3, max=254),
         validators.Email(message='Must be a valid email address')
     ])
-    s = PasswordField('Password', [
+    password = PasswordField('Password', [
         validators.DataRequired(),
-        validators.EqualTo('c', message='Passwords must match')
+        validators.EqualTo('password_confirm', message='Passwords must match')
     ])
-    c = PasswordField('Repeat Password')
-    roles = StringField('Roles')
+    password_confirm = PasswordField('Repeat Password', [
+        validators.DataRequired()
+    ])
 
 
 @blueprint.route('/register', methods=['GET', 'POST'])
