@@ -273,11 +273,15 @@ input[type="radio"] {
     border: 1px solid $warm-black;
   }
 
-  &:checked + label::before {
-    content: '\a0';
-    background: $sanguine;
-    border: 1px solid $warm-white;
-    box-shadow: inset 0 0 0 1px $warm-white, 0 0 0 1px $sanguine;
+  &:checked + label {
+    color: $sanguine;
+    
+    &::before {
+      content: '\a0';
+      background: $sanguine;
+      border: 1px solid $warm-white;
+      box-shadow: inset 0 0 0 1px $warm-white, 0 0 0 1px $sanguine;
+    }
   }
 }
 
