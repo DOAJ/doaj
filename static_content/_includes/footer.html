@@ -151,7 +151,7 @@
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
