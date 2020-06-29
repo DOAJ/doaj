@@ -6,12 +6,7 @@
 }
 
 .filters__heading {
-  margin-bottom: 0;
-  font-size: 1em;
   color: $dark-grey;
-  text-transform: uppercase;
-  letter-spacing: normal;
-  @include font-sans;
 }
 
 .filters__list {

@@ -25,7 +25,7 @@
 
         <h1>
           {{ journal.title }}
-          {% if journal.subtitle %}<span>{{ journal.subtitle }}</span>{% endif %}
+          {% if journal.subtitle %}<span aria-hidden="true">{{ journal.subtitle }}</span>{% endif %}
         </h1>
 
         {% if journal.issn %}
@@ -55,17 +55,14 @@
             <section class="col-md-4">
               <h3 class="label">Journal metadata</h3>
               <dl>
-                <dt>Manuscript accepted in</dt>
+                <dt>Manuscripts accepted in</dt>
                 <dd>{{ journal.lang }}</dd>
-
-                <dt>ISSN</dt>
-                <dd>{{ journal.issn }}</dd>
-
-                <dt>Publisher</dt>
-                <dd>{{ journal.publisher }}</dd>
 
                 <dt>Country of publisher</dt>
                 <dd>{{ journal.country }}</dd>
+
+                <dt>Publisher</dt>
+                <dd>{{ journal.publisher }}</dd>
 
                 <dt>LCC subjects</dt>
                 {% assign lcc_codes = journal.lcc | split: "|" %}
@@ -81,9 +78,6 @@
                   {{ keyword }}{% if forloop.last %}{% else %}, {% endif %}
                   {% endfor %}
                 </dd>
-
-                <dt>Article formats</dt>
-                <dd>{{ journal.formats }}</dd>
               </dl>
             </section>
 
@@ -110,8 +104,9 @@
 
             <section class="col-md-4">
               <h3 class="label">Best practice</h3>
-              <p>This journal has been in <strong>open access since 2015</strong>. It uses a <strong>CC BY-NC-ND</strong> license which is electronically-embedded.  The author does not retain unrestricted copyrights and publishing rights.</p>
+              <p>This journal has been in <strong>open access since 2015</strong>. It uses a <strong>CC BY-NC-ND</strong> license.  The author does not retain unrestricted copyrights and publishing rights.</p>
 
+              <p>More from the journal’s website:</p>
               <ul>
                 <li><a href="">License terms</a></li>
                 <li><a href=""> Open access statement</a></li>

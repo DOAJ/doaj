@@ -2,6 +2,12 @@
 
 .journal-details {
 
+  h1 span {
+    display: block;
+    color: $dark-grey;
+    font-weight: 400;
+  }
+
   .tabs__content {
     margin-top: -1px;
     padding: $spacing-04 $spacing-04 0 $spacing-04;
@@ -9,14 +15,11 @@
     border: 1px solid $sanguine;
 
     h2,
+    h3,
     section,
     dl {
       margin-top: 0;
       padding-top: 0;
-    }
-
-    .label {
-      margin: 0 0 $spacing-04 0;
     }
   }
 
@@ -31,5 +34,9 @@
       color: $sanguine;
       font-weight: 700;
     }
+  }
+
+  #about-journal .label {
+    margin-bottom: $spacing-04;
   }
 }
