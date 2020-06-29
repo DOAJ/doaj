@@ -10,8 +10,16 @@
 
     <main class="container page-content">
       <header>
-        <p class="label">
-          {{ journal.issn }}
+
+        <p>
+          <span class="label label--secondary">
+            <span data-feather="clock" aria-hidden="true"></span>
+            Updated recently
+          </span>
+          <span class="label">
+            <span data-feather="book-open" aria-hidden="true"></span>
+            {{ journal.issn }}
+          </span>
         </p>
 
         <h1>
@@ -26,14 +34,9 @@
         </a>
         {% endif %}
 
-        <a class="tag">
-          <span data-feather="clock" aria-hidden="true"></span>
-          Updated recently
-        </a>
-
         <a href="{{ journal.url }}" target="_blank" rel="noopeener" class="tag">
           <span data-feather="external-link" aria-hidden="true"></span>
-          See website
+          Website
         </a>
 
       </header>
@@ -54,7 +57,7 @@
           <section id="about-journal" class="row tabs__panel" role="tabpanel" aria-hidden="false">
             <h2 class="sr-only">About</h2>
             <section class="col-md-4">
-              <h3 class="label">Journal metadata</h3>
+              <h3 class="label label--underlined">Journal metadata</h3>
 
               <article class="card card--with-icon">
                 <span data-feather="map-pin" aria-hidden="true"></span>
@@ -92,11 +95,60 @@
             </section>
 
             <section class="col-md-4">
-              <h3 class="label">Publishing with this journal</h3>
+              <h3 class="label label--underlined">Publishing with this journal</h3>
 
               <article class="card card--with-icon">
                 <span data-feather="user-check" aria-hidden="true"></span>
-                <p>Expect <strong>35 weeks</strong> from submission to publication.  There are <strong>no APCs</strong> (article processing charges) and <strong>no submission charges</strong>. This journal checks for plagiarism.</p>
+                <div>
+                  <p>
+                    Expect <strong class="label label--large">{{ journal.processing_time }} weeks</strong> from submission to publication. 
+                    {% if journal.plagiarism_check %}This journal checks for plagiarism.{% endif %}
+                  </p>
+                  <p>
+                    &rarr; Read about their <a href="">double blind peer review</a> process.
+                  </p>
+                </div>
+              </article>
+
+              <article class="card card--with-icon">
+                <span data-feather="dollar-sign" aria-hidden="true"></span>
+                <div>
+                  <p>
+                    {% if journal.apc %}
+                    It costs <strong class="label label--large">{{ journal.apc }}</strong> for APCs (article processing charges)
+                    {% else %}
+                    There are <strong class="label label--large">No APCs</strong> (article processing charges) to publish with this journal
+                    {% endif %}
+                    and
+                    {% if journal.apc %}
+                    there are
+                    {% endif %}
+                    <strong>no submission charges</strong>.
+                  </p>
+                  <p>
+                    &rarr; There is a <a href="https://businessperspectives.org/journals/innovative-marketing#article-processing-charge" target="_blank" rel="noopener">waiver policy</a> for these charges.
+                  </p>
+                </div>
+              </article>
+
+              <article class="card card--with-icon">
+                <span data-feather="link" aria-hidden="true"></span>
+                <div>
+                  <p>More from the journal’s website:</p>
+                  <ul>
+                    <li><a href=""> Editorial Board</a></li>
+                    <li> <a href="">Aims & scope </a></li>
+                    <li><a href="">Instructions for authors</a></li>
+                  </ul>
+                </div>
+              </article>
+            </section>
+
+            <section class="col-md-4">
+              <h3 class="label label--underlined">Best practice</h3>
+              <article class="card card--with-icon">
+                <span data-feather="unlock" aria-hidden="true"></span>
+                <p>This journal has been in <strong>open access since 2015</strong>.  It uses a <strong>CC BY-NC-ND</strong> license.  The author does not retain unrestricted copyrights and publishing rights.</p>
               </article>
 
               <article class="card card--with-icon">
@@ -108,28 +160,10 @@
                     <li>Portico;</li>
                     <li>Koninklijke Bibliotheek, a national library.</li>
                   </ul>
+                  <p>
+                    &rarr; Find out about their <a href="https://businessperspectives.org/journals/innovative-marketing#indexed-abstracted" target="_blank" rel="noopener">archiving policy</a>.
+                  </p>
                 </div>
-              </article>
-
-              <article class="card card--with-icon">
-                <span data-feather="link" aria-hidden="true"></span>
-                <div>
-                  <p>More from the journal’s website:</p>
-                  <ul>
-                    <li><a href="">Double blind peer review</a></li>
-                    <li><a href=""> Editorial Board</a></li>
-                    <li> <a href="">Aims & scope </a></li>
-                    <li><a href="">Instructions for authors</a></li>
-                  </ul>
-                </div>
-              </article>
-            </section>
-
-            <section class="col-md-4">
-              <h3 class="label">Best practice</h3>
-              <article class="card card--with-icon">
-                <span data-feather="unlock" aria-hidden="true"></span>
-                <p>This journal has been in <strong>open access since 2015</strong>.  It uses a <strong>CC BY-NC-ND</strong> license.  The author does not retain unrestricted copyrights and publishing rights.</p>
               </article>
 
               <article class="card card--with-icon">
@@ -149,6 +183,8 @@
           </section>
 
           <section id="all-articles" class="row tabs__panel" role="tabpanel" aria-hidden="true">
+            <h2 class="sr-only">All articles</h2>
+
             <div class="col-md-3">
               {% include search-article-filters.html %}
             </div>

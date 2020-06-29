@@ -16,6 +16,13 @@
     top: 2px;
     stroke: $warm-white;
   }
+
+  &:hover, &:focus, &active {
+
+    svg {
+      stroke: $grapefruit;
+    }
+  }
 }
 
 .tag--featured {

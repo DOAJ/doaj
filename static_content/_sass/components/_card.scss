@@ -2,10 +2,13 @@
 
 .card {
   padding: $spacing-03;
-  margin-bottom: $spacing-05;
+  margin-bottom: $spacing-04;
   background-color: $fair-pink;
-
   @include typescale-06;
+
+  @media screen and (min-width: 768px) {
+    margin-bottom: $spacing-05;
+  }
 }
 
 .card__desc {

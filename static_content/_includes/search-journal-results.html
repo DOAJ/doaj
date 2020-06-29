@@ -34,7 +34,7 @@
       <div class="col-sm-8 search-results__main">
         <header>
           {% if i.seal %}
-          <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag">
+          <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag tag--featured">
             <span data-feather="check-circle" aria-hidden="true"></span>
             DOAJ Seal
           </a>
@@ -76,7 +76,7 @@
           </li>
           {% if i.articles %}
           <li>
-            {{ i.articles }} articles indexed
+            <a href="{{ site.baseurl }}{% link search/journal-details.md %}#all-articles">{{ i.articles }} articles indexed</a>
           </li>
           {% endif %}
           <li>

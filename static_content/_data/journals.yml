@@ -24,7 +24,8 @@
   processing_time: 9
   articles: 602
   seal: true
-  issn: "1814-2427 (Print); 1816-6326 (Online)"
+  issn: "Online ISSN: 1816-6326 / Print ISSN: 1814-2427"
+  plagiarism_check: true
 
 - title: "Yeni Üroloji Dergisi"
   subtitle: "The New Journal of Urology"

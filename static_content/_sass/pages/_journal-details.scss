@@ -43,10 +43,10 @@
     }
   }
 
-  #about-journal .label {
-    margin-bottom: $spacing-04;
-    padding-bottom: $spacing-03;
-    border-bottom: 1px dashed;
+  #about-journal {
+    > section {
+      padding-bottom: 0;
+    }
   }
 
   #all-articles {

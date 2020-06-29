@@ -24,4 +24,5 @@
 
 .article-summary__abstract-body {
   margin-top: $spacing-03;
+  @include font-serif;
 }
