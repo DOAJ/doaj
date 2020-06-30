@@ -1,6 +1,7 @@
 from flask import Blueprint, make_response
 from flask_login import current_user, login_required
 from flask import abort
+from portality.decorators import api_key_required
 
 from portality import models as models
 from portality import constants
@@ -19,7 +20,7 @@ INCLUDE_STATUSES = [
 ]
 
 @blueprint.route('/inprogress')
-@login_required
+@api_key_required
 def inprogress():
     if not current_user.has_role("jct_inprogress"):
         abort(404)
