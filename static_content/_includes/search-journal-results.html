@@ -39,7 +39,7 @@
           </a>
           {% endif %}
           <h3 class="search-results__heading">
-            <a href="{% if i.detail %}{{ i.detail }}{% else %}journal-detail{% endif %}">
+            <a href="../{% if i.detail %}{{ i.detail }}{% else %}journal-detail{% endif %}">
               {{ i.title }}
             </a>
             {% if i.subtitle %}<span class="search-results__subheading">{{ i.subtitle }}</span>{% endif %}
