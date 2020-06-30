@@ -1,8 +1,8 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/6c8421b5-baef-482e-a9ae-729954cec42f/deploy-status)](https://app.netlify.com/sites/doaj-static/deploys)
+
 # doaj-templates
 
 Jekyll-based static pages for the new doaj.org. 
-
-[![Netlify Status](https://api.netlify.com/api/v1/badges/6c8421b5-baef-482e-a9ae-729954cec42f/deploy-status)](https://app.netlify.com/sites/doaj-static/deploys)
 
 ## Install Jekyll
 
