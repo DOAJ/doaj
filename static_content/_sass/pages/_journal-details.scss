@@ -23,23 +23,27 @@
     }
   }
 
-  .tabs__item a {
-    margin: 0 $spacing-04 $spacing-05 0;
-    padding: 0 0 $spacing-02 0;
-    border: 0;
-    color: $dark-grey;
+  .tabs__item {
+    flex: 0;
 
-    &[aria-selected="true"] {
-      border-bottom: 2px solid $grapefruit;
-      background: transparent;
-      color: $warm-black;
-      font-weight: 700;
-    }
+    a {
+      margin: 0 $spacing-04 $spacing-05 0;
+      padding: 0 0 $spacing-02 0;
+      border: 0;
+      color: $dark-grey;
 
-    &:hover, &:focus, &:active {
-      background: none;
-      border-bottom: 2px solid $grapefruit;
-      color: $warm-black;
+      &[aria-selected="true"] {
+        border-bottom: 2px solid $grapefruit;
+        background: transparent;
+        color: $warm-black;
+        font-weight: 700;
+      }
+
+      &:hover, &:focus, &:active {
+        background: none;
+        border-bottom: 2px solid $grapefruit;
+        color: $warm-black;
+      }
     }
   }
 
