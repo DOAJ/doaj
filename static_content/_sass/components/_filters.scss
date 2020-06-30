@@ -63,16 +63,12 @@
   font-size: 1em !important;
 }
 
-input[type="checkbox"]:checked + .filter__label {
-  color: $sanguine;
-}
-
 // Mobile-only accordion
 
 @media (min-width: 992px) {
   .filters {
 
-    .filters__heading .feather {
+    .filters__heading .feather-chevron-down {
       display: none;
     }
 
