@@ -1,5 +1,9 @@
 /* Tags */
 
+.tags {
+  @include unstyled-list($inline: true);
+}
+
 .tag {
   display: inline-block;
   margin: 0 $spacing-03 $spacing-03 0;

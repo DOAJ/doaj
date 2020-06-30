@@ -46,14 +46,14 @@
                   {{ i.bio }}
                 </p>
                 {% if i.coi %}
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  <ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     {% for j in i.coi %}
-                    <li><a href="{{ j[1] }}" target="_blank">{{ j[0] }}</a></li>
+                    <li><a href="{{ j[1] }}" target="_blank" class="tag">{{ j[0] }}</a></li>
                     {% endfor %}
                   </ul>
-                </p>
+                </div>
                 {% endif %}
               </div>
             </li>
