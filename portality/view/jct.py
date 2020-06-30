@@ -1,11 +1,12 @@
 from flask import Blueprint, make_response
-from flask_login import current_user, login_required
+from flask_login import current_user
 from flask import abort
 from portality.decorators import api_key_required
 
-from portality import models as models
+from portality import models
 from portality import constants
 from portality.crosswalks.jct_inprogress import JCTInProgressXWalk
+from portality.util import make_json_resp
 
 import json
 
@@ -31,4 +32,4 @@ def inprogress():
         records.append(record)
 
     data = json.dumps(records)
-    return make_response((data, 200, {'Content-Type': 'application/json'}))
+    return make_json_resp(data, 200)
