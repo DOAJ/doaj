@@ -1,0 +1,21 @@
+.search-options {
+  padding-bottom: $spacing-04;
+
+  label {
+    display: block;
+    margin-bottom: $spacing-02;
+    font-size: smaller;
+  }
+
+  select {
+    font-size: smaller;
+  }
+}
+
+.search-options__right {
+  text-align: right;
+  
+  select {
+    float: right;
+  }
+}
