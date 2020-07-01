@@ -1824,8 +1824,7 @@ input[type="checkbox"]:checked + .filter__label {
     font-size: 1rem; }
   .form__question input, .form__question select {
     width: 75%;
-    margin: 5px 0 5px 0;
-    padding: 0px; }
+    margin: 5px 0 5px 0; }
     .form__question input[type="number"], .form__question select[type="number"] {
       width: 25%; }
   .form__question input[type="checkbox"] + label,
@@ -2661,6 +2660,6 @@ input[type="checkbox"]:checked + .filter__label {
 #apply .remove_field__button {
   color: #5C5956;
   border: none;
-  margin: 5px 0 5px 0; }
+  margin-left: 10px; }
 
 /*# sourceMappingURL=main.css.map */
