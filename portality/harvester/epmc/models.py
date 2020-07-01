@@ -1,5 +1,5 @@
 from portality.lib import dataobj
-from portality.lib import xml as xutil
+from portality.lib import xmlutil as xutil
 from lxml import etree
 
 
