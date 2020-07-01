@@ -48,7 +48,7 @@
 </head>
 
 
-  <body id="apply">
+  <body>
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -59,7 +59,9 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
-            <h1 class="sr-only">The Directory of Open Access Journals</h1>
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -147,7 +149,7 @@
       </div>
     </div>
   </div>
-  <nav class="secondary-nav ">
+  <nav class="secondary-nav secondary-nav--precedes-highlight">
     <div class="container">
       <a href="#" class="secondary-nav__menu-toggle" aria-label="Click to open menu">
         <span data-feather="menu" aria-hidden="true"></span> <h2 class="secondary-nav__header">Menu</h2>
@@ -233,6 +235,11 @@
             <li>
               <a href="/about/ambassadors/" class="dropdown__link">
                 Ambassadors
+              </a>
+            </li>
+            <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
               </a>
             </li>
             <li>
@@ -344,17 +351,17 @@
       </div>
       <div class="input-group">
         <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-        <input type="text" name="keywords" id="quick-search-keywords" required>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
 
         <label for="quick-search-fields" class="sr-only">In the field:</label>
-        <select name="fields" id="quick-search-fields">
+        <select class="input-group__input" name="fields" id="quick-search-fields">
           <option value="all">In all fields</option>
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
           <option value="subject">Author</option>
         </select>
-        <button type="submit">
+        <button class="input-group__input" type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
@@ -363,493 +370,169 @@
 </section>
 
 
-    <main class="container">
-      <div class="row">
+    <main class="page-content article-summary">
+      <div class="highlight">
+        <header class="container">
+          <p class="label">
+            Frontiers in Immunology (June 2020)
+          </p>
 
-        <div class="col-md-8">
-          <section class="page-content">
-            <p class="label">Page 2 of 7</p>
-            <h1>
-<span data-feather="edit-3" aria-hidden="true"></span> About the journal</h1>
+          <h1>IL-12 Signaling Contributes to the Reprogramming of Neonatal CD8+ T Cells</h1>
 
+          
+          <ul>
             
-
-
-            <form action="../03-copyright-licensing">
-              
-
-              
-
-              
-              
-
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="title">
-                  Journal title <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-title"></span><span class="sr-only">More help</span>
-
-                  
-                </label>
-                <input id="title" type="text" placeholder="My journal" required>
-                
-                
-
-              </div>
-
-              
-              <!-- Long help in modal -->
-              <div class="modal" id="modal-title" tabindex="-1" role="dialog" aria-labelledby="modalLabel-title">
-                <div class="modal__dialog" role="document">
-                  
-                  <h3 class="modal__title" id="modalLabel-title">
-                    “Journal title”
-                  </h3>
-                  <p>The journal title must match what is displayed on the website and what is registered at the <a href="https://portal.issn.org/" target="_blank" rel="noopener">ISSN Portal</a>.</p> <p>For translated titles, you may add the translation as an alternative title.</p>
-                  <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-                </div>
-              </div>
-              
-
-              
-
-              
-              
-
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="alternative_title">
-                  Alternative title (includes translation of the title) <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-alternative_title"></span><span class="sr-only">More help</span>
-
-                  
-                </label>
-                <input id="alternative_title" type="text" placeholder="Ma revue" required>
-                
-                
-
-              </div>
-
-              
-              <!-- Long help in modal -->
-              <div class="modal" id="modal-alternative_title" tabindex="-1" role="dialog" aria-labelledby="modalLabel-alternative_title">
-                <div class="modal__dialog" role="document">
-                  
-                  <h3 class="modal__title" id="modalLabel-alternative_title">
-                    “Alternative title (includes translation of the title)”
-                  </h3>
-                  <p>The journal title must match what is displayed on the website and what is registered at the <a href="https://portal.issn.org/" target="_blank" rel="noopener">ISSN Portal</a>.</p> <p>For translated titles, you may add the translation as an alternative title.</p>
-                  <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-                </div>
-              </div>
-              
-
-              
-
-              
-              
-
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="journal_url">
-                  Link to the journal’s homepage 
-
-                  
-                </label>
-                <input id="journal_url" type="url" placeholder="https://www.my-journal.com" required>
-                
-                
-
-              </div>
-
-              
-
-              
-
-              
-              
-
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="pissn">
-                  ISSN (print) <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-pissn"></span><span class="sr-only">More help</span>
-
-                  
-                </label>
-                <input id="pissn" type="text" placeholder="2049-3630" required>
-                
-                
-
-              </div>
-
-              
-              <!-- Long help in modal -->
-              <div class="modal" id="modal-pissn" tabindex="-1" role="dialog" aria-labelledby="modalLabel-pissn">
-                <div class="modal__dialog" role="document">
-                  
-                  <h3 class="modal__title" id="modalLabel-pissn">
-                    “ISSN (print)”
-                  </h3>
-                  <p>Must be a valid ISSN, fully registered and confirmed at the <a href="https://portal.issn.org/" target="_blank" rel="noopener">ISSN Portal</a>.</p>
-<p>The ISSN must match what is given on the journal website.</p>
-                  <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-                </div>
-              </div>
-              
-
-              
-
-              
-              
-
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="eissn">
-                  ISSN (online) <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-eissn"></span><span class="sr-only">More help</span>
-
-                  
-                </label>
-                <input id="eissn" type="text" placeholder="0378-5955" required>
-                
-                
-
-              </div>
-
-              
-              <!-- Long help in modal -->
-              <div class="modal" id="modal-eissn" tabindex="-1" role="dialog" aria-labelledby="modalLabel-eissn">
-                <div class="modal__dialog" role="document">
-                  
-                  <h3 class="modal__title" id="modalLabel-eissn">
-                    “ISSN (online)”
-                  </h3>
-                  <p>Must be a valid ISSN, fully registered and confirmed at the <a href="https://portal.issn.org/" target="_blank" rel="noopener">ISSN Portal</a>.</p>
-<p>The ISSN must match what is given on the journal website.</p>
-                  <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-                </div>
-              </div>
-              
-
-              
-
-              
-              
-
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="keywords">
-                  Up to 6 subject keywords in English <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-keywords"></span><span class="sr-only">More help</span>
-
-                  
-                </label>
-                <input id="keywords" type="text" required>
-                
-                
-
-              </div>
-
-              
-              <!-- Long help in modal -->
-              <div class="modal" id="modal-keywords" tabindex="-1" role="dialog" aria-labelledby="modalLabel-keywords">
-                <div class="modal__dialog" role="document">
-                  
-                  <h3 class="modal__title" id="modalLabel-keywords">
-                    “Up to 6 subject keywords in English”
-                  </h3>
-                  <p>Only 6 keywords are allowed. Choose words that describe the subject matter of the journal and not the journal’s qualities.</p>
-<p>Keywords must be in English and separated by a comma.</p>
-                  <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-                </div>
-              </div>
-              
-
-              
-
-              
-              
-
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="language">
-                  Languages in which the journal accepts manuscripts 
-
-                  
-                </label>
-                <select id="language" required>
-                  
-                  <option id="language-1">English</option>
-                  
-                  <option id="language-2">French</option>
-                  
-                  <option id="language-3">Spanish</option>
-                  
-                </select>
-                
-
-                
-
-              </div>
-
-              
-
-              
-
-              
-              
-
-              
-              <h2 class="form__header">Publisher</h2>
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="publisher-name">
-                  Name 
-
-                  
-                </label>
-                <input id="publisher-name" type="text" required>
-                
-                
-
-              </div>
-
-              
-
-              
-
-              
-              
-
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="publisher-country">
-                  Country 
-
-                  
-                </label>
-                <select id="publisher-country" required>
-                  
-                  <option id="publisher-country-1">United Kingdom</option>
-                  
-                  <option id="publisher-country-2">Sweden</option>
-                  
-                  <option id="publisher-country-3">Indonesia</option>
-                  
-                </select>
-                
-
-                
-
-              </div>
-
-              
-
-              
-
-              
-              
-
-              
-              <h2 class="form__header">Society or institution, if applicable</h2>
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="society-name">
-                  Name <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-society-name"></span><span class="sr-only">More help</span>
-
-                  <span class="form__question--optional">(Optional)</span>
-                </label>
-                <input id="society-name" type="text">
-                <p><small>The society or institution responsible for the journal</small></p>
-                
-
-              </div>
-
-              
-              <!-- Long help in modal -->
-              <div class="modal" id="modal-society-name" tabindex="-1" role="dialog" aria-labelledby="modalLabel-society-name">
-                <div class="modal__dialog" role="document">
-                  <p class="label">Society or institution, if applicable</p>
-                  <h3 class="modal__title" id="modalLabel-society-name">
-                    “Name”
-                  </h3>
-                  <p>Some societies or institutions are linked to a journal in some way but are not responsible for publishing it. The publisher can be a separate organisation. If your journal is linked to a society or other type of institution, enter that here.</p>
-                  <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-                </div>
-              </div>
-              
-
-              
-
-              
-              
-
-              
-
-              <div class="form__question">
-
-                <!-- Hardcoding this bit just because it’s easier for HTML prototyping purposes -->
-                
-                <label for="society-country">
-                  Country 
-
-                  <span class="form__question--optional">(Optional)</span>
-                </label>
-                <select id="society-country">
-                  
-                  <option id="society-country-1">United Kingdom</option>
-                  
-                  <option id="society-country-2">Sweden</option>
-                  
-                  <option id="society-country-3">Indonesia</option>
-                  
-                </select>
-                <p><small>The country in which the society or institution is based</small></p>
-
-                
-
-              </div>
-
-              
-
-              
-
-              
-              <p class="pager-buttons">
-                
-                <a href="../01-oa-compliance" class="pager-buttons__left">Previous</a>
-                
-
-                <button type="submit" class="pager-buttons__right">Next</button>
-
-                <a href="#" class="pager-buttons__center">Save draft</a>
-              </p>
-              
-            </form>
-          </section>
-        </div>
-
-        <div class="col-md-4">
-          <div>
+            <li>Stephanie Kullmann, </li>
             
+            <li>Vera Valenta, </li>
             
+            <li>Robert Wagner, </li>
             
+            <li>Otto Tschritter, </li>
             
+            <li>Jürgen Machann, </li>
             
+            <li>Hans-Ulrich Häring, </li>
             
+            <li>Hubert Preissl, </li>
+            
+            <li>Andreas Fritsche, </li>
+            
+            <li>Martin Heni</li>
+            
+          </ul>
+          
+
+          
+          <p>
+            <a href="https://doi.org/10.3389/fimmu.2020.01089" target="_blank" rel="noopener">https://doi.org/10.3389/fimmu.2020.01089</a>
+          </p>
+          
+        </header>
+      </div>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+
+            <h2>Abstract</h2>
+            
+            <p>Neonates are highly susceptible to intracellular pathogens, leading to high morbidity and mortality rates. CD8+ T lymphocytes are responsible for the elimination of infected cells. Understanding the response of these cells to normal and high stimulatory conditions is important to propose better treatments and vaccine formulations for neonates. We have previously shown that human neonatal CD8+ T cells overexpress innate inflammatory genes and have a low expression of cytotoxic and cell signaling genes. To investigate the activation potential of these cells, we evaluated the transcriptome of human neonatal and adult naïve CD8+ T cells after TCR/CD28 signals ± IL-12. We found that in neonatal cells, IL-12 signals contribute to the adult-like expression of genes associated with cell-signaling, T-cell cytokines, metabolism, and cell division. Additionally, IL-12 signals contributed to the downregulation of the neutrophil signature transcription factor CEBPE and other immaturity related genes. To validate the transcriptome results, we evaluated the expression of a series of genes by RT-qPCR and the promoter methylation status on independent samples. We found that in agreement with the transcriptome, IL-12 signals contributed to the chromatin closure of neutrophil-like genes and the opening of cytotoxicity genes, suggesting that IL-12 signals contribute to the epigenetic reprogramming of neonatal lymphocytes. Furthermore, high expression of some inflammatory genes was observed in naïve and stimulated neonatal cells, in agreement with the high inflammatory profile of neonates to infections. Altogether our results point to an important contribution of IL-12 signals to the reprogramming of the neonatal CD8+ T cells.</p>
             
 
             
-            <nav class="application-nav">
-              <h2 class="application-nav__heading">Application progress</h2>
-              <ol class="application-nav__list">
-                <li class="application-nav__list-item
-                   application-nav__list-item--done
-                  ">
-                  <a href="/apply/01-oa-compliance/">
-                    Open access compliance
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                   application-nav__list-item--active
-                  ">
-                  <a href="/apply/02-about/">
-                    About
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/03-copyright-licensing/">
-                    Copyright &amp; licensing
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/04-editorial/">
-                    Editorial
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/05-business-model/">
-                    Business model
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/06-best-practice/">
-                    Best practice
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/07-review/">
-                    Review your answers
-                  </a>
-                </li>
-              </ol>
-            </nav>
-            
-
-            
-            <aside class="highlight highlight--aside">
-              <h2>Related help</h2>
-              <ul class="full-width-list">
-                <li class="full-width-list__item">
-                  <a href="/apply/guide/">Guide to applying</a>
-                </li>
-                <li class="full-width-list__item">
-                  <a href="/apply/seal/">The DOAJ Seal</a>
-                </li>
-                <li class="full-width-list__item">
-                  <a href="/apply/transparency/">Transparency &amp; best practice</a>
-                </li>
-                <li class="full-width-list__item">
-                  <a href="/apply/why-index/">Why index your journal in DOAJ?</a>
-                </li>
-              </ul>
-            </aside>
-            
-
+            <h2 class="sr-only">Keywords</h2>
+            <ul>
+              
+              <li>neonatal T cells, </li>
+              
+              <li>CD8+ T cells, </li>
+              
+              <li>RNA-sequencing, </li>
+              
+              <li>IL-12, </li>
+              
+              <li>T cell activation, </li>
+              
+              <li>neonatal immunity</li>
+              
+            </ul>
             
           </div>
+
+          <aside class="col-md-4">
+
+            <h2>Published in <em>Frontiers in Immunology</em>
+</h2>
+            <dl>
+              <dt>ISSN</dt>
+              <dd>1664-3224 (Online)</dd>
+
+              <dt>Publisher</dt>
+              <dd>Frontiers Media S.A.</dd>
+
+              <dt>Country of publisher</dt>
+              <dd>Switzerland</dd>
+
+              <dt>Language</dt>
+              <dd>English</dd>
+
+              <dt>LCC Subject Category</dt>
+              <dd>Medicine: Internal medicine: Specialties of internal medicine: Immunologic diseases. Allergy</dd>
+            </dl>
+
+            <p>
+              <a href="/search/journal-details/" class="button secondary-button">About the journal</a>
+            </p>
+
+            <!-- Dimensions badges -->
+            <p>
+              <span class="__dimensions_badge_embed__" data-doi="10.1001/jama.2016.9797" data-hide-zero-citations="true" data-style="small_rectangle"></span>
+              <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
+            </p>
+          </aside>
         </div>
+
+        <footer>
+          <h2>More articles like this…</h2>
+          <div class="row title-list">
+            <article class="col-xs-6 col-md-3 col-lg-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Human Immunology (1999)</p>
+                <h3 class="title-list__heading">Expression of the costimulator molecules, CD80, CD86, CD28, and CD152 on lymphocytes from neonates and young children</h3>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3 col-lg-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Molecular Metabolism (2017)</p>
+                <h3 class="title-list__heading">Neonatal pancreatic pericytes support β-cell proliferation</h3>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Frontiers in Immunology (2014)</p>
+                <h3 class="title-list__heading">The unique neonatal NK cells: a critical component required for neonatal autoimmune disease induction by maternal autoantibody</h3>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3 col-lg-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Immunology &amp; Cell Biology (2016)</p>
+                <h3 class="title-list__heading">Modeling the dynamics of neonatal CD8+ T-cell responses</h3>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3 col-lg-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Human Immunology (1999)</p>
+                <h3 class="title-list__heading">Expression of the costimulator molecules, CD80, CD86, CD28, and CD152 on lymphocytes from neonates and young children</h3>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3 col-lg-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Molecular Metabolism (2017)</p>
+                <h3 class="title-list__heading">Neonatal pancreatic pericytes support β-cell proliferation</h3>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3 col-lg-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Frontiers in Immunology (2014)</p>
+                <h3 class="title-list__heading">The unique neonatal NK cells: a critical component required for neonatal autoimmune disease induction by maternal autoantibody</h3>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3 col-lg-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Immunology &amp; Cell Biology (2016)</p>
+                <h3 class="title-list__heading">Modeling the dynamics of neonatal CD8+ T-cell responses</h3>
+              </a>
+            </article>
+          </div>
+        </footer>
       </div>
     </main>
 

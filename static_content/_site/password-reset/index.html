@@ -32,16 +32,24 @@
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
 
   <meta name="theme-color" content="#F8F3EF">
 
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
+
 </head>
 
 
-  <body class="sidenav-page" data-spy="scroll" data-offset="70" style="position: relative;">
+  <body class="no-sidenav-page">
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -365,33 +373,35 @@
 
 
 
-    <main class="container">
-      <div class="row">
-
-        <div class="col-md-4 col-md-push-8">
+    <main class="page-content">
+      
+        <header class="container">
           
-          <nav class="page-nav nav" data-spy="affix">
-            <h2 class="page-nav__heading">Jump to:</h2>
-            <ul class="page-nav__list">
-</ul>
-          </nav>
+          <h1>Forgot your password</h1>
+          <div class="row">
+            <div class="col-md-8">
+              <p>Please provide your username or e-mail address to reset your password.</p>
 
-          
-        </div>
+<form action="/login/">
+  <div class="form__question">
+    <label for="email">E-mail address or username</label>
+    <input id="email" type="email">
+  </div>
+  <p>
+    <input type="submit" value="Reset password">
+  </p>
+</form>
 
-        <div class="col-md-8 col-md-pull-4">
-           <section class="page-content">
-            
-            <h1>Password reset</h1>
+            </div>
+          </div>
+        </header>
+      
 
-            
+      <div class="container">
+        
 
 
-            <!-- Display data pages -->
-            
-          </section>
-        </div>
-
+        
       </div>
     </main>
 
@@ -503,13 +513,6 @@
   </div>
 </footer>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<script src="../../js/vendors/bootstrap.js"></script>
-
-<!-- Feather icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-
 <script>
   // Use Feather icons
   feather.replace()
@@ -556,7 +559,7 @@
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
@@ -587,6 +590,20 @@
       }, 50, 'linear');
     }
   } );
+
+  // Ability to link to specific Bootstrap tab
+  $(function() {
+    var hash = document.location.hash;
+    if (hash) {
+      console.log(hash);
+      $('.tabs a[href="+hash+"]').tab('show');
+    }
+
+    // Change hash for page-reload
+    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+      window.location.hash = e.target.hash;
+    });
+  });
 </script>
 
   </body>

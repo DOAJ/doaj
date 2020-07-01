@@ -1,6 +1,6 @@
 As a focal point for open access publishing, DOAJ helps promote quality, peer-reviewed open access journals. DOAJ encourages open access as the sustainable model for the future of scholarly publishing.
 
-## Four reasons why being indexed in DOAJ matters
+### Four reasons why being indexed in DOAJ matters
 
 {:.numbered-table .numbered-table--labels}
 |   | Participation in the world’s most important open access service | DOAJ is the [most important community-driven, open access service in the world](http://repository.jisc.ac.uk/6269/10/final-KE-Report-V5.1-20JAN2016.pdf). DOAJ covers more than 14,000 gold open access journals from 133 countries, in 77 languages, and over 300 subject areas. All journals are reviewed by our team of staff and volunteer editors to ensure they meet a set of quality standards. |
@@ -10,7 +10,7 @@ As a focal point for open access publishing, DOAJ helps promote quality, peer-re
 
 ---
 
-## Five ways in which DOAJ can help your journal
+### Five ways in which DOAJ can help your journal
 
 {:.numbered-table .numbered-table--labels}
 |   | Service               | We help you to serve your authors better.                                                                                                                                                                                                                                                                                                                                                              |

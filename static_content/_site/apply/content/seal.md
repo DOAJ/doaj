@@ -1,40 +1,39 @@
+The DOAJ Seal may be awarded to journals that demonstrate best practice in open access publishing. Around 10% of journals indexed in DOAJ have been awarded the Seal.
+
 **Journals do not need to meet the Seal criteria to be accepted into DOAJ.**
 
-There are extra criteria which may make the journal eligible for the DOAJ Seal for best practice. The Seal is awarded to journals that meet additional best practice recommendations based on seven criteria relating to accessibility, openness, discoverability, reuse, and authors rights.
+There are seven criteria which a journal must meet to be eligible for the DOAJ Seal. These relate to best practice in long term preservation, use of permanent identifiers, discoverability, reuse policies and authors' rights.
 
 ---
 
 ## Criteria
 
-All seven criteria must be met to be awarded the Seal:
+All seven criteria must be met for a journal to be awarded the Seal. Failure to maintain the best practice and standards described in these criteria may lead to removal of the Seal.
 
 {:.tabular-list .tabular-list--ordered}
-1. [Digital archiving and preservation](https://blog.doaj.org/2015/01/28/applications-a-note-about-archiving-and-preservation/)
-    - The journal content must be actively deposited in one of the DOAJ-approved services:
-        - CINES
-        - CLOCKSS
+1. Digital preservation
+    - The journal content must be continuously deposited in one of these archives:
+        - any archiving agency included in [Keepers Registry](https://keepers.issn.org/keepers)
         - Internet Archive
-        - LOCKSS
-        - PKP PN
-        - PMC/Europe PMC/PMC Canada
-        - Portico
-        - A national library
-2. Permanent identifiers
-    - For example, DOI, ARK, Handle
-    - Identifiers must be deposited regularly and must resolve.
+        - PubMed Central
+2. Permanent article identifiers
+    - Articles must use permanent article identifiers. (DOI, ARK or Handle are the most commonly used.)
+    - All permanent links must resolve correctly.
 3. Metadata supply to DOAJ
-    - Article metadata must be upload to DOAJ regularly and within three months of receiving the Seal.
-4. Embedded CC license information
-    - The licensing information must be visible in all full-text formats.
-5. License type
-    - The journal must use a CC BY, CC BY-SA or CC BY-NC license
-    - Allows the creation of derivative products.
-6. A repository policy &ndash;allowing authors to deposit a copy of their work&ndash; indicated in one of the following ways:
-    - (1) Registered with one of these services:
-        - SHERPA/RoMEO
-        - Dulcinea
-        - Héloïse
-        - Diadorim
-    - (2) Or stated on the website but not registered.
-7. Copyright and publishing rights
-    -  Authors must retain unrestricted rights.
+    - Article metadata must be uploaded to DOAJ regularly.
+4. License type
+    - The journal must permit the use of a Creative Commons license that allows the creation of derivative products.
+        - CC BY
+        - CC BY-SA
+        - CC BY-NC
+        - CC BY-NC-SA
+5. License information in articles
+    - Creative Commons licensing information must be displayed in all full-text article formats.
+6. Copyright and publishing rights
+    -  Authors must retain unrestricted copyright and all publishing rights when publishing under any license permitted by the journal.
+7. Self-archiving policy
+    - Authors must be permitted to deposit all versions of their paper in an institutional or subject repository.
+        - Preprint
+        - Author's Accepted Manuscript
+        - Version of Record
+    - An embargo may not be applied.
