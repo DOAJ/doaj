@@ -1,7 +1,7 @@
-admin.application_status: Status of the application.  If provided, will be ignored
-admin.contact.email: Email address of the contact for this application
-admin.contact.name: Name for the contact for this application
+admin.application_status: Status of the application.  If provided, will be ignored and set automatically by our system
+admin.bulk_upload: ID of the bulk upload this application was originally supplied with.  If provided, will be ignored.
 admin.current_journal: ID of a journal that you would like to request an update for
+admin.date_applied: Date this application was originally made.  If provided, will be ignored and set automatically by our system
 admin.owner: Your user account ID.  If provided, will be ignored and overridden by the account ID related to the API key
 bibjson.allows_fulltext_indexing: See application form Q27 - https://doaj.org/application/new#crawl_permission-container
 bibjson.alternative_title: See application form Q3 - https://doaj.org/application/new#alternative_title-container
@@ -25,6 +25,7 @@ bibjson.format: see application form Q33: https://doaj.org/application/new#fullt
 bibjson.identifier.id: The ISSN(s) of the journal.  Related bibjson.identifier.type must be "pissn" or "eissn" as needed.
 bibjson.identifier.type: The identifier type.  Should be one of "pissn" or "eissn"
 bibjson.institution: as per application form Q7 - https://doaj.org/application/new#society_institution-container
+bibjson.is_replaced_by: Provided for parity with Application retrieve.  Will be ignored if provided.
 bibjson.keywords: as per application form Q34 - https://doaj.org/application/new#keywords-container
 bibjson.language: as per application form Q35 - https://doaj.org/application/new#languages-container
 bibjson.license.BY: Does the licence have an attribution clause.  You may omit if using one of the defined licence types in application form Q47 - https://doaj.org/application/new#license-container
@@ -47,7 +48,8 @@ bibjson.plagiarism_detection.url: see application form Q42 - https://doaj.org/ap
 bibjson.provider: see application form Q8 - https://doaj.org/application/new#platform-container
 bibjson.publication_time: see application form Q43 - https://doaj.org/application/new#publication_time-container
 bibjson.publisher: see application form Q6 - https://doaj.org/application/new#publisher-container
-bibjson.subject.code: assigned subject code, will be ignored if provided
+bibjson.replaces: Provided for parity with Application retrieve.  Will be ignored if provided
+bibjson.subject.code: assigned subject code, provided for parity with Application retrieve. Will be ignored if provided
 bibjson.subject.scheme: assigned subject scheme, will be ignored if provided
 bibjson.subject.term: assigned subject term, will be ignored if provided
 bibjson.submission_charges.average_price: see application form Q19 - https://doaj.org/application/new#submission_charges_amount-container
