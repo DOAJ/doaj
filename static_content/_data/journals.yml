@@ -14,7 +14,7 @@
     - big data analysis
   formats: PDF
   lang: English
-  publisher: 'LLC "CPC "Business Perspectives"'
+  publisher: Example of a publisher’s name
   country: Ukraine
   added: 13 May 2020
   updated: 5 June 2020
@@ -33,7 +33,7 @@
 
 - title: "Yeni Üroloji Dergisi"
   subtitle: "The New Journal of Urology"
-  detail: journal-details-2 
+  detail: journal-details-2
   url: "https://dergipark.org.tr/en/pub/yud"
   lcc: "Medicine. Diseases of the genitourinary system. Urology"
   formats: PDF
@@ -80,7 +80,7 @@
   lcc: "Science: Microbiology"
   formats: PDF, HTML, XML
   lang: English
-  publisher:
+  publisher: Example of a publisher’s name
   country: "United Kingdom"
   added: 13 May 2020
   updated:
@@ -170,7 +170,7 @@
   lcc: "Social Sciences: Economic history and conditions | Social Sciences: Finance"
   formats: PDF
   lang: Slovak, Czech, English
-  publisher:
+  publisher: Example of a publisher’s name
   country: Czechia
   added: 13 May 2020
   updated:

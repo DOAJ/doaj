@@ -1,3 +1,4 @@
 - name: "Name #1"
   region: North America
+  org: Name of organisation
   bio: "Lorem ipsum dolor sit amet."
