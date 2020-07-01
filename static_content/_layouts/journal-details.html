@@ -111,19 +111,6 @@
               <h3 class="label label--underlined">Publishing with this journal</h3>
 
               <article class="card card--with-icon">
-                <span data-feather="user-check" aria-hidden="true"></span>
-                <div>
-                  <p>
-                    Expect <strong class="label label--large">{{ journal.processing_time }} weeks</strong> from submission to publication.
-                    {% if journal.plagiarism_check %}This journal checks for plagiarism.{% endif %}
-                  </p>
-                  <p>
-                    &rarr; Read about their <a href="">double blind peer review</a> process.
-                  </p>
-                </div>
-              </article>
-
-              <article class="card card--with-icon">
                 <span data-feather="dollar-sign" aria-hidden="true"></span>
                 <div>
                   <p>
@@ -143,6 +130,19 @@
                     &rarr; There is a <a href="https://businessperspectives.org/journals/innovative-marketing#article-processing-charge" target="_blank" rel="noopener">waiver policy</a> for these charges.
                   </p>
                   {% endif %}
+                </div>
+              </article>
+
+              <article class="card card--with-icon">
+                <span data-feather="user-check" aria-hidden="true"></span>
+                <div>
+                  <p>
+                    Expect <strong class="label label--large">{{ journal.processing_time }} weeks</strong> from submission to publication.
+                    {% if journal.plagiarism_check %}This journal checks for plagiarism.{% endif %}
+                  </p>
+                  <p>
+                    &rarr; Read about their <a href="">double blind peer review</a> process.
+                  </p>
                 </div>
               </article>
 
