@@ -605,46 +605,55 @@ var formulaic = {
         },
         multipleField: function(params){
             this.fieldDef = params.fieldDef
-            this.field = $('#' + this.fieldDef["name"]);
+            let tag = this.fieldDef["input"] === "select" ? "select" : "input";
+            this.fields = $(tag + '[id^="' + this.fieldDef["name"] +'"]')
+
+            this.count = 0;
+
+            this.count = 0;
+            this.max = this.fieldDef["repeatable"]["initial"]-1
 
             this.init = () => {
-                this.field.attr('id', this.fieldDef["name"] + '--id_0');
-                if (this.field.attr('required')) {
-                    this.field.removeAttr('required');
-                    this.field.attr("data-parsley-validate-multiple", "")
-                    this.field.attr("data-parsley-validate-if-empty","true");
-                }
-                let type = this.field.prop('tagName').toLowerCase();
-                $("#remove_field__"+this.fieldDef["name"]).attr('id', "remove_field__"+this.fieldDef["name"] + "--id_0")
-
-                let cloneCount = 1
-                $("#add_field__" + this.fieldDef["name"]).on("click", () => {
-                    cloneCount++;
-                    if (cloneCount > 1) {
-                        $("[id^=remove_field__"+this.fieldDef["name"] + "--id_").show()
+                this.fields.each((idx, f) => {
+                    $(f).wrap("<div class='removable_field' id='removable_field__" + idx +"'></div>");
+                    $(f).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    feather.replace();
+                    if (idx !== 0) {
+                        $(f).attr("required", false);
+                        $(f).attr("data-parsley-validate-if-empty","true");
+                        $('#removable_field__' + idx).hide();
                     }
-                    let div = $("<div>").addClass('multiple_input');
-                    let previousInput = $('.removable_field__' + this.fieldDef["name"]).find(type).filter(':first')
-                    let newInput = $(previousInput)
-                        .clone(true)
-                        .attr('id', params.fieldDef["name"] + '--id_' + cloneCount)
-                    newInput.appendTo($(div));
-                    let previousRemoveBtn = $("[id^=remove_field__"+this.fieldDef["name"] + '--id_').filter(':first')
-                    newInput.after(
-                        $(previousRemoveBtn)
-                        .clone(true)
-                        .attr('id', "remove_field__"+this.fieldDef["name"] + '--id_' + cloneCount)
-                    );
-                    $(previousInput).parent().after($(div));
                 })
-                $("[id^=remove_field__" + this.fieldDef["name"] + "--id_").on("click", (event) => {
-                    let number = $(event.target.closest('button')).attr('id').slice(-1)
-                    let input = $('#' + this.fieldDef["name"] + '--id_' + number)
-                    input.parent().remove()
-                    cloneCount--;
-                    if (cloneCount === 1) {
-                        $("[id^=remove_field__"+this.fieldDef["name"] + "--id_").hide()
+                this.remove_btns = $(".remove_field__button")
+                $(this.remove_btns[0]).hide();
+
+                this.addFieldBtn = $("#add_field__" + this.fieldDef["name"])
+                this.addFieldBtn.on("click", () => {
+                    $('#removable_field__' + (this.count + 1)).show();
+                    this.count++;
+                    if (this.count > 0){
+                        $(this.remove_btns[0]).show();
                     }
+                    if (this.count === this.max) {
+                        $(this.addFieldBtn).hide();
+                    }
+
+                })
+                $(this.remove_btns).each((idx, btn) => {
+                    $(btn).on("click", () => {
+                        for (let i = idx; i < this.max; i++){
+                            //console.log($(this.fields[i]).val, $(this.fields[i+1]).val())
+                            $(this.fields[i]).val($(this.fields[i+1]).val())
+                        }
+                        $(this.fields[this.count]).parent().hide();
+                        this.count--;
+                        if (this.count === 0){
+                            $(this.remove_btns[0]).hide();
+                        }
+                        if (this.count < this.max) {
+                            $(this.addFieldBtn).show();
+                        }
+                    })
                 })
             }
             this.init()

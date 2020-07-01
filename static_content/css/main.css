@@ -2661,6 +2661,6 @@ input[type="checkbox"]:checked + .filter__label {
 #apply .remove_field__button {
   color: #5C5956;
   border: none;
-  margin: 5px 0 5px 0; }
+  margin-left: 10px; }
 
 /*# sourceMappingURL=main.css.map */

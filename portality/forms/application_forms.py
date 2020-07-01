@@ -300,8 +300,10 @@ class FieldDefinitions:
         "name": "language",
         "label": "Languages in which the journal accepts manuscripts",
         "input": "select",
-        "multiple": True,
         "options_fn": "iso_language_list",
+        "repeatable": {
+            "initial": 5
+        },
         "validate": [
             "required"
         ],
@@ -323,7 +325,6 @@ class FieldDefinitions:
         ],
         "widgets": [
             {"autocomplete": {"field": "bibjson.publisher.name"}},
-            "multiple_field"
         ]
     }
 
@@ -342,7 +343,6 @@ class FieldDefinitions:
         ],
         "widgets": [
             {"select": {}},
-            "multiple_field"
         ],
         "attr": {
             "class": "input-xlarge"
@@ -370,7 +370,6 @@ class FieldDefinitions:
         },
         "widgets": [
             {"autocomplete": {"field": "bibjson.institution.name"}},
-            "multiple_field"
         ]
     }
 
@@ -386,7 +385,6 @@ class FieldDefinitions:
         },
         "widgets": [
             {"select": {}},
-            "multiple_field"
         ],
         "attr": {
             "class": "input-xlarge"
@@ -737,7 +735,6 @@ class FieldDefinitions:
     APC_CHARGES = {
         "name": "apc_charges",
         "input": "group",
-        # "repeatable" : True,
         "label": "Highest APC Charged",
         "repeatable" : {
             "initial" : 5
@@ -752,6 +749,9 @@ class FieldDefinitions:
         "subfields": [
             "apc_currency",
             "apc_max"
+        ],
+        "widgets": [
+            # "multiple_field"
         ]
     }
 
@@ -1864,7 +1864,10 @@ class SelectBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
-        return SelectField(**wtfargs)
+        sf = SelectField(**wtfargs)
+        if "repeatable" in field:
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+        return sf
 
 
 class MultiSelectBuilder(WTFormsBuilder):
@@ -1911,10 +1914,11 @@ class IntegerBuilder(WTFormsBuilder):
         return IntegerField(**wtfargs)
 
 
+# TODO: multiple group doesn't work
 class GroupBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
-        return field.get("input") == "group" and not field.get("repeatable", False)
+        return field.get("input") == "group" and field.get("repeatable") is not None
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
@@ -1926,7 +1930,7 @@ class GroupBuilder(WTFormsBuilder):
 class GroupListBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
-        return field.get("input") == "group" and field.get("repeatable") is not None
+        return field.get("input") == "group" and not field.get("repeatable", False)
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
