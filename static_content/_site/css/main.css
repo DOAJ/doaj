@@ -2755,6 +2755,10 @@ button svg {
     width: 330px; } }
 #apply hr {
   background-color: #FD5A3B; }
+#apply .add_field__button_div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; }
 #apply .add_field__button {
   margin: 5px; }
 #apply .remove_field__button {

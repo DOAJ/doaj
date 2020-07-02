@@ -146,6 +146,12 @@
     background-color: $grapefruit;
   }
 
+  .add_field__button_div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
   .add_field__button{
     margin: 5px;
   }

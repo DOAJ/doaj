@@ -615,13 +615,13 @@ var formulaic = {
 
             this.init = () => {
                 this.fields.each((idx, f) => {
-                    $(f).wrap("<div class='removable_field' id='removable_field__" + idx +"'></div>");
-                    $(f).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    let s2_input = $(f).select2();
+                    $(s2_input).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
                     feather.replace();
                     if (idx !== 0) {
-                        $(f).attr("required", false);
-                        $(f).attr("data-parsley-validate-if-empty","true");
-                        $('#removable_field__' + idx).hide();
+                        $(s2_input).attr("required", false);
+                        $(s2_input).attr("data-parsley-validate-if-empty","true");
+                        $(s2_input).closest('li').hide();
                     }
                 })
                 this.remove_btns = $(".remove_field__button")
@@ -629,7 +629,7 @@ var formulaic = {
 
                 this.addFieldBtn = $("#add_field__" + this.fieldDef["name"])
                 this.addFieldBtn.on("click", () => {
-                    $('#removable_field__' + (this.count + 1)).show();
+                    $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').show();
                     this.count++;
                     if (this.count > 0){
                         $(this.remove_btns[0]).show();
@@ -640,13 +640,15 @@ var formulaic = {
 
                 })
                 $(this.remove_btns).each((idx, btn) => {
-                    $(btn).on("click", () => {
-                        for (let i = idx; i < this.max; i++){
-                            //console.log($(this.fields[i]).val, $(this.fields[i+1]).val())
-                            $(this.fields[i]).val($(this.fields[i+1]).val())
+                    $(btn).on("click", (event) => {
+                        $(this.fields[idx]).val("ML")
+
+                        for (let i = idx; i < this.count; i++){
+                            let data = $(this.fields[i+1]).select2('data')
+                            $(this.fields[i]).select2('data', { id: data.id, text: data.text});
                         }
-                        $(this.fields[this.count]).parent().hide();
                         this.count--;
+                        $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').hide();
                         if (this.count === 0){
                             $(this.remove_btns[0]).hide();
                         }
