@@ -67,14 +67,14 @@ li.parsley-type {
 }
 
 .select2 {
-    height: 100% !important;
+    height: 100% !important;deqwzxwzxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2111111111111111111111adsssssssssssse
     width: 100% !important;
 }
 
 .select2-container {
     height: 100% !important;
     width: 100% !important;
-    padding: 5px 0 5px 0;
+    margin: 5px 0 5px 0;
  }
 
 .select2-container .select2-choice {
@@ -83,6 +83,7 @@ li.parsley-type {
     border: 1px solid #282624;
     background-color: #FEFBF8;
     background-image: none;
+    padding: 0.5em;
 }
 
 .select2-drop-active {
