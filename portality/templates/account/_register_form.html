@@ -16,6 +16,11 @@
             <div class="form__question">
           {{ render_field(form.password_confirm, placeholder="********") }}
             </div>
+          {% if current_user.is_authenticated and current_user.has_role("create_user") %}
+              <div class="form__question">
+                {{ render_field(form.roles) }}
+              </div>
+          {% endif %}
         <div class="actions">
           <input type="submit" value="Register" />
         </div>

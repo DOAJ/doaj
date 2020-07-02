@@ -259,26 +259,30 @@ class RegisterForm(RedirectForm):
     password_confirm = PasswordField('Repeat Password', [
         validators.DataRequired()
     ])
+    roles = StringField('Roles')
 
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 @ssl_required
 @write_required()
 def register():
-    if current_user.is_authenticated and current_user.has_role("create_user"):
-        # Admin user is already logged in
-        # todo: check if 3rd party creation should be supported
-        pass
     if not app.config.get('PUBLIC_REGISTER', False):
         abort(401)
+
+    # 3rd-party registration only for those with create_user role
+    if current_user.is_authenticated and not current_user.has_role("create_user"):
+        # Redirect if the user is already registered and don't have permission to create new ones
+        return redirect('/account')
+
     form = RegisterForm(request.form, csrf_enabled=False, roles='api')
     if request.method == 'POST' and form.validate():
         account = models.Account.make_account(
-            username=form.w.data,
-            email=form.n.data,
+            name=form.name.data,
+            username=models.Account.new_short_uuid(),
+            email=form.email.data,
             roles=[r.strip() for r in form.roles.data.split(',')]
         )
-        account.set_password(form.s.data)
+        account.set_password(form.password.data)
         account.save()
         flash('Account created for ' + account.id + '. If not listed below, refresh the page to catch up.', 'success')
         return redirect('/account')

@@ -207,3 +207,12 @@ class Account(DomainObject, UserMixin):
                 return usr
         return None
 
+    @classmethod
+    def new_short_uuid(cls):
+        """ Generate a short UUID and check it's unique in this type """
+        trunc_uuid = str(uuid.uuid4())[:8]
+        if cls.pull(trunc_uuid) is None:
+            return trunc_uuid
+        else:
+            return cls.new_short_uuid()
+
