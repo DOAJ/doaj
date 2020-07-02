@@ -276,6 +276,7 @@ class FieldDefinitions:
             "to_lower"  # FIXME: this might just be a feature of the crosswalk
         ],
         "widgets": [
+            {"autocomplete": {"field": "bibjson.keywords", "multiple_choice": True}},
             {
                 "taglist": {
                     "maximumSelectionSize": 6,

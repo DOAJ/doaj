@@ -779,14 +779,24 @@ var formulaic = {
 
         Autocomplete: function(params){
             this.fieldDef = params.fieldDef;
+            let field = $('input[id^="' + this.fieldDef["name"] +'"]')
             this.init = () => {
-                let field = params.fieldDef.widgets.find(element => {
+                console.log(params.fieldDef.widgets)
+                let autocompleteParams = this.fieldDef.widgets.find(element => {
                     if ("autocomplete" in element){
                         return element;
                     }
-                })["autocomplete"]["field"];
+                })["autocomplete"];
 
-                return autocomplete("[name='" + this.fieldDef.name + "']", field, "journal", 1, true, false);
+                let taglistWidget = this.fieldDef.widgets.find(element => {
+                    if ("taglist" in element){
+                        return element;
+                    }
+                });
+
+                let maximumSelectionSize = taglistWidget !== undefined ? taglistWidget["taglist"]["maximumSelectionSize"] : 1000;
+
+                return autocomplete("[name='" + this.fieldDef.name + "']", autocompleteParams["field"], "journal", 1, true, false, maximumSelectionSize, taglistWidget !== undefined, taglistWidget !== undefined);
             }
             this.init()
         }
@@ -794,11 +804,14 @@ var formulaic = {
     }
 };
 
-function autocomplete(selector, doc_field, doc_type, mininput, include_input, allow_clear) {
-    var doc_type = doc_type || "journal";
-    var mininput = mininput === undefined ? 3 : mininput;
-    var include_input = include_input === undefined ? true : include_input;
-    var allow_clear = allow_clear === undefined ? true : allow_clear;
+function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_input, max, tags_input, multiple_allowed) {
+    let doc_type = doc || "journal";
+    let maximumSelectionLength = max === undefined ? 6 : max
+    let mininput = min_input === undefined ? 3 : min_input;
+    let include_input = include === undefined ? true : include;
+    let allow_clear = allow_clear_input === undefined ? true : allow_clear_input;
+    let tags = tags_input === undefined ? false : tags_input;
+    let multiple = multiple_allowed === undefined ? false : multiple_allowed
 
     var ajax = {
             url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
@@ -826,7 +839,11 @@ function autocomplete(selector, doc_field, doc_type, mininput, include_input, al
             createSearchChoice: csc,
             initSelection : initSel,
             placeholder: "Choose a value",
-            allowClear: allow_clear
+            allowClear: allow_clear,
+            multiple: multiple,
+            tags: tags,
+            maximumSelectionLength: maximumSelectionLength,
+            tokenSeparators: [',']
         });
     } else {
         // go without the create search choice option
@@ -835,7 +852,11 @@ function autocomplete(selector, doc_field, doc_type, mininput, include_input, al
             ajax: ajax,
             initSelection : initSel,
             placeholder: "Choose a value",
-            allowClear: allow_clear
+            allowClear: allow_clear,
+            multiple: multiple,
+            tags: tags,
+            maximumSelectionLength: maximumSelectionLength,
+            tokenSeparators: [',']
         });
     }
 }
