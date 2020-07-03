@@ -276,15 +276,13 @@ class FieldDefinitions:
             "to_lower"  # FIXME: this might just be a feature of the crosswalk
         ],
         "widgets": [
-
-                # "taglist": {
-                #     "maximumSelectionSize": 6,
-                #     "stopWords": STOP_WORDS,
-                #     "field": "bibjson.keywords"
-                # }
-
-                {"autocomplete": {"field": "bibjson.keywords"}}
-
+            {
+                "taglist": {
+                    "maximumSelectionSize": 6,
+                    "stopWords": STOP_WORDS,
+                    "field": "bibjson.keywords"
+                }
+            }
         ],
         "attr": {
             "class": "input-xlarge"

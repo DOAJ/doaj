@@ -688,56 +688,57 @@ var formulaic = {
         TagList : function(params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
-            this.params = params.args;
+            this.args = params.args;
 
             this.ns = "formulaic-taglist";
 
             this.init = function() {
-
-                var minInputLength = edges.getParam(this.args.minimumInputLength, 1);
-                var tokenSeparators = edges.getParam(this.args.tokenSeparators, [","]);
-                var maximumSelectionSize = edges.getParam(this.args.maximumSelectionSize, 6);
                 var stopWords = edges.getParam(this.args.stopWords, []);
 
-                this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                var ajax = {
+                    url: current_scheme + "//" + current_domain + "/autocomplete/journal/" + this.args["field"],
+                    dataType: 'json',
+                    data: function (term, page) {
+                        return {
+                            q: term
+                        };
+                    },
+                    results: function (data, page) {
+                        return {results: data["suggestions"]};
+                    }
+                };
 
-                return autocomplete("[name='" + this.fieldDef.name + "']", this.params["field"], "journal", 1, true, false, true);
+                var csc = function (term) {
+                    if ($.inArray(term, stopWords) !== -1) {
+                        return null;
+                    }
+                    return {id: $.trim(term), text: $.trim(term)};
+                }
 
-                // var ajax = {
-                //     url: current_scheme + "//" + current_domain + "/autocomplete/journal/" + this.args["field"],
-                //     dataType: 'json',
-                //     data: function (term, page) {
-                //         return {
-                //             q: term
-                //         };
-                //     },
-                //     results: function (data, page) {
-                //         return { results: data["suggestions"] };
-                //     }
-                // };
-                // var csc = function(term) {return {"id":term, "text": term};};
-                // var initSel = function (element, callback) {
-                //     var data = {id: element.val(), text: element.val()};
-                //     callback(data);
-                // };
-                //
-                // this.elements.select2({
-                //     multiple: true,
-                //     minimumInputLength: minInputLength,
-                //     tags: true,
-                //     tokenSeparators: tokenSeparators,
-                //     maximumSelectionSize: maximumSelectionSize,
-                //     createSearchChoice: function (term) {
-                //         if ($.inArray(term, stopWords) !== -1) {
-                //             return null;
-                //         }
-                //         return {id: $.trim(term), text: $.trim(term)};
-                //     }
-                // });
-            }
 
-            this.init();
-        },
+                var initSel = function (element, callback) {
+                    var data = {id: element.val(), text: element.val()};
+                    callback(data);
+                };
+
+                // apply the create search choice
+                $("[name='" + this.fieldDef.name + "']").select2({
+                    multiple: true,
+                    minimumInputLength: 1,
+                    ajax: ajax,
+                    createSearchChoice: csc,
+                    initSelection: initSel,
+                    placeholder: "Choose a value",
+                    allowClear: false,
+                    tags: true,
+                    tokenSeparators: [','],
+                    maximumSelectionSize: this.args["maximumSelectionSize"]
+                });
+
+            };
+
+                this.init();
+            },
 
         newSelect : function(params) {
             return edges.instantiate(formulaic.widgets.Select, params);
