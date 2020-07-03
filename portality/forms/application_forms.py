@@ -276,13 +276,15 @@ class FieldDefinitions:
             "to_lower"  # FIXME: this might just be a feature of the crosswalk
         ],
         "widgets": [
-            {
-                "taglist": {
-                    "maximumSelectionSize": 6,
-                    "stopWords": STOP_WORDS,
-                    "field": "bibjson.keywords"
-                }
-            }
+
+                # "taglist": {
+                #     "maximumSelectionSize": 6,
+                #     "stopWords": STOP_WORDS,
+                #     "field": "bibjson.keywords"
+                # }
+
+                {"autocomplete": {"field": "bibjson.keywords"}}
+
         ],
         "attr": {
             "class": "input-xlarge"
@@ -325,7 +327,7 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
-            {"autocomplete": {"field": "bibjson.publisher.name"}},
+            {"autocomplete": {"field": "bibjson.publisher"}},
         ]
     }
 
@@ -370,7 +372,7 @@ class FieldDefinitions:
                           "a society or other type of institution, enter that here."]
         },
         "widgets": [
-            {"autocomplete": {"field": "bibjson.institution.name"}},
+            {"autocomplete": {"field": "bibjson.institution"}},
         ]
     }
 

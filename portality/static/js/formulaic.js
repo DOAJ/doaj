@@ -688,7 +688,7 @@ var formulaic = {
         TagList : function(params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
-            this.args = params.args;
+            this.params = params.args;
 
             this.ns = "formulaic-taglist";
 
@@ -701,37 +701,39 @@ var formulaic = {
 
                 this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
 
-                var ajax = {
-                    url: current_scheme + "//" + current_domain + "/autocomplete/journal/" + this.args["field"],
-                    dataType: 'json',
-                    data: function (term, page) {
-                        return {
-                            q: term
-                        };
-                    },
-                    results: function (data, page) {
-                        return { results: data["suggestions"] };
-                    }
-                };
-                var csc = function(term) {return {"id":term, "text": term};};
-                var initSel = function (element, callback) {
-                    var data = {id: element.val(), text: element.val()};
-                    callback(data);
-                };
+                return autocomplete("[name='" + this.fieldDef.name + "']", this.params["field"], "journal", 1, true, false, true);
 
-                this.elements.select2({
-                    multiple: true,
-                    minimumInputLength: minInputLength,
-                    tags: true,
-                    tokenSeparators: tokenSeparators,
-                    maximumSelectionSize: maximumSelectionSize,
-                    createSearchChoice: function (term) {
-                        if ($.inArray(term, stopWords) !== -1) {
-                            return null;
-                        }
-                        return {id: $.trim(term), text: $.trim(term)};
-                    }
-                });
+                // var ajax = {
+                //     url: current_scheme + "//" + current_domain + "/autocomplete/journal/" + this.args["field"],
+                //     dataType: 'json',
+                //     data: function (term, page) {
+                //         return {
+                //             q: term
+                //         };
+                //     },
+                //     results: function (data, page) {
+                //         return { results: data["suggestions"] };
+                //     }
+                // };
+                // var csc = function(term) {return {"id":term, "text": term};};
+                // var initSel = function (element, callback) {
+                //     var data = {id: element.val(), text: element.val()};
+                //     callback(data);
+                // };
+                //
+                // this.elements.select2({
+                //     multiple: true,
+                //     minimumInputLength: minInputLength,
+                //     tags: true,
+                //     tokenSeparators: tokenSeparators,
+                //     maximumSelectionSize: maximumSelectionSize,
+                //     createSearchChoice: function (term) {
+                //         if ($.inArray(term, stopWords) !== -1) {
+                //             return null;
+                //         }
+                //         return {id: $.trim(term), text: $.trim(term)};
+                //     }
+                // });
             }
 
             this.init();
@@ -746,7 +748,8 @@ var formulaic = {
             this.params = params.args;
             let field = $('input[id^="' + this.fieldDef["name"] +'"]')
             this.init = () => {
-                return autocomplete("[name='" + this.fieldDef.name + "']", params["field"], "journal", 1, true, false);
+
+                return autocomplete("[name='" + this.fieldDef.name + "']", this.params["field"], "journal", 1, true, false);
             }
             this.init()
         }
@@ -754,7 +757,7 @@ var formulaic = {
     }
 };
 
-function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_input) {
+function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_input, tagfield) {
     let doc_type = doc || "journal";
     let mininput = min_input === undefined ? 3 : min_input;
     let include_input = include === undefined ? true : include;

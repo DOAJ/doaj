@@ -1074,7 +1074,7 @@ form {
     display: block;
     margin: 0.75rem 0; }
 
-input, select, button {
+input, select, button, .select2-choices {
   /* remove default iOS styles */
   border-radius: 0;
   -webkit-appearance: none;
