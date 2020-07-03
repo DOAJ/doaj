@@ -30,6 +30,7 @@ Here is a table of each element in the DOAJ XML file. It shows you whether or no
 | Document type      | Optional, max. 1                                                            |
 | **Title**          | Required, 1 or more                                                         |
 | Authors            | Optional                                                                    |
+| ORCID iD           | Optional, max. 1                                                            |
 | Affiliations       | Optional                                                                    |
 | Abstracts          | Optional                                                                    |
 | **Full-text URL**  | Required, only 1                                                            |
