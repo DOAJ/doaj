@@ -71,20 +71,31 @@ li.parsley-type {
     width: 100% !important;
 }
 
-.select2-container,
-.select2-container-multi{
+.select2-container-multi .select2-choices {
+	border-radius: 0;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	display: block;
+	background-color: #FEFBF8;
+	border: 1px solid #282624;
+	font-size: 1rem;
+	font-family: 'Source Sans Pro', sans-serif;
+	letter-spacing: 0.01em;
+}
+
+.select2-container {
     height: 100% !important;
     width: 100% !important;
-    background-color: #FEFBF8;
+    background-color: inherit;
     background-image: none;
  }
 
-.select2-container .select2-choice,
-.select2-container-multi .select2-choices {
+.select2-container .select2-choice {
     height: 100% !important;
     border-radius: 0;
     border: 1px solid #282624;
-    background-color: #FEFBF8;
+    background-color: inherit;
     background-image: none;
     padding: 0.5em;
 }
@@ -103,14 +114,20 @@ li.parsley-type {
     border-top: none;
 }
 
-.select2-container .select2-choice .select2-arrow b,
-.select2-container-multi .select2-choices .select2-arrow b{
+.select2-container-multi .select2-choices .select2-search-choice {
+    background-color: #FEFBF8;
+    border: 1px solid #282624;
+    margin: 1px;
+    height: 2em;
+    background-image: none;
+}
+
+.select2-container .select2-choice .select2-arrow b {
     background-size: 1em;
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-down'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat calc(100% - 0.5em) center;
 }
 
-.select2-container .select2-choice .select2-arrow,
-.select2-container-multi .select2-choices .select2-arrow{
+.select2-container .select2-choice .select2-arrow {
 	background-image: none;
 	background-color: #FEFBF8;
 	width: 10%;
@@ -132,8 +149,7 @@ li.parsley-type {
     color: #282624;
 }
 
-.select2-container .select2-choice > .select2-chosen,
-.select2-container-multi .select2-choices > .select2-chosen{
+.select2-container .select2-choice > .select2-chosen {
     display: inline;
     vertical-align: -moz-middle-with-baseline;
 }
