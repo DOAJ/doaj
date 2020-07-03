@@ -2760,7 +2760,8 @@ button svg {
   flex-direction: column;
   align-items: flex-end; }
 #apply .add_field__button {
-  margin: 5px; }
+  margin-left: 5px;
+  height: 100%; }
 #apply .remove_field__button {
   color: #5C5956;
   border: none;
