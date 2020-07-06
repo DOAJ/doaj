@@ -98,9 +98,11 @@
                     <li><a href="">Editorial Board</a></li>
                     <li><strong><a href="">Double blind peer review</a></strong> process</li>
                   </ul>
+                  {% if journal.plagiarism_check %}
                   <p>
-                    {% if journal.plagiarism_check %}<li>This journal checks for plagiarism</li>{% endif %}
+                    &rarr; This journal checks for plagiarism
                   </p>
+                  {% endif %}
                 </div>
               </article>
 
@@ -134,9 +136,9 @@
               </article>
 
               <article class="card card--with-icon">
-                <span data-feather="unlock" aria-hidden="true"></span>
+                {% include svg/copyright.svg %}
                 <div>
-                  <p>The author does not retain unrestricted copyrights and publishing rights.</p>
+                  <p>The author does <strong>not</strong> retain unrestricted copyrights and publishing rights.</p>
                 </div>
               </article>
 
