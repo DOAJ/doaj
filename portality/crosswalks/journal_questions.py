@@ -25,6 +25,8 @@ class Journal2QuestionXwalk(object):
         ("review_url", "Review process information URL"),
         ("pissn", "Journal ISSN (print version)"),
         ("eissn", "Journal EISSN (online version)"),
+        ("continues", "Continues"),
+        ("continued_by", "Continued By"),
         ("institution.institution_name", "Society or institution"),
         ("keywords", "Keywords"),
         ("language", "Full text language"),
@@ -53,7 +55,8 @@ class Journal2QuestionXwalk(object):
         ("has_waiver", "Journal waiver policy (for developing country authors etc)"),
         ("orcid_ids", "Article metadata includes ORCIDs"),
         ("open_citations", "Journal complies with I4OC standards for open citations"),
-        ("deposit_policy_url", "URL for deposit policy")
+        ("deposit_policy_url", "URL for deposit policy"),
+        ("subject", "LCC Codes")
     ]
 
     DEGEN = {
@@ -146,6 +149,8 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("publisher.publisher_country"), datasets.get_country_name(forminfo.get("publisher", {}).get("publisher_country"))))
         kvs.append((cls.q("institution.institution_name"), forminfo.get("institution", {}).get("institution_name")))
         kvs.append((cls.q("institution.institution_country"), datasets.get_country_name(forminfo.get("institution", {}).get("institution_country"))))
+        kvs.append((cls.q("continues"), ", ".join(forminfo.get("continues"))))
+        kvs.append((cls.q("continued_by"), ", ".join(forminfo.get("continued_by"))))
         kvs.append((cls.q("apc"), yes_no_or_blank(forminfo.get("apc"))))
         kvs.append((cls.q("apc_url"), forminfo.get("apc_url")))
 
@@ -205,5 +210,7 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("copyright_url"), forminfo.get("copyright_url")))
         kvs.append((cls.q("orcid_ids"), yes_no_or_blank(forminfo.get("orcid_ids"))))
         kvs.append((cls.q("open_citations"), yes_no_or_blank(forminfo.get("open_citations"))))
+
+        kvs.append((cls.q("subject"), "|".join(forminfo.get("subject"))))
 
         return kvs

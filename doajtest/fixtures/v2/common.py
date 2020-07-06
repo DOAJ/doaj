@@ -171,12 +171,8 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "has_waiver" : "y",
     "orcid_ids" : "y",
     "open_citations" : "n",
-    "deposit_policy_url" : "http://deposit.policy"
-
-    #"contact_name": "Contact Name",
-    #"contact_email": "contact@email.com",
-    #"confirm_contact_email": "contact@email.com",
-    #"replaces": ["1111-1111"],
-    #"is_replaced_by": ["2222-2222"],
-    #"discontinued_date": "2001-01-01"
+    "deposit_policy_url" : "http://deposit.policy",
+    "replaces": ["1111-1111"],
+    "is_replaced_by": ["2222-2222"],
+    "discontinued_date": "2001-01-01"
 }

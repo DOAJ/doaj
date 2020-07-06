@@ -67,11 +67,6 @@ JOURNAL_SOURCE = {
     "last_updated": "2002-01-01T00:00:00Z",
     "admin": {
         "bulk_upload": "bulk_1234567890",
-        "contact":
-            {
-                "email": "contact@example.com",
-                "name": "Example Contact"
-            },
         "current_application": "qwertyuiop",
         "editor_group": "editorgroup",
         "editor": "associate",
@@ -317,6 +312,8 @@ CSV_HEADERS = [
     "Country of publisher",
     "Society or institution",
     "Country of society or institution",
+    "Continues",
+    "Continued By",
     "APC",
     "APC information URL",
     "APC amount",
@@ -351,6 +348,7 @@ CSV_HEADERS = [
     "Copyright information URL",
     "Article metadata includes ORCIDs",
     "Journal complies with I4OC standards for open citations",
+    "LCC Codes",
     'DOAJ Seal',
     'Tick: Accepted after March 2014',
     'Added on Date',
@@ -369,6 +367,8 @@ JOURNAL_QUESTION_ANSWERS = [
     "United States",
     'Society Institution',
     "United States",
+    "1111-1111",
+    "2222-2222",
     'Yes',
     'http://apc.com',
     "2 GBP",
@@ -402,5 +402,6 @@ JOURNAL_QUESTION_ANSWERS = [
     'Yes',
     'http://copyright.com',
     'Yes',
-    'No'
+    'No',
+    "HB1-3840|H"
 ]

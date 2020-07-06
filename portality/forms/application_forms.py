@@ -1076,15 +1076,15 @@ class FieldDefinitions:
         ]
     }
 
-    DOAJ_QUICK_REJECT = {
-        "name": "doaj_quick_reject",
+    QUICK_REJECT = {
+        "name": "quick_reject",
         "label": "Select the reason for rejection",
         "input": "select",
         "options_fn": "quick_reject"
     }
 
-    DOAJ_QUICK_REJECT_DETAILS = {
-        "name": "doaj_quick_reject_details",
+    QUICK_REJECT_DETAILS = {
+        "name": "quick_reject_details",
         "label": "Enter additional information to be sent to the publisher",
         "input": "text",
         "help": {
@@ -1096,8 +1096,8 @@ class FieldDefinitions:
         ],
     }
 
-    DOAJ_OWNER = {
-        "name": "doaj_owner",
+    OWNER = {
+        "name": "owner",
         "label": "DOAJ Account",
         "input": "text",
         "validate": [
@@ -1108,8 +1108,8 @@ class FieldDefinitions:
         ]
     }
 
-    DOAJ_STATUS = {
-        "name": "doaj_status",
+    APPLICATION_STATUS = {
+        "name": "application_status",
         "label": "Select status",
         "input": "select",
         "options_fn": "application_statuses",
@@ -1136,8 +1136,8 @@ class FieldDefinitions:
         ]
     }
 
-    DOAJ_EDITOR_GROUP = {
-        "name": "doaj_editor_group",
+    EDITOR_GROUP = {
+        "name": "editor_group",
         "label": "Assign to editor group",
         "input": "text",
         "widgets": [
@@ -1150,8 +1150,8 @@ class FieldDefinitions:
         }
     }
 
-    DOAJ_EDITOR = {
-        "name": "doaj_editor",
+    EDITOR = {
+        "name": "editor",
         "label": "Assign to individual",
         "input": "select",
         "options": [],
@@ -1165,8 +1165,8 @@ class FieldDefinitions:
         ]
     }
 
-    DOAJ_DISCONTINUED_DATE = {
-        "name": "doaj_discontinued_date",
+    DISCONTINUED_DATE = {
+        "name": "discontinued_date",
         "label": "This journal was discontinued on",
         "input": "text",
         "validate" : [
@@ -1189,8 +1189,8 @@ class FieldDefinitions:
         ]
     }
 
-    DOAJ_CONTINUES = {
-        "name": "doaj_continues",
+    CONTINUES = {
+        "name": "continues",
         "label": "This journal continues an older journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
@@ -1201,8 +1201,8 @@ class FieldDefinitions:
         ]
     }
 
-    DOAJ_CONTINUED_BY = {
-        "name": "doaj_continued_by",
+    CONTINUED_BY = {
+        "name": "continued_by",
         "label": "This journal is continued by a newer version of the journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
@@ -1213,8 +1213,8 @@ class FieldDefinitions:
         ]
     }
 
-    DOAJ_SUBJECT = {
-        "name": "doaj_subject",
+    SUBJECT = {
+        "name": "subject",
         "label": "Assign one or a maximum of two subject classifications",
         "input": "text",
         "help": {
@@ -1368,8 +1368,8 @@ class FieldSetDefinitions:
         "name": "quick_reject",
         "label": "Quick Reject",
         "fields": [
-            FieldDefinitions.DOAJ_QUICK_REJECT["name"],
-            FieldDefinitions.DOAJ_QUICK_REJECT_DETAILS["name"]
+            FieldDefinitions.QUICK_REJECT["name"],
+            FieldDefinitions.QUICK_REJECT_DETAILS["name"]
         ]
     }
 
@@ -1377,7 +1377,7 @@ class FieldSetDefinitions:
         "name": "reassign",
         "label": "Re-assign publisher account",
         "fields": [
-            FieldDefinitions.DOAJ_OWNER["name"]
+            FieldDefinitions.OWNER["name"]
         ]
     }
 
@@ -1385,7 +1385,7 @@ class FieldSetDefinitions:
         "name": "status",
         "label": "Status",
         "fields": [
-            FieldDefinitions.DOAJ_STATUS["name"]
+            FieldDefinitions.APPLICATION_STATUS["name"]
         ]
     }
 
@@ -1393,8 +1393,8 @@ class FieldSetDefinitions:
         "name": "reviewers",
         "label": "Assign for review",
         "fields": [
-            FieldDefinitions.DOAJ_EDITOR_GROUP["name"],
-            FieldDefinitions.DOAJ_EDITOR["name"]
+            FieldDefinitions.EDITOR_GROUP["name"],
+            FieldDefinitions.EDITOR["name"]
         ]
     }
 
@@ -1402,9 +1402,9 @@ class FieldSetDefinitions:
         "name": "continuations",
         "label": "Continuations",
         "fields": [
-            FieldDefinitions.DOAJ_DISCONTINUED_DATE["name"],
-            FieldDefinitions.DOAJ_CONTINUES["name"],
-            FieldDefinitions.DOAJ_CONTINUED_BY["name"]
+            FieldDefinitions.DISCONTINUED_DATE["name"],
+            FieldDefinitions.CONTINUES["name"],
+            FieldDefinitions.CONTINUED_BY["name"]
         ]
     }
 
@@ -1412,7 +1412,7 @@ class FieldSetDefinitions:
         "name": "subject",
         "label": "Subject classification",
         "fields": [
-            FieldDefinitions.DOAJ_SUBJECT["name"]
+            FieldDefinitions.SUBJECT["name"]
         ]
     }
 
