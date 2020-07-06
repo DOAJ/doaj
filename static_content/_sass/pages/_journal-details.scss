@@ -48,12 +48,12 @@
   }
 
   #about-journal {
+    display: flex;
+    justify-content: space-between;
+
     > section {
       padding-bottom: 0;
+      width: calc(100%/3 - 40px);
     }
-  }
-
-  #all-articles {
-
   }
 }

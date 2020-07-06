@@ -60,9 +60,9 @@
         </nav>
 
         <div class="tabs__content">
-          <section id="about-journal" class="row tabs__panel" role="tabpanel" aria-hidden="false">
+          <section id="about-journal" class="tabs__panel" role="tabpanel" aria-hidden="false">
             <h2 class="sr-only">About</h2>
-            <section class="col-md-4">
+            <section>
               <h3 class="label label--underlined">Publishing with this journal</h3>
 
               <article class="card card--with-icon">
@@ -114,7 +114,7 @@
               </article>
             </section>
 
-            <section class="col-md-4">
+            <section>
               <h3 class="label label--underlined">Best practice</h3>
               <article class="card card--with-icon">
                 <span data-feather="unlock" aria-hidden="true"></span>
@@ -189,7 +189,7 @@
               </article>
             </section>
 
-            <section class="col-md-4">
+            <section>
               <h3 class="label label--underlined">Journal metadata</h3>
 
               <article class="card card--with-icon">
@@ -215,7 +215,7 @@
                   {% assign lcc_codes = journal.lcc | split: "|" %}
                   <dd>
                     {% for code in lcc_codes %}
-                    {{ code }}{% if forloop.last %}{% else %}, {% endif %}
+                      <a href="{{ site.baseurl }}{% link search/journals.md %}">{{ code }}</a>{% if forloop.last %}{% else %}, {% endif %}
                     {% endfor %}
                   </dd>
 
@@ -223,7 +223,7 @@
                   <dt>Keywords</dt>
                   <dd>
                     {% for keyword in journal.keywords %}
-                    {{ keyword }}{% if forloop.last %}{% else %}, {% endif %}
+                    <a href="{{ site.baseurl }}{% link search/articles.md %}">{{ keyword }}</a>{% if forloop.last %}{% else %}, {% endif %}
                     {% endfor %}
                   </dd>
                   {% endif %}
