@@ -58,11 +58,6 @@
             </li>
           </ul>
           <ul>
-            <li>
-              {% if i.apc %}APCs: <strong>{{ i.apc }}</strong>{% else %}<strong>No</strong> charges{% endif %}
-            </li>
-          </ul>
-          <ul>
             {% assign lcc_codes = i.lcc | split: "|" %}
             {% for i in lcc_codes %}
             <li>{{ i }}</li>
@@ -83,6 +78,9 @@
           {% endif %}
           <li>
             <a href="{{ i.url }}" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            {% if i.apc %}APCs: <strong>{{ i.apc }}</strong>{% else %}<strong>No</strong> charges{% endif %}
           </li>
           <li>
             <a href="{{ i.license_url }}" target="_blank" rel="noopener">{{ i.license }}</a>

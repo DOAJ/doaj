@@ -9,6 +9,14 @@
   @media screen and (min-width: 768px) {
     margin-bottom: $spacing-05;
   }
+
+  ul {
+    @include unstyled-list;
+
+    li:before {
+      content: '→ ';
+    }
+  }
 }
 
 .card__desc {

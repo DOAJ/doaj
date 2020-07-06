@@ -63,51 +63,6 @@
           <section id="about-journal" class="row tabs__panel" role="tabpanel" aria-hidden="false">
             <h2 class="sr-only">About</h2>
             <section class="col-md-4">
-              <h3 class="label label--underlined">Journal metadata</h3>
-
-              <article class="card card--with-icon">
-                <span data-feather="map-pin" aria-hidden="true"></span>
-                <dl>
-                  <dt>Country of publisher</dt>
-                  <dd>{{ journal.country }}</dd>
-
-                  <dt>Publisher</dt>
-                  <dd>{{ journal.publisher }}</dd>
-
-                  {% if journal.institution %}
-                  <dt>Society or institution</dt>
-                  <dd>{{ journal.institution }}</dd>
-                  {% endif %}
-
-                  <dt>Manuscripts accepted in</dt>
-                  <dd>{{ journal.lang }}</dd>
-                </dl>
-              </article>
-
-              <article class="card card--with-icon">
-                <span data-feather="tag" aria-hidden="true"></span>
-                <dl>
-                  <dt>LCC subjects</dt>
-                  {% assign lcc_codes = journal.lcc | split: "|" %}
-                  <dd>
-                    {% for code in lcc_codes %}
-                    {{ code }}{% if forloop.last %}{% else %}, {% endif %}
-                    {% endfor %}
-                  </dd>
-
-                  {% if journal.keywords %}
-                  <dt>Publisher’s keywords</dt>
-                  <dd>
-                    {% for keyword in journal.keywords %}
-                    {{ keyword }}{% if forloop.last %}{% else %}, {% endif %}
-                    {% endfor %}
-                  </dd>
-                  {% endif %}
-                </dl>
-              </article>
-            </section>
-
-            <section class="col-md-4">
               <h3 class="label label--underlined">Publishing with this journal</h3>
 
               <article class="card card--with-icon">
@@ -136,25 +91,23 @@
               <article class="card card--with-icon">
                 <span data-feather="user-check" aria-hidden="true"></span>
                 <div>
+                  <p>Look up the journal’s:</p>
+                  <ul>
+                    <li><a href="">Aims & scope</a></li>
+                    <li><a href="">Instructions for authors</a></li>
+                    <li><a href="">Editorial Board</a></li>
+                    <li><strong><a href="">Double blind peer review</a></strong> process</li>
+                  </ul>
                   <p>
-                    Expect <strong class="label label--large">{{ journal.processing_time }} weeks</strong> from submission to publication.
-                    {% if journal.plagiarism_check %}This journal checks for plagiarism.{% endif %}
-                  </p>
-                  <p>
-                    &rarr; Read about their <a href="">double blind peer review</a> process.
+                    {% if journal.plagiarism_check %}<li>This journal checks for plagiarism</li>{% endif %}
                   </p>
                 </div>
               </article>
 
               <article class="card card--with-icon">
-                <span data-feather="link" aria-hidden="true"></span>
+                <span data-feather="clock" aria-hidden="true"></span>
                 <div>
-                  <p>More from the journal’s website:</p>
-                  <ul>
-                    <li><a href="">Editorial Board</a></li>
-                    <li><a href="">Aims & scope</a></li>
-                    <li><a href="">Instructions for authors</a></li>
-                  </ul>
+                  Expect on average <strong>{{ journal.processing_time }} weeks</strong> from submission to publication.
                 </div>
               </article>
             </section>
@@ -164,7 +117,7 @@
               <article class="card card--with-icon">
                 <span data-feather="unlock" aria-hidden="true"></span>
                 <div>
-                  <p>This journal has been in <strong>open access since {{ journal.oa_since }}</strong>. It uses a <strong>{{ journal.license }}</strong> license. The author does not retain unrestricted copyrights and publishing rights.</p>
+                  <p>This journal uses a <strong>{{ journal.license }}</strong> license.</p>
                   <p>
                     <a href="{{ journal.license_url }}" target="_blank" rel="noopener" style="text-decoration: none;">
                     {% if journal.license == "CC BY" %}
@@ -181,13 +134,20 @@
               </article>
 
               <article class="card card--with-icon">
+                <span data-feather="unlock" aria-hidden="true"></span>
+                <div>
+                  <p>The author does not retain unrestricted copyrights and publishing rights.</p>
+                </div>
+              </article>
+
+              <article class="card card--with-icon">
                 <span data-feather="archive" aria-hidden="true"></span>
                 <div>
-                  <p>Articles are digitally archived in:</p>
+                  <p>Articles digitally archived in:</p>
                   <ul>
-                    <li>CLOCKSS;</li>
-                    <li>Portico;</li>
-                    <li>Koninklijke Bibliotheek, a national library.</li>
+                    <li>CLOCKSS</li>
+                    <li>Portico</li>
+                    <li>Koninklijke Bibliotheek, a national library</li>
                   </ul>
                   <p>
                     &rarr; Find out about their <a href="https://businessperspectives.org/journals/innovative-marketing#indexed-abstracted" target="_blank" rel="noopener">archiving policy</a>.
@@ -195,8 +155,79 @@
                 </div>
               </article>
 
+              <article class="card card--with-icon">
+                <span data-feather="upload-cloud" aria-hidden="true"></span>
+                <div>
+                  <p>
+                    <a href="{{ journal.policy_url }}" target="_blank" rel="noopener">Deposit policy</a> with:
+                  </p>
+                  <ul>
+                    <li>
+                      <a href="https://v2.sherpa.ac.uk/cgi/search/publication/basic?publication_title-auto={{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                        Sherpa/ROMEO
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://diadorim.ibict.br/simple-search?query={{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                        Diadorim
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://heloise.ccsd.cnrs.fr/search/searchreview?parameter_0={{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                        Héloïse
+                      </a>
+                    </li>
+                    <li>
+                      <a href="https://www.accesoabierto.net/dulcinea/lista/REVISTA/{{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                        Dulcinea
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </article>
             </section>
 
+            <section class="col-md-4">
+              <h3 class="label label--underlined">Journal metadata</h3>
+
+              <article class="card card--with-icon">
+                <span data-feather="map-pin" aria-hidden="true"></span>
+                <dl>
+                  <dt>Publisher</dt>
+                  <dd>{{ journal.publisher }}, {{ journal.country }}</dd>
+
+                  {% if journal.institution %}
+                  <dt>Society or institution</dt>
+                  <dd>{{ journal.institution }}{% if journal.institution_country %}, {{ journal.institution_country }}{% endif %}</dd>
+                  {% endif %}
+
+                  <dt>Manuscripts accepted in</dt>
+                  <dd>{{ journal.lang }}</dd>
+                </dl>
+              </article>
+
+              <article class="card card--with-icon">
+                <span data-feather="tag" aria-hidden="true"></span>
+                <dl>
+                  <dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span></a></dt>
+                  {% assign lcc_codes = journal.lcc | split: "|" %}
+                  <dd>
+                    {% for code in lcc_codes %}
+                    {{ code }}{% if forloop.last %}{% else %}, {% endif %}
+                    {% endfor %}
+                  </dd>
+
+                  {% if journal.keywords %}
+                  <dt>Keywords</dt>
+                  <dd>
+                    {% for keyword in journal.keywords %}
+                    {{ keyword }}{% if forloop.last %}{% else %}, {% endif %}
+                    {% endfor %}
+                  </dd>
+                  {% endif %}
+                </dl>
+              </article>
+            </section>
 
           </section>
 
