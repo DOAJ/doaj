@@ -6,12 +6,14 @@
 <hr />
 
     {% set fieldsets = formulaic_context.fieldsets() %}
+    {% set tab = { "val": 0} %}
     {% for fs in fieldsets %}
         <table>
             <tbody>
                 <tr>
                     <th>{{ fs.label }}</th>
-                    <th><a href=#>Edit this section</a></th>
+                    <th><a href=# onclick="showTab({{ tab.val }})">Edit this section</a></th>
+                    {% if tab.update({"val": tab.val + 1}) %}{% endif %}
                 </tr>
             {% for f in fs.fields() %}
                         <tr>
