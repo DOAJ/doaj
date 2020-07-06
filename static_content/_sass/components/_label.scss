@@ -8,17 +8,29 @@
   font-weight: 600;
   color: $sanguine;
   letter-spacing: 0.05em;
-  @include typescale-06;
+  font-size: smaller;
+
+  a {
+    color: $sanguine;
+  }
 
   svg {
     position: relative;
     padding-right: $spacing-01;
     top: 2px;
   }
+
+  + .label {
+    margin-top: -$spacing-03;
+  }
 }
 
 .label--secondary {
   color: $warm-black;
+
+  a {
+    color: $warm-black;
+  }
 }
 
 .label--underlined {
@@ -31,4 +43,8 @@
   margin: $spacing-01 0 $spacing-02 0;
   color: $warm-black;
   @include typescale-04;
+
+  a {
+    color: $warm-black;
+  }
 }

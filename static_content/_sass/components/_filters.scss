@@ -1,6 +1,7 @@
 /* List of filters for search results */
 
 .filters {
+  margin-bottom: $spacing-04;
   border: 0;
   @include typescale-06;
 }

@@ -6,11 +6,11 @@
   <body>
     {% include header.html %}
 
-    <main class="page-content article-summary">
+    <main class="page-content article-summary article-details">
       <div class="highlight">
         <header class="container">
           <p class="label">
-            {{ page.journal }} ({{ page.issue_pub_date }})
+            <a href="{{ site.baseurl }}{% link search/journal-details.md %}">{{ page.journal }}</a> ({{ page.issue_pub_date }})
           </p>
 
           <h1>{{ page.title }}</h1>
@@ -24,33 +24,40 @@
           {% endif %}
 
           {% if page.doi %}
-          <p>
-            <a href="https://doi.org/{{ page.doi }}" target="_blank" rel="noopener">https://doi.org/{{ page.doi }}</a>
-          </p>
+          <dl>
+            <dt>DOI</dt>
+            <dd>
+              <a href="https://doi.org/{{ page.doi }}" target="_blank" rel="noopener">https://doi.org/{{ page.doi }}</a>
+            </dd>
+          </dl>
           {% endif %}
         </header>
       </div>
 
       <div class="container">
         <div class="row">
-          <div class="col-md-8">
-
-            <h2>Abstract</h2>
+          <section class="col-md-8">
+            <header class="flex-header">
+              <h2 class="flex-header__child">Abstract</h2>
+              <p class="flex-header__child">
+                <a href="{{ page.url }}" target="_blank" rel="noopener" role="button">Read online</a>
+              </p>
+            </header>
             {% if page.abstract %}
-            <p>{{ page.abstract }}</p>
+            <p class="abstract">{{ page.abstract }}</p>
             {% else %}
-            <em>No abstracts available.</em>
+            <em class="abstract--empty">No abstracts available.</em>
             {% endif %}
 
             {% if page.keywords %}
             <h2 class="sr-only">Keywords</h2>
-            <ul>
+            <ul class="tags">
               {% for j in page.keywords %}
-              <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
+              <li class="tag">{{ j }}</li>
               {% endfor %}
             </ul>
             {% endif %}
-          </div>
+          </section>
 
           <aside class="col-md-4">
 

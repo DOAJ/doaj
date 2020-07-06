@@ -231,7 +231,7 @@ input, select, button {
   padding: 0.5em;
   background-color: $warm-white;
   border: 1px solid $warm-black;
-  font-size: 1rem;
+  font-size: smaller;
   @include font-sans;
 }
 
@@ -275,7 +275,7 @@ input[type="radio"] {
 
   &:checked + label {
     color: $sanguine;
-    
+
     &::before {
       content: '\a0';
       background: $sanguine;

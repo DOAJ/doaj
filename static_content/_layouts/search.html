@@ -6,8 +6,8 @@
   <body class="search">
     {% include header.html %}
 
-    <main class="container">
-      <section class="page-content">
+    <main class="container page-content">
+      <header>
         {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
         <h1>{{ page.title }}</h1>
 
@@ -26,39 +26,39 @@
         {% if page.name == 'journals.md' %}
 
         {% include search-journal-bar.html %}
+      </header>
 
-        <h2>14,576 indexed journals</h2>
+      <h2>14,576 indexed journals</h2>
 
-        <div class="row">
-          <div class="col-md-3">
-            {% include search-journal-filters.html %}
-          </div>
-
-          <div class="col-md-9">
-            {% include search-journal-results.html %}
-          </div>
-
+      <div class="row">
+        <div class="col-md-3">
+          {% include search-journal-filters.html %}
         </div>
 
-        {% else page.name == 'articles.md' %}
-
-        {% include search-article-bar.html %}
-        
-        <h2>4,926,886 indexed articles</h2>
-
-        <div class="row">
-          <div class="col-md-3">
-            {% include search-article-filters.html %}
-          </div>
-
-          <div class="col-md-9">
-            {% include search-article-results.html %}
-          </div>
-
+        <div class="col-md-9">
+          {% include search-journal-results.html %}
         </div>
 
-        {% endif %}
-      </section>
+      </div>
+
+      {% else page.name == 'articles.md' %}
+
+      {% include search-article-bar.html %}
+
+      <h2>4,926,886 indexed articles</h2>
+
+      <div class="row">
+        <div class="col-md-3">
+          {% include search-article-filters.html %}
+        </div>
+
+        <div class="col-md-9">
+          {% include search-article-results.html %}
+        </div>
+
+      </div>
+
+      {% endif %}
     </main>
 
     {% include footer.html %}
