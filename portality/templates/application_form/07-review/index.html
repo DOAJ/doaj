@@ -5,27 +5,27 @@
 
 <hr />
 
-    {% set fieldsets = formulaic_context.fieldsets() %}
-    {% set tab = { "val": 0} %}
-    {% for fs in fieldsets %}
-        <table>
-            <tbody>
-                <tr>
-                    <th>{{ fs.label }}</th>
-                    <th><a href=# onclick="showTab({{ tab.val }})">Edit this section</a></th>
-                    {% if tab.update({"val": tab.val + 1}) %}{% endif %}
-                </tr>
-            {% for f in fs.fields() %}
-                        <tr>
-                            <td id="{{ f.name }}__review_label">{{ f.label }}</td>
-                            <td id="{{ f.name  }}__review_value"></td>
-                        </tr>
-            {% endfor %}
-                        </tbody>
-
+    {% set t = { "val": 0} %}
+        {% for tab in FORM %}
+            <table>
+                <tbody>
+                    <th>{{ tab.title }}</th>
+                    <th><a href="#" onclick="showTab({{ t.val }})">Edit this section</a></th>
+                    {% set fieldsests = tab.fieldsets %}
+                    {% for fieldset in fieldsests %}
+                        {% set fs = formulaic_context.fieldset(fieldset) %}
+                        {% if t.update({"val": t.val + 1}) %}{% endif %}
+                        {% for f in fs.fields() %}
+                            <tr>
+                                <td id="{{ f.name }}__review_label">{{ f.label }}</td>
+                                <td id="{{ f.name  }}__review_value"></td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
             </table>
             <hr />
-    {% endfor %}
+        {% endfor %}
 
 
 

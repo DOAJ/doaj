@@ -129,11 +129,26 @@
         divs.each((i, div) => {
             let input = $(div).find('input')
             let name = input.attr("name")
-            if (input.attr("type") !== "radio" && input.attr("type") !== "checkbox"){
+            if (input.attr("type") === "text" || input.attr("type") === "select"){
+
                 $("#" + name + "__review_value").html(input.val())
             }
+            else if (input.attr("type") === "url") {
+                $("#" + name + "__review_value").html('<a href=' + input.val() + '>' + input.val() + '</a>')
+            }
+            else if (input.attr("type") === "radio") {
+                if (input.is(":checked")){
+                    $("#" + name + "__review_value").html(input.filter(':checked').val())
+                }
+            }
             else {
-                $("#" + name + "__review_value:checked").html(input.val())
+                let result = ''
+                input.each((idx, i) => {
+                    if ($(i).is(":checked")){
+                        result += $(i).val() + ", ";
+                    }
+                } )
+                $("#" + name + "__review_value").html(result)
             }
 
         })
@@ -142,7 +157,6 @@
     let form_validated = () => {
         let result = true;
         $("[name^='validated']").each((idx, input) => {
-            console.log($(input).val())
             if ($(input).val() !== "True") {
                 result = false;
                 return false;
