@@ -104,7 +104,8 @@ JOURNAL_APIDO_STRUCT = {
         "id": {"coerce": "unicode"},
         "created_date": {"coerce": "utcdatetime"},
         "last_updated": {"coerce": "utcdatetime"},
-        'last_manual_update': {'coerce': 'utcdatetime'}
+        'last_manual_update': {'coerce': 'utcdatetime'},
+        "es_type": {"coerce": "unicode"}
     },
     "structs": {
         "admin": {

@@ -135,7 +135,8 @@ PROVENANCE_STRUCT = {
         "type" : {"coerce" : "unicode"},
         "subtype" : {"coerce" : "unicode"},
         "action" : {"coerce" : "unicode"},
-        "resource_id" : {"coerce" : "unicode"}
+        "resource_id" : {"coerce" : "unicode"},
+        "es_type": {"coerce": "unicode"}
     },
     "lists" : {
         "roles" : {"contains" : "field", "coerce" : "unicode"},
