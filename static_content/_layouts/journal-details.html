@@ -121,7 +121,16 @@
                   <span data-feather="unlock" aria-hidden="true"></span>
                   <div>
                     {% if journal.license %}
-                    <p>This journal uses a <strong>{{ journal.license }}</strong> license.</p>
+                    <p>This journal uses
+                      {% for license in journal.license %}
+                      {% if forloop.first %}
+                      {% elsif forloop.last %} &
+                      {% else %},
+                      {% endif %}
+                      a <strong>{{ license }}</strong>
+                      {% endfor %}
+                      license.
+                    </p>
                     <p>
                       {% for license in journal.license %}
                       <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener" style="text-decoration: none;">

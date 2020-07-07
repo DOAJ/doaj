@@ -10,9 +10,7 @@
       <div class="highlight">
         <header class="container">
           <p class="label">
-            <a href="{{ site.baseurl }}{% link search/journal-details.md %}">{{ page.journal }}</a>.
-            {% if page.volume %}Vol. {{ page.volume }}{% endif %}{% if page.volume and page.issue %},{% endif %}
-            {% if page.issue %}no. {{ page.issue }}{% endif %}
+            <a href="{{ site.baseurl }}{% link search/journal-details.md %}">{{ page.journal }}</a>
             ({{ page.issue_pub_date }})
           </p>
 
@@ -69,6 +67,12 @@
               <dt>DOI</dt>
               <dd>
                 <a href="https://doi.org/{{ page.doi }}" target="_blank" rel="noopener">https://doi.org/{{ page.doi }}</a>
+              </dd>
+
+              <dt>Journal volume & issue</dt>
+              <dd>
+                {% if page.volume %}Vol. {{ page.volume }}{% endif %}{% if page.volume and page.issue %},{% endif %}
+                {% if page.issue %}no. {{ page.issue }}{% endif %}
               </dd>
             </dl>
             {% endif %}

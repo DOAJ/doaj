@@ -54,7 +54,7 @@
           {% for i in site.data.search-filters.journals limit:50 %}
           <li>
             <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
-            <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.name.size }})</label>
+            <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
           </li>
           {% endfor %}
         </ul>
