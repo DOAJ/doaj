@@ -3,7 +3,7 @@
     <span data-feather="sliders" aria-hidden="true"></span> Refine search results <span data-feather="chevron-down" aria-hidden="true"></span>
   </h2>
   <ul class="collapse filters__list" id="filters" aria-expanded="false">
-    
+
     <!--  Search within these results -->
     <li class="filter">
       <h3 class="filter__heading">
@@ -30,7 +30,7 @@
           {% for i in site.data.search-filters.subjects limit:50 %}
           <li>
             <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
-            <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+            <label for="{{ i.name }}" class="filter__label">{{ i.name }}</label>
           </li>
           {% endfor %}
         </ul>
@@ -54,7 +54,7 @@
           {% for i in site.data.search-filters.journals limit:50 %}
           <li>
             <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
-            <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.total }})</label>
+            <label for="{{ i.name }}" class="filter__label">{{ i.name }} ({{ i.name.size }})</label>
           </li>
           {% endfor %}
         </ul>
