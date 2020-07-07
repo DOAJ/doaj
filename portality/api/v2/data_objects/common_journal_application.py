@@ -3,6 +3,8 @@ from copy import deepcopy
 from portality.lib import swagger
 from portality.lib.seamless import SeamlessMixin
 
+"""
+# Replace this with the main BIBJSON definition
 _SHARED_STRUCT = {
     "objects": [
         "bibjson"
@@ -67,7 +69,7 @@ _SHARED_STRUCT = {
                     },
                     "lists": {
                         "license_display": {"contains": "field", "coerce": "unicode",
-                                            "allowed_values": ["embed", "display", "no"]},
+                                            "allowed_values": ["Embed", "Display", "No"]},
                     }
                 },
                 "copyright": {
@@ -186,6 +188,10 @@ _SHARED_STRUCT = {
         }
     }
 }
+"""
+
+from portality.models.v2.shared_structs import JOURNAL_BIBJSON
+_SHARED_STRUCT = JOURNAL_BIBJSON
 
 class OutgoingCommonJournalApplication(SeamlessMixin, swagger.SwaggerSupport):
 

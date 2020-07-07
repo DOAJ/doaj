@@ -52,49 +52,20 @@ INTERNAL_APPLICATION_STRUCT = {
                 "owner" : {"coerce" : "unicode"},
                 "seal" : {"coerce" : "unicode"}
             },
-            "objects": [
-                "applicant",
-                "contact"
-            ],
             "lists": {
                 "notes" : {"contains" : "object"},
-            },
-            "structs" : {
-                "applicant" : {
-                    "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "email": {"coerce" : "unicode"}
-                    }
-                },
-                "contact": {
-                    "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "email": {"coerce" : "unicode"}
-                    }
-                }
             }
         }
     }
 }
 
 
-
 INCOMING_APPLICATION_REQUIREMENTS = {
     "required" : ["admin", "bibjson"],
 
     "structs": {
-        "admin" : {
-            "required" : ["contact"],
-            "structs" : {
-                "contact": {
-                    "required" : ["name", "email"]
-                }
-            }
-        },
-
         "bibjson": {
             "required": [
-                "apc",
                 "copyright",
                 "deposit_policy",
                 "editorial",
@@ -141,8 +112,11 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     __SEAMLESS_COERCE__ = COERCE_MAP
     __SEAMLESS_STRUCT__ = [
         OUTGOING_APPLICATION_STRUCT,
-        INTERNAL_APPLICATION_STRUCT,
+        # FIXME: should this be here? It looks like it allows users to send administrative data to the system
+        # I have removed it as it was exposing incorrect data in the auto-generated documentation
+        # INTERNAL_APPLICATION_STRUCT,
         _SHARED_STRUCT,
+        # FIXME: can we live without specifying required fields, since the form validation will handle this?
         INCOMING_APPLICATION_REQUIREMENTS
     ]
 
@@ -168,7 +142,7 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
 
         # check that at least one of them appears and if they are different
         if pissn is None and eissn is None or pissn == eissn:
-            raise seamless.SeamlessException("You must specify at least one of P-ISSN or E-ISSN in bibjson.identifier")
+            raise seamless.SeamlessException("You must specify at least one of bibjson.pissn and bibjson.eissn, and they must be different")
 
         # normalise the ids
         if pissn is not None:
@@ -184,24 +158,24 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         # A link to the journal homepage is required
         #
         if self.data["bibjson"]["ref"]["journal"] is None or self.data["bibjson"]["ref"]["journal"] == "":
-            raise seamless.SeamlessException("You must specify the journal homepage in bibjson.link@type='homepage'")
+            raise seamless.SeamlessException("You must specify the journal homepage in bibjson.ref.journal")
 
         # if plagiarism detection is done, then the url is a required field
         if self.data["bibjson"]["plagiarism"]["detection"] is True:
             url = self.data["bibjson"]["plagiarism"]["url"]
             if url is None:
-                raise seamless.SeamlessException("In this context bibjson.plagiarism_detection.url is required")
+                raise seamless.SeamlessException("In this context bibjson.plagiarism.url is required")
 
         # if licence_display is "embed", then the url is a required field   #TODO: what with "display"
         art = self.data["bibjson"]["article"]
         if "embed" in art["license_display"] or "display" in art["license_display"]:
             if art["license_display_example_url"] is None or art["license_display_example_url"] ==  "":
-                raise seamless.SeamlessException("In this context bibjson.license.license_display_example_url is required")
+                raise seamless.SeamlessException("In this context bibjson.article.license_display_example_url is required")
 
         # if the author does not hold the copyright the url is optional, otherwise it is required
         if self.data["bibjson"]["copyright"]["author_retains"] is not False:
             if self.data["bibjson"]["copyright"]["url"] is None or self.data["bibjson"]["copyright"]["url"] == "":
-                raise seamless.SeamlessException("In this context bibjson.author_copyright.url is required")
+                raise seamless.SeamlessException("In this context bibjson.copyright.url is required")
 
         # check the number of keywords is no more than 6
         if len(self.data["bibjson"]["keywords"]) > 6:
@@ -325,35 +299,6 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
 
     def remove_editor(self):
         self.__seamless__.delete('admin.editor')
-
-    def contact_name(self):
-        return self.__seamless__.get_single("admin.contact.name")
-
-    def contact_email(self):
-        return self.__seamless__.get_single("admin.contact.email")
-
-    def set_contact(self):
-        return self.__seamless__.set_with_struct()
-
-    def get_latest_contact_name(self):
-        try:
-            contact = self.contacts()[-1]
-        except IndexError as e:
-            return ""
-        return contact.get("name", "")
-
-    def get_latest_contact_email(self):
-        try:
-            contact = self.contacts()[-1]
-        except IndexError as e:
-            return ""
-        return contact.get("email", "")
-
-    def add_contact(self, name, email):
-        self.__seamless__.set_with_struct("admin.contact", {"name": name, "email": email})
-
-    def remove_contacts(self):
-        self.__seamless__.delete("admin.contact")
 
     def add_note(self, note, date=None, id=None):
         if date is None:

@@ -1,3 +1,5 @@
+# DEPRECATED - this file is dead, and should be removed by the end of the redesign project
+
 from portality.formcontext.formhelper import FormHelperBS3
 from portality.formcontext.choices import Choices
 from copy import deepcopy

@@ -1,0 +1,30 @@
+<div class="{{ f.name }}__container" {# {% if f.has_conditional %}style="display:none"{% endif %} #}>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <fieldset>
+                    <a class="question_id" name="{{ f.name }}" href="#{{ f.name }}">{{ f.name }}</a><br>
+                    <legend>{% autoescape off %}{{ f.label }}{% endautoescape %}</legend>
+
+                    <div class="row">
+                        <div class="col-md-11">
+
+                            {% for subfield in f.group_subfields() %}
+                                {% set f = subfield %}
+                                {% set field_template = subfield.template %}
+                                {%  include field_template %}
+                                <hr>
+                            {% endfor %}
+
+                        </div>
+                        <div class="col-md-1">
+                            {% if f.help("doaj_criteria") %}<span title="{{ f.help("doaj_criteria") }}">DOAJ</span>&nbsp;{% endif %}
+                            {% if f.help("seal_criteria") %}<span title="{{ f.help("seal_criteria") }}">SEAL</span>{% endif %}
+                            {% if f.help("long_help") %}<span title="{{ f.help("long_help") }}">HELP</span>{% endif %}
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>

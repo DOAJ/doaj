@@ -40,10 +40,6 @@ class TestAnon(DoajTestCase):
         journal_src['admin'] = {
             'owner': 'testuser',
             'editor': 'testeditor',
-            'contact': [{
-                'email': 'test@doaj.org',
-                'name': 'Tester Tester'
-            }],
             'notes': [
                 {
                     "id" : "note1",
@@ -66,10 +62,6 @@ class TestAnon(DoajTestCase):
         assert ar.data['admin'] == {
             'owner': 'testuser',
             'editor': 'testeditor',
-            'contact': [{
-                'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com',
-                'name': 'Ryan Gallagher'
-            }],
             'notes': [
                 {
                     "id" : "note1",
@@ -90,10 +82,6 @@ class TestAnon(DoajTestCase):
         journal_src['admin'] = {
             'owner': 'testuser',
             'editor': 'testeditor',
-            'contact': [{
-                'email': 'test@doaj.org',
-                'name': 'Tester Tester'
-            }],
             'notes': []
         }
 
@@ -105,10 +93,6 @@ class TestAnon(DoajTestCase):
         assert ar.data['admin'] == {
             'owner': 'testuser',
             'editor': 'testeditor',
-            'contact': [{
-                'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com',
-                'name': 'Ryan Gallagher'
-            }],
             'notes': []
         }, ar['admin']
 
@@ -116,14 +100,6 @@ class TestAnon(DoajTestCase):
         anon_a = anon_export.anonymise_account(AccountFixtureFactory.make_publisher_source())
         assert anon_a['id'] == 'publisher', anon_a['id']
         assert anon_a['email'] == '25011d8de5bfcb72ee529fcc38b518ea6a46f99a81a412c065fe7147272b8f2a@example.com', anon_a['email']
-
-    def test_08_anonymise_journal(self):
-        pass  # tests 5 and 6 cover this entirely
-
-    def test_09_anonymise_suggestion(self):
-        asug = anon_export.anonymise_suggestion(ApplicationFixtureFactory.make_application_source())
-        assert asug['admin']['applicant']['name'] == 'Jon Cole', asug['suggestion']['suggester']['name']
-        assert asug['admin']['applicant']['email'] == '5224a2ac2278eeb77400bf5d35e518a1627a7fb10bf0108171542c6af81988a7@example.com', asug['suggestion']['suggester']['email']
 
     def test_10_anonymise_background_job(self):
         bgjob = BackgroundFixtureFactory.example()

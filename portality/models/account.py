@@ -11,7 +11,7 @@ class Account(DomainObject, UserMixin):
     __type__ = 'account'
 
     def __init__(self, **kwargs):
-        from portality.formcontext.validate import ReservedUsernames
+        from portality.forms.validate import ReservedUsernames
         ReservedUsernames().validate(kwargs.get('id', ''))
         super(Account, self).__init__(**kwargs)
 

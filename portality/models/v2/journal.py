@@ -85,6 +85,14 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             issns += j.known_issns()
         return issns
 
+    @classmethod
+    def find_by_journal_url(cls, url, in_doaj=None, max=10):
+        q = JournalURLQuery(url, in_doaj, max)
+        result = cls.query(q=q.query())
+        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too (i.e. Suggestion)
+        records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+
     ############################################
     ## base property methods
 
@@ -895,6 +903,29 @@ class JournalQuery(object):
             q["sort"] = [{"bibjson.title.exact": {"order": "asc"}}]
         return q
 
+
+class JournalURLQuery(object):
+    def __init__(self, url, in_doaj=None, max=10):
+        self.url = url
+        self.in_doaj = in_doaj
+        self.max = max
+
+    def query(self):
+        q = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "terms": {"bibjson.ref.journal.exact": self.url}
+                        }
+                    ]
+                }
+            },
+            "size" : self.max
+        }
+        if self.in_doaj is not None:
+            q["query"]["bool"]["must"].append({"term": {"admin.in_doaj": self.in_doaj}})
+        return q
 
 class IssnQuery(object):
     base_query = {

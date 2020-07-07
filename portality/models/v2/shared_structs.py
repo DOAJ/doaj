@@ -61,7 +61,7 @@ JOURNAL_BIBJSON = {
                         "i4oc_open_citations" : {"coerce" : "bool"}
                     },
                     "lists" : {
-                        "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["embed", "display", "no"]},
+                        "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["Embed", "Display", "No"]},
                     }
                 },
                 "copyright" : {
@@ -127,8 +127,8 @@ JOURNAL_BIBJSON = {
                 },
                 "preservation": {
                     "fields": {
-                        "has_preservation": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"}
+                        "has_preservation": {"coerce": "bool"},
+                        "url": {"coerce": "url"}
                     },
                     "lists": {
                         "national_library": {"contains" : "field", "coerce": "unicode"},

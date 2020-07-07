@@ -8,7 +8,8 @@ from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException, NoSuchObjectException
 from portality import lock
 from portality.formcontext import formcontext
-from portality.formcontext.xwalks import suggestion_form
+from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.forms.application_forms import ApplicationFormFactory
 from werkzeug.datastructures import MultiDict
 
 from copy import deepcopy
@@ -67,9 +68,9 @@ class ApplicationsCrudApi(CrudApi):
         ap = ia.to_application_model()
 
         # now augment the suggestion object with all the additional information it requires
-        #
-        # suggester name and email from the user account
-        ap.set_applicant(account.name, account.email)
+
+        # set the owner
+        ap.set_owner(account.id)
 
         # they are not allowed to set "subject"
         ap.bibjson().remove_subjects()
@@ -100,7 +101,7 @@ class ApplicationsCrudApi(CrudApi):
                 raise Api404Error(jlock, alock)
 
             # convert the incoming application into the web form
-            form = MultiDict(suggestion_form.SuggestionFormXWalk.obj2form(ap))
+            form = MultiDict(ApplicationFormXWalk.obj2form(ap))
 
             fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
             if fc.validate():
@@ -121,22 +122,26 @@ class ApplicationsCrudApi(CrudApi):
         # otherwise, this is a brand-new application
         else:
             # convert the incoming application into the web form
-            form = MultiDict(suggestion_form.SuggestionFormXWalk.obj2form(ap))
+            # form = MultiDict(ApplicationFormXWalk.obj2form(ap))
+            #from doajtest.fixtures.v2.common import expanded2compact
+            #form = MultiDict(expanded2compact(ApplicationFormXWalk.obj2form(ap)))
+            form = ApplicationFormXWalk.obj2formdata(ap)
 
             # create a template that will hold all the values we want to persist across the form submission
             template = models.Suggestion()
             template.set_owner(account.id)
 
-            fc = formcontext.ApplicationFormFactory.get_form_context(form_data=form, source=template)
-            if fc.validate():
+            fc = ApplicationFormFactory.context("public")
+            processor = fc.processor(form, template)
+            if processor.validate():
                 try:
                     save_target = not dry_run
-                    fc.finalise(save_target=save_target, email_alert=False)
-                    return fc.target
+                    processor.finalise(account, save_target=save_target, email_alert=False)
+                    return processor.target
                 except formcontext.FormContextException as e:
                     raise Api400Error(str(e))
             else:
-                raise Api400Error(cls._validation_message(fc))
+                raise Api400Error(cls._validation_message(processor))
 
 
     @classmethod
@@ -245,7 +250,7 @@ class ApplicationsCrudApi(CrudApi):
                 raise Api404Error()
 
             # convert the incoming application into the web form
-            form = MultiDict(suggestion_form.SuggestionFormXWalk.obj2form(new_ap))
+            form = MultiDict(ApplicationFormXWalk.obj2form(new_ap))
 
             fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
             if fc.validate():
@@ -271,7 +276,7 @@ class ApplicationsCrudApi(CrudApi):
                     raise Api404Error()
 
             # convert the incoming application into the web form
-            form = MultiDict(suggestion_form.SuggestionFormXWalk.obj2form(new_ap))
+            form = MultiDict(ApplicationFormXWalk.obj2form(new_ap))
 
             fc = formcontext.ApplicationFormFactory.get_form_context(form_data=form, source=ap)
             if fc.validate():
@@ -329,8 +334,43 @@ class ApplicationsCrudApi(CrudApi):
     def _validation_message(cls, fc):
         errors = fc.errors
         msg = "The following validation errors were received:\n"
-        for fieldName, errorMessages in errors.items():
-            fieldName = suggestion_form.SuggestionFormXWalk.formField2objectField(fieldName)
+
+        def _expand(errors):
+            report = {}
+            for fieldName, errorMessages in errors.items():
+                if isinstance(errorMessages, dict):
+                    subs = _expand(errorMessages)
+                    for sub, subErrors in subs.items():
+                        report[fieldName + "." + sub] = subErrors
+                else:
+                    reportable = []
+                    for em in errorMessages:
+                        if isinstance(em, list):
+                            em = " ".join(em)
+                        reportable.append(em)
+                    report[fieldName] = list(set(reportable))
+
+            return report
+
+        report = _expand(errors)
+        for fieldName, errorMessages in report.items():
+            fieldName = ApplicationFormXWalk.formField2objectField(fieldName)
             msg += fieldName + " : " + "; ".join(errorMessages) + "\n"
         return msg
+        """
+        for fieldName, errorMessages in errors.items():
+            if isinstance(errorMessages, dict):
+                for subfield, subMessages in errorMessages.items():
+
+
+            fieldName = ApplicationFormXWalk.formField2objectField(fieldName)
+            reportable = []
+
+            for em in errorMessages:
+                if isinstance(em, list):
+                    em = " ".join(em)
+                reportable.append(em)
+            msg += fieldName + " : " + "; ".join(reportable) + "\n"
+        return msg
+        """
 

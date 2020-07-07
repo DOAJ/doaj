@@ -61,7 +61,7 @@ def format(klazz, example, fields):
 
 def document(klazz, field_descriptions):
     inst = klazz()
-    base_struct = inst.get_struct()
+    base_struct = inst.__seamless_struct__.raw
 
     fields = {}
 

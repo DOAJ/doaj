@@ -1,0 +1,25 @@
+<form id="{{ form_id }}"
+      novalidate
+      action="{{ form_action }}"
+      method="post"
+      data-formulaic-after="{{ formulaic_after }}">
+
+{% for fs in formulaic_context.fieldsets() %}
+    <h1>{{ fs.label }}</h1>
+    <fieldset id="{{ fs.name }}" class="form_page">
+    {% for field in fs.fields() %}
+        {% set f = field %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+        <hr>
+    {% endfor %}
+    </fieldset>
+{% endfor %}
+
+    <button name="complete" class="formulaic-complete" type="submit" id="complete">Submit</button>
+    <button name="draft" class="formulaic-draft" type="submit" id="draft">Save as Draft</button>
+
+    {% if obj %}
+    <input type="hidden" name="id" value="{{ obj.id }}">
+    {% endif %}
+</form>

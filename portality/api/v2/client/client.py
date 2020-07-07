@@ -1,5 +1,5 @@
 from portality.core import app
-from portality.lib import http
+from portality.lib import httputil
 import esprit, json
 from portality.api.v1.client import models
 
@@ -69,7 +69,7 @@ class DOAJv1API(object):
             for k, v in params.items():
                 if qs != "":
                     qs += "&"
-                qs += http.quote(k) + "=" + http.quote(str(v))
+                qs += httputil.quote(k) + "=" + httputil.quote(str(v))
         if qs != "":
             url += "?" + qs
 
@@ -99,10 +99,10 @@ class DOAJv1API(object):
                 sort += ":" + sort_dir
             params["sort"] = sort
 
-        url = self.doaj_url("search", type, additional_path=http.quote(query_string), params=params)
+        url = self.doaj_url("search", type, additional_path=httputil.quote(query_string), params=params)
         print(url)
 
-        resp = http.get(url, retry_codes=DOAJ_RETRY_CODES)
+        resp = httputil.get(url, retry_codes=DOAJ_RETRY_CODES)
         j = resp.json()
 
         klazz = self.CLASSMAP.get(type)
@@ -140,7 +140,7 @@ class DOAJv1API(object):
             article_data = article.data
 
         url = self.doaj_url(type="articles", params={"api_key" : self.api_key})
-        resp = http.post(url, data=json.dumps(article_data), headers={"Content-Type" : "application/json"}, retry_codes=DOAJ_RETRY_CODES)
+        resp = httputil.post(url, data=json.dumps(article_data), headers={"Content-Type" : "application/json"}, retry_codes=DOAJ_RETRY_CODES)
 
         if resp.status_code == 400:
             raise DOAJException("Bad request against DOAJ API: '{x}'".format(x=resp.json().get("error", "no error provided")))

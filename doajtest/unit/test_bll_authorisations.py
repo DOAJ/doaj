@@ -48,10 +48,10 @@ def create_edit_cases():
     application_source = ApplicationFixtureFactory.make_application_source()
     account_source = AccountFixtureFactory.make_publisher_source()
 
-    editable_application = Suggestion(**application_source)
+    editable_application = Suggestion(**deepcopy(application_source))
     editable_application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
-    non_editable_application = Suggestion(**application_source)
+    non_editable_application = Suggestion(**deepcopy(application_source))
     non_editable_application.set_application_status(constants.APPLICATION_STATUS_READY)
 
     owner_account = Account(**deepcopy(account_source))

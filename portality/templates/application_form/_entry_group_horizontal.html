@@ -1,0 +1,8 @@
+<div class="form-inline">
+{% for subfield in f.group_subfields() %}
+    <div class="form-group">
+        {{ subfield.render_form_control({"class" : "form-control"}, wtfinst=entry[subfield.name]) }}
+    </div>
+{% endfor %}
+</div>
+<hr>

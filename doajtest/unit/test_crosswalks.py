@@ -1,15 +1,18 @@
-import portality.formcontext.xwalks.journal_form
+from portality.crosswalks.journal_form import JournalFormXWalk
+from portality.crosswalks.application_form import ApplicationFormXWalk
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, diff_dicts
 from portality.crosswalks.article_doaj_xml import DOAJXWalk
 from portality.crosswalks.article_crossref_xml import CrossrefXWalk
 from portality.formcontext import forms
-from portality.formcontext.xwalks import suggestion_form
+
 from portality import models
 from werkzeug.datastructures import MultiDict
 from copy import deepcopy
 from portality import lcc
+from portality.models import Journal
+from portality.forms.application_forms import ApplicationFormFactory
 
 from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
 
@@ -30,7 +33,8 @@ def mock_lookup_code(code):
     if code == "HB1-3840": return "Economic theory. Demography"
     return None
 
-class TestXwalk(DoajTestCase):
+
+class TestCrosswalks(DoajTestCase):
     def setUp(self):
         self.old_lookup_code = lcc.lookup_code
         lcc.lookup_code = mock_lookup_code
@@ -38,69 +42,53 @@ class TestXwalk(DoajTestCase):
     def tearDown(self):
         lcc.lookup_code = self.old_lookup_code
 
-    def test_01_journal(self):
-        forminfo = portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))
-        #diff_dicts(JOURNAL_FORMINFO, forminfo)
-        assert forminfo == JOURNAL_FORMINFO
+    def test_01_journal_form2obj(self):
+        pc = ApplicationFormFactory.context("admin")
+        form = pc.wtform(MultiDict(JOURNAL_FORM))
 
-        form = forms.ManEdJournalReviewForm(formdata=MultiDict(JOURNAL_FORM))
-        obj = portality.formcontext.xwalks.journal_form.JournalFormXWalk.form2obj(form)
+        obj = JournalFormXWalk.form2obj(form)
 
-        onotes = obj["admin"]["notes"]
-        del obj["admin"]["notes"]
+        assert isinstance(obj, Journal)
 
-        cnotes = JOURNAL_SOURCE["admin"]["notes"]
-        csource = deepcopy(JOURNAL_SOURCE)
-        del csource["admin"]["notes"]
+        xwalked = obj.bibjson().data
+        compare = deepcopy(JOURNAL_SOURCE.get("bibjson"))
 
-        otext = [n.get("note") for n in onotes]
-        ctext = [n.get("note") for n in cnotes]
-        assert otext == ctext
+        assert xwalked == compare, diff_dicts(xwalked, compare, 'xwalked', 'fixture')
 
-        # get rid of the id and created_date in the ready-made fixture journal for comparison
-        # the model object is not going to have an id or created_date since it's not been saved yet
-        del csource['id']
-        del csource['created_date']
-        del csource["admin"]["current_application"]
-        del csource["admin"]["related_applications"]
-        assert obj == csource, diff_dicts(csource, obj, 'csource', 'modelobj')
+    def test_02_journal_obj2form(self):
+        j = models.Journal(**JOURNAL_SOURCE)
+        form = JournalFormXWalk.obj2form(j)
 
-    def test_02_application(self):
-        forminfo = suggestion_form.SuggestionFormXWalk.obj2form(models.Suggestion(**APPLICATION_SOURCE))
-        #diff_dicts(APPLICATION_FORMINFO, forminfo)
-        assert forminfo == APPLICATION_FORMINFO
+        compare = deepcopy(JOURNAL_FORMINFO)
+        assert form == compare, diff_dicts(form, compare, 'xwalked', 'fixture')
 
-        form = forms.ManEdApplicationReviewForm(formdata=MultiDict(APPLICATION_FORM))
-        obj = suggestion_form.SuggestionFormXWalk.form2obj(form)
 
-        onotes = obj["admin"]["notes"]
-        del obj["admin"]["notes"]
+    def test_03_application_form2obj(self):
+        pc = ApplicationFormFactory.context("admin")
+        form = pc.wtform(MultiDict(APPLICATION_FORM))
 
-        cnotes = APPLICATION_SOURCE["admin"]["notes"]
-        csource = deepcopy(APPLICATION_SOURCE)
-        del csource["admin"]["notes"]
+        obj = ApplicationFormXWalk.form2obj(form)
 
-        otext = [n.get("note") for n in onotes]
-        ctext = [n.get("note") for n in cnotes]
-        assert otext == ctext
+        assert isinstance(obj, Journal)
 
-        # get rid of the id and created_date in the ready-made fixture application for comparison
-        # the model object is not going to have an id or created_date since it's not been saved yet
-        del csource['id']
-        del csource['created_date']
-        del csource["admin"]["current_journal"]
-        del csource["admin"]["related_journal"]
-        del csource["suggestion"]["suggested_on"]
-        #diff_dicts(csource, obj, 'csource', 'modelobj')
-        #diff_dicts(csource["bibjson"], obj["bibjson"])
-        assert obj == csource
+        xwalked = obj.bibjson().data
+        compare = deepcopy(APPLICATION_SOURCE.get("bibjson"))
 
+        assert xwalked == compare, diff_dicts(xwalked, compare, 'xwalked', 'fixture')
+
+    def test_04_application_obj2form(self):
+        j = models.Application(**APPLICATION_SOURCE)
+        form = ApplicationFormXWalk.obj2form(j)
+
+        compare = deepcopy(APPLICATION_FORMINFO)
+        assert form == compare, diff_dicts(form, compare, 'xwalked', 'fixture')
+        
     def test_04_application_license_other_text_broken(self):
         af = APPLICATION_FORM
         af["license_other"] = "None",
 
         form = forms.ManEdApplicationReviewForm(formdata=MultiDict(af))
-        obj = suggestion_form.SuggestionFormXWalk.form2obj(form)
+        obj = ApplicationFormXWalk.form2obj(form)
 
         assert obj.bibjson().get_license_type() == "None"
 

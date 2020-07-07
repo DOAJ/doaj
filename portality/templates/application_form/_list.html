@@ -9,11 +9,14 @@
                 </label>
                 <div class="col-md-7">
 
-                    <div class="row">
-                        <div class="col-xs-12">
-                            {{ f.render_form_control() }}
+                    {% for entry in f.wtfield %}
+                        <div class="row">
+                            <div class="col-xs-12">
+                                {% set entry_template = f.entry_template %}
+                                {% include entry_template %}
+                            </div>
                         </div>
-                    </div>
+                    {% endfor %}
 
                     {% if f.help("short_help") %}
                     <div class="row">

@@ -6,19 +6,19 @@ from flask import render_template, url_for, request
 from flask_login import current_user
 
 import portality.formcontext.forms
-import portality.formcontext.xwalks.journal_form
-import portality.formcontext.xwalks.metadata_article_form
+from portality.crosswalks.journal_form import JournalFormXWalk
+from portality.crosswalks.article_form import ArticleFormXWalk
+from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality import constants
 from portality import models, app_email, util
 from portality.bll import DOAJ
 from portality.core import app
-from portality.formcontext import forms, render, choices, emails, FormContextException
-from portality.formcontext.xwalks import suggestion_form
+from portality.formcontext import forms, render, choices, FormContextException
 from portality.lcc import lcc_jstree
 from portality.ui.messages import Messages
+import portality.notifications.application_emails as emails
 
-from portality.lib.formulaic import Formulaic
-from portality.formcontext.form_definitions import FORMS, PYTHON_FUNCTIONS, JAVASCRIPT_FUNCTIONS
+from portality.forms.application_forms import JAVASCRIPT_FUNCTIONS
 
 ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
@@ -569,10 +569,10 @@ class ApplicationContext(PrivateContext):
             if current_journal is not None:
                 cj = models.Journal.pull(current_journal)
                 if cj is not None:
-                    jform = portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(cj)
+                    jform = JournalFormXWalk.obj2form(cj)
                     if "notes" in jform:
                         del jform["notes"]
-                    aform = suggestion_form.SuggestionFormXWalk.obj2form(self.source)
+                    aform = ApplicationFormXWalk.obj2form(self.source)
                     if "notes" in aform:
                         del aform["notes"]
                     diff = self._form_diff(jform, aform)
@@ -609,7 +609,8 @@ class ApplicationFormFactory(object):
     @classmethod
     def get_form_context(cls, role=None, source=None, form_data=None):
         if role is None:
-            return PublicApplication(source=source, form_data=form_data)
+            # return PublicApplication(source=source, form_data=form_data)
+            return None
         elif role == "admin":
             return ManEdApplicationReview(source=source, form_data=form_data)
         elif role == "editor":
@@ -660,7 +661,7 @@ class ManEdApplicationReview(ApplicationContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.ManEdApplicationReviewForm(data=suggestion_form.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.ManEdApplicationReviewForm(data=ApplicationFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -672,7 +673,7 @@ class ManEdApplicationReview(ApplicationContext):
         self._validate_editor_field()
 
     def form2target(self):
-        self.target = suggestion_form.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -699,8 +700,8 @@ class ManEdApplicationReview(ApplicationContext):
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         # If we have changed the editors assinged to this application, let them know.
-        is_editor_group_changed = suggestion_form.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
-        is_associate_editor_changed = suggestion_form.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        is_editor_group_changed = ApplicationFormXWalk.is_new_editor_group(self.form, self.source)
+        is_associate_editor_changed = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # record the event in the provenance tracker
         models.Provenance.make(current_user, "edit", self.target)
@@ -884,7 +885,7 @@ class EditorApplicationReview(ApplicationContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.EditorApplicationReviewForm(data=suggestion_form.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.EditorApplicationReviewForm(data=ApplicationFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -901,7 +902,7 @@ class EditorApplicationReview(ApplicationContext):
             self.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
     def form2target(self):
-        self.target = suggestion_form.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -928,7 +929,7 @@ class EditorApplicationReview(ApplicationContext):
         choices.Choices.validate_status_change('editor', self.source.application_status, self.target.application_status)
 
         # FIXME: may want to factor this out of the suggestionformxwalk
-        new_associate_assigned = suggestion_form.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        new_associate_assigned = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1043,7 +1044,7 @@ class AssEdApplicationReview(ApplicationContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.AssEdApplicationReviewForm(data=suggestion_form.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.AssEdApplicationReviewForm(data=ApplicationFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -1060,7 +1061,7 @@ class AssEdApplicationReview(ApplicationContext):
             self.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
     def form2target(self):
-        self.target = suggestion_form.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1161,7 +1162,7 @@ class PublisherUpdateRequest(ApplicationContext):
         self._disable_fields()
 
     def source2form(self):
-        self.form = forms.PublisherUpdateRequestForm(data=suggestion_form.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.PublisherUpdateRequestForm(data=ApplicationFormXWalk.obj2form(self.source))
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
         self._disable_fields()
@@ -1199,7 +1200,7 @@ class PublisherUpdateRequest(ApplicationContext):
             self.form.confirm_contact_email.data = contact.get("email")
 
     def form2target(self):
-        self.target = suggestion_form.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1320,79 +1321,6 @@ class PublisherUpdateRequest(ApplicationContext):
             app.logger.error(magic + "\n" + repr(e))
             raise e
 
-from portality.lib.formulaic import FormProcessor
-
-class PublicApplication(FormProcessor):
-    """
-    Public Application Form Context.  This is also a sort of demonstrator as to how to implement
-    one, so it will do unnecessary things like override methods that don't actually need to be overridden.
-
-    This should be used in a context where an unauthenticated user is making a request to put a journal into the
-    DOAJ.  It does not have any edit capacity (i.e. the form can only be submitted once), and it does not provide
-    any form fields other than the essential journal bibliographic, application bibliographc and contact information
-    for the suggester.  On submission, it will set the status to "pending" and the item will be available for review
-    by the editors
-    """
-
-    ############################################################
-    # PublicApplicationForm versions of FormProcessor lifecycle functions
-    ############################################################
-
-    def draft(self, account, id=None, *args, **kwargs):
-        # check for validity
-        valid = self.validate()
-
-        # if not valid, then remove all fields which have validation errors
-        if not valid:
-            for field in self.form:
-                if field.errors:
-                    field.data = field.default
-
-        self.form2target()
-        draft_application = models.DraftApplication(**self.target.data)
-        if id is not None:
-            draft_application.set_id(id)
-        draft_application.set_owner(account.id)
-        draft_application.save()
-        return draft_application
-
-    def pre_validate(self):
-        # no pre-validation requirements
-        pass
-
-    def patch_target(self):
-        if self.source is not None:
-            #self._carry_fixed_aspects()
-            #self._merge_notes_forward()
-            self.target.set_owner(self.source.owner)
-            self.target.set_editor_group(self.source.editor_group)
-            self.target.set_editor(self.source.editor)
-            #self._carry_continuations()
-
-            # we carry this over for completeness, although it will be overwritten in the finalise() method
-            self.target.set_application_status(self.source.application_status)
-
-    def finalise(self, save_target=True, email_alert=True):
-        super(PublicApplication, self).finalise()
-
-        # set some administrative data
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        self.target.date_applied = now
-        self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
-
-        # Finally save the target
-        self.target.set_last_manual_update()
-        self.target.set_applicant(self.form.applicant_name.data, self.form.applicant_email.data)
-        if save_target:
-            self.target.save()
-
-        if email_alert:
-            try:
-                emails.send_received_email(self.target)
-            except app_email.EmailException as e:
-                self.add_alert("We were unable to send you an email confirmation - possible problem with the email address provided")
-                app.logger.exception('Error sending application received email.')
-
 
 class PublisherUpdateRequestReadOnly(PrivateContext):
     """
@@ -1418,7 +1346,7 @@ class PublisherUpdateRequestReadOnly(PrivateContext):
         self.renderer.disable_all_fields(False)
 
     def source2form(self):
-        self.form = forms.PublisherUpdateRequestForm(data=portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.PublisherUpdateRequestForm(data=JournalFormXWalk.obj2form(self.source))
         # self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -1483,7 +1411,7 @@ class ManEdJournalReview(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.ManEdJournalReviewForm(data=portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.ManEdJournalReviewForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -1493,7 +1421,7 @@ class ManEdJournalReview(PrivateContext):
         self._validate_editor_field()
 
     def form2target(self):
-        self.target = portality.formcontext.xwalks.journal_form.JournalFormXWalk.form2obj(self.form)
+        self.target = JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1524,8 +1452,8 @@ class ManEdJournalReview(PrivateContext):
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         # If we have changed the editors assinged to this application, let them know.
-        is_editor_group_changed = portality.formcontext.xwalks.journal_form.JournalFormXWalk.is_new_editor_group(self.form, self.source)
-        is_associate_editor_changed = portality.formcontext.xwalks.journal_form.JournalFormXWalk.is_new_editor(self.form, self.source)
+        is_editor_group_changed = JournalFormXWalk.is_new_editor_group(self.form, self.source)
+        is_associate_editor_changed = JournalFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1608,13 +1536,13 @@ class EditorJournalReview(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.EditorJournalReviewForm(data=portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.EditorJournalReviewForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
 
     def form2target(self):
-        self.target = portality.formcontext.xwalks.journal_form.JournalFormXWalk.form2obj(self.form)
+        self.target = JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1648,7 +1576,7 @@ class EditorJournalReview(PrivateContext):
         super(EditorJournalReview, self).finalise()
 
         # FIXME: may want to factor this out of the suggestionformxwalk
-        email_associate = suggestion_form.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        email_associate = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1686,13 +1614,13 @@ class AssEdJournalReview(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.AssEdJournalReviewForm(data=portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.AssEdJournalReviewForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
 
     def form2target(self):
-        self.target = portality.formcontext.xwalks.journal_form.JournalFormXWalk.form2obj(self.form)
+        self.target = JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1755,7 +1683,7 @@ class ReadOnlyJournal(PrivateContext):
         self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.ReadOnlyJournalForm(data=portality.formcontext.xwalks.journal_form.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.ReadOnlyJournalForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
         self._expand_url_descriptions(URL_FIELDS)
@@ -1856,7 +1784,7 @@ class MetadataForm(FormContext):
 
     def source2form(self):
         self.form = portality.formcontext.forms.ArticleForm()
-        portality.formcontext.xwalks.metadata_article_form.MetadataArticleFormXwalk.obj2form(self.form, article=self.source)
+        ArticleFormXWalk.obj2form(self.form, article=self.source)
         self._set_choices()
 
     def data2form(self):
@@ -1864,7 +1792,7 @@ class MetadataForm(FormContext):
         self._set_choices()
 
     def form2target(self):
-        self.target = portality.formcontext.xwalks.metadata_article_form.MetadataArticleFormXwalk.form2obj(form=self.form)
+        self.target = ArticleFormXWalk.form2obj(form=self.form)
 
     def validate(self):
         if not self._validate_authors():

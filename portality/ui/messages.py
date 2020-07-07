@@ -57,6 +57,8 @@ class Messages(object):
 
     CONSENT_COOKIE_VALUE = """By using the DOAJ website you have agreed to our cookie policy."""
 
+    FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR = "We were unable to send you an email confirmation - possible problem with the email address provided"
+    FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR = 'Error sending application received email.'
 
     @classmethod
     def flash(cls, tup):

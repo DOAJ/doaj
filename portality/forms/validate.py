@@ -6,6 +6,8 @@ from wtforms.compat import string_types
 from portality.formcontext.choices import Choices
 from portality.core import app
 
+from portality.models import Journal
+
 class DataOptional(object):
     """
     Allows empty input and stops the validation chain from continuing.
@@ -34,18 +36,16 @@ class DataOptional(object):
             field.errors[:] = []
             raise validators.StopValidation()
 
+
 class OptionalIf(DataOptional):
-    # A validator which makes a field optional if # another field is set
+    # A validator which makes a field optional if another field is set
     # and has a truthy value.
 
-    # Additionally, a list of values (optvals) can be specified - if any
-    # of those values are present in the other field, this field becomes
-    # optional. The other field having a truthy value is then no longer
-    # sufficient.
-    field_flags = ('display_required_star', )
-
-    def __init__(self, other_field_name, optvals=None, *args, **kwargs):
+    def __init__(self, other_field_name, message=None, optvals=None, *args, **kwargs):
         self.other_field_name = other_field_name
+        if not message:
+            message = "This field is required in the current circumstances"
+        self.message = message
         self.optvals = optvals if optvals is not None else []
         super(OptionalIf, self).__init__(*args, **kwargs)
 
@@ -58,6 +58,10 @@ class OptionalIf(DataOptional):
             # ... just make this field optional if the other is truthy
             if bool(other_field.data):
                 super(OptionalIf, self).__call__(form, field)
+            else:
+                # otherwise it is required
+                dr = validators.DataRequired(self.message)
+                dr(form, field)
         else:
             # if such values are specified, check for them
             no_optval_matched = True
@@ -212,6 +216,7 @@ class MaxLen(object):
         if len(field.data) > self.max_len:
             raise validators.ValidationError(self.message.format(max_len=self.max_len))
 
+
 class RequiredIfRole(validators.Required):
     '''
     Makes a field required, if the user has the specified role
@@ -224,6 +229,7 @@ class RequiredIfRole(validators.Required):
     def __call__(self, form, field):
         if current_user.has_role(self.role):
             super(RequiredIfRole, self).__call__(form, field)
+
 
 class RegexpOnTagList(object):
     """
@@ -255,6 +261,7 @@ class RegexpOnTagList(object):
                         message = self.message
 
                 raise validators.ValidationError(message)
+
 
 class ThisOrThat(object):
     def __init__(self, other_field_name, *args, **kwargs):
@@ -291,3 +298,93 @@ class ReservedUsernames(object):
     @classmethod
     def validate(cls, username):
         return cls().__validate(username)
+
+
+class ISSNInPublicDOAJ(object):
+    def __init__(self, message=None):
+        if not message:
+            message = "This ISSN already appears in the public DOAJ database"
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data is not None:
+            existing = Journal.find_by_issn(field.data, in_doaj=True, max=1)
+            if len(existing) > 0:
+                raise validators.ValidationError(self.message)
+
+
+class JournalURLInPublicDOAJ(object):
+    def __init__(self, message=None):
+        if not message:
+            message = "This ISSN already appears in the public DOAJ database"
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data is not None:
+            existing = Journal.find_by_journal_url(field.data, in_doaj=True, max=1)
+            if len(existing) > 0:
+                raise validators.ValidationError(self.message)
+
+
+class StopWords(object):
+    def __init__(self, stopwords, message=None):
+        self.stopwords = stopwords
+        if not message:
+            message = "You may not enter '{stop_word}' in this field"
+        self.message = message
+
+    def __call__(self, form, field):
+        for v in field.data:
+            if v.strip() in self.stopwords:
+                raise validators.ValidationError(self.message.format(stop_word=v))
+
+
+class DifferentTo(object):
+    def __init__(self, other_field_name, ignore_empty=True, message=None):
+        self.other_field_name = other_field_name
+        self.ignore_empty = ignore_empty
+        if not message:
+            message = "This field must contain a different value to the field '{x}'".format(x=other_field_name)
+        self.message = message
+
+    def __call__(self, form, field):
+        other_field = self.get_other_field(form)
+
+        if other_field.data == field.data:
+            if self.ignore_empty and (not other_field.data or not field.data):
+                return
+            raise validators.ValidationError(self.message)
+
+    def get_other_field(self, form):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        return other_field
+
+
+class RequiredIfOtherValue(object):
+    '''
+    Makes a field required, if the user has selected a specific value in another field
+    '''
+
+    def __init__(self, other_field_name, other_value, *args, **kwargs):
+        self.other_field_name = other_field_name
+        self.other_value = other_value
+        super(RequiredIfOtherValue, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        other_field = self.get_other_field(form)
+        match = False
+        if isinstance(other_field.data, list):
+            match = self.other_value in other_field.data
+        else:
+            match = other_field.data == self.other_value
+        if match:
+            dr = validators.DataRequired()
+            dr(form, field)
+
+    def get_other_field(self, form):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        return other_field

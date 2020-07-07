@@ -1,3 +1,5 @@
+# DEPRECATED
+
 from datetime import datetime
 
 from flask_login import current_user
@@ -9,7 +11,7 @@ from portality import regex
 from portality.core import app
 
 from portality.formcontext.fields import DOAJSelectField, DOAJSelectMultipleField, URLField, TagListField, DisabledTextField, PermissiveSelectField, OptionalRadioField
-from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, \
+from portality.forms.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, \
     MaxLen, RegexpOnTagList, ReservedUsernames, ThisOrThat
 
 from portality.formcontext.choices import Choices

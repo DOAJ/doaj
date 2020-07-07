@@ -4,12 +4,12 @@ from datetime import datetime
 import rstr
 
 from portality import constants
-from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
-from doajtest.fixtures.v2.journals import JOURNAL_SOURCE, JOURNAL_INFO
+from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED
+from doajtest.fixtures.v2.journals import JOURNAL_SOURCE, JOURNAL_FORM_EXPANDED
 from portality.formcontext import forms
 from portality.lib import dates
 from portality.models.v2.application import Application
-
+from portality.forms.utils import expanded2compact
 
 class ApplicationFixtureFactory(object):
     @staticmethod
@@ -48,7 +48,7 @@ class ApplicationFixtureFactory(object):
         if role == "assed" or role == "editor":
             del form["editor_group"]
         elif role == "publisher":
-            UPDATE_REQUEST_FORMINFO = deepcopy(JOURNAL_INFO)
+            UPDATE_REQUEST_FORMINFO = deepcopy(JOURNAL_FORM_EXPANDED)
             UPDATE_REQUEST_FORMINFO.update(deepcopy(SUGGESTION))
 
             form = deepcopy(UPDATE_REQUEST_FORMINFO)
@@ -63,7 +63,7 @@ class ApplicationFixtureFactory(object):
 
     @staticmethod
     def make_application_form_info():
-        return deepcopy(APPLICATION_FORMINFO)
+        return deepcopy(APPLICATION_FORM_EXPANDED)
 
     @classmethod
     def incoming_application(cls):
@@ -120,11 +120,6 @@ APPLICATION_SOURCE = {
     "admin": {
         "application_status" : constants.APPLICATION_STATUS_PENDING,
         "bulk_upload": "bulk123456789",
-        "contact" :
-            {
-                "email" : "contact@email.com",
-                "name" : "Contact Name"
-            },
         "current_journal" : "poiuytrewq",
         "editor" : "associate",
         "editor_group" : "editorgroup",
@@ -135,16 +130,12 @@ APPLICATION_SOURCE = {
         "owner" : "Owner",
         "related_journal" : "987654321123456789",
         "seal": True,
-        "date_applied" : "2003-01-01T00:00:00Z",
-        "applicant": {
-            "name" : "Suggester",
-            "email" : "suggester@email.com"
-        }
+        "date_applied" : "2003-01-01T00:00:00Z"
     },
-    "bibjson" : deepcopy(JOURNAL_SOURCE['bibjson'])
+    "bibjson" : JOURNAL_LIKE_BIBJSON
 }
 
-_isbj = deepcopy(JOURNAL_SOURCE['bibjson'])
+_isbj = deepcopy(JOURNAL_LIKE_BIBJSON)
 del _isbj["subject"]
 del _isbj["replaces"]
 del _isbj["is_replaced_by"]
@@ -157,32 +148,25 @@ INCOMING_SOURCE = {
 
     "bibjson": _isbj,
     "admin" : {
-        "contact" :
-        {
-            "email" : "contact@email.com",
-            "name" : "Contact Name"
-        },
-        "current_journal" : "1234567890",
-        "applicant" : {
-            "name" : "Applicant",
-            "email" : "applicant@email.com"
-        }
+        "current_journal" : "1234567890"
     }
 }
 
-WORKFLOW = {
+WORKFLOW_FORM_EXPANDED = {
     "application_status" : constants.APPLICATION_STATUS_PENDING
 }
 
-APPLICATION_FORMINFO = deepcopy(JOURNAL_INFO)
-APPLICATION_FORMINFO.update(deepcopy(NOTES))
-APPLICATION_FORMINFO.update(deepcopy(SUBJECT))
-APPLICATION_FORMINFO.update(deepcopy(OWNER))
-APPLICATION_FORMINFO.update(deepcopy(EDITORIAL))
-APPLICATION_FORMINFO.update(deepcopy(SEAL))
-APPLICATION_FORMINFO.update(deepcopy(WORKFLOW))
+APPLICATION_FORM_EXPANDED = deepcopy(JOURNAL_FORM_EXPANDED)
+APPLICATION_FORM_EXPANDED.update(deepcopy(NOTES_FORM_EXPANDED))
+APPLICATION_FORM_EXPANDED.update(deepcopy(SUBJECT_FORM_EXPANDED))
+APPLICATION_FORM_EXPANDED.update(deepcopy(OWNER_FORM_EXPANDED))
+APPLICATION_FORM_EXPANDED.update(deepcopy(EDITORIAL_FORM_EXPANDED))
+APPLICATION_FORM_EXPANDED.update(deepcopy(SEAL_FORM_EXPANDED))
+APPLICATION_FORM_EXPANDED.update(deepcopy(WORKFLOW_FORM_EXPANDED))
 
-APPLICATION_FORM = deepcopy(APPLICATION_FORMINFO)
+APPLICATION_FORM = expanded2compact(APPLICATION_FORM_EXPANDED, {"keywords" : ","})
+
+"""
 APPLICATION_FORM["keywords"] = ",".join(APPLICATION_FORM["keywords"])
 notes = APPLICATION_FORM["notes"]
 del APPLICATION_FORM["notes"]
@@ -193,3 +177,4 @@ for n in notes:
     APPLICATION_FORM[notekey] = n.get("note")
     APPLICATION_FORM[datekey] = n.get("date")
     i += 1
+"""

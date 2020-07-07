@@ -1,46 +1,19 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% set form_id = "public_application" %}
+{% if obj %}
+    {% set form_action = url_for("doaj.public_application", draft_id=obj.id) %}
+{% else %}
+    {% set form_action = url_for("doaj.public_application") %}
+{% endif %}
+{% set formulaic_after = url_for("doaj.application_thanks") %}
+{% set js_validation = False %}
+{% set auto_save = 0 %}
 
-    <form id="public_application"
-          novalidate
-          action="{{ url_for("doaj.public_application") }}"
-          method="post"
-          data-formulaic-after="{{ url_for("doaj.suggestion_thanks", _anchor='thanks') }}">
-
-    {% for fs in formulaic_context.fieldsets() %}
-        <h1>{{ fs.label }}</h1>
-        <fieldset id="{{ fs.name }}">
-        {% for f in fs.fields() %}
-            {% include 'application_form/_field.html' %}
-            <hr>
-        {% endfor %}
-        </fieldset>
-    {% endfor %}
-
-        <button name="complete" class="formulaic-complete" type="submit" id="complete">Submit</button>
-        <button name="draft" class="formulaic-draft" type="submit" id="draft">Save as Draft</button>
-
-        {% if obj %}
-        <input type="hidden" name="id" value="{{ obj.id }}">
-        {% endif %}
-    </form>
-
+{% block content scoped %}
+    {% include "application_form/_form.html" %}
 {% endblock %}
 
-{% block extra_js_bottom %}
-    <script type="text/javascript" src="/static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
-    <script type="text/javascript" src="/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
-    <script type="text/javascript" src="/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
-    <script type="text/javascript">
-        jQuery(document).ready(function($) {
-            formulaic.active = formulaic.newFormulaic({
-                formSelector: "#public_application",
-                fieldsets : {{ formulaic_context.ui_settings|tojson }},
-                functions : {{ formulaic_context.javascript_functions|tojson }},
-                doValidation : true,
-                autoSave: 0
-            });
-        });
-    </script>
+{% block extra_js_bottom scoped %}
+    {% include "application_form/_form_js.html" %}
 {% endblock %}

@@ -161,7 +161,7 @@ permissive_bibjson_struct = {
         },
         "preservation": {
             "fields": {
-                "has_preservation": {"coerce": "unicode"},
+                "has_preservation": {"coerce": "bool"},
                 "url": {"coerce": "unicode", "set__allow_coerce_failure": True}
             },
             "lists": {
@@ -341,6 +341,8 @@ def bibjson_migration(source, target):
             else:
                 known.append(p[1])
         else:
+            if p == "PMC/Europe PMC/PMC Canada":
+                p = "PMC"
             known.append(p)
     if len(known) > 0 or policy_url is not None:
         if policy_url == "":
