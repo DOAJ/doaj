@@ -5,6 +5,7 @@
 }
 
 button,
+input[type="button"],
 .button {
   display: inline-block;
   padding: $spacing-02 $spacing-03;
@@ -46,18 +47,14 @@ input[disabled] {
   font-style: italic;
 }
 
+// "Flat 3D"-style buttons for CTA buttons only
 input[type="submit"],
-button[type="submit"] {
-  background-color: $grapefruit;
-  border-color: $grapefruit;
-  color: $warm-black;
-}
-
-// "Flat 3D"-style buttons
+button[type="submit"],
 .button--primary {
   position: relative;
   left: 0;
   top: 0;
+  transition: all 0.15s ease;
   border-color: $sanguine;
   box-shadow: $spacing-01 $spacing-01 0 0 $sanguine;
   color: $sanguine;
@@ -69,5 +66,36 @@ button[type="submit"] {
     top: $spacing-01;
     box-shadow: 0 0 0 0 $sanguine;
     background-color: $sanguine;
+  }
+}
+
+input[type="submit"],
+button[type="submit"] {
+  background-color: $grapefruit;
+  border-color: $grapefruit;
+  color: $warm-black;
+
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: $grapefruit;
+  }
+}
+
+.button--secondary {
+  position: relative;
+  left: 0;
+  top: 0;
+  transition: all 0.15s ease;
+  border-color: $warm-black;
+  box-shadow: $spacing-01 $spacing-01 0 0 $warm-black;
+  color: $warm-black;
+
+  &:hover,
+  &:active,
+  &:focus {
+    left: $spacing-01;
+    top: $spacing-01;
+    box-shadow: 0 0 0 0 $warm-black;
   }
 }
