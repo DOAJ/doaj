@@ -60,14 +60,14 @@
         </header>
         <div class="search-results__body">
           {% if i.keywords %}
-          <h4>Article keywords: </h4>
+          <h4>Article keywords</h4>
           <ul>
             {% for j in i.keywords %}
             <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
             {% endfor %}
           </ul>
           {% else %}
-          <h4>Journal subjects: </h4>
+          <h4>Journal subjects</h4>
           <ul>
             {% assign lcc_codes = i.lcc | split: "|" %}
             {% for i in lcc_codes %}

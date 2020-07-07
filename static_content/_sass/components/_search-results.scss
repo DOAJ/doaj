@@ -50,6 +50,18 @@
 }
 
 .search-results__body {
+  @include typescale-06;
+
+  h4 {
+    margin: $spacing-03 0 $spacing-02 0;
+    font-size: 1em;
+    font-weight: 600;
+
+    .feather {
+      height: 0.65em;
+      width: auto;
+    }
+  }
 
   ul {
     @include unstyled-list;
