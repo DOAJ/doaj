@@ -2,7 +2,7 @@
 
 .label {
   display: block;
-  margin: $spacing-03 0;
+  margin-bottom: $spacing-03;
   text-transform: uppercase;
   line-height: 1.15;
   font-weight: 600;
@@ -18,10 +18,6 @@
     position: relative;
     padding-right: $spacing-01;
     top: 2px;
-  }
-
-  + .label {
-    margin-top: -$spacing-03;
   }
 }
 

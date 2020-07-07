@@ -47,13 +47,26 @@
     }
   }
 
-  #about-journal {
+  .three-col {
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
+
+    @media (min-width: 769px) {
+      flex-direction: row;
+    }
 
     > section {
-      padding-bottom: 0;
-      width: calc(100%/3 - 40px);
+      width: 100%;
+
+      @media (min-width: 769px) {
+        padding-bottom: 0;
+        width: calc(100%/3 - 20px);
+      }
+
+      @media (min-width: 1280px) {
+        width: calc(100%/3 - 40px);
+      }
     }
   }
 }

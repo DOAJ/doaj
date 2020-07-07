@@ -19,7 +19,9 @@
   added: 13 May 2020
   updated: 5 June 2020
   apc: "€595 (EUR)"
-  license: "CC BY"
+  license:
+    - "CC BY"
+    - "CC BY-NC"
   license_url: "https://creativecommons.org/licenses/by/2.0/"
   policy_url: "https://businessperspectives.org/journals/innovative-marketing#indexed-abstracted"
   oa_since: 2005
