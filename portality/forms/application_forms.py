@@ -856,8 +856,8 @@ class FieldDefinitions:
         ]
     }
 
-    PRESERVATION_SERVICE = {
-        "name": "preservation_service",
+    ARCHIVING_POLICY = {
+        "name": "archiving_policy",
         "label": "Long-term preservation service(s) with which the journal is currently archived",
         "input": "checkbox",
         "multiple": True,
@@ -890,9 +890,6 @@ class FieldDefinitions:
         "name": "archiving_policy_library",
         "label": "A national library:",
         "input": "text",
-        "repeatable" : {
-            "initial" : 2
-        },
         "help": {
             "short_help": "Name of national library"
         },
@@ -1408,6 +1405,7 @@ class FieldSetDefinitions:
         "name": "archiving_policy",
         "label": "Archiving Policy",
         "fields": [
+            FieldDefinitions.ARCHIVING_POLICY["name"],
             FieldDefinitions.ARCHIVING_POLICY_LIBRARY["name"],
             FieldDefinitions.ARCHIVING_POLICY_OTHER["name"],
             FieldDefinitions.ARCHIVING_POLICY_URL["name"]

@@ -16,33 +16,6 @@
         });
 
     });
-    window.Parsley.addValidator('validateMultiple', {
-            validate: function(value, requirement, parsleyField) {
-                var inputs;
-                inputs = $(document).find("select[name='" + parsleyField.$element[0].name + "']");
-                if (inputs.length === 0){
-                    inputs = $(document).find("input[name='" + parsleyField.$element[0].name + "']");
-                }
-                var ret = false;
-                inputs.each(function(idx, obj){
-                    if ($(obj).val() !== '' && $(obj).val() !== ' ' && $(obj).val() !== undefined) {
-                        ret = true;
-                        //break the loop
-                        return false;
-                    }
-                });
-                if (ret){
-                    inputs.each(function(idx, obj){
-                        $(obj).parsley().reset()
-                    });
-                }
-                console.log(parsleyField.getErrorsMessages())
-                return ret;
-            },
-            messages: {
-                en: 'At least one value required',
-            }
-    });
 
     $(".conditional").each((idx,field) => {
         let conditionValue = $(field).attr("value");
@@ -116,6 +89,8 @@
             submitButton.html("Save draft");
             submitButton.prop("disabled",false);
         }
+        currentTab = n;
+        previousTab = n-1;
         // ... and run a function that displays the correct step indicator:
         if(n === 6) {
             prepareReview()
@@ -125,32 +100,46 @@
     }
 
     let prepareReview = () => {
-        let divs = $("[id$='__container']")
-        divs.each((i, div) => {
-            let input = $(div).find('input')
-            let name = input.attr("name")
-            if (input.attr("type") === "text" || input.attr("type") === "select"){
-
-                $("#" + name + "__review_value").html(input.val())
-            }
-            else if (input.attr("type") === "url") {
-                $("#" + name + "__review_value").html('<a href=' + input.val() + '>' + input.val() + '</a>')
-            }
-            else if (input.attr("type") === "radio") {
-                if (input.is(":checked")){
-                    $("#" + name + "__review_value").html(input.filter(':checked').val())
+        let review_values = $("td[id$='__review_value']")
+        review_values.each((idx, question) => {
+            let id = $(question).attr('id')
+            let name = id.substring(0,id.indexOf("__review_value"));
+            let input = $("input[name='" + name + "']");
+            if (input.length === 0) {
+                input = $("[name='" + name + "']");
+                if (input.length === 0){
+                    input = $("[name^='" + name + "']");
                 }
+                console.log(name, input)
+                $(question).html(input.val())
             }
             else {
-                let result = ''
-                input.each((idx, i) => {
-                    if ($(i).is(":checked")){
-                        result += $(i).val() + ", ";
+                let type = input.attr("type");
+                if (type === "text" || type === "number"){
+                    $(question).html(input.val())
+                }
+                else if (type === "url") {
+                    $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>')
+                }
+                else if (type === "radio") {
+                    if (input.is(":checked")){
+                        $(question).html(input.filter(':checked').val())
                     }
-                } )
-                $("#" + name + "__review_value").html(result)
-            }
+                }
+                else if (type === "select") {
+                    console.log(input)
 
+                }
+                else {
+                    let result = ''
+                    input.each((idx, i) => {
+                        if ($(i).is(":checked")){
+                            result += $(i).val() + ", ";
+                        }
+                    } )
+                    $(question).html(result)
+                }
+            }
         })
     }
 
@@ -227,7 +216,7 @@
                 if ($("#validated-" + i).val() === '') {
                     return false;
                 } else {
-                    previousTab = currentTab
+                    previousTab = i-1;
                     currentTab = i;
                     $('#' + '{{ form_id }}').parsley().whenValidate({
                         group: 'block-' + previousTab
@@ -263,8 +252,8 @@
         });
     }
 
-    let currentTab = 6; // Current tab is set to be the first tab (0)
-    let previousTab = 5;
+    let currentTab = 5; // Current tab is set to be the first tab (0)
+    let previousTab = 4;
     let tabs = $(".tab");
     let sections = $(".form-section");
     prepareSections();
