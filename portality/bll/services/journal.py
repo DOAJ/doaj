@@ -53,15 +53,10 @@ class JournalService(object):
 
         # copy all the relevant information from the journal to the application
         bj = journal.bibjson()
-        contact = journal.contact
         notes = journal.notes
-        first_contact = None
 
         application = models.Suggestion()
         application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
-        application.add_contact(contact.get("name"), contact.get("email"))
-        if first_contact is None:
-            first_contact = contact
         application.set_current_journal(journal.id)
         if keep_editors is True:
             if journal.editor is not None:
@@ -76,9 +71,7 @@ class JournalService(object):
         application.set_owner(journal.owner)
         application.set_seal(journal.has_seal())
         application.set_bibjson(bj)
-        if first_contact is not None:
-            application.set_suggester(first_contact.get("name"), first_contact.get("email"))
-        application.suggested_on = dates.now()
+        application.date_applied = dates.now()
 
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed journal_2_application; return application object")
         return application

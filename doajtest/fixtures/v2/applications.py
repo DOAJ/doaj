@@ -120,11 +120,6 @@ APPLICATION_SOURCE = {
     "admin": {
         "application_status" : constants.APPLICATION_STATUS_PENDING,
         "bulk_upload": "bulk123456789",
-        #"contact" :
-        #    {
-        #        "email" : "contact@email.com",
-        #        "name" : "Contact Name"
-        #    },
         "current_journal" : "poiuytrewq",
         "editor" : "associate",
         "editor_group" : "editorgroup",
@@ -153,11 +148,6 @@ INCOMING_SOURCE = {
 
     "bibjson": _isbj,
     "admin" : {
-        "contact" :
-        {
-            "email" : "contact@email.com",
-            "name" : "Contact Name"
-        },
         "current_journal" : "1234567890"
     }
 }

@@ -172,9 +172,9 @@ class JournalGenericXWalk(object):
             bibjson.deposit_policy_url = form.deposit_policy_url.data
 
         # continuations information
-        if getattr(form, "replaces", None):
+        if getattr(form, "continues", None):
             bibjson.replaces = form.replaces.data
-        if getattr(form, "is_replaced_by", None):
+        if getattr(form, "continued_by", None):
             bibjson.is_replaced_by = form.is_replaced_by.data
         if getattr(form, "discontinued_date", None):
             bibjson.discontinued_date = form.discontinued_date.data
@@ -190,9 +190,9 @@ class JournalGenericXWalk(object):
     @classmethod
     def form2admin(cls, form, obj):
         # FIXME: notes have IDs and dates, these need to be taken into account
-        for formnote in form.notes.data:
-            if formnote["note"]:
-                obj.add_note(formnote["note"])
+        #for formnote in form.notes.data:
+        #    if formnote["note"]:
+        #        obj.add_note(formnote["note"])
 
         if getattr(form, 'owner', None):
             owner = form.owner.data
@@ -350,7 +350,7 @@ class JournalGenericXWalk(object):
     @classmethod
     def admin2form(cls, obj, forminfo):
         # FIXME: make sure we are treating note dates and ids correctly
-        forminfo['notes'] = obj.ordered_notes
+        # forminfo['notes'] = obj.ordered_notes
 
         forminfo['owner'] = obj.owner
         if obj.editor_group is not None:

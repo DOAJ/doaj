@@ -213,7 +213,12 @@ class TestArticleCleanupSync(DoajTestCase):
         task = article_cleanup_sync.ArticleCleanupSyncBackgroundTask(job)
         background.BackgroundApi.execute(task)
 
-        time.sleep(2)
+        models.Article.blockall([
+            (a1.id, a1.last_updated),
+            (a2.id, a2.last_updated),
+            (a3.id, a3.last_updated),
+            (a4.id, a4.last_updated)
+        ])
 
         # retrieve any updated records
         a1u = models.Article.pull(a1.id)

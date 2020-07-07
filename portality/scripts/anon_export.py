@@ -1,7 +1,7 @@
 import esprit, os, shutil, gzip, uuid
 from portality import models
 from portality.core import app
-from portality.lib.anon import basic_hash, anon_name, anon_email
+from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.lib import dates
 from portality.store import StoreFactory
@@ -13,9 +13,6 @@ def _anonymise_email(record):
 
 
 def _anonymise_admin(record):
-    new_email = anon_email(record.get_latest_contact_email())
-    record.remove_contacts()
-    record.add_contact(anon_name(), new_email)
     for note in record.notes[:]:
         record.remove_note(note)
         record.add_note(basic_hash(note['note']), id=note["id"])
@@ -65,7 +62,6 @@ def anonymise_suggestion(record):
         return record
 
     sug = _anonymise_admin(sug)
-    sug.set_suggester(anon_name(), anon_email(sug.suggester['email']))
     return sug.data
 
 

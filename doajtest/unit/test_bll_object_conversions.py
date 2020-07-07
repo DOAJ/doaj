@@ -43,18 +43,15 @@ def load_j2a_cases():
 def load_a2j_cases():
     return load_from_matrix("application_2_journal.csv", test_ids=[])
 
+
 def application_matches(journal, application):
     assert isinstance(application, Suggestion)
     assert journal.bibjson().data == application.bibjson().data
     assert application.application_status == constants.APPLICATION_STATUS_UPDATE_REQUEST
-    assert journal.contacts() == application.contacts()
     assert application.current_journal == journal.id
-    #assert application.editor == journal.editor
-    #assert application.editor_group == journal.editor_group
     assert application.notes == journal.notes
     assert application.owner == journal.owner
     assert application.has_seal() is journal.has_seal()
-    assert application.suggester == journal.contacts()[0]
 
 
 class TestBLLObjectConversions(DoajTestCase):
@@ -151,10 +148,6 @@ class TestBLLObjectConversions(DoajTestCase):
                 assert journal.last_manual_update is not None and journal.last_manual_update != "1970-01-01T00:00:00Z"
 
             if app_key_properties == "yes":
-                contacts = journal.contacts()
-                assert len(contacts) == 1
-                assert contacts[0].get("name") == "Application"
-                assert contacts[0].get("email") == "application@example.com"
                 assert journal.editor_group == "appeditorgroup"
                 assert journal.editor == "appeditor"
                 assert journal.owner == "appowner"
@@ -167,10 +160,6 @@ class TestBLLObjectConversions(DoajTestCase):
 
             elif app_key_properties == "no":
                 if current_journal == "present":
-                    contacts = journal.contacts()
-                    assert len(contacts) == 1
-                    assert contacts[0].get("name") == "Journal"
-                    assert contacts[0].get("email") == "journal@example.com"
                     assert journal.editor_group == "journaleditorgroup"
                     assert journal.editor == "journaleditor"
                     assert journal.owner == "journalowner"
@@ -178,8 +167,6 @@ class TestBLLObjectConversions(DoajTestCase):
                     assert len(journal.notes) == 2
 
                 elif current_journal == "none" or current_journal == "missing":
-                    contacts = journal.contacts()
-                    assert len(contacts) == 0
                     assert journal.editor_group is None
                     assert journal.editor is None
                     assert journal.owner is None
