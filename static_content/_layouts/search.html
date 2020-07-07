@@ -7,23 +7,10 @@
     {% include header.html %}
 
     <main class="container page-content">
-      <header>
+      {% if page.name == 'journals.md' %}
+      <header class="search__header">
         {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
         <h1>{{ page.title }}</h1>
-
-        {% comment %}
-          All of this generates a "random" number for the search tip
-        {% endcomment %}
-        {% assign min = 0 %}
-        {% assign max = site.data.promo.size %}
-        {% assign diff = max | minus: min %}
-        {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
-
-        <p class="alert">
-          <span data-feather="alert-circle" aria-hidden="true"></span> <em>Search tip:</em> {{ site.data.search-tips[random].text }}
-        </p>
-
-        {% if page.name == 'journals.md' %}
 
         {% include search-journal-bar.html %}
       </header>
@@ -38,12 +25,15 @@
         <div class="col-md-9">
           {% include search-journal-results.html %}
         </div>
-
       </div>
 
       {% else page.name == 'articles.md' %}
+      <header class="search__header">
+        {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
+        <h1>{{ page.title }}</h1>
 
-      {% include search-article-bar.html %}
+        {% include search-article-bar.html %}
+      </header>
 
       <h2>4,926,886 indexed articles</h2>
 

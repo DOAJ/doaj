@@ -10,7 +10,10 @@
       <div class="highlight">
         <header class="container">
           <p class="label">
-            <a href="{{ site.baseurl }}{% link search/journal-details.md %}">{{ page.journal }}</a> ({{ page.issue_pub_date }})
+            <a href="{{ site.baseurl }}{% link search/journal-details.md %}">{{ page.journal }}</a>.
+            {% if page.volume %}Vol. {{ page.volume }}{% endif %}{% if page.volume and page.issue %},{% endif %}
+            {% if page.issue %}no. {{ page.issue }}{% endif %}
+            ({{ page.issue_pub_date }})
           </p>
 
           <h1>{{ page.title }}</h1>
@@ -24,12 +27,9 @@
           {% endif %}
 
           {% if page.doi %}
-          <dl>
-            <dt>DOI</dt>
-            <dd>
-              <a href="https://doi.org/{{ page.doi }}" target="_blank" rel="noopener">https://doi.org/{{ page.doi }}</a>
-            </dd>
-          </dl>
+          <p>
+            <strong>DOI</strong> <a href="https://doi.org/{{ page.doi }}" target="_blank" rel="noopener">https://doi.org/{{ page.doi }}</a>
+          </p>
           {% endif %}
         </header>
       </div>
@@ -40,7 +40,7 @@
             <header class="flex-header">
               <h2 class="flex-header__child">Abstract</h2>
               <p class="flex-header__child">
-                <a href="{{ page.url }}" target="_blank" rel="noopener" role="button">Read online</a>
+                <a href="{{ page.url }}" class="button primary-button" target="_blank" rel="noopener" role="button">Read online</a>
               </p>
             </header>
             {% if page.abstract %}
@@ -53,14 +53,19 @@
             <h2 class="sr-only">Keywords</h2>
             <ul class="tags">
               {% for j in page.keywords %}
-              <li class="tag">{{ j }}</li>
+              <li class="tag"><a href="{{ site.baseurl }}{% link search/articles.md %}">{{ j }}</a></li>
               {% endfor %}
             </ul>
             {% endif %}
+
+            <!-- Dimensions badges -->
+            <p>
+              <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
+              <span class="__dimensions_badge_embed__" data-doi="10.1001/jama.2016.9797" data-legend="never"></span>
+            </p>
           </section>
 
           <aside class="col-md-4">
-
             <h2>Published in <em>{{ page.journal }}</em></h2>
             <dl>
               <dt>ISSN</dt>
@@ -72,9 +77,6 @@
               <dt>Country of publisher</dt>
               <dd>{{ page.country }}</dd>
 
-              <dt>Language</dt>
-              <dd>{{ page.lang }}</dd>
-
               <dt>LCC Subject Category</dt>
               <dd>{{ page.lcc }}</dd>
             </dl>
@@ -83,11 +85,6 @@
               <a href="{{ site.baseurl }}{% link search/journal-details.md %}" class="button secondary-button">About the journal</a>
             </p>
 
-            <!-- Dimensions badges -->
-            <p>
-              <span class="__dimensions_badge_embed__" data-doi="10.1001/jama.2016.9797" data-hide-zero-citations="true" data-style="small_rectangle"></span>
-              <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
-            </p>
           </aside>
         </div>
 
@@ -109,34 +106,6 @@
             </article>
 
             <article class="col-xs-6 col-md-3">
-              <a href="#" class="title-list__link">
-                <p class="label">Frontiers in Immunology (2014)</p>
-                <h3 class="title-list__heading">The unique neonatal NK cells: a critical component required for neonatal autoimmune disease induction by maternal autoantibody</h3>
-              </a>
-            </article>
-
-            <article class="col-xs-6 col-md-3 col-lg-3">
-              <a href="#" class="title-list__link">
-                <p class="label">Immunology & Cell Biology (2016)</p>
-                <h3 class="title-list__heading">Modeling the dynamics of neonatal CD8+ T-cell responses</h3>
-              </a>
-            </article>
-
-            <article class="col-xs-6 col-md-3 col-lg-3">
-              <a href="#" class="title-list__link">
-                <p class="label">Human Immunology (1999)</p>
-                <h3 class="title-list__heading">Expression of the costimulator molecules, CD80, CD86, CD28, and CD152 on lymphocytes from neonates and young children</h3>
-              </a>
-            </article>
-
-            <article class="col-xs-6 col-md-3 col-lg-3">
-              <a href="#" class="title-list__link">
-                <p class="label">Molecular Metabolism (2017)</p>
-                <h3 class="title-list__heading">Neonatal pancreatic pericytes support β-cell proliferation</h3>
-              </a>
-            </article>
-
-            <article class="col-xs-6 col-md-3 col-lg-3">
               <a href="#" class="title-list__link">
                 <p class="label">Frontiers in Immunology (2014)</p>
                 <h3 class="title-list__heading">The unique neonatal NK cells: a critical component required for neonatal autoimmune disease induction by maternal autoantibody</h3>

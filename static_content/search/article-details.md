@@ -31,5 +31,5 @@ lcc: "Medicine: Internal medicine: Specialties of internal medicine: Immunologic
 issn: "1664-3224 (Online)"
 issue_pub_date: "June 2020"
 volume: 11
-
+issue: 2
 ---

@@ -7,6 +7,10 @@
   flex-flow: row wrap;
   border-collapse: separate;
   width: 100%;
+
+  &:last-of-type {
+    margin: 0;
+  }
 }
 
 .input-group__input {
