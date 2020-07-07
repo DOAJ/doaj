@@ -8,7 +8,7 @@
 
     <main class="container page-content">
       {% if page.name == 'journals.md' %}
-      <header class="search__header">
+      <header class="search__header" style="background-image: url('https://images.unsplash.com/photo-1501769214405-5e5ee5125a02?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1298&q=80')">
         {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
         <h1>{{ page.title }}</h1>
 
@@ -28,7 +28,7 @@
       </div>
 
       {% else page.name == 'articles.md' %}
-      <header class="search__header">
+      <header class="search__header" style="background-image: url('https://images.unsplash.com/photo-1485684032659-1c86cf196acc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80')">
         {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
         <h1>{{ page.title }}</h1>
 
