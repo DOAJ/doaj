@@ -3,14 +3,15 @@
 .label {
   display: block;
   margin-bottom: $spacing-03;
-  text-transform: uppercase;
   line-height: 1.15;
   font-weight: 600;
-  color: $sanguine;
   letter-spacing: 0.05em;
+  text-transform: uppercase;
   font-size: smaller;
+  color: $sanguine;
 
   a {
+    text-decoration: none;
     color: $sanguine;
   }
 

@@ -101,12 +101,12 @@
               {% if page.name != "index.md" and page.name != "thank-you.md" and page.name != "07-review.md" %}
               <p class="pager-buttons">
                 {% if page.previous %}
-                <a href="../{{ page.previous }}" class="pager-buttons__left">Previous</a>
+                <a href="../{{ page.previous }}" class="button pager-buttons__left">Previous</a>
                 {% endif %}
 
                 <button type="submit" class="pager-buttons__right">Next</button>
 
-                <a href="#" class="pager-buttons__center">Save draft</a>
+                <a href="#" class="button pager-buttons__center">Save draft</a>
               </p>
               {% endif %}
             </form>

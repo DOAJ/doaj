@@ -100,7 +100,9 @@
             <p>
               DOAJ is independent. All funding is via donations, 22% of which comes from sponsors and 78% from supporters.
             </p>
-            <a href="{{ site.baseurl }}{% link support/index.md %}" class="button primary-button">Support DOAJ</a>
+            <p>
+              <a href="{{ site.baseurl }}{% link support/index.md %}" class="button button--primary">Support DOAJ</a>
+            </p>
             <p>
               Journal publishers don’t need to donate to be part of DOAJ.
             </p>
@@ -110,7 +112,13 @@
 
       <!-- Blog -->
       <section class="container">
-        <h2>From the blog <sup><a href="https://blog.doaj.org">See all</a></sup></h2>
+        <header class="flex-header">
+          <h2 class="flex-header__child">From the blog</h2>
+          <p class="flex-header__child">
+            <a href="https://blog.doaj.org" class="button">See all</a>
+          </p>
+        </header>
+
         <div class="row">
           <div class="col-sm-4">
             <article class="blog-post blog-post--featured">
@@ -175,13 +183,15 @@
         <div class="container">
           <h2>Community</h2>
           <section>
-            <h3>Volunteers</h3>
+            <header class="flex-header">
+              <h3 class="flex-header__child">Volunteers</h3>
+              <p class="flex-header__child">
+                <a href="{{ site.baseurl }}{% link about/volunteers.md %}" class="button button--primary">See volunteers &rarr;</a>
+              </p>
+            </header>
             <div class="row intro">
               <div class="col-sm-8 intro__text">
                 <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
-              </div>
-              <div class="col-sm-4">
-                <p class="intro__cta"><a href="{{ site.baseurl }}{% link about/volunteers.md %}" class="button primary-button">See all</a></p>
               </div>
             </div>
             <div class="row mobile-scrollable-row volunteers">
@@ -237,13 +247,15 @@
           </section>
 
           <section>
-            <h3>Sponsors</h3>
+            <header class="flex-header">
+              <h3 class="flex-header__child">Sponsors</h3>
+              <p class="flex-header__child">
+                <a href="{{ site.baseurl }}{% link support/sponsors.md %}" class="button button--primary">See sponsors &rarr;</a>
+              </p>
+            </header>
             <div class="row intro">
               <div class="col-sm-8 intro__text">
                 <p>The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.</p>
-              </div>
-              <div class="col-sm-4">
-                <p class="intro__cta"><a href="{{ site.baseurl }}{% link support/sponsors.md %}" class="button primary-button">See sponsors</a></p>
               </div>
             </div>
 
@@ -254,13 +266,15 @@
           </section>
 
           <section>
-            <h3>Funding</h3>
+            <header class="flex-header">
+              <h3 class="flex-header__child">Funding</h3>
+              <p class="flex-header__child">
+                <a href="{{ site.baseurl }}{% link support/index.md %}" class="button button--primary">Support us &rarr;</a>
+              </p>
+            </header>
             <div class="row intro">
               <div class="col-sm-8 intro__text">
                 <p>Some organisations and publishers support DOAJ with either a one-off payment or an annual payment.</p>
-              </div>
-              <div class="col-sm-4">
-                <p class="intro__cta"><a href="{{ site.baseurl }}{% link support/index.md %}" class="button primary-button">Support us</a></p>
               </div>
             </div>
             <ul class="row title-list title-list--large">
