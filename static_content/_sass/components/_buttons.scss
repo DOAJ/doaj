@@ -12,7 +12,7 @@ input[type="button"],
   margin: 0;
   transition: all 0.15s ease;
   width: auto;
-  border: 1px solid;
+  border: 1px solid $warm-black;
   background: $fair-pink;
   cursor: pointer;
   vertical-align: middle;
@@ -27,6 +27,7 @@ input[type="button"],
   &:hover,
   &:active,
   &:focus {
+    border-color: $warm-black;
     background-color: $warm-black;
     color: $warm-white;
   }
@@ -36,6 +37,12 @@ input[type="button"],
     top: 0.1em;
     height: 1em;
   }
+}
+
+input[type="submit"],
+button[type="submit"] {
+  background-color: $warm-black;
+  color: $warm-white;
 }
 
 button:disabled,
@@ -48,8 +55,6 @@ input[disabled] {
 }
 
 // "Flat 3D"-style buttons for CTA buttons only
-input[type="submit"],
-button[type="submit"],
 .button--primary {
   position: relative;
   left: 0;

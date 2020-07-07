@@ -18,19 +18,64 @@
 
           <h1>{{ page.title }}</h1>
 
-          {% if page.authors %}
-          <ul>
-            {% for j in page.authors %}
-            <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
-            {% endfor %}
-          </ul>
-          {% endif %}
+          <div class="row article-details__meta">
+            {% if page.authors %}
+            <div class="col-md-6 col-lg-6">
+              <ul>
+                {% for j in page.authors %}
+                <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
+                {% endfor %}
+              </ul>
 
-          {% if page.doi %}
-          <p>
-            <strong>DOI</strong> <a href="https://doi.org/{{ page.doi }}" target="_blank" rel="noopener">https://doi.org/{{ page.doi }}</a>
-          </p>
-          {% endif %}
+              <p>
+                <a class="button" type="button" data-toggle="collapse" data-target="#authors-affiliations" aria-expanded="false">
+                  Affiliations
+                  <span data-feather="plus" aria-hidden="true"></span>
+                </a>
+              </p>
+              <dl id="authors-affiliations" class="collapse" aria-expanded="false">
+                <dt>Stephanie Kullmann </dt>
+                <dd>Institute for Diabetes Research and Metabolic Diseases of the Helmholtz Center Munich at the University of Tübingen</dd>
+
+                <dt>Vera Valenta </dt>
+                <dd>Institute for Diabetes Research and Metabolic Diseases of the Helmholtz Center Munich at the University of Tübingen</dd>
+
+                <dt>Robert Wagner </dt>
+                <dd>Institute for Diabetes Research and Metabolic Diseases of the Helmholtz Center Munich at the University of Tübingen</dd>
+
+                <dt>Otto Tschritter </dt>
+                <dd>Emergency Department, Marienhospital Stuttgart, Vinzenz von Paul Kliniken</dd>
+
+                <dt>Jürgen Machann </dt>
+                <dd>Institute for Diabetes Research and Metabolic Diseases of the Helmholtz Center Munich at the University of Tübingen</dd>
+
+                <dt>Hans-Ulrich Häring </dt>
+                <dd>Institute for Diabetes Research and Metabolic Diseases of the Helmholtz Center Munich at the University of Tübingen</dd>
+
+                <dt>Hubert Preissl </dt>
+                <dd>Institute for Diabetes Research and Metabolic Diseases of the Helmholtz Center Munich at the University of Tübingen</dd>
+
+                <dt>Andreas Fritsche </dt>
+                <dd>Institute for Diabetes Research and Metabolic Diseases of the Helmholtz Center Munich at the University of Tübingen</dd>
+
+                <dt>Martin Heni </dt>
+                <dd>Institute for Diabetes Research and Metabolic Diseases of the Helmholtz Center Munich at the University of Tübingen</dd>
+              </dl>
+            </div>
+            {% endif %}
+
+            {% if page.doi %}
+            <dl class="col-md-6 col-lg-6">
+              <dt>DOI</dt>
+              <dd>
+                <a href="https://doi.org/{{ page.doi }}" target="_blank" rel="noopener">https://doi.org/{{ page.doi }}</a>
+              </dd>
+            </dl>
+            {% endif %}
+          </div>
+
+
+
         </header>
       </div>
 
@@ -44,9 +89,9 @@
               </p>
             </header>
             {% if page.abstract %}
-            <p class="abstract">{{ page.abstract }}</p>
+            <p class="article-details__abstract">{{ page.abstract }}</p>
             {% else %}
-            <em class="abstract--empty">No abstracts available.</em>
+            <em class="article-details__abstract--empty">No abstracts available.</em>
             {% endif %}
 
             {% if page.keywords %}

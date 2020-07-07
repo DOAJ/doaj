@@ -26,7 +26,7 @@ h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  margin: $spacing-04 0 $spacing-05;
+  margin: $spacing-04 0;
   font-weight: 700;
   line-height: 1.05;
   @include typescale-01;
@@ -66,7 +66,7 @@ ul, ol {
 }
 
 dl {
-  margin-bottom: $spacing-04;
+  margin: 0 0 $spacing-04 0;
 
   dt {
     color: $dark-grey;

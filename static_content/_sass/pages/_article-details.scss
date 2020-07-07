@@ -1,8 +1,8 @@
-.article-details {
+.article-details__meta {
+  font-size: smaller;
+}
 
-  .abstract {
-    line-height: 1.55;
-    @include font-serif;
-  }
-
+.article-details__abstract {
+  line-height: 1.55;
+  @include font-serif;
 }
