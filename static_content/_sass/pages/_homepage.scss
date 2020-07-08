@@ -24,6 +24,16 @@
   }
 
   aside {
+    margin-top: $spacing-04;
+    padding-top: $spacing-04;
+    border-width: 1px 0 0 0;
+    border-style: dashed;
+    border-color: $sanguine;
     color: $sanguine;
+
+    @media (min-width: 769px) {
+      padding-top: 0;
+      border-width: 0 0 0 1px;
+    }
   }
 }
