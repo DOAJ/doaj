@@ -5,12 +5,11 @@ from datetime import datetime, timedelta
 import time
 import re
 
-from portality.core import app, es_connection
+from portality.core import app
 import urllib.parse
 import json
 
 import esprit
-
 
 # All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 # You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
@@ -24,7 +23,7 @@ class ElasticSearchWriteException(Exception):
 
 
 class DomainObject(UserDict, object):
-    __type__ = None                                                       # set the type on the model that inherits this
+    __type__ = None  # set the type on the model that inherits this
 
     def __init__(self, **kwargs):
         # if self.data is already set, don't do anything here
@@ -44,21 +43,15 @@ class DomainObject(UserDict, object):
     @classmethod
     def target_whole_index(cls):
         t = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/') + '/'
-        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE'] and cls.__type__ is not None:
-            t += ','.join([app.config['ELASTIC_SEARCH_DB_PREFIX'] + t for t in cls.__type__.split(',')]) + '/'
-        else:
-            t += app.config['ELASTIC_SEARCH_DB'] + '/'
+        t += app.config['ELASTIC_SEARCH_DB'] + '/'
         return t
-            
+
     @classmethod
     def target(cls):
         t = cls.target_whole_index()
-        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-            t += esprit.raw.INDEX_PER_TYPE_SUBSTITUTE + '/'
-        else:
-            t += cls.__type__ + '/'
+        t += cls.__type__ + '/'
         return t
-    
+
     @classmethod
     def makeid(cls):
         """Create a new id for data object overwrite this in specific model types if required"""
@@ -70,12 +63,12 @@ class DomainObject(UserDict, object):
         if rawid is not None:
             return str(rawid)
         return None
-    
+
     def set_id(self, id=None):
         if id is None:
             id = self.makeid()
         self.data["id"] = str(id)
-    
+
     @property
     def version(self):
         return self.meta.get('_version', None)
@@ -83,7 +76,7 @@ class DomainObject(UserDict, object):
     @property
     def json(self):
         return json.dumps(self.data)
-    
+
     def set_created(self, date=None):
         if date is None:
             self.data['created_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -97,7 +90,7 @@ class DomainObject(UserDict, object):
     @property
     def created_timestamp(self):
         return datetime.strptime(self.data.get("created_date"), "%Y-%m-%dT%H:%M:%SZ")
-    
+
     @property
     def last_updated(self):
         return self.data.get("last_updated")
@@ -114,9 +107,6 @@ class DomainObject(UserDict, object):
 
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
-
-        if 'es_type' not in self.data and self.__type__ is not None:
-            self.data['es_type'] = self.__type__
 
         now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         if (blocking or differentiate) and "last_updated" in self.data:
@@ -168,7 +158,7 @@ class DomainObject(UserDict, object):
                 raise
 
             # wait before retrying
-            time.sleep((2**attempt) * back_off_factor)
+            time.sleep((2 ** attempt) * back_off_factor)
 
         if attempt > retries:
             raise DAOSaveExceptionMaxRetriesReached(
@@ -256,7 +246,7 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def pull_by_key(cls, key, value):
-        res = cls.query(q={"query": {"term": {key+app.config['FACET_FIELD']: value}}})
+        res = cls.query(q={"query": {"term": {key + app.config['FACET_FIELD']: value}}})
         if res.get('hits', {}).get('total', 0) == 1:
             return cls.pull(res['hits']['hits'][0]['_source']['id'])
         else:
@@ -274,12 +264,13 @@ class DomainObject(UserDict, object):
                     if itm != 'exact' and not itm.startswith('_'):
                         keys.append(prefix + itm + app.config['FACET_FIELD'])
             else:
-                keys = keys + cls.es_keys(mapping=mapping[item]['properties'], prefix=prefix+item+'.')
+                keys = keys + cls.es_keys(mapping=mapping[item]['properties'], prefix=prefix + item + '.')
         keys.sort()
         return keys
-        
+
     @staticmethod
-    def make_query(recid='', endpoint='_search', theq='', terms=None, facets=None, should_terms=None, consistent_order=True, **kwargs):
+    def make_query(recid='', endpoint='_search', theq='', terms=None, facets=None, should_terms=None,
+                   consistent_order=True, **kwargs):
         """
         Generate a query object based on parameters but don't send to
         backend - return it instead. Must always have the same
@@ -365,19 +356,21 @@ class DomainObject(UserDict, object):
         return query
 
     @classmethod
-    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, return_raw_resp=False, raise_es_errors=False, **kwargs):
+    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, return_raw_resp=False,
+              raise_es_errors=False, **kwargs):
         """Perform a query on backend.
 
         :param recid: needed if endpoint is about a record, e.g. mlt
         :param endpoint: default is _search, but could be _mapping, _mlt, _flt etc.
         :param q: maps to query_string parameter if string, or query dict if dict.
-        :param terms: dictionary of terms to filter on. values should be lists. 
+        :param terms: dictionary of terms to filter on. values should be lists.
         :param facets: dict of facets to return from the query.
         :param kwargs: any keyword args as per
             http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
         """
         query = cls.make_query(recid, endpoint, q, terms, facets, **kwargs)
-        return cls.send_query(query, endpoint=endpoint, recid=recid, return_raw_resp=return_raw_resp, raise_es_errors=raise_es_errors)
+        return cls.send_query(query, endpoint=endpoint, recid=recid, return_raw_resp=return_raw_resp,
+                              raise_es_errors=raise_es_errors)
 
     @classmethod
     def send_query(cls, qobj, endpoint='_search', recid='', retry=50, return_raw_resp=False, raise_es_errors=False):
@@ -396,7 +389,7 @@ class DomainObject(UserDict, object):
             except Exception as e:
                 exception = e
             time.sleep(0.5)
-                
+
         if r is not None:
             j = r.json()
 
@@ -417,7 +410,7 @@ class DomainObject(UserDict, object):
             return
 
         r = requests.delete(self.target() + self.id)
-    
+
     @classmethod
     def remove_by_id(cls, id):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
@@ -441,10 +434,8 @@ class DomainObject(UserDict, object):
             app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
             return
 
-        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-            return esprit.raw.delete_index_by_prefix(es_connection, app.config['ELASTIC_SEARCH_DB_PREFIX'])
-        else:
-            return esprit.raw.delete_index(es_connection)
+        r = requests.delete(cls.target_whole_index())
+        return r
 
     def update(self, doc):
         """
@@ -455,7 +446,7 @@ class DomainObject(UserDict, object):
             return
 
         return requests.post(self.target() + self.id + "/_update", data=json.dumps({"doc": doc}))
-    
+
     @classmethod
     def delete_all(cls):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
@@ -477,7 +468,7 @@ class DomainObject(UserDict, object):
                     "Elasticsearch returned an error:"
                     "\nES HTTP Response status: {es_status}"
                     "\nES Response:{es_resp}"
-                    .format(es_status=res.get('status', 'unknown'), es_resp=es_resp)
+                        .format(es_status=res.get('status', 'unknown'), es_resp=es_resp)
                 ) + extra_trace_info
             )
 
@@ -488,8 +479,8 @@ class DomainObject(UserDict, object):
                     "It probably returned an error we did not understand instead."
                     "\nES HTTP Response status: {es_status}"
                     "\nES Response:{es_resp}\n"
-                    .format(es_status=res.get('status', 'unknown'), es_resp=json.dumps(res, indent=2))
-                    ) + extra_trace_info
+                        .format(es_status=res.get('status', 'unknown'), es_resp=json.dumps(res, indent=2))
+                ) + extra_trace_info
             )
         return True
 
@@ -534,21 +525,21 @@ class DomainObject(UserDict, object):
         theq = deepcopy(q)
         theq["size"] = page_size
         theq["from"] = 0
-        if "sort" not in theq:             # to ensure complete coverage on a changing index, sort by id is our best bet
+        if "sort" not in theq:  # to ensure complete coverage on a changing index, sort by id is our best bet
             theq["sort"] = [{"_id": {"order": "asc"}}]
         counter = 0
         while True:
             # apply the limit
             if limit is not None and counter >= limit:
                 break
-            
+
             res = cls.query(q=theq)
             rs = cls.handle_es_raw_response(
                 res,
                 wrap=wrap,
                 extra_trace_info=
-                    "\nQuery sent to ES:\n{q}\n"
-                    "\n\nPage #{counter} of the ES response with size {page_size}."
+                "\nQuery sent to ES:\n{q}\n"
+                "\n\nPage #{counter} of the ES response with size {page_size}."
                     .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)
             )
 
@@ -563,8 +554,8 @@ class DomainObject(UserDict, object):
                     yield cls(**r)
                 else:
                     yield r
-            theq["from"] += page_size   
-    
+            theq["from"] += page_size
+
     @classmethod
     def iterall(cls, page_size=1000, limit=None):
         return cls.iterate(deepcopy(all_query), page_size, limit)
@@ -601,7 +592,7 @@ class DomainObject(UserDict, object):
             "query": {"prefix": {query_field: prefix.lower()}},
             "size": 0,
             "facets": {
-              field: {"terms": {"field": facet_field, "size": size}}
+                field: {"terms": {"field": facet_field, "size": size}}
             }
         }
 
@@ -671,7 +662,8 @@ class DomainObject(UserDict, object):
         substring = substring.lower()
 
         if " " in substring and not prefix_only:
-            res = cls.wildcard_autocomplete_query(filter_field, substring, before=True, after=True, facet_size=size, facet_field=facet_field)
+            res = cls.wildcard_autocomplete_query(filter_field, substring, before=True, after=True, facet_size=size,
+                                                  facet_field=facet_field)
         else:
             res = cls.prefix_query(filter_field, substring, size=size, facet_field=facet_field, analyzed_field=analyzed)
 
@@ -704,7 +696,8 @@ class DomainObject(UserDict, object):
     def q2obj(cls, **kwargs):
         extra_trace_info = ''
         if 'q' in kwargs:
-            extra_trace_info = "\nQuery sent to ES (before manipulation in DomainObject.query):\n{}\n".format(json.dumps(kwargs['q'], indent=2))
+            extra_trace_info = "\nQuery sent to ES (before manipulation in DomainObject.query):\n{}\n".format(
+                json.dumps(kwargs['q'], indent=2))
 
         res = cls.query(**kwargs)
         rs = cls.handle_es_raw_response(res, wrap=True, extra_trace_info=extra_trace_info)
@@ -744,7 +737,9 @@ class DomainObject(UserDict, object):
                             return
             else:
                 if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
-                    raise BlockTimeOutException("Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
+                    raise BlockTimeOutException(
+                        "Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(
+                            id=id, limit=max_retry_seconds))
 
             time.sleep(sleep)
 
@@ -773,11 +768,12 @@ class ESMappingMissingError(Exception):
 class ESError(Exception):
     pass
 
+
 ########################################################################
 # Some useful ES queries
 ########################################################################
 
-all_query = { 
+all_query = {
     "query": {
         "match_all": {}
     }
@@ -794,13 +790,13 @@ block_query = {
     "fields": ["last_updated"]
 }
 
+
 #########################################################################
 # A query handler that knows how to speak facetview2
 #########################################################################
 
 
 class Facetview2(object):
-
     """
     {"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"_type":"article"}}]}},"query":{"query_string":{"query":"richard","default_operator":"OR"}}}},"from":0,"size":10}
     {"query":{"query_string":{"query":"richard","default_operator":"OR"}},"from":0,"size":10}

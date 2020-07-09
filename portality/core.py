@@ -157,5 +157,4 @@ def setup_jinja(app):
 
     # app.jinja_env.template_search_path = ["templates", "static_content/templates"]
 
-
 app = create_app()
