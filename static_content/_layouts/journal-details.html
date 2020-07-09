@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include head.html %}
+
+  <body class="journal-details">
+    {% include header.html %}
+
+    {% if page.name == "journal-details.md" %}
+    {% assign journal = site.data.journals[0] %}
+    {% else %}
+    {% assign journal = site.data.journals[1] %}
+    {% endif %}
+
+    <main class="container page-content">
+      <header>
+
+        <p>
+          {% if journal.updated %}
+          <span class="label label--secondary">
+            <span data-feather="clock" aria-hidden="true"></span>
+            Updated recently
+          </span>
+          {% endif %}
+          <span class="label">
+            <span data-feather="book-open" aria-hidden="true"></span>
+            {{ journal.issn }}
+          </span>
+        </p>
+
+        <h1>
+          {{ journal.title }}
+          {% if journal.subtitle %}<span aria-hidden="true">{{ journal.subtitle }}</span>{% endif %}
+        </h1>
+
+        {% if journal.seal %}
+        <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag tag--featured">
+          <span data-feather="check-circle" aria-hidden="true"></span>
+          DOAJ Seal
+        </a>
+        {% endif %}
+
+        <a href="{{ journal.url }}" target="_blank" rel="noopeener" class="tag">
+          <span data-feather="external-link" aria-hidden="true"></span>
+          Website
+        </a>
+
+      </header>
+
+      <div class="tabs">
+        <nav class="tabs__menu">
+          <ul class="tabs__list" role="tablist">
+            <li class="tabs__item">
+              <a href="#about-journal" role="tab" aria-selected="true">About</a>
+            </li>
+            <li class="tabs__item"role="presentation">
+              <a href="#all-articles" role="tab" aria-selected="false">Articles</a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="tabs__content">
+          <section id="about-journal" class="tabs__panel" role="tabpanel" aria-hidden="false">
+            <h2 class="sr-only">About</h2>
+            <div class="three-col">
+              <section>
+                <h3 class="label label--underlined">Publishing with this journal</h3>
+
+                <article class="card card--with-icon">
+                  <span data-feather="dollar-sign" aria-hidden="true"></span>
+                  <div>
+                    <p>
+                      {% if journal.apc %}
+                      It costs <strong class="label label--large">{{ journal.apc }}</strong> for APCs (article processing charges)
+                      {% else %}
+                      There are <strong class="label label--large">No APC<span style="text-transform: lowercase;">s</span></strong> (article processing charges) to publish with this journal
+                      {% endif %}
+                      and
+                      {% if journal.apc %}
+                      there are
+                      {% endif %}
+                      <strong>no submission charges</strong>.
+                    </p>
+                    {% if journal.waiver %}
+                    <p>
+                      &rarr; There is a <a href="https://businessperspectives.org/journals/innovative-marketing#article-processing-charge" target="_blank" rel="noopener">waiver policy</a> for these charges.
+                    </p>
+                    {% endif %}
+                  </div>
+                </article>
+
+                <article class="card card--with-icon">
+                  <span data-feather="user-check" aria-hidden="true"></span>
+                  <div>
+                    <p>Look up the journal’s:</p>
+                    <ul>
+                      <li><a href="">Aims & scope</a></li>
+                      <li><a href="">Instructions for authors</a></li>
+                      <li><a href="">Editorial Board</a></li>
+                      <li><strong><a href="">Double blind peer review</a></strong> process</li>
+                    </ul>
+                    {% if journal.plagiarism_check %}
+                    <p>
+                      &rarr; This journal checks for plagiarism
+                    </p>
+                    {% endif %}
+                  </div>
+                </article>
+
+                <article class="card card--with-icon">
+                  <span data-feather="clock" aria-hidden="true"></span>
+                  <div>
+                    Expect on average <strong>{{ journal.processing_time }} weeks</strong> from submission to publication.
+                  </div>
+                </article>
+              </section>
+
+              <section>
+                <h3 class="label label--underlined">Best practice</h3>
+                <article class="card card--with-icon">
+                  <span data-feather="unlock" aria-hidden="true"></span>
+                  <div>
+                    {% if journal.license %}
+                    <p>This journal uses
+                      {% for license in journal.license %}
+                      {% if forloop.first %}
+                      {% elsif forloop.last %} &
+                      {% else %},
+                      {% endif %}
+                      a <strong>{{ license }}</strong>
+                      {% endfor %}
+                      license.
+                    </p>
+                    <p>
+                      {% for license in journal.license %}
+                      <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener" style="text-decoration: none;">
+                      {% if license == "CC BY" %}
+                      {% include svg/cc.svg %} {% include svg/by.svg %}
+                      {% elsif license == "CC BY-NC" %}
+                      {% include svg/cc.svg %} {% include svg/by.svg %} {% include svg/nc.svg %}
+                      {% endif %}
+                      {% if forloop.last %}{% else %}<br/>{% endif %}
+                      </a>
+                      {% endfor %}
+                    </p>
+                    {% endif %}
+                    <p>
+                      &rarr; Look up their <a href="">open access statement</a> and their <a href="">license terms</a>.
+                    </p>
+                  </div>
+                </article>
+
+                <article class="card card--with-icon">
+                  {% include svg/copyright.svg %}
+                  <div>
+                    <p>The author does <strong>not</strong> retain unrestricted copyrights and publishing rights.</p>
+                  </div>
+                </article>
+
+                <article class="card card--with-icon">
+                  <span data-feather="archive" aria-hidden="true"></span>
+                  <div>
+                    <p>Articles digitally archived in:</p>
+                    <ul>
+                      <li>CLOCKSS</li>
+                      <li>Portico</li>
+                      <li>Koninklijke Bibliotheek, a national library</li>
+                    </ul>
+                    <p>
+                      &rarr; Find out about their <a href="https://businessperspectives.org/journals/innovative-marketing#indexed-abstracted" target="_blank" rel="noopener">archiving policy</a>.
+                    </p>
+                  </div>
+                </article>
+
+                <article class="card card--with-icon">
+                  <span data-feather="upload-cloud" aria-hidden="true"></span>
+                  <div>
+                    <p>
+                      <a href="{{ journal.policy_url }}" target="_blank" rel="noopener">Deposit policy</a> with:
+                    </p>
+                    <ul>
+                      <li>
+                        <a href="https://v2.sherpa.ac.uk/cgi/search/publication/basic?publication_title-auto={{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                          Sherpa/ROMEO
+                        </a>
+                      </li>
+                      <li>
+                        <a href="https://diadorim.ibict.br/simple-search?query={{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                          Diadorim
+                        </a>
+                      </li>
+                      <li>
+                        <a href="https://heloise.ccsd.cnrs.fr/search/searchreview?parameter_0={{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                          Héloïse
+                        </a>
+                      </li>
+                      <li>
+                        <a href="https://www.accesoabierto.net/dulcinea/lista/REVISTA/{{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                          Dulcinea
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </article>
+              </section>
+
+              <section>
+                <h3 class="label label--underlined">Journal metadata</h3>
+
+                <article class="card card--with-icon">
+                  <span data-feather="map-pin" aria-hidden="true"></span>
+                  <dl>
+                    <dt>Publisher</dt>
+                    <dd>{{ journal.publisher }}, {{ journal.country }}</dd>
+
+                    {% if journal.institution %}
+                    <dt>Society or institution</dt>
+                    <dd>{{ journal.institution }}{% if journal.institution_country %}, {{ journal.institution_country }}{% endif %}</dd>
+                    {% endif %}
+
+                    <dt>Manuscripts accepted in</dt>
+                    <dd>{{ journal.lang }}</dd>
+                  </dl>
+                </article>
+
+                <article class="card card--with-icon">
+                  <span data-feather="tag" aria-hidden="true"></span>
+                  <dl>
+                    <dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span></a></dt>
+                    {% assign lcc_codes = journal.lcc | split: "|" %}
+                    <dd>
+                      {% for code in lcc_codes %}
+                        <a href="{{ site.baseurl }}{% link search/journals.md %}">{{ code }}</a>{% if forloop.last %}{% else %}, {% endif %}
+                      {% endfor %}
+                    </dd>
+
+                    {% if journal.keywords %}
+                    <dt>Keywords</dt>
+                    <dd>
+                      {% for keyword in journal.keywords %}
+                      <a href="{{ site.baseurl }}{% link search/articles.md %}">{{ keyword }}</a>{% if forloop.last %}{% else %}, {% endif %}
+                      {% endfor %}
+                    </dd>
+                    {% endif %}
+                  </dl>
+                </article>
+              </section>
+            </div>
+          </section>
+
+          <section id="all-articles" class="row tabs__panel" role="tabpanel" aria-hidden="true">
+            <header class="col-xs-12">
+              <h2>{{ journal.articles }} indexed articles</h2>
+            </header>
+
+            <div class="col-md-3">
+              {% include search-article-filters.html %}
+            </div>
+
+            <div class="col-md-9">
+              {% include search-article-results.html %}
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <footer id="updated" class="page-content__footer">
+        <p>
+          Added {{ journal.added }}
+          {% if journal.updated %}
+          &bull; Updated {{ journal.updated }}
+          {% endif %}
+        </p>
+      </footer>
+
+    </main>
+
+    {% include footer.html %}
+  </body>
+
+</html>

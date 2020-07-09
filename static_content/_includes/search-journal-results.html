@@ -1,0 +1,95 @@
+<nav class="search-options">
+  <h3 class="sr-only">Display options</h3>
+  <div class="row">
+    <div class="col-xs-6">
+      <label for="sort-by">Sort by</label>
+      <select name="sort-by" id="sort-by">
+        <option value="">Added to DOAJ (newest first)</option>
+        <option value="">Added to DOAJ (oldest first)</option>
+        <option value="">Last updated (most recent first)</option>
+        <option value="">Last updated (less recent first)</option>
+        <option value="">Title (A-Z)</option>
+        <option value="">Title (Z-A)</option>
+        <option value="">Relevance</option>
+      </select>
+    </div>
+    <div class="col-xs-6 search-options__right">
+      <label for="results-per-page">Results per page</label>
+      <select name="results-per-page" id="results-per-page">
+        <option value="all">50</option>
+        <option value="all">100</option>
+        <option value="all">200</option>
+      </select>
+    </div>
+  </div>
+</nav>
+
+{% include pagination.html %}
+
+<ol class="search-results">
+  {% assign count = 0 %}
+
+  {% for i in site.data.journals %}
+  {% assign count = count | plus: 1 %}
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          {% if i.seal %}
+          <a href="{{ site.baseurl }}{% link apply/seal.md %}" class="tag tag--featured">
+            <span data-feather="check-circle" aria-hidden="true"></span>
+            DOAJ Seal
+          </a>
+          {% endif %}
+          <h3 class="search-results__heading">
+            <a href="../{% if i.detail %}{{ i.detail }}{% else %}journal-details{% endif %}">
+              {{ i.title }}
+            </a>
+            {% if i.subtitle %}<span class="search-results__subheading">{{ i.subtitle }}</span>{% endif %}
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published {% if i.publisher %}by <em>{{ i.publisher }}</em>{% endif %} in <strong>{{ i.country }}</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>{{ i.lang }}</strong>
+            </li>
+          </ul>
+          <ul>
+            {% assign lcc_codes = i.lcc | split: "|" %}
+            {% for i in lcc_codes %}
+            <li>{{ i }}</li>
+            {% endfor %}
+          <ul>
+        </div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            {% if i.updated %}Last updated on {{ i.updated }}
+            {% else %}Added on {{ i.added }}{% endif %}
+          </li>
+          {% if i.articles %}
+          <li>
+            <a href="{{ site.baseurl }}{% link search/journal-details.md %}#all-articles">{{ i.articles }} articles indexed</a>
+          </li>
+          {% endif %}
+          <li>
+            <a href="{{ i.url }}" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            {% if i.apc %}APCs: <strong>{{ i.apc }}</strong>{% else %}<strong>No</strong> charges{% endif %}
+          </li>
+          <li>
+            <a href="{{ i.license_url }}" target="_blank" rel="noopener">{{ i.license }}</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  {% endfor %}
+</ol>
+
+{% include pagination.html %}

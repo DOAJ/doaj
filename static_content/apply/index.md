@@ -24,7 +24,7 @@ Please log in to your account before you submit your application.
     <label for="password">Password</label>
     <input id="password" type="password" required>
   </div>
-  <input type="submit" value="Start now">
+  <input type="submit" value="Start now" class="button button--primary">
   <p>
     <small>&rarr; <a href="{{ site.baseurl }}{% link password-reset.md %}">Forgot your password?</a></small>
   </p>

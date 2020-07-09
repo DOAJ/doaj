@@ -2,33 +2,35 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 18px;
+  font-size: 22px;
 
   @media (max-width: 768px) {
-    font-size: 16px;
+    font-size: 18px;
   }
 }
 
 body {
   background-color: $warm-white;
   color: $warm-black;
-  line-height: 1.35;
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 400;
   @include font-sans;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  margin: $spacing-04 0;
+h2, h3, h4, h5, h6 {
+  margin: $spacing-05 0 $spacing-04 0;
   line-height: 1.05;
-  font-weight: 600;
-  @include font-serif;
+  font-weight: 400;
 }
 
 h1 {
-  margin: $spacing-04 0 $spacing-05;
+  margin: $spacing-04 0;
+  font-weight: 700;
+  line-height: 1.05;
   @include typescale-01;
+  @include font-serif;
 }
 
 h2 {
@@ -51,10 +53,6 @@ h6 {
   @include typescale-06;
 }
 
-p, blockquote {
-  margin: 0 0 $spacing-04 0;
-}
-
 ul, ol {
   padding-left: $spacing-04;
 
@@ -68,18 +66,19 @@ ul, ol {
 }
 
 dl {
+  margin: 0 0 $spacing-04 0;
 
   dt {
-    @include font-monospace;
+    color: $dark-grey;
     @include typescale-06;
   }
+}
 
-  dd {
-    margin: 0 0 $spacing-04 0;
+p, blockquote, dd, ul, ol {
+  margin: 0 0 $spacing-04 0;
 
-    &:last-child {
-      margin: 0;
-    }
+  &:last-child {
+    margin-bottom: 0;
   }
 }
 
@@ -96,6 +95,10 @@ code {
   background: $fair-pink;
 }
 
+strong, b {
+  font-weight: 600;
+}
+
 a {
   text-decoration: underline;
   color: $warm-black;
@@ -103,17 +106,13 @@ a {
   &:hover,
   &:focus,
   &:active {
-    color: $sanguine;
+    color: $grapefruit;
     text-decoration: none;
   }
 }
 
 section {
   padding: $spacing-04 0;
-}
-
-section aside {
-  border-left: 1px dashed $sanguine;
 }
 
 blockquote {
@@ -196,10 +195,13 @@ table {
 
 aside {
   font-size: smaller;
-  color: $sanguine;
 
-  a {
-    color: $sanguine;
+  h2 {
+    @include typescale-03;
+  }
+
+  h2 {
+    @include typescale-04;
   }
 }
 
@@ -214,18 +216,21 @@ form {
   }
 }
 
-input, select, button, .select2-choices {
-  /* remove default iOS styles */
-  border-radius: 0;
+input, select, button {
+  // reset default styles
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none;
+  border-radius: 0;
 
   display: block;
   padding: 0.5em;
   background-color: $warm-white;
   border: 1px solid $warm-black;
-  font-size: 1rem;
+  font-size: smaller;
   @include font-sans;
 }
 
@@ -267,11 +272,15 @@ input[type="radio"] {
     border: 1px solid $warm-black;
   }
 
-  &:checked + label::before {
-    content: '\a0';
-    background: $sanguine;
-    border: 1px solid $warm-white;
-    box-shadow: inset 0 0 0 1px $warm-white, 0 0 0 1px $sanguine;
+  &:checked + label {
+    color: $sanguine;
+
+    &::before {
+      content: '\a0';
+      background: $sanguine;
+      border: 1px solid $warm-white;
+      box-shadow: inset 0 0 0 1px $warm-white, 0 0 0 1px $sanguine;
+    }
   }
 }
 
@@ -282,10 +291,6 @@ input[type="radio"] + label {
   &::before {
     border-radius: 50%;
   }
-}
-
-[type="button"] {
-  cursor: pointer;
 }
 
 /* Feather icons */

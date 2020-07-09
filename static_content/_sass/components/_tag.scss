@@ -1,18 +1,44 @@
 /* Tags */
 
+.tags {
+  @include unstyled-list($inline: true);
+}
+
 .tag {
   display: inline-block;
-  margin-bottom: $spacing-03;
-  padding: $spacing-01 $spacing-02;
-  background: $grapefruit;
-  color: $warm-black;
+  margin: 0 $spacing-03 $spacing-03 0;
+  padding: $spacing-01 $spacing-03;
+  border-radius: 9999px; // hack-y way to create pill shape
+  background: $warm-black;
+  color: $warm-white;
   text-decoration: none;
   @include typescale-06;
+
+  a {
+    text-decoration: none;
+    color: $warm-white;
+  }
 
   svg {
     position: relative;
     padding-right: $spacing-01;
     top: 2px;
+    stroke: $warm-white;
+  }
+
+  &:hover, &:focus, &active {
+
+    svg {
+      stroke: $grapefruit;
+    }
+  }
+}
+
+.tag--featured {
+  background: $grapefruit;
+  color: $warm-black;
+
+  svg {
     stroke: $warm-black;
   }
 

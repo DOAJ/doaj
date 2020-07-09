@@ -14,4 +14,4 @@ Publisher supporters can choose to make a contribution that is relative to the s
   - Publishing less than **200** articles/year
   - GBP £200 per year
 
-## Current publisher supporters
+## Our publisher supporters

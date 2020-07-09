@@ -4,6 +4,10 @@
   margin-top: -$spacing-04;
   padding-top: $spacing-04;
   background-color: $fair-pink;
+
+  header {
+    padding-bottom: $spacing-04;
+  }
 }
 
 .highlight--aside {
@@ -36,6 +40,7 @@
   input, select {
     margin-bottom: $spacing-03;
     max-width: 100%;
+    width: 100%;
     font-size: 1em;
 
     &:last-child {

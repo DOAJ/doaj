@@ -5,7 +5,7 @@ title: Browse by subject
 section: Search
 toc: false
 sticky_sidenav: false
-highlight: true
+highlight: false
 ---
 
 Journals and their articles are categorised by our editorial team using a subset of the [Library of Congress Classification](https://www.loc.gov/catdir/cpso/lcco/). The classification is assigned when a journal is accepted and, if a publisher chooses to upload article metadata to us, the articles inherit the same classification.

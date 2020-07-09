@@ -1,0 +1,35 @@
+.pagination {
+  text-align: center;
+  @include typescale-06;
+
+  ul {
+    display: flex;
+    @include unstyled-list;
+
+    li {
+      flex: 1 1 0;
+
+      &:first-child,
+      &:nth-child(2) {
+        text-align: left;
+        flex: 0.25;
+      }
+
+      &:last-child,
+      &:nth-child(4) {
+        text-align: right;
+        flex: 0.25;
+      }
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: $dark-grey;
+  }
+
+  .feather {
+    position: relative;
+    top: $spacing-01;
+  }
+}

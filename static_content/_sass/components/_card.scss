@@ -1,10 +1,29 @@
 /* Cards */
 
 .card {
+  padding: $spacing-03;
+  margin-bottom: $spacing-04;
+  background-color: $fair-pink;
   @include typescale-06;
+
+  @media screen and (min-width: 768px) {
+    margin-bottom: $spacing-05;
+  }
 }
 
 .card__desc {
   color: $dark-grey;
   margin-bottom: $spacing-01;
+}
+
+.card--with-icon {
+  display: flex;
+  padding: $spacing-04 $spacing-04 $spacing-04 $spacing-03;
+
+  > svg {
+    margin: $spacing-01 $spacing-03 0 0;
+    flex-shrink: 0;
+    height: 20px;
+    width: auto;
+  }
 }

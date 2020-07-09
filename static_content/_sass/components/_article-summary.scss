@@ -11,16 +11,7 @@
   color: $dark-grey;
 }
 
-.article-summary__abstract-heading {
-  margin-bottom: 0;
-  font-size: 1rem;
-
-  .feather {
-    height: 0.65em;
-    width: auto;
-  }
-}
-
 .article-summary__abstract-body {
   margin-top: $spacing-03;
+  @include font-serif;
 }

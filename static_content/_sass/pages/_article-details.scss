@@ -1,0 +1,12 @@
+.article-details__meta {
+  font-size: smaller;
+
+  div {
+    border-right: 1px dashed $sanguine;
+  }
+}
+
+.article-details__abstract {
+  line-height: 1.55;
+  @include font-serif;
+}

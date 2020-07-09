@@ -5,6 +5,7 @@
   margin: 0 0 $spacing-03 0;
   list-style: none;
   @if $inline {
+
     li {
       display: inline-block;
     }

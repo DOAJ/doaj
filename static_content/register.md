@@ -12,7 +12,7 @@ You only need an account if you have a journal in DOAJ or you are a volunteer.
 
 <form action="{{ site.baseurl }}{% link apply/01-oa-compliance.md %}">
   <div class="form__question">
-    <label for="email">E-mail address or username</label>
+    <label for="email">E-mail address</label>
     <input id="email" type="email">
   </div>
   <div class="form__question">

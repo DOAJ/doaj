@@ -1,17 +1,13 @@
 /* List of filters for search results */
 
 .filters {
+  margin-bottom: $spacing-04;
   border: 0;
   @include typescale-06;
 }
 
 .filters__heading {
-  margin-bottom: 0;
-  font-size: 1em;
-  color: $dark-grey;
-  text-transform: uppercase;
-  letter-spacing: normal;
-  @include font-sans;
+  margin-top: 0;
 }
 
 .filters__list {
@@ -68,16 +64,12 @@
   font-size: 1em !important;
 }
 
-input[type="checkbox"]:checked + .filter__label {
-  color: $sanguine;
-}
-
 // Mobile-only accordion
 
 @media (min-width: 992px) {
   .filters {
 
-    .filters__heading .feather {
+    .filters__heading .feather-chevron-down {
       display: none;
     }
 

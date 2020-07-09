@@ -1,30 +1,49 @@
 # Temporary journals list
 
 - title: "Innovative Marketing"
-  paral_title: "Інноваційний маркетинг"
+  subtitle: "Інноваційний маркетинг"
+  detail: journal-details
   url: "https://businessperspectives.org/journals/innovative-marketing?category_id=30"
-  lcc: "Social Sciences: Commerce: Business: Marketing. Distribution of products"
+  lcc: "Social Sciences. Marketing. Distribution of products"
+  keywords:
+    - methods and tools of marketing
+    - corporate culture and innovative marketing
+    - marketing of financial services
+    - property rights for innovations and inventions
+    - innovation management
+    - big data analysis
   formats: PDF
   lang: English
-  institution:
+  publisher: Example of a publisher’s name
   country: Ukraine
   added: 13 May 2020
-  updated:
+  updated: 5 June 2020
   apc: "€595 (EUR)"
-  license: "CC BY"
+  license:
+    - "CC BY"
+    - "CC BY-NC"
   license_url: "https://creativecommons.org/licenses/by/2.0/"
+  policy_url: "https://businessperspectives.org/journals/innovative-marketing#indexed-abstracted"
   oa_since: 2005
   processing_time: 9
   articles: 602
   seal: true
+  issn: "Online ISSN: 1816-6326 / Print ISSN: 1814-2427"
+  plagiarism_check: true
+  waiver: true
+  unrestricted_copyright: true
+  publishing_rights: true
 
 - title: "Yeni Üroloji Dergisi"
-  paral_title: "The New Journal of Urology"
+  subtitle: "The New Journal of Urology"
+  detail: journal-details-2
   url: "https://dergipark.org.tr/en/pub/yud"
-  lcc: "Medicine: Internal medicine: Specialties of internal medicine: Diseases of the genitourinary system. Urology"
+  lcc: "Medicine. Diseases of the genitourinary system. Urology"
   formats: PDF
   lang: Turkish, English
+  publisher: "Ali İhsan Taşçı"
   institution: "Eurasian Urooncological Association"
+  institution_country: "Turkey"
   country: "Turkey"
   added: 13 May 2020
   updated:
@@ -33,16 +52,21 @@
   license_url: "https://creativecommons.org/licenses/by-nc/2.0/"
   oa_since: 2011
   processing_time: 3
-  articles:
+  articles: 79
   seal: false
+  issn: "Online ISSN: 2687-1955 / Print ISSN: 1305-2489"
+  plagiarism_check: false
+  waiver: false
+  unrestricted_copyright: false
+  publishing_rights: false
 
 - title: "Linguagem & Ensino"
-  paral_title: "Linguagem e Ensino"
+  subtitle: "Linguagem e Ensino"
   url: "https://periodicos.ufpel.edu.br/ojs2/index.php/rle"
-  lcc: "Language and Literature: Philology. Linguistics | Language and Literature: Literature (General)"
+  lcc: "Language and Literature. Linguistics | Literature (General)"
   formats: PDF
   lang: Portuguese, Spanish, English
-  institution: "Universidade Federal de Pelotas (UFPel)"
+  publisher: "Universidade Federal de Pelotas (UFPel)"
   country: "Brazil"
   added: 13 May 2020
   updated:
@@ -55,12 +79,12 @@
   seal: false
 
 - title: "Access Microbiology"
-  paral_title:
+  subtitle:
   url: "https://www.microbiologyresearch.org/content/journal/acmi"
   lcc: "Science: Microbiology"
   formats: PDF, HTML, XML
   lang: English
-  institution:
+  publisher: Example of a publisher’s name
   country: "United Kingdom"
   added: 13 May 2020
   updated:
@@ -73,12 +97,12 @@
   seal: false
 
 - title: "M@n@gement"
-  paral_title: "Management"
+  subtitle: "Management"
   url: "https://management-aims.com/index.php/mgmt"
-  lcc: "Social Sciences: Industries. Land use. Labor: Management. Industrial management | Social Sciences: Commerce: Business"
+  lcc: "Social Sciences. Industries. Land use. Management. Industrial management | Business"
   formats: PDF, HTML, EPUB, XML
   lang: English
-  institution: AIMS
+  publisher: AIMS
   country: "France"
   added: 13 May 2020
   updated:
@@ -91,12 +115,12 @@
   seal: false
 
 - title: "Entomological Communications"
-  paral_title:
+  subtitle:
   url: "https://www.entomologicalcommunications.org/"
   lcc: "Science: Zoology"
   formats: PDF
   lang: Portuguese, English
-  institution: "Sociedade Entomológica do Brasil"
+  publisher: "Sociedade Entomológica do Brasil"
   country: "Brazil"
   added: 13 May 2020
   updated:
@@ -109,12 +133,12 @@
   seal: false
 
 - title: "Biología Acuática"
-  paral_title:
+  subtitle:
   url: "https://revistas.unlp.edu.ar/bacuatica/"
   lcc: "Agriculture: Aquaculture. Fisheries. Angling | Science: Biology (General) | Science: Physiology: Animal biochemistry"
   formats: PDF
   lang: Spanish
-  institution: "Instituto de Limnología Raúl A. Ringuelet. (CONICET-UNLP)"
+  publisher: "Instituto de Limnología Raúl A. Ringuelet. (CONICET-UNLP)"
   country: "Argentina"
   added: 13 May 2020
   updated:
@@ -127,12 +151,12 @@
   seal: false
 
 - title: "Медицина катастроф"
-  paral_title: "Disaster Medicine"
+  subtitle: "Disaster Medicine"
   url: "http://medkatjorn.vcmk.ru/en/"
   lcc: "Medicine: Internal medicine: Medical emergencies. Critical care. Intensive care. First aid"
   formats: PDF
   lang: Russian
-  institution: "Ministry of Health of the Russian Federation, All-Russian Centre for Disaster Medicine «Zashchita»"
+  publisher: "Ministry of Health of the Russian Federation, All-Russian Centre for Disaster Medicine «Zashchita»"
   country: "Russian Federation"
   added: 13 May 2020
   updated:
@@ -145,12 +169,12 @@
   seal: false
 
 - title: "Acta Sting"
-  paral_title:
+  subtitle:
   url: "https://www.sting.cz/acta-sting-en/"
   lcc: "Social Sciences: Economic history and conditions | Social Sciences: Finance"
   formats: PDF
   lang: Slovak, Czech, English
-  institution:
+  publisher: Example of a publisher’s name
   country: Czechia
   added: 13 May 2020
   updated:
@@ -163,12 +187,12 @@
   seal: false
 
 - title: "Inform: Jurnal Ilmiah Bidang Teknologi Informasi dan Komunikasi"
-  paral_title:
+  subtitle:
   url: "https://ejournal.unitomo.ac.id/index.php/inform/index"
   lcc: "Technology: Electrical engineering. Electronics. Nuclear engineering: Electronics: Computer engineering. Computer hardware"
   formats: PDF
   lang: Indonesian, English
-  institution: Universitas Dr Soetomo
+  publisher: Universitas Dr Soetomo
   country: Indonesia
   added: 13 May 2020
   updated:
@@ -181,12 +205,12 @@
   seal: false
 
 - title: "Indonesia Accounting Journal"
-  paral_title:
+  subtitle:
   url: "https://ejournal.unsrat.ac.id/index.php/iaj/index"
   lcc: "Social Sciences: Finance"
   formats: PDF
   lang: "Indonesian, English"
-  institution: "Sam Ratulangi University"
+  publisher: "Sam Ratulangi University"
   country: Indonesia
   added: 13 May 2020
   updated:
