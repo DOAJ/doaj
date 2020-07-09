@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include head.html %}
+
+  <body>
+    {% include header.html %}
+
+    {% if page.name == 'article-details.md' %}
+    <main class="page-content article-summary">
+      <div class="highlight">
+        <header class="container">
+          <p class="label">
+            From <em>{{ page.journal }}</em> ({{ page.issue_pub_date }})
+          </p>
+
+          <h1>{{ page.title }}</h1>
+
+          {% if page.doi %}
+          <p>
+            <a href="https://doi.org/{{ page.doi }}" target="_blank" rel="noopener">https://doi.org/{{ page.doi }}</a>
+          </p>
+          {% endif %}
+
+          {% if page.authors %}
+          <ul>
+            {% for j in page.authors %}
+            <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </header>
+      </div>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+            {% if page.keywords %}
+            <h2>Keywords</h2>
+            <ul>
+              {% for j in page.keywords %}
+              <li>{{ j }}{% if forloop.last %}{% else %}, {% endif %}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+            <h2>Abstract <sup><a href="{{ page.url }}" target="_blank" rel="noopener">Full text</sup></h2>
+            {% if page.abstract %}
+            <p>{{ page.abstract }}</p>
+            {% else %}
+            <em>No abstracts available.</em>
+            {% endif %}
+
+            <h2>Cite this article</h2>
+            <dl class="row">
+              <dt class="col-xs-6">APA</dt>
+              <dd class="col-xs-6"></dd>
+
+              <dt class="col-xs-6">MLA</dt>
+              <dd class="col-xs-6"></dd>
+
+              <dt class="col-xs-6">Chicago</dt>
+              <dd class="col-xs-6"></dd>
+            </dl>
+          </div>
+
+          <aside class="col-md-4">
+            <h2>Published in <em>{{ page.journal }}</em></h2>
+            <dl>
+              <dt>ISSN</dt>
+              <dd>{{ page.issn }}</dd>
+
+              <dt>Publisher</dt>
+              <dd>{{ page.publisher }}</dd>
+
+              <dt>Country of publisher</dt>
+              <dd>{{ page.country }}</dd>
+
+              <dt>Language</dt>
+              <dd>{{ page.lang }}</dd>
+
+              <dt>LCC Subject Category</dt>
+              <dd>{{ page.lcc }}</dd>
+            </dl>
+
+            <p><a href="#">More about this journal</a></p>
+          </aside>
+        </div>
+
+        <footer>
+          <h2>More articles like this&hellip;</h2>
+          <div class="row title-list">
+            <article class="col-xs-6 col-md-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Human Immunology (1999)</p>
+                <h3 class="title-list__heading">Expression of the costimulator molecules, CD80, CD86, CD28, and CD152 on lymphocytes from neonates and young children</h3>
+                <ul>
+                  <li>S. Elliott,</li>
+                  <li>P. Macardle,</li>
+                  <li>D. Roberton,</li>
+                  <li>H. Zola</li>
+                </ul>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Molecular Metabolism (2017)</p>
+                <h3 class="title-list__heading">Neonatal pancreatic pericytes support β-cell proliferation</h3>
+                <ul>
+                  <li>Alona Epshtein,</li>
+                  <li>Eleonor Rachi,</li>
+                  <li>Lina Sakhneny,</li>
+                  <li>Shani Mizrachi,</li>
+                  <li>Daria Baer,</li>
+                  <li>Limor Landsmanf</li>
+                </ul>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Frontiers in Immunology (2014)</p>
+                <h3 class="title-list__heading">The unique neonatal NK cells: a critical component required for neonatal autoimmune disease induction by maternal autoantibody</h3>
+                <ul>
+                  <li>Alona Epshtein,</li>
+                  <li>Eleonor Rachi,</li>
+                  <li>Lina Sakhneny,</li>
+                  <li>Shani Mizrachi,</li>
+                  <li>Daria Baer,</li>
+                  <li>Limor Landsmanf</li>
+                </ul>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Immunology & Cell Biology (2016)</p>
+                <h3 class="title-list__heading">Modeling the dynamics of neonatal CD8+ T-cell responses</h3>
+                <ul>
+                  <li>Alona Epshtein,</li>
+                  <li>Eleonor Rachi,</li>
+                  <li>Lina Sakhneny,</li>
+                  <li>Shani Mizrachi,</li>
+                  <li>Daria Baer,</li>
+                  <li>Limor Landsmanf</li>
+                </ul>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Human Immunology (1999)</p>
+                <h3 class="title-list__heading">Expression of the costimulator molecules, CD80, CD86, CD28, and CD152 on lymphocytes from neonates and young children</h3>
+                <ul>
+                  <li>S. Elliott,</li>
+                  <li>P. Macardle,</li>
+                  <li>D. Roberton,</li>
+                  <li>H. Zola</li>
+                </ul>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Molecular Metabolism (2017)</p>
+                <h3 class="title-list__heading">Neonatal pancreatic pericytes support β-cell proliferation</h3>
+                <ul>
+                  <li>Alona Epshtein,</li>
+                  <li>Eleonor Rachi,</li>
+                  <li>Lina Sakhneny,</li>
+                  <li>Shani Mizrachi,</li>
+                  <li>Daria Baer,</li>
+                  <li>Limor Landsmanf</li>
+                </ul>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Frontiers in Immunology (2014)</p>
+                <h3 class="title-list__heading">The unique neonatal NK cells: a critical component required for neonatal autoimmune disease induction by maternal autoantibody</h3>
+                <ul>
+                  <li>Alona Epshtein,</li>
+                  <li>Eleonor Rachi,</li>
+                  <li>Lina Sakhneny,</li>
+                  <li>Shani Mizrachi,</li>
+                  <li>Daria Baer,</li>
+                  <li>Limor Landsmanf</li>
+                </ul>
+              </a>
+            </article>
+
+            <article class="col-xs-6 col-md-3">
+              <a href="#" class="title-list__link">
+                <p class="label">Immunology & Cell Biology (2016)</p>
+                <h3 class="title-list__heading">Modeling the dynamics of neonatal CD8+ T-cell responses</h3>
+                <ul>
+                  <li>Alona Epshtein,</li>
+                  <li>Eleonor Rachi,</li>
+                  <li>Lina Sakhneny,</li>
+                  <li>Shani Mizrachi,</li>
+                  <li>Daria Baer,</li>
+                  <li>Limor Landsmanf</li>
+                </ul>
+              </a>
+            </article>
+          </div>
+        </footer>
+      </div>
+    </main>
+    {% endif %}
+
+    {% if page.name == 'journal-details.md' %}
+    <main class="page-content article-summary">
+      <div class="highlight">
+        <header class="container">
+          <p>
+            Added {{ page.added }}
+          </p>
+
+          <h1>{{ page.title }}</h1>
+
+          {% if page.issn %}
+          <p>
+            {{ page.issn }}
+          </p>
+          {% endif %}
+
+        </header>
+      </div>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8">
+
+
+          </div>
+
+          <aside class="col-md-4">
+            <h2>Published in <em>{{ page.journal }}</em></h2>
+            <dl>
+              <dt>ISSN</dt>
+              <dd>{{ page.issn }}</dd>
+
+              <dt>Publisher</dt>
+              <dd>{{ page.publisher }}</dd>
+
+              <dt>Country of publisher</dt>
+              <dd>{{ page.country }}</dd>
+
+              <dt>Language</dt>
+              <dd>{{ page.lang }}</dd>
+
+              <dt>LCC Subject Category</dt>
+              <dd>{{ page.lcc }}</dd>
+            </dl>
+
+            <p><a href="#">More about this journal</a></p>
+          </aside>
+        </div>
+
+      </div>
+    </main>
+    {% endif %}
+
+    {% include footer.html %}
+  </body>
+
+</html>

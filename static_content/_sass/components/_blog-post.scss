@@ -1,0 +1,66 @@
+/* Blog posts */
+
+.blog-post__link {
+  display: block;
+  margin-bottom: $spacing-05;
+  text-decoration: none;
+}
+
+.blog-post__title {
+  margin-top: $spacing-03;
+}
+
+/* Featured / "3d" effect article */
+
+.blog-post--featured .blog-post__link {
+  position: relative;
+  padding: $spacing-06 $spacing-05;
+  border: 1px solid $sanguine;
+  top: $spacing-02;
+  bottom: -$spacing-02;
+  right: -$spacing-02;
+  left: $spacing-02;
+  transition: all 90ms ease-in;
+  background-color: $sanguine;
+  color: $warm-white;
+
+  &:before {
+    outline: 1px solid $sanguine;
+    background: $warm-white;
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: -$spacing-02;
+    bottom: $spacing-02;
+    right: $spacing-02;
+    left: -$spacing-02;
+    z-index: -5;
+    transition: all 90ms ease-in;
+  }
+
+  &:hover,
+  &:active,
+  &:focus {
+    box-shadow: none;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    &:before {
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+    }
+  }
+
+  .label {
+    color: $warm-white;
+  }
+
+  @media (max-width: 768px) {
+    padding: $spacing-04 $spacing-03;
+  }
+}

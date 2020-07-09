@@ -18,10 +18,11 @@ class Cache(DomainObject):
         # since the cache won't be allowed to store the regenerated ones
         if returnable or app.config.get("READ_ONLY_MODE", False):
             return {
-                "articles" : rec.data.get("articles"),
                 "journals" : rec.data.get("journals"),
                 "countries" : rec.data.get("countries"),
-                "searchable" : rec.data.get("searchable")
+                "abstracts" : rec.data.get("abstracts"),
+                "no-apc-journals" : rec.data.get("no-apc-journals"),
+                "last-updated" : rec.data.get("last-updated")
             }
 
         # if we get to here, then we don't return the cache

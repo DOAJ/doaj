@@ -1,69 +1,468 @@
-{% extends "sidebar-page.html" %}
+{% extends "layouts/base.html" %}
 
 {% block content %}
-<div class="row">
-    <div class="col-xs-12 with-borders main-content">
-        <div class="row">
-            <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">
-                <form id="homepage-search-form" action="/search" method="POST">
-                    <input type="hidden" name="ref" value="homepage-box">
-                    <input type="hidden" name="origin" value="ui"/>
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <label class="sr-only" for="homepage-search-input">Search DOAJ</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="homepage-search-input" name="q" placeholder="Search DOAJ">
-                                <span class="input-group-btn">
-                                    <button type="submit" class="btn btn-info"><span class="glyphicon glyphicon-search"></span></button>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <label class="checkbox">
-                                <input type="checkbox" name="include_journals" value="include_journals" checked="checked"/><span class="label-text">journals</span>
-                            </label>
-                            <label class="checkbox">
-                                <input type="checkbox" name="include_articles" value="include_articles" checked="checked"/><span class="label-text">articles</span>
-                            </label>
-                            <a href="{{ url_for('doaj.search') }}" class="pull-right">[Advanced Search]</a>
-                        </div>
-                    </div>
-                </form>
+
+  <body id="homepage">
+    <main class="page-content">
+      <!-- Search bar -->
+      <section class="highlight">
+        <div class="container">
+          <p class="label">The Directory of Open Access Journals</p>
+          <h1>Find open access journals & articles.</h1>
+          <form class="row">
+            <div class="col-xs-12 col-md-8">
+              <div class="inline-fields">
+                <input type="radio" id="journals" name="content-type" value="journals" checked>
+                <label for="journals">Journals</label>
+                <input type="radio" id="articles" name="content-type" value="articles">
+                <label for="articles">Articles</label>
+              </div>
             </div>
+
+            <div class="col-xs-12 col-md-8 input-group">
+              <label for="keywords" class="sr-only">Search by keywords:</label>
+              <input type="text" name="keywords" id="keywords" required>
+
+              <label for="fields" class="sr-only">In the field:</label>
+              <select name="fields" id="fields">
+                <option value="all">In all fields</option>
+                <option value="title">Title</option>
+                <option value="abstract">Abstract</option>
+                <option value="subject">Subject</option>
+                <option value="subject">Author</option>
+              </select>
+
+              <button type="submit">
+                <span data-feather="search"></span><span class="sr-only"> Search</span>
+              </button>
+            </div>
+          </form>
+
+          <section class="row mobile-scrollable-row">
+            <p class="col-md-2 stat">
+              <a href="#">
+                <span class="stat__number">{{statistics.journals}}</span>
+                <span class="stat__description">journals</span>
+              </a>
+            </p>
+            <p class="col-md-2 stat">
+              <a href="#">
+                <span class="stat__number">{{ statistics.abstracts }}</span>
+                <span class="stat__description">articles abstracts</span>
+              </a>
+            </p>
+            <p class="col-md-2 stat">
+              <a href="#">
+                <span class="stat__number">{{ statistics.countries }}</span>
+                <span class="stat__description">countries represented</span>
+              </a>
+            </p>
+            <p class="col-md-2 stat">
+              <a href="#">
+                <span class="stat__number">{{ statistics.last_updated }}</span>
+                <span class="stat__description">recently-updated journals</span>
+              </a>
+            </p>
+            <p class="col-md-2 stat">
+              <a href="#">
+                <span class="stat__number">{{ statistics.no_apc }}</span>
+                <span class="stat__description">journals without APCs</span>
+              </a>
+            </p>
+          </section>
         </div>
-    </div>
-</div>
+      </section>
 
-<div class="row">
-    <div class="col-xs-12 with-borders bordered-text-box">
-        <h2>DOAJ (Directory of Open Access Journals)</h2>
-        <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed
-            journals. DOAJ is independent. All funding is via donations, 22% of which comes from
-            <a href="{{ url_for('doaj.sponsors') }}">sponsors</a> and 78% from <a href="{{ url_for('doaj.members') }}">members and
-                publisher members</a>. All DOAJ services are free of charge including being indexed in DOAJ. All data is freely available.</p>
-        <p>DOAJ operates an education and outreach program across the globe, focussing on improving the quality of applications submitted.</p>
-        <p><a href="https://drive.google.com/file/d/1yU9DrfItxwKOpfLoezOu9AvhnKU6Z6je/view">Why index your journal in DOAJ? </a></p>
+      <!-- About -->
+      <section class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <h2 class="sr-only">About</h2>
+            <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.</p>
+            <p>All DOAJ services are free of charge including being indexed. All data is freely available.</p>
+            <p><a href="/apply/why-index/">Why index your journal in DOAJ?</a></p>
+          </div>
 
-    </div>
-</div>
+          <aside class="col-sm-6">
+            <p>
+              DOAJ is independent. All funding is via donations, 22% of which comes from sponsors and 78% from supporters.
+            </p>
+            <a href="/support/" class="button primary-button">Support DOAJ</a>
+            <p>
+              Journal publishers don’t need to donate to be part of DOAJ.
+            </p>
+            <p>
+              <a href="/apply/" class="button secondary-button">Apply now</a>
+              <br><a href="/apply/guide/">How to apply</a>
+            </p>
+          </aside>
+        </div>
+      </section>
 
-<!-- news feed -->
-<div class="row">
-    <div class="col-xs-12 with-borders bordered-text-box">
-        <h2>Latest News</h2>
-        {% for n in news %}
-            <div style="border-bottom: 1px dotted #cccccc; padding: 15px">
-                <strong><a href="{{n.url}}" target="_blank">{% autoescape off%}{{n.title}}{% endautoescape %}</a></strong><br>
-                <p>{% autoescape off%}{{n.summary}}{% endautoescape %}&nbsp;<a href="{{n.url}}" target="_blank">Read More...</a></p>
-                <em>Published {{n.published_formatted()}}</em>
+      <!-- Blog -->
+      <section class="container">
+        <h2>From the blog <sup><a href="https://blog.doaj.org">See all</a></sup></h2>
+        <div class="row">
+          <div class="col-sm-6">
+            <article class="blog-post blog-post--featured">
+              <a href="#" class="blog-post__link">
+                <p class="label">Africa, OA landscape</p>
+                <h3 class="blog-post__title">Guest post: Overview of the African Open Access Landscape, with a Focus on Scholarly Publishing</h3>
+                <p>Between October 2016 until October 2019, the Academy of Science of South Africa (ASSAf) conducted a landscape study on the progress made regarding Open Access.</p>
+                <time datetime="2019-10-11">11 Oct 2019</time>
+              </a>
+            </article>
+          </div>
+
+          <div class="col-sm-6">
+            <article class="blog-post">
+              <a href="#" class="blog-post__link">
+                <p class="label">Liber</p>
+                <h3 class="blog-post__title">OAPEN joins Think. Check. Submit.</h3>
+                <p>Think. Check. Submit. carried out a large survey of its users at the end of 2018 and the resounding opinion was that TCS needed to develop its tools and resources further to accommodate the fast-changing world of scholarly publishing.</p>
+                <time datetime="2019-10-07">7 Oct 2019</time>
+              </a>
+            </article>
+
+            <article class="blog-post">
+              <a href="#" class="blog-post__link">
+                <p class="label">Sustainable development</p>
+                <h3 class="blog-post__title">Sponsorship plan for 2020</h3>
+                <p>All sponsors sponsoring us with £3000 or more are eligible to put forward a nomination at the next round of elections for the Advisory Board or Council and vote in both elections.</p>
+                <time datetime="2019-10-03">3 Oct 2019</time>
+              </a>
+            </article>
+          </div>
+        </div>
+
+        <!-- Special / themed posts, optional -->
+        <section>
+          <h3>Special post series. Myth busting</h3>
+
+          <div class="row title-list">
+            <article class="col-md-4">
+              <a href="" class="title-list__link">
+                <h4 class="title-list__heading">Myth: “All open access journals can be listed on DOAJ”</h4>
+              </a>
+            </article>
+
+            <article class="col-md-4">
+              <a href="" class="title-list__link">
+                <h4 class="title-list__heading">Myth: “Journals must meet the DOAJ seal criteria to be indexed”</h4>
+              </a>
+            </article>
+
+            <article class="col-md-4">
+              <a href="" class="title-list__link">
+                <h4 class="title-list__heading">Myth: “DOAJ indexes predatory journals”</h4>
+              </a>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <!-- Community -->
+      <section class="highlight">
+        <div class="container">
+          <h2>Community</h2>
+          <section>
+            <h3>Volunteers</h3>
+            <div class="row intro">
+              <div class="col-sm-8 intro__text">
+                <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
+              </div>
+              <div class="col-sm-4">
+                <p class="intro__cta"><a href="/about/volunteers/" class="button primary-button">See all</a></p>
+              </div>
+            </div>
+            <div class="row mobile-scrollable-row volunteers">
+              <article class="col-md-4 card">
+                <h4>Karina Menegaldo</h4>
+                <figure class="portrait">
+                  <img src="https://images.generated.photos/ggaWl1zseN8sJNmJZ9rVZuAoc17In0C1qb7na6AGuHE/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zL3Yy/XzA1MzUyMDAuanBn.jpg" alt="Portrait of Karina Megaldo" height="150" width="150" class="portrait__img"/>
+                </figure>
+                <p class="label">
+                  Linguistics and computation
+                </p>
+                <p class="card__desc">
+                  Volunteer since 2018
+                </p>
+                <p class="card__desc">
+                  São Paulo,	Brasil
+                </p>
+              </article>
+
+              <article class="col-md-4 card">
+                <h4>Marco Tullney</h4>
+                <figure class="portrait">
+                  <img src="https://images.generated.photos/PYqJjdWKLiLWW3R0pVQGZRQ6oZWQ5qdPMLkwLCttkJs/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zLzA5/OTUwMjkuanBn.jpg" alt="Portrait of Marco Tullney" height="150" width="150" class="portrait__img"/>
+                </figure>
+                <p class="label">
+                  Social sciences
+                </p>
+                <p class="card__desc">
+                  Volunteer since 2014
+                </p>
+                <p class="card__desc">
+                  Hannover, Germany
+                </p>
+              </article>
+
+              <article class="col-md-4 card">
+                <h4>Karima Akool Al Salihi</h4>
+                <figure class="portrait">
+                  <img src="https://images.generated.photos/hoWxGiF0Ha-1RMoWzL3GqouXZf2fSxU3dYY9G8EyP3k/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zLzA5/OTkyMjAuanBn.jpg" alt="Portrait of Karima Akool Al Salihi" height="150" width="150" class="portrait__img"/>
+                </figure>
+                <p class="label">
+                  Medicine
+                </p>
+                <p class="card__desc">
+                  Volunteer since 2018
+                </p>
+                <p class="card__desc">
+                  Baghdad, Iraq
+                </p>
+              </article>
+            </div>
+          </section>
+
+          <section>
+            <h3>Sponsors</h3>
+            <div class="row intro">
+              <div class="col-sm-8 intro__text">
+                <p>The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.</p>
+              </div>
+              <div class="col-sm-4">
+                <p class="intro__cta"><a href="/support/sponsors/" class="button primary-button">Learn more</a></p>
+              </div>
             </div>
 
-        {% endfor %}
-        <br>
-        <p>Read more DOAJ news on our <a href="{{url_for('doaj.news')}}">news page</a></p>
-    </div>
-</div>
+            <h4>Gold sponsor</h4>
+            <div class="row">
+              <div class="col-xs-6 col-md-4">
+                <a href="https://www.ieee.org/" target="_blank">
+                  <img src="img/sponsors/ieee.png" alt="IEEE logo" height="35"/>
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3>Funding</h3>
+            <div class="row intro">
+              <div class="col-sm-8 intro__text">
+                <p>Some organisations and publishers support DOAJ with either a one-off payment or an annual payment.</p>
+              </div>
+              <div class="col-sm-4">
+                <p class="intro__cta"><a href="/support/" class="button primary-button">Support us</a></p>
+              </div>
+            </div>
+            <ul class="row title-list">
+              <li class="col-sm-6">
+                <a href="/support/supporters/" class="title-list__link title-list__link--is-highlighted">
+                  <h4 class="title-list__heading">Supporters</h4>
+                  <p>DOAJ Membership is recommended for those who can support us with a long-term annual fixed contribution.</p>
+                  <p>Learn more</p>
+                </a>
+              </li>
+
+              <li class="col-sm-6">
+                <a href="/support/publisher-supporters/" class="title-list__link title-list__link--is-highlighted">
+                  <h4 class="title-list__heading">Publisher supporters</h4>
+                  <p>If you publish or own an Open Access journal, you may prefer to become a Publisher Supporter with DOAJ.</p>
+                  <p>Learn more</p>
+                </a>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <!-- New journals -->
+      <section>
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-4">
+              <h2>Recently-added journals</h2>
+              <p><a href="">See all</a></p>
+            </div>
+            <div class="col-sm-8">
+              <ul class="row mobile-scrollable-row title-list">
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Journal of Electrical, Electronics and Informatics</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Journal of Pure and Applied Microbiology</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Çocuk ve Gençlik Ruh Sağlığı Dergisi</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">transLogos: Translation Studies Journal</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Amasya İlahiyat Dergisi</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Computational Methods for Differential Equations</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Танцювальні студії</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Научный журнал Российского НИИ проблем мелиорации</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Ciencia y Educación</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Iranian Journal of Pathology</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Environmental Pollutants & Bioavailability</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Journal of the Egyptian National Cancer Institute</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Известия Томского политехнического университета: Инжиниринг георесурсов</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Curricula: Journal of Teaching and Learning</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Pengarah</a>
+                </li>
+                <li class="col-md-3">
+                  <a href="" class="title-list__link">Journal of Innovation Management</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+  <div class="container">
+    <section class="row">
+      <div class="col-sm-2">
+        <h2>Apply</h2>
+        <ul>
+          <li><a href="/apply">Application form</a></li>
+          <li><a href="/apply/guide">Guide to applying</a></li>
+          <li><a href="/apply/seal">The DOAJ seal</a></li>
+          <li><a href="/apply/transparency">Transparency & best practice</a></li>
+          <li><a href="/apply/why-index">Why index your journal in DOAJ?</a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-2">
+        <h2>Search</h2>
+        <ul>
+          <li><a href="">Journals</a></li>
+          <li><a href="">Articles</a></li>
+          <li><a href="">Browse by subject</a></li>
+          <li><a href="">Open Knowledge Maps</a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-2">
+        <h2>Documentation</h2>
+        <ul>
+          <li><a href="">API</a></li>
+          <li><a href="">OAI-PMH</a></li>
+          <li><a href="/docs/xml">XML</a></li>
+          <li><a href="/docs/widgets">Widgets</a></li>
+          <li><a href="/docs/public-data-dump">Public data dump</a></li>
+          <li><a href="/docs/openurl">OpenURL</a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-2">
+        <h2>About</h2>
+        <ul>
+          <li><a href="/about">History & mission</a></li>
+          <li><a href="/about/team">Team</a></li>
+          <li><a href="/about/ambassadors">Ambassadors</a></li>
+          <li><a href="/about/advisory-board-council">Advisory Board & Council</a></li>
+          <li><a href="/about/volunteers">Volunteers</a></li>
+          <li><a href="">News</a></li>
+          <li><a href="/about/faq">FAQs</a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-2">
+        <h2>Support</h2>
+        <ul>
+          <li><a href="/support">Support DOAJ</a></li>
+          <li><a href="/support/sponsors">Sponsors</a></li>
+          <li><a href="/support/publisher-supporters">Publisher supporters</a></li>
+          <li><a href="/support/supporters">Supporters</a></li>
+        </ul>
+      </div>
+
+      <div class="col-sm-2">
+        <h2>Stay up to date</h2>
+        <ul>
+          <li>
+            <a href="https://twitter.com/DOAJplus" target="_blank">
+              <span data-feather="twitter"></span> Twitter
+            </a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank">
+              <span data-feather="facebook"></span> Facebook
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/DOAJ" target="_blank">
+              <span data-feather="github"></span> Github
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank">
+              <span data-feather="linkedin"></span> Linkedin
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <span data-feather="rss"></span> Atom feed</a>
+            </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="row legal">
+      <div class="col-sm-6">
+        <ul>
+          <li><a href="">Privacy</a></li>
+          <li><a href="">Contact us</a></li>
+          <li><a href="">IS4OA</a></li>
+          <li><a href="">Cottage Labs LLP</a></li>
+        </ul>
+      </div>
+      <p class="col-sm-6">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
+    </section>
+  </div>
+</footer>
+
+<script>
+  // User Feather icons
+  feather.replace()
+
+  // Responsive menu
+  var openMenu = document.querySelector(".secondary-nav__menu-toggle");
+  var nav = document.querySelector(".secondary-nav__menu");
+
+  openMenu.addEventListener('click', function() {
+    nav.classList.toggle("secondary-nav__menu-toggle--is-active");
+  }, false);
+</script>
+
+  </body>
+
+</html>
+
 
 {% endblock %}

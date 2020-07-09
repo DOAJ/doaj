@@ -411,6 +411,10 @@ class FormulaicField(object):
         return self._definition.get("help", {}).get(key)
 
     @property
+    def optional(self):
+        return self._definition.get("optional", False)
+
+    @property
     def wtforms_builders(self):
         return self._formulaic_fieldset.wtforms_builders
 
@@ -443,6 +447,16 @@ class FormulaicField(object):
         return len(self._definition.get("conditional", [])) > 0
 
     @property
+    def condition_field(self):
+        condition = self._definition.get("conditional", [])
+        return condition[0].get("field", None) if len(condition) > 0 else None
+
+    @property
+    def condition_value(self):
+        condition = self._definition.get("conditional", [])
+        return condition[0].get("value", None) if len(condition) > 0 else None
+
+    @property
     def template(self):
         local = self._definition.get("template")
         if local is not None:
@@ -452,10 +466,6 @@ class FormulaicField(object):
             return self._formulaic_fieldset.default_group_template
 
         return self._formulaic_fieldset.default_field_template
-
-    @property
-    def entry_template(self):
-        return self._definition.get("entry_template")
 
     def has_validator(self, validator_name):
         for validator in self._definition.get("validate", []):
@@ -512,7 +522,7 @@ class FormulaicField(object):
         wtf = self.wtfield
         return wtf.errors
 
-    def render_form_control(self, custom_args=None, wtfinst=None):
+    def render_form_control(self, custom_args=None):
         kwargs = deepcopy(self._definition.get("attr", {}))
         if "placeholder" in self._definition.get("help", {}):
             kwargs["placeholder"] = self._definition["help"]["placeholder"]
@@ -533,11 +543,7 @@ class FormulaicField(object):
             for k, v in custom_args.items():
                 kwargs[k] = v
 
-        wtf = None
-        if wtfinst is not None:
-            wtf = wtfinst
-        else:
-            wtf = self.wtfield
+        wtf = self.wtfield
         return wtf(**kwargs)
 
     @classmethod
@@ -567,7 +573,7 @@ class FormulaicField(object):
             "description": field.get("help", {}).get("description"),
         }
         if "default" in field:
-            wtargs["default"] = field.get("default")
+            wtargs["default"] = field["default"]
         if "options" in field or "options_fn" in field:
             wtargs["choices"] = cls._options2choices(field, formulaic_context.function_map.get("options", {}))
 

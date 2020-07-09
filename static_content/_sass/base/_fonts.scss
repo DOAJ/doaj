@@ -1,0 +1,16 @@
+/* Fonts mixins */
+
+@mixin font-serif {
+  font-family: 'Spectral', serif;
+  letter-spacing: -0.04em;
+}
+
+@mixin font-sans {
+  font-family: 'Source Sans Pro', sans-serif;
+  letter-spacing: normal;
+}
+
+@mixin font-monospace {
+  font-family: 'Source Code Pro', monospace;
+  letter-spacing: normal;
+}

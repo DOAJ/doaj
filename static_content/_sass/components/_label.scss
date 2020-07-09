@@ -1,0 +1,11 @@
+/* Tags, disciplines, labels... */
+
+.label {
+  margin-bottom: $spacing-02;
+  text-transform: uppercase;
+  line-height: 1.15;
+  font-weight: 600;
+  color: $sanguine;
+  letter-spacing: 0.05em;
+  @include typescale-06;
+}

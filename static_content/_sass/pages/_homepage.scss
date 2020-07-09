@@ -1,0 +1,25 @@
+/* Homepage-specific styles  */
+
+#homepage {
+  .input-group input[type="text"] {
+    width: 40%;
+  }
+
+  .input-group select {
+    width: 40%;
+    margin-left: -1px;
+  }
+  .input-group input[type="submit"] {
+    width: 20%;
+    margin-left: -1px;
+  }
+
+  .gold-sponsor {
+    display: block;
+
+    img {
+      height: 75px;
+      width: auto;
+    }
+  }
+}

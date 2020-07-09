@@ -1,0 +1,78 @@
+
+
+    <main class="container">
+      <div class="row">
+
+        <div class="col-md-4 col-md-push-8">
+          
+          <nav class="page-nav nav" data-spy="affix">
+            <h2 class="page-nav__heading">Jump to:</h2>
+            <ul class="page-nav__list">
+<li class="page-nav__item item-h2"><a href="#improving-results">Improving results</a></li>
+<li class="page-nav__item item-h2"><a href="#supported-openurl-version">Supported OpenURL version</a></li>
+</ul>
+          </nav>
+
+          
+        </div>
+
+        <div class="col-md-8 col-md-pull-4">
+           <section class="page-content">
+            <p class="label">Docs</p>
+            <h1>OpenURL</h1>
+
+            <p><a href="http://alcme.oclc.org/openurl/servlet/OAIHandler?verb=ListSets" target="_blank" rel="noopener">OpenURL is for retrieving a resource using a structured URL format.</a></p>
+
+<p>On DOAJ, the parameters included in the request are passed to our search interface, which provides the top result. This means that using OpenURL isn’t guaranteed to find your result 100% of the time, even if it exists.</p>
+
+<h2 id="improving-results">Improving results</h2>
+
+<p>There are a few things you can try if you keep seeing the <em>Not Found</em> page or getting the wrong result:</p>
+
+<table class="numbered-table numbered-table--labels">
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Troubleshooting tip</th>
+      <th>Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>Use a trustworthy field</td>
+      <td>Identifiers like <code class="highlighter-rouge">issn</code> are more reliable than free text like <code class="highlighter-rouge">title</code>.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Make sure each parameter is correct</td>
+      <td>Ensure there are no typos or strange formatting and that the parameter labels are correct.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Reduce constraints</td>
+      <td>Remove some parameters, like specific volume and issue because these may not be present in our index.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Use OpenURL 1.0</td>
+      <td>This will remove the rewriting step from the process (see below).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="supported-openurl-version">Supported OpenURL version</h2>
+
+<p>DOAJ prefers to receive OpenURL 1.0 requests. However, if the old “0.1” syntax is used, the DOAJ will rewrite it to the new syntax and try again. You will see a redirect to an OpenURL 1.0 URL, then the result.</p>
+
+
+
+            <!-- Display data pages -->
+            
+          </section>
+        </div>
+
+      </div>
+    </main>
+
+

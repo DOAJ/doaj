@@ -1,0 +1,28 @@
+/* Promotional space in sidebar */
+
+.promo {
+  margin: $spacing-04 0;
+  padding: $spacing-03;
+  color: $warm-black;
+  background-color: $fair-pink;
+}
+
+.promo__heading {
+  margin: $spacing-03 0 $spacing-04;
+  @include typescale-04;
+}
+
+.promo__text {
+  margin-bottom: 0;
+}
+
+.promo__link {
+  display: block;
+  margin-top: $spacing-04;
+  text-decoration: none;
+  color: $dark-grey;
+
+  &:before {
+    content: '→ ';
+  }
+}

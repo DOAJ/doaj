@@ -1,14 +1,12 @@
 import os
-import threading
 
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_cors import CORS
-from lxml import etree
+from jinja2 import FileSystemLoader
 
 from portality import settings
-from portality.bll import exceptions
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping
 
@@ -25,12 +23,11 @@ def load_account_for_login_manager(userid):
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path='',
+                static_folder=os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
     configure_app(app)
     setup_error_logging(app)
     setup_jinja(app)
-    app.config["LOAD_CROSSREF_THREAD"] = threading.Thread(target=load_crossref_schema, args=(app, ), daemon=True)
-    app.config["LOAD_CROSSREF_THREAD"].start()
     login_manager.init_app(app)
     CORS(app)
     initialise_apm(app)
@@ -100,62 +97,23 @@ application configuration (settings.py or app.cfg).
     return env
 
 
-def load_crossref_schema(app):
-    schema_path = app.config["SCHEMAS"].get("crossref")
-
-    if not app.config.get("CROSSREF_SCHEMA"):
-        try:
-            schema_doc = etree.parse(schema_path)
-            schema = etree.XMLSchema(schema_doc)
-            app.config["CROSSREF_SCHEMA"] = schema
-        except Exception as e:
-            raise exceptions.IngestException(
-                message="There was an error attempting to load schema from " + schema_path, inner=e)
-
-
-def create_es_connection(app):
-    # temporary logging config for debugging index-per-type
-    #import logging
-    #esprit.raw.configure_logging(logging.DEBUG)
-
+def put_mappings(app, mappings):
     # make a connection to the index
-    if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-        conn = esprit.raw.Connection(host=app.config['ELASTIC_SEARCH_HOST'], index='')
-    else:
-        conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
+    conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
 
-    return conn
-
-
-def mutate_mapping(conn, type, mapping):
-    """ When we are using an index-per-type connection change the mappings to be keyed 'doc' rather than the type """
-    if conn.index_per_type:
-        try:
-            mapping[esprit.raw.INDEX_PER_TYPE_SUBSTITUTE] = mapping.pop(type)
-        except KeyError:
-            # Allow this mapping through unaltered if it isn't keyed by type
-            pass
-
-        # Add the index prefix to the mapping as we create the type
-        type = app.config['ELASTIC_SEARCH_DB_PREFIX'] + type
-    return type
-
-
-def put_mappings(conn, mappings):
     # get the ES version that we're working with
     es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
 
-    # for each mapping (a class may supply multiple), create a mapping, or mapping and index
+    # for each mapping (a class may supply multiple), create them in the index
     for key, mapping in iter(mappings.items()):
-        altered_key = mutate_mapping(conn, key, mapping)
-        if not esprit.raw.type_exists(conn, altered_key, es_version=es_version):
-            r = esprit.raw.put_mapping(conn, altered_key, mapping, es_version=es_version)
-            print("Creating ES Type + Mapping for", altered_key, "; status:", r.status_code)
+        if not esprit.raw.type_exists(conn, key, es_version=es_version):
+            r = esprit.raw.put_mapping(conn, key, mapping, es_version=es_version)
+            print("Creating ES Type + Mapping for", key, "; status:", r.status_code)
         else:
             print("ES Type + Mapping already exists for", key)
 
 
-def initialise_index(app, conn):
+def initialise_index(app):
     if not app.config['INITIALISE_INDEX']:
         app.logger.warn('INITIALISE_INDEX config var is not True, initialise_index command cannot run')
         return
@@ -168,7 +126,7 @@ def initialise_index(app, conn):
     mappings = es_data_mapping.get_mappings(app)
 
     # Send the mappings to ES
-    put_mappings(conn, mappings)
+    put_mappings(app, mappings)
 
 
 def initialise_apm(app):
@@ -185,6 +143,11 @@ def setup_jinja(app):
     app.jinja_env.add_extension('jinja2.ext.loopcontrols')
     app.jinja_env.globals['getattr'] = getattr
     app.jinja_env.globals['type'] = type
+    app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates',
+                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_site',
+                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_includes',
+                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_layouts'])
+
 
     # a jinja filter that prints to the Flask log
     def jinja_debug(text):
@@ -192,6 +155,7 @@ def setup_jinja(app):
         return ''
     app.jinja_env.filters['debug']=jinja_debug
 
+    # app.jinja_env.template_search_path = ["templates", "static_content/templates"]
+
 
 app = create_app()
-es_connection = create_es_connection(app)

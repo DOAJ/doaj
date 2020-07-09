@@ -1,0 +1,14 @@
+/* Styles specific to pages with a sidenav */
+
+.sidenav-page .page-content {
+  padding-right: $spacing-04;
+
+  @media (max-width: 768px) {
+    padding-right: 0;
+  }
+
+  h1 + h2,
+  h2 + h3 {
+    padding-top: 0;
+  }
+}

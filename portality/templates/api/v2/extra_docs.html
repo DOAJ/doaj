@@ -1,0 +1,141 @@
+<h2 id="search_api">Search API</h2>
+
+    <h3 id="query_syntax">Query string syntax</h3>
+    <p>If you'd like to do more complex queries than simple words or phrases, reading <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax" target="_blank">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax</a> should prove very useful. The datastore that backs DOAJ is Elasticsearch and knowing more about its query syntax will let you send more advanced queries to DOAJ. <strong>This is not a prerequisite for using the DOAJ API - in the sections below, we provide instructions for the most common use cases.</strong> Please do email us if you think what you have achieved with the API would be useful to others and would like to add an example to the API documentation below.</p>
+
+    <h3 id="default_query_operator">Default handling of phrases</h3>
+    <p>When searching for e.g. "understanding shadows in 3D scenes", DOAJ's web interface will return articles and journals which have metadata that contains *all* of the words "understanding", "shadows", "in" (may be ignored), "3D" and "scenes". In technical terms, the default query operator is <strong>AND</strong>. You can override it by sending us a query such as "understanding OR shadows". We find that the results returned by AND queries are much more relevant when looking for specific topics, where OR queries are best for exploring what is available, e.g. based loosely on the interests of your users.</p>
+
+    <h3 id="specific_field_search">Searching inside a specific field</h3>
+
+    <p>When you are querying on a specific field you can use the json dot notation used by Elasticsearch, so for example to access the journal title of an article, you could use
+        <pre>bibjson.journal.title:"Journal of Science"</pre>
+    </p>
+
+    <p>Note that all fields are analysed, which means that the above search does not look for the exact string "Journal of Science". To do that, add ".exact" to any string field (not date or number fields) to match the exact contents:
+                <pre>bibjson.journal.title.exact:"Journal of Science"</pre>
+    </p>
+
+
+
+    <h3 id="special_characters">Special characters</h3>
+    <p>All forward slash <code>/</code> characters will be automatically escaped for you unless you escape them yourself. This means any forward slashes <code>/</code> will become <code>\/</code> which ends up encoded as <code>%5C/</code> in a URL since a "naked" backslash <code>\</code> is not allowed in a URL. So you can search for a DOI by giving the articles endpoint either of the following queries (they will give you the same results):
+
+<pre>
+doi:10.3389/fpsyg.2013.00479
+doi:10.3389%5C/fpsyg.2013.00479
+</pre>
+    </p>
+
+
+
+    <h3 id="short_field_names">Short field names</h3>
+    <p>For convenience we also offer shorter field names for you to use when querying. Note that <em>you cannot use the ".exact" notation mentioned above on these substitutions</em>.</p>
+
+    <p>The substitutions for journals are as follows:<br>
+        <ul>
+            <li>title - search within the journal's title</li>
+            <li>issn - the journal's issn</li>
+            <li>publisher - the journal's publisher (not exact match)</li>
+            <li>license - the exact licence</li>
+        </ul>
+    </p>
+
+    <p>In addition, if you have a publisher account with the DOAJ, you may use the field "username" to query for your own publicly available journal records.
+        Usernames are not available in the returned journal records, and no list of usernames is available to the public;
+        you need to know your own username to use this field.  You would include "username:myusername" in your search.</p>
+
+    <p>The substitutions for articles are as follows:<br>
+        <ul>
+            <li>title - search within the article title</li>
+            <li>doi - the article's doi</li>
+            <li>issn - the article's journal's issn</li>
+            <li>publisher - the article's journal's publisher (not exact match)</li>
+            <li>abstract - search within the article abstract</li>
+        </ul>
+    </p>
+
+
+
+    <h3 id="sorting">Sorting of results</h3>
+
+    <p>Each request can take a "sort" url parameter, which can be of the form of one of:</p>
+
+<pre>
+sort=field
+sort=field:direction
+</pre>
+
+    <p>The field again uses the dot notation.</p>
+
+    <p>If specifying the direction, it must be one of "asc" or "desc". If no direction is supplied then "asc" is used.</p>
+
+    <p>So for example</p>
+
+<pre>
+sort=bibjson.title
+sort=bibjson.title:desc
+</pre>
+
+    <p>Note that for fields which may contain multiple values (i.e. arrays), the sort will use the "smallest" value in that field to sort by (depending on the definition of "smallest" for that field type)</p>
+
+
+
+    <h3 id="query_string_advanced_usage">The query string - advanced usage</h3>
+
+    <p>The format of the query part of the URL is that of an Elasticsearch query string, as documented here: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax</a>. Elasticsearch uses Lucene under the hood.</p>
+
+    <p>Some of the Elasticsearch query syntax <strong>has been disabled</strong> in order to prevent queries which may damage performance. The disabled features are:</p>
+
+    <ol>
+        <li><p>Wildcard searches.  You may not put a * into a query string: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_wildcards">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_wildcards</a></p></li>
+        <li><p>Regular expression searches.  You may not put an expression between two forward slashes <code>/regex/</code> into a query string: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_regular_expressions">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_regular_expressions</a>. This is done both for performance reasons and because of the escaping of forward slashes <code>/</code> <a href="#special_characters">described above.</a></p></li>
+        <li><p>Fuzzy Searches.  You may not use the ~ notation: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_fuzziness">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_fuzziness</a></p></li>
+        <li><p>Proximity Searches. <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_proximity_searches">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_proximity_searches</a></p></li>
+    </ol>
+
+    <h2 id="crud_api">CRUD API</h2>
+    <h3 id="creating_articles">Creating articles</h3>
+    <p>Documentation for the structure of the JSON documents that you can send to our API
+        is <a href="https://github.com/DOAJ/doaj/blob/master/docs/system/IncomingAPIArticle.md">hosted on our github</a>.</p>
+
+    <p>If you try to create an article with a DOI or a full-text URL as another one of the articles associated with your account,
+        then the system will detect this as a duplicate. It will overwrite the old article we have with the new data you're supplying
+        via the CRUD Article Create endpoint. It works in the same way as submitting article metadata to DOAJ via XML upload or
+        manual entry with your publisher user account.</p>
+
+    <h3 id="update_requests">Applications - Update Requests</h3>
+    <p>If you wish to submit an application which is intended to provide updated information for an existing Journal you
+    have in DOAJ, then you can submit an Update Request.</p>
+
+    <p>An Update Request can be created by sending a new application record via the <a href="/api/v2/docs#!/CRUD_Applications/post_api_v2_applications">Application CRUD</a> endpoint, and including
+    the identifier of the Journal it replaces in the "admin.current_journal" field:</p>
+
+<pre>
+    POST /api/v2/applications?api_key=?????
+
+    {
+        "admin" : {
+            "current_journal" : 1234567890
+        },
+        "bibjson : { ... }
+    }
+</pre>
+
+    <p>When you do this, a new application will be created, based on the pre-existing Journal.  There are a number of fields that will be <strong>ignored</strong>
+    when provided during an Update Request, these are:</p>
+
+    <ul>
+        <li>Title - bibjson.title</li>
+        <li>Alternative Title - bibjson.alternative_title</li>
+        <li>Print ISSN - bibjson.identifier type=pissn</li>
+        <li>Electronic ISSN - bibjson.identifier type=eissn</li>
+        <li>Contact Name - admin.contact.name</li>
+        <li>Contact Email - admin.contact.email</li>
+    </ul>
+
+    <p>If you need to change any of these fields, please contact us.</p>
+
+    <p>Once you have created a new Update Request, you can make changes to that via the CRUD endpoint (both Update and Delete) until an
+    administrator at DOAJ picks it up for review.  Once it is picked up for review, attempts to update or delete the Update Request will
+    be rejected by the API with a 403 (Forbidden).</p>

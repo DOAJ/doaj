@@ -1,17 +1,66 @@
-{% extends "base.html" %}
+{% block extra_stylesheets %}
+<!-- get Swagger UI css -->
+    <link href='/portality/static/doaj/css/application_form.css' media='screen' rel='stylesheet' type='text/css' />
+
+{% endblock %}
+
+{% extends "layouts/base.html" %}
 
 {% set form_id = "public_application" %}
-{% if obj %}
-    {% set form_action = url_for("doaj.public_application", draft_id=obj.id) %}
-{% else %}
-    {% set form_action = url_for("doaj.public_application") %}
-{% endif %}
-{% set formulaic_after = url_for("doaj.application_thanks") %}
+{% set form_action = url_for("apply.public_application") %}
+{% set formulaic_after = url_for("doaj.suggestion_thanks", _anchor='thanks') %}
 {% set js_validation = False %}
 {% set auto_save = 0 %}
 
+
+
 {% block content scoped %}
-    {% include "application_form/_form.html" %}
+<body id="apply">
+    <main class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <section class="page-content">
+                    <form id="{{ form_id }}"
+                      novalidate
+                      action="{{ form_action }}"
+                      method="post"
+                      data-formulaic-after="{{ formulaic_after }}">
+                    <div class="tab form-section">
+                        {% include "application_form/01-oa-compliance/index.html" %}
+                    </div>
+                    <div class="tab form-section">
+                        {% include "application_form/02-about/index.html" %}
+                    </div>
+                    <div class="tab form-section">
+                        {% include "application_form/03-copyright-licensing/index.html" %}
+                    </div>
+                    <div class="tab form-section">
+                        {% include "application_form/04-editorial/index.html" %}
+                    </div>
+                    <div class="tab form-section">
+                        {% include "application_form/05-business-model/index.html" %}
+                    </div>
+                    <div class="tab form-section">
+                        {% include "application_form/06-best-practice/index.html" %}
+                    </div>
+                        <div class="tab form-section">
+                        {% include "application_form/07-review/index.html" %}
+                    </div>
+
+                    {% include "application_form/_buttons.html" %}
+                </form>
+                </section>
+            </div>
+
+            <div class="col-md-4">
+                <div>
+                    {% include "application_form/pagination_menu.html" %}
+                    {% include "application_form/aside_menu.html" %}
+                </div>
+            </div>
+        </div>
+    </main>
+ </body>
 {% endblock %}
 
 {% block extra_js_bottom scoped %}

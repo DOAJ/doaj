@@ -1,0 +1,37 @@
+
+    <p class="label">Page 6 of 7</p>
+    <h1><span data-feather="archive"></span> Best practice</h1>
+
+<p>The best practices in this section adhere to publishing standards based around findability, preserving the content and ethical publishing practices.</p>
+
+<p>We encourage journals to adopt these best practices as far as possible but they are <strong>not</strong> mandatory for DOAJ indexing.</p>
+
+<hr />
+
+
+    <input type="hidden" name="validated" value="">
+    {% set fs = formulaic_context.fieldset("archiving_policy") %}
+    <h2 class="form__header"> {{ fs.label }}</h2>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+    {% set fs = formulaic_context.fieldset("repository_policy") %}
+    <h2 class="form__header"> {{ fs.label }}</h2>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+    {% set fs = formulaic_context.fieldset("unique_identifiers") %}
+    <h2 class="form__header"> {{ fs.label }}</h2>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+
+
+
+    {% if obj %}
+        <input type="hidden" name="id" value="{{ obj.id }}">
+    {% endif %}
+

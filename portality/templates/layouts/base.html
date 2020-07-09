@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+{%  include "includes/head.html" %}
+{% if not request.cookies.get(config.get("CONSENT_COOKIE_KEY")) %}
+    {% include "doaj/cookie_consent.html" %}
+{% endif %}
+<body>
+
+{% include "includes/header.html" %}
+
+    {% block main_panel %}
+        {% block content %}{% endblock %}
+    {% endblock %}
+
+    {% include '_js_includes.html' %}
+
+    {% block extra_js_bottom %}{% endblock extra_js_bottom %}
+
+{% include "includes/footer.html" %}
+
+{% if not request.cookies.get("doaj-consent") %}
+
+    <script type="text/javascript">
+    jQuery(document).ready(function() {
+        $(".cookie-consent").on("click", setCookieConsent);
+    });
+    </script>
+
+{% endif %}
+
+</body>
+</html>

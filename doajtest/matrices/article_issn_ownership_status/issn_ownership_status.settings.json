@@ -1,66 +1,69 @@
 {
   "parameters": [
     {
-      "type": "index",
-      "name": "test_id"
+      "name": "test_id",
+      "type": "index"
     },
     {
+      "name": "article",
+      "type": "generated",
       "values": {
-        "exists": {
+        "none": {
           "constraints": {
-            "seen_eissn": {
-              "nor": [
-                "-"
-              ]
-            },
-            "seen_pissn": {
-              "nor": [
-                "-"
-              ]
-            },
             "article_eissn": {
-              "nor": [
+              "or": [
                 "-"
               ]
             },
             "article_pissn": {
-              "nor": [
+              "or": [
+                "-"
+              ]
+            },
+            "seen_eissn": {
+              "or": [
+                "-"
+              ]
+            },
+            "seen_pissn": {
+              "or": [
                 "-"
               ]
             }
           }
         },
-        "none": {
+        "exists": {
           "constraints": {
-            "seen_eissn": {
-              "or": [
-                "-"
-              ]
-            },
-            "seen_pissn": {
-              "or": [
-                "-"
-              ]
-            },
             "article_eissn": {
-              "or": [
+              "nor": [
                 "-"
               ]
             },
             "article_pissn": {
-              "or": [
+              "nor": [
+                "-"
+              ]
+            },
+            "seen_eissn": {
+              "nor": [
+                "-"
+              ]
+            },
+            "seen_pissn": {
+              "nor": [
                 "-"
               ]
             }
           }
         }
-      },
-      "type": "generated",
-      "name": "article"
+      }
     },
     {
+      "name": "article_eissn",
+      "type": "generated",
       "values": {
         "-": {},
+        "yes": {},
         "no": {
           "constraints": {
             "article_pissn": {
@@ -69,15 +72,15 @@
               ]
             }
           }
-        },
-        "yes": {}
-      },
-      "type": "generated",
-      "name": "article_eissn"
+        }
+      }
     },
     {
+      "name": "article_pissn",
+      "type": "generated",
       "values": {
         "-": {},
+        "yes": {},
         "no": {
           "constraints": {
             "article_eissn": {
@@ -86,49 +89,40 @@
               ]
             }
           }
-        },
-        "yes": {}
-      },
-      "type": "generated",
-      "name": "article_pissn"
+        }
+      }
     },
     {
+      "name": "owner",
+      "type": "generated",
       "values": {
-        "exists": {},
-        "none": {}
-      },
-      "type": "generated",
-      "name": "owner"
+        "none": {},
+        "exists": {}
+      }
     },
     {
-      "values": {
-        "-": {},
-        "no": {},
-        "yes": {}
-      },
+      "name": "seen_eissn",
       "type": "generated",
-      "name": "seen_eissn"
-    },
-    {
       "values": {
         "-": {},
-        "no": {},
-        "yes": {}
-      },
-      "type": "generated",
-      "name": "seen_pissn"
+        "yes": {},
+        "no": {}
+      }
     },
     {
+      "name": "seen_pissn",
+      "type": "generated",
       "values": {
-        "mix": {
-          "constraints": {
-            "owner": {
-              "or": [
-                "exists"
-              ]
-            }
-          }
-        },
+        "-": {},
+        "yes": {},
+        "no": {}
+      }
+    },
+    {
+      "name": "journal_owner",
+      "type": "generated",
+      "values": {
+        "none": {},
         "correct": {
           "constraints": {
             "owner": {
@@ -139,12 +133,21 @@
           }
         },
         "incorrect": {},
-        "none": {}
-      },
-      "type": "generated",
-      "name": "journal_owner"
+        "mix": {
+          "constraints": {
+            "owner": {
+              "or": [
+                "exists"
+              ]
+            }
+          }
+        }
+      }
     },
     {
+      "name": "raises",
+      "type": "conditional",
+      "default": "",
       "values": {
         "ArgumentException": {
           "conditions": [
@@ -164,10 +167,7 @@
             }
           ]
         }
-      },
-      "type": "conditional",
-      "default": "",
-      "name": "raises"
+      }
     }
   ]
 }

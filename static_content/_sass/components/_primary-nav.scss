@@ -1,0 +1,33 @@
+/* Top / primary nav */
+
+.primary-nav {
+  position: fixed;
+  width: 100vw;
+  z-index: 10;
+  height: 50px;
+  font-weight: 600;
+  background-color: $fair-pink;
+
+  @media (max-width: 768px) {
+    .nav-bar {
+      float: right;
+    }
+
+    .feather-chevron-down,
+    .feather-heart,
+    .primary-nav__item_desktop {
+      display: none !important;
+    }
+  }
+}
+
+.primary-nav__search {
+  padding: 0 $spacing-03;
+  background-color: $grapefruit;
+  cursor: pointer;
+
+  .feather-search {
+    top: $spacing-01;
+    height: 20px;
+  }
+}

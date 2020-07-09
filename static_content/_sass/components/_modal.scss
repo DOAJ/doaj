@@ -1,0 +1,88 @@
+/* Modals */
+
+.modal-open {
+  overflow: hidden;
+
+  .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  display: none;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+
+  &.fade .modal__dialog {
+    -webkit-transform: translate(0, -25%);
+    -ms-transform: translate(0, -25%);
+    -o-transform: translate(0, -25%);
+    transform: translate(0, -25%);
+    -webkit-transition: -webkit-transform 0.3s ease-out;
+    -o-transition: -o-transform 0.3s ease-out;
+    transition: transform 0.3s ease-out;
+  }
+
+  &.in .modal__dialog {
+    -webkit-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
+    transform: translate(0, 0);
+  }
+}
+
+.modal__title {
+  margin: 0 0 $spacing-04 0;
+  @include font-sans;
+}
+
+.modal__close {
+  display: block;
+  margin-top: $spacing-04;
+}
+
+.modal__dialog {
+  position: relative;
+  padding: $spacing-04;
+  margin: $spacing-02;
+  width: auto;
+  background-color: $warm-white;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid $dark-grey;
+}
+
+.modal__backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: $warm-black;
+
+  &.fade {
+    filter: alpha(opacity=0);
+    opacity: 0;
+  }
+
+  &.in {
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+  }
+}
+
+@media (min-width: 768px) {
+  .modal__dialog {
+    width: 600px;
+    margin: 30px auto;
+  }
+}
