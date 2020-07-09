@@ -96,3 +96,5 @@ local_store/tmp/*
 .sass-cache/
 .jekyll-cache/
 .jekyll-metadata
+
+/static_content/css/*

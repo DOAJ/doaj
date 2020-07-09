@@ -1775,6 +1775,16 @@ button[type="submit"] {
     display: none; }
   .filters .filters__list {
     display: block; } }
+.flex-header {
+  display: flex; }
+
+.flex-header__child {
+  margin-top: 0;
+  flex: 1; }
+  .flex-header__child:last-child {
+    width: 25%;
+    text-align: right; }
+
 /* General form styles
    Question = groups paragraph text, label, input for a single question */
 .form__header {
@@ -2143,6 +2153,29 @@ button[type="submit"] {
     border-color: #982E0A;
     background: #982E0A;
     color: #FEFBF8; }
+
+.pagination {
+  text-align: center;
+  font-size: .889em; }
+  .pagination ul {
+    display: flex;
+    padding-left: 0;
+    margin: 0 0 0.75rem 0;
+    list-style: none; }
+    .pagination ul li {
+      flex: 1 1 0; }
+      .pagination ul li:first-child, .pagination ul li:nth-child(2) {
+        text-align: left;
+        flex: 0.25; }
+      .pagination ul li:last-child, .pagination ul li:nth-child(4) {
+        text-align: right;
+        flex: 0.25; }
+  .pagination a {
+    text-decoration: none;
+    color: #5C5956; }
+  .pagination .feather {
+    position: relative;
+    top: 0.1875rem; }
 
 /* Portraits / photographs of people
    Used in biographies, profiles... */
@@ -2605,99 +2638,6 @@ button[type="submit"] {
 .title-list--large {
   font-size: 1.125em; }
 
-/* Sponsors page */
-.sponsor {
-  margin-top: 3rem;
-  margin-bottom: 3rem; }
-  .sponsor:nth-child(3n+1) {
-    clear: both; }
-
-.sponsor__link {
-  display: block; }
-
-.sponsor__logo {
-  max-height: 75px;
-  width: auto; }
-
-.sponsor__name {
-  margin-bottom: 0.75rem;
-  font-weight: 400;
-  font-family: 'Source Sans Pro', sans-serif;
-  letter-spacing: 0.01em;
-  font-size: .889em; }
-
-/* Homepage-specific styles  */
-#homepage .input-group input[type="text"] {
-  width: 40%; }
-#homepage .input-group select {
-  width: 40%;
-  margin-left: -1px; }
-#homepage .input-group input[type="submit"] {
-  width: 20%;
-  margin-left: -1px; }
-#homepage .gold-sponsor {
-  display: block; }
-  #homepage .gold-sponsor img {
-    height: 75px;
-    width: auto; }
-#homepage aside {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-width: 1px 0 0 0;
-  border-style: dashed;
-  border-color: #982E0A;
-  color: #982E0A; }
-  @media (min-width: 769px) {
-    #homepage aside {
-      padding-top: 0;
-      border-width: 0 0 0 1px; } }
-
-/* Specific to journal detail pages */
-.journal-details h1 span {
-  display: block;
-  color: #5C5956;
-  font-weight: 400; }
-.journal-details .tabs {
-  margin-top: 1.5rem; }
-.journal-details .tabs__content h2,
-.journal-details .tabs__content h3,
-.journal-details .tabs__content section,
-.journal-details .tabs__content dl {
-  margin-top: 0;
-  padding-top: 0; }
-.journal-details .tabs__item {
-  flex: 0; }
-  .journal-details .tabs__item a {
-    margin: 0 1.5rem 3rem 0;
-    padding: 0 0 0.375rem 0;
-    border: 0;
-    color: #5C5956; }
-    .journal-details .tabs__item a[aria-selected="true"] {
-      border-bottom: 2px solid #FD5A3B;
-      background: transparent;
-      color: #282624;
-      font-weight: 700; }
-    .journal-details .tabs__item a:hover, .journal-details .tabs__item a:focus, .journal-details .tabs__item a:active {
-      background: none;
-      border-bottom: 2px solid #FD5A3B;
-      color: #282624; }
-.journal-details .three-col {
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column; }
-  @media (min-width: 769px) {
-    .journal-details .three-col {
-      flex-direction: row; } }
-  .journal-details .three-col > section {
-    width: 100%; }
-    @media (min-width: 769px) {
-      .journal-details .three-col > section {
-        padding-bottom: 0;
-        width: calc(100%/3 - 20px); } }
-    @media (min-width: 1280px) {
-      .journal-details .three-col > section {
-        width: calc(100%/3 - 40px); } }
-
 /* Application form page styles */
 @media (max-width: 991px) {
   #apply .application-nav {
@@ -2800,5 +2740,122 @@ button[type="submit"] {
   color: #5C5956;
   border: none;
   margin-left: 10px; }
+
+.article-details__meta {
+  font-size: smaller; }
+  .article-details__meta div {
+    border-right: 1px dashed #982E0A; }
+
+.article-details__abstract {
+  line-height: 1.55;
+  font-family: 'Spectral', serif;
+  letter-spacing: -0.04em; }
+
+/* Homepage-specific styles  */
+#homepage .input-group input[type="text"] {
+  width: 40%; }
+#homepage .input-group select {
+  width: 40%;
+  margin-left: -1px; }
+#homepage .input-group input[type="submit"] {
+  width: 20%;
+  margin-left: -1px; }
+#homepage .gold-sponsor {
+  display: block; }
+  #homepage .gold-sponsor img {
+    height: 75px;
+    width: auto; }
+#homepage aside {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-width: 1px 0 0 0;
+  border-style: dashed;
+  border-color: #982E0A;
+  color: #982E0A; }
+  @media (min-width: 769px) {
+    #homepage aside {
+      padding-top: 0;
+      border-width: 0 0 0 1px; } }
+
+/* Specific to journal detail pages */
+.journal-details h1 span {
+  display: block;
+  color: #5C5956;
+  font-weight: 400; }
+.journal-details .tabs {
+  margin-top: 1.5rem; }
+.journal-details .tabs__content h2,
+.journal-details .tabs__content h3,
+.journal-details .tabs__content section,
+.journal-details .tabs__content dl {
+  margin-top: 0;
+  padding-top: 0; }
+.journal-details .tabs__item {
+  flex: 0; }
+  .journal-details .tabs__item a {
+    margin: 0 1.5rem 3rem 0;
+    padding: 0 0 0.375rem 0;
+    border: 0;
+    color: #5C5956; }
+    .journal-details .tabs__item a[aria-selected="true"] {
+      border-bottom: 2px solid #FD5A3B;
+      background: transparent;
+      color: #282624;
+      font-weight: 700; }
+    .journal-details .tabs__item a:hover, .journal-details .tabs__item a:focus, .journal-details .tabs__item a:active {
+      background: none;
+      border-bottom: 2px solid #FD5A3B;
+      color: #282624; }
+.journal-details .three-col {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column; }
+  @media (min-width: 769px) {
+    .journal-details .three-col {
+      flex-direction: row; } }
+  .journal-details .three-col > section {
+    width: 100%; }
+    @media (min-width: 769px) {
+      .journal-details .three-col > section {
+        padding-bottom: 0;
+        width: calc(100%/3 - 20px); } }
+    @media (min-width: 1280px) {
+      .journal-details .three-col > section {
+        width: calc(100%/3 - 40px); } }
+
+.search__header {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  background-size: cover;
+  background-color: #F8F3EF;
+  background-blend-mode: luminosity;
+  background-position: bottom; }
+  .search__header h1 {
+    margin-bottom: 0.75rem; }
+  .search__header form {
+    margin-bottom: 0; }
+.search h2 {
+  margin-top: 0; }
+
+/* Sponsors page */
+.sponsor {
+  margin-top: 3rem;
+  margin-bottom: 3rem; }
+  .sponsor:nth-child(3n+1) {
+    clear: both; }
+
+.sponsor__link {
+  display: block; }
+
+.sponsor__logo {
+  max-height: 75px;
+  width: auto; }
+
+.sponsor__name {
+  margin-bottom: 0.75rem;
+  font-weight: 400;
+  font-family: 'Source Sans Pro', sans-serif;
+  letter-spacing: 0.01em;
+  font-size: .889em; }
 
 /*# sourceMappingURL=main.css.map */
