@@ -86,6 +86,8 @@ button[type="submit"] {
   &:active,
   &:focus {
     background-color: $grapefruit;
+    border-color: $grapefruit;
+    color: $warm-black;
   }
 }
 

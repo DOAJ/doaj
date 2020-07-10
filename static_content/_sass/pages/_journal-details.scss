@@ -7,46 +7,7 @@
     color: $dark-grey;
     font-weight: 400;
   }
-
-  .tabs {
-    margin-top: $spacing-04;
-  }
-
-  .tabs__content {
-
-    h2,
-    h3,
-    section,
-    dl {
-      margin-top: 0;
-      padding-top: 0;
-    }
-  }
-
-  .tabs__item {
-    flex: 0;
-
-    a {
-      margin: 0 $spacing-04 $spacing-05 0;
-      padding: 0 0 $spacing-02 0;
-      border: 0;
-      color: $dark-grey;
-
-      &[aria-selected="true"] {
-        border-bottom: 2px solid $grapefruit;
-        background: transparent;
-        color: $warm-black;
-        font-weight: 700;
-      }
-
-      &:hover, &:focus, &:active {
-        background: none;
-        border-bottom: 2px solid $grapefruit;
-        color: $warm-black;
-      }
-    }
-  }
-
+  
   .three-col {
     display: flex;
     justify-content: space-between;
