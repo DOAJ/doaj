@@ -1,13 +1,13 @@
 <!-- get jquery js -->
-<script type="text/javascript" src="/static/vendor/jquery-3.4.0/jquery-3.4.0.min.js"></script>
+<script type="text/javascript" src="/portality/static/vendor/jquery-3.4.0/jquery-3.4.0.min.js"></script>
 
 <!-- get bootstrap js -->
-<script type="text/javascript" src="/static/vendor/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/portality/static/vendor/bootstrap-3.3.7/js/bootstrap.min.js"></script>
 
 {% if subject_page %}
 
     <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
-    <script type="text/javascript" src="/static/vendor/jstree-3.0.0-beta10/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript" src="/portality/static/vendor/jstree-3.0.0-beta10/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endif %}
 
@@ -32,26 +32,26 @@
     {% if edit_suggestion_page or edit_journal_page or subject_page %}
 
         <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
-        <script type="text/javascript" src="/static/portality/vendor/jstree-3.0.0-beta10/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+        <script type="text/javascript" src="/portality/static/vendor/jstree-3.0.0-beta10/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
         {% if not subject_page %}
-            <script type="text/javascript" src="/static/doaj/js/suggestions_and_journals.js?v={{config.get('DOAJ_VERSION')}}"></script>
+            <script type="text/javascript" src="/portality/static/js/suggestions_and_journals.js?v={{config.get('DOAJ_VERSION')}}"></script>
         {% endif %}
 
     {% endif %}
 {% endif %}
 
 <!-- get tablesorter -->
-<script type="text/javascript" src="/static/vendor/tablesorter-2.3.10/js/jquery.tablesorter.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/portality/static/vendor/tablesorter-2.3.10/js/jquery.tablesorter.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <!-- get our autocomplete function for select2 -->
-<script type="text/javascript" src="/static/js/autocomplete.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/portality/static/js/autocomplete.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <!-- get our functions for handling form fields fixme: should there be a form_page flag?-->
-<script type="text/javascript" src="/static/js/formutils.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/portality/static/js/formutils.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <!-- get select2 -->
-<script type="text/javascript" src="/static/vendor/select2-3.5.4/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/portality/static/vendor/select2-3.5.4/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 
 <script type="text/javascript">var current_domain = document.location.host;</script>
@@ -60,5 +60,5 @@
 <script type="text/javascript">var es_scheme = current_scheme;</script>
 
 <!-- get the app's js -->
-<script type="text/javascript" src="/static/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/portality/static/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
