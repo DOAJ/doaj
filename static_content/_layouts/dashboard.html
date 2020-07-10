@@ -12,12 +12,12 @@
       <div class="tabs">
         <nav class="tabs__menu">
           <ul class="tabs__list" role="tablist">
-            <li class="tabs__item">
-              <a href="#publisher-journals" role="tab" aria-selected="true">Your journals</a>
+            <li class="tabs__item"role="presentation">
+              <a href="#publisher-drafts" role="tab" aria-selected="true">Drafts</a>
             </li>
 
-            <li class="tabs__item"role="presentation">
-              <a href="#publisher-drafts" role="tab" aria-selected="false">Drafts</a>
+            <li class="tabs__item">
+              <a href="#publisher-journals" role="tab" aria-selected="false">Your journals</a>
             </li>
 
             <li class="tabs__item"role="presentation">
@@ -35,8 +35,11 @@
         </nav>
 
         <div class="row tabs__content">
-          <section id="publisher-journals" class="tabs__panel" role="tabpanel" aria-hidden="false">
+          <section id="publisher-drafts" class="tabs__panel" role="tabpanel" aria-hidden="false">
 
+          </section>
+
+          <section id="publisher-journals" class="tabs__panel" role="tabpanel" aria-hidden="true">
             <header class="col-xs-12">
               <h2>Your journals</h2>
             </header>
@@ -48,19 +51,24 @@
             <div class="col-md-9">
               {% include search-journal-results.html %}
             </div>
-
-          </section>
-
-          <section id="publisher-drafts" class="tabs__panel" role="tabpanel" aria-hidden="true">
-
           </section>
 
           <section id="publisher-update-requests" class="tabs__panel" role="tabpanel" aria-hidden="true">
+            <header class="col-xs-12">
+              <h2>Update requests</h2>
+            </header>
 
+            <div class="col-md-3">
+              {% include search-journal-filters.html %}
+            </div>
+
+            <div class="col-md-9">
+              {% include search-journal-results.html %}
+            </div>
           </section>
 
           <section id="publisher-upload-xml" class="tabs__panel" role="tabpanel" aria-hidden="true">
-            <header class="col-md-6">
+            <header class="col-md-4">
               <h2>Upload article XML</h2>
 
               <div class="alert">
@@ -72,7 +80,7 @@
               </div>
             </header>
 
-            <form class="col-md-6 form">
+            <form class="col-md-8 form">
               <div class="form__question">
                 <label for="upload-xml-file">Select a file</label>
                 <input type="file" id="upload-xml-file" name="upload-xml-file" accept="text/xml">
@@ -100,6 +108,100 @@
           </section>
 
           <section id="publisher-enter-metadata" class="tabs__panel" role="tabpanel" aria-hidden="true">
+            <header class="col-md-4">
+              <h2>Enter article metadata</h2>
+
+              <div class="alert">
+                <p>Lorem ipsum dolor sit amet.</p>
+              </div>
+            </header>
+
+            <form class="col-md-8 form">
+              <div class="form__question">
+                <label for="enter-metadata">Article title</label>
+                <input type="text" id="enter-metadata" name="enter-metadata" placeholder="">
+              </div>
+
+              <div class="form__question">
+                <label for="enter-metadata">Article full-text link</label>
+                <input type="url" id="enter-metadata" name="enter-metadata" placeholder="">
+              </div>
+
+              <div class="form__question">
+                <label for="enter-metadata">DOI</label>
+                <input type="text" id="enter-metadata" name="enter-metadata" placeholder="">
+              </div>
+
+              <h2 class="form__header">Publication date</h2>
+              <div class="form__question">
+                <div class="input-group">
+                  <div class="input-group__input">
+                    <label for="enter-metadata">Month</label>
+                    <input type="number" id="enter-metadata" name="enter-metadata" placeholder="">
+                  </div>
+                  <div class="input-group__input">
+                    <label for="enter-metadata">Year</label>
+                    <input type="number" id="enter-metadata" name="enter-metadata" placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <h2 class="form__header">ISSNs</h2>
+              <div class="form__question">
+                <div class="input-group">
+                  <div class="input-group__input">
+                    <label for="enter-metadata">Print</label>
+                    <input type="number" id="enter-metadata" name="enter-metadata" placeholder="">
+                  </div>
+                  <div class="input-group__input">
+                    <label for="enter-metadata">Online</label>
+                    <input type="number" id="enter-metadata" name="enter-metadata" placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <h2 class="form__header">Journal</h2>
+              <div class="form__question">
+                <div class="input-group">
+                  <div class="input-group__input">
+                    <label for="enter-metadata">Volume</label>
+                    <input type="number" id="enter-metadata" name="enter-metadata" placeholder="">
+                  </div>
+                  <div class="input-group__input">
+                    <label for="enter-metadata">Issue</label>
+                    <input type="number" id="enter-metadata" name="enter-metadata" placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <h2 class="form__header">Page(s)</h2>
+              <div class="form__question">
+                <div class="input-group">
+                  <div class="input-group__input">
+                    <label for="enter-metadata">Start</label>
+                    <input type="number" id="enter-metadata" name="enter-metadata" placeholder="">
+                  </div>
+                  <div class="input-group__input">
+                    <label for="enter-metadata">End</label>
+                    <input type="number" id="enter-metadata" name="enter-metadata" placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <h2 class="form__header">Article content</h2>
+              <div class="form__question">
+                <label for="enter-metadata">Abstract</label>
+                <textarea id="enter-metadata"></textarea>
+              </div>
+
+              <div class="form__question">
+                <label for="enter-metadata"">DOI</label>
+                <input type="text" id="enter-metadata" name="enter-metadata" placeholder="">
+                <p><small>Seperate each keyword with a comma <code>,</code>.</small></p>
+              </div>
+
+              <button type="submit" class="button button--primary">Add article</button>
+            </form>
 
           </section>
         </div>
