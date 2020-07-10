@@ -228,7 +228,6 @@ input, select, button, textarea {
 
   display: block;
   padding: 0.5em;
-  width: 100%;
   background-color: $warm-white;
   border: 1px solid $warm-black;
   font-size: smaller;
@@ -237,7 +236,6 @@ input, select, button, textarea {
 
 select {
   padding-right: 30px;
-  width: 100%;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
