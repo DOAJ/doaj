@@ -5,11 +5,12 @@ from datetime import datetime, timedelta
 import time
 import re
 
-from portality.core import app
+from portality.core import app, es_connection
 import urllib.parse
 import json
 
 import esprit
+
 
 # All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 # You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
@@ -43,15 +44,21 @@ class DomainObject(UserDict, object):
     @classmethod
     def target_whole_index(cls):
         t = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/') + '/'
-        t += app.config['ELASTIC_SEARCH_DB'] + '/'
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE'] and cls.__type__ is not None:
+            t += ','.join([app.config['ELASTIC_SEARCH_DB_PREFIX'] + t for t in cls.__type__.split(',')]) + '/'
+        else:
+            t += app.config['ELASTIC_SEARCH_DB'] + '/'
         return t
-
+            
     @classmethod
     def target(cls):
         t = cls.target_whole_index()
-        t += cls.__type__ + '/'
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+            t += esprit.raw.INDEX_PER_TYPE_SUBSTITUTE + '/'
+        else:
+            t += cls.__type__ + '/'
         return t
-
+    
     @classmethod
     def makeid(cls):
         """Create a new id for data object overwrite this in specific model types if required"""
@@ -107,6 +114,9 @@ class DomainObject(UserDict, object):
 
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
+
+        if 'es_type' not in self.data and self.__type__ is not None:
+            self.data['es_type'] = self.__type__
 
         now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         if (blocking or differentiate) and "last_updated" in self.data:
@@ -246,7 +256,7 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def pull_by_key(cls, key, value):
-        res = cls.query(q={"query": {"term": {key + app.config['FACET_FIELD']: value}}})
+        res = cls.query(q={"query": {"term": {key+app.config['FACET_FIELD']: value}}})
         if res.get('hits', {}).get('total', 0) == 1:
             return cls.pull(res['hits']['hits'][0]['_source']['id'])
         else:
@@ -264,7 +274,7 @@ class DomainObject(UserDict, object):
                     if itm != 'exact' and not itm.startswith('_'):
                         keys.append(prefix + itm + app.config['FACET_FIELD'])
             else:
-                keys = keys + cls.es_keys(mapping=mapping[item]['properties'], prefix=prefix + item + '.')
+                keys = keys + cls.es_keys(mapping=mapping[item]['properties'], prefix=prefix+item+'.')
         keys.sort()
         return keys
 
@@ -356,21 +366,19 @@ class DomainObject(UserDict, object):
         return query
 
     @classmethod
-    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, return_raw_resp=False,
-              raise_es_errors=False, **kwargs):
+    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, return_raw_resp=False, raise_es_errors=False, **kwargs):
         """Perform a query on backend.
 
         :param recid: needed if endpoint is about a record, e.g. mlt
         :param endpoint: default is _search, but could be _mapping, _mlt, _flt etc.
         :param q: maps to query_string parameter if string, or query dict if dict.
-        :param terms: dictionary of terms to filter on. values should be lists.
+        :param terms: dictionary of terms to filter on. values should be lists. 
         :param facets: dict of facets to return from the query.
         :param kwargs: any keyword args as per
             http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
         """
         query = cls.make_query(recid, endpoint, q, terms, facets, **kwargs)
-        return cls.send_query(query, endpoint=endpoint, recid=recid, return_raw_resp=return_raw_resp,
-                              raise_es_errors=raise_es_errors)
+        return cls.send_query(query, endpoint=endpoint, recid=recid, return_raw_resp=return_raw_resp, raise_es_errors=raise_es_errors)
 
     @classmethod
     def send_query(cls, qobj, endpoint='_search', recid='', retry=50, return_raw_resp=False, raise_es_errors=False):
@@ -389,7 +397,7 @@ class DomainObject(UserDict, object):
             except Exception as e:
                 exception = e
             time.sleep(0.5)
-
+                
         if r is not None:
             j = r.json()
 
@@ -434,8 +442,10 @@ class DomainObject(UserDict, object):
             app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
             return
 
-        r = requests.delete(cls.target_whole_index())
-        return r
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+            return esprit.raw.delete_index_by_prefix(es_connection, app.config['ELASTIC_SEARCH_DB_PREFIX'])
+        else:
+            return esprit.raw.delete_index(es_connection)
 
     def update(self, doc):
         """
@@ -525,21 +535,21 @@ class DomainObject(UserDict, object):
         theq = deepcopy(q)
         theq["size"] = page_size
         theq["from"] = 0
-        if "sort" not in theq:  # to ensure complete coverage on a changing index, sort by id is our best bet
+        if "sort" not in theq:             # to ensure complete coverage on a changing index, sort by id is our best bet
             theq["sort"] = [{"_id": {"order": "asc"}}]
         counter = 0
         while True:
             # apply the limit
             if limit is not None and counter >= limit:
                 break
-
+            
             res = cls.query(q=theq)
             rs = cls.handle_es_raw_response(
                 res,
                 wrap=wrap,
                 extra_trace_info=
-                "\nQuery sent to ES:\n{q}\n"
-                "\n\nPage #{counter} of the ES response with size {page_size}."
+                    "\nQuery sent to ES:\n{q}\n"
+                    "\n\nPage #{counter} of the ES response with size {page_size}."
                     .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)
             )
 
