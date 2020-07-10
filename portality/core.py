@@ -101,7 +101,6 @@ application configuration (settings.py or app.cfg).
         )
     return env
 
-
 def load_crossref_schema(app):
     schema_path = app.config["SCHEMAS"].get("crossref")
 
@@ -202,3 +201,4 @@ def setup_jinja(app):
     # app.jinja_env.template_search_path = ["templates", "static_content/templates"]
 
 app = create_app()
+es_connection = create_es_connection(app)
