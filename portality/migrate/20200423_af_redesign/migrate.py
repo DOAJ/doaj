@@ -1,16 +1,20 @@
 """
 Migrate the DOAJ to index-per-type; migrating application and journal types, copies others directly.
+Adds 'type' to every record, which is the model __type__ (necessary for index-per-type)
+
 Source index (sconn) MUST be index-per-project, based on config from settings.py (or overrides):
     ELASTIC_SEARCH_HOST
     ELASTIC_SEARCH_DB
 
-Target index (tconn) will require the app to be configured to use a new index-per-type connection:
+Target index (tconn) supports the app being configured to use a fresh index-per-type connection:
     ELASTIC_SEARCH_HOST
     ELASTIC_SEARCH_INDEX_PER_TYPE = True
     ELASTIC_SEARCH_DB_PREFIX
+But an index-per-project connection above as will work too.
 """
 
 from portality.core import app, es_connection, initialise_index
+from portality.util import ipt_prefix
 
 from portality.models.v1.suggestion import Suggestion as SuggestionV1
 from portality.models.v1.journal import JournalBibJSON as JournalBibJSONV1
@@ -539,10 +543,9 @@ batch_size = 1000
 # * article_history
 # * journal_history
 # * toc
-
 # Start with the straight copy operations
 for ct in copy_types:
-    tt = prefix + ct
+    tt = ipt_prefix(ct)
     print("Copying", ct, "to", tt)
     batch = []
     total = 0
@@ -556,6 +559,7 @@ for ct in copy_types:
 
     try:
         for result in esprit.tasks.scroll(sconn, ct, q=default_query, keepalive="1m", page_size=1000, scan=True):
+            result['es_type'] = ct
             batch.append(result)
             if len(batch) >= batch_size:
                 total += len(batch)
@@ -590,7 +594,7 @@ for ct in copy_types:
 
 # now do the hard migrations
 for smt, tmt, source_model, target_model, processor in migrate_types:
-    tt = prefix + tmt
+    tt = ipt_prefix(tmt)
     print("Migrating", smt, "to", tt)
     batch = []
     total = 0
@@ -604,7 +608,6 @@ for smt, tmt, source_model, target_model, processor in migrate_types:
 
     try:
         for result in esprit.tasks.scroll(sconn, smt, q=default_query, keepalive="2m", page_size=1000, scan=True):
-
             source = source_model(**result)
             try:
                 source.snapshot()  # FIXME: is this what we should actually do?  It means that the history system has a copy of the record at final stage, which seems sensible
@@ -615,7 +618,7 @@ for smt, tmt, source_model, target_model, processor in migrate_types:
             target = target_model()
             processor(source, target)
             target.prep(is_update=False)  # in order to regenerate all the index fields, etc
-
+            target.data['es_type'] = tmt
             batch.append(target.data)
             if len(batch) >= batch_size:
                 total += len(batch)

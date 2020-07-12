@@ -53,8 +53,8 @@ if 'api1' in app.config['FEATURES']:
     app.register_blueprint(api_v1, url_prefix='/api/v1')
 if 'api2' in app.config['FEATURES']:
     app.register_blueprint(api_v2, url_prefix='/api/v2')
-app.register_blueprint(status, url_prefix='/status')
-app.register_blueprint(apply, url_prefix='/apply')
+app.register_blueprint(status, url_prefix='/_status')
+app.register_blueprint(status, url_prefix='/status')   # TODO: remove duplicate route once uptimerobot has been informed
 
 app.register_blueprint(oaipmh)
 app.register_blueprint(openurl)
@@ -176,6 +176,12 @@ def legacy_doaj_XML_schema():
             mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
             )
 
+@app.route("/isCrossrefLoaded")
+def is_crossref_loaded():
+    if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").isAlive():
+        return "false"
+    else:
+        return "true"
 
 # FIXME: this used to calculate the site stats on request, but for the time being
 # this is an unnecessary overhead, so taking it out.  Will need to put something

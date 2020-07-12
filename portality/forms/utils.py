@@ -6,7 +6,7 @@ def expanded2compact(expanded, join_lists=None, repeat_lists=None):
 
     compact = {}
     for k, v in expanded.items():
-        if isinstance(v, list):
+        if isinstance(v, list) and len(v) > 0:
             if isinstance(v[0], dict):
                 i = 0
                 for entry in v:
