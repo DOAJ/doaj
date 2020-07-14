@@ -1126,7 +1126,7 @@ form {
     display: block;
     margin: 0.75rem 0; }
 
-input, select, button {
+input, select, button, .select2-choices {
   /* remove default iOS styles */
   border-radius: 0;
   -webkit-appearance: none;
@@ -2657,7 +2657,8 @@ input[type="checkbox"]:checked + .filter__label {
 #apply hr {
   background-color: #FD5A3B; }
 #apply .add_field__button {
-  margin: 5px; }
+  margin-left: 5px;
+  height: 100%; }
 #apply .remove_field__button {
   color: #5C5956;
   border: none;
