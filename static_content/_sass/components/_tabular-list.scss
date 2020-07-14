@@ -1,0 +1,55 @@
+/* Lists laid out like a table */
+/* First-level item is emphasised */
+
+.tabular-list {
+  display: table;
+  padding: 0;
+  list-style: none;
+  border-collapse: collapse;
+  border-spacing: 0 $spacing-04;
+
+  > li {
+    display: table-row;
+    vertical-align: top;
+    width: 100%;
+    border-bottom: 1px solid rgba($dark-grey, 0.25);
+    counter-increment: row-number;
+    @include font-serif;
+    @include typescale-05;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    > ul {
+      display: table-cell;
+      padding: $spacing-03 0 $spacing-03 $spacing-05;
+      list-style: none;
+      width: 60%;
+      @include font-sans;
+      @include typescale-06;
+    }
+
+    h3 {
+      padding-top: 0;
+      font-size: 1em;
+      font-weight: 400;
+    }
+  }
+}
+
+.tabular-list--ordered {
+  counter-reset: row-number;
+
+  > li,
+  &__row {
+    counter-increment: row-number;
+
+    &::before {
+      vertical-align: baseline;
+      font-weight: 400;
+      content: counter(row-number) '. ';
+      @include font-serif;
+    }
+  }
+}

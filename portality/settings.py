@@ -1,5 +1,4 @@
 import os
-
 from portality import constants
 
 # Use these options to place the application into READ ONLY mode
@@ -18,6 +17,8 @@ OFFLINE_MODE = False
 FEATURES = ['api1','api2']
 VALID_FEATURES = ['api1','api2']
 
+API_VERSION = "2.0.0"
+
 # ========================
 # MAIN SETTINGS
 
@@ -31,6 +32,8 @@ elif BASE_URL.startswith('http://'):
     BASE_DOMAIN = BASE_URL[7:]
 else:
     BASE_DOMAIN = BASE_URL
+
+BASE_API_URL = "http://doaj.org/api/v2/"
 API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
 API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
 
@@ -740,21 +743,6 @@ STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 TOC_CHANGEFREQ = "monthly"
 
 STATIC_PAGES = [
-    ("", "monthly"), # home page
-    # ("/search", "daily"),  # taken out since javascript-enabled bots were spidering this, causing enormous load - there should be other ways to present a list of all journals to them if we need to
-    ("/toc", "monthly"),
-    ("/application/new", "monthly"),
-    ("/about", "monthly"),
-    ("/publishers", "monthly"),
-    ("/support", "monthly"),
-    ("/contact", "yearly"),
-    ("/members", "monthly"),
-    ("/membership", "monthly"),
-    ("/publishermembers", "monthly"),
-    ("/faq", "monthly"),
-    ("/features", "monthly"),
-    ("/oainfo", "monthly"),
-    ("/sponsors", "monthly")
 ]
 
 

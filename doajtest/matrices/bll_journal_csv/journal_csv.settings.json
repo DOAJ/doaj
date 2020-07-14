@@ -8,6 +8,7 @@
       "name": "prune",
       "type": "generated",
       "values": {
+        "True": {},
         "False": {},
         "None": {
           "constraints": {
@@ -37,8 +38,7 @@
               ]
             }
           }
-        },
-        "True": {}
+        }
       }
     },
     {
@@ -69,7 +69,6 @@
       "name": "journals",
       "type": "generated",
       "values": {
-        "3": {},
         "0": {
           "constraints": {
             "journals_with_articles": {
@@ -78,7 +77,8 @@
               ]
             }
           }
-        }
+        },
+        "3": {}
       }
     },
     {
@@ -100,7 +100,8 @@
       "name": "journals_with_articles",
       "type": "generated",
       "values": {
-        "3": {
+        "0": {},
+        "1": {
           "constraints": {
             "journals": {
               "or": [
@@ -109,8 +110,7 @@
             }
           }
         },
-        "0": {},
-        "1": {
+        "3": {
           "constraints": {
             "journals": {
               "or": [
@@ -122,10 +122,21 @@
       }
     },
     {
-      "default": "",
       "name": "raises",
       "type": "conditional",
+      "default": "",
       "values": {
+        "ArgumentException": {
+          "conditions": [
+            {
+              "prune": {
+                "or": [
+                  "None"
+                ]
+              }
+            }
+          ]
+        },
         "IOError": {
           "conditions": [
             {
@@ -139,17 +150,6 @@
               "main_write": {
                 "or": [
                   "fail"
-                ]
-              }
-            }
-          ]
-        },
-        "ArgumentException": {
-          "conditions": [
-            {
-              "prune": {
-                "or": [
-                  "None"
                 ]
               }
             }

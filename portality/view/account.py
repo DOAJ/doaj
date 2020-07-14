@@ -116,7 +116,7 @@ class RedirectForm(Form):
 
 
 class LoginForm(RedirectForm):
-    username = StringField('Username', [validators.DataRequired()])
+    username = StringField('E-mail address or username', [validators.DataRequired()])
     password = PasswordField('Password', [validators.DataRequired()])
 
 
@@ -142,6 +142,9 @@ def login():
             abort(500)
     if request.method == 'POST' and not form.validate():
         flash('Invalid credentials', 'error')
+        # to do: choose which template should be generated
+    if request.args.get("redirected") == "apply":
+        return render_template('account/login_to_apply.html', form=form)
     return render_template('account/login.html', form=form)
 
 

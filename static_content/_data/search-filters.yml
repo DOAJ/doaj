@@ -1,0 +1,4496 @@
+subjects:
+- name: "Medicine "
+  total: 783
+
+- name: "Social Sciences "
+  total: 606
+
+- name: "Education "
+  total: 580
+
+- name: "Social sciences (General) "
+  total: 560
+
+- name: "Education (General) "
+  total: 550
+
+- name: "Medicine (General) "
+  total: 521
+
+- name: "Special aspects of education "
+  total: 457
+
+- name: "Business "
+  total: 409
+
+- name: "Language and Literature "
+  total: 353
+
+- name: "Science "
+  total: 333
+
+- name: "Biology (General) "
+  total: 330
+
+- name: "Philology. Linguistics "
+  total: 298
+
+- name: "Psychology "
+  total: 296
+
+- name: "Public aspects of medicine "
+  total: 294
+
+- name: "Technology "
+  total: 279
+
+- name: "Law "
+  total: 274
+
+- name: "Mathematics "
+  total: 258
+
+- name: "Engineering (General). Civil engineering (General) "
+  total: 257
+
+- name: "Economics as a science "
+  total: 255
+
+- name: "Environmental sciences "
+  total: 239
+
+- name: "Communication. Mass media "
+  total: 227
+
+- name: "Agriculture (General) "
+  total: 224
+
+- name: "Agriculture "
+  total: 214
+
+- name: "Law in general. Comparative and uniform law. Jurisprudence "
+  total: 212
+
+- name: "Philosophy (General) "
+  total: 206
+
+- name: "Theory and practice of education "
+  total: 196
+
+- name: "Geography (General) "
+  total: 190
+
+- name: "Electronic computers. Computer science "
+  total: 189
+
+- name: "Islam "
+  total: 188
+
+- name: "Science (General) "
+  total: 180
+
+- name: "Sociology (General) "
+  total: 178
+
+- name: "Political science "
+  total: 167
+
+- name: "History of scholarship and learning. The humanities "
+  total: 166
+
+- name: "Bibliography. Library science. Information resources "
+  total: 154
+
+- name: "French literature - Italian literature - Spanish literature - Portuguese literature "
+  total: 153
+
+- name: "Philosophy. Psychology. Religion "
+  total: 150
+
+- name: "History (General) "
+  total: 146
+
+- name: "Finance "
+  total: 145
+
+- name: "Literature (General) "
+  total: 142
+
+- name: "Neoplasms. Tumors. Oncology. Including cancer and carcinogens "
+  total: 140
+
+- name: "Information technology "
+  total: 136
+
+- name: "Chemistry "
+  total: 134
+
+- name: "Therapeutics. Pharmacology "
+  total: 134
+
+- name: "Technology (General) "
+  total: 133
+
+- name: "Geography. Anthropology. Recreation "
+  total: 128
+
+- name: "Surgery "
+  total: 124
+
+- name: "Dentistry "
+  total: 123
+
+- name: "Diseases of the circulatory (Cardiovascular) system "
+  total: 118
+
+- name: "Latin America. Spanish America "
+  total: 116
+
+- name: "Political science (General) "
+  total: 116
+
+- name: "Arts in general "
+  total: 115
+
+- name: "Nursing "
+  total: 113
+
+- name: "Physics "
+  total: 113
+
+- name: "Geology "
+  total: 112
+
+- name: "General Works "
+  total: 111
+
+- name: "Fine Arts "
+  total: 110
+
+- name: "Anthropology "
+  total: 109
+
+- name: "Architecture "
+  total: 109
+
+- name: "Management. Industrial management "
+  total: 109
+
+- name: "Sports "
+  total: 108
+
+- name: "History (General) and history of Europe "
+  total: 103
+
+- name: "Archaeology "
+  total: 101
+
+- name: "Ecology "
+  total: 100
+
+- name: "Neurosciences. Biological psychiatry. Neuropsychiatry "
+  total: 100
+
+- name: "Zoology "
+  total: 100
+
+- name: "International relations "
+  total: 99
+
+- name: "Veterinary medicine "
+  total: 99
+
+- name: "Ethnology. Social and cultural anthropology "
+  total: 96
+
+- name: "Botany "
+  total: 93
+
+- name: "Political institutions and public administration (General) "
+  total: 91
+
+- name: "Infectious and parasitic diseases "
+  total: 89
+
+- name: "Language. Linguistic theory. Comparative grammar "
+  total: 88
+
+- name: "Neurology. Diseases of the nervous system "
+  total: 88
+
+- name: "Pediatrics "
+  total: 87
+
+- name: "Accounting. Bookkeeping "
+  total: 86
+
+- name: "Electrical engineering. Electronics. Nuclear engineering "
+  total: 86
+
+- name: "Economic theory. Demography "
+  total: 85
+
+- name: "Genetics "
+  total: 83
+
+- name: "Plant culture "
+  total: 83
+
+- name: "Biotechnology "
+  total: 80
+
+- name: "Internal medicine "
+  total: 80
+
+- name: "Animal culture "
+  total: 78
+
+- name: "Gynecology and obstetrics "
+  total: 77
+
+- name: "Nutrition. Foods and food supply "
+  total: 76
+
+- name: "Economic growth, development, planning "
+  total: 74
+
+- name: "Commerce "
+  total: 73
+
+- name: "Forestry "
+  total: 72
+
+- name: "Microbiology "
+  total: 72
+
+- name: "Pharmacy and materia medica "
+  total: 70
+
+- name: "Mechanical engineering and machinery "
+  total: 67
+
+- name: "Social pathology. Social and public welfare. Criminology "
+  total: 65
+
+- name: "Psychiatry "
+  total: 64
+
+- name: "Visual arts "
+  total: 64
+
+- name: "Materials of engineering and construction. Mechanics of materials "
+  total: 63
+
+- name: "Medical emergencies. Critical care. Intensive care. First aid "
+  total: 63
+
+- name: "Diseases of the genitourinary system. Urology "
+  total: 62
+
+- name: "English language "
+  total: 61
+
+- name: "Computer applications to medicine. Medical informatics "
+  total: 60
+
+- name: "Environmental technology. Sanitary engineering "
+  total: 60
+
+- name: "Medical physics. Medical radiology. Nuclear medicine "
+  total: 59
+
+- name: "Aquaculture. Fisheries. Angling "
+  total: 57
+
+- name: "Computer engineering. Computer hardware "
+  total: 57
+
+- name: "Diseases of the digestive system. Gastroenterology "
+  total: 56
+
+- name: "Immunologic diseases. Allergy "
+  total: 56
+
+- name: "Social history and conditions. Social problems. Social reform "
+  total: 56
+
+- name: "Romanic languages "
+  total: 53
+
+- name: "Sports medicine "
+  total: 53
+
+- name: "Food processing and manufacture "
+  total: 52
+
+- name: "Diseases of the endocrine glands. Clinical endocrinology "
+  total: 50
+
+- name: "Industrial engineering. Management engineering "
+  total: 49
+
+- name: "Ophthalmology "
+  total: 49
+
+- name: "Orthopedic surgery "
+  total: 49
+
+- name: "Economic history and conditions "
+  total: 48
+
+- name: "Religion (General) "
+  total: 47
+
+- name: "Urban groups. The city. Urban sociology "
+  total: 47
+
+- name: "Diseases of the musculoskeletal system "
+  total: 46
+
+- name: "Medical technology "
+  total: 46
+
+- name: "Chemical technology "
+  total: 44
+
+- name: "Diseases of the respiratory system "
+  total: 43
+
+- name: "History of the arts "
+  total: 43
+
+- name: "Biochemistry "
+  total: 42
+
+- name: "Islam. Bahai Faith. Theosophy, etc. "
+  total: 42
+
+- name: "Recreation. Leisure "
+  total: 42
+
+- name: "Women. Feminism "
+  total: 42
+
+- name: "Military Science "
+  total: 40
+
+- name: "Building construction "
+  total: 39
+
+- name: "Dermatology "
+  total: 39
+
+- name: "Meteorology. Climatology "
+  total: 39
+
+- name: "Applied mathematics. Quantitative methods "
+  total: 37
+
+- name: "Computer software "
+  total: 37
+
+- name: "Ethics "
+  total: 37
+
+- name: "Music "
+  total: 36
+
+- name: "Cytology "
+  total: 35
+
+- name: "Mining engineering. Metallurgy "
+  total: 35
+
+- name: "Motor vehicles. Aeronautics. Astronautics "
+  total: 35
+
+- name: "Oceanography "
+  total: 34
+
+- name: "Anesthesiology "
+  total: 33
+
+- name: "Transportation engineering "
+  total: 33
+
+- name: "English literature "
+  total: 32
+
+- name: "Geriatrics "
+  total: 32
+
+- name: "Pathology "
+  total: 32
+
+- name: "Telecommunication "
+  total: 32
+
+- name: "Electronics "
+  total: 31
+
+- name: "Medieval history "
+  total: 31
+
+- name: "Otorhinolaryngology "
+  total: 31
+
+- name: "Aesthetics of cities. City planning and beautifying "
+  total: 30
+
+- name: "Diseases of the blood and blood-forming organs "
+  total: 30
+
+- name: "Human ecology. Anthropogeography "
+  total: 30
+
+- name: "Renewable energy sources "
+  total: 29
+
+- name: "Environmental engineering "
+  total: 28
+
+- name: "Physical geography "
+  total: 28
+
+- name: "Drawing. Design. Illustration "
+  total: 27
+
+- name: "Chemical engineering "
+  total: 26
+
+- name: "Criminal law and procedure "
+  total: 26
+
+- name: "Islamic law "
+  total: 26
+
+- name: "Practical Theology "
+  total: 26
+
+- name: "The family. Marriage. Woman "
+  total: 26
+
+- name: "Communities. Classes. Races "
+  total: 25
+
+- name: "Jurisprudence. Philosophy and theory of law "
+  total: 25
+
+- name: "Physiology "
+  total: 25
+
+- name: "Auxiliary sciences of history "
+  total: 24
+
+- name: "Colonies and colonization. Emigration and immigration. International migration "
+  total: 24
+
+- name: "Demography. Population. Vital events "
+  total: 24
+
+- name: "Doctrinal Theology "
+  total: 24
+
+- name: "General. Including nature conservation, geographical distribution "
+  total: 24
+
+- name: "Optics. Light "
+  total: 24
+
+- name: "Cities. Urban geography "
+  total: 23
+
+- name: "Modern history, 1453- "
+  total: 23
+
+- name: "Nutritional diseases. Deficiency diseases "
+  total: 23
+
+- name: "Philosophy of religion. Psychology of religion. Religion in relation to other subjects "
+  total: 23
+
+- name: "Religions. Mythology. Rationalism "
+  total: 23
+
+- name: "Applied optics. Photonics "
+  total: 22
+
+- name: "Arctic medicine. Tropical medicine "
+  total: 22
+
+- name: "History of education "
+  total: 22
+
+- name: "Marketing. Distribution of products "
+  total: 22
+
+- name: "Other systems of medicine "
+  total: 22
+
+- name: "Slavic languages. Baltic languages. Albanian languages "
+  total: 22
+
+- name: "Statistics "
+  total: 22
+
+- name: "Translating and interpreting "
+  total: 22
+
+- name: "Regional economics. Space in economics "
+  total: 21
+
+- name: "Greek language and literature. Latin language and literature "
+  total: 20
+
+- name: "Museums. Collectors and collecting "
+  total: 20
+
+- name: "Nuclear and particle physics. Atomic energy. Radioactivity "
+  total: 20
+
+- name: "Ancient history "
+  total: 19
+
+- name: "History of Spain "
+  total: 19
+
+- name: "Information resources (General) "
+  total: 19
+
+- name: "Law of Europe "
+  total: 19
+
+- name: "Mechanics of engineering. Applied mechanics "
+  total: 19
+
+- name: "Medical philosophy. Medical ethics "
+  total: 19
+
+- name: "Political theory "
+  total: 19
+
+- name: "Probabilities. Mathematical statistics "
+  total: 19
+
+- name: "Toxicology. Poisons "
+  total: 19
+
+- name: "Transportation and communications "
+  total: 19
+
+- name: "Analysis "
+  total: 18
+
+- name: "Christianity "
+  total: 18
+
+- name: "History America "
+  total: 18
+
+- name: "History of Asia "
+  total: 18
+
+- name: "Labor. Work. Working class "
+  total: 18
+
+- name: "Production of electric energy or power. Powerplants. Central stations "
+  total: 18
+
+- name: "Specialties of internal medicine "
+  total: 18
+
+- name: "City planning "
+  total: 17
+
+- name: "Hospitality industry. Hotels, clubs, restaurants, etc. Food service "
+  total: 17
+
+- name: "Music and books on Music "
+  total: 17
+
+- name: "Political institutions and public administration - Asia (Asian studies only) "
+  total: 17
+
+- name: "Geophysics. Cosmic physics "
+  total: 16
+
+- name: "Industries. Land use. Labor "
+  total: 16
+
+- name: "Neurophysiology and neuropsychology "
+  total: 16
+
+- name: "Water supply for domestic and industrial purposes "
+  total: 16
+
+- name: "Agricultural industries "
+  total: 15
+
+- name: "Consciousness. Cognition "
+  total: 15
+
+- name: "Energy industries. Energy policy. Fuel trade "
+  total: 15
+
+- name: "Environmental pollution "
+  total: 15
+
+- name: "Evolution "
+  total: 15
+
+- name: "Geodesy "
+  total: 15
+
+- name: "Naval architecture. Shipbuilding. Marine engineering "
+  total: 15
+
+- name: "Recreation leadership. Administration of recreation services "
+  total: 15
+
+- name: "Speculative philosophy "
+  total: 15
+
+- name: "Therapeutics. Psychotherapy "
+  total: 15
+
+- name: "Astronomy "
+  total: 14
+
+- name: "History of Africa "
+  total: 14
+
+- name: "History of the Greco-Roman World "
+  total: 14
+
+- name: "Hydraulic engineering "
+  total: 14
+
+- name: "Journalism. The periodical press, etc. "
+  total: 14
+
+- name: "Miscellaneous systems and treatments "
+  total: 14
+
+- name: "Personnel management. Employment management "
+  total: 14
+
+- name: "Production management. Operations management "
+  total: 14
+
+- name: "Aesthetics "
+  total: 13
+
+- name: "Architectural engineering. Structural engineering of buildings "
+  total: 13
+
+- name: "Comparative law. International uniform law "
+  total: 13
+
+- name: "Discourse analysis "
+  total: 13
+
+- name: "Folklore "
+  total: 13
+
+- name: "History of Civilization "
+  total: 13
+
+- name: "Naval Science "
+  total: 13
+
+- name: "Nuclear engineering. Atomic power "
+  total: 13
+
+- name: "Oriental languages and literatures "
+  total: 13
+
+- name: "Plant ecology "
+  total: 13
+
+- name: "History of Eastern Europe "
+  total: 12
+
+- name: "Human settlements. Communities "
+  total: 12
+
+- name: "Management information systems "
+  total: 12
+
+- name: "Regional planning "
+  total: 12
+
+- name: "River, lake, and water-supply engineering (General) "
+  total: 12
+
+- name: "Social sciences and state - Asia (Asian studies only) "
+  total: 12
+
+- name: "Technological innovations. Automation "
+  total: 12
+
+- name: "Analytical chemistry "
+  total: 11
+
+- name: "Industrial medicine. Industrial hygiene "
+  total: 11
+
+- name: "Industrial safety. Industrial accident prevention "
+  total: 11
+
+- name: "Manufactures "
+  total: 11
+
+- name: "Organic chemistry "
+  total: 11
+
+- name: "Polymers and polymer manufacture "
+  total: 11
+
+- name: "Prehistoric archaeology "
+  total: 11
+
+- name: "Special situations and conditions "
+  total: 11
+
+- name: "Urbanization. City and country "
+  total: 11
+
+- name: "Engineering geology. Rock mechanics. Soil mechanics. Underground construction "
+  total: 10
+
+- name: "Human anatomy "
+  total: 10
+
+- name: "Industrial psychology "
+  total: 10
+
+- name: "Motion pictures "
+  total: 10
+
+- name: "Ocean engineering "
+  total: 10
+
+- name: "The performing arts. Show business "
+  total: 10
+
+- name: "Architectural drawing and design "
+  total: 9
+
+- name: "Banking "
+  total: 9
+
+- name: "Cartography "
+  total: 9
+
+- name: "Computational linguistics. Natural language processing "
+  total: 9
+
+- name: "Control engineering systems. Automatic machinery (General) "
+  total: 9
+
+- name: "Disasters and engineering "
+  total: 9
+
+- name: "Environmental law "
+  total: 9
+
+- name: "Germanic languages. Scandinavian languages "
+  total: 9
+
+- name: "Homeopathy "
+  total: 9
+
+- name: "Land use "
+  total: 9
+
+- name: "Languages and literature of Eastern Asia, Africa, Oceania "
+  total: 9
+
+- name: "Musical instruction and study "
+  total: 9
+
+- name: "Petroleum refining. Petroleum products "
+  total: 9
+
+- name: "Private international law. Conflict of laws "
+  total: 9
+
+- name: "African languages and literature "
+  total: 8
+
+- name: "American literature "
+  total: 8
+
+- name: "Automation "
+  total: 8
+
+- name: "Civil law "
+  total: 8
+
+- name: "Clay industries. Ceramics. Glass "
+  total: 8
+
+- name: "Environmental protection "
+  total: 8
+
+- name: "Epistemology. Theory of knowledge "
+  total: 8
+
+- name: "General works "
+  total: 8
+
+- name: "History of medicine. Medical expeditions "
+  total: 8
+
+- name: "Judaism "
+  total: 8
+
+- name: "Paleontology "
+  total: 8
+
+- name: "Practical religion. The Christian life "
+  total: 8
+
+- name: "Public finance "
+  total: 8
+
+- name: "Reproduction "
+  total: 8
+
+- name: "Textile bleaching, dyeing, printing, etc. "
+  total: 8
+
+- name: "The Bible "
+  total: 8
+
+- name: "Vocational rehabilitation. Employment of people with disabilities "
+  total: 8
+
+- name: "Acoustics. Sound "
+  total: 7
+
+- name: "Animal biochemistry "
+  total: 7
+
+- name: "City population. Including children in cities, immigration "
+  total: 7
+
+- name: "Crystallography "
+  total: 7
+
+- name: "Drama "
+  total: 7
+
+- name: "History of Italy "
+  total: 7
+
+- name: "History of Russia. Soviet Union. Former Soviet Republics "
+  total: 7
+
+- name: "Industrial hygiene. Industrial welfare "
+  total: 7
+
+- name: "Information theory "
+  total: 7
+
+- name: "Inorganic chemistry "
+  total: 7
+
+- name: "Japanese language and literature "
+  total: 7
+
+- name: "Language acquisition "
+  total: 7
+
+- name: "Law of nations "
+  total: 7
+
+- name: "Life "
+  total: 7
+
+- name: "Logic "
+  total: 7
+
+- name: "Mathematical geography. Cartography "
+  total: 7
+
+- name: "Metaphysics "
+  total: 7
+
+- name: "Microbial ecology "
+  total: 7
+
+- name: "Organizational behaviour, change and effectiveness. Corporate culture "
+  total: 7
+
+- name: "Systems engineering "
+  total: 7
+
+- name: "1789- "
+  total: 6
+
+- name: "Advertising "
+  total: 6
+
+- name: "Business ethics "
+  total: 6
+
+- name: "Business mathematics. Commercial arithmetic. Including tables, etc. "
+  total: 6
+
+- name: "Cybernetics "
+  total: 6
+
+- name: "Dancing "
+  total: 6
+
+- name: "Descriptive and experimental mechanics "
+  total: 6
+
+- name: "Dramatic representation. The theater "
+  total: 6
+
+- name: "Engineering design "
+  total: 6
+
+- name: "German literature "
+  total: 6
+
+- name: "History and principles of religions "
+  total: 6
+
+- name: "History of Balkan Peninsula "
+  total: 6
+
+- name: "Industry "
+  total: 6
+
+- name: "Medical legislation "
+  total: 6
+
+- name: "Mental healing "
+  total: 6
+
+- name: "Natural history (General) "
+  total: 6
+
+- name: "Physical and theoretical chemistry "
+  total: 6
+
+- name: "Risk in industry. Risk management "
+  total: 6
+
+- name: "Stratigraphy "
+  total: 6
+
+- name: "Astrophysics "
+  total: 5
+
+- name: "Atomic physics. Constitution and properties of matter "
+  total: 5
+
+- name: "Commercial geography. Economic geography "
+  total: 5
+
+- name: "Diplomatics. Archives. Seals "
+  total: 5
+
+- name: "Energy conservation "
+  total: 5
+
+- name: "Engineering economy "
+  total: 5
+
+- name: "Greek philology and language "
+  total: 5
+
+- name: "History of Central Europe "
+  total: 5
+
+- name: "History of Greece "
+  total: 5
+
+- name: "Literature on music "
+  total: 5
+
+- name: "Machine design and drawing "
+  total: 5
+
+- name: "Moral theology "
+  total: 5
+
+- name: "Oral communication. Speech "
+  total: 5
+
+- name: "Public law "
+  total: 5
+
+- name: "Socialism. Communism. Anarchism "
+  total: 5
+
+- name: "Transportation and communication "
+  total: 5
+
+- name: "Applications of electric power "
+  total: 4
+
+- name: "Cadastral mapping "
+  total: 4
+
+- name: "Commercial law "
+  total: 4
+
+- name: "Construction industry "
+  total: 4
+
+- name: "Dynamic and structural geology "
+  total: 4
+
+- name: "Electricity and magnetism "
+  total: 4
+
+- name: "Europe (General) "
+  total: 4
+
+- name: "Gas industry "
+  total: 4
+
+- name: "Health Sciences "
+  total: 4
+
+- name: "History of Great Britain "
+  total: 4
+
+- name: "History of Law "
+  total: 4
+
+- name: "Indo-Iranian languages and literature "
+  total: 4
+
+- name: "Labor market. Labor supply. Labor demand "
+  total: 4
+
+- name: "Labor policy. Labor and the state "
+  total: 4
+
+- name: "Lexicography "
+  total: 4
+
+- name: "Men "
+  total: 4
+
+- name: "Mineralogy "
+  total: 4
+
+- name: "Modern "
+  total: 4
+
+- name: "Osteopathy "
+  total: 4
+
+- name: "Pharmaceutical industry "
+  total: 4
+
+- name: "Public relations. Industrial publicity "
+  total: 4
+
+- name: "Semantics "
+  total: 4
+
+- name: "Style. Composition. Rhetoric "
+  total: 4
+
+- name: "America "
+  total: 3
+
+- name: "Business and Economics "
+  total: 3
+
+- name: "Business records management "
+  total: 3
+
+- name: "Engineering machinery, tools, and implements "
+  total: 3
+
+- name: "Environmental effects of industries and plants "
+  total: 3
+
+- name: "Fermentation industries. Beverages. Alcohol "
+  total: 3
+
+- name: "Finnic. Baltic-Finnic "
+  total: 3
+
+- name: "History "
+  total: 3
+
+- name: "History of Poland "
+  total: 3
+
+- name: "Home economics "
+  total: 3
+
+- name: "Human evolution "
+  total: 3
+
+- name: "Industrial electrochemistry "
+  total: 3
+
+- name: "Insurance "
+  total: 3
+
+- name: "Large industry. Factory system. Big business "
+  total: 3
+
+- name: "Management of special enterprises "
+  total: 3
+
+- name: "Microscopy "
+  total: 3
+
+- name: "Oils, fats, and waxes "
+  total: 3
+
+- name: "Petrology "
+  total: 3
+
+- name: "Photography "
+  total: 3
+
+- name: "Physical anthropology. Somatology "
+  total: 3
+
+- name: "Production capacity. Manufacturing capacity "
+  total: 3
+
+- name: "Rural industries "
+  total: 3
+
+- name: "Shipment of goods. Delivery of goods "
+  total: 3
+
+- name: "Small and medium-sized businesses, artisans, handicrafts, trades "
+  total: 3
+
+- name: "Social insurance. Social security. Pension "
+  total: 3
+
+- name: "Societies: secret, benevolent, etc. "
+  total: 3
+
+- name: "Special industries and trades "
+  total: 3
+
+- name: "Structural engineering (General) "
+  total: 3
+
+- name: "Thermodynamics "
+  total: 3
+
+- name: "United States "
+  total: 3
+
+- name: "Urban renewal. Urban redevelopment "
+  total: 3
+
+- name: "Vocational guidance. Career development "
+  total: 3
+
+- name: "Analytic mechanics "
+  total: 2
+
+- name: "Asia and Eurasia, Africa, Pacific Area, and Antarctica "
+  total: 2
+
+- name: "Bibliography "
+  total: 2
+
+- name: "Bridge engineering "
+  total: 2
+
+- name: "Business communication. Including business report writing, business correspondence "
+  total: 2
+
+- name: "Chemical industries "
+  total: 2
+
+- name: "Chemicals: Manufacture, use, etc. "
+  total: 2
+
+- name: "Chinese language and literature "
+  total: 2
+
+- name: "Chiropractic "
+  total: 2
+
+- name: "Christian Denominations "
+  total: 2
+
+- name: "Comparative grammar "
+  total: 2
+
+- name: "Conservation and restoration of prints "
+  total: 2
+
+- name: "Decorative arts "
+  total: 2
+
+- name: "Distribution or transmission of electric power "
+  total: 2
+
+- name: "Economics "
+  total: 2
+
+- name: "Electricity "
+  total: 2
+
+- name: "Elementary particle physics "
+  total: 2
+
+- name: "Fossil man. Human paleontology "
+  total: 2
+
+- name: "Fuel "
+  total: 2
+
+- name: "General. Including alchemy "
+  total: 2
+
+- name: "Heat "
+  total: 2
+
+- name: "Highway engineering. Roads and pavements "
+  total: 2
+
+- name: "History of France "
+  total: 2
+
+- name: "History of Low Countries - Benelux Countries "
+  total: 2
+
+- name: "History of Oceania (South Seas) "
+  total: 2
+
+- name: "History of Portugal "
+  total: 2
+
+- name: "Labor in politics. Political activity of the working class "
+  total: 2
+
+- name: "Mechanical drawing. Engineering graphics "
+  total: 2
+
+- name: "North Germanic. Scandinavian "
+  total: 2
+
+- name: "Office management "
+  total: 2
+
+- name: "Oratory. Elocution, etc. "
+  total: 2
+
+- name: "Periodicals "
+  total: 2
+
+- name: "Print media "
+  total: 2
+
+- name: "Professions (General). Professional employees "
+  total: 2
+
+- name: "Railroad engineering and operation "
+  total: 2
+
+- name: "Real estate business "
+  total: 2
+
+- name: "Regulation of industry, trade, and commerce. Occupational law "
+  total: 2
+
+- name: "Religions of the world "
+  total: 2
+
+- name: "Religious ethics "
+  total: 2
+
+- name: "Revenue. Taxation. Internal revenue "
+  total: 2
+
+- name: "Social legislation "
+  total: 2
+
+- name: "Social responsibility of business "
+  total: 2
+
+- name: "South Asia. Southeast Asia. East Asia "
+  total: 2
+
+- name: "United States local history "
+  total: 2
+
+- name: "Academies and learned societies "
+  total: 1
+
+- name: "Balance of trade "
+  total: 1
+
+- name: "Biography "
+  total: 1
+
+- name: "Buddhism "
+  total: 1
+
+- name: "Business and Management "
+  total: 1
+
+- name: "By period "
+  total: 1
+
+- name: "Canals and inland navigation. Waterways "
+  total: 1
+
+- name: "Cattle "
+  total: 1
+
+- name: "Cellular telephone services industry. Wireless telephone industry "
+  total: 1
+
+- name: "Competition "
+  total: 1
+
+- name: "Dairy processing. Dairy products "
+  total: 1
+
+- name: "Dairying "
+  total: 1
+
+- name: "Details in building design and construction. Including walls, roofs "
+  total: 1
+
+- name: "Dictionaries and other general reference works "
+  total: 1
+
+- name: "Earth and Environmental Sciences "
+  total: 1
+
+- name: "Earthwork. Foundations "
+  total: 1
+
+- name: "Economic biology "
+  total: 1
+
+- name: "Economic geography of the oceans (General) "
+  total: 1
+
+- name: "Electric apparatus and materials. Electric circuits. Electric networks "
+  total: 1
+
+- name: "Employee participation in management. Employee ownership. Industrial democracy. Works councils "
+  total: 1
+
+- name: "Ethnology "
+  total: 1
+
+- name: "Geography "
+  total: 1
+
+- name: "Geomagnetism "
+  total: 1
+
+- name: "Handicrafts. Arts and crafts "
+  total: 1
+
+- name: "Harbors and coast protective works. Coastal engineering. Lighthouses "
+  total: 1
+
+- name: "History of Austria. Liechtenstein. Hungary. Czechoslovakia "
+  total: 1
+
+- name: "History of Germany "
+  total: 1
+
+- name: "History of Northern Europe. Scandinavia "
+  total: 1
+
+- name: "History of specific doctrines and movements. Heresies and schisms "
+  total: 1
+
+- name: "Hungary "
+  total: 1
+
+- name: "Industrial arbitration. Meditation and conciliation "
+  total: 1
+
+- name: "Industrial directories "
+  total: 1
+
+- name: "Instruments and machines "
+  total: 1
+
+- name: "Irrigation engineering. Reclamation of wasteland. Drainage "
+  total: 1
+
+- name: "Labor systems "
+  total: 1
+
+- name: "Land tenure "
+  total: 1
+
+- name: "Library and Information Science "
+  total: 1
+
+- name: "Low temperature engineering. Cryogenic engineering. Refrigeration "
+  total: 1
+
+- name: "Manners and customs (General) "
+  total: 1
+
+- name: "Maps "
+  total: 1
+
+- name: "Markets. Fairs "
+  total: 1
+
+- name: "Mathematics and Statistics "
+  total: 1
+
+- name: "Metropolitan areas "
+  total: 1
+
+- name: "Mineral industries. Metal trade "
+  total: 1
+
+- name: "Multidisciplinary "
+  total: 1
+
+- name: "Municipal refuse. Solid wastes "
+  total: 1
+
+- name: "Norway "
+  total: 1
+
+- name: "Norwegian literature "
+  total: 1
+
+- name: "Packaging "
+  total: 1
+
+- name: "Painting "
+  total: 1
+
+- name: "Plasma physics. Ionized gases "
+  total: 1
+
+- name: "Printmaking and engraving "
+  total: 1
+
+- name: "Protection of buildings. Including protection from dampness, fire, burglary "
+  total: 1
+
+- name: "Public Health "
+  total: 1
+
+- name: "Radioactivity and radioactive substances "
+  total: 1
+
+- name: "River protective works. Regulation. Flood control "
+  total: 1
+
+- name: "Settlements "
+  total: 1
+
+- name: "Sewage collection and disposal systems. Sewerage "
+  total: 1
+
+- name: "Special types of environment "
+  total: 1
+
+- name: "Standardization. Simplification. Waste "
+  total: 1
+
+- name: "Systems of building construction. Including fireproof construction, concrete construction "
+  total: 1
+
+- name: "The city as an economic factor. City promotion "
+  total: 1
+
+- name: "Trade unions. Labor unions. Workers associations "
+  total: 1
+
+- name: "Ural-Altaic languages "
+  total: 1
+
+- name: "Work groups. Team work in industry. Quality circles "
+  total: 1
+
+apc:
+- name: Yes
+  total: 10565
+
+- name: No
+  total: 3970
+
+seal:
+- name: Yes
+  total: 13197
+
+- name: No
+  total: 1,381
+
+licenses:
+- name: CC BY
+  total: 5993
+
+- name: CC BY-NC-ND
+  total: 3189
+
+- name: CC BY-NC
+  total: 2626
+
+- name: CC BY-NC-SA
+  total: 1251
+
+- name: CC BY-SA
+  total: 953
+
+- name: Publisher’s own license
+  total: 372
+
+- name: CC BY-ND
+  total: 168
+
+- name: AJAP Licence
+  total: 1
+
+- name: Public Domain
+  total: 1
+
+publisher:
+- name: "Elsevier "
+  total: 343
+
+- name: "BMC "
+  total: 322
+
+- name: "Sciendo "
+  total: 309
+
+- name: "Hindawi Limited "
+  total: 238
+
+- name: "MDPI AG "
+  total: 201
+
+- name: "SpringerOpen "
+  total: 198
+
+- name: "Wolters Kluwer Medknow Publications "
+  total: 198
+
+- name: "Taylor & Francis Group "
+  total: 163
+
+- name: "SAGE Publishing "
+  total: 159
+
+- name: "Wiley "
+  total: 119
+
+- name: "Dove Medical Press "
+  total: 101
+
+- name: "Universitas Negeri Semarang "
+  total: 91
+
+- name: "Frontiers Media S.A. "
+  total: 65
+
+- name: "De Gruyter "
+  total: 63
+
+- name: "Oxford University Press "
+  total: 51
+
+- name: "PAGEPress Publications "
+  total: 50
+
+- name: "Universidade de São Paulo "
+  total: 46
+
+- name: "Universitas Udayana "
+  total: 46
+
+- name: "Nature Publishing Group "
+  total: 45
+
+- name: "Universidad Complutense de Madrid "
+  total: 44
+
+- name: "Ubiquity Press "
+  total: 43
+
+- name: "Universitas Gadjah Mada "
+  total: 42
+
+- name: "Copernicus Publications "
+  total: 39
+
+- name: "AOSIS "
+  total: 36
+
+- name: "Consejo Superior de Investigaciones Científicas "
+  total: 36
+
+- name: "University of Bologna "
+  total: 36
+
+- name: "University of Brawijaya "
+  total: 36
+
+- name: "Universidad Nacional de Colombia "
+  total: 35
+
+- name: "Pensoft Publishers "
+  total: 33
+
+- name: "Universidad de Chile "
+  total: 32
+
+- name: "Universidade Estadual de Campinas "
+  total: 32
+
+- name: "Emerald Publishing "
+  total: 30
+
+- name: "Conselho Nacional de Pesquisa e Pós-graduação em Direito (CONPEDI) "
+  total: 29
+
+- name: "Firenze University Press "
+  total: 29
+
+- name: "Universidade Federal de Santa Catarina "
+  total: 29
+
+- name: "Universidad Nacional de La Plata "
+  total: 28
+
+- name: "Universidad de Costa Rica "
+  total: 28
+
+- name: "Universitas Negeri Malang "
+  total: 28
+
+- name: "Cambridge University Press "
+  total: 27
+
+- name: "EDP Sciences "
+  total: 27
+
+- name: "Karger Publishers "
+  total: 27
+
+- name: "Termedia Publishing House "
+  total: 26
+
+- name: "Galenos Yayinevi "
+  total: 25
+
+- name: "Universidade Federal de Minas Gerais "
+  total: 25
+
+- name: "Universidade do Estado do Rio de Janeiro "
+  total: 25
+
+- name: "BMJ Publishing Group "
+  total: 24
+
+- name: "KeAi "
+  total: 24
+
+- name: "KeAi Communications Co. Ltd. "
+  total: 24
+
+- name: "Lodz University Press "
+  total: 24
+
+- name: "Muhammadiyah University Press "
+  total: 24
+
+- name: "Universidade de Brasília "
+  total: 24
+
+- name: "Universitas Indonesia "
+  total: 24
+
+- name: "Vilnius University Press "
+  total: 24
+
+- name: "Universitas Negeri Yogyakarta "
+  total: 23
+
+- name: "Università degli Studi di Milano "
+  total: 23
+
+- name: "Shiraz University of Medical Sciences "
+  total: 22
+
+- name: "Universidad de Murcia "
+  total: 22
+
+- name: "Universitat de Barcelona "
+  total: 22
+
+- name: "University Library System, University of Pittsburgh "
+  total: 22
+
+- name: "Universidad de Granada "
+  total: 21
+
+- name: "Groupe d’Etudes et de Recherches pour le Français Langue Internationale (GERFLINT) "
+  total: 20
+
+- name: "Mashhad University of Medical Sciences "
+  total: 20
+
+- name: "Universitas Airlangga "
+  total: 20
+
+- name: "University of Isfahan "
+  total: 20
+
+- name: "University of Tehran "
+  total: 20
+
+- name: "Diponegoro University "
+  total: 19
+
+- name: "Universidad de Buenos Aires "
+  total: 19
+
+- name: "Universidade Federal de Goiás "
+  total: 19
+
+- name: "V. N. Karazin Kharkiv National University "
+  total: 19
+
+- name: "eScholarship Publishing, University of California "
+  total: 19
+
+- name: "Allameh Tabataba'i University Press "
+  total: 18
+
+- name: "Ediciones Universidad de Salamanca "
+  total: 18
+
+- name: "Open Library of Humanities "
+  total: 18
+
+- name: "Peoples’ Friendship University of Russia (RUDN University) "
+  total: 18
+
+- name: "Universidade Federal do Rio de Janeiro "
+  total: 18
+
+- name: "AIMS Press "
+  total: 17
+
+- name: "JMIR Publications "
+  total: 17
+
+- name: "Karolinum Press "
+  total: 17
+
+- name: "Universidade Federal do Rio Grande do Sul "
+  total: 17
+
+- name: "Universitas Negeri Surabaya "
+  total: 17
+
+- name: "European Alliance for Innovation (EAI) "
+  total: 16
+
+- name: "Scandinavian University Press/Universitetsforlaget "
+  total: 16
+
+- name: "Universidad Nacional de Córdoba "
+  total: 16
+
+- name: "Universidad de Antioquia "
+  total: 16
+
+- name: "Universitat Autònoma de Barcelona "
+  total: 16
+
+- name: "Zibeline International "
+  total: 16
+
+- name: "European Medical Journal "
+  total: 15
+
+- name: "Shahid Beheshti University of Medical Sciences "
+  total: 15
+
+- name: "Universidad Nacional Autónoma de México "
+  total: 15
+
+- name: "Universidad Nacional de Educación a Distancia (UNED) "
+  total: 15
+
+- name: "Universidade Estadual Paulista "
+  total: 15
+
+- name: "Wolters Kluwer "
+  total: 15
+
+- name: "Bogor Agricultural University "
+  total: 14
+
+- name: "Exeley Inc. "
+  total: 14
+
+- name: "Ferdowsi University of Mashhad "
+  total: 14
+
+- name: "Hindawi-Wiley "
+  total: 14
+
+- name: "Shahid Sadoughi University of Medical Sciences "
+  total: 14
+
+- name: "Universidade Estadual de Londrina "
+  total: 14
+
+- name: "Universidade Federal Fluminense "
+  total: 14
+
+- name: "Adis, Springer Healthcare "
+  total: 13
+
+- name: "Alzahra University "
+  total: 13
+
+- name: "Islamic Azad University "
+  total: 13
+
+- name: "LLC \"CPC \"Business Perspectives\" "
+  total: 13
+
+- name: "Michigan Publishing "
+  total: 13
+
+- name: "Tehran University of Medical Sciences "
+  total: 13
+
+- name: "Universidad de Alicante "
+  total: 13
+
+- name: "Universidade Federal da Grande Dourados "
+  total: 13
+
+- name: "Universidade Federal de Uberlândia "
+  total: 13
+
+- name: "Universitas Negeri Jakarta "
+  total: 13
+
+- name: "Universitas Pasundan "
+  total: 13
+
+- name: "Universitas Pendidikan Indonesia "
+  total: 13
+
+- name: "Moscow State University of Psychology and Education "
+  total: 12
+
+- name: "Pontificia Universidad Católica del Perú "
+  total: 12
+
+- name: "Pontifícia Universidade Católica de São Paulo "
+  total: 12
+
+- name: "UTS ePRESS "
+  total: 12
+
+- name: "Universidad Autónoma de Madrid "
+  total: 12
+
+- name: "Universidade Estadual de Maringá "
+  total: 12
+
+- name: "Universidade Federal da Paraíba "
+  total: 12
+
+- name: "Universidade Federal do Ceará "
+  total: 12
+
+- name: "Universitas Muhammadiyah Yogyakarta "
+  total: 12
+
+- name: "Universitat de València "
+  total: 12
+
+- name: "Utrecht University Library Open Access Journals (Publishing Services) "
+  total: 12
+
+- name: "Vilnius Gedinimas Technical University "
+  total: 12
+
+- name: "Atlantis Press "
+  total: 11
+
+- name: "Center for Open Access in Science, Belgrade, Serbia "
+  total: 11
+
+- name: "Czech Academy of Agricultural Sciences "
+  total: 11
+
+- name: "Edizioni Ca’ Foscari "
+  total: 11
+
+- name: "Universidad Externado de Colombia "
+  total: 11
+
+- name: "Universidad Nacional del Litoral "
+  total: 11
+
+- name: "Universidad Santo Tomás "
+  total: 11
+
+- name: "Universidade Federal do Paraná "
+  total: 11
+
+- name: "Università degli Studi di Torino "
+  total: 11
+
+- name: "ABV-press "
+  total: 10
+
+- name: "Cappelen Damm Akademisk NOASP "
+  total: 10
+
+- name: "Editora da Pontifícia Universidade Católica do Rio Grande do Sul (EDIPUCRS) "
+  total: 10
+
+- name: "German Medical Science GMS Publishing House "
+  total: 10
+
+- name: "Hipatia Press "
+  total: 10
+
+- name: "IOP Publishing "
+  total: 10
+
+- name: "Institution of Engineering and Technology "
+  total: 10
+
+- name: "KNUKiM Publishing Centre "
+  total: 10
+
+- name: "Pontificia Universidad Javeriana "
+  total: 10
+
+- name: "Universidad Nacional de Mar del Plata "
+  total: 10
+
+- name: "Universidad Pedagógica y Tecnológica de Colombia "
+  total: 10
+
+- name: "Universidade Federal da Bahia "
+  total: 10
+
+- name: "Universidade Federal de Pernambuco "
+  total: 10
+
+- name: "Universidade Federal de Santa Maria "
+  total: 10
+
+- name: "Universidade Federal do Maranhão "
+  total: 10
+
+- name: "Universidade Federal do Rio Grande do Norte "
+  total: 10
+
+- name: "Universidade Nove de Julho "
+  total: 10
+
+- name: "Universitas Islam Bandung "
+  total: 10
+
+- name: "Universitas Islam Negeri Syarif Hidayatullah Jakarta "
+  total: 10
+
+- name: "Universitas PGRI Madiun "
+  total: 10
+
+- name: "Universitas Padjadjaran "
+  total: 10
+
+- name: "Universitas Semarang "
+  total: 10
+
+- name: "University of Bucharest "
+  total: 10
+
+- name: "Istanbul University "
+  total: 9
+
+- name: "KeAi Communications Co., Ltd. "
+  total: 9
+
+- name: "PC Technology Center "
+  total: 9
+
+- name: "Petra Christian University "
+  total: 9
+
+- name: "Stellenbosch University "
+  total: 9
+
+- name: "Syiah Kuala University "
+  total: 9
+
+- name: "Tabriz University of Medical Sciences "
+  total: 9
+
+- name: "Universidad Distrital Francisco José de Caldas "
+  total: 9
+
+- name: "Universidad de Córdoba "
+  total: 9
+
+- name: "Universidad de Guadalajara "
+  total: 9
+
+- name: "Universidad de Los Andes "
+  total: 9
+
+- name: "Universidad de Valladolid "
+  total: 9
+
+- name: "Universidad de la República "
+  total: 9
+
+- name: "Universidad del Valle "
+  total: 9
+
+- name: "Universidade Federal de Santa Maria (UFSM) "
+  total: 9
+
+- name: "Universidade Federal de Sergipe "
+  total: 9
+
+- name: "Universidade Federal de Viçosa "
+  total: 9
+
+- name: "Universidade de Santa Cruz do Sul "
+  total: 9
+
+- name: "Universitas Ahmad Dahlan "
+  total: 9
+
+- name: "Universitas Muhammadiyah Metro "
+  total: 9
+
+- name: "Universitas Muhammadiyah Purwokerto "
+  total: 9
+
+- name: "Universitas Negeri Medan "
+  total: 9
+
+- name: "University of Edinburgh "
+  total: 9
+
+- name: "Amaltea Medical Publishing House "
+  total: 8
+
+- name: "Ankara University "
+  total: 8
+
+- name: "BRILL "
+  total: 8
+
+- name: "EMH Swiss Medical Publishers Ltd. "
+  total: 8
+
+- name: "Editorial Ciencias Médicas "
+  total: 8
+
+- name: "Georg Thieme Verlag "
+  total: 8
+
+- name: "Hamadan University of Medical Sciences "
+  total: 8
+
+- name: "IEEE "
+  total: 8
+
+- name: "Institut Agama Islam Negeri (IAIN) Curup "
+  total: 8
+
+- name: "Institute of Slavic Studies, Polish Academy of Sciences "
+  total: 8
+
+- name: "Jenderal Soedirman University "
+  total: 8
+
+- name: "Mykolas Romeris University "
+  total: 8
+
+- name: "Politeknik Negeri Bali "
+  total: 8
+
+- name: "Pontificia Universidad Católica de Chile "
+  total: 8
+
+- name: "PsychOpen "
+  total: 8
+
+- name: "Purdue University Press "
+  total: 8
+
+- name: "Sekolah Tinggi Agama Islam Negeri (STAIN) Kudus "
+  total: 8
+
+- name: "Septentrio Academic Publishing "
+  total: 8
+
+- name: "Servicios Academicos Intercontinentales "
+  total: 8
+
+- name: "The International Academic Forum "
+  total: 8
+
+- name: "Universidad Politécnica de Madrid "
+  total: 8
+
+- name: "Universidad Politécnica de Valencia "
+  total: 8
+
+- name: "Universidad de Cádiz "
+  total: 8
+
+- name: "Universidade Federal de Pelotas "
+  total: 8
+
+- name: "Universidade Federal do Tocantins "
+  total: 8
+
+- name: "Universidade do Porto "
+  total: 8
+
+- name: "Universidade do Vale do Rio dos Sinos "
+  total: 8
+
+- name: "Universitas Andalas "
+  total: 8
+
+- name: "Universitas Diponegoro "
+  total: 8
+
+- name: "Universitas Islam Negeri Sunan Ampel Surabaya "
+  total: 8
+
+- name: "Universitas Islam Negeri Sunan Kalijaga Yogyakarta "
+  total: 8
+
+- name: "Universitas Merdeka Malang "
+  total: 8
+
+- name: "Universitat Pompeu Fabra "
+  total: 8
+
+- name: "Universitetsforlaget "
+  total: 8
+
+- name: "University of Alberta "
+  total: 8
+
+- name: "Università del Salento "
+  total: 8
+
+- name: "Univerzita Karlova, Filozofická fakulta "
+  total: 8
+
+- name: "Uniwersytet Mikołaja Kopernika "
+  total: 8
+
+- name: "Znanstvena založba Filozofske fakultete Univerze v Ljubljani (Ljubljana University Press, Faculty of Arts) "
+  total: 8
+
+- name: "Alexandru Ioan Cuza University of Iasi "
+  total: 7
+
+- name: "Colegio Oficial de Psicólogos de Madrid "
+  total: 7
+
+- name: "Columbia University Libraries "
+  total: 7
+
+- name: "Editura Universităţii din Oradea "
+  total: 7
+
+- name: "Escola Bahiana de Medicina e Saúde Pública "
+  total: 7
+
+- name: "Future Medicine Ltd "
+  total: 7
+
+- name: "Growing Science "
+  total: 7
+
+- name: "Hasanuddin University "
+  total: 7
+
+- name: "Health and Medical Publishing Group "
+  total: 7
+
+- name: "Indonesian Institute of Sciences "
+  total: 7
+
+- name: "Institut Teknologi Bandung "
+  total: 7
+
+- name: "Islamic Azad University, Tabriz Branch "
+  total: 7
+
+- name: "Ivyspring International Publisher "
+  total: 7
+
+- name: "KARE Publishing "
+  total: 7
+
+- name: "Kerman University of Medical Sciences "
+  total: 7
+
+- name: "Linköping University Electronic Press "
+  total: 7
+
+- name: "Oslo and Akershus University College of Applied Sciences "
+  total: 7
+
+- name: "Payame Noor University "
+  total: 7
+
+- name: "Polish Academy of Sciences "
+  total: 7
+
+- name: "Public Library of Science (PLoS) "
+  total: 7
+
+- name: "Stockholm University Press "
+  total: 7
+
+- name: "Universidad Industrial de Santander "
+  total: 7
+
+- name: "Universidad de Málaga "
+  total: 7
+
+- name: "Universidad de Sevilla "
+  total: 7
+
+- name: "Universidad del Rosario "
+  total: 7
+
+- name: "Universidade Federal de Juiz de Fora "
+  total: 7
+
+- name: "Universidade Federal de São Carlos "
+  total: 7
+
+- name: "Universidade do Estado de Santa Catarina "
+  total: 7
+
+- name: "Universitas Darussalam Gontor "
+  total: 7
+
+- name: "Universitas Sebelas Maret "
+  total: 7
+
+- name: "Università degli Studi di Cagliari "
+  total: 7
+
+- name: "Università di Napoli Federico II "
+  total: 7
+
+- name: "World Scientific Publishing "
+  total: 7
+
+- name: "Wydawnictwo Naukowe Uniwersytetu Szczecińskiego "
+  total: 7
+
+- name: "AcademicPres "
+  total: 6
+
+- name: "Badan Penelitian dan Pengembangan Kesehatan "
+  total: 6
+
+- name: "El Colegio de México, A.C. "
+  total: 6
+
+- name: "Imam Sadiq University "
+  total: 6
+
+- name: "Institut Agama Islam Negeri (IAIN) Salatiga "
+  total: 6
+
+- name: "Kassel University Press "
+  total: 6
+
+- name: "Kazan Federal University "
+  total: 6
+
+- name: "Lesya Ukrainka Eastern European National University "
+  total: 6
+
+- name: "Mazandaran University of Medical Sciences "
+  total: 6
+
+- name: "Nicolaus Copernicus University in Toruń "
+  total: 6
+
+- name: "Pontifícia Universidade Católica de Minas Gerais "
+  total: 6
+
+- name: "Pontifícia Universidade Católica do Rio Grande do Sul (EDIPUCRS) "
+  total: 6
+
+- name: "Queensland University of Technology "
+  total: 6
+
+- name: "Radcliffe Medical Media "
+  total: 6
+
+- name: "Sada Institute of Art and Language Studies "
+  total: 6
+
+- name: "Smart Science & Technology LLC "
+  total: 6
+
+- name: "Sport Sciences Research Institute "
+  total: 6
+
+- name: "State Institute of Islamic Studies (IAIN) Tulungagung "
+  total: 6
+
+- name: "Sultan Qaboos University "
+  total: 6
+
+- name: "The MIT Press "
+  total: 6
+
+- name: "Universidad Militar Nueva Granada "
+  total: 6
+
+- name: "Universidad Nacional "
+  total: 6
+
+- name: "Universidad Nacional Mayor de San Marcos "
+  total: 6
+
+- name: "Universidad Nacional de Costa Rica "
+  total: 6
+
+- name: "Universidad Nacional de Rosario "
+  total: 6
+
+- name: "Universidad Pablo de Olavide "
+  total: 6
+
+- name: "Universidad Politécnica Salesiana "
+  total: 6
+
+- name: "Universidad Pontificia Bolivariana "
+  total: 6
+
+- name: "Universidad Pontificia Comillas "
+  total: 6
+
+- name: "Universidad de Jaén "
+  total: 6
+
+- name: "Universidad de La Habana "
+  total: 6
+
+- name: "Universidad de Oriente "
+  total: 6
+
+- name: "Universidad de Salamanca "
+  total: 6
+
+- name: "Universidad de San Buenaventura "
+  total: 6
+
+- name: "Universidad de Zaragoza "
+  total: 6
+
+- name: "Universidad del Norte "
+  total: 6
+
+- name: "Universidade Estadual Paulista Júlio de Mesquita Filho "
+  total: 6
+
+- name: "Universidade Federal de Santa Catarina (UFSC) "
+  total: 6
+
+- name: "Universidade Federal do Espírito Santo "
+  total: 6
+
+- name: "Universidade Federal do Rio Grande "
+  total: 6
+
+- name: "Universidade Tecnológica Federal do Paraná "
+  total: 6
+
+- name: "Universitas Islam Negeri Ar-Raniry "
+  total: 6
+
+- name: "Universitas Lambung Mangkurat "
+  total: 6
+
+- name: "Universitas Medan Area "
+  total: 6
+
+- name: "Universitas Mercu Buana Yogyakarta "
+  total: 6
+
+- name: "Universitas Muhammadiyah Magelang "
+  total: 6
+
+- name: "Universitas Muhammadiyah Ponorogo "
+  total: 6
+
+- name: "Universitas Negeri Makassar "
+  total: 6
+
+- name: "University of Windsor "
+  total: 6
+
+- name: "Vesnu Publications "
+  total: 6
+
+- name: "Volgograd State University "
+  total: 6
+
+- name: "AIP Publishing LLC "
+  total: 5
+
+- name: "AVES "
+  total: 5
+
+- name: "Aalborg University Press "
+  total: 5
+
+- name: "Alfred Nobel University Publisher "
+  total: 5
+
+- name: "American Physical Society "
+  total: 5
+
+- name: "Babol University of Medical Sciences "
+  total: 5
+
+- name: "Belarusian National Technical University "
+  total: 5
+
+- name: "Cluj University Press "
+  total: 5
+
+- name: "Elsevier España "
+  total: 5
+
+- name: "Erciyes University "
+  total: 5
+
+- name: "Fundação Getúlio Vargas "
+  total: 5
+
+- name: "Georgia Southern University "
+  total: 5
+
+- name: "Hacettepe University "
+  total: 5
+
+- name: "Institut Agama Islam Negeri Raden Intan Lampung "
+  total: 5
+
+- name: "Iran University of Medical Sciences "
+  total: 5
+
+- name: "Irkutsk National Research Technical University "
+  total: 5
+
+- name: "Isfahan University of Technology "
+  total: 5
+
+- name: "Khon Kaen University "
+  total: 5
+
+- name: "Kyiv National University of Culture and Arts "
+  total: 5
+
+- name: "LIDSEN Publishing Inc. "
+  total: 5
+
+- name: "Masters Program in Public Health, Universitas Sebelas Maret "
+  total: 5
+
+- name: "Moldova State University "
+  total: 5
+
+- name: "Moscow Region State University Editorial Office "
+  total: 5
+
+- name: "NIHR Journals Library "
+  total: 5
+
+- name: "NISCAIR "
+  total: 5
+
+- name: "National Research University Higher School of Economics "
+  total: 5
+
+- name: "Novus forlag "
+  total: 5
+
+- name: "Odessa National Academy of Food Technologies "
+  total: 5
+
+- name: "Oles Honchar Dnipro National University "
+  total: 5
+
+- name: "OmniaScience "
+  total: 5
+
+- name: "Optical Society of America (OSA) "
+  total: 5
+
+- name: "Padova University Press "
+  total: 5
+
+- name: "Petrozavodsk State University "
+  total: 5
+
+- name: "Publishing House Zaslavsky "
+  total: 5
+
+- name: "Shahid Beheshti University "
+  total: 5
+
+- name: "Soegijapranata Catholic University "
+  total: 5
+
+- name: "State College of Islamic Studies Pamekasan (STAIN Pamekasan) "
+  total: 5
+
+- name: "Stefan cel Mare University of Suceava "
+  total: 5
+
+- name: "The Ohio State University Libraries "
+  total: 5
+
+- name: "Thieme Medical Publishers "
+  total: 5
+
+- name: "Thieme Publishers "
+  total: 5
+
+- name: "UIR Press "
+  total: 5
+
+- name: "UPV/EHU Press "
+  total: 5
+
+- name: "Universidad Centroccidental Lisandro Alvarado "
+  total: 5
+
+- name: "Universidad Nacional del Centro de la Provincia de Buenos Aires "
+  total: 5
+
+- name: "Universidad Nacional del Comahue "
+  total: 5
+
+- name: "Universidad Nacional del Nordeste "
+  total: 5
+
+- name: "Universidad Técnica de Manabí "
+  total: 5
+
+- name: "Universidad de Caldas "
+  total: 5
+
+- name: "Universidad de La Rioja "
+  total: 5
+
+- name: "Universidad de La Sabana "
+  total: 5
+
+- name: "Universidad de Nariño "
+  total: 5
+
+- name: "Universidad de San Martín de Porres "
+  total: 5
+
+- name: "Universidad de Santiago de Chile "
+  total: 5
+
+- name: "Universidade Estadual de Ponta Grossa "
+  total: 5
+
+- name: "Universidade Federal de Alagoas "
+  total: 5
+
+- name: "Universidade Federal de Mato Grosso (UFMT) "
+  total: 5
+
+- name: "Universidade Federal de São Paulo "
+  total: 5
+
+- name: "Universidade Federal do Pará "
+  total: 5
+
+- name: "Universidade Regional Integrada do Alto Uruguai e das Missões (URI) "
+  total: 5
+
+- name: "Universidade de São Paulo (USP) "
+  total: 5
+
+- name: "Universitas Islam Indonesia "
+  total: 5
+
+- name: "Universitas Islam Negeri Raden Fatah Palembang "
+  total: 5
+
+- name: "Universitas Jambi "
+  total: 5
+
+- name: "Universitas Kanjuruhan Malang "
+  total: 5
+
+- name: "Universitas Kristen Satya Wacana "
+  total: 5
+
+- name: "Universitas Lancang Kuning "
+  total: 5
+
+- name: "Universitas Negeri Padang "
+  total: 5
+
+- name: "Universitas Syiah Kuala "
+  total: 5
+
+- name: "Universitat Politècnica de València "
+  total: 5
+
+- name: "University of Guilan "
+  total: 5
+
+- name: "University of Malaya "
+  total: 5
+
+- name: "University of Oslo "
+  total: 5
+
+- name: "University of Tabriz "
+  total: 5
+
+- name: "University of Tartu Press "
+  total: 5
+
+- name: "University of Zadar "
+  total: 5
+
+- name: "VM Media sp. z o.o. VM Group sp.k. Grupa Via Medica "
+  total: 5
+
+- name: "Via Medica "
+  total: 5
+
+- name: "4S go, s.r.o. "
+  total: 4
+
+- name: "Academic Conferences and Publishing International "
+  total: 4
+
+- name: "Adam Mickiewicz University, Poznan "
+  total: 4
+
+- name: "Altay State University "
+  total: 4
+
+- name: "American Geophysical Union (AGU) "
+  total: 4
+
+- name: "American Society for Microbiology "
+  total: 4
+
+- name: "Australian International Academic Centre PTY. LTD. "
+  total: 4
+
+- name: "Babes-Bolyai University "
+  total: 4
+
+- name: "Babes-Bolyai University, Cluj-Napoca "
+  total: 4
+
+- name: "Bioscientifica "
+  total: 4
+
+- name: "Bond University "
+  total: 4
+
+- name: "Budapest University of Technology "
+  total: 4
+
+- name: "Carleton University "
+  total: 4
+
+- name: "Centro Universitário de Maringá "
+  total: 4
+
+- name: "Cogitatio "
+  total: 4
+
+- name: "Coimbra University Press "
+  total: 4
+
+- name: "Conselho Nacional de Pesquisa e Pós-graduação em Direito "
+  total: 4
+
+- name: "Cumhuriyet University "
+  total: 4
+
+- name: "Danubius University "
+  total: 4
+
+- name: "ECIMED "
+  total: 4
+
+- name: "EconJournals "
+  total: 4
+
+- name: "Editura Universitatii Transilvania din Brasov "
+  total: 4
+
+- name: "European Publishing "
+  total: 4
+
+- name: "Faculdade Meridional IMED "
+  total: 4
+
+- name: "Government of the Russian Federation, Financial University "
+  total: 4
+
+- name: "Guilan University of Medical Sciences "
+  total: 4
+
+- name: "Hrvatska akademija znanosti i umjetnosti "
+  total: 4
+
+- name: "ICT Academy of Tamil Nadu "
+  total: 4
+
+- name: "Institut Teknologi Sepuluh Nopember "
+  total: 4
+
+- name: "Instituto Brasileiro de Pesquisa e Ensino em Fisiologia do Exercício "
+  total: 4
+
+- name: "Instituto Tecnológico de Costa Rica "
+  total: 4
+
+- name: "Inter-Research "
+  total: 4
+
+- name: "International Scientific Publications and Consulting Services (ISPACS) "
+  total: 4
+
+- name: "International Union of Crystallography "
+  total: 4
+
+- name: "Ivan Kozhedub Kharkiv National Air Force University "
+  total: 4
+
+- name: "JVE International "
+  total: 4
+
+- name: "Korea Distribution Science Association "
+  total: 4
+
+- name: "LED Edizioni Universitarie "
+  total: 4
+
+- name: "Lembaga Layanan Pendidikan Tinggi Wilayah X "
+  total: 4
+
+- name: "MBI & UNS Solo "
+  total: 4
+
+- name: "MGTU im. N.È. Baumana "
+  total: 4
+
+- name: "Masaryk University "
+  total: 4
+
+- name: "Medical Communications Sp. z o.o. "
+  total: 4
+
+- name: "Mehmet Akif Ersoy University "
+  total: 4
+
+- name: "Mersin University "
+  total: 4
+
+- name: "National Technical University of Ukraine "
+  total: 4
+
+- name: "Negah Institute for Scientific Communication "
+  total: 4
+
+- name: "New Prairie Press "
+  total: 4
+
+- name: "Oles Honchar Dnipropetrovsk National University "
+  total: 4
+
+- name: "Palacký University Olomouc "
+  total: 4
+
+- name: "Penerbit Universiti Sains Malaysia "
+  total: 4
+
+- name: "Permanyer "
+  total: 4
+
+- name: "Queen's University "
+  total: 4
+
+- name: "Research Plus Journals "
+  total: 4
+
+- name: "Romanian Academy "
+  total: 4
+
+- name: "Romanian Foundation for Business Intelligence "
+  total: 4
+
+- name: "Rutgers University Libraries "
+  total: 4
+
+- name: "STAIN Ponorogo "
+  total: 4
+
+- name: "STKIP Muhammadiyah Pringsewu "
+  total: 4
+
+- name: "STKIP PGRI Sumatera Barat "
+  total: 4
+
+- name: "Scandinavian University Press (Universitetsforlaget) "
+  total: 4
+
+- name: "SciPost "
+  total: 4
+
+- name: "Scientific Route OÜ "
+  total: 4
+
+- name: "Sebelas Maret University "
+  total: 4
+
+- name: "Shahrekord University of Medical Sciences "
+  total: 4
+
+- name: "Social Sciences Research Society "
+  total: 4
+
+- name: "Sprint Investify "
+  total: 4
+
+- name: "Sriwijaya University "
+  total: 4
+
+- name: "State Islamic University Sunan Kalijaga "
+  total: 4
+
+- name: "Stepan Gzhytskyi National University of Veterinary Medicine and Biotechnologies Lviv "
+  total: 4
+
+- name: "TU Delft Open "
+  total: 4
+
+- name: "Taras Shevchenko National University of Kyiv "
+  total: 4
+
+- name: "UCL Press "
+  total: 4
+
+- name: "UMSurabaya Publishing "
+  total: 4
+
+- name: "Ukrmedknyha Publishing House "
+  total: 4
+
+- name: "Universidad Academia de Humanismo Cristiano "
+  total: 4
+
+- name: "Universidad Autónoma de Nuevo León "
+  total: 4
+
+- name: "Universidad Central de Venezuela "
+  total: 4
+
+- name: "Universidad Central del Ecuador "
+  total: 4
+
+- name: "Universidad EAFIT "
+  total: 4
+
+- name: "Universidad Francisco de Paula Santander "
+  total: 4
+
+- name: "Universidad Jorge Tadeo Lozano "
+  total: 4
+
+- name: "Universidad Libre "
+  total: 4
+
+- name: "Universidad Nacional, Costa Rica "
+  total: 4
+
+- name: "Universidad Pedagógica Nacional "
+  total: 4
+
+- name: "Universidad Simón Bolívar "
+  total: 4
+
+- name: "Universidad de Cartagena "
+  total: 4
+
+- name: "Universidad de Castilla-La Mancha "
+  total: 4
+
+- name: "Universidad de Cienfuegos "
+  total: 4
+
+- name: "Universidad de Cuenca "
+  total: 4
+
+- name: "Universidad de Deusto "
+  total: 4
+
+- name: "Universidad de Navarra "
+  total: 4
+
+- name: "Universidad del Magdalena "
+  total: 4
+
+- name: "Universidade Estadual Paulista Júlio de Mesquita Filho (UNESP) "
+  total: 4
+
+- name: "Universidade Estadual de Mato Grosso do Sul "
+  total: 4
+
+- name: "Universidade Estadual do Ceará "
+  total: 4
+
+- name: "Universidade Estadual do Oeste do Paraná "
+  total: 4
+
+- name: "Universidade Federal Fluminense (UFF) "
+  total: 4
+
+- name: "Universidade Federal Rural de Pernambuco "
+  total: 4
+
+- name: "Universidade Federal Rural do Rio de Janeiro "
+  total: 4
+
+- name: "Universidade Federal de Lavras "
+  total: 4
+
+- name: "Universidade Federal do Rio de Janeiro (UFRJ) "
+  total: 4
+
+- name: "Universidade da Coruña "
+  total: 4
+
+- name: "Universidade de Caxias do Sul "
+  total: 4
+
+- name: "Universidade de Passo Fundo (UPF) "
+  total: 4
+
+- name: "Universidade do Estado da Bahia "
+  total: 4
+
+- name: "Universidade do Estado de Mato Grosso "
+  total: 4
+
+- name: "Universidade do Sul de Santa Catarina "
+  total: 4
+
+- name: "Universitas Islam Negeri (UIN) Sunan Gunung Djati Bandung "
+  total: 4
+
+- name: "Universitas Islam Negeri Raden Intan Lampung "
+  total: 4
+
+- name: "Universitas Jenderal Soedirman "
+  total: 4
+
+- name: "Universitas Mercu Buana "
+  total: 4
+
+- name: "Universitas Muhammadiyah Jakarta "
+  total: 4
+
+- name: "Universitas Muria Kudus "
+  total: 4
+
+- name: "Universitas Negeri Semarang "
+  total: 4
+
+- name: "Universitas Sultan Ageng Tirtayasa "
+  total: 4
+
+- name: "Universitas Tarumanagara "
+  total: 4
+
+- name: "Universitas Trunojoyo Madura "
+  total: 4
+
+- name: "Universitat Politecnica de Valencia "
+  total: 4
+
+- name: "University of Belgrade "
+  total: 4
+
+- name: "University of Bergen "
+  total: 4
+
+- name: "University of Calgary "
+  total: 4
+
+- name: "University of Huddersfield Press "
+  total: 4
+
+- name: "University of Ljubljana "
+  total: 4
+
+- name: "University of Minnesota Libraries Publishing "
+  total: 4
+
+- name: "University of Oradea "
+  total: 4
+
+- name: "Ural Federal University "
+  total: 4
+
+- name: "Vasyl Stefanyk Precarpathian National University "
+  total: 4
+
+- name: "Vernadsky National Library of Ukraine "
+  total: 4
+
+- name: "Vilnius University "
+  total: 4
+
+- name: "Vytautas Magnus University "
+  total: 4
+
+- name: "West University of Timisoara "
+  total: 4
+
+- name: "Wydawnictwo Naukowe Uniwersytetu Mikołaja Kopernika "
+  total: 4
+
+- name: "Yildiz Technical University "
+  total: 4
+
+- name: "«Publishing company «World of science», LLC "
+  total: 4
+
+- name: "\"Alexandru Ioan Cuza\" University of Iași "
+  total: 3
+
+- name: "Aalborg Universitetsforlag "
+  total: 3
+
+- name: "AboutScience Srl "
+  total: 3
+
+- name: "Afarand Scholarly Publishing Institute "
+  total: 3
+
+- name: "Africa Development and Resources Research Institute (ADRRI) "
+  total: 3
+
+- name: "African Online Scientific Information Systems "
+  total: 3
+
+- name: "Akadémiai Kiadó "
+  total: 3
+
+- name: "Akdeniz University "
+  total: 3
+
+- name: "American Association for the Advancement of Science "
+  total: 3
+
+- name: "American Society of Agronomy; Crop Science Society of America "
+  total: 3
+
+- name: "Amsterdam University Press "
+  total: 3
+
+- name: "Anadolu University "
+  total: 3
+
+- name: "Andalas University "
+  total: 3
+
+- name: "Athabasca University Press "
+  total: 3
+
+- name: "Belarusian State University "
+  total: 3
+
+- name: "Bilimsel Tip Yayinevi "
+  total: 3
+
+- name: "Bina Nusantara University "
+  total: 3
+
+- name: "Borys Grinchenko Kyiv University "
+  total: 3
+
+- name: "Bowling Green State University "
+  total: 3
+
+- name: "BraDypUS "
+  total: 3
+
+- name: "BİSKA Bilisim Company "
+  total: 3
+
+- name: "CSRC Publishing "
+  total: 3
+
+- name: "Center for Research and Publication UIN Ar-Raniry "
+  total: 3
+
+- name: "Clausius Scientific Press Inc. "
+  total: 3
+
+- name: "Codon Publications "
+  total: 3
+
+- name: "Corporación Universitaria Minuto de Dios "
+  total: 3
+
+- name: "Cukurova University "
+  total: 3
+
+- name: "Danubius University "
+  total: 3
+
+- name: "Donner Institute "
+  total: 3
+
+- name: "EDUCatt "
+  total: 3
+
+- name: "EUT Edizioni Università di Trieste "
+  total: 3
+
+- name: "Eastern Macedonia and Thrace Institute of Technology "
+  total: 3
+
+- name: "Editora da Pontifícia Universidade Católica do Rio Grande do Sul - EDIPUCRS "
+  total: 3
+
+- name: "Editorial Cuadernos de Sofía "
+  total: 3
+
+- name: "Editum, Ediciones de la Universidad de Murcia "
+  total: 3
+
+- name: "Editura Fundatiei Romania de Maine "
+  total: 3
+
+- name: "Editura Universitatii din Oradea "
+  total: 3
+
+- name: "Ege University "
+  total: 3
+
+- name: "Eskişehir Osmangazi University "
+  total: 3
+
+- name: "Estonian Academy Publishers "
+  total: 3
+
+- name: "European Respiratory Society "
+  total: 3
+
+- name: "Eötvös Loránd University "
+  total: 3
+
+- name: "Faculdade Projeção "
+  total: 3
+
+- name: "Facultad Latinoamericana de Ciencias Sociales, Sede Ecuador "
+  total: 3
+
+- name: "FahrenHouse "
+  total: 3
+
+- name: "Federal University of São Carlos (UFSCAR) "
+  total: 3
+
+- name: "Galati University Press "
+  total: 3
+
+- name: "Galenos Publishing House "
+  total: 3
+
+- name: "Gazi University "
+  total: 3
+
+- name: "Golestan University of Medical Sciences "
+  total: 3
+
+- name: "HATASO "
+  total: 3
+
+- name: "HBKU Press "
+  total: 3
+
+- name: "IAIN Salatiga "
+  total: 3
+
+- name: "IAIN Samarinda "
+  total: 3
+
+- name: "IAIN Surakarta "
+  total: 3
+
+- name: "IMA-PRESS LLC "
+  total: 3
+
+- name: "IRBIS LLC "
+  total: 3
+
+- name: "IWA Publishing "
+  total: 3
+
+- name: "Immanuel Kant Baltic Federal University "
+  total: 3
+
+- name: "Indiana University Office of Scholarly Publishing "
+  total: 3
+
+- name: "Indonesian Institute for Counseling, Education and Therapy (IICET) "
+  total: 3
+
+- name: "Inst. Patrimoniului Cultural (IPC) "
+  total: 3
+
+- name: "Institut Pertanian Bogor "
+  total: 3
+
+- name: "Institut d'Estudis Catalans "
+  total: 3
+
+- name: "Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Norte "
+  total: 3
+
+- name: "International Academy of Ecology and Environmental Sciences "
+  total: 3
+
+- name: "Iranian Research Organization for Science and Technology (IROST) "
+  total: 3
+
+- name: "Istanbul University Press "
+  total: 3
+
+- name: "JCDR Research and Publications Pvt. Ltd. "
+  total: 3
+
+- name: "Karadeniz Technical University "
+  total: 3
+
+- name: "Karl Franzens-Universität Graz "
+  total: 3
+
+- name: "Kastamonu University "
+  total: 3
+
+- name: "Kaunas University of Technology "
+  total: 3
+
+- name: "Kemerovo State University "
+  total: 3
+
+- name: "Kennesaw State University "
+  total: 3
+
+- name: "Knowledge E "
+  total: 3
+
+- name: "Kozminski University "
+  total: 3
+
+- name: "Ledizioni "
+  total: 3
+
+- name: "Lembaga Penelitian Universitas Swadaya Gunung Jati "
+  total: 3
+
+- name: "Levy Library Press "
+  total: 3
+
+- name: "Librelloph "
+  total: 3
+
+- name: "Lithuanian University of Educational Sciences "
+  total: 3
+
+- name: "Lomonosov Moscow State University "
+  total: 3
+
+- name: "Marmara University "
+  total: 3
+
+- name: "Mary Ann Liebert "
+  total: 3
+
+- name: "McGill University "
+  total: 3
+
+- name: "Middle Tennessee State University "
+  total: 3
+
+- name: "Mulawarman University "
+  total: 3
+
+- name: "Nab'a Al-Hayat Foundation for Medical Sciences and Health Care - Press "
+  total: 3
+
+- name: "National Taiwan University "
+  total: 3
+
+- name: "Novosibirsk State University Press "
+  total: 3
+
+- name: "Paneuropean University Apeiron "
+  total: 3
+
+- name: "Polish Botanical Society "
+  total: 3
+
+- name: "Politeknik Negeri Semarang "
+  total: 3
+
+- name: "Pontificia Universidad Católica de Valparaíso "
+  total: 3
+
+- name: "Presses Universitaires du Midi "
+  total: 3
+
+- name: "Publishing House \"Akademperiodyka\" "
+  total: 3
+
+- name: "Publishing House of the Romanian Academy "
+  total: 3
+
+- name: "Pusat Penelitian dan Pengembangan Perikanan "
+  total: 3
+
+- name: "Qom University of Medical Sciences "
+  total: 3
+
+- name: "STAIN Kudus "
+  total: 3
+
+- name: "STKIP Siliwangi "
+  total: 3
+
+- name: "STKIP Singkawang "
+  total: 3
+
+- name: "Samara National Research University "
+  total: 3
+
+- name: "Saratov State University "
+  total: 3
+
+- name: "Schloss Dagstuhl -- Leibniz-Zentrum fuer Informatik "
+  total: 3
+
+- name: "Science and Innovation Center Publishing House "
+  total: 3
+
+- name: "Selva Andina Research Society "
+  total: 3
+
+- name: "Selçuk University "
+  total: 3
+
+- name: "Shahid Chamran University of Ahvaz "
+  total: 3
+
+- name: "Silesian University of Technology "
+  total: 3
+
+- name: "Süleyman Demirel University "
+  total: 3
+
+- name: "Taiwan Association of Engineering and Technology Innovation "
+  total: 3
+
+- name: "Technical University of Kosice "
+  total: 3
+
+- name: "Technological University Dublin "
+  total: 3
+
+- name: "The British Editorial Society of Bone & Joint Surgery "
+  total: 3
+
+- name: "The Historical Society of Southern Primorska Koper "
+  total: 3
+
+- name: "The Royal Society of Chemistry "
+  total: 3
+
+- name: "Thieme Revinter Publicações "
+  total: 3
+
+- name: "Trakya University "
+  total: 3
+
+- name: "Trunojoyo University "
+  total: 3
+
+- name: "Turkish Chemical Society "
+  total: 3
+
+- name: "Turkiye Klinikleri "
+  total: 3
+
+- name: "UIN Sunan Gunung Djati Bandung "
+  total: 3
+
+- name: "UNIMAS Publisher "
+  total: 3
+
+- name: "UP Print "
+  total: 3
+
+- name: "Uludag University "
+  total: 3
+
+- name: "Universidad Autónoma de Baja California "
+  total: 3
+
+- name: "Universidad Autónoma de Bucaramanga "
+  total: 3
+
+- name: "Universidad Autónoma del Estado de México "
+  total: 3
+
+- name: "Universidad Católica de Colombia "
+  total: 3
+
+- name: "Universidad Católica del Uruguay "
+  total: 3
+
+- name: "Universidad Central \"Marta Abreu\" de Las Villas "
+  total: 3
+
+- name: "Universidad Cooperativa de Colombia "
+  total: 3
+
+- name: "Universidad Distrital Francisco Jose de Caldas "
+  total: 3
+
+- name: "Universidad Estatal de Milagro "
+  total: 3
+
+- name: "Universidad ICESI "
+  total: 3
+
+- name: "Universidad Nacional de Chimborazo "
+  total: 3
+
+- name: "Universidad Nacional de Colombia, sede Medellín "
+  total: 3
+
+- name: "Universidad Nacional de La Pampa "
+  total: 3
+
+- name: "Universidad Nacional de Misiones "
+  total: 3
+
+- name: "Universidad Nacional de Quilmes "
+  total: 3
+
+- name: "Universidad Nacional de Trujillo "
+  total: 3
+
+- name: "Universidad Pedagógica Nacional "
+  total: 3
+
+- name: "Universidad Pedagógica y Tecnológica de Colombia "
+  total: 3
+
+- name: "Universidad Veracruzana "
+  total: 3
+
+- name: "Universidad de Antioquía "
+  total: 3
+
+- name: "Universidad de Camagüey Ignacio Agramonte Loynaz "
+  total: 3
+
+- name: "Universidad de Extremadura "
+  total: 3
+
+- name: "Universidad de Huelva "
+  total: 3
+
+- name: "Universidad de León "
+  total: 3
+
+- name: "Universidad de Lima "
+  total: 3
+
+- name: "Universidad de Manizales "
+  total: 3
+
+- name: "Universidad de Medellín, Sello Editorial "
+  total: 3
+
+- name: "Universidad de Montevideo "
+  total: 3
+
+- name: "Universidad de Pinar del Río \"Hermanos Saíz Montes de Oca\" "
+  total: 3
+
+- name: "Universidad de Santander "
+  total: 3
+
+- name: "Universidad de Talca "
+  total: 3
+
+- name: "Universidad de los Andes "
+  total: 3
+
+- name: "Universidad del Bío Bío "
+  total: 3
+
+- name: "Universidade Estadual de Londrina (UEL) "
+  total: 3
+
+- name: "Universidade Estadual de Montes Claros "
+  total: 3
+
+- name: "Universidade Estadual do Paraná "
+  total: 3
+
+- name: "Universidade Estadual do Sudoeste da Bahia "
+  total: 3
+
+- name: "Universidade Estadual do Sudoeste da Bahia (UESB) "
+  total: 3
+
+- name: "Universidade Federal da Fronteira Sul "
+  total: 3
+
+- name: "Universidade Federal de Campina Grande "
+  total: 3
+
+- name: "Universidade Federal de Pelotas (UFPel) "
+  total: 3
+
+- name: "Universidade Federal do Estado do Rio de Janeiro "
+  total: 3
+
+- name: "Universidade Metodista de Piracicaba "
+  total: 3
+
+- name: "Universidade Metodista de São Paulo "
+  total: 3
+
+- name: "Universidade Presbiteriana Mackenzie "
+  total: 3
+
+- name: "Universidade Salvador (UNIFACS) "
+  total: 3
+
+- name: "Universidade de Fortaleza "
+  total: 3
+
+- name: "Universidade de Lisboa "
+  total: 3
+
+- name: "Universidade de São Paulo "
+  total: 3
+
+- name: "Universidade do Estado de Santa Catarina (UDESC) "
+  total: 3
+
+- name: "Universidade do Estado do Mato Grosso "
+  total: 3
+
+- name: "Universidade do Estado do Rio Grande do Norte "
+  total: 3
+
+- name: "Universidade do Minho "
+  total: 3
+
+- name: "Universidade do Oeste Paulista "
+  total: 3
+
+- name: "Universidade do Oeste de Santa Catarina "
+  total: 3
+
+- name: "Universitas Brawijaya "
+  total: 3
+
+- name: "Universitas Gadjah Mada, Yogyakarta "
+  total: 3
+
+- name: "Universitas Islam Negeri (UIN) Walisongo Semarang "
+  total: 3
+
+- name: "Universitas Lampung "
+  total: 3
+
+- name: "Universitas Muhammadiyah Semarang "
+  total: 3
+
+- name: "Universitas Pelita Harapan "
+  total: 3
+
+- name: "Universitas Pesantren Tinggi Darul Ulum (Unipdu) Jombang "
+  total: 3
+
+- name: "Universitas Sanata Dharma "
+  total: 3
+
+- name: "Universitas Sarjanawiyata Tamansiswa Yogyakarta "
+  total: 3
+
+- name: "Universitas Tanjungpura "
+  total: 3
+
+- name: "Universitat Autonoma de Barcelona "
+  total: 3
+
+- name: "Universitat Jaume I "
+  total: 3
+
+- name: "Universitat Oberta de Catalunya "
+  total: 3
+
+- name: "Universitat Politècnica de Catalunya "
+  total: 3
+
+- name: "Universitat Rovira i Virgili "
+  total: 3
+
+- name: "Universiti Kebangsaan Malaysia "
+  total: 3
+
+- name: "Universiti Malaysia Pahang "
+  total: 3
+
+- name: "Universiti Sains Malaysia "
+  total: 3
+
+- name: "University of Arizona Libraries "
+  total: 3
+
+- name: "University of Barcelona "
+  total: 3
+
+- name: "University of Birjand "
+  total: 3
+
+- name: "University of Bucharest Publishing House "
+  total: 3
+
+- name: "University of Debrecen "
+  total: 3
+
+- name: "University of Dubrovnik "
+  total: 3
+
+- name: "University of Hawaii Press "
+  total: 3
+
+- name: "University of Kragujevac "
+  total: 3
+
+- name: "University of Liege "
+  total: 3
+
+- name: "University of Messina "
+  total: 3
+
+- name: "University of Muhammadiyah Malang "
+  total: 3
+
+- name: "University of Niš "
+  total: 3
+
+- name: "University of North Carolina at Greensboro "
+  total: 3
+
+- name: "University of Ottawa "
+  total: 3
+
+- name: "University of Pitesti "
+  total: 3
+
+- name: "University of Primorska "
+  total: 3
+
+- name: "University of Science and Technology, Yemen "
+  total: 3
+
+- name: "University of São Paulo "
+  total: 3
+
+- name: "University of the Philippines "
+  total: 3
+
+- name: "Università degli Studi di Urbino Carlo Bo "
+  total: 3
+
+- name: "Université de Limoges "
+  total: 3
+
+- name: "Université de Provence "
+  total: 3
+
+- name: "Utah State University "
+  total: 3
+
+- name: "V.N. Karazin Kharkiv National University "
+  total: 3
+
+- name: "V.N. Karazin Kharkiv National University Publishing "
+  total: 3
+
+- name: "VSB-Technical University of Ostrava "
+  total: 3
+
+- name: "Valahia University Press "
+  total: 3
+
+- name: "Via Medica sp. z.o.o. VM Group Via Medica "
+  total: 3
+
+- name: "Vilnius Gediminas Technical University "
+  total: 3
+
+- name: "Virginia Tech Libraries "
+  total: 3
+
+- name: "West Asia Organization for Cancer Prevention "
+  total: 3
+
+- name: "White Rose University Press "
+  total: 3
+
+- name: "Winchester University Press "
+  total: 3
+
+- name: "Zaporozhye State Medical University "
+  total: 3
+
+publisher_country:
+- name: "Indonesia "
+  total: 1646
+
+- name: "United Kingdom "
+  total: 1636
+
+- name: "Brazil "
+  total: 1461
+
+- name: "United States "
+  total: 772
+
+- name: "Spain "
+  total: 768
+
+- name: "Poland "
+  total: 622
+
+- name: "Iran, Islamic Republic of "
+  total: 542
+
+- name: "Turkey "
+  total: 413
+
+- name: "Italy "
+  total: 411
+
+- name: "Russian Federation "
+  total: 398
+
+- name: "Colombia "
+  total: 368
+
+- name: "Romania "
+  total: 344
+
+- name: "Switzerland "
+  total: 335
+
+- name: "Ukraine "
+  total: 326
+
+- name: "India "
+  total: 288
+
+- name: "Germany "
+  total: 264
+
+- name: "Argentina "
+  total: 258
+
+- name: "Netherlands "
+  total: 248
+
+- name: "France "
+  total: 231
+
+- name: "Serbia "
+  total: 187
+
+- name: "Canada "
+  total: 169
+
+- name: "Mexico "
+  total: 138
+
+- name: "Korea, Republic of "
+  total: 128
+
+- name: "Croatia "
+  total: 122
+
+- name: "Chile "
+  total: 121
+
+- name: "China "
+  total: 121
+
+- name: "Czechia "
+  total: 120
+
+- name: "Australia "
+  total: 114
+
+- name: "Portugal "
+  total: 112
+
+- name: "Norway "
+  total: 106
+
+- name: "Cuba "
+  total: 101
+
+- name: "South Africa "
+  total: 99
+
+- name: "Lithuania "
+  total: 83
+
+- name: "Peru "
+  total: 73
+
+- name: "Malaysia "
+  total: 70
+
+- name: "Costa Rica "
+  total: 67
+
+- name: "Bulgaria "
+  total: 66
+
+- name: "Ecuador "
+  total: 63
+
+- name: "Pakistan "
+  total: 59
+
+- name: "Slovenia "
+  total: 59
+
+- name: "Austria "
+  total: 53
+
+- name: "Iraq "
+  total: 49
+
+- name: "Slovakia "
+  total: 49
+
+- name: "Belgium "
+  total: 44
+
+- name: "Sweden "
+  total: 43
+
+- name: "Finland "
+  total: 39
+
+- name: "Greece "
+  total: 37
+
+- name: "Hungary "
+  total: 36
+
+- name: "Japan "
+  total: 35
+
+- name: "Moldova, Republic of "
+  total: 32
+
+- name: "Taiwan, Province of China "
+  total: 32
+
+- name: "Venezuela, Bolivarian Republic of "
+  total: 32
+
+- name: "Egypt "
+  total: 31
+
+- name: "Thailand "
+  total: 31
+
+- name: "Denmark "
+  total: 30
+
+- name: "Estonia "
+  total: 28
+
+- name: "Algeria "
+  total: 26
+
+- name: "Uruguay "
+  total: 26
+
+- name: "Bosnia and Herzegovina "
+  total: 25
+
+- name: "Morocco "
+  total: 23
+
+- name: "Bangladesh "
+  total: 20
+
+- name: "Paraguay "
+  total: 20
+
+- name: "Hong Kong "
+  total: 19
+
+- name: "Nepal "
+  total: 19
+
+- name: "Singapore "
+  total: 17
+
+- name: "Ireland "
+  total: 16
+
+- name: "New Zealand "
+  total: 16
+
+- name: "Saudi Arabia "
+  total: 15
+
+- name: "Sri Lanka "
+  total: 15
+
+- name: "Belarus "
+  total: 14
+
+- name: "North Macedonia "
+  total: 12
+
+- name: "Latvia "
+  total: 11
+
+- name: "Philippines "
+  total: 10
+
+- name: "United Arab Emirates "
+  total: 10
+
+- name: "Montenegro "
+  total: 9
+
+- name: "Nicaragua "
+  total: 8
+
+- name: "Nigeria "
+  total: 8
+
+- name: "Dominican Republic "
+  total: 7
+
+- name: "Iceland "
+  total: 7
+
+- name: "Oman "
+  total: 7
+
+- name: "Ghana "
+  total: 6
+
+- name: "Kenya "
+  total: 6
+
+- name: "Yemen "
+  total: 6
+
+- name: "Albania "
+  total: 5
+
+- name: "Bolivia, Plurinational State of "
+  total: 5
+
+- name: "Ethiopia "
+  total: 5
+
+- name: "El Salvador "
+  total: 4
+
+- name: "Jordan "
+  total: 4
+
+- name: "Kazakhstan "
+  total: 4
+
+- name: "Mongolia "
+  total: 4
+
+- name: "Puerto Rico "
+  total: 4
+
+- name: "Qatar "
+  total: 4
+
+- name: "Tunisia "
+  total: 4
+
+- name: "Armenia "
+  total: 3
+
+- name: "Kyrgyzstan "
+  total: 3
+
+- name: "Libya "
+  total: 3
+
+- name: "Luxembourg "
+  total: 3
+
+- name: "Malta "
+  total: 3
+
+- name: "Angola "
+  total: 2
+
+- name: "Azerbaijan "
+  total: 2
+
+- name: "Cyprus "
+  total: 2
+
+- name: "Georgia "
+  total: 2
+
+- name: "Guatemala "
+  total: 2
+
+- name: "Israel "
+  total: 2
+
+- name: "Viet Nam "
+  total: 2
+
+- name: "Bahamas "
+  total: 1
+
+- name: "Bahrain "
+  total: 1
+
+- name: "Barbados "
+  total: 1
+
+- name: "Cameroon "
+  total: 1
+
+- name: "Congo, The Democratic Republic of the "
+  total: 1
+
+- name: "Guam "
+  total: 1
+
+- name: "Honduras "
+  total: 1
+
+- name: "Kuwait "
+  total: 1
+
+- name: "Lebanon "
+  total: 1
+
+- name: "Malawi "
+  total: 1
+
+- name: "Mali "
+  total: 1
+
+- name: "Palestine, State of "
+  total: 1
+
+- name: "Rwanda "
+  total: 1
+
+- name: "South Sudan "
+  total: 1
+
+- name: "Turkmenistan "
+  total: 1
+
+- name: "Uganda "
+  total: 1
+
+- name: "Zimbabwe "
+  total: 1
+
+institution:
+
+institution_country:
+
+languages:
+- name: English
+  total: 11088
+
+- name: Spanish
+  total: 2791
+
+- name: Portuguese
+  total: 1942
+
+- name: Indonesian
+  total: 1349
+
+- name: French
+  total: 1008
+
+- name: Russian
+  total: 742
+
+- name: Italian
+  total: 532
+
+- name: German
+  total: 424
+
+- name: Turkish
+  total: 302
+
+- name: Ukrainian
+  total: 298
+
+- name: Persian
+  total: 256
+
+- name: Polish
+  total: 235
+
+- name: Arabic
+  total: 166
+
+- name: Serbian
+  total: 129
+
+- name: Catalan
+  total: 125
+
+- name: Croatian
+  total: 98
+
+- name: Romanian
+  total: 95
+
+- name: Czech
+  total: 77
+
+- name: Slovak
+  total: 59
+
+- name: Swedish
+  total: 56
+
+- name: Chinese
+  total: 54
+
+- name: Danish
+  total: 54
+
+- name: Lithuanian
+  total: 49
+
+- name: Norwegian Bokmål
+  total: 49
+
+- name: Slovenian
+  total: 48
+
+- name: Korean
+  total: 45
+
+- name: Norwegian
+  total: 38
+
+- name: Dutch
+  total: 31
+
+- name: Galician
+  total: 30
+
+- name: Norwegian Nynorsk
+  total: 29
+
+- name: Bulgarian
+  total: 22
+
+- name: Malay (macrolanguage)
+  total: 21
+
+- name: Afrikaans
+  total: 19
+
+- name: Finnish
+  total: 19
+
+- name: Hungarian
+  total: 16
+
+- name: Modern Greek (1453-)
+  total: 16
+
+- name: Basque
+  total: 14
+
+- name: Estonian
+  total: 12
+
+- name: Japanese
+  total: 12
+
+- name: Belarusian
+  total: 9
+
+- name: Bosnian
+  total: 9
+
+- name: Macedonian
+  total: 8
+
+- name: Urdu
+  total: 8
+
+- name: Icelandic
+  total: 6
+
+- name: Latvian
+  total: 5
+
+- name: Thai
+  total: 5
+
+- name: Hindi
+  total: 4
+
+- name: Latin
+  total: 4
+
+- name: Tagalog
+  total: 4
+
+- name: Azerbaijani
+  total: 3
+
+- name: Kazakh
+  total: 3
+
+- name: Amharic
+  total: 2
+
+- name: Esperanto
+  total: 2
+
+- name: Georgian
+  total: 2
+
+- name: Irish
+  total: 2
+
+- name: Kurdish
+  total: 2
+
+- name: Mongolian
+  total: 2
+
+- name: Sanskrit
+  total: 2
+
+- name: Swahili (macrolanguage)
+  total: 2
+
+- name: Uighur
+  total: 2
+
+- name: Vietnamese
+  total: 2
+
+- name: Xhosa
+  total: 2
+
+- name: Albanian
+  total: 1
+
+- name: Aragonese
+  total: 1
+
+- name: Armenian
+  total: 1
+
+- name: Hebrew
+  total: 1
+
+- name: Kirghiz
+  total: 1
+
+- name: Maltese
+  total: 1
+
+- name: Maori
+  total: 1
+
+- name: Nepali (macrolanguage)
+  total: 1
+
+- name: Occitan (post 1500)
+  total: 1
+
+- name: Scottish Gaelic
+  total: 1
+
+- name: Serbo-Croatian
+  total: 1
+
+- name: Southern Sotho
+  total: 1
+
+- name: Turkmen
+  total: 1
+
+- name: Uzbek
+  total: 1
+
+- name: Venda
+  total: 1
+
+- name: Zulu
+  total: 1
+
+peer_review:
+- name: Double blind peer review
+  total: 7638
+
+- name: Blind peer review
+  total: 4084
+
+- name: Peer review
+  total: 2550
+
+- name: Open peer review
+  total: 136
+
+- name: Editorial review
+  total: 128
+
+date_added:
+- name: 2020
+  total: 805
+
+- name: 2019
+  total: 1951
+
+- name: 2018
+  total: 2240
+
+- name: 2017
+  total: 2450
+
+- name: 2016
+  total: 1628
+
+- name: 2015
+  total: 1250
+
+- name: 2014
+  total: 378
+
+- name: 2013
+  total: 855
+
+- name: 2012
+  total: 521
+
+- name: 2011
+  total: 508
+
+- name: 2010
+  total: 554
+
+- name: 2009
+  total: 297
+
+- name: 2008
+  total: 276
+
+- name: 2007
+  total: 176
+
+- name: 2006
+  total: 154
+
+- name: 2005
+  total: 161
+
+- name: 2004
+  total: 189
+
+- name: 2003
+  total: 161
+
+- name: 2002
+  total: 22
+
+last_updated:

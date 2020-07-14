@@ -1,0 +1,361 @@
+
+
+    <main class="container">
+      <div class="row">
+
+        <div class="col-md-4 col-md-push-8">
+          
+          <nav class="page-nav nav">
+            <h2 class="page-nav__heading">Jump to:</h2>
+            <ul class="page-nav__list">
+<li class="page-nav__item item-h2"><a href="#uploading-an-xml-file">Uploading an XML file</a></li>
+<li class="page-nav__item item-h2"><a href="#list-of-doaj-xml-elements">List of DOAJ XML elements</a></li>
+<li class="page-nav__item item-h2"><a href="#example-doaj-xml-file">Example DOAJ XML File</a></li>
+<li class="page-nav__item item-h2"><a href="#the-doajarticlesxsd-schema-file">The doajArticles.xsd schema file</a></li>
+</ul>
+          </nav>
+
+          
+        </div>
+
+        <div class="col-md-8 col-md-pull-4">
+           <section class="page-content">
+            <p class="label">Docs</p>
+            <h1>XML</h1>
+
+            <p>When you upload your article metadata to us, it must be in one of two XML formats.</p>
+
+<p>Article metadata is provided to us on the understanding that it will then be available for free, to be distributed to any third party who wants it.</p>
+
+<p>We do not check the metadata’s quality or correctness as we ingest it—this is your responsibility—so any errors (for example, typos in author names, URLs, or DOI) will be uploaded as-is. From time to time, a user of our metadata may contact us and ask us to correct your metadata.</p>
+
+<h2 id="uploading-an-xml-file">Uploading an XML file</h2>
+
+<ul>
+  <li>First convert your article metadata into an accepted XML format: DOAJ or Crossref.
+    <ul>
+      <li>It must be structured correctly.</li>
+      <li>Its format must follow a set of rules laid out in the <a href="/static/doaj/doajArticles.xsd">DOAJ XML schema file</a>, or the rules laid out in <a href="https://support.crossref.org/hc/en-us/articles/214530063-Crossref-XSD-schema-quick-reference" target="_blank" rel="noopener">Crossref’s schema file</a>.</li>
+    </ul>
+  </li>
+  <li>If you are creating DOAJ XML manually, try <a href="https://jsonformatter.org/xml-formatter" target="_blank" rel="noopener">formatting</a> and <a href="https://www.xmlvalidation.com/" target="_blank" rel="noopener">validating</a> the file before you upload it to us.</li>
+  <li>If you are exporting XML from an OJS plugin, you can <a href="/publisher/uploadfile">upload the file</a> immediately.</li>
+</ul>
+
+<h2 id="list-of-doaj-xml-elements">List of DOAJ XML elements</h2>
+
+<p>Here is a table of each possible element in the DOAJ XML file. It shows you whether or not the element is required by the DOAJ schema. Providing as much information in the metadata as possible ensures a more complete record in our database and allows the record to be distributed more easily to other services.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Requirement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Language, ISO code</td>
+      <td>Optional, max 1</td>
+    </tr>
+    <tr>
+      <td>Publisher</td>
+      <td>Optional, max 1</td>
+    </tr>
+    <tr>
+      <td><strong>Journal title</strong></td>
+      <td>Required, only 1</td>
+    </tr>
+    <tr>
+      <td>ISSN</td>
+      <td>Optional, max. 1 <br>Either the ISSN or the EISSN must be present, or both</td>
+    </tr>
+    <tr>
+      <td>EISSN</td>
+      <td>Optional, max. 1  <br>Either the ISSN or the EISSN must be present, or both</td>
+    </tr>
+    <tr>
+      <td><strong>Publication date</strong></td>
+      <td>Required, only 1</td>
+    </tr>
+    <tr>
+      <td>Volume number</td>
+      <td>Optional, max. 1</td>
+    </tr>
+    <tr>
+      <td>Issue number</td>
+      <td>Optional, max. 1</td>
+    </tr>
+    <tr>
+      <td>Start page</td>
+      <td>Optional, max. 1</td>
+    </tr>
+    <tr>
+      <td>End page</td>
+      <td>Optional, max. 1</td>
+    </tr>
+    <tr>
+      <td>DOI</td>
+      <td>Optional, max. 1</td>
+    </tr>
+    <tr>
+      <td>Document type</td>
+      <td>Optional, max. 1</td>
+    </tr>
+    <tr>
+      <td><strong>Title</strong></td>
+      <td>Required, 1 or more</td>
+    </tr>
+    <tr>
+      <td>Authors</td>
+      <td>Optional</td>
+    </tr>
+    <tr>
+      <td>Affiliations</td>
+      <td>Optional</td>
+    </tr>
+    <tr>
+      <td>Abstracts</td>
+      <td>Optional</td>
+    </tr>
+    <tr>
+      <td><strong>Full-text URL</strong></td>
+      <td>Required, only 1</td>
+    </tr>
+    <tr>
+      <td>Keywords</td>
+      <td>Optional</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>There are <a href="https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en" target="_blank" rel="noopener">European Union restrictions</a> on how you distribute personal data, such as email addresses. DOAJ doesn’t have any need for or display author email addresses so please don’t send them to us in the XML.</p>
+
+<h2 id="example-doaj-xml-file">Example DOAJ XML File</h2>
+
+<p>The example file below contains only one record.</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;records&gt;</span>
+  <span class="nt">&lt;record&gt;</span>
+    <span class="nt">&lt;language&gt;</span>eng<span class="nt">&lt;/language&gt;</span>
+    <span class="nt">&lt;publisher&gt;</span>Popular Chemistry<span class="nt">&lt;/publisher&gt;</span>
+    <span class="nt">&lt;journalTitle&gt;</span>Botanical Magazine<span class="nt">&lt;/journalTitle&gt;</span>
+    <span class="nt">&lt;issn&gt;</span>17497221<span class="nt">&lt;/issn&gt;</span>
+    <span class="nt">&lt;eissn&gt;</span>17497234<span class="nt">&lt;/eissn&gt;</span>
+    <span class="nt">&lt;publicationDate&gt;</span>2002-09-30<span class="nt">&lt;/publicationDate&gt;</span>
+    <span class="nt">&lt;volume&gt;</span>98<span class="nt">&lt;/volume&gt;</span>
+    <span class="nt">&lt;issue&gt;</span>2<span class="nt">&lt;/issue&gt;</span>
+    <span class="nt">&lt;startPage&gt;</span>1234<span class="nt">&lt;/startPage&gt;</span>
+    <span class="nt">&lt;endPage&gt;</span>1235<span class="nt">&lt;/endPage&gt;</span>
+    <span class="nt">&lt;doi&gt;</span>1234567<span class="nt">&lt;/doi&gt;</span>
+    <span class="nt">&lt;publisherRecordId&gt;</span>12345<span class="nt">&lt;/publisherRecordId&gt;</span>
+    <span class="nt">&lt;documentType&gt;</span>article<span class="nt">&lt;/documentType&gt;</span>
+    <span class="nt">&lt;title</span> <span class="na">language=</span><span class="s">"eng"</span><span class="nt">&gt;</span>Roses and Lilies<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;authors&gt;</span>
+      <span class="nt">&lt;author&gt;</span>
+        <span class="nt">&lt;name&gt;</span>Fritz Haber<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;affiliationId&gt;</span>1<span class="nt">&lt;/affiliationId&gt;</span>
+        <span class="nt">&lt;affiliationId&gt;</span>2<span class="nt">&lt;/affiliationId&gt;</span>
+        <span class="nt">&lt;affiliationId&gt;</span>3<span class="nt">&lt;/affiliationId&gt;</span>
+      <span class="nt">&lt;/author&gt;</span>
+    <span class="nt">&lt;/authors&gt;</span>
+    <span class="nt">&lt;affiliationsList&gt;</span>
+      <span class="nt">&lt;affiliationName</span> <span class="na">affiliationId=</span><span class="s">"1"</span><span class="nt">&gt;</span>University of A<span class="nt">&lt;/affiliationName&gt;</span>
+      <span class="nt">&lt;affiliationName</span> <span class="na">affiliationId=</span><span class="s">"2"</span><span class="nt">&gt;</span>University of B<span class="nt">&lt;/affiliationName&gt;</span>
+      <span class="nt">&lt;affiliationName</span> <span class="na">affiliationId=</span><span class="s">"3"</span><span class="nt">&gt;</span>University of C<span class="nt">&lt;/affiliationName&gt;</span>
+    <span class="nt">&lt;/affiliationsList&gt;</span>
+    <span class="nt">&lt;abstract</span> <span class="na">language=</span><span class="s">"eng"</span><span class="nt">&gt;</span>The catalytic formation of ammonia from hydrogen and atmospheric nitrogen under conditions of high temperature and high pressure.<span class="nt">&lt;/abstract&gt;</span>
+    <span class="nt">&lt;fullTextUrl</span> <span class="na">format=</span><span class="s">"pdf"</span><span class="nt">&gt;</span>http://www.science.org/articles/HaberBosch.pdf<span class="nt">&lt;/fullTextUrl&gt;</span>
+    <span class="nt">&lt;keywords</span> <span class="na">language=</span><span class="s">"eng"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;keyword&gt;</span>garden<span class="nt">&lt;/keyword&gt;</span>
+      <span class="nt">&lt;keyword&gt;</span>rose<span class="nt">&lt;/keyword&gt;</span>
+    <span class="nt">&lt;/keywords&gt;</span>
+  <span class="nt">&lt;/record&gt;</span>
+  <span class="nt">&lt;record&gt;</span>...<span class="nt">&lt;/record&gt;</span>
+  ...
+<span class="nt">&lt;/records&gt;</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Comment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">record</code></td>
+      <td>Represents a single record.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">language</code></td>
+      <td>The language tag content must conform to the ISO 639-2b standard. <a href="https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes" target="_blank" rel="noopener">Find the correct language code</a>.</td>
+    </tr>
+    <tr>
+      <td>
+<code class="highlighter-rouge">issn</code>  <br><code class="highlighter-rouge">eissn</code>
+</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">title language=""</code></td>
+      <td>If the title occurs in more than one language, then you may include those in your XML. However, we can only display one language. The title tag’s language attribute must be set according to the ISO 639-2b standard.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">name</code></td>
+      <td>The author name should be formatted First Name, Middle Name, Last Name</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">affiliationId</code></td>
+      <td>Note that the <code class="highlighter-rouge">affiliationId</code> numbers denote the affiliations in the <code class="highlighter-rouge">affiliationslist</code> further down.</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="the-doajarticlesxsd-schema-file">The doajArticles.xsd schema file</h2>
+
+<p>The <a href="http://www.doaj.org/static/doaj/doajArticles.xsd" target="_blank" rel="noopener">doajArticles.xsd</a> file specifies what may or may not be uploaded to the database.</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;xs:schema</span> <span class="na">xmlns:xs=</span><span class="s">"http://www.w3.org/2001/XMLSchema"</span> <span class="na">xmlns:iso_639-2b=</span><span class="s">"https://doaj.org/schemas/iso_639-2b/1.0"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;xs:import</span> <span class="na">namespace=</span><span class="s">"https://doaj.org/schemas/iso_639-2b/1.0"</span> <span class="na">schemaLocation=</span><span class="s">"https://doaj.org/static/doaj/iso_639-2b.xsd"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;xs:annotation&gt;</span>
+      <span class="nt">&lt;xs:documentation&gt;</span>
+        This schema determines allowable xml file formats
+        for upload into the DOAJ database.
+        The schema uses imported codes for the representation
+        of names of languages devised by the International
+        Organization for Standardization (ISO) 639-2/B
+        (bibliographic codes). Please note that when two
+        codes separated by a dash occurs in the iso 639-2
+        table then only the first code is used, the
+        bibliographic one. The terminology code that comes
+        second is omitted.
+      <span class="nt">&lt;/xs:documentation&gt;</span>
+    <span class="nt">&lt;/xs:annotation&gt;</span>
+  <span class="nt">&lt;/xs:import&gt;</span>
+  <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"records"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;xs:complexType&gt;</span>
+      <span class="nt">&lt;xs:sequence&gt;</span>
+        <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"record"</span> <span class="na">type=</span><span class="s">"recordType"</span> <span class="na">maxOccurs=</span><span class="s">"unbounded"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/xs:sequence&gt;</span>
+    <span class="nt">&lt;/xs:complexType&gt;</span>
+  <span class="nt">&lt;/xs:element&gt;</span>
+  <span class="nt">&lt;xs:complexType</span> <span class="na">name=</span><span class="s">"recordType"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;xs:sequence&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"language"</span> <span class="na">type=</span><span class="s">"iso_639-2b:LanguageCodeType"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"publisher"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"journalTitle"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"issn"</span> <span class="na">minOccurs=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;xs:simpleType&gt;</span>
+          <span class="nt">&lt;xs:restriction</span> <span class="na">base=</span><span class="s">"xs:string"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;xs:pattern</span> <span class="na">value=</span><span class="s">"[d0-9]{4}-{0,1}[0-9]{3}[0-9xX]{1}"</span> <span class="nt">/&gt;</span>
+          <span class="nt">&lt;/xs:restriction&gt;</span>
+        <span class="nt">&lt;/xs:simpleType&gt;</span>
+      <span class="nt">&lt;/xs:element&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"eissn"</span> <span class="na">minOccurs=</span><span class="s">"0"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;xs:simpleType&gt;</span>
+          <span class="nt">&lt;xs:restriction</span> <span class="na">base=</span><span class="s">"xs:string"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;xs:pattern</span> <span class="na">value=</span><span class="s">"[0-9]{4}-{0,1}[0-9]{3}[0-9xX]{1}"</span> <span class="nt">/&gt;</span>
+          <span class="nt">&lt;/xs:restriction&gt;</span>
+        <span class="nt">&lt;/xs:simpleType&gt;</span>
+      <span class="nt">&lt;/xs:element&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"publicationDate"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;xs:simpleType&gt;</span>
+          <span class="nt">&lt;xs:restriction</span> <span class="na">base=</span><span class="s">"xs:string"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;xs:pattern</span> <span class="na">value=</span><span class="s">"[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?"</span> <span class="nt">/&gt;</span>
+          <span class="nt">&lt;/xs:restriction&gt;</span>
+        <span class="nt">&lt;/xs:simpleType&gt;</span>
+      <span class="nt">&lt;/xs:element&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"volume"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"issue"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"startPage"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"endPage"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"doi"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"publisherRecordId"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"documentType"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"title"</span> <span class="na">minOccurs=</span><span class="s">"1"</span> <span class="na">maxOccurs=</span><span class="s">"unbounded"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;xs:complexType&gt;</span>
+          <span class="nt">&lt;xs:simpleContent&gt;</span>
+            <span class="nt">&lt;xs:extension</span> <span class="na">base=</span><span class="s">"xs:string"</span><span class="nt">&gt;</span>
+              <span class="nt">&lt;xs:attribute</span> <span class="na">name=</span><span class="s">"language"</span> <span class="na">type=</span><span class="s">"iso_639-2b:LanguageCodeType"</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/xs:extension&gt;</span>
+          <span class="nt">&lt;/xs:simpleContent&gt;</span>
+        <span class="nt">&lt;/xs:complexType&gt;</span>
+      <span class="nt">&lt;/xs:element&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"authors"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="na">maxOccurs=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;xs:complexType&gt;</span>
+          <span class="nt">&lt;xs:sequence&gt;</span>
+            <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"author"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="na">maxOccurs=</span><span class="s">"unbounded"</span><span class="nt">&gt;</span>
+              <span class="nt">&lt;xs:complexType&gt;</span>
+                <span class="nt">&lt;xs:sequence&gt;</span>
+                  <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"name"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="nt">/&gt;</span>
+                  <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"email"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="nt">/&gt;</span>
+                  <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"affiliationId"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="na">maxOccurs=</span><span class="s">"unbounded"</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;/xs:sequence&gt;</span>
+              <span class="nt">&lt;/xs:complexType&gt;</span>
+            <span class="nt">&lt;/xs:element&gt;</span>
+          <span class="nt">&lt;/xs:sequence&gt;</span>
+        <span class="nt">&lt;/xs:complexType&gt;</span>
+      <span class="nt">&lt;/xs:element&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"affiliationsList"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="na">maxOccurs=</span><span class="s">"1"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;xs:complexType&gt;</span>
+          <span class="nt">&lt;xs:sequence&gt;</span>
+            <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"affiliationName"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="na">maxOccurs=</span><span class="s">"unbounded"</span><span class="nt">&gt;</span>
+              <span class="nt">&lt;xs:complexType&gt;</span>
+                <span class="nt">&lt;xs:simpleContent&gt;</span>
+                  <span class="nt">&lt;xs:extension</span> <span class="na">base=</span><span class="s">"xs:string"</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;xs:attribute</span> <span class="na">name=</span><span class="s">"affiliationId"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="na">use=</span><span class="s">"required"</span> <span class="nt">/&gt;</span>
+                  <span class="nt">&lt;/xs:extension&gt;</span>
+                <span class="nt">&lt;/xs:simpleContent&gt;</span>
+              <span class="nt">&lt;/xs:complexType&gt;</span>
+            <span class="nt">&lt;/xs:element&gt;</span>
+          <span class="nt">&lt;/xs:sequence&gt;</span>
+        <span class="nt">&lt;/xs:complexType&gt;</span>
+      <span class="nt">&lt;/xs:element&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"abstract"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="na">maxOccurs=</span><span class="s">"unbounded"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;xs:complexType&gt;</span>
+          <span class="nt">&lt;xs:simpleContent&gt;</span>
+            <span class="nt">&lt;xs:extension</span> <span class="na">base=</span><span class="s">"xs:string"</span><span class="nt">&gt;</span>
+              <span class="nt">&lt;xs:attribute</span> <span class="na">name=</span><span class="s">"language"</span> <span class="na">type=</span><span class="s">"iso_639-2b:LanguageCodeType"</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/xs:extension&gt;</span>
+          <span class="nt">&lt;/xs:simpleContent&gt;</span>
+        <span class="nt">&lt;/xs:complexType&gt;</span>
+      <span class="nt">&lt;/xs:element&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"fullTextUrl"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;xs:complexType&gt;</span>
+          <span class="nt">&lt;xs:simpleContent&gt;</span>
+            <span class="nt">&lt;xs:extension</span> <span class="na">base=</span><span class="s">"xs:anyURI"</span><span class="nt">&gt;</span>
+              <span class="nt">&lt;xs:attribute</span> <span class="na">name=</span><span class="s">"format"</span> <span class="nt">/&gt;</span>
+            <span class="nt">&lt;/xs:extension&gt;</span>
+          <span class="nt">&lt;/xs:simpleContent&gt;</span>
+        <span class="nt">&lt;/xs:complexType&gt;</span>
+      <span class="nt">&lt;/xs:element&gt;</span>
+      <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"keywords"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="na">maxOccurs=</span><span class="s">"unbounded"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;xs:complexType&gt;</span>
+          <span class="nt">&lt;xs:sequence&gt;</span>
+            <span class="nt">&lt;xs:element</span> <span class="na">name=</span><span class="s">"keyword"</span> <span class="na">type=</span><span class="s">"xs:string"</span> <span class="na">minOccurs=</span><span class="s">"0"</span> <span class="na">maxOccurs=</span><span class="s">"unbounded"</span> <span class="nt">/&gt;</span>
+          <span class="nt">&lt;/xs:sequence&gt;</span>
+          <span class="nt">&lt;xs:attribute</span> <span class="na">name=</span><span class="s">"language"</span> <span class="na">type=</span><span class="s">"iso_639-2b:LanguageCodeType"</span> <span class="na">use=</span><span class="s">"optional"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;/xs:complexType&gt;</span>
+      <span class="nt">&lt;/xs:element&gt;</span>
+    <span class="nt">&lt;/xs:sequence&gt;</span>
+  <span class="nt">&lt;/xs:complexType&gt;</span>
+<span class="nt">&lt;/xs:schema&gt;</span>
+</code></pre></div></div>
+
+
+
+            <!-- Display data pages -->
+            
+          </section>
+        </div>
+
+      </div>
+    </main>
+
+

@@ -12,12 +12,7 @@
     {% endif %}
 
     {% if field.type == 'FormField' %}
-        <div class="form-group
-        {% if field.errors %} error{% endif %}
-        {% if render_subfields_horizontal %} row{% endif %}
-        {% if container_class %} {{container_class}} {% endif %}
-        " id="{{field.short_name}}-container"
-        {% if hidden %} style="display: none;" {% endif %} 
+        <div {% if hidden %} style="display: none;" {% endif %}
         >
             {% for subfield in field %}
                 {% if render_subfields_horizontal 
@@ -36,7 +31,7 @@
                       {% do vars.update({'subfield_width': '3'}) %}
                     {% endif %}
 
-                    <div class="col-xs-{{vars.subfield_width}} nested-field-container">
+                    <div>
                         {{ __render_field(subfield, maximise_width=True, **kwargs) }}
                     </div>
                 {% else %}
@@ -54,8 +49,7 @@
                    )
                 }}
             {% else %}
-            <div class="form-group
-            {% if subfield.errors %} error{% endif %}"
+            <div
             {% if hidden %} style="display: none;" {% endif %}
             id="{{field.short_name}}-container"
             >
@@ -64,10 +58,7 @@
             {% endif %}
         {% endfor %}    
     {% else %}
-        <div class="form-group
-        {% if field.errors %} error {% endif %}
-        {% if container_class %} {{container_class}} {% endif %}
-        "
+        <div
         {% if hidden %} style="display: none;" {% endif %}
         id="{{field.short_name}}-container"
         >
@@ -87,11 +78,11 @@
     {% if not (field.type == 'CSRFTokenField' and not field.value) %}
         {% if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField'] %}
 
-            {% if q_num %}<a class="animated" name="{{q_num}}"></a>{% endif %}
+            {% if q_num %}<a name="{{q_num}}"></a>{% endif %}
 
-            <label class="col-md-3 control-label" for="{{field.short_name}}">
-              {% if q_num %} <a class="animated orange" href="#{{field.short_name}}-container" title="Link to this question" tabindex="-1">{{ q_num }})</a> {% endif %}
-              {{field.label.text}}{% if field.flags.required %}&nbsp;<span class="red">*</span>{% endif %}{% if not field.flags.required and field.flags.display_required_star %}&nbsp;<span class="red">*</span>{% endif %}
+            <label for="{{field.short_name}}">
+                {{field.label.text}}
+              {% if q_num %} <a href="#{{field.short_name}}-container" title="Link to this question" tabindex="-1">{{ q_num }})</a> {% endif %}
             </label>
 
         {% endif %}
@@ -107,7 +98,7 @@
             {% set extra_class = extra_class + ' checkboxes' %}
         {% endif %}
 
-        <div class="col-md-9 {{extra_class}}">
+        <div>
             {% if field.type == 'RadioField' %}
                 {% for subfield in field %}
                     {{ __render_radio(subfield,
@@ -169,9 +160,9 @@
               extra_input_field2='', display_extra2_when_label_is=''
          )
 %}
-<label class="radio" for="{{field.short_name}}">
+<label for="{{field.short_name}}">
     {{ field(**kwargs) }}
-    <span class="label-text">{{field.label.text}}</span>
+    <span>{{field.label.text}}</span>
 
     {% if extra_input_field and display_extra_when_label_is.lower() == field.label.text.lower() %}
       {{ extra_input_field(class="extra_input_field") }}
@@ -209,14 +200,11 @@
 {% macro render_field_horizontal(field, style=None, placeholder="", required=False, container_style="") %}
     {% if field.type == 'FieldList' %}
       {% for subfield in field %}
-        <div class="form-group
-        {% if subfield.errors %} error {% endif %}
-        ">
-            <label class="col-md-3 control-label" for="{{subfield.short_name}}">{{subfield.label.text | safe}}
-            {% if subfield.flags.required or required %}<span class="red">*</span>{% endif %}
+        <div>
+            <label for="{{subfield.short_name}}">{{subfield.label.text | safe}}
             </label>
 
-            <div class="col-md-9">
+            <div>
               {{ subfield(**kwargs) }}
               {% if subfield.errors %}
                   <ul class="errors">
@@ -229,12 +217,9 @@
         </div>
       {% endfor %}
     {% else %}
-      <div class="form-group
-      {% if field.errors %} error {% endif %}
-      ">
+      <div>
           {% if field.type != 'SubmitField' %}
-              <label class="col-md-3 control-label" for="{{field.short_name}}">{{field.label.text | safe}}
-              {% if field.flags.required or required %}<span class="red">*</span>{% endif %}
+              <label for="{{field.short_name}}">{{field.label.text | safe}}
               </label>
           {% endif %}
 
@@ -245,7 +230,7 @@
             {% set extra_class = extra_class + ' checkboxes' %}
           {% endif %}
 
-          <div class="col-md-9 {{ extra_class }}" style="{{ container_style }}">
+          <div style="{{ container_style }}">
               {% if field.type != 'RadioField' %}
                   {{ field(style=style, placeholder=placeholder, **kwargs) }}
                   {% if field.errors %}

@@ -1,0 +1,192 @@
+<footer class="page-footer">
+  <div class="container">
+    <a href="#" id="top" class="back-to-top" data-spy="affix"><span data-feather="arrow-up" aria-hidden="true"></span><span class="sr-only">Back to top</span></a>
+    <section class="row">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
+        <h2>Apply</h2>
+        <ul>
+          <li><a href="/apply">Application form</a></li>
+          <li><a href="/apply/guide">Guide to applying</a></li>
+          <li><a href="/apply/seal">The DOAJ seal</a></li>
+          <li><a href="/apply/transparency">Transparency & best practice</a></li>
+          <li><a href="/apply/why-index">Why index your journal in DOAJ?</a></li>
+        </ul>
+      </div>
+
+      <div class="col-xs-6 col-sm-4 col-lg-2">
+        <h2>Search</h2>
+        <ul>
+          <li><a href="">Journals</a></li>
+          <li><a href="">Articles</a></li>
+          <li><a href="">Browse by subject</a></li>
+          <li><a href="">Open Knowledge Maps</a></li>
+        </ul>
+      </div>
+
+      <div class="col-xs-6 col-sm-4 col-lg-2">
+        <h2>Documentation</h2>
+        <ul>
+          <li><a href="">API</a></li>
+          <li><a href="">OAI-PMH</a></li>
+          <li><a href="/docs/xml">XML</a></li>
+          <li><a href="/docs/widgets">Widgets</a></li>
+          <li><a href="/docs/public-data-dump">Public data dump</a></li>
+          <li><a href="/docs/openurl">OpenURL</a></li>
+        </ul>
+      </div>
+
+      <div class="col-xs-6 col-sm-4 col-lg-2">
+        <h2>About</h2>
+        <ul>
+          <li><a href="/about">History & mission</a></li>
+          <li><a href="/about/team">Team</a></li>
+          <li><a href="/about/ambassadors">Ambassadors</a></li>
+          <li><a href="/about/advisory-board-council">Advisory Board & Council</a></li>
+          <li><a href="/about/volunteers">Volunteers</a></li>
+          <li><a href="">News</a></li>
+          <li><a href="/about/faq">FAQs</a></li>
+        </ul>
+      </div>
+
+      <div class="col-xs-6 col-sm-4 col-lg-2">
+        <h2>Support</h2>
+        <ul>
+          <li><a href="/support">Support DOAJ</a></li>
+          <li><a href="/support/sponsors">Sponsors</a></li>
+          <li><a href="/support/publisher-supporters">Publisher supporters</a></li>
+          <li><a href="/support/supporters">Supporters</a></li>
+        </ul>
+      </div>
+
+      <div class="col-xs-6 col-sm-4 col-lg-2">
+        <h2>Stay up to date</h2>
+        <ul>
+          <li>
+            <a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener noreferrer">
+              <span data-feather="twitter" aria-hidden="true"></span> Twitter
+            </a>
+          </li>
+          <li>
+            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank" rel="noopener noreferrer">
+              <span data-feather="facebook" aria-hidden="true"></span> Facebook
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/DOAJ" target="_blank" rel="noopener noreferrer">
+              <span data-feather="github" aria-hidden="true"></span> Github
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank" rel="noopener noreferrer">
+              <span data-feather="linkedin" aria-hidden="true"></span> Linkedin
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <span data-feather="rss" aria-hidden="true"></span> Atom feed</a>
+            </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="row legal">
+      <h2 class="sr-only">Legal & admin</h2>
+      <div class="col-sm-8">
+        <ul>
+          <li><a href="about/accessibility">Accessibility statement</a></li>
+            <li><a href="about/privacy">Privacy</a></li>
+          <li><a href="/contact">Contact us</a></li>
+          <li><a href="https://is4oa.org/" target="_blank" rel="noopener noreferrer">IS4OA</a></li>
+          <li><a href="https://cottagelabs.com/" target="_blank" rel="noopener noreferrer">Cottage Labs LLP</a></li>
+        </ul>
+      </div>
+      <p class="col-sm-4">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
+    </section>
+  </div>
+</footer>
+
+{#<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->#}
+{#<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>#}
+{#<script src="/static_content/js/vendors/bootstrap.js"></script>#}
+{##}
+{#<!-- Feather icons -->#}
+{#<script src="https://unpkg.com/feather-icons"></script>#}
+
+<script>
+  // Use Feather icons
+  feather.replace()
+
+  // Responsive menu
+  var openMenu = document.querySelector(".secondary-nav__menu-toggle");
+  var nav = document.querySelector(".secondary-nav__menu");
+
+  openMenu.addEventListener('click', function() {
+    nav.classList.toggle("secondary-nav__menu-toggle--active");
+  }, false);
+
+  // Back-to-top button
+  topBtn = document.getElementById("top");
+
+  window.onscroll = function() {scrollFunction()};
+
+  function scrollFunction() {
+    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+      topBtn.style.display = "flex";
+    } else {
+      topBtn.style.display = "none";
+    }
+  }
+
+  // When the user clicks on the button, scroll to the top of the document
+  function topFunction() {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+  }
+
+  // Tabs
+  $("[role='tab']").click(function(e) {
+    e.preventDefault();
+    $(this).attr("aria-selected", "true");
+    $(this).parent().siblings().children().attr("aria-selected", "false");
+    var tabpanelShow = $(this).attr("href");
+    $(tabpanelShow).attr("aria-hidden", "false");
+    $(tabpanelShow).siblings().attr("aria-hidden", "true");
+  });
+
+  // Offset when clicking on anchor link or sidenav link to compensate for fixed header
+  var headerHeight = 70;
+
+  // When on the same page
+  jQuery (function($) {
+    $('a[href*="#"]:not([href="#"])').click(function() {
+      var target = $(this.hash);
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight
+      }, 50, 'linear');
+    });
+    if (location.hash){
+      var id = $(location.hash);
+    }
+
+    $(window).load(function() {
+      if (location.hash){
+        $('html,body').animate({
+          scrollTop: id.offset().top - headerHeight
+        }, 50, 'linear')
+      };
+    });
+  });
+
+  // Coming from another page
+  jQuery (document).ready (function($) {
+    var hash= window.location.hash
+    if ( hash == '' || hash == '#' || hash == undefined ) return false;
+    var target = $(hash);
+    target = target.length ? target : $('[name=' + hash.slice(1) +']');
+    if (target.length) {
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight //offsets for fixed header
+      }, 50, 'linear');
+    }
+  } );
+</script>

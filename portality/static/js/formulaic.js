@@ -302,14 +302,15 @@ var formulaic = {
                         }
 
                         // bind a change event for checking conditionals
-                        var element = this.controlSelect.input({name: condField});
-                        edges.on(element, "change.Conditional", this, "checkConditional");
+                        var element = this.controlSelect.input({id: condField});
+                        edges.on(element, "click", this, "checkConditional");
                     }
                 }
             }
         };
 
         this.checkConditional = function(element) {
+            console.log("this should be called")
             var name = this.getElementName($(element));
             var downstream = this.conditionals[name];
             for (var i = 0; i < downstream.length; i++) {
@@ -584,7 +585,7 @@ var formulaic = {
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<a id="' + id + '" class="' + classes + '" target="_blank" href="' + val + '">visit site</a>');
+                        that.after('<p><small><a id="' + id + '" class="' + classes + '" target="_blank" href="' + val + '">' + val + '</a></small></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
@@ -596,6 +597,56 @@ var formulaic = {
             };
 
             this.init();
+        },
+
+        newMultipleField : function(params) {
+            return edges.instantiate(formulaic.widgets.multipleField, params)
+        },
+        multipleField: function(params){
+            this.fieldDef = params.fieldDef
+            this.field = $('#' + this.fieldDef["name"]);
+
+            this.init = () => {
+                this.field.attr('id', this.fieldDef["name"] + '--id_0');
+                if (this.field.attr('required')) {
+                    this.field.removeAttr('required');
+                    this.field.attr("data-parsley-validate-multiple", "")
+                    this.field.attr("data-parsley-validate-if-empty","true");
+                }
+                let type = this.field.prop('tagName').toLowerCase();
+                $("#remove_field__"+this.fieldDef["name"]).attr('id', "remove_field__"+this.fieldDef["name"] + "--id_0")
+
+                let cloneCount = 1
+                $("#add_field__" + this.fieldDef["name"]).on("click", () => {
+                    cloneCount++;
+                    if (cloneCount > 1) {
+                        $("[id^=remove_field__"+this.fieldDef["name"] + "--id_").show()
+                    }
+                    let div = $("<div>").addClass('multiple_input');
+                    let previousInput = $('.removable_field__' + this.fieldDef["name"]).find(type).filter(':first')
+                    let newInput = $(previousInput)
+                        .clone(true)
+                        .attr('id', params.fieldDef["name"] + '--id_' + cloneCount)
+                    newInput.appendTo($(div));
+                    let previousRemoveBtn = $("[id^=remove_field__"+this.fieldDef["name"] + '--id_').filter(':first')
+                    newInput.after(
+                        $(previousRemoveBtn)
+                        .clone(true)
+                        .attr('id', "remove_field__"+this.fieldDef["name"] + '--id_' + cloneCount)
+                    );
+                    $(previousInput).parent().after($(div));
+                })
+                $("[id^=remove_field__" + this.fieldDef["name"] + "--id_").on("click", (event) => {
+                    let number = $(event.target.closest('button')).attr('id').slice(-1)
+                    let input = $('#' + this.fieldDef["name"] + '--id_' + number)
+                    input.parent().remove()
+                    cloneCount--;
+                    if (cloneCount === 1) {
+                        $("[id^=remove_field__"+this.fieldDef["name"] + "--id_").hide()
+                    }
+                })
+            }
+            this.init()
         },
 
         newSelect : function(params) {
@@ -611,9 +662,9 @@ var formulaic = {
 
             this.init = function() {
                 this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                this.elements.select2({
-                    allowClear: true
-                });
+                // this.elements.select2({  //TODO: select2 is not a function
+                //     allowClear: true
+                // });
             };
 
             this.init();
@@ -637,21 +688,81 @@ var formulaic = {
                 var stopWords = edges.getParam(this.args.stopWords, []);
 
                 this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                this.elements.select2({
-                    minimumInputLength: minInputLength,
-                    tags: [],
-                    tokenSeparators: tokenSeparators,
-                    maximumSelectionSize: maximumSelectionSize,
-                    createSearchChoice : function(term) {   // NOTE: if we update select2, this has to change
-                        if ($.inArray(term, stopWords) !== -1) {
-                            return null;
-                        }
-                        return {id: $.trim(term), text: $.trim(term)};
-                    }
-                });
+                // this.elements.select2({      //TODO: select2 is not a function
+                //     minimumInputLength: minInputLength,
+                //     tags: [],
+                //     tokenSeparators: tokenSeparators,
+                //     maximumSelectionSize: maximumSelectionSize,
+                //     createSearchChoice : function(term) {   // NOTE: if we update select2, this has to change
+                //         if ($.inArray(term, stopWords) !== -1) {
+                //             return null;
+                //         }
+                //         return {id: $.trim(term), text: $.trim(term)};
+                //     }
+                // });
             };
 
             this.init();
+        },
+
+        newAutocomplete: function(params){
+            return edges.instantiate(formulaic.widgets.Autocomplete, params);
+        },
+
+        Autocomplete: function(params){
+            this.fieldDef = params.fieldDef;
+            this.init = () => {
+                return autocomplete("[name='" + this.fieldDef.name + "']", 'bibjson.publisher.name', "journal", 1, true, true);
+            }
+            this.init()
         }
+
     }
 };
+
+// function autocomplete(selector, doc_field, doc_type, mininput, include_input, allow_clear) {
+//     var doc_type = doc_type || "journal";
+//     var mininput = mininput === undefined ? 3 : mininput;
+//     var include_input = include_input === undefined ? true : include_input;
+//     var allow_clear = allow_clear === undefined ? true : allow_clear;
+//
+//     var ajax = {
+//             url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
+//             dataType: 'json',
+//             data: function (term, page) {
+//                 return {
+//                     q: term
+//                 };
+//             },
+//             results: function (data, page) {
+//                 return { results: data["suggestions"] };
+//             }
+//         };
+//     var csc = function(term) {return {"id":term, "text": term};};
+//     var initSel = function (element, callback) {
+//             var data = {id: element.val(), text: element.val()};
+//             callback(data);
+//         };
+//
+//     if (include_input) {
+//         // apply the create search choice
+//         console.log($(selector).)
+//         $(selector).select2({
+//             minimumInputLength: mininput,
+//             ajax: ajax,
+//             createSearchChoice: csc,
+//             initSelection : initSel,
+//             placeholder: "Choose a value",
+//             allowClear: allow_clear
+//         });
+//     } else {
+//         // go without the create search choice option
+//         $(selector).select2({
+//             minimumInputLength: mininput,
+//             ajax: ajax,
+//             initSelection : initSel,
+//             placeholder: "Choose a value",
+//             allowClear: allow_clear
+//         });
+//     }
+// }

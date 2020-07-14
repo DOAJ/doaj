@@ -31,6 +31,7 @@ from portality.view.openurl import blueprint as openurl
 from portality.view.atom import blueprint as atom
 from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
+from portality.view.apply import blueprint as apply
 if 'api1' in app.config['FEATURES']:
     from portality.view.api_v1 import blueprint as api_v1
 if 'api2' in app.config['FEATURES']:
@@ -52,8 +53,9 @@ if 'api1' in app.config['FEATURES']:
     app.register_blueprint(api_v1, url_prefix='/api/v1')
 if 'api2' in app.config['FEATURES']:
     app.register_blueprint(api_v2, url_prefix='/api/v2')
+app.register_blueprint(status, url_prefix='/status')
+app.register_blueprint(apply, url_prefix='/apply')
 app.register_blueprint(status, url_prefix='/_status')
-app.register_blueprint(status, url_prefix='/status')   # TODO: remove duplicate route once uptimerobot has been informed
 
 app.register_blueprint(oaipmh)
 app.register_blueprint(openurl)

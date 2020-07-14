@@ -1,6 +1,6 @@
-<script type="text/javascript" src="/static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/portality/static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/portality/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/portality/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript">
     jQuery(document).ready(function($) {
         formulaic.active = formulaic.newFormulaic({
@@ -10,5 +10,216 @@
             autoSave: {{ auto_save }},
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
+
     });
+    window.Parsley.addValidator('validateMultiple', {
+            validate: function(value, requirement, parsleyField) {
+                var inputs;
+                inputs = $(document).find("select[name='" + parsleyField.$element[0].name + "']");
+                if (inputs.length === 0){
+                    inputs = $(document).find("input[name='" + parsleyField.$element[0].name + "']");
+                }
+                var ret = false;
+                inputs.each(function(idx, obj){
+                    if ($(obj).val() !== '' && $(obj).val() !== ' ' && $(obj).val() !== undefined) {
+                        ret = true;
+                        //break the loop
+                        return false;
+                    }
+                });
+                if (ret){
+                    inputs.each(function(idx, obj){
+                        $(obj).parsley().reset()
+                    });
+                }
+                console.log(parsleyField.getErrorsMessages())
+                return ret;
+            },
+            messages: {
+                en: 'At least one value required',
+            }
+    });
+
+    $(".conditional").each((idx,field) => {
+        let conditionValue = $(field).attr("value");
+        let fieldToHide = $("#" + $(field).attr("id").replace("__conditional","") + "__container");
+        $('[name="' + $(field).attr("name") + '"]').each((idx, input) => {
+            if ($(input).type === "radio") {
+                $(input).on("click", () => {
+                    if ($(input).is(':checked')) {
+                        if ($(input).val() === conditionValue) {
+                            fieldToHide.show();
+                        } else {
+                            fieldToHide.hide();
+                        }
+                    }
+                })
+            }
+            else {
+                $(input).on("click", () => {
+                    if ($(input).val() === conditionValue) {
+                        if ($(input).is(':checked')) {
+                            fieldToHide.show();
+                        } else {
+                            fieldToHide.hide();
+                        }
+                    }
+                })
+            }
+        });
+    });
+
+    let currentTab = 0; // Current tab is set to be the first tab (0)
+    let previousTab = 0;
+    let tabs = $(".tab");
+    let sections = $(".form-section");
+    prepareSections();
+    usePaginationMenu();
+    showTab(currentTab); // Display the current tab
+
+    function showTab(n) {
+        // This function will display the specified tab of the form ...
+        //hide all other tabs
+        if (n < sections.length-1){
+            let hiddenField = $("#validated-" + n)
+            if (hiddenField.val() === "") {
+                hiddenField.val("False");
+            }
+        }
+
+        tabs.each((idx, tab) => {
+            $(tab).hide();
+        });
+
+        let submitButton = $("#submitBtn");
+        $(tabs[n]).show();
+        submitButton.innerHTML = "Save draft";
+        // ... and fix the Previous/Next buttons:
+        if (n === 0) {
+            $("#prevBtn").hide();
+        } else {
+            $("#prevBtn").show();
+        }
+
+        if (n === (tabs.length - 1)) {
+            //show submit button only if all tabs are validated
+            $("#nextBtn").hide();
+            submitButton.innerHTML = "Submit";
+            let validated = form_validated();
+            submitButton.disabled = !validated;
+            if (!validated) {
+                $("#cannot-submit").show();
+            } else {
+                $("#cannot-submit").hide();
+            }
+
+        } else {
+            let nextBtn = $("#nextBtn")
+            nextBtn.show();
+            nextBtn.innerHTML = "Next";
+            submitButton.innerHTML = "Save draft";
+            submitButton.disabled = false;
+        }
+        // ... and run a function that displays the correct step indicator:
+        fixStepIndicator(n)
+
+    }
+
+    function form_validated() {
+        $("[name='validated']").each((idx, input) => {
+            if ($(input).val() === 'False') return false;
+        });
+        return true;
+    }
+
+    function onSubmit() {
+        let form = $("form");
+        form.noValidate = true
+    }
+
+    function navigate(n) {
+        // Hide the current tab:
+        $(tabs[currentTab]).hide();
+        // Increase or decrease the current tab by 1:
+        previousTab = currentTab
+        currentTab = currentTab + n;
+        // Otherwise, display the correct tab:
+        showTab(currentTab);
+    }
+
+    function prev() {
+        navigate(-1);
+    }
+
+    function next() {
+        var form = $('#' + '{{ form_id }}');
+        form.parsley().whenValidate({
+            group: 'block-' + currentTab
+        }).done(function () {
+            $("#validated-" + currentTab).val("True");
+            navigate(1);
+        }).fail(function () {
+            $("#validated-" + currentTab).val("False");
+            //only for dev!!
+            navigate(1);
+        });
+    }
+
+    function fixStepIndicator(n) {
+        // This function removes the "active" class of all steps...
+        $(".application-nav__list-item").each((idx, x) => {
+            let hiddenField = $("#validated-" + idx);
+            if (hiddenField.val() === "True") {
+                $(x).className = "application-nav__list-item application-nav__list-item--done"
+            } else if (hiddenField.val() === "False") {
+                $(x).className = "application-nav__list-item application-nav__list-item--invalid"
+            }
+        });
+        //... and adds the "active" class to the current step:
+        $(tabs[n]).className = "application-nav__list-item application-nav__list-item--active";
+        $("#page_link-" + n).className = "page_link";
+    }
+
+    function usePaginationMenu() {
+        $('[id^="page_link-"]').each((idx, x) => {
+            $(x).on("click", () => {
+                previousTab = currentTab
+                currentTab = i;
+                if ($("#validated-" + i).value === '') {
+                    return false;
+                } else {
+                    $('#' + '{{ form_id }}').parsley().whenValidate({
+                        group: 'block-' + previousTab
+                    }).done(function () {
+                        $("#validated-" + previousTab).val("True");
+                        showTab(currentTab);
+                    }).fail(function () {
+                        $("#validated-" + previousTab).val("False");
+                        showTab(currentTab);
+                    });
+                }
+
+            });
+        });
+    }
+
+    function prepareSections() {
+        sections.each((idx, section) => {
+
+            $(section).find("input").each((i, input) => {
+                $(input).attr('data-parsley-group', 'block-' + idx);
+            });
+
+            if (idx < sections.length-1){
+                let hiddenInputs = $("[name='validated']");
+                $(hiddenInputs[idx]).attr('id', 'validated-' + idx);
+            }
+
+        });
+
+        $('[id^="page_link-"]').each((i, menu) =>  {
+            $(menu).className = "page_link--disabled";
+        });
+    }
+
 </script>

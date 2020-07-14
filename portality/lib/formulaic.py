@@ -411,6 +411,10 @@ class FormulaicField(object):
         return self._definition.get("help", {}).get(key)
 
     @property
+    def optional(self):
+        return self._definition.get("optional", False)
+
+    @property
     def wtforms_builders(self):
         return self._formulaic_fieldset.wtforms_builders
 
@@ -441,6 +445,16 @@ class FormulaicField(object):
     @property
     def has_conditional(self):
         return len(self._definition.get("conditional", [])) > 0
+
+    @property
+    def condition_field(self):
+        condition = self._definition.get("conditional", [])
+        return condition[0].get("field", None) if len(condition) > 0 else None
+
+    @property
+    def condition_value(self):
+        condition = self._definition.get("conditional", [])
+        return condition[0].get("value", None) if len(condition) > 0 else None
 
     @property
     def template(self):

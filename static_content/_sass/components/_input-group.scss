@@ -1,0 +1,24 @@
+/* Input groups */
+
+.input-group {
+  margin: 1rem 0;
+  position: relative;
+  display: flex;
+  flex-flow: row wrap;
+  border-collapse: separate;
+  width: 100%;
+}
+
+.input-group__input {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0;
+
+  &:not([type="submit"]) {
+    flex-grow: 1;
+  }
+
+  &:not(:first-child) {
+    margin-left: -1px;
+  }
+}

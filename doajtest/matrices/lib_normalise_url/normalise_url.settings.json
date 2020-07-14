@@ -1,25 +1,13 @@
 {
   "parameters": [
     {
-      "type": "index",
-      "name": "test_id"
+      "name": "test_id",
+      "type": "index"
     },
     {
+      "name": "url",
+      "type": "generated",
       "values": {
-        "exists": {
-          "constraints": {
-            "scheme": {
-              "nor": [
-                "-"
-              ]
-            },
-            "whitespace": {
-              "nor": [
-                "-"
-              ]
-            }
-          }
-        },
         "none": {
           "constraints": {
             "scheme": {
@@ -33,36 +21,51 @@
               ]
             }
           }
+        },
+        "exists": {
+          "constraints": {
+            "scheme": {
+              "nor": [
+                "-"
+              ]
+            },
+            "whitespace": {
+              "nor": [
+                "-"
+              ]
+            }
+          }
         }
-      },
-      "type": "generated",
-      "name": "url"
+      }
     },
     {
+      "name": "scheme",
+      "type": "generated",
       "values": {
         "-": {},
-        "invalid": {},
-        "ftps": {},
-        "unknown": {},
-        "//": {},
-        "none": {},
-        "ftp": {},
         "http": {},
-        "https": {}
-      },
-      "type": "generated",
-      "name": "scheme"
+        "https": {},
+        "ftp": {},
+        "ftps": {},
+        "invalid": {},
+        "unknown": {},
+        "none": {},
+        "//": {}
+      }
     },
     {
+      "name": "whitespace",
+      "type": "generated",
       "values": {
         "-": {},
-        "no": {},
-        "yes": {}
-      },
-      "type": "generated",
-      "name": "whitespace"
+        "yes": {},
+        "no": {}
+      }
     },
     {
+      "name": "raises",
+      "type": "conditional",
+      "default": "",
       "values": {
         "ValueError": {
           "conditions": [
@@ -82,10 +85,7 @@
             }
           ]
         }
-      },
-      "type": "conditional",
-      "default": "",
-      "name": "raises"
+      }
     }
   ]
 }

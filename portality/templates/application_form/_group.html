@@ -1,30 +1,24 @@
-<div class="{{ f.name }}__container" {# {% if f.has_conditional %}style="display:none"{% endif %} #}>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <fieldset>
-                    <a class="question_id" name="{{ f.name }}" href="#{{ f.name }}">{{ f.name }}</a><br>
-                    <legend>{% autoescape off %}{{ f.label }}{% endautoescape %}</legend>
-
-                    <div class="row">
-                        <div class="col-md-11">
-
-                            {% for subfield in f.group_subfields() %}
-                                {% set f = subfield %}
-                                {% set field_template = subfield.template %}
-                                {%  include field_template %}
-                                <hr>
-                            {% endfor %}
-
-                        </div>
-                        <div class="col-md-1">
-                            {% if f.help("doaj_criteria") %}<span title="{{ f.help("doaj_criteria") }}">DOAJ</span>&nbsp;{% endif %}
-                            {% if f.help("seal_criteria") %}<span title="{{ f.help("seal_criteria") }}">SEAL</span>{% endif %}
-                            {% if f.help("long_help") %}<span title="{{ f.help("long_help") }}">HELP</span>{% endif %}
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-        </div>
+<div class="form__question">
+    <label>
+        {% autoescape off %}{{ f.label }}{% endautoescape%}
+        {% if f.help("long_help") %}
+            <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ f.name }}"></span> {% endif %}
+        {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
+    </label>
+    <div class="input-group">
+        {% for subfield in f.group_subfields() %}
+            {% set f = subfield %}
+            {{ f.render_form_control() }}
+            {% if f.help("short_help") %}
+                <p><small>{{ f.help("short_help") }}</small></p>
+            {% endif %}
+            {% if f.has_errors() %}
+                {% for error in f.errors() %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
     </div>
 </div>
+
+{% include "application_form/modal.html" %}

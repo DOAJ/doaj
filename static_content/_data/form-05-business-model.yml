@@ -1,0 +1,63 @@
+## TEMPOPRARY FILE for application form fields
+## to be removed once merged with core sit’s dynamic form
+
+- label: "Does the journal require payment of article processing charges (APCs)?"
+  id: apc
+  input: radio
+  subgroup: "Article processing charges"
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+
+- label: "Where can we find this information?"
+  short_help: "Link to the page where this is stated. The page must declare <strong>whether or not</strong> APCs are charged."
+  id: apc_url
+  input: url
+  subgroup: "Article processing charges"
+  required: true
+  placeholder: "https://www.my-journal.com/about#apc"
+
+- label: "Highest APC charged"
+  id: apc_max
+  input: number
+  subgroup: "Article processing charges"
+  input_group: apc_max
+  required: true
+  long_help: "<p>If the journal charges different APCs, you must enter the highest APC charged. If more than one currency is used, add a new line.</p>"
+
+- label: "Does the journal provide APC waivers or discounts for authors?"
+  id: has_waiver
+  input: radio
+  subgroup: "APC waivers"
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+  long_help: "<p>Answer <em>Yes</em> if the journal provides APC waivers for authors from low-income economies, discounts for authors from lower middle-income economies, and/or waivers and discounts for other authors with demonstrable needs.</p>"
+
+- label: "Where can we find this information?"
+  short_help: "Link to the journal’s waiver information"
+  id: waiver_url
+  input: url
+  subgroup: "APC waivers"
+  required: true
+  placeholder: "https://www.my-journal.com/about#waiver"
+
+- label: "Does the journal charge any other fees to authors?"
+  id: has_other_charges
+  input: radio
+  subgroup: "Other fees"
+  required: true
+  choices:
+    1: "Yes"
+    2: "No"
+  long_help: "<p>Declare all other charges: editorial processing charges, colour charges, submission fees, page charges, membership fees, print subscription costs, other supplementary charges.</p>"
+
+- label: "Where can we find this information?"
+  short_help: "Link to the journal’s fees information"
+  id: other_charges_url
+  subgroup: "Other fees"
+  input: url
+  required: true
+  placeholder: "https://www.my-journal.com/about#fees"
