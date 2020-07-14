@@ -162,7 +162,7 @@ class FieldDefinitions:
         "validate": [
             "required",
             "is_url",
-            # "journal_url_in_public_doaj"  # Check whether the journal url is already in a public DOAJ record
+            "journal_url_in_public_doaj"  # Check whether the journal url is already in a public DOAJ record
         ],
         "widgets": [
             "clickable_url"
@@ -179,7 +179,7 @@ class FieldDefinitions:
             }
         },
         "asynchronous_warnings": [
-            # "journal_url_in_public_doaj",  # Check whether the journal url is already in a public DOAJ record
+            "journal_url_in_public_doaj",  # Check whether the journal url is already in a public DOAJ record
             {"rejected_application": {"age": "6 months"}},
             # check that the journal does not have a rejection less than 6 months ago
             "active_application"  # Check that the URL is not related to an active application
@@ -200,10 +200,9 @@ class FieldDefinitions:
         "validate": [
             {"optional_if": {"field": "eissn",
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
-            # "in_public_doaj",
             {"is_issn": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "eissn", "message" : "This field must contain a different value to 'ISSN (online)'"}},
-            # "issn_in_public_doaj"
+            "issn_in_public_doaj"
         ],
         "contexts": {
             "editor": {
@@ -217,7 +216,7 @@ class FieldDefinitions:
             }
         },
         "asynchronous_warnings": [
-            # "issn_in_public_doaj",  # check whether the journal url is already in a public DOAJ record
+            "issn_in_public_doaj",  # check whether the journal url is already in a public DOAJ record
             {"rejected_application": {"age": "6 months"}},
             "active_application"  # Check that the ISSN is not related to an active application
         ]
@@ -239,7 +238,7 @@ class FieldDefinitions:
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "pissn", "message" : "This field must contain a different value to 'ISSN (print)'"}},
-            # "issn_in_public_doaj"
+            "issn_in_public_doaj"
         ],
         "contexts": {
             "editor": {
@@ -253,7 +252,7 @@ class FieldDefinitions:
             }
         },
         "asynchronous_warnings": [
-            # "issn_in_public_doaj",  # check whether the journal url is already in a public DOAJ record
+            "issn_in_public_doaj",  # check whether the journal url is already in a public DOAJ record
             {"rejected_application": {"age": "6 months"}},
             "active_application"  # Check that the ISSN is not related to an active application
         ]
@@ -301,6 +300,7 @@ class FieldDefinitions:
         "name": "language",
         "label": "Languages in which the journal accepts manuscripts",
         "input": "select",
+        "multiple": True,   # FIXME: is this correct?
         "options_fn": "iso_language_list",
         "repeatable": {
             "initial": 5
@@ -343,7 +343,7 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
-            {"select": {}},
+            {"select": {}}
         ],
         "attr": {
             "class": "input-xlarge"
@@ -380,12 +380,12 @@ class FieldDefinitions:
         "input": "select",
         "default" : "",
         "options_fn": "iso_country_list",
-        "optional": True,
         "help": {
-            "short_help": "The country in which the society or institution is based"
+            "short_help": "The country in which the society or institution is based",
+            "optional": True
         },
         "widgets": [
-            {"select": {}},
+            {"select": {}}
         ],
         "attr": {
             "class": "input-xlarge"
@@ -547,13 +547,13 @@ class FieldDefinitions:
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "Editorial review", "value": "editorial_review"},
-            {"display": "Peer review", "value": "peer_review"},
-            {"display": "Blind peer review", "value": "blind_peer_review"},
-            {"display": "Double blind peer review", "value": "double_blind_peer_review"},
-            {"display": "Post-publication peer review", "value": "post_publication_peer_review"},
-            {"display": "Open peer review", "value": "open_peer_review"},
-            {"display": "Other", "value": "other"}
+            {"display": "Editorial review", "value": "Editorial review"},
+            {"display": "Peer review", "value": "Peer review"},
+            {"display": "Blind peer review", "value": "Blind peer review"},
+            {"display": "Double blind peer review", "value": "Double blind peer review"},
+            {"display": "Post-publication peer review", "value": "Post-publication peer review"},
+            {"display": "Open peer review", "value": "Open peer review"},
+            {"display": "Other", "value": "other", "subfields": ["review_process_other"]}
         ],
         "help": {
             "doaj_criteria": "Peer review must be carried out"
@@ -730,7 +730,6 @@ class FieldDefinitions:
         "widgets": [
             "clickable_url"
         ]
-
     }
 
     APC_CHARGES = {
@@ -752,7 +751,7 @@ class FieldDefinitions:
             "apc_max"
         ],
         "widgets": [
-            # "multiple_field"
+            "multiple_field"
         ]
     }
 
@@ -856,24 +855,24 @@ class FieldDefinitions:
         ]
     }
 
-    ARCHIVING_POLICY = {
-        "name": "archiving_policy",
+    PRESERVATION_SERVICE = {
+        "name": "preservation_service",
         "label": "Long-term preservation service(s) with which the journal is currently archived",
         "input": "checkbox",
         "multiple": True,
         "hint": "Select at least one:",
         "options": [
-            {"display": "CINES", "value": "cines"},
-            {"display": "CLOCKSS", "value": "clockss"},
-            {"display": "LOCKSS", "value": "lockss"},
-            {"display": "Internet Archive", "value": "internet_archive"},
-            {"display": "PKP PN", "value": "pkp_pn"},
-            {"display": "PubMed Central (PMC)", "value": "pmc"},
-            {"display": "Portico", "value": "portico"},
+            {"display": "CINES", "value": "CINES"},
+            {"display": "CLOCKSS", "value": "CLOCKSS"},
+            {"display": "LOCKSS", "value": "LOCKSS"},
+            {"display": "Internet Archive", "value": "Internet Archive"},
+            {"display": "PKP PN", "value": "PKP PN"},
+            {"display": "PubMed Central (PMC)", "value": "PMC"},
+            {"display": "Portico", "value": "Portico"},
             {"display": "A national library", "value": "national_library"},
-            {"display": "Other service", "value": "other"},
             {"display": "The journal content isn't archived with a long-term preservation service",
              "value": "none", "exclusive": True},
+            {"display": "Other", "value": "other"}
         ],
         "help": {
             "long_help": [
@@ -886,38 +885,41 @@ class FieldDefinitions:
         ]
     }
 
-    ARCHIVING_POLICY_LIBRARY = {
-        "name": "archiving_policy_library",
+    PRESERVATION_SERVICE_LIBRARY = {
+        "name": "preservation_service_library",
         "label": "A national library:",
         "input": "text",
+        "repeatable" : {
+            "initial" : 2
+        },
         "help": {
             "short_help": "Name of national library"
         },
-        "conditional": [{"field": "archiving_policy", "value": "national_library"}],
+        "conditional": [{"field": "preservation_service", "value": "national_library"}],
         "validate": [
-            {"required_if": {"field": "archiving_policy", "value": "national_library"}}
+            {"required_if": {"field": "preservation_service", "value": "national_library"}}
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
         ]
     }
 
-    ARCHIVING_POLICY_OTHER = {
-        "name": "archiving_policy_other",
+    PRESERVATION_SERVICE_OTHER = {
+        "name": "preservation_service_other",
         "label": "Other archiving policy:",
         "input": "text",
-        "conditional": [{"field": "archiving_policy", "value": "other"}],
+        "conditional": [{"field": "preservation_service", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "archiving_policy", "value": "other"}}
+            {"required_if": {"field": "preservation_service", "value": "other"}}
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
         ]
     }
 
-    ARCHIVING_POLICY_URL = {
-        "name": "archiving_policy_url",
-        "label": "Where can we find this information",
+    PRESERVATION_SERVICE_URL = {
+        "name": "preservation_service_url",
+        "label": "Where can we find this information?",
         "input": "text",
         "help": {
             "short_help": "Link to the preservation and archiving information on the journal's site",
@@ -925,7 +927,7 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/about#archiving"
         },
         "validate": [
-            {"optional_if": {"field": "archiving_policy", "value": "none"}},
+            {"optional_if": {"field": "preservation_service", "values": ["none"]}},
             "is_url"
         ],
         "widgets": [
@@ -933,17 +935,17 @@ class FieldDefinitions:
         ]
     }
 
-    REPOSITORY_POLICY = {
-        "name": "repository_policy",
+    DEPOSIT_POLICY = {
+        "name": "deposit_policy",
         "label": "Where is the journal's policy allowing authors to deposit the AAM or VOR registered?",
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "SHERPA/RoMEO", "value": "sherpa_romeo"},
-            {"display": "Dulcinea", "value": "dulcinea"},
-            {"display": "Héloïse", "value": "heloise"},
-            {"display": "Diadorim", "value": "diadorim"},
-            {"display": "The journal has a policy but it isn't registered anywhere", "value": "unregistered"},
+            {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo"},
+            {"display": "Dulcinea", "value": "Dulcinea"},
+            {"display": "Héloïse", "value": "Héloïse"},
+            {"display": "Diadorim", "value": "Diadorim"},
+            {"display": "The journal has a policy but it isn't registered anywhere", "value": "Unregistered", "exclusive" : True},
             {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
             {"display": "Other", "value": "other"}
         ],
@@ -958,22 +960,22 @@ class FieldDefinitions:
         ]
     }
 
-    REPOSITORY_POLICY_OTHER = {
-        "name": "repository_policy_other",
+    DEPOSIT_POLICY_OTHER = {
+        "name": "deposit_policy_other",
         "label": "Other repository",
         "input": "text",
-        "conditional": [{"field": "repository_policy", "value": "other"}],
+        "conditional": [{"field": "deposit_policy", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "repository_policy", "value": "other"}}
+            {"required_if": {"field": "deposit_policy", "value": "other"}}
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
         ]
     }
 
-    REPOSITORY_POLICY_URL = {
-        "name": "repository_policy_url",
-        "label": "Where can we find this information",
+    DEPOSIT_POLICY_URL = {
+        "name": "deposit_policy_url",
+        "label": "Where can we find this information?",
         "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL",
@@ -981,7 +983,7 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
         "validate": [
-            {"required_if": {"field": "repository_policy", "value": "unregistered"}},
+            {"required_if": {"field": "deposit_policy", "value": "unregistered"}},
             "is_url"
         ],
         "widgets": [
@@ -996,10 +998,10 @@ class FieldDefinitions:
         "multiple": True,
         "hint": "Select at least one",
         "options": [
-            {"display": "DOIs", "value": "doi"},
-            {"display": "ARKs", "value": "ark"},
-            {"display": "Handles", "value": "handle"},
-            {"display": "PURLs", "value": "purl"},
+            {"display": "DOIs", "value": "DOI"},
+            {"display": "ARKs", "value": "ARK"},
+            {"display": "Handles", "value": "Handles"},
+            {"display": "PURLs", "value": "PURL"},
             {"display": "The journal does not use persistent article identifiers", "value": "none", "exclusive": True},
             {"display": "Other", "value": "other"}
         ],
@@ -1066,24 +1068,25 @@ class FieldDefinitions:
         "name": "doaj_seal",
         "label": "The journal has fulfilled all the criteria for the Seal. Award the Seal?",
         "input": "checkbox",
-        "options": [
-            {"display": "Yes", "value": "yes"}
-        ],
-        "validate": []  # certain questions must be answered for the seal to be awarded
+        "validate": [
+            {
+                "only_if" : {"fields" : [
+                    {"field" : "license_display", "value" : "Embed"},
+                    {"field" : "copyright_author_retains", "value" : "y"},
+                    {"field" : "preservation_service", "not" : "none"},
+                    {"field" : "preservation_service_url", "not" : ""},
+                    {"field" : "deposit_policy", "not" : "none"},
+                    {"field" : "persistent_identifiers", "value" : "DOI"}
+                ]}
+            }
+        ]
     }
 
     QUICK_REJECT = {
         "name": "quick_reject",
         "label": "Select the reason for rejection",
         "input": "select",
-        "options": [
-            {"display": "Quick reject reason 1", "value": "qr1"},
-            {"display": "Quick reject reason 2", "value": "qr2"},
-            {"display": "Other", "value": "other"}
-        ],
-        "widgets": [
-            {"select": {}}
-        ],
+        "options_fn": "quick_reject"
     }
 
     QUICK_REJECT_DETAILS = {
@@ -1099,173 +1102,139 @@ class FieldDefinitions:
         ],
     }
 
-    DOAJ_PUBLISHER_ACCOUNT = {
-        "name": "doaj_publisher_account",
+    OWNER = {
+        "name": "owner",
         "label": "DOAJ Account",
         "input": "text",
-        # will be pre-populated with the initial applicant's account no
         "validate": [
-            {"required_if": {"field": "doaj_status", "value": "accepted", "message": "You must confirm the account number"}}
-            # When Accepted selected display: 'This journal is currently assigned to its applicant account XXXXXX. Is this the correct account for this journal?'
+            {"required" : {"message" : "You must confirm the account id"}}
         ],
         "widgets": [
             {"autocomplete": {"field": "account"}}
         ]
     }
 
-    DOAJ_STATUS = {
-        "name": "doaj_status",
+    APPLICATION_STATUS = {
+        "name": "application_status",
         "label": "Select status",
         "input": "select",
-        # will be pre-populated with 'pending' for new applications
-        "options_fn": None,  # List of available statuses changes based on role of viewer
+        "options_fn": "application_statuses",
         "validate": [
             "required"
         ],
-        "help": {
-            "short_help": ""  # Varies according to role  todo: we may need a help function
+        "contexts" : {
+            "associate_editor" : {
+                "help" : {
+                    "short_help" : "Set the status to 'In Progress' to signal to the applicant that you have started your review."
+                                    "Set the status to 'Ready' to alert the Editor that you have completed your review."
+                }
+            },
+            "editor" : {
+                "help" : {
+                    "short_help" : "Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed."
+                                    "Set the status to 'Completed' to alert the Managing Editor that you have completed your review."
+                }
+            }
+        },
+        "widgets" : [
+            # When Accepted selected display. 'This journal is currently assigned to its applicant account XXXXXX. Is this the correct account for this journal?'
+            "owner_review"
+        ]
+    }
+
+    EDITOR_GROUP = {
+        "name": "editor_group",
+        "label": "Assign to editor group",
+        "input": "text",
+        "widgets": [
+            {"autocomplete": {"field": "editor_group"}}
+        ],
+        "contexts" : {
+            "editor" : {
+                "disabled" : True
+            }
         }
     }
 
-    DOAJ_REVIEW_GROUP = {
-        "name": "doaj_review_group",
-        "label": "Assign to editor group",
-        "input": "select",
-        "options_fn": None      # List of Editor Groups
-    }
-
-    DOAJ_REVIEW_USER = {
-        "name": "doaj_review_user",
+    EDITOR = {
+        "name": "editor",
         "label": "Assign to individual",
         "input": "select",
-        "options_fn": None      # List of users in the selected group
-        # todo: clear this field if group is changed?
+        "options": [],
+        "validate" : [
+            { "group_member" : {"group_field" : "doaj_editor_group"}}
+        ],
+        "widgets" : [
+            # show the members of the selected editor group
+            # clear the field if the group is changed
+            { "editor_select" : {"group_field" : "doaj_editor_group"}}
+        ]
     }
 
-    DOAJ_DISCONTINUED_DATE = {
-        "name": "doaj_discontinued_date",
+    DISCONTINUED_DATE = {
+        "name": "discontinued_date",
         "label": "This journal was discontinued on",
-        "input": ""  # todo: Date picker
-    }
-
-    DOAJ_CONTINUES = {
-        "name": "doaj_continues",
-        "label": "This journal continues an older journal with the ISSN(s)",    # todo: can we really accept both ISSNs?
         "input": "text",
-        "validate": [
-            {"is_issn": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "doaj_continued_by"}}
+        "validate" : [
+            "bigenddate",
+            {
+                "not_if" : {
+                    "fields" : [
+                        {"field" : "doaj_continues"},
+                        {"field" : "doaj_continued_by"}
+                    ],
+                    "message" : "You cannot enter a discontinued date and continuation information."
+                }
+            }
         ],
-        "contexts": {  # fixme: requirements in spreadsheet unclear for this
-            "associate_editor": {
-                "disabled": True
-            },
+        "help" : {
+            "short_help" : "If the day of the month is not known, please use '01'"
         },
-        "asynchronous_warnings": [
-            # "issn_in_public_doaj",  # check whether issn corresponds to a public DOAJ record todo: check collision with pissn
+        "widgets" : [
+            "datepicker"
         ]
     }
 
-    DOAJ_CONTINUED_BY = {
-        "name": "doaj_continued_by",
+    CONTINUES = {
+        "name": "continues",
+        "label": "This journal continues an older journal with the ISSN(s)",
+        "input": "taglist",
+        "validate": [
+            {"is_issn": {"message": "This is not a valid ISSN"}},   # FIXME: might have to think about how the validators work with a taglist
+            {"different_to": {"field": "doaj_continued_by"}},       # FIXME: as above
+            {"not_if" : { "fields" : {"field" : "doaj_discontinued_date"}}},
+            "issn_in_public_doaj"                                   # FIXME: is this right?
+        ]
+    }
+
+    CONTINUED_BY = {
+        "name": "continued_by",
         "label": "This journal is continued by a newer version of the journal with the ISSN(s)",
-        "input": "text",
+        "input": "taglist",
         "validate": [
-            {"is_issn": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "doaj_continues"}}
-        ],
-        "contexts": {
-            "associate_editor": {
-                "disabled": True
-            },
-        },
-        "asynchronous_warnings": [
-            # "issn_in_public_doaj",  # todo: as above
+            {"is_issn": {"message": "This is not a valid ISSN"}}, # FIXME: might have to think about how the validators work with a taglist
+            {"different_to": {"field": "doaj_continues"}},  # FIXME: as above
+            {"not_if": {"fields": {"field": "doaj_discontinued_date"}}},
+            "issn_in_public_doaj"  # FIXME: is this right?
         ]
     }
 
-    DOAJ_SUBJECT = {
-        "name": "doaj_subject",
+    SUBJECT = {
+        "name": "subject",
         "label": "Assign one or a maximum of two subject classifications",
-        "input": "select",
+        "input": "text",
         "help": {
             "short_help": "Selecting a subject will not automatically select its sub-categories"
         },
         "validate": [
             "required",
-            {"max_tags": {"max": 2}}        # required and max 2 should mean [min 1 max 2] to as per spec
+            {"max_tags": {"max": 2, "message" : "You have chosen too many"}}        # required and max 2 should mean [min 1 max 2] to as per spec
         ],
         "widget": [
-            {"autocomplete": ""}  # autocomplete on subject tree
-            # todo: expandable subject tree feature
+            "subject_tree"
         ]
     }
 
-# FIELDS = {
-#     FieldDefinitions.BOAI["name"]: FieldDefinitions.BOAI,
-#     FieldDefinitions.OA_STATEMENT_URL["name"]: FieldDefinitions.OA_STATEMENT_URL,
-#
-#     FieldDefinitions.TITLE["name"]: FieldDefinitions.TITLE,
-#     FieldDefinitions.ALTERNATIVE_TITLE["name"]: FieldDefinitions.ALTERNATIVE_TITLE,
-#     FieldDefinitions.JOURNAL_URL["name"]: FieldDefinitions.JOURNAL_URL,
-#     FieldDefinitions.PISSN["name"]: FieldDefinitions.PISSN,
-#     FieldDefinitions.EISSN["name"]: FieldDefinitions.EISSN,
-#     FieldDefinitions.KEYWORDS["name"]: FieldDefinitions.KEYWORDS,
-#     FieldDefinitions.LANGUAGE["name"]: FieldDefinitions.LANGUAGE,
-#     FieldDefinitions.PUBLISHER_NAME["name"]: FieldDefinitions.PUBLISHER_NAME,
-#     FieldDefinitions.PUBLISHER_COUNTRY["name"]: FieldDefinitions.PUBLISHER_COUNTRY,
-#     FieldDefinitions.INSTITUTION_NAME["name"]: FieldDefinitions.INSTITUTION_NAME,
-#     FieldDefinitions.INSTITUTION_COUNTRY["name"]: FieldDefinitions.INSTITUTION_COUNTRY,
-#
-#     FieldDefinitions.LICENSE["name"]: FieldDefinitions.LICENSE,
-#     FieldDefinitions.LICENSE_ATTRIBUTES["name"]: FieldDefinitions.LICENSE_ATTRIBUTES,
-#     FieldDefinitions.LICENSE_TERMS_URL["name"]: FieldDefinitions.LICENSE_TERMS_URL,
-#
-#     FieldDefinitions.LICENSE_DISPLAY["name"]: FieldDefinitions.LICENSE_DISPLAY,
-#     FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]: FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL,
-#
-#     FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS["name"]: FieldDefinitions.COPYRIGHT_AUTHOR_RETAINS,
-#     FieldDefinitions.COPYRIGHT_URL["name"]: FieldDefinitions.COPYRIGHT_URL,
-#
-#     FieldDefinitions.REVIEW_PROCESS["name"]: FieldDefinitions.REVIEW_PROCESS,
-#     FieldDefinitions.REVIEW_PROCESS_OTHER["name"]: FieldDefinitions.REVIEW_PROCESS_OTHER,
-#     FieldDefinitions.REVIEW_URL["name"]: FieldDefinitions.REVIEW_URL,
-#
-#     FieldDefinitions.PLAGIARISM_DETECTION["name"]: FieldDefinitions.PLAGIARISM_DETECTION,
-#     FieldDefinitions.PLAGIARISM_URL["name"]: FieldDefinitions.PLAGIARISM_URL,
-#
-#     FieldDefinitions.EDITORIAL_BOARD_URL["name"]: FieldDefinitions.EDITORIAL_BOARD_URL,
-#     FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"]: FieldDefinitions.AUTHOR_INSTRUCTIONS_URL,
-#     FieldDefinitions.PUBLICATION_TIME_WEEKS["name"]: FieldDefinitions.PUBLICATION_TIME_WEEKS,
-#
-#     FieldDefinitions.APC["name"]: FieldDefinitions.APC,
-#     FieldDefinitions.APC_URL["name"]: FieldDefinitions.APC_URL,
-#     FieldDefinitions.APC_CHARGES["name"]: FieldDefinitions.APC_CHARGES,
-#     FieldDefinitions.APC_CURRENCY["name"]: FieldDefinitions.APC_CURRENCY,
-#     FieldDefinitions.APC_MAX["name"]: FieldDefinitions.APC_MAX,
-#     FieldDefinitions.HAS_WAIVER["name"]: FieldDefinitions.HAS_WAIVER,
-#     FieldDefinitions.WAIVER_URL["name"]: FieldDefinitions.WAIVER_URL,
-#     FieldDefinitions.HAS_OTHER_CHARGES["name"]: FieldDefinitions.HAS_OTHER_CHARGES,
-#     FieldDefinitions.OTHER_CHARGES_URL["name"]: FieldDefinitions.OTHER_CHARGES_URL,
-#
-#     FieldDefinitions.ARCHIVING_POLICY_LIBRARY["name"]: FieldDefinitions.ARCHIVING_POLICY_LIBRARY,
-#     FieldDefinitions.ARCHIVING_POLICY_OTHER["name"]: FieldDefinitions.ARCHIVING_POLICY_OTHER,
-#     FieldDefinitions.ARCHIVING_POLICY_URL["name"]: FieldDefinitions.ARCHIVING_POLICY_URL,
-#
-#     FieldDefinitions.REPOSITORY_POLICY["name"]: FieldDefinitions.REPOSITORY_POLICY,
-#     FieldDefinitions.REPOSITORY_POLICY_OTHER["name"]: FieldDefinitions.REPOSITORY_POLICY_OTHER,
-#     FieldDefinitions.REPOSITORY_POLICY_URL["name"]: FieldDefinitions.REPOSITORY_POLICY_URL,
-#
-#     FieldDefinitions.PERSISTENT_IDENTIFIERS["name"]: FieldDefinitions.PERSISTENT_IDENTIFIERS,
-#     FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"]: FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER,
-#     FieldDefinitions.ORCID_IDS["name"]: FieldDefinitions.ORCID_IDS,
-#     FieldDefinitions.OPEN_CITATIONS["name"]: FieldDefinitions.OPEN_CITATIONS,
-#
-#     FieldDefinitions.DOAJ_SEAL["name"]: FieldDefinitions.DOAJ_SEAL,
-#
-#     FieldDefinitions.QUICK_REJECT["name"]: FieldDefinitions.QUICK_REJECT,
-#     FieldDefinitions.QUICK_REJECT_DETAILS["name"]: FieldDefinitions.QUICK_REJECT_DETAILS
-# }
 
 ##########################################################
 # Define our fieldsets
@@ -1405,20 +1374,20 @@ class FieldSetDefinitions:
         "name": "archiving_policy",
         "label": "Archiving Policy",
         "fields": [
-            FieldDefinitions.ARCHIVING_POLICY["name"],
-            FieldDefinitions.ARCHIVING_POLICY_LIBRARY["name"],
-            FieldDefinitions.ARCHIVING_POLICY_OTHER["name"],
-            FieldDefinitions.ARCHIVING_POLICY_URL["name"]
+            FieldDefinitions.PRESERVATION_SERVICE["name"],
+            FieldDefinitions.PRESERVATION_SERVICE_LIBRARY["name"],
+            FieldDefinitions.PRESERVATION_SERVICE_OTHER["name"],
+            FieldDefinitions.PRESERVATION_SERVICE_URL["name"]
         ]
     }
 
     REPOSITORY_POLICY = {
-        "name": "repository_policy",
+        "name": "deposit_policy",
         "label": "Repository Policy",
         "fields": [
-            FieldDefinitions.REPOSITORY_POLICY["name"],
-            FieldDefinitions.REPOSITORY_POLICY_OTHER["name"],
-            FieldDefinitions.REPOSITORY_POLICY_URL["name"]
+            FieldDefinitions.DEPOSIT_POLICY["name"],
+            FieldDefinitions.DEPOSIT_POLICY_OTHER["name"],
+            FieldDefinitions.DEPOSIT_POLICY_URL["name"]
         ]
     }
 
@@ -1454,7 +1423,7 @@ class FieldSetDefinitions:
         "name": "reassign",
         "label": "Re-assign publisher account",
         "fields": [
-            FieldDefinitions.DOAJ_PUBLISHER_ACCOUNT["name"]
+            FieldDefinitions.OWNER["name"]
         ]
     }
 
@@ -1462,7 +1431,7 @@ class FieldSetDefinitions:
         "name": "status",
         "label": "Status",
         "fields": [
-            FieldDefinitions.DOAJ_STATUS["name"]
+            FieldDefinitions.APPLICATION_STATUS["name"]
         ]
     }
 
@@ -1470,8 +1439,8 @@ class FieldSetDefinitions:
         "name": "reviewers",
         "label": "Assign for review",
         "fields": [
-            FieldDefinitions.DOAJ_REVIEW_GROUP["name"],
-            FieldDefinitions.DOAJ_REVIEW_USER["name"]
+            FieldDefinitions.EDITOR_GROUP["name"],
+            FieldDefinitions.EDITOR["name"]
         ]
     }
 
@@ -1479,9 +1448,9 @@ class FieldSetDefinitions:
         "name": "continuations",
         "label": "Continuations",
         "fields": [
-            FieldDefinitions.DOAJ_DISCONTINUED_DATE["name"],
-            FieldDefinitions.DOAJ_CONTINUES["name"],
-            # FieldDefinitions.DOAJ_CONTINUED_BY["name"]
+            FieldDefinitions.DISCONTINUED_DATE["name"],
+            FieldDefinitions.CONTINUES["name"],
+            FieldDefinitions.CONTINUED_BY["name"]
         ]
     }
 
@@ -1489,7 +1458,7 @@ class FieldSetDefinitions:
         "name": "subject",
         "label": "Subject classification",
         "fields": [
-            # FieldDefinitions.DOAJ_SUBJECT["name"]
+            FieldDefinitions.SUBJECT["name"]
         ]
     }
 
@@ -1523,10 +1492,10 @@ class ContextDefinitions:
             "all_urls_the_same"
         ],
         "templates": {
-            "form": "application_form/public_application.html",
-            "default_field": "application_form/_field.html",
-            "default_group": "application_form/_group.html",
-            "default_list": "application_form/_list.html"
+            "form" : "application_form/public_application.html",
+            "default_field" : "application_form/_field.html",
+            "default_group" : "application_form/_group.html"#,
+            #"default_list" : "application_form/_list.html"
         },
         "crosswalks": {
             "obj2form": ApplicationFormXWalk.obj2form,
@@ -1534,6 +1503,23 @@ class ContextDefinitions:
         },
         "processor": application_processors.NewApplication,
     }
+
+    # TODO - define the update request context
+    UPDATE = deepcopy(PUBLIC)
+    UPDATE["name"] = "update_request"
+
+    ASSOCIATE = deepcopy(PUBLIC)
+    ASSOCIATE["name"] = "associate_editor"
+    ASSOCIATE["fieldsets"] += [
+        FieldSetDefinitions.STATUS["name"]
+    ]
+
+    EDITOR = deepcopy(PUBLIC)
+    EDITOR["name"] = "editor"
+    EDITOR["fieldsets"] += [
+        FieldSetDefinitions.STATUS["name"],
+        FieldSetDefinitions.REASSIGN["name"],
+    ]
 
     MANED = deepcopy(PUBLIC)
     MANED["name"] = "admin"
@@ -1546,6 +1532,7 @@ class ContextDefinitions:
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"]
     ]
+    MANED["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
 
 
 #######################################################
@@ -1557,8 +1544,8 @@ FORMS = {
         ContextDefinitions.PUBLIC["name"]: ContextDefinitions.PUBLIC,
         ContextDefinitions.MANED["name"]: ContextDefinitions.MANED
     },
-    "fields": {v['name']: v for k,v in FieldDefinitions.__dict__.items() if not k.startswith('_')},
-    "fieldsets": {v['name']: v for k, v in FieldSetDefinitions.__dict__.items() if not k.startswith('_')}
+    "fieldsets": {v['name']: v for k, v in FieldSetDefinitions.__dict__.items() if not k.startswith('_')},
+    "fields": {v['name']: v for k, v in FieldDefinitions.__dict__.items() if not k.startswith('_')}
 }
 
 
@@ -1585,6 +1572,14 @@ def iso_currency_list(field):
     for v, d in currency_options:
         cl.append({"display": d, "value": v})
     return cl
+
+
+def quick_reject(field):
+    raise NotImplementedError()
+
+
+def application_statuses(field):
+    raise NotImplementedError()
 
 
 #######################################################
@@ -1715,6 +1710,35 @@ class RequiredIfBuilder:
         return RequiredIfOtherValue(settings.get("field"), settings.get("value"))
 
 
+class OnlyIfBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        raise NotImplementedError()
+
+    @staticmethod
+    def wtforms(field, settings):
+        raise NotImplementedError()
+
+
+class GroupMemberBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        raise NotImplementedError()
+
+    @staticmethod
+    def wtforms(field, settings):
+        raise NotImplementedError()
+
+class NotIfBuildier:
+    @staticmethod
+    def render(settings, html_attrs):
+        raise NotImplementedError()
+
+    @staticmethod
+    def wtforms(field, settings):
+        raise NotImplementedError()
+
+
 #########################################################
 # Crosswalks
 #########################################################
@@ -1723,19 +1747,24 @@ PYTHON_FUNCTIONS = {
     "options": {
         "iso_country_list": iso_country_list,
         "iso_language_list": iso_language_list,
-        "iso_currency_list": iso_currency_list
+        "iso_currency_list": iso_currency_list,
+        "quick_reject" : quick_reject,
+        "application_statuses" : application_statuses
     },
     "validate": {
         "render": {
             "required": RequiredBuilder.render,
             "is_url": IsURLBuilder.render,
             "int_range": IntRangeBuilder.render,
-            # "issn_in_public_doaj": ISSNInPublicDOAJBuilder.render,
-            # "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder.render,
+            "issn_in_public_doaj": ISSNInPublicDOAJBuilder.render,
+            "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder.render,
             "optional_if": OptionalIfBuilder.render,
             "is_issn": IsISSNBuilder.render,
             "different_to": DifferentToBuilder.render,
             "required_if": RequiredIfBuilder.render,
+            "only_if" : OnlyIfBuilder.render,
+            "group_member" : GroupMemberBuilder.render,
+            "not_if" : NotIfBuildier.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -1743,12 +1772,15 @@ PYTHON_FUNCTIONS = {
             "max_tags": MaxTagsBuilder.wtforms,
             "int_range": IntRangeBuilder.wtforms,
             "stop_words": StopWordsBuilder.wtforms,
-            # "issn_in_public_doaj": ISSNInPublicDOAJBuilder.wtforms,
-            # "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder.wtforms,
+            "issn_in_public_doaj": ISSNInPublicDOAJBuilder.wtforms,
+            "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder.wtforms,
             "optional_if": OptionalIfBuilder.wtforms,
             "is_issn": IsISSNBuilder.wtforms,
             "different_to": DifferentToBuilder.wtforms,
-            "required_if": RequiredIfBuilder.wtforms
+            "required_if": RequiredIfBuilder.wtforms,
+            "only_if" : OnlyIfBuilder.wtforms,
+            "group_member" : GroupMemberBuilder.wtforms,
+            "not_if" : NotIfBuildier.wtforms
         }
     },
 
@@ -1929,7 +1961,7 @@ class GroupBuilder(WTFormsBuilder):
 class GroupListBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
-        return field.get("input") == "group" and not field.get("repeatable", False)
+        return field.get("input") == "group" and field.get("repeatable") is not None
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
@@ -1951,5 +1983,4 @@ WTFORMS_BUILDERS = [
     GroupListBuilder
 ]
 
-ApplicationFormFactory = Formulaic(FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS,
-                                   javascript_functions=JAVASCRIPT_FUNCTIONS)
+ApplicationFormFactory = Formulaic(FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
