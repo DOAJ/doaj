@@ -8,6 +8,7 @@ from wtforms.widgets.core import html_params, HTMLString
 
 from portality.formcontext.fields import TagListField
 from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.forms import application_processors
 from portality.forms.validate import (
     URLOptionalScheme,
@@ -1235,6 +1236,49 @@ class FieldDefinitions:
         ]
     }
 
+    NOTES = {
+        "name" : "notes",
+        "input": "group",
+        "label": "Note",
+        "repeatable" : {
+            "initial" : 1
+        },
+        "subfields": [
+            "note",
+            "note_date",
+            "note_id"
+        ],
+        "widgets": [
+            "multiple_field"
+        ]
+    }
+
+    NOTE = {
+        "subfield": True,
+        "name": "note",
+        "input": "text"
+    }
+
+    NOTE_DATE = {
+        "subfield": True,
+        "name" : "note_date",
+        "input": "text"
+    }
+
+    NOTE_ID = {
+        "subfield" : True,
+        "name": "note_id",
+        "input": "hidden"
+    }
+
+    OPTIONAL_VALIDATION = {
+        "name" : "optional_validation",
+        "input" : "checkbox",
+        "widget" : {
+            "optional_validation"
+        }
+    }
+
 
 ##########################################################
 # Define our fieldsets
@@ -1462,12 +1506,42 @@ class FieldSetDefinitions:
         ]
     }
 
+    NOTES = {
+        "name": "notes",
+        "label": "Notes",
+        "fields": [
+            FieldDefinitions.NOTES["name"],
+            FieldDefinitions.NOTE["name"],
+            FieldDefinitions.NOTE_DATE["name"],
+            FieldDefinitions.NOTE_ID["name"]
+        ]
+    }
+
+    OPTIONAL_VALIDATION = {
+        "name": "optional_validation",
+        "label": "Allow save without validation",
+        "fields" : [
+            FieldDefinitions.OPTIONAL_VALIDATION["name"]
+        ]
+    }
+
+    BULK_EDIT = {
+        "name" : "bulk_edit",
+        "label" : "Bulk Edit",
+        "fields" : [
+            FieldDefinitions.PUBLISHER_NAME["name"],
+            FieldDefinitions.PUBLISHER_COUNTRY["name"],
+            FieldDefinitions.DOAJ_SEAL["name"],
+            FieldDefinitions.OWNER["name"]
+        ]
+    }
+
 
 ###########################################################
 # Define our Contexts
 ###########################################################
 
-class ContextDefinitions:
+class ApplicationContextDefinitions:
     PUBLIC = {
         "name": "public",
         "fieldsets": [
@@ -1504,22 +1578,29 @@ class ContextDefinitions:
         "processor": application_processors.NewApplication,
     }
 
-    # TODO - define the update request context
     UPDATE = deepcopy(PUBLIC)
     UPDATE["name"] = "update_request"
+    UPDATE["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    UPDATE["templates"]["form"] = "application_form/update_request.html"
 
     ASSOCIATE = deepcopy(PUBLIC)
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["fieldsets"] += [
-        FieldSetDefinitions.STATUS["name"]
+        FieldSetDefinitions.STATUS["name"],
+        FieldSetDefinitions.NOTES["name"]
     ]
+    ASSOCIATE["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    ASSOCIATE["templates"]["form"] = "application_form/assed_application.html"
 
     EDITOR = deepcopy(PUBLIC)
     EDITOR["name"] = "editor"
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
-        FieldSetDefinitions.REASSIGN["name"],
+        FieldSetDefinitions.REVIEWERS["name"],
+        FieldSetDefinitions.NOTES["name"]
     ]
+    EDITOR["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    EDITOR["templates"]["form"] = "application_form/editor_application.html"
 
     MANED = deepcopy(PUBLIC)
     MANED["name"] = "admin"
@@ -1528,24 +1609,123 @@ class ContextDefinitions:
         FieldSetDefinitions.QUICK_REJECT["name"],
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.STATUS["name"],
-        FieldSetDefinitions.REASSIGN["name"],
+        FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
-        FieldSetDefinitions.SUBJECT["name"]
+        FieldSetDefinitions.SUBJECT["name"],
+        FieldSetDefinitions.NOTES["name"]
     ]
     MANED["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    MANED["templates"]["form"] = "application_form/maned_application.html"
+
+
+class JournalContextDefinitions:
+    READ_ONLY = {
+        "name": "read_only",
+        "fieldsets": [
+            FieldSetDefinitions.BASIC_COMPLIANCE["name"],
+            FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
+            FieldSetDefinitions.PUBLISHER["name"],
+            FieldSetDefinitions.SOCIETY_OR_INSTITUTION["name"],
+            FieldSetDefinitions.LICENSING["name"],
+            FieldSetDefinitions.EMBEDDED_LICENSING["name"],
+            FieldSetDefinitions.COPYRIGHT["name"],
+            FieldSetDefinitions.PEER_REVIEW["name"],
+            FieldSetDefinitions.PLAGIARISM["name"],
+            FieldSetDefinitions.EDITORIAL["name"],
+            FieldSetDefinitions.APC["name"],
+            FieldSetDefinitions.APC_WAIVERS["name"],
+            FieldSetDefinitions.OTHER_FEES["name"],
+            FieldSetDefinitions.ARCHIVING_POLICY["name"],
+            FieldSetDefinitions.REPOSITORY_POLICY["name"],
+            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"],
+            FieldSetDefinitions.SUBJECT["name"],
+            FieldSetDefinitions.NOTES["name"]
+        ],
+        "templates": {
+            "form" : "application_form/readonly_journal.html",
+            "default_field" : "application_form/_field.html",
+            "default_group" : "application_form/_group.html"#,
+            #"default_list" : "application_form/_list.html"
+        },
+        "crosswalks": {
+            "obj2form": JournalFormXWalk.obj2form,
+            "form2obj": JournalFormXWalk.form2obj
+        },
+        "processor": application_processors.NewApplication # FIXME: enter the real processor
+    }
+
+    ASSOCIATE = deepcopy(READ_ONLY)
+    ASSOCIATE["name"] = "associate_editor"
+    ASSOCIATE["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    ASSOCIATE["templates"]["form"] = "application_form/assed_journal.html"
+
+    EDITOR = deepcopy(READ_ONLY)
+    EDITOR["name"] = "editor"
+    EDITOR["fieldsets"] += [
+        FieldSetDefinitions.REVIEWERS["name"]
+    ]
+    EDITOR["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    EDITOR["templates"]["form"] = "application_form/editor_journal.html"
+
+    MANED = deepcopy(EDITOR)
+    MANED["name"] = "admin"
+    MANED["fieldsets"] += [
+        FieldSetDefinitions.REVIEWERS["name"],
+        FieldSetDefinitions.REASSIGN["name"],
+        FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
+        FieldSetDefinitions.SEAL["name"],
+        FieldSetDefinitions.CONTINUATIONS["name"]
+    ]
+    MANED["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    MANED["templates"]["form"] = "application_form/maned_journal.html"
+
+    BULK_EDIT = {
+        "name" : "bulk_edit",
+        "fieldsets" : [
+            FieldSetDefinitions.BULK_EDIT["name"]
+        ],
+        "templates": {
+            "form" : "application_form/readonly_journal.html",
+            "default_field" : "application_form/_field.html",
+            "default_group" : "application_form/_group.html"#,
+            #"default_list" : "application_form/_list.html"
+        },
+        "crosswalks": {
+            "obj2form": JournalFormXWalk.obj2form,
+            "form2obj": JournalFormXWalk.form2obj
+        },
+        "processor": application_processors.NewApplication # FIXME: enter the real processor
+    }
+
 
 
 #######################################################
 # Gather all of our form information in one place
 #######################################################
 
-FORMS = {
+APPLICATION_FORMS = {
     "contexts": {
-        ContextDefinitions.PUBLIC["name"]: ContextDefinitions.PUBLIC,
-        ContextDefinitions.MANED["name"]: ContextDefinitions.MANED
+        ApplicationContextDefinitions.PUBLIC["name"]: ApplicationContextDefinitions.PUBLIC,
+        ApplicationContextDefinitions.UPDATE["name"]: ApplicationContextDefinitions.UPDATE,
+        ApplicationContextDefinitions.ASSOCIATE["name"]: ApplicationContextDefinitions.ASSOCIATE,
+        ApplicationContextDefinitions.EDITOR["name"]: ApplicationContextDefinitions.EDITOR,
+        ApplicationContextDefinitions.MANED["name"]: ApplicationContextDefinitions.MANED
     },
     "fieldsets": {v['name']: v for k, v in FieldSetDefinitions.__dict__.items() if not k.startswith('_')},
     "fields": {v['name']: v for k, v in FieldDefinitions.__dict__.items() if not k.startswith('_')}
+}
+
+
+JOURNAL_FORMS = {
+    "contexts": {
+        JournalContextDefinitions.READ_ONLY["name"]: JournalContextDefinitions.READ_ONLY,
+        JournalContextDefinitions.BULK_EDIT["name"]: JournalContextDefinitions.BULK_EDIT,
+        JournalContextDefinitions.ASSOCIATE["name"]: JournalContextDefinitions.ASSOCIATE,
+        JournalContextDefinitions.EDITOR["name"]: JournalContextDefinitions.EDITOR,
+        JournalContextDefinitions.MANED["name"]: JournalContextDefinitions.MANED
+    },
+    "fieldsets": APPLICATION_FORMS["fieldsets"],
+    "fields": APPLICATION_FORMS["fields"]
 }
 
 
@@ -1983,4 +2163,6 @@ WTFORMS_BUILDERS = [
     GroupListBuilder
 ]
 
-ApplicationFormFactory = Formulaic(FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
+
+ApplicationFormFactory = Formulaic(APPLICATION_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
+JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
