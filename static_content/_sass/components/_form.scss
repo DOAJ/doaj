@@ -2,40 +2,42 @@
    Question = groups paragraph text, label, input for a single question */
 
 .form__header {
- padding-bottom: $spacing-03;
- border-bottom: 1px solid rgba($dark-grey, 0.5);
+  margin-bottom: 0;
+  padding-bottom: $spacing-03;
+  border-bottom: 1px solid rgba($dark-grey, 0.5);
 
+  + .form__question {
+    margin-top: $spacing-03;
+  }
 }
 
 .form__question {
- margin: $spacing-05 0;
+  margin: $spacing-05 0;
 
- p, label {
-   margin-bottom: $spacing-03;
-   @include typescale-04;
- }
+  p, label {
+    margin-bottom: $spacing-03;
+    @include typescale-05;
+  }
 
- small {
-   display: block;
-   margin-top: -$spacing-02;
-   color: $dark-grey;
-   font-size: 1rem;
- }
+  small {
+    display: block;
+    margin-top: -$spacing-02;
+    color: $dark-grey;
+    font-size: 1rem;
+  }
 
- input, select {
-   width: 75%;
-    margin: 5px 0 5px 0;
-    padding: 0px;
+  input, select, textarea {
+    width: 75%;
 
-   &[type="number"] {
-     width: 25%;
-   }
- }
+    &[type="number"] {
+      width: 25%;
+    }
+  }
 
- input[type="checkbox"] + label,
- input[type="radio"] + label {
-   font-size: 1rem;
- }
+  input[type="checkbox"] + label,
+  input[type="radio"] + label {
+    font-size: 1rem;
+  }
 }
 
 .form__question--optional {
@@ -44,6 +46,7 @@
 }
 
 .form__subquestion {
+  display: none;
   margin-top: -$spacing-04;
   padding-left: $spacing-04;
   border-left: 1px solid $sanguine;

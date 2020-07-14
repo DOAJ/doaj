@@ -13,4 +13,4 @@ Sponsorship levels are tiered and have accompanying benefits. To discuss sponsor
 
 ---
 
-## List of sponsors
+## Our sponsors

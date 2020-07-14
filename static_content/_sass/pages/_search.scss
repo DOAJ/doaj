@@ -1,0 +1,23 @@
+.search {
+
+  &__header {
+    padding: $spacing-04;
+    margin-bottom: $spacing-04;
+    background-size: cover;
+    background-color: $fair-pink;
+    background-blend-mode: luminosity;
+    background-position: bottom;
+
+    h1 {
+      margin-bottom: $spacing-03;
+    }
+
+    form {
+      margin-bottom: 0;
+    }
+  }
+
+  h2 {
+    margin-top: 0;
+  }
+}

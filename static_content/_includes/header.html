@@ -13,7 +13,7 @@
             {% else %}
             <h2 class="sr-only">The Directory of Open Access Journals</h2>
             {% endif %}
-            {% include logo.svg %}
+            {% include svg/logo.svg %}
           </a>
         </div>
         <nav class="col-xs-8 col-sm-6">
@@ -32,6 +32,11 @@
                   </a>
                 </li>
                 <li>
+                  <a href="{{ site.baseurl }}{% link support/supporters.md %}" class="dropdown__link">
+                    Supporters
+                  </a>
+                </li>
+                <li>
                   <a href="{{ site.baseurl }}{% link support/sponsors.md %}" class="dropdown__link">
                     Sponsors
                   </a>
@@ -39,11 +44,6 @@
                 <li>
                   <a href="{{ site.baseurl }}{% link support/publisher-supporters.md %}" class="dropdown__link">
                     Publisher supporters
-                  </a>
-                </li>
-                <li>
-                  <a href="{{ site.baseurl }}{% link support/supporters.md %}" class="dropdown__link">
-                    Supporters
                   </a>
                 </li>
               </ul>
@@ -112,11 +112,6 @@
                 Articles
               </a>
             </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
-              </a>
-            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -179,13 +174,13 @@
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link about/editorial-subcommittee.md %}" class="dropdown__link">
-                Editorial Subcommittee
+              <a href="{{ site.baseurl }}{% link about/advisory-board-council.md %}" class="dropdown__link">
+                Advisory Board & Council
               </a>
             </li>
             <li>
-              <a href="{{ site.baseurl }}{% link about/advisory-board-council.md %}" class="dropdown__link">
-                Advisory Board & Council
+              <a href="{{ site.baseurl }}{% link about/editorial-subcommittee.md %}" class="dropdown__link">
+                Editorial Subcommittee
               </a>
             </li>
             <li>

@@ -1,5 +1,5 @@
 ---
-layout: filters
+layout: search
 fragment: false
 title: Articles
 section: Search

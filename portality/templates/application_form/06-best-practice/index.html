@@ -16,7 +16,7 @@
             {% set field_template = f.template %}
             {%  include field_template %}
         {% endfor %}
-    {% set fs = formulaic_context.fieldset("repository_policy") %}
+    {% set fs = formulaic_context.fieldset("deposit_policy") %}
     <h2 class="form__header"> {{ fs.label }}</h2>
         {% for f in fs.fields() %}
             {% set field_template = f.template %}

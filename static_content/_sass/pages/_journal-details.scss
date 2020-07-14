@@ -1,0 +1,33 @@
+/* Specific to journal detail pages */
+
+.journal-details {
+
+  h1 span {
+    display: block;
+    color: $dark-grey;
+    font-weight: 400;
+  }
+  
+  .three-col {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    @media (min-width: 769px) {
+      flex-direction: row;
+    }
+
+    > section {
+      width: 100%;
+
+      @media (min-width: 769px) {
+        padding-bottom: 0;
+        width: calc(100%/3 - 20px);
+      }
+
+      @media (min-width: 1280px) {
+        width: calc(100%/3 - 40px);
+      }
+    }
+  }
+}

@@ -31,7 +31,7 @@ Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is 
 
 ### I know a journal which should be in DOAJ but isn’t. What should I do?
 
-  [Submit an application]() or contact the journal and ask them to apply. You can also send us the details of the journal—title and ISSN—and we will contact them.
+  Contact the journal and ask them to submit an application. You can also send us the details of the journal—title and ISSN—and we will contact them.
 
 ### The journal I am looking for isn't in DOAJ. Why? What should I do?
 

@@ -1,11 +1,47 @@
 /* Tags, disciplines, labels... */
 
 .label {
+  display: block;
   margin-bottom: $spacing-02;
-  text-transform: uppercase;
   line-height: 1.15;
   font-weight: 600;
-  color: $sanguine;
   letter-spacing: 0.05em;
-  @include typescale-06;
+  text-transform: uppercase;
+  font-size: smaller;
+  color: $sanguine;
+
+  a {
+    text-decoration: none;
+    color: $sanguine;
+  }
+
+  svg {
+    position: relative;
+    padding-right: $spacing-01;
+    top: 2px;
+  }
+}
+
+.label--secondary {
+  color: $warm-black;
+
+  a {
+    color: $warm-black;
+  }
+}
+
+.label--underlined {
+  margin-bottom: $spacing-04;
+  padding-bottom: $spacing-03;
+  border-bottom: 1px dashed;
+}
+
+.label--large {
+  margin: $spacing-01 0 $spacing-02 0;
+  color: $warm-black;
+  @include typescale-04;
+
+  a {
+    color: $warm-black;
+  }
 }

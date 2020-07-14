@@ -1,6 +1,4 @@
-/* Styles specific to pages with a sidenav */
-
-.sidenav-page .page-content {
+.with-sidenav .page-content {
   padding-right: $spacing-04;
 
   @media (max-width: 768px) {

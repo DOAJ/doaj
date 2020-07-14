@@ -40,5 +40,10 @@
   margin-top: $spacing-02;
   margin-bottom: $spacing-03;
   font-weight: 400;
+  line-height: 1.35;
   @include typescale-04;
+}
+
+.title-list--large {
+  @include typescale-05;
 }

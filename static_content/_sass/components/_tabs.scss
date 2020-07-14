@@ -1,11 +1,9 @@
-.tabs {}
-
-.tabs__menu {
-  overflow-x: auto;
+.tabs {
+  margin-top: $spacing-04;
 }
 
 .tabs__list {
-  display: table;
+  display: flex;
   margin: $spacing-02 0 0;
   padding-left: 0;
   list-style-type: none;
@@ -19,32 +17,32 @@
   }
 }
 
+
 .tabs__item {
-  display: table-cell;
+  flex: 0;
 
   a {
     display: block;
-    padding: $spacing-02 $spacing-03;
+    margin: 0 $spacing-04 0 0;
+    padding: 0 0 $spacing-02 0;
+    border: 0;
+    color: $dark-grey;
     background-color: transparent;
-    border: 1px solid $sanguine;
-    color: $sanguine;
+    color: $dark-grey;
     text-decoration: none;
 
-    &[aria-selected="false"]:hover,
-    &[aria-selected="false"]:active,
-    &[aria-selected="false"]:focus {
-      background-color: $sanguine;
-      color: $warm-white
-    }
-
     &[aria-selected="true"] {
-      background-color: $sanguine;
-      color: $warm-white;
+      border-bottom: 2px solid $grapefruit;
+      background: transparent;
+      color: $warm-black;
+      font-weight: 700;
     }
-  }
 
-  &:not(:first-child) a {
-    margin-left: -1px;
+    &:hover, &:focus, &:active {
+      background: none;
+      border-bottom: 2px solid $grapefruit;
+      color: $warm-black;
+    }
   }
 }
 
@@ -56,5 +54,14 @@
   &[aria-hidden="true"] {
     display: none;
     visibility: hidden;
+  }
+}
+
+.tabs__content {
+
+  section,
+  dl {
+    margin-top: 0;
+    padding-top: 0;
   }
 }

@@ -37,7 +37,7 @@
         position: absolute;
         height: 60px;
         margin-left: 17px;
-        margin-top: 13px;
+        margin-top: 20px;
         z-index: -10;
       }
 
@@ -67,6 +67,7 @@
           text-align: center;
           color: rgba($dark-grey, 0.75);
           font-weight: bold;
+          font-size: smaller;
         }
       }
     }

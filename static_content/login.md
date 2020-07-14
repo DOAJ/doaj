@@ -10,7 +10,7 @@ DOAJ is free to use without logging in.
 
 You only need an account if you have a journal in DOAJ or you are a volunteer.
 
-<form>
+<form action="{{ site.baseurl }}{% link dashboard/index.md %}">
   <div class="form__question">
     <label for="email">E-mail address or username</label>
     <input id="email" type="email">
