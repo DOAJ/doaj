@@ -11,7 +11,7 @@ import os, sys
 import tzlocal
 import pytz
 
-from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
+from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, send_from_directory
 from flask_login import login_user, current_user
 
 from datetime import datetime
@@ -132,6 +132,22 @@ SPONSORS = {
 
 # In each tier, create an ordered dictionary sorted alphabetically by sponsor name
 SPONSORS = {k: OrderedDict(sorted(list(v.items()), key=lambda t: t[0])) for k, v in list(SPONSORS.items())}
+
+
+# serve static files from multiple potential locations
+# this allows us to override the standard static file handling with our own dynamic version
+@app.route("/static/<path:filename>")
+@app.route("/static_content/<path:filename>")
+def our_static(filename):
+    return custom_static(filename)
+
+
+def custom_static(path):
+    for dir in app.config.get("STATIC_PATHS", []):
+        target = os.path.join(app.root_path, dir, path)
+        if os.path.isfile(target):
+            return send_from_directory(os.path.dirname(target), os.path.basename(target))
+    abort(404)
 
 
 # Configure the Google Analytics tracker

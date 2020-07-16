@@ -126,6 +126,15 @@ DEBUG_PYCHARM_PORT = 6000
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True
 
+# paths where static content should be served from.
+# * in the order you want them searched
+# * relative to the portality directory
+STATIC_PATHS = [
+    "static",
+    "../static_content"
+]
+
+
 # =======================
 # email settings
 

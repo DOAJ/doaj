@@ -26,8 +26,7 @@ def load_account_for_login_manager(userid):
 
 
 def create_app():
-    app = Flask(__name__, static_url_path='',
-                static_folder=os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+    app = Flask(__name__)
     configure_app(app)
     setup_error_logging(app)
     setup_jinja(app)

@@ -32,10 +32,10 @@
     {% if edit_suggestion_page or edit_journal_page or subject_page %}
 
         <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
-        <script type="text/javascript" src="/static/portality/vendor/jstree-3.0.0-beta10/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+        <script type="text/javascript" src="/static/vendor/jstree-3.0.0-beta10/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
         {% if not subject_page %}
-            <script type="text/javascript" src="/static/doaj/js/suggestions_and_journals.js?v={{config.get('DOAJ_VERSION')}}"></script>
+            <script type="text/javascript" src="/static/js/suggestions_and_journals.js?v={{config.get('DOAJ_VERSION')}}"></script>
         {% endif %}
 
     {% endif %}
