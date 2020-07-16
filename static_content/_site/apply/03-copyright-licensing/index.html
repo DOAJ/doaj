@@ -31,11 +31,19 @@
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
 
   <meta name="theme-color" content="#F8F3EF">
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
 
 </head>
 
@@ -51,7 +59,9 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
-            <h1 class="sr-only">The Directory of Open Access Journals</h1>
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -81,6 +91,11 @@
                   </a>
                 </li>
                 <li>
+                  <a href="/support/supporters/" class="dropdown__link">
+                    Supporters
+                  </a>
+                </li>
+                <li>
                   <a href="/support/sponsors/" class="dropdown__link">
                     Sponsors
                   </a>
@@ -88,11 +103,6 @@
                 <li>
                   <a href="/support/publisher-supporters/" class="dropdown__link">
                     Publisher supporters
-                  </a>
-                </li>
-                <li>
-                  <a href="/support/supporters/" class="dropdown__link">
-                    Supporters
                   </a>
                 </li>
               </ul>
@@ -161,11 +171,6 @@
                 Articles
               </a>
             </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
-              </a>
-            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -230,6 +235,11 @@
             <li>
               <a href="/about/advisory-board-council/" class="dropdown__link">
                 Advisory Board &amp; Council
+              </a>
+            </li>
+            <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
               </a>
             </li>
             <li>
@@ -336,17 +346,17 @@
       </div>
       <div class="input-group">
         <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-        <input type="text" name="keywords" id="quick-search-keywords" required>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
 
         <label for="quick-search-fields" class="sr-only">In the field:</label>
-        <select name="fields" id="quick-search-fields">
+        <select class="input-group__input" name="fields" id="quick-search-fields">
           <option value="all">In all fields</option>
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
           <option value="subject">Author</option>
         </select>
-        <button type="submit">
+        <button class="input-group__input" type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
@@ -621,12 +631,12 @@
               
               <p class="pager-buttons">
                 
-                <a href="../02-about" class="pager-buttons__left">Previous</a>
+                <a href="../02-about" class="button button--secondary pager-buttons__left">Previous</a>
                 
 
-                <button type="submit" class="pager-buttons__right">Next</button>
+                <button type="submit" class="button button--primary pager-buttons__right">Next</button>
 
-                <a href="#" class="pager-buttons__center">Save draft</a>
+                <a href="#" class="button button--secondary pager-buttons__center">Save draft</a>
               </p>
               
             </form>
@@ -698,7 +708,7 @@
 
             
             <aside class="highlight highlight--aside">
-              <h2>Related help</h2>
+              <h2 class="label">Related help</h2>
               <ul class="full-width-list">
                 <li class="full-width-list__item">
                   <a href="/apply/guide/">Guide to applying</a>
@@ -829,13 +839,6 @@
   </div>
 </footer>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<script src="../../js/vendors/bootstrap.js"></script>
-
-<!-- Feather icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-
 <script>
   // Use Feather icons
   feather.replace()
@@ -882,7 +885,7 @@
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
@@ -913,6 +916,7 @@
       }, 50, 'linear');
     }
   } );
+
 </script>
 
   </body>

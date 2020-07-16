@@ -32,11 +32,19 @@
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
 
   <meta name="theme-color" content="#F8F3EF">
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
 
 </head>
 
@@ -52,7 +60,9 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
-            <h1 class="sr-only">The Directory of Open Access Journals</h1>
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -82,6 +92,11 @@
                   </a>
                 </li>
                 <li>
+                  <a href="/support/supporters/" class="dropdown__link">
+                    Supporters
+                  </a>
+                </li>
+                <li>
                   <a href="/support/sponsors/" class="dropdown__link">
                     Sponsors
                   </a>
@@ -89,11 +104,6 @@
                 <li>
                   <a href="/support/publisher-supporters/" class="dropdown__link">
                     Publisher supporters
-                  </a>
-                </li>
-                <li>
-                  <a href="/support/supporters/" class="dropdown__link">
-                    Supporters
                   </a>
                 </li>
               </ul>
@@ -162,11 +172,6 @@
                 Articles
               </a>
             </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
-              </a>
-            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -231,6 +236,11 @@
             <li>
               <a href="/about/advisory-board-council/" class="dropdown__link">
                 Advisory Board &amp; Council
+              </a>
+            </li>
+            <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
               </a>
             </li>
             <li>
@@ -323,7 +333,7 @@
 </header>
 
 
-<!-- Admin-only edit buttons -->
+<!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/about/content/team.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
 
@@ -347,17 +357,17 @@
       </div>
       <div class="input-group">
         <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-        <input type="text" name="keywords" id="quick-search-keywords" required>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
 
         <label for="quick-search-fields" class="sr-only">In the field:</label>
-        <select name="fields" id="quick-search-fields">
+        <select class="input-group__input" name="fields" id="quick-search-fields">
           <option value="all">In all fields</option>
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
           <option value="subject">Author</option>
         </select>
-        <button type="submit">
+        <button class="input-group__input" type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
@@ -389,7 +399,7 @@
           <!-- About section: team -->
           <ul class="row title-list">
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
@@ -399,27 +409,26 @@
                 <p class="label">Project and Communications Manager</p>
                 <h2 class="title-list__heading">Clara Armengou</h2>
                 <p class="title-list__para">
-                  Clara has several years of experience in the scholarly publishing industry, recently working at Cambridge University Press as an Open Access Project Manager. She also works as a science communication officer at the University Pompeu Fabra, Barcelona, where she leads a project to to promote scientific research of excellence in Catalonia and to make science and research accessible to the general public.
+                  Clara has several years of experience in the scholarly publishing industry. She worked at Cambridge University Press as an Open Access Project Manager until 2015. She also works in science communication as a freelancer at the University Pompeu Fabra, Barcelona. Clara speaks Spanish, Catalan, English and some German and French. She loves cetaceans, freediving, cycling, and is an enthusiast cook.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mbDFybndLbldEbFE/view?usp=sharing" target="_blank" rel="noopener">2016</a></li>
+                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mbDFybndLbldEbFE/view?usp=sharing" target="_blank" class="tag" rel="noopener">2016</a></li>
                     
-                    <li><a href="https://drive.google.com/file/d/1LHmZSZ6bwf6U71fNvIibJa6R1lquNhfR/view?usp=sharing)" target="_blank" rel="noopener">2018</a></li>
+                    <li><a href="https://drive.google.com/file/d/1LHmZSZ6bwf6U71fNvIibJa6R1lquNhfR/view?usp=sharing)" target="_blank" class="tag" rel="noopener">2018</a></li>
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
@@ -432,52 +441,50 @@
                   Judith has over 20 years experience in the scholarly publishing industry, working for a range of non-profit society publishers and service providers. She has a keen interest in publishing standards and protocols, and has served on the board of CLOCKSS and as chair of the PALS (publisher and library solutions) working group in the UK.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="https://drive.google.com/file/d/0B0fPCpIPjZlmb3JmVkFYbjN5aTh1OUhLd2lZaEV0ZlFwbTZV/view?usp=sharing" target="_blank" rel="noopener">2016</a></li>
+                    <li><a href="https://drive.google.com/file/d/0B0fPCpIPjZlmb3JmVkFYbjN5aTh1OUhLd2lZaEV0ZlFwbTZV/view?usp=sharing" target="_blank" class="tag" rel="noopener">2016</a></li>
                     
-                    <li><a href="https://drive.google.com/file/d/0B0fPCpIPjZlmb3JmVkFYbjN5aTh1OUhLd2lZaEV0ZlFwbTZV/view?usp=sharing" target="_blank" rel="noopener">2018</a></li>
+                    <li><a href="https://drive.google.com/file/d/0B0fPCpIPjZlmb3JmVkFYbjN5aTh1OUhLd2lZaEV0ZlFwbTZV/view?usp=sharing" target="_blank" class="tag" rel="noopener">2018</a></li>
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
-                    <div class="portrait__bg-img--3d" style="background-image: url('../../img/team/kamel.jpg')" alt="Portrait of Kamel Belhamel"></div>
+                    <div class="portrait__bg-img--3d" style="background-image: url('../../img/team/Kamel.jpg')" alt="Portrait of Kamel Belhamel"></div>
                   
                 </figure>
                 <p class="label">Managing Editor</p>
                 <h2 class="title-list__heading">Kamel Belhamel</h2>
                 <p class="title-list__para">
-                  Kamel holds a PhD in the Process Engineering and Electrochemistry from the University of Setif since 2005. He is author/co-author of more 27 scientific papers in international scientific journals (ORCID ID: https://orcid.org/0000-0002-9099-8040), he has also presented more than 50 abstract books at local and international conferences. His scientific activities are focused on Open Access; Open Science and the chemistry of Natural Products. He is currently Professor of Chemistry at the University of Bejaia in Algeria and Editor in chief of the Algerian Journal of Natural Products (E-ISSN: 2353-0391) as volunteer. He is also the DOAJ Ambassador for North African countries.
+                  Kamel is Full Professor of Chemistry at the University of Bejaia in Algeria (ORCID ID: https://orcid.org/0000-0002-9099-8040). He holds his PhD in the field of Process Engineering and Chemistry of Materials Science at the University of Setif in Algeria. He joined the DOAJ team in 2016 as an Ambassador for Northern African and Middle East countries. He is currently a DOAJ Managing Editor, Creative Commons Algeria Chapter lead, director of the Laboratory of Organic Materials at the University of Bejaia in Algeria and  editor in chief of Algerian Journal of Natural Products (E-ISSN: 2353-0391). His scientific activity is focused on the chemistry of the Natural Products, scholarly communications and new developments in academic publishing. Father of 3 daughters, he likes travelling, healthy local foods &amp; home-made snacks.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="https://drive.google.com/file/d/1JdF2kh-fLXz8kPGN_3ijDt5y9K6s0hOQ/view?usp=sharing" target="_blank" rel="noopener">2018</a></li>
+                    <li><a href="https://drive.google.com/file/d/1JdF2kh-fLXz8kPGN_3ijDt5y9K6s0hOQ/view?usp=sharing" target="_blank" class="tag" rel="noopener">2018</a></li>
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
@@ -487,27 +494,27 @@
                 <p class="label">Managing Director and Founder</p>
                 <h2 class="title-list__heading">Lars Bjørnshauge</h2>
                 <p class="title-list__para">
-                  Lars was Director of Libraries at Lund University from 2001 to 2011 and founded the DOAJ in 2003. He became Managing Director of DOAJ in January 2013. He has vast experience in: change management; the re-engineering of academic libraries; the development of information services for research &amp; higher education. He has been a strong advocate of open access and for providing services to the open access movement (open access to research publications). He is co-founder of <a href="http://www.opendoar.org/" target="_blank" rel="noopener">OpenDOAR</a> and the <a href="https://www.doabooks.org/" target="_blank" rel="noopener">Directory of Open Access Books</a>.
+                  Lars has been working at Danish university libraries for two decades and was Director of Libraries at Lund University, Sweden from 2001 to 2011 and founded the DOAJ in 2003. He became Managing Director of DOAJ in January 2013. He has vast experience in: change management; the re-engineering of academic libraries; the development of information services for research &amp; higher education. He has for two decades been a strong advocate of open access and for providing services to the open access movement. He is co-founder of  <a href="http://www.opendoar.org/" target="_blank" rel="noopener">OpenDOAR</a>, the the <a href="https://www.doabooks.org/" target="_blank" rel="noopener">Directory of Open Access Books</a> and ThinkCheckSubmit. He is Past-President of the Danish Research Library Organization – Past-VicePresident of the Swedish Library Association – Board member OASPA 2012-2019.
+Lars is Dane, lives outside Copenhagen, married to Annette, 4 children and 4 grandchildren. He enjoys vegetable gardening, growing cacti and succulents, and playing internet chess.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mbmo2aU9NWkx5dGs/view?usp=sharing" target="_blank" rel="noopener">2016</a></li>
+                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mbmo2aU9NWkx5dGs/view?usp=sharing" target="_blank" class="tag" rel="noopener">2016</a></li>
                     
-                    <li><a href="https://drive.google.com/file/d/1mm1a8nbY5MQX9loqIs2ZQuVN-73RfPuN/view?usp=sharing" target="_blank" rel="noopener">2018</a></li>
+                    <li><a href="https://drive.google.com/file/d/1mm1a8nbY5MQX9loqIs2ZQuVN-73RfPuN/view?usp=sharing" target="_blank" class="tag" rel="noopener">2018</a></li>
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
@@ -517,27 +524,26 @@
                 <p class="label">Managing Editor</p>
                 <h2 class="title-list__heading">Sonja Brage</h2>
                 <p class="title-list__para">
-                  Sonja Brage is a former Information Librarian from Lund University Library. She has a B.A. in English, Bulgarian and Russian from Lund University and specialises in applications for journals in the Slavonic languages.
+                  Sonja is a former Information Librarian from Lund University Library. She has a B.A. in English, Bulgarian and Russian from Lund University and specialises in applications for journals in the Slavonic languages.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mNUFoZWV4YnZ3bDg/view?usp=sharing" target="_blank" rel="noopener">2016</a></li>
+                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mNUFoZWV4YnZ3bDg/view?usp=sharing" target="_blank" class="tag" rel="noopener">2016</a></li>
                     
-                    <li><a href="https://drive.google.com/file/d/1M5AGEDP79uk2olCcmVYjKCsmzL7tG2Vc/view?usp=sharings" target="_blank" rel="noopener">2018</a></li>
+                    <li><a href="https://drive.google.com/file/d/1M5AGEDP79uk2olCcmVYjKCsmzL7tG2Vc/view?usp=sharings" target="_blank" class="tag" rel="noopener">2018</a></li>
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
@@ -547,27 +553,26 @@
                 <p class="label">Managing Editor</p>
                 <h2 class="title-list__heading">Ilaria Fava</h2>
                 <p class="title-list__para">
-                  Ilaria is a librarian with several years experience within the Open Access community in her home country of Italy, where she has dealt with Open Access issues at both a national and international level. She has been involved in EU Open Access Projects, as well as being a serving technical board member for the Italian Journal of Library and Information Science <a href="https://www.jlis.it/" target="_blank" rel="noopener">JLIS.it</a>.
+                  Ilaria is a librarian with several years of experience within the Open Access community in her home country of Italy, where she has dealt with Open Access issues at both a national and international level. She also serves the Göttingen State and University Library working on Open Science projects. Based in Rome and Göttingen, Ilaria loves baking cakes; she speaks Italian, English, some Spanish and a little German.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mY2dRZTR5eTFjQkk/view?usp=sharing" target="_blank" rel="noopener">2016</a></li>
+                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mY2dRZTR5eTFjQkk/view?usp=sharing" target="_blank" class="tag" rel="noopener">2016</a></li>
                     
-                    <li><a href="https://drive.google.com/file/d/1AMi0uIWHgEiaqmJLM7f_SFsiLEJENfjF/view?usp=sharing" target="_blank" rel="noopener">2018</a></li>
+                    <li><a href="https://drive.google.com/file/d/1AMi0uIWHgEiaqmJLM7f_SFsiLEJENfjF/view?usp=sharing" target="_blank" class="tag" rel="noopener">2018</a></li>
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
@@ -577,27 +582,26 @@
                 <p class="label">Managing Editor</p>
                 <h2 class="title-list__heading">Alejandra Manco Vega</h2>
                 <p class="title-list__para">
-                  Alejandra has a Bachelor’s degree in Information Science and a Master’s degree in Digital Media and she has around eight years of experience in information and knowledge management and also in scholarly communication at national and international level. She is responsible for the review of applications for journals wishing to be indexed at the Directory.
+                  Alejandra has a Bachelor’s degree in Information Science and a Master’s degree in Digital Media; she has around ten years of experience in information management, knowledge management and scholarly communication at national and international level.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mVFhjdkZWaFJZOTQ/view?usp=sharing" target="_blank" rel="noopener">2016</a></li>
+                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mVFhjdkZWaFJZOTQ/view?usp=sharing" target="_blank" class="tag" rel="noopener">2016</a></li>
                     
-                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mRlRYTDBPRlZiWTRxQ3VMTUZpQnZ5ZkwyLVQ4/view?usp=sharing" target="_blank" rel="noopener">2018</a></li>
+                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mRlRYTDBPRlZiWTRxQ3VMTUZpQnZ5ZkwyLVQ4/view?usp=sharing" target="_blank" class="tag" rel="noopener">2018</a></li>
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
@@ -610,20 +614,19 @@
                   Paula is a published researcher and holds a PhD in Biological Sciences from the University of Exeter. She has extensive experience managing and maintaining large databases and has been an advocate for open science for many years.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
@@ -636,24 +639,23 @@
                   Dom has worked extensively with the publisher and librarian communities both as a publisher and as an account and project manager. He is responsible for DOAJ’s strategic and operational development, including its technical development, and DOAJ’s profile in social media. He writes <a href="https://blog.doaj.org" target="_blank" rel="noopener">the DOAJ blog</a>. In 2019, he was elected to the OASPA Board of Directors.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mWmU0UHZqZm1xcDQ/view?usp=sharing" target="_blank" rel="noopener">2016</a></li>
+                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mWmU0UHZqZm1xcDQ/view?usp=sharing" target="_blank" class="tag" rel="noopener">2016</a></li>
                     
-                    <li><a href="https://drive.google.com/file/d/13XX_GUrw2xRmXARjRrTxegULPT8Redka/view?usp=sharing" target="_blank" rel="noopener">2018</a></li>
+                    <li><a href="https://drive.google.com/file/d/13XX_GUrw2xRmXARjRrTxegULPT8Redka/view?usp=sharing" target="_blank" class="tag" rel="noopener">2018</a></li>
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
@@ -666,50 +668,48 @@
                   Tom has a PhD in molecular microbiology and has spent several years in Africa doing research on malaria, sleeping sickness and meningococcal epidemics. He has been actively advocating open access and open science since 2012 when he joined the Open Knowledge community. At around the same time he became a member of the DOAJ advisory board. His current research interests are development of quality systems for the assessment of scholarly journals and articles, and research in the area of soil microbiology in relation to soil health and human health.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mYUFZNDRISTZodUU/view?usp=sharing" target="_blank" rel="noopener">2016</a></li>
+                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mYUFZNDRISTZodUU/view?usp=sharing" target="_blank" class="tag" rel="noopener">2016</a></li>
                     
-                    <li><a href="https://drive.google.com/file/d/1x0w-a1TWQdJDKPtQpGhmDZSdA4BhFSpI/view?usp=sharing" target="_blank" rel="noopener">2018</a></li>
+                    <li><a href="https://drive.google.com/file/d/1x0w-a1TWQdJDKPtQpGhmDZSdA4BhFSpI/view?usp=sharing" target="_blank" class="tag" rel="noopener">2018</a></li>
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
-                    <div class="portrait__img--empty"></div>
+                    <div class="portrait__bg-img--3d" style="background-image: url('../../img/team/iemima.jpeg')" alt="Portrait of Iemima Ploscariu"></div>
                   
                 </figure>
                 <p class="label">Managing Editor</p>
                 <h2 class="title-list__heading">Iemima Ploscariu</h2>
                 <p class="title-list__para">
-                  Iemima holds a Master of Arts in Comparative History from Central European University, Hungary, and a Master of Letters in Central and East European Studies from the University of St Andrews, Scotland. She is a PhD student and researcher for the Irish Research Council at Dublin City University, Ireland. She volunteered as Editor for DOAJ from 2014 until 2020 when she became Managing Editor.
+                  Iemima holds a Master of Arts in Comparative History from Central European University, Hungary, and a Master of Letters in Central and East European Studies from the University of St Andrews, Scotland. She is a PhD student and researcher for the Irish Research Council at Dublin City University, Ireland. She volunteered as an Editor for DOAJ from 2014 until 2020 when she became a Managing Editor.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
@@ -719,51 +719,49 @@
                 <p class="label">Managing Editor</p>
                 <h2 class="title-list__heading">Leena Shah</h2>
                 <p class="title-list__para">
-                  Leena Shah holds a Master’s Degree in Information Studies from Nanyang Technological University, Singapore and a Bachelor’s degree in Engineering. She worked as a Science Librarian in Singapore before joining DOAJ. Leena has a keen interest in Scholarly Communication &amp; Open Science. She is responsible for journal applications applying to be in DOAJ from Indonesia, India and the neighbouring regions.
+                  Leena works as a Managing Editor for DOAJ. Her primary focus is to ensure that journals from Indonesia, India &amp; neighbouring regions included in DOAJ are good quality OA journals. She joined the team in 2016 as an Ambassador for India. Prior to joining DOAJ she worked as a science librarian at Nanyang Technological University, Singapore. This is where she developed a keen interest in scholarly communication &amp; open science. A recent addition to her interests is artificial intelligence in scholarly communication. Leena holds a Masters degree in Information Studies and lives in Singapore. She loves watching sci-fi shows and is enthusiastic about travelling to new places.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="https://drive.google.com/file/d/1tifEjAIlU3txBw9DjIcRW9cZL7YG7_nU/view?usp=sharing" target="_blank" rel="noopener">2018</a></li>
+                    <li><a href="https://drive.google.com/file/d/1tifEjAIlU3txBw9DjIcRW9cZL7YG7_nU/view?usp=sharing" target="_blank" class="tag" rel="noopener">2018</a></li>
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
-                    <div class="portrait__img--empty"></div>
+                    <div class="portrait__bg-img--3d" style="background-image: url('../../img/team/cenyu.jpg')" alt="Portrait of Cenyu Shen"></div>
                   
                 </figure>
                 <p class="label">Managing Editor</p>
                 <h2 class="title-list__heading">Cenyu Shen</h2>
                 <p class="title-list__para">
-                  Cenyu has a Master degree in Computer Science from University of Helsinki and she is currently a PhD candidate and researcher in Information Systems Science at Hanken School of Economics in Finland. She has spent around seven years on Open Access research with a particular focus on gold OA publishing concerning journals and publishers outside the mainstream. She used to be one of three DOAJ ambassadors for China from 2016 to 2017.
+                  Cenyu holds a PhD in Information Systems Science at Hanken School of Economics in Finland. She has spent around seven years on Open Access research with a particular focus on gold OA publishing concerning journals and publishers outside the mainstream. She used to be one of three DOAJ ambassadors for China from 2016 to 2017.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
             
-            <li class="col-sm-6 col-md-4">
+            <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <figure class="portrait">
                   
@@ -776,19 +774,18 @@
                   Rikard has a Bachelor of Arts degree with a Major in Cultural Sciences and a specialization in publishing.
                 </p>
                 
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  </p>
-<ul>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
                     
-                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mdnJPdldOM0hUMFU/view?usp=sharing" target="_blank" rel="noopener">2016</a></li>
+                    <li><a href="https://drive.google.com/file/d/0ByRf6PVViI-mdnJPdldOM0hUMFU/view?usp=sharing" target="_blank" class="tag" rel="noopener">2016</a></li>
                     
-                    <li><a href="https://drive.google.com/file/d/1tOnW8L6TwolyLpIXwMKTITf9wGh_ukLb/view?usp=sharing" target="_blank" rel="noopener">2018</a></li>
+                    <li><a href="https://drive.google.com/file/d/1tOnW8L6TwolyLpIXwMKTITf9wGh_ukLb/view?usp=sharing" target="_blank" class="tag" rel="noopener">2018</a></li>
                     
-                    <li><a href="" target="_blank">2020</a></li>
+                    <li><a href="" target="_blank" class="tag">2020</a></li>
                     
                   </ul>
-                
+                </div>
                 
               </div>
             </li>
@@ -907,13 +904,6 @@
   </div>
 </footer>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<script src="../../js/vendors/bootstrap.js"></script>
-
-<!-- Feather icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-
 <script>
   // Use Feather icons
   feather.replace()
@@ -960,7 +950,7 @@
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
@@ -991,6 +981,7 @@
       }, 50, 'linear');
     }
   } );
+
 </script>
 
   </body>

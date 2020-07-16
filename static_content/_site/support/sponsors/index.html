@@ -32,16 +32,24 @@
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
 
   <meta name="theme-color" content="#F8F3EF">
 
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
+
 </head>
 
 
-  <body class="sidenav-page" data-spy="scroll" data-offset="70" style="position: relative;">
+  <body class="with-sidenav" data-spy="scroll" data-offset="70" style="position: relative;">
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -52,7 +60,9 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
-            <h1 class="sr-only">The Directory of Open Access Journals</h1>
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -82,6 +92,11 @@
                   </a>
                 </li>
                 <li>
+                  <a href="/support/supporters/" class="dropdown__link">
+                    Supporters
+                  </a>
+                </li>
+                <li>
                   <a href="/support/sponsors/" class="dropdown__link">
                     Sponsors
                   </a>
@@ -89,11 +104,6 @@
                 <li>
                   <a href="/support/publisher-supporters/" class="dropdown__link">
                     Publisher supporters
-                  </a>
-                </li>
-                <li>
-                  <a href="/support/supporters/" class="dropdown__link">
-                    Supporters
                   </a>
                 </li>
               </ul>
@@ -162,11 +172,6 @@
                 Articles
               </a>
             </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
-              </a>
-            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -231,6 +236,11 @@
             <li>
               <a href="/about/advisory-board-council/" class="dropdown__link">
                 Advisory Board &amp; Council
+              </a>
+            </li>
+            <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
               </a>
             </li>
             <li>
@@ -323,7 +333,7 @@
 </header>
 
 
-<!-- Admin-only edit buttons -->
+<!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/support/content/sponsors.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
 
@@ -347,17 +357,17 @@
       </div>
       <div class="input-group">
         <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-        <input type="text" name="keywords" id="quick-search-keywords" required>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
 
         <label for="quick-search-fields" class="sr-only">In the field:</label>
-        <select name="fields" id="quick-search-fields">
+        <select class="input-group__input" name="fields" id="quick-search-fields">
           <option value="all">In all fields</option>
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
           <option value="subject">Author</option>
         </select>
-        <button type="submit">
+        <button class="input-group__input" type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
@@ -376,7 +386,7 @@
             <h2 class="page-nav__heading">Jump to:</h2>
             <ul class="page-nav__list">
 <li class="page-nav__item item-h2"><a href="#rates-and-benefits">Rates and benefits</a></li>
-<li class="page-nav__item item-h2"><a href="#list-of-sponsors">List of sponsors</a></li>
+<li class="page-nav__item item-h2"><a href="#our-sponsors">Our sponsors</a></li>
 </ul>
           </nav>
 
@@ -388,9 +398,9 @@
             <p class="label">Support</p>
             <h1>Sponsors</h1>
 
-            <p>The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.</p>
+            <p>DOAJ Sponsors provide us with crucial funding on an annual basis.</p>
 
-<p>Sponsorship levels are tiered and have accompanying benefits. To discuss your sponsorship options with us, send an email to <a href="mailto:dom@doaj.org">dom@doaj.org</a>.</p>
+<p>Sponsorship levels are tiered and have accompanying benefits. To discuss sponsorship options, please send an email to <a href="mailto:dom@doaj.org">dom@doaj.org</a>.</p>
 
 <h2 id="rates-and-benefits">Rates and benefits</h2>
 
@@ -410,35 +420,35 @@
       <td>Gold</td>
       <td>£18,000</td>
       <td>£9,000</td>
-      <td>Your logo on our Sponsors page, on our presentations, and on promotional material.  A featured interview, on the DOAJ blog when sponsorship starts, with someone from your organisation. A subsequent post after 2 years of continued sponsorship: reflections on the past 2 years and changes in the open access landscape.  A Tweet, upon every annual renewal, confirming your organisation as a Sponsor.  A dedicated DOAJ Team member as your point of contact at DOAJ.</td>
+      <td>Your logo on our Sponsors page, on our presentations, and on promotional material.  A featured interview on the DOAJ blog when sponsorship starts. A subsequent post after 2 years of continued sponsorship: reflections on the past 2 years and changes in the open access landscape.  A Tweet, upon every annual renewal, confirming your organisation as a Sponsor.  A dedicated point of contact at DOAJ.</td>
     </tr>
     <tr>
       <td> </td>
       <td>Silver</td>
       <td>£12,000</td>
       <td>£6,000</td>
-      <td>Your logo on our Sponsors page.  A featured interview, on the DOAJ blog when sponsorship starts, with someone from your organisation.  A Tweet, upon every annual renewal, confirming your organisation as a Sponsor</td>
+      <td>Your logo on our Sponsors page.  A featured interview on the DOAJ blog when sponsorship starts.  A Tweet, upon every annual renewal, confirming your organisation as a Sponsor.</td>
     </tr>
     <tr>
       <td> </td>
       <td>Bronze</td>
       <td>£6,000</td>
       <td>£3,000</td>
-      <td>Your logo on our Sponsors page.  A Tweet welcoming you as a DOAJ Sponsor</td>
+      <td>Your logo on our Sponsors page.  A Tweet welcoming you as a DOAJ Sponsor.</td>
     </tr>
     <tr>
       <td> </td>
       <td>All sponsors</td>
       <td> </td>
       <td> </td>
-      <td>A bronze, silver or gold ‘DOAJ Sponsor’ logo for you to use on your web sites and promotional materials.  Any organisation sponsoring us with £3000 or more is eligible to put forward a nomination for the DOAJ Advisory Board or Council at the next round of elections and is eligible to vote in both elections</td>
+      <td>A gold, silver or bronze ‘DOAJ Sponsor’ logo for you to use on your web sites and promotional materials.  Any organisation sponsoring us with £3000 or more is eligible to put forward a nomination for the DOAJ Advisory Board or Council at the next round of elections and is eligible to vote in both elections.</td>
     </tr>
   </tbody>
 </table>
 
 <hr>
 
-<h2 id="list-of-sponsors">List of sponsors</h2>
+<h2 id="our-sponsors">Our sponsors</h2>
 
 
 
@@ -770,13 +780,6 @@
   </div>
 </footer>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<script src="../../js/vendors/bootstrap.js"></script>
-
-<!-- Feather icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-
 <script>
   // Use Feather icons
   feather.replace()
@@ -823,7 +826,7 @@
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
@@ -854,6 +857,7 @@
       }, 50, 'linear');
     }
   } );
+
 </script>
 
   </body>

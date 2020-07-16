@@ -1,10 +1,10 @@
 ## Accessibility
 
-If you disable all Javascript, searching DOAJ won't work properly because some of the code that is required is served by Google's Javascript library hosting. Once disabled, search fails.
+Please be aware that if you disable all Javascript, searching DOAJ won't work properly. This is because some of the code that is required is served by Google's Javascript library. Once this is disabled, DOAJ search will fail.
 
 If you can select which components can be switched off, then you can continue to use DOAJ.
 
-Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is the framework used to build the DOAJ website. This contains some Javascript for some of its features.
+Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is the framework used to build the DOAJ website. This contains Javascript for some of its features.
 
 ---
 
@@ -31,7 +31,7 @@ Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is 
 
 ### I know a journal which should be in DOAJ but isn’t. What should I do?
 
-  [Submit an application]() or contact the journal and ask them to apply. You can also send us the details of the journal—title and ISSN—and we will contact them.
+  Contact the journal and ask them to submit an application. You can also send us the details of the journal—title and ISSN—and we will contact them.
 
 ### The journal I am looking for isn't in DOAJ. Why? What should I do?
 

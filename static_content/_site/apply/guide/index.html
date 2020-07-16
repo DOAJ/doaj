@@ -32,16 +32,24 @@
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
 
   <meta name="theme-color" content="#F8F3EF">
 
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
+
 </head>
 
 
-  <body class="sidenav-page" data-spy="scroll" data-offset="70" style="position: relative;">
+  <body class="with-sidenav" data-spy="scroll" data-offset="70" style="position: relative;">
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -52,7 +60,9 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
-            <h1 class="sr-only">The Directory of Open Access Journals</h1>
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -82,6 +92,11 @@
                   </a>
                 </li>
                 <li>
+                  <a href="/support/supporters/" class="dropdown__link">
+                    Supporters
+                  </a>
+                </li>
+                <li>
                   <a href="/support/sponsors/" class="dropdown__link">
                     Sponsors
                   </a>
@@ -89,11 +104,6 @@
                 <li>
                   <a href="/support/publisher-supporters/" class="dropdown__link">
                     Publisher supporters
-                  </a>
-                </li>
-                <li>
-                  <a href="/support/supporters/" class="dropdown__link">
-                    Supporters
                   </a>
                 </li>
               </ul>
@@ -162,11 +172,6 @@
                 Articles
               </a>
             </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
-              </a>
-            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -231,6 +236,11 @@
             <li>
               <a href="/about/advisory-board-council/" class="dropdown__link">
                 Advisory Board &amp; Council
+              </a>
+            </li>
+            <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
               </a>
             </li>
             <li>
@@ -323,7 +333,7 @@
 </header>
 
 
-<!-- Admin-only edit buttons -->
+<!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/apply/content/guide.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
 
@@ -345,17 +355,17 @@
       </div>
       <div class="input-group">
         <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-        <input type="text" name="keywords" id="quick-search-keywords" required>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
 
         <label for="quick-search-fields" class="sr-only">In the field:</label>
-        <select name="fields" id="quick-search-fields">
+        <select class="input-group__input" name="fields" id="quick-search-fields">
           <option value="all">In all fields</option>
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
           <option value="subject">Author</option>
         </select>
-        <button type="submit">
+        <button class="input-group__input" type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
@@ -376,27 +386,18 @@
 <li class="page-nav__item item-h2">
 <a href="#basic-criteria-for-inclusion-in-doaj">Basic criteria for inclusion in DOAJ</a>
 <ul class="page-nav__sublist">
+<li class="page-nav__item item-h3"><a href="#the-type-of-journal-that-can-apply">The type of journal that can apply</a></li>
 <li class="page-nav__item item-h3"><a href="#type-of-open-access">Type of open access</a></li>
-<li class="page-nav__item item-h3">
-<a href="#journal-website">Journal website</a>
-<ul class="page-nav__sublist">
-<li class="page-nav__item item-h4"><a href="#full-text-articles">Full-text articles</a></li>
-</ul>
-</li>
+<li class="page-nav__item item-h3"><a href="#journal-website">Journal website</a></li>
+<li class="page-nav__item item-h3"><a href="#issn">ISSN</a></li>
 <li class="page-nav__item item-h3"><a href="#editorial-process">Editorial process</a></li>
-<li class="page-nav__item item-h3">
-<a href="#copyright-and-licensing">Copyright and licensing</a>
-<ul class="page-nav__sublist">
-<li class="page-nav__item item-h4"><a href="#copyright">Copyright</a></li>
-<li class="page-nav__item item-h4"><a href="#licensing">Licensing</a></li>
-<li class="page-nav__item item-h4"><a href="#the-difficult-bit">The difficult bit</a></li>
-<li class="page-nav__item item-h4"><a href="#fair-use">Fair use</a></li>
-</ul>
-</li>
+<li class="page-nav__item item-h3"><a href="#licensing">Licensing</a></li>
+<li class="page-nav__item item-h3"><a href="#copyright">Copyright</a></li>
+<li class="page-nav__item item-h3"><a href="#footnote">Footnote</a></li>
 </ul>
 </li>
 <li class="page-nav__item item-h2">
-<a href="#specific-cases-exceptions-and-conditions">Specific cases: exceptions and conditions</a>
+<a href="#additional-criteria-for-some-journal-types">Additional criteria for some journal types</a>
 <ul class="page-nav__sublist">
 <li class="page-nav__item item-h3"><a href="#arts-and-humanities-journals">Arts and humanities journals</a></li>
 <li class="page-nav__item item-h3"><a href="#case-reports-journals">Case reports journals</a></li>
@@ -438,67 +439,19 @@
 
 <p>Journals applying to DOAJ <strong>must</strong> meet the following criteria:</p>
 
-<table class="numbered-table">
-  <thead>
-    <tr>
-      <th> </th>
-      <th>Criteria</th>
-      <th>Details</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td> </td>
-      <td>make all content available for free and <a href="#type-of-open-access">open access</a> without delay (no embargo period)</td>
-      <td>the journal must be ‘gold’ (non-APC or APC) open access <br>the journal’s open access policy must be stated on the journal web site</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>be actively publishing scholarly research</td>
-      <td>its primary target audience should be researchers or practitioners</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>publish at least five (5) scholarly articles per year</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>have a dedicated <a href="#journal-website">homepage or website</a>
-</td>
-      <td>the URL is stable and reliable</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>make their articles available as individual, <a href="#full-text-articles">full-text articles</a>
-</td>
-      <td>each article has its own page with a unique URL</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>have an editor and an <a href="#editorial-process">editorial board</a>
-</td>
-      <td>the journal must be peer-reviewed <br>we accept a form of editorial review for Arts and Humanities journals</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>have at least one current ISSN registered and confirmed at issn.org and displayed on the website</td>
-      <td>the name of the journal in the application must match what is registered at issn.org and on the website</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>clearly indicate the <a href="#copyright">terms of copyright</a> on the website</td>
-      <td>it can not restrict authors’ rights to fair use only</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>clearly indicate its <a href="#licensing">licensing terms</a> on the website</td>
-      <td>licensing terms must be available and clearly stated on the journal website, preferably on the full text of every article</td>
-    </tr>
-  </tbody>
-</table>
+<ol>
+  <li>The journal must be <a href="#the-type-of-journal-that-can-apply">actively publishing scholarly research</a>
+</li>
+  <li>The journal must be <a href="#type-of-open-access">fully Open Access</a>.</li>
+  <li>The journal must have its own dedicated URL and <a href="#journal-website">homepage or website</a> that is accessible from any location.</li>
+  <li>A journal must have at least one <a href="#issn">ISSN (International Standard Serial Number)</a> which is registered and confirmed at issn.org.</li>
+  <li>A journal must have an <a href="#editorial-process">editor and an editorial board</a>
+</li>
+  <li>The <a href="#licensing">licensing terms</a> for use and re-use of the published content must be clearly stated on the website.</li>
+  <li>The <a href="#copyright">copyright terms</a> applied to the published content must be clearly stated and separate from the copyright terms applied to the website.</li>
+</ol>
 
-<p>Furthermore, please make sure that:</p>
+<p>Please make sure that:</p>
 
 <ul>
   <li>the journal hasn’t had an application rejected within the last six months;
@@ -517,20 +470,27 @@
   <li>the contact details provided in the application include a real name and a valid email address.</li>
 </ul>
 
-<p>Journals included in DOAJ <strong>can</strong> also:</p>
-
-<ul>
-  <li>discuss any research subject areas;</li>
-  <li>be published in any language:
-    <ul>
-      <li>there is no requirement to publish in English;</li>
-    </ul>
-  </li>
-</ul>
-
 <p><strong>Journals do not need to meet the Seal criteria to be accepted into DOAJ.</strong></p>
 
 <p>You might like to <a href="https://www.youtube.com/embed/videoseries?list=PLgsj-CNPbicMgBrdzA4jfevecibpl_a1G" target="_blank" rel="noopener">watch our video series</a> which introduces DOAJ and gives some context to our criteria and some of the terms we use.</p>
+
+<hr>
+
+<h3 id="the-type-of-journal-that-can-apply">The type of journal that can apply</h3>
+
+<p>Journals published in any language may apply.</p>
+
+<ul>
+  <li>The journal must be actively publishing scholarly research
+    <ul>
+      <li>All research subject areas are accepted</li>
+      <li>Should publish at least 5 research articles per year</li>
+    </ul>
+  </li>
+  <li>The primary target audience should be researchers or practitioners</li>
+</ul>
+
+<p>Read about the <a href="#additional-criteria-for-some-journal-types">additional criteria for some journal types</a>.</p>
 
 <hr>
 
@@ -552,119 +512,117 @@
 
 <h3 id="journal-website">Journal website</h3>
 
-<p>The journal must be linkable (it must have a URL) and have its own dedicated website.</p>
-
-<p>The website must be clear and easy to navigate. It must demonstrate that it adheres to high ethical and professional standards, according to the Principles of Transparency and Best Practice in Scholarly Publishing.</p>
-
-<p>The following information must be available on the journal site:</p>
-
 <ul>
-  <li>Open access policy</li>
+  <li>The journal must have its own dedicated URL and homepage that is accessible from any location</li>
+  <li>The website must be clear and easy to navigate</li>
+  <li>The journal  should adhere to the guidelines described in the Principles of Transparency and Best Practice in Scholarly Publishing</li>
+  <li>Each article must be available as an individual, full-text article
+    <ul>
+      <li>one unique URL per article</li>
+      <li>HTML or PDF, as a minimum</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The following information must be available online, and easily accessible from the journal homepage:</p>
+<ul>
+  <li>Open Access policy</li>
   <li>Aims and scope</li>
   <li>Editorial board (including institutional affiliations of all members)</li>
   <li>Instructions for authors</li>
-  <li>Editorial process (peer review or editorial review)</li>
-  <li>Plagiarism policy (if any)</li>
-  <li>Copyright and licensing terms</li>
-  <li>Author charges (must be stated, even if there is none)</li>
-  <li>Contact details</li>
+  <li>Editorial process (peer review)</li>
+  <li>Licensing terms</li>
+  <li>Copyright terms</li>
+  <li>Author charges
+    <ul>
+      <li>If a journal doesn’t have any charges then this must be stated</li>
+      <li>Must include all fees that may be charged to the author, from submission to publication, including:
+        <ul>
+          <li>submission fees</li>
+          <li>editorial processing charges</li>
+          <li>article processing charges (APCs)</li>
+          <li>page charges</li>
+          <li>colour charges</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Contact details
+    <ul>
+      <li>The contact details must include a real name and the journal’s dedicated email address</li>
+      <li>The country in the application and on the journal website must be the country where the publisher is registered and carries out its business activities</li>
+    </ul>
+  </li>
 </ul>
 
-<p>Information on author charges must include all fees that an author might have to pay—from submission to publication—including submission fees, article processing charges (APCs), page charges, colour charges, etc.</p>
+<hr>
 
-<p>It must be clearly stated if a journal doesn’t have any charges.</p>
+<h3 id="issn">ISSN</h3>
 
-<h4 id="full-text-articles">Full-text articles</h4>
+<ul>
+  <li>A journal must have at least one ISSN (International Standard Serial Number) which is registered and confirmed at <a href="https://portal.issn.org/" target="_blank" rel="noopener">issn.org</a>.</li>
+  <li>The ISSN(s) must be displayed on the website.</li>
+  <li>The name of the journal in the application and on the website must match what is shown at <a href="https://portal.issn.org/" target="_blank" rel="noopener">issn.org</a>.</li>
+</ul>
 
-<p>The journal content must be available as individual full-text articles: one unique URL per article. Each article must be downloadable as HTML or a PDF, as a minimum.</p>
+<hr>
 
 <h3 id="editorial-process">Editorial process</h3>
 
-<p>A journal must have an editor and an editorial board. You must list the current editorial board on the journal site and include the name and affiliation of all editors and board members.</p>
-
-<p>All articles must pass through a quality control system (editorial review or peer review) before publication and the exact type of review must be stated clearly on the website.</p>
-
-<p>Arts &amp; Humanities journals only: we will accept a form of editorial review using two editors and no editorial board.</p>
-
-<p>Journals run by a student body must have an advisory board. At least two members of the Board must have a PhD or equivalent.</p>
-
-<hr>
-
-<h3 id="copyright-and-licensing">Copyright and licensing</h3>
-
-<p>Copyright and licensing are two distinct legal terms.</p>
-
-<p>Copyright declares who owns the rights to the website’s content (for example, the about pages and the blog) and its published academic content (that is, articles and figures).</p>
-
-<p>Licensing describes the terms under which the website’s readers are allowed to use or re-use the copyrighted content.</p>
-
-<h4 id="copyright">Copyright</h4>
-
-<p>The terms of copyright applied to the published content must be clearly stated and be separate from any copyright terms applied to the website.</p>
-
-<p>Copyright terms mustn’t contradict the licensing terms or the terms of the open access policy.</p>
-
-<p>Our preference is that the author retains copyright, without restrictions, but DOAJ does accept journals where copyright is transferred. Authors may then grant the publishers <strong>non-exclusive</strong> publishing rights to publish the articles.</p>
-
-<p>Sometimes, even though the author retains copyright, restrictions are imposed by the publisher:</p>
-
 <ul>
-  <li>The publisher requires <strong>exclusive</strong> publishing rights. The author no longer holds the copyright without restrictions.</li>
-  <li>The publisher requires <strong>a transfer of commercial rights or an exclusive grant of commercial rights</strong> for the articles. The author no longer retains copyright without restrictions.</li>
-</ul>
-
-<h4 id="licensing">Licensing</h4>
-
-<ol>
-  <li>The licensing terms for use and re-use of the published content must be clearly stated on the website.
+  <li>A journal must have an editor and an editorial board.
     <ul>
-      <li>Preferably they will also be stated on the full text of every article.</li>
+      <li>The editorial board must be listed on the website.</li>
+      <li>The name and affiliation of all editors and board members must be included.</li>
+      <li>If the journal is run by a student body, it must have an advisory board of which at least two members have a PhD or equivalent.</li>
     </ul>
   </li>
-  <li>DOAJ recommends the use of Creative Commons licenses for this purpose
+  <li>All articles must pass through a quality control system (peer review) before publication.
     <ul>
-      <li>This ensures that readers know what they can and can’t do with the content.</li>
+      <li>The type and details of the peer review process must be stated clearly on the website.</li>
     </ul>
   </li>
-  <li>In some cases, DOAJ will accept a publisher’s own license
-    <ul>
-      <li>But only if it is broadly equivalent to one of the Creative Commons licenses.</li>
-    </ul>
-  </li>
-  <li>The terms of a Creative Commons license may not be added to or changed in any way.
-    <ul>
-      <li>For example, a journal shouldn’t write ‘[Other conditions] will apply and prevail over all conflicting provisions of the [open access] license’ model.</li>
-      <li>Creative Commons states clearly that “For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply”.</li>
-    </ul>
-  </li>
-</ol>
-
-<h4 id="the-difficult-bit">The difficult bit</h4>
-
-<p>The terms of the user license always apply to readers and NOT to the copyright holder.</p>
-
-<ol>
-  <li>When copyright is retained by the author without restrictions, the license applies to the readers and the publisher.</li>
-  <li>When copyright is transferred to the publisher or publishing rights are exclusively licensed, the license applies to the author as well as the readers.</li>
-  <li>When the author retains copyright, but commercial rights are transferred to the publisher, and a non-commercial license is used, the license applies to the reader and the author.</li>
-  <li>When the author retains copyright, but exclusive publishing rights are granted to the publisher, this is equivalent to the transfer of commercial rights to the publisher.</li>
-</ol>
-
-<h4 id="fair-use">Fair use</h4>
-
-<p>An open access journal cannot restrict the rights of the author to fair use only.</p>
-
-<p>Fair use alone is not open access and DOAJ will not accept a journal with these restrictions. A common example of fair use is when a journal allows authors only to retain the rights to:</p>
-
-<ul>
-  <li>use the substance of the article in future works, including lectures and books;</li>
-  <li>reproduce the article for one’s own purposes, provided that copies are not offered for sale;</li>
-  <li>self-archive the article.</li>
 </ul>
 
 <hr>
 
-<h2 id="specific-cases-exceptions-and-conditions">Specific cases: exceptions and conditions</h2>
+<h3 id="licensing">Licensing</h3>
+
+<ul>
+  <li>The licensing terms for use and re-use of the published content must be clearly stated on the website.</li>
+  <li>DOAJ recommends the use of <a href="https://creativecommons.org/" target="_blank" rel="noopener">Creative Commons</a> licenses for this purpose.</li>
+  <li>If Creative Commons licensing is not used, similar terms and conditions should be applied.
+    <ul>
+      <li>Extra care must be taken to state these terms clearly.</li>
+    </ul>
+  </li>
+</ul>
+
+<hr>
+
+<h3 id="copyright">Copyright</h3>
+
+<ul>
+  <li>The copyright terms applied to the published content must be clearly stated and separate from the copyright terms applied to the website.</li>
+  <li>Copyright terms must not contradict the licensing terms or the terms of the Open Access policy.
+    <ul>
+      <li>“All rights reserved” is not appropriate for open access content.</li>
+    </ul>
+  </li>
+</ul>
+
+<hr>
+
+<h3 id="footnote">Footnote</h3>
+
+<ul>
+  <li>Applications that contain information that is inaccurate or wrong, or that have answers missing, are automatically rejected.</li>
+  <li>Journals that are rejected must wait 6 months from the date of rejection before applying again unless otherwise advised by DOAJ.</li>
+</ul>
+
+<hr>
+
+<h2 id="additional-criteria-for-some-journal-types">Additional criteria for some journal types</h2>
 
 <ul class="tabular-list">
   <li>
@@ -895,13 +853,6 @@ We cannot provide a status update for applications which are less than three mon
   </div>
 </footer>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<script src="../../js/vendors/bootstrap.js"></script>
-
-<!-- Feather icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-
 <script>
   // Use Feather icons
   feather.replace()
@@ -948,7 +899,7 @@ We cannot provide a status update for applications which are less than three mon
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
@@ -979,6 +930,7 @@ We cannot provide a status update for applications which are less than three mon
       }, 50, 'linear');
     }
   } );
+
 </script>
 
   </body>

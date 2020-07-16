@@ -1,4 +1,4 @@
-Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the form that they would also be retrieved via the API.
+Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the same form as those retrieved via the API.
 
 [Download the journal metadata](/public-data-dump/journal) (4.4Mb)
 

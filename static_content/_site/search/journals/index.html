@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,16 +31,24 @@
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
 
   <meta name="theme-color" content="#F8F3EF">
 
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
+
 </head>
 
 
-  <body>
+  <body class="search">
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -52,7 +59,9 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
-            <h1 class="sr-only">The Directory of Open Access Journals</h1>
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -82,6 +91,11 @@
                   </a>
                 </li>
                 <li>
+                  <a href="/support/supporters/" class="dropdown__link">
+                    Supporters
+                  </a>
+                </li>
+                <li>
                   <a href="/support/sponsors/" class="dropdown__link">
                     Sponsors
                   </a>
@@ -89,11 +103,6 @@
                 <li>
                   <a href="/support/publisher-supporters/" class="dropdown__link">
                     Publisher supporters
-                  </a>
-                </li>
-                <li>
-                  <a href="/support/supporters/" class="dropdown__link">
-                    Supporters
                   </a>
                 </li>
               </ul>
@@ -162,11 +171,6 @@
                 Articles
               </a>
             </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
-              </a>
-            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -231,6 +235,11 @@
             <li>
               <a href="/about/advisory-board-council/" class="dropdown__link">
                 Advisory Board &amp; Council
+              </a>
+            </li>
+            <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
               </a>
             </li>
             <li>
@@ -323,7 +332,7 @@
 </header>
 
 
-<!-- Admin-only edit buttons -->
+<!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/search/content/journals.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
 
@@ -345,17 +354,17 @@
       </div>
       <div class="input-group">
         <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-        <input type="text" name="keywords" id="quick-search-keywords" required>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
 
         <label for="quick-search-fields" class="sr-only">In the field:</label>
-        <select name="fields" id="quick-search-fields">
+        <select class="input-group__input" name="fields" id="quick-search-fields">
           <option value="all">In all fields</option>
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
           <option value="subject">Author</option>
         </select>
-        <button type="submit">
+        <button class="input-group__input" type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
@@ -364,2021 +373,1893 @@
 </section>
 
 
-
-    <main class="container">
-      <section class="page-content">
+    <main class="container page-content">
+      
+      <header class="search__header" style="background-image: url('https://images.unsplash.com/photo-1501769214405-5e5ee5125a02?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=1298&amp;q=80')">
         <p class="label">Search</p>
-        <h1>Journals</h1>
-
-        
-        
-        
-        
-
-        <p class="alert">
-          <span data-feather="alert-circle" aria-hidden="true"></span> <em>Search tip:</em> If you write more than one word in your search query it will be treated as a phrase.
-        </p>
-
-        
-        <div class="input-group">
-          <label for="keywords" class="sr-only">Search by keywords:</label>
-          <input type="text" name="keywords" id="keywords">
-
-          <label for="fields" class="sr-only">In the field:</label>
-          <select name="fields" id="fields">
-            <option value="">All fields</option>
-            <option value="">Title</option>
-            <option value="">Keywords</option>
-            <option value="">Subject</option>
-            <option value="">Author</option>
-            <option value="">ISSN</option>
-            <option value="">DOI</option>
-            <option value="">Publisher</option>
-            <option value="">Country of publisher</option>
-            <option value="">Language</option>
-          </select>
-
-          <button type="submit">
-            <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
-          </button>
-        </div>
+        <h1>
+          Journals
+          <span data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-help" type="button"></span><span class="sr-only">Help</span>
+        </h1>
 
         <div class="row">
+  <form class="col-md-9">
+    <div class="input-group">
+      <label for="keywords" class="sr-only">Search by keywords:</label>
+      <input class="input-group__input" type="text" name="keywords" id="keywords">
 
-          <div class="col-md-3">
-            <aside class="filters">
-              <h2 class="filters__heading">Refine search results</h2>
-              <ul class="filters__list">
-                <li class="filter">
-                  <h3 class="filter__heading">
-                    See journals…
-                  </h3>
+      <label for="fields" class="sr-only">In the field:</label>
+      <select class="input-group__input" name="fields" id="fields">
+        <option value="">All fields</option>
+        <option value="">Title</option>
+        <option value="">Keywords</option>
+        <option value="">Subject</option>
+        <option value="">Author</option>
+        <option value="">ISSN</option>
+        <option value="">DOI</option>
+        <option value="">Publisher</option>
+        <option value="">Country of publisher</option>
+        <option value="">Language</option>
+      </select>
 
-                  <!-- General journal settings -->
-                  <ul class="filter__choices">
-                    <li>
-                      <input id="filter-seal" type="checkbox" name="filter-seal">
-                      <label for="filter-seal" class="filter__label">With a DOAJ Seal  <span data-feather="check-circle" aria-hidden="true"></span></label>
-                    </li>
-                    <li>
-                      <input id="filter-apc" type="checkbox" name="filter-apc">
-                      <label for="filter-apc" class="filter__label">Without APCs or other fees</label>
-                    </li>
-                  </ul>
-                </li>
+      <button class="input-group__input" type="submit">
+        <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
+      </button>
+    </div>
+  </form>
+</div>
 
-                <!-- Subject filter -->
-                <li class="filter">
-                  <h3 class="filter__heading">
-                    Subjects
-                  </h3>
-                  <div id="filter-subjects" class="filter__body">
+      </header>
 
-                    
-                    <label for="search-subjects" class="sr-only">Search 508 subjects</label>
-                    <input type="text" name="search-subjects" id="search-subjects" class="filter__search" placeholder="Search 508 subjects">
-                    
+      <h2>14,576 indexed journals</h2>
 
-                    <ul class="filter__choices">
-                      
-                      <li>
-                        <input id="Medicine " type="checkbox" name="Medicine ">
-                        <label for="Medicine " class="filter__label">Medicine  (783)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Social Sciences " type="checkbox" name="Social Sciences ">
-                        <label for="Social Sciences " class="filter__label">Social Sciences  (606)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Education " type="checkbox" name="Education ">
-                        <label for="Education " class="filter__label">Education  (580)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Social sciences (General) " type="checkbox" name="Social sciences (General) ">
-                        <label for="Social sciences (General) " class="filter__label">Social sciences (General)  (560)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Education (General) " type="checkbox" name="Education (General) ">
-                        <label for="Education (General) " class="filter__label">Education (General)  (550)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Medicine (General) " type="checkbox" name="Medicine (General) ">
-                        <label for="Medicine (General) " class="filter__label">Medicine (General)  (521)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Special aspects of education " type="checkbox" name="Special aspects of education ">
-                        <label for="Special aspects of education " class="filter__label">Special aspects of education  (457)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Business " type="checkbox" name="Business ">
-                        <label for="Business " class="filter__label">Business  (409)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Language and Literature " type="checkbox" name="Language and Literature ">
-                        <label for="Language and Literature " class="filter__label">Language and Literature  (353)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Science " type="checkbox" name="Science ">
-                        <label for="Science " class="filter__label">Science  (333)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Biology (General) " type="checkbox" name="Biology (General) ">
-                        <label for="Biology (General) " class="filter__label">Biology (General)  (330)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Philology. Linguistics " type="checkbox" name="Philology. Linguistics ">
-                        <label for="Philology. Linguistics " class="filter__label">Philology. Linguistics  (298)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Psychology " type="checkbox" name="Psychology ">
-                        <label for="Psychology " class="filter__label">Psychology  (296)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Public aspects of medicine " type="checkbox" name="Public aspects of medicine ">
-                        <label for="Public aspects of medicine " class="filter__label">Public aspects of medicine  (294)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Technology " type="checkbox" name="Technology ">
-                        <label for="Technology " class="filter__label">Technology  (279)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Law " type="checkbox" name="Law ">
-                        <label for="Law " class="filter__label">Law  (274)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Mathematics " type="checkbox" name="Mathematics ">
-                        <label for="Mathematics " class="filter__label">Mathematics  (258)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Engineering (General). Civil engineering (General) " type="checkbox" name="Engineering (General). Civil engineering (General) ">
-                        <label for="Engineering (General). Civil engineering (General) " class="filter__label">Engineering (General). Civil engineering (General)  (257)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Economics as a science " type="checkbox" name="Economics as a science ">
-                        <label for="Economics as a science " class="filter__label">Economics as a science  (255)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Environmental sciences " type="checkbox" name="Environmental sciences ">
-                        <label for="Environmental sciences " class="filter__label">Environmental sciences  (239)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Communication. Mass media " type="checkbox" name="Communication. Mass media ">
-                        <label for="Communication. Mass media " class="filter__label">Communication. Mass media  (227)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Agriculture (General) " type="checkbox" name="Agriculture (General) ">
-                        <label for="Agriculture (General) " class="filter__label">Agriculture (General)  (224)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Agriculture " type="checkbox" name="Agriculture ">
-                        <label for="Agriculture " class="filter__label">Agriculture  (214)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Law in general. Comparative and uniform law. Jurisprudence " type="checkbox" name="Law in general. Comparative and uniform law. Jurisprudence ">
-                        <label for="Law in general. Comparative and uniform law. Jurisprudence " class="filter__label">Law in general. Comparative and uniform law. Jurisprudence  (212)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Philosophy (General) " type="checkbox" name="Philosophy (General) ">
-                        <label for="Philosophy (General) " class="filter__label">Philosophy (General)  (206)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Theory and practice of education " type="checkbox" name="Theory and practice of education ">
-                        <label for="Theory and practice of education " class="filter__label">Theory and practice of education  (196)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Geography (General) " type="checkbox" name="Geography (General) ">
-                        <label for="Geography (General) " class="filter__label">Geography (General)  (190)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Electronic computers. Computer science " type="checkbox" name="Electronic computers. Computer science ">
-                        <label for="Electronic computers. Computer science " class="filter__label">Electronic computers. Computer science  (189)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Islam " type="checkbox" name="Islam ">
-                        <label for="Islam " class="filter__label">Islam  (188)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Science (General) " type="checkbox" name="Science (General) ">
-                        <label for="Science (General) " class="filter__label">Science (General)  (180)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Sociology (General) " type="checkbox" name="Sociology (General) ">
-                        <label for="Sociology (General) " class="filter__label">Sociology (General)  (178)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Political science " type="checkbox" name="Political science ">
-                        <label for="Political science " class="filter__label">Political science  (167)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="History of scholarship and learning. The humanities " type="checkbox" name="History of scholarship and learning. The humanities ">
-                        <label for="History of scholarship and learning. The humanities " class="filter__label">History of scholarship and learning. The humanities  (166)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Bibliography. Library science. Information resources " type="checkbox" name="Bibliography. Library science. Information resources ">
-                        <label for="Bibliography. Library science. Information resources " class="filter__label">Bibliography. Library science. Information resources  (154)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="French literature - Italian literature - Spanish literature - Portuguese literature " type="checkbox" name="French literature - Italian literature - Spanish literature - Portuguese literature ">
-                        <label for="French literature - Italian literature - Spanish literature - Portuguese literature " class="filter__label">French literature - Italian literature - Spanish literature - Portuguese literature  (153)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Philosophy. Psychology. Religion " type="checkbox" name="Philosophy. Psychology. Religion ">
-                        <label for="Philosophy. Psychology. Religion " class="filter__label">Philosophy. Psychology. Religion  (150)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="History (General) " type="checkbox" name="History (General) ">
-                        <label for="History (General) " class="filter__label">History (General)  (146)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Finance " type="checkbox" name="Finance ">
-                        <label for="Finance " class="filter__label">Finance  (145)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Literature (General) " type="checkbox" name="Literature (General) ">
-                        <label for="Literature (General) " class="filter__label">Literature (General)  (142)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Neoplasms. Tumors. Oncology. Including cancer and carcinogens " type="checkbox" name="Neoplasms. Tumors. Oncology. Including cancer and carcinogens ">
-                        <label for="Neoplasms. Tumors. Oncology. Including cancer and carcinogens " class="filter__label">Neoplasms. Tumors. Oncology. Including cancer and carcinogens  (140)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Information technology " type="checkbox" name="Information technology ">
-                        <label for="Information technology " class="filter__label">Information technology  (136)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Chemistry " type="checkbox" name="Chemistry ">
-                        <label for="Chemistry " class="filter__label">Chemistry  (134)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Therapeutics. Pharmacology " type="checkbox" name="Therapeutics. Pharmacology ">
-                        <label for="Therapeutics. Pharmacology " class="filter__label">Therapeutics. Pharmacology  (134)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Technology (General) " type="checkbox" name="Technology (General) ">
-                        <label for="Technology (General) " class="filter__label">Technology (General)  (133)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Geography. Anthropology. Recreation " type="checkbox" name="Geography. Anthropology. Recreation ">
-                        <label for="Geography. Anthropology. Recreation " class="filter__label">Geography. Anthropology. Recreation  (128)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Surgery " type="checkbox" name="Surgery ">
-                        <label for="Surgery " class="filter__label">Surgery  (124)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Dentistry " type="checkbox" name="Dentistry ">
-                        <label for="Dentistry " class="filter__label">Dentistry  (123)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Diseases of the circulatory (Cardiovascular) system " type="checkbox" name="Diseases of the circulatory (Cardiovascular) system ">
-                        <label for="Diseases of the circulatory (Cardiovascular) system " class="filter__label">Diseases of the circulatory (Cardiovascular) system  (118)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Latin America. Spanish America " type="checkbox" name="Latin America. Spanish America ">
-                        <label for="Latin America. Spanish America " class="filter__label">Latin America. Spanish America  (116)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Political science (General) " type="checkbox" name="Political science (General) ">
-                        <label for="Political science (General) " class="filter__label">Political science (General)  (116)</label>
-                      </li>
-                      
-                    </ul>
-                  </div>
-                </li>
+      <div class="row">
+        <div class="col-md-3">
+          <aside class="filters">
+  <h2 class="label label--underlined filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">
+    <span data-feather="sliders" aria-hidden="true"></span> Refine search results <span data-feather="chevron-down" aria-hidden="true"></span>
+  </h2>
+  <ul class="collapse filters__list" id="filters" aria-expanded="false">
 
-                <!-- Languages -->
-                <li class="filter">
-                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-languages" aria-expanded="false">
-                    Languages
-                    <span data-feather="chevron-down" aria-hidden="true"></span>
-                  </h3>
-                  <div id="filter-languages" class="collapse filter__body" aria-expanded="false">
+    <!-- General journal settings -->
+    <li class="filter">
+      <h3 class="filter__heading">
+        See journals…
+      </h3>
+      <ul class="filter__choices">
+        <li>
+          <input id="filter-seal" type="checkbox" name="filter-seal">
+          <label for="filter-seal" class="filter__label">With a DOAJ Seal  <span data-feather="check-circle" aria-hidden="true"></span></label>
+        </li>
+        <li>
+          <input id="filter-apc" type="checkbox" name="filter-apc">
+          <label for="filter-apc" class="filter__label">Without APCs or other fees</label>
+        </li>
+      </ul>
+    </li>
 
-                    
-                    <label for="search-languages" class="sr-only">Search 78 languages</label>
-                    <input type="text" name="search-languages" class="filter__search" placeholder="Search 78 languages">
-                    
+    <!-- Subject filter -->
+    <li class="filter">
+      <h3 class="filter__heading">
+        Subjects
+      </h3>
+      <div id="filter-subjects" class="filter__body">
 
-                    <ul class="filter__choices">
-                      
-                      <li>
-                        <input id="English" type="checkbox" name="English">
-                        <label for="English" class="filter__label">English (11088)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Spanish" type="checkbox" name="Spanish">
-                        <label for="Spanish" class="filter__label">Spanish (2791)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Portuguese" type="checkbox" name="Portuguese">
-                        <label for="Portuguese" class="filter__label">Portuguese (1942)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Indonesian" type="checkbox" name="Indonesian">
-                        <label for="Indonesian" class="filter__label">Indonesian (1349)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="French" type="checkbox" name="French">
-                        <label for="French" class="filter__label">French (1008)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Russian" type="checkbox" name="Russian">
-                        <label for="Russian" class="filter__label">Russian (742)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Italian" type="checkbox" name="Italian">
-                        <label for="Italian" class="filter__label">Italian (532)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="German" type="checkbox" name="German">
-                        <label for="German" class="filter__label">German (424)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Turkish" type="checkbox" name="Turkish">
-                        <label for="Turkish" class="filter__label">Turkish (302)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Ukrainian" type="checkbox" name="Ukrainian">
-                        <label for="Ukrainian" class="filter__label">Ukrainian (298)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Persian" type="checkbox" name="Persian">
-                        <label for="Persian" class="filter__label">Persian (256)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Polish" type="checkbox" name="Polish">
-                        <label for="Polish" class="filter__label">Polish (235)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Arabic" type="checkbox" name="Arabic">
-                        <label for="Arabic" class="filter__label">Arabic (166)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Serbian" type="checkbox" name="Serbian">
-                        <label for="Serbian" class="filter__label">Serbian (129)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Catalan" type="checkbox" name="Catalan">
-                        <label for="Catalan" class="filter__label">Catalan (125)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Croatian" type="checkbox" name="Croatian">
-                        <label for="Croatian" class="filter__label">Croatian (98)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Romanian" type="checkbox" name="Romanian">
-                        <label for="Romanian" class="filter__label">Romanian (95)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Czech" type="checkbox" name="Czech">
-                        <label for="Czech" class="filter__label">Czech (77)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Slovak" type="checkbox" name="Slovak">
-                        <label for="Slovak" class="filter__label">Slovak (59)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Swedish" type="checkbox" name="Swedish">
-                        <label for="Swedish" class="filter__label">Swedish (56)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Chinese" type="checkbox" name="Chinese">
-                        <label for="Chinese" class="filter__label">Chinese (54)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Danish" type="checkbox" name="Danish">
-                        <label for="Danish" class="filter__label">Danish (54)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Lithuanian" type="checkbox" name="Lithuanian">
-                        <label for="Lithuanian" class="filter__label">Lithuanian (49)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Norwegian Bokmål" type="checkbox" name="Norwegian Bokmål">
-                        <label for="Norwegian Bokmål" class="filter__label">Norwegian Bokmål (49)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Slovenian" type="checkbox" name="Slovenian">
-                        <label for="Slovenian" class="filter__label">Slovenian (48)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Korean" type="checkbox" name="Korean">
-                        <label for="Korean" class="filter__label">Korean (45)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Norwegian" type="checkbox" name="Norwegian">
-                        <label for="Norwegian" class="filter__label">Norwegian (38)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Dutch" type="checkbox" name="Dutch">
-                        <label for="Dutch" class="filter__label">Dutch (31)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Galician" type="checkbox" name="Galician">
-                        <label for="Galician" class="filter__label">Galician (30)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Norwegian Nynorsk" type="checkbox" name="Norwegian Nynorsk">
-                        <label for="Norwegian Nynorsk" class="filter__label">Norwegian Nynorsk (29)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Bulgarian" type="checkbox" name="Bulgarian">
-                        <label for="Bulgarian" class="filter__label">Bulgarian (22)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Malay (macrolanguage)" type="checkbox" name="Malay (macrolanguage)">
-                        <label for="Malay (macrolanguage)" class="filter__label">Malay (macrolanguage) (21)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Afrikaans" type="checkbox" name="Afrikaans">
-                        <label for="Afrikaans" class="filter__label">Afrikaans (19)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Finnish" type="checkbox" name="Finnish">
-                        <label for="Finnish" class="filter__label">Finnish (19)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Hungarian" type="checkbox" name="Hungarian">
-                        <label for="Hungarian" class="filter__label">Hungarian (16)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Modern Greek (1453-)" type="checkbox" name="Modern Greek (1453-)">
-                        <label for="Modern Greek (1453-)" class="filter__label">Modern Greek (1453-) (16)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Basque" type="checkbox" name="Basque">
-                        <label for="Basque" class="filter__label">Basque (14)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Estonian" type="checkbox" name="Estonian">
-                        <label for="Estonian" class="filter__label">Estonian (12)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Japanese" type="checkbox" name="Japanese">
-                        <label for="Japanese" class="filter__label">Japanese (12)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Belarusian" type="checkbox" name="Belarusian">
-                        <label for="Belarusian" class="filter__label">Belarusian (9)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Bosnian" type="checkbox" name="Bosnian">
-                        <label for="Bosnian" class="filter__label">Bosnian (9)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Macedonian" type="checkbox" name="Macedonian">
-                        <label for="Macedonian" class="filter__label">Macedonian (8)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Urdu" type="checkbox" name="Urdu">
-                        <label for="Urdu" class="filter__label">Urdu (8)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Icelandic" type="checkbox" name="Icelandic">
-                        <label for="Icelandic" class="filter__label">Icelandic (6)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Latvian" type="checkbox" name="Latvian">
-                        <label for="Latvian" class="filter__label">Latvian (5)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Thai" type="checkbox" name="Thai">
-                        <label for="Thai" class="filter__label">Thai (5)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Hindi" type="checkbox" name="Hindi">
-                        <label for="Hindi" class="filter__label">Hindi (4)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Latin" type="checkbox" name="Latin">
-                        <label for="Latin" class="filter__label">Latin (4)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Tagalog" type="checkbox" name="Tagalog">
-                        <label for="Tagalog" class="filter__label">Tagalog (4)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Azerbaijani" type="checkbox" name="Azerbaijani">
-                        <label for="Azerbaijani" class="filter__label">Azerbaijani (3)</label>
-                      </li>
-                      
-                    </ul>
-                  </div>
-                </li>
-
-                <!-- Licenses -->
-                <li class="filter">
-                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-licenses" aria-expanded="false">
-                    Licenses
-                    <span data-feather="chevron-down" aria-hidden="true"></span>
-                  </h3>
-                  <div id="filter-licenses" class="collapse filter__body" aria-expanded="false">
-                    
-
-                    <ul class="filter__choices">
-                      
-                      <li>
-                        <input id="CC BY" type="checkbox" name="CC BY">
-                        <label for="CC BY" class="filter__label">CC BY (5993)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="CC BY-NC-ND" type="checkbox" name="CC BY-NC-ND">
-                        <label for="CC BY-NC-ND" class="filter__label">CC BY-NC-ND (3189)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="CC BY-NC" type="checkbox" name="CC BY-NC">
-                        <label for="CC BY-NC" class="filter__label">CC BY-NC (2626)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="CC BY-NC-SA" type="checkbox" name="CC BY-NC-SA">
-                        <label for="CC BY-NC-SA" class="filter__label">CC BY-NC-SA (1251)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="CC BY-SA" type="checkbox" name="CC BY-SA">
-                        <label for="CC BY-SA" class="filter__label">CC BY-SA (953)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Publisher’s own license" type="checkbox" name="Publisher’s own license">
-                        <label for="Publisher’s own license" class="filter__label">Publisher’s own license (372)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="CC BY-ND" type="checkbox" name="CC BY-ND">
-                        <label for="CC BY-ND" class="filter__label">CC BY-ND (168)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="AJAP Licence" type="checkbox" name="AJAP Licence">
-                        <label for="AJAP Licence" class="filter__label">AJAP Licence (1)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Public Domain" type="checkbox" name="Public Domain">
-                        <label for="Public Domain" class="filter__label">Public Domain (1)</label>
-                      </li>
-                      
-                    </ul>
-                  </div>
-                </li>
-
-                <!-- Publisher -->
-                <li class="filter">
-                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-publisher" aria-expanded="false">
-                    Publishers
-                    <span data-feather="chevron-down" aria-hidden="true"></span>
-                  </h3>
-                  <div id="filter-publisher" class="collapse filter__body" aria-expanded="false">
-                    
-                    <label for="search-publisher" class="sr-only">Search 749 publishers</label>
-                    <input type="text" name="search-publisher" class="filter__search" placeholder="Search 749 publishers">
-                    
-
-                    <ul class="filter__choices">
-                      
-                      <li>
-                        <input id="Elsevier " type="checkbox" name="Elsevier ">
-                        <label for="Elsevier " class="filter__label">Elsevier  (343)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="BMC " type="checkbox" name="BMC ">
-                        <label for="BMC " class="filter__label">BMC  (322)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Sciendo " type="checkbox" name="Sciendo ">
-                        <label for="Sciendo " class="filter__label">Sciendo  (309)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Hindawi Limited " type="checkbox" name="Hindawi Limited ">
-                        <label for="Hindawi Limited " class="filter__label">Hindawi Limited  (238)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="MDPI AG " type="checkbox" name="MDPI AG ">
-                        <label for="MDPI AG " class="filter__label">MDPI AG  (201)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="SpringerOpen " type="checkbox" name="SpringerOpen ">
-                        <label for="SpringerOpen " class="filter__label">SpringerOpen  (198)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Wolters Kluwer Medknow Publications " type="checkbox" name="Wolters Kluwer Medknow Publications ">
-                        <label for="Wolters Kluwer Medknow Publications " class="filter__label">Wolters Kluwer Medknow Publications  (198)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Taylor &amp; Francis Group " type="checkbox" name="Taylor &amp; Francis Group ">
-                        <label for="Taylor &amp; Francis Group " class="filter__label">Taylor &amp; Francis Group  (163)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="SAGE Publishing " type="checkbox" name="SAGE Publishing ">
-                        <label for="SAGE Publishing " class="filter__label">SAGE Publishing  (159)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Wiley " type="checkbox" name="Wiley ">
-                        <label for="Wiley " class="filter__label">Wiley  (119)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Dove Medical Press " type="checkbox" name="Dove Medical Press ">
-                        <label for="Dove Medical Press " class="filter__label">Dove Medical Press  (101)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universitas Negeri Semarang " type="checkbox" name="Universitas Negeri Semarang ">
-                        <label for="Universitas Negeri Semarang " class="filter__label">Universitas Negeri Semarang  (91)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Frontiers Media S.A. " type="checkbox" name="Frontiers Media S.A. ">
-                        <label for="Frontiers Media S.A. " class="filter__label">Frontiers Media S.A.  (65)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="De Gruyter " type="checkbox" name="De Gruyter ">
-                        <label for="De Gruyter " class="filter__label">De Gruyter  (63)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Oxford University Press " type="checkbox" name="Oxford University Press ">
-                        <label for="Oxford University Press " class="filter__label">Oxford University Press  (51)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="PAGEPress Publications " type="checkbox" name="PAGEPress Publications ">
-                        <label for="PAGEPress Publications " class="filter__label">PAGEPress Publications  (50)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universidade de São Paulo " type="checkbox" name="Universidade de São Paulo ">
-                        <label for="Universidade de São Paulo " class="filter__label">Universidade de São Paulo  (46)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universitas Udayana " type="checkbox" name="Universitas Udayana ">
-                        <label for="Universitas Udayana " class="filter__label">Universitas Udayana  (46)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Nature Publishing Group " type="checkbox" name="Nature Publishing Group ">
-                        <label for="Nature Publishing Group " class="filter__label">Nature Publishing Group  (45)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universidad Complutense de Madrid " type="checkbox" name="Universidad Complutense de Madrid ">
-                        <label for="Universidad Complutense de Madrid " class="filter__label">Universidad Complutense de Madrid  (44)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Ubiquity Press " type="checkbox" name="Ubiquity Press ">
-                        <label for="Ubiquity Press " class="filter__label">Ubiquity Press  (43)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universitas Gadjah Mada " type="checkbox" name="Universitas Gadjah Mada ">
-                        <label for="Universitas Gadjah Mada " class="filter__label">Universitas Gadjah Mada  (42)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Copernicus Publications " type="checkbox" name="Copernicus Publications ">
-                        <label for="Copernicus Publications " class="filter__label">Copernicus Publications  (39)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="AOSIS " type="checkbox" name="AOSIS ">
-                        <label for="AOSIS " class="filter__label">AOSIS  (36)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Consejo Superior de Investigaciones Científicas " type="checkbox" name="Consejo Superior de Investigaciones Científicas ">
-                        <label for="Consejo Superior de Investigaciones Científicas " class="filter__label">Consejo Superior de Investigaciones Científicas  (36)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="University of Bologna " type="checkbox" name="University of Bologna ">
-                        <label for="University of Bologna " class="filter__label">University of Bologna  (36)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="University of Brawijaya " type="checkbox" name="University of Brawijaya ">
-                        <label for="University of Brawijaya " class="filter__label">University of Brawijaya  (36)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universidad Nacional de Colombia " type="checkbox" name="Universidad Nacional de Colombia ">
-                        <label for="Universidad Nacional de Colombia " class="filter__label">Universidad Nacional de Colombia  (35)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Pensoft Publishers " type="checkbox" name="Pensoft Publishers ">
-                        <label for="Pensoft Publishers " class="filter__label">Pensoft Publishers  (33)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universidad de Chile " type="checkbox" name="Universidad de Chile ">
-                        <label for="Universidad de Chile " class="filter__label">Universidad de Chile  (32)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universidade Estadual de Campinas " type="checkbox" name="Universidade Estadual de Campinas ">
-                        <label for="Universidade Estadual de Campinas " class="filter__label">Universidade Estadual de Campinas  (32)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Emerald Publishing " type="checkbox" name="Emerald Publishing ">
-                        <label for="Emerald Publishing " class="filter__label">Emerald Publishing  (30)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Conselho Nacional de Pesquisa e Pós-graduação em Direito (CONPEDI) " type="checkbox" name="Conselho Nacional de Pesquisa e Pós-graduação em Direito (CONPEDI) ">
-                        <label for="Conselho Nacional de Pesquisa e Pós-graduação em Direito (CONPEDI) " class="filter__label">Conselho Nacional de Pesquisa e Pós-graduação em Direito (CONPEDI)  (29)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Firenze University Press " type="checkbox" name="Firenze University Press ">
-                        <label for="Firenze University Press " class="filter__label">Firenze University Press  (29)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universidade Federal de Santa Catarina " type="checkbox" name="Universidade Federal de Santa Catarina ">
-                        <label for="Universidade Federal de Santa Catarina " class="filter__label">Universidade Federal de Santa Catarina  (29)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universidad Nacional de La Plata " type="checkbox" name="Universidad Nacional de La Plata ">
-                        <label for="Universidad Nacional de La Plata " class="filter__label">Universidad Nacional de La Plata  (28)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universidad de Costa Rica " type="checkbox" name="Universidad de Costa Rica ">
-                        <label for="Universidad de Costa Rica " class="filter__label">Universidad de Costa Rica  (28)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universitas Negeri Malang " type="checkbox" name="Universitas Negeri Malang ">
-                        <label for="Universitas Negeri Malang " class="filter__label">Universitas Negeri Malang  (28)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Cambridge University Press " type="checkbox" name="Cambridge University Press ">
-                        <label for="Cambridge University Press " class="filter__label">Cambridge University Press  (27)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="EDP Sciences " type="checkbox" name="EDP Sciences ">
-                        <label for="EDP Sciences " class="filter__label">EDP Sciences  (27)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Karger Publishers " type="checkbox" name="Karger Publishers ">
-                        <label for="Karger Publishers " class="filter__label">Karger Publishers  (27)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Termedia Publishing House " type="checkbox" name="Termedia Publishing House ">
-                        <label for="Termedia Publishing House " class="filter__label">Termedia Publishing House  (26)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Galenos Yayinevi " type="checkbox" name="Galenos Yayinevi ">
-                        <label for="Galenos Yayinevi " class="filter__label">Galenos Yayinevi  (25)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universidade Federal de Minas Gerais " type="checkbox" name="Universidade Federal de Minas Gerais ">
-                        <label for="Universidade Federal de Minas Gerais " class="filter__label">Universidade Federal de Minas Gerais  (25)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Universidade do Estado do Rio de Janeiro " type="checkbox" name="Universidade do Estado do Rio de Janeiro ">
-                        <label for="Universidade do Estado do Rio de Janeiro " class="filter__label">Universidade do Estado do Rio de Janeiro  (25)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="BMJ Publishing Group " type="checkbox" name="BMJ Publishing Group ">
-                        <label for="BMJ Publishing Group " class="filter__label">BMJ Publishing Group  (24)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="KeAi " type="checkbox" name="KeAi ">
-                        <label for="KeAi " class="filter__label">KeAi  (24)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="KeAi Communications Co. Ltd. " type="checkbox" name="KeAi Communications Co. Ltd. ">
-                        <label for="KeAi Communications Co. Ltd. " class="filter__label">KeAi Communications Co. Ltd.  (24)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Lodz University Press " type="checkbox" name="Lodz University Press ">
-                        <label for="Lodz University Press " class="filter__label">Lodz University Press  (24)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Muhammadiyah University Press " type="checkbox" name="Muhammadiyah University Press ">
-                        <label for="Muhammadiyah University Press " class="filter__label">Muhammadiyah University Press  (24)</label>
-                      </li>
-                      
-                    </ul>
-                  </div>
-                </li>
-
-                <!-- Publisher country -->
-                <li class="filter">
-                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-publisher-country" aria-expanded="false">
-                    Publishers’ countries
-                    <span data-feather="chevron-down" aria-hidden="true"></span>
-                  </h3>
-                  <div id="filter-publisher-country" class="collapse filter__body" aria-expanded="false">
-                    
-                    <label for="search-publisher-country" class="sr-only">Search 122 countries</label>
-                    <input type="text" name="search-publisher-country" class="filter__search" placeholder="Search 122 countries">
-                    
-
-                    <ul class="filter__choices">
-                      
-                      <li>
-                        <input id="Indonesia " type="checkbox" name="Indonesia ">
-                        <label for="Indonesia " class="filter__label">Indonesia  (1646)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="United Kingdom " type="checkbox" name="United Kingdom ">
-                        <label for="United Kingdom " class="filter__label">United Kingdom  (1636)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Brazil " type="checkbox" name="Brazil ">
-                        <label for="Brazil " class="filter__label">Brazil  (1461)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="United States " type="checkbox" name="United States ">
-                        <label for="United States " class="filter__label">United States  (772)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Spain " type="checkbox" name="Spain ">
-                        <label for="Spain " class="filter__label">Spain  (768)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Poland " type="checkbox" name="Poland ">
-                        <label for="Poland " class="filter__label">Poland  (622)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Iran, Islamic Republic of " type="checkbox" name="Iran, Islamic Republic of ">
-                        <label for="Iran, Islamic Republic of " class="filter__label">Iran, Islamic Republic of  (542)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Turkey " type="checkbox" name="Turkey ">
-                        <label for="Turkey " class="filter__label">Turkey  (413)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Italy " type="checkbox" name="Italy ">
-                        <label for="Italy " class="filter__label">Italy  (411)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Russian Federation " type="checkbox" name="Russian Federation ">
-                        <label for="Russian Federation " class="filter__label">Russian Federation  (398)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Colombia " type="checkbox" name="Colombia ">
-                        <label for="Colombia " class="filter__label">Colombia  (368)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Romania " type="checkbox" name="Romania ">
-                        <label for="Romania " class="filter__label">Romania  (344)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Switzerland " type="checkbox" name="Switzerland ">
-                        <label for="Switzerland " class="filter__label">Switzerland  (335)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Ukraine " type="checkbox" name="Ukraine ">
-                        <label for="Ukraine " class="filter__label">Ukraine  (326)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="India " type="checkbox" name="India ">
-                        <label for="India " class="filter__label">India  (288)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Germany " type="checkbox" name="Germany ">
-                        <label for="Germany " class="filter__label">Germany  (264)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Argentina " type="checkbox" name="Argentina ">
-                        <label for="Argentina " class="filter__label">Argentina  (258)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Netherlands " type="checkbox" name="Netherlands ">
-                        <label for="Netherlands " class="filter__label">Netherlands  (248)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="France " type="checkbox" name="France ">
-                        <label for="France " class="filter__label">France  (231)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Serbia " type="checkbox" name="Serbia ">
-                        <label for="Serbia " class="filter__label">Serbia  (187)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Canada " type="checkbox" name="Canada ">
-                        <label for="Canada " class="filter__label">Canada  (169)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Mexico " type="checkbox" name="Mexico ">
-                        <label for="Mexico " class="filter__label">Mexico  (138)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Korea, Republic of " type="checkbox" name="Korea, Republic of ">
-                        <label for="Korea, Republic of " class="filter__label">Korea, Republic of  (128)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Croatia " type="checkbox" name="Croatia ">
-                        <label for="Croatia " class="filter__label">Croatia  (122)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Chile " type="checkbox" name="Chile ">
-                        <label for="Chile " class="filter__label">Chile  (121)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="China " type="checkbox" name="China ">
-                        <label for="China " class="filter__label">China  (121)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Czechia " type="checkbox" name="Czechia ">
-                        <label for="Czechia " class="filter__label">Czechia  (120)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Australia " type="checkbox" name="Australia ">
-                        <label for="Australia " class="filter__label">Australia  (114)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Portugal " type="checkbox" name="Portugal ">
-                        <label for="Portugal " class="filter__label">Portugal  (112)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Norway " type="checkbox" name="Norway ">
-                        <label for="Norway " class="filter__label">Norway  (106)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Cuba " type="checkbox" name="Cuba ">
-                        <label for="Cuba " class="filter__label">Cuba  (101)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="South Africa " type="checkbox" name="South Africa ">
-                        <label for="South Africa " class="filter__label">South Africa  (99)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Lithuania " type="checkbox" name="Lithuania ">
-                        <label for="Lithuania " class="filter__label">Lithuania  (83)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Peru " type="checkbox" name="Peru ">
-                        <label for="Peru " class="filter__label">Peru  (73)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Malaysia " type="checkbox" name="Malaysia ">
-                        <label for="Malaysia " class="filter__label">Malaysia  (70)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Costa Rica " type="checkbox" name="Costa Rica ">
-                        <label for="Costa Rica " class="filter__label">Costa Rica  (67)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Bulgaria " type="checkbox" name="Bulgaria ">
-                        <label for="Bulgaria " class="filter__label">Bulgaria  (66)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Ecuador " type="checkbox" name="Ecuador ">
-                        <label for="Ecuador " class="filter__label">Ecuador  (63)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Pakistan " type="checkbox" name="Pakistan ">
-                        <label for="Pakistan " class="filter__label">Pakistan  (59)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Slovenia " type="checkbox" name="Slovenia ">
-                        <label for="Slovenia " class="filter__label">Slovenia  (59)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Austria " type="checkbox" name="Austria ">
-                        <label for="Austria " class="filter__label">Austria  (53)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Iraq " type="checkbox" name="Iraq ">
-                        <label for="Iraq " class="filter__label">Iraq  (49)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Slovakia " type="checkbox" name="Slovakia ">
-                        <label for="Slovakia " class="filter__label">Slovakia  (49)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Belgium " type="checkbox" name="Belgium ">
-                        <label for="Belgium " class="filter__label">Belgium  (44)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Sweden " type="checkbox" name="Sweden ">
-                        <label for="Sweden " class="filter__label">Sweden  (43)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Finland " type="checkbox" name="Finland ">
-                        <label for="Finland " class="filter__label">Finland  (39)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Greece " type="checkbox" name="Greece ">
-                        <label for="Greece " class="filter__label">Greece  (37)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Hungary " type="checkbox" name="Hungary ">
-                        <label for="Hungary " class="filter__label">Hungary  (36)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Japan " type="checkbox" name="Japan ">
-                        <label for="Japan " class="filter__label">Japan  (35)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Moldova, Republic of " type="checkbox" name="Moldova, Republic of ">
-                        <label for="Moldova, Republic of " class="filter__label">Moldova, Republic of  (32)</label>
-                      </li>
-                      
-                    </ul>
-                  </div>
-                </li>
-
-                <!-- Peer review -->
-                <li class="filter">
-                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-peer-review" aria-expanded="false">
-                    Peer review types
-                    <span data-feather="chevron-down" aria-hidden="true"></span>
-                  </h3>
-                  <div id="filter-peer-review" class="collapse filter__body" aria-expanded="false">
-                    <ul class="filter__choices">
-                      
-                      <li>
-                        <input id="Double blind peer review" type="checkbox" name="Double blind peer review">
-                        <label for="Double blind peer review" class="filter__label">Double blind peer review (7638)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Blind peer review" type="checkbox" name="Blind peer review">
-                        <label for="Blind peer review" class="filter__label">Blind peer review (4084)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Peer review" type="checkbox" name="Peer review">
-                        <label for="Peer review" class="filter__label">Peer review (2550)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Open peer review" type="checkbox" name="Open peer review">
-                        <label for="Open peer review" class="filter__label">Open peer review (136)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="Editorial review" type="checkbox" name="Editorial review">
-                        <label for="Editorial review" class="filter__label">Editorial review (128)</label>
-                      </li>
-                      
-                    </ul>
-                  </div>
-                </li>
-
-
-                <!-- Date added -->
-                <li class="filter">
-                  <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-date-added" aria-expanded="false">
-                    Date added
-                    <span data-feather="chevron-down" aria-hidden="true"></span>
-                  </h3>
-                  <div id="filter-date-added" class="collapse filter__body" aria-expanded="false">
-                    <ul class="filter__choices">
-                      
-                      <li>
-                        <input id="2020" type="checkbox" name="2020">
-                        <label for="2020" class="filter__label">2020 (805)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2019" type="checkbox" name="2019">
-                        <label for="2019" class="filter__label">2019 (1951)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2018" type="checkbox" name="2018">
-                        <label for="2018" class="filter__label">2018 (2240)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2017" type="checkbox" name="2017">
-                        <label for="2017" class="filter__label">2017 (2450)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2016" type="checkbox" name="2016">
-                        <label for="2016" class="filter__label">2016 (1628)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2015" type="checkbox" name="2015">
-                        <label for="2015" class="filter__label">2015 (1250)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2014" type="checkbox" name="2014">
-                        <label for="2014" class="filter__label">2014 (378)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2013" type="checkbox" name="2013">
-                        <label for="2013" class="filter__label">2013 (855)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2012" type="checkbox" name="2012">
-                        <label for="2012" class="filter__label">2012 (521)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2011" type="checkbox" name="2011">
-                        <label for="2011" class="filter__label">2011 (508)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2010" type="checkbox" name="2010">
-                        <label for="2010" class="filter__label">2010 (554)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2009" type="checkbox" name="2009">
-                        <label for="2009" class="filter__label">2009 (297)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2008" type="checkbox" name="2008">
-                        <label for="2008" class="filter__label">2008 (276)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2007" type="checkbox" name="2007">
-                        <label for="2007" class="filter__label">2007 (176)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2006" type="checkbox" name="2006">
-                        <label for="2006" class="filter__label">2006 (154)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2005" type="checkbox" name="2005">
-                        <label for="2005" class="filter__label">2005 (161)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2004" type="checkbox" name="2004">
-                        <label for="2004" class="filter__label">2004 (189)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2003" type="checkbox" name="2003">
-                        <label for="2003" class="filter__label">2003 (161)</label>
-                      </li>
-                      
-                      <li>
-                        <input id="2002" type="checkbox" name="2002">
-                        <label for="2002" class="filter__label">2002 (22)</label>
-                      </li>
-                      
-                    </ul>
-                  </div>
-                </li>
-
-
-              </ul>
-            </aside>
-          </div>
-
-          <div class="col-md-9">
-            <h2>Showing 14,576 indexed journals</h2>
-            <nav class="search-results__display">
-              <h3 class="sr-only">Display options</h3>
-              <div class="row">
-                <div class="col-xs-6">
-                  <label for="sort-by">Sort by</label>
-                  <select name="sort-by" id="sort-by">
-                    <option value="">Added to DOAJ (newest first)</option>
-                    <option value="">Added to DOAJ (oldest first)</option>
-                    <option value="">Last updated (most recent first)</option>
-                    <option value="">Last updated (less recent first)</option>
-                    <option value="">Title (A-Z)</option>
-                    <option value="">Title (Z-A)</option>
-                    <option value="">Relevance</option>
-                  </select>
-                </div>
-                <div class="col-xs-6">
-                  <label for="results-per-page">Results per page</label>
-                  <select name="results-per-page" id="results-per-page">
-                    <option value="all">50</option>
-                    <option value="all">100</option>
-                    <option value="all">200</option>
-                  </select>
-                </div>
-              </div>
-            </nav>
-            <ol class="search-results">
-              
-              <li class="search-results__record">
-                <article class="row">
-                  <div class="col-sm-8">
-                    <p class="label">
-                      
-                      
-                      <small>Social Sciences: Commerce: Business: Marketing. Distribution of products</small>
-                      
-                    </p>
-                    <h3 class="search-results__heading">
-                      <a href="#" class="">
-                        Innovative Marketing
-                        <br><span class="search-results__secondary-heading">Інноваційний маркетинг</span>
-                      </a>
-                    </h3>
-                    
-                    <a href="/apply/seal/" class="tag">
-                      <span data-feather="check-circle" aria-hidden="true"></span>
-                      DOAJ Seal
-                    </a>
-                    
-                    <div class="search-results__body">
-                      <ul>
-                        <li>
-                          Published  in <strong>Ukraine</strong>
-                        </li>
-                        <li>
-                          Accepts manuscripts in <strong>English</strong>
-                        </li>
-                      </ul>
-                      <ul>
-                        <li>
-                          <strong>9</strong> weeks to publication
-                        </li>
-                        <li>
-                          <strong>€595 (EUR)</strong> processing fee
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <aside class="col-sm-4 search-results__aside">
-                    <ul>
-                      <li>
-                        <a href="https://businessperspectives.org/journals/innovative-marketing?category_id=30" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
-                      </li>
-                      <li>
-                        <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY</a>
-                      </li>
-                      <li>
-                        PDF articles
-                      </li>
-                      
-                      <li>
-                        602 articles dating back to 2005
-                      </li>
-                      
-                      <li>
-                        Added on 13 May 2020
-                      </li>
-                    </ul>
-                  </aside>
-                </article>
-              </li>
-              
-              <li class="search-results__record">
-                <article class="row">
-                  <div class="col-sm-8">
-                    <p class="label">
-                      
-                      
-                      <small>Medicine: Internal medicine: Specialties of internal medicine: Diseases of the genitourinary system. Urology</small>
-                      
-                    </p>
-                    <h3 class="search-results__heading">
-                      <a href="#" class="">
-                        Yeni Üroloji Dergisi
-                        <br><span class="search-results__secondary-heading">The New Journal of Urology</span>
-                      </a>
-                    </h3>
-                    
-                    <div class="search-results__body">
-                      <ul>
-                        <li>
-                          Published by <em>Eurasian Urooncological Association</em> in <strong>Turkey</strong>
-                        </li>
-                        <li>
-                          Accepts manuscripts in <strong>Turkish, English</strong>
-                        </li>
-                      </ul>
-                      <ul>
-                        <li>
-                          <strong>3</strong> weeks to publication
-                        </li>
-                        <li>
-                          No charges
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <aside class="col-sm-4 search-results__aside">
-                    <ul>
-                      <li>
-                        <a href="https://dergipark.org.tr/en/pub/yud" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
-                      </li>
-                      <li>
-                        <a href="https://creativecommons.org/licenses/by-nc/2.0/" target="_blank" rel="noopener">CC BY-NC</a>
-                      </li>
-                      <li>
-                        PDF articles
-                      </li>
-                      
-                      <li>
-                        Added on 13 May 2020
-                      </li>
-                    </ul>
-                  </aside>
-                </article>
-              </li>
-              
-              <li class="search-results__record">
-                <article class="row">
-                  <div class="col-sm-8">
-                    <p class="label">
-                      
-                      
-                      <small>Language and Literature: Philology. Linguistics </small><br>
-                      
-                      <small> Language and Literature: Literature (General)</small>
-                      
-                    </p>
-                    <h3 class="search-results__heading">
-                      <a href="#" class="">
-                        Linguagem &amp; Ensino
-                        <br><span class="search-results__secondary-heading">Linguagem e Ensino</span>
-                      </a>
-                    </h3>
-                    
-                    <div class="search-results__body">
-                      <ul>
-                        <li>
-                          Published by <em>Universidade Federal de Pelotas (UFPel)</em> in <strong>Brazil</strong>
-                        </li>
-                        <li>
-                          Accepts manuscripts in <strong>Portuguese, Spanish, English</strong>
-                        </li>
-                      </ul>
-                      <ul>
-                        <li>
-                          <strong>8</strong> weeks to publication
-                        </li>
-                        <li>
-                          No charges
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <aside class="col-sm-4 search-results__aside">
-                    <ul>
-                      <li>
-                        <a href="https://periodicos.ufpel.edu.br/ojs2/index.php/rle" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
-                      </li>
-                      <li>
-                        <a href="https://creativecommons.org/licenses/by-nc-nd/2.0/" target="_blank" rel="noopener">CC BY-NC-ND</a>
-                      </li>
-                      <li>
-                        PDF articles
-                      </li>
-                      
-                      <li>
-                        Added on 13 May 2020
-                      </li>
-                    </ul>
-                  </aside>
-                </article>
-              </li>
-              
-              <li class="search-results__record">
-                <article class="row">
-                  <div class="col-sm-8">
-                    <p class="label">
-                      
-                      
-                      <small>Science: Microbiology</small>
-                      
-                    </p>
-                    <h3 class="search-results__heading">
-                      <a href="#" class="">
-                        Access Microbiology
-                        
-                      </a>
-                    </h3>
-                    
-                    <div class="search-results__body">
-                      <ul>
-                        <li>
-                          Published  in <strong>United Kingdom</strong>
-                        </li>
-                        <li>
-                          Accepts manuscripts in <strong>English</strong>
-                        </li>
-                      </ul>
-                      <ul>
-                        <li>
-                          <strong>12</strong> weeks to publication
-                        </li>
-                        <li>
-                          <strong>£700 (GBP)</strong> processing fee
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <aside class="col-sm-4 search-results__aside">
-                    <ul>
-                      <li>
-                        <a href="https://www.microbiologyresearch.org/content/journal/acmi" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
-                      </li>
-                      <li>
-                        <a href="https://creativecommons.org/licenses/by-nc/2.0/" target="_blank" rel="noopener">CC BY-NC</a>
-                      </li>
-                      <li>
-                        PDF, HTML, XML articles
-                      </li>
-                      
-                      <li>
-                        Added on 13 May 2020
-                      </li>
-                    </ul>
-                  </aside>
-                </article>
-              </li>
-              
-              <li class="search-results__record">
-                <article class="row">
-                  <div class="col-sm-8">
-                    <p class="label">
-                      
-                      
-                      <small>Social Sciences: Industries. Land use. Labor: Management. Industrial management </small><br>
-                      
-                      <small> Social Sciences: Commerce: Business</small>
-                      
-                    </p>
-                    <h3 class="search-results__heading">
-                      <a href="#" class="">
-                        M@n@gement
-                        <br><span class="search-results__secondary-heading">Management</span>
-                      </a>
-                    </h3>
-                    
-                    <div class="search-results__body">
-                      <ul>
-                        <li>
-                          Published by <em>AIMS</em> in <strong>France</strong>
-                        </li>
-                        <li>
-                          Accepts manuscripts in <strong>English</strong>
-                        </li>
-                      </ul>
-                      <ul>
-                        <li>
-                          <strong>70</strong> weeks to publication
-                        </li>
-                        <li>
-                          No charges
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <aside class="col-sm-4 search-results__aside">
-                    <ul>
-                      <li>
-                        <a href="https://management-aims.com/index.php/mgmt" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
-                      </li>
-                      <li>
-                        <a href="https://creativecommons.org/licenses/by-nc/2.0/" target="_blank" rel="noopener">CC BY-NC</a>
-                      </li>
-                      <li>
-                        PDF, HTML, EPUB, XML articles
-                      </li>
-                      
-                      <li>
-                        Added on 13 May 2020
-                      </li>
-                    </ul>
-                  </aside>
-                </article>
-              </li>
-              
-              <li class="search-results__record">
-                <article class="row">
-                  <div class="col-sm-8">
-                    <p class="label">
-                      
-                      
-                      <small>Science: Zoology</small>
-                      
-                    </p>
-                    <h3 class="search-results__heading">
-                      <a href="#" class="">
-                        Entomological Communications
-                        
-                      </a>
-                    </h3>
-                    
-                    <div class="search-results__body">
-                      <ul>
-                        <li>
-                          Published by <em>Sociedade Entomológica do Brasil</em> in <strong>Brazil</strong>
-                        </li>
-                        <li>
-                          Accepts manuscripts in <strong>Portuguese, English</strong>
-                        </li>
-                      </ul>
-                      <ul>
-                        <li>
-                          <strong>6</strong> weeks to publication
-                        </li>
-                        <li>
-                          <strong>$250 BRL</strong> processing fee
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <aside class="col-sm-4 search-results__aside">
-                    <ul>
-                      <li>
-                        <a href="https://www.entomologicalcommunications.org/" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
-                      </li>
-                      <li>
-                        <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY</a>
-                      </li>
-                      <li>
-                        PDF articles
-                      </li>
-                      
-                      <li>
-                        0 articles dating back to 2019
-                      </li>
-                      
-                      <li>
-                        Added on 13 May 2020
-                      </li>
-                    </ul>
-                  </aside>
-                </article>
-              </li>
-              
-              <li class="search-results__record">
-                <article class="row">
-                  <div class="col-sm-8">
-                    <p class="label">
-                      
-                      
-                      <small>Agriculture: Aquaculture. Fisheries. Angling </small><br>
-                      
-                      <small> Science: Biology (General) </small><br>
-                      
-                      <small> Science: Physiology: Animal biochemistry</small>
-                      
-                    </p>
-                    <h3 class="search-results__heading">
-                      <a href="#" class="">
-                        Biología Acuática
-                        
-                      </a>
-                    </h3>
-                    
-                    <div class="search-results__body">
-                      <ul>
-                        <li>
-                          Published by <em>Instituto de Limnología Raúl A. Ringuelet. (CONICET-UNLP)</em> in <strong>Argentina</strong>
-                        </li>
-                        <li>
-                          Accepts manuscripts in <strong>Spanish</strong>
-                        </li>
-                      </ul>
-                      <ul>
-                        <li>
-                          <strong>28</strong> weeks to publication
-                        </li>
-                        <li>
-                          No charges
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <aside class="col-sm-4 search-results__aside">
-                    <ul>
-                      <li>
-                        <a href="https://revistas.unlp.edu.ar/bacuatica/" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
-                      </li>
-                      <li>
-                        <a href="https://creativecommons.org/licenses/by-nc-sa/2.0/" target="_blank" rel="noopener">CC BY-NC-SA</a>
-                      </li>
-                      <li>
-                        PDF articles
-                      </li>
-                      
-                      <li>
-                        Added on 13 May 2020
-                      </li>
-                    </ul>
-                  </aside>
-                </article>
-              </li>
-              
-              <li class="search-results__record">
-                <article class="row">
-                  <div class="col-sm-8">
-                    <p class="label">
-                      
-                      
-                      <small>Medicine: Internal medicine: Medical emergencies. Critical care. Intensive care. First aid</small>
-                      
-                    </p>
-                    <h3 class="search-results__heading">
-                      <a href="#" class="">
-                        Медицина катастроф
-                        <br><span class="search-results__secondary-heading">Disaster Medicine</span>
-                      </a>
-                    </h3>
-                    
-                    <div class="search-results__body">
-                      <ul>
-                        <li>
-                          Published by <em>Ministry of Health of the Russian Federation, All-Russian Centre for Disaster Medicine «Zashchita»</em> in <strong>Russian Federation</strong>
-                        </li>
-                        <li>
-                          Accepts manuscripts in <strong>Russian</strong>
-                        </li>
-                      </ul>
-                      <ul>
-                        <li>
-                          <strong>4</strong> weeks to publication
-                        </li>
-                        <li>
-                          No charges
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <aside class="col-sm-4 search-results__aside">
-                    <ul>
-                      <li>
-                        <a href="http://medkatjorn.vcmk.ru/en/" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
-                      </li>
-                      <li>
-                        <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY</a>
-                      </li>
-                      <li>
-                        PDF articles
-                      </li>
-                      
-                      <li>
-                        Added on 13 May 2020
-                      </li>
-                    </ul>
-                  </aside>
-                </article>
-              </li>
-              
-              <li class="search-results__record">
-                <article class="row">
-                  <div class="col-sm-8">
-                    <p class="label">
-                      
-                      
-                      <small>Social Sciences: Economic history and conditions </small><br>
-                      
-                      <small> Social Sciences: Finance</small>
-                      
-                    </p>
-                    <h3 class="search-results__heading">
-                      <a href="#" class="">
-                        Acta Sting
-                        
-                      </a>
-                    </h3>
-                    
-                    <div class="search-results__body">
-                      <ul>
-                        <li>
-                          Published  in <strong>Czechia</strong>
-                        </li>
-                        <li>
-                          Accepts manuscripts in <strong>Slovak, Czech, English</strong>
-                        </li>
-                      </ul>
-                      <ul>
-                        <li>
-                          <strong>12</strong> weeks to publication
-                        </li>
-                        <li>
-                          No charges
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <aside class="col-sm-4 search-results__aside">
-                    <ul>
-                      <li>
-                        <a href="https://www.sting.cz/acta-sting-en/" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
-                      </li>
-                      <li>
-                        <a href="https://creativecommons.org/licenses/by-nc-sa/2.0/" target="_blank" rel="noopener">CC BY-NC-SA</a>
-                      </li>
-                      <li>
-                        PDF articles
-                      </li>
-                      
-                      <li>
-                        Added on 13 May 2020
-                      </li>
-                    </ul>
-                  </aside>
-                </article>
-              </li>
-              
-              <li class="search-results__record">
-                <article class="row">
-                  <div class="col-sm-8">
-                    <p class="label">
-                      
-                      
-                      <small>Technology: Electrical engineering. Electronics. Nuclear engineering: Electronics: Computer engineering. Computer hardware</small>
-                      
-                    </p>
-                    <h3 class="search-results__heading">
-                      <a href="#" class="">
-                        Inform: Jurnal Ilmiah Bidang Teknologi Informasi dan Komunikasi
-                        
-                      </a>
-                    </h3>
-                    
-                    <div class="search-results__body">
-                      <ul>
-                        <li>
-                          Published by <em>Universitas Dr Soetomo</em> in <strong>Indonesia</strong>
-                        </li>
-                        <li>
-                          Accepts manuscripts in <strong>Indonesian, English</strong>
-                        </li>
-                      </ul>
-                      <ul>
-                        <li>
-                          <strong>10</strong> weeks to publication
-                        </li>
-                        <li>
-                          No charges
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <aside class="col-sm-4 search-results__aside">
-                    <ul>
-                      <li>
-                        <a href="https://ejournal.unitomo.ac.id/index.php/inform/index" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
-                      </li>
-                      <li>
-                        <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener">CC BY-SA</a>
-                      </li>
-                      <li>
-                        PDF articles
-                      </li>
-                      
-                      <li>
-                        Added on 13 May 2020
-                      </li>
-                    </ul>
-                  </aside>
-                </article>
-              </li>
-              
-              <li class="search-results__record">
-                <article class="row">
-                  <div class="col-sm-8">
-                    <p class="label">
-                      
-                      
-                      <small>Social Sciences: Finance</small>
-                      
-                    </p>
-                    <h3 class="search-results__heading">
-                      <a href="#" class="">
-                        Indonesia Accounting Journal
-                        
-                      </a>
-                    </h3>
-                    
-                    <div class="search-results__body">
-                      <ul>
-                        <li>
-                          Published by <em>Sam Ratulangi University</em> in <strong>Indonesia</strong>
-                        </li>
-                        <li>
-                          Accepts manuscripts in <strong>Indonesian, English</strong>
-                        </li>
-                      </ul>
-                      <ul>
-                        <li>
-                          <strong>4</strong> weeks to publication
-                        </li>
-                        <li>
-                          No charges
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <aside class="col-sm-4 search-results__aside">
-                    <ul>
-                      <li>
-                        <a href="https://ejournal.unsrat.ac.id/index.php/iaj/index" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
-                      </li>
-                      <li>
-                        <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY</a>
-                      </li>
-                      <li>
-                        PDF articles
-                      </li>
-                      
-                      <li>
-                        Added on 13 May 2020
-                      </li>
-                    </ul>
-                  </aside>
-                </article>
-              </li>
-              
-            </ol>
-          </div>
-
-        </div>
+        
+        <label for="search-subjects" class="sr-only">Search 20 subjects</label>
+        <input type="text" name="search-subjects" id="search-subjects" class="filter__search" placeholder="Search 20 subjects">
         
 
+        <ul class="filter__choices">
+          
+          <li>
+            <input id="Agriculture" type="checkbox" name="Agriculture">
+            <label for="Agriculture" class="filter__label">Agriculture</label>
+          </li>
+          
+          <li>
+            <input id="Auxiliary sciences of history" type="checkbox" name="Auxiliary sciences of history">
+            <label for="Auxiliary sciences of history" class="filter__label">Auxiliary sciences of history</label>
+          </li>
+          
+          <li>
+            <input id="Bibliography. Library science. Information resources" type="checkbox" name="Bibliography. Library science. Information resources">
+            <label for="Bibliography. Library science. Information resources" class="filter__label">Bibliography. Library science. Information resources</label>
+          </li>
+          
+          <li>
+            <input id="Education" type="checkbox" name="Education">
+            <label for="Education" class="filter__label">Education</label>
+          </li>
+          
+          <li>
+            <input id="Fine Arts" type="checkbox" name="Fine Arts">
+            <label for="Fine Arts" class="filter__label">Fine Arts</label>
+          </li>
+          
+          <li>
+            <input id="General Works" type="checkbox" name="General Works">
+            <label for="General Works" class="filter__label">General Works</label>
+          </li>
+          
+          <li>
+            <input id="Geography. Anthropology. Recreation" type="checkbox" name="Geography. Anthropology. Recreation">
+            <label for="Geography. Anthropology. Recreation" class="filter__label">Geography. Anthropology. Recreation</label>
+          </li>
+          
+          <li>
+            <input id="History (General) and history of Europe" type="checkbox" name="History (General) and history of Europe">
+            <label for="History (General) and history of Europe" class="filter__label">History (General) and history of Europe</label>
+          </li>
+          
+          <li>
+            <input id="History America" type="checkbox" name="History America">
+            <label for="History America" class="filter__label">History America</label>
+          </li>
+          
+          <li>
+            <input id="Language and Literature" type="checkbox" name="Language and Literature">
+            <label for="Language and Literature" class="filter__label">Language and Literature</label>
+          </li>
+          
+          <li>
+            <input id="Law" type="checkbox" name="Law">
+            <label for="Law" class="filter__label">Law</label>
+          </li>
+          
+          <li>
+            <input id="Medicine" type="checkbox" name="Medicine">
+            <label for="Medicine" class="filter__label">Medicine</label>
+          </li>
+          
+          <li>
+            <input id="Military Science" type="checkbox" name="Military Science">
+            <label for="Military Science" class="filter__label">Military Science</label>
+          </li>
+          
+          <li>
+            <input id="Music and books on Music" type="checkbox" name="Music and books on Music">
+            <label for="Music and books on Music" class="filter__label">Music and books on Music</label>
+          </li>
+          
+          <li>
+            <input id="Naval Science" type="checkbox" name="Naval Science">
+            <label for="Naval Science" class="filter__label">Naval Science</label>
+          </li>
+          
+          <li>
+            <input id="Philosophy. Psychology. Religion" type="checkbox" name="Philosophy. Psychology. Religion">
+            <label for="Philosophy. Psychology. Religion" class="filter__label">Philosophy. Psychology. Religion</label>
+          </li>
+          
+          <li>
+            <input id="Political science" type="checkbox" name="Political science">
+            <label for="Political science" class="filter__label">Political science</label>
+          </li>
+          
+          <li>
+            <input id="Science" type="checkbox" name="Science">
+            <label for="Science" class="filter__label">Science</label>
+          </li>
+          
+          <li>
+            <input id="Social Sciences" type="checkbox" name="Social Sciences">
+            <label for="Social Sciences" class="filter__label">Social Sciences</label>
+          </li>
+          
+          <li>
+            <input id="Technology" type="checkbox" name="Technology">
+            <label for="Technology" class="filter__label">Technology</label>
+          </li>
+          
+        </ul>
+      </div>
+    </li>
 
-      </section>
+    <!-- Languages -->
+    <li class="filter">
+      <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-languages" aria-expanded="false">
+        Languages
+        <span data-feather="chevron-down" aria-hidden="true"></span>
+      </h3>
+      <div id="filter-languages" class="collapse filter__body" aria-expanded="false">
+
+        
+        <label for="search-languages" class="sr-only">Search 78 languages</label>
+        <input type="text" name="search-languages" class="filter__search" placeholder="Search 78 languages">
+        
+
+        <ul class="filter__choices">
+          
+          <li>
+            <input id="English" type="checkbox" name="English">
+            <label for="English" class="filter__label">English (11088)</label>
+          </li>
+          
+          <li>
+            <input id="Spanish" type="checkbox" name="Spanish">
+            <label for="Spanish" class="filter__label">Spanish (2791)</label>
+          </li>
+          
+          <li>
+            <input id="Portuguese" type="checkbox" name="Portuguese">
+            <label for="Portuguese" class="filter__label">Portuguese (1942)</label>
+          </li>
+          
+          <li>
+            <input id="Indonesian" type="checkbox" name="Indonesian">
+            <label for="Indonesian" class="filter__label">Indonesian (1349)</label>
+          </li>
+          
+          <li>
+            <input id="French" type="checkbox" name="French">
+            <label for="French" class="filter__label">French (1008)</label>
+          </li>
+          
+          <li>
+            <input id="Russian" type="checkbox" name="Russian">
+            <label for="Russian" class="filter__label">Russian (742)</label>
+          </li>
+          
+          <li>
+            <input id="Italian" type="checkbox" name="Italian">
+            <label for="Italian" class="filter__label">Italian (532)</label>
+          </li>
+          
+          <li>
+            <input id="German" type="checkbox" name="German">
+            <label for="German" class="filter__label">German (424)</label>
+          </li>
+          
+          <li>
+            <input id="Turkish" type="checkbox" name="Turkish">
+            <label for="Turkish" class="filter__label">Turkish (302)</label>
+          </li>
+          
+          <li>
+            <input id="Ukrainian" type="checkbox" name="Ukrainian">
+            <label for="Ukrainian" class="filter__label">Ukrainian (298)</label>
+          </li>
+          
+          <li>
+            <input id="Persian" type="checkbox" name="Persian">
+            <label for="Persian" class="filter__label">Persian (256)</label>
+          </li>
+          
+          <li>
+            <input id="Polish" type="checkbox" name="Polish">
+            <label for="Polish" class="filter__label">Polish (235)</label>
+          </li>
+          
+          <li>
+            <input id="Arabic" type="checkbox" name="Arabic">
+            <label for="Arabic" class="filter__label">Arabic (166)</label>
+          </li>
+          
+          <li>
+            <input id="Serbian" type="checkbox" name="Serbian">
+            <label for="Serbian" class="filter__label">Serbian (129)</label>
+          </li>
+          
+          <li>
+            <input id="Catalan" type="checkbox" name="Catalan">
+            <label for="Catalan" class="filter__label">Catalan (125)</label>
+          </li>
+          
+          <li>
+            <input id="Croatian" type="checkbox" name="Croatian">
+            <label for="Croatian" class="filter__label">Croatian (98)</label>
+          </li>
+          
+          <li>
+            <input id="Romanian" type="checkbox" name="Romanian">
+            <label for="Romanian" class="filter__label">Romanian (95)</label>
+          </li>
+          
+          <li>
+            <input id="Czech" type="checkbox" name="Czech">
+            <label for="Czech" class="filter__label">Czech (77)</label>
+          </li>
+          
+          <li>
+            <input id="Slovak" type="checkbox" name="Slovak">
+            <label for="Slovak" class="filter__label">Slovak (59)</label>
+          </li>
+          
+          <li>
+            <input id="Swedish" type="checkbox" name="Swedish">
+            <label for="Swedish" class="filter__label">Swedish (56)</label>
+          </li>
+          
+          <li>
+            <input id="Chinese" type="checkbox" name="Chinese">
+            <label for="Chinese" class="filter__label">Chinese (54)</label>
+          </li>
+          
+          <li>
+            <input id="Danish" type="checkbox" name="Danish">
+            <label for="Danish" class="filter__label">Danish (54)</label>
+          </li>
+          
+          <li>
+            <input id="Lithuanian" type="checkbox" name="Lithuanian">
+            <label for="Lithuanian" class="filter__label">Lithuanian (49)</label>
+          </li>
+          
+          <li>
+            <input id="Norwegian Bokmål" type="checkbox" name="Norwegian Bokmål">
+            <label for="Norwegian Bokmål" class="filter__label">Norwegian Bokmål (49)</label>
+          </li>
+          
+          <li>
+            <input id="Slovenian" type="checkbox" name="Slovenian">
+            <label for="Slovenian" class="filter__label">Slovenian (48)</label>
+          </li>
+          
+          <li>
+            <input id="Korean" type="checkbox" name="Korean">
+            <label for="Korean" class="filter__label">Korean (45)</label>
+          </li>
+          
+          <li>
+            <input id="Norwegian" type="checkbox" name="Norwegian">
+            <label for="Norwegian" class="filter__label">Norwegian (38)</label>
+          </li>
+          
+          <li>
+            <input id="Dutch" type="checkbox" name="Dutch">
+            <label for="Dutch" class="filter__label">Dutch (31)</label>
+          </li>
+          
+          <li>
+            <input id="Galician" type="checkbox" name="Galician">
+            <label for="Galician" class="filter__label">Galician (30)</label>
+          </li>
+          
+          <li>
+            <input id="Norwegian Nynorsk" type="checkbox" name="Norwegian Nynorsk">
+            <label for="Norwegian Nynorsk" class="filter__label">Norwegian Nynorsk (29)</label>
+          </li>
+          
+          <li>
+            <input id="Bulgarian" type="checkbox" name="Bulgarian">
+            <label for="Bulgarian" class="filter__label">Bulgarian (22)</label>
+          </li>
+          
+          <li>
+            <input id="Malay (macrolanguage)" type="checkbox" name="Malay (macrolanguage)">
+            <label for="Malay (macrolanguage)" class="filter__label">Malay (macrolanguage) (21)</label>
+          </li>
+          
+          <li>
+            <input id="Afrikaans" type="checkbox" name="Afrikaans">
+            <label for="Afrikaans" class="filter__label">Afrikaans (19)</label>
+          </li>
+          
+          <li>
+            <input id="Finnish" type="checkbox" name="Finnish">
+            <label for="Finnish" class="filter__label">Finnish (19)</label>
+          </li>
+          
+          <li>
+            <input id="Hungarian" type="checkbox" name="Hungarian">
+            <label for="Hungarian" class="filter__label">Hungarian (16)</label>
+          </li>
+          
+          <li>
+            <input id="Modern Greek (1453-)" type="checkbox" name="Modern Greek (1453-)">
+            <label for="Modern Greek (1453-)" class="filter__label">Modern Greek (1453-) (16)</label>
+          </li>
+          
+          <li>
+            <input id="Basque" type="checkbox" name="Basque">
+            <label for="Basque" class="filter__label">Basque (14)</label>
+          </li>
+          
+          <li>
+            <input id="Estonian" type="checkbox" name="Estonian">
+            <label for="Estonian" class="filter__label">Estonian (12)</label>
+          </li>
+          
+          <li>
+            <input id="Japanese" type="checkbox" name="Japanese">
+            <label for="Japanese" class="filter__label">Japanese (12)</label>
+          </li>
+          
+          <li>
+            <input id="Belarusian" type="checkbox" name="Belarusian">
+            <label for="Belarusian" class="filter__label">Belarusian (9)</label>
+          </li>
+          
+          <li>
+            <input id="Bosnian" type="checkbox" name="Bosnian">
+            <label for="Bosnian" class="filter__label">Bosnian (9)</label>
+          </li>
+          
+          <li>
+            <input id="Macedonian" type="checkbox" name="Macedonian">
+            <label for="Macedonian" class="filter__label">Macedonian (8)</label>
+          </li>
+          
+          <li>
+            <input id="Urdu" type="checkbox" name="Urdu">
+            <label for="Urdu" class="filter__label">Urdu (8)</label>
+          </li>
+          
+          <li>
+            <input id="Icelandic" type="checkbox" name="Icelandic">
+            <label for="Icelandic" class="filter__label">Icelandic (6)</label>
+          </li>
+          
+          <li>
+            <input id="Latvian" type="checkbox" name="Latvian">
+            <label for="Latvian" class="filter__label">Latvian (5)</label>
+          </li>
+          
+          <li>
+            <input id="Thai" type="checkbox" name="Thai">
+            <label for="Thai" class="filter__label">Thai (5)</label>
+          </li>
+          
+          <li>
+            <input id="Hindi" type="checkbox" name="Hindi">
+            <label for="Hindi" class="filter__label">Hindi (4)</label>
+          </li>
+          
+          <li>
+            <input id="Latin" type="checkbox" name="Latin">
+            <label for="Latin" class="filter__label">Latin (4)</label>
+          </li>
+          
+          <li>
+            <input id="Tagalog" type="checkbox" name="Tagalog">
+            <label for="Tagalog" class="filter__label">Tagalog (4)</label>
+          </li>
+          
+          <li>
+            <input id="Azerbaijani" type="checkbox" name="Azerbaijani">
+            <label for="Azerbaijani" class="filter__label">Azerbaijani (3)</label>
+          </li>
+          
+        </ul>
+      </div>
+    </li>
+
+    <!-- Licenses -->
+    <li class="filter">
+      <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-licenses" aria-expanded="false">
+        Licenses
+        <span data-feather="chevron-down" aria-hidden="true"></span>
+      </h3>
+      <div id="filter-licenses" class="collapse filter__body" aria-expanded="false">
+        
+
+        <ul class="filter__choices">
+          
+          <li>
+            <input id="CC BY" type="checkbox" name="CC BY">
+            <label for="CC BY" class="filter__label">CC BY (5993)</label>
+          </li>
+          
+          <li>
+            <input id="CC BY-NC-ND" type="checkbox" name="CC BY-NC-ND">
+            <label for="CC BY-NC-ND" class="filter__label">CC BY-NC-ND (3189)</label>
+          </li>
+          
+          <li>
+            <input id="CC BY-NC" type="checkbox" name="CC BY-NC">
+            <label for="CC BY-NC" class="filter__label">CC BY-NC (2626)</label>
+          </li>
+          
+          <li>
+            <input id="CC BY-NC-SA" type="checkbox" name="CC BY-NC-SA">
+            <label for="CC BY-NC-SA" class="filter__label">CC BY-NC-SA (1251)</label>
+          </li>
+          
+          <li>
+            <input id="CC BY-SA" type="checkbox" name="CC BY-SA">
+            <label for="CC BY-SA" class="filter__label">CC BY-SA (953)</label>
+          </li>
+          
+          <li>
+            <input id="Publisher’s own license" type="checkbox" name="Publisher’s own license">
+            <label for="Publisher’s own license" class="filter__label">Publisher’s own license (372)</label>
+          </li>
+          
+          <li>
+            <input id="CC BY-ND" type="checkbox" name="CC BY-ND">
+            <label for="CC BY-ND" class="filter__label">CC BY-ND (168)</label>
+          </li>
+          
+          <li>
+            <input id="AJAP Licence" type="checkbox" name="AJAP Licence">
+            <label for="AJAP Licence" class="filter__label">AJAP Licence (1)</label>
+          </li>
+          
+          <li>
+            <input id="Public Domain" type="checkbox" name="Public Domain">
+            <label for="Public Domain" class="filter__label">Public Domain (1)</label>
+          </li>
+          
+        </ul>
+      </div>
+    </li>
+
+    <!-- Publisher -->
+    <li class="filter">
+      <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-publisher" aria-expanded="false">
+        Publishers
+        <span data-feather="chevron-down" aria-hidden="true"></span>
+      </h3>
+      <div id="filter-publisher" class="collapse filter__body" aria-expanded="false">
+        
+        <label for="search-publisher" class="sr-only">Search 749 publishers</label>
+        <input type="text" name="search-publisher" class="filter__search" placeholder="Search 749 publishers">
+        
+
+        <ul class="filter__choices">
+          
+          <li>
+            <input id="Elsevier " type="checkbox" name="Elsevier ">
+            <label for="Elsevier " class="filter__label">Elsevier  (343)</label>
+          </li>
+          
+          <li>
+            <input id="BMC " type="checkbox" name="BMC ">
+            <label for="BMC " class="filter__label">BMC  (322)</label>
+          </li>
+          
+          <li>
+            <input id="Sciendo " type="checkbox" name="Sciendo ">
+            <label for="Sciendo " class="filter__label">Sciendo  (309)</label>
+          </li>
+          
+          <li>
+            <input id="Hindawi Limited " type="checkbox" name="Hindawi Limited ">
+            <label for="Hindawi Limited " class="filter__label">Hindawi Limited  (238)</label>
+          </li>
+          
+          <li>
+            <input id="MDPI AG " type="checkbox" name="MDPI AG ">
+            <label for="MDPI AG " class="filter__label">MDPI AG  (201)</label>
+          </li>
+          
+          <li>
+            <input id="SpringerOpen " type="checkbox" name="SpringerOpen ">
+            <label for="SpringerOpen " class="filter__label">SpringerOpen  (198)</label>
+          </li>
+          
+          <li>
+            <input id="Wolters Kluwer Medknow Publications " type="checkbox" name="Wolters Kluwer Medknow Publications ">
+            <label for="Wolters Kluwer Medknow Publications " class="filter__label">Wolters Kluwer Medknow Publications  (198)</label>
+          </li>
+          
+          <li>
+            <input id="Taylor &amp; Francis Group " type="checkbox" name="Taylor &amp; Francis Group ">
+            <label for="Taylor &amp; Francis Group " class="filter__label">Taylor &amp; Francis Group  (163)</label>
+          </li>
+          
+          <li>
+            <input id="SAGE Publishing " type="checkbox" name="SAGE Publishing ">
+            <label for="SAGE Publishing " class="filter__label">SAGE Publishing  (159)</label>
+          </li>
+          
+          <li>
+            <input id="Wiley " type="checkbox" name="Wiley ">
+            <label for="Wiley " class="filter__label">Wiley  (119)</label>
+          </li>
+          
+          <li>
+            <input id="Dove Medical Press " type="checkbox" name="Dove Medical Press ">
+            <label for="Dove Medical Press " class="filter__label">Dove Medical Press  (101)</label>
+          </li>
+          
+          <li>
+            <input id="Universitas Negeri Semarang " type="checkbox" name="Universitas Negeri Semarang ">
+            <label for="Universitas Negeri Semarang " class="filter__label">Universitas Negeri Semarang  (91)</label>
+          </li>
+          
+          <li>
+            <input id="Frontiers Media S.A. " type="checkbox" name="Frontiers Media S.A. ">
+            <label for="Frontiers Media S.A. " class="filter__label">Frontiers Media S.A.  (65)</label>
+          </li>
+          
+          <li>
+            <input id="De Gruyter " type="checkbox" name="De Gruyter ">
+            <label for="De Gruyter " class="filter__label">De Gruyter  (63)</label>
+          </li>
+          
+          <li>
+            <input id="Oxford University Press " type="checkbox" name="Oxford University Press ">
+            <label for="Oxford University Press " class="filter__label">Oxford University Press  (51)</label>
+          </li>
+          
+          <li>
+            <input id="PAGEPress Publications " type="checkbox" name="PAGEPress Publications ">
+            <label for="PAGEPress Publications " class="filter__label">PAGEPress Publications  (50)</label>
+          </li>
+          
+          <li>
+            <input id="Universidade de São Paulo " type="checkbox" name="Universidade de São Paulo ">
+            <label for="Universidade de São Paulo " class="filter__label">Universidade de São Paulo  (46)</label>
+          </li>
+          
+          <li>
+            <input id="Universitas Udayana " type="checkbox" name="Universitas Udayana ">
+            <label for="Universitas Udayana " class="filter__label">Universitas Udayana  (46)</label>
+          </li>
+          
+          <li>
+            <input id="Nature Publishing Group " type="checkbox" name="Nature Publishing Group ">
+            <label for="Nature Publishing Group " class="filter__label">Nature Publishing Group  (45)</label>
+          </li>
+          
+          <li>
+            <input id="Universidad Complutense de Madrid " type="checkbox" name="Universidad Complutense de Madrid ">
+            <label for="Universidad Complutense de Madrid " class="filter__label">Universidad Complutense de Madrid  (44)</label>
+          </li>
+          
+          <li>
+            <input id="Ubiquity Press " type="checkbox" name="Ubiquity Press ">
+            <label for="Ubiquity Press " class="filter__label">Ubiquity Press  (43)</label>
+          </li>
+          
+          <li>
+            <input id="Universitas Gadjah Mada " type="checkbox" name="Universitas Gadjah Mada ">
+            <label for="Universitas Gadjah Mada " class="filter__label">Universitas Gadjah Mada  (42)</label>
+          </li>
+          
+          <li>
+            <input id="Copernicus Publications " type="checkbox" name="Copernicus Publications ">
+            <label for="Copernicus Publications " class="filter__label">Copernicus Publications  (39)</label>
+          </li>
+          
+          <li>
+            <input id="AOSIS " type="checkbox" name="AOSIS ">
+            <label for="AOSIS " class="filter__label">AOSIS  (36)</label>
+          </li>
+          
+          <li>
+            <input id="Consejo Superior de Investigaciones Científicas " type="checkbox" name="Consejo Superior de Investigaciones Científicas ">
+            <label for="Consejo Superior de Investigaciones Científicas " class="filter__label">Consejo Superior de Investigaciones Científicas  (36)</label>
+          </li>
+          
+          <li>
+            <input id="University of Bologna " type="checkbox" name="University of Bologna ">
+            <label for="University of Bologna " class="filter__label">University of Bologna  (36)</label>
+          </li>
+          
+          <li>
+            <input id="University of Brawijaya " type="checkbox" name="University of Brawijaya ">
+            <label for="University of Brawijaya " class="filter__label">University of Brawijaya  (36)</label>
+          </li>
+          
+          <li>
+            <input id="Universidad Nacional de Colombia " type="checkbox" name="Universidad Nacional de Colombia ">
+            <label for="Universidad Nacional de Colombia " class="filter__label">Universidad Nacional de Colombia  (35)</label>
+          </li>
+          
+          <li>
+            <input id="Pensoft Publishers " type="checkbox" name="Pensoft Publishers ">
+            <label for="Pensoft Publishers " class="filter__label">Pensoft Publishers  (33)</label>
+          </li>
+          
+          <li>
+            <input id="Universidad de Chile " type="checkbox" name="Universidad de Chile ">
+            <label for="Universidad de Chile " class="filter__label">Universidad de Chile  (32)</label>
+          </li>
+          
+          <li>
+            <input id="Universidade Estadual de Campinas " type="checkbox" name="Universidade Estadual de Campinas ">
+            <label for="Universidade Estadual de Campinas " class="filter__label">Universidade Estadual de Campinas  (32)</label>
+          </li>
+          
+          <li>
+            <input id="Emerald Publishing " type="checkbox" name="Emerald Publishing ">
+            <label for="Emerald Publishing " class="filter__label">Emerald Publishing  (30)</label>
+          </li>
+          
+          <li>
+            <input id="Conselho Nacional de Pesquisa e Pós-graduação em Direito (CONPEDI) " type="checkbox" name="Conselho Nacional de Pesquisa e Pós-graduação em Direito (CONPEDI) ">
+            <label for="Conselho Nacional de Pesquisa e Pós-graduação em Direito (CONPEDI) " class="filter__label">Conselho Nacional de Pesquisa e Pós-graduação em Direito (CONPEDI)  (29)</label>
+          </li>
+          
+          <li>
+            <input id="Firenze University Press " type="checkbox" name="Firenze University Press ">
+            <label for="Firenze University Press " class="filter__label">Firenze University Press  (29)</label>
+          </li>
+          
+          <li>
+            <input id="Universidade Federal de Santa Catarina " type="checkbox" name="Universidade Federal de Santa Catarina ">
+            <label for="Universidade Federal de Santa Catarina " class="filter__label">Universidade Federal de Santa Catarina  (29)</label>
+          </li>
+          
+          <li>
+            <input id="Universidad Nacional de La Plata " type="checkbox" name="Universidad Nacional de La Plata ">
+            <label for="Universidad Nacional de La Plata " class="filter__label">Universidad Nacional de La Plata  (28)</label>
+          </li>
+          
+          <li>
+            <input id="Universidad de Costa Rica " type="checkbox" name="Universidad de Costa Rica ">
+            <label for="Universidad de Costa Rica " class="filter__label">Universidad de Costa Rica  (28)</label>
+          </li>
+          
+          <li>
+            <input id="Universitas Negeri Malang " type="checkbox" name="Universitas Negeri Malang ">
+            <label for="Universitas Negeri Malang " class="filter__label">Universitas Negeri Malang  (28)</label>
+          </li>
+          
+          <li>
+            <input id="Cambridge University Press " type="checkbox" name="Cambridge University Press ">
+            <label for="Cambridge University Press " class="filter__label">Cambridge University Press  (27)</label>
+          </li>
+          
+          <li>
+            <input id="EDP Sciences " type="checkbox" name="EDP Sciences ">
+            <label for="EDP Sciences " class="filter__label">EDP Sciences  (27)</label>
+          </li>
+          
+          <li>
+            <input id="Karger Publishers " type="checkbox" name="Karger Publishers ">
+            <label for="Karger Publishers " class="filter__label">Karger Publishers  (27)</label>
+          </li>
+          
+          <li>
+            <input id="Termedia Publishing House " type="checkbox" name="Termedia Publishing House ">
+            <label for="Termedia Publishing House " class="filter__label">Termedia Publishing House  (26)</label>
+          </li>
+          
+          <li>
+            <input id="Galenos Yayinevi " type="checkbox" name="Galenos Yayinevi ">
+            <label for="Galenos Yayinevi " class="filter__label">Galenos Yayinevi  (25)</label>
+          </li>
+          
+          <li>
+            <input id="Universidade Federal de Minas Gerais " type="checkbox" name="Universidade Federal de Minas Gerais ">
+            <label for="Universidade Federal de Minas Gerais " class="filter__label">Universidade Federal de Minas Gerais  (25)</label>
+          </li>
+          
+          <li>
+            <input id="Universidade do Estado do Rio de Janeiro " type="checkbox" name="Universidade do Estado do Rio de Janeiro ">
+            <label for="Universidade do Estado do Rio de Janeiro " class="filter__label">Universidade do Estado do Rio de Janeiro  (25)</label>
+          </li>
+          
+          <li>
+            <input id="BMJ Publishing Group " type="checkbox" name="BMJ Publishing Group ">
+            <label for="BMJ Publishing Group " class="filter__label">BMJ Publishing Group  (24)</label>
+          </li>
+          
+          <li>
+            <input id="KeAi " type="checkbox" name="KeAi ">
+            <label for="KeAi " class="filter__label">KeAi  (24)</label>
+          </li>
+          
+          <li>
+            <input id="KeAi Communications Co. Ltd. " type="checkbox" name="KeAi Communications Co. Ltd. ">
+            <label for="KeAi Communications Co. Ltd. " class="filter__label">KeAi Communications Co. Ltd.  (24)</label>
+          </li>
+          
+          <li>
+            <input id="Lodz University Press " type="checkbox" name="Lodz University Press ">
+            <label for="Lodz University Press " class="filter__label">Lodz University Press  (24)</label>
+          </li>
+          
+          <li>
+            <input id="Muhammadiyah University Press " type="checkbox" name="Muhammadiyah University Press ">
+            <label for="Muhammadiyah University Press " class="filter__label">Muhammadiyah University Press  (24)</label>
+          </li>
+          
+        </ul>
+      </div>
+    </li>
+
+    <!-- Publisher country -->
+    <li class="filter">
+      <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-publisher-country" aria-expanded="false">
+        Publishers’ countries
+        <span data-feather="chevron-down" aria-hidden="true"></span>
+      </h3>
+      <div id="filter-publisher-country" class="collapse filter__body" aria-expanded="false">
+        
+        <label for="search-publisher-country" class="sr-only">Search 122 countries</label>
+        <input type="text" name="search-publisher-country" class="filter__search" placeholder="Search 122 countries">
+        
+
+        <ul class="filter__choices">
+          
+          <li>
+            <input id="Indonesia " type="checkbox" name="Indonesia ">
+            <label for="Indonesia " class="filter__label">Indonesia  (1646)</label>
+          </li>
+          
+          <li>
+            <input id="United Kingdom " type="checkbox" name="United Kingdom ">
+            <label for="United Kingdom " class="filter__label">United Kingdom  (1636)</label>
+          </li>
+          
+          <li>
+            <input id="Brazil " type="checkbox" name="Brazil ">
+            <label for="Brazil " class="filter__label">Brazil  (1461)</label>
+          </li>
+          
+          <li>
+            <input id="United States " type="checkbox" name="United States ">
+            <label for="United States " class="filter__label">United States  (772)</label>
+          </li>
+          
+          <li>
+            <input id="Spain " type="checkbox" name="Spain ">
+            <label for="Spain " class="filter__label">Spain  (768)</label>
+          </li>
+          
+          <li>
+            <input id="Poland " type="checkbox" name="Poland ">
+            <label for="Poland " class="filter__label">Poland  (622)</label>
+          </li>
+          
+          <li>
+            <input id="Iran, Islamic Republic of " type="checkbox" name="Iran, Islamic Republic of ">
+            <label for="Iran, Islamic Republic of " class="filter__label">Iran, Islamic Republic of  (542)</label>
+          </li>
+          
+          <li>
+            <input id="Turkey " type="checkbox" name="Turkey ">
+            <label for="Turkey " class="filter__label">Turkey  (413)</label>
+          </li>
+          
+          <li>
+            <input id="Italy " type="checkbox" name="Italy ">
+            <label for="Italy " class="filter__label">Italy  (411)</label>
+          </li>
+          
+          <li>
+            <input id="Russian Federation " type="checkbox" name="Russian Federation ">
+            <label for="Russian Federation " class="filter__label">Russian Federation  (398)</label>
+          </li>
+          
+          <li>
+            <input id="Colombia " type="checkbox" name="Colombia ">
+            <label for="Colombia " class="filter__label">Colombia  (368)</label>
+          </li>
+          
+          <li>
+            <input id="Romania " type="checkbox" name="Romania ">
+            <label for="Romania " class="filter__label">Romania  (344)</label>
+          </li>
+          
+          <li>
+            <input id="Switzerland " type="checkbox" name="Switzerland ">
+            <label for="Switzerland " class="filter__label">Switzerland  (335)</label>
+          </li>
+          
+          <li>
+            <input id="Ukraine " type="checkbox" name="Ukraine ">
+            <label for="Ukraine " class="filter__label">Ukraine  (326)</label>
+          </li>
+          
+          <li>
+            <input id="India " type="checkbox" name="India ">
+            <label for="India " class="filter__label">India  (288)</label>
+          </li>
+          
+          <li>
+            <input id="Germany " type="checkbox" name="Germany ">
+            <label for="Germany " class="filter__label">Germany  (264)</label>
+          </li>
+          
+          <li>
+            <input id="Argentina " type="checkbox" name="Argentina ">
+            <label for="Argentina " class="filter__label">Argentina  (258)</label>
+          </li>
+          
+          <li>
+            <input id="Netherlands " type="checkbox" name="Netherlands ">
+            <label for="Netherlands " class="filter__label">Netherlands  (248)</label>
+          </li>
+          
+          <li>
+            <input id="France " type="checkbox" name="France ">
+            <label for="France " class="filter__label">France  (231)</label>
+          </li>
+          
+          <li>
+            <input id="Serbia " type="checkbox" name="Serbia ">
+            <label for="Serbia " class="filter__label">Serbia  (187)</label>
+          </li>
+          
+          <li>
+            <input id="Canada " type="checkbox" name="Canada ">
+            <label for="Canada " class="filter__label">Canada  (169)</label>
+          </li>
+          
+          <li>
+            <input id="Mexico " type="checkbox" name="Mexico ">
+            <label for="Mexico " class="filter__label">Mexico  (138)</label>
+          </li>
+          
+          <li>
+            <input id="Korea, Republic of " type="checkbox" name="Korea, Republic of ">
+            <label for="Korea, Republic of " class="filter__label">Korea, Republic of  (128)</label>
+          </li>
+          
+          <li>
+            <input id="Croatia " type="checkbox" name="Croatia ">
+            <label for="Croatia " class="filter__label">Croatia  (122)</label>
+          </li>
+          
+          <li>
+            <input id="Chile " type="checkbox" name="Chile ">
+            <label for="Chile " class="filter__label">Chile  (121)</label>
+          </li>
+          
+          <li>
+            <input id="China " type="checkbox" name="China ">
+            <label for="China " class="filter__label">China  (121)</label>
+          </li>
+          
+          <li>
+            <input id="Czechia " type="checkbox" name="Czechia ">
+            <label for="Czechia " class="filter__label">Czechia  (120)</label>
+          </li>
+          
+          <li>
+            <input id="Australia " type="checkbox" name="Australia ">
+            <label for="Australia " class="filter__label">Australia  (114)</label>
+          </li>
+          
+          <li>
+            <input id="Portugal " type="checkbox" name="Portugal ">
+            <label for="Portugal " class="filter__label">Portugal  (112)</label>
+          </li>
+          
+          <li>
+            <input id="Norway " type="checkbox" name="Norway ">
+            <label for="Norway " class="filter__label">Norway  (106)</label>
+          </li>
+          
+          <li>
+            <input id="Cuba " type="checkbox" name="Cuba ">
+            <label for="Cuba " class="filter__label">Cuba  (101)</label>
+          </li>
+          
+          <li>
+            <input id="South Africa " type="checkbox" name="South Africa ">
+            <label for="South Africa " class="filter__label">South Africa  (99)</label>
+          </li>
+          
+          <li>
+            <input id="Lithuania " type="checkbox" name="Lithuania ">
+            <label for="Lithuania " class="filter__label">Lithuania  (83)</label>
+          </li>
+          
+          <li>
+            <input id="Peru " type="checkbox" name="Peru ">
+            <label for="Peru " class="filter__label">Peru  (73)</label>
+          </li>
+          
+          <li>
+            <input id="Malaysia " type="checkbox" name="Malaysia ">
+            <label for="Malaysia " class="filter__label">Malaysia  (70)</label>
+          </li>
+          
+          <li>
+            <input id="Costa Rica " type="checkbox" name="Costa Rica ">
+            <label for="Costa Rica " class="filter__label">Costa Rica  (67)</label>
+          </li>
+          
+          <li>
+            <input id="Bulgaria " type="checkbox" name="Bulgaria ">
+            <label for="Bulgaria " class="filter__label">Bulgaria  (66)</label>
+          </li>
+          
+          <li>
+            <input id="Ecuador " type="checkbox" name="Ecuador ">
+            <label for="Ecuador " class="filter__label">Ecuador  (63)</label>
+          </li>
+          
+          <li>
+            <input id="Pakistan " type="checkbox" name="Pakistan ">
+            <label for="Pakistan " class="filter__label">Pakistan  (59)</label>
+          </li>
+          
+          <li>
+            <input id="Slovenia " type="checkbox" name="Slovenia ">
+            <label for="Slovenia " class="filter__label">Slovenia  (59)</label>
+          </li>
+          
+          <li>
+            <input id="Austria " type="checkbox" name="Austria ">
+            <label for="Austria " class="filter__label">Austria  (53)</label>
+          </li>
+          
+          <li>
+            <input id="Iraq " type="checkbox" name="Iraq ">
+            <label for="Iraq " class="filter__label">Iraq  (49)</label>
+          </li>
+          
+          <li>
+            <input id="Slovakia " type="checkbox" name="Slovakia ">
+            <label for="Slovakia " class="filter__label">Slovakia  (49)</label>
+          </li>
+          
+          <li>
+            <input id="Belgium " type="checkbox" name="Belgium ">
+            <label for="Belgium " class="filter__label">Belgium  (44)</label>
+          </li>
+          
+          <li>
+            <input id="Sweden " type="checkbox" name="Sweden ">
+            <label for="Sweden " class="filter__label">Sweden  (43)</label>
+          </li>
+          
+          <li>
+            <input id="Finland " type="checkbox" name="Finland ">
+            <label for="Finland " class="filter__label">Finland  (39)</label>
+          </li>
+          
+          <li>
+            <input id="Greece " type="checkbox" name="Greece ">
+            <label for="Greece " class="filter__label">Greece  (37)</label>
+          </li>
+          
+          <li>
+            <input id="Hungary " type="checkbox" name="Hungary ">
+            <label for="Hungary " class="filter__label">Hungary  (36)</label>
+          </li>
+          
+          <li>
+            <input id="Japan " type="checkbox" name="Japan ">
+            <label for="Japan " class="filter__label">Japan  (35)</label>
+          </li>
+          
+          <li>
+            <input id="Moldova, Republic of " type="checkbox" name="Moldova, Republic of ">
+            <label for="Moldova, Republic of " class="filter__label">Moldova, Republic of  (32)</label>
+          </li>
+          
+        </ul>
+      </div>
+    </li>
+
+    <!-- Peer review -->
+    <li class="filter">
+      <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-peer-review" aria-expanded="false">
+        Peer review types
+        <span data-feather="chevron-down" aria-hidden="true"></span>
+      </h3>
+      <div id="filter-peer-review" class="collapse filter__body" aria-expanded="false">
+        <ul class="filter__choices">
+          
+          <li>
+            <input id="Double blind peer review" type="checkbox" name="Double blind peer review">
+            <label for="Double blind peer review" class="filter__label">Double blind peer review (7638)</label>
+          </li>
+          
+          <li>
+            <input id="Blind peer review" type="checkbox" name="Blind peer review">
+            <label for="Blind peer review" class="filter__label">Blind peer review (4084)</label>
+          </li>
+          
+          <li>
+            <input id="Peer review" type="checkbox" name="Peer review">
+            <label for="Peer review" class="filter__label">Peer review (2550)</label>
+          </li>
+          
+          <li>
+            <input id="Open peer review" type="checkbox" name="Open peer review">
+            <label for="Open peer review" class="filter__label">Open peer review (136)</label>
+          </li>
+          
+          <li>
+            <input id="Editorial review" type="checkbox" name="Editorial review">
+            <label for="Editorial review" class="filter__label">Editorial review (128)</label>
+          </li>
+          
+        </ul>
+      </div>
+    </li>
+
+
+    <!-- Date added -->
+    <li class="filter">
+      <h3 class="filter__heading" type="button" data-toggle="collapse" data-target="#filter-date-added" aria-expanded="false">
+        Date added
+        <span data-feather="chevron-down" aria-hidden="true"></span>
+      </h3>
+      <div id="filter-date-added" class="collapse filter__body" aria-expanded="false">
+        <ul class="filter__choices">
+          
+          <li>
+            <input id="2020" type="checkbox" name="2020">
+            <label for="2020" class="filter__label">2020 (805)</label>
+          </li>
+          
+          <li>
+            <input id="2019" type="checkbox" name="2019">
+            <label for="2019" class="filter__label">2019 (1951)</label>
+          </li>
+          
+          <li>
+            <input id="2018" type="checkbox" name="2018">
+            <label for="2018" class="filter__label">2018 (2240)</label>
+          </li>
+          
+          <li>
+            <input id="2017" type="checkbox" name="2017">
+            <label for="2017" class="filter__label">2017 (2450)</label>
+          </li>
+          
+          <li>
+            <input id="2016" type="checkbox" name="2016">
+            <label for="2016" class="filter__label">2016 (1628)</label>
+          </li>
+          
+          <li>
+            <input id="2015" type="checkbox" name="2015">
+            <label for="2015" class="filter__label">2015 (1250)</label>
+          </li>
+          
+          <li>
+            <input id="2014" type="checkbox" name="2014">
+            <label for="2014" class="filter__label">2014 (378)</label>
+          </li>
+          
+          <li>
+            <input id="2013" type="checkbox" name="2013">
+            <label for="2013" class="filter__label">2013 (855)</label>
+          </li>
+          
+          <li>
+            <input id="2012" type="checkbox" name="2012">
+            <label for="2012" class="filter__label">2012 (521)</label>
+          </li>
+          
+          <li>
+            <input id="2011" type="checkbox" name="2011">
+            <label for="2011" class="filter__label">2011 (508)</label>
+          </li>
+          
+          <li>
+            <input id="2010" type="checkbox" name="2010">
+            <label for="2010" class="filter__label">2010 (554)</label>
+          </li>
+          
+          <li>
+            <input id="2009" type="checkbox" name="2009">
+            <label for="2009" class="filter__label">2009 (297)</label>
+          </li>
+          
+          <li>
+            <input id="2008" type="checkbox" name="2008">
+            <label for="2008" class="filter__label">2008 (276)</label>
+          </li>
+          
+          <li>
+            <input id="2007" type="checkbox" name="2007">
+            <label for="2007" class="filter__label">2007 (176)</label>
+          </li>
+          
+          <li>
+            <input id="2006" type="checkbox" name="2006">
+            <label for="2006" class="filter__label">2006 (154)</label>
+          </li>
+          
+          <li>
+            <input id="2005" type="checkbox" name="2005">
+            <label for="2005" class="filter__label">2005 (161)</label>
+          </li>
+          
+          <li>
+            <input id="2004" type="checkbox" name="2004">
+            <label for="2004" class="filter__label">2004 (189)</label>
+          </li>
+          
+          <li>
+            <input id="2003" type="checkbox" name="2003">
+            <label for="2003" class="filter__label">2003 (161)</label>
+          </li>
+          
+          <li>
+            <input id="2002" type="checkbox" name="2002">
+            <label for="2002" class="filter__label">2002 (22)</label>
+          </li>
+          
+        </ul>
+      </div>
+    </li>
+
+  </ul>
+
+  <p class="input-group">
+    <button class="input-group__input" type="button">
+      <span data-feather="share-2" aria-hidden="true"></span> Share
+    </button>
+    <button class="input-group__input" type="button">
+      <span data-feather="code" aria-hidden="true"></span> Embed
+    </button>
+  </p>
+</aside>
+
+        </div>
+
+        <div class="col-md-9">
+          <nav class="search-options">
+  <h3 class="sr-only">Display options</h3>
+  <div class="row">
+    <div class="col-xs-6">
+      <label for="sort-by">Sort by</label>
+      <select name="sort-by" id="sort-by">
+        <option value="">Added to DOAJ (newest first)</option>
+        <option value="">Added to DOAJ (oldest first)</option>
+        <option value="">Last updated (most recent first)</option>
+        <option value="">Last updated (less recent first)</option>
+        <option value="">Title (A-Z)</option>
+        <option value="">Title (Z-A)</option>
+        <option value="">Relevance</option>
+      </select>
+    </div>
+    <div class="col-xs-6 search-options__right">
+      <label for="results-per-page">Results per page</label>
+      <select name="results-per-page" id="results-per-page">
+        <option value="all">50</option>
+        <option value="all">100</option>
+        <option value="all">200</option>
+      </select>
+    </div>
+  </div>
+</nav>
+
+<nav class="pagination">
+  <h3 class="sr-only">Jump to…</h3>
+  <ul>
+    <li><a href=""><span data-feather="chevrons-left" aria-hidden="true"></span> First</a></li>
+    <li><a href=""><span data-feather="chevron-left" aria-hidden="true"></span> Previous</a></li>
+    <li><strong>Page 1 of 298</strong></li>
+    <li><a href="">Next <span data-feather="chevron-right" aria-hidden="true"></span></a></li>
+    <li><a href="">Last <span data-feather="chevrons-right" aria-hidden="true"></span></a></li>
+  </ul>
+</nav>
+
+
+<ol class="search-results">
+  
+
+  
+  
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          
+          <a href="/apply/seal/" class="tag tag--featured">
+            <span data-feather="check-circle" aria-hidden="true"></span>
+            DOAJ Seal
+          </a>
+          
+          <h3 class="search-results__heading">
+            <a href="../journal-details">
+              Innovative Marketing
+            </a>
+            <span class="search-results__subheading">Інноваційний маркетинг</span>
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published by <em>Example of a publisher’s name</em> in <strong>Ukraine</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>English</strong>
+            </li>
+          </ul>
+          <ul>
+            
+            
+            <li>Social Sciences. Marketing. Distribution of products</li>
+            
+          <ul>
+        </ul>
+</ul>
+</div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            Last updated on 5 June 2020
+            
+          </li>
+          
+          <li>
+            602 articles indexed
+          </li>
+          
+          <li>
+            <a href="https://businessperspectives.org/journals/innovative-marketing?category_id=30" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            APCs: <strong>€595 (EUR)</strong>
+          </li>
+          <li>
+            <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BYCC BY-NC</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  
+  
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          
+          <h3 class="search-results__heading">
+            <a href="../journal-details-2">
+              Yeni Üroloji Dergisi
+            </a>
+            <span class="search-results__subheading">The New Journal of Urology</span>
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published by <em>Ali İhsan Taşçı</em> in <strong>Turkey</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>Turkish, English</strong>
+            </li>
+          </ul>
+          <ul>
+            
+            
+            <li>Medicine. Diseases of the genitourinary system. Urology</li>
+            
+          <ul>
+        </ul>
+</ul>
+</div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            Added on 13 May 2020
+          </li>
+          
+          <li>
+            79 articles indexed
+          </li>
+          
+          <li>
+            <a href="https://dergipark.org.tr/en/pub/yud" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            <strong>No</strong> charges
+          </li>
+          <li>
+            <a href="https://creativecommons.org/licenses/by-nc/2.0/" target="_blank" rel="noopener">CC BY-NC</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  
+  
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          
+          <h3 class="search-results__heading">
+            <a href="../journal-details">
+              Linguagem &amp; Ensino
+            </a>
+            <span class="search-results__subheading">Linguagem e Ensino</span>
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published by <em>Universidade Federal de Pelotas (UFPel)</em> in <strong>Brazil</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>Portuguese, Spanish, English</strong>
+            </li>
+          </ul>
+          <ul>
+            
+            
+            <li>Language and Literature. Linguistics </li>
+            
+            <li> Literature (General)</li>
+            
+          <ul>
+        </ul>
+</ul>
+</div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            Added on 13 May 2020
+          </li>
+          
+          <li>
+            <a href="https://periodicos.ufpel.edu.br/ojs2/index.php/rle" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            <strong>No</strong> charges
+          </li>
+          <li>
+            <a href="https://creativecommons.org/licenses/by-nc-nd/2.0/" target="_blank" rel="noopener">CC BY-NC-ND</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  
+  
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          
+          <h3 class="search-results__heading">
+            <a href="../journal-details">
+              Access Microbiology
+            </a>
+            
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published by <em>Example of a publisher’s name</em> in <strong>United Kingdom</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>English</strong>
+            </li>
+          </ul>
+          <ul>
+            
+            
+            <li>Science: Microbiology</li>
+            
+          <ul>
+        </ul>
+</ul>
+</div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            Added on 13 May 2020
+          </li>
+          
+          <li>
+            <a href="https://www.microbiologyresearch.org/content/journal/acmi" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            APCs: <strong>£700 (GBP)</strong>
+          </li>
+          <li>
+            <a href="https://creativecommons.org/licenses/by-nc/2.0/" target="_blank" rel="noopener">CC BY-NC</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  
+  
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          
+          <h3 class="search-results__heading">
+            <a href="../journal-details">
+              M@n@gement
+            </a>
+            <span class="search-results__subheading">Management</span>
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published by <em>AIMS</em> in <strong>France</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>English</strong>
+            </li>
+          </ul>
+          <ul>
+            
+            
+            <li>Social Sciences. Industries. Land use. Management. Industrial management </li>
+            
+            <li> Business</li>
+            
+          <ul>
+        </ul>
+</ul>
+</div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            Added on 13 May 2020
+          </li>
+          
+          <li>
+            <a href="https://management-aims.com/index.php/mgmt" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            <strong>No</strong> charges
+          </li>
+          <li>
+            <a href="https://creativecommons.org/licenses/by-nc/2.0/" target="_blank" rel="noopener">CC BY-NC</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  
+  
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          
+          <h3 class="search-results__heading">
+            <a href="../journal-details">
+              Entomological Communications
+            </a>
+            
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published by <em>Sociedade Entomológica do Brasil</em> in <strong>Brazil</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>Portuguese, English</strong>
+            </li>
+          </ul>
+          <ul>
+            
+            
+            <li>Science: Zoology</li>
+            
+          <ul>
+        </ul>
+</ul>
+</div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            Added on 13 May 2020
+          </li>
+          
+          <li>
+            0 articles indexed
+          </li>
+          
+          <li>
+            <a href="https://www.entomologicalcommunications.org/" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            APCs: <strong>$250 BRL</strong>
+          </li>
+          <li>
+            <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  
+  
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          
+          <h3 class="search-results__heading">
+            <a href="../journal-details">
+              Biología Acuática
+            </a>
+            
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published by <em>Instituto de Limnología Raúl A. Ringuelet. (CONICET-UNLP)</em> in <strong>Argentina</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>Spanish</strong>
+            </li>
+          </ul>
+          <ul>
+            
+            
+            <li>Agriculture: Aquaculture. Fisheries. Angling </li>
+            
+            <li> Science: Biology (General) </li>
+            
+            <li> Science: Physiology: Animal biochemistry</li>
+            
+          <ul>
+        </ul>
+</ul>
+</div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            Added on 13 May 2020
+          </li>
+          
+          <li>
+            <a href="https://revistas.unlp.edu.ar/bacuatica/" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            <strong>No</strong> charges
+          </li>
+          <li>
+            <a href="https://creativecommons.org/licenses/by-nc-sa/2.0/" target="_blank" rel="noopener">CC BY-NC-SA</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  
+  
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          
+          <h3 class="search-results__heading">
+            <a href="../journal-details">
+              Медицина катастроф
+            </a>
+            <span class="search-results__subheading">Disaster Medicine</span>
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published by <em>Ministry of Health of the Russian Federation, All-Russian Centre for Disaster Medicine «Zashchita»</em> in <strong>Russian Federation</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>Russian</strong>
+            </li>
+          </ul>
+          <ul>
+            
+            
+            <li>Medicine: Internal medicine: Medical emergencies. Critical care. Intensive care. First aid</li>
+            
+          <ul>
+        </ul>
+</ul>
+</div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            Added on 13 May 2020
+          </li>
+          
+          <li>
+            <a href="http://medkatjorn.vcmk.ru/en/" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            <strong>No</strong> charges
+          </li>
+          <li>
+            <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  
+  
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          
+          <h3 class="search-results__heading">
+            <a href="../journal-details">
+              Acta Sting
+            </a>
+            
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published by <em>Example of a publisher’s name</em> in <strong>Czechia</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>Slovak, Czech, English</strong>
+            </li>
+          </ul>
+          <ul>
+            
+            
+            <li>Social Sciences: Economic history and conditions </li>
+            
+            <li> Social Sciences: Finance</li>
+            
+          <ul>
+        </ul>
+</ul>
+</div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            Added on 13 May 2020
+          </li>
+          
+          <li>
+            <a href="https://www.sting.cz/acta-sting-en/" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            <strong>No</strong> charges
+          </li>
+          <li>
+            <a href="https://creativecommons.org/licenses/by-nc-sa/2.0/" target="_blank" rel="noopener">CC BY-NC-SA</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  
+  
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          
+          <h3 class="search-results__heading">
+            <a href="../journal-details">
+              Inform: Jurnal Ilmiah Bidang Teknologi Informasi dan Komunikasi
+            </a>
+            
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published by <em>Universitas Dr Soetomo</em> in <strong>Indonesia</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>Indonesian, English</strong>
+            </li>
+          </ul>
+          <ul>
+            
+            
+            <li>Technology: Electrical engineering. Electronics. Nuclear engineering: Electronics: Computer engineering. Computer hardware</li>
+            
+          <ul>
+        </ul>
+</ul>
+</div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            Added on 13 May 2020
+          </li>
+          
+          <li>
+            <a href="https://ejournal.unitomo.ac.id/index.php/inform/index" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            <strong>No</strong> charges
+          </li>
+          <li>
+            <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener">CC BY-SA</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  
+  
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-8 search-results__main">
+        <header>
+          
+          <h3 class="search-results__heading">
+            <a href="../journal-details">
+              Indonesia Accounting Journal
+            </a>
+            
+          </h3>
+        </header>
+        <div class="search-results__body">
+          <ul>
+            <li>
+              Published by <em>Sam Ratulangi University</em> in <strong>Indonesia</strong>
+            </li>
+            <li>
+              Accepts manuscripts in <strong>Indonesian, English</strong>
+            </li>
+          </ul>
+          <ul>
+            
+            
+            <li>Social Sciences: Finance</li>
+            
+          <ul>
+        </ul>
+</ul>
+</div>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <ul>
+          <li>
+            Added on 13 May 2020
+          </li>
+          
+          <li>
+            <a href="https://ejournal.unsrat.ac.id/index.php/iaj/index" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>
+          </li>
+          <li>
+            <strong>No</strong> charges
+          </li>
+          <li>
+            <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY</a>
+          </li>
+        </ul>
+      </aside>
+    </article>
+  </li>
+  
+</ol>
+
+<nav class="pagination">
+  <h3 class="sr-only">Jump to…</h3>
+  <ul>
+    <li><a href=""><span data-feather="chevrons-left" aria-hidden="true"></span> First</a></li>
+    <li><a href=""><span data-feather="chevron-left" aria-hidden="true"></span> Previous</a></li>
+    <li><strong>Page 1 of 298</strong></li>
+    <li><a href="">Next <span data-feather="chevron-right" aria-hidden="true"></span></a></li>
+    <li><a href="">Last <span data-feather="chevrons-right" aria-hidden="true"></span></a></li>
+  </ul>
+</nav>
+
+
+        </div>
+      </div>
+
+      
+
+      <div class="modal" id="modal-help" tabindex="-1" role="dialog" aria-labelledby="modalLabel-help">
+        <div class="modal__dialog" role="document">
+          <p class="label">Tips</p>
+          <h3 class="modal__title" id="modalLabel-help">
+            Improving your search results
+          </h3>
+          <ul>
+            <li>Use the facets and filters (on the left) to refine your search.</li>
+            <li>Use the dropdown menus (at the top) to sort the results.</li>
+            <li>A search query of more than one word will be treated as a phrase.</li>
+            <li>Use <code>" "</code> around the title to search full journal or article titles.</li>
+          </ul>
+          <button type="button" data-dismiss="modal" class="modal__close">Close</button>
+        </div>
+      </div>
     </main>
-
 
     <footer class="page-footer">
   <div class="container">
@@ -2487,13 +2368,6 @@
   </div>
 </footer>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<script src="../../js/vendors/bootstrap.js"></script>
-
-<!-- Feather icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-
 <script>
   // Use Feather icons
   feather.replace()
@@ -2540,7 +2414,7 @@
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
@@ -2571,9 +2445,9 @@
       }, 50, 'linear');
     }
   } );
+
 </script>
 
   </body>
 
 </html>
-
