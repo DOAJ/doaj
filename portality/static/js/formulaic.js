@@ -772,29 +772,53 @@ var formulaic = {
             this.ns = "formulaic-taglist";
 
             this.init = function() {
-
-                var minInputLength = edges.getParam(this.args.minimumInputLength, 1);
-                var tokenSeparators = edges.getParam(this.args.tokenSeparators, [","]);
-                var maximumSelectionSize = edges.getParam(this.args.maximumSelectionSize, 6);
                 var stopWords = edges.getParam(this.args.stopWords, []);
 
-                this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                // this.elements.select2({      //TODO: select2 is not a function
-                //     minimumInputLength: minInputLength,
-                //     tags: [],
-                //     tokenSeparators: tokenSeparators,
-                //     maximumSelectionSize: maximumSelectionSize,
-                //     createSearchChoice : function(term) {   // NOTE: if we update select2, this has to change
-                //         if ($.inArray(term, stopWords) !== -1) {
-                //             return null;
-                //         }
-                //         return {id: $.trim(term), text: $.trim(term)};
-                //     }
-                // });
+                var ajax = {
+                    url: current_scheme + "//" + current_domain + "/autocomplete/journal/" + this.args["field"],
+                    dataType: 'json',
+                    data: function (term, page) {
+                        return {
+                            q: term
+                        };
+                    },
+                    results: function (data, page) {
+                        return {results: data["suggestions"]};
+                    }
+                };
+
+                var csc = function (term) {
+                    if ($.inArray(term, stopWords) !== -1) {
+                        return null;
+                    }
+                    return {id: $.trim(term), text: $.trim(term)};
+                }
+
+
+                var initSel = function (element, callback) {
+                    var data = {id: element.val(), text: element.val()};
+                    callback(data);
+                };
+
+                // apply the create search choice
+                $("[name='" + this.fieldDef.name + "']").select2({
+                    multiple: true,
+                    minimumInputLength: 1,
+                    ajax: ajax,
+                    createSearchChoice: csc,
+                    initSelection: initSel,
+                    placeholder: "Choose a value",
+                    allowClear: false,
+                    tags: true,
+                    tokenSeparators: [','],
+                    maximumSelectionSize: this.args["maximumSelectionSize"]
+                });
+
             };
 
-            this.init();
-        },
+                this.init();
+            },
+
 
         newAutocomplete: function(params){
             return edges.instantiate(formulaic.widgets.Autocomplete, params);

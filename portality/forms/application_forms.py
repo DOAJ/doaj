@@ -301,7 +301,6 @@ class FieldDefinitions:
         "name": "language",
         "label": "Languages in which the journal accepts manuscripts",
         "input": "select",
-        "multiple": True,   # FIXME: is this correct?
         "options_fn": "iso_language_list",
         "repeatable": {
             "initial": 5
