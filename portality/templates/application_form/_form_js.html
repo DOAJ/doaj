@@ -141,9 +141,21 @@
                     //this required the check if the value is actually set up
                     result += $(inp).find('option:selected').text();
                 //})
-                $(question).html(result)
+                $(question).html(result);
             }
-
+            else if (input.length > 1) {
+                let result = "";
+                input.each((idx,inp) => {
+                    let val = $(inp).val();
+                    if (val !== ""){
+                        result += $(inp).val() + ", ";
+                        if (idx < input.length-1){
+                            result += ", ";
+                        }
+                    }
+                });
+                $(question).html(result);
+            }
             else {
                 let type = input.attr("type");
                 if (type === "text" || type === "number"){
