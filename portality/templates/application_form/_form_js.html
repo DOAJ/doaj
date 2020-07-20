@@ -152,7 +152,18 @@
                 }
                 else if (type === "radio") {
                     if (input.is(":checked")){
-                        $(question).html(input.filter(':checked').val())
+                        let val = input.filter(':checked').val()
+                        if (val === "y") {
+                            $(question).html("Yes");
+                        }
+                        else if (val === "n"){
+                            $(question).html("No");
+                        }
+                        else if (val === "") {}
+                        else {
+                            $(question).html("Oops, something went wrong! You shouldn't see that, please contact support");
+                        }
+
                     }
                 }
                 else if (type === "select") {
