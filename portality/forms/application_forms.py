@@ -301,6 +301,7 @@ class FieldDefinitions:
         "name": "language",
         "label": "Languages in which the journal accepts manuscripts",
         "input": "select",
+        "default" : "",
         "options_fn": "iso_language_list",
         "repeatable": {
             "initial": 5
@@ -333,7 +334,7 @@ class FieldDefinitions:
         "name": "publisher_country",
         "label": "Country",
         "input": "select",
-        "default" : "",
+        "default": "",
         "options_fn": "iso_country_list",
         "help": {
             "long_help": ["The country where the publisher carries out its business operations and is registered."],
