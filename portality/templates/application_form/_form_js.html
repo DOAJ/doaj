@@ -139,58 +139,57 @@
                 let result = "";
                 //input.each((idx,inp) => {
                     //this required the check if the value is actually set up
-                    result += $(inp).find('option:selected').text();
+                    result += $(input).find('option:selected').text();
                 //})
                 $(question).html(result);
             }
-            else if (input.length > 1) {
-                let result = "";
-                input.each((idx,inp) => {
-                    let val = $(inp).val();
-                    if (val !== ""){
-                        result += $(inp).val() + ", ";
-                        if (idx < input.length-1){
-                            result += ", ";
-                        }
-                    }
-                });
-                $(question).html(result);
-            }
             else {
-                let type = input.attr("type");
-                if (type === "text" || type === "number"){
-                    $(question).html(input.val())
-                }
-                else if (type === "url") {
-                    $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>')
-                }
-                else if (type === "radio") {
-                    if (input.is(":checked")){
-                        let val = input.filter(':checked').val()
-                        if (val === "y") {
-                            $(question).html("Yes");
+                if (id === "keywords__review_value"){
+                    let result = "";
+                    input.each((idx,inp) => {
+                        let val = $(inp).val();
+                        if (val !== ""){
+                            result += $(inp).val() + ", ";
+                            if (idx < input.length-1){
+                                result += ", ";
+                            }
                         }
-                        else if (val === "n"){
-                            $(question).html("No");
-                        }
-                        else if (val === "") {}
-                        else {
-                            $(question).html("Oops, something went wrong! You shouldn't see that, please contact support");
-                        }
-
-                    }
-                }
-                else if (type === "select") {
-                    $(question).html(input.filter(':selected').text());
+                    });
+                    $(question).html(result);
                 }
                 else {
-                    let result = ''
-                    input.each((idx, i) => {
-                        if ($(i).is(":checked")){
-                            result += $(i).val() + ", ";
+                    let type = input.attr("type");
+                    if (type === "text" || type === "number"){
+                        $(question).html(input.val())
+                    }
+                    else if (type === "url") {
+                        $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>')
+                    }
+                    else if (type === "radio") {
+                        if (input.is(":checked")){
+                            let val = input.filter(':checked').val()
+                            if (val === "y") {
+                                $(question).html("Yes");
+                            }
+                            else if (val === "n"){
+                                $(question).html("No");
+                            }
+                            else if (val === "") {}
+                            else {
+                                $(question).html("Oops, something went wrong! You shouldn't see that, please contact support");
+                            }
+
                         }
-                    } )
-                    $(question).html(result)
+                    }
+                    else if (type === "checkbox"){
+                        let result = ''
+                        input.each((idx, i) => {
+                            if ($(i).is(":checked")){
+                                result += $(i).val() + ", ";
+                            }
+                        } )
+                        $(question).html(result)
+                    }
                 }
             }
 
@@ -306,7 +305,7 @@
         });
     }
 
-    let currentTab = 1; // Current tab is set to be the first tab (0)
+    let currentTab = 0; // Current tab is set to be the first tab (0)
     let previousTab = 0;
     let tabs = $(".tab");
     let sections = $(".form-section");
