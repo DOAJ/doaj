@@ -134,13 +134,11 @@
             let id = $(question).attr('id')
             let name = id.substring(0,id.indexOf("__review_value"));
             let input = $("input[name='" + name + "']");
-            if (input.length === 0) {
-                input = $("[name='" + name + "']");
-                $(question).html(input.val())
-                if (input.length === 0) {
-                    console.log(id)
-                }
+            if (input.length === 0) {  //it's not input but select
+                input = $("[name^='" + name + "']");
+                $(question).html($(input.get(0)).find('option:selected').text())
             }
+
             else {
                 let type = input.attr("type");
                 if (type === "text" || type === "number"){
@@ -166,8 +164,7 @@
                     }
                 }
                 else if (type === "select") {
-                    console.log(input)
-
+                    $(question).html(input.filter(':selected').text());
                 }
                 else {
                     let result = ''
