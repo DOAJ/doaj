@@ -136,11 +136,10 @@
             let input = $("input[name='" + name + "']");
             if (input.length === 0) {
                 input = $("[name='" + name + "']");
-                if (input.length === 0){
-                    input = $("[name^='" + name + "']");
-                }
-                console.log(name, input)
                 $(question).html(input.val())
+                if (input.length === 0) {
+                    console.log(id)
+                }
             }
             else {
                 let type = input.attr("type");
