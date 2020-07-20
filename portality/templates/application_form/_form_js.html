@@ -137,10 +137,13 @@
             if (input.length === 0) {  //it's not input but select
                 input = $("[name^='" + name + "']");
                 let result = "";
-                //input.each((idx,inp) => {
-                    //this required the check if the value is actually set up
-                    result += $(input).find('option:selected').text();
-                //})
+                input.each((idx,inp) => {
+                    let val = $(inp).find('option:selected').text();
+                    if (val !== ""){
+                        result += val + ", ";
+                    }
+
+                })
                 $(question).html(result);
             }
             else {

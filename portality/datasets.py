@@ -28,7 +28,7 @@ def _generate_currency_options():
 
 def _generate_language_options():
     """ Gather the languages with 2-character codes (ISO 639-2b) """
-    language_options_ = []
+    language_options_ = [('', '')]
     for l in sorted(pycountry.languages, key=lambda x: x.name):
         try:
             language_options_.append((l.alpha_2.upper(), l.name))
