@@ -46,6 +46,35 @@
         });
     });
 
+    $(".conditional").each((idx,field) => {
+        let conditionValue = $(field).attr("value");
+        let fieldToHide = $("#" + $(field).attr("id").replace("__conditional","") + "__container");
+        $('[name="' + $(field).attr("name") + '"]').each((idx, input) => {
+            if ($(input).type === "radio") {
+                $(input).on("click", () => {
+                    if ($(input).is(':checked')) {
+                        if ($(input).val() === conditionValue) {
+                            fieldToHide.show();
+                        } else {
+                            fieldToHide.hide();
+                        }
+                    }
+                })
+            }
+            else {
+                $(input).on("click", () => {
+                    if ($(input).val() === conditionValue) {
+                        if ($(input).is(':checked')) {
+                            fieldToHide.show();
+                        } else {
+                            fieldToHide.hide();
+                        }
+                    }
+                })
+            }
+        });
+    });
+
     let showTab = (n) => {
         // This function will display the specified tab of the form ...
         //hide all other tabs
