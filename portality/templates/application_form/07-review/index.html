@@ -14,7 +14,6 @@
                     {% set fieldsests = tab.fieldsets %}
                     {% for fieldset in fieldsests %}
                         {% set fs = formulaic_context.fieldset(fieldset) %}
-                        {% if t.update({"val": t.val + 1}) %}{% endif %}
                         {% for f in fs.fields() %}
                             <tr>
                                 <td id="{{ f.name }}__review_label">{{ f.label }}</td>
@@ -22,6 +21,7 @@
                             </tr>
                         {% endfor %}
                     {% endfor %}
+                {% if t.update({"val": t.val + 1}) %}{% endif %}
                 </tbody>
             </table>
             <hr />
