@@ -1,12 +1,32 @@
-<main class="container">
-  <div class="row">
 
-    <div class="col-md-8">
-       <section class="page-content">
-        <p class="label">Documentation</p>
-        <h1>Widgets</h1>
 
-        <p>Widgets are tools that allow you to embed DOAJ into your site. There are two widgets available:</p>
+    <main class="container">
+      <div class="row">
+
+        <div class="col-md-4 col-md-push-8">
+          
+          <nav class="page-nav nav" data-spy="affix">
+            <h2 class="page-nav__heading">Jump to:</h2>
+            <ul class="page-nav__list">
+<li class="page-nav__item item-h2"><a href="#simple-search">Simple Search</a></li>
+<li class="page-nav__item item-h2">
+<a href="#fixed-query">Fixed Query</a>
+<ul class="page-nav__sublist">
+<li class="page-nav__item item-h3"><a href="#configuring-via-query_options">Configuring via QUERY_OPTIONS</a></li>
+</ul>
+</li>
+</ul>
+          </nav>
+
+          
+        </div>
+
+        <div class="col-md-8 col-md-pull-4">
+           <section class="page-content">
+            <p class="label">Docs</p>
+            <h1>Widgets</h1>
+
+            <p>Widgets are tools that allow you to embed DOAJ into your site. There are two widgets available:</p>
 
 <ol>
   <li>A Simple Search widget which embeds a search box on your page. Upon submitting the search, the user is taken to their search results on DOAJ.</li>
@@ -46,105 +66,98 @@
 <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"doaj-fixed-query-widget"</span><span class="nt">&gt;&lt;/div&gt;</span>
 </code></pre></div></div>
 
-<h3 id="configuring-via-query_options">Configuring via <code class="highlighter-rouge">QUERY_OPTIONS</code></h3>
+<h3 id="configuring-via-query_options">Configuring via <code class="highlighter-rouge">QUERY_OPTIONS</code>
+</h3>
 
-<p>There are a handful of options available, all are optional; omit them from <code class="highlighter-rouge">QUERY_OPTIONS</code> for the default behaviour.</p>
+<p>There are a handful of options available. All are optional; omit them from <code class="highlighter-rouge">QUERY_OPTIONS</code> for the default behaviour.</p>
 
-<dl>
-  <dt><code>query_string</code></dt>
-  <dd>
-    Accepts plain text: any text you might put in the search box
-  </dd>
-
-  <dt><code>query_field</code></dt>
-  <dd>
-    The field to query. Omit to search in any field, or specify one of these:
+<ul class="tabular-list">
+  <li>
+<code class="highlighter-rouge">query_string</code>
     <ul>
-      <li>
-        <code>bibjson.title</code>: title
-      </li>
-      <li>
-        <code>bibjson.keywords</code>: keywords
-      </li>
-      <li>
-        <code>index.classification</code>: subject
-      </li>
-      <li>
-        <code>index.issn.exact</code>: ISSN
-      </li>
-      <li>
-        <code>bibjson.identifier.id</code>: DOI
-      </li>
-      <li>
-        <code>index.country</code>: country of publisher
-      </li>
-      <li>
-        <code>index.language</code>: journal language
-      </li>
-      <li>
-        <code>index.publisher</code>: publisher name
+      <li>Accepts plain text: any text you might put in the search box</li>
+    </ul>
+  </li>
+  <li>
+<code class="highlighter-rouge">query_field</code>
+    <ul>
+      <li>The field to query. Omit to search in any field, or specify one of these:
+        <ul>
+          <li>
+<code class="highlighter-rouge">bibjson.title</code>: title</li>
+          <li>
+<code class="highlighter-rouge">bibjson.keywords</code>: keywords</li>
+          <li>
+<code class="highlighter-rouge">index.classification</code>: subject</li>
+          <li>
+<code class="highlighter-rouge">index.issn.exact</code>: ISSN</li>
+          <li>
+<code class="highlighter-rouge">bibjson.identifier.id</code>: DOI</li>
+          <li>
+<code class="highlighter-rouge">index.country</code>: country of publisher</li>
+          <li>
+<code class="highlighter-rouge">index.language</code>: journal language</li>
+          <li>
+<code class="highlighter-rouge">index.publisher</code>: publisher name</li>
+        </ul>
       </li>
     </ul>
-  </dd>
-
-  <dt><code>sort_field</code></dt>
-  <dd>
+  </li>
+  <li>
+<code class="highlighter-rouge">sort_field</code>
     <ul>
       <li>
-        <code>created_date</code>: sort by date added to DOAJ (default)
-      </li>
+<code class="highlighter-rouge">created_date</code>: sort by date added to DOAJ (default)</li>
       <li>
-        <code>index.unpunctitle.exact</code>: sort by title
+<code class="highlighter-rouge">index.unpunctitle.exact</code>: sort by title</li>
+    </ul>
+  </li>
+  <li>
+<code class="highlighter-rouge">sort_direction</code>
+    <ul>
+      <li>
+<code class="highlighter-rouge">asc</code>: ascending (default)</li>
+      <li>
+<code class="highlighter-rouge">desc</code>: descending</li>
+    </ul>
+  </li>
+  <li>
+<code class="highlighter-rouge">search_operator</code>
+    <ul>
+      <li>
+<code class="highlighter-rouge">AND</code>: use AND for the terms in the query string (default)</li>
+      <li>
+<code class="highlighter-rouge">OR</code>: use OR for the terms in the query string</li>
+    </ul>
+  </li>
+  <li>
+<code class="highlighter-rouge">search_type</code>
+    <ul>
+      <li>The type of result to show. Omit this property to show results of both type
+        <ul>
+          <li>
+<code class="highlighter-rouge">journal</code>: only show journals</li>
+          <li>
+<code class="highlighter-rouge">article</code>: only show articles</li>
+        </ul>
       </li>
     </ul>
-  </dd>
-
-  <dt><code>sort_direction</code></dt>
-  <dd>
+  </li>
+  <li>
+<code class="highlighter-rouge">page_size</code>
     <ul>
       <li>
-        <code>asc</code>: ascending (default)
-      </li>
-      <li>
-        <code>desc</code>: descending
-      </li>
+<code class="highlighter-rouge">integer</code>: how many results to show per page, 1 or more (default: 10)</li>
     </ul>
-  </dd>
-
-  <dt><code>search_operator</code></dt>
-  <dd>
+  </li>
+  <li>
+<code class="highlighter-rouge">page_from</code>
     <ul>
       <li>
-        <code>AND</code>: use AND for the terms in the query string (default)
-      </li>
-      <li>
-        <code>OR</code>: use OR for the terms in the query string
-      </li>
+<code class="highlighter-rouge">integer</code>: which result to start from initially, 0 or higher, (default 0)</li>
     </ul>
-  </dd>
-
-  <dt><code>search_type</code></dt>
-  <dd>
-    The type of result to show. Omit this property to show results of both type
-    <ul>
-      <li>
-        <code>journal</code>: only show journals
-      </li>
-      <li>
-        <code>article</code>: only show articles
-      </li>
-    </ul></dd>
-
-  <dt><code>page_size</code></dt>
-  <dd>
-    <code>integer</code>: how many results to show per page, 1 or more (default: 10)
-  </dd>
-
-  <dt><code>page_from</code></dt>
-  <dd>
-    <code>integer</code>: which result to start from initially, 0 or higher, (default 0)
-  </dd>
-</dl>
+  </li>
+</ul>
 
 <p>The parameter <code class="highlighter-rouge">QUERY_OPTIONS</code> takes a subset of fields to define which results to retrieve. The example above displays the journals containing the word <code class="highlighter-rouge">medicine</code> in the title and in alphabetical order. Configuration via these <code class="highlighter-rouge">QUERY_OPTIONS</code> provides a simplified way to display results by keyword.</p>
 
@@ -158,28 +171,12 @@
 
 
 
-        <!-- TODO: make this more elegant -->
-        <!-- Display data pages -->
-        
-      </section>
-    </div>
+            <!-- Display data pages -->
+            
+          </section>
+        </div>
 
-    <div class="col-md-4">
-      
-      <nav class="page-nav" data-spy="affix">
-        <h2 class="page-nav__heading">Jump to:</h2>
-        <a href="#" class="page-nav__top">Top of the page</a>
-        <ul class="page-nav__list">
-<li class="page-nav__item item-h2"><a href="#simple-search">Simple Search</a></li>
-<li class="page-nav__item item-h2"><a href="#fixed-query">Fixed Query</a>
-<ul class="page-nav__sublist">
-<li class="page-nav__item item-h3"><a href="#configuring-via-query_options">Configuring via QUERY_OPTIONS</a></li>
-</ul>
-</li>
-</ul>
-      </nav>
-      
-    </div>
+      </div>
+    </main>
 
-  </div>
-</main>
+

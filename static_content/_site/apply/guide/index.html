@@ -1,32 +1,55 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
   <meta charset="utf-8">
   <title>Directory of Open Access Journals</title>
-  <meta name="description" content="">
+  <meta name="description" content="DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 
-  <!-- <link rel="manifest" href="site.webmanifest">
-  <link rel="apple-touch-icon" href="icon.png"> -->
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <!-- generics -->
+  <link rel="icon" href="/img/favicon/32.png" sizes="32x32">
+  <link rel="icon" href="/img/favicon/57.png" sizes="57x57">
+  <link rel="icon" href="/img/favicon/76.png" sizes="76x76">
+  <link rel="icon" href="/img/favicon/96.png" sizes="96x96">
+  <link rel="icon" href="/img/favicon/128.png" sizes="128x128">
+  <link rel="icon" href="/img/favicon/192.png" sizes="192x192">
+  <link rel="icon" href="/img/favicon/228.png" sizes="228x228">
+
+  <!-- Android -->
+  <link rel="shortcut icon" sizes="196x196" href=“/img/favicon/196.png">
+
+  <!-- iOS -->
+  <link rel="apple-touch-icon" href="/img/favicon/120.png" sizes="120x120">
+  <link rel="apple-touch-icon" href="/img/favicon/152.png" sizes="152x152">
+  <link rel="apple-touch-icon" href="/img/favicon/180.png" sizes="180x180">
+
+  <!-- Windows 8 IE 10-->
+  <meta name="msapplication-TileColor" content="#F8F3EF">
+  <meta name="msapplication-TileImage" content="/img/favicon/144.png">
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
+
+  <meta name="theme-color" content="#F8F3EF">
 
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
 
-  <script src="../../js/vendors/bootstrap.js"></script>
-
-  <meta name="theme-color" content="#982E0A">
-
   <!-- Feather icons -->
   <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
+
 </head>
 
 
-  <body class="sidenav-page">
+  <body class="with-sidenav" data-spy="scroll" data-offset="70" style="position: relative;">
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -37,8 +60,11 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
-<svg height="30px" viewBox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
   <g id="logotype" fill="#FEFBF8" fill-rule="nonzero">
     <path d="M0,0.4219 L17.9297,0.4219 C24.8672,0.4688 30.0703,3.3516 33.5391,9.0703 C34.7812,10.9922 35.5664,13.0078 35.8945,15.1172 C36.1523,17.2266 36.2812,20.8711 36.2812,26.0508 C36.2812,31.5586 36.082,35.4023 35.6836,37.582 C35.4961,38.6836 35.2148,39.668 34.8398,40.5352 C34.4414,41.3789 33.9609,42.2578 33.3984,43.1719 C31.8984,45.5859 29.8125,47.5781 27.1406,49.1484 C24.4922,50.8359 21.2461,51.6797 17.4023,51.6797 L0,51.6797 L0,0.4219 Z M7.7695,44.332 L17.0508,44.332 C21.4102,44.332 24.5742,42.8438 26.543,39.8672 C27.4102,38.7656 27.9609,37.3711 28.1953,35.6836 C28.4062,34.0195 28.5117,30.9023 28.5117,26.332 C28.5117,21.8789 28.4062,18.6914 28.1953,16.7695 C27.9141,14.8477 27.2461,13.2891 26.1914,12.0938 C24.0352,9.1172 20.9883,7.6758 17.0508,7.7695 L7.7695,7.7695 L7.7695,44.332 Z"></path>
@@ -51,17 +77,23 @@
           </a>
         </div>
         <nav class="col-xs-8 col-sm-6">
+          <h2 class="sr-only">Main actions</h2>
           <ul class="nav-bar">
-            <li class="dropdown">
-              <a href="/support/" class="dropdown__trigger nav-bar__link" id="menu-support" type="button" aria-haspopup="true" aria-expanded="false">
-                <span data-feather="heart"></span>
+            <li class="dropdown primary-nav__item_desktop">
+              <a href="/support/" class="dropdown__trigger nav-bar__link" id="action-menu-support" type="button" aria-haspopup="true" aria-expanded="false">
+                <span data-feather="heart" aria-hidden="true"></span>
                 Support
-                <span data-feather="chevron-down"></span>
+                <span data-feather="chevron-down" aria-hidden="true"></span>
               </a>
-              <ul class="dropdown__menu" aria-labelledby="menu-support">
+              <ul class="dropdown__menu" aria-labelledby="action-menu-support">
                 <li>
                   <a href="/support/" class="dropdown__link">
                     Support DOAJ
+                  </a>
+                </li>
+                <li>
+                  <a href="/support/supporters/" class="dropdown__link">
+                    Supporters
                   </a>
                 </li>
                 <li>
@@ -74,19 +106,14 @@
                     Publisher supporters
                   </a>
                 </li>
-                <li>
-                  <a href="/support/supporters/" class="dropdown__link">
-                    Supporters
-                  </a>
-                </li>
               </ul>
             </li>
-            <li class="dropdown">
-              <a href="/apply/" class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
+            <li class="dropdown primary-nav__item_desktop">
+              <a href="/apply/" class="dropdown__trigger nav-bar__link" id="action-menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
                 Apply
-                <span data-feather="chevron-down"></span>
+                <span data-feather="chevron-down" aria-hidden="true"></span>
               </a>
-              <ul class="dropdown__menu" aria-labelledby="menu-apply">
+              <ul class="dropdown__menu" aria-labelledby="action-menu-apply">
                 <li>
                   <a href="/apply/" class="dropdown__link">
                     Application form
@@ -104,7 +131,7 @@
                 </li>
                 <li>
                   <a href="/apply/transparency/" class="dropdown__link">
-                    Transparency & best practice
+                    Transparency &amp; best practice
                   </a>
                 </li>
                 <li>
@@ -114,11 +141,9 @@
                 </li>
               </ul>
             </li>
-            <li>
-              <a href="" class="nav-bar__link primary-nav__search">
-                <span data-feather="search"></span>
-                <span class="sr-only"> Search</span>
-              </a>
+            <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0">
+              <span data-feather="search" aria-hidden="true"></span>
+              <span class="sr-only"> Search</span>
             </li>
           </ul>
         </nav>
@@ -128,50 +153,40 @@
   <nav class="secondary-nav ">
     <div class="container">
       <a href="#" class="secondary-nav__menu-toggle" aria-label="Click to open menu">
-        <span data-feather="menu"></span> Menu
+        <span data-feather="menu" aria-hidden="true"></span> <h2 class="secondary-nav__header">Menu</h2>
       </a>
       <ul class="nav-bar secondary-nav__menu">
         <li class="dropdown">
-          <a class="dropdown__trigger nav-bar__link" id="menu-journals-articles" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Journals & articles
-            <span data-feather="chevron-down"></span>
+          <a class="dropdown__trigger nav-bar__link" id="menu-journals-articles" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
+            Search
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-journals-articles">
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="/search/journals/" class="dropdown__link">
                 Journals
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="/search/articles/" class="dropdown__link">
                 Articles
-              </a>
-            </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
-                Browse by subject
-              </a>
-            </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
-                Open Knowledge Maps
               </a>
             </li>
           </ul>
         </li>
         <li class="dropdown">
-          <a class="dropdown__trigger nav-bar__link" id="menu-data" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown__trigger nav-bar__link" id="menu-data" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             Documentation
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-data">
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="#" class="dropdown__link dropdown__link--disabled">
                 API
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link dropdown__link--is-disabled">
+              <a href="/docs/oai-pmh/" class="dropdown__link">
                 OAI-PMH
               </a>
             </li>
@@ -198,9 +213,9 @@
           </ul>
         </li>
         <li class="dropdown">
-          <a href="/about/"  class="dropdown__trigger nav-bar__link" id="menu-about" type="button" aria-haspopup="true" aria-expanded="false">
+          <a class="dropdown__trigger nav-bar__link" id="menu-about" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             About
-            <span data-feather="chevron-down"></span>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-about">
             <li>
@@ -220,7 +235,12 @@
             </li>
             <li>
               <a href="/about/advisory-board-council/" class="dropdown__link">
-                Advisory Board & Council
+                Advisory Board &amp; Council
+              </a>
+            </li>
+            <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
               </a>
             </li>
             <li>
@@ -229,7 +249,7 @@
               </a>
             </li>
             <li>
-              <a class="dropdown__link dropdown__link--is-disabled">
+              <a class="dropdown__link dropdown__link--disabled">
                 News
               </a>
             </li>
@@ -240,10 +260,72 @@
             </li>
           </ul>
         </li>
+        
+        <li class="dropdown secondary-nav__item_mobile">
+          <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <strong>Support</strong>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
+          </a>
+          <ul class="dropdown__menu" aria-labelledby="menu-support">
+            <li>
+              <a href="/support/" class="dropdown__link">
+                Support DOAJ
+              </a>
+            </li>
+            <li>
+              <a href="/support/sponsors/" class="dropdown__link">
+                Sponsors
+              </a>
+            </li>
+            <li>
+              <a href="/support/publisher-supporters/" class="dropdown__link">
+                Publisher supporters
+              </a>
+            </li>
+            <li>
+              <a href="/support/supporters/" class="dropdown__link">
+                Supporters
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="dropdown secondary-nav__item_mobile">
+          <a class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <strong>Apply</strong>
+            <span data-feather="chevron-down" aria-hidden="true"></span>
+          </a>
+          <ul class="dropdown__menu" aria-labelledby="menu-apply">
+            <li>
+              <a href="/apply/" class="dropdown__link">
+                Application form
+              </a>
+            </li>
+            <li>
+              <a href="/apply/guide/" class="dropdown__link">
+                Guide to applying
+              </a>
+            </li>
+            <li>
+              <a href="/apply/seal/" class="dropdown__link">
+                The DOAJ seal
+              </a>
+            </li>
+            <li>
+              <a href="/apply/transparency/" class="dropdown__link">
+                Transparency &amp; best practice
+              </a>
+            </li>
+            <li>
+              <a href="/apply/why-index/" class="dropdown__link">
+                Why index your journal in DOAJ?
+              </a>
+            </li>
+          </ul>
+        </li>
         <li class="secondary-nav__login">
           <a href="/login/" class="nav-bar__link">
             Login
-            <span data-feather="log-in"></span>
+            <span data-feather="log-in" aria-hidden="true"></span>
           </a>
         </li>
       </ul>
@@ -252,12 +334,97 @@
 </header>
 
 
+<!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
+<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/apply/content/guide.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
+
+
+
+
+
+
+
+<!-- Quick search modal -->
+<section class="modal" id="modal-search" tabindex="-1" role="dialog">
+  <div class="modal__dialog" role="document">
+    <form class="quick-search__form" role="search">
+      <h2 class="modal__title">Quick search</h2>
+      <div class="inline-fields">
+        <input type="radio" id="quick-search-journals" name="content-type" value="journals" checked>
+        <label for="quick-search-journals">Journals</label>
+        <input type="radio" id="quick-search-articles" name="content-type" value="articles">
+        <label for="quick-search-articles">Articles</label>
+      </div>
+      <div class="input-group">
+        <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
+
+        <label for="quick-search-fields" class="sr-only">In the field:</label>
+        <select class="input-group__input" name="fields" id="quick-search-fields">
+          <option value="all">In all fields</option>
+          <option value="title">Title</option>
+          <option value="abstract">Abstract</option>
+          <option value="subject">Subject</option>
+          <option value="subject">Author</option>
+        </select>
+        <button class="input-group__input" type="submit">
+          <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+
+
     <main class="container">
       <div class="row">
 
-        <div class="col-md-8">
+        <div class="col-md-4 col-md-push-8">
+          
+          <nav class="page-nav nav" data-spy="affix">
+            <h2 class="page-nav__heading">Jump to:</h2>
+            <ul class="page-nav__list">
+<li class="page-nav__item item-h2">
+<a href="#basic-criteria-for-inclusion">Basic criteria for inclusion</a>
+<ul class="page-nav__sublist">
+<li class="page-nav__item item-h3"><a href="#the-type-of-journal-that-can-apply">The type of journal that can apply</a></li>
+<li class="page-nav__item item-h3"><a href="#the-type-of-open-access">The type of open access</a></li>
+<li class="page-nav__item item-h3"><a href="#journal-website">Journal website</a></li>
+<li class="page-nav__item item-h3"><a href="#issn">ISSN</a></li>
+<li class="page-nav__item item-h3"><a href="#editorial-process">Editorial process</a></li>
+<li class="page-nav__item item-h3"><a href="#licensing">Licensing</a></li>
+<li class="page-nav__item item-h3"><a href="#copyright">Copyright</a></li>
+<li class="page-nav__item item-h3"><a href="#footnote">Footnote</a></li>
+</ul>
+</li>
+<li class="page-nav__item item-h2">
+<a href="#additional-criteria-for-some-journal-types">Additional criteria for some journal types</a>
+<ul class="page-nav__sublist">
+<li class="page-nav__item item-h3"><a href="#arts-and-humanities-journals">Arts and humanities journals</a></li>
+<li class="page-nav__item item-h3"><a href="#case-reports-journals">Case reports journals</a></li>
+<li class="page-nav__item item-h3"><a href="#law-journals">Law journals</a></li>
+<li class="page-nav__item item-h3"><a href="#student-run-journals">Student-run journals</a></li>
+<li class="page-nav__item item-h3"><a href="#journals-that-have-flipped-to-open-access">Journals that have flipped to open access</a></li>
+<li class="page-nav__item item-h3"><a href="#mirror-journals">Mirror journals</a></li>
+</ul>
+</li>
+<li class="page-nav__item item-h2">
+<a href="#the-application-process">The application process</a>
+<ul class="page-nav__sublist">
+<li class="page-nav__item item-h3"><a href="#time-from-submission-to-decision">Time from submission to decision</a></li>
+</ul>
+</li>
+<li class="page-nav__item item-h2"><a href="#if-your-application-is-rejected">If your application is rejected</a></li>
+<li class="page-nav__item item-h2"><a href="#appeals">Appeals</a></li>
+</ul>
+          </nav>
+
+          
+        </div>
+
+        <div class="col-md-8 col-md-pull-4">
            <section class="page-content">
-            
+            <p class="label">Apply</p>
             <h1>Guide to applying</h1>
 
             <p><label for="languages">Show me this guide in…</label>
@@ -269,233 +436,199 @@
 
 <p>Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them.</p>
 
-<h2 id="basic-criteria-for-inclusion-in-doaj">Basic criteria for inclusion in DOAJ</h2>
+<h2 id="basic-criteria-for-inclusion">Basic criteria for inclusion</h2>
 
-<p>Journals applying to DOAJ <strong>must</strong> meet the following criteria:</p>
+<h3 id="the-type-of-journal-that-can-apply">The type of journal that can apply</h3>
 
-<table class="numbered-table">
-  <thead>
-    <tr>
-      <th> </th>
-      <th>Criteria</th>
-      <th>Details</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td> </td>
-      <td>make all content available for free and <a href="#type-of-open-access">open access</a> without delay (no embargo period)</td>
-      <td>the journal must be ‘gold’ (non-APC or APC) open access <br />the journal’s open access policy must be stated on the journal web site</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>be actively publishing scholarly research</td>
-      <td>its primary target audience should be researchers</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>publish at least five (5) scholarly articles per year</td>
-      <td>⅓ of all content must be peer-reviewed original research and/or review papers</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>have a dedicated <a href="#journal-website">homepage or website</a></td>
-      <td>the URL is stable and reliable</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>make their articles available as individual, <a href="#full-text-articles">full-text articles</a></td>
-      <td>each article has its own page with a unique URL</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>have an editor and an <a href="#editorial-process">editorial board</a></td>
-      <td>the journal must be peer-reviewed <br />we accept a form of editorial review for Arts and Humanities journals</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>have at least one current ISSN registered and confirmed at issn.org</td>
-      <td>provisional ISSNs are not accepted <br />the name of the journal in the application must match what is registered at issn.org and on the website</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>clearly indicate the <a href="#copyright">terms of copyright</a> on the website</td>
-      <td>it can not restrict authors’ rights to fair use only</td>
-    </tr>
-    <tr>
-      <td> </td>
-      <td>clearly indicate its <a href="#licensing">licensing terms</a> on the website</td>
-      <td>licensing terms must be available and clearly stated on the journal website, preferably on the full text of every article</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>Furthermore, please make sure that:</p>
+<p>Open access journals published in any language may apply.</p>
 
 <ul>
-  <li>the journal hasn’t had an application rejected within the last six months;</li>
-  <li>the journal isn’t in DOAJ already;</li>
-  <li>the journal doesn’t have another application already in progress;
+  <li>The journal must be actively publishing scholarly research
     <ul>
-      <li>duplicate applications are rejected immediately;</li>
+      <li>All research subject areas are accepted</li>
+      <li>Should publish at least 5 research articles per year</li>
     </ul>
   </li>
-  <li>the application doesn’t contain information that is inaccurate or wrong, or isn’t missing any answers;</li>
-  <li>the country in the application, and on the journal website, is the country where the publisher is registered and carries out its business activities;</li>
-  <li>the contact details provided in the application include a real name and a valid email address.</li>
+  <li>The primary target audience should be researchers or practitioners</li>
 </ul>
 
-<p>Journals included in DOAJ <strong>can</strong> also:</p>
+<hr>
+
+<h3 id="the-type-of-open-access">The type of open access</h3>
 
 <ul>
-  <li>discuss any research subject areas;</li>
-  <li>be published in any language:
+  <li>DOAJ only accepts open access journals.</li>
+  <li>We define these as journals where the copyright holder of a scholarly work grants usage rights to others using an open license (Creative Commons or equivalent) allowing for immediate free access to the work and permitting any user to read, download, copy, distribute, print, search, or link to the full texts of articles, crawl them for indexing, pass them as data to software, or use them for any other lawful purpose.</li>
+  <li>The journal must display an open access statement indicating that it fulfils the DOAJ definition of open access.</li>
+  <li>The full text of all content must be available for free and open access without delay
     <ul>
-      <li>there is no requirement to publish in English;</li>
-    </ul>
-  </li>
-  <li>be of any origin:
-    <ul>
-      <li>academic, governmental, commercial, non-profit, private, and so on.</li>
+      <li>No embargo period</li>
+      <li>Requiring users to register to read content is not accepted</li>
+      <li>A charge for the print version of a journal is permitted</li>
     </ul>
   </li>
 </ul>
 
-<p><strong>Journals do not need to meet the Seal criteria to be accepted into DOAJ.</strong></p>
-
-<p>You might like to <a href="https://www.youtube.com/embed/videoseries?list=PLgsj-CNPbicMgBrdzA4jfevecibpl_a1G">watch our video series</a> which introduces DOAJ and gives some context to our criteria and some of the terms we use.</p>
-
-<hr />
-
-<h3 id="type-of-open-access">Type of open access</h3>
-
-<p>The full text of all the content must be available for free and be open access without delay (no embargo period). DOAJ will accept journals that have flipped to open access even if the previous volumes aren’t freely available.</p>
-
-<p>We don’t accept websites that require users to register to read the content, even if it’s free.</p>
-
-<p>A charge for the print version of a journal is permitted.</p>
-
-<p>The journal’s open access policy must be stated on the journal web site and not only on the publisher’s main site. Ideally, the policy will follow the BOAI definition of open access:</p>
-
-<blockquote>
-  <p>This is an open access journal which means that all content is freely available without charge to the user or his/her institution. Users are allowed to read, download, copy, distribute, print, search, or link to the full texts of the articles, or use them for any other lawful purpose, without asking prior permission from the publisher or the author. This is in accordance with the BOAI definition of open access.</p>
-</blockquote>
-
-<hr />
+<hr>
 
 <h3 id="journal-website">Journal website</h3>
 
-<p>The journal must be linkable (it must have a URL) and have its own dedicated website.</p>
+<ul>
+  <li>The journal must have its own dedicated URL and homepage that is accessible from any location</li>
+  <li>The website must be clear and easy to navigate</li>
+  <li>The journal  should adhere to the guidelines described in the Principles of Transparency and Best Practice in Scholarly Publishing</li>
+  <li>Each article must be available as an individual, full-text article
+    <ul>
+      <li>one unique URL per article</li>
+      <li>HTML or PDF, as a minimum</li>
+    </ul>
+  </li>
+</ul>
 
-<p>The website must be clear and easy to navigate. It must demonstrate that it adheres to high ethical and professional standards, according to the Principles of Transparency and Best Practice in Scholarly Publishing.</p>
-
-<p>The following information must be available on the journal site:</p>
-
+<p>The following information must be available online, and easily accessible from the journal homepage:</p>
 <ul>
   <li>Open access policy</li>
   <li>Aims and scope</li>
   <li>Editorial board (including institutional affiliations of all members)</li>
   <li>Instructions for authors</li>
-  <li>Editorial process (peer review or editorial review)</li>
-  <li>Plagiarism policy (if any)</li>
-  <li>Copyright and licensing terms</li>
-  <li>Author charges (must be stated, even if there is none)</li>
-  <li>Contact details</li>
+  <li>Editorial process (peer review)</li>
+  <li>Licensing terms</li>
+  <li>Copyright terms</li>
+  <li>Author charges
+    <ul>
+      <li>If a journal doesn’t have any charges then this must be stated</li>
+      <li>Must include all fees that may be charged to the author, from submission to publication, including:
+        <ul>
+          <li>submission fees</li>
+          <li>editorial processing charges</li>
+          <li>article processing charges (APCs)</li>
+          <li>page charges</li>
+          <li>colour charges</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Contact details
+    <ul>
+      <li>The contact details must include a real name and the journal’s dedicated email address</li>
+      <li>The country in the application and on the journal website must be the country where the publisher is registered and carries out its business activities</li>
+    </ul>
+  </li>
 </ul>
 
-<p>Information on author charges must include all fees that an author might have to pay—from submission to publication—including submission fees, article processing charges (APCs), page charges, colour charges, etc.</p>
+<hr>
 
-<p>It must be clearly stated if a journal doesn’t have any charges.</p>
+<h3 id="issn">ISSN</h3>
 
-<h4 id="full-text-articles">Full-text articles</h4>
+<ul>
+  <li>A journal must have at least one ISSN (International Standard Serial Number) which is registered and confirmed at <a href="https://portal.issn.org/" target="_blank" rel="noopener">issn.org</a>.</li>
+  <li>The ISSN(s) must be displayed on the website.</li>
+  <li>The name of the journal in the application and on the website must match what is shown at <a href="https://portal.issn.org/" target="_blank" rel="noopener">issn.org</a>.</li>
+</ul>
 
-<p>The journal content must be available as individual full-text articles: one unique URL per article. Each article must be downloadable as HTML or a PDF, as a minimum.</p>
+<hr>
 
 <h3 id="editorial-process">Editorial process</h3>
 
-<p>A journal must have an editor and an editorial board. You must list the current editorial board on the journal site and include the name and affiliation of all editors and board members.</p>
-
-<p>All articles must pass through a quality control system (editorial review or peer review) before publication and the exact type of review must be stated clearly on the website.</p>
-
-<p>Arts &amp; Humanities journals only: we will accept a form of editorial review using two editors and no editorial board.</p>
-
-<p>Journals run by a student body must have an advisory board. At least two members of the Board must have a PhD or equivalent.</p>
-
-<hr />
-
-<h3 id="copyright-and-licensing">Copyright and licensing</h3>
-
-<p>Copyright and licensing are two distinct legal terms.</p>
-
-<p>Copyright declares who owns the rights to the website’s content (for example, the about pages and the blog) and its published academic content (that is, articles and figures).</p>
-
-<p>Licensing describes the terms under which the website’s readers are allowed to use or re-use the copyrighted content.</p>
-
-<h4 id="copyright">Copyright</h4>
-
-<p>The terms of copyright applied to the published content must be clearly stated and be separate from any copyright terms applied to the website.</p>
-
-<p>Copyright terms mustn’t contradict the licensing terms or the terms of the open access policy.</p>
-
-<p>Our preference is that the author retains copyright, without restrictions, but DOAJ does accept journals where copyright is transferred. Authors may then grant the publishers <strong>non-exclusive</strong> publishing rights to publish the articles.</p>
-
-<p>Sometimes, even though the author retains copyright, restrictions are imposed by the publisher:</p>
-
 <ul>
-  <li>The publisher requires <strong>exclusive</strong> publishing rights. The author no longer holds the copyright without restrictions.</li>
-  <li>The publisher requires <strong>a transfer of commercial rights or an exclusive grant of commercial rights</strong> for the articles. The author no longer retains copyright without restrictions.</li>
+  <li>A journal must have an editor and an editorial board.
+    <ul>
+      <li>The editorial board must be listed on the website.</li>
+      <li>The name and affiliation of all editors and board members must be included.</li>
+      <li>If the journal is run by a student body, it must have an advisory board of which at least two members have a PhD or equivalent.</li>
+    </ul>
+  </li>
+  <li>All articles must pass through a quality control system (peer review) before publication.
+    <ul>
+      <li>The type and details of the peer review process must be stated clearly on the website.</li>
+    </ul>
+  </li>
 </ul>
 
-<h4 id="licensing">Licensing</h4>
+<hr>
 
-<ol>
-  <li>The licensing terms for use and re-use of the published content must be clearly stated on the website.
-    <ul>
-      <li>Preferably they will also be stated on the full text of every article.</li>
-    </ul>
-  </li>
-  <li>DOAJ recommends the use of Creative Commons licenses for this purpose
-    <ul>
-      <li>This ensures that readers know what they can and can’t do with the content.</li>
-    </ul>
-  </li>
-  <li>In some cases, DOAJ will accept a publisher’s own license
-    <ul>
-      <li>But only if it is broadly equivalent to one of the Creative Commons licenses.</li>
-    </ul>
-  </li>
-  <li>The terms of a Creative Commons license may not be added to or changed in any way.
-    <ul>
-      <li>For example, a journal shouldn’t write ‘[Other conditions] will apply and prevail over all conflicting provisions of the [open access] license’ model.</li>
-      <li>Creative Commons states clearly that “For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply”.</li>
-    </ul>
-  </li>
-</ol>
-
-<h4 id="the-difficult-bit">The difficult bit</h4>
-
-<p>The terms of the user license always apply to readers and NOT to the copyright holder.</p>
-
-<ol>
-  <li>When copyright is retained by the author without restrictions, the license applies to the readers and the publisher.</li>
-  <li>When copyright is transferred to the publisher or publishing rights are exclusively licensed, the license applies to the author as well as the readers.</li>
-  <li>When the author retains copyright, but commercial rights are transferred to the publisher, and a non-commercial license is used, the license applies to the reader and the author.</li>
-  <li>When the author retains copyright, but exclusive publishing rights are granted to the publisher, this is equivalent to the transfer of commercial rights to the publisher.</li>
-</ol>
-
-<h4 id="fair-use">Fair use</h4>
-
-<p>An open access journal cannot restrict the rights of the author to fair use only.</p>
-
-<p>Fair use alone is not open access and DOAJ will not accept a journal with these restrictions. A common example of fair use is when a journal allows authors only to retain the rights to:</p>
+<h3 id="licensing">Licensing</h3>
 
 <ul>
-  <li>use the substance of the article in future works, including lectures and books;</li>
-  <li>reproduce the article for one’s own purposes, provided that copies are not offered for sale;</li>
-  <li>self-archive the article.</li>
+  <li>The licensing terms for use and re-use of the published content must be clearly stated on the website.</li>
+  <li>DOAJ recommends the use of <a href="https://creativecommons.org/" target="_blank" rel="noopener">Creative Commons</a> licenses for this purpose.</li>
+  <li>If Creative Commons licensing is not used, similar terms and conditions should be applied.
+    <ul>
+      <li>Extra care must be taken to state these terms clearly.</li>
+    </ul>
+  </li>
 </ul>
 
-<hr />
+<hr>
+
+<h3 id="copyright">Copyright</h3>
+
+<ul>
+  <li>The copyright terms applied to the published content must be clearly stated and separate from the copyright terms applied to the website.</li>
+  <li>Copyright terms must not contradict the licensing terms or the terms of the open access policy.
+    <ul>
+      <li>“All rights reserved” is never appropriate for open access content.</li>
+    </ul>
+  </li>
+</ul>
+
+<hr>
+
+<h3 id="footnote">Footnote</h3>
+
+<p>Applications that contain information that is inaccurate or wrong, or that have answers missing, are automatically rejected.</p>
+
+<p>Journals that are rejected must wait 6 months from the date of rejection before applying again unless otherwise advised by DOAJ.</p>
+
+<hr>
+
+<h2 id="additional-criteria-for-some-journal-types">Additional criteria for some journal types</h2>
+
+<ul class="tabular-list">
+  <li>
+    <h3 id="arts-and-humanities-journals">Arts and humanities journals</h3>
+    <ul>
+      <li>For these subjects only, DOAJ can accept journals that undertake editorial review, rather than peer review.  Editorial review must be handled with a minimum of two editors.</li>
+    </ul>
+  </li>
+  <li>
+    <h3 id="case-reports-journals">Case reports journals</h3>
+    <ul>
+      <li>DOAJ only considers case reports as research if they include the retrospective analysis of more than three clinical cases and/or a literature review. Before applying, make sure that the journal has published at least five articles per year that meet this definition.</li>
+    </ul>
+  </li>
+  <li>
+    <h3 id="law-journals">Law journals</h3>
+    <ul>
+      <li>Law journals must undertake a peer review process to be included in DOAJ. However, an exception is made for US law journals where editorial review is an accepted practice in this field and has been traditionally used for over a century.</li>
+    </ul>
+  </li>
+  <li>
+    <h3 id="student-run-journals">Student-run journals</h3>
+    <ul>
+      <li>If a journal is run by a student body, there must be an advisory board for the journal where at least two members have a PhD or equivalent qualification.</li>
+    </ul>
+  </li>
+  <li>
+    <h3 id="journals-that-have-flipped-to-open-access">Journals that have flipped to open access</h3>
+    <ul>
+      <li>Where a journal was previously published as a subscription or hybrid journal and has now flipped to a fully open access model, this information must be clearly displayed:
+        <ul>
+          <li>The date of the change to fully open access</li>
+          <li>The availability of the archive material (open access, free, or paywalled)</li>
+          <li>Reuse rights of the archive material (all rights reserved or open license)</li>
+        </ul>
+      </li>
+      <li>For a journal to be included in DOAJ, the latest volume must be completely open access. DOAJ does not accept journals where the current material is a mixture of open and restricted licenses.</li>
+    </ul>
+  </li>
+  <li>
+    <h3 id="mirror-journals">Mirror journals</h3>
+    <ul>
+      <li>A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it has a different ISSN. DOAJ will currently accept mirror journals if they meet the usual inclusion criteria.</li>
+    </ul>
+  </li>
+</ul>
 
 <h2 id="the-application-process">The application process</h2>
 
@@ -529,66 +662,67 @@
 <p>The time from submission to decision varies greatly and is dependent on the responsiveness of the journal contact and/or applicant. It can take up to six months for a decision to be reached but often a decision is reached within three months.
 We cannot provide a status update for applications which are less than three months old.</p>
 
-<hr />
+<hr>
 
-<h2 id="editorial-disclaimer">Editorial disclaimer</h2>
+<h2 id="if-your-application-is-rejected">If your application is rejected</h2>
 
-<p>The applicant is responsible for providing accurate information when submitting an application. If the information provided is not sufficient or is incomplete, the application will be rejected.
-In cases where the information provided is found to be untrue, either during review or after admission, we reserve the right to reject the application or remove the journal and to not accept new applications for a period of one year.
-In cases where a single publisher has submitted more than five applications with false information, we reserve the right to reject all associated applications and remove all associated journals. We will not accept any more applications for a maximum period of three years, depending on the number of journals for which false information was provided and the eventual number of repeated incidents.</p>
+<p>You will receive an email giving the reasons for rejection of the application. Unless otherwise advised by DOAJ staff, you may not submit another application for the same journal until 6 months after the date of the notification of rejection.</p>
+
+<p>You are responsible for providing accurate information when submitting an application. In cases where journal information is found to be untrue or misleading, DOAJ may decide not to allow further applications from the publisher for a period of up to three years.</p>
+
+<p>DOAJ accepts only journals that follow good publishing practice. If our review finds a publisher is not adhering to best practice, or has questionable publishing practices, DOAJ will not allow further applications from that publisher for a period of up to three years.</p>
+
+<p>Journals already accepted into DOAJ may also be removed if they are found to be no longer adhering to DOAJ criteria or publishing best practice.</p>
+
+<p>Please ensure that, if you do apply again after the exclusion period, the journal meets the DOAJ criteria for inclusion and any necessary changes have been made to the journal website or policies.</p>
+
+<hr>
+
+<h2 id="appeals">Appeals</h2>
+
+<p>If you would like to appeal against a decision to reject your application or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, <a href="mailto:managing-editors@doaj.org">managing-editors@doaj.org</a>.</p>
+
+<p>The appeal should contain the following information:</p>
+<ul>
+  <li>Journal title</li>
+  <li>Journal ISSN</li>
+  <li>Reason for appeal</li>
+  <li>Evidence for the DOAJ Appeals Committee to consider</li>
+  <li>The original notification of rejection/removal</li>
+</ul>
+
+<p>Appeals are considered by the DOAJ Appeals Committee, consisting of the Editor-in-Chief and members of the editorial team. Committee meetings are held monthly. After your case is discussed a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.</p>
+
+<p>No further communication will be entered into after the appeal is heard and the Committee has made their decision.</p>
 
 
 
-            <!-- TODO: make this more elegant -->
             <!-- Display data pages -->
             
           </section>
         </div>
 
-        <div class="col-md-4">
-          
-          <nav class="page-nav" data-spy="affix">
-            <h2 class="page-nav__heading">Jump to:</h2>
-            <a href="#" class="page-nav__top">Top of the page</a>
-            <ul class="page-nav__list">
-<li class="page-nav__item item-h2"><a href="#basic-criteria-for-inclusion-in-doaj">Basic criteria for inclusion in DOAJ</a>
-<ul class="page-nav__sublist">
-<li class="page-nav__item item-h3"><a href="#type-of-open-access">Type of open access</a></li>
-<li class="page-nav__item item-h3"><a href="#journal-website">Journal website</a></li>
-<li class="page-nav__item item-h3"><a href="#editorial-process">Editorial process</a></li>
-<li class="page-nav__item item-h3"><a href="#copyright-and-licensing">Copyright and licensing</a></li>
-</ul>
-</li>
-<li class="page-nav__item item-h2"><a href="#the-application-process">The application process</a>
-<ul class="page-nav__sublist">
-<li class="page-nav__item item-h3"><a href="#time-from-submission-to-decision">Time from submission to decision</a></li>
-</ul>
-</li>
-<li class="page-nav__item item-h2"><a href="#editorial-disclaimer">Editorial disclaimer</a></li>
-</ul>
-          </nav>
-          
-        </div>
-
       </div>
     </main>
 
+
     <footer class="page-footer">
   <div class="container">
+    <a href="#" id="top" class="back-to-top" data-spy="affix"><span data-feather="arrow-up" aria-hidden="true"></span><span class="sr-only">Back to top</span></a>
     <section class="row">
-      <div class="col-sm-2">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Apply</h2>
         <ul>
-          <li><a href="/apply">Application form</a></li>
-          <li><a href="/apply/guide">Guide to applying</a></li>
-          <li><a href="/apply/seal">The DOAJ seal</a></li>
-          <li><a href="/apply/transparency">Transparency & best practice</a></li>
-          <li><a href="/apply/why-index">Why index your journal in DOAJ?</a></li>
+          <li><a href="/apply/">Application form</a></li>
+          <li><a href="/apply/guide/">Guide to applying</a></li>
+          <li><a href="/apply/seal/">The DOAJ seal</a></li>
+          <li><a href="/apply/transparency/">Transparency &amp; best practice</a></li>
+          <li><a href="/apply/why-index/">Why index your journal in DOAJ?</a></li>
         </ul>
       </div>
 
-      <div class="col-sm-2">
-        <h2>Journals & articles</h2>
+      <div class="col-xs-6 col-sm-4 col-lg-2">
+        <h2>Search</h2>
         <ul>
           <li><a href="">Journals</a></li>
           <li><a href="">Articles</a></li>
@@ -597,88 +731,90 @@ In cases where a single publisher has submitted more than five applications with
         </ul>
       </div>
 
-      <div class="col-sm-2">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Documentation</h2>
         <ul>
           <li><a href="">API</a></li>
-          <li><a href="">OAI-PMH</a></li>
-          <li><a href="/docs/xml">XML</a></li>
-          <li><a href="/docs/widgets">Widgets</a></li>
-          <li><a href="/docs/public-data-dump">Public data dump</a></li>
-          <li><a href="/docs/openurl">OpenURL</a></li>
+          <li><a href="/docs/oai-pmh/">OAI-PMH</a></li>
+          <li><a href="/docs/xml/">XML</a></li>
+          <li><a href="/docs/widgets/">Widgets</a></li>
+          <li><a href="/docs/public-data-dump/">Public data dump</a></li>
+          <li><a href="/docs/openurl/">OpenURL</a></li>
         </ul>
       </div>
 
-      <div class="col-sm-2">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>About</h2>
         <ul>
-          <li><a href="/about">History & mission</a></li>
-          <li><a href="/about/team">Team</a></li>
-          <li><a href="/about/ambassadors">Ambassadors</a></li>
-          <li><a href="/about/advisory-board-council">Advisory Board & Council</a></li>
-          <li><a href="/about/volunteers">Volunteers</a></li>
+          <li><a href="/about/">History &amp; mission</a></li>
+          <li><a href="/about/team/">Team</a></li>
+          <li><a href="/about/ambassadors/">Ambassadors</a></li>
+          <li><a href="/about/advisory-board-council/">Advisory Board &amp; Council</a></li>
+          <li><a href="/about/volunteers/">Volunteers</a></li>
           <li><a href="">News</a></li>
-          <li><a href="/about/faq">FAQs</a></li>
+          <li><a href="/about/faq/">FAQs</a></li>
         </ul>
       </div>
 
-      <div class="col-sm-2">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Support</h2>
         <ul>
-          <li><a href="/support">Support DOAJ</a></li>
-          <li><a href="/support/sponsors">Sponsors</a></li>
-          <li><a href="/support/publisher-supporters">Publisher supporters</a></li>
-          <li><a href="/support/supporters">Supporters</a></li>
+          <li><a href="/support/">Support DOAJ</a></li>
+          <li><a href="/support/sponsors/">Sponsors</a></li>
+          <li><a href="/support/publisher-supporters/">Publisher supporters</a></li>
+          <li><a href="/support/supporters/">Supporters</a></li>
         </ul>
       </div>
 
-      <div class="col-sm-2">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Stay up to date</h2>
         <ul>
           <li>
-            <a href="https://twitter.com/DOAJplus" target="_blank">
-              <span data-feather="twitter"></span> Twitter
+            <a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">
+              <span data-feather="twitter" aria-hidden="true"></span> Twitter
             </a>
           </li>
           <li>
-            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank">
-              <span data-feather="facebook"></span> Facebook
+            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank" rel="noopener">
+              <span data-feather="facebook" aria-hidden="true"></span> Facebook
             </a>
           </li>
           <li>
-            <a href="https://github.com/DOAJ" target="_blank">
-              <span data-feather="github"></span> Github
+            <a href="https://github.com/DOAJ" target="_blank" rel="noopener">
+              <span data-feather="github" aria-hidden="true"></span> Github
             </a>
           </li>
           <li>
-            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank">
-              <span data-feather="linkedin"></span> Linkedin
+            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank" rel="noopener">
+              <span data-feather="linkedin" aria-hidden="true"></span> Linkedin
             </a>
           </li>
           <li>
             <a href="">
-              <span data-feather="rss"></span> Journals RSS</a>
+              <span data-feather="rss" aria-hidden="true"></span> Atom feed</a>
             </li>
         </ul>
       </div>
     </section>
 
     <section class="row legal">
-      <div class="col-sm-6">
+      <h2 class="sr-only">Legal &amp; admin</h2>
+      <div class="col-sm-8">
         <ul>
-          <li><a href="">Privacy</a></li>
-          <li><a href="">Contact us</a></li>
-          <li><a href="">IS4OA</a></li>
-          <li><a href="">Cottage Labs LLP</a></li>
+          <li><a href="/about/accessibility/">Accessibility statement</a></li>
+            <li><a href="/about/privacy/">Privacy</a></li>
+          <li><a href="/contact/">Contact us</a></li>
+          <li><a href="https://is4oa.org/" target="_blank" rel="noopener">IS4OA</a></li>
+          <li><a href="https://cottagelabs.com/" target="_blank" rel="noopener">Cottage Labs LLP</a></li>
         </ul>
       </div>
-      <p class="col-sm-6">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
+      <p class="col-sm-4">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
     </section>
   </div>
 </footer>
 
 <script>
-  // User Feather icons
+  // Use Feather icons
   feather.replace()
 
   // Responsive menu
@@ -686,10 +822,78 @@ In cases where a single publisher has submitted more than five applications with
   var nav = document.querySelector(".secondary-nav__menu");
 
   openMenu.addEventListener('click', function() {
-    nav.classList.toggle("secondary-nav__menu-toggle--is-active");
+    nav.classList.toggle("secondary-nav__menu-toggle--active");
   }, false);
+
+  // Back-to-top button
+  topBtn = document.getElementById("top");
+
+  window.onscroll = function() {scrollFunction()};
+
+  function scrollFunction() {
+    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+      topBtn.style.display = "flex";
+    } else {
+      topBtn.style.display = "none";
+    }
+  }
+
+  // When the user clicks on the button, scroll to the top of the document
+  function topFunction() {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+  }
+
+  // Tabs
+  $("[role='tab']").click(function(e) {
+    e.preventDefault();
+    $(this).attr("aria-selected", "true");
+    $(this).parent().siblings().children().attr("aria-selected", "false");
+    var tabpanelShow = $(this).attr("href");
+    $(tabpanelShow).attr("aria-hidden", "false");
+    $(tabpanelShow).siblings().attr("aria-hidden", "true");
+  });
+
+  // Offset when clicking on anchor link or sidenav link to compensate for fixed header
+  var headerHeight = 70;
+
+  // When on the same page
+  jQuery (function($) {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
+      var target = $(this.hash);
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight
+      }, 50, 'linear');
+    });
+    if (location.hash){
+      var id = $(location.hash);
+    }
+
+    $(window).load(function() {
+      if (location.hash){
+        $('html,body').animate({
+          scrollTop: id.offset().top - headerHeight
+        }, 50, 'linear')
+      };
+    });
+  });
+
+  // Coming from another page
+  jQuery (document).ready (function($) {
+    var hash= window.location.hash
+    if ( hash == '' || hash == '#' || hash == undefined ) return false;
+    var target = $(hash);
+    target = target.length ? target : $('[name=' + hash.slice(1) +']');
+    if (target.length) {
+      $('html,body').animate({
+        scrollTop: target.offset().top - headerHeight //offsets for fixed header
+      }, 50, 'linear');
+    }
+  } );
+
 </script>
 
   </body>
 
 </html>
+

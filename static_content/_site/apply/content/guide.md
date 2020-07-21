@@ -7,152 +7,130 @@
 
 Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them.
 
-## Basic criteria for inclusion in DOAJ
+## Basic criteria for inclusion
 
-Journals applying to DOAJ **must** meet the following criteria:
+### The type of journal that can apply
 
-{:.numbered-table}
-|   | Criteria                                                                                                      | Details                                                                                                                             |
-|---|---------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-|   | make all content available for free and [open access](#type-of-open-access) without delay (no embargo period) | the journal must be ‘gold’ (non-APC or APC) open access <br>the journal’s open access policy must be stated on the journal web site |
-|   | be actively publishing scholarly research                                                                     | its primary target audience should be researchers                                                                                   |
-|   | publish at least five (5) scholarly articles per year                                                         | ⅓ of all content must be peer-reviewed original research and/or review papers                                                       |
-|   | have a dedicated [homepage or website](#journal-website)                                                      | the URL is stable and reliable                                                                                                      |
-|   | make their articles available as individual, [full-text articles](#full-text-articles)                        | each article has its own page with a unique URL                                                                                     |
-|   | have an editor and an [editorial board](#editorial-process)                                                   | the journal must be peer-reviewed <br>we accept a form of editorial review for Arts and Humanities journals                         |
-|   | have at least one current ISSN registered and confirmed at issn.org                                           | provisional ISSNs are not accepted <br>the name of the journal in the application must match what is registered at issn.org and on the website                             |
-|   | clearly indicate the [terms of copyright](#copyright) on the website                                          | it can not restrict authors’ rights to fair use only                                                                                |
-|   | clearly indicate its [licensing terms](#licensing) on the website                                             | licensing terms must be available and clearly stated on the journal website, preferably on the full text of every article           |
+Open access journals published in any language may apply.
 
-Furthermore, please make sure that:
-
-- the journal hasn’t had an application rejected within the last six months;
-- the journal isn’t in DOAJ already;
-- the journal doesn’t have another application already in progress;
-  - duplicate applications are rejected immediately;
-- the application doesn’t contain information that is inaccurate or wrong, or isn’t missing any answers;
-- the country in the application, and on the journal website, is the country where the publisher is registered and carries out its business activities;
-- the contact details provided in the application include a real name and a valid email address.
-
-Journals included in DOAJ **can** also:
-
-- discuss any research subject areas;
-- be published in any language:
-  - there is no requirement to publish in English;
-- be of any origin:
-  - academic, governmental, commercial, non-profit, private, and so on.
-
-**Journals do not need to meet the Seal criteria to be accepted into DOAJ.**
-
-You might like to [watch our video series](https://www.youtube.com/embed/videoseries?list=PLgsj-CNPbicMgBrdzA4jfevecibpl_a1G) which introduces DOAJ and gives some context to our criteria and some of the terms we use.
+- The journal must be actively publishing scholarly research
+  - All research subject areas are accepted
+  - Should publish at least 5 research articles per year
+- The primary target audience should be researchers or practitioners
 
 ---
 
-### Type of open access
+### The type of open access
 
-The full text of all the content must be available for free and be open access without delay (no embargo period). DOAJ will accept journals that have flipped to open access even if the previous volumes aren’t freely available.
-
-We don’t accept websites that require users to register to read the content, even if it’s free.
-
-A charge for the print version of a journal is permitted.
-
-The journal's open access policy must be stated on the journal web site and not only on the publisher's main site. Ideally, the policy will follow the BOAI definition of open access:
-
-> This is an open access journal which means that all content is freely available without charge to the user or his/her institution. Users are allowed to read, download, copy, distribute, print, search, or link to the full texts of the articles, or use them for any other lawful purpose, without asking prior permission from the publisher or the author. This is in accordance with the BOAI definition of open access.
+- DOAJ only accepts open access journals.
+- We define these as journals where the copyright holder of a scholarly work grants usage rights to others using an open license (Creative Commons or equivalent) allowing for immediate free access to the work and permitting any user to read, download, copy, distribute, print, search, or link to the full texts of articles, crawl them for indexing, pass them as data to software, or use them for any other lawful purpose.
+- The journal must display an open access statement indicating that it fulfils the DOAJ definition of open access.
+- The full text of all content must be available for free and open access without delay
+  - No embargo period
+  - Requiring users to register to read content is not accepted
+  - A charge for the print version of a journal is permitted
 
 ---
 
 ### Journal website
 
-The journal must be linkable (it must have a URL) and have its own dedicated website.
+- The journal must have its own dedicated URL and homepage that is accessible from any location
+- The website must be clear and easy to navigate
+- The journal  should adhere to the guidelines described in the Principles of Transparency and Best Practice in Scholarly Publishing
+- Each article must be available as an individual, full-text article
+  - one unique URL per article
+  - HTML or PDF, as a minimum
 
-The website must be clear and easy to navigate. It must demonstrate that it adheres to high ethical and professional standards, according to the Principles of Transparency and Best Practice in Scholarly Publishing.
-
-The following information must be available on the journal site:
-
+The following information must be available online, and easily accessible from the journal homepage:
 - Open access policy
 - Aims and scope
 - Editorial board (including institutional affiliations of all members)
 - Instructions for authors
-- Editorial process (peer review or editorial review)
-- Plagiarism policy (if any)
-- Copyright and licensing terms
-- Author charges (must be stated, even if there is none)
+- Editorial process (peer review)
+- Licensing terms
+- Copyright terms
+- Author charges
+  - If a journal doesn’t have any charges then this must be stated
+  - Must include all fees that may be charged to the author, from submission to publication, including:
+    - submission fees
+    - editorial processing charges
+    - article processing charges (APCs)
+    - page charges
+    - colour charges
 - Contact details
+  - The contact details must include a real name and the journal’s dedicated email address
+  - The country in the application and on the journal website must be the country where the publisher is registered and carries out its business activities
 
-Information on author charges must include all fees that an author might have to pay—from submission to publication—including submission fees, article processing charges (APCs), page charges, colour charges, etc.
+---
 
-It must be clearly stated if a journal doesn’t have any charges.
+### ISSN
 
-#### Full-text articles
+- A journal must have at least one ISSN (International Standard Serial Number) which is registered and confirmed at [issn.org](https://portal.issn.org/).
+- The ISSN(s) must be displayed on the website.
+- The name of the journal in the application and on the website must match what is shown at [issn.org](https://portal.issn.org/).
 
-The journal content must be available as individual full-text articles: one unique URL per article. Each article must be downloadable as HTML or a PDF, as a minimum.
+---
 
 ### Editorial process
 
-A journal must have an editor and an editorial board. You must list the current editorial board on the journal site and include the name and affiliation of all editors and board members.
+- A journal must have an editor and an editorial board.
+  - The editorial board must be listed on the website.
+  - The name and affiliation of all editors and board members must be included.
+  - If the journal is run by a student body, it must have an advisory board of which at least two members have a PhD or equivalent.
+- All articles must pass through a quality control system (peer review) before publication.
+  - The type and details of the peer review process must be stated clearly on the website.
 
-All articles must pass through a quality control system (editorial review or peer review) before publication and the exact type of review must be stated clearly on the website.
+---
 
-Arts & Humanities journals only: we will accept a form of editorial review using two editors and no editorial board.
+### Licensing
 
-Journals run by a student body must have an advisory board. At least two members of the Board must have a PhD or equivalent.
+- The licensing terms for use and re-use of the published content must be clearly stated on the website.
+- DOAJ recommends the use of [Creative Commons](https://creativecommons.org/) licenses for this purpose.
+- If Creative Commons licensing is not used, similar terms and conditions should be applied.
+  - Extra care must be taken to state these terms clearly.
 
 ---
 
-### Copyright and licensing
+### Copyright
 
-Copyright and licensing are two distinct legal terms.
-
-Copyright declares who owns the rights to the website’s content (for example, the about pages and the blog) and its published academic content (that is, articles and figures).
-
-Licensing describes the terms under which the website’s readers are allowed to use or re-use the copyrighted content.
-
-#### Copyright
-
-The terms of copyright applied to the published content must be clearly stated and be separate from any copyright terms applied to the website.
-
-Copyright terms mustn’t contradict the licensing terms or the terms of the open access policy.
-
-Our preference is that the author retains copyright, without restrictions, but DOAJ does accept journals where copyright is transferred. Authors may then grant the publishers **non-exclusive** publishing rights to publish the articles.
-
-Sometimes, even though the author retains copyright, restrictions are imposed by the publisher:
-
-- The publisher requires **exclusive** publishing rights. The author no longer holds the copyright without restrictions.
-- The publisher requires **a transfer of commercial rights or an exclusive grant of commercial rights** for the articles. The author no longer retains copyright without restrictions.
-
-#### Licensing
-
-1. The licensing terms for use and re-use of the published content must be clearly stated on the website.
-  - Preferably they will also be stated on the full text of every article.
-2. DOAJ recommends the use of Creative Commons licenses for this purpose
-  - This ensures that readers know what they can and can’t do with the content.
-3. In some cases, DOAJ will accept a publisher’s own license
-  - But only if it is broadly equivalent to one of the Creative Commons licenses.
-4. The terms of a Creative Commons license may not be added to or changed in any way.
-  - For example, a journal shouldn’t write ‘[Other conditions] will apply and prevail over all conflicting provisions of the [open access] license’ model.
-  - Creative Commons states clearly that “For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply”.
-
-#### The difficult bit
-
-The terms of the user license always apply to readers and NOT to the copyright holder.
-
-1. When copyright is retained by the author without restrictions, the license applies to the readers and the publisher.
-2. When copyright is transferred to the publisher or publishing rights are exclusively licensed, the license applies to the author as well as the readers.
-3. When the author retains copyright, but commercial rights are transferred to the publisher, and a non-commercial license is used, the license applies to the reader and the author.
-4. When the author retains copyright, but exclusive publishing rights are granted to the publisher, this is equivalent to the transfer of commercial rights to the publisher.
-
-#### Fair use
-
-An open access journal cannot restrict the rights of the author to fair use only.
-
-Fair use alone is not open access and DOAJ will not accept a journal with these restrictions. A common example of fair use is when a journal allows authors only to retain the rights to:
-
-- use the substance of the article in future works, including lectures and books;
-- reproduce the article for one’s own purposes, provided that copies are not offered for sale;
-- self-archive the article.
+- The copyright terms applied to the published content must be clearly stated and separate from the copyright terms applied to the website.
+- Copyright terms must not contradict the licensing terms or the terms of the open access policy.
+  - “All rights reserved” is never appropriate for open access content.
 
 ---
+
+### Footnote
+
+Applications that contain information that is inaccurate or wrong, or that have answers missing, are automatically rejected.
+
+Journals that are rejected must wait 6 months from the date of rejection before applying again unless otherwise advised by DOAJ.
+
+---
+
+## Additional criteria for some journal types
+
+{:.tabular-list}
+- ### Arts and humanities journals
+   - For these subjects only, DOAJ can accept journals that undertake editorial review, rather than peer review.  Editorial review must be handled with a minimum of two editors.
+
+- ### Case reports journals
+   - DOAJ only considers case reports as research if they include the retrospective analysis of more than three clinical cases and/or a literature review. Before applying, make sure that the journal has published at least five articles per year that meet this definition.
+
+- ### Law journals
+   - Law journals must undertake a peer review process to be included in DOAJ. However, an exception is made for US law journals where editorial review is an accepted practice in this field and has been traditionally used for over a century.
+
+- ### Student-run journals
+   - If a journal is run by a student body, there must be an advisory board for the journal where at least two members have a PhD or equivalent qualification.
+
+- ### Journals that have flipped to open access
+   - Where a journal was previously published as a subscription or hybrid journal and has now flipped to a fully open access model, this information must be clearly displayed:
+      - The date of the change to fully open access
+      - The availability of the archive material (open access, free, or paywalled)
+      - Reuse rights of the archive material (all rights reserved or open license)
+   - For a journal to be included in DOAJ, the latest volume must be completely open access. DOAJ does not accept journals where the current material is a mixture of open and restricted licenses.
+
+- ### Mirror journals
+   - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it has a different ISSN. DOAJ will currently accept mirror journals if they meet the usual inclusion criteria.
 
 ## The application process
 
@@ -175,8 +153,31 @@ We cannot provide a status update for applications which are less than three mon
 
 ---
 
-## Editorial disclaimer
+## If your application is rejected
 
-The applicant is responsible for providing accurate information when submitting an application. If the information provided is not sufficient or is incomplete, the application will be rejected.
-In cases where the information provided is found to be untrue, either during review or after admission, we reserve the right to reject the application or remove the journal and to not accept new applications for a period of one year.
-In cases where a single publisher has submitted more than five applications with false information, we reserve the right to reject all associated applications and remove all associated journals. We will not accept any more applications for a maximum period of three years, depending on the number of journals for which false information was provided and the eventual number of repeated incidents.
+You will receive an email giving the reasons for rejection of the application. Unless otherwise advised by DOAJ staff, you may not submit another application for the same journal until 6 months after the date of the notification of rejection.
+
+You are responsible for providing accurate information when submitting an application. In cases where journal information is found to be untrue or misleading, DOAJ may decide not to allow further applications from the publisher for a period of up to three years.
+
+DOAJ accepts only journals that follow good publishing practice. If our review finds a publisher is not adhering to best practice, or has questionable publishing practices, DOAJ will not allow further applications from that publisher for a period of up to three years.
+
+Journals already accepted into DOAJ may also be removed if they are found to be no longer adhering to DOAJ criteria or publishing best practice.
+
+Please ensure that, if you do apply again after the exclusion period, the journal meets the DOAJ criteria for inclusion and any necessary changes have been made to the journal website or policies.
+
+---
+
+## Appeals
+
+If you would like to appeal against a decision to reject your application or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, [managing-editors@doaj.org](mailto:managing-editors@doaj.org).
+
+The appeal should contain the following information:
+- Journal title
+- Journal ISSN
+- Reason for appeal
+- Evidence for the DOAJ Appeals Committee to consider
+- The original notification of rejection/removal
+
+Appeals are considered by the DOAJ Appeals Committee, consisting of the Editor-in-Chief and members of the editorial team. Committee meetings are held monthly. After your case is discussed a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
+
+No further communication will be entered into after the appeal is heard and the Committee has made their decision.

@@ -1,12 +1,26 @@
-<main class="container">
-  <div class="row">
 
-    <div class="col-md-8">
-       <section class="page-content">
-        <p class="label">Documentation</p>
-        <h1>Public data dump</h1>
 
-        <p>Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the form that they would also be retrieved via the API.</p>
+    <main class="container">
+      <div class="row">
+
+        <div class="col-md-4 col-md-push-8">
+          
+          <nav class="page-nav nav" data-spy="affix">
+            <h2 class="page-nav__heading">Jump to:</h2>
+            <ul class="page-nav__list">
+<li class="page-nav__item item-h2"><a href="#structure">Structure</a></li>
+</ul>
+          </nav>
+
+          
+        </div>
+
+        <div class="col-md-8 col-md-pull-4">
+           <section class="page-content">
+            <p class="label">Docs</p>
+            <h1>Public data dump</h1>
+
+            <p>Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the same form as those retrieved via the API.</p>
 
 <p><a href="/public-data-dump/journal">Download the journal metadata</a> (4.4Mb)</p>
 
@@ -27,36 +41,26 @@
   </li>
   <li>Each file contains up to 100,000 records and is UTF-8 encoded. All files should contain the same number of records, apart from the last one, which may have fewer.</li>
   <li>The structure of each file is as a JSON list:
-    <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w"> </span><span class="p">[</span><span class="w">
-     </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="err">first</span><span class="w"> </span><span class="err">record</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span><span class="w">
-     </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="err">second</span><span class="w"> </span><span class="err">record</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">},</span><span class="w">
-     </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="err">third</span><span class="w"> </span><span class="err">record</span><span class="w"> </span><span class="err">...</span><span class="p">},</span><span class="w">
-     </span><span class="err">...</span><span class="w"> </span><span class="err">etc</span><span class="w"> </span><span class="err">...</span><span class="w">
- </span><span class="p">]</span><span class="w">
-</span></code></pre></div>    </div>
+    <div class="highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> [
+     { ... first record ... },
+     { ... second record ... },
+     { ... third record ...},
+     ... etc ...
+ ]
+</code></pre></div>    </div>
   </li>
   <li>Records are not explicitly ordered and the order is not guaranteed to remain consistent across data dumps produced on different days.</li>
 </ol>
 
 
 
-        <!-- TODO: make this more elegant -->
-        <!-- Display data pages -->
-        
-      </section>
-    </div>
+            <!-- Display data pages -->
+            
+          </section>
+        </div>
 
-    <div class="col-md-4">
-      
-      <nav class="page-nav" data-spy="affix">
-        <h2 class="page-nav__heading">Jump to:</h2>
-        <a href="#" class="page-nav__top">Top of the page</a>
-        <ul class="page-nav__list">
-<li class="page-nav__item item-h2"><a href="#structure">Structure</a></li>
-</ul>
-      </nav>
-      
-    </div>
+      </div>
+    </main>
 
-  </div>
-</main>
+

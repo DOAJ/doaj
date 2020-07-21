@@ -1,7 +1,8 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/6c8421b5-baef-482e-a9ae-729954cec42f/deploy-status)](https://app.netlify.com/sites/doaj-static/deploys)
+
 # doaj-templates
 
 Jekyll-based static pages for the new doaj.org. 
-
 
 ## Install Jekyll
 
@@ -110,7 +111,7 @@ Advanced tools:
 
 # TODO
 
-- [ ] Rename and harmonise base templates (`sidenav`, `data`) 
+- [x] Rename and harmonise base templates (`sidenav`, `data`) 
 - [ ] Add a promo post category so we can target content for specific pages
 - [ ] Finish inputting data in `volunteers.yml`
 - [x] Add & style bio photos for `team.yml` + `team-ambassadors.md`

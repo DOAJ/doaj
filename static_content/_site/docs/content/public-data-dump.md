@@ -1,4 +1,4 @@
-Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the form that they would also be retrieved via the API.
+Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the same form as those retrieved via the API.
 
 [Download the journal metadata](/public-data-dump/journal) (4.4Mb)
 
@@ -15,7 +15,7 @@ The data dumps are structured as follows:
   - For example, `journal_batch_3.json` or `article_batch_27.json`.
 3. Each file contains up to 100,000 records and is UTF-8 encoded. All files should contain the same number of records, apart from the last one, which may have fewer.
 4. The structure of each file is as a JSON list:
-  ```json
+  ```
     [
         { ... first record ... },
         { ... second record ... },

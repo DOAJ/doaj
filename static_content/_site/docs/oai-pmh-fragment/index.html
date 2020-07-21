@@ -1,0 +1,529 @@
+
+
+    <main class="container">
+      <div class="row">
+
+        <div class="col-md-4 col-md-push-8">
+          
+          <nav class="page-nav nav">
+            <h2 class="page-nav__heading">Jump to:</h2>
+            <ul class="page-nav__list">
+<li class="page-nav__item item-h2">
+<a href="#journal-feed">Journal feed</a>
+<ul class="page-nav__sublist">
+<li class="page-nav__item item-h3"><a href="#example-of-a-record">Example of a record</a></li>
+<li class="page-nav__item item-h3"><a href="#revision-history">Revision history</a></li>
+</ul>
+</li>
+<li class="page-nav__item item-h2">
+<a href="#article-feed">Article feed</a>
+<ul class="page-nav__sublist">
+<li class="page-nav__item item-h3">
+<a href="#dublin-core-oai-article-format-oai_dc">Dublin Core OAI Article format (OAI_DC)</a>
+<ul class="page-nav__sublist">
+<li class="page-nav__item item-h4"><a href="#example-of-a-record-1">Example of a record</a></li>
+<li class="page-nav__item item-h4"><a href="#revision-history-1">Revision history</a></li>
+</ul>
+</li>
+<li class="page-nav__item item-h3">
+<a href="#doaj-oai-article-format-oai_doaj">DOAJ OAI Article format (OAI_DOAJ)</a>
+<ul class="page-nav__sublist">
+<li class="page-nav__item item-h4"><a href="#example-of-a-record-2">Example of a record</a></li>
+<li class="page-nav__item item-h4"><a href="#revision-history-2">Revision history</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+          </nav>
+
+          
+        </div>
+
+        <div class="col-md-8 col-md-pull-4">
+           <section class="page-content">
+            <p class="label">Docs</p>
+            <h1>OAI-PMH</h1>
+
+            <h2 id="journal-feed">Journal feed</h2>
+
+<ul class="tabular-list">
+  <li>
+<code class="highlighter-rouge">Identify</code>
+    <ul>
+      <li>Access the <a href="http://www.doaj.org/oai?verb=Identify" target="_blank" rel="noopener">base Identify endpoint</a>.</li>
+    </ul>
+  </li>
+  <li>
+<code class="highlighter-rouge">ListSets</code>
+    <ul>
+      <li>DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in. Access the <a href="http://www.doaj.org/oai?verb=ListSets" target="_blank" rel="noopener">full list of the sets</a>.</li>
+    </ul>
+  </li>
+  <li>
+<code class="highlighter-rouge">ListMetadataFormats</code>
+    <ul>
+      <li>DOAJ currently supports only <code class="highlighter-rouge">oai_dc</code>; access <a href="http://www.doaj.org/oai?verb=ListMetadataFormats" target="_blank" rel="noopener">the metadata formats</a>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Journal field:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dublin Core</th>
+      <th>Meaning within DOAJ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">title</code></td>
+      <td>The title of the journal</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">identifier</code></td>
+      <td>The ISSNs of the journal (both print and electronic) or a link back to the DOAJ record for this journal</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">subject</code></td>
+      <td>Free-text keywords or formal subject classifications. Formal classifications are prefixed by their scheme (e.g. CLASSIFICATION:Science), except in the case of Library of Congress Classification. LCC subjects are denoted by an additional attribute on this element, xsi:type=”dcterms:LCSH”.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">language</code></td>
+      <td>The languages that can appear in this journal</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">relation</code></td>
+      <td>Links to related resources: the journal home page and the journal author-pays link if relevant</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">rights</code></td>
+      <td>The journal’s content re-use policy. Will be one of the Creative Commons licences</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">publisher</code></td>
+      <td>The publisher/provider of the journal</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">type</code></td>
+      <td>The type of the object; always contains “journal”</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="example-of-a-record">Example of a record</h3>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;record&gt;</span>
+  <span class="nt">&lt;header</span> <span class="na">xmlns:oai_dc=</span><span class="s">"http://www.openarchives.org/OAI/2.0/oai_dc/"</span> <span class="na">xmlns:dc=</span><span class="s">"http://purl.org/dc/elements/1.1/"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;identifier&gt;</span>
+      oai:doaj.org/journal:9dfe4879964541069dff9bb6d15b65a2
+    <span class="nt">&lt;/identifier&gt;</span>
+    <span class="nt">&lt;datestamp&gt;</span>2013-12-10T00:23:25Z<span class="nt">&lt;/datestamp&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>TENDOkVjb25vbWljIHRoZW9yeS4gRGVtb2dyYXBoeQ~~<span class="nt">&lt;/setSpec&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>TENDOlNvY2lhbCBTY2llbmNlcw~~<span class="nt">&lt;/setSpec&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>RE9BSjpFY29ub21pY3M~<span class="nt">&lt;/setSpec&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>RE9BSjpCdXNpbmVzcyBhbmQgRWNvbm9taWNz<span class="nt">&lt;/setSpec&gt;</span>
+  <span class="nt">&lt;/header&gt;</span>
+  <span class="nt">&lt;metadata</span> <span class="na">xmlns:oai_dc=</span><span class="s">"http://www.openarchives.org/OAI/2.0/oai_dc/"</span> <span class="na">xmlns:dc=</span><span class="s">"http://purl.org/dc/elements/1.1/"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;oai_dc:dc</span> <span class="na">xsi:schemaLocation=</span><span class="s">"http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;dc:title&gt;</span>Croatian Economic Survey<span class="nt">&lt;/dc:title&gt;</span>
+      <span class="nt">&lt;dc:identifier&gt;</span>1330-4860<span class="nt">&lt;/dc:identifier&gt;</span>
+      <span class="nt">&lt;dc:identifier&gt;</span>1846-3878<span class="nt">&lt;/dc:identifier&gt;</span>
+      <span class="nt">&lt;dc:identifier&gt;</span>
+        http://doaj.org/search?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22id%22%3A%229dfe4879964541069dff9bb6d15b65a2%22%7D%7D%5D%7D%7D%7D
+      <span class="nt">&lt;/dc:identifier&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>economics<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>post-socialist Europe<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>comparative economics<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>policy formulation<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:language&gt;</span>English<span class="nt">&lt;/dc:language&gt;</span>
+      <span class="nt">&lt;dc:relation&gt;</span>
+        http://www.eizg.hr/en-US/Croatian-Economic-Survey-26.aspx
+      <span class="nt">&lt;/dc:relation&gt;</span>
+      <span class="nt">&lt;dc:publisher&gt;</span>The Institute of Economics, Zagreb<span class="nt">&lt;/dc:publisher&gt;</span>
+      <span class="nt">&lt;dc:relation&gt;</span>
+        http://www.eizg.hr/en-US/Croatian-Economic-Survey-26.aspx
+      <span class="nt">&lt;/dc:relation&gt;</span>
+      <span class="nt">&lt;dc:publisher&gt;</span>The Institute of Economics, Zagreb<span class="nt">&lt;/dc:publisher&gt;</span>
+      <span class="nt">&lt;dc:date&gt;</span>2013-11-06T15:18:52Z<span class="nt">&lt;/dc:date&gt;</span>
+      <span class="nt">&lt;dc:type&gt;</span>journal<span class="nt">&lt;/dc:type&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>Diseases of the musculoskeletal system<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>RC925-935<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>Specialties of internal medicine<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>RC581-951<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>Internal medicine<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>RC31-1245<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>Medicine<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>R<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>SOME_NONLCC_FORMAL_CLASSIFICATION:term<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>DOAJ:Economics<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>DOAJ:Business and Economics<span class="nt">&lt;/dc:subject&gt;</span>
+    <span class="nt">&lt;/oai_dc:dc&gt;</span>
+  <span class="nt">&lt;/metadata&gt;</span>
+<span class="nt">&lt;/record&gt;</span>
+</code></pre></div></div>
+
+<h3 id="revision-history">Revision history</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date changes were made live</th>
+      <th>Changes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>20 April 2015</td>
+      <td>
+<code class="highlighter-rouge">subject</code> elements which represent a Library of Congress Classification (LCC) topic will now be marked with an additional OAI DC-compliant attribute to denote this: <code class="highlighter-rouge">xsi:type="dcterms:LCSH"</code>. LCC subjects will no longer be prefixed by <code class="highlighter-rouge">LCC:</code>.</td>
+    </tr>
+    <tr>
+      <td>13 December 2013</td>
+      <td>Initial release</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="article-feed">Article feed</h2>
+
+<ul class="tabular-list">
+  <li>
+<code class="highlighter-rouge">Identify</code>
+    <ul>
+      <li>Access the <a href="http://www.doaj.org/oai.article?verb=Identify" target="_blank" rel="noopener">base Identify endpoint</a>.</li>
+    </ul>
+  </li>
+  <li>
+<code class="highlighter-rouge">ListSets</code>
+    <ul>
+      <li>DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in. Access the <a href="http://www.doaj.org/oai.article?verb=ListSets" target="_blank" rel="noopener">full list of the sets</a>.</li>
+    </ul>
+  </li>
+  <li>
+<code class="highlighter-rouge">ListMetadataFormats</code>
+    <ul>
+      <li>DOAJ currently supports the <code class="highlighter-rouge">oai_dc</code> and <code class="highlighter-rouge">oai_doaj</code> formats; access <a href="http://www.doaj.org/oai.article?verb=ListMetadataFormats" target="_blank" rel="noopener">the metadata formats</a>.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="dublin-core-oai-article-format-oai_dc">Dublin Core OAI Article format (<code class="highlighter-rouge">OAI_DC</code>)</h3>
+
+<p>The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Article field:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dublin Core</th>
+      <th>Meaning within DOAJ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">title</code></td>
+      <td>The title of the article.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">identifier</code></td>
+      <td>The ISSNs of the journal the article appears in (both print and electronic), the DOI of the article, or a link back to the DOAJ record for this article.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">subject</code></td>
+      <td>Free-text keywords or formal subject classifications. Formal classifications are prefixed by their scheme (e.g. <code class="highlighter-rouge">CLASSIFICATION:Science</code>), except in the case of Library of Congress Classification. LCC subjects are denoted by an additional attribute on this element, <code class="highlighter-rouge">xsi:type="dcterms:LCSH"</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">language</code></td>
+      <td>The languages that the journal publishing this article publishes in. Does not necessarily strictly denote the language of this article, and there may be multiple language fields provided.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">relation</code></td>
+      <td>Links to related resources: the full-text url</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">provenance</code></td>
+      <td>Includes information about the journal’s content re-use policy. Will be one of the Creative Commons licences. This does not necessarily indicate the article’s re-use policy.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">publisher</code></td>
+      <td>The publisher/provider of the journal this article appears in.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">type</code></td>
+      <td>The type of the object; always contains “article”</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">date</code></td>
+      <td>The approximate date of publication.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">description</code></td>
+      <td>The article’s abstract.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">creator</code></td>
+      <td>The article’s authors, may contain an optional attribute id for ORCID iD.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-of-a-record-1">Example of a record</h4>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;record&gt;</span>
+  <span class="nt">&lt;header</span> <span class="na">xmlns:oai_dc=</span><span class="s">"http://www.openarchives.org/OAI/2.0/oai_dc/"</span> <span class="na">xmlns:dc=</span><span class="s">"http://purl.org/dc/elements/1.1/"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;identifier&gt;</span>
+      oai:doaj.org/article:2f032c66cd6047bdadaf0eddd7ab3341
+    <span class="nt">&lt;/identifier&gt;</span>
+    <span class="nt">&lt;datestamp&gt;</span>2013-12-10T02:01:04Z<span class="nt">&lt;/datestamp&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>TENDOlB1YmxpYyBhc3BlY3RzIG9mIG1lZGljaW5l<span class="nt">&lt;/setSpec&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>TENDOk1lZGljaW5l<span class="nt">&lt;/setSpec&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>RE9BSjpQdWJsaWMgSGVhbHRo<span class="nt">&lt;/setSpec&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>RE9BSjpIZWFsdGggU2NpZW5jZXM~<span class="nt">&lt;/setSpec&gt;</span>
+  <span class="nt">&lt;/header&gt;</span>
+  <span class="nt">&lt;metadata</span> <span class="na">xmlns:oai_dc=</span><span class="s">"http://www.openarchives.org/OAI/2.0/oai_dc/"</span> <span class="na">xmlns:dc=</span><span class="s">"http://purl.org/dc/elements/1.1/"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;oai_dc:dc</span> <span class="na">xsi:schemaLocation=</span><span class="s">"http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;dc:title&gt;</span>
+        Prevalência e fatores associados ao consumo de cigarros entre estudantes de escolas estaduais do ensino médio de Santa Maria, Rio Grande do Sul, Brasil, 2002
+      <span class="nt">&lt;/dc:title&gt;</span>
+      <span class="nt">&lt;dc:identifier&gt;</span>0102-311X<span class="nt">&lt;/dc:identifier&gt;</span>
+      <span class="nt">&lt;dc:identifier&gt;</span>1678-4464<span class="nt">&lt;/dc:identifier&gt;</span>
+      <span class="nt">&lt;dc:identifier&gt;</span>
+        http://doaj.org/search?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22id%22%3A%222f032c66cd6047bdadaf0eddd7ab3341%22%7D%7D%5D%7D%7D%7D
+      <span class="nt">&lt;/dc:identifier&gt;</span>
+      <span class="nt">&lt;dc:date&gt;</span>2006-01-01T00:00:00Z<span class="nt">&lt;/dc:date&gt;</span>
+      <span class="nt">&lt;dc:relation&gt;</span>
+        http://www.scielo.br/scielo.php?script=sci_arttext<span class="err">&amp;</span>pid=S0102-311X2006000800010
+      <span class="nt">&lt;/dc:relation&gt;</span>
+      <span class="nt">&lt;dc:description&gt;</span>
+        O tabagismo é a segunda principal causa mundial de morte, sendo responsável pela morte de um a cada dez adultos (5 milhões por ano). Se os padrões atuais se mantiverem, em 2020 o tabagismo será a causa de 10 milhões de óbitos anuais, segundo a Organização Mundial da Saúde. Realizou-se um estudo transversal, em 2002, no qual foram entrevistados 459 estudantes de oito escolas do ensino médio estadual em Santa Maria, Rio Grande do Sul, Brasil, para determinar a prevalência e os fatores associados ao tabagismo, obtendo-se um modelo logístico multivariável descrevendo como as chances de ser fumante estão relacionadas com as variáveis investigadas. A prevalência encontrada para o tabagismo foi de 18% (IC95%: 14,6-21,7), sendo que os estudantes começam a fumar, em média, aos 14 anos. Os resultados permitem concluir que os estudantes das escolas estaduais de Santa Maria começam a fumar precocemente, sendo influenciados pelos amigos fumantes (OR = 4,37; p = 0,000), pela renda familiar mensal (OR = 2,04; p = 0,013) e idade (OR = 1,86; p = 0,031), destacando-se a necessidade de se trabalhar, preventivamente, no grupo de risco observado.
+      <span class="nt">&lt;/dc:description&gt;</span>
+      <span class="nt">&lt;dc:creator&gt;</span>Zanini Roselaine Ruviaro<span class="nt">&lt;/dc:creator&gt;</span>
+      <span class="nt">&lt;dc:creator</span> <span class="na">id=</span><span class="s">"https://orcid.org/0000-0001-1234-1234"</span><span class="nt">&gt;</span>Moraes Anaelena Bragança de<span class="nt">&lt;/dc:creator&gt;</span>
+      <span class="nt">&lt;dc:creator&gt;</span>Trindade Ana Cláudia Antunes<span class="nt">&lt;/dc:creator&gt;</span>
+      <span class="nt">&lt;dc:creator</span> <span class="na">id=</span><span class="s">"https://orcid.org/0000-0001-1111-2222"</span><span class="nt">&gt;</span>Riboldi João<span class="nt">&lt;/dc:creator&gt;</span>
+      <span class="nt">&lt;dc:creator&gt;</span>Medeiros Lídia Rosi de<span class="nt">&lt;/dc:creator&gt;</span>
+      <span class="nt">&lt;dc:publisher&gt;</span>
+        Escola Nacional de Saúde Pública, Fundação Oswaldo Cruz
+      <span class="nt">&lt;/dc:publisher&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>Tabagismo<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>Estudantes<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>Estudos Transversais<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:type&gt;</span>article<span class="nt">&lt;/dc:type&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>DOAJ:Public Health<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>DOAJ:Health Sciences<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>Diseases of the musculoskeletal system<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>RC925-935<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>Specialties of internal medicine<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>RC581-951<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>Internal medicine<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>RC31-1245<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>Medicine<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject</span> <span class="na">xsi:type=</span><span class="s">"dcterms:LCSH"</span><span class="nt">&gt;</span>R<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:subject&gt;</span>SOME_NONLCC_FORMAL_CLASSIFICATION:term<span class="nt">&lt;/dc:subject&gt;</span>
+      <span class="nt">&lt;dc:language&gt;</span>English<span class="nt">&lt;/dc:language&gt;</span>
+      <span class="nt">&lt;dc:language&gt;</span>Spanish<span class="nt">&lt;/dc:language&gt;</span>
+      <span class="nt">&lt;dc:language&gt;</span>Portuguese<span class="nt">&lt;/dc:language&gt;</span>
+      <span class="nt">&lt;dc:rights&gt;</span>CC BY-NC<span class="nt">&lt;/dc:rights&gt;</span>
+    <span class="nt">&lt;/oai_dc:dc&gt;</span>
+  <span class="nt">&lt;/metadata&gt;</span>
+<span class="nt">&lt;/record&gt;</span>
+</code></pre></div></div>
+
+<h4 id="revision-history-1">Revision history</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date changes were made live</th>
+      <th>Changes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>22 August 2016</td>
+      <td>The <code class="highlighter-rouge">dc:rights</code> element was removed, as it was technically inaccurate - it represented the Journal’s overall licence policy, not the specific rights for the article. This information is now in <code class="highlighter-rouge">dc:provenance</code>.</td>
+    </tr>
+    <tr>
+      <td>20 April 2015</td>
+      <td>The <code class="highlighter-rouge">identifier</code> element will now point to the DOAJ article page rather than the <code class="highlighter-rouge">/search</code> page. E.g. <a href="https://doaj.org/article/0000178c89214dc8b82df1a25c0c478e" target="_blank" rel="noopener"><code class="highlighter-rouge">https://doaj.org/article/0000178c89214dc8b82df1a25c0c478e</code></a> <br><br>Up to two new <code class="highlighter-rouge">relation</code> elements will appear for each article, containing URL-s to the Table of Contents page for the article’s journal. The page can be reached via both print ISSN and E-ISSN, so up to two such links might appear. <br><br><code class="highlighter-rouge">subject</code> elements which represent a Library of Congress Classification (LCC) topic will now be marked with an additional OAI DC-compliant attribute to denote this: <code class="highlighter-rouge">xsi:type="dcterms:LCSH"</code>. LCC subjects will no longer be prefixed by <code class="highlighter-rouge">LCC:</code>.</td>
+    </tr>
+    <tr>
+      <td>13 December 2013</td>
+      <td>Initial release</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="doaj-oai-article-format-oai_doaj">DOAJ OAI Article format (<code class="highlighter-rouge">OAI_DOAJ</code>)</h3>
+
+<p>The following fields are available (not every article will have all the information):</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>DOAJ OAI field</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="highlighter-rouge">language</code></td>
+      <td>The languages that the journal publishing this article publishes in. Does not necessarily strictly denote the language of this article. Only the first language the journal publishes in is provided, even when multiple are recorded on the journal record.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">publisher</code></td>
+      <td>The publisher/provider of the journal this article appears in.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">journalTitle</code></td>
+      <td>The title of the journal the article appears in.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">issn</code></td>
+      <td>The print ISSN of the journal the article appears in.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">eissn</code></td>
+      <td>The E-ISSN of the journal the article appears in.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">publicationDate</code></td>
+      <td>The article’s date of publication. In <code class="highlighter-rouge">YYYY-MM-DD</code> format.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">volume</code></td>
+      <td>The journal volume the article appears in.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">issue</code></td>
+      <td>The journal issue the article appears in.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">startPage</code></td>
+      <td>The number of the journal page the article starts on.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">endPage</code></td>
+      <td>The number of the journal page the article ends on.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">doi</code></td>
+      <td>The article’s Digital Object Identifier.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">publisherRecordId</code></td>
+      <td>An ID assigned to this article by its publisher and supplied to DOAJ via metadata upload. Not guaranteed to be unique or otherwise useful in any context, simply a way for the publisher to refer to this article.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">documentType</code></td>
+      <td>Will never be present in a <code class="highlighter-rouge">OAI_DOAJ</code> article record, even though it’s in the XML schema.</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">title</code></td>
+      <td>The title of the article</td>
+    </tr>
+    <tr>
+      <td><code class="highlighter-rouge">authors</code></td>
+      <td>A list of <code class="highlighter-rouge">&lt;author&gt;</code> elements. Each <author> element can have a `<name>`, `<email>`, `<affiliationid>` and `<orcid_id>` child elements\. The `affiliationId` refers to one of the affiliations in the `affiliationsList` element described below\.</orcid_id></affiliationid></email></name></author>
+</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-of-a-record-2">Example of a record</h4>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;record&gt;</span>
+  <span class="nt">&lt;header</span> <span class="na">xmlns:oai_doaj=</span><span class="s">"http://doaj.org/features/oai_doaj/1.0/"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;identifier&gt;</span>oai:doaj.org/article:2a48ccce13c546ceab0c6bc5b74d433d<span class="nt">&lt;/identifier&gt;</span>
+    <span class="nt">&lt;datestamp&gt;</span>2015-03-21T20:28:31Z<span class="nt">&lt;/datestamp&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>TENDOkRpc2Vhc2VzIG9mIHRoZSBtdXNjdWxvc2tlbGV0YWwgc3lzdGVt<span class="nt">&lt;/setSpec&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>TENDOlNwZWNpYWx0aWVzIG9mIGludGVybmFsIG1lZGljaW5l<span class="nt">&lt;/setSpec&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>TENDOkludGVybmFsIG1lZGljaW5l<span class="nt">&lt;/setSpec&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>TENDOk1lZGljaW5l<span class="nt">&lt;/setSpec&gt;</span>
+    <span class="nt">&lt;setSpec&gt;</span>dGVzdDp0ZXJt<span class="nt">&lt;/setSpec&gt;</span>
+  <span class="nt">&lt;/header&gt;</span>
+  <span class="nt">&lt;metadata</span> <span class="na">xmlns:oai_doaj=</span><span class="s">"http://doaj.org/features/oai_doaj/1.0/"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;oai_doaj:doajArticle</span> <span class="na">xsi:schemaLocation=</span><span class="s">"http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd http://doaj.org/features/oai_doaj/1.0/ https://doaj.org/static/doaj/doajArticles.xsd"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;oai_doaj:language&gt;</span>ger<span class="nt">&lt;/oai_doaj:language&gt;</span>
+      <span class="nt">&lt;oai_doaj:publisher&gt;</span>Verlag Krause und Pachernegg GmbH<span class="nt">&lt;/oai_doaj:publisher&gt;</span>
+      <span class="nt">&lt;oai_doaj:journalTitle&gt;</span>Journal f<span class="ni">&amp;#xFC;</span>r Mineralstoffwechsel<span class="nt">&lt;/oai_doaj:journalTitle&gt;</span>
+      <span class="nt">&lt;oai_doaj:issn&gt;</span>1023-7763<span class="nt">&lt;/oai_doaj:issn&gt;</span>
+      <span class="nt">&lt;oai_doaj:eissn&gt;</span>1680-9408<span class="nt">&lt;/oai_doaj:eissn&gt;</span>
+      <span class="nt">&lt;oai_doaj:publicationDate&gt;</span>1998-01-01<span class="nt">&lt;/oai_doaj:publicationDate&gt;</span>
+      <span class="nt">&lt;oai_doaj:volume&gt;</span>5<span class="nt">&lt;/oai_doaj:volume&gt;</span>
+      <span class="nt">&lt;oai_doaj:issue&gt;</span>1<span class="nt">&lt;/oai_doaj:issue&gt;</span>
+      <span class="nt">&lt;oai_doaj:startPage&gt;</span>25<span class="nt">&lt;/oai_doaj:startPage&gt;</span>
+      <span class="nt">&lt;oai_doaj:endPage&gt;</span>29<span class="nt">&lt;/oai_doaj:endPage&gt;</span>
+      <span class="nt">&lt;oai_doaj:publisherRecordId&gt;</span>648<span class="nt">&lt;/oai_doaj:publisherRecordId&gt;</span>
+      <span class="nt">&lt;oai_doaj:title&gt;</span>Leitfaden zur medikament<span class="ni">&amp;#xF6;</span>sen Standardtherapie in der Osteoporose<span class="nt">&lt;/oai_doaj:title&gt;</span>
+      <span class="nt">&lt;authors&gt;</span>
+        <span class="nt">&lt;author&gt;</span>
+          <span class="nt">&lt;name&gt;</span>Stevo Popovic<span class="nt">&lt;/name&gt;</span>
+          <span class="nt">&lt;affiliationId&gt;</span>0<span class="nt">&lt;/affiliationId&gt;</span>
+          <span class="nt">&lt;orcid_id&gt;</span>https://orcid.org/0000-0001-1234-1234<span class="nt">&lt;/orcid_id&gt;</span>
+        <span class="nt">&lt;/author&gt;</span>
+        <span class="nt">&lt;author&gt;</span>
+          <span class="nt">&lt;name&gt;</span>Dusko Bjelica<span class="nt">&lt;/name&gt;</span>
+          <span class="nt">&lt;affiliationId&gt;</span>1<span class="nt">&lt;/affiliationId&gt;</span>
+        <span class="nt">&lt;/author&gt;</span>
+        <span class="nt">&lt;author&gt;</span>
+          <span class="nt">&lt;name&gt;</span>Gabriela Doina Tanase<span class="nt">&lt;/name&gt;</span>
+          <span class="nt">&lt;affiliationId&gt;</span>2<span class="nt">&lt;/affiliationId&gt;</span>
+          <span class="nt">&lt;orcid_id&gt;</span>https://orcid.org/0000-0001-1111-2222<span class="nt">&lt;/orcid_id&gt;</span>
+        <span class="nt">&lt;/author&gt;</span>
+        <span class="nt">&lt;author&gt;</span>
+          <span class="nt">&lt;name&gt;</span>Rajko Mila<span class="ni">&amp;#x161;</span>inovi<span class="ni">&amp;#x107;</span><span class="nt">&lt;/name&gt;</span>
+          <span class="nt">&lt;affiliationId&gt;</span>3<span class="nt">&lt;/affiliationId&gt;</span>
+        <span class="nt">&lt;/author&gt;</span>
+      <span class="nt">&lt;/authors&gt;</span>
+      <span class="nt">&lt;affiliationsList&gt;</span>
+        <span class="nt">&lt;affiliationName</span> <span class="na">affiliationId=</span><span class="s">"0"</span><span class="nt">&gt;</span>University of Montenegro, Faculty for Sport and Physical Education, Nik<span class="ni">&amp;#x161;</span>i<span class="ni">&amp;#x107;</span>, Montenegro<span class="nt">&lt;/affiliationName&gt;</span>
+        <span class="nt">&lt;affiliationName</span> <span class="na">affiliationId=</span><span class="s">"1"</span><span class="nt">&gt;</span>University of Montenegro, Faculty for Sport and Physical Education, Nik<span class="ni">&amp;#x161;</span>i<span class="ni">&amp;#x107;</span>, Montenegro<span class="nt">&lt;/affiliationName&gt;</span>
+        <span class="nt">&lt;affiliationName</span> <span class="na">affiliationId=</span><span class="s">"2"</span><span class="nt">&gt;</span>University of Montenegro, Faculty for Sport and Physical Education, Nik<span class="ni">&amp;#x161;</span>i<span class="ni">&amp;#x107;</span>, Montenegro<span class="nt">&lt;/affiliationName&gt;</span>
+        <span class="nt">&lt;affiliationName</span> <span class="na">affiliationId=</span><span class="s">"3"</span><span class="nt">&gt;</span>University of Novi Sad, ACIMSR, Novi Sad, Serbia<span class="nt">&lt;/affiliationName&gt;</span>
+      <span class="nt">&lt;/affiliationsList&gt;</span>
+      <span class="nt">&lt;oai_doaj:fullTextUrl</span> <span class="na">format=</span><span class="s">"pdf"</span><span class="nt">&gt;</span>http://www.kup.at/kup/pdf/648.pdf<span class="nt">&lt;/oai_doaj:fullTextUrl&gt;</span>
+      <span class="nt">&lt;oai_doaj:keywords&gt;</span>
+        <span class="nt">&lt;oai_doaj:keyword&gt;</span>Empfehlung<span class="nt">&lt;/oai_doaj:keyword&gt;</span>
+        <span class="nt">&lt;oai_doaj:keyword&gt;</span>Mineralstoffwechsel<span class="nt">&lt;/oai_doaj:keyword&gt;</span>
+        <span class="nt">&lt;oai_doaj:keyword&gt;</span>Osteoporose<span class="nt">&lt;/oai_doaj:keyword&gt;</span>
+        <span class="nt">&lt;oai_doaj:keyword&gt;</span>Richtlinie<span class="nt">&lt;/oai_doaj:keyword&gt;</span>
+        <span class="nt">&lt;oai_doaj:keyword&gt;</span>Therapie<span class="nt">&lt;/oai_doaj:keyword&gt;</span>
+      <span class="nt">&lt;/oai_doaj:keywords&gt;</span>
+    <span class="nt">&lt;/oai_doaj:doajArticle&gt;</span>
+  <span class="nt">&lt;/metadata&gt;</span>
+<span class="nt">&lt;/record&gt;</span>
+</code></pre></div></div>
+
+<h4 id="revision-history-2">Revision history</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date changes were made live</th>
+      <th>Changes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>20 April 2015</td>
+      <td>Initial release</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+            <!-- Display data pages -->
+            
+          </section>
+        </div>
+
+      </div>
+    </main>
+
+

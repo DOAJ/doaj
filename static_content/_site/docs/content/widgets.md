@@ -40,103 +40,39 @@ var QUERY_OPTIONS = {
 
 ### Configuring via `QUERY_OPTIONS`
 
-There are a handful of options available, all are optional; omit them from `QUERY_OPTIONS` for the default behaviour.
+There are a handful of options available. All are optional; omit them from `QUERY_OPTIONS` for the default behaviour.
 
-<dl>
-  <dt><code>query_string</code></dt>
-  <dd>
-    Accepts plain text: any text you might put in the search box
-  </dd>
+{:.tabular-list}
+- `query_string`
+  - Accepts plain text: any text you might put in the search box
+- `query_field`
+  - The field to query. Omit to search in any field, or specify one of these:
+      - `bibjson.title`: title
+      - `bibjson.keywords`: keywords
+      - `index.classification`: subject
+      - `index.issn.exact`: ISSN
+      - `bibjson.identifier.id`: DOI
+      - `index.country`: country of publisher
+      - `index.language`: journal language
+      - `index.publisher`: publisher name
+- `sort_field`
+    - `created_date`: sort by date added to DOAJ (default)
+    - `index.unpunctitle.exact`: sort by title
+- `sort_direction`
+    - `asc`: ascending (default)
+    - `desc`: descending
+- `search_operator`
+    - `AND`: use AND for the terms in the query string (default)
+    - `OR`: use OR for the terms in the query string
+- `search_type`
+  - The type of result to show. Omit this property to show results of both type    
+      - `journal`: only show journals
+      - `article`: only show articles
+- `page_size`
+  - `integer`: how many results to show per page, 1 or more (default: 10)
+- `page_from`
+  - `integer`: which result to start from initially, 0 or higher, (default 0)
 
-  <dt><code>query_field</code></dt>
-  <dd>
-    The field to query. Omit to search in any field, or specify one of these:
-    <ul>
-      <li>
-        <code>bibjson.title</code>: title
-      </li>
-      <li>
-        <code>bibjson.keywords</code>: keywords
-      </li>
-      <li>
-        <code>index.classification</code>: subject
-      </li>
-      <li>
-        <code>index.issn.exact</code>: ISSN
-      </li>
-      <li>
-        <code>bibjson.identifier.id</code>: DOI
-      </li>
-      <li>
-        <code>index.country</code>: country of publisher
-      </li>
-      <li>
-        <code>index.language</code>: journal language
-      </li>
-      <li>
-        <code>index.publisher</code>: publisher name
-      </li>
-    </ul>
-  </dd>
-
-  <dt><code>sort_field</code></dt>
-  <dd>
-    <ul>
-      <li>
-        <code>created_date</code>: sort by date added to DOAJ (default)
-      </li>
-      <li>
-        <code>index.unpunctitle.exact</code>: sort by title
-      </li>
-    </ul>
-  </dd>
-
-  <dt><code>sort_direction</code></dt>
-  <dd>
-    <ul>
-      <li>
-        <code>asc</code>: ascending (default)
-      </li>
-      <li>
-        <code>desc</code>: descending
-      </li>
-    </ul>
-  </dd>
-
-  <dt><code>search_operator</code></dt>
-  <dd>
-    <ul>
-      <li>
-        <code>AND</code>: use AND for the terms in the query string (default)
-      </li>
-      <li>
-        <code>OR</code>: use OR for the terms in the query string
-      </li>
-    </ul>
-  </dd>
-
-  <dt><code>search_type</code></dt>
-  <dd>
-    The type of result to show. Omit this property to show results of both type
-    <ul>
-      <li>
-        <code>journal</code>: only show journals
-      </li>
-      <li>
-        <code>article</code>: only show articles
-      </li>
-    </ul></dd>
-
-  <dt><code>page_size</code></dt>
-  <dd>
-    <code>integer</code>: how many results to show per page, 1 or more (default: 10)
-  </dd>
-
-  <dt><code>page_from</code></dt>
-  <dd>
-    <code>integer</code>: which result to start from initially, 0 or higher, (default 0)
-  </dd>
-</dl>
 
 The parameter `QUERY_OPTIONS` takes a subset of fields to define which results to retrieve. The example above displays the journals containing the word `medicine` in the title and in alphabetical order. Configuration via these `QUERY_OPTIONS` provides a simplified way to display results by keyword.
 

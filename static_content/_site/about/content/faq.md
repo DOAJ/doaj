@@ -1,10 +1,10 @@
 ## Accessibility
 
-If you disable all Javascript, searching DOAJ won't work properly because some of the code that is required is served by Google's Javascript library hosting. Once disabled, search fails.
+Please be aware that if you disable all Javascript, searching DOAJ won't work properly. This is because some of the code that is required is served by Google's Javascript library. Once this is disabled, DOAJ search will fail.
 
 If you can select which components can be switched off, then you can continue to use DOAJ.
 
-Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is the framework used to build the DOAJ website. This contains some Javascript for some of its features.
+Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is the framework used to build the DOAJ website. This contains Javascript for some of its features.
 
 ---
 
@@ -19,7 +19,7 @@ Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is 
 3. If you find a broken link or something that is out of date or incomplete, [contact us]().
   + We are always grateful when our users are our eyes and ears.
 4. Become a volunteer
-  + From time to time, we put out a call for volunteers. Follow us on [Twitter](https://twitter.com/doajplus) or [our blog](https://blog.doaj.org/) to be alertedfind out when the next call is published.
+  + From time to time, we put out a call for volunteers. Follow us on [Twitter](https://twitter.com/doajplus) or [our blog](https://blog.doaj.org/) to find out when the next call is published.
 
 ### I have found a broken link. What should I do?
 
@@ -31,11 +31,11 @@ Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is 
 
 ### I know a journal which should be in DOAJ but isn’t. What should I do?
 
-  [Submit an application]() or contact the journal and ask them to submit an application to us. You can also send us the details of the journal—title and ISSN—and we will contact them.
+  Contact the journal and ask them to submit an application. You can also send us the details of the journal—title and ISSN—and we will contact them.
 
 ### The journal I am looking for isn't in DOAJ. Why? What should I do?
 
-  May be the journal hasn't applied to us or its application is still in progress. It may be that the journal was removed from DOAJ. [Contact us]() to see if the journal has a pending application.
+  Maybe the journal hasn't applied to us or its application is still in progress. It may be that the journal was removed from DOAJ. [Contact us]() to see if the journal has a pending application.
 
 ### How do I report a bug or ask for technical help?
 
@@ -86,7 +86,7 @@ You may crawl DOAJ as long as you follow our good behaviour guidelines for crawl
 + use our sitemap
 + obey our rate limit
 
-If your crawler hits our servers too often, or your crawler starts to affect DOAJ's performance in any way, then your access will be restricted or even blocked. (It's actually faster and easier for you to collect our medata if you connect via the API.)
+If your crawler hits our servers too often, or your crawler starts to affect DOAJ's performance in any way, then your access will be restricted or even blocked. (It's faster and easier for you to collect our metadata if you connect via the API.)
 
 #### CSV file
 
@@ -101,7 +101,7 @@ You can [download all of our journal and article metadata]() as two static files
 
 #### OAI-PMH
 
-DOAJ supports the OAI protocol for metadata harvesting (OAI-PMH). Any OAI compatible service can obtain records from DOAJ. The base URL is: http://www.doaj.org/oai. You can add most OAI verbs and other commands directly on to that. There is a full description of this service on the [OAI-PMH documentation page](). Our current OAI offering is standardised around Dublin Core.
+DOAJ supports the OAI protocol for metadata harvesting (OAI-PMH). Any OAI compatible service can obtain records from DOAJ. The base URL is `http://www.doaj.org/oai`. You can add most OAI verbs and other commands directly on to that. There is a full description of this service on the [OAI-PMH documentation page](). Our current OAI offering is standardised around Dublin Core.
 
 ### Why do some journals have no or very little article metadata in DOAJ?
 
@@ -139,4 +139,4 @@ The subject classifications used to [Browse by subject]() page are structured as
 
 You can choose to filter your search results by ‘keyword’.
 
-Journal keywords are chosen by the person submitting an application for a journal. They are reviewed and edited by the DOAJ Team. They are more arbitrary than the subject classification.
+Journal keywords are chosen by the person applying for a journal. They are reviewed and edited by the DOAJ Team. They are more arbitrary than the subject classification.

@@ -1,20 +1,18 @@
-When you upload your article metadata to us, it must be in one of two XML formats. 
+Article metadata is provided to DOAJ by publishers on the understanding that the data will then be available for free, to be distributed to any third party who wants it.
 
-Article metadata is provided to us on the understanding that it will then be available for free, to be distributed to any third party who wants it.
-
-We do not check the metadata's quality or correctness as we ingest it—this is your responsibility—so any errors (for example, typos in author names, URLs, or DOI) will be uploaded as is. From time to time, a user of our metadata may contact us and ask us to make a correction to your metadata.
+We do not check metadata quality as we ingest it — this is the publisher's responsibility — so any errors (for example, typos in author names, URLs, or DOI) will not be corrected. Users of our metadata may contact us to ask for metadata to be  corrected.
 
 ## Uploading an XML file
 
 + First convert your article metadata into an accepted XML format: DOAJ or Crossref.
-  + It is important that it is structured correctly.
+  + It must be structured correctly.
   + Its format must follow a set of rules laid out in the [DOAJ XML schema file](/static/doaj/doajArticles.xsd), or the rules laid out in [Crossref’s schema file](https://support.crossref.org/hc/en-us/articles/214530063-Crossref-XSD-schema-quick-reference).
 + If you are creating DOAJ XML manually, try [formatting](https://jsonformatter.org/xml-formatter) and [validating](https://www.xmlvalidation.com/) the file before you upload it to us.
 + If you are exporting XML from an OJS plugin, you can [upload the file](/publisher/uploadfile) immediately.
 
 ## List of DOAJ XML elements
 
-Here is a table of each possible element in the DOAJ XML file. It shows you whether or not the element is required by the DOAJ schema. Providing as much information in the metadata as possible ensures a more complete record in our database and allows the record to be distributed more easily to other services.
+Here is a table of each element in the DOAJ XML file. It shows you whether or not the element is required by the DOAJ schema. Providing as much information in the metadata as possible ensures a more complete record in our database and allows the record to be distributed more easily to other services.
 
 | Element            | Requirement                                                                 |
 |--------------------|-----------------------------------------------------------------------------|
@@ -32,12 +30,13 @@ Here is a table of each possible element in the DOAJ XML file. It shows you whet
 | Document type      | Optional, max. 1                                                            |
 | **Title**          | Required, 1 or more                                                         |
 | Authors            | Optional                                                                    |
+| ORCID iD           | Optional, max. 1                                                            |
 | Affiliations       | Optional                                                                    |
 | Abstracts          | Optional                                                                    |
 | **Full-text URL**  | Required, only 1                                                            |
 | Keywords           | Optional                                                                    |
 
-There are [European Union restrictions](https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en) on how you distribute personal data, such as email addresses. DOAJ doesn’t have any need for or display author email addresses so please don’t send them to us in the XML.
+There are [European Union restrictions](https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en) on distribution of personal data, such as email addresses. DOAJ doesn’t need or display author email addresses so please don’t send them to us in the XML.
 
 ## Example DOAJ XML File
 
@@ -91,9 +90,9 @@ The example file below contains only one record.
 | `record`            | Represents a single record.                                                                                                                                                                                           |
 | `language`          | The language tag content must conform to the ISO 639-2b standard. [Find the correct language code](https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes).                                                            |
 | `issn`  <br>`eissn` |                                                                                                                                                                                                                       |
-| `title language=""` | If the title occurs in more than one language, then you may include those in your XML. However we can only display one language. The title tag’s language attribute must be set according to the ISO 639-2b standard. |
+| `title language=""` | If the title occurs in more than one language, then you may include those in your XML. However, we can only display one language. The title tag’s language attribute must be set according to the ISO 639-2b standard. |
 | `name`              | The author name should be formatted First Name, Middle Name, Last Name                                                                                                                                                |
-| `affiliationId`     | Note that the `affilitationId` numbers denote the affilitations in the `affiliationslist` further down.                                                                                                               |
+| `affiliationId`     | Note that the `affiliationId` numbers denote the affiliations in the `affiliationslist` further down.                                                                                                               |
 
 
 ---
