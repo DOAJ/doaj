@@ -13,11 +13,11 @@
         <nav class="tabs__menu">
           <ul class="tabs__list" role="tablist">
             <li class="tabs__item"role="presentation">
-              <a href="#publisher-drafts" role="tab" aria-selected="true">Drafts</a>
+              <a href="#publisher-drafts" role="tab" aria-selected="true">My applications</a>
             </li>
 
             <li class="tabs__item">
-              <a href="#publisher-journals" role="tab" aria-selected="false">Your journals</a>
+              <a href="#publisher-journals" role="tab" aria-selected="false">My journals</a>
             </li>
 
             <li class="tabs__item"role="presentation">
@@ -34,14 +34,19 @@
           </ul>
         </nav>
 
-        <div class="row tabs__content">
+        <div class="tabs__content">
           <section id="publisher-drafts" class="tabs__panel" role="tabpanel" aria-hidden="false">
+            <header>
+              <h2>My applications</h2>
+            </header>
+
+            {% include draft-journals.html %}
 
           </section>
 
           <section id="publisher-journals" class="tabs__panel" role="tabpanel" aria-hidden="true">
             <header class="col-xs-12">
-              <h2>Your journals</h2>
+              <h2>My journals</h2>
             </header>
 
             <div class="col-md-3">
