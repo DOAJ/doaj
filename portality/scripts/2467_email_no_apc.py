@@ -5,7 +5,18 @@ import csv
 
 NO_APC = {
     "query": {
-        "term": {"index.has_apc.exact": "No"}
+        "filtered": {
+            "filter": {
+                "bool": {
+                    "must": {
+                        "term": {"admin.in_doaj": True}
+                    }
+                }
+            },
+            "query": {
+                "term": {"index.has_apc.exact": "No"}
+            }
+        }
     }
 }
 
@@ -25,7 +36,7 @@ if __name__ == "__main__":
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(["ID", "Journal Name", "Journal Contact", "Account", "Account Email", "In DOAJ"])
+        writer.writerow(["ID", "Journal Name", "Journal Contact", "Account", "Account Email", "Marketing Consent"])
 
         for j in esprit.tasks.scroll(conn, models.Journal.__type__, q=NO_APC, page_size=100, keepalive='5m'):
             journal = models.Journal(_source=j)
@@ -33,6 +44,6 @@ if __name__ == "__main__":
             account = models.Account.pull(journal.owner)
 
             try:
-                writer.writerow([journal.id, bibjson.title, journal.get_latest_contact_email(), account.id, account.email, journal.is_in_doaj()])
+                writer.writerow([journal.id, bibjson.title, journal.get_latest_contact_email(), account.id, account.email, account.marketing_consent])
             except AttributeError:
                 print("Error reading attributes for journal {0}".format(j['id']))
