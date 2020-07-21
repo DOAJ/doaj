@@ -27,12 +27,13 @@
 
 .dropdown__link {
  display: block;
- padding: $spacing-03 $spacing-04;
+ padding: $spacing-03;
  clear: both;
  white-space: nowrap;
  color: $warm-black;
  font-weight: 400;
  text-transform: none;
+ line-height: 1;
  @include typescale-06;
 
  &:hover,
