@@ -1,47 +1,41 @@
-{% extends "publisher/publisher_base.html" %}
-{% block publisher_content %}
+{% extends "publisher/dashboard.html" %}
+{% block tabs_content %}
 <div id="crossref-alert" class="alert-messages">
    <div class="alert alert-message fade in" data-alert="alert">
        <a class="close" data-dismiss="alert" href="#">×</a>
        Crossref schema is still loading, uploading your file may take a bit longer than usual.
    </div>
 </div>
-<div class="row" style="margin-top: 20px">
-    <div class="col-md-12">
-        <div class="well">
-            <p>Uploaded files must conform to one of the approved XML formats:</p>
-            <ul>
-                <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
-                <li><a href="/static/crossref/crossref4.4.2.xsd">Crossref 4.4.2 XML</a></li>
-            </ul>
-            
-            <p>Uploaded files must be &lt; 50Mb. Remote files must be &lt; 250Mb. If you need to upload more data, you should provide multiple files.</p>
-        </div>
-    </div>
-</div>
+    <header class="col-md-4">
+              <h2>Upload article XML</h2>
 
+              <div class="alert">
+                <p>Uploaded files must conform to one of the approved XML formats:</p>
+                <ul>
+                  <li><a href="/portality/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
+                  <li><a href="/portality/static/crossref/crossref4.4.2.xsd">Crossref 4.4.2 XML</a></li>
+                </ul>
+              </div>
+            </header>
 
-<form id="upload_form" class="form-horizontal" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
+            <form id="upload_form" class="col-md-8 form" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
+              <div class="form__question">
+                <label for="upload-xml-file">Select a file</label>
+                  <input type="file" id="upload-xml-file" name="file">
+                <p><small>Must be less than 50Mb.</small></p>
+              </div>
 
-    <div class="row">
-        <label for="file" class="col-md-3 control-label">Select a file to upload</label>
-        <div class="col-md-9"><input type="file" name="file"></div>
-    </div>
-    
-    <div class="row" style="margin-top: 20px;">
-        <div class="col-md-3" style="text-align: right"><strong>OR</strong></div>
-        <div class="col-md-9">&nbsp;</div>
-    </div>
-    
-    <div class="row">
-        <label for="url" class="col-md-3 control-label">Provide a URL where we can download the XML</label>
-        <div class="col-md-9"><input type="text" name="url" placeholder="URL for XML file (250Mb maximum size)" style="width: 80%"></div>
-    </div>
+              <p>• <strong>OR</strong> •</p>
 
-    <div class="row" style="margin-top: 20px">
-        <label for="url" class="col-md-3 control-label">Format of the file</label>
-        <div class="col-md-9">
-            <select name="schema" class="form-control" style="width: 200px">
+              <div class="form__question">
+                <label for="upload-xml-link">Upload from a link</label>
+                  <input type="url" id="upload-xml-link" name="upload-xml-link" placeholder="https://www.example.com">
+                <p><small>Must be less than 250Mb.</small></p>
+              </div>
+
+              <div class="form__question">
+                <label for="upload-xml-format">File format</label>
+                <select name="schema" class="form-control" id="upload-xml-format" require>
                 {% if schema == '' or schema == 'doaj' %}
                     <option value="doaj" selected>DOAJ Native XML</option>
                     <option value="crossref">Crossref 4.4.2 XML</option>
@@ -50,15 +44,10 @@
                     <option value="crossref" selected>Crossref 4.4.2 XML</option>
                 {% endif %}
             </select>
-        </div>
-    </div>
+              </div>
 
-    <div class="row" style="margin-top: 20px;">
-        <div class="col-md-3">&nbsp;</div>
-        <div class="col-md-9"><button class="btn btn-success" id="upload">Upload</button></div>
-    </div>
-
-</form>
+              <button type="submit" id="upload" class="button button--primary">Upload</button>
+            </form>
 
 <hr>
 
@@ -122,7 +111,7 @@
                             {% endif %}
                         {% else %}
                             {% if file.status == "partial" or file.status == "processed" %}
-                                {{ file.imported }} articles imported 
+                                {{ file.imported }} articles imported
                                 {% if file.imported > 0 %}
                                     ({{file.new}} new, {{file.updates}} updated)
                                 {% endif %}

@@ -27,7 +27,7 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template("publisher/index.html")
+    return render_template("publisher/dashboard.html")
 
 
 @blueprint.route("/journal")
