@@ -19,6 +19,11 @@
             {% endif %}
         {% endfor %}
     </div>
+    {% if "multiple_field" in f.get("widgets", []) %}
+        <div style="display: flex; flex-grow: 2; flex-direction: column; align-items: flex-start" class="add_field__button_div">
+            <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add another </button>
+        </div>
+    {% endif %}
 </div>
 
 {% include "application_form/modal.html" %}
