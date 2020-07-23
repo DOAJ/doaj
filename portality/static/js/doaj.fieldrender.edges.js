@@ -22,6 +22,147 @@ $.extend(true, doaj, {
         }
     },
 
+    templates : {
+        newPublicSearch: function (params) {
+            return edges.instantiate(doaj.templates.PublicSearch, params, edges.newTemplate);
+        },
+        PublicSearch: function (params) {
+            this.namespace = "doajpublicsearch";
+
+            this.title = edges.getParam(params.title, "");
+
+            this.draw = function (edge) {
+                this.edge = edge;
+
+
+                var frag = '<header class="search__header" style="background-image: url(\'/static/doaj/images/search-background.jpg\')"> \
+                        <p class="label">Search</p>\n \
+                        <h1>' + this.title + ' \
+                            <span data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-help" type="button"></span><span class="sr-only">Help</span> \
+                        </h1> \
+                        <div id="search-journal-bar"></div>\
+                    </header>\
+                    <h2 id="result-count"></h2>\
+                    <div class="row">\
+                        <div class="col-md-3">\
+                            <aside class="filters">\
+                                <h2 class="label label--underlined filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
+                                    <span data-feather="sliders" aria-hidden="true"></span> Refine search results <span data-feather="chevron-down" aria-hidden="true"></span>\
+                                </h2>\
+                                <ul class="collapse filters__list" id="filters" aria-expanded="false">\
+                                    <li class="filter">\
+                                        {{FACETS}}\
+                                    </li>\
+                                </ul>\
+                                <p class="input-group" id="share_embed"></p>\
+                        </div>\
+                            \
+                        <div class="col-md-9">\
+                            <nav class="search-options">\
+                                <h3 class="sr-only">Display options</h3>\
+                                <div class="row">\
+                                    <div class="col-xs-6" id="sort_by"></div>\
+                                    <div class="col-xs-6 search-options__right" id="rpp"></div>\
+                                </div>\
+                            </nav>\
+                            {% include search-journal-results.html %}\
+                        </div>\
+                    </div>';
+
+                // add the facets dynamically
+                var facetClass = edges.css_classes(this.namespace, "facet");
+                var facets = edge.category("facet");
+                var facetContainers = "";
+                for (var i = 0; i < facets.length; i++) {
+                    facetContainers += '<div class="' + facetClass + '"><div id="' + facets[i].id + '"></div></div>';
+                }
+                frag = frag.replace(/{{FACETS}}/g, facetContainers);
+
+                /*
+                // the classes we're going to need
+                var containerClass = edges.css_classes(this.namespace, "container");
+                var facetsClass = edges.css_classes(this.namespace, "facets");
+                var facetClass = edges.css_classes(this.namespace, "facet");
+                var panelClass = edges.css_classes(this.namespace, "panel");
+                var controllerClass = edges.css_classes(this.namespace, "search-controller");
+                var selectedFiltersClass = edges.css_classes(this.namespace, "selected-filters");
+                var pagerClass = edges.css_classes(this.namespace, "pager");
+                var searchingClass = edges.css_classes(this.namespace, "searching");
+                var resultsClass = edges.css_classes(this.namespace, "results");
+
+                // the facet view object to be appended to the page
+                var thefacetview = '<div class="' + containerClass + '"><div class="row">';
+
+                // if there are facets, give them span3 to exist, otherwise, take up all the space
+                var facets = edge.category("facet");
+                var facetContainers = "";
+
+                if (facets.length > 0) {
+                    thefacetview += '<div class="col-md-3">\
+                        <div class="' + facetsClass + '">{{FACETS}}</div>\
+                    </div>';
+                    thefacetview += '<div class="col-md-9" class="' + panelClass + '">';
+
+                    for (var i = 0; i < facets.length; i++) {
+                        facetContainers += '<div class="' + facetClass + '"><div id="' + facets[i].id + '"></div></div>';
+                    }
+                } else {
+                    thefacetview += '<div class="col-md-12" class="' + panelClass + '">';
+                }
+
+                // make space for the search options container at the top
+                var controller = edge.category("controller");
+                if (controller.length > 0) {
+                    thefacetview += '<div class="row"><div class="col-md-12"><div class="' + controllerClass + '"><div id="' + controller[0].id + '"></div></div></div></div>';
+                }
+
+                // make space for the selected filters
+                var selectedFilters = edge.category("selected-filters");
+                if (selectedFilters.length > 0) {
+                    thefacetview += '<div class="row">\
+                                            <div class="col-md-12">\
+                                                <div class="' + selectedFiltersClass + '"><div id="' + selectedFilters[0].id + '"></div></div>\
+                                            </div>\
+                                        </div>';
+                }
+
+                // make space at the top for the page
+                var topPagers = edge.category("top-pager");
+                if (topPagers.length > 0) {
+                    thefacetview += '<div class="row"><div class="col-md-12"><div class="' + pagerClass + '"><div id="' + topPagers[0].id + '"></div></div></div></div>';
+                }
+
+                // loading notification (note that the notification implementation is responsible for its own visibility)
+                var loading = edge.category("searching-notification");
+                if (loading.length > 0) {
+                    thefacetview += '<div class="row"><div class="col-md-12"><div class="' + searchingClass + '"><div id="' + loading[0].id + '"></div></div></div></div>'
+                }
+
+                // insert the frame within which the results actually will go
+                var results = edge.category("results");
+                if (results.length > 0) {
+                    for (var i = 0; i < results.length; i++) {
+                        thefacetview += '<div class="row"><div class="col-md-12"><div class="' + resultsClass + '" dir="auto"><div id="' + results[i].id + '"></div></div></div></div>';
+                    }
+                }
+
+                // make space at the bottom for the pager
+                var bottomPagers = edge.category("bottom-pager");
+                if (bottomPagers.length > 0) {
+                    thefacetview += '<div class="row"><div class="col-md-12"><div class="' + pagerClass + '"><div id="' + bottomPagers[0].id + '"></div></div></div></div>';
+                }
+
+                // close off all the big containers and return
+                thefacetview += '</div></div></div>';
+
+                thefacetview = thefacetview.replace(/{{FACETS}}/g, facetContainers);
+                */
+
+                edge.context.html(frag);
+            };
+        }
+    },
+
     renderers : {
         newFullSearchControllerRenderer: function (params) {
             return edges.instantiate(doaj.renderers.FullSearchControllerRenderer, params, edges.newRenderer);

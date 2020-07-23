@@ -102,18 +102,13 @@
           </a>
           <ul class="dropdown__menu" aria-labelledby="menu-journals-articles">
             <li>
-              <a href="#" class="dropdown__link">
+              <a href="{{ url_for("doaj.journals_search") }}" class="dropdown__link">
                 Journals
               </a>
             </li>
             <li>
-              <a href="#" class="dropdown__link">
+              <a href="{{ url_for("doaj.articles_search") }}" class="dropdown__link">
                 Articles
-              </a>
-            </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
               </a>
             </li>
           </ul>

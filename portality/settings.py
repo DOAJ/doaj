@@ -446,23 +446,41 @@ MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
 
 QUERY_ROUTE = {
     "query" : {
-        "journal,article" : {
+        "journal" : {
+            "auth" : False,
+            "role" : None,
+            "query_validator" : "public_query_validator",
+            "query_filters" : ["only_in_doaj"],
+            "result_filters" : ["public_result_filter"],
+            "dao" : "portality.models.Journal",
+            "required_parameters" : {"ref" : ["fqw", "public_journal", "subject_page"]}
+        },
+        "article" : {
             "auth" : False,
             "role" : None,
             "query_validator" : "public_query_validator",
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter", "prune_author_emails"],
-            "dao" : "portality.models.search.JournalArticle",
-            "required_parameters" : {"ref" : ["fqw", "public_journal_article", "subject_page"]}
-        },
-        "article" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter", "prune_author_emails"],
             "dao" : "portality.models.Article",
-            "required_parameters" : {"ref" : ["toc"]}
-        }
+            "required_parameters" : {"ref" : ["fqw", "public_article", "toc", "subject_page"]}
+        },
+        #"journal,article" : {
+        #    "auth" : False,
+        #    "role" : None,
+        #    "query_validator" : "public_query_validator",
+        #    "query_filters" : ["only_in_doaj"],
+        #    "result_filters" : ["public_result_filter", "prune_author_emails"],
+        #    "dao" : "portality.models.search.JournalArticle",
+        #    "required_parameters" : {"ref" : ["fqw", "public_journal_article", "subject_page"]}
+        #},
+        #"article" : {
+        #    "auth" : False,
+        #    "role" : None,
+        #    "query_filters" : ["only_in_doaj"],
+        #    "result_filters" : ["public_result_filter", "prune_author_emails"],
+        #    "dao" : "portality.models.Article",
+        #    "required_parameters" : {"ref" : ["toc"]}
+        #}
     },
     "publisher_query" : {
         "journal" : {

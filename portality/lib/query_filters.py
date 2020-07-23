@@ -59,10 +59,12 @@ def editor(q):
     q.add_must({"terms" : {"admin.editor_group.exact" : gnames}})
     return q
 
+
 def private_source(q):
     q.add_include(["admin.application_status", "suggestion", "admin.ticked",
         "admin.seal", "last_updated", "created_date", "id", "bibjson"])
     return q
+
 
 def public_source(q):
     q.add_include(["admin.ticked", "admin.seal", "last_updated",
