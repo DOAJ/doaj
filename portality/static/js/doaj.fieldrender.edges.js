@@ -34,7 +34,6 @@ $.extend(true, doaj, {
             this.draw = function (edge) {
                 this.edge = edge;
 
-
                 var frag = '<header class="search__header" style="background-image: url(\'/static/doaj/images/search-background.jpg\')"> \
                         <p class="label">Search</p>\n \
                         <h1>' + this.title + ' \
@@ -65,7 +64,9 @@ $.extend(true, doaj, {
                                     <div class="col-xs-6 search-options__right" id="rpp"></div>\
                                 </div>\
                             </nav>\
-                            {% include search-journal-results.html %}\
+                            <nav class="pagination" id="top-pager"></nav>\
+                            <ol class="search-results" id="results"></ol>\
+                            <nav class="pagination" id="bottom-pager"></nav>\
                         </div>\
                     </div>';
 
