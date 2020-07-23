@@ -751,6 +751,8 @@ class FieldDefinitions:
             "apc_currency",
             "apc_max"
         ],
+        "template" : "application_form/_list.html",
+        "entry_template" : "application_form/_entry_group_horizontal.html",
         "widgets": [
             "multiple_field"
         ]
@@ -758,6 +760,7 @@ class FieldDefinitions:
 
     APC_CURRENCY = {
         "subfield": True,
+        "group" : "apc_charges",
         "name": "apc_currency",
         "input": "select",
         "options_fn": "iso_currency_list",
@@ -772,6 +775,7 @@ class FieldDefinitions:
 
     APC_MAX = {
         "subfield": True,
+        "group" : "apc_charges",
         "name": "apc_max",
         "input": "number",
         "datatype": "integer",
