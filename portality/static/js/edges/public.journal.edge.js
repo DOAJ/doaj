@@ -251,6 +251,9 @@ $.extend(true, doaj, {
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
+                    },
+                    "edges:post-init" : function() {
+                        feather.replace();
                     }
                 }
             });
