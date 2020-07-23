@@ -276,7 +276,9 @@ class FormulaicContext(object):
         fields = []
         for fieldset in self._definition.get("fieldsets", []):
             for field in fieldset.get("fields", []):
-                if "group" in field:
+                #if "group" in field:
+                #    continue
+                if "subfield" in field:
                     continue
                 fields.append(field)
 

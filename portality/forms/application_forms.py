@@ -2129,7 +2129,7 @@ class IntegerBuilder(WTFormsBuilder):
 class GroupBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
-        return field.get("input") == "group" and field.get("repeatable") is not None
+        return field.get("input") == "group" and field.get("repeatable") is None
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
