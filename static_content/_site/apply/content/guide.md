@@ -111,26 +111,32 @@ Journals that are rejected must wait 6 months from the date of rejection before 
 
 {:.tabular-list}
 - ### Arts and humanities journals
-   - For these subjects only, DOAJ can accept journals that undertake editorial review, rather than peer review.  Editorial review must be handled with a minimum of two editors.
+   - For these disciplines only, DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
 
-- ### Case reports journals
+- ### Clinical case reports journals
    - DOAJ only considers case reports as research if they include the retrospective analysis of more than three clinical cases and/or a literature review. Before applying, make sure that the journal has published at least five articles per year that meet this definition.
 
-- ### Law journals
-   - Law journals must undertake a peer review process to be included in DOAJ. However, an exception is made for US law journals where editorial review is an accepted practice in this field and has been traditionally used for over a century.
+- ### Conference proceedings journals
+   - For DOAJ to include journals that are dedicated to publishing conference proceedings, the journal must have an ISSN and a permanent editorial or advisory board providing editorial oversight. Papers from each published conference must be peer reviewed according to DOAJ criteria. Full text of all conference papers must be available. Individual conference proceedings will not be indexed.
+   
+- ### Data journals
+   - DOAJ will accept journals publishing research articles about data or datasets, but not journals that simply link to datasets or announce their availability.
+
+- ### Overlay journals
+   - DOAJ will accept journals that select and peer-review articles that are hosted on a preprint server or other site.
 
 - ### Student-run journals
    - If a journal is run by a student body, there must be an advisory board for the journal where at least two members have a PhD or equivalent qualification.
 
-- ### Journals that have flipped to open access
+- ### Flipped journals
    - Where a journal was previously published as a subscription or hybrid journal and has now flipped to a fully open access model, this information must be clearly displayed:
       - The date of the change to fully open access
       - The availability of the archive material (open access, free, or paywalled)
       - Reuse rights of the archive material (all rights reserved or open license)
-   - For a journal to be included in DOAJ, the latest volume must be completely open access. DOAJ does not accept journals where the current material is a mixture of open and restricted licenses.
+   - For a journal to be included in DOAJ, all content published after it has flipped must be completely open access.
 
 - ### Mirror journals
-   - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it has a different ISSN. DOAJ will currently accept mirror journals if they meet the usual inclusion criteria.
+   - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
 
 ## The application process
 

@@ -12,7 +12,7 @@
     </label>
     {% if f.get("hint") %}<p><small>{{ f.hint }}</small></p>{% endif %}
     {% if "multiple_field" in f.get("widgets", []) %}
-            <div class="removable_field__{{ f.name }}">
+            <div class="multiple_inputs__container">
                 <div class= 'multiple_input'>
                     {{ f.render_form_control() }}
                 </div>
