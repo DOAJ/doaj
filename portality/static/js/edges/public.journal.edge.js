@@ -44,7 +44,7 @@ $.extend(true, doaj, {
                         {'display':'Journal Language','field':'index.language'}
                     ],
                     defaultOperator : "AND",
-                    renderer : doaj.renderers.newFullSearchControllerRenderer({
+                    renderer : doaj.renderers.newSearchBarRenderer({
                         freetextSubmitDelay: -1,
                         clearButton: false,
                         searchButton: true,
@@ -56,101 +56,144 @@ $.extend(true, doaj, {
                     id: "result-count",
                     category: "pager",
                     renderer : edges.bs3.newResultCountRenderer({
-                        suffix: " indexed journals"
+                        countFormat: countFormat,
+                        suffix: " indexed journals",
+                        htmlContainerWrapper: false
                     })
                 }),
 
-                edges.newRefiningANDTermSelector({
-                    id : "subject",
+                edges.newFilterSetter({
+                    id : "see_journals",
+                    category: "facet",
+                    filters : [
+                        {
+                            id: "with_seal",
+                            display: "With a DOAJ Seal&nbsp;&nbsp;<span data-feather=\"check-circle\" aria-hidden=\"true\"></span>",
+                            must : [
+                                es.newTermFilter({
+                                    field: "index.has_seal.exact",
+                                    value: "Yes"
+                                })
+                            ]
+                        },
+                        {
+                            id : "no_charges",
+                            display: "Without APCs or other fees",
+                            must : [
+                                es.newTermFilter({
+                                    field: "bibjson.apc.has_apc",
+                                    value: false
+                                }),
+                                es.newTermFilter({
+                                    field: "bibjson.other_charges.has_other_charges",
+                                    value: false
+                                })
+                            ]
+                        }
+                    ],
+                    renderer : doaj.renderers.newFacetFilterSetterRenderer({
+                        facetTitle : "See journals...",
+                        open: true,
+                        togglable: false,
+                        showCount: false
+                    })
+                }),
+
+                // FIXME: this is an approximation of the subject selector that we actually want, just to get the
+                // ball rolling
+                edges.newORTermSelector({
+                    id: "subject",
                     category: "facet",
                     field: "index.classification.exact",
                     display: "Subjects",
-                    deactivateThreshold: 1,
-                    renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: false,
+                    size: 5000,
+                    syncCounts: false,
+                    lifecycle: "static",
+                    renderer : doaj.renderers.newORTermSelectorRenderer({
+                        showCount: false,
+                        hideEmpty: false,
                         open: true,
-                        togglable: false,
-                        countFormat: countFormat,
-                        hideInactive: true
+                        togglable: false
                     })
                 }),
 
-                edges.newRefiningANDTermSelector({
-                    id : "language",
+                edges.newORTermSelector({
+                    id: "language",
                     category: "facet",
                     field: "index.language.exact",
                     display: "Languages",
-                    deactivateThreshold: 1,
-                    active: false,
-                    renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
+                    size: 999,
+                    syncCounts: false,
+                    lifecycle: "update",
+                    renderer : doaj.renderers.newORTermSelectorRenderer({
+                        showCount: true,
+                        hideEmpty: false,
                         open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
+                        togglable: true
                     })
                 }),
 
-                edges.newRefiningANDTermSelector({
-                    id : "journal_licence",
+                edges.newORTermSelector({
+                    id: "journal_licence",
                     category: "facet",
                     field: "index.license.exact",
                     display: "Licenses",
-                    deactivateThreshold: 1,
-                    renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
+                    size: 99,
+                    syncCounts: false,
+                    lifecycle: "update",
+                    renderer : doaj.renderers.newORTermSelectorRenderer({
+                        showCount: true,
+                        hideEmpty: false,
                         open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
+                        togglable: true
                     })
                 }),
 
-                edges.newRefiningANDTermSelector({
-                    id : "publisher",
+                edges.newORTermSelector({
+                    id: "publisher",
                     category: "facet",
                     field: "bibjson.publisher.name.exact",
                     display: "Publishers",
-                    deactivateThreshold: 1,
-                    renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
+                    size: 9999,
+                    syncCounts: false,
+                    lifecycle: "update",
+                    renderer : doaj.renderers.newORTermSelectorRenderer({
+                        showCount: true,
+                        hideEmpty: false,
                         open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
+                        togglable: true
                     })
                 }),
 
-                edges.newRefiningANDTermSelector({
-                    id : "country_publisher",
+                edges.newORTermSelector({
+                    id: "country_publisher",
                     category: "facet",
                     field: "index.country.exact",
                     display: "Publishers' countries",
-                    deactivateThreshold: 1,
-                    active: false,
-                    renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
+                    size: 999,
+                    syncCounts: false,
+                    lifecycle: "update",
+                    renderer : doaj.renderers.newORTermSelectorRenderer({
+                        showCount: true,
+                        hideEmpty: false,
                         open: false,
-                        togglable: true,
-                        hideInactive: true,
-                        countFormat: countFormat
+                        togglable: true
                     })
                 }),
 
-                edges.newRefiningANDTermSelector({
-                    id : "peer_review",
+                edges.newORTermSelector({
+                    id: "peer_review",
                     category: "facet",
                     field: "bibjson.editorial.review_process.exact",
                     display: "Peer review types",
-                    ignoreEmptyString: true,
-                    deactivateThreshold: 1,
-                    active: false,
-                    renderer : edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
+                    size: 99,
+                    syncCounts: false,
+                    lifecycle: "update",
+                    renderer : doaj.renderers.newORTermSelectorRenderer({
+                        showCount: true,
+                        hideEmpty: false,
                         open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
+                        togglable: true
                     })
                 }),
 
@@ -160,7 +203,6 @@ $.extend(true, doaj, {
                     field: "created_date",
                     interval: "year",
                     display: "Date added",
-                    active: false,
                     displayFormatter : function(val) {
                         return (new Date(parseInt(val))).getUTCFullYear();
                     },
@@ -168,11 +210,11 @@ $.extend(true, doaj, {
                         values.reverse();
                         return values;
                     },
-                    renderer : edges.bs3.newDateHistogramSelectorRenderer({
+                    renderer : doaj.renderers.newDateHistogramSelectorRenderer({
                         open: false,
                         togglable: true,
                         countFormat: countFormat,
-                        hideInactive: true
+                        hideInactive: false
                     })
                 }),
 
@@ -253,6 +295,9 @@ $.extend(true, doaj, {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
                     },
                     "edges:post-init" : function() {
+                        feather.replace();
+                    },
+                    "edges:post-render" : function() {
                         feather.replace();
                     }
                 }

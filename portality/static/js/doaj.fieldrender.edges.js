@@ -39,7 +39,9 @@ $.extend(true, doaj, {
                         <h1>' + this.title + ' \
                             <span data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-help" type="button"></span><span class="sr-only">Help</span> \
                         </h1> \
-                        <div id="search-journal-bar"></div>\
+                        <div class="row">\
+                            <div id="search-journal-bar" class="col-md-9"></div>\
+                        </div>\
                     </header>\
                     <h2 id="result-count"></h2>\
                     <div class="row">\
@@ -49,9 +51,7 @@ $.extend(true, doaj, {
                                     <span data-feather="sliders" aria-hidden="true"></span> Refine search results <span data-feather="chevron-down" aria-hidden="true"></span>\
                                 </h2>\
                                 <ul class="collapse filters__list" id="filters" aria-expanded="false">\
-                                    <li class="filter">\
-                                        {{FACETS}}\
-                                    </li>\
+                                    {{FACETS}}\
                                 </ul>\
                                 <p class="input-group" id="share_embed"></p>\
                         </div>\
@@ -71,11 +71,10 @@ $.extend(true, doaj, {
                     </div>';
 
                 // add the facets dynamically
-                var facetClass = edges.css_classes(this.namespace, "facet");
                 var facets = edge.category("facet");
                 var facetContainers = "";
                 for (var i = 0; i < facets.length; i++) {
-                    facetContainers += '<div class="' + facetClass + '"><div id="' + facets[i].id + '"></div></div>';
+                    facetContainers += '<li class="filter" id="' + facets[i].id + '"></li>';
                 }
                 frag = frag.replace(/{{FACETS}}/g, facetContainers);
 
@@ -165,6 +164,7 @@ $.extend(true, doaj, {
     },
 
     renderers : {
+        // FIXME: this is probably obsolete
         newFullSearchControllerRenderer: function (params) {
             return edges.instantiate(doaj.renderers.FullSearchControllerRenderer, params, edges.newRenderer);
         },
@@ -549,6 +549,789 @@ $.extend(true, doaj, {
                     button.html('<span class="glyphicon glyphicon-resize-full"></span>original url');
                     this.showShortened = true;
                 }
+            };
+        },
+
+        newSearchBarRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.SearchBarRenderer, params, edges.newRenderer);
+        },
+        SearchBarRenderer: function (params) {
+            // enable the search button
+            this.searchButton = edges.getParam(params.searchButton, false);
+
+            // text to include on the search button.  If not provided, will just be the magnifying glass
+            this.searchButtonText = edges.getParam(params.searchButtonText, false);
+
+            // should the clear button be rendered
+            this.clearButton = edges.getParam(params.clearButton, true);
+
+            // set the placeholder text for the search box
+            this.searchPlaceholder = edges.getParam(params.searchPlaceholder, "Search");
+
+            // amount of time between finishing typing and when a query is executed from the search box
+            this.freetextSubmitDelay = edges.getParam(params.freetextSubmitDelay, 500);
+
+            ////////////////////////////////////////
+            // state variables
+
+            this.namespace = "doaj-bs3-search-controller";
+
+            this.draw = function () {
+                var comp = this.component;
+
+                // FIXME: leaving this in in case we need to add it in production
+                //var clearClass = edges.css_classes(this.namespace, "reset", this);
+                //var clearFrag = "";
+                //if (this.clearButton) {
+                //    clearFrag = '<button type="button" class="btn btn-danger btn-sm ' + clearClass + '" title="Clear all search and sort parameters and start again"> \
+                //            <span class="glyphicon glyphicon-remove"></span> \
+                //        </button>';
+                //}
+
+                // select box for fields to search on
+                var field_select = "";
+                if (comp.fieldOptions && comp.fieldOptions.length > 0) {
+                    // classes that we'll use
+                    var searchFieldClass = edges.css_classes(this.namespace, "field", this);
+                    var searchFieldId = edges.css_id(this.namespace, "fields", this);
+
+                    field_select += '<select class="' + searchFieldClass + ' input-group__input" name="fields" id="' + searchFieldId + '">';
+                    field_select += '<option value="">All fields</option>';
+
+                    for (var i = 0; i < comp.fieldOptions.length; i++) {
+                        var obj = comp.fieldOptions[i];
+                        field_select += '<option value="' + obj['field'] + '">' + edges.escapeHtml(obj['display']) + '</option>';
+                    }
+                    field_select += '</select>';
+                }
+
+                // more classes that we'll use
+                var textClass = edges.css_classes(this.namespace, "text", this);
+
+                var searchFrag = "";
+                if (this.searchButton) {
+                    var text = '<span class="glyphicon glyphicon-white glyphicon-search"></span>';
+                    if (this.searchButtonText !== false) {
+                        text = this.searchButtonText;
+                    }
+                    searchFrag = '<span class="input-group-btn"> \
+                        <button type="button" class="btn btn-info btn-sm ' + searchClass + '"> \
+                            ' + text + ' \
+                        </button> \
+                    </span>';
+                }
+
+                var textId = edges.css_id(this.namespace, "text", this);
+                var searchBox = '<input type="text" id="' + textId + '" class="' + textClass + ' input-group__input" name="q" value="" placeholder="' + this.searchPlaceholder + '"/>';
+
+                var searchClass = edges.css_classes(this.namespace, "search", this);
+                var button = '<button class="' + searchClass + ' input-group__input" type="submit">\
+                        <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>\
+                    </button>';
+
+                // if (clearFrag !== "") {
+                //     clearFrag = '<div class="col-md-1 col-xs-12">' + clearFrag + "</div>";
+                //}
+
+                var sr1 = '<label for="keywords" class="sr-only">Search by keywords:</label>';
+                var sr2 = '<label for="fields" class="sr-only">In the field:</label>';
+                var frag = '<div class="input-group">' + sr1 + searchBox + sr2 + field_select + button + '</div>';
+
+                comp.context.html(frag);
+
+                if (comp.fieldOptions && comp.fieldOptions.length > 0) {
+                    this.setUISearchField();
+                }
+                this.setUISearchText();
+
+                if (comp.fieldOptions && comp.fieldOptions.length > 0) {
+                    var fieldSelector = edges.css_class_selector(this.namespace, "field", this);
+                    edges.on(fieldSelector, "change", this, "changeSearchField");
+                }
+                var textSelector = edges.css_class_selector(this.namespace, "text", this);
+                if (this.freetextSubmitDelay > -1) {
+                    edges.on(textSelector, "keyup", this, "setSearchText", this.freetextSubmitDelay);
+                } else {
+                    function onlyEnter(event) {
+                        var code = (event.keyCode ? event.keyCode : event.which);
+                        return code === 13;
+                    }
+
+                    edges.on(textSelector, "keyup", this, "setSearchText", false, onlyEnter);
+                }
+
+                //var resetSelector = edges.css_class_selector(this.namespace, "reset", this);
+                //edges.on(resetSelector, "click", this, "clearSearch");
+
+                var searchSelector = edges.css_class_selector(this.namespace, "search", this);
+                edges.on(searchSelector, "click", this, "doSearch");
+
+                // if we've been asked to focus the text box, do that
+                if (this.focusSearchBox) {
+                    $(textSelector).focus();
+                    this.focusSearchBox = false;
+                }
+            };
+
+            //////////////////////////////////////////////////////
+            // functions for setting UI values
+
+            this.setUISearchField = function () {
+                if (!this.component.searchField) {
+                    return;
+                }
+                // get the selector we need
+                var fieldSelector = edges.css_class_selector(this.namespace, "field", this);
+                var el = this.component.jq(fieldSelector);
+                el.val(this.component.searchField);
+            };
+
+            this.setUISearchText = function () {
+                if (!this.component.searchString) {
+                    return;
+                }
+                // get the selector we need
+                var textSelector = edges.css_class_selector(this.namespace, "text", this);
+                var el = this.component.jq(textSelector);
+                el.val(this.component.searchString);
+            };
+
+            ////////////////////////////////////////
+            // event handlers
+
+            this.changeSearchField = function (element) {
+                var val = this.component.jq(element).val();
+                this.component.setSearchField(val);
+            };
+
+            this.setSearchText = function (element) {
+                this.focusSearchBox = true;
+                var val = this.component.jq(element).val();
+                this.component.setSearchText(val);
+            };
+
+            this.clearSearch = function (element) {
+                this.component.clearSearch();
+            };
+
+            this.doSearch = function (element) {
+                var textId = edges.css_id_selector(this.namespace, "text", this);
+                var text = this.component.jq(textId).val();
+                this.component.setSearchText(text);
+            };
+        },
+
+        newFacetFilterSetterRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.FacetFilterSetterRenderer, params, edges.newRenderer);
+        },
+        FacetFilterSetterRenderer: function (params) {
+            // whether the facet should be open or closed
+            // can be initialised and is then used to track internal state
+            this.open = edges.getParam(params.open, false);
+
+            // whether the facet can be opened and closed
+            this.togglable = edges.getParam(params.togglable, true);
+
+            // whether the count should be displayed along with the term
+            // defaults to false because count may be confusing to the user in an OR selector
+            this.showCount = edges.getParam(params.showCount, true);
+
+            // The display title for the facet
+            this.facetTitle = edges.getParam(params.facetTitle, "Untitled");
+
+            this.openIcon = edges.getParam(params.openIcon, "glyphicon glyphicon-plus");
+
+            this.closeIcon = edges.getParam(params.closeIcon, "glyphicon glyphicon-minus");
+
+            // namespace to use in the page
+            this.namespace = "doaj-facet-filter-setter";
+
+            this.draw = function () {
+                // for convenient short references ...
+                var comp = this.component;
+                var namespace = this.namespace;
+
+                var checkboxClass = edges.css_classes(namespace, "selector", this);
+
+                var filters = "";
+                for (var i = 0; i < comp.filters.length; i++) {
+                    var filter = comp.filters[i];
+                    var id = filter.id;
+                    var display = filter.display;
+                    var count = comp.filter_counts[id];
+                    var active = comp.active_filters[id];
+
+                    if (count === undefined) {
+                        count = 0;
+                    }
+
+                    var checked = "";
+                    if (active) {
+                        checked = ' checked="checked" ';
+                    }
+                    filters += '<li>\
+                            <input class="' + checkboxClass + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
+                            <label for="' + id + '" class="filter__label">' + display + '</label>\
+                        </li>';
+                }
+
+                var frag = '<h3 class="filter__heading">' + this.facetTitle + '</h3>\
+                    <ul class="filter__choices">{{FILTERS}}</ul>';
+
+                // substitute in the component parts
+                frag = frag.replace(/{{FILTERS}}/g, filters);
+
+                // now render it into the page
+                comp.context.html(frag);
+
+                // trigger all the post-render set-up functions
+                this.setUIOpen();
+
+                var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
+                edges.on(checkboxSelector, "change", this, "filterToggle");
+            };
+
+            this.setUIOpen = function () {
+                // the selectors that we're going to use
+                var resultsSelector = edges.css_id_selector(this.namespace, "results", this);
+                var toggleSelector = edges.css_id_selector(this.namespace, "toggle", this);
+
+                var results = this.component.jq(resultsSelector);
+                var toggle = this.component.jq(toggleSelector);
+
+                var openBits = this.openIcon.split(" ");
+                var closeBits = this.closeIcon.split(" ");
+
+                if (this.open) {
+                    var i = toggle.find("i");
+                    for (var j = 0; j < openBits.length; j++) {
+                        i.removeClass(openBits[j]);
+                    }
+                    for (var j = 0; j < closeBits.length; j++) {
+                        i.addClass(closeBits[j]);
+                    }
+                    results.show();
+                } else {
+                    var i = toggle.find("i");
+                    for (var j = 0; j < closeBits.length; j++) {
+                        i.removeClass(closeBits[j]);
+                    }
+                    for (var j = 0; j < openBits.length; j++) {
+                        i.addClass(openBits[j]);
+                    }
+                    results.hide();
+                }
+            };
+
+            this.filterToggle = function(element) {
+                var filter_id = this.component.jq(element).attr("id");
+                var checked = this.component.jq(element).is(":checked");
+                if (checked) {
+                    this.component.addFilter(filter_id);
+                } else {
+                    this.component.removeFilter(filter_id);
+                }
+            };
+
+            this.toggleOpen = function (element) {
+                this.open = !this.open;
+                this.setUIOpen();
+            };
+        },
+
+        newORTermSelectorRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.ORTermSelectorRenderer, params, edges.newRenderer);
+        },
+        ORTermSelectorRenderer: function (params) {
+            // whether the facet should be open or closed
+            // can be initialised and is then used to track internal state
+            this.open = edges.getParam(params.open, false);
+
+            this.togglable = edges.getParam(params.togglable, true);
+
+            // whether the count should be displayed along with the term
+            // defaults to false because count may be confusing to the user in an OR selector
+            this.showCount = edges.getParam(params.showCount, false);
+
+            // whether counts of 0 should prevent the value being rendered
+            this.hideEmpty = edges.getParam(params.hideEmpty, false);
+
+            // namespace to use in the page
+            this.namespace = "doaj-or-term-selector";
+
+            this.draw = function () {
+                // for convenient short references ...
+                var ts = this.component;
+                var namespace = this.namespace;
+
+                // sort out all the classes that we're going to be using
+                var resultClass = edges.css_classes(namespace, "result", this);
+                var valClass = edges.css_classes(namespace, "value", this);
+                var filterRemoveClass = edges.css_classes(namespace, "filter-remove", this);
+                var facetClass = edges.css_classes(namespace, "facet", this);
+                var headerClass = edges.css_classes(namespace, "header", this);
+                var selectionsClass = edges.css_classes(namespace, "selections", this);
+                var bodyClass = edges.css_classes(namespace, "body", this);
+                var countClass = edges.css_classes(namespace, "count", this);
+
+                var checkboxClass = edges.css_classes(namespace, "selector", this);
+
+                var toggleId = edges.css_id(namespace, "toggle", this);
+                var resultsId = edges.css_id(namespace, "results", this);
+
+                // this is what's displayed in the body if there are no results
+                var results = "<li>Loading...</li>";
+
+                // render a list of the values
+                if (ts.terms.length > 0) {
+                    results = "";
+
+                    for (var i = 0; i < ts.terms.length; i++) {
+                        var val = ts.terms[i];
+                        if (val.count === 0 && this.hideEmpty) {
+                            continue
+                        }
+
+                        var active = $.inArray(val.term.toString(), ts.selected) > -1;
+                        var checked = "";
+                        if (active) {
+                            checked = ' checked="checked" ';
+                        }
+                        var count = "";
+                        if (this.showCount) {
+                            count = ' <span class="' + countClass + '">(' + val.count + ')</span>';
+                        }
+                        var id = edges.safeId(val.term);
+                        results += '<li>\
+                                <input class="' + checkboxClass + '" data-key="' + edges.escapeHtml(val.term) + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
+                                <label for="' + id + '" class="filter__label">' + edges.escapeHtml(val.display) + count + '</label>\
+                            </li>';
+                    }
+
+                    /*
+                    // render each value, if it is not also a filter that has been set
+                    for (var i = 0; i < ts.terms.length; i++) {
+                        var val = ts.terms[i];
+                        // should we ignore the empty counts
+                        if (val.count === 0 && this.hideEmpty) {
+                            continue
+                        }
+                        // otherwise, render any that aren't selected already
+                        if ($.inArray(val.term.toString(), ts.selected) === -1) {   // the toString() helps us normalise other values, such as integers
+                            results += '<div class="' + resultClass + '"><a href="#" class="' + valClass + '" data-key="' + edges.escapeHtml(val.term) + '">' +
+                                edges.escapeHtml(val.display) + "</a>";
+                            if (this.showCount) {
+                                results += ' <span class="' + countClass + '">(' + val.count + ')</span>';
+                            }
+                            results += "</div>";
+                        }
+                    }*/
+                }
+
+                /*
+                // if we want the active filters, render them
+                var filterFrag = "";
+                if (ts.selected.length > 0) {
+                    for (var i = 0; i < ts.selected.length; i++) {
+                        var filt = ts.selected[i];
+                        var def = this._getFilterDef(filt);
+                        if (def) {
+                            filterFrag += '<div class="' + resultClass + '"><strong>' + edges.escapeHtml(def.display);
+                            if (this.showCount) {
+                                filterFrag += " (" + def.count + ")";
+                            }
+                            filterFrag += '&nbsp;<a href="#" class="' + filterRemoveClass + '" data-key="' + edges.escapeHtml(def.term) + '">';
+                            filterFrag += '<i class="glyphicon glyphicon-black glyphicon-remove"></i></a>';
+                            filterFrag += "</strong></a></div>";
+                        }
+                    }
+                }*/
+
+                /*
+                // render the overall facet
+                var frag = '<div class="' + facetClass + '">\
+                        <div class="' + headerClass + '"><div class="row"> \
+                            <div class="col-md-12">\
+                                ' + header + '\
+                            </div>\
+                        </div></div>\
+                        <div class="' + bodyClass + '">\
+                            <div class="row" style="display:none" id="' + resultsId + '">\
+                                <div class="col-md-12">\
+                                    {{SELECTED}}\
+                                </div>\
+                                <div class="col-md-12"><div class="' + selectionsClass + '">\
+                                    {{RESULTS}}\
+                                </div>\
+                            </div>\
+                        </div>\
+                        </div></div>';
+                */
+
+                var toggle = "";
+                if (this.togglable) {
+                    toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
+                }
+                var frag = '<h3 class="filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
+                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                        <ul class="filter__choices">{{FILTERS}}</ul>\
+                    </div>';
+
+                // substitute in the component parts
+                frag = frag.replace(/{{FILTERS}}/g, results);
+
+                // now render it into the page
+                ts.context.html(frag);
+                feather.replace();
+
+                // trigger all the post-render set-up functions
+                this.setUIOpen();
+
+                var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
+                edges.on(checkboxSelector, "change", this, "filterToggle");
+
+                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+                edges.on(toggleSelector, "click", this, "toggleOpen");
+                /*
+                // sort out the selectors we're going to be needing
+                var valueSelector = edges.css_class_selector(namespace, "value", this);
+                var filterRemoveSelector = edges.css_class_selector(namespace, "filter-remove", this);
+                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+
+                // for when a value in the facet is selected
+                edges.on(valueSelector, "click", this, "termSelected");
+                // for when the open button is clicked
+                edges.on(toggleSelector, "click", this, "toggleOpen");
+                // for when a filter remove button is clicked
+                edges.on(filterRemoveSelector, "click", this, "removeFilter");
+                 */
+            };
+
+            this.setUIOpen = function () {
+                // the selectors that we're going to use
+                var resultsSelector = edges.css_id_selector(this.namespace, "results", this);
+                var toggleSelector = edges.css_id_selector(this.namespace, "toggle", this);
+
+                var results = this.component.jq(resultsSelector);
+                var toggle = this.component.jq(toggleSelector);
+
+                if (this.open) {
+                    //var i = toggle.find("i");
+                    //for (var j = 0; j < openBits.length; j++) {
+                    //    i.removeClass(openBits[j]);
+                   // }
+                    //for (var j = 0; j < closeBits.length; j++) {
+                    //    i.addClass(closeBits[j]);
+                    //}
+                    //results.show();
+
+                    results.addClass("in").attr("aria-expanded", "true").css({"height": ""});
+                    toggle.removeClass("collapsed").attr("aria-expanded", "true");
+                } else {
+                    //var i = toggle.find("i");
+                    //for (var j = 0; j < closeBits.length; j++) {
+                    //    i.removeClass(closeBits[j]);
+                   // }
+                    //for (var j = 0; j < openBits.length; j++) {
+                     //   i.addClass(openBits[j]);
+                    //}
+                    //results.hide();
+
+                    results.removeClass("in").attr("aria-expanded", "false").css({"height" : "0px"});
+                    toggle.addClass("collapsed").attr("aria-expanded", "false");
+                }
+            };
+
+            this.filterToggle = function(element) {
+                var term = this.component.jq(element).attr("data-key");
+                var checked = this.component.jq(element).is(":checked");
+                if (checked) {
+                    this.component.selectTerm(term);
+                } else {
+                    this.component.removeFilter(term);
+                }
+            };
+
+            /*
+            this.termSelected = function (element) {
+                var term = this.component.jq(element).attr("data-key");
+                this.component.selectTerm(term);
+            };
+
+            this.removeFilter = function (element) {
+                var term = this.component.jq(element).attr("data-key");
+                this.component.removeFilter(term);
+            };*/
+
+            this.toggleOpen = function (element) {
+                this.open = !this.open;
+                this.setUIOpen();
+            };
+        },
+
+        newDateHistogramSelectorRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.DateHistogramSelectorRenderer, params, edges.newRenderer);
+        },
+        DateHistogramSelectorRenderer: function (params) {
+
+            ///////////////////////////////////////
+            // parameters that can be passed in
+
+            // whether to hide or just disable the facet if not active
+            this.hideInactive = edges.getParam(params.hideInactive, false);
+
+            // whether the facet should be open or closed
+            // can be initialised and is then used to track internal state
+            this.open = edges.getParam(params.open, false);
+
+            this.togglable = edges.getParam(params.togglable, true);
+
+            // whether to display selected filters
+            this.showSelected = edges.getParam(params.showSelected, true);
+
+            this.showCount = edges.getParam(params.showCount, true);
+
+            // formatter for count display
+            this.countFormat = edges.getParam(params.countFormat, false);
+
+            // whether to suppress display of date range with no values
+            this.hideEmptyDateBin = params.hideEmptyDateBin || true;
+
+            // namespace to use in the page
+            this.namespace = "doaj-datehistogram-selector";
+
+            this.draw = function () {
+                // for convenient short references ...
+                var ts = this.component;
+                var namespace = this.namespace;
+
+                if (!ts.active && this.hideInactive) {
+                    ts.context.html("");
+                    return;
+                }
+
+                // sort out all the classes that we're going to be using
+                var resultsListClass = edges.css_classes(namespace, "results-list", this);
+                var resultClass = edges.css_classes(namespace, "result", this);
+                var valClass = edges.css_classes(namespace, "value", this);
+                var filterRemoveClass = edges.css_classes(namespace, "filter-remove", this);
+                var facetClass = edges.css_classes(namespace, "facet", this);
+                var headerClass = edges.css_classes(namespace, "header", this);
+                var selectedClass = edges.css_classes(namespace, "selected", this);
+                var checkboxClass = edges.css_classes(namespace, "selector", this);
+                var countClass = edges.css_classes(namespace, "count", this);
+
+                var toggleId = edges.css_id(namespace, "toggle", this);
+                var resultsId = edges.css_id(namespace, "results", this);
+
+                // this is what's displayed in the body if there are no results
+                var results = "<li>Loading...</li>";
+                if (ts.values !== false) {
+                    results = "<li>No data available</li>";
+                }
+
+                // render a list of the values
+                if (ts.values && ts.values.length > 0) {
+                    results = "";
+
+                    // get the terms of the filters that have already been set
+                    var filterTerms = [];
+                    for (var i = 0; i < ts.filters.length; i++) {
+                        filterTerms.push(ts.filters[i].display);
+                    }
+
+                    // render each value, if it is not also a filter that has been set
+                    for (var i = 0; i < ts.values.length; i++) {
+                        var val = ts.values[i];
+                        if ($.inArray(val.display, filterTerms) === -1) {
+
+                            var ltData = "";
+                            if (val.lt) {
+                                ltData = ' data-lt="' + edges.escapeHtml(val.lt) + '" ';
+                            }
+                            //results += '<div class="' + resultClass + ' ' + myLongClass + '" '  + styles +  '><a href="#" class="' + valClass + '" data-gte="' + edges.escapeHtml(val.gte) + '"' + ltData + '>' +
+                            //    edges.escapeHtml(val.display) + "</a> (" + count + ")</div>";
+
+                            var count = "";
+                            if (this.showCount) {
+                                count = val.count;
+                                if (this.countFormat) {
+                                    count = this.countFormat(count)
+                                }
+                                count = ' <span class="' + countClass + '">(' + count + ')</span>';
+                            }
+                            var id = edges.safeId(val.display.toString());
+                            results += '<li>\
+                                    <input class="' + checkboxClass + '" data-gte="' + edges.escapeHtml(val.gte) + '"' + ltData + ' id="' + id + '" type="checkbox" name="' + id + '">\
+                                    <label for="' + id + '" class="filter__label">' + edges.escapeHtml(val.display) + count + '</label>\
+                                </li>';
+                        }
+                    }
+                }
+
+                // if we want the active filters, render them
+                var filterFrag = "";
+                if (ts.filters.length > 0 && this.showSelected) {
+                    for (var i = 0; i < ts.filters.length; i++) {
+                        var filt = ts.filters[i];
+                        var ltData = "";
+                        if (filt.lt) {
+                            ltData = ' data-lt="' + edges.escapeHtml(filt.lt) + '" ';
+                        }
+                        filterFrag += '<li>\
+                                    <input checked="checked" class="' + checkboxClass + '" data-gte="' + edges.escapeHtml(val.gte) + '"' + ltData + ' id="' + id + '" type="checkbox" name="' + id + '">\
+                                    <label for="' + id + '" class="filter__label">' + edges.escapeHtml(val.display) + '</label>\
+                                </li>';
+
+                        /*
+                        filterFrag += '<div class="' + resultClass + '"><strong>' + edges.escapeHtml(filt.display) + "&nbsp;";
+                        filterFrag += '<a href="#" class="' + filterRemoveClass + '" data-gte="' + edges.escapeHtml(filt.gte) + '"' + ltData + '>';
+                        filterFrag += '<i class="glyphicon glyphicon-black glyphicon-remove"></i></a>';
+                        filterFrag += "</strong></a></div>";
+                         */
+                    }
+                }
+
+                /*
+                // render the toggle capability
+                var tog = ts.display;
+                if (this.togglable) {
+                    tog = '<a href="#" id="' + toggleId + '"><i class="glyphicon glyphicon-plus"></i>&nbsp;' + tog + "</a>";
+                }
+
+                // render the overall facet
+                var frag = '<div class="' + facetClass + '">\
+                        <div class="' + headerClass + '"><div class="row"> \
+                            <div class="col-md-12">\
+                                ' + tog + '\
+                            </div>\
+                        </div></div>\
+                        ' + tooltipFrag + '\
+                        <div class="row" style="display:none" id="' + resultsId + '">\
+                            <div class="col-md-12">\
+                                <div class="' + selectedClass + '">{{SELECTED}}</div>\
+                                <div class="' + resultsListClass + '">{{RESULTS}}</div>\
+                            </div>\
+                        </div></div>';
+                */
+
+                var toggle = "";
+                if (this.togglable) {
+                    toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
+                }
+                var frag = '<h3 class="filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
+                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                        <ul class="filter__choices">{{FILTERS}}</ul>\
+                    </div>';
+
+                // substitute in the component parts
+                frag = frag.replace(/{{FILTERS}}/g, filterFrag + results);
+
+                // now render it into the page
+                ts.context.html(frag);
+                feather.replace();
+
+                // trigger all the post-render set-up functions
+                this.setUIOpen();
+
+                var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
+                edges.on(checkboxSelector, "change", this, "filterToggle");
+
+                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+                edges.on(toggleSelector, "click", this, "toggleOpen");
+
+                /*
+                // sort out the selectors we're going to be needing
+                var valueSelector = edges.css_class_selector(namespace, "value", this);
+                var filterRemoveSelector = edges.css_class_selector(namespace, "filter-remove", this);
+                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+                var tooltipSelector = edges.css_id_selector(namespace, "tooltip-toggle", this);
+                var shortLongToggleSelector = edges.css_id_selector(namespace, "sl-toggle", this);
+
+                // for when a value in the facet is selected
+                edges.on(valueSelector, "click", this, "termSelected");
+                // for when the open button is clicked
+                edges.on(toggleSelector, "click", this, "toggleOpen");
+                // for when a filter remove button is clicked
+                edges.on(filterRemoveSelector, "click", this, "removeFilter");
+                // toggle the full tooltip
+                edges.on(tooltipSelector, "click", this, "toggleTooltip");
+                // toggle show/hide full list
+                edges.on(shortLongToggleSelector, "click", this, "toggleShortLong");
+
+                 */
+            };
+
+            /////////////////////////////////////////////////////
+            // UI behaviour functions
+
+            this.setUIOpen = function () {
+                // the selectors that we're going to use
+                var resultsSelector = edges.css_id_selector(this.namespace, "results", this);
+                var toggleSelector = edges.css_id_selector(this.namespace, "toggle", this);
+
+                var results = this.component.jq(resultsSelector);
+                var toggle = this.component.jq(toggleSelector);
+
+                if (this.open) {
+                    //var i = toggle.find("i");
+                    //for (var j = 0; j < openBits.length; j++) {
+                    //    i.removeClass(openBits[j]);
+                   // }
+                    //for (var j = 0; j < closeBits.length; j++) {
+                    //    i.addClass(closeBits[j]);
+                    //}
+                    //results.show();
+
+                    results.addClass("in").attr("aria-expanded", "true").css({"height": ""});
+                    toggle.removeClass("collapsed").attr("aria-expanded", "true");
+                } else {
+                    //var i = toggle.find("i");
+                    //for (var j = 0; j < closeBits.length; j++) {
+                    //    i.removeClass(closeBits[j]);
+                   // }
+                    //for (var j = 0; j < openBits.length; j++) {
+                     //   i.addClass(openBits[j]);
+                    //}
+                    //results.hide();
+
+                    results.removeClass("in").attr("aria-expanded", "false").css({"height" : "0px"});
+                    toggle.addClass("collapsed").attr("aria-expanded", "false");
+                }
+            };
+
+            /////////////////////////////////////////////////////
+            // event handlers
+
+            this.filterToggle = function(element) {
+                var gte = this.component.jq(element).attr("data-gte");
+                var lt = this.component.jq(element).attr("data-lt");
+                var checked = this.component.jq(element).is(":checked");
+                if (checked) {
+                    this.component.selectRange({gte: gte, lt: lt});
+                } else {
+                    this.component.removeFilter({gte: gte, lt: lt});
+                }
+            };
+
+            /*
+            this.termSelected = function (element) {
+                var gte = this.component.jq(element).attr("data-gte");
+                var lt = this.component.jq(element).attr("data-lt");
+                this.component.selectRange({gte: gte, lt: lt});
+            };
+
+            this.removeFilter = function (element) {
+                var gte = this.component.jq(element).attr("data-gte");
+                var lt = this.component.jq(element).attr("data-lt");
+                this.component.removeFilter({gte: gte, lt: lt});
+            };
+
+             */
+
+            this.toggleOpen = function (element) {
+                this.open = !this.open;
+                this.setUIOpen();
             };
         },
 
