@@ -965,7 +965,8 @@ ul, ol {
   ul ul, ul ol, ol ul, ol ol {
     margin-left: 0.75rem; }
   ul li, ol li {
-    line-height: 1.5; }
+    line-height: 1.5;
+    display: ruby-base-container; }
 
 dl {
   margin: 0 0 1.5rem 0; }
@@ -2778,12 +2779,12 @@ button[type="submit"] {
 #apply hr {
   background-color: #FD5A3B; }
 #apply .add_field__button {
-  margin-left: 5px;
-  height: 100%; }
+  margin-left: 5px; }
 #apply .remove_field__button {
+  background-color: inherit;
   color: #5C5956;
   border: none;
-  margin-left: 10px; }
+  margin: 0 0 0.5em 0.5em; }
 
 .article-details__meta {
   font-size: smaller; }

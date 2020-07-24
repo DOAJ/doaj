@@ -60,11 +60,27 @@ li.parsley-type {
     text-decoration: #982E0A;
 }
 
+.multiple_inputs__container {
+    display: flex;
+    flex-direction: row;
+}
+
+.add_field__button_div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: flex-end;
+}
+
 .multiple_input {
     height: 100% !important;
     display: flex;
-    flex-direction: row
+    flex-direction: column;
+    flex-grow: 120;
 }
+
+
+
 
 .select2 {
     height: 100% !important;
@@ -86,7 +102,7 @@ li.parsley-type {
 
 .select2-container {
     height: 100% !important;
-    width: 100% !important;
+    width: 85%;
     background-color: inherit;
     background-image: none;
  }
@@ -97,7 +113,8 @@ li.parsley-type {
     border: 1px solid #282624;
     background-color: inherit;
     background-image: none;
-    padding: 0.5em;
+    padding: 0.5em 0.5em 0 0.5em;
+    margin-bottom: 0.5em;
 }
 
 /*.select2-container-multi .select2-choices .select2-search-field input {*/

@@ -149,12 +149,12 @@
 
   .add_field__button{
     margin-left: 5px;
-    height: 100%;
   }
 
   .remove_field__button {
+    background-color: inherit;
     color: $dark-grey;
     border: none;
-    margin-left: 10px;
+    margin: 0 0 0.5em 0.5em;
   }
 }
