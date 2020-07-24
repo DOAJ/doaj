@@ -12,16 +12,14 @@
     </label>
     {% if f.get("hint") %}<p><small>{{ f.hint }}</small></p>{% endif %}
     {% if "multiple_field" in f.get("widgets", []) %}
-        <div style="display: flex; flex-direction: row">
-            <div style="display: flex; flex-direction: column; flex-grow: 5" class="removable_field__{{ f.name }}">
+            <div class="removable_field__{{ f.name }}">
                 <div class= 'multiple_input'>
                     {{ f.render_form_control() }}
                 </div>
             </div>
-            <div style="display: flex; flex-grow: 2; flex-direction: column; align-items: flex-start" class="add_field__button_div">
+            <div class="add_field__button_div">
                 <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add another </button>
             </div>
-        </div>
     {% else %}
         {{ f.render_form_control() }}
     {% endif %}

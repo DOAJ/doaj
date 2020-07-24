@@ -628,18 +628,6 @@ var formulaic = {
                         })
                     })
 
-                    this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
-                    this.addFieldBtn.on("click", (event) => {
-                        $(event.target).parent().show();
-                        this.count++;
-                        if (this.count > 0) {
-                            $(this.remove_btns[0]).show();
-                        }
-                        if (this.count === this.max) {
-                            $(this.addFieldBtn).hide();
-                        }
-
-                    });
                 } else {
                     let tag = this.fieldDef["input"] === "select" ? "select" : "input";
                     this.fields = $(tag + '[id^="' + this.fieldDef["name"] + '"]')
