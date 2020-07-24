@@ -128,15 +128,15 @@ Journals that are rejected must wait 6 months from the date of rejection before 
 - ### Student-run journals
    - If a journal is run by a student body, there must be an advisory board for the journal where at least two members have a PhD or equivalent qualification.
 
-- ### Journals that have flipped to open access
+- ### Flipped journals
    - Where a journal was previously published as a subscription or hybrid journal and has now flipped to a fully open access model, this information must be clearly displayed:
       - The date of the change to fully open access
       - The availability of the archive material (open access, free, or paywalled)
       - Reuse rights of the archive material (all rights reserved or open license)
-   - For a journal to be included in DOAJ, the latest volume must be completely open access. DOAJ does not accept journals where the current material is a mixture of open and restricted licenses.
+   - For a journal to be included in DOAJ, all content published after it has flipped must be completely open access.
 
 - ### Mirror journals
-   - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it has a different ISSN. DOAJ will currently accept mirror journals if they meet the usual inclusion criteria.
+   - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
 
 ## The application process
 
