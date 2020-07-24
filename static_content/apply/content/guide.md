@@ -111,13 +111,13 @@ Journals that are rejected must wait 6 months from the date of rejection before 
 
 {:.tabular-list}
 - ### Arts and humanities journals
-   - For these subjects only, DOAJ can accept journals that undertake editorial review, rather than peer review.  Editorial review must be handled with a minimum of two editors.
+   - For these disciplines only, DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
 
-- ### Case reports journals
+- ### Clinical case reports journals
    - DOAJ only considers case reports as research if they include the retrospective analysis of more than three clinical cases and/or a literature review. Before applying, make sure that the journal has published at least five articles per year that meet this definition.
 
-- ### Law journals
-   - Law journals must undertake a peer review process to be included in DOAJ. However, an exception is made for US law journals where editorial review is an accepted practice in this field and has been traditionally used for over a century.
+- ### Conference proceedings journals
+   - For DOAJ to include journals that are dedicated to publishing conference proceedings, the journal must have an ISSN and a permanent editorial or advisory board providing editorial oversight. Papers from each published conference must be peer reviewed according to DOAJ criteria. Full text of all conference papers must be available. Individual conference proceedings will not be indexed.
 
 - ### Student-run journals
    - If a journal is run by a student body, there must be an advisory board for the journal where at least two members have a PhD or equivalent qualification.
