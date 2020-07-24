@@ -27,9 +27,9 @@
   }
 
   &:hover, &:focus, &active {
-
-    svg {
+    svg, a {
       stroke: $grapefruit;
+      color: $grapefruit;
     }
   }
 }
@@ -37,6 +37,10 @@
 .tag--featured {
   background: $grapefruit;
   color: $warm-black;
+
+  a {
+    color: $warm-black;
+  }
 
   svg {
     stroke: $warm-black;
@@ -46,8 +50,9 @@
     background: $sanguine;
     color: $warm-white;
 
-    svg {
+    svg, a {
       stroke: $warm-white;
+      color: $warm-white;
     }
   }
 }

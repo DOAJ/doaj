@@ -20,7 +20,7 @@ body {
 }
 
 h2, h3, h4, h5, h6 {
-  margin: $spacing-05 0 $spacing-04 0;
+  margin: $spacing-04 0 $spacing-03 0;
   line-height: 1.05;
   font-weight: 400;
 }
@@ -142,10 +142,6 @@ iframe {
   padding: $spacing-02;
   width: 100%;
   border: 1px dashed $sanguine;
-}
-
-time {
-  font-size: smaller;
 }
 
 table {

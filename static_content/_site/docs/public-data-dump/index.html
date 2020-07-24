@@ -260,6 +260,7 @@
             </li>
           </ul>
         </li>
+        
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Support</strong>
@@ -401,22 +402,22 @@
 
 <p><a href="/public-data-dump/article">Download the article metadata</a> (3.5Gb)</p>
 
-<p>Each file is a <code class="language-plaintext highlighter-rouge">tar.gz</code>.</p>
+<p>Each file is a <code class="highlighter-rouge">tar.gz</code>.</p>
 
 <h2 id="structure">Structure</h2>
 
 <p>The data dumps are structured as follows:</p>
 
 <ol>
-  <li>When you unzip/untar the file, you will have a single directory of the form <code class="language-plaintext highlighter-rouge">doaj_zx[type]_data_[date generated]</code>.</li>
-  <li>Inside that directory, you will find a list of files with names of the form <code class="language-plaintext highlighter-rouge">[type]_batch_[number].json</code>.
+  <li>When you unzip/untar the file, you will have a single directory of the form <code class="highlighter-rouge">doaj_zx[type]_data_[date generated]</code>.</li>
+  <li>Inside that directory, you will find a list of files with names of the form <code class="highlighter-rouge">[type]_batch_[number].json</code>.
     <ul>
-      <li>For example, <code class="language-plaintext highlighter-rouge">journal_batch_3.json</code> or <code class="language-plaintext highlighter-rouge">article_batch_27.json</code>.</li>
+      <li>For example, <code class="highlighter-rouge">journal_batch_3.json</code> or <code class="highlighter-rouge">article_batch_27.json</code>.</li>
     </ul>
   </li>
   <li>Each file contains up to 100,000 records and is UTF-8 encoded. All files should contain the same number of records, apart from the last one, which may have fewer.</li>
   <li>The structure of each file is as a JSON list:
-    <div class="language-plaintext highlighter-rouge">
+    <div class="highlighter-rouge">
 <div class="highlight"><pre class="highlight"><code> [
      { ... first record ... },
      { ... second record ... },

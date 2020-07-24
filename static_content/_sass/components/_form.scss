@@ -23,7 +23,6 @@
     display: block;
     margin-top: -$spacing-02;
     color: $dark-grey;
-    font-size: 1rem;
   }
 
   input, select, textarea {
@@ -57,5 +56,24 @@
 
   &:hover {
     stroke: $grapefruit;
+  }
+}
+
+/* Compact form */
+.form--compact {
+  font-size: smaller;
+
+  .form__header {
+    margin-top: $spacing-04;
+    font-size: 1em;
+    font-weight: 600;
+  }
+
+  .form__question {
+    margin: 0 0 $spacing-04 0;
+
+    &:first-child {
+      margin-top: $spacing-05;
+    }
   }
 }

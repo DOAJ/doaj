@@ -150,6 +150,11 @@
                 OpenURL
               </a>
             </li>
+            <li>
+              <a href="{{ site.baseurl }}{% link about/faq.md %}" class="dropdown__link">
+                FAQs
+              </a>
+            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -193,13 +198,15 @@
                 News
               </a>
             </li>
-            <li>
-              <a href="{{ site.baseurl }}{% link about/faq.md %}" class="dropdown__link">
-                FAQs
-              </a>
-            </li>
           </ul>
         </li>
+        {% if page.url == '/dashboard/' %}
+        <li class="dropdown primary-nav__item_desktop">
+          <a href="{{ site.baseurl }}" class="nav-bar__link" type="button">
+            My account
+          </a>
+        </li>
+        {% endif %}
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Support</strong>

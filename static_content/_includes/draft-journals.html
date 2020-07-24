@@ -1,0 +1,91 @@
+<ol class="search-results">
+  {% assign count = 0 %}
+
+  {% for i in site.data.journals %}
+  {% assign count = count | plus: 1 %}
+  <li class="search-results__record">
+    <article class="row">
+      <div class="col-sm-4 search-results__main">
+        <header>
+          <h3 class="search-results__heading">
+            <a href="{{ site.baseurl }}{% link apply/07-review.md %}">
+              {{ i.title }}
+            </a>
+            {% if i.subtitle %}<span class="search-results__subheading">{{ i.subtitle }}</span>{% endif %}
+          </h3>
+        </header>
+      </div>
+      <aside class="col-sm-4 search-results__aside">
+        <h4 class="label">Status</h4>
+        <ul>
+          <li>
+            <strong>{{ i.status }}</strong>
+          </li>
+          {% if i.status == 'Under review by an editor'  %}
+          <li>
+            Submitted on <time datetime="2019-12-05">December 5, 2019</time>
+          </li>
+          {% elsif i.status == 'Pending' %}
+          <li>
+            Submitted on <time datetime="2020-02-27">February 27, 2020</time>
+          </li>
+          {% else %}
+          <li>
+            <strong>{{ i.complete }}%</strong> complete
+          </li>
+          <li>
+            Last updated <time datetime="2019-08-15" title="August 15, 2019">3 days ago</time>
+          </li>
+          {% endif %}
+        </ul>
+      </aside>
+      <div class="col-sm-4 search-results__aside">
+
+        <h4 class="label">Actions</h4>
+        <ul class="tags">
+          {% if i.status == 'Under review by an editor' %}
+          <li class="tag">
+            <a href="{{ site.baseurl }}{% link apply/07-review.md %}">
+              <span data-feather="message-circle" aria-hidden="true"></span>
+              <span>Message editor</span>
+            </a>
+          </li>
+          {% else %}
+          <li class="tag">
+            <a href="{{ site.baseurl }}{% link apply/07-review.md %}">
+              <span data-feather="edit-3" aria-hidden="true"></span>
+              <span>Edit</span>
+            </a>
+          </li>
+          <li class="tag">
+            <a href="#"  data-toggle="modal" data-target="#modal-delete-application">
+              <span data-feather="trash-2" aria-hidden="true"></span>
+              <span>Delete</span>
+            </a>
+          </li>
+          {% endif %}
+          {% if i.complete == 100 and i.status == 'Not yet submitted' %}
+          <li class="tag tag--featured">
+            <a href="{{ site.baseurl }}{% link apply/07-review.md %}">
+              <span data-feather="send" aria-hidden="true"></span>
+              <span>Submit</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </article>
+  </li>
+  {% endfor %}
+</ol>
+
+
+
+<!-- Delete application modal -->
+<section class="modal" id="modal-delete-application" tabindex="-1" role="dialog">
+  <div class="modal__dialog" role="document">
+    <h2 class="modal__title">Delete this application</h2>
+    <p>Are you sure you want to delete your application for Access Microbiology?</p>
+    <a href="#" class="button button--primary">Yes, delete it</a> <a href="#" class="button button--secondary">No</a>
+  </div>
+</section>
