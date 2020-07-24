@@ -118,6 +118,12 @@ Journals that are rejected must wait 6 months from the date of rejection before 
 
 - ### Conference proceedings journals
    - For DOAJ to include journals that are dedicated to publishing conference proceedings, the journal must have an ISSN and a permanent editorial or advisory board providing editorial oversight. Papers from each published conference must be peer reviewed according to DOAJ criteria. Full text of all conference papers must be available. Individual conference proceedings will not be indexed.
+   
+- ### Data journals
+   - DOAJ will accept journals publishing research articles about data or datasets, but not journals that simply link to datasets or announce their availability.
+
+- ### Overlay journals
+   - DOAJ will accept journals that select and peer-review articles that are hosted on a preprint server or other site.
 
 - ### Student-run journals
    - If a journal is run by a student body, there must be an advisory board for the journal where at least two members have a PhD or equivalent qualification.
