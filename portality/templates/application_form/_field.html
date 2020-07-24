@@ -12,14 +12,14 @@
     </label>
     {% if f.get("hint") %}<p><small>{{ f.hint }}</small></p>{% endif %}
     {% if "multiple_field" in f.get("widgets", []) %}
-        <div class="multiple_inputs__container">
-            <div class= 'multiple_input'>
-                {{ f.render_form_control() }}
+            <div class="removable_field__{{ f.name }}">
+                <div class= 'multiple_input'>
+                    {{ f.render_form_control() }}
+                </div>
             </div>
             <div class="add_field__button_div">
                 <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add another </button>
             </div>
-        </div>
     {% else %}
         {{ f.render_form_control() }}
     {% endif %}

@@ -603,60 +603,116 @@ var formulaic = {
         newMultipleField : function(params) {
             return edges.instantiate(formulaic.widgets.multipleField, params)
         },
-        multipleField: function(params){
+        multipleField: function(params) {
             this.fieldDef = params.fieldDef
-            let tag = this.fieldDef["input"] === "select" ? "select" : "input";
-            this.fields = $(tag + '[id^="' + this.fieldDef["name"] +'"]')
-
-            this.count = 0;
-
-            this.count = 0;
-            this.max = this.fieldDef["repeatable"]["initial"]-1
+            this.max = this.fieldDef["repeatable"]["initial"] - 1
 
             this.init = () => {
-                this.fields.each((idx, f) => {
-                    let s2_input = $(f).select2();
-                    $(s2_input).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
-                    feather.replace();
-                    if (idx !== 0) {
-                        $(s2_input).attr("required", false);
-                        $(s2_input).attr("data-parsley-validate-if-empty","true");
-                        $(s2_input).closest('li').hide();
-                    }
-                })
-                this.remove_btns = $(".remove_field__button")
-                $(this.remove_btns[0]).hide();
+                if (this.fieldDef["input"] === "group") {
+                    this.divs = $("div[class='form-group " + this.fieldDef["name"] + "__group']")
 
-                this.addFieldBtn = $("#add_field__" + this.fieldDef["name"])
-                this.addFieldBtn.on("click", () => {
-                    $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').show();
-                    this.count++;
-                    if (this.count > 0){
-                        $(this.remove_btns[0]).show();
-                    }
-                    if (this.count === this.max) {
-                        $(this.addFieldBtn).hide();
-                    }
+                    this.count = 0;
 
-                })
-                $(this.remove_btns).each((idx, btn) => {
-                    $(btn).on("click", (event) => {
-                        $(this.fields[idx]).val("ML")
-
-                        for (let i = idx; i < this.count; i++){
-                            let data = $(this.fields[i+1]).select2('data')
-                            $(this.fields[i]).select2('data', { id: data.id, text: data.text});
-                        }
-                        this.count--;
-                        $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').hide();
-                        if (this.count === 0){
-                            $(this.remove_btns[0]).hide();
-                        }
-                        if (this.count < this.max) {
-                            $(this.addFieldBtn).show();
+                    this.divs.each((idx, div) => {
+                        $(div).append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                        feather.replace();
+                        if (idx !== 0) {
+                            $(div).attr("required", false);
+                            $(div).attr("data-parsley-validate-if-empty", "true");
+                            $(div).hide();
                         }
                     })
-                })
+
+                    this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                    $(this.remove_btns[0]).hide();
+                    this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+
+                    this.addFieldBtn.on("click", () => {
+                        $(this.divs[this.count + 1]).show();
+                        this.count++;
+                        if (this.count > 0) {
+                            $(this.remove_btns[0]).show();
+                        }
+                        if (this.count === this.max) {
+                            $(this.addFieldBtn).hide();
+                        }
+
+                    })
+
+                    $(this.remove_btns).each((idx, btn) => {
+                        $(btn).on("click", () => {
+                            let thisDiv = $(btn).parent();
+                            let nextDiv = $(thisDiv)
+                            for (let i = idx; i < this.count; i++) {
+                                thisDiv = nextDiv;
+                                nextDiv = nextDiv.parent().parent().next();
+                                thisInputs = $(thisDiv).find('select, input');
+                                nextInputs = $(nextDiv).find('select, input');
+                                for (let j = 0; j < thisInputs.length; j++){
+                                    $(thisInputs[j]).val($(nextInputs[j]).val());
+                                }
+                            }
+                            this.count--;
+                            $(this.divs[this.count + 1]).hide();
+                            if (this.count === 0) {
+                                $(this.remove_btns[0]).hide();
+                            }
+                            if (this.count < this.max) {
+                                $(this.addFieldBtn).show();
+                            }
+                        })
+                    })
+
+                } else {
+                    let tag = this.fieldDef["input"] === "select" ? "select" : "input";
+                    this.fields = $(tag + '[id^="' + this.fieldDef["name"] + '"]')
+
+                    this.count = 0;
+
+                    this.fields.each((idx, f) => {
+                        let s2_input = $(f).select2();
+                        $(s2_input).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                        feather.replace();
+                        if (idx !== 0) {
+                            $(s2_input).attr("required", false);
+                            $(s2_input).attr("data-parsley-validate-if-empty", "true");
+                            $(s2_input).closest('li').hide();
+                        }
+                    })
+                    this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                    $(this.remove_btns[0]).hide();
+                    this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+                    this.addFieldBtn.on("click", () => {
+                        $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').show();
+                        this.count++;
+                        if (this.count > 0) {
+                            $(this.remove_btns[0]).show();
+                        }
+                        if (this.count === this.max) {
+                            $(this.addFieldBtn).hide();
+                        }
+
+                    })
+                    $(this.remove_btns).each((idx, btn) => {
+                        $(btn).on("click", (event) => {
+                            for (let i = idx; i < this.count; i++) {
+                                let data = $(this.fields[i + 1]).select2('data')
+                                if (data === null) {
+                                    data = {id: i, text: ""};
+                                }
+                                $(this.fields[i]).select2('data', {id: data.id, text: data.text});
+                            }
+                            this.count--;
+                            $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').hide();
+                            if (this.count === 0) {
+                                $(this.remove_btns[0]).hide();
+                            }
+                            if (this.count < this.max) {
+                                $(this.addFieldBtn).show();
+                            }
+                        })
+                    })
+                }
             }
             this.init()
         },

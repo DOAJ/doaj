@@ -46,35 +46,6 @@
         });
     });
 
-    $(".conditional").each((idx,field) => {
-        let conditionValue = $(field).attr("value");
-        let fieldToHide = $("#" + $(field).attr("id").replace("__conditional","") + "__container");
-        $('[name="' + $(field).attr("name") + '"]').each((idx, input) => {
-            if ($(input).type === "radio") {
-                $(input).on("click", () => {
-                    if ($(input).is(':checked')) {
-                        if ($(input).val() === conditionValue) {
-                            fieldToHide.show();
-                        } else {
-                            fieldToHide.hide();
-                        }
-                    }
-                })
-            }
-            else {
-                $(input).on("click", () => {
-                    if ($(input).val() === conditionValue) {
-                        if ($(input).is(':checked')) {
-                            fieldToHide.show();
-                        } else {
-                            fieldToHide.hide();
-                        }
-                    }
-                })
-            }
-        });
-    });
-
     let showTab = (n) => {
         // This function will display the specified tab of the form ...
         //hide all other tabs
@@ -90,8 +61,10 @@
         });
 
         let submitButton = $("#submitBtn");
+        let draftButton = $("#draftBtn");
         $(tabs[n]).show();
-        submitButton.html("Save draft");
+        submitButton.hide();
+        draftButton.show();
         // ... and fix the Previous/Next buttons:
         if (n === 0) {
             $("#prevBtn").hide();
@@ -102,7 +75,8 @@
         if (n === (tabs.length - 1)) {
             //show submit button only if all tabs are validated
             $("#nextBtn").hide();
-            submitButton.html("Submit");
+            submitButton.show();
+            draftButton.show();
             let validated = form_validated();
             submitButton.prop("disabled", !validated);
             if (!validated) {
@@ -115,7 +89,8 @@
             let nextBtn = $("#nextBtn")
             nextBtn.show();
             nextBtn.html("Next");
-            submitButton.html("Save draft");
+            submitButton.hide();
+            draftButton.show();
             submitButton.prop("disabled",false);
         }
         currentTab = n;
@@ -132,66 +107,67 @@
         let review_values = $("td[id$='__review_value']")
         review_values.each((idx, question) => {
             let id = $(question).attr('id')
-            let name = id.substring(0,id.indexOf("__review_value"));
-            let input = $("input[name='" + name + "']");
-            if (input.length === 0) {  //it's not input but select
-                input = $("[name^='" + name + "']");
-                let result = "";
-                input.each((idx,inp) => {
-                    let val = $(inp).find('option:selected').text();
-                    if (val !== ""){
-                        result += val + ", ";
-                    }
+            if (id === "apc_charges__review_value") {
+                    let currency = $("select[id='apc_currency']").find('option:selected').val();
+                    let max = $("input[name='apc_max']").val();
 
-                })
-                $(question).html(result);
+                    $(question).html(max + " " + currency);
             }
             else {
-                if (id === "keywords__review_value"){
+                let name = id.substring(0, id.indexOf("__review_value"));
+                let input = $("input[name='" + name + "']");
+                if (input.length === 0) {  //it's not input but select
+                    input = $("[name^='" + name + "']");
                     let result = "";
-                    input.each((idx,inp) => {
-                        let val = $(inp).val();
-                        if (val !== ""){
-                            result += $(inp).val() + ", ";
-                            if (idx < input.length-1){
-                                result += ", ";
-                            }
+                    input.each((idx, inp) => {
+                        let val = $(inp).find('option:selected').text();
+                        if (val !== "") {
+                            result += val + ", ";
                         }
-                    });
-                    $(question).html(result);
-                }
-                else {
-                    let type = input.attr("type");
-                    if (type === "text" || type === "number"){
-                        $(question).html(input.val())
-                    }
-                    else if (type === "url") {
-                        $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>')
-                    }
-                    else if (type === "radio") {
-                        if (input.is(":checked")){
-                            let val = input.filter(':checked').val()
-                            if (val === "y") {
-                                $(question).html("Yes");
-                            }
-                            else if (val === "n"){
-                                $(question).html("No");
-                            }
-                            else if (val === "") {}
-                            else {
-                                $(question).html("Oops, something went wrong! You shouldn't see that, please contact support");
-                            }
 
-                        }
-                    }
-                    else if (type === "checkbox"){
-                        let result = ''
-                        input.each((idx, i) => {
-                            if ($(i).is(":checked")){
-                                result += $(i).val() + ", ";
+                    })
+                    $(question).html(result);
+                } else {
+                    if (id === "keywords__review_value") {
+                        let result = "";
+                        input.each((idx, inp) => {
+                            let val = $(inp).val();
+                            if (val !== "") {
+                                result += $(inp).val() + ", ";
+                                if (idx < input.length - 1) {
+                                    result += ", ";
+                                }
                             }
-                        } )
-                        $(question).html(result)
+                        });
+                        $(question).html(result);
+                    } else {
+                        let type = input.attr("type");
+                        if (type === "text" || type === "number") {
+                            $(question).html(input.val())
+                        } else if (type === "url") {
+                            $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>')
+                        } else if (type === "radio") {
+                            if (input.is(":checked")) {
+                                let val = input.filter(':checked').val()
+                                if (val === "y") {
+                                    $(question).html("Yes");
+                                } else if (val === "n") {
+                                    $(question).html("No");
+                                } else if (val === "") {
+                                } else {
+                                    $(question).html("Oops, something went wrong! You shouldn't see that, please contact support");
+                                }
+
+                            }
+                        } else if (type === "checkbox") {
+                            let result = ''
+                            input.each((idx, i) => {
+                                if ($(i).is(":checked")) {
+                                    result += $(i).val() + ", ";
+                                }
+                            })
+                            $(question).html(result)
+                        }
                     }
                 }
             }
@@ -210,25 +186,6 @@
         return result;
     }
 
-    let onSubmit = () => {
-        let form = $("form");
-        form.noValidate = true
-    }
-
-    let navigate = (n) => {
-        // Hide the current tab:
-        $(tabs[currentTab]).hide();
-        // Increase or decrease the current tab by 1:
-        previousTab = currentTab
-        currentTab = currentTab + n;
-        // Otherwise, display the correct tab:
-        showTab(currentTab);
-    }
-
-    let prev = () => {
-        navigate(-1);
-    }
-
     let next = () => {
         var form = $('#' + '{{ form_id }}');
         form.parsley().whenValidate({
@@ -242,6 +199,45 @@
             navigate(1);
         });
     }
+
+    let prev = () => {
+        navigate(-1);
+    }
+
+    let submitaplication = () => {
+        console.log("submitting");
+        let form = $("form");
+        form.noValidate = false;
+        form.submit()
+    }
+
+    let savedraft = () => {
+        console.log("save draft!")
+        let form = $(".application_form");
+        console.log($(form))
+        $(form).attr('novalidate', 'novalidate');
+        let input = $("<input>")
+               .attr("type", "hidden")
+               .attr("name", "draft").val(true);
+        let input2 = $("<input>")
+               .attr("type", "hidden")
+               .attr("name", "draft_id").val($(form).attr("id"));
+        form.append($(input));
+        form.append($(input2));
+        $(form).off('submit.parsleyForm');
+        //form.submit()
+    }
+
+    let navigate = (n) => {
+        // Hide the current tab:
+        $(tabs[currentTab]).hide();
+        // Increase or decrease the current tab by 1:
+        previousTab = currentTab
+        currentTab = currentTab + n;
+        // Otherwise, display the correct tab:
+        showTab(currentTab);
+    }
+
 
     let fixStepIndicator = (n) => {
         // This function removes the "active" class of all steps...
@@ -308,12 +304,14 @@
         });
     }
 
-    let currentTab = 0; // Current tab is set to be the first tab (0)
-    let previousTab = 0;
+    let currentTab = 4; // Current tab is set to be the first tab (0)
+    let previousTab = 3;
     let tabs = $(".tab");
     let sections = $(".form-section");
     prepareSections();
     usePaginationMenu();
     showTab(currentTab); // Display the current tab
+    {#$("#submitBtn").on("click",onSubmit);#}
+    {#$("#draftBtn").on("click", saveDraft);#}
 
 </script>
