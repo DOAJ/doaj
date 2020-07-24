@@ -8,8 +8,6 @@ from portality import constants
 from portality.crosswalks.jct_inprogress import JCTInProgressXWalk
 from portality.util import make_json_resp
 
-import json
-
 blueprint = Blueprint('jct', __name__)
 
 INCLUDE_STATUSES = [
@@ -31,5 +29,4 @@ def inprogress():
         record = JCTInProgressXWalk.application2jct(application)
         records.append(record)
 
-    data = json.dumps(records)
-    return make_json_resp(data, 200)
+    return make_json_resp(records, 200)
