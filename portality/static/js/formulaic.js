@@ -605,26 +605,61 @@ var formulaic = {
         },
         multipleField: function(params) {
             this.fieldDef = params.fieldDef
+            this.max = this.fieldDef["repeatable"]["initial"] - 1
 
             this.init = () => {
                 if (this.fieldDef["input"] === "group") {
-                    console.log(this.fieldDef)
-                    let currency = $("select[id='apc_currency']");
-                    let max = $("input[name='apc_max']");
-                    let div = $(max).parent();
-                    console.log($(div))
-                    div.each((idx, d) => {
-                        $(d).after($('<button type="button" id="remove_field__apc--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
-                        feather.replace();
-                        // if (idx !== 0) {
-                        //     $(d).hide();
-                        // }
-                    })
-                    this.remove_btns = $(".remove_field_apc__button")
-                    //$(this.remove_btns[0]).hide();
-                    $(this.remove_btns).each((idx, btn) => {
-                        $(btn).on("click", (event) => {
+                    this.divs = $("div[class='form-group " + this.fieldDef["name"] + "__group']")
 
+                    this.count = 0;
+
+                    this.divs.each((idx, div) => {
+                        $(div).append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                        feather.replace();
+                        if (idx !== 0) {
+                            $(div).attr("required", false);
+                            $(div).attr("data-parsley-validate-if-empty", "true");
+                            $(div).hide();
+                        }
+                    })
+
+                    this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                    $(this.remove_btns[0]).hide();
+                    this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+
+                    this.addFieldBtn.on("click", () => {
+                        $(this.divs[this.count + 1]).show();
+                        this.count++;
+                        if (this.count > 0) {
+                            $(this.remove_btns[0]).show();
+                        }
+                        if (this.count === this.max) {
+                            $(this.addFieldBtn).hide();
+                        }
+
+                    })
+
+                    $(this.remove_btns).each((idx, btn) => {
+                        $(btn).on("click", () => {
+                            let thisDiv = $(btn).parent();
+                            let nextDiv = $(thisDiv)
+                            for (let i = idx; i < this.count; i++) {
+                                thisDiv = nextDiv;
+                                nextDiv = nextDiv.parent().parent().next();
+                                thisInputs = $(thisDiv).find('select, input');
+                                nextInputs = $(nextDiv).find('select, input');
+                                for (let j = 0; j < thisInputs.length; j++){
+                                    $(thisInputs[j]).val($(nextInputs[j]).val());
+                                }
+                            }
+                            this.count--;
+                            $(this.divs[this.count + 1]).hide();
+                            if (this.count === 0) {
+                                $(this.remove_btns[0]).hide();
+                            }
+                            if (this.count < this.max) {
+                                $(this.addFieldBtn).show();
+                            }
                         })
                     })
 
@@ -634,8 +669,6 @@ var formulaic = {
 
                     this.count = 0;
 
-                    this.count = 0;
-                    this.max = this.fieldDef["repeatable"]["initial"] - 1
                     this.fields.each((idx, f) => {
                         let s2_input = $(f).select2();
                         $(s2_input).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
