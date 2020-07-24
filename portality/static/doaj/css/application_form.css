@@ -62,7 +62,8 @@ li.parsley-type {
 
 .multiple_inputs__container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    flex-grow: 5;
 }
 
 .add_field__button_div {
@@ -78,9 +79,6 @@ li.parsley-type {
     flex-direction: column;
     flex-grow: 120;
 }
-
-
-
 
 .select2 {
     height: 100% !important;
@@ -101,7 +99,6 @@ li.parsley-type {
 }
 
 .select2-container {
-    height: 100% !important;
     width: 85%;
     background-color: inherit;
     background-image: none;
