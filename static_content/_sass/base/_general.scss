@@ -215,10 +215,10 @@ form {
 
 input, select, button, textarea {
   // reset default styles
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  //-webkit-user-selection: none;
+  //-moz-user-selection: none;
+  //-ms-user-selection: none;
+  //user-select: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   border-radius: 0;
