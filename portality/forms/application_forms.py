@@ -415,7 +415,7 @@ class FieldDefinitions:
             {"display": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
             {"display": "CC0", "value": "CC0"},
             {"display": "Public domain", "value": "Public domain"},
-            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True},
+            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True, "subfields": ["license_attributes"]},
         ],
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
@@ -541,7 +541,7 @@ class FieldDefinitions:
 
     REVIEW_PROCESS = {
         "name": "review_process",
-        "label": "DOAJ only accepts peer-reviewed journals."
+        "label": "DOAJ only accepts peer-reviewed journals. "
                  "Which type(s) of peer review does this journal use?",
         "input": "checkbox",
         "multiple": True,
@@ -600,7 +600,7 @@ class FieldDefinitions:
         "label": "Does the journal routinely screen article submissions for plagiarism?",
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
+            {"display": "Yes", "value": "y", "subfields": ["review_process_other"]},
             {"display": "No", "value": "n"}
         ],
         "validate": [
@@ -701,7 +701,7 @@ class FieldDefinitions:
         "label": "Does the journal require payment of article processing charges (APCs)?",
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
+            {"display": "Yes", "value": "y", "subfields": ["apc_charges"]},
             {"display": "No", "value": "n"}
         ],
         "help": {
@@ -790,7 +790,7 @@ class FieldDefinitions:
         "label": "Does the journal provide APC waivers or discounts for authors?",
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
+            {"display": "Yes", "value": "y", "subfields": ["waiver_url"]},
             {"display": "No", "value": "n"}
         ],
         "help": {
@@ -828,7 +828,7 @@ class FieldDefinitions:
         "label": "Does the journal charge any other fees to authors?",
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
+            {"display": "Yes", "value": "y", "subfields": ["other_charges_url"]},
             {"display": "No", "value": "n"}
         ],
         "help": {
@@ -875,10 +875,10 @@ class FieldDefinitions:
             {"display": "PKP PN", "value": "PKP PN"},
             {"display": "PubMed Central (PMC)", "value": "PMC"},
             {"display": "Portico", "value": "Portico"},
-            {"display": "A national library", "value": "national_library"},
+            {"display": "A national library", "value": "national_library", "subfields": ["preservation_service_library"]},
             {"display": "The journal content isn't archived with a long-term preservation service",
              "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other"}
+            {"display": "Other", "value": "other", "subfields": ["preservation_service_other"]}
         ],
         "help": {
             "long_help": [
@@ -953,7 +953,7 @@ class FieldDefinitions:
             {"display": "Héloïse", "value": "Héloïse"},
             {"display": "Diadorim", "value": "Diadorim"},
             {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
-            {"display": "Other (including publisher's own site)", "value": "other"}
+            {"display": "Other (including publisher's own site)", "value": "other", "subfields": ["deposit_policy_other"]}
         ],
         "help": {
             "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
@@ -1014,7 +1014,7 @@ class FieldDefinitions:
             {"display": "Handles", "value": "Handles"},
             {"display": "PURLs", "value": "PURL"},
             {"display": "The journal does not use persistent article identifiers", "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other"}
+            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]}
         ],
         "help": {
             "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "

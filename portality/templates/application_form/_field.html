@@ -1,5 +1,4 @@
-<div id="{{ f.name }}__container" class="form__question {% if f.has_conditional %} form__subquestion {% endif %}"
-{% if f.has_conditional %} style="display: none"{% endif %}>
+<div id="{{ f.name }}__container" class="form__question {% if f.has_conditional %} form__subquestion {% endif %}">
     {% if f.has_conditional %}
         <input type="hidden" class="conditional" id="{{ f.name }}__conditional" name="{{ f.condition_field }}" value="{{ f.condition_value }}">
     {% endif %}
