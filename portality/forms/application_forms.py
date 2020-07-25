@@ -2048,6 +2048,7 @@ class RadioBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
+        wtfargs["widget"] = ListWidgetWithSubfields()
         return RadioField(**wtfargs)
 
 
