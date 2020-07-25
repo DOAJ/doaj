@@ -645,9 +645,9 @@ var formulaic = {
                             let nextDiv = $(thisDiv)
                             for (let i = idx; i < this.count; i++) {
                                 thisDiv = nextDiv;
-                                nextDiv = nextDiv.parent().parent().next();
-                                thisInputs = $(thisDiv).find('select, input');
-                                nextInputs = $(nextDiv).find('select, input');
+                                nextDiv = nextDiv.next();
+                                let thisInputs = $(thisDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
+                                let nextInputs = $(nextDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
                                 for (let j = 0; j < thisInputs.length; j++){
                                     $(thisInputs[j]).val($(nextInputs[j]).val());
                                 }
