@@ -63,6 +63,7 @@
         let submitButton = $("#submitBtn");
         let draftButton = $("#draftBtn");
         $(tabs[n]).show();
+        $("#cannot_save_draft").hide();
         submitButton.hide();
         draftButton.show();
         // ... and fix the Previous/Next buttons:
@@ -78,6 +79,7 @@
             submitButton.show();
             draftButton.show();
             let validated = form_validated();
+            console.log(validated)
             submitButton.prop("disabled", !validated);
             if (!validated) {
                 $("#cannot-submit").show();
@@ -85,7 +87,7 @@
                 $("#cannot-submit").hide();
             }
 
-        } else {"Save draft"
+        } else {
             let nextBtn = $("#nextBtn")
             nextBtn.show();
             nextBtn.html("Next");
@@ -177,10 +179,12 @@
 
     let form_validated = () => {
         let result = true;
-        $("[name^='validated']").each((idx, input) => {
+        let inputs = $("[name^='validated']");
+        $(inputs).each((idx, input) => {
+            console.log($(input))
             if ($(input).val() !== "True") {
                 result = false;
-                return false;
+                return;
             }
         });
         return result;
@@ -205,16 +209,13 @@
     }
 
     let submitaplication = () => {
-        console.log("submitting");
         let form = $("form");
-        form.noValidate = false;
+        $(form).parsley().validate()
         form.submit()
     }
 
     let savedraft = () => {
-        console.log("save draft!")
         let form = $(".application_form");
-        console.log($(form))
         $(form).attr('novalidate', 'novalidate');
         let input = $("<input>")
                .attr("type", "hidden")
@@ -224,8 +225,26 @@
                .attr("name", "draft_id").val($(form).attr("id"));
         form.append($(input));
         form.append($(input2));
-        $(form).off('submit.parsleyForm');
-        //form.submit()
+        let parsleyForm = $(form).parsley()
+        parsleyForm.validate()
+        let result = true;
+
+        for (let i = 0; i < parsleyForm.fields.length; i++){
+            let validationResult = parsleyForm.fields[i].validationResult;
+            if (validationResult !== true){
+                if (validationResult[0].assert.name !== 'required'){
+                    $("#cannot_save_draft").show();
+                    result = false;
+                    break;
+
+                }
+            }
+        }
+        if (result) {
+            $(form).off('form:validate');
+            $("#cannot_save_draft").hide();
+            parsleyForm._submit();
+        }
     }
 
     let navigate = (n) => {
@@ -304,8 +323,8 @@
         });
     }
 
-    let currentTab = 4; // Current tab is set to be the first tab (0)
-    let previousTab = 3;
+    let currentTab = 0; // Current tab is set to be the first tab (0)
+    let previousTab = 0;
     let tabs = $(".tab");
     let sections = $(".form-section");
     prepareSections();
