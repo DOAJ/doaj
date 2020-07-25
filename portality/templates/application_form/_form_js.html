@@ -102,6 +102,7 @@
             prepareReview()
         }
         fixStepIndicator(n)
+        window.scrollTo(0,0);
 
     }
 
@@ -181,7 +182,9 @@
         let result = true;
         let inputs = $("[name^='validated']");
         $(inputs).each((idx, input) => {
-            console.log($(input))
+            if (idx === inputs.length) {
+                return result;
+            }
             if ($(input).val() !== "True") {
                 result = false;
                 return;
@@ -200,7 +203,7 @@
         }).fail(function () {
             $("#validated-" + currentTab).val("False");
             //only for dev!!
-            navigate(1);
+            //navigate(1);
         });
     }
 
@@ -311,7 +314,7 @@
                 $(input).attr('data-parsley-group', 'block-' + idx);
             });
 
-            if (idx < sections.length-1){
+            if (idx < sections.length){
                 let hiddenInputs = $("[name='validated']");
                 $(hiddenInputs[idx]).attr('id', 'validated-' + idx);
             }
