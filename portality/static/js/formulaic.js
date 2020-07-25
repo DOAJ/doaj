@@ -808,7 +808,10 @@ var formulaic = {
             this.elements = false;
 
             this.init = function() {
-                this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                console.log(this.fieldDef.name)
+                //this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                this.elements = $("select[name$='" + this.fieldDef.name + "']")
+                console.log(this.elements)
                 this.elements.select2({  //TODO: select2 is not a function
                     allowClear: true
                 });
