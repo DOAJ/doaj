@@ -609,7 +609,7 @@ var formulaic = {
 
             this.init = () => {
                 if (this.fieldDef["input"] === "group") {
-                    this.divs = $("div[class='form-group " + this.fieldDef["name"] + "__group']")
+                    this.divs = $("div[name='" + this.fieldDef["name"] + "__group']")
 
                     this.count = 0;
 

@@ -183,3 +183,17 @@ li.parsley-type {
     display: flex;
     flex-direction: row;
 }
+
+.form_group {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 0.5em;
+}
+
+.form_group > select {
+    width: 60%;
+}
+
+.form_group > input {
+    width: 30%;
+}

@@ -7,24 +7,22 @@
         {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
     </label>
     {% if f.get("hint") %}<p><small>{{ f.hint }}</small></p>{% endif %}
-    {% for entry in f.wtfield %}
-        {% set entry_template = f.entry_template %}
-        {% if "multiple_field" in f.get("widgets", []) %}
-            <div class="removable_field__{{ f.name }}">
-                <div class= 'multiple_input'>
-                    {% include entry_template %}
-                </div>
-            </div>
-        {% else %}
-            {% include entry_template %}
-        {% endif %}
-    {% endfor %}
-
     {% if "multiple_field" in f.get("widgets", []) %}
-        <div class="add_field__button_div">
-            <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add another </button>
+        <div class="removable_field">
+            <div class= 'multiple_input'>
+                {% for entry in f.wtfield %}
+                    {% set entry_template = f.entry_template %}
+                        {% include entry_template %}
+                {% endfor %}
+            </div>
+            <div class="add_field__button_div">
+                <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add another </button>
+            </div>
         </div>
+    {% else %}
+        {% include entry_template %}
     {% endif %}
+
 
     {% if f.help("short_help") %}
        <p><small>{{ f.help("short_help") }}</small></p>

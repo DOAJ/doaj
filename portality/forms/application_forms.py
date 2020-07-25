@@ -765,6 +765,9 @@ class FieldDefinitions:
         "input": "select",
         "options_fn": "iso_currency_list",
         "default" : "",
+        "help": {
+            "placeholder": "Currency"
+        },
         "widgets": [
             {"select": {}}
         ],
