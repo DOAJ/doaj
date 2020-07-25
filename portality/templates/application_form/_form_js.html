@@ -288,7 +288,9 @@
         $('[id^="page_link-"]').each((i, x) => {
             $(x).on("click", () => {
                 if ($("#validated-" + i).val() === '') {
-                    return false;
+                    //dev only!
+                    showTab(i);
+                    //return false;
                 } else {
                     previousTab = i-1;
                     currentTab = i;

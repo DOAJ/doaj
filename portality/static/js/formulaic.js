@@ -729,9 +729,10 @@ var formulaic = {
             this.elements = false;
 
             this.init = function() {
-                this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                this.elements = $("select[name$='" + this.fieldDef.name + "']")
                 this.elements.select2({  //TODO: select2 is not a function
-                    allowClear: true
+                    allowClear: true,
+                    width: 'resolve'
                 });
             };
 
@@ -796,26 +797,7 @@ var formulaic = {
                 this.init();
             },
 
-        newSelect : function(params) {
-            return edges.instantiate(formulaic.widgets.Select, params);
-        },
-        Select : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-            this.args = params.args;    // TODO: no args currently supported
 
-            this.ns = "formulaic-select";
-            this.elements = false;
-
-            this.init = function() {
-                this.elements = $("select[name$='" + this.fieldDef.name + "']")
-                this.elements.select2({  //TODO: select2 is not a function
-                    allowClear: true
-                });
-            };
-
-            this.init();
-        },
 
         newTagList : function(params) {
             return edges.instantiate(formulaic.widgets.TagList, params);
