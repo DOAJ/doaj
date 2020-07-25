@@ -469,8 +469,11 @@ class FieldDefinitions:
     LICENSE_DISPLAY = {
         "name": "license_display",
         "label": "Does the journal embed and/or display licensing information in its articles?",
-        "input": "checkbox",
-        "multiple": True,
+        "input": "radio",
+        "options": [
+            {"display": "Yes", "value": "y"},
+            {"display": "No", "value": "n"}
+        ],
         "help": {
             "long_help": ["Licensing information must be displayed or embedded on every PDF or in the full text of the "
                           "HTML articles.",
@@ -478,11 +481,6 @@ class FieldDefinitions:
                           "the site."],
             "seal_criteria": "If the answer is Embed"
         },
-        "options": [
-            {"display": "Embed", "value": "Embed"},
-            {"display": "Display", "value": "Display"},
-            {"display": "No", "value": "No", "exclusive": True}
-        ],
         "validate": [
             "required"
         ]
@@ -945,7 +943,8 @@ class FieldDefinitions:
 
     DEPOSIT_POLICY = {
         "name": "deposit_policy",
-        "label": "Where is the journal's policy allowing authors to deposit the AAM or VOR registered?",
+        "label": "Does the journal have a policy allowing authors to deposit versions of their work in an "
+                 "institutional or other repository of their choice? Where is this policy recorded?",
         "input": "checkbox",
         "multiple": True,
         "options": [
@@ -953,16 +952,20 @@ class FieldDefinitions:
             {"display": "Dulcinea", "value": "Dulcinea"},
             {"display": "Héloïse", "value": "Héloïse"},
             {"display": "Diadorim", "value": "Diadorim"},
-            {"display": "The journal has a policy but it isn't registered anywhere", "value": "Unregistered", "exclusive" : True},
             {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other"}
+            {"display": "Other (including publisher's own site)", "value": "other"}
         ],
         "help": {
-            "long_help": ["AAM stands for <b>Author Accepted Manuscript</b>. VOR is the <b>Version of Record</b>.",
-                          "This questions ask whether or not the journal allows authors to deposit a copy of their "
-                          "work in an institutional repository.", "If the journal allows authors to do this, "
-                                                                  "is that policy registered in a policy directory?"],
-        },
+            "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
+                          "of their choice. What is the journal's policy for this?",
+                          "You should state your policy with regard to the different versions of the paper:"
+                          "<ul style='list-style-type: none;'>"
+                          "<li>Submitted version</li>"
+                          "<li>Accepted version (Author Accepted Manuscript)</li>"
+                          "<li>Published version (Version of Record)</li>"
+                          "</ul>",
+                          "For a journal to qualify for the DOAJ Seal, it must allow all versions to be deposited in an institutional or other repository of the author's choice without embargo.,"
+                          ]},
         "validate": [
             "required"
         ]

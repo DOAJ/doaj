@@ -210,8 +210,13 @@ form {
   label, p {
     display: block;
     margin: $spacing-03 0;
+
+    small, a {
+      color: $dark-grey;
+    }
   }
 }
+
 
 input, select, button, textarea {
   -webkit-appearance: none;

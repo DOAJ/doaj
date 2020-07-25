@@ -1068,6 +1068,8 @@ form {
   form label, form p {
     display: block;
     margin: 0.75rem 0; }
+    form label small, form label a, form p small, form p a {
+      color: #5C5956; }
 
 input, select, button, textarea {
   -webkit-appearance: none;
