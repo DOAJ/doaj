@@ -1892,8 +1892,9 @@ class DifferentToBuilder:
 class RequiredIfBuilder:
     @staticmethod
     def render(settings, html_attrs):
+        html_attrs["data-parsley-validate-if-empty"] = "true"
+        html_attrs["data-parsley-required-if"] = settings.get("value")
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
-        html_attrs["data-parsley-required-if-value"] = settings.get("value")
 
     @staticmethod
     def wtforms(field, settings):

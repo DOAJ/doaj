@@ -17,6 +17,18 @@
 
     });
 
+    window.Parsley.addValidator("requiredIf", {
+        validateString : function(value, requirement, parsleyInstance) {
+            field = parsleyInstance.$element.attr("data-parsley-required-if-field");
+            value = requirement;
+            return ($('[name="' + field + '"]').val() !== requirement)
+        },
+        messages: {
+            en: 'This field is required, because you answered "%s" to the previous question.'
+        },
+        priority: 33
+    })
+
     let showTab = (n) => {
         // This function will display the specified tab of the form ...
         //hide all other tabs
