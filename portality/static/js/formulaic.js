@@ -284,7 +284,7 @@ var formulaic = {
                 for (var j = 0; j < fieldset.fields.length; j++) {
                     var field = fieldset.fields[j];
 
-                    if (!field.hasOwnProperty('conditional')) {
+                    if (!field.hasOwnProperty("conditional")) {
                         continue;
                     }
 
@@ -303,7 +303,7 @@ var formulaic = {
 
                         // bind a change event for checking conditionals
                         var element = this.controlSelect.input({name: condField});
-                        edges.on(element, 'click', this, 'checkConditional');
+                        edges.on(element, "change.Conditional", this, "checkConditional");
                     }
                 }
             }
@@ -315,10 +315,10 @@ var formulaic = {
             for (var i = 0; i < downstream.length; i++) {
                 var field = downstream[i];
                 if (this.isConditionSatisfied({field: field})) {
-                    console.log(this.controlSelect.container({id: field}))
-                    this.controlSelect.container({id: field}).show();
+                    console.log(this.controlSelect.container({name: field}))
+                    this.controlSelect.container({name: field}).show();
                 } else {
-                    this.controlSelect.container({id: field}).hide();
+                    this.controlSelect.container({name: field}).hide();
                 }
             }
         };
@@ -554,14 +554,7 @@ var formulaic = {
         this.container = function(params) {
             var context = this.get_context(params);
             var name = params.name || params.syncName;
-            var selector;
-            if (params.name === undefined){
-                selector = "#" + this.containerClassTemplate.replace("{name}", params.id);
-            }
-            else {
-                selector = "." + this.containerClassTemplate.replace("{name}", name);
-            }
-
+            var selector = "." + this.containerClassTemplate.replace("{name}", name);
             return $(selector, context);
         };
     },
