@@ -22,7 +22,10 @@ from portality.forms.validate import (
     ISSNInPublicDOAJ,
     JournalURLInPublicDOAJ,
     DifferentTo,
-    RequiredIfOtherValue
+    RequiredIfOtherValue,
+    OnlyIf,
+    NotIf,
+    GroupMember
 )
 
 from portality.datasets import language_options, country_options, currency_options
@@ -1203,7 +1206,7 @@ class FieldDefinitions:
         "validate": [
             {"is_issn": {"message": "This is not a valid ISSN"}},   # FIXME: might have to think about how the validators work with a taglist
             {"different_to": {"field": "doaj_continued_by"}},       # FIXME: as above
-            {"not_if" : { "fields" : {"field" : "doaj_discontinued_date"}}},
+            {"not_if" : { "fields" : [{"field" : "doaj_discontinued_date"}]}},
             "issn_in_public_doaj"                                   # FIXME: is this right?
         ]
     }
@@ -1215,7 +1218,7 @@ class FieldDefinitions:
         "validate": [
             {"is_issn": {"message": "This is not a valid ISSN"}}, # FIXME: might have to think about how the validators work with a taglist
             {"different_to": {"field": "doaj_continues"}},  # FIXME: as above
-            {"not_if": {"fields": {"field": "doaj_discontinued_date"}}},
+            {"not_if": {"fields": [{"field": "doaj_discontinued_date"}]}},
             "issn_in_public_doaj"  # FIXME: is this right?
         ]
     }
@@ -1786,7 +1789,7 @@ class IsURLBuilder:
     @staticmethod
     def wtforms(field, settings):
         # FIXME: do we want the scheme to be optional?
-        return URLOptionalScheme()
+        return URLOptionalScheme(message=settings.get('message'))
 
 
 class IntRangeBuilder:
@@ -1854,7 +1857,7 @@ class OptionalIfBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return OptionalIf(settings.get("field"), settings.get("message"), settings.get("values", []))
+        return OptionalIf(settings.get("field") or field, settings.get("message"), settings.get("values", []))
 
 
 class IsISSNBuilder:
@@ -1876,7 +1879,7 @@ class DifferentToBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return DifferentTo(settings.get("field"), settings.get("ignore_empty", True), settings.get("message"))
+        return DifferentTo(settings.get("field") or field, settings.get("ignore_empty", True), settings.get("message"))
 
 
 class RequiredIfBuilder:
@@ -1887,36 +1890,44 @@ class RequiredIfBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return RequiredIfOtherValue(settings.get("field"), settings.get("value"))
+        return RequiredIfOtherValue(settings.get("field") or field, settings.get("value"))
 
 
 class OnlyIfBuilder:
     @staticmethod
     def render(settings, html_attrs):
-        raise NotImplementedError()
+        # FIXME: front end validator for this does not yet exist
+        for f in settings.get('fields'):
+            html_attrs["data-parsley-only-if-field"] = f['field']
+            html_attrs["data-parsley-only-if-value"] = f.get('value', '')
 
     @staticmethod
-    def wtforms(field, settings):
-        raise NotImplementedError()
+    def wtforms(fields, settings):
+        return OnlyIf(settings.get('fields') or fields, settings.get('message'))
+
+
+class NotIfBuildier:
+    @staticmethod
+    def render(settings, html_attrs):
+        # FIXME: front end validator for this does not yet exist
+        for f in settings.get('fields'):
+            html_attrs["data-parsley-not-if-field"] = f['field']
+            html_attrs["data-parsley-not-if-value"] = f.get('value', '')
+
+    @staticmethod
+    def wtforms(fields, settings):
+        return NotIf(settings.get('fields') or fields, settings.get('message'))
 
 
 class GroupMemberBuilder:
     @staticmethod
     def render(settings, html_attrs):
-        raise NotImplementedError()
+        # FIXME: front end validator for this does not yet exist (do we have an existing one from formcontext?)
+        html_attrs["data-parsley-group-member-field"] = settings.get("group_field")
 
     @staticmethod
     def wtforms(field, settings):
-        raise NotImplementedError()
-
-class NotIfBuildier:
-    @staticmethod
-    def render(settings, html_attrs):
-        raise NotImplementedError()
-
-    @staticmethod
-    def wtforms(field, settings):
-        raise NotImplementedError()
+        return GroupMember(settings.get('group_field') or field)
 
 
 #########################################################

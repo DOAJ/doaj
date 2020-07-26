@@ -1,12 +1,26 @@
+import re
 from flask_login import current_user
 from wtforms import validators
-import re
 from wtforms.compat import string_types
+from typing import List
 
 from portality.formcontext.choices import Choices
 from portality.core import app
+from portality.models import Journal, EditorGroup
 
-from portality.models import Journal
+
+class MultiFieldValidator(object):
+    """ A validator that accesses the value of an additional field """
+
+    def __init__(self, other_field, *args, **kwargs):
+        self.other_field_name = other_field
+        super(MultiFieldValidator, self).__init__(*args, **kwargs)
+
+    def get_other_field(self, form):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('No field named "{0}" in form'.format(self.other_field_name))
+    
 
 class DataOptional(object):
     """
@@ -37,7 +51,7 @@ class DataOptional(object):
             raise validators.StopValidation()
 
 
-class OptionalIf(DataOptional):
+class OptionalIf(DataOptional, MultiFieldValidator):
     # A validator which makes a field optional if another field is set
     # and has a truthy value.
 
@@ -88,15 +102,11 @@ class OptionalIf(DataOptional):
         super(OptionalIf, self).__call__(form, field)
         raise validators.StopValidation()
 
-    def get_other_field(self, form):
-        other_field = form._fields.get(self.other_field_name)
-        if other_field is None:
-            raise Exception('no field named "%s" in form' % self.other_field_name)
-        return other_field
-
 
 class ExtraFieldRequiredIf(OptionalIf):
-    '''Another field is required if this field has a certain value, but must be empty for all other values of this field.'''
+    """ Another field is required if this field has a certain value,
+    but must be empty for all other values of this field. """
+
     # A radio button has a related text field - we've got to:
     # a/ require a value in the text input if the related radio
     # button is checked.
@@ -133,12 +143,12 @@ class ExtraFieldRequiredIf(OptionalIf):
                 raise validators.ValidationError(self.message_full.format(reqval=self.reqval))
 
     def get_extra_field(self, form):
-        '''Alias get_other_field from the superclass to make its purpose clearer for this class.'''
+        """Alias get_other_field from the superclass to make its purpose clearer for this class."""
         return self.get_other_field(form)
 
 
 class ExclusiveCheckbox(object):
-    '''If a checkbox is checked, do not allow any other checkboxes to be checked.'''
+    """If a checkbox is checked, do not allow any other checkboxes to be checked."""
     # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
     # except where it will simplify a 50-field form, k?
 
@@ -201,12 +211,12 @@ class URLOptionalScheme(validators.Regexp):
 
 
 class MaxLen(object):
-    '''
+    """
     Maximum length validator. Works on anything which supports len(thing).
 
     Use {max_len} in your custom message to insert the maximum length you've
     specified into the message.
-    '''
+    """
 
     def __init__(self, max_len, message='Maximum {max_len}.', *args, **kwargs):
         self.max_len = max_len
@@ -217,10 +227,10 @@ class MaxLen(object):
             raise validators.ValidationError(self.message.format(max_len=self.max_len))
 
 
-class RequiredIfRole(validators.Required):
-    '''
+class RequiredIfRole(validators.DataRequired):
+    """
     Makes a field required, if the user has the specified role
-    '''
+    """
 
     def __init__(self, role, *args, **kwargs):
         self.role = role
@@ -263,14 +273,12 @@ class RegexpOnTagList(object):
                 raise validators.ValidationError(message)
 
 
-class ThisOrThat(object):
+class ThisOrThat(MultiFieldValidator):
     def __init__(self, other_field_name, *args, **kwargs):
-        self.other_field_name = other_field_name
+        super(ThisOrThat, self).__init__(other_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
-        other_field = form._fields.get(self.other_field_name)
-        if other_field is None:
-            raise Exception('no field named "%s" in form' % self.other_field_name)
+        other_field = self.get_other_field(form)
         this = bool(field.data)
         that = bool(other_field.data)
         if not this and not that:
@@ -278,10 +286,10 @@ class ThisOrThat(object):
 
 
 class ReservedUsernames(object):
-    '''
+    """
     A username validator. When applied to fields containing usernames it prevents
     their use if they are reserved.
-    '''
+    """
     def __init__(self, message='The "{reserved}" user is reserved. Please choose a different username.', *args, **kwargs):
         self.message = message
 
@@ -339,12 +347,12 @@ class StopWords(object):
                 raise validators.ValidationError(self.message.format(stop_word=v))
 
 
-class DifferentTo(object):
+class DifferentTo(MultiFieldValidator):
     def __init__(self, other_field_name, ignore_empty=True, message=None):
-        self.other_field_name = other_field_name
+        super(DifferentTo, self).__init__(other_field_name)
         self.ignore_empty = ignore_empty
         if not message:
-            message = "This field must contain a different value to the field '{x}'".format(x=other_field_name)
+            message = "This field must contain a different value to the field '{x}'".format(x=self.other_field_name)
         self.message = message
 
     def __call__(self, form, field):
@@ -355,26 +363,18 @@ class DifferentTo(object):
                 return
             raise validators.ValidationError(self.message)
 
-    def get_other_field(self, form):
-        other_field = form._fields.get(self.other_field_name)
-        if other_field is None:
-            raise Exception('no field named "%s" in form' % self.other_field_name)
-        return other_field
 
-
-class RequiredIfOtherValue(object):
-    '''
+class RequiredIfOtherValue(MultiFieldValidator):
+    """
     Makes a field required, if the user has selected a specific value in another field
-    '''
+    """
 
     def __init__(self, other_field_name, other_value, *args, **kwargs):
-        self.other_field_name = other_field_name
         self.other_value = other_value
-        super(RequiredIfOtherValue, self).__init__(*args, **kwargs)
+        super(RequiredIfOtherValue, self).__init__(other_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
         other_field = self.get_other_field(form)
-        match = False
         if isinstance(other_field.data, list):
             match = self.other_value in other_field.data
         else:
@@ -383,8 +383,78 @@ class RequiredIfOtherValue(object):
             dr = validators.DataRequired()
             dr(form, field)
 
-    def get_other_field(self, form):
-        other_field = form._fields.get(self.other_field_name)
-        if other_field is None:
-            raise Exception('no field named "%s" in form' % self.other_field_name)
-        return other_field
+
+class OnlyIf(object):
+    """ Field only validates if other fields have specific values (or are truthy)"""
+    def __init__(self, other_fields: List[dict], ignore_empty=True, message=None):
+        self.other_fields = other_fields
+        self.ignore_empty = ignore_empty
+        if not message:
+            fieldnames = [n['field'] for n in self.other_fields]
+            message = "This field can only be selected with valid values in other fields: '{x}'".format(x=fieldnames)
+        self.message = message
+
+    def __call__(self, form, field):
+        self.get_other_fields(form)
+
+        for o_f in self.other_fields:
+            if self.ignore_empty and (not o_f['field'].data or not field.data):
+                continue
+            if o_f.get('value') is None:
+                # Succeed if the other field is truthy
+                if o_f['field'].data:
+                    continue
+            elif o_f['field'].data == o_f['value']:
+                # Succeed if the other field has the specified value
+                continue
+            raise validators.ValidationError(self.message)
+
+    def get_other_fields(self, form):
+        # populate self.other_fields with the actual fields
+        for f in self.other_fields:
+            f['field'] = form._fields.get(f['name'])
+            if f['field'] is None:
+                raise Exception('No field named "{0}" in form'.format(f['name']))
+
+
+class NotIf(OnlyIf):
+    """ Field only validates if other fields DO NOT have specific values (or are truthy)"""
+
+    def __call__(self, form, field):
+        self.get_other_fields(form)
+
+        for o_f in self.other_fields:
+            if self.ignore_empty and (not o_f['field'].data or not field.data):
+                continue
+            if o_f.get('value') is None:
+                # Fail if the other field is truthy
+                if o_f['field'].data:
+                    validators.ValidationError(self.message)
+            elif o_f['field'].data == o_f['value']:
+                # Fail if the other field has the specified value
+                validators.ValidationError(self.message)
+
+
+class GroupMember(MultiFieldValidator):
+    """ Validation passes when a field's value is a member of the specified group """
+    # Fixme: should / can this be generalised to any group vs specific to editor groups?
+
+    def __init__(self, group_field_name, *args, **kwargs):
+        super(GroupMember, self).__init__(group_field_name, *args, **kwargs)
+
+    def __call__(self, form, field):
+        group_field = self.get_other_field(form)
+
+        """ Validate the choice of editor, which could be out of sync with the group in exceptional circumstances """
+        # lifted from from formcontext
+        editor = field.data
+        if editor is not None and editor != "":
+            editor_group_name = group_field.data
+            if editor_group_name is not None and editor_group_name != "":
+                eg = EditorGroup.pull_by_key("name", editor_group_name)
+                if eg is not None:
+                    if eg.is_member(editor):
+                        return  # success - an editor group was found and our editor was in it
+                raise validators.ValidationError("Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_name))
+            else:
+                raise validators.ValidationError("An editor has been assigned without an editor group")
