@@ -782,7 +782,8 @@ var formulaic = {
                 this.elements = $("select[name$='" + this.fieldDef.name + "']")
                 this.elements.select2({  //TODO: select2 is not a function
                     allowClear: true,
-                    width: 'resolve'
+                    width: 'resolve',
+                    newOption: true
                 });
             };
 
