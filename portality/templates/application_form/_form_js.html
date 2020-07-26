@@ -19,9 +19,12 @@
 
     window.Parsley.addValidator("requiredIf", {
         validateString : function(value, requirement, parsleyInstance) {
-            field = parsleyInstance.$element.attr("data-parsley-required-if-field");
-            value = requirement;
-            return ($('[name="' + field + '"]').val() !== requirement)
+            let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
+
+            if ($('[name="' + field + '"]').val() === requirement){
+                return !!value;
+            }
+            return true;
         },
         messages: {
             en: 'This field is required, because you answered "%s" to the previous question.'
@@ -62,7 +65,6 @@
             submitButton.show();
             draftButton.show();
             let validated = form_validated();
-            console.log(validated)
             submitButton.prop("disabled", !validated);
             if (!validated) {
                 $("#cannot-submit").show();

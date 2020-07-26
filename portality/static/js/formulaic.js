@@ -315,7 +315,6 @@ var formulaic = {
             for (var i = 0; i < downstream.length; i++) {
                 var field = downstream[i];
                 if (this.isConditionSatisfied({field: field})) {
-                    console.log(this.controlSelect.container({name: field}))
                     this.controlSelect.container({name: field}).show();
                 } else {
                     this.controlSelect.container({name: field}).hide();
