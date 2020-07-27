@@ -496,14 +496,14 @@ def xml():
     return render_template("layouts/static_page.html", page_frag="/docs/xml-fragment/index.html")
 
 
-# @blueprint.route("/docs/widgets/")
-# def widgets():
-#     return render_template("layouts/static_page.html", page_frag="/docs/widgets-fragment/index.html")
+@blueprint.route("/docs/widgets/")
+def widgets():
+    return render_template("layouts/static_page.html", page_frag="/docs/widgets-fragment/index.html")
 
 
-# @blueprint.route("/docs/public-data-dump/")
-# def public_data_dump():
-#     return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump-fragment/index.html")
+@blueprint.route("/docs/public-data-dump/")
+def public_data_dump():
+    return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump-fragment/index.html")
 
 
 @blueprint.route("/docs/openurl/")
@@ -577,14 +577,14 @@ def features():
     return redirect(url_for("doaj.xml", **request.args), code=308)
 
 
-@blueprint.route('/widgets')
-def old_widgets():
-    return redirect(url_for("doaj.widgets", **request.args), code=308)
+# @blueprint.route('/widgets')
+# def old_widgets():
+#     return redirect(url_for("doaj.widgets", **request.args), code=308)
 
 
-@blueprint.route("/public-data-dump/<record_type>")
-def old_public_data_dump(record_type):
-    return redirect(url_for("doaj.public_data_dump", **request.args), code=308)
+# @blueprint.route("/public-data-dump/<record_type>")
+# def old_public_data_dump(record_type):
+#     return redirect(url_for("doaj.public_data_dump", **request.args), code=308)
 
 
 @blueprint.route("/openurl/help")
