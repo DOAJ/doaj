@@ -23,6 +23,10 @@
  border: 1px solid $warm-black;
  -webkit-background-clip: padding-box;
  background-clip: padding-box;
+
+ > li {
+   display: block;
+ }
 }
 
 .dropdown__link {
