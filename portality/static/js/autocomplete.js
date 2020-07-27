@@ -6,7 +6,7 @@ function autocomplete(selector, doc_field, doc_type, mininput, include_input, al
     var allow_clear = allow_clear === undefined ? true : allow_clear;
 
     var ajax = {
-            url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_ffunction autocompleteield,
+            url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
             dataType: 'json',
             data: function (term, page) {
                 return {
