@@ -2,6 +2,7 @@
 layout: apply
 title: <span data-feather="unlock" aria-hidden="true"></span> Open access compliance
 toc: true
+fragment: false
 highlight: false
 previous: index
 next: 02-about
