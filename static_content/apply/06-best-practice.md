@@ -2,6 +2,7 @@
 layout: apply
 title: <span data-feather="archive" aria-hidden="true"></span> Best practice
 toc: true
+fragment: false
 highlight: false
 previous: 05-business-model
 next: 07-review
