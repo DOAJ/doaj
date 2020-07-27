@@ -326,7 +326,7 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
-            {"autocomplete": {"field": "index.publisher_ac.exact"}},
+            {"autocomplete": {"field": "index.publisher.name.exact"}},
         ]
     }
 
