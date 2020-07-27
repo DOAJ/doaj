@@ -63,11 +63,10 @@
             submitButton.show();
             draftButton.show();
             let validated = form_validated();
-            submitButton.prop("disabled", !validated);
             if (!validated) {
-                $("#cannot-submit").show();
+                $("#cannot-submit-invalid-fields").show();
             } else {
-                $("#cannot-submit").hide();
+                $("#cannot-submit-invalid-fields").hide();
             }
 
         } else {
@@ -310,6 +309,22 @@
             $(menu).className = "page_link--disabled";
         });
     }
+
+    let manage_review_checkboxes = () => {
+        if ($("#understanding").prop("checked") && $("#reviewed").prop("checked")){
+            $("#cannot-submit-checkboxes").hide();
+            $("#submitBtn").prop("disabled", !form_validated());
+        } else {
+            $("#cannot-submit-checkboxes").show();
+            $("#submitBtn").prop("disabled", true);
+        }
+    }
+
+    $("#understanding").on("click", manage_review_checkboxes);
+    $("#reviewed").on("click", manage_review_checkboxes);
+
+
+
 
     let currentTab = 0; // Current tab is set to be the first tab (0)
     let previousTab = 0;
