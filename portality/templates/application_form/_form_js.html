@@ -19,13 +19,16 @@
 
     window.ParsleyConfig = {
         validators: {
-            conditionalrequired: {
+            valueRequired: {
                 fn: function (value, requirements) {
                     // if requirements[0] value does not meet requirements[1] expectation, field is required
-                    if (requirements[1] === $(requirements[0]).val() && '' === value)
+                    if (requirements[1] !== $(requirements[0]).val())
                         return false;
 
                     return true;
+                },
+                messages: {
+                    en: 'Answer "%s" is required to proceed.'
                 },
                 priority: 32
             },
