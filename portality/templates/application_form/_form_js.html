@@ -19,6 +19,7 @@
 
     window.Parsley.addValidator("requiredIf", {
         validateString : function(value, requirement, parsleyInstance) {
+            let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
             if ($('[name="' + field + '"]').filter(':checked').val() === requirement){
                 return !!value;
             }

@@ -326,7 +326,7 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
-            {"autocomplete": {"field": "bibjson.publisher"}},
+            {"autocomplete": {"field": "index.publisher_ac.exact"}},
         ]
     }
 
