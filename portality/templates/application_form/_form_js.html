@@ -96,6 +96,12 @@
             if (id === "apc_charges__review_value") {
                     let currency = $("select[id='apc_currency']").find('option:selected').val();
                     let max = $("input[name='apc_max']").val();
+                    if (currency === undefined) {
+                        currency = "";
+                    }
+                    if (max === undefined) {
+                        max = "";
+                    }
 
                     $(question).html(max + " " + currency);
             }

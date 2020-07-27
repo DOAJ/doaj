@@ -907,6 +907,9 @@ class FieldDefinitions:
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
+        ],
+        "widgets": [
+            "multiple_field"
         ]
     }
 
