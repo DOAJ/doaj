@@ -19,9 +19,7 @@
 
     window.Parsley.addValidator("requiredIf", {
         validateString : function(value, requirement, parsleyInstance) {
-            let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
-
-            if ($('[name="' + field + '"]').val() === requirement){
+            if ($('[name="' + field + '"]').filter(':checked').val() === requirement){
                 return !!value;
             }
             return true;
@@ -167,7 +165,7 @@
         let result = true;
         let inputs = $("[name^='validated']");
         $(inputs).each((idx, input) => {
-            if (idx === inputs.length) {
+            if (idx === inputs.length-1) {
                 return result;
             }
             if ($(input).val() !== "True") {
@@ -274,7 +272,7 @@
             $(x).on("click", () => {
                 if ($("#validated-" + i).val() === '') {
                     //dev only!
-                    showTab(i);
+                    navigate(i);
                     //return false;
                 } else {
                     previousTab = i-1;
@@ -283,10 +281,10 @@
                         group: 'block-' + previousTab
                     }).done(function () {
                         $("#validated-" + previousTab).val("True");
-                        showTab(currentTab);
+                        navigate(currentTab);
                     }).fail(function () {
                         $("#validated-" + previousTab).val("False");
-                        showTab(currentTab);
+                        navigate(currentTab);
                     });
                 }
 
@@ -319,7 +317,7 @@
     let sections = $(".form-section");
     prepareSections();
     usePaginationMenu();
-    showTab(currentTab); // Display the current tab
+    navigate(currentTab); // Display the current tab
     {#$("#submitBtn").on("click",onSubmit);#}
     {#$("#draftBtn").on("click", saveDraft);#}
 
