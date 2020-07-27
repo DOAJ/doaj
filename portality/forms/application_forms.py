@@ -326,7 +326,7 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
-            {"autocomplete": {"field": "index.publisher.name.exact"}},
+            {"autocomplete": {"field": "bibjson.publisher.name.exact"}},
         ]
     }
 
@@ -371,7 +371,7 @@ class FieldDefinitions:
                           "a society or other type of institution, enter that here."]
         },
         "widgets": [
-            {"autocomplete": {"field": "bibjson.institution"}},
+            {"autocomplete": {"field": "bibjson.institution.name.exact"}},
         ]
     }
 

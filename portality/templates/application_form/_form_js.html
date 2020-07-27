@@ -17,38 +17,18 @@
 
     });
 
-    window.ParsleyConfig = {
-        validators: {
-            valueRequired: {
-                fn: function (value, requirements) {
-                    // if requirements[0] value does not meet requirements[1] expectation, field is required
-                    if (requirements[1] !== $(requirements[0]).val())
-                        return false;
-
-                    return true;
-                },
-                messages: {
-                    en: 'Answer "%s" is required to proceed.'
-                },
-                priority: 32
-            },
-            validateString : {
-                fn: function(value, requirement, parsleyInstance) {
-                    let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
-                    if ($('[name="' + field + '"]').filter(':checked').val() === requirement){
-                        return !!value;
-                    }
-                    return true;
-                },
-                messages: {
-                    en: 'This field is required, because you answered "%s" to the previous question.'
-                },
-                priority: 33}
-        }
-    };
-
     window.Parsley.addValidator("requiredIf", {
-
+        validateString : function(value, requirement, parsleyInstance) {
+            let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
+            if ($('[name="' + field + '"]').filter(':checked').val() === requirement){
+                return !!value;
+            }
+            return true;
+        },
+        messages: {
+            en: 'This field is required, because you answered "%s" to the previous question.'
+        },
+        priority: 33
     })
 
     let showTab = (n) => {
@@ -207,13 +187,14 @@
     }
 
     let prev = () => {
-        navigate(currentTab - 1);
+        navigate(currentTab - 1, true);
     }
 
     let submitaplication = () => {
         let form = $("form");
-        $(form).parsley().validate()
-        form.submit()
+        let parsleyForm = $(form).parsley()
+        $(form).submit();
+
     }
 
     let savedraft = () => {

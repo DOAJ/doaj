@@ -110,6 +110,7 @@ li.parsley-type {
     border: 1px solid #282624;
     background-color: inherit;
     background-image: none;
+    padding: 0.25em 0.5em 0.25em 0.5em
 }
 
 li > .select2-container .select2-choice {
