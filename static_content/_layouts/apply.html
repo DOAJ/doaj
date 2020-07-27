@@ -1,3 +1,4 @@
+{% if page.fragment == false %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,13 +6,14 @@
 
   <body id="apply">
     {% include header.html %}
+{% endif %}
 
     <main class="container">
       <div class="row">
 
         <div class="col-md-8">
           <section class="page-content">
-            {% if page.name != "index.md" and page.name != "thank-you.md" %}<p class="label">Page {{ page.number }} of 7</p>{% endif %}
+            {% if page.name != "index.md" and page.name != "thank-you.md" and page.name != "thank-you-fragment.md" %}<p class="label">Page {{ page.number }} of 7</p>{% endif %}
             <h1>{{ page.title }}</h1>
 
             {{ content }}
@@ -98,7 +100,7 @@
 
               {% endfor %}
 
-              {% if page.name != "index.md" and page.name != "thank-you.md" and page.name != "07-review.md" %}
+              {% if page.name != "index.md" and page.name != "thank-you.md" and page.name != "thank-you-fragment.md" and page.name != "07-review.md" %}
               <p class="pager-buttons">
                 {% if page.previous %}
                 <a href="../{{ page.previous }}" class="button button--secondary pager-buttons__left">Previous</a>
@@ -123,7 +125,7 @@
             {% assign step6 = '06-best-practice.md' %}
             {% assign step7 = '07-review.md' %}
 
-            {% if page.name != "index.md" and page.name != "thank-you.md" %}
+            {% if page.name != "index.md" and page.name != "thank-you.md" and page.name != "thank-you-fragment.md" %}
             <nav class="application-nav">
               <h2 class="application-nav__heading">Application progress</h2>
               <ol class="application-nav__list">
@@ -185,7 +187,7 @@
             </nav>
             {% endif %}
 
-            {% if page.name != "thank-you.md" %}
+            {% if page.name != "thank-you.md" and page.name != "thank-you-fragment.md" %}
             <aside class="highlight highlight--aside">
               <h2 class="label">Related help</h2>
               <ul class="full-width-list">
@@ -220,7 +222,9 @@
       </div>
     </main>
 
+{% if page.fragment == false %}
     {% include footer.html %}
   </body>
 
 </html>
+{% endif %}
