@@ -125,7 +125,7 @@
             {% assign step6 = '06-best-practice.md' %}
             {% assign step7 = '07-review.md' %}
 
-            {% if page.name != "index.md" and page.name != "thank-you.md" %}
+            {% if page.name != "index.md" and page.name != "thank-you.md" and page.name != "thank-you-fragment.md" %}
             <nav class="application-nav">
               <h2 class="application-nav__heading">Application progress</h2>
               <ol class="application-nav__list">
@@ -187,7 +187,7 @@
             </nav>
             {% endif %}
 
-            {% if page.name != "thank-you.md" %}
+            {% if page.name != "thank-you.md" and page.name != "thank-you-fragment.md" %}
             <aside class="highlight highlight--aside">
               <h2 class="label">Related help</h2>
               <ul class="full-width-list">
