@@ -1699,6 +1699,8 @@ button[type="submit"] {
   border: 1px solid #282624;
   -webkit-background-clip: padding-box;
   background-clip: padding-box; }
+  .dropdown__menu > li {
+    display: block; }
 
 .dropdown__link {
   display: block;
