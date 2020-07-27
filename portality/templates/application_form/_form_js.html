@@ -249,25 +249,27 @@
         }
     }
 
-    let validate_tab = (tab) => {
+    let navigate = (n, showEvenIfInvalid = false) => {
+        // Hide the current tab:
         var form = $('#' + '{{ form_id }}');
         form.parsley().whenValidate({
-            group: 'block-' + tab
+            group: 'block-' + currentTab
         }).done(function () {
-            $("#validated-" + tab).val("True");
+            $("#validated-" + currentTab).val("True");
+            previousTab = n-1
+            currentTab = n;
+            // Otherwise, display the correct tab:
+            showTab(currentTab);
         }).fail(function () {
-            $("#validated-" + tab).val("False");
-        });
-    }
+            $("#validated-" + currentTab).val("False");
+            if (showEvenIfInvalid){
+                previousTab = n-1
+                currentTab = n;
+                // Otherwise, display the correct tab:
+                showTab(currentTab);
+            }
 
-    let navigate = (n) => {
-        // Hide the current tab:
-        validate_tab(currentTab);
-        $(tabs[currentTab]).hide();
-        previousTab = n-1
-        currentTab = n;
-        // Otherwise, display the correct tab:
-        showTab(currentTab);
+        });
     }
 
 
@@ -302,7 +304,7 @@
                     //navigate(i);
                     return false;
                 } else {
-                    navigate(i);
+                    navigate(i, true);
                 }
 
             });
