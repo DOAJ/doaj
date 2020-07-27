@@ -183,21 +183,11 @@
     }
 
     let next = () => {
-        var form = $('#' + '{{ form_id }}');
-        form.parsley().whenValidate({
-            group: 'block-' + currentTab
-        }).done(function () {
-            $("#validated-" + currentTab).val("True");
-            navigate(1);
-        }).fail(function () {
-            $("#validated-" + currentTab).val("False");
-            //only for dev!!
-            //navigate(1);
-        });
+        navigate(currentTab + 1);
     }
 
     let prev = () => {
-        navigate(-1);
+        navigate(currentTab - 1);
     }
 
     let submitaplication = () => {
@@ -239,12 +229,23 @@
         }
     }
 
+    let validate_tab = (tab) => {
+        var form = $('#' + '{{ form_id }}');
+        form.parsley().whenValidate({
+            group: 'block-' + tab
+        }).done(function () {
+            $("#validated-" + tab).val("True");
+        }).fail(function () {
+            $("#validated-" + tab).val("False");
+        });
+    }
+
     let navigate = (n) => {
         // Hide the current tab:
+        validate_tab(currentTab);
         $(tabs[currentTab]).hide();
-        // Increase or decrease the current tab by 1:
-        previousTab = currentTab
-        currentTab = currentTab + n;
+        previousTab = n-1
+        currentTab = n;
         // Otherwise, display the correct tab:
         showTab(currentTab);
     }
@@ -278,20 +279,10 @@
             $(x).on("click", () => {
                 if ($("#validated-" + i).val() === '') {
                     //dev only!
-                    navigate(i);
-                    //return false;
+                    //navigate(i);
+                    return false;
                 } else {
-                    previousTab = i-1;
-                    currentTab = i;
-                    $('#' + '{{ form_id }}').parsley().whenValidate({
-                        group: 'block-' + previousTab
-                    }).done(function () {
-                        $("#validated-" + previousTab).val("True");
-                        navigate(currentTab);
-                    }).fail(function () {
-                        $("#validated-" + previousTab).val("False");
-                        navigate(currentTab);
-                    });
+                    navigate(i);
                 }
 
             });
