@@ -31,6 +31,17 @@
         priority: 33
     })
 
+    window.Parsley.addValidator("requiredvalue", {
+        validateString : function(value, requirement) {
+            console.log(value, requirement);
+            return (value === requirement);
+        },
+        messages: {
+            en: 'You need to answer "%s" to continue'
+        },
+        priority: 32
+    })
+
     let showTab = (n) => {
         // This function will display the specified tab of the form ...
         //hide all other tabs
