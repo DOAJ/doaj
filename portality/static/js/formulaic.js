@@ -619,8 +619,6 @@ var formulaic = {
                         $(div).append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
                         feather.replace();
                         if (idx !== 0) {
-                            $(div).attr("required", false);
-                            $(div).attr("data-parsley-validate-if-empty", "true");
                             $(div).hide();
                         }
                     })
