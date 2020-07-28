@@ -1,0 +1,13 @@
+.editorial-panel {
+  max-height: 75vh;
+  overflow-y: scroll;
+
+  fieldset {
+    margin: 0;
+    padding: $spacing-03 0;
+  }
+
+  select, textarea, input {
+    width: 20vw;
+  }
+}
