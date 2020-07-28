@@ -12,7 +12,11 @@
     }
   }
 
-  select, textarea, input {
-    width: 20vw;
+  @media (min-width: 992px) {
+    position: fixed;
+
+    select, textarea, input {
+      width: 20vw;
+    }
   }
 }
