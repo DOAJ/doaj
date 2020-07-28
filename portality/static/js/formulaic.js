@@ -842,7 +842,8 @@ var formulaic = {
                     allowClear: false,
                     tags: true,
                     tokenSeparators: [','],
-                    maximumSelectionSize: this.args["maximumSelectionSize"]
+                    maximumSelectionSize: this.args["maximumSelectionSize"],
+                    width: 'resolve'
                 });
 
             };
@@ -902,6 +903,7 @@ function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_
             initSelection : initSel,
             placeholder: "Choose a value",
             allowClear: allow_clear,
+            width: 'resolve'
         });
     } else {
         // go without the create search choice option
@@ -911,6 +913,7 @@ function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_
             initSelection : initSel,
             placeholder: "Choose a value",
             allowClear: allow_clear,
+            width: 'resolve'
         });
     }
 }

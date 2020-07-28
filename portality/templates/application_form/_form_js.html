@@ -295,7 +295,7 @@
     let prepareSections = () => {
         sections.each((idx, section) => {
 
-            $(section).find("input").each((i, input) => {
+            $(section).find("input, select").each((i, input) => {
                 $(input).attr('data-parsley-group', 'block-' + idx);
             });
 

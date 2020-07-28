@@ -1785,6 +1785,7 @@ class RequiredBuilder:
         html_attrs["required"] = ""
         if "message" in settings:
             html_attrs["data-parsley-required-message"] = settings["message"]
+        html_attrs["data-parsley-validate-if-empty"] = "true"
 
     @staticmethod
     def wtforms(field, settings):
