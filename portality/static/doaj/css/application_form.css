@@ -34,6 +34,7 @@ ul.parsley-errors-list {
     color: #982E0A;
     list-style-type: none;
     margin-left: 0;
+    padding-left: 0;
 }
 
 li.parsley-required {

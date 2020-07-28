@@ -966,7 +966,7 @@ ul, ol {
     margin-left: 0.75rem; }
   ul li, ol li {
     line-height: 1.5;
-    display: ruby-base-container; }
+    display: block; }
 
 dl {
   margin: 0 0 1.5rem 0; }
