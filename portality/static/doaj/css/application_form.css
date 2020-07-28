@@ -30,6 +30,7 @@
 }
 
 ul.parsley-errors-list {
+    display: block;
     color: #982E0A;
     list-style-type: none;
     margin-left: 0;

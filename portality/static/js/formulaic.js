@@ -782,7 +782,7 @@ var formulaic = {
             this.init = function() {
                 this.elements = $("select[name$='" + this.fieldDef.name + "']")
                 this.elements.select2({  //TODO: select2 is not a function
-                    allowClear: true,
+                    allowClear: false,
                     width: 'resolve',
                     newOption: true
                 });
@@ -790,65 +790,6 @@ var formulaic = {
 
             this.init();
         },
-
-        newTagList : function(params) {
-            return edges.instantiate(formulaic.widgets.TagList, params);
-        },
-        TagList : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-            this.args = params.args;
-
-            this.ns = "formulaic-taglist";
-
-            this.init = function() {
-                var stopWords = edges.getParam(this.args.stopWords, []);
-
-                var ajax = {
-                    url: current_scheme + "//" + current_domain + "/autocomplete/journal/" + this.args["field"],
-                    dataType: 'json',
-                    data: function (term, page) {
-                        return {
-                            q: term
-                        };
-                    },
-                    results: function (data, page) {
-                        return {results: data["suggestions"]};
-                    }
-                };
-
-                var csc = function (term) {
-                    if ($.inArray(term, stopWords) !== -1) {
-                        return null;
-                    }
-                    return {id: $.trim(term), text: $.trim(term)};
-                }
-
-
-                var initSel = function (element, callback) {
-                    var data = {id: element.val(), text: element.val()};
-                    callback(data);
-                };
-
-                // apply the create search choice
-                $("[name='" + this.fieldDef.name + "']").select2({
-                    multiple: true,
-                    minimumInputLength: 1,
-                    ajax: ajax,
-                    createSearchChoice: csc,
-                    initSelection: initSel,
-                    placeholder: "Choose a value",
-                    allowClear: false,
-                    tags: true,
-                    tokenSeparators: [','],
-                    maximumSelectionSize: this.args["maximumSelectionSize"]
-                });
-
-            };
-
-                this.init();
-            },
-
 
 
         newTagList : function(params) {
