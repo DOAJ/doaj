@@ -574,7 +574,7 @@ var formulaic = {
                 var elements = this.form.controlSelect.input({name: this.fieldDef.name});
                 // TODO: should work as-you-type by changing "change" to "keyup" event; doesn't work in edges
                 //edges.on(elements, "change.ClickableUrl", this, "updateUrl");
-                edges.on(elements, "change.ClickableUrl", this, "updateUrl");
+                edges.on(elements, "keyup.ClickableUrl", this, "updateUrl");
             };
 
             this.updateUrl = function(element) {
@@ -584,6 +584,7 @@ var formulaic = {
                 if (val) {
                     if (this.link) {
                         this.link.attr("href", val);
+                        this.link.html(val);
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
