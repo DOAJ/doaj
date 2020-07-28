@@ -54,6 +54,23 @@
     </fieldset>
 
     <fieldset>
+      <h3 class="label" type="button" data-toggle="collapse" data-target="#status" aria-expanded="false">
+        Status
+        <span data-feather="plus" aria-hidden="true"></span>
+      </h3>
+      <div class="collapse" id="status" aria-expanded="false">
+        <label for="select-status">Change status</label>
+        <select name="select-status" id="select-status">
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+        </select>
+      </div>
+      <p><small>Status: <strong><code>pending</code></strong></small></p>
+    </fieldset>
+
+    <fieldset>
       <h3 class="label" type="button" data-toggle="collapse" data-target="#assign-review" aria-expanded="false">
         Assign for review
         <span data-feather="plus" aria-hidden="true"></span>
@@ -79,20 +96,23 @@
     </fieldset>
 
     <fieldset>
-      <h3 class="label" type="button" data-toggle="collapse" data-target="#status" aria-expanded="false">
-        Status
+      <h3 class="label" type="button" data-toggle="collapse" data-target="#continuations" aria-expanded="false">
+        Continuations
         <span data-feather="plus" aria-hidden="true"></span>
       </h3>
-      <div class="collapse" id="status" aria-expanded="false">
-        <label for="select-status">Change status</label>
-        <select name="select-status" id="select-status">
-          <option value="">Lorem ipsum</option>
-          <option value="">Lorem ipsum</option>
-          <option value="">Lorem ipsum</option>
-          <option value="">Lorem ipsum</option>
-        </select>
+      <div class="collapse" id="continuations" aria-expanded="false">
+        <label for="continues">Continues an older journal with the ISSN(s)</label>
+        <input type="text" placeholder="1234-567X" id="continues"></input>
+
+        <label for="continued_by">Continued by a newer version of the journal with the ISSN(s)</label>
+        <input type="text" placeholder="1234-567X" id="continued_by"></input>
+
+        <label for="discontinued">Discontinued on</label>
+        <input type="date" id="discontinued"></input>
+        <p>
+          <small>If the day of the month is not known, please use <strong><code>01</code></strong>.</small>
+        </p>
       </div>
-      <p><small>Status: <strong><code>pending</code></strong></small></p>
     </fieldset>
 
     <fieldset class="filter">
@@ -119,26 +139,6 @@
         </p>
       </div>
       <p><small>Selected: <strong><code>Agriculture</code></strong></small></p>
-    </fieldset>
-
-    <fieldset>
-      <h3 class="label" type="button" data-toggle="collapse" data-target="#continuations" aria-expanded="false">
-        Continuations
-        <span data-feather="plus" aria-hidden="true"></span>
-      </h3>
-      <div class="collapse" id="continuations" aria-expanded="false">
-        <label for="continues">Continues an older journal with the ISSN(s)</label>
-        <input type="text" placeholder="1234-567X" id="continues"></input>
-
-        <label for="continued_by">Continued by a newer version of the journal with the ISSN(s)</label>
-        <input type="text" placeholder="1234-567X" id="continued_by"></input>
-
-        <label for="discontinued">Discontinued on</label>
-        <input type="date" id="discontinued"></input>
-        <p>
-          <small>If the day of the month is not known, please use <strong><code>01</code></strong>.</small>
-        </p>
-      </div>
     </fieldset>
 
     <fieldset>
