@@ -22,7 +22,8 @@ from portality.forms.validate import (
     ISSNInPublicDOAJ,
     JournalURLInPublicDOAJ,
     DifferentTo,
-    RequiredIfOtherValue
+    RequiredIfOtherValue,
+    RequiredValue
 )
 
 from portality.datasets import language_options, country_options, currency_options
@@ -63,7 +64,8 @@ class FieldDefinitions:
             "doaj_criteria": "You must answer 'Yes'"
         },
         "validate": [
-            {"required": {"message": "You must answer YES to continue"}}
+            {"required": {"message": "You must answer YES to continue"}},
+            {"required_value" : {"value" : "y", "message" : "You must answer YES to continue"}}
         ],
         "contexts": {
             "editor": {
@@ -1924,6 +1926,7 @@ class GroupMemberBuilder:
     def wtforms(field, settings):
         raise NotImplementedError()
 
+
 class NotIfBuildier:
     @staticmethod
     def render(settings, html_attrs):
@@ -1932,6 +1935,16 @@ class NotIfBuildier:
     @staticmethod
     def wtforms(field, settings):
         raise NotImplementedError()
+
+
+class RequiredValueBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-requiredvalue"] = settings.get("value")
+
+    @staticmethod
+    def wtforms(field, settings):
+        RequiredValue(settings.get("value"), settings.get("message"))
 
 
 #########################################################
@@ -1959,7 +1972,8 @@ PYTHON_FUNCTIONS = {
             "required_if": RequiredIfBuilder.render,
             "only_if" : OnlyIfBuilder.render,
             "group_member" : GroupMemberBuilder.render,
-            "not_if" : NotIfBuildier.render
+            "not_if" : NotIfBuildier.render,
+            "required_value" : RequiredValueBuilder.render,
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -1975,7 +1989,8 @@ PYTHON_FUNCTIONS = {
             "required_if": RequiredIfBuilder.wtforms,
             "only_if" : OnlyIfBuilder.wtforms,
             "group_member" : GroupMemberBuilder.wtforms,
-            "not_if" : NotIfBuildier.wtforms
+            "not_if" : NotIfBuildier.wtforms,
+            "required_value" : RequiredValueBuilder.wtforms
         }
     },
 
