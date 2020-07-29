@@ -64,6 +64,7 @@ $.extend(true, doaj, {
                                     <div class="col-xs-6 search-options__right" id="rpp"></div>\
                                 </div>\
                             </nav>\
+                            <aside id="selected-filters"></aside>\
                             <nav class="pagination" id="top-pager"></nav>\
                             <ol class="search-results" id="results"></ol>\
                             <nav class="pagination" id="bottom-pager"></nav>\
@@ -512,6 +513,197 @@ $.extend(true, doaj, {
                     this.shareBoxOpen = false;
                 } else {
                     el.show();
+                    if (this.showShortened) {
+                        textarea.val(this.component.shortUrl);
+                    } else {
+                        textarea.val(this.component.edge.fullUrl());
+                    }
+                    if (this.component.embedSnippet) {
+                        var embedSelector = edges.css_class_selector(this.namespace, "embed", this);
+                        var embedTextarea = this.component.jq(embedSelector);
+                        embedTextarea.val(this.component.embedSnippet(this));
+                    }
+                    this.shareBoxOpen = true;
+                }
+            };
+
+            this.toggleShorten = function(element) {
+                if (!this.component.shortUrl) {
+                    var callback = edges.objClosure(this, "updateShortUrl");
+                    this.component.generateShortUrl(callback);
+                } else {
+                    this.updateShortUrl();
+                }
+            };
+
+            this.updateShortUrl = function() {
+                var shareUrlSelector = edges.css_class_selector(this.namespace, "share-url", this);
+                var shortenSelector = edges.css_class_selector(this.namespace, "shorten", this);
+                var textarea = this.component.jq(shareUrlSelector);
+                var button = this.component.jq(shortenSelector).find("button");
+                if (this.showShortened) {
+                    textarea.val(this.component.edge.fullUrl());
+                    button.html('<span class="glyphicon glyphicon-resize-small"></span>shorten url');
+                    this.showShortened = false;
+                } else {
+                    textarea.val(this.component.shortUrl);
+                    button.html('<span class="glyphicon glyphicon-resize-full"></span>original url');
+                    this.showShortened = true;
+                }
+            };
+        },
+
+        newPageSizeRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.PageSizeRenderer, params, edges.newRenderer);
+        },
+        PageSizeRenderer: function (params) {
+            this.sizeOptions = edges.getParam(params.sizeOptions, [10, 25, 50, 100]);
+
+            this.sizeLabel = edges.getParam(params.sizeLabel, "");
+
+            this.namespace = "doaj-pagesize";
+
+            this.draw = function () {
+                // classes we'll need
+                var sizeSelectClass = edges.css_classes(this.namespace, "size", this);
+                var sizeSelectId = edges.css_classes(this.namespace, "page-size", this);
+
+                // the number of records per page
+                var sizer = '<label for="">' + this.sizeLabel + '</label><select class="' + sizeSelectClass + '" name="' + sizeSelectId + '">{{SIZES}}</select>';
+                var sizeopts = "";
+                var optarr = this.sizeOptions.slice(0);
+                if (this.component.pageSize && $.inArray(this.component.pageSize, optarr) === -1) {
+                    optarr.push(this.component.pageSize)
+                }
+                optarr.sort(function (a, b) {
+                    return a - b
+                });  // sort numerically
+                for (var i = 0; i < optarr.length; i++) {
+                    var so = optarr[i];
+                    var selected = "";
+                    if (so === this.component.pageSize) {
+                        selected = "selected='selected'";
+                    }
+                    sizeopts += '<option name="' + so + '" ' + selected + '>' + so + '</option>';
+                }
+                sizer = sizer.replace(/{{SIZES}}/g, sizeopts);
+
+                this.component.context.html(sizer);
+
+                var sizeSelector = edges.css_class_selector(this.namespace, "size", this);
+                edges.on(sizeSelector, "change", this, "changeSize");
+
+            };
+
+            this.changeSize = function (element) {
+                var size = $(element).val();
+                this.component.setSize(size);
+            };
+        },
+
+        newShareEmbedRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.ShareEmbedRenderer, params, edges.newRenderer);
+        },
+        ShareEmbedRenderer: function (params) {
+            // enable the share/save link feature
+            this.shareLinkText = edges.getParam(params.shareLinkText, "share");
+
+            ////////////////////////////////////////
+            // state variables
+
+            this.shareBoxOpen = false;
+
+            this.showShortened = false;
+
+            this.namespace = "doaj-share-embed";
+
+            this.draw = function () {
+                // reset these on each draw
+                this.shareBoxOpen = false;
+                this.showShortened = false;
+
+                var comp = this.component;
+
+                var shareButtonFrag = "";
+                var shareButtonClass = edges.css_classes(this.namespace, "toggle-share", this);
+                var modalId = edges.css_id(this.namespace, "modal", this);
+                shareButtonFrag = '<button href="#" data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' input_group__input" type="button">' + this.shareLinkText + '</button>';
+
+                var shorten = "";
+                if (this.component.urlShortener) {
+                    var shortenClass = edges.css_classes(this.namespace, "shorten", this);
+                    shorten = '<div class="' + shortenClass + '">Share a link to this search</div>'
+                }
+                var embed = "";
+                if (this.component.embedSnippet) {
+                    var embedClass = edges.css_classes(this.namespace, "embed", this);
+                    embed = '<div class="row">\
+                        <div class="col-md-12">\
+                            Embed this search in your webpage\
+                        </div>\
+                    </div>\
+                    <div class="row">\
+                        <div class="col-md-12">\
+                            <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>\
+                        </div>\
+                    </div>';
+                }
+                var shareBoxClass = edges.css_classes(this.namespace, "share", this);
+                var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
+                var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this);
+                var shareFrag = '<div class="' + shareBoxClass + '">\
+                    <div class="row">\
+                        <div class="col-md-11">\
+                            ' + shorten + '\
+                        </div>\
+                    </div>\
+                    <div class="row">\
+                        <div class="col-md-12">\
+                            <textarea style="width: 100%; height: 150px" readonly class="' + shareUrlClass + '"></textarea>\
+                            <button class="input_group__input ' + shortenButtonClass + '">shorten url</button>\
+                        </div>\
+                    </div>\
+                    ' + embed + '\
+                </div>';
+
+                var modal = '<section class="modal" id="' + modalId + '" tabindex="-1" role="dialog">\
+                    <div class="modal__dialog" role="document">\
+                        <form class="quick-search__form" role="search">\
+                            <h2 class="modal__title">' + this.shareLinkText + '</h2>\
+                            ' + shareFrag + '\
+                        </form>\
+                    </div>\
+                </section>';
+
+                var frag = shareButtonFrag + modal;
+
+                comp.context.html(frag);
+                feather.replace();
+
+                var shareSelector = edges.css_class_selector(this.namespace, "toggle-share", this);
+                edges.on(shareSelector, "click", this, "toggleShare");
+
+                if (this.component.urlShortener) {
+                    var shortenSelector = edges.css_class_selector(this.namespace, "shorten-url", this);
+                    edges.on(shortenSelector, "click", this, "toggleShorten");
+                }
+            };
+
+            //////////////////////////////////////////////////////
+            // functions for setting UI values
+
+            this.toggleShare = function(element) {
+                var shareUrlSelector = edges.css_class_selector(this.namespace, "share-url", this);
+                var textarea = this.component.jq(shareUrlSelector);
+                if (this.shareBoxOpen) {
+                    textarea.val("");
+                    if (this.component.embedSnippet) {
+                        var embedSelector = edges.css_class_selector(this.namespace, "embed", this);
+                        var embedTextarea = this.component.jq(embedSelector);
+                        embedTextarea.val("");
+                    }
+                    this.shareBoxOpen = false;
+                } else {
                     if (this.showShortened) {
                         textarea.val(this.component.shortUrl);
                     } else {
@@ -1335,6 +1527,232 @@ $.extend(true, doaj, {
             };
         },
 
+        newSelectedFiltersRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.SelectedFiltersRenderer, params, edges.newRenderer);
+        },
+        SelectedFiltersRenderer: function (params) {
+
+            this.showFilterField = edges.getParam(params.showFilterField, true);
+
+            this.showSearchString = edges.getParam(params.showSearchString, false);
+
+            this.ifNoFilters = edges.getParam(params.ifNoFilters, false);
+
+            this.namespace = "doaj-selected-filters";
+
+            this.draw = function () {
+                // for convenient short references
+                var sf = this.component;
+                var ns = this.namespace;
+
+                // sort out the classes we are going to use
+                var fieldClass = edges.css_classes(ns, "field", this);
+                var fieldNameClass = edges.css_classes(ns, "fieldname", this);
+                var valClass = edges.css_classes(ns, "value", this);
+                var relClass = edges.css_classes(ns, "rel", this);
+                var containerClass = edges.css_classes(ns, "container", this);
+
+                var filters = "";
+
+                if (this.showSearchString && sf.searchString) {
+                    var field = sf.searchField;
+                    var text = sf.searchString;
+                    filters += '<span class="' + fieldClass + '">';
+                    if (field) {
+                        if (field in sf.fieldDisplays) {
+                            field = sf.fieldDisplays[field];
+                        }
+                        filters += '<span class="' + fieldNameClass + '">' + field + ':</span>';
+                    }
+                    filters += '<span class="' + valClass + '">"' + text + '"</span>';
+                    filters += '</span>';
+                }
+
+                var fields = Object.keys(sf.mustFilters);
+                for (var i = 0; i < fields.length; i++) {
+                    var field = fields[i];
+                    var def = sf.mustFilters[field];
+
+                    for (var j = 0; j < def.values.length; j++) {
+                        var val = def.values[j];
+                        filters += '<li class="tag ' + valClass + '">';
+
+                        // the remove block looks different, depending on the kind of filter to remove
+                        var removeClass = edges.css_classes(ns, "remove", this);
+                        if (def.filter == "term" || def.filter === "terms") {
+                            filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" alt="Remove" title="Remove">';
+                            filters += def.display + ": " + val.display;
+                            filters += ' <span data-feather="x" aria-hidden="true"></span>';
+                            filters += "</a>";
+                        } else if (def.filter === "range") {
+                            var from = val.from ? ' data-' + val.fromType + '="' + val.from + '" ' : "";
+                            var to = val.to ? ' data-' + val.toType + '="' + val.to + '" ' : "";
+                            filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" ' + from + to + ' alt="Remove" title="Remove">';
+                            filters += def.display + ": " + val.display;
+                            filters += ' <span data-feather="x" aria-hidden="true"></span>';
+                            filters += "</a>";
+                        }
+
+                        filters += "</li>";
+                    }
+                    filters += "</span>";
+                }
+
+                if (filters === "" && this.ifNoFilters) {
+                    filters = this.ifNoFilters;
+                }
+
+                if (filters !== "") {
+                    var frag = '<ul class="tags ' + containerClass + '">{{FILTERS}}</ul>';
+                    frag = frag.replace(/{{FILTERS}}/g, filters);
+                    sf.context.html(frag);
+                    feather.replace();
+
+                    // click handler for when a filter remove button is clicked
+                    var removeSelector = edges.css_class_selector(ns, "remove", this);
+                    edges.on(removeSelector, "click", this, "removeFilter");
+                } else {
+                    sf.context.html("");
+                }
+            };
+
+            /////////////////////////////////////////////////////
+            // event handlers
+
+            this.removeFilter = function (element) {
+                var el = this.component.jq(element);
+                var field = el.attr("data-field");
+                var ft = el.attr("data-filter");
+                var bool = el.attr("data-bool");
+
+                var value = false;
+                if (ft === "terms" || ft === "term") {
+                    value = el.attr("data-value");
+                } else if (ft === "range") {
+                    value = {};
+
+                    var from = el.attr("data-gte");
+                    var fromType = "gte";
+                    if (!from) {
+                        from = el.attr("data-gt");
+                        fromType = "gt";
+                    }
+
+                    var to = el.attr("data-lt");
+                    var toType = "lt";
+                    if (!to) {
+                        to = el.attr("data-lte");
+                        toType = "lte";
+                    }
+
+                    if (from) {
+                        value["from"] = parseInt(from);
+                        value["fromType"] = fromType;
+                    }
+                    if (to) {
+                        value["to"] = parseInt(to);
+                        value["toType"] = toType;
+                    }
+                }
+
+                this.component.removeFilter(bool, ft, field, value);
+            };
+        },
+
+        newPagerRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.PagerRenderer, params, edges.newRenderer);
+        },
+        PagerRenderer: function (params) {
+
+            this.scroll = edges.getParam(params.scroll, true);
+
+            this.scrollSelector = edges.getParam(params.scrollSelector, "body");
+
+            this.numberFormat = edges.getParam(params.numberFormat, false);
+
+            this.namespace = "doaj-pager";
+
+            this.draw = function () {
+                if (this.component.total === false || this.component.total === 0) {
+                    this.component.context.html("");
+                    return;
+                }
+
+                // classes we'll need
+                var navClass = edges.css_classes(this.namespace, "nav", this);
+                var firstClass = edges.css_classes(this.namespace, "first", this);
+                var prevClass = edges.css_classes(this.namespace, "prev", this);
+                var pageClass = edges.css_classes(this.namespace, "page", this);
+                var nextClass = edges.css_classes(this.namespace, "next", this);
+
+                var first = '<li><span data-feather="chevrons-left" aria-hidden="true"></span> <a href="#" class="' + firstClass + '">First</a></li>';
+                var prev = '<li><span data-feather="chevron-left" aria-hidden="true"></span> <a href="#" class="' + prevClass + '">Prev</a></li>';
+                if (this.component.page === 1) {
+                    first = '<li><span data-feather="chevrons-left" aria-hidden="true"></span> First</li>';
+                    prev = '<li><span data-feather="chevron-left" aria-hidden="true"></span> Prev</li>';
+                }
+
+                var next = '<li><a href="#" class="' + nextClass + '">Next <span data-feather="chevron-right" aria-hidden="true"></span></a></li>';
+                if (this.component.page === this.component.totalPages) {
+                    next = '<li>Next <span data-feather="chevron-right" aria-hidden="true"></span></li>';
+                }
+
+                var pageNum = this.component.page;
+                var totalPages = this.component.totalPages;
+                if (this.numberFormat) {
+                    pageNum = this.numberFormat(pageNum);
+                    totalPages = this.numberFormat(totalPages);
+                }
+                var nav = '<h3 class="sr-only">Jump to&hellip;</h3><ul class="' + navClass + '">' + first + prev +
+                    '<li class="' + pageClass + '"><strong>Page ' + pageNum + ' of ' + totalPages + '</strong></li>' +
+                    next + "</ul>";
+
+                this.component.context.html(nav);
+                feather.replace();
+
+                // now create the selectors for the functions
+                var firstSelector = edges.css_class_selector(this.namespace, "first", this);
+                var prevSelector = edges.css_class_selector(this.namespace, "prev", this);
+                var nextSelector = edges.css_class_selector(this.namespace, "next", this);
+
+                // bind the event handlers
+                if (this.component.page !== 1) {
+                    edges.on(firstSelector, "click", this, "goToFirst");
+                    edges.on(prevSelector, "click", this, "goToPrev");
+                }
+                if (this.component.page !== this.component.totalPages) {
+                    edges.on(nextSelector, "click", this, "goToNext");
+                }
+            };
+
+            this.doScroll = function () {
+                $(this.scrollSelector).animate({    // note we do not use component.jq, because the scroll target could be outside it
+                    scrollTop: $(this.scrollSelector).offset().top
+                }, 1);
+            };
+
+            this.goToFirst = function (element) {
+                if (this.scroll) {
+                    this.doScroll();
+                }
+                this.component.setFrom(1);
+            };
+
+            this.goToPrev = function (element) {
+                if (this.scroll) {
+                    this.doScroll();
+                }
+                this.component.decrementPage();
+            };
+
+            this.goToNext = function (element) {
+                if (this.scroll) {
+                    this.doScroll();
+                }
+                this.component.incrementPage();
+            };
+        },
+
         newPublicSearchResultRenderer : function(params) {
             return edges.instantiate(doaj.renderers.PublicSearchResultRenderer, params, edges.newRenderer);
         },
@@ -1350,20 +1768,21 @@ $.extend(true, doaj, {
                 var results = this.component.results;
                 if (results && results.length > 0) {
                     // list the css classes we'll require
-                    var recordClasses = edges.css_classes(this.namespace, "record", this);
+                    // var recordClasses = edges.css_classes(this.namespace, "record", this);
 
                     // now call the result renderer on each result to build the records
                     frag = "";
                     for (var i = 0; i < results.length; i++) {
-                        var rec = this._renderResult(results[i]);
-                        frag += '<div class="row"><div class="col-md-12"><div class="' + recordClasses + '">' + rec + '</div></div></div>';
+                        frag += this._renderResult(results[i]);
+                        // frag += '<div class="row"><div class="col-md-12"><div class="' + recordClasses + '">' + rec + '</div></div></div>';
                     }
                 }
 
                 // finally stick it all together into the container
-                var containerClasses = edges.css_classes(this.namespace, "container", this);
-                var container = '<div class="' + containerClasses + '">' + frag + '</div>';
-                this.component.context.html(container);
+                //var containerClasses = edges.css_classes(this.namespace, "container", this);
+                //var container = '<div class="' + containerClasses + '">' + frag + '</div>';
+                this.component.context.html(frag);
+                feather.replace();
 
                 // now bind the abstract expander
                 var abstractAction = edges.css_class_selector(this.namespace, "abstractaction", this);
@@ -1388,163 +1807,129 @@ $.extend(true, doaj, {
             };
 
             this._renderPublicJournal = function(resultobj) {
-
-                // start off the string to be rendered
-                var result = "<div class='row'>";
-
-                // start the main box that all the details go in
-                result += "<div class='col-md-12'>";
-
-                // add the journal icon
-                result += "<div class='pull-left' style='width: 4%; width: 33px'>";
-                result += "<i style='font-size: 24px' class='fas fa-book-open'></i>";
-                result += "</div>";
-
-                result += "<div class='pull-left' style='width: 93%'>";
-
-                result += "<div class='row'><div class='col-md-10'>";
-
-                // set the title
-                if (resultobj.bibjson.title) {
-                    result += "<span class='title'><a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + edges.escapeHtml(resultobj.bibjson.title) + "</a></span><br>";
+                var seal = "";
+                if (edges.objVal("admin.seal", resultobj, false)) {
+                    seal = '<a href="/apply/seal" class="tag tag--featured">\
+                            <span data-feather="check-circle" aria-hidden="true"></span>\
+                            DOAJ Seal\
+                          </a>';
+                }
+                var issn = resultobj.bibjson.issn;
+                if (!issn) {
+                    issn = resultobj.bibjson.eissn;
                 }
 
-                // set the alternative title
-                if (resultobj.bibjson.alternative_title) {
-                    result += "<span class='alternative_title' style='color: #aaaaaa'>" + edges.escapeHtml(resultobj.bibjson.alternative_title) + "</span><br>";
+                var subtitle = "";
+                if (edges.hasProp(resultobj, "bibjson.alternative_title")) {
+                    subtitle = '<span class="search-results__subheading">' + resultobj.bibjson.alternative_title + '</span>';
                 }
 
-                // set the issn
-                if (resultobj.bibjson && resultobj.bibjson.identifier) {
-                    var ids = resultobj.bibjson.identifier;
-                    var pissns = [];
-                    var eissns = [];
-                    for (var i = 0; i < ids.length; i++) {
-                        if (ids[i].type === "pissn") {
-                            pissns.push(edges.escapeHtml(ids[i].id))
-                        } else if (ids[i].type === "eissn") {
-                            eissns.push(edges.escapeHtml(ids[i].id))
-                        }
+                var published = "";
+                if (edges.hasProp(resultobj, "bibjson.publisher")) {
+                    var name = "";
+                    var country = "";
+                    if (resultobj.bibjson.publisher.name) {
+                        name = 'by <em>' + resultobj.bibjson.publisher.name + '</em>';
                     }
-                    if (pissns.length > 0 || eissns.length > 0) {
-                        result += "ISSN: ";
-                        if (pissns.length > 0) {
-                            result += pissns.join(", ") + "&nbsp;(Print)";
-                        }
-                        if (eissns.length > 0) {
-                            if (pissns.length > 0) {
-                                result += "; ";
-                            }
-                            result += eissns.join(", ") + "&nbsp;(Online)";
-                        }
-                        result += "<br>";
+                    if (resultobj.bibjson.publisher.country && edges.hasProp(resultobj, "index.country")) {
+                        country = 'in <strong>' + resultobj.index.country + '</strong>';
                     }
-                }
-
-                // set the homepage url
-                // FIXME: how to escape the html here?
-                if (resultobj.bibjson && resultobj.bibjson.link) {
-                    var ls = resultobj.bibjson.link;
-                    for (var i = 0; i < ls.length; i++) {
-                        var t = ls[i].type;
-                        if (t == 'homepage') {
-                            result += "<a href='" + ls[i].url + "'>" + ls[i].url + "</a><br>";
-                        }
-                    }
-                }
-
-                // peer review type
-                if (resultobj.bibjson.editorial_review && resultobj.bibjson.editorial_review.process) {
-                    var proc = resultobj.bibjson.editorial_review.process;
-                    if (proc === "None") {
-                        proc = "No peer review"
-                    }
-                    result += proc + "<br>";
+                    published = 'Published ' + name + " " + country;
                 }
 
                 // add the subjects
-                if (resultobj.index && resultobj.index.classification_paths && resultobj.index.classification_paths.length > 0) {
-                    result += "<strong>Subject:</strong>&nbsp;";
-                    result += resultobj.index.classification_paths.join(" | ") + "<br>";
+                var subjects = "";
+                if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
+                    subjects = "<li>" + resultobj.index.classification_paths.join("</li><li>") + "</li>";
                 }
 
-                // add the date added to doaj
-                if (resultobj.created_date) {
-                    result += "<strong>Date added to DOAJ</strong>:&nbsp;";
-                    result += doaj.humanDate(resultobj.created_date) + "<br>";
-                }
-
+                var update_or_added = "";
                 if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
-                    result += "<strong>Record Last Updated</strong>:&nbsp;";
-                    result += doaj.humanDate(resultobj.last_manual_update);
+                    update_or_added = 'Last updated on ' + doaj.humanDate(resultobj.last_manual_update);
+                } else {
+                    update_or_added = 'Added on ' + doaj.humanDate(resultobj.created_date);
                 }
 
-                // close the main details box
-                result += "</div>";
+                // FIXME: this is to present the number of articles indexed, which is not information we currently possess
+                // at search time
+                var articles = "";
 
-                // start the journal properties side-bar
-                result += "<div class='col-md-2' align='right'>";
-
-                // licence
-                if (resultobj.bibjson.license) {
-                    var ltitle = undefined;
-                    var lics = resultobj.bibjson.license;
-                    if (lics.length > 0) {
-                        ltitle = lics[0].title
-                    }
-                    if (ltitle) {
-                        if (doaj.licenceMap[ltitle]) {
-                            var urls = doaj.licenceMap[ltitle];
-                            result += "<a href='" + urls[1] + "' title='" + ltitle + "' target='_blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + ltitle + "'></a><br>"
-                        } else {
-                            result += "<strong>License: " + edges.escapeHtml(ltitle) + "</strong><br>"
+                var apcs = '<li>';
+                if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
+                    apcs += "APCs: ";
+                    for (var i = 0; i < resultobj.bibjson.apc.max.length; i++) {
+                        apcs += "<strong>";
+                        var apcRecord = resultobj.bibjson.apc.max[i];
+                        if (apcRecord.hasOwnProperty("price")) {
+                            apcs += edges.escapeHtml(apcRecord.price);
                         }
+                        if (apcRecord.currency) {
+                            apcs += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
+                        }
+                        apcs += "</strong>";
+                    }
+                } else {
+                    apcs += "<strong>No</strong> charges";
+                }
+                apcs += '</li>';
+
+                var licenses = "";
+                if (resultobj.bibjson.license && resultobj.bibjson.license.length > 0) {
+                    var terms_url = resultobj.bibjson.ref.license_terms;
+                    for (var i = 0; i < resultobj.bibjson.license.length; i++) {
+                        var lic = resultobj.bibjson.license[i];
+                        var license_url = lic.url || terms_url;
+                        licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + lic.type + '</a>';
                     }
                 }
 
-                // set the tick if it is relevant
-                if (resultobj.admin && resultobj.admin.ticked) {
-                    result += "<img src='/static/doaj/images/tick_short.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​<br>";
-                }
+                var frag = '<li class="search-results__record">\
+                    <article class="row">\
+                      <div class="col-sm-8 search-results__main">\
+                        <header>\
+                          ' + seal + '\
+                          <h3 class="search-results__heading">\
+                            <a href="/toc/' + issn + '">\
+                              ' + resultobj.bibjson.title + '\
+                            </a>\
+                            ' + subtitle + '\
+                          </h3>\
+                        </header>\
+                        <div class="search-results__body">\
+                          <ul>\
+                            <li>\
+                              ' + published + '\
+                            </li>\
+                            <li>\
+                              Accepts manuscripts in <strong>' + resultobj.index.language.join(", ") + '</strong>\
+                            </li>\
+                          </ul>\
+                          <ul>\
+                            ' + subjects + '\
+                          <ul>\
+                        </div>\
+                      </div>\
+                      <aside class="col-sm-4 search-results__aside">\
+                        <ul>\
+                          <li>\
+                            ' + update_or_added + '\
+                          </li>\
+                          ' + articles + '\
+                          <li>\
+                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>\
+                          </li>\
+                          <li>\
+                            ' + apcs + '\
+                          </li>\
+                          <li>\
+                            ' + licenses + '\
+                          </li>\
+                        </ul>\
+                      </aside>\
+                    </article>\
+                  </li>';
 
-                // show the seal if it's set
-                if (resultobj.admin && resultobj.admin.seal) {
-                    result += "<img src='/static/doaj/images/seal_short.png' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal'>​​<br>";
-                }
-
-                // APC
-                if (resultobj.bibjson.apc) {
-                    if (resultobj.bibjson.apc.currency || resultobj.bibjson.apc.average_price) {
-                        result += "<strong>APC: ";
-                        if (resultobj.bibjson.apc.average_price) {
-                            result += edges.escapeHtml(resultobj.bibjson.apc.average_price);
-                        } else {
-                            result += "price unknown ";
-                        }
-                        if (resultobj.bibjson.apc.currency) {
-                            result += edges.escapeHtml(resultobj.bibjson.apc.currency);
-                        } else {
-                            result += " currency unknown";
-                        }
-                        result += "</strong>";
-                    } else {
-                        result += "<strong>No APC</strong>";
-                    }
-                    result += "<br>";
-                }
-
-                // discontinued date
-                var isreplaced = resultobj.bibjson.is_replaced_by && resultobj.bibjson.is_replaced_by.length > 0;
-                if (resultobj.bibjson.discontinued_date || isreplaced) {
-                    result += "<strong>Discontinued</strong>";
-                }
-
-                // close the journal properties side-bar
-                result += "</div>";
-
-                // close off the result with the ending strings, and then return
-                result += "</div></div>";
-                return result;
+                return frag;
             };
 
             this._renderPublicArticle = function(resultobj) {

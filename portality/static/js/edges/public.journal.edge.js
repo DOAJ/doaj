@@ -219,6 +219,16 @@ $.extend(true, doaj, {
                 }),
 
                 edges.newFullSearchController({
+                    id: "share_embed",
+                    category: "controller",
+                    urlShortener : doaj.bitlyShortener,
+                    embedSnippet : doaj.publicSearch.embedSnippet,
+                    renderer: doaj.renderers.newShareEmbedRenderer({
+                        shareLinkText: '<span data-feather="share-2" aria-hidden="true"></span> Share | <span data-feather="code" aria-hidden="true"></span> Embed'
+                    })
+                }),
+
+                edges.newFullSearchController({
                     id: "sort_by",
                     category: "controller",
                     sortOptions : [
@@ -239,23 +249,40 @@ $.extend(true, doaj, {
                 edges.newPager({
                     id: "rpp",
                     category: "pager",
-                    renderer : edges.bs3.newPagerRenderer({
+                    renderer : doaj.renderers.newPageSizeRenderer({
                         sizeOptions: [50, 100, 200],
-                        sizePrefix: "Results per page",
-                        sizeSuffix: "",
-                        showRecordCount: false,
-                        showPageNavigation: false
+                        sizeLabel: "Results per page"
                     })
+                }),
+
+                // selected filters display, with all the fields given their display names
+                edges.newSelectedFilters({
+                    id: "selected-filters",
+                    category: "selected-filters",
+                    fieldDisplays : {
+                        "index.has_seal.exact" : "With a DOAJ Seal",
+                        "bibjson.apc.has_apc" : "Without APC",
+                        "bibjson.other_charges.has_other_charges" : "Without other charges",
+                        "index.classification.exact" : "Subjects",
+                        "index.license.exact" : "Licenses",
+                        "bibjson.publisher.name.exact" : "Publishers",
+                        "index.country.exact" : "Publishers' countries",
+                        "index.language.exact" : "Languages",
+                        "bibjson.editorial.review_process.exact" : "Peer review",
+                        "created_date" : "Date added"
+                    },
+                    rangeFunctions : {
+                        "created_date" : doaj.valueMaps.displayYearPeriod
+                    },
+                    renderer : doaj.renderers.newSelectedFiltersRenderer({})
                 }),
 
                 edges.newPager({
                     id: "top-pager",
                     category: "top-pager",
-                    renderer : edges.bs3.newPagerRenderer({
-                        showSizeSelector: false,
-                        showRecordCount: false,
+                    renderer : doaj.renderers.newPagerRenderer({
                         numberFormat: countFormat,
-                        scrollSelector: "html, body"
+                        scrollSelector: "#top-pager"
                     })
                 }),
 
@@ -269,11 +296,9 @@ $.extend(true, doaj, {
                 edges.newPager({
                     id: "bottom-pager",
                     category: "bottom-pager",
-                    renderer : edges.bs3.newPagerRenderer({
-                        showSizeSelector: false,
-                        showRecordCount: false,
+                    renderer : doaj.renderers.newPagerRenderer({
                         numberFormat: countFormat,
-                        scrollSelector: "html, body"
+                        scrollSelector: "#top-pager"    // FIXME: these selectors don't work, why not?
                     })
                 })
             ];
