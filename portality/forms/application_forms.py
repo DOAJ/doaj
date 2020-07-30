@@ -62,7 +62,7 @@ class FieldDefinitions:
         ],
         "help": {
             "long_help": ['This definition follows the definition of Libre Open Access formulated by Peter Suber <br>'
-                          '<a href="http://nrs.harvard.edu/urn-3:HUL.InstRepos:4322580">http://nrs.harvard.edu/urn-3:HUL.InstRepos:4322580</a>'],
+                          "<a href='http://nrs.harvard.edu/urn-3:HUL.InstRepos:4322580' target='_blank' >http://nrs.harvard.edu/urn-3:HUL.InstRepos:4322580</a>"],
             "doaj_criteria": "You must answer 'Yes'"
         },
         "validate": [
@@ -114,7 +114,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["The journal title must match what is displayed on the website and what is registered at the "
-                          "<a href='https://portal.issn.org/'> ISSN Portal</a>.",
+                          "<a href='https://portal.issn.org/' target='_blank'> ISSN Portal</a>.",
                           "For translated titles, you may add the "
                           "translation as an alternative title."],
             "placeholder": "Journal title",
@@ -143,7 +143,7 @@ class FieldDefinitions:
         "optional": True,
         "help": {
             "long_help": ["The journal title must match what is displayed on the website and what is registered at the "
-                          "<a href='https://portal.issn.org/'> ISSN Portal</a>.",
+                          "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal</a>.",
                           "For translated titles, you may add the "
                           "translation as an alternative title."],
             "placeholder": "Ma revue"
@@ -195,7 +195,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/'> ISSN Portal.</a>",
+                          "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal.</a>",
                           "The ISSN must match what is given on the journal website."],
             "placeholder": "2049-3630",
             "doaj_criteria": "ISSN must be provided"
@@ -231,7 +231,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/'> ISSN Portal</a>",
+                          "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal</a>",
                           "The ISSN must match what is given on the journal website."],
             "placeholder": "0378-5955",
             "doaj_criteria": "ISSN must be provided"
@@ -1024,7 +1024,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
                          "located. The most common type of PID is the digital object identifier (DOI). ",
-                         "<a href='https://en.wikipedia.org/wiki/Persistent_identifier'>Read more about PIDs.</a>"],
+                         "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' >Read more about PIDs.</a>"],
         },
         "validate": [
             "required"
@@ -1070,7 +1070,7 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
-            "long_help": ["The <a href='https://i4oc.org/#goals'>I4OC standards</a> ask that citations are structured, separable, and open. "],
+            "long_help": ["The <a href='https://i4oc.org/#goals' target='_blank'>I4OC standards</a> ask that citations are structured, separable, and open. "],
         },
         "validate": [
             "required"
