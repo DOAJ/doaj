@@ -21,6 +21,12 @@
           <section class="page-content">
             {% if page.name != "index.md" and page.name != "thank-you.md" and page.name != "thank-you-fragment.md" and page.name != "edit.md" %}<p class="label">Page {{ page.number }} of 7</p>{% endif %}
             <h1>{{ page.title }}</h1>
+            {% if page.admin %}
+            <ul class="tags">
+              <li class="tag">Pending</li>
+              <li class="tag"><a href="#"><span data-feather="user" aria-hidden="true"></span> soonkim (Southeast Asia)</a></li>
+            </ul>
+            {% endif %}
 
             {{ content }}
 

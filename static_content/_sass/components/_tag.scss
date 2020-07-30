@@ -17,6 +17,14 @@
   a {
     text-decoration: none;
     color: $warm-white;
+
+    &:hover, &:focus, &:active {
+      color: $grapefruit;
+
+      svg {
+        stroke: $grapefruit;
+      }
+    }
   }
 
   svg {
@@ -24,13 +32,6 @@
     padding-right: $spacing-01;
     top: 2px;
     stroke: $warm-white;
-  }
-
-  &:hover, &:focus, &active {
-    svg, a {
-      stroke: $grapefruit;
-      color: $grapefruit;
-    }
   }
 }
 
@@ -40,19 +41,22 @@
 
   a {
     color: $warm-black;
+
+    &:hover, &:focus, &:active {
+      color: $warm-white;
+
+      svg {
+        stroke: $warm-white;
+      }
+    }
   }
 
   svg {
     stroke: $warm-black;
   }
 
-  &:hover, &:focus, &active {
+  &:hover, &:focus, &:active {
     background: $sanguine;
     color: $warm-white;
-
-    svg, a {
-      stroke: $warm-white;
-      color: $warm-white;
-    }
   }
 }
