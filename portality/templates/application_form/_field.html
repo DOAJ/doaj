@@ -7,7 +7,7 @@
         {% if f.help("long_help") %}
             <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-{{ f.name }}"></span><span class="sr-only">More help</span>
         {% endif %}
-        {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
+        {% if f.optional %}<span class="form__question--optional">(Optional)</span>{% endif %}
     </label>
     {% if f.get("hint") %}<p><small>{{ f.hint }}</small></p>{% endif %}
     {% if "multiple_field" in f.get("widgets", []) %}
