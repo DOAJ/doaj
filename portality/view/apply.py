@@ -34,9 +34,6 @@ def public_application(draft_id=None):
 
     elif request.method == "POST":
 
-        # todo: THIS LINE IS FOR TESTS ONLY! REMOVE FOR DEVELOPMENT
-        return redirect(url_for('doaj.application_thanks', _anchor='thanks'))
-
         fc = ApplicationFormFactory.context("public")
 
         draft = request.form.get("draft")
