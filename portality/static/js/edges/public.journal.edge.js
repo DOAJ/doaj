@@ -232,12 +232,12 @@ $.extend(true, doaj, {
                     id: "sort_by",
                     category: "controller",
                     sortOptions : [
-                        {'display':'Added to DOAJ (newest first)','field':'created_date desc'},
-                        {'display':'Added to DOAJ (oldest first)','field':'created_date asc'},
-                        {'display':'Last updated (most recent first)','field':'last_updated desc'},
-                        {'display':'Last updated (less recent first)','field':'last_updated asc'},
-                        {'display':'Title (A-Z)','field':'index.unpunctitle.exact asc'},
-                        {'display':'Title (Z-A)','field':'index.unpunctitle.exact desc'},
+                        {'display':'Added to DOAJ (newest first)','field':'created_date', "dir" : "desc"},
+                        {'display':'Added to DOAJ (oldest first)','field':'created_date', "dir" : "asc"},
+                        {'display':'Last updated (most recent first)','field':'last_updated', "dir" : "desc"},
+                        {'display':'Last updated (less recent first)','field':'last_updated', "dir" : "asc"},
+                        {'display':'Title (A-Z)','field':'index.unpunctitle.exact', "dir" : "asc"},
+                        {'display':'Title (Z-A)','field':'index.unpunctitle.exact', "dir" : "desc"},
                         {'display':'Relevance','field':'_score'}
                     ],
                     renderer: edges.bs3.newSortRenderer({
