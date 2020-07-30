@@ -33,13 +33,35 @@
 
     window.Parsley.addValidator("requiredvalue", {
         validateString : function(value, requirement) {
-            console.log(value, requirement);
             return (value === requirement);
         },
         messages: {
             en: 'You need to answer "%s" to continue'
         },
         priority: 32
+    })
+
+    window.Parsley.addValidator("optionalIf", {
+        validateString : function(value, requirement) {
+            if (!!value) return true;
+            else {
+                return (!!($("[name = " + requirement + "]")).val())
+            }
+        },
+        messages: {
+            en: 'You need to provide the answer to either this field or %s field (or both)'
+        },
+        priority: 1
+    })
+
+    window.Parsley.addValidator("differentTo", {
+        validateString : function(value, requirement) {
+          return (!value || ($("[name = " + requirement + "]")).val() !== value)
+        },
+        messages: {
+            en: 'Value of this field and %s field must be different'
+        },
+        priority: 1
     })
 
     let showTab = (n) => {

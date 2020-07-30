@@ -1866,6 +1866,7 @@ class JournalURLInPublicDOAJBuilder:
 class OptionalIfBuilder:
     @staticmethod
     def render(settings, html_attrs):
+        html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-optional-if"] = settings.get("field")
 
     @staticmethod
