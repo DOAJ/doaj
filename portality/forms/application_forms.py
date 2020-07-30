@@ -140,6 +140,7 @@ class FieldDefinitions:
         "name": "alternative_title",
         "label": "Alternative title (including translation of the title)",
         "input": "text",
+        "optional": True,
         "help": {
             "long_help": ["The journal title must match what is displayed on the website and what is registered at the "
                           "<a href='https://portal.issn.org/'> ISSN Portal</a>.",
@@ -147,9 +148,6 @@ class FieldDefinitions:
                           "translation as an alternative title."],
             "placeholder": "Ma revue"
         },
-        "validate": [
-            "required"
-        ],
         "contexts": {
             "editor": {
                 "disabled": True
