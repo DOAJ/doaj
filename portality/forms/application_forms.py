@@ -61,6 +61,8 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
+            "long_help": ['This definition follows the definition of Libre Open Access formulated by Peter Suber <br>'
+                          '<a href="http://nrs.harvard.edu/urn-3:HUL.InstRepos:4322580">http://nrs.harvard.edu/urn-3:HUL.InstRepos:4322580</a>'],
             "doaj_criteria": "You must answer 'Yes'"
         },
         "validate": [
