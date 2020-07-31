@@ -259,10 +259,23 @@ $.extend(true, doaj, {
                 edges.newSelectedFilters({
                     id: "selected-filters",
                     category: "selected-filters",
+                    compoundDisplays : [
+                        {
+                            filters : [
+                                es.newTermFilter({
+                                    field: "bibjson.apc.has_apc",
+                                    value: false
+                                }),
+                                es.newTermFilter({
+                                    field: "bibjson.other_charges.has_other_charges",
+                                    value: false
+                                })
+                            ],
+                            display : "Without APCs or other fees"
+                        }
+                    ],
                     fieldDisplays : {
                         "index.has_seal.exact" : "With a DOAJ Seal",
-                        "bibjson.apc.has_apc" : "Without APC",
-                        "bibjson.other_charges.has_other_charges" : "Without other charges",
                         "index.classification.exact" : "Subjects",
                         "index.license.exact" : "Licenses",
                         "bibjson.publisher.name.exact" : "Publishers",
@@ -274,7 +287,15 @@ $.extend(true, doaj, {
                     rangeFunctions : {
                         "created_date" : doaj.valueMaps.displayYearPeriod
                     },
-                    renderer : doaj.renderers.newSelectedFiltersRenderer({})
+                    renderer : doaj.renderers.newSelectedFiltersRenderer({
+                        hideValues : [
+                            "index.has_seal.exact"
+                        ],
+                        omit : [
+                            "bibjson.apc.has_apc",
+                            "bibjson.other_charges.has_other_charges"
+                        ]
+                    })
                 }),
 
                 edges.newPager({

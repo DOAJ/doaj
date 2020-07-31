@@ -1538,6 +1538,10 @@ $.extend(true, doaj, {
 
             this.ifNoFilters = edges.getParam(params.ifNoFilters, false);
 
+            this.hideValues = edges.getParam(params.hideValues, []);
+
+            this.omit = edges.getParam(params.omit, []);
+
             this.namespace = "doaj-selected-filters";
 
             this.draw = function () {
@@ -1549,8 +1553,8 @@ $.extend(true, doaj, {
                 var fieldClass = edges.css_classes(ns, "field", this);
                 var fieldNameClass = edges.css_classes(ns, "fieldname", this);
                 var valClass = edges.css_classes(ns, "value", this);
-                var relClass = edges.css_classes(ns, "rel", this);
                 var containerClass = edges.css_classes(ns, "container", this);
+                var removeClass = edges.css_classes(ns, "remove", this);
 
                 var filters = "";
 
@@ -1573,27 +1577,45 @@ $.extend(true, doaj, {
                     var field = fields[i];
                     var def = sf.mustFilters[field];
 
-                    for (var j = 0; j < def.values.length; j++) {
-                        var val = def.values[j];
+                    // render any compound filters
+                    if (def.filter === "compound") {
                         filters += '<li class="tag ' + valClass + '">';
-
-                        // the remove block looks different, depending on the kind of filter to remove
-                        var removeClass = edges.css_classes(ns, "remove", this);
-                        if (def.filter == "term" || def.filter === "terms") {
-                            filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" alt="Remove" title="Remove">';
-                            filters += def.display + ": " + val.display;
-                            filters += ' <span data-feather="x" aria-hidden="true"></span>';
-                            filters += "</a>";
-                        } else if (def.filter === "range") {
-                            var from = val.from ? ' data-' + val.fromType + '="' + val.from + '" ' : "";
-                            var to = val.to ? ' data-' + val.toType + '="' + val.to + '" ' : "";
-                            filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" ' + from + to + ' alt="Remove" title="Remove">';
-                            filters += def.display + ": " + val.display;
-                            filters += ' <span data-feather="x" aria-hidden="true"></span>';
-                            filters += "</a>";
+                        filters += '<a href="DELETE" class="' + removeClass + '" data-compound="' + field + '" alt="Remove" title="Remove">';
+                        filters += def.display;
+                        filters += ' <span data-feather="x" aria-hidden="true"></span>';
+                        filters += "</a>";
+                        filters += "</li>";
+                    } else {
+                        if ($.inArray(field, this.omit) > -1) {
+                            continue;
                         }
 
-                        filters += "</li>";
+                        // then render any filters that have values
+                        for (var j = 0; j < def.values.length; j++) {
+                            var val = def.values[j];
+                            var valDisplay = ": " + val.display;
+                            if ($.inArray(field, this.hideValues) > -1) {
+                                valDisplay = "";
+                            }
+                            filters += '<li class="tag ' + valClass + '">';
+
+                            // the remove block looks different, depending on the kind of filter to remove
+                            if (def.filter === "term" || def.filter === "terms") {
+                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" alt="Remove" title="Remove">';
+                                filters += def.display + valDisplay;
+                                filters += ' <span data-feather="x" aria-hidden="true"></span>';
+                                filters += "</a>";
+                            } else if (def.filter === "range") {
+                                var from = val.from ? ' data-' + val.fromType + '="' + val.from + '" ' : "";
+                                var to = val.to ? ' data-' + val.toType + '="' + val.to + '" ' : "";
+                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" ' + from + to + ' alt="Remove" title="Remove">';
+                                filters += def.display + valDisplay;
+                                filters += ' <span data-feather="x" aria-hidden="true"></span>';
+                                filters += "</a>";
+                            }
+
+                            filters += "</li>";
+                        }
                     }
                     filters += "</span>";
                 }
@@ -1621,6 +1643,15 @@ $.extend(true, doaj, {
 
             this.removeFilter = function (element) {
                 var el = this.component.jq(element);
+
+                // if this is a compound filter, remove it by id
+                var compound = el.attr("data-compound");
+                if (compound) {
+                    this.component.removeCompoundFilter({compound_id: compound});
+                    return;
+                }
+
+                // otherwise follow the usual instructions for removing a filter
                 var field = el.attr("data-field");
                 var ft = el.attr("data-filter");
                 var bool = el.attr("data-bool");
