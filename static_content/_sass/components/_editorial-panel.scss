@@ -2,6 +2,10 @@
   max-height: 50vh;
   overflow-y: scroll;
 
+  select, textarea, input {
+    width: 100%;
+  }
+
   fieldset {
     margin: 0;
     padding: $spacing-03 0;
