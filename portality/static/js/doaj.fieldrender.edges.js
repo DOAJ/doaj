@@ -40,7 +40,7 @@ $.extend(true, doaj, {
                             <span data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-help" type="button"></span><span class="sr-only">Help</span> \
                         </h1> \
                         <div class="row">\
-                            <div id="search-journal-bar" class="col-md-9"></div>\
+                            <div id="search-input-bar" class="col-md-9"></div>\
                         </div>\
                     </header>\
                     <h2 id="result-count"></h2>\
@@ -1824,7 +1824,16 @@ $.extend(true, doaj, {
                 var el = $(element);
                 var abstractText = edges.css_class_selector(this.namespace, "abstracttext", this);
                 var at = this.component.jq(abstractText).filter('[rel="' + el.attr("rel") + '"]');
-                at.slideToggle(300);
+
+                if (el.attr("aria-expanded") === "false") {
+                    el.removeClass("collapsed").attr("aria-expanded", "true");
+                    at.addClass("in").attr("aria-expanded", "true");
+                } else {
+                    el.addClass("collapsed").attr("aria-expanded", "false");
+                    at.removeClass("in").attr("aria-expanded", "false");
+                }
+
+                // at.slideToggle(300);
             };
 
             this._renderResult = function(resultobj) {
@@ -1849,10 +1858,13 @@ $.extend(true, doaj, {
                 if (!issn) {
                     issn = resultobj.bibjson.eissn;
                 }
+                if (issn) {
+                    issn = edges.escapeHtml(issn);
+                }
 
                 var subtitle = "";
                 if (edges.hasProp(resultobj, "bibjson.alternative_title")) {
-                    subtitle = '<span class="search-results__subheading">' + resultobj.bibjson.alternative_title + '</span>';
+                    subtitle = '<span class="search-results__subheading">' + edges.escapeHtml(resultobj.bibjson.alternative_title) + '</span>';
                 }
 
                 var published = "";
@@ -1860,10 +1872,10 @@ $.extend(true, doaj, {
                     var name = "";
                     var country = "";
                     if (resultobj.bibjson.publisher.name) {
-                        name = 'by <em>' + resultobj.bibjson.publisher.name + '</em>';
+                        name = 'by <em>' + edges.escapeHtml(resultobj.bibjson.publisher.name) + '</em>';
                     }
                     if (resultobj.bibjson.publisher.country && edges.hasProp(resultobj, "index.country")) {
-                        country = 'in <strong>' + resultobj.index.country + '</strong>';
+                        country = 'in <strong>' + edges.escapeHtml(resultobj.index.country) + '</strong>';
                     }
                     published = 'Published ' + name + " " + country;
                 }
@@ -1910,7 +1922,7 @@ $.extend(true, doaj, {
                     for (var i = 0; i < resultobj.bibjson.license.length; i++) {
                         var lic = resultobj.bibjson.license[i];
                         var license_url = lic.url || terms_url;
-                        licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + lic.type + '</a>';
+                        licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + edges.escapeHtml(lic.type) + '</a>';
                     }
                 }
 
@@ -1921,7 +1933,7 @@ $.extend(true, doaj, {
                           ' + seal + '\
                           <h3 class="search-results__heading">\
                             <a href="/toc/' + issn + '">\
-                              ' + resultobj.bibjson.title + '\
+                              ' + edges.escapeHtml(resultobj.bibjson.title) + '\
                             </a>\
                             ' + subtitle + '\
                           </h3>\
@@ -1964,112 +1976,65 @@ $.extend(true, doaj, {
             };
 
             this._renderPublicArticle = function(resultobj) {
+                var journal = resultobj.bibjson.journal ? resultobj.bibjson.journal.title : "";
 
-                function makeCitation(record) {
-                    // Journal name. YYYY;32(4):489-98
-
-                    // get all the relevant citation properties
-                    var ctitle = record.bibjson.journal ? record.bibjson.journal.title : undefined;
-                    var cvol = record.bibjson.journal ? record.bibjson.journal.volume : undefined;
-                    var ciss = record.bibjson.journal ? record.bibjson.journal.number: undefined;
-                    var cstart = record.bibjson.start_page;
-                    var cend = record.bibjson.end_page;
-                    var cyear = record.bibjson.year;
-
-                    // we're also going to need the issn
-                    var issns = [];
-                    if (resultobj.bibjson && resultobj.bibjson.identifier) {
-                        var ids = resultobj.bibjson.identifier;
-                        for (var i = 0; i < ids.length; i++) {
-                            if (ids[i].type === "pissn" || ids[i].type === "eissn") {
-                                issns.push(edges.escapeHtml(ids[i].id))
-                            }
-                        }
-                    }
-
-                    var citation = "";
-
-                    // journal title
-                    if (ctitle) {
-                        if (issns.length > 0) {
-                            citation += "<a href='/toc/" + issns[0] + "'>" + edges.escapeHtml(ctitle.trim()) + "</a>";
-                        } else {
-                            citation += edges.escapeHtml(ctitle.trim());
-                        }
-                        citation += ". ";
-                    }
-
-                    // year
-                    if (cyear) {
-                        citation += edges.escapeHtml(cyear) + ";";
-                    }
-
-                    // volume
-                    if (cvol) {
-                        citation += edges.escapeHtml(cvol);
-                    }
-
-                    if (ciss) {
-                        citation += "(" + edges.escapeHtml(ciss) + ")";
-                    }
-
-                    if (cstart || cend) {
-                        if (citation !== "") { citation += ":" }
-                        if (cstart) {
-                            citation += edges.escapeHtml(cstart);
-                        }
-                        if (cend) {
-                            if (cstart) {
-                                citation += "-"
-                            }
-                            citation += edges.escapeHtml(cend);
-                        }
-                    }
-
-                    return citation;
+                var date = "";
+                if (resultobj.index.date) {
+                    date = "(" + doaj.humanYearMonth(resultobj.index.date) + ")";
                 }
 
-                // start off the string to be rendered
-                var result = "<div class='row'>";
-
-                // start the main box that all the details go in
-                result += "<div class='col-md-12'>";
-
-                // add the article icon
-                result += "<div class='pull-left' style='width: 4%; min-width: 33px'>";
-                result += "<i style='font-size: 24px' class='far fa-file-alt'></i>";
-                result += "</div>";
-
-                result += "<div class='pull-left' style='width: 93%'>";
-
-                result += "<div class='row'><div class='col-md-10'>";
-
-                // set the title
+                var title = "";
                 if (resultobj.bibjson.title) {
-                    result += "<span class='title'><a href='/article/" + resultobj.id + "'>" + edges.escapeHtml(resultobj.bibjson.title) + "</a></span><br>";
+                    title = edges.escapeHtml(resultobj.bibjson.title);
                 }
 
                 // set the authors
-                if (resultobj.bibjson && resultobj.bibjson.author && resultobj.bibjson.author.length > 0) {
+                var authors = "";
+                if (edges.hasProp(resultobj, "bibjson.author") && resultobj.bibjson.author.length > 0) {
+                    authors = '<ul class="article-summary__authors">';
                     var anames = [];
-                    var authors = resultobj.bibjson.author;
-                    for (var i = 0; i < authors.length; i++) {
-                        var author = authors[i];
+                    var bauthors = resultobj.bibjson.author;
+                    for (var i = 0; i < bauthors.length; i++) {
+                        var author = bauthors[i];
                         if (author.name) {
                             var field = edges.escapeHtml(author.name);
                             anames.push(field);
                         }
                     }
-                    result += "<em>" + anames.join(", ") + "</em><br>";
+                    authors += '<li>' + anames.join("</li><li>") + '</li>';
+                    authors += '</ul>';
                 }
 
-                // set the citation
-                var cite = makeCitation(resultobj);
-                if (cite) {
-                    result += cite;
+                var keywords = "";
+                if (edges.hasProp(resultobj, "bibjson.keywords") && resultobj.bibjson.keywords.length > 0) {
+                    keywords = '<h4>Article keywords</h4><ul>';
+                    keywords+= '<li>' + resultobj.bibjson.keywords.join(", ") + '</li>';
+                    keywords += '</ul>';
                 }
 
-                // set the doi
+                var subjects = "";
+                if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
+                    subjects = '<h4>Journal subjects</h4><ul>';
+                    subjects += "<li>" + resultobj.index.classification_paths.join("<br>") + "</li>";
+                    subjects += '</ul>';
+                }
+
+                var subjects_or_keywords = keywords === "" ? subjects : keywords;
+
+                var abstract = "";
+                if (resultobj.bibjson.abstract) {
+                    var abstractAction = edges.css_classes(this.namespace, "abstractaction", this);
+                    var abstractText = edges.css_classes(this.namespace, "abstracttext", this);
+
+                    abstract = '<h4 class="article-summary__abstract-heading ' + abstractAction + '" type="button" aria-expanded="false" rel="' + resultobj.id + '">\
+                            Abstract\
+                            <span data-feather="plus" aria-hidden="true"></span>\
+                          </h4>\
+                          <p rel="' + resultobj.id + '" class="collapse article-summary__abstract-body ' + abstractText + '" aria-expanded="false">\
+                            ' + edges.escapeHtml(resultobj.bibjson.abstract) + '\
+                          </p>';
+                }
+
                 var doi_url = false;
                 if (resultobj.bibjson && resultobj.bibjson.identifier) {
                     var ids = resultobj.bibjson.identifier;
@@ -2078,16 +2043,12 @@ $.extend(true, doaj, {
                             var doi = ids[i].id;
                             var tendot = doi.indexOf("10.");
                             doi_url = "https://doi.org/" + edges.escapeHtml(doi.substring(tendot));
-                            result += " DOI <a href='" + doi_url + "'>" + edges.escapeHtml(doi.substring(tendot)) + "</a>";
                         }
                     }
                 }
 
-                result += "<br>";
-
-                // extract the fulltext link if there is one
                 var ftl = false;
-                if (resultobj.bibjson && resultobj.bibjson.link && resultobj.bibjson.link.length !== 0) {
+                if (edges.hasProp(resultobj, "bibjson.link") && resultobj.bibjson.link.length !== 0) {
                     var ls = resultobj.bibjson.link;
                     for (var i = 0; i < ls.length; i++) {
                         var t = ls[i].type;
@@ -2099,39 +2060,69 @@ $.extend(true, doaj, {
                     ftl = doi_url;
                 }
 
-                // create the abstract section if desired
-                if (resultobj.bibjson.abstract || ftl) {
-                    if (resultobj.bibjson.abstract) {
-                        var abstractAction = edges.css_classes(this.namespace, "abstractaction", this);
-                        result += '<a class="' + abstractAction + '" href="#" rel="' + resultobj.id + '"><strong>Abstract</strong></a>';
-                    }
-                    if (ftl) {
-                        if (resultobj.bibjson.abstract) {
-                            result += " | ";
+                var issns = [];
+                if (resultobj.bibjson && resultobj.bibjson.identifier) {
+                    var ids = resultobj.bibjson.identifier;
+                    for (var i = 0; i < ids.length; i++) {
+                        if (ids[i].type === "pissn" || ids[i].type === "eissn") {
+                            issns.push(edges.escapeHtml(ids[i].id))
                         }
-                        result += "<a href='" + ftl + "'>Full Text</a>";
-                    }
-
-                    if (resultobj.bibjson.abstract) {
-                        var abstractText = edges.css_classes(this.namespace, "abstracttext", this);
-                        result += '<div class="' + abstractText + '" rel="' + resultobj.id + '" style="display:none">' + edges.escapeHtml(resultobj.bibjson.abstract) + '</div>';
                     }
                 }
 
-                // close the main details box
-                result += "</div>";
+                var license = "";
+                if (edges.hasProp(resultobj, "bibjson.journal.license") && resultobj.bibjson.journal.license.length > 0) {
+                    for (var i = 0; i < resultobj.bibjson.journal.license.length; i++) {
+                        var lic = resultobj.bibjson.journal.license[i];
+                        license += '<a href="' + lic.url + '" target="_blank" rel="noopener">' + lic.type + '</a> ';
+                    }
+                }
 
-                // start the journal properties side-bar
-                result += "<div class='col-md-2' align='right'>";
+                var published = "";
+                if (edges.hasProp(resultobj, "bibjson.journal.publisher")) {
+                    var name = 'by <em>' + edges.escapeHtml(resultobj.bibjson.journal.publisher) + '</em>';
+                    published = 'Published ' + name;
+                }
 
-                // close the journal properties side-bar
-                result += "</div>";
-
-                // close off the main result
-                result += "</div></div>";
+                var frag = '<li class="search-results__record">\
+                    <article class="row">\
+                      <div class="col-sm-8 search-results__main article-summary">\
+                        <header>\
+                          <p class="label">\
+                            ' + edges.escapeHtml(journal) + ' ' + date + '\
+                          </p>\
+                          <h3 class="search-results__heading">\
+                            <a href="/article/' + resultobj.id + '" class="">\
+                              ' + title + '\
+                            </a>\
+                          </h3>\
+                          ' + authors + '\
+                        </header>\
+                        <div class="search-results__body">\
+                          ' + subjects_or_keywords + '\
+                          ' + abstract + '\
+                        </div>\
+                      </div>\
+                      <aside class="col-sm-4 search-results__aside">\
+                        <ul>\
+                          <li>\
+                            <a href="' + ftl + '" target="_blank" rel="noopener">Read online <span data-feather="external-link" aria-hidden="true"></span></a>\
+                          </li>\
+                          <li>\
+                            <a href="/toc/' + issns[0] + '" target="_blank" rel="noopener">Journal Table of Contents</a>\
+                          </li>\
+                          <li>\
+                            ' + license + '\
+                          </li>\
+                          <li>\
+                            ' + published + '\
+                          </li>\
+                        </ul>\
+                      </aside>\
+                    </article></li>';
 
                 // close off the result and return
-                return result;
+                return frag;
             };
         },
     },

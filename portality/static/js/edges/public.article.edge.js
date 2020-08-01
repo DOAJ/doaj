@@ -23,7 +23,7 @@ $.extend(true, doaj, {
             var current_domain = document.location.host;
             var current_scheme = window.location.protocol;
 
-            var selector = params.selector || "#public-journal-search";
+            var selector = params.selector || "#public-article-search";
             var search_url = current_scheme + "//" + current_domain + doaj.publicSearchConfig.publicSearchPath;
 
             var countFormat = edges.numFormat({
@@ -36,12 +36,12 @@ $.extend(true, doaj, {
                     category: "controller",
                     fieldOptions : [
                         {'display':'Title','field':'bibjson.title'},
+                        {'display':'Abstract','field':'bibjson.abstract'},
                         {'display':'Keywords','field':'bibjson.keywords'},
-                        {'display':'Subject','field':'index.classification'},
-                        {'display':'ISSN', 'field':'index.issn.exact'},
-                        {'display':'Publisher','field':'bibjson.publisher.name'},
-                        {'display':'Country of publisher','field':'index.country'},
-                        {'display':'Journal Language','field':'index.language'}
+                        {'display':'Author','field':'bibjson.author.name'},
+                        {'display':'ORCID','field':'bibjson.author.orcid_id'},
+                        {'display':'DOI', 'field' : 'bibjson.identifier.id'},
+                        {'display':'Language','field':'index.language'}
                     ],
                     defaultOperator : "AND",
                     renderer : doaj.renderers.newSearchBarRenderer({
@@ -57,45 +57,8 @@ $.extend(true, doaj, {
                     category: "pager",
                     renderer : edges.bs3.newResultCountRenderer({
                         countFormat: countFormat,
-                        suffix: " indexed journals",
+                        suffix: " indexed articles",
                         htmlContainerWrapper: false
-                    })
-                }),
-
-                edges.newFilterSetter({
-                    id : "see_journals",
-                    category: "facet",
-                    filters : [
-                        {
-                            id: "with_seal",
-                            display: "With a DOAJ Seal&nbsp;&nbsp;<span data-feather=\"check-circle\" aria-hidden=\"true\"></span>",
-                            must : [
-                                es.newTermFilter({
-                                    field: "index.has_seal.exact",
-                                    value: "Yes"
-                                })
-                            ]
-                        },
-                        {
-                            id : "no_charges",
-                            display: "Without APCs or other fees",
-                            must : [
-                                es.newTermFilter({
-                                    field: "bibjson.apc.has_apc",
-                                    value: false
-                                }),
-                                es.newTermFilter({
-                                    field: "bibjson.other_charges.has_other_charges",
-                                    value: false
-                                })
-                            ]
-                        }
-                    ],
-                    renderer : doaj.renderers.newFacetFilterSetterRenderer({
-                        facetTitle : "See journals...",
-                        open: true,
-                        togglable: false,
-                        showCount: false
                     })
                 }),
 
@@ -118,83 +81,15 @@ $.extend(true, doaj, {
                 }),
 
                 edges.newORTermSelector({
-                    id: "language",
+                    id: "journals",
                     category: "facet",
-                    field: "index.language.exact",
-                    display: "Languages",
+                    field: "bibjson.journal.title.exact",
+                    display: "Journals",
                     size: 40,
                     syncCounts: false,
                     lifecycle: "update",
                     orderBy: "count",
                     orderDir: "desc",
-                    renderer : doaj.renderers.newORTermSelectorRenderer({
-                        showCount: true,
-                        hideEmpty: false,
-                        open: false,
-                        togglable: true
-                    })
-                }),
-
-                edges.newORTermSelector({
-                    id: "journal_licence",
-                    category: "facet",
-                    field: "index.license.exact",
-                    display: "Licenses",
-                    size: 99,
-                    syncCounts: false,
-                    lifecycle: "update",
-                    renderer : doaj.renderers.newORTermSelectorRenderer({
-                        showCount: true,
-                        hideEmpty: false,
-                        open: false,
-                        togglable: true
-                    })
-                }),
-
-                edges.newORTermSelector({
-                    id: "publisher",
-                    category: "facet",
-                    field: "bibjson.publisher.name.exact",
-                    display: "Publishers",
-                    size: 40,
-                    syncCounts: false,
-                    lifecycle: "update",
-                    orderBy: "count",
-                    orderDir: "desc",
-                    renderer : doaj.renderers.newORTermSelectorRenderer({
-                        showCount: true,
-                        hideEmpty: false,
-                        open: false,
-                        togglable: true
-                    })
-                }),
-
-                edges.newORTermSelector({
-                    id: "country_publisher",
-                    category: "facet",
-                    field: "index.country.exact",
-                    display: "Publishers' countries",
-                    size: 40,
-                    syncCounts: false,
-                    lifecycle: "update",
-                    orderBy: "count",
-                    orderDir: "desc",
-                    renderer : doaj.renderers.newORTermSelectorRenderer({
-                        showCount: true,
-                        hideEmpty: false,
-                        open: false,
-                        togglable: true
-                    })
-                }),
-
-                edges.newORTermSelector({
-                    id: "peer_review",
-                    category: "facet",
-                    field: "bibjson.editorial.review_process.exact",
-                    display: "Peer review types",
-                    size: 99,
-                    syncCounts: false,
-                    lifecycle: "update",
                     renderer : doaj.renderers.newORTermSelectorRenderer({
                         showCount: true,
                         hideEmpty: false,
@@ -204,11 +99,11 @@ $.extend(true, doaj, {
                 }),
 
                 edges.newDateHistogramSelector({
-                    id : "year_added",
+                    id : "year_published",
                     category: "facet",
-                    field: "created_date",
+                    field: "index.date",
                     interval: "year",
-                    display: "Date added",
+                    display: "Year of publication",
                     displayFormatter : function(val) {
                         return (new Date(parseInt(val))).getUTCFullYear();
                     },
@@ -240,8 +135,8 @@ $.extend(true, doaj, {
                     sortOptions : [
                         {'display':'Added to DOAJ (newest first)','field':'created_date', "dir" : "desc"},
                         {'display':'Added to DOAJ (oldest first)','field':'created_date', "dir" : "asc"},
-                        {'display':'Last updated (most recent first)','field':'last_updated', "dir" : "desc"},
-                        {'display':'Last updated (less recent first)','field':'last_updated', "dir" : "asc"},
+                        {'display':'Publication date (most recent first)','field':'index.date', "dir" : "desc"},
+                        {'display':'Publication date (less recent first)','field':'index.date', "dir" : "asc"},
                         {'display':'Title (A-Z)','field':'index.unpunctitle.exact', "dir" : "asc"},
                         {'display':'Title (Z-A)','field':'index.unpunctitle.exact', "dir" : "desc"},
                         {'display':'Relevance','field':'_score'}
@@ -265,43 +160,15 @@ $.extend(true, doaj, {
                 edges.newSelectedFilters({
                     id: "selected-filters",
                     category: "selected-filters",
-                    compoundDisplays : [
-                        {
-                            filters : [
-                                es.newTermFilter({
-                                    field: "bibjson.apc.has_apc",
-                                    value: false
-                                }),
-                                es.newTermFilter({
-                                    field: "bibjson.other_charges.has_other_charges",
-                                    value: false
-                                })
-                            ],
-                            display : "Without APCs or other fees"
-                        }
-                    ],
                     fieldDisplays : {
-                        "index.has_seal.exact" : "With a DOAJ Seal",
                         "index.classification.exact" : "Subjects",
-                        "index.license.exact" : "Licenses",
-                        "bibjson.publisher.name.exact" : "Publishers",
-                        "index.country.exact" : "Publishers' countries",
-                        "index.language.exact" : "Languages",
-                        "bibjson.editorial.review_process.exact" : "Peer review",
-                        "created_date" : "Date added"
+                        "bibjson.journal.title.exact" : "Journals",
+                        "index.date" : "Year of publication"
                     },
                     rangeFunctions : {
-                        "created_date" : doaj.valueMaps.displayYearPeriod
+                        "index.date" : doaj.valueMaps.displayYearPeriod
                     },
-                    renderer : doaj.renderers.newSelectedFiltersRenderer({
-                        hideValues : [
-                            "index.has_seal.exact"
-                        ],
-                        omit : [
-                            "bibjson.apc.has_apc",
-                            "bibjson.other_charges.has_other_charges"
-                        ]
-                    })
+                    renderer : doaj.renderers.newSelectedFiltersRenderer({})
                 }),
 
                 edges.newPager({
@@ -333,7 +200,7 @@ $.extend(true, doaj, {
             var e = edges.newEdge({
                 selector: selector,
                 template: doaj.templates.newPublicSearch({
-                    title: "Journals"
+                    title: "Articles"
                 }),
                 search_url: search_url,
                 manageUrl : true,

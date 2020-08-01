@@ -1,0 +1,27 @@
+{% extends "layouts/base.html" %}
+
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
+{% block body_attrs %}class="search"{% endblock %}
+
+{% block content %}
+    <main class="container page-content">
+        <div id="public-article-search"></div>
+        {% include "includes/search-help-modal.html" %}
+    </main>
+{% endblock %}
+
+{% block extra_js_bottom %}
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        publicSearchConfig : {
+            publicSearchPath : '{{ url_for("query.query", path="article/_search") }}?ref=public_article'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/public.article.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+{% endblock extra_js_bottom %}
