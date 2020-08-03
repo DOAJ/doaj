@@ -43,10 +43,12 @@
 
     window.Parsley.addValidator("optionalIf", {
         validateString : function(value, requirement) {
-            if (!!value) return true;
-            else {
-                return (!!($("[name = " + requirement + "]")).val())
+            theOtherField = $("[name = " + requirement + "]")
+            if (!!value || !!($(theOtherField)).val()) {
+                $(theOtherField).parsley().reset()
+                return true;
             }
+            return false;
         },
         messages: {
             en: 'You need to provide the answer to either this field or %s field (or both)'
