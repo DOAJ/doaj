@@ -1,7 +1,7 @@
 from copy import deepcopy
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
-from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, Form, \
+from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, \
     FormField, FieldList
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
@@ -204,7 +204,8 @@ class FieldDefinitions:
             {"optional_if": {"field": "eissn",
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "eissn", "message" : "This field must contain a different value to 'ISSN (online)'"}},
+            {"different_to": {"field": "eissn", "message": "This field must contain a different value to 'ISSN ("
+                                                           "online)'"}},
             "issn_in_public_doaj"
         ],
         "contexts": {
@@ -873,17 +874,17 @@ class FieldDefinitions:
         "multiple": True,
         "hint": "Select at least one:",
         "options": [
-            {"display": "CINES", "value": "CINES"},
-            {"display": "CLOCKSS", "value": "CLOCKSS"},
-            {"display": "LOCKSS", "value": "LOCKSS"},
-            {"display": "Internet Archive", "value": "Internet Archive"},
-            {"display": "PKP PN", "value": "PKP PN"},
-            {"display": "PubMed Central (PMC)", "value": "PMC"},
-            {"display": "Portico", "value": "Portico"},
-            {"display": "A national library", "value": "national_library", "subfields": ["preservation_service_library"]},
+            {"display": "CINES", "value": "CINES", "subfields": ["preservation_service_url"]},
+            {"display": "CLOCKSS", "value": "CLOCKSS", "subfields": ["preservation_service_url"]},
+            {"display": "LOCKSS", "value": "LOCKSS", "subfields": ["preservation_service_url"]},
+            {"display": "Internet Archive", "value": "Internet Archive", "subfields": ["preservation_service_url"]},
+            {"display": "PKP PN", "value": "PKP PN", "subfields": ["preservation_service_url"]},
+            {"display": "PubMed Central (PMC)", "value": "PMC", "subfields": ["preservation_service_url"]},
+            {"display": "Portico", "value": "Portico", "subfields": ["preservation_service_url"]},
+            {"display": "A national library", "value": "national_library", "subfields": ["preservation_service_library", "preservation_service_url"]},
             {"display": "The journal content isn't archived with a long-term preservation service",
              "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other", "subfields": ["preservation_service_other"]}
+            {"display": "Other", "value": "other", "subfields": ["preservation_service_other", "preservation_service_url"]}
         ],
         "help": {
             "long_help": [
@@ -940,8 +941,27 @@ class FieldDefinitions:
             "doaj_criteria": "You must provide a URL",
             "placeholder": "https://www.my-journal.com/about#archiving"
         },
+        "conditional": [
+            {"field": "preservation_service", "value": "CINES"},
+            {"field": "preservation_service", "value": "CLOCKSS"},
+            {"field": "preservation_service", "value": "LOCKSS"},
+            {"field": "preservation_service", "value": "Internet Archive"},
+            {"field": "preservation_service", "value": "PKP PN"},
+            {"field": "preservation_service", "value": "PMC"},
+            {"field": "preservation_service", "value": "Portico"},
+            {"field": "preservation_service", "value": "national_library"},
+            {"field": "preservation_service", "value": "other"}
+        ],
         "validate": [
-            {"optional_if": {"field": "preservation_service", "values": ["none"]}},
+            {"required_if": {"field": "preservation_service", "values": ["CINES"]}},
+            {"required_if": {"field": "preservation_service", "values": ["CLOCKSS"]}},
+            {"required_if": {"field": "preservation_service", "values": ["LOCKSS"]}},
+            {"required_if": {"field": "preservation_service", "values": ["Internet Archive"]}},
+            {"required_if": {"field": "preservation_service", "values": ["PKP PN"]}},
+            {"required_if": {"field": "preservation_service", "values": ["PMC"]}},
+            {"required_if": {"field": "preservation_service", "values": ["Portico"]}},
+            {"required_if": {"field": "preservation_service", "values": ["national_library"]}},
+            {"required_if": {"field": "preservation_service", "values": ["other"]}},
             "is_url"
         ],
         "widgets": [
@@ -956,12 +976,12 @@ class FieldDefinitions:
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo"},
-            {"display": "Dulcinea", "value": "Dulcinea"},
-            {"display": "Héloïse", "value": "Héloïse"},
-            {"display": "Diadorim", "value": "Diadorim"},
+            {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo", "subfields": ["deposit_policy_url"]},
+            {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
+            {"display": "Héloïse", "value": "Héloïse", "subfields": ["deposit_policy_url"]},
+            {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
             {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
-            {"display": "Other (including publisher's own site)", "value": "other", "subfields": ["deposit_policy_other"]}
+            {"display": "Other (including publisher's own site)", "value": "other", "subfields": ["deposit_policy_other"], "subfields": ["deposit_policy_url"]}
         ],
         "help": {
             "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
@@ -996,13 +1016,22 @@ class FieldDefinitions:
         "name": "deposit_policy_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "conditional": [{"field": "deposit_policy", "value": "Sherpa/Romeo"},
+                        {"field": "deposit_policy", "value": "Dulcinea"},
+                        {"field": "deposit_policy", "value": "Héloïse"},
+                        {"field": "deposit_policy", "value": "Diadorim"},
+                        {"field": "deposit_policy", "value": "other"}],
         "help": {
             "doaj_criteria": "You must provide a URL",
             "short_help": "Link to the policy on the journal's site",
             "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
         "validate": [
-            {"required_if": {"field": "deposit_policy", "value": "unregistered"}},
+            {"required_if": {"field": "deposit_policy", "value": "Sherpa/Romeo"}},
+            {"required_if": {"field": "deposit_policy", "value": "Dulcinea"}},
+            {"required_if": {"field": "deposit_policy", "value": "Héloïse"}},
+            {"required_if": {"field": "deposit_policy", "value": "Diadorim"}},
+            {"required_if": {"field": "deposit_policy", "value": "other"}},
             "is_url"
         ],
         "widgets": [

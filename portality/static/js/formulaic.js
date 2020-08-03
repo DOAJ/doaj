@@ -339,12 +339,12 @@ var formulaic = {
                             checkedValues.push(that.val());
                         }
                     });
-                    if ($.inArray(val, checkedValues) === -1) {
-                        return false;
+                    if ($.inArray(val, checkedValues) !== -1) {
+                        return true;
                     }
                 }
             }
-            return true;
+            return false;
         };
 
         ///////////////////////////////////////////////////////
