@@ -1,5 +1,7 @@
 {% extends "layouts/sidebar-page.html" %}
 
+{% block body_class %}article-details{% endblock %}
+
 {% block page_title %}
     {% set bibjson = article.bibjson() %}
     {%  if bibjson.title %}
@@ -72,172 +74,183 @@ hosted on DOAJ.org) #}
 {% set doi = bibjson.get_one_identifier("doi") %}
 {% set normalised_doi = article.get_normalised_doi() %}
 
-<div class="row">
-    <div class="col-md-12">
+<main class="page-content article-summary">
+  <div class="highlight">
+    <header class="container">
+      <p class="label">
+        <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}">{{jtitle}}</a>
+        ({{ page.issue_pub_date }})
+      </p>
+
+      <h1>
         {%  if bibjson.title %}
-            <h1>{{bibjson.title}}</h1>
+        {{bibjson.title}}
         {% else %}
-            <h1>&lt; Article title missing &gt;</h1>
+        <i>[Article title missing]</i>
         {% endif %}
+      </h1>
 
-        <p>
-        {# citation #}
-        {% if issns|length > 0 %}
-            <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}">{{jtitle}}</a>. {{cite}}
-        {% else %}
-            {{jtitle}}. {{cite}}
-        {% endif %}
-
-        {# doi #}
-        {% if doi %}
-            {% set url_text = normalised_doi | doi_url | safe %}
-            {% if url_text != "" %}
-                DOI <a href="{{ url_text }}"> {{ normalised_doi }}</a>
-            {% endif %}
-        {% endif %}
-
-        </p>
-    </div>
-
-</div>
-
-<div class="row" style="margin-bottom: 30px; margin-top: 30px">
-    <div class="col-md-1">&nbsp;</div>
-    <div class="col-md-5">
-        <div class="box with-borders" style="min-height: 140px">
-            {% if jbib.get_single_url("homepage") %}
-                <p><a href="{{jbib.get_single_url('homepage')}}">Journal Homepage</a></p>
-            {% endif %}
-
-            <p><strong>Journal Title</strong>: {{ jbib.title }}</p>
-
-            {# this next bit has to be all on one line so that the spacing is correct #}
-            {% if jbib.issns()|length > 0 %}
-            <p>
-            <strong>ISSN</strong>:
-            {% for identifier in jbib.get_identifiers(idtype='pissn') %}{{identifier}} (Print){% endfor %}{% for identifier in jbib.get_identifiers(idtype='eissn') %}{% if jbib.get_identifiers(idtype='pissn') %};&nbsp;{% endif %}{{identifier}} (Online){% endfor %}
-            </p>
-            {% endif %}
-
-            {% if jbib.publisher %}
-                <p><strong>Publisher</strong>:&nbsp;{{jbib.publisher}}</p>
-            {% endif %}
-            {% if jbib.institution %}
-                <p><strong>Society/Institution</strong>:&nbsp;{{jbib.institution}}</p>
-            {% endif %}
-
-        </div>
-    </div>
-
-    <div class="col-md-5">
-        <div class="box with-borders" style="min-height: 140px">
-
-            {% for path in bibjson.lcc_paths() %}
-                {% if loop.index0 == 0 %}<p><strong>LCC Subject Category</strong>: {% endif %}
-                {% if loop.index0 > 0 %} | {% endif %}
-                {{ path }}
-                {% if loop.last %}</p>{% endif %}
+      <div class="row article-details__meta">
+        {% if bibjson.author %}
+        <div class="col-md-6 col-lg-6">
+          <ul>
+            {% for author in bibjson.author %}
+            <li>{{author.name}}{% if loop.last %}{% else %}, {% endif %}</li>
             {% endfor %}
+          </ul>
 
-
-            {% if jbib.country %}
-                <p><strong>Country of publisher</strong>:&nbsp;{{jbib.country_name()}}</p>
-            {% endif %}
-
-            {% if jbib.language %}
-                <p><strong>Language of fulltext</strong>:&nbsp;{{jbib.language_name()|join(", ")}}</p>
-            {% endif %}
-
-            {% if jbib.format|length > 0 %}
-                <p><strong>Full-text formats available</strong>: {{jbib.format|join(", ")}}</p>
-            {% endif %}
+          <p>
+            <a class="button" type="button" data-toggle="collapse" data-target="#authors-affiliations" aria-expanded="false">
+              Affiliations
+              <span data-feather="plus" aria-hidden="true"></span>
+            </a>
+          </p>
+          <dl id="authors-affiliations" class="collapse" aria-expanded="false">
+            {% for author in bibjson.author %}
+              <dt>{{author.name}}</dt>
+              {% if author.orcid_id %}
+                <dd><a href="{{author.orcid_id}}">ORCiD</a></dd>
+              {% endif %}
+              {% if author.affiliation %}
+                <dd>{{author.affiliation}}</dd>
+              {% endif %}
+            {% endfor %}
+          </dl>
         </div>
-    </div>
-</div>
+        {% endif %}
 
-<div class="row" style="margin-top: 30px">
-    <div class="col-md-1">&nbsp;</div>
-    <div class="col-md-5">
-        <div class="box slim">
-            <p><strong>AUTHORS</strong></p>
+        <dl class="col-md-6 col-lg-6">
+          {% if doi %}
+          <dt>DOI</dt>
+          <dd>
+            {% set url_text = normalised_doi | doi_url | safe %}
+            <a href="{{ url_text }}" target="_blank" rel="noopener">{{ url_text }}</a>
+          </dd>
+          {% endif %}
 
-            <p>
-                {% for author in bibjson.author %}
-                    <br>
+          <dt>Journal volume & issue</dt>
+          <dd>
+            {% if page.volume %}Vol. {{ page.volume }}{% endif %}{% if page.volume and page.issue %},{% endif %}
+            {% if page.issue %}no. {{ page.issue }}{% endif %}
+          </dd>
+        </dl>
+      </div>
 
-                    {% if author.orcid_id %}
-                        <a href="{{author.orcid_id}}">{{author.name}}</a>
-                    {% else %}
-                        {{author.name}}
-                    {% endif %}
-                    {% if author.affiliation %} ({{author.affiliation}}){% endif %}
-                    </em><br>
-                {% endfor %}
-            </p>
+    </header>
+  </div>
 
-        </div>
-    </div>
-
-    <div class="col-md-5">
-        <div class="box slim">
-            <p><strong>EDITORIAL INFORMATION</strong></p>
-
-            {% if jbib.editorial_review %}
-                {% if jbib.editorial_review.get("process") or jbib.editorial_review.get("url") %}
-                    <p>
-                    {% if jbib.editorial_review.get("url") %}
-                        <a href="{{jbib.editorial_review.get('url')}}">{{jbib.editorial_review.get("process", "Review process unknown")}}</a>
-                    {% else %}
-                        {{jbib.editorial_review.get("process", "Review process unknown")}}
-                    {% endif %}
-                    </p>
+  <div class="container">
+    <div class="row">
+      <section class="col-md-8">
+        <header class="flex-header">
+          <h2 class="flex-header__child">Abstract</h2>
+          <p class="flex-header__child">
+            {% if bibjson.get_urls("fulltext") %}
+              {% for url in bibjson.get_urls("fulltext") %}
+                <a href="{{url}}" class="button button--primary" target="_blank" rel="noopener" role="button">Read online</a>
+              {% endfor %}
+            {% else %}
+              {% if doi %}
+                {% set url_text = normalised_doi | doi_url | safe %}
+                {% if url_text != "" %}
+                  <a href="{{url_text}}" class="button button--primary" target="_blank" rel="noopener" role="button">Read online</a>
                 {% endif %}
+              {% endif %}
             {% endif %}
 
-            {% if jbib.get_single_url("editorial_board") %}
-                <p><a href="{{jbib.get_single_url('editorial_board')}}">Editorial Board</a></p>
-            {% endif %}
+          </p>
+        </header>
+        {% if bibjson.abstract %}
+        <p class="article-details__abstract">{{bibjson.abstract}}</p>
+        {% else %}
+        <em class="article-details__abstract--empty">No abstracts available.</em>
+        {% endif %}
 
-            {% if jbib.get_single_url("author_instructions") %}
-                <p><a href="{{jbib.get_single_url('author_instructions')}}">Instructions for authors</a></p>
-            {% endif %}
+        {% if page.keywords %}
+        <h2 class="sr-only">Keywords</h2>
+        <ul class="tags">
+          {% for j in page.keywords %}
+          <li class="tag"><a href="{{ site.baseurl }}{% link search/articles.md %}">{{ j }}</a></li>
+          {% endfor %}
+        </ul>
+        {% endif %}
 
-            {% if jbib.publication_time %}
-                <p>Time From Submission to Publication: {{jbib.publication_time}} weeks</p>
-            {% endif %}
+        {% if doi %}
+        <!-- Dimensions badges -->
+        <p>
+          <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
+          <span class="__dimensions_badge_embed__" data-doi="{{ normalised_doi }}" data-legend="never"></span>
+        </p>
+        {% endif %}
+      </section>
 
-        </div>
-    </div>
+      <aside class="col-md-4">
+        <h2>Published in <em>{{jtitle}}</em></h2>
+        <dl>
+          {% if jbib.issns()|length > 0 %}
+          <dt>ISSN</dt>
+          {% for identifier in jbib.get_identifiers(idtype='pissn') %}<dd>{{identifier}} (Print)</dd>{% endfor %}
+          {% for identifier in jbib.get_identifiers(idtype='eissn') %}<dd>{{identifier}} (Online)</dd>{% endfor %}
+          {% endif %}
 
-</div>
+          {% if jbib.publisher %}
+          <dt>Publisher</dt>
+          <dd>{{jbib.publisher}}</dd>
+          {% endif %}
 
-<div class="row" style="margin-top: 30px">
-    <div class="col-md-1">&nbsp;</div>
-    <div class="col-md-10">
-        <div style="padding: 0.5em">
+          {% if jbib.country %}
+          <dt>Country of publisher</dt>
+          <dd>{{jbib.country_name()}}</dd>
+          {% endif %}
+
+          <dt>LCC Subject Category</dt>
+          <dd>{{ page.lcc }}</dd>
+
+          {% if jbib.get_single_url("homepage") %}
+          <dt>Website</dt>
+          <dd><a href="{{jbib.get_single_url('homepage')}}">{{jbib.get_single_url('homepage')}}</a></dd>
+          {% endif %}
+        </dl>
 
         <p>
-            <strong>
-                Abstract
-                {% if bibjson.get_urls("fulltext") %}
-                    {% for url in bibjson.get_urls("fulltext") %}
-                        | <a href="{{url}}">Full Text</a>
-                    {% endfor %}
-                {% else %}
-                    {% if doi %}
-                        {% set url_text = normalised_doi | doi_url | safe %}
-                        {% if url_text != "" %}
-                            <a href="{{ url_text }}"> Full Text</a>
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-            </strong>
+          <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}" class="button secondary-button">About the journal</a>
         </p>
-        <p>{{bibjson.abstract}}</p>
 
-        </div>
-
+      </aside>
     </div>
-</div>
 
+    <footer>
+      <h2>More articles like this&hellip;</h2>
+      <div class="row title-list">
+        <article class="col-xs-6 col-md-3 col-lg-3">
+          <a href="#" class="title-list__link">
+            <p class="label">Human Immunology (1999)</p>
+            <h3 class="title-list__heading">Expression of the costimulator molecules, CD80, CD86, CD28, and CD152 on lymphocytes from neonates and young children</h3>
+          </a>
+        </article>
+
+        <article class="col-xs-6 col-md-3 col-lg-3">
+          <a href="#" class="title-list__link">
+            <p class="label">Molecular Metabolism (2017)</p>
+            <h3 class="title-list__heading">Neonatal pancreatic pericytes support β-cell proliferation</h3>
+          </a>
+        </article>
+
+        <article class="col-xs-6 col-md-3">
+          <a href="#" class="title-list__link">
+            <p class="label">Frontiers in Immunology (2014)</p>
+            <h3 class="title-list__heading">The unique neonatal NK cells: a critical component required for neonatal autoimmune disease induction by maternal autoantibody</h3>
+          </a>
+        </article>
+
+        <article class="col-xs-6 col-md-3 col-lg-3">
+          <a href="#" class="title-list__link">
+            <p class="label">Immunology & Cell Biology (2016)</p>
+            <h3 class="title-list__heading">Modeling the dynamics of neonatal CD8+ T-cell responses</h3>
+          </a>
+        </article>
+      </div>
+    </footer>
+  </div>
+</main>
 {% endblock %}
