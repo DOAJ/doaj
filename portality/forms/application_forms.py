@@ -473,7 +473,7 @@ class FieldDefinitions:
         "label": "Does the journal embed and/or display licensing information in its articles?",
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
+            {"display": "Yes", "value": "y", "subfields": ["license_display_example_url"]},
             {"display": "No", "value": "n"}
         ],
         "help": {
@@ -492,11 +492,14 @@ class FieldDefinitions:
         "name": "license_display_example_url",
         "label": "Recent article displaying or embedding a license in the full text",
         "input": "text",
+        "optional": True,
+        "conditional": [
+            {"field": "license_display", "value": "y"}
+        ],
         "help": {
             "short_help": "Link to an example article"
         },
         "validate": [
-            "required",
             "is_url"
         ],
         "widgets": [
