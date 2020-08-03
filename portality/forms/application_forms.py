@@ -84,7 +84,7 @@ class FieldDefinitions:
 
     OA_STATEMENT_URL = {
         "name": "oa_statement_url",
-        "label": "Your website must display its open access statement. Where can we find this information?",
+        "label": "The journal website must display its open access statement. Where can we find this information?",
         "input": "text",
         "help": {
             "long_help": ["Here is an example of a suitable Open Access statement that meets our criteria:<blockquote>"
@@ -736,7 +736,7 @@ class FieldDefinitions:
     APC_CHARGES = {
         "name": "apc_charges",
         "input": "group",
-        "label": "Highest APC Charged",
+        "label": "Highest APC charged",
         "repeatable" : {
             "initial" : 5
         },

@@ -346,7 +346,7 @@
     }
 
     let manage_review_checkboxes = () => {
-        if ($("#understanding").prop("checked") && $("#reviewed").prop("checked")){
+        if ($("#reviewed").prop("checked")){
             $("#cannot-submit-checkboxes").hide();
             $("#submitBtn").prop("disabled", !form_validated());
         } else {
@@ -355,7 +355,6 @@
         }
     }
 
-    $("#understanding").on("click", manage_review_checkboxes);
     $("#reviewed").on("click", manage_review_checkboxes);
 
 
