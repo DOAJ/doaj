@@ -65,6 +65,42 @@ journal-details
       {% endif %}
     </h1>
 
+    {% if bibjson.discontinued_date %}
+        <p>Ceased publication on <strong>{{ bibjson.discontinued_datestamp.strftime("%d %B %Y") }}</strong></p>
+    {% endif %}
+
+    {% if past %}
+        <p>Continues
+        {% for p in past %}
+            {% set bibjson = p.bibjson() %}
+            {% if bibjson.issns()|length > 0 %}
+                {% if p.is_in_doaj() %}
+                    <em><a href="{{ url_for('doaj.toc', identifier=bibjson.issns()[0]) }}">{{ bibjson.title }}</a></em>
+                {% else %}
+                    <em>{{ bibjson.title }}</em>, ISSN: {{ bibjson.issns()[0] }} (not available in DOAJ)
+                {% endif %}
+            {% endif %}
+            {% if not loop.last %}; {% endif %}
+        {% endfor %}
+        </p>
+    {% endif %}
+
+    {% if future %}
+        <p>Continued by
+        {% for f in future %}
+            {% set bibjson = f.bibjson() %}
+            {% if bibjson.issns()|length > 0 %}
+                {% if f.is_in_doaj() %}
+                    <em><a href="{{ url_for('doaj.toc', identifier=bibjson.issns()[0]) }}">{{ bibjson.title }}</a></em>
+                {% else %}
+                    <em>{{ bibjson.title }}</em>, ISSN: {{ bibjson.issns()[0] }} (not available in DOAJ)
+                {% endif %}
+            {% endif %}
+            {% if not loop.last %}; {% endif %}
+        {% endfor %}
+        </p>
+    {% endif %}
+
     {%- set seal = journal.has_seal() -%}
     {% if seal %}
     <a href="#" class="tag tag--featured">
