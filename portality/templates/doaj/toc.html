@@ -338,11 +338,11 @@ journal-details
                   {% endfor %}
                 </dd>
 
-                {% if journal.keywords %}
+                {% if bibjson.keywords %}
                 <dt>Keywords</dt>
                 <dd>
-                  {% for keyword in journal.keywords %}
-                  <a href="{{ site.baseurl }}{% link search/articles.md %}">{{ keyword }}</a>{% if forloop.last %}{% else %}, {% endif %}
+                  {% for keyword in bibjson.keywords %}
+                  <a href="">{{ keyword }}</a>{% if forloop.last %}{% else %}, {% endif %}
                   {% endfor %}
                 </dd>
                 {% endif %}
