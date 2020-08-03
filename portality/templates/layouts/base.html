@@ -4,7 +4,7 @@
 {% if not request.cookies.get(config.get("CONSENT_COOKIE_KEY")) %}
     {% include "doaj/cookie_consent.html" %}
 {% endif %}
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
 {% include "includes/header.html" %}
 

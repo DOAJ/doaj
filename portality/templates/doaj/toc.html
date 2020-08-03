@@ -1,5 +1,9 @@
 {% extends "layouts/base.html" %}
 
+{% block body_class %}
+journal-details
+{% endblock %}
+
 {% block page_title %}
     {% set metatitle = bibjson.title %}
     {% if current_volume %}{% set metatitle = metatitle + ', ' + 'Volume ' + current_volume %}{% endif %}
@@ -38,378 +42,306 @@
     {# FIXME for new data model's support of multiple licenses #}
 {% set lic = bibjson.licenses[0] %}
 
-<div class="row">
-    <div class="col-md-9">
-        <h1>{{bibjson.title}}</h1>
-        {% if bibjson.alternative_title %}
-            <strong><em>{{bibjson.alternative_title}}</em></strong>
-        {% endif %}
-        <p>
+<main class="container page-content">
+  <header>
+    <p>
+      {% if journal.updated %}
+      <span class="label label--secondary">
+        <span data-feather="clock" aria-hidden="true"></span>
+        Updated recently
+      </span>
+      {% endif %}
+      <span class="label">
+        <span data-feather="book-open" aria-hidden="true"></span>
         {# this next bit has to be all on one line so that the spacing is correct #}
-        {% for identifier in bibjson.get_identifiers(idtype='pissn') %}{{identifier}} (Print){% endfor %}{% for identifier in bibjson.get_identifiers(idtype='eissn') %}{% if bibjson.get_identifiers(idtype='pissn') %};&nbsp;{% endif %}{{identifier}} (Online){% endfor %}
-        </p>
+        {% for identifier in bibjson.get_identifiers(idtype='pissn') %}{{identifier}} (Print){% endfor %}{% for identifier in bibjson.get_identifiers(idtype='eissn') %}{% if bibjson.get_identifiers(idtype='pissn') %}&nbsp;/ {% endif %}{{identifier}} (Online){% endfor %}
+      </span>
+    </p>
 
-        {% if bibjson.discontinued_date %}
-            <p><strong>Ceased publication: </strong>{{ bibjson.discontinued_datestamp.strftime("%d %B %Y") }}</p>
-        {% endif %}
+    <h1>
+      {{ bibjson.title }}
+      {% if bibjson.alternative_title %}
+      <span aria-hidden="true">{{ bibjson.alternative_title }}</span>
+      {% endif %}
+    </h1>
 
-        {% if past %}
-            <p><strong>Continues: </strong>
-            {% for p in past %}
-                {% set bibjson = p.bibjson() %}
-                {% if bibjson.issns()|length > 0 %}
-                    {% if p.is_in_doaj() %}
-                        <a href="{{ url_for('doaj.toc', identifier=bibjson.issns()[0]) }}">{{ bibjson.title }}</a>
-                    {% else %}
-                        {{ bibjson.title }}, ISSN: {{ bibjson.issns()[0] }} (not available in DOAJ)
-                    {% endif %}
-                {% endif %}
-                {% if not loop.last %}&nbsp;|&nbsp;{% endif %}
-            {% endfor %}
-            </p>
-        {% endif %}
+    {%- set seal = journal.has_seal() -%}
+    {% if seal %}
+    <a href="#" class="tag tag--featured">
+      <span data-feather="check-circle" aria-hidden="true"></span>
+      DOAJ Seal
+    </a>
+    {%- endif %}
 
-        {% if future %}
-            <p><strong>Continued by: </strong>
-            {% for f in future %}
-                {% set bibjson = f.bibjson() %}
-                {% if bibjson.issns()|length > 0 %}
-                    {% if f.is_in_doaj() %}
-                        <a href="{{ url_for('doaj.toc', identifier=bibjson.issns()[0]) }}">{{ bibjson.title }}</a>
-                    {% else %}
-                        {{ bibjson.title }}, ISSN: {{ bibjson.issns()[0] }} (not available in DOAJ)
-                    {% endif %}
-                {% endif %}
-                {% if not loop.last %}&nbsp;|&nbsp;{% endif %}
-            {% endfor %}
-            </p>
-        {% endif %}
+    {% if bibjson.get_single_url("homepage") %}
+    <a href="{{ bibjson.get_single_url('homepage') }}" target="_blank" rel="noopeener" class="tag">
+      <span data-feather="external-link" aria-hidden="true"></span>
+      Website
+    </a>
+    {% endif %}
 
-    </div>
-    <div class="col-md-2" align="right" style="padding-top: 20px">
-        {%- if lic -%}
-            {%- set urls = CC_MAP.get(lic.get("type")) -%}
-            {%- if urls -%}
-                <a href="{{urls[1]}}" title="{{lic.get('title')}}" target='blank'><img src="{{urls[0]}}" width='80' height='15' valign='middle' alt="{{lic.get('title')}}"></a><br>
-            {%- endif -%}
-        {%- endif -%}
-        {%- set tick = journal.is_ticked() -%}
-        {%- if tick -%}
-            <img src='/static/doaj/images/tick_short.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style="padding-bottom: 3px">​<br>
-        {%- endif -%}
-        {%- set seal = journal.has_seal() -%}
-        {%- if seal -%}
-            <img src='/static/doaj/images/seal_short.png' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal' style="padding-bottom: 3px">​
-        {%- endif -%}
-    </div>
-</div>
+  </header>
 
-<div class="row" style="margin-bottom: 30px; margin-top: 30px">
-    <div class="col-md-1">&nbsp;</div>
-    <div class="col-md-5">
-        <div class="box with-borders" style="min-height: 140px">
-            {% if bibjson.get_single_url("homepage") %}
-                <p><a href="{{bibjson.get_single_url('homepage')}}">Homepage</a></p>
-            {% endif %}
-            {% if bibjson.publisher %}
-                <p><strong>Publisher</strong>:&nbsp;{{bibjson.publisher}}</p>
-            {% endif %}
+  <div class="tabs">
+    <nav class="tabs__menu">
+      <ul class="tabs__list" role="tablist">
+        <li class="tabs__item">
+          <a href="#about-journal" role="tab" aria-selected="true">About</a>
+        </li>
+        <li class="tabs__item"role="presentation">
+          <a href="#all-articles" role="tab" aria-selected="false">Articles</a>
+        </li>
+      </ul>
+    </nav>
 
-            {% if bibjson.institution %}
-                <p><strong>Society/Institution</strong>:&nbsp;{{bibjson.institution}}</p>
-            {% endif %}
+    <div class="tabs__content">
+      <section id="about-journal" class="tabs__panel" role="tabpanel" aria-hidden="false">
+        <h2 class="sr-only">About</h2>
+        <div class="three-col">
+          <section>
+            <h3 class="label label--underlined">Publishing with this journal</h3>
 
-            {% if bibjson.country %}
-                <p><strong>Country of publisher</strong>:&nbsp;{{bibjson.country_name()}}</p>
-            {% endif %}
+            <article class="card card--with-icon">
+              <span data-feather="dollar-sign" aria-hidden="true"></span>
+              <div>
+                {% if not bibjson.apc_url and not bibjson.submission_charges_url and not bibjson.get_single_url("waiver_policy") %}
+                  <p>Information on publication charges not available for this journal.</p>
 
-            {% if bibjson.provider %}
-                <p><strong>Platform/Host/Aggregator</strong>:&nbsp;{{bibjson.provider}}</p>
-            {% endif %}
-
-            <p><strong>Date added to DOAJ</strong>:&nbsp;{{journal.created_timestamp.strftime("%e %b %Y")}}</p>
-
-            {% if journal.last_manual_update_timestamp and journal.last_manual_update_timestamp.strftime(app.config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')) != app.config.get('DEFAULT_TIMESTAMP','1970-01-01T00:00:00Z')%}
-            <p><strong>Record Last Updated</strong>:&nbsp;{{journal.last_manual_update_timestamp.strftime("%e %b %Y")}}</p>
-            {% endif %}
-
-        </div>
-    </div>
-
-    <div class="col-md-5">
-        <div class="box with-borders" style="min-height: 140px">
-            {% for path in bibjson.lcc_paths() %}
-                {% if loop.index0 == 0 %}<p><strong>LCC Subject Category</strong>: {% endif %}
-                {% if loop.index0 > 0 %} | {% endif %}
-                {{ path }}
-                {% if loop.last %}</p>{% endif %}
-            {% endfor %}
-
-            {% if bibjson.keywords %}
-                <p><strong>Publisher's keywords</strong>: {{bibjson.keywords|join(", ")}}</p>
-            {% endif %}
-
-            {% if bibjson.language %}
-                <p><strong>Language of fulltext</strong>:&nbsp;{{bibjson.language_name()|join(", ")}}</p>
-            {% endif %}
-
-            {% if bibjson.format|length > 0 %}
-                <p><strong>Full-text formats available</strong>: {{bibjson.format|join(", ")}}</p>
-            {% endif %}
-        </div>
-    </div>
-
-</div>
-
-<div class="row" style="margin-top: 30px">
-    <div class="col-md-1">&nbsp;</div>
-    <div class="col-md-5">
-        <div class="box slim">
-            <p><strong>PUBLICATION CHARGES</strong></p>
-
-            {% if not bibjson.apc_url and not bibjson.submission_charges_url and not bibjson.get_single_url("waiver_policy") %}
-
-                <p>Information on publication charges not available for this journal</p>
-
-            {% else %}
-
-                {% if bibjson.apc_url %}
-                    {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
-                        <p>
-                            <a href="{{ bibjson.apc_url }}">Article Processing Charges (APCs):</a>
-                            {{bibjson.apc.get("average_price", "price unknown")}} {{bibjson.apc.get("currency", " currency unknown")}}
-                        </p>
-                    {% else %}
-                        <p>
-                            <a href="{{ bibjson.apc_url }}">Article Processing Charges (APCs):</a> No
-                        </p>
-                    {% endif %}
                 {% else %}
+                  <p>
+                    {# APCs #}
                     {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
-                        <p>
-                            Article Processing Charges (APCs):
-                            {{bibjson.apc.get("average_price", "price unknown")}} {{bibjson.apc.get("currency", " currency unknown")}}
-                        </p>
-                    {% else %}
-                        <p>
-                            Article Processing Charges (APCs): No
-                        </p>
-                    {% endif %}
-                {% endif %}
+                      It costs <strong class="label label--large">{{ bibjson.apc.get("average_price", "price unknown") }} {{ bibjson.apc.get("currency", " currency unknown") }}</strong> for APCs
+                      ({% if bibjson.apc_url%}<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">{% endif %}article processing charges{% if bibjson.apc_url%}</a>{% endif %})
 
-                {% if bibjson.submission_charges_url %}
+                    {% else %}
+                      There are <strong class="label label--large">No APC<span style="text-transform: lowercase;">s</span></strong> (<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">article processing charges</a>) to publish with this journal
+                    {% endif %}
+
+                    {# Submission charges #}
                     {% if bibjson.submission_charges.get("currency") or bibjson.submission_charges.get("average_price") %}
-                        <p>
-                            <a href="{{ bibjson.submission_charges_url }}">Submission Charges:</a>
-                            {{bibjson.submission_charges.get("average_price", "price unknown")}} {{bibjson.submission_charges.get("currency", " currency unknown")}}
-                        </p>
+                      and there is a {% if bibjson.submission_charges_url %}<a href="{% if bibjson.submission_charges_url %}" target="_blank" rel="noopener">{% endif %}submission charge{% if bibjson.submission_charges_url %}</a>{% endif %} of <strong class="labe label--large">{{ bibjson.submission_charges.get("average_price", "price unknown") }} {{ bibjson.submission_charges.get("currency", " currency unknown") }}</strong>
                     {% else %}
-                        <p>
-                            <a href="{{ bibjson.submission_charges_url }}">Submission Charges:</a> No
-                        </p>
+                      and there are <strong>no submission charges</strong>
                     {% endif %}
-                {% else %}
-                    {% if bibjson.submission_charges.get("currency") or bibjson.submission_charges.get("average_price") %}
-                        <p>
-                            Submission Charges:
-                            {{bibjson.submission_charges.get("average_price", "price unknown")}} {{bibjson.submission_charges.get("currency", " currency unknown")}}
-                        </p>
-                    {% else %}
-                        <p>
-                            Submission Charges: No
-                        </p>
+                  </p>
+
+                  {# Waivers #}
+                  {% if bibjson.get_single_url("waiver_policy") %}
+                  <p>
+                    &rarr; There is a <a href="{{ bibjson.get_single_url('waiver_policy') }}" target="_blank" rel="noopener">waiver policy</a> for these charges.
+                  </p>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </article>
+
+            <article class="card card--with-icon">
+              <span data-feather="user-check" aria-hidden="true"></span>
+              <div>
+                <p>Look up the journal’s:</p>
+                <ul>
+                  {% if bibjson.get_single_url("aims_scope") %}
+                  <li><a href="{{ bibjson.get_single_url('aims_scope') }}" target="_blank" rel="noopener">Aims & scope</a></li>
+                  {% endif %}
+                  {% if bibjson.get_single_url("author_instructions") %}
+                  <li><a href="{{ bibjson.get_single_url('author_instructions') }}" target="_blank" rel="noopener">Instructions for authors</a></li>
+                  {% endif %}
+                  {% if bibjson.get_single_url("editorial_board") %}
+                  <li><a href="{{ bibjson.get_single_url('editorial_board') }}" target="_blank" rel="noopener">Editorial Board</a></li>
+                  {% endif %}
+                  {% if bibjson.editorial_review %}
+                    {% if bibjson.editorial_review.get("process") or bibjson.editorial_review.get("url") %}
+                    <li><strong>{% if bibjson.editorial_review.get("url") %}<a href="{{ bibjson.editorial_review.get('url') }}" target="_blank" rel="noopener">{% endif %}{{ bibjson.editorial_review.get("process", "Review process unknown") }}{% if bibjson.editorial_review.get("url") %}</a>{% endif %}</strong></li>
                     {% endif %}
+                  {% endif %}
+                </ul>
+                {% if journal.plagiarism_check %}
+                <p>
+                  &rarr; This journal checks for plagiarism
+                </p>
                 {% endif %}
-
-                {% if bibjson.get_single_url("waiver_policy") %}
-                    <p>
-                        <a href="{{bibjson.get_single_url('waiver_policy')}}">Waiver policy for charges</a>
-                    </p>
-                {% endif %}
-            {% endif %}
-
-        </div>
-    </div>
-
-    <div class="col-md-5">
-        <div class="box slim">
-            <p><strong>EDITORIAL INFORMATION</strong></p>
-
-            {% if bibjson.editorial_review %}
-                {% if bibjson.editorial_review.get("process") or bibjson.editorial_review.get("url") %}
-                    <p>
-                    {% if bibjson.editorial_review.get("url") %}
-                        <a href="{{bibjson.editorial_review.get('url')}}">{{bibjson.editorial_review.get("process", "Review process unknown")}}</a>
-                    {% else %}
-                        {{bibjson.editorial_review.get("process", "Review process unknown")}}
-                    {% endif %}
-                    </p>
-                {% endif %}
-            {% endif %}
-
-            {% if bibjson.get_single_url("editorial_board") %}
-                <p><a href="{{bibjson.get_single_url('editorial_board')}}">Editorial Board</a></p>
-            {% endif %}
-
-            {% if bibjson.get_single_url("aims_scope") %}
-                <p><a href="{{bibjson.get_single_url('aims_scope')}}">Aims and scope</a></p>
-            {% endif %}
-
-            {% if bibjson.get_single_url("author_instructions") %}
-                <p><a href="{{bibjson.get_single_url('author_instructions')}}">Instructions for authors</a></p>
-            {% endif %}
+              </div>
+            </article>
 
             {% if bibjson.publication_time %}
-                <p>Time From Submission to Publication: {{bibjson.publication_time}} weeks</p>
+            <article class="card card--with-icon">
+              <span data-feather="clock" aria-hidden="true"></span>
+              <div>
+                Expect on average <strong>{{ bibjson.publication_time }} weeks</strong> from submission to publication.
+              </div>
+            </article>
+            {% endif %}
+          </section>
+
+          <section>
+            <h3 class="label label--underlined">Best practice</h3>
+            <article class="card card--with-icon">
+              <span data-feather="unlock" aria-hidden="true"></span>
+              <div>
+                {% if journal.license %}
+                <p>This journal uses
+                  {% for license in journal.license %}
+                  {% if forloop.first %}
+                  {% elsif forloop.last %} &
+                  {% else %},
+                  {% endif %}
+                  a <strong>{{ license }}</strong>
+                  {% endfor %}
+                  license.
+                </p>
+                <p>
+                  {% for license in journal.license %}
+                  <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener" style="text-decoration: none;">
+                  {% if license == "CC BY" %}
+                  {% include svg/cc.svg %} {% include svg/by.svg %}
+                  {% elsif license == "CC BY-NC" %}
+                  {% include svg/cc.svg %} {% include svg/by.svg %} {% include svg/nc.svg %}
+                  {% endif %}
+                  {% if forloop.last %}{% else %}<br/>{% endif %}
+                  </a>
+                  {% endfor %}
+                </p>
+                {% endif %}
+                <p>
+                  &rarr; Look up their <a href="{{bibjson.get_single_url('oa_statement')}}" target="_blank" rel="noopener">open access statement</a> and their <a href="{{lic.get('url')}}" target="_blank" rel="noopener">license terms</a>.
+                </p>
+              </div>
+            </article>
+
+            <article class="card card--with-icon">
+              {% include svg/copyright.svg %}
+              <div>
+                <p>The author does <strong>not</strong> retain unrestricted copyrights and publishing rights.</p>
+              </div>
+            </article>
+
+            {% if bibjson.archiving_policy %}
+            <article class="card card--with-icon">
+              <span data-feather="archive" aria-hidden="true"></span>
+              <div>
+                <p>Articles digitally archived in:</p>
+                <ul>
+                  <li>{{ bibjson.flattened_archiving_policies|join(", ") }}</li>
+                </ul>
+
+                {% if bibjson.archiving_policy.get("url") %}
+                <p>
+                  &rarr; Find out about their <a href="bibjson.archiving_policy.get("url")" target="_blank" rel="noopener">archiving policy</a>.
+                </p>
+                {% endif %}
+              </div>
+            </article>
             {% endif %}
 
+            {% if bibjson.deposit_policy %}
+            <article class="card card--with-icon">
+              <span data-feather="upload-cloud" aria-hidden="true"></span>
+              <div>
+                <p>
+                  <a href="{{ journal.policy_url }}" target="_blank" rel="noopener">Deposit policy</a> with:
+                </p>
+                <ul>
+                  <li>
+                    <a href="https://v2.sherpa.ac.uk/cgi/search/publication/basic?publication_title-auto={{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                      Sherpa/ROMEO
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://diadorim.ibict.br/simple-search?query={{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                      Diadorim
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://heloise.ccsd.cnrs.fr/search/searchreview?parameter_0={{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                      Héloïse
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://www.accesoabierto.net/dulcinea/lista/REVISTA/{{ journal.title | url_encode }}" target="_blank" rel="noopener">
+                      Dulcinea
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </article>
+            {% endif %}
+          </section>
+
+          <section>
+            <h3 class="label label--underlined">Journal metadata</h3>
+
+            <article class="card card--with-icon">
+              <span data-feather="map-pin" aria-hidden="true"></span>
+              <dl>
+                {% if bibjson.publisher %}
+                <dt>Publisher</dt>
+                <dd>{{bibjson.publisher}}{% if bibjson.country %}, {{bibjson.country_name()}}{% endif %}</dd>
+                {% endif %}
+
+                {% if bibjson.institution %}
+                <dt>Society or institution</dt>
+                <dd>{{bibjson.institution}}{% if bibjson.institution_country %}, {{ bibjson.institution_country }}{% endif %}</dd>
+                {% endif %}
+
+                {% if bibjson.language %}
+                <dt>Manuscripts accepted in</dt>
+                <dd>{{bibjson.language_name()|join(", ")}}</dd>
+                {% endif %}
+              </dl>
+            </article>
+
+            <article class="card card--with-icon">
+              <span data-feather="tag" aria-hidden="true"></span>
+              <dl>
+                <dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span></a></dt>
+                {% assign lcc_codes = journal.lcc | split: "|" %}
+                <dd>
+                  {% for code in lcc_codes %}
+                    <a href="{{ site.baseurl }}{% link search/journals.md %}">{{ code }}</a>{% if forloop.last %}{% else %}, {% endif %}
+                  {% endfor %}
+                </dd>
+
+                {% if journal.keywords %}
+                <dt>Keywords</dt>
+                <dd>
+                  {% for keyword in journal.keywords %}
+                  <a href="{{ site.baseurl }}{% link search/articles.md %}">{{ keyword }}</a>{% if forloop.last %}{% else %}, {% endif %}
+                  {% endfor %}
+                </dd>
+                {% endif %}
+              </dl>
+            </article>
+          </section>
         </div>
-    </div>
+      </section>
 
-</div>
+      <section id="all-articles" class="row tabs__panel" role="tabpanel" aria-hidden="true">
+        <header class="col-xs-12">
+          <h2>{{ journal.articles }} indexed articles</h2>
+        </header>
 
-<div class="row">
-    <div class="col-md-1">&nbsp;</div>
-    <div class="col-md-11">
-        <div class="box slim"><a href="#" id="journal_details_toggle">More</a></div>
-    </div>
-</div>
-
-<div id="journal_details">
-
-    <div class="row" style="margin-top: 30px">
-        <div class="col-md-1">&nbsp;</div>
-        <div class="col-md-5">
-            <div class="box slim">
-                <p><strong>OPEN ACCESS &amp; LICENSING</strong></p>
-
-                {% if lic %}
-                    <p>Type of License: {{lic.get("title", "Unknown")}}</p>
-
-                    {% if lic.get("url") %}
-                        <p><a href="{{lic.get('url')}}">License terms</a></p>
-                    {% endif %}
-
-                {% endif %}
-
-                {% if bibjson.get_single_url("oa_statement") %}
-                    <p><a href="{{bibjson.get_single_url('oa_statement')}}">Open Access Statement</a></p>
-                {% endif %}
-
-                {% if bibjson.oa_start.get("year") %}
-                    <p>Year Open Access Content Began: {{bibjson.oa_start.get("year")}}</p>
-                {% endif %}
-
-                {% if bibjson.author_copyright %}
-                    {% if bibjson.author_copyright.get("copyright") or bibjson.author_copyright.get("url") %}
-                    <p>Does the author retain unrestricted copyright?
-                        {% set c = bibjson.author_copyright.get("copyright", "uncertain") %}
-                        {% if bibjson.author_copyright.get("url") %}
-                            <a href="{{bibjson.author_copyright.get('url')}}">{{TYN.get(c, c)}}</a>
-                        {% else %}
-                            {{TYN.get(c, c)}}
-                        {% endif %}
-                    </p>
-                    {% endif %}
-                {% endif %}
-
-                {% if bibjson.author_publishing_rights %}
-                    {% if bibjson.author_publishing_rights.get("publishing_rights") or bibjson.author_publishing_rights.get("url") %}
-                    <p>Does the author retain publishing rights?
-                        {% set c = bibjson.author_publishing_rights.get("publishing_rights", "uncertain") %}
-                        {% if bibjson.author_publishing_rights.get("url") %}
-                            <a href="{{bibjson.author_publishing_rights.get('url')}}">{{TYN.get(c, c)}}</a>
-                        {% else %}
-                            {{TYN.get(c, c)}}
-                        {% endif %}
-                    {% endif %}
-                    </p>
-                {% endif %}
-
-
-            </div>
-        </div>
-
-        <div class="col-md-5">
-            <div class="box slim">
-                <p><strong>BEST PRACTICE POLICIES</strong></p>
-
-                {% if bibjson.persistent_identifier_scheme|length > 0 %}
-                    <p>Permanent article identifier: {{bibjson.persistent_identifier_scheme|join(", ")}} </p>
-                {% endif %}
-
-                {% if bibjson.plagiarism_detection %}
-                    {% if bibjson.plagiarism_detection.get("detection") or bibjson.plagiarism_detection.get("url") %}
-                    <p>Checks for plagiarism:
-                        {% set c = bibjson.plagiarism_detection.get("detection", "uncertain") %}
-                        {% if bibjson.plagiarism_detection.get("url") %}
-                            <a href="{{bibjson.plagiarism_detection.get('url')}}">{{TYN.get(c, c)}}</a>
-                        {% else %}
-                            {{TYN.get(c, c)}}
-                        {% endif %}
-                    </p>
-                    {% endif %}
-                {% endif %}
-
-                {% if bibjson.archiving_policy %}
-                    {% if bibjson.archiving_policy.get("policy") or bibjson.archiving_policy.get("url") %}
-                    <p>Content digitally archived in:
-                        {% if bibjson.archiving_policy.get("url") %}
-                            <a href="{{bibjson.archiving_policy.get('url')}}">{{bibjson.flattened_archiving_policies|join(", ")}}</a>
-                        {% else %}
-                            {{bibjson.flattened_archiving_policies|join(", ")}}
-                        {% endif %}
-                    </p>
-                    {% endif %}
-                {% endif %}
-
-                {% if bibjson.article_statistics %}
-                    {% if bibjson.article_statistics.get("statistics") or bibjson.article_statistics.get("url") %}
-                    <p>Article-level metrics:
-                        {% set c = bibjson.article_statistics.get("statistics", "uncertain") %}
-                        {% if bibjson.article_statistics.get("url") %}
-                            <a href="{{bibjson.article_statistics.get('url')}}">{{TYN.get(c, c)}}</a>
-                        {% else %}
-                            {{TYN.get(c, c)}}
-                        {% endif %}
-                    </p>
-                    {% endif %}
-                {% endif %}
-
-                {% if bibjson.deposit_policy %}
-                    <p>Deposit policy registered in: {{bibjson.deposit_policy|join(", ")}}</p>
-                {% endif %}
-
-                {% if lic %}
-                    {% if lic.get("embedded") %}
-                        <p>Electronically embedded licenses? {{TYN.get(lic.get("embedded"), lic.get("embedded"))}}</p>
-                    {% endif %}
-                {% endif %}
-
-            </div>
+        <div class="col-md-3">
+          {% include search-article-filters.html %}
         </div>
 
+        <div class="col-md-9">
+          {% include search-article-results.html %}
+        </div>
+      </section>
     </div>
+  </div>
 
-</div>
+  <footer id="updated" class="page-content__footer">
+    <p>
+      Added {{journal.created_timestamp.strftime("%e %B %Y")}}
+      {% if journal.last_manual_update_timestamp and journal.last_manual_update_timestamp.strftime(app.config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')) != app.config.get('DEFAULT_TIMESTAMP','1970-01-01T00:00:00Z')%}
+      &bull; Updated {{journal.last_manual_update_timestamp.strftime("%e %B %Y")}}
+      {% endif %}
+    </p>
+  </footer>
 
-<div class="row" style="margin-top: 50px; margin-bottom: 20px">
-    <div class="col-md-12">
-        <h2>Tables of Contents</h2>
-    </div>
-</div>
-
-
-<div id="journal_toc_articles"></div>
-
-<noscript>
-
-    <p>You are currently browsing with JavaScript turned off, which means the ToC will not appear.</p>git flo
-
-    <p>If you are seeing this, but believe you have JavaScript enabled, please <a href="/contact">contact us</a> and let us know.</p>
-
-</noscript>
-
+</main>
 
 {% endblock %}
 
@@ -443,36 +375,3 @@
     <script type="text/javascript" src="/static/js/edges/public.toc.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endblock extra_js_bottom %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
