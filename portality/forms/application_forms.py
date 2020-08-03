@@ -1787,6 +1787,8 @@ class RequiredBuilder:
         html_attrs["required"] = ""
         if "message" in settings:
             html_attrs["data-parsley-required-message"] = settings["message"]
+        else:
+            html_attrs["data-parsley-required-message"] = "This answer is required"
         html_attrs["data-parsley-validate-if-empty"] = "true"
 
     @staticmethod
