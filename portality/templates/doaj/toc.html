@@ -10,9 +10,7 @@
 
 {% block page_desc %}<meta name="description" content="Information about the open-access journal {{ bibjson.title }} in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">{% endblock %}
 
-{% block extra_stylesheets %}
-    {% include "_edges_common_css.html" %}
-{% endblock %}
+{% include "_edges_common_css.html" %}
 
 {% block content %}
 
@@ -172,7 +170,7 @@
                 <p>Information on publication charges not available for this journal</p>
 
             {% else %}
-
+                {#
                 {% if bibjson.apc_url %}
                     {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
                         <p>
@@ -220,7 +218,7 @@
                         </p>
                     {% endif %}
                 {% endif %}
-
+                #}
                 {% if bibjson.get_single_url("waiver_policy") %}
                     <p>
                         <a href="{{bibjson.get_single_url('waiver_policy')}}">Waiver policy for charges</a>
@@ -234,7 +232,7 @@
     <div class="col-md-5">
         <div class="box slim">
             <p><strong>EDITORIAL INFORMATION</strong></p>
-
+            {#
             {% if bibjson.editorial_review %}
                 {% if bibjson.editorial_review.get("process") or bibjson.editorial_review.get("url") %}
                     <p>
@@ -262,7 +260,7 @@
             {% if bibjson.publication_time %}
                 <p>Time From Submission to Publication: {{bibjson.publication_time}} weeks</p>
             {% endif %}
-
+            #}
         </div>
     </div>
 
@@ -295,11 +293,11 @@
                 {% if bibjson.get_single_url("oa_statement") %}
                     <p><a href="{{bibjson.get_single_url('oa_statement')}}">Open Access Statement</a></p>
                 {% endif %}
-
+                {#
                 {% if bibjson.oa_start.get("year") %}
                     <p>Year Open Access Content Began: {{bibjson.oa_start.get("year")}}</p>
                 {% endif %}
-
+                #}
                 {% if bibjson.author_copyright %}
                     {% if bibjson.author_copyright.get("copyright") or bibjson.author_copyright.get("url") %}
                     <p>Does the author retain unrestricted copyright?
@@ -338,6 +336,7 @@
                     <p>Permanent article identifier: {{bibjson.persistent_identifier_scheme|join(", ")}} </p>
                 {% endif %}
 
+            {#
                 {% if bibjson.plagiarism_detection %}
                     {% if bibjson.plagiarism_detection.get("detection") or bibjson.plagiarism_detection.get("url") %}
                     <p>Checks for plagiarism:
@@ -350,7 +349,8 @@
                     </p>
                     {% endif %}
                 {% endif %}
-
+                #}
+                {#
                 {% if bibjson.archiving_policy %}
                     {% if bibjson.archiving_policy.get("policy") or bibjson.archiving_policy.get("url") %}
                     <p>Content digitally archived in:
@@ -362,7 +362,7 @@
                     </p>
                     {% endif %}
                 {% endif %}
-
+                #}
                 {% if bibjson.article_statistics %}
                     {% if bibjson.article_statistics.get("statistics") or bibjson.article_statistics.get("url") %}
                     <p>Article-level metrics:

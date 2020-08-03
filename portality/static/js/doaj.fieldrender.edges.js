@@ -31,10 +31,14 @@ $.extend(true, doaj, {
 
             this.title = edges.getParam(params.title, "");
 
+            this.titleBar = edges.getParam(params.titleBar, true);
+
             this.draw = function (edge) {
                 this.edge = edge;
 
-                var frag = '<header class="search__header" style="background-image: url(\'/static/doaj/images/search-background.jpg\')"> \
+                var titleBarFrag = "";
+                if (this.titleBar) {
+                    titleBarFrag = '<header class="search__header" style="background-image: url(\'/static/doaj/images/search-background.jpg\')"> \
                         <p class="label">Search</p>\n \
                         <h1>' + this.title + ' \
                             <span data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-help" type="button"></span><span class="sr-only">Help</span> \
@@ -42,7 +46,10 @@ $.extend(true, doaj, {
                         <div class="row">\
                             <div id="search-input-bar" class="col-md-9"></div>\
                         </div>\
-                    </header>\
+                    </header>';
+                }
+
+                var frag = titleBarFrag + '\
                     <h2 id="result-count"></h2>\
                     <div class="row">\
                         <div class="col-md-3">\
