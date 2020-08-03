@@ -3,7 +3,7 @@ layout: apply
 title: <span data-feather="eye" aria-hidden="true"></span> Review your answers
 toc: true
 fragment: false
-hightrght: false
+highlight: false
 number: 7
 ---
 

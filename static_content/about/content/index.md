@@ -38,4 +38,6 @@ DOAJ partners with many organisations. The nature of the partnerships vary and m
 + {:.full-width-list__item} [SciELO](http://www.scielo.org/)
 + {:.full-width-list__item} [Think. Check. Submit.](https://thinkchecksubmit.org/)
 
-DOAJ is [an adopting organisation](https://c4disc.org/about/adopting-organizations/) of [the C4DISC Joint Statement of Principles](https://c4disc.org/principles/). Adopting the Joint Statement of Principles shows our support for improving diversity and inclusion in scholarly communications.
+## Diversity
+
+DOAJ believes in the power and value of diversity in scholarly communications. DOAJ is [an adopting organisation](https://c4disc.org/about/adopting-organizations/) of [the C4DISC Joint Statement of Principles](https://c4disc.org/principles/). Adopting the Joint Statement of Principles shows our support for improving diversity and inclusion in our industry.

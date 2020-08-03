@@ -50,7 +50,7 @@
         padding: $spacing-03 $spacing-01;
         text-decoration: none;
 
-        &:hover {
+        &:hover, &:active, &:focus {
           color: $warm-black;
         }
 
@@ -63,7 +63,7 @@
           height: 30px;
           border: 1px solid rgba($dark-grey, 0.5);
           border-radius: 50%;
-          line-height: 30px;
+          line-height: 28px;
           text-align: center;
           color: rgba($dark-grey, 0.75);
           font-weight: bold;
@@ -83,7 +83,7 @@
         background-color: $dark-grey;
         border-color: $dark-grey;
 
-      a:hover {
+      &:hover, &:focus, &:active {
         color: $sanguine;
         cursor: pointer;
       }
@@ -98,7 +98,7 @@
         border-color: $grapefruit;
       }
 
-      a:hover {
+      &:hover, &:active, &:focus {
         cursor: pointer;
         color: $sanguine;
       }
@@ -108,15 +108,15 @@
       }
     }
 
-    .application-nav__list-item--invalid {
+    .application-nav__list-item--invalid a {
 
-      a:before {
+      &:before {
         color: $sanguine;
         border-color: $sanguine;
         border-width: 2px;
       }
 
-      a:hover {
+      &:hover, &:active, &:focus {
         color: $sanguine;
         cursor: pointer;
       }
@@ -148,13 +148,13 @@
   }
 
   .add_field__button{
-    margin-left: 5px;
+    margin-left: $spacing-03;
   }
 
   .remove_field__button {
     background-color: inherit;
     color: $dark-grey;
     border: none;
-    margin: 0 0 0.5em 0.5em;
+    margin: 0 0 $spacing-03 $spacing-03;
   }
 }
