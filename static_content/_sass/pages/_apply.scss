@@ -50,6 +50,10 @@
         padding: $spacing-03 $spacing-01;
         text-decoration: none;
 
+        &:hover {
+          color: $warm-black;
+        }
+
         &:before {
           display: inline-block;
           margin-right: $spacing-01;
@@ -59,7 +63,7 @@
           height: 30px;
           border: 1px solid rgba($dark-grey, 0.5);
           border-radius: 50%;
-          line-height: 28px;
+          line-height: 30px;
           text-align: center;
           color: rgba($dark-grey, 0.75);
           font-weight: bold;
@@ -68,14 +72,22 @@
       }
     }
 
-    .application-nav__list-item--done a:before {
-      content: '\00a0';
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-check'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: 15px;
-      background-color: $dark-grey;
-      border-color: $dark-grey;
+    .application-nav__list-item--done a {
+
+      &:before {
+        content: '\00a0';
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-check'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 15px;
+        background-color: $dark-grey;
+        border-color: $dark-grey;
+
+      a:hover {
+        color: $sanguine;
+        cursor: pointer;
+      }
+      }
     }
 
     .application-nav__list-item--active {
@@ -86,8 +98,41 @@
         border-color: $grapefruit;
       }
 
+      a:hover {
+        cursor: pointer;
+        color: $sanguine;
+      }
+
       &:before, ~ li:before {
         border: 1px dashed rgba($dark-grey, 0.25);
+      }
+    }
+
+    .application-nav__list-item--invalid {
+
+      a:before {
+        color: $sanguine;
+        border-color: $sanguine;
+        border-width: 2px;
+      }
+
+      a:hover {
+        color: $sanguine;
+        cursor: pointer;
+      }
+
+      &:before, ~ li:before {
+        border: 1px dashed rgba($dark-grey, 0.25);
+      }
+    }
+
+    .page_link--disabled {
+      color: $dark-grey;
+      &:hover,
+      &:focus,
+      &:active {
+        color: $dark-grey;
+        text-decoration: none;
       }
     }
   }
@@ -100,5 +145,16 @@
 
   hr {
     background-color: $grapefruit;
+  }
+
+  .add_field__button{
+    margin-left: 5px;
+  }
+
+  .remove_field__button {
+    background-color: inherit;
+    color: $dark-grey;
+    border: none;
+    margin: 0 0 0.5em 0.5em;
   }
 }

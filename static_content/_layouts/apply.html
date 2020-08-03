@@ -11,22 +11,10 @@
     <main class="container">
       <div class="row">
 
-        {% if page.admin %}
-        <div class="col-md-4">
-          {% include admin-panel.html %}
-        </div>
-        {% endif %}
-
         <div class="col-md-8">
           <section class="page-content">
-            {% if page.name != "index.md" and page.name != "thank-you.md" and page.name != "thank-you-fragment.md" and page.name != "edit.md" %}<p class="label">Page {{ page.number }} of 7</p>{% endif %}
+            {% if page.name != "index.md" and page.name != "thank-you.md" and page.name != "thank-you-fragment.md" %}<p class="label">Page {{ page.number }} of 7</p>{% endif %}
             <h1>{{ page.title }}</h1>
-            {% if page.admin %}
-            <ul class="tags">
-              <li class="tag">Pending</li>
-              <li class="tag"><a href="#"><span data-feather="user" aria-hidden="true"></span> soonkim (Southeast Asia)</a></li>
-            </ul>
-            {% endif %}
 
             {{ content }}
 
@@ -127,7 +115,6 @@
           </section>
         </div>
 
-        {% if page.admin == false %}
         <div class="col-md-4">
           <div>
             {% assign step1 = '01-oa-compliance.md' %}
@@ -232,7 +219,6 @@
             {% endif %}
           </div>
         </div>
-        {% endif %}
       </div>
     </main>
 

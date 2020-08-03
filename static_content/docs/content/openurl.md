@@ -1,6 +1,4 @@
-An OpenURL is similar to a web address, but instead of referring to a physical website, it refers to an article, book, patent, or other resource within a website. OpenURLs are similar to permalinks because they are permanently connected to a resource, regardless of which website the resource is connected to. (Retrieved from [Wikipedia](https://en.wikipedia.org/wiki/OpenURL).)
-
-The resource is retrieved using [a structured URL format.](http://alcme.oclc.org/openurl/servlet/OAIHandler?verb=ListSets)
+[OpenURL is for retrieving a resource using a structured URL format.](http://alcme.oclc.org/openurl/servlet/OAIHandler?verb=ListSets)
 
 On DOAJ, the parameters included in the request are passed to our search interface, which provides the top result. This means that using OpenURL isn't guaranteed to find your result 100% of the time, even if it exists.
 

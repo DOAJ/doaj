@@ -16,14 +16,10 @@
 
 .filter {
   margin: $spacing-04 0;
-
-  &:first-child {
-    margin-top: auto;
-  }
 }
 
 .filter__heading {
-  margin: auto 0 $spacing-03 0;
+  margin: $spacing-03 0;
   font-size: 1em;
   color: $warm-black;
   @include font-sans;
