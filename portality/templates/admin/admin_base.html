@@ -1,15 +1,12 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-  
-  <div class="row">
-    <div class="col-md-12">
+    <main class="container">
+    <h1>Admin dashboard</h1>
+
       {% include 'admin/nav.html' %}
 
       {% block admin_content %}
       {% endblock %}
-
-    </div>
-  </div>
-  
+    </main>
 {% endblock %}

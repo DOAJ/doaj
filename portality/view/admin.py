@@ -48,9 +48,7 @@ def index():
 @login_required
 @ssl_required
 def journals():
-    if not current_user.has_role("admin_journals"):
-        abort(401)
-    return render_template('admin/journals.html', admin_page=True)
+    return redirect(url_for("admin.index"))
 
 
 @blueprint.route("/journals", methods=["POST", "DELETE"])

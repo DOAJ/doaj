@@ -1,12 +1,29 @@
-<div class="row">
-    <div class="col-md-12">
-        <ul class="nav nav-tabs">
-            <li{% if request.path == url_for('admin.journals') %} class="active"{% endif %}><a href="{{ url_for('admin.journals') }}">Journals</a></li>
-            <li{% if request.path == url_for('admin.suggestions') %} class="active"{% endif %}><a href="{{ url_for('admin.suggestions') }}">Applications/Update Requests</a></li>
-            <li{% if request.path == url_for('account.index') %} class="active"{% endif %}><a href="{{ url_for('account.index') }}">Users</a></li>
-            <li{% if request.path == url_for('admin.admin_site_search') %} class="active"{% endif %}><a href="{{ url_for('admin.admin_site_search') }}">Journals and Articles (Admin)</a></li>
-            <li{% if request.path == url_for('admin.editor_group_search') %} class="active"{% endif %}><a href="{{ url_for('admin.editor_group_search') }}">Editor Groups</a></li>
-            <li{% if request.path == url_for('admin.background_jobs_search') %} class="active"{% endif %}><a href="{{ url_for('admin.background_jobs_search') }}">Background Jobs</a></li>
+{% set journals = url_for("admin.index") %}
+{% set applications = url_for("admin.suggestions") %}
+{% set users = url_for("account.index") %}
+{% set site_search = url_for("admin.admin_site_search") %}
+{% set editor_gorups = url_for("admin.editor_group_search") %}
+{% set bg = url_for("admin.background_jobs_search") %}
+
+{% set tabs = [
+    (journals, "Journals"),
+    (applications, "Applications/Update Requests"),
+    (users, "Users"),
+    (site_search, "Journals and Articles"),
+    (editor_gorups, "Editor Groups"),
+    (bg, "Background Jobs")
+    ]
+%}
+
+<div class="tabs">
+    <nav class="tabs__menu">
+        <ul class="tabs__list" role="tablist">
+            {% set selected = url == request.path %}
+            {% for url, label in tabs %}
+                <li class="tabs__item" {% if not selected %}role="presentation"{% endif %}>
+                    <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}">{{ label }}</a>
+                </li>
+            {% endfor %}
         </ul>
-    </div>
+    </nav>
 </div>

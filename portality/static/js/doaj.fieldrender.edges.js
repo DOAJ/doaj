@@ -78,94 +78,12 @@ $.extend(true, doaj, {
                     facetContainers += '<li class="filter" id="' + facets[i].id + '"></li>';
                 }
                 frag = frag.replace(/{{FACETS}}/g, facetContainers);
-
-                /*
-                // the classes we're going to need
-                var containerClass = edges.css_classes(this.namespace, "container");
-                var facetsClass = edges.css_classes(this.namespace, "facets");
-                var facetClass = edges.css_classes(this.namespace, "facet");
-                var panelClass = edges.css_classes(this.namespace, "panel");
-                var controllerClass = edges.css_classes(this.namespace, "search-controller");
-                var selectedFiltersClass = edges.css_classes(this.namespace, "selected-filters");
-                var pagerClass = edges.css_classes(this.namespace, "pager");
-                var searchingClass = edges.css_classes(this.namespace, "searching");
-                var resultsClass = edges.css_classes(this.namespace, "results");
-
-                // the facet view object to be appended to the page
-                var thefacetview = '<div class="' + containerClass + '"><div class="row">';
-
-                // if there are facets, give them span3 to exist, otherwise, take up all the space
-                var facets = edge.category("facet");
-                var facetContainers = "";
-
-                if (facets.length > 0) {
-                    thefacetview += '<div class="col-md-3">\
-                        <div class="' + facetsClass + '">{{FACETS}}</div>\
-                    </div>';
-                    thefacetview += '<div class="col-md-9" class="' + panelClass + '">';
-
-                    for (var i = 0; i < facets.length; i++) {
-                        facetContainers += '<div class="' + facetClass + '"><div id="' + facets[i].id + '"></div></div>';
-                    }
-                } else {
-                    thefacetview += '<div class="col-md-12" class="' + panelClass + '">';
-                }
-
-                // make space for the search options container at the top
-                var controller = edge.category("controller");
-                if (controller.length > 0) {
-                    thefacetview += '<div class="row"><div class="col-md-12"><div class="' + controllerClass + '"><div id="' + controller[0].id + '"></div></div></div></div>';
-                }
-
-                // make space for the selected filters
-                var selectedFilters = edge.category("selected-filters");
-                if (selectedFilters.length > 0) {
-                    thefacetview += '<div class="row">\
-                                            <div class="col-md-12">\
-                                                <div class="' + selectedFiltersClass + '"><div id="' + selectedFilters[0].id + '"></div></div>\
-                                            </div>\
-                                        </div>';
-                }
-
-                // make space at the top for the page
-                var topPagers = edge.category("top-pager");
-                if (topPagers.length > 0) {
-                    thefacetview += '<div class="row"><div class="col-md-12"><div class="' + pagerClass + '"><div id="' + topPagers[0].id + '"></div></div></div></div>';
-                }
-
-                // loading notification (note that the notification implementation is responsible for its own visibility)
-                var loading = edge.category("searching-notification");
-                if (loading.length > 0) {
-                    thefacetview += '<div class="row"><div class="col-md-12"><div class="' + searchingClass + '"><div id="' + loading[0].id + '"></div></div></div></div>'
-                }
-
-                // insert the frame within which the results actually will go
-                var results = edge.category("results");
-                if (results.length > 0) {
-                    for (var i = 0; i < results.length; i++) {
-                        thefacetview += '<div class="row"><div class="col-md-12"><div class="' + resultsClass + '" dir="auto"><div id="' + results[i].id + '"></div></div></div></div>';
-                    }
-                }
-
-                // make space at the bottom for the pager
-                var bottomPagers = edge.category("bottom-pager");
-                if (bottomPagers.length > 0) {
-                    thefacetview += '<div class="row"><div class="col-md-12"><div class="' + pagerClass + '"><div id="' + bottomPagers[0].id + '"></div></div></div></div>';
-                }
-
-                // close off all the big containers and return
-                thefacetview += '</div></div></div>';
-
-                thefacetview = thefacetview.replace(/{{FACETS}}/g, facetContainers);
-                */
-
                 edge.context.html(frag);
             };
         }
     },
 
     renderers : {
-        // FIXME: this is probably obsolete
         newFullSearchControllerRenderer: function (params) {
             return edges.instantiate(doaj.renderers.FullSearchControllerRenderer, params, edges.newRenderer);
         },
@@ -185,77 +103,20 @@ $.extend(true, doaj, {
             // amount of time between finishing typing and when a query is executed from the search box
             this.freetextSubmitDelay = edges.getParam(params.freetextSubmitDelay, 500);
 
-            // enable the share/save link feature
-            this.shareLink = edges.getParam(params.shareLink, false);
-            this.shareLinkText = edges.getParam(params.shareLinkText, "share");
-
             ////////////////////////////////////////
             // state variables
-
-            this.shareBoxOpen = false;
-
-            this.showShortened = false;
 
             this.focusSearchBox = false;
 
             this.namespace = "doaj-bs3-search-controller";
 
             this.draw = function () {
-                // reset these on each draw
-                this.shareBoxOpen = false;
-                this.showShortened = false;
-
                 var comp = this.component;
-
-                var shareButtonFrag = "";
-                var shareFrag = "";
-                if (this.shareLink) {
-                    var shareButtonClass = edges.css_classes(this.namespace, "toggle-share", this);
-                    shareButtonFrag = '<button class="' + shareButtonClass + ' btn btn-default btn-sm">' + this.shareLinkText + '</button>';
-                    var shorten = "";
-                    if (this.component.urlShortener) {
-                        var shortenClass = edges.css_classes(this.namespace, "shorten", this);
-                        shorten = '<div class="' + shortenClass + '">Share a link to this search <button class="btn btn-default btn-xs"><span class="glyphicon glyphicon-resize-small"></span>shorten url</button></div>'
-                    }
-                    var embed = "";
-                    if (this.component.embedSnippet) {
-                        var embedClass = edges.css_classes(this.namespace, "embed", this);
-                        embed = '<div class="row">\
-                            <div class="col-md-12">\
-                                Embed this search in your webpage\
-                            </div>\
-                        </div>\
-                        <div class="row">\
-                            <div class="col-md-12">\
-                                <textarea readonly class="' + embedClass + '"></textarea>\
-                            </div>\
-                        </div>';
-                    }
-                    var shareBoxClass = edges.css_classes(this.namespace, "share", this);
-                    var closeClass = edges.css_classes(this.namespace, "close-share", this);
-                    var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
-                    shareFrag = '<div class="' + shareBoxClass + '" style="display:none">\
-                        <div class="row">\
-                            <div class="col-md-11">\
-                                ' + shorten + '\
-                            </div>\
-                            <div class="col-md-1">\
-                                <a href="#" class="' + closeClass + ' pull-right"><span class="glyphicon glyphicon-remove"></span></a>\
-                            </div>\
-                        </div>\
-                        <div class="row">\
-                            <div class="col-md-12">\
-                                <textarea readonly class="' + shareUrlClass + '"></textarea>\
-                            </div>\
-                        </div>\
-                        ' + embed + '\
-                    </div>';
-                }
 
                 var clearClass = edges.css_classes(this.namespace, "reset", this);
                 var clearFrag = "";
                 if (this.clearButton) {
-                    clearFrag = '<button type="button" class="btn btn-danger btn-sm ' + clearClass + '" title="Clear all search and sort parameters and start again"> \
+                    clearFrag = '<button type="button" class="' + clearClass + '" title="Clear all search and sort parameters and start again"> \
                             <span class="glyphicon glyphicon-remove"></span> \
                         </button>';
                 }
@@ -268,13 +129,9 @@ $.extend(true, doaj, {
                     var directionClass = edges.css_classes(this.namespace, "direction", this);
                     var sortFieldClass = edges.css_classes(this.namespace, "sortby", this);
 
-                    sortOptions = '<div class="form-inline ' + sortClasses + '"> \
-                            <div class="form-group"> \
-                                <div class="input-group"> \
-                                    <span class="input-group-btn"> \
-                                        <button type="button" class="btn btn-default btn-sm ' + directionClass + '" title="" href="#"></button> \
-                                    </span> \
-                                    <select class="' + sortFieldClass + ' form-control input-sm"> \
+                    sortOptions = '<div class="input-group ' + sortClasses + '"> \
+                                    <button type="button" class="input-group__input ' + directionClass + '" title="" href="#"></button> \
+                                    <select class="' + sortFieldClass + ' input-group__input"> \
                                         <option value="_score">Relevance</option>';
 
                     for (var i = 0; i < comp.sortOptions.length; i++) {
@@ -283,10 +140,7 @@ $.extend(true, doaj, {
                         sortOptions += '<option value="' + field + '">' + edges.escapeHtml(display) + '</option>';
                     }
 
-                    sortOptions += ' </select> \
-                                </div> \
-                            </div> \
-                        </div>';
+                    sortOptions += ' </select></div>';
                 }
 
                 // select box for fields to search on
@@ -295,7 +149,7 @@ $.extend(true, doaj, {
                     // classes that we'll use
                     var searchFieldClass = edges.css_classes(this.namespace, "field", this);
 
-                    field_select += '<select class="' + searchFieldClass + ' form-control input-sm">';
+                    field_select += '<select class="' + searchFieldClass + ' input-group__input">';
                     field_select += '<option value="">search all</option>';
 
                     for (var i = 0; i < comp.fieldOptions.length; i++) {
@@ -318,44 +172,29 @@ $.extend(true, doaj, {
                     if (this.searchButtonText !== false) {
                         text = this.searchButtonText;
                     }
-                    searchFrag = '<span class="input-group-btn"> \
-                        <button type="button" class="btn btn-info btn-sm ' + searchClass + '"> \
+                    searchFrag = '<button type="button" class="input-group__input ' + searchClass + '"> \
                             ' + text + ' \
-                        </button> \
-                    </span>';
+                        </button>';
                 }
 
                 var searchClasses = edges.css_classes(this.namespace, "searchcombo", this);
-                var searchBox = '<div class="form-inline ' + searchClasses + '"> \
-                        <div class="form-group"> \
-                            <div class="input-group"> \
+                var searchBox = '<div class="input-group ' + searchClasses + '"> \
                                 ' + field_select + '\
                                 <input type="text" id="' + textId + '" class="' + textClass + ' form-control input-sm" name="q" value="" placeholder="' + this.searchPlaceholder + '"/> \
                                 ' + searchFrag + ' \
-                            </div> \
-                        </div> \
                     </div>';
 
-                if (shareButtonFrag !== "") {
-                    shareButtonFrag = '<div class="col-md-2 col-xs-12">' + shareButtonFrag + "</div>";
-                }
                 if (clearFrag !== "") {
-                    clearFrag = '<div class="col-md-1 col-xs-12">' + clearFrag + "</div>";
+                    clearFrag = '<div class="col-md-3 col-xs-12">' + clearFrag + "</div>";
                 }
                 if (sortOptions !== "") {
-                    sortOptions = '<div class="col-md-3 col-xs-12">' + sortOptions + "</div>";
+                    sortOptions = '<div class="col-md-9 col-xs-12">' + sortOptions + "</div>";
                 }
                 if (searchBox !== "") {
-                    searchBox = '<div class="col-md-6 col-xs-12">' + searchBox + "</div>";
+                    searchBox = '<div class="col-xs-12">' + searchBox + "</div>";
                 }
 
-                // caclulate all the div widths
-                var shareMd = "2";
-                var sortMd = "4";
-                var shareXs = "6";
-                var sortXs = "6";
-
-                var frag = shareFrag + '<div class="row">' + shareButtonFrag + clearFrag + sortOptions + searchBox + '</div>';
+                var frag = '<div class="row">' + clearFrag + sortOptions + searchBox + '</div>';
 
                 comp.context.html(frag);
 
@@ -495,61 +334,6 @@ $.extend(true, doaj, {
                 var textId = edges.css_id_selector(this.namespace, "text", this);
                 var text = this.component.jq(textId).val();
                 this.component.setSearchText(text);
-            };
-
-            this.toggleShare = function(element) {
-                var shareSelector = edges.css_class_selector(this.namespace, "share", this);
-                var shareUrlSelector = edges.css_class_selector(this.namespace, "share-url", this);
-                var el = this.component.jq(shareSelector);
-                var textarea = this.component.jq(shareUrlSelector);
-                if (this.shareBoxOpen) {
-                    el.hide();
-                    textarea.val("");
-                    if (this.component.embedSnippet) {
-                        var embedSelector = edges.css_class_selector(this.namespace, "embed", this);
-                        var embedTextarea = this.component.jq(embedSelector);
-                        embedTextarea.val("");
-                    }
-                    this.shareBoxOpen = false;
-                } else {
-                    el.show();
-                    if (this.showShortened) {
-                        textarea.val(this.component.shortUrl);
-                    } else {
-                        textarea.val(this.component.edge.fullUrl());
-                    }
-                    if (this.component.embedSnippet) {
-                        var embedSelector = edges.css_class_selector(this.namespace, "embed", this);
-                        var embedTextarea = this.component.jq(embedSelector);
-                        embedTextarea.val(this.component.embedSnippet(this));
-                    }
-                    this.shareBoxOpen = true;
-                }
-            };
-
-            this.toggleShorten = function(element) {
-                if (!this.component.shortUrl) {
-                    var callback = edges.objClosure(this, "updateShortUrl");
-                    this.component.generateShortUrl(callback);
-                } else {
-                    this.updateShortUrl();
-                }
-            };
-
-            this.updateShortUrl = function() {
-                var shareUrlSelector = edges.css_class_selector(this.namespace, "share-url", this);
-                var shortenSelector = edges.css_class_selector(this.namespace, "shorten", this);
-                var textarea = this.component.jq(shareUrlSelector);
-                var button = this.component.jq(shortenSelector).find("button");
-                if (this.showShortened) {
-                    textarea.val(this.component.edge.fullUrl());
-                    button.html('<span class="glyphicon glyphicon-resize-small"></span>shorten url');
-                    this.showShortened = false;
-                } else {
-                    textarea.val(this.component.shortUrl);
-                    button.html('<span class="glyphicon glyphicon-resize-full"></span>original url');
-                    this.showShortened = true;
-                }
             };
         },
 
