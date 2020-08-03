@@ -203,8 +203,10 @@ hosted on DOAJ.org) #}
           <dd>{{jbib.country_name()}}</dd>
           {% endif %}
 
-          <dt>LCC Subject Category</dt>
-          <dd>{{ page.lcc }}</dd>
+          {% for path in bibjson.lcc_paths() %}
+          {% if loop.index0 == 0 %}<dt>LCC Subject Category</dt>{% endif %}
+          <dd>{{ path }}</dd>
+          {% endfor %}
 
           {% if jbib.get_single_url("homepage") %}
           <dt>Website</dt>
