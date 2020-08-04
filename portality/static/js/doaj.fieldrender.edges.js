@@ -54,8 +54,8 @@ $.extend(true, doaj, {
                     <div class="row">\
                         <div class="col-md-3">\
                             <aside class="filters">\
-                                <h2 class="label label--underlined filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
-                                    <span data-feather="sliders" aria-hidden="true"></span> Refine search results <span data-feather="chevron-down" aria-hidden="true"></span>\
+                                <h2 class="label label--underlined filters__heading">\
+                                    <span data-feather="sliders" aria-hidden="true"></span> Refine search results\
                                 </h2>\
                                 <ul class="collapse filters__list" id="filters" aria-expanded="false">\
                                     {{FACETS}}\
@@ -1806,6 +1806,13 @@ $.extend(true, doaj, {
                     }
                 }
 
+                var language = "";
+                if (resultobj.index.language && resultobj.index.language.length > 0) {
+                    language = '<li>\
+                              Accepts manuscripts in <strong>' + resultobj.index.language.join(", ") + '</strong>\
+                            </li>';
+                }
+
                 var frag = '<li class="search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
@@ -1823,9 +1830,7 @@ $.extend(true, doaj, {
                             <li>\
                               ' + published + '\
                             </li>\
-                            <li>\
-                              Accepts manuscripts in <strong>' + resultobj.index.language.join(", ") + '</strong>\
-                            </li>\
+                            ' + language + '\
                           </ul>\
                           <ul>\
                             ' + subjects + '\
