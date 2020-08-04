@@ -210,6 +210,10 @@ form {
     display: block;
     margin: $spacing-03 0;
 
+    small, a {
+      color: $dark-grey;
+    }
+
     &:first-child {
       margin-top: auto;
     }
