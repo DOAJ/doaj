@@ -275,7 +275,7 @@ var formulaic = {
 
         ///////////////////////////////////////////////////////
 
-        // Functionsl for conditional fields
+        // Functions for conditional fields
         ///////////////////////////////////////////////////////
 
         this.bindConditional = function() {
@@ -302,15 +302,14 @@ var formulaic = {
                         }
 
                         // bind a change event for checking conditionals
-                        var element = this.controlSelect.input({id: condField});
-                        edges.on(element, "click", this, "checkConditional");
+                        var element = this.controlSelect.input({name: condField});
+                        edges.on(element, "change.Conditional", this, "checkConditional");
                     }
                 }
             }
         };
 
         this.checkConditional = function(element) {
-            console.log("this should be called")
             var name = this.getElementName($(element));
             var downstream = this.conditionals[name];
             for (var i = 0; i < downstream.length; i++) {
@@ -340,12 +339,12 @@ var formulaic = {
                             checkedValues.push(that.val());
                         }
                     });
-                    if ($.inArray(val, checkedValues) === -1) {
-                        return false;
+                    if ($.inArray(val, checkedValues) !== -1) {
+                        return true;
                     }
                 }
             }
-            return true;
+            return false;
         };
 
         ///////////////////////////////////////////////////////
@@ -573,7 +572,9 @@ var formulaic = {
 
             this.init = function() {
                 var elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                edges.on(elements, "change.ClickableUrl", this, "updateUrl");
+                // TODO: should work as-you-type by changing "change" to "keyup" event; doesn't work in edges
+                //edges.on(elements, "change.ClickableUrl", this, "updateUrl");
+                edges.on(elements, "keyup.ClickableUrl", this, "updateUrl");
             };
 
             this.updateUrl = function(element) {
@@ -583,6 +584,7 @@ var formulaic = {
                 if (val) {
                     if (this.link) {
                         this.link.attr("href", val);
+                        this.link.html(val);
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
@@ -603,60 +605,163 @@ var formulaic = {
         newMultipleField : function(params) {
             return edges.instantiate(formulaic.widgets.multipleField, params)
         },
-        multipleField: function(params){
+        multipleField: function(params) {
             this.fieldDef = params.fieldDef
-            let tag = this.fieldDef["input"] === "select" ? "select" : "input";
-            this.fields = $(tag + '[id^="' + this.fieldDef["name"] +'"]')
-
-            this.count = 0;
-
-            this.count = 0;
-            this.max = this.fieldDef["repeatable"]["initial"]-1
+            this.max = this.fieldDef["repeatable"]["initial"] - 1
 
             this.init = () => {
-                this.fields.each((idx, f) => {
-                    let s2_input = $(f).select2();
-                    $(s2_input).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
-                    feather.replace();
-                    if (idx !== 0) {
-                        $(s2_input).attr("required", false);
-                        $(s2_input).attr("data-parsley-validate-if-empty","true");
-                        $(s2_input).closest('li').hide();
-                    }
-                })
-                this.remove_btns = $(".remove_field__button")
-                $(this.remove_btns[0]).hide();
+                if (this.fieldDef["input"] === "group") {
+                    this.divs = $("div[name='" + this.fieldDef["name"] + "__group']")
 
-                this.addFieldBtn = $("#add_field__" + this.fieldDef["name"])
-                this.addFieldBtn.on("click", () => {
-                    $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').show();
-                    this.count++;
-                    if (this.count > 0){
-                        $(this.remove_btns[0]).show();
-                    }
-                    if (this.count === this.max) {
-                        $(this.addFieldBtn).hide();
-                    }
+                    this.count = 0;
 
-                })
-                $(this.remove_btns).each((idx, btn) => {
-                    $(btn).on("click", (event) => {
-                        $(this.fields[idx]).val("ML")
-
-                        for (let i = idx; i < this.count; i++){
-                            let data = $(this.fields[i+1]).select2('data')
-                            $(this.fields[i]).select2('data', { id: data.id, text: data.text});
-                        }
-                        this.count--;
-                        $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').hide();
-                        if (this.count === 0){
-                            $(this.remove_btns[0]).hide();
-                        }
-                        if (this.count < this.max) {
-                            $(this.addFieldBtn).show();
+                    this.divs.each((idx, div) => {
+                        $(div).append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                        feather.replace();
+                        if (idx !== 0) {
+                            $(div).hide();
                         }
                     })
-                })
+
+                    this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                    $(this.remove_btns[0]).hide();
+                    this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+
+                    this.addFieldBtn.on("click", () => {
+                        $(this.divs[this.count + 1]).show();
+                        this.count++;
+                        if (this.count > 0) {
+                            $(this.remove_btns[0]).show();
+                        }
+                        if (this.count === this.max) {
+                            $(this.addFieldBtn).hide();
+                        }
+
+                    })
+
+                    $(this.remove_btns).each((idx, btn) => {
+                        $(btn).on("click", () => {
+                            let thisDiv = $(btn).parent();
+                            let nextDiv = $(thisDiv)
+                            for (let i = idx; i < this.count; i++) {
+                                thisDiv = nextDiv;
+                                nextDiv = nextDiv.next();
+                                let thisInputs = $(thisDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
+                                let nextInputs = $(nextDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
+                                for (let j = 0; j < thisInputs.length; j++){
+                                    $(thisInputs[j]).val($(nextInputs[j]).val());
+                                }
+                            }
+                            this.count--;
+                            $(this.divs[this.count + 1]).hide();
+                            if (this.count === 0) {
+                                $(this.remove_btns[0]).hide();
+                            }
+                            if (this.count < this.max) {
+                                $(this.addFieldBtn).show();
+                            }
+                        })
+                    })
+
+                } else {
+                    let tag = this.fieldDef["input"] === "select" ? "select" : "input";
+                    this.fields = $(tag + '[id^="' + this.fieldDef["name"] + '-"]')
+
+                    this.count = 0;
+                    if (tag === "select"){
+                        this.fields.each((idx, f) => {
+                            let s2_input = $(f).select2()
+                            $(s2_input).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                            feather.replace();
+                            if (idx !== 0) {
+                                $(s2_input).attr("required", false);
+                                $(s2_input).attr("data-parsley-validate-if-empty", "true");
+                                $(s2_input).closest('li').hide();
+                            }
+                        })
+                        this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                        $(this.remove_btns[0]).hide();
+                        this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+                        this.addFieldBtn.on("click", () => {
+                            $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').show();
+                            this.count++;
+                            if (this.count > 0) {
+                                $(this.remove_btns[0]).show();
+                            }
+                            if (this.count === this.max) {
+                                $(this.addFieldBtn).hide();
+                            }
+
+                        })
+                        $(this.remove_btns).each((idx, btn) => {
+                            $(btn).on("click", (event) => {
+                                for (let i = idx; i < this.count; i++) {
+                                    let data = $(this.fields[i + 1]).select2('data')
+                                    if (data === null) {
+                                        data = {id: i, text: ""};
+                                    }
+                                    $(this.fields[i]).select2('data', {id: data.id, text: data.text});
+                                }
+                                this.count--;
+                                $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').hide();
+                                if (this.count === 0) {
+                                    $(this.remove_btns[0]).hide();
+                                }
+                                if (this.count < this.max) {
+                                    $(this.addFieldBtn).show();
+                                }
+                            })
+                        })
+                    } else {
+                        this.fields.each((idx, f) => {
+                            $(f).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                            feather.replace();
+                            if (idx !== 0) {
+                                $(f).attr("required", false);
+                                $(f).attr("data-parsley-validate-if-empty", "true");
+                                $(f).parent().hide();
+                            }
+                        })
+                        this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '-"]');
+                        $(this.remove_btns[0]).hide();
+                        this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+                        this.addFieldBtn.on("click", () => {
+                            let next_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
+                            // TODO: why .show() does not work?
+                            $(next_input).show();
+                            this.count++;
+                            if (this.count > 0) {
+                                $(this.remove_btns[0]).show();
+                            }
+                            if (this.count === this.max) {
+                                $(this.addFieldBtn).hide();
+                            }
+
+                        })
+                        $(this.remove_btns).each((idx, btn) => {
+                            $(btn).on("click", (event) => {
+                                for (let i = idx; i < this.count; i++) {
+                                    let data = $(this.fields[i + 1]).val()
+                                    if (data === null) {
+                                        data = "";
+                                    }
+                                    $(this.fields[i]).val(data);
+                                }
+
+                                this.count--;
+                                let last_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
+                                $(last_input).hide();
+                                if (this.count === 0) {
+                                    $(this.remove_btns[0]).hide();
+                                }
+                                if (this.count < this.max) {
+                                    $(this.addFieldBtn).show();
+                                }
+                            })
+                        })
+                    }
+
+                }
             }
             this.init()
         },
@@ -673,14 +778,17 @@ var formulaic = {
             this.elements = false;
 
             this.init = function() {
-                this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                this.elements = $("select[name$='" + this.fieldDef.name + "']")
                 this.elements.select2({  //TODO: select2 is not a function
-                    allowClear: true
+                    allowClear: false,
+                    width: 'resolve',
+                    newOption: true
                 });
             };
 
             this.init();
         },
+
 
         newTagList : function(params) {
             return edges.instantiate(formulaic.widgets.TagList, params);
@@ -732,7 +840,8 @@ var formulaic = {
                     allowClear: false,
                     tags: true,
                     tokenSeparators: [','],
-                    maximumSelectionSize: this.args["maximumSelectionSize"]
+                    maximumSelectionSize: this.args["maximumSelectionSize"],
+                    width: 'resolve'
                 });
 
             };
@@ -740,61 +849,6 @@ var formulaic = {
                 this.init();
             },
 
-        newSelect : function(params) {
-            return edges.instantiate(formulaic.widgets.Select, params);
-        },
-        Select : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-            this.args = params.args;    // TODO: no args currently supported
-
-            this.ns = "formulaic-select";
-            this.elements = false;
-
-            this.init = function() {
-                this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                this.elements.select2({  //TODO: select2 is not a function
-                    allowClear: true
-                });
-            };
-
-            this.init();
-        },
-
-        newTagList : function(params) {
-            return edges.instantiate(formulaic.widgets.TagList, params);
-        },
-        TagList : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-            this.args = params.args;
-
-            this.ns = "formulaic-taglist";
-
-            this.init = function() {
-
-                var minInputLength = edges.getParam(this.args.minimumInputLength, 1);
-                var tokenSeparators = edges.getParam(this.args.tokenSeparators, [","]);
-                var maximumSelectionSize = edges.getParam(this.args.maximumSelectionSize, 6);
-                var stopWords = edges.getParam(this.args.stopWords, []);
-
-                this.elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                // this.elements.select2({      //TODO: select2 is not a function
-                //     minimumInputLength: minInputLength,
-                //     tags: [],
-                //     tokenSeparators: tokenSeparators,
-                //     maximumSelectionSize: maximumSelectionSize,
-                //     createSearchChoice : function(term) {   // NOTE: if we update select2, this has to change
-                //         if ($.inArray(term, stopWords) !== -1) {
-                //             return null;
-                //         }
-                //         return {id: $.trim(term), text: $.trim(term)};
-                //     }
-                // });
-            };
-
-            this.init();
-        },
 
         newAutocomplete: function(params){
             return edges.instantiate(formulaic.widgets.Autocomplete, params);
@@ -847,6 +901,7 @@ function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_
             initSelection : initSel,
             placeholder: "Choose a value",
             allowClear: allow_clear,
+            width: 'resolve'
         });
     } else {
         // go without the create search choice option
@@ -856,6 +911,7 @@ function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_
             initSelection : initSel,
             placeholder: "Choose a value",
             allowClear: allow_clear,
+            width: 'resolve'
         });
     }
 }

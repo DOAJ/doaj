@@ -40,7 +40,7 @@ var QUERY_OPTIONS = {
 
 ### Configuring via `QUERY_OPTIONS`
 
-There are a handful of options available, all are optional; omit them from `QUERY_OPTIONS` for the default behaviour.
+The parameter `QUERY_OPTIONS` takes a subset of fields to define which results to retrieve. The example above displays, in alphabetical order, journals that contain the word `medicine` in the title. Configuration via these `QUERY_OPTIONS` provides a simplified way to display results by keyword. There are a handful of options available. All are optional; omit them from `QUERY_OPTIONS` for the default behaviour.
 
 {:.tabular-list}
 - `query_string`
@@ -74,12 +74,8 @@ There are a handful of options available, all are optional; omit them from `QUER
   - `integer`: which result to start from initially, 0 or higher, (default 0)
 
 
-The parameter `QUERY_OPTIONS` takes a subset of fields to define which results to retrieve. The example above displays the journals containing the word `medicine` in the title and in alphabetical order. Configuration via these `QUERY_OPTIONS` provides a simplified way to display results by keyword.
-
-For more control over which results to display, we recommend configuring your query via the _Search_ page. Use the controls to find the results you want to show then click the _Share_ button and copy the text provided in the box below _Embed this search_ for inclusion on your page.
+For more control over which results to display, configure your query on the [Search](/search/journals/) page. Use the controls to find the results you want to show then click the 'Share' button and copy the shortened URL provided for inclusion on your page.
 
 The widget can be resized to fit within available horizontal space. Use the `page_size` property to minimise its vertical requirement by reducing the number of results per page.
 
-Note: the vertical size can change depending on the number of results shown on each page.
-
-You can only embed one fixed query widget per page. If you see strange characters in the results, try declaring the encoding in the `<head>` element of your HTML page by adding `<meta charset="utf-8">`.
+Notes: The vertical size can change depending on the number of results shown on each page. You can only embed one fixed query widget per page. If you see strange characters in the results, try declaring the encoding in the `<head>` element of your HTML page by adding `<meta charset="utf-8">`.

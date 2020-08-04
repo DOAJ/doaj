@@ -1,0 +1,242 @@
+<aside class="highlight highlight--aside editorial-panel">
+  <h2 class="sr-only">Editorial actions</h2>
+  <form class="form" action="#modal-unlock-confirm">
+    <h3 class="label">Locked for editing until 13:08</h3>
+    <p>
+      <button class="button button--secondary"data-toggle="modal" data-target="#modal-unlock-confirm">Unlock & close</button>
+    </p>
+  </form>
+
+  <form class="form" action="#modal-reject-confirm">
+    <h3 class="label">Quick reject</h3>
+    <label for="reject_reason">Reason for rejection</label>
+    <select name="reject_reason" id="reject_reason">
+      <option value="">Other</option>
+      <option value="The journal has not published enough research content to qualify for DOAJ inclusion.">The journal has not published enough research content to qualify for DOAJ inclusion.</option>
+      <option value="The ISSN is incorrect, provisional or not registered with issn.org.">The ISSN is incorrect, provisional or not registered with issn.org.</option>
+      <option value="The URL(s) provided in the application do not work.">The URL(s) provided in the application do not work.</option>
+      <option value="The contact details provided are not real names of individuals.">The contact details provided are not real names of individuals.</option>
+      <option value="The journal is already in DOAJ.">The journal is already in DOAJ.</option>
+      <option value="The journal is not Open Access.">The journal is not Open Access.</option>
+      <option value="The journal title in the application and/or website does not match the title at issn.org.">The journal title in the application and/or website does not match the title at issn.org.</option>
+      <option value="The application has incomplete answers or the URLs given do not provide the required information.">The application has incomplete answers or the URLs given do not provide the required information.</option>
+      <option value="This application is a duplicate.">This application is a duplicate.</option>
+      <option value="The full-text articles are not available article by article with individual links.">The full-text articles are not available article by article with individual links.</option>
+      <option value="The information in the journal implies that it does not employ a fair &amp; robust peer review process.">The information in the journal implies that it does not employ a fair &amp; robust peer review process.</option>
+      <option value="The journal or publisher has been previously rejected or removed from DOAJ.">The journal or publisher has been previously rejected or removed from DOAJ.</option>
+      <option value="The journal's copyright policy is not available or unclear.">The journal's copyright policy is not available or unclear.</option>
+      <option value="The journal's licensing policy is not available or unclear.">The journal's licensing policy is not available or unclear.</option>
+      <option value="The information about the journal is in different languages.">The information about the journal is in different languages.</option>
+      <option value="The journal makes a false claim to be indexed in DOAJ or other databases or displays non-standard Impact Factors.">The journal makes a false claim to be indexed in DOAJ or other databases or displays non-standard Impact Factors.</option>
+      <option value="The journal does not employ good publishing practices.">The journal does not employ good publishing practices.</option>
+    </select>
+
+    <label for="reject_info">
+      Additional info
+      <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-reject-info"></span><span class="sr-only">More help</span>
+    </label>
+    <textarea id="reject_info" placeholder="Enter additional information to be sent to the publisher"></textarea>
+
+    <button type="submit" class="button button--primary" data-toggle="modal" data-target="#modal-reject-confirm">Reject</button>
+  </form>
+
+  <hr/>
+
+  <form class="form">
+    <fieldset>
+      <h3 class="label" type="button" data-toggle="collapse" data-target="#assign-publisher-account" aria-expanded="false">
+        Re-assign publisher account
+        <span data-feather="plus" aria-hidden="true"></span>
+      </h3>
+      <div class="collapse" id="assign-publisher-account" aria-expanded="false">
+        <label for="reassign">DOAJ account</label>
+        <select name="reassign" id="reassign">
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+        </select>
+      </div>
+      <p><small>Assigned: <strong><code>Lorem Ipsum</code></strong></small></p>
+    </fieldset>
+
+    <fieldset>
+      <h3 class="label" type="button" data-toggle="collapse" data-target="#status" aria-expanded="false">
+        Status
+        <span data-feather="plus" aria-hidden="true"></span>
+      </h3>
+      <div class="collapse" id="status" aria-expanded="false">
+        <label for="select-status">Change status</label>
+        <select name="select-status" id="select-status">
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+        </select>
+      </div>
+      <p><small>Status: <strong><code>pending</code></strong></small></p>
+    </fieldset>
+
+    <fieldset>
+      <h3 class="label" type="button" data-toggle="collapse" data-target="#assign-review" aria-expanded="false">
+        Assign for review
+        <span data-feather="plus" aria-hidden="true"></span>
+      </h3>
+      <div class="collapse" id="assign-review" aria-expanded="false">
+        <label for="assign_group">Group</label>
+        <select name="assign_group" id="assign_group">
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+        </select>
+
+        <label for="assign_ind">Individual</label>
+        <select name="assign_ind" id="assign_ind">
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+          <option value="">Lorem ipsum</option>
+        </select>
+      </div>
+      <p><small>Assigned: <strong><code>soonkim (Southeast Asia)</code></strong></small></p>
+    </fieldset>
+
+    <fieldset>
+      <h3 class="label" type="button" data-toggle="collapse" data-target="#continuations" aria-expanded="false">
+        Continuations
+        <span data-feather="plus" aria-hidden="true"></span>
+      </h3>
+      <div class="collapse" id="continuations" aria-expanded="false">
+        <label for="continues">Continues an older journal with the ISSN(s)</label>
+        <input type="text" placeholder="1234-567X" id="continues"></input>
+
+        <label for="continued_by">Continued by a newer version of the journal with the ISSN(s)</label>
+        <input type="text" placeholder="1234-567X" id="continued_by"></input>
+
+        <label for="discontinued">Discontinued on</label>
+        <input type="date" id="discontinued"></input>
+        <p>
+          <small>If the day of the month is not known, please use <strong><code>01</code></strong>.</small>
+        </p>
+      </div>
+    </fieldset>
+
+    <fieldset class="filter">
+      <h3 class="label" type="button" data-toggle="collapse" data-target="#subjects" aria-expanded="false">
+        Subject classification
+        <span data-feather="plus" aria-hidden="true"></span>
+      </h3>
+      <div class="collapse" id="subjects" aria-expanded="false">
+        <p>Assign one or a maximum of two subject classifications.</p>
+        <label for="search-subjects" class="sr-only">Search {{ site.data.search-filters.subjects.size }} subjects</label>
+        <input type="text" name="search-subjects" id="search-subjects" class="filter__search" placeholder="Search {{ site.data.search-filters.subjects.size }} subjects">
+
+        <ul class="filter__choices">
+          {% for i in site.data.search-filters.subjects limit:50 %}
+          <li>
+            <input id="{{ i.name }}" type="checkbox" name="{{ i.name }}"/>
+            <label for="{{ i.name }}" class="filter__label">{{ i.name }}</label>
+          </li>
+          {% endfor %}
+        </ul>
+
+        <p>
+          <small>Selecting a subject will not automatically select its sub-categories.</small>
+        </p>
+      </div>
+      <p><small>Selected: <strong><code>Agriculture</code></strong></small></p>
+    </fieldset>
+
+    <fieldset>
+      <h3 class="label">
+        Award the Seal
+        <a href="{{ site.baseurl }}{% link apply/seal.md %}" target="blank">
+          <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal"></span>
+          <span class="sr-only">More help</span>
+        </a>
+      </h3>
+      <input id="award_seal" type="checkbox" name="award_seal"/>
+      <label for="award_seal">The journal has fulfilled all the criteria</label>
+    </fieldset>
+
+    <fieldset>
+      <h3 class="label">Notes</h3>
+
+      <label for="note_1" class="sr-only">Note</label>
+      <textarea id="note_1" placeholder="Enter additional comments or notes here"></textarea>
+      <p>
+        <small><time datetime="2019-12-05">December 5, 2019</time></small>
+      </p>
+      <button>
+        <span data-feather="plus" aria-hidden="true"></span>
+        <span class="sr-only">Add</span>
+      </button>
+    </fieldset>
+
+    <p>
+      <button type="submit" class="button button--primary">Save</button>
+    </p>
+  </form>
+</aside>
+
+<!-- Modals  -->
+<div class="modal" id="modal-reject-info" tabindex="-1" role="dialog" aria-labelledby="modalLabel-reject-info">
+  <div class="modal__dialog" role="document">
+    <p class="label">Quick reject</p>
+    <h3 class="modal__title" id="modalLabel-reject-info">
+      “Additional info”
+    </h3>
+    <p>
+      The selected reason for rejection, and any additional information you include, are sent to the journal contact with the rejection email.
+    </p>
+    <button type="button" data-dismiss="modal" class="modal__close">Close</button>
+  </div>
+</div>
+
+<div class="modal" id="modal-reject-confirm" tabindex="-1" role="dialog" aria-labelledby="modalLabel-reject-confirm">
+  <div class="modal__dialog" role="document">
+    <p class="label">Quick reject</p>
+    <h3 class="modal__title" id="modalLabel-reject-confirm">
+      Reject “Indonesia Accounting Journal”
+    </h3>
+    <p>
+      Are you sure you want to do this?
+    </p>
+    <p class="input-group">
+      <button type="button" data-dismiss="modal" class="button button--secondary">No</button>
+      <button type="button" class="button button--primary">Yes, reject this journal</button>
+    </p>
+  </div>
+</div>
+
+<div class="modal" id="modal-unlock-confirm" tabindex="-1" role="dialog" aria-labelledby="modalLabel-unlock-confirm">
+  <div class="modal__dialog" role="document">
+    <h3 class="modal__title" id="modalLabel-unlock-confirm">
+      Unlock this journal’s application and close
+    </h3>
+    <p>
+      Are you sure you want to do this? Please make sure all of your changes have been saved.
+    </p>
+    <p class="input-group">
+      <button type="button" data-dismiss="modal" class="button button--secondary">No</button>
+      <button type="button" class="button button--primary">Yes, unlock this journal</button>
+    </p>
+  </div>
+</div>
+
+<div class="modal" id="modal-reject-info" tabindex="-1" role="dialog" aria-labelledby="modalLabel-reject-info">
+  <div class="modal__dialog" role="document">
+    <p class="label">Status</p>
+    <h3 class="modal__title" id="modalLabel-reject-info">
+      “Change status”
+    </h3>
+    <h4>Associate Editors</h4>
+    <p>Set the status to 'In Progress' to signal to the applicant that you have started your review.</p>
+    <p>Set the status to 'Ready' to alert the Editor that you have completed your review.</p>
+    <h4>Editors</h4>
+    <p>Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed.</p>
+    <p>Set the status to 'Completed' to alert the Managing Editor that you have completed your review.</p>
+    <button type="button" data-dismiss="modal" class="modal__close">Close</button>
+  </div>
+</div>

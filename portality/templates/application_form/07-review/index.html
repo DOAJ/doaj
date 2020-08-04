@@ -4,7 +4,7 @@
 <p>Please review your answers before submitting your application.</p>
 
 <hr />
-
+<input type="hidden" name="validated" value="">
     {% set t = { "val": 0} %}
         {% for tab in FORM %}
             <table>
@@ -14,7 +14,6 @@
                     {% set fieldsests = tab.fieldsets %}
                     {% for fieldset in fieldsests %}
                         {% set fs = formulaic_context.fieldset(fieldset) %}
-                        {% if t.update({"val": t.val + 1}) %}{% endif %}
                         {% for f in fs.fields() %}
                             <tr>
                                 <td id="{{ f.name }}__review_label">{{ f.label }}</td>
@@ -22,6 +21,7 @@
                             </tr>
                         {% endfor %}
                     {% endfor %}
+                {% if t.update({"val": t.val + 1}) %}{% endif %}
                 </tbody>
             </table>
             <hr />
@@ -32,7 +32,5 @@
 <input type="checkbox" id="reviewed" name="reviewed" value="reviewed">
 <label for="reviewed">I’ve reviewed the answers to my application and confirm that the information provided is accurate and true.</label>
 
-<input type="checkbox" id="understanding" name="understanding" value="understanding">
-<label for="understanding">I understand that, if the information is found to be not sufficient or incomplete, my application will not be considered.</label>
-
-<p id="cannot-submit" style={"display:none"}><i>You cannot submit your answers because your application contains invalid fields. Please review your answers and try again.</i></p>
+<p class="cannot-submit" id="cannot-submit-checkboxes"><i>You need to agree by checking the boxes above to submit the application.</i></p>
+<p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot submit your answers because your application contains invalid fields. Please review your answers and try again.</i></p>

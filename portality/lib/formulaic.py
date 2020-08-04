@@ -278,6 +278,8 @@ class FormulaicContext(object):
             for field in fieldset.get("fields", []):
                 if "group" in field:
                     continue
+                #if "subfield" in field:
+                #    continue
                 fields.append(field)
 
         klazz = self.make_wtform_class(fields)
@@ -370,7 +372,7 @@ class FormulaicFieldset(object):
 
     def fields(self):
         return [FormulaicField(f, self) for f in
-                self._definition.get("fields", []) if not f.get("subfield")]
+                self._definition.get("fields", []) if not f.get("group")]
 
     def field(self, field_name):
         for f in self._definition.get("fields", []):

@@ -32,11 +32,19 @@
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
 
   <meta name="theme-color" content="#F8F3EF">
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
 
 </head>
 
@@ -52,7 +60,9 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
-            <h1 class="sr-only">The Directory of Open Access Journals</h1>
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -82,6 +92,11 @@
                   </a>
                 </li>
                 <li>
+                  <a href="/support/supporters/" class="dropdown__link">
+                    Supporters
+                  </a>
+                </li>
+                <li>
                   <a href="/support/sponsors/" class="dropdown__link">
                     Sponsors
                   </a>
@@ -89,11 +104,6 @@
                 <li>
                   <a href="/support/publisher-supporters/" class="dropdown__link">
                     Publisher supporters
-                  </a>
-                </li>
-                <li>
-                  <a href="/support/supporters/" class="dropdown__link">
-                    Supporters
                   </a>
                 </li>
               </ul>
@@ -162,11 +172,6 @@
                 Articles
               </a>
             </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
-              </a>
-            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -205,6 +210,11 @@
                 OpenURL
               </a>
             </li>
+            <li>
+              <a href="/about/faq/" class="dropdown__link">
+                FAQs
+              </a>
+            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -234,6 +244,11 @@
               </a>
             </li>
             <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
+              </a>
+            </li>
+            <li>
               <a href="/about/volunteers/" class="dropdown__link">
                 Volunteers
               </a>
@@ -243,13 +258,9 @@
                 News
               </a>
             </li>
-            <li>
-              <a href="/about/faq/" class="dropdown__link">
-                FAQs
-              </a>
-            </li>
           </ul>
         </li>
+        
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Support</strong>
@@ -323,7 +334,7 @@
 </header>
 
 
-<!-- Admin-only edit buttons -->
+<!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/about/content/advisory-board-council.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
 
@@ -347,17 +358,17 @@
       </div>
       <div class="input-group">
         <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-        <input type="text" name="keywords" id="quick-search-keywords" required>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
 
         <label for="quick-search-fields" class="sr-only">In the field:</label>
-        <select name="fields" id="quick-search-fields">
+        <select class="input-group__input" name="fields" id="quick-search-fields">
           <option value="all">In all fields</option>
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
           <option value="subject">Author</option>
         </select>
-        <button type="submit">
+        <button class="input-group__input" type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
@@ -388,10 +399,10 @@
         
           <!-- About section: advisory board & council -->
           <h2>Advisory Board</h2>
-          <p>The DOAJ Advisory Board was elected by the community. All board members started in August 2019.</p>
+          <p>The DOAJ Advisory Board was elected by the community to provide advice and expertise to the DOAJ Team. The Board is governed by <a href="https://docs.google.com/document/d/1jXOga20kU61i-vzdQmPtn5uZUckzX8EwU6Zx7Xd3AQ4/edit?usp=sharing" target="_blank" rel="noopener">Terms of reference</a>. All board members started in August 2019.</p>
           <ul class="row title-list">
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Canada</p>
                 <h3 class="title-list__heading">Leslie Chan</h3>
@@ -402,7 +413,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Norway</p>
                 <h3 class="title-list__heading">Jan Erik Frantsvåg</h3>
@@ -420,7 +431,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">United Kingdom</p>
                 <h3 class="title-list__heading">Mark Hahnel</h3>
@@ -438,7 +449,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Norway</p>
                 <h3 class="title-list__heading">Rolf Halse</h3>
@@ -456,7 +467,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">United States</p>
                 <h3 class="title-list__heading">Emma Molls</h3>
@@ -474,7 +485,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Germany</p>
                 <h3 class="title-list__heading">Anja Oberländer</h3>
@@ -492,7 +503,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Brazil</p>
                 <h3 class="title-list__heading">Solange Maria Dos Santos</h3>
@@ -510,7 +521,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">United States</p>
                 <h3 class="title-list__heading">Lisa Schiff</h3>
@@ -528,7 +539,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">United Kingdom</p>
                 <h3 class="title-list__heading">Steven Vidovic (CHAIR)</h3>
@@ -549,10 +560,10 @@
           </ul>
 
           <h2>Council</h2>
-          <p>The DOAJ Council was elected by the community. All Council members started in September 2019 unless otherwise stated.</p>
-          <ul class="row bleed title-list">
+          <p>The DOAJ Council was elected by the community to provide advice and expertise to the Advisory Board and assist them with their recommendations to the DOAJ Team. The Council is governed by <a href="https://docs.google.com/document/d/1jXOga20kU61i-vzdQmPtn5uZUckzX8EwU6Zx7Xd3AQ4/edit?usp=sharing" target="_blank" rel="noopener">Terms of reference</a>. All Council members started in September 2019 unless otherwise stated.</p>
+          <ul class="row title-list">
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">United Kingdom</p>
                 <h3 class="title-list__heading">Shelley Allen</h3>
@@ -570,7 +581,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Mexico</p>
                 <h3 class="title-list__heading">Arianna Becerril García (NOV 2019)</h3>
@@ -588,7 +599,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">United States</p>
                 <h3 class="title-list__heading">Perry Collins</h3>
@@ -606,7 +617,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Switzerland</p>
                 <h3 class="title-list__heading">Frederick Fenter</h3>
@@ -624,7 +635,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Mexico</p>
                 <h3 class="title-list__heading">Dora Elvira García-González</h3>
@@ -642,7 +653,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Italy</p>
                 <h3 class="title-list__heading">Piero Grandesso</h3>
@@ -660,7 +671,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Denmark</p>
                 <h3 class="title-list__heading">Christian Knudsen</h3>
@@ -678,7 +689,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">United States</p>
                 <h3 class="title-list__heading">Suzanne Kemperman</h3>
@@ -696,7 +707,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">United States</p>
                 <h3 class="title-list__heading">Gail McMillan</h3>
@@ -714,7 +725,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Australia</p>
                 <h3 class="title-list__heading">Donna McRostie</h3>
@@ -732,7 +743,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Switzerland</p>
                 <h3 class="title-list__heading">Rainer Rees-Mertins</h3>
@@ -750,7 +761,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">United Kingdom</p>
                 <h3 class="title-list__heading">Karen Rowlett</h3>
@@ -768,7 +779,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Canada</p>
                 <h3 class="title-list__heading">Stephanie Savage</h3>
@@ -786,7 +797,7 @@
               </div>
             </li>
             
-            <li class="col-xs-6 col-md-4">
+            <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 <p class="label">Switzerland</p>
                 <h3 class="title-list__heading">Franck Vazquez</h3>
@@ -918,13 +929,6 @@
   </div>
 </footer>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<script src="../../js/vendors/bootstrap.js"></script>
-
-<!-- Feather icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-
 <script>
   // Use Feather icons
   feather.replace()
@@ -971,7 +975,7 @@
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
@@ -1002,6 +1006,7 @@
       }, 50, 'linear');
     }
   } );
+
 </script>
 
   </body>

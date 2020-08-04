@@ -458,3 +458,24 @@ class GroupMember(MultiFieldValidator):
                 raise validators.ValidationError("Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_name))
             else:
                 raise validators.ValidationError("An editor has been assigned without an editor group")
+
+    def get_other_field(self, form):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        return other_field
+
+
+class RequiredValue(object):
+    """
+    Checks that a field contains a required value
+    """
+    def __init__(self, value, message=None):
+        self.value = value
+        if not message:
+            message = "You must enter {value}"
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data != self.value:
+            raise validators.ValidationError(self.message.format(value=self.value))

@@ -1,7 +1,7 @@
 from copy import deepcopy
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
-from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, Form, \
+from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, \
     FormField, FieldList
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
@@ -25,7 +25,8 @@ from portality.forms.validate import (
     RequiredIfOtherValue,
     OnlyIf,
     NotIf,
-    GroupMember
+    GroupMember,
+    RequiredValue
 )
 
 from portality.datasets import language_options, country_options, currency_options
@@ -63,10 +64,13 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
+            "long_help": ['This definition follows the definition of Libre Open Access formulated by Peter Suber <br>'
+                          "<a href='http://nrs.harvard.edu/urn-3:HUL.InstRepos:4322580' target='_blank' >http://nrs.harvard.edu/urn-3:HUL.InstRepos:4322580</a>"],
             "doaj_criteria": "You must answer 'Yes'"
         },
         "validate": [
-            {"required": {"message": "You must answer YES to continue"}}
+            {"required": {"message": "You must answer YES to continue"}},
+            {"required_value" : {"value" : "y", "message" : "You must answer YES to continue"}}
         ],
         "contexts": {
             "editor": {
@@ -83,7 +87,7 @@ class FieldDefinitions:
 
     OA_STATEMENT_URL = {
         "name": "oa_statement_url",
-        "label": "Your website must display its open access statement. Where can we find this information?",
+        "label": "The journal website must display its open access statement. Where can we find this information?",
         "input": "text",
         "help": {
             "long_help": ["Here is an example of a suitable Open Access statement that meets our criteria:<blockquote>"
@@ -113,7 +117,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["The journal title must match what is displayed on the website and what is registered at the "
-                          "<a href='https://portal.issn.org/'> ISSN Portal</a>.",
+                          "<a href='https://portal.issn.org/' target='_blank'> ISSN Portal</a>.",
                           "For translated titles, you may add the "
                           "translation as an alternative title."],
             "placeholder": "Journal title",
@@ -139,16 +143,14 @@ class FieldDefinitions:
         "name": "alternative_title",
         "label": "Alternative title (including translation of the title)",
         "input": "text",
+        "optional": True,
         "help": {
             "long_help": ["The journal title must match what is displayed on the website and what is registered at the "
-                          "<a href='https://portal.issn.org/'> ISSN Portal</a>.",
+                          "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal</a>.",
                           "For translated titles, you may add the "
                           "translation as an alternative title."],
             "placeholder": "Ma revue"
         },
-        "validate": [
-            "required"
-        ],
         "contexts": {
             "editor": {
                 "disabled": True
@@ -196,7 +198,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/'> ISSN Portal.</a>",
+                          "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal.</a>",
                           "The ISSN must match what is given on the journal website."],
             "placeholder": "2049-3630",
             "doaj_criteria": "ISSN must be provided"
@@ -205,7 +207,8 @@ class FieldDefinitions:
             {"optional_if": {"field": "eissn",
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "eissn", "message" : "This field must contain a different value to 'ISSN (online)'"}},
+            {"different_to": {"field": "eissn", "message": "This field must contain a different value to 'ISSN ("
+                                                           "online)'"}},
             "issn_in_public_doaj"
         ],
         "contexts": {
@@ -232,7 +235,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/'> ISSN Portal</a>",
+                          "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal</a>",
                           "The ISSN must match what is given on the journal website."],
             "placeholder": "0378-5955",
             "doaj_criteria": "ISSN must be provided"
@@ -304,7 +307,7 @@ class FieldDefinitions:
         "name": "language",
         "label": "Languages in which the journal accepts manuscripts",
         "input": "select",
-        "multiple": True,   # FIXME: is this correct?
+        "default" : "",
         "options_fn": "iso_language_list",
         "repeatable": {
             "initial": 5
@@ -329,7 +332,7 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
-            {"autocomplete": {"field": "bibjson.publisher"}},
+            {"autocomplete": {"field": "bibjson.publisher.name.exact"}},
         ]
     }
 
@@ -337,7 +340,7 @@ class FieldDefinitions:
         "name": "publisher_country",
         "label": "Country",
         "input": "select",
-        "default" : "",
+        "default": "",
         "options_fn": "iso_country_list",
         "help": {
             "long_help": ["The country where the publisher carries out its business operations and is registered."],
@@ -374,7 +377,7 @@ class FieldDefinitions:
                           "a society or other type of institution, enter that here."]
         },
         "widgets": [
-            {"autocomplete": {"field": "bibjson.institution"}},
+            {"autocomplete": {"field": "bibjson.institution.name.exact"}},
         ]
     }
 
@@ -418,7 +421,7 @@ class FieldDefinitions:
             {"display": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
             {"display": "CC0", "value": "CC0"},
             {"display": "Public domain", "value": "Public domain"},
-            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True},
+            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True, "subfields": ["license_attributes"]},
         ],
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
@@ -472,8 +475,11 @@ class FieldDefinitions:
     LICENSE_DISPLAY = {
         "name": "license_display",
         "label": "Does the journal embed and/or display licensing information in its articles?",
-        "input": "checkbox",
-        "multiple": True,
+        "input": "radio",
+        "options": [
+            {"display": "Yes", "value": "y", "subfields": ["license_display_example_url"]},
+            {"display": "No", "value": "n"}
+        ],
         "help": {
             "long_help": ["Licensing information must be displayed or embedded on every PDF or in the full text of the "
                           "HTML articles.",
@@ -481,11 +487,6 @@ class FieldDefinitions:
                           "the site."],
             "seal_criteria": "If the answer is Embed"
         },
-        "options": [
-            {"display": "Embed", "value": "Embed"},
-            {"display": "Display", "value": "Display"},
-            {"display": "No", "value": "No", "exclusive": True}
-        ],
         "validate": [
             "required"
         ]
@@ -495,11 +496,14 @@ class FieldDefinitions:
         "name": "license_display_example_url",
         "label": "Recent article displaying or embedding a license in the full text",
         "input": "text",
+        "optional": True,
+        "conditional": [
+            {"field": "license_display", "value": "y"}
+        ],
         "help": {
             "short_help": "Link to an example article"
         },
         "validate": [
-            "required",
             "is_url"
         ],
         "widgets": [
@@ -546,7 +550,7 @@ class FieldDefinitions:
 
     REVIEW_PROCESS = {
         "name": "review_process",
-        "label": "DOAJ only accepts peer-reviewed journals."
+        "label": "DOAJ only accepts peer-reviewed journals. "
                  "Which type(s) of peer review does this journal use?",
         "input": "checkbox",
         "multiple": True,
@@ -605,7 +609,7 @@ class FieldDefinitions:
         "label": "Does the journal routinely screen article submissions for plagiarism?",
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
+            {"display": "Yes", "value": "y", "subfields": ["review_process_other"]},
             {"display": "No", "value": "n"}
         ],
         "validate": [
@@ -706,7 +710,7 @@ class FieldDefinitions:
         "label": "Does the journal require payment of article processing charges (APCs)?",
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
+            {"display": "Yes", "value": "y", "subfields": ["apc_charges"]},
             {"display": "No", "value": "n"}
         ],
         "help": {
@@ -739,7 +743,7 @@ class FieldDefinitions:
     APC_CHARGES = {
         "name": "apc_charges",
         "input": "group",
-        "label": "Highest APC Charged",
+        "label": "Highest APC charged",
         "repeatable" : {
             "initial" : 5
         },
@@ -754,6 +758,8 @@ class FieldDefinitions:
             "apc_currency",
             "apc_max"
         ],
+        "template" : "application_form/_list.html",
+        "entry_template" : "application_form/_entry_group_horizontal.html",
         "widgets": [
             "multiple_field"
         ]
@@ -761,10 +767,14 @@ class FieldDefinitions:
 
     APC_CURRENCY = {
         "subfield": True,
+        "group" : "apc_charges",
         "name": "apc_currency",
         "input": "select",
         "options_fn": "iso_currency_list",
         "default" : "",
+        "help": {
+            "placeholder": "Currency"
+        },
         "widgets": [
             {"select": {}}
         ],
@@ -775,6 +785,7 @@ class FieldDefinitions:
 
     APC_MAX = {
         "subfield": True,
+        "group" : "apc_charges",
         "name": "apc_max",
         "input": "number",
         "datatype": "integer",
@@ -788,7 +799,7 @@ class FieldDefinitions:
         "label": "Does the journal provide APC waivers or discounts for authors?",
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
+            {"display": "Yes", "value": "y", "subfields": ["waiver_url"]},
             {"display": "No", "value": "n"}
         ],
         "help": {
@@ -826,7 +837,7 @@ class FieldDefinitions:
         "label": "Does the journal charge any other fees to authors?",
         "input": "radio",
         "options": [
-            {"display": "Yes", "value": "y"},
+            {"display": "Yes", "value": "y", "subfields": ["other_charges_url"]},
             {"display": "No", "value": "n"}
         ],
         "help": {
@@ -866,17 +877,17 @@ class FieldDefinitions:
         "multiple": True,
         "hint": "Select at least one:",
         "options": [
-            {"display": "CINES", "value": "CINES"},
-            {"display": "CLOCKSS", "value": "CLOCKSS"},
-            {"display": "LOCKSS", "value": "LOCKSS"},
-            {"display": "Internet Archive", "value": "Internet Archive"},
-            {"display": "PKP PN", "value": "PKP PN"},
-            {"display": "PubMed Central (PMC)", "value": "PMC"},
-            {"display": "Portico", "value": "Portico"},
-            {"display": "A national library", "value": "national_library"},
+            {"display": "CINES", "value": "CINES", "subfields": ["preservation_service_url"]},
+            {"display": "CLOCKSS", "value": "CLOCKSS", "subfields": ["preservation_service_url"]},
+            {"display": "LOCKSS", "value": "LOCKSS", "subfields": ["preservation_service_url"]},
+            {"display": "Internet Archive", "value": "Internet Archive", "subfields": ["preservation_service_url"]},
+            {"display": "PKP PN", "value": "PKP PN", "subfields": ["preservation_service_url"]},
+            {"display": "PubMed Central (PMC)", "value": "PMC", "subfields": ["preservation_service_url"]},
+            {"display": "Portico", "value": "Portico", "subfields": ["preservation_service_url"]},
+            {"display": "A national library", "value": "national_library", "subfields": ["preservation_service_library", "preservation_service_url"]},
             {"display": "The journal content isn't archived with a long-term preservation service",
              "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other"}
+            {"display": "Other", "value": "other", "subfields": ["preservation_service_other", "preservation_service_url"]}
         ],
         "help": {
             "long_help": [
@@ -905,6 +916,9 @@ class FieldDefinitions:
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
+        ],
+        "widgets": [
+            "multiple_field"
         ]
     }
 
@@ -930,8 +944,27 @@ class FieldDefinitions:
             "doaj_criteria": "You must provide a URL",
             "placeholder": "https://www.my-journal.com/about#archiving"
         },
+        "conditional": [
+            {"field": "preservation_service", "value": "CINES"},
+            {"field": "preservation_service", "value": "CLOCKSS"},
+            {"field": "preservation_service", "value": "LOCKSS"},
+            {"field": "preservation_service", "value": "Internet Archive"},
+            {"field": "preservation_service", "value": "PKP PN"},
+            {"field": "preservation_service", "value": "PMC"},
+            {"field": "preservation_service", "value": "Portico"},
+            {"field": "preservation_service", "value": "national_library"},
+            {"field": "preservation_service", "value": "other"}
+        ],
         "validate": [
-            {"optional_if": {"field": "preservation_service", "values": ["none"]}},
+            {"required_if": {"field": "preservation_service", "values": ["CINES"]}},
+            {"required_if": {"field": "preservation_service", "values": ["CLOCKSS"]}},
+            {"required_if": {"field": "preservation_service", "values": ["LOCKSS"]}},
+            {"required_if": {"field": "preservation_service", "values": ["Internet Archive"]}},
+            {"required_if": {"field": "preservation_service", "values": ["PKP PN"]}},
+            {"required_if": {"field": "preservation_service", "values": ["PMC"]}},
+            {"required_if": {"field": "preservation_service", "values": ["Portico"]}},
+            {"required_if": {"field": "preservation_service", "values": ["national_library"]}},
+            {"required_if": {"field": "preservation_service", "values": ["other"]}},
             "is_url"
         ],
         "widgets": [
@@ -941,24 +974,29 @@ class FieldDefinitions:
 
     DEPOSIT_POLICY = {
         "name": "deposit_policy",
-        "label": "Where is the journal's policy allowing authors to deposit the AAM or VOR registered?",
+        "label": "Does the journal have a policy allowing authors to deposit versions of their work in an "
+                 "institutional or other repository of their choice? Where is this policy recorded?",
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo"},
-            {"display": "Dulcinea", "value": "Dulcinea"},
-            {"display": "Héloïse", "value": "Héloïse"},
-            {"display": "Diadorim", "value": "Diadorim"},
-            {"display": "The journal has a policy but it isn't registered anywhere", "value": "Unregistered", "exclusive" : True},
+            {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo", "subfields": ["deposit_policy_url"]},
+            {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
+            {"display": "Héloïse", "value": "Héloïse", "subfields": ["deposit_policy_url"]},
+            {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
             {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other"}
+            {"display": "Other (including publisher's own site)", "value": "other", "subfields": ["deposit_policy_other"], "subfields": ["deposit_policy_url"]}
         ],
         "help": {
-            "long_help": ["AAM stands for <b>Author Accepted Manuscript</b>. VOR is the <b>Version of Record</b>.",
-                          "This questions ask whether or not the journal allows authors to deposit a copy of their "
-                          "work in an institutional repository.", "If the journal allows authors to do this, "
-                                                                  "is that policy registered in a policy directory?"],
-        },
+            "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
+                          "of their choice. What is the journal's policy for this?",
+                          "You should state your policy with regard to the different versions of the paper:"
+                          "<ul style='list-style-type: none;'>"
+                          "<li>Submitted version</li>"
+                          "<li>Accepted version (Author Accepted Manuscript)</li>"
+                          "<li>Published version (Version of Record)</li>"
+                          "</ul>",
+                          "For a journal to qualify for the DOAJ Seal, it must allow all versions to be deposited in an institutional or other repository of the author's choice without embargo.,"
+                          ]},
         "validate": [
             "required"
         ]
@@ -981,13 +1019,22 @@ class FieldDefinitions:
         "name": "deposit_policy_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "conditional": [{"field": "deposit_policy", "value": "Sherpa/Romeo"},
+                        {"field": "deposit_policy", "value": "Dulcinea"},
+                        {"field": "deposit_policy", "value": "Héloïse"},
+                        {"field": "deposit_policy", "value": "Diadorim"},
+                        {"field": "deposit_policy", "value": "other"}],
         "help": {
             "doaj_criteria": "You must provide a URL",
             "short_help": "Link to the policy on the journal's site",
             "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
         "validate": [
-            {"required_if": {"field": "deposit_policy", "value": "unregistered"}},
+            {"required_if": {"field": "deposit_policy", "value": "Sherpa/Romeo"}},
+            {"required_if": {"field": "deposit_policy", "value": "Dulcinea"}},
+            {"required_if": {"field": "deposit_policy", "value": "Héloïse"}},
+            {"required_if": {"field": "deposit_policy", "value": "Diadorim"}},
+            {"required_if": {"field": "deposit_policy", "value": "other"}},
             "is_url"
         ],
         "widgets": [
@@ -1007,12 +1054,12 @@ class FieldDefinitions:
             {"display": "Handles", "value": "Handles"},
             {"display": "PURLs", "value": "PURL"},
             {"display": "The journal does not use persistent article identifiers", "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other"}
+            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]}
         ],
         "help": {
             "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
                          "located. The most common type of PID is the digital object identifier (DOI). ",
-                         "<a href='https://en.wikipedia.org/wiki/Persistent_identifier'>Read more about PIDs.</a>"],
+                         "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' >Read more about PIDs.</a>"],
         },
         "validate": [
             "required"
@@ -1058,7 +1105,7 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
-            "long_help": ["The <a href='https://i4oc.org/#goals'>I4OC standards</a> ask that citations are structured, separable, and open. "],
+            "long_help": ["The <a href='https://i4oc.org/#goals' target='_blank'>I4OC standards</a> ask that citations are structured, separable, and open. "],
         },
         "validate": [
             "required"
@@ -1775,6 +1822,9 @@ class RequiredBuilder:
         html_attrs["required"] = ""
         if "message" in settings:
             html_attrs["data-parsley-required-message"] = settings["message"]
+        else:
+            html_attrs["data-parsley-required-message"] = "This answer is required"
+        html_attrs["data-parsley-validate-if-empty"] = "true"
 
     @staticmethod
     def wtforms(field, settings):
@@ -1853,6 +1903,7 @@ class JournalURLInPublicDOAJBuilder:
 class OptionalIfBuilder:
     @staticmethod
     def render(settings, html_attrs):
+        html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-optional-if"] = settings.get("field")
 
     @staticmethod
@@ -1885,8 +1936,9 @@ class DifferentToBuilder:
 class RequiredIfBuilder:
     @staticmethod
     def render(settings, html_attrs):
+        html_attrs["data-parsley-validate-if-empty"] = "true"
+        html_attrs["data-parsley-required-if"] = settings.get("value")
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
-        html_attrs["data-parsley-required-if-value"] = settings.get("value")
 
     @staticmethod
     def wtforms(field, settings):
@@ -1930,6 +1982,16 @@ class GroupMemberBuilder:
         return GroupMember(settings.get('group_field') or field)
 
 
+class RequiredValueBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-requiredvalue"] = settings.get("value")
+
+    @staticmethod
+    def wtforms(field, settings):
+        RequiredValue(settings.get("value"), settings.get("message"))
+
+
 #########################################################
 # Crosswalks
 #########################################################
@@ -1955,7 +2017,8 @@ PYTHON_FUNCTIONS = {
             "required_if": RequiredIfBuilder.render,
             "only_if" : OnlyIfBuilder.render,
             "group_member" : GroupMemberBuilder.render,
-            "not_if" : NotIfBuildier.render
+            "not_if" : NotIfBuildier.render,
+            "required_value" : RequiredValueBuilder.render,
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -1971,7 +2034,8 @@ PYTHON_FUNCTIONS = {
             "required_if": RequiredIfBuilder.wtforms,
             "only_if" : OnlyIfBuilder.wtforms,
             "group_member" : GroupMemberBuilder.wtforms,
-            "not_if" : NotIfBuildier.wtforms
+            "not_if" : NotIfBuildier.wtforms,
+            "required_value" : RequiredValueBuilder.wtforms
         }
     },
 
@@ -2052,6 +2116,7 @@ class RadioBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
+        wtfargs["widget"] = ListWidgetWithSubfields()
         return RadioField(**wtfargs)
 
 
@@ -2140,7 +2205,7 @@ class IntegerBuilder(WTFormsBuilder):
 class GroupBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
-        return field.get("input") == "group" and field.get("repeatable") is not None
+        return field.get("input") == "group" and field.get("repeatable") is None
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
@@ -2171,7 +2236,8 @@ WTFORMS_BUILDERS = [
     TagListBuilder,
     IntegerBuilder,
     GroupBuilder,
-    GroupListBuilder
+    GroupListBuilder,
+    RequiredValueBuilder
 ]
 
 

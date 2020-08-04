@@ -30,9 +30,11 @@
 }
 
 ul.parsley-errors-list {
+    display: block;
     color: #982E0A;
     list-style-type: none;
     margin-left: 0;
+    padding-left: 0;
 }
 
 li.parsley-required {
@@ -51,7 +53,7 @@ li.parsley-type {
     color: #982E0A;
 }
 
-#cannot-submit {
+.cannot-submit {
     color: #982E0A;
 }
 
@@ -60,10 +62,24 @@ li.parsley-type {
     text-decoration: #982E0A;
 }
 
+.multiple_inputs__container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 5;
+}
+
+.add_field__button_div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: flex-end;
+}
+
 .multiple_input {
     height: 100% !important;
     display: flex;
-    flex-direction: row
+    flex-direction: column;
+    flex-grow: 120;
 }
 
 .select2 {
@@ -85,8 +101,7 @@ li.parsley-type {
 }
 
 .select2-container {
-    height: 100% !important;
-    width: 100% !important;
+    width: 85%;
     background-color: inherit;
     background-image: none;
  }
@@ -97,16 +112,16 @@ li.parsley-type {
     border: 1px solid #282624;
     background-color: inherit;
     background-image: none;
-    padding: 0.5em;
+    padding: 0.25em 0.5em 0.25em 0.5em;
 }
 
-/*.select2-container-multi .select2-choices .select2-search-field input {*/
-/*    height: 100% !important;*/
-/*    border-radius: 0;*/
-/*    background-color: #FEFBF8;*/
-/*    background-image: none;*/
-/*    padding: 0.5em;*/
-/*}*/
+li > .select2-container .select2-choice {
+    padding: 0.25em 0.5em 0.25em 0.5em;
+}
+
+.form__question > .select2-container > a.select2-choice.select2-default {
+    padding: 0.25em 0.5em 0.25em 0.5em;
+}
 
 .select2-drop-active {
     background-color: #FEFBF8;
@@ -168,4 +183,18 @@ li.parsley-type {
 .removable_field {
     display: flex;
     flex-direction: row;
+}
+
+.form_group {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 0.5em;
+}
+
+.form_group > select {
+    width: 60%;
+}
+
+.form_group > input {
+    width: 30%;
 }

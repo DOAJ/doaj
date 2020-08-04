@@ -37,6 +37,10 @@ input[type="button"],
     top: 0.1em;
     height: 1em;
   }
+
+  + .button {
+    margin-left: $spacing-03;
+  }
 }
 
 input[type="submit"],

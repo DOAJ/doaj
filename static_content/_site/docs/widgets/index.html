@@ -32,16 +32,24 @@
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
 
   <meta name="theme-color" content="#F8F3EF">
 
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
+
 </head>
 
 
-  <body class="sidenav-page" data-spy="scroll" data-offset="70" style="position: relative;">
+  <body class="with-sidenav" data-spy="scroll" data-offset="70" style="position: relative;">
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -52,7 +60,9 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
-            <h1 class="sr-only">The Directory of Open Access Journals</h1>
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -82,6 +92,11 @@
                   </a>
                 </li>
                 <li>
+                  <a href="/support/supporters/" class="dropdown__link">
+                    Supporters
+                  </a>
+                </li>
+                <li>
                   <a href="/support/sponsors/" class="dropdown__link">
                     Sponsors
                   </a>
@@ -89,11 +104,6 @@
                 <li>
                   <a href="/support/publisher-supporters/" class="dropdown__link">
                     Publisher supporters
-                  </a>
-                </li>
-                <li>
-                  <a href="/support/supporters/" class="dropdown__link">
-                    Supporters
                   </a>
                 </li>
               </ul>
@@ -162,11 +172,6 @@
                 Articles
               </a>
             </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
-              </a>
-            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -205,6 +210,11 @@
                 OpenURL
               </a>
             </li>
+            <li>
+              <a href="/about/faq/" class="dropdown__link">
+                FAQs
+              </a>
+            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -234,6 +244,11 @@
               </a>
             </li>
             <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
+              </a>
+            </li>
+            <li>
               <a href="/about/volunteers/" class="dropdown__link">
                 Volunteers
               </a>
@@ -243,13 +258,9 @@
                 News
               </a>
             </li>
-            <li>
-              <a href="/about/faq/" class="dropdown__link">
-                FAQs
-              </a>
-            </li>
           </ul>
         </li>
+        
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Support</strong>
@@ -323,7 +334,7 @@
 </header>
 
 
-<!-- Admin-only edit buttons -->
+<!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/docs/content/widgets.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
 
@@ -345,17 +356,17 @@
       </div>
       <div class="input-group">
         <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-        <input type="text" name="keywords" id="quick-search-keywords" required>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
 
         <label for="quick-search-fields" class="sr-only">In the field:</label>
-        <select name="fields" id="quick-search-fields">
+        <select class="input-group__input" name="fields" id="quick-search-fields">
           <option value="all">In all fields</option>
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
           <option value="subject">Author</option>
         </select>
-        <button type="submit">
+        <button class="input-group__input" type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
@@ -431,108 +442,104 @@
 <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"doaj-fixed-query-widget"</span><span class="nt">&gt;&lt;/div&gt;</span>
 </code></pre></div></div>
 
-<h3 id="configuring-via-query_options">Configuring via <code class="highlighter-rouge">QUERY_OPTIONS</code>
+<h3 id="configuring-via-query_options">Configuring via <code class="language-plaintext highlighter-rouge">QUERY_OPTIONS</code>
 </h3>
 
-<p>There are a handful of options available, all are optional; omit them from <code class="highlighter-rouge">QUERY_OPTIONS</code> for the default behaviour.</p>
+<p>The parameter <code class="language-plaintext highlighter-rouge">QUERY_OPTIONS</code> takes a subset of fields to define which results to retrieve. The example above displays, in alphabetical order, journals that contain the word <code class="language-plaintext highlighter-rouge">medicine</code> in the title. Configuration via these <code class="language-plaintext highlighter-rouge">QUERY_OPTIONS</code> provides a simplified way to display results by keyword. There are a handful of options available. All are optional; omit them from <code class="language-plaintext highlighter-rouge">QUERY_OPTIONS</code> for the default behaviour.</p>
 
 <ul class="tabular-list">
   <li>
-<code class="highlighter-rouge">query_string</code>
+<code class="language-plaintext highlighter-rouge">query_string</code>
     <ul>
       <li>Accepts plain text: any text you might put in the search box</li>
     </ul>
   </li>
   <li>
-<code class="highlighter-rouge">query_field</code>
+<code class="language-plaintext highlighter-rouge">query_field</code>
     <ul>
       <li>The field to query. Omit to search in any field, or specify one of these:
         <ul>
           <li>
-<code class="highlighter-rouge">bibjson.title</code>: title</li>
+<code class="language-plaintext highlighter-rouge">bibjson.title</code>: title</li>
           <li>
-<code class="highlighter-rouge">bibjson.keywords</code>: keywords</li>
+<code class="language-plaintext highlighter-rouge">bibjson.keywords</code>: keywords</li>
           <li>
-<code class="highlighter-rouge">index.classification</code>: subject</li>
+<code class="language-plaintext highlighter-rouge">index.classification</code>: subject</li>
           <li>
-<code class="highlighter-rouge">index.issn.exact</code>: ISSN</li>
+<code class="language-plaintext highlighter-rouge">index.issn.exact</code>: ISSN</li>
           <li>
-<code class="highlighter-rouge">bibjson.identifier.id</code>: DOI</li>
+<code class="language-plaintext highlighter-rouge">bibjson.identifier.id</code>: DOI</li>
           <li>
-<code class="highlighter-rouge">index.country</code>: country of publisher</li>
+<code class="language-plaintext highlighter-rouge">index.country</code>: country of publisher</li>
           <li>
-<code class="highlighter-rouge">index.language</code>: journal language</li>
+<code class="language-plaintext highlighter-rouge">index.language</code>: journal language</li>
           <li>
-<code class="highlighter-rouge">index.publisher</code>: publisher name</li>
+<code class="language-plaintext highlighter-rouge">index.publisher</code>: publisher name</li>
         </ul>
       </li>
     </ul>
   </li>
   <li>
-<code class="highlighter-rouge">sort_field</code>
+<code class="language-plaintext highlighter-rouge">sort_field</code>
     <ul>
       <li>
-<code class="highlighter-rouge">created_date</code>: sort by date added to DOAJ (default)</li>
+<code class="language-plaintext highlighter-rouge">created_date</code>: sort by date added to DOAJ (default)</li>
       <li>
-<code class="highlighter-rouge">index.unpunctitle.exact</code>: sort by title</li>
+<code class="language-plaintext highlighter-rouge">index.unpunctitle.exact</code>: sort by title</li>
     </ul>
   </li>
   <li>
-<code class="highlighter-rouge">sort_direction</code>
+<code class="language-plaintext highlighter-rouge">sort_direction</code>
     <ul>
       <li>
-<code class="highlighter-rouge">asc</code>: ascending (default)</li>
+<code class="language-plaintext highlighter-rouge">asc</code>: ascending (default)</li>
       <li>
-<code class="highlighter-rouge">desc</code>: descending</li>
+<code class="language-plaintext highlighter-rouge">desc</code>: descending</li>
     </ul>
   </li>
   <li>
-<code class="highlighter-rouge">search_operator</code>
+<code class="language-plaintext highlighter-rouge">search_operator</code>
     <ul>
       <li>
-<code class="highlighter-rouge">AND</code>: use AND for the terms in the query string (default)</li>
+<code class="language-plaintext highlighter-rouge">AND</code>: use AND for the terms in the query string (default)</li>
       <li>
-<code class="highlighter-rouge">OR</code>: use OR for the terms in the query string</li>
+<code class="language-plaintext highlighter-rouge">OR</code>: use OR for the terms in the query string</li>
     </ul>
   </li>
   <li>
-<code class="highlighter-rouge">search_type</code>
+<code class="language-plaintext highlighter-rouge">search_type</code>
     <ul>
       <li>The type of result to show. Omit this property to show results of both type
         <ul>
           <li>
-<code class="highlighter-rouge">journal</code>: only show journals</li>
+<code class="language-plaintext highlighter-rouge">journal</code>: only show journals</li>
           <li>
-<code class="highlighter-rouge">article</code>: only show articles</li>
+<code class="language-plaintext highlighter-rouge">article</code>: only show articles</li>
         </ul>
       </li>
     </ul>
   </li>
   <li>
-<code class="highlighter-rouge">page_size</code>
+<code class="language-plaintext highlighter-rouge">page_size</code>
     <ul>
       <li>
-<code class="highlighter-rouge">integer</code>: how many results to show per page, 1 or more (default: 10)</li>
+<code class="language-plaintext highlighter-rouge">integer</code>: how many results to show per page, 1 or more (default: 10)</li>
     </ul>
   </li>
   <li>
-<code class="highlighter-rouge">page_from</code>
+<code class="language-plaintext highlighter-rouge">page_from</code>
     <ul>
       <li>
-<code class="highlighter-rouge">integer</code>: which result to start from initially, 0 or higher, (default 0)</li>
+<code class="language-plaintext highlighter-rouge">integer</code>: which result to start from initially, 0 or higher, (default 0)</li>
     </ul>
   </li>
 </ul>
 
-<p>The parameter <code class="highlighter-rouge">QUERY_OPTIONS</code> takes a subset of fields to define which results to retrieve. The example above displays the journals containing the word <code class="highlighter-rouge">medicine</code> in the title and in alphabetical order. Configuration via these <code class="highlighter-rouge">QUERY_OPTIONS</code> provides a simplified way to display results by keyword.</p>
+<p>For more control over which results to display, configure your query on the <a href="/search/journals/">Search</a> page. Use the controls to find the results you want to show then click the ‘Share’ button and copy the shortened URL provided for inclusion on your page.</p>
 
-<p>For more control over which results to display, we recommend configuring your query via the <em>Search</em> page. Use the controls to find the results you want to show then click the <em>Share</em> button and copy the text provided in the box below <em>Embed this search</em> for inclusion on your page.</p>
+<p>The widget can be resized to fit within available horizontal space. Use the <code class="language-plaintext highlighter-rouge">page_size</code> property to minimise its vertical requirement by reducing the number of results per page.</p>
 
-<p>The widget can be resized to fit within available horizontal space. Use the <code class="highlighter-rouge">page_size</code> property to minimise its vertical requirement by reducing the number of results per page.</p>
-
-<p>Note: the vertical size can change depending on the number of results shown on each page.</p>
-
-<p>You can only embed one fixed query widget per page. If you see strange characters in the results, try declaring the encoding in the <code class="highlighter-rouge">&lt;head&gt;</code> element of your HTML page by adding <code class="highlighter-rouge">&lt;meta charset="utf-8"&gt;</code>.</p>
+<p>Notes: The vertical size can change depending on the number of results shown on each page. You can only embed one fixed query widget per page. If you see strange characters in the results, try declaring the encoding in the <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code> element of your HTML page by adding <code class="language-plaintext highlighter-rouge">&lt;meta charset="utf-8"&gt;</code>.</p>
 
 
 
@@ -652,13 +659,6 @@
   </div>
 </footer>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<script src="../../js/vendors/bootstrap.js"></script>
-
-<!-- Feather icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-
 <script>
   // Use Feather icons
   feather.replace()
@@ -705,7 +705,7 @@
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
@@ -736,6 +736,7 @@
       }, 50, 'linear');
     }
   } );
+
 </script>
 
   </body>

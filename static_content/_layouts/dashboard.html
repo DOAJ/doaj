@@ -13,11 +13,11 @@
         <nav class="tabs__menu">
           <ul class="tabs__list" role="tablist">
             <li class="tabs__item"role="presentation">
-              <a href="#publisher-drafts" role="tab" aria-selected="true">Drafts</a>
+              <a href="#publisher-drafts" role="tab" aria-selected="true">My applications</a>
             </li>
 
             <li class="tabs__item">
-              <a href="#publisher-journals" role="tab" aria-selected="false">Your journals</a>
+              <a href="#publisher-journals" role="tab" aria-selected="false">My journals</a>
             </li>
 
             <li class="tabs__item"role="presentation">
@@ -34,14 +34,19 @@
           </ul>
         </nav>
 
-        <div class="row tabs__content">
+        <div class="tabs__content">
           <section id="publisher-drafts" class="tabs__panel" role="tabpanel" aria-hidden="false">
+            <header>
+              <h2>My applications</h2>
+            </header>
+
+            {% include draft-journals.html %}
 
           </section>
 
-          <section id="publisher-journals" class="tabs__panel" role="tabpanel" aria-hidden="true">
+          <section id="publisher-journals" class="row tabs__panel" role="tabpanel" aria-hidden="true">
             <header class="col-xs-12">
-              <h2>Your journals</h2>
+              <h2>My journals</h2>
             </header>
 
             <div class="col-md-3">
@@ -53,7 +58,7 @@
             </div>
           </section>
 
-          <section id="publisher-update-requests" class="tabs__panel" role="tabpanel" aria-hidden="true">
+          <section id="publisher-update-requests" class="row tabs__panel" role="tabpanel" aria-hidden="true">
             <header class="col-xs-12">
               <h2>Update requests</h2>
             </header>
@@ -67,7 +72,7 @@
             </div>
           </section>
 
-          <section id="publisher-upload-xml" class="tabs__panel" role="tabpanel" aria-hidden="true">
+          <section id="publisher-upload-xml" class="row tabs__panel" role="tabpanel" aria-hidden="true">
             <header class="col-md-4">
               <h2>Upload article XML</h2>
 
@@ -77,10 +82,12 @@
                   <li><a href="https://doaj.org/static/doaj/doajArticles.xsd" target="_blank" rel="noopener">DOAJ Native XML</a></li>
                   <li><a href="https://doaj.org/static/doaj/doajArticles.xsd" target="_blank" rel="noopener">Crossref 4.4.2 XML</a></li>
                 </ul>
+
+                <p>Read the <a href="{{ site.baseurl }}{% link docs/xml.md %}">XML documentation</a>.</p>
               </div>
             </header>
 
-            <form class="col-md-8 form">
+            <form class="col-md-8 form form--compact">
               <div class="form__question">
                 <label for="upload-xml-file">Select a file</label>
                 <input type="file" id="upload-xml-file" name="upload-xml-file" accept="text/xml">
@@ -107,7 +114,7 @@
             </form>
           </section>
 
-          <section id="publisher-enter-metadata" class="tabs__panel" role="tabpanel" aria-hidden="true">
+          <section id="publisher-enter-metadata" class="row tabs__panel" role="tabpanel" aria-hidden="true">
             <header class="col-md-4">
               <h2>Enter article metadata</h2>
 
@@ -116,7 +123,7 @@
               </div>
             </header>
 
-            <form class="col-md-8 form">
+            <form class="col-md-8 form form--compact">
               <div class="form__question">
                 <label for="enter-metadata">Article title</label>
                 <input type="text" id="enter-metadata" name="enter-metadata" placeholder="">
@@ -195,7 +202,7 @@
               </div>
 
               <div class="form__question">
-                <label for="enter-metadata"">DOI</label>
+                <label for="enter-metadata">DOI</label>
                 <input type="text" id="enter-metadata" name="enter-metadata" placeholder="">
                 <p><small>Seperate each keyword with a comma <code>,</code>.</small></p>
               </div>
