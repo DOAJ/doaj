@@ -150,7 +150,7 @@
                     input.each((idx, inp) => {
                         let val = $(inp).find('option:selected').text();
                         if (val !== "") {
-                            result += val + ", ";
+                            result += val + "<br>";
                         }
 
                     })
@@ -163,7 +163,7 @@
                             if (val !== "") {
                                 result += $(inp).val() + ", ";
                                 if (idx < input.length - 1) {
-                                    result += ", ";
+                                    result += "<br>";
                                 }
                             }
                         });
@@ -191,7 +191,7 @@
                             let result = ''
                             input.each((idx, i) => {
                                 if ($(i).is(":checked")) {
-                                    result += $(i).val() + ", ";
+                                    result += $(i).val() + "<br>";
                                 }
                             })
                             $(question).html(result)
@@ -362,8 +362,8 @@
 
 
 
-    let currentTab = 0; // Current tab is set to be the first tab (0)
-    let previousTab = 0;
+    let currentTab = 6; // Current tab is set to be the first tab (0)
+    let previousTab = 5;
     let tabs = $(".tab");
     let sections = $(".form-section");
     prepareSections();
