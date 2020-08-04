@@ -128,11 +128,13 @@ hosted on DOAJ.org) #}
           </dd>
           {% endif %}
 
+          {% if jbib.volume or jbib.number %}
           <dt>Journal volume & issue</dt>
           <dd>
-            {% if page.volume %}Vol. {{ page.volume }}{% endif %}{% if page.volume and page.issue %},{% endif %}
-            {% if page.issue %}no. {{ page.issue }}{% endif %}
+            {% if jbib.volume %}Vol. {{ jbib.volume }}{% endif %}{% if jbib.volume and jbib.number %},{% endif %}
+            {% if jbib.number %}no. {{ jbib.number }}{% endif %}
           </dd>
+          {% endif %}
         </dl>
       </div>
 
@@ -204,7 +206,7 @@ hosted on DOAJ.org) #}
           {% endif %}
 
           {% for path in bibjson.lcc_paths() %}
-          {% if loop.index0 == 0 %}<dt>LCC Subject Category</dt>{% endif %}
+          {% if loop.index0 == 0 %}<dt>LCC subjects</dt>{% endif %}
           <dd>{{ path }}</dd>
           {% endfor %}
 
