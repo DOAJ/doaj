@@ -158,16 +158,19 @@
                 } else {
                     if (id === "keywords__review_value") {
                         let result = "";
-                        input.each((idx, inp) => {
-                            let val = $(inp).val();
-                            if (val !== "") {
-                                result += $(inp).val() + ", ";
-                                if (idx < input.length - 1) {
-                                    result += "<br>";
-                                }
-                            }
-                        });
+                        let this_input = $('#keywords')
+                        let keywords = this_input.val().split(",")
+                        if (keywords.length !== 1) {
+                            $(keywords).each((idx, kw) => {
+                                result += kw + "<br>";
+                            });
+                        }
+                        else {
+                            result = keywords[0];
+                        }
                         $(question).html(result);
+
+
                     } else {
                         let type = input.attr("type");
                         if (type === "text" || type === "number") {
