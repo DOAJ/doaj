@@ -344,6 +344,95 @@ $.extend(true, doaj, {
             };
         },
 
+        newSearchBoxFacetRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.SearchBoxFacetRenderer, params, edges.newRenderer);
+        },
+        SearchBoxFacetRenderer: function (params) {
+
+            // set the placeholder text for the search box
+            this.searchPlaceholder = edges.getParam(params.searchPlaceholder, "Search");
+
+            // amount of time between finishing typing and when a query is executed from the search box
+            this.freetextSubmitDelay = edges.getParam(params.freetextSubmitDelay, 500);
+
+            this.title = edges.getParam(params.title, "");
+
+            ////////////////////////////////////////
+            // state variables
+
+            this.focusSearchBox = false;
+
+            this.namespace = "doaj-bs3-search-box-facet";
+
+            this.draw = function () {
+                var comp = this.component;
+
+                // more classes that we'll use
+                var textClass = edges.css_classes(this.namespace, "text", this);
+                var textId = edges.css_id(this.namespace, "text", this);
+
+                //var frag = '<div class="row">' + clearFrag + sortOptions + searchBox + '</div>';
+                var frag = '<h3 class="filter__heading">' + edges.escapeHtml(this.title) + '</h3>\
+                    <label for="' + textId + '" class="sr-only">' + edges.escapeHtml(this.title) + '</label>\
+                    <input type="text" name="' + textId + '" id="' + textId + '" class="filter__search ' + textClass + '" placeholder="' + this.searchPlaceholder + '">';
+
+                comp.context.html(frag);
+                feather.replace();
+
+                this.setUISearchText();
+
+                var textSelector = edges.css_class_selector(this.namespace, "text", this);
+                if (this.freetextSubmitDelay > -1) {
+                    edges.on(textSelector, "keyup", this, "setSearchText", this.freetextSubmitDelay);
+                } else {
+                    function onlyEnter(event) {
+                        var code = (event.keyCode ? event.keyCode : event.which);
+                        return code === 13;
+                    }
+
+                    edges.on(textSelector, "keyup", this, "setSearchText", false, onlyEnter);
+                }
+
+                // if we've been asked to focus the text box, do that
+                if (this.focusSearchBox) {
+                    $(textSelector).focus();
+                    this.focusSearchBox = false;
+                }
+            };
+
+            //////////////////////////////////////////////////////
+            // functions for setting UI values
+
+            this.setUISearchText = function () {
+                if (!this.component.searchString) {
+                    return;
+                }
+                // get the selector we need
+                var textSelector = edges.css_class_selector(this.namespace, "text", this);
+                var el = this.component.jq(textSelector);
+                el.val(this.component.searchString);
+            };
+
+            ////////////////////////////////////////
+            // event handlers
+
+            this.setSearchText = function (element) {
+                this.focusSearchBox = true;
+                var val = this.component.jq(element).val();
+                this.component.setSearchText(val);
+            };
+
+            this.clearSearch = function (element) {
+                this.component.clearSearch();
+            };
+
+            this.doSearch = function (element) {
+                var textId = edges.css_id_selector(this.namespace, "text", this);
+                var text = this.component.jq(textId).val();
+                this.component.setSearchText(text);
+            };
+        },
+
         newPageSizeRenderer: function (params) {
             return edges.instantiate(doaj.renderers.PageSizeRenderer, params, edges.newRenderer);
         },

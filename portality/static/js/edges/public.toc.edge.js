@@ -96,6 +96,17 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),*/
+
+                edges.newFullSearchController({
+                    id: "search-controller",
+                    category: "facet",
+                    renderer : doaj.renderers.newSearchBoxFacetRenderer({
+                        freetextSubmitDelay: 1000,
+                        searchPlaceholder: "Additional keywords",
+                        title: "Search within the results"
+                    })
+                }),
+
                 edges.newDateHistogramSelector({
                     id : "year_published",
                     category: "facet",
