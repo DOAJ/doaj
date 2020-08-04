@@ -493,7 +493,6 @@ class FieldDefinitions:
         "name": "license_display_example_url",
         "label": "Recent article displaying or embedding a license in the full text",
         "input": "text",
-        "optional": True,
         "conditional": [
             {"field": "license_display", "value": "y"}
         ],
@@ -501,7 +500,8 @@ class FieldDefinitions:
             "short_help": "Link to an example article"
         },
         "validate": [
-            "is_url"
+            "is_url",
+            "required"
         ],
         "widgets": [
             "clickable_url"
@@ -883,7 +883,7 @@ class FieldDefinitions:
             {"display": "Portico", "value": "Portico", "subfields": ["preservation_service_url"]},
             {"display": "A national library", "value": "national_library", "subfields": ["preservation_service_library", "preservation_service_url"]},
             {"display": "The journal content isn't archived with a long-term preservation service",
-             "value": "none", "exclusive": True},
+             "value": "none", "exclusive": True, "subfields": ["preservation_service_url"]},
             {"display": "Other", "value": "other", "subfields": ["preservation_service_other", "preservation_service_url"]}
         ],
         "help": {
