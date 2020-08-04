@@ -1661,7 +1661,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
-    MANED["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = "application_form/maned_application.html"
 
 

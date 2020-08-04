@@ -69,7 +69,6 @@ class NewApplication(FormProcessor):
         self.target.set_last_manual_update()
 
         # Finally save the target
-
         if save_target:
             self.target.save()
 
@@ -79,3 +78,16 @@ class NewApplication(FormProcessor):
             except app_email.EmailException as e:
                 self.add_alert(Messages.FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR)
                 app.logger.exception(Messages.FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR)
+
+
+class AdminApplication(FormProcessor):
+
+    def patch_target(self):
+        pass
+
+    def finalise(self, account, save_target=True, email_alert=True):
+        super(AdminApplication, self).finalise()
+
+        # fixme: do we need a save_target param? when don't we save?
+        if save_target:
+            self.target.save()

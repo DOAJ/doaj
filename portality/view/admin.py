@@ -325,7 +325,7 @@ def application(application_id):
 
     auth_svc = DOAJ.authorisationService()
     try:
-        auth_svc.can_edit_application(current_user, ap)
+        auth_svc.can_edit_application(current_user._get_current_object(), ap)
     except exceptions.AuthoriseException:
         abort(401)
 
