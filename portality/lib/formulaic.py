@@ -664,13 +664,13 @@ class FormProcessor(object):
     def target(self, val):
         self._target = val
 
-    @property
-    def template(self):
-        return self._template
-
-    @template.setter
-    def template(self, val):
-        self._template = val
+    # @property
+    # def template(self):
+    #     return self._template
+    #
+    # @template.setter
+    # def template(self, val):
+    #     self._template = val
 
     @property
     def alert(self):

@@ -10,6 +10,8 @@ from doajtest.helpers import DoajTestCase
 from portality import lcc
 from portality import models
 from portality.formcontext import formcontext
+from portality.forms.application_forms import ApplicationFormFactory
+from portality.forms.application_processors import AdminApplication
 
 
 #####################################################################
@@ -75,22 +77,22 @@ class TestManEdAppReview(DoajTestCase):
         ctx = self._make_and_push_test_context(acc=acc)
 
         # we start by constructing it from source
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=models.Suggestion(**APPLICATION_SOURCE))
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(source=models.Application(**APPLICATION_SOURCE))
+        assert isinstance(fc, AdminApplication)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
-        assert fc.template is not None
+        #assert fc.template is not None
 
         # no need to check form rendering - there are no disabled fields
 
         # now construct it from form data (with a known source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="admin",
-            form_data=MultiDict(APPLICATION_FORM) ,
+        fc = formulaic_context.processor(
+            formdata=MultiDict(APPLICATION_FORM),
             source=models.Suggestion(**APPLICATION_SOURCE))
 
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        assert isinstance(fc, AdminApplication)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None
@@ -118,7 +120,7 @@ class TestManEdAppReview(DoajTestCase):
         # everything else is overridden by the form, so no need to check it has patched
 
         # now do finalise (which will also re-run all of the steps above)
-        fc.finalise()
+        fc.finalise(acc)
 
         time.sleep(2)
 

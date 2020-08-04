@@ -2,10 +2,11 @@ from copy import deepcopy
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
 from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, \
-    FormField, FieldList
+    FormField, FieldList, HiddenField
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 
+from portality.formcontext.choices import Choices
 from portality.formcontext.fields import TagListField
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
@@ -25,10 +26,13 @@ from portality.forms.validate import (
     RequiredIfOtherValue,
     OnlyIf,
     NotIf,
-    GroupMember
+    GroupMember,
+    RequiredValue
 )
 
 from portality.datasets import language_options, country_options, currency_options
+from portality.core import app
+from portality.constants import APPLICATION_STATUSES_ALL
 from portality.regex import ISSN, ISSN_COMPILED
 
 # Stop words used in the keywords field
@@ -1804,11 +1808,11 @@ def iso_currency_list(field):
 
 
 def quick_reject(field):
-    raise NotImplementedError()
+    return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
 
 
 def application_statuses(field):
-    raise NotImplementedError()
+    return [{'display': d, 'value': v} for (d, v) in Choices.application_status(context='admin')] #fixme - formulaic needs context
 
 
 #######################################################
@@ -1990,6 +1994,17 @@ class RequiredValueBuilder:
     def wtforms(field, settings):
         RequiredValue(settings.get("value"), settings.get("message"))
 
+class BigEndDateBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        pass
+        #html_attrs["data-parsley-bigenddate"] = settings.get("value")
+
+    @staticmethod
+    def wtforms(field, settings):
+        pass
+        #RequiredValue(settings.get("value"), settings.get("message"))
+
 
 #########################################################
 # Crosswalks
@@ -2018,6 +2033,7 @@ PYTHON_FUNCTIONS = {
             "group_member" : GroupMemberBuilder.render,
             "not_if" : NotIfBuildier.render,
             "required_value" : RequiredValueBuilder.render,
+            "bigenddate": BigEndDateBuilder.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -2034,7 +2050,8 @@ PYTHON_FUNCTIONS = {
             "only_if" : OnlyIfBuilder.wtforms,
             "group_member" : GroupMemberBuilder.wtforms,
             "not_if" : NotIfBuildier.wtforms,
-            "required_value" : RequiredValueBuilder.wtforms
+            "required_value" : RequiredValueBuilder.wtforms,
+            "bigenddate": BigEndDateBuilder.wtforms
         }
     },
 
@@ -2225,6 +2242,17 @@ class GroupListBuilder(WTFormsBuilder):
         return FieldList(ff, min_entries=repeat_cfg.get("initial", 1))
 
 
+class HiddenFieldBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "hidden"
+
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        return HiddenField(**wtfargs)
+
+
+
 WTFORMS_BUILDERS = [
     RadioBuilder,
     MultiCheckboxBuilder,
@@ -2235,7 +2263,8 @@ WTFORMS_BUILDERS = [
     TagListBuilder,
     IntegerBuilder,
     GroupBuilder,
-    GroupListBuilder
+    GroupListBuilder,
+    HiddenFieldBuilder
 ]
 
 
