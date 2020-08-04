@@ -41,18 +41,6 @@
                 <section class="row mobile-scrollable-row">
                     <p class="col-md-2 stat">
                         <a href="#">
-                            <span class="stat__number">{{ statistics.journals }}</span>
-                            <span class="stat__description">journals</span>
-                        </a>
-                    </p>
-                    <p class="col-md-2 stat">
-                        <a href="#">
-                            <span class="stat__number">{{ statistics.abstracts }}</span>
-                            <span class="stat__description">articles abstracts</span>
-                        </a>
-                    </p>
-                    <p class="col-md-2 stat">
-                        <a href="#">
                             <span class="stat__number">{{ statistics.countries }}</span>
                             <span class="stat__description">countries represented</span>
                         </a>
@@ -60,13 +48,25 @@
                     <p class="col-md-2 stat">
                         <a href="#">
                             <span class="stat__number">{{ statistics.last_updated }}</span>
-                            <span class="stat__description">recently-updated journals</span>
+                            <span class="stat__description">new journals</span>
                         </a>
                     </p>
                     <p class="col-md-2 stat">
                         <a href="#">
                             <span class="stat__number">{{ statistics.no_apc }}</span>
                             <span class="stat__description">journals without APC<span style="text-transform: lowercase;">s</span></span>
+                        </a>
+                    </p>
+                    <p class="col-md-2 stat">
+                        <a href="#">
+                            <span class="stat__number">{{ statistics.journals }}</span>
+                            <span class="stat__description">journals</span>
+                        </a>
+                    </p>
+                    <p class="col-md-2 stat">
+                        <a href="#">
+                            <span class="stat__number">{{ statistics.abstracts }}</span>
+                            <span class="stat__description">article abstracts</span>
                         </a>
                     </p>
                 </section>
@@ -109,7 +109,7 @@
         <header class="flex-header">
           <h2 class="flex-header__child">From the blog</h2>
           <p class="flex-header__child">
-            <a href="https://blog.doaj.org" class="button" target="_blank" rel="noopener">
+            <a href="{{url_for('doaj.news')}}" class="button" target="_blank" rel="noopener">
               See all →
             </a>
           </p>
@@ -190,9 +190,6 @@
             <div class="row mobile-scrollable-row volunteers">
               <article class="col-md-4">
                 <h4>Karina Menegaldo</h4>
-                <figure class="portrait">
-                  <img src="https://images.generated.photos/ggaWl1zseN8sJNmJZ9rVZuAoc17In0C1qb7na6AGuHE/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zL3Yy/XzA1MzUyMDAuanBn.jpg" class="portrait__img portrait__img--split" alt="Portrait of Karina Megaldo">
-                </figure>
                 <p class="label">
                   Linguistics and computation
                 </p>
@@ -206,10 +203,6 @@
 
               <article class="col-md-4">
                 <h4>Marco Tullney</h4>
-                <figure class="portrait">
-                  <img src="https://images.generated.photos/PYqJjdWKLiLWW3R0pVQGZRQ6oZWQ5qdPMLkwLCttkJs/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zLzA5/OTUwMjkuanBn.jpg" class="portrait__img portrait__img--split" alt="Portrait of Marco Tullney">
-                </figure>
-
                 <p class="label">
                   Social sciences
                 </p>
@@ -223,9 +216,6 @@
 
               <article class="col-md-4">
                 <h4>Karima Akool Al Salihi</h4>
-                <figure class="portrait">
-                  <img src="https://images.generated.photos/hoWxGiF0Ha-1RMoWzL3GqouXZf2fSxU3dYY9G8EyP3k/rs:fit:512:512/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zLzA5/OTkyMjAuanBn.jpg" class="portrait__img portrait__img--split" alt="Portrait of Karima Akool Al Salihi">
-                </figure>
                 <p class="label">
                   Medicine
                 </p>
