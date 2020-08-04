@@ -16,7 +16,7 @@
                         {% set fs = formulaic_context.fieldset(fieldset) %}
                         {% for f in fs.fields() %}
                             <tr>
-                                <td id="{{ f.name }}__review_label">{{ f.label }}</td>
+                                <td id="{{ f.name }}__review_label">{{ f.label | safe }}</td>
                                 <td id="{{ f.name  }}__review_value"></td>
                             </tr>
                         {% endfor %}

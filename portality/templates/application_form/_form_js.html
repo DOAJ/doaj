@@ -150,7 +150,7 @@
                     input.each((idx, inp) => {
                         let val = $(inp).find('option:selected').text();
                         if (val !== "") {
-                            result += val + ", ";
+                            result += val + "<br>";
                         }
 
                     })
@@ -163,7 +163,7 @@
                             if (val !== "") {
                                 result += $(inp).val() + ", ";
                                 if (idx < input.length - 1) {
-                                    result += ", ";
+                                    result += "<br>";
                                 }
                             }
                         });
@@ -176,22 +176,15 @@
                             $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>')
                         } else if (type === "radio") {
                             if (input.is(":checked")) {
-                                let val = input.filter(':checked').val()
-                                if (val === "y") {
-                                    $(question).html("Yes");
-                                } else if (val === "n") {
-                                    $(question).html("No");
-                                } else if (val === "") {
-                                } else {
-                                    $(question).html("Oops, something went wrong! You shouldn't see that, please contact support");
-                                }
-
+                                let text = $('label[for=' + $(input.filter(':checked')).attr('id') + ']').text();
+                                $(question).html(text);
                             }
                         } else if (type === "checkbox") {
                             let result = ''
                             input.each((idx, i) => {
                                 if ($(i).is(":checked")) {
-                                    result += $(i).val() + ", ";
+                                    let text = $('label[for=' + $(i).attr('id') + ']').text();
+                                    result += text + "<br>";
                                 }
                             })
                             $(question).html(result)
@@ -362,8 +355,8 @@
 
 
 
-    let currentTab = 0; // Current tab is set to be the first tab (0)
-    let previousTab = 0;
+    let currentTab = 6; // Current tab is set to be the first tab (0)
+    let previousTab = 5;
     let tabs = $(".tab");
     let sections = $(".form-section");
     prepareSections();
