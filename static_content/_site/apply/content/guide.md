@@ -36,7 +36,7 @@ Open access journals published in any language may apply.
 
 - The journal must have its own dedicated URL and homepage that is accessible from any location
 - The website must be clear and easy to navigate
-- The journal  should adhere to the guidelines described in the Principles of Transparency and Best Practice in Scholarly Publishing
+- The journal  should adhere to the guidelines described in the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency/)
 - Each article must be available as an individual, full-text article
   - one unique URL per article
   - HTML or PDF, as a minimum

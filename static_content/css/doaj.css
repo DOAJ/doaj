@@ -965,8 +965,7 @@ ul, ol {
   ul ul, ul ol, ol ul, ol ol {
     margin-left: 0.75rem; }
   ul li, ol li {
-    line-height: 1.5;
-    display: block; }
+    line-height: 1.5; }
 
 dl {
   margin: 0 0 1.5rem 0; }
@@ -1070,8 +1069,14 @@ form {
     margin: 0.75rem 0; }
     form label small, form label a, form p small, form p a {
       color: #5C5956; }
+    form label:first-child, form p:first-child {
+      margin-top: auto; }
 
 input, select, button, textarea {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   border-radius: 0;
@@ -1131,6 +1136,12 @@ input[type="radio"] + label {
   margin: 0 1.5rem 0.375rem 0; }
   input[type="radio"] + label::before {
     border-radius: 50%; }
+
+fieldset {
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  border: 0;
+  min-width: 0; }
 
 /* Feather icons */
 .feather {
@@ -1748,9 +1759,11 @@ button[type="submit"] {
 
 .filter {
   margin: 1.5rem 0; }
+  .filter:first-child {
+    margin-top: auto; }
 
 .filter__heading {
-  margin: 0.75rem 0;
+  margin: auto 0 0.75rem 0;
   font-size: 1em;
   color: #282624;
   font-family: 'Source Sans Pro', sans-serif;
@@ -1895,20 +1908,19 @@ button[type="submit"] {
     font-size: 1em;
     font-family: 'Source Sans Pro', sans-serif;
     letter-spacing: 0.01em; }
+  .highlight--aside hr {
+    margin: 0.375rem 0; }
   .highlight--aside ul, .highlight--aside ol  {
     margin: 0; }
-  .highlight--aside form {
-    margin-bottom: 1.5rem; }
-    .highlight--aside form:last-child {
-      margin-bottom: 0; }
+  .highlight--aside input[type="checkbox"] + label, .highlight--aside input[type="radio"] + label {
+    font-size: 1em; }
   .highlight--aside select {
     padding: 0.375rem 30px 0.375rem 0.375rem; }
-  .highlight--aside input, .highlight--aside select {
+  .highlight--aside input, .highlight--aside select, .highlight--aside textarea {
     margin-bottom: 0.75rem;
     max-width: 100%;
-    width: 100%;
     font-size: 1em; }
-    .highlight--aside input:last-child, .highlight--aside select:last-child {
+    .highlight--aside input:last-child, .highlight--aside select:last-child, .highlight--aside textarea:last-child {
       margin-bottom: 0; }
 
 /* Highlighted list with large numbers */
@@ -2626,28 +2638,30 @@ button[type="submit"] {
   .tag a {
     text-decoration: none;
     color: #FEFBF8; }
+    .tag a:hover, .tag a:focus, .tag a:active {
+      color: #FD5A3B; }
+      .tag a:hover svg, .tag a:focus svg, .tag a:active svg {
+        stroke: #FD5A3B; }
   .tag svg {
     position: relative;
     padding-right: 0.1875rem;
     top: 2px;
     stroke: #FEFBF8; }
-  .tag:hover svg, .tag:hover a, .tag:focus svg, .tag:focus a, .tagactive svg, .tagactive a {
-    stroke: #FD5A3B;
-    color: #FD5A3B; }
 
 .tag--featured {
   background: #FD5A3B;
   color: #282624; }
   .tag--featured a {
     color: #282624; }
+    .tag--featured a:hover, .tag--featured a:focus, .tag--featured a:active {
+      color: #FEFBF8; }
+      .tag--featured a:hover svg, .tag--featured a:focus svg, .tag--featured a:active svg {
+        stroke: #FEFBF8; }
   .tag--featured svg {
     stroke: #282624; }
-  .tag--featured:hover, .tag--featured:focus, .tag--featuredactive {
+  .tag--featured:hover, .tag--featured:focus, .tag--featured:active {
     background: #982E0A;
     color: #FEFBF8; }
-    .tag--featured:hover svg, .tag--featured:hover a, .tag--featured:focus svg, .tag--featured:focus a, .tag--featuredactive svg, .tag--featuredactive a {
-      stroke: #FEFBF8;
-      color: #FEFBF8; }
 
 /* List of titles (journals, articles, posts ...)
    In 2+ columns */
@@ -2723,7 +2737,7 @@ button[type="submit"] {
       display: block;
       padding: 0.75rem 0.1875rem;
       text-decoration: none; }
-      #apply .application-nav__list-item a:hover {
+      #apply .application-nav__list-item a:hover, #apply .application-nav__list-item a:active, #apply .application-nav__list-item a:focus {
         color: #282624; }
       #apply .application-nav__list-item a:before {
         display: inline-block;
@@ -2734,7 +2748,7 @@ button[type="submit"] {
         height: 30px;
         border: 1px solid rgba(92, 89, 86, 0.5);
         border-radius: 50%;
-        line-height: 30px;
+        line-height: 28px;
         text-align: center;
         color: rgba(92, 89, 86, 0.75);
         font-weight: bold;
@@ -2747,14 +2761,14 @@ button[type="submit"] {
     background-size: 15px;
     background-color: #5C5956;
     border-color: #5C5956; }
-    #apply .application-nav__list-item--done a:before a:hover {
-      color: #982E0A;
-      cursor: pointer; }
+  #apply .application-nav__list-item--done a:hover, #apply .application-nav__list-item--done a:focus, #apply .application-nav__list-item--done a:active {
+    color: #982E0A;
+    cursor: pointer; }
   #apply .application-nav__list-item--active a:before {
     background: #FD5A3B;
     color: #282624;
     border-color: #FD5A3B; }
-  #apply .application-nav__list-item--active a:hover {
+  #apply .application-nav__list-item--active:hover, #apply .application-nav__list-item--active:active, #apply .application-nav__list-item--active:focus {
     cursor: pointer;
     color: #982E0A; }
   #apply .application-nav__list-item--active:before, #apply .application-nav__list-item--active ~ li:before {
@@ -2763,10 +2777,10 @@ button[type="submit"] {
     color: #982E0A;
     border-color: #982E0A;
     border-width: 2px; }
-  #apply .application-nav__list-item--invalid a:hover {
+  #apply .application-nav__list-item--invalid a:hover, #apply .application-nav__list-item--invalid a:active, #apply .application-nav__list-item--invalid a:focus {
     color: #982E0A;
     cursor: pointer; }
-  #apply .application-nav__list-item--invalid:before, #apply .application-nav__list-item--invalid ~ li:before {
+  #apply .application-nav__list-item--invalid a:before, #apply .application-nav__list-item--invalid a ~ li:before {
     border: 1px dashed rgba(92, 89, 86, 0.25); }
   #apply .page_link--disabled {
     color: #5C5956; }
@@ -2779,12 +2793,12 @@ button[type="submit"] {
 #apply hr {
   background-color: #FD5A3B; }
 #apply .add_field__button {
-  margin-left: 5px; }
+  margin-left: 0.75rem; }
 #apply .remove_field__button {
   background-color: inherit;
   color: #5C5956;
   border: none;
-  margin: 0 0 0.5em 0.5em; }
+  margin: 0 0 0.75rem 0.75rem; }
 
 .article-details__meta {
   font-size: smaller; }
