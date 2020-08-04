@@ -1,5 +1,4 @@
-<div id="{{ f.name }}__container" class="form__question {% if f.has_conditional %} form__subquestion {% endif %}"
-{% if f.has_conditional %} style="display: none"{% endif %}>
+<div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
     {% if f.has_conditional %}
         <input type="hidden" class="conditional" id="{{ f.name }}__conditional" name="{{ f.condition_field }}" value="{{ f.condition_value }}">
     {% endif %}
@@ -8,18 +7,20 @@
         {% if f.help("long_help") %}
             <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-{{ f.name }}"></span><span class="sr-only">More help</span>
         {% endif %}
-        {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
+        {% if f.optional %}<span class="form__question--optional">(Optional)</span>{% endif %}
     </label>
     {% if f.get("hint") %}<p><small>{{ f.hint }}</small></p>{% endif %}
     {% if "multiple_field" in f.get("widgets", []) %}
-        <div style="display: flex; flex-direction: row">
-            <div style="display: flex; flex-direction: column; flex-grow: 5" class="removable_field__{{ f.name }}">
+        <div class="removable_field">
+            <div class="multiple_inputs__container" id="removable_field__{{ f.name }}">
                 <div class= 'multiple_input'>
                     {{ f.render_form_control() }}
                 </div>
             </div>
-            <div style="display: flex; flex-grow: 2; flex-direction: column; align-items: flex-start" class="add_field__button_div">
-                <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add another </button>
+            <div class="add_field__button_div">
+                <div class="add_field__button_div">
+                    <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add another </button>
+                </div>
             </div>
         </div>
     {% else %}

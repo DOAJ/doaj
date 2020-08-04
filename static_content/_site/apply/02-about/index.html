@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,11 +32,19 @@
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
 
   <meta name="theme-color" content="#F8F3EF">
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
 
 </head>
 
@@ -51,7 +60,9 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
-            <h1 class="sr-only">The Directory of Open Access Journals</h1>
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -81,6 +92,11 @@
                   </a>
                 </li>
                 <li>
+                  <a href="/support/supporters/" class="dropdown__link">
+                    Supporters
+                  </a>
+                </li>
+                <li>
                   <a href="/support/sponsors/" class="dropdown__link">
                     Sponsors
                   </a>
@@ -88,11 +104,6 @@
                 <li>
                   <a href="/support/publisher-supporters/" class="dropdown__link">
                     Publisher supporters
-                  </a>
-                </li>
-                <li>
-                  <a href="/support/supporters/" class="dropdown__link">
-                    Supporters
                   </a>
                 </li>
               </ul>
@@ -161,11 +172,6 @@
                 Articles
               </a>
             </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
-              </a>
-            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -204,6 +210,11 @@
                 OpenURL
               </a>
             </li>
+            <li>
+              <a href="/about/faq/" class="dropdown__link">
+                FAQs
+              </a>
+            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -233,6 +244,11 @@
               </a>
             </li>
             <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
+              </a>
+            </li>
+            <li>
               <a href="/about/volunteers/" class="dropdown__link">
                 Volunteers
               </a>
@@ -242,13 +258,9 @@
                 News
               </a>
             </li>
-            <li>
-              <a href="/about/faq/" class="dropdown__link">
-                FAQs
-              </a>
-            </li>
           </ul>
         </li>
+        
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Support</strong>
@@ -322,6 +334,14 @@
 </header>
 
 
+<!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
+<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content//content/02-about.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
+
+
+
+
+
+
 
 <!-- Quick search modal -->
 <section class="modal" id="modal-search" tabindex="-1" role="dialog">
@@ -336,17 +356,17 @@
       </div>
       <div class="input-group">
         <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-        <input type="text" name="keywords" id="quick-search-keywords" required>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
 
         <label for="quick-search-fields" class="sr-only">In the field:</label>
-        <select name="fields" id="quick-search-fields">
+        <select class="input-group__input" name="fields" id="quick-search-fields">
           <option value="all">In all fields</option>
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
           <option value="subject">Author</option>
         </select>
-        <button type="submit">
+        <button class="input-group__input" type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
@@ -355,14 +375,18 @@
 </section>
 
 
+
     <main class="container">
       <div class="row">
+
+        
 
         <div class="col-md-8">
           <section class="page-content">
             <p class="label">Page 2 of 7</p>
             <h1>
 <span data-feather="edit-3" aria-hidden="true"></span> About the journal</h1>
+            
 
             
 
@@ -745,105 +769,22 @@
               
               <p class="pager-buttons">
                 
-                <a href="../01-oa-compliance" class="pager-buttons__left">Previous</a>
+                <a href="../01-oa-compliance" class="button button--secondary pager-buttons__left">Previous</a>
                 
 
-                <button type="submit" class="pager-buttons__right">Next</button>
+                <button type="submit" class="button button--primary pager-buttons__right">Next</button>
 
-                <a href="#" class="pager-buttons__center">Save draft</a>
+                <a href="#" class="button button--secondary pager-buttons__center">Save draft</a>
               </p>
               
             </form>
           </section>
         </div>
 
-        <div class="col-md-4">
-          <div>
-            
-            
-            
-            
-            
-            
-            
-
-            
-            <nav class="application-nav">
-              <h2 class="application-nav__heading">Application progress</h2>
-              <ol class="application-nav__list">
-                <li class="application-nav__list-item
-                   application-nav__list-item--done
-                  ">
-                  <a href="/apply/01-oa-compliance/">
-                    Open access compliance
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                   application-nav__list-item--active
-                  ">
-                  <a href="/apply/02-about/">
-                    About
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/03-copyright-licensing/">
-                    Copyright &amp; licensing
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/04-editorial/">
-                    Editorial
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/05-business-model/">
-                    Business model
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/06-best-practice/">
-                    Best practice
-                  </a>
-                </li>
-                <li class="application-nav__list-item
-                  ">
-                  <a href="/apply/07-review/">
-                    Review your answers
-                  </a>
-                </li>
-              </ol>
-            </nav>
-            
-
-            
-            <aside class="highlight highlight--aside">
-              <h2>Related help</h2>
-              <ul class="full-width-list">
-                <li class="full-width-list__item">
-                  <a href="/apply/guide/">Guide to applying</a>
-                </li>
-                <li class="full-width-list__item">
-                  <a href="/apply/seal/">The DOAJ Seal</a>
-                </li>
-                <li class="full-width-list__item">
-                  <a href="/apply/transparency/">Transparency &amp; best practice</a>
-                </li>
-                <li class="full-width-list__item">
-                  <a href="/apply/why-index/">Why index your journal in DOAJ?</a>
-                </li>
-              </ul>
-            </aside>
-            
-
-            
-          </div>
-        </div>
+        
       </div>
     </main>
+
 
     <footer class="page-footer">
   <div class="container">
@@ -952,13 +893,6 @@
   </div>
 </footer>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<script src="../../js/vendors/bootstrap.js"></script>
-
-<!-- Feather icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-
 <script>
   // Use Feather icons
   feather.replace()
@@ -1005,7 +939,7 @@
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
@@ -1036,8 +970,10 @@
       }, 50, 'linear');
     }
   } );
+
 </script>
 
   </body>
 
 </html>
+

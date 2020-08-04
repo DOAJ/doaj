@@ -1,23 +1,50 @@
 /* Blog posts */
 
-.blog-post {
+.blog {
+
+  h3, h4 {
+    margin-top: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+.blog__post {
   margin-bottom: $spacing-05;
-  @include typescale-06;
 }
 
-.blog-post__link {
+.blog__link {
   display: block;
-  text-decoration: none;
 }
 
-.blog-post__title {
-  margin-top: $spacing-03;
+.blog__aside {
+
+  h3, h4, {
+    @include typescale-06;
+  }
+
+  h4 {
+    margin: 0;
+  }
 }
+
 
 // Featured / latest article
-
-.blog-post--featured {
+.blog__post--featured {
   padding: $spacing-04;
   background-color: $fair-pink;
   text-align: center;
+}
+
+// Special post series
+.blog__post--special {
+  margin: 0;
+  padding: $spacing-04 0;
+  border-bottom: 1px solid $dark-grey;
+
+  &:last-child {
+    border: 0;
+  }
 }

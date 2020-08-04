@@ -1,7 +1,9 @@
 {% block buttons %}
     <p class="pager-buttons">
-        <button type="button" id="prevBtn" class="pager-buttons__left" onclick="prev()">Previous</button>
-        <button type="button" id="nextBtn" class="pager-buttons__right" onclick="next()">Next</button>
-        <button type="submit" id="submitBtn" class="pager-buttons__right" onclick="onSubmit()">Save the draft</button>
+        <button type="button" id="prevBtn" class="button button--secondary pager-buttons__left" onclick="prev()">Previous</button>
+        <button type="button" id="nextBtn" class="button button--secondary pager-buttons__right" onclick="next()">Next</button>
+        <a id="submitBtn" class="button button--primary pager-buttons__right" onclick="submitaplication()">Submit</a>
+        <a id="saveDraft" class="button button--secondary pager-buttons__center" onclick="savedraft()">Save the draft</a>
+
     </p>
 {% endblock %}

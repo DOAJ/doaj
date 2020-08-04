@@ -1,50 +1,33 @@
-<div class="{{ f.name }}__container" {# {% if f.has_conditional %}style="display:none"{% endif %} #}>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <label class="control-label col-md-4" for="{{ f.name }}">
-                    <a class="question_id" name="{{ f.name }}" href="#{{ f.name }}">{{ f.name }}</a><br>
-                    {% autoescape off %}{{ f.label }}{% endautoescape %}
-                    {% if f.has_validator("required") %}<br>(required){% endif %}
-                </label>
-                <div class="col-md-7">
-
-                    {% for entry in f.wtfield %}
-                        <div class="row">
-                            <div class="col-xs-12">
-                                {% set entry_template = f.entry_template %}
-                                {% include entry_template %}
-                            </div>
-                        </div>
-                    {% endfor %}
-
-                    {% if f.help("short_help") %}
-                    <div class="row">
-                        <div class="col-xs-12">
-                            {{ f.help("short_help") }}
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% if f.has_errors() %}
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <ul class="errors">
-                                {% for error in f.errors() %}
-                                <li>{{ error }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                </div>
+<div id="{{ f.name }}__container" class=form__question">
+    <label>
+        {% autoescape off %}{{ f.label }}{% endautoescape %}
+        {% if f.help("long_help") %}
+            <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-{{ f.name }}"></span><span class="sr-only">More help</span>
+        {% endif %}
+        {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
+    </label>
+    {% if f.get("hint") %}<p><small>{{ f.hint }}</small></p>{% endif %}
+    {% if "multiple_field" in f.get("widgets", []) %}
+        <div class="removable_field">
+            <div class= 'multiple_input'>
+                {% for entry in f.wtfield %}
+                    {% set entry_template = f.entry_template %}
+                        {% include entry_template %}
+                {% endfor %}
             </div>
-            <div class="col-md-1">
-                {% if f.help("doaj_criteria") %}<span title="{{ f.help("doaj_criteria") }}">DOAJ</span>&nbsp;{% endif %}
-                {% if f.help("seal_criteria") %}<span title="{{ f.help("seal_criteria") }}">SEAL</span>{% endif %}
-                {% if f.help("long_help") %}<span title="{{ f.help("long_help") }}">HELP</span>{% endif %}
+            <div class="add_field__button_div">
+                <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add another </button>
             </div>
         </div>
-    </div>
+    {% else %}
+        {% include entry_template %}
+    {% endif %}
+
+
+    {% if f.help("short_help") %}
+       <p><small>{{ f.help("short_help") }}</small></p>
+    {% endif %}
+
+    {% include "application_form/modal.html" %}
 </div>
+

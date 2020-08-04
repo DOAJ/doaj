@@ -1,4 +1,4 @@
-Thank you for you for supporting DOAJ.
+Thank you very much for supporting DOAJ! Your donation helps to keep DOAJ available for the benefit of the worldwide open access community.
 
 Your payment has been made and the transaction is complete.
 

@@ -20,7 +20,7 @@ body {
 }
 
 h2, h3, h4, h5, h6 {
-  margin: $spacing-05 0 $spacing-04 0;
+  margin: $spacing-04 0 $spacing-03 0;
   line-height: 1.05;
   font-weight: 400;
 }
@@ -144,10 +144,6 @@ iframe {
   border: 1px dashed $sanguine;
 }
 
-time {
-  font-size: smaller;
-}
-
 table {
   margin-bottom: $spacing-04;
   width: 100%;
@@ -213,6 +209,14 @@ form {
   label, p {
     display: block;
     margin: $spacing-03 0;
+
+    small, a {
+      color: $dark-grey;
+    }
+
+    &:first-child {
+      margin-top: auto;
+    }
   }
 }
 
@@ -291,6 +295,13 @@ input[type="radio"] + label {
   &::before {
     border-radius: 50%;
   }
+}
+
+fieldset {
+  padding: 0;
+  margin: 0 0 $spacing-04 0;
+  border: 0;
+  min-width: 0;
 }
 
 /* Feather icons */

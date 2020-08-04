@@ -49,12 +49,12 @@ def news():
     return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
 
 
-@blueprint.route("/widgets")
-def widgets():
-    return render_template('doaj/widgets.html',
-                           env=app.config.get("DOAJENV"),
-                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
-                           )
+# @blueprint.route("/widgets")
+# def widgets():
+#     return render_template('doaj/widgets.html',
+#                            env=app.config.get("DOAJENV"),
+#                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+#                            )
 
 @blueprint.route("/ssw_demo")
 def ssw_demo():
@@ -133,51 +133,51 @@ from portality.forms.application_forms import ApplicationFormFactory
 
 
 
-@blueprint.route("/application/new", methods=["GET", "POST"])
-@blueprint.route("/application/new/<draft_id>", methods=["GET", "POST"])
-@write_required()
-@login_required
-def public_application(draft_id=None):
-    fc = ApplicationFormFactory.context("public")
-
-    if request.method == "GET":
-        if draft_id is None:
-            return fc.render_template()
-        draft_application = models.DraftApplication.pull(draft_id)
-        if draft_application is None:
-            abort(404)
-        if draft_application.owner != current_user.id:
-            abort(404)
-        fc.processor(source=draft_application)
-        return fc.render_template(obj=draft_application)
-
-    elif request.method == "POST":
-        draft = request.form.get("draft")
-        async_def = request.form.get("async")
-        processor = fc.processor(formdata=request.form)
-
-        if draft is not None:
-            draft_application = None
-            if draft_id is not None:
-                draft_application = models.DraftApplication.pull(draft_id)
-                if draft_application is None:
-                    abort(404)
-                if draft_application.owner != current_user.id:
-                    abort(404)
-
-            draft_application = processor.draft(current_user._get_current_object(), id=draft_id)
-            if async_def is not None:
-                return make_response(json.dumps({"id": draft_application.id}), 200)
-            else:
-                return redirect(url_for('doaj.draft_saved'))
-        else:
-            if processor.validate():
-                processor.finalise(current_user._get_current_object())
-                return redirect(url_for('doaj.application_thanks'))
-            else:
-                return fc.render_template()
-def old_application(draft_id=None):
-    redirect(url_for("doaj.public_application", **request.args), code=308)
+# @blueprint.route("/application/new", methods=["GET", "POST"])
+# @blueprint.route("/application/new/<draft_id>", methods=["GET", "POST"])
+# @write_required()
+# @login_required
+# def public_application(draft_id=None):
+#     fc = ApplicationFormFactory.context("public")
+#
+#     if request.method == "GET":
+#         if draft_id is None:
+#             return fc.render_template()
+#         draft_application = models.DraftApplication.pull(draft_id)
+#         if draft_application is None:
+#             abort(404)
+#         if draft_application.owner != current_user.id:
+#             abort(404)
+#         fc.processor(source=draft_application)
+#         return fc.render_template(obj=draft_application)
+#
+#     elif request.method == "POST":
+#         draft = request.form.get("draft")
+#         async_def = request.form.get("async")
+#         processor = fc.processor(formdata=request.form)
+#
+#         if draft is not None:
+#             draft_application = None
+#             if draft_id is not None:
+#                 draft_application = models.DraftApplication.pull(draft_id)
+#                 if draft_application is None:
+#                     abort(404)
+#                 if draft_application.owner != current_user.id:
+#                     abort(404)
+#
+#             draft_application = processor.draft(current_user._get_current_object(), id=draft_id)
+#             if async_def is not None:
+#                 return make_response(json.dumps({"id": draft_application.id}), 200)
+#             else:
+#                 return redirect(url_for('doaj.draft_saved'))
+#         else:
+#             if processor.validate():
+#                 processor.finalise(current_user._get_current_object())
+#                 return redirect(url_for('doaj.application_thanks'))
+#             else:
+#                 return fc.render_template()
+# def old_application(draft_id=None):
+#     redirect(url_for("doaj.public_application", **request.args), code=308)
 
 
 #############################################
@@ -203,7 +203,7 @@ def journal_readonly(journal_id):
 
 @blueprint.route("/application/thanks", methods=["GET"])
 def application_thanks():
-    return render_template('doaj/application_thanks.html')
+    return render_template("layouts/static_page.html", page_frag="/apply/thank-you-fragment/index.html")
 
 
 @blueprint.route("/application/draft", methods=["GET"])
@@ -232,18 +232,18 @@ def sitemap():
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
 
 
-@blueprint.route("/public-data-dump")
-def public_data_dump():
-    data_dump = models.Cache.get_public_data_dump()
-    show_article = data_dump.get("article", {}).get("url") is not None
-    article_size = data_dump.get("article", {}).get("size")
-    show_journal = data_dump.get("journal", {}).get("url") is not None
-    journal_size = data_dump.get("journal", {}).get("size")
-    return render_template("doaj/public_data_dump.html",
-                           show_article=show_article,
-                           article_size=article_size,
-                           show_journal=show_journal,
-                           journal_size=journal_size)
+# @blueprint.route("/public-data-dump")
+# def public_data_dump():
+#     data_dump = models.Cache.get_public_data_dump()
+#     show_article = data_dump.get("article", {}).get("url") is not None
+#     article_size = data_dump.get("article", {}).get("size")
+#     show_journal = data_dump.get("journal", {}).get("url") is not None
+#     journal_size = data_dump.get("journal", {}).get("size")
+#     return render_template("doaj/public_data_dump.html",
+#                            show_article=show_article,
+#                            article_size=article_size,
+#                            show_journal=show_journal,
+#                            journal_size=journal_size)
 
 
 @blueprint.route("/public-data-dump/<record_type>")
@@ -507,14 +507,14 @@ def xml():
     return render_template("layouts/static_page.html", page_frag="/docs/xml-fragment/index.html")
 
 
-# @blueprint.route("/docs/widgets/")
-# def widgets():
-#     return render_template("layouts/static_page.html", page_frag="/docs/widgets-fragment/index.html")
+@blueprint.route("/docs/widgets/")
+def widgets():
+    return render_template("layouts/static_page.html", page_frag="/docs/widgets-fragment/index.html")
 
 
-# @blueprint.route("/docs/public-data-dump/")
-# def public_data_dump():
-#     return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump-fragment/index.html")
+@blueprint.route("/docs/public-data-dump/")
+def public_data_dump():
+    return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump-fragment/index.html")
 
 
 @blueprint.route("/docs/openurl/")
@@ -588,14 +588,14 @@ def features():
     return redirect(url_for("doaj.xml", **request.args), code=308)
 
 
-@blueprint.route('/widgets')
-def old_widgets():
-    return redirect(url_for("doaj.widgets", **request.args), code=308)
+# @blueprint.route('/widgets')
+# def old_widgets():
+#     return redirect(url_for("doaj.widgets", **request.args), code=308)
 
 
-@blueprint.route("/public-data-dump/<record_type>")
-def old_public_data_dump(record_type):
-    return redirect(url_for("doaj.public_data_dump", **request.args), code=308)
+# @blueprint.route("/public-data-dump/<record_type>")
+# def old_public_data_dump(record_type):
+#     return redirect(url_for("doaj.public_data_dump", **request.args), code=308)
 
 
 @blueprint.route("/openurl/help")

@@ -32,16 +32,24 @@
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
 
   <meta name="theme-color" content="#F8F3EF">
 
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
+
 </head>
 
 
-  <body class="sidenav-page" data-spy="scroll" data-offset="70" style="position: relative;">
+  <body class="with-sidenav" data-spy="scroll" data-offset="70" style="position: relative;">
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -52,7 +60,9 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
-            <h1 class="sr-only">The Directory of Open Access Journals</h1>
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -82,6 +92,11 @@
                   </a>
                 </li>
                 <li>
+                  <a href="/support/supporters/" class="dropdown__link">
+                    Supporters
+                  </a>
+                </li>
+                <li>
                   <a href="/support/sponsors/" class="dropdown__link">
                     Sponsors
                   </a>
@@ -89,11 +104,6 @@
                 <li>
                   <a href="/support/publisher-supporters/" class="dropdown__link">
                     Publisher supporters
-                  </a>
-                </li>
-                <li>
-                  <a href="/support/supporters/" class="dropdown__link">
-                    Supporters
                   </a>
                 </li>
               </ul>
@@ -162,11 +172,6 @@
                 Articles
               </a>
             </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
-              </a>
-            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -205,6 +210,11 @@
                 OpenURL
               </a>
             </li>
+            <li>
+              <a href="/about/faq/" class="dropdown__link">
+                FAQs
+              </a>
+            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -234,6 +244,11 @@
               </a>
             </li>
             <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
+              </a>
+            </li>
+            <li>
               <a href="/about/volunteers/" class="dropdown__link">
                 Volunteers
               </a>
@@ -243,13 +258,9 @@
                 News
               </a>
             </li>
-            <li>
-              <a href="/about/faq/" class="dropdown__link">
-                FAQs
-              </a>
-            </li>
           </ul>
         </li>
+        
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Support</strong>
@@ -323,7 +334,7 @@
 </header>
 
 
-<!-- Admin-only edit buttons -->
+<!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/about/content/index.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
 
@@ -345,17 +356,17 @@
       </div>
       <div class="input-group">
         <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-        <input type="text" name="keywords" id="quick-search-keywords" required>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
 
         <label for="quick-search-fields" class="sr-only">In the field:</label>
-        <select name="fields" id="quick-search-fields">
+        <select class="input-group__input" name="fields" id="quick-search-fields">
           <option value="all">In all fields</option>
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
           <option value="subject">Author</option>
         </select>
-        <button type="submit">
+        <button class="input-group__input" type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
@@ -376,6 +387,7 @@
 <li class="page-nav__item item-h2"><a href="#our-mission">Our mission</a></li>
 <li class="page-nav__item item-h2"><a href="#constitution">Constitution</a></li>
 <li class="page-nav__item item-h2"><a href="#partnerships-and-collaborations">Partnerships and collaborations</a></li>
+<li class="page-nav__item item-h2"><a href="#diversity">Diversity</a></li>
 </ul>
           </nav>
 
@@ -387,13 +399,11 @@
             <p class="label">About</p>
             <h1>About DOAJ</h1>
 
-            <p>The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open access journals. Today, this independent database contains over 14500 open access journals covering all areas of science, technology, medicine, social science and humanities. Journals from all countries and in all languages are welcome.</p>
+            <p>The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open access journals. Today, this independent database contains over 14 500 peer-reviewed open access journals covering all areas of science, technology, medicine, social sciences, arts and humanities. Open access journals from all countries and in all languages are welcome to apply for inclusion.</p>
 
-<p>DOAJ is a community-curated list of open access journals and aims to be the starting point for all information searches for quality, peer reviewed open access material.</p>
+<p>DOAJ is financially supported by many libraries, publishers and other like-minded organisations. Supporting DOAJ demonstrates a firm commitment to open access and the infrastructure that supports it.</p>
 
-<p>DOAJ is a co-author to the <a href="/apply/transparency">Principles of Transparency and Best Practice in Scholarly Publishing</a> which provide the basis of the <a href="/apply/guide">DOAJ criteria</a> for inclusion.</p>
-
-<p>DOAJ is a membership organisation. DOAJ Membership is a clear statement of intent and proves a commitment to quality, peer-reviewed open access.</p>
+<p>DOAJ is a co-author to the <a href="/apply/transparency">Principles of Transparency and Best Practice in Scholarly Publishing</a> which provide the basis of the <a href="/apply/guide">DOAJ basic criteria</a> for inclusion.</p>
 
 <h2 id="our-mission">Our mission</h2>
 
@@ -401,22 +411,21 @@
 
 <h2 id="constitution">Constitution</h2>
 
-<p>DOAJ is a non-profit organisation managed by <a href="http://is4oa.org/" target="_blank" rel="noopener">Infrastructure Services for Open Access C.I.C.</a> (<a href="https://en.wikipedia.org/wiki/Community_interest_company" target="_blank" rel="noopener">community interest company</a>) based in the United Kingdom. DOAJ relies entirely on the voluntary donations of its members and sponsors. Neither DOAJ or IS4OA receives grants or funding from any other source.</p>
+<p>DOAJ is a non-profit organisation managed by <a href="http://is4oa.org/" target="_blank" rel="noopener">Infrastructure Services for Open Access C.I.C.</a> (IS4OA), a  <a href="https://en.wikipedia.org/wiki/Community_interest_company" target="_blank" rel="noopener">community interest company</a> based in the United Kingdom. DOAJ relies entirely on the voluntary donations of its supporters and sponsors. Neither DOAJ or IS4OA receives grants or funding from any other source.</p>
 
 <p>DOAJ has <a href="/board-council/">an Advisory Board and a Council</a>, the members of which carry out their duties voluntarily.</p>
 
-<p>DOAJ uses the services of approximately 100 voluntary editorial staff who review applications. All volunteers are bound by an Agreement. Two references are requested from everyone who volunteers. All volunteers must declare any conflicts of interest to the Managing Editors.</p>
+<p>DOAJ uses the services of approximately 100 voluntary editorial staff who review applications for journals to be indexed. All volunteers are bound by an Agreement and must declare any conflicts of interest.</p>
 
-<p>DOAJ has a global network of Ambassadors who are also bound by an Agreement and must declare all conflicts of interest.</p>
+<p>DOAJ has a global network of Ambassadors who promote open access and best practice in their regions. Our Ambassadors are also bound by an Agreement and must declare all conflicts of interest.</p>
 
 <h2 id="partnerships-and-collaborations">Partnerships and collaborations</h2>
 
-<p>DOAJ partners with many organisations. The nature of the partnership varies and may include membership, contracts for work, exchanges of information or services, initiative signatories or access to information resources that assist DOAJ with its application review process.</p>
+<p>DOAJ partners with many organisations. The nature of the partnerships vary and may include membership, contracts for work, exchanges of information or services, initiative signatories or access to information resources that assist DOAJ with its application review process.</p>
 
 <ul class="full-width-list">
   <li class="full-width-list__item"><a href="https://network.creativecommons.org/" target="_blank" rel="noopener">Creative Commons Global Network</a></li>
-  <li class="full-width-list__item">
-<a href="https://publicationethics.org/" target="_blank" rel="noopener">COPE</a>: We are a member of and subscribe to the principles of COPE.</li>
+  <li class="full-width-list__item"><a href="https://publicationethics.org/" target="_blank" rel="noopener">COPE</a></li>
   <li class="full-width-list__item"><a href="https://cottagelabs.com/" target="_blank" rel="noopener">Cottage Labs LLP</a></li>
   <li class="full-width-list__item"><a href="https://www.erudit.org/en/" target="_blank" rel="noopener">Érudit</a></li>
   <li class="full-width-list__item"><a href="https://tsv.fi/en" target="_blank" rel="noopener">Federation of Finnish Learned Societies</a></li>
@@ -431,7 +440,9 @@
   <li class="full-width-list__item"><a href="https://thinkchecksubmit.org/" target="_blank" rel="noopener">Think. Check. Submit.</a></li>
 </ul>
 
-<p>DOAJ is <a href="https://c4disc.org/about/adopting-organizations/" target="_blank" rel="noopener">an adopting organisation</a> of <a href="https://c4disc.org/principles/" target="_blank" rel="noopener">the C4DISC Joint Statement of Principles</a>. Adopting the Joint Statement of Principles is a show of support for improving diversity and inclusion in scholarly communications.</p>
+<h2 id="diversity">Diversity</h2>
+
+<p>DOAJ believes in the power and value of diversity in scholarly communications. DOAJ is <a href="https://c4disc.org/about/adopting-organizations/" target="_blank" rel="noopener">an adopting organisation</a> of <a href="https://c4disc.org/principles/" target="_blank" rel="noopener">the C4DISC Joint Statement of Principles</a>. Adopting the Joint Statement of Principles shows our support for improving diversity and inclusion in our industry.</p>
 
 
 
@@ -551,13 +562,6 @@
   </div>
 </footer>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<script src="../../js/vendors/bootstrap.js"></script>
-
-<!-- Feather icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-
 <script>
   // Use Feather icons
   feather.replace()
@@ -604,7 +608,7 @@
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
@@ -635,6 +639,7 @@
       }, 50, 'linear');
     }
   } );
+
 </script>
 
   </body>

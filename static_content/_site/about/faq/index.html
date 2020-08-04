@@ -32,16 +32,24 @@
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
-  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital@0;1&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../css/main.css">
 
   <meta name="theme-color" content="#F8F3EF">
 
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <script src="../../js/vendors/bootstrap.js"></script>
+
 </head>
 
 
-  <body class="sidenav-page" data-spy="scroll" data-offset="70" style="position: relative;">
+  <body class="with-sidenav" data-spy="scroll" data-offset="70" style="position: relative;">
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -52,7 +60,9 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
-            <h1 class="sr-only">The Directory of Open Access Journals</h1>
+            
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            
             <?xml version="1.0" encoding="UTF-8"?>
 <svg height="30px" viewbox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>DOAJ Logotype</title>
@@ -82,6 +92,11 @@
                   </a>
                 </li>
                 <li>
+                  <a href="/support/supporters/" class="dropdown__link">
+                    Supporters
+                  </a>
+                </li>
+                <li>
                   <a href="/support/sponsors/" class="dropdown__link">
                     Sponsors
                   </a>
@@ -89,11 +104,6 @@
                 <li>
                   <a href="/support/publisher-supporters/" class="dropdown__link">
                     Publisher supporters
-                  </a>
-                </li>
-                <li>
-                  <a href="/support/supporters/" class="dropdown__link">
-                    Supporters
                   </a>
                 </li>
               </ul>
@@ -162,11 +172,6 @@
                 Articles
               </a>
             </li>
-            <li>
-              <a href="#" class="dropdown__link dropdown__link--disabled">
-                Open Knowledge Maps
-              </a>
-            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -205,6 +210,11 @@
                 OpenURL
               </a>
             </li>
+            <li>
+              <a href="/about/faq/" class="dropdown__link">
+                FAQs
+              </a>
+            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -234,6 +244,11 @@
               </a>
             </li>
             <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">
+                Editorial Subcommittee
+              </a>
+            </li>
+            <li>
               <a href="/about/volunteers/" class="dropdown__link">
                 Volunteers
               </a>
@@ -243,13 +258,9 @@
                 News
               </a>
             </li>
-            <li>
-              <a href="/about/faq/" class="dropdown__link">
-                FAQs
-              </a>
-            </li>
           </ul>
         </li>
+        
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Support</strong>
@@ -323,7 +334,7 @@
 </header>
 
 
-<!-- Admin-only edit buttons -->
+<!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/about/content/faq.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
 
@@ -345,17 +356,17 @@
       </div>
       <div class="input-group">
         <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-        <input type="text" name="keywords" id="quick-search-keywords" required>
+        <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
 
         <label for="quick-search-fields" class="sr-only">In the field:</label>
-        <select name="fields" id="quick-search-fields">
+        <select class="input-group__input" name="fields" id="quick-search-fields">
           <option value="all">In all fields</option>
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
           <option value="subject">Author</option>
         </select>
-        <button type="submit">
+        <button class="input-group__input" type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
         </button>
       </div>
@@ -424,11 +435,11 @@
 
             <h2 id="accessibility">Accessibility</h2>
 
-<p>If you disable all Javascript, searching DOAJ won’t work properly because some of the code that is required is served by Google’s Javascript library hosting. Once disabled, search fails.</p>
+<p>Please be aware that if you disable all Javascript, searching DOAJ won’t work properly. This is because some of the code that is required is served by Google’s Javascript library. Once this is disabled, DOAJ search will fail.</p>
 
 <p>If you can select which components can be switched off, then you can continue to use DOAJ.</p>
 
-<p>Another Javascript component is <a href="https://getbootstrap.com/" target="_blank" rel="noopener">Bootstrap</a> which is the framework used to build the DOAJ website. This contains some Javascript for some of its features.</p>
+<p>Another Javascript component is <a href="https://getbootstrap.com/" target="_blank" rel="noopener">Bootstrap</a> which is the framework used to build the DOAJ website. This contains Javascript for some of its features.</p>
 
 <hr>
 
@@ -470,7 +481,7 @@
 
 <h3 id="i-know-a-journal-which-should-be-in-doaj-but-isnt-what-should-i-do">I know a journal which should be in DOAJ but isn’t. What should I do?</h3>
 
-<p><a href="">Submit an application</a> or contact the journal and ask them to apply. You can also send us the details of the journal—title and ISSN—and we will contact them.</p>
+<p>Contact the journal and ask them to submit an application. You can also send us the details of the journal—title and ISSN—and we will contact them.</p>
 
 <h3 id="the-journal-i-am-looking-for-isnt-in-doaj-why-what-should-i-do">The journal I am looking for isn’t in DOAJ. Why? What should I do?</h3>
 
@@ -546,7 +557,7 @@
 
 <h4 id="oai-pmh">OAI-PMH</h4>
 
-<p>DOAJ supports the OAI protocol for metadata harvesting (OAI-PMH). Any OAI compatible service can obtain records from DOAJ. The base URL is <code class="highlighter-rouge">http://www.doaj.org/oai</code>. You can add most OAI verbs and other commands directly on to that. There is a full description of this service on the <a href="">OAI-PMH documentation page</a>. Our current OAI offering is standardised around Dublin Core.</p>
+<p>DOAJ supports the OAI protocol for metadata harvesting (OAI-PMH). Any OAI compatible service can obtain records from DOAJ. The base URL is <code class="language-plaintext highlighter-rouge">http://www.doaj.org/oai</code>. You can add most OAI verbs and other commands directly on to that. There is a full description of this service on the <a href="">OAI-PMH documentation page</a>. Our current OAI offering is standardised around Dublin Core.</p>
 
 <h3 id="why-do-some-journals-have-no-or-very-little-article-metadata-in-doaj">Why do some journals have no or very little article metadata in DOAJ?</h3>
 
@@ -706,13 +717,6 @@
   </div>
 </footer>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-<script src="../../js/vendors/bootstrap.js"></script>
-
-<!-- Feather icons -->
-<script src="https://unpkg.com/feather-icons"></script>
-
 <script>
   // Use Feather icons
   feather.replace()
@@ -759,7 +763,7 @@
 
   // When on the same page
   jQuery (function($) {
-    $('a[href*="#"]:not([href="#"])').click(function() {
+    $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
       var target = $(this.hash);
       $('html,body').animate({
         scrollTop: target.offset().top - headerHeight
@@ -790,6 +794,7 @@
       }, 50, 'linear');
     }
   } );
+
 </script>
 
   </body>

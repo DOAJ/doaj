@@ -33,6 +33,8 @@
   waiver: true
   unrestricted_copyright: true
   publishing_rights: true
+  status: "Not yet submitted"
+  complete: 79
 
 - title: "Yeni Üroloji Dergisi"
   subtitle: "The New Journal of Urology"
@@ -59,6 +61,8 @@
   waiver: false
   unrestricted_copyright: false
   publishing_rights: false
+  status: "Not yet submitted"
+  complete: 24
 
 - title: "Linguagem & Ensino"
   subtitle: "Linguagem e Ensino"
@@ -77,6 +81,8 @@
   processing_time: 8
   articles:
   seal: false
+  status: "Not yet submitted"
+  complete: 100
 
 - title: "Access Microbiology"
   subtitle:
@@ -95,6 +101,8 @@
   processing_time: 12
   articles:
   seal: false
+  status: "Pending"
+  complete: 100
 
 - title: "M@n@gement"
   subtitle: "Management"
@@ -113,6 +121,8 @@
   processing_time: 70
   articles:
   seal: false
+  status: "Pending"
+  complete: 100
 
 - title: "Entomological Communications"
   subtitle:
@@ -131,6 +141,8 @@
   processing_time: 6
   articles: 0
   seal: false
+  status: "Under review by an editor"
+  complete: 100
 
 - title: "Biología Acuática"
   subtitle:
@@ -149,6 +161,8 @@
   processing_time: 28
   articles:
   seal: false
+  status: "Under review by an editor"
+  complete: 100
 
 - title: "Медицина катастроф"
   subtitle: "Disaster Medicine"
@@ -167,6 +181,8 @@
   processing_time: 4
   articles:
   seal: false
+  status: "Under review by an editor"
+  complete: 100
 
 - title: "Acta Sting"
   subtitle:
@@ -185,6 +201,8 @@
   processing_time: 12
   articles:
   seal: false
+  status: "Under review by an editor"
+  complete: 100
 
 - title: "Inform: Jurnal Ilmiah Bidang Teknologi Informasi dan Komunikasi"
   subtitle:
@@ -203,6 +221,8 @@
   processing_time: 10
   articles:
   seal: false
+  status: "Under review by an editor"
+  complete: 100
 
 - title: "Indonesia Accounting Journal"
   subtitle:
@@ -221,3 +241,5 @@
   processing_time: 4
   articles:
   seal: false
+  status: "Under review by an editor"
+  complete: 100
