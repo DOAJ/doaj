@@ -278,26 +278,43 @@ journal-details
                   <a href="{{ journal.policy_url }}" target="_blank" rel="noopener">Deposit policy</a> with:
                 </p>
                 <ul>
-                  <li>
-                    <a href="https://v2.sherpa.ac.uk/cgi/search/publication/basic?publication_title-auto={{ journal.title | url_encode }}" target="_blank" rel="noopener">
-                      Sherpa/ROMEO
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://diadorim.ibict.br/simple-search?query={{ journal.title | url_encode }}" target="_blank" rel="noopener">
-                      Diadorim
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://heloise.ccsd.cnrs.fr/search/searchreview?parameter_0={{ journal.title | url_encode }}" target="_blank" rel="noopener">
-                      Héloïse
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://www.accesoabierto.net/dulcinea/lista/REVISTA/{{ journal.title | url_encode }}" target="_blank" rel="noopener">
-                      Dulcinea
-                    </a>
-                  </li>
+                  {% for policy in bibjson.deposit_policy %}
+                    <li>
+                      {% if policy == "Sherpa/Romeo" %}
+                      <a href="https://v2.sherpa.ac.uk/cgi/search/publication/basic?publication_title-auto={{ bibjson.title }}" target="_blank" rel="noopener">
+                        {{ policy }}
+                      </a>
+                      {% elsif policy == "Diadorim" %}
+                      <a href="https://diadorim.ibict.br/simple-search?query={{ bibjson.title }}" target="_blank" rel="noopener">
+                        {{ policy }}
+                      </a>
+                      {% elsif policy == "Héloïse" %}
+                      <a href="https://heloise.ccsd.cnrs.fr/search/searchreview?parameter_0={{ bibjson.title }}" target="_blank" rel="noopener">
+                        {{ policy }}
+                      </a>
+                      {% elsif policy == "Dulcinea" %}
+                      <a href="https://www.accesoabierto.net/dulcinea/lista/REVISTA/{{ bibjson.title }}" target="_blank" rel="noopener">
+                        {{ policy }}
+                      </a>
+                      {% endif %}
+                    </li>
+                  {% else %}
+                    <li>{{ policy }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </article>
+            {% endif %}
+
+            {% if bibjson.persistent_identifier_scheme|length > 0 %}
+            <article class="card card--with-icon">
+              <span data-feather="upload-cloud" aria-hidden="true"></span>
+              <div>
+                <p>Permanent article identifier:</p>
+                <ul>
+                  {% for identifier in bibjson.persistent_identifier_scheme %}
+                  <li>{{ identifier }}</li>
+                  {% endfor %}
                 </ul>
               </div>
             </article>
@@ -330,13 +347,10 @@ journal-details
             <article class="card card--with-icon">
               <span data-feather="tag" aria-hidden="true"></span>
               <dl>
-                <dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span></a></dt>
-                {% assign lcc_codes = journal.lcc | split: "|" %}
-                <dd>
-                  {% for code in lcc_codes %}
-                    <a href="{{ site.baseurl }}{% link search/journals.md %}">{{ code }}</a>{% if forloop.last %}{% else %}, {% endif %}
-                  {% endfor %}
-                </dd>
+                {% for path in bibjson.lcc_paths() %}
+                {% if loop.index0 == 0 %}<dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span></a></dt>{% endif %}
+                <dd>{{ path }}</dd>
+                {% endfor %}
 
                 {% if bibjson.keywords %}
                 <dt>Keywords</dt>
