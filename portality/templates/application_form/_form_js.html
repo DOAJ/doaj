@@ -143,12 +143,9 @@
                         result += (m === "" ? "" : m) + " " + (curr === "" ? "" : curr) + " " + "<br>";
                     }
                 }
-                console.log($(max[0]).parsley().validationResult)
-                console.log($(currency[0]).parsley().validationResult)
                 if ($(max[0]).parsley().validationResult !== true || ($(currency[0]).parsley().validationResult !== true)) {
                     isValid = false;
                 }
-                console.log(result)
                 if (result === "" && isValid){
                     $(question).parent().hide();
                 }
@@ -380,11 +377,8 @@
 
     $("#reviewed").on("click", manage_review_checkboxes);
 
-
-
-
-    let currentTab = 6; // Current tab is set to be the first tab (0)
-    let previousTab = 5;
+    let currentTab = 0; // Current tab is set to be the first tab (0)
+    let previousTab = 0;
     let tabs = $(".tab");
     let sections = $(".form-section");
     prepareSections();

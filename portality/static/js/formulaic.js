@@ -325,7 +325,6 @@ var formulaic = {
 
         this.removeValues = (container) => {
             let inputs = $(container).find("input");
-            console.log(inputs);
             inputs.each((idx, inp) => {
                 $(inp).val("");
             })
