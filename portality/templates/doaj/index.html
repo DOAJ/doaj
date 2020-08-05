@@ -77,7 +77,7 @@
     </section>
 
     <!-- About -->
-    <section class="container">
+    <section class="container about">
         <div class="row">
             <div class="col-sm-6">
                 <h2 class="sr-only">About</h2>
@@ -108,7 +108,7 @@
     </section>
 
     <!-- Blog -->
-    <section class="container blog">
+    <section class="container homepage__blog">
         <header class="flex-header">
             <h2 class="flex-header__child">From the blog</h2>
             <p class="flex-header__child">
@@ -116,9 +116,9 @@
             </p>
         </header>
         <div class="row">
-            <div class="col-sm-3">
+            <section class="col-sm-3 homepage__featured-post">
                 {% for n in news[:1] %}
-                <article class="blog__post blog__post--featured">
+                <article class="blog__post">
                     <a href="{{ n.url }}" class="blog__link" target="_blank">
                         <p class="label">{{ n.category }}</p>
                         <h3 class="blog__title">{{ n.title }}</h3>
@@ -127,9 +127,9 @@
                     </a>
                 </article>
                 {% endfor %}
-            </div>
+            </section>
 
-            <div class="col-sm-6">
+            <div class="col-sm-6 homepage__other-posts">
                 {% for n in news[1:] %}
                 <article class="blog__post">
                     <a href="{{ n.url }}" class="blog__link" target="_blank">
@@ -142,29 +142,35 @@
                 {% endfor %}
             </div>
 
-            <!-- Special / themed posts, optional -->
-            <section class="col-sm-3">
+            <!-- Special / themed posts; when none: display Twitter feed -->
+            <section class="col-sm-3 homepage__themed-post">
                 <h3 class="label">Special post series: Myth busting</h3>
-                <article>
-                    <a href="">
-                        <h4>Myth: “All open access journals can be listed on DOAJ”</h4>
-                    </a>
-                    <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
-                </article>
-
-                <article>
-                    <a href="">
-                        <h4>Myth: “Journals must meet the DOAJ seal criteria to be indexed”</h4>
-                    </a>
-                    <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
-                </article>
-
-                <article>
-                    <a href="">
-                        <h4>Myth: “DOAJ indexes predatory journals”</h4>
-                    </a>
-                    <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
-                </article>
+                <ol>
+                    <li>
+                        <article>
+                            <a href="">
+                                <h4>Myth: “All open access journals can be listed on DOAJ”</h4>
+                            </a>
+                            <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
+                        </article>
+                    </li>
+                    <li>
+                        <article>
+                            <a href="">
+                                <h4>Myth: “Journals must meet the DOAJ seal criteria to be indexed”</h4>
+                            </a>
+                            <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
+                        </article>
+                    </li>
+                    <li>
+                        <article>
+                            <a href="">
+                                <h4>Myth: “DOAJ indexes predatory journals”</h4>
+                            </a>
+                            <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
+                        </article>
+                    </li>
+                </ol>
             </section>
         </div>
     </section>
@@ -172,97 +178,60 @@
     <!-- Community -->
     <section class="highlight">
         <div class="container">
-            <h2 class="label">Community</h2>
+            <h2 class="sr-only">Community</h2>
             <div class="row">
-                <section class="col-sm-3">
+                <section class="col-sm-3 homepage__funding">
                     <header>
-                        <h3>Funding</h3>
+                        <h3 class="label">Funding</h3>
                         <p>Some organisations and publishers support DOAJ with either a one-off payment or an annual payment.</p>
-                    </header>
-                    <article>
-                        <a href="/support/supporters/" class="title-list__link title-list__link--highlighted">
-                            <h4 class="title-list__heading">Supporters</h4>
-                            <p>DOAJ Membership is recommended for those who can support us with a long-term annual fixed contribution.</p>
-                            <p>Learn more</p>
-                        </a>
-                    </article>
-                    <article>
-                        <a href="/support/publisher-supporters/" class="title-list__link title-list__link--highlighted">
-                            <h4 class="title-list__heading">Publisher supporters</h4>
-                            <p>If you publish or own an Open Access journal, you may prefer to become a Publisher Supporter with DOAJ.</p>
-                            <p>Learn more</p>
-                        </a>
-                    </article>
-                    <footer>
                         <p>
                             <a href="/support/" class="button">Support us →</a>
                         </p>
-                    </footer>
+                    </header>
+                    <ul>
+                        <li>
+                            <article>
+                                <h4>Supporters</h4>
+                                <p>DOAJ Membership is recommended for those who can support us with a long-term annual fixed contribution.</p>
+                                <a href="/support/supporters/">
+                                    <p>Learn more</p>
+                                </a>
+                            </article>
+                        </li>
+                        <li>
+                            <article>
+                                <h4>Publisher supporters</h4>
+                                <p>If you publish or own an Open Access journal, you may prefer to become a Publisher Supporter with DOAJ.</p>
+                                <a href="/support/publisher-supporters/">
+                                    <p>Learn more</p>
+                                </a>
+                            </article>
+                        </li>
+                    </ul>
                 </section>
 
-                <section class="col-sm-6">
+                <section class="col-sm-6 homepage__volunteers">
                     <header>
                         <h3>Volunteers</h3>
                         <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
                     </header>
                     <div class="row">
+                        {% for volunteer in volunteers.ed %}
+                        {% if volunteer.featured %}
                         <article class="col-xs-4">
-                            <p class="label">Linguistics and computation</p>
-                            <h4>Karina Menegaldo</h4>
-                            <p>
-                                Volunteer since 2018<br/>
-                                São Paulo,	Brasil
-                            </p>
+                            <h4>{{ volunteer.name }}</h4>
+                            <p>{{ volunteer.area }}</p>
+                            <p>{{ volunteer.city }}, {{ volunteer.country }}<br/>{{ volunteer.language }}</p>
                         </article>
-                        <article class="col-xs-4">
-                            <p class="label">Social sciences</p>
-                            <h4>Marco Tullney</h4>
-                            <p>
-                                Volunteer since 2014<br/>
-                                Hannover, Germany
-                            </p>
-                        </article>
-                        <article class="col-xs-4">
-                            <p class="label">Medicine</p>
-                            <h4>Karima Akool Al Salihi</h4>
-                            <p>
-                                Volunteer since 2018<br/>
-                                Baghdad, Iraq
-                            </p>
-                        </article>
-                        <article class="col-xs-4">
-                            <p class="label">Linguistics and computation</p>
-                            <h4>Karina Menegaldo</h4>
-                            <p>
-                                Volunteer since 2018<br/>
-                                São Paulo,	Brasil
-                            </p>
-                        </article>
-                        <article class="col-xs-4">
-                            <p class="label">Social sciences</p>
-                            <h4>Marco Tullney</h4>
-                            <p>
-                                Volunteer since 2014<br/>
-                                Hannover, Germany
-                            </p>
-                        </article>
-                        <article class="col-xs-4">
-                            <p class="label">Medicine</p>
-                            <h4>Karima Akool Al Salihi</h4>
-                            <p>
-                                Volunteer since 2018<br/>
-                                Baghdad, Iraq
-                            </p>
-                        </article>
+                        {% endif %}
+                        {% endfor %}
                     </div>
-                    <footer>
-                        <p><a href="/about/volunteers/" class="button">See volunteers →</a></p>
-                    </footer>
+                    <p><a href="/about/volunteers/" class="button">See volunteers →</a></p>
                 </section>
 
-                <section class="col-sm-3">
+                <section class="col-sm-3 homepage__sponsors">
                     <header>
-                        <h3>Sponsors</h3>
+                        <h3 class="label">Sponsors</h3>
                         <p>The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.</p>
                     </header>
                     <article>
