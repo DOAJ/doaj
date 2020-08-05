@@ -75,6 +75,9 @@ initialise_index(app, es_connection)
 SPONSORS = open("static_content/_data/sponsors.yml")
 SPONSORS = yaml.load(SPONSORS, Loader=yaml.FullLoader)
 
+VOLUNTEERS = open("static_content/_data/volunteers.yml")
+VOLUNTEERS = yaml.load(VOLUNTEERS, Loader=yaml.FullLoader)
+
 # serve static files from multiple potential locations
 # this allows us to override the standard static file handling with our own dynamic version
 @app.route("/static/<path:filename>")
@@ -162,6 +165,7 @@ def set_current_context():
     '''
     return {
         'sponsors': SPONSORS,
+        'volunteers': VOLUNTEERS,
         'settings': settings,
         'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
