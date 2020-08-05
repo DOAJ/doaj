@@ -129,6 +129,8 @@
         let review_values = $("td[id$='__review_value']")
         review_values.each((idx, question) => {
             let id = $(question).attr('id')
+            {#let validationResult = parsleyForm.fields[i].validationResult;#}
+            {#if (validationResult !== true){#}
             if (id === "apc_charges__review_value") {
                     let currency = $("select[id='apc_currency']").find('option:selected').val();
                     let max = $("input[name='apc_max']").val();
@@ -172,6 +174,15 @@
 
 
                     } else {
+                        if ($(input).attr("data-parsley-required-if") !== undefined) {
+                            if (input.val() === "" && $(input).parsley().validationResult === true){
+                                $(question).parent().hide();
+                                return;
+                            }
+                            else {
+                                $(question).parent().show();
+                            }
+                        }
                         let type = input.attr("type");
                         if (type === "text" || type === "number") {
                             $(question).html(input.val())
