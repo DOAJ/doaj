@@ -26,6 +26,7 @@
     {% else %}
         {{ f.render_form_control() }}
     {% endif %}
+    <div id="{{ f.name }}_checkbox-errors"></div>
 
     {% if f.help("short_help") %}
        <p><small>{{ f.help("short_help") | safe }}</small></p>

@@ -15,6 +15,22 @@
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
 
+        {#var parsleyConfig = {#}
+        {#    errorsContainer: function(parsleyField) {#}
+        {##}
+        {#        var fieldSet = parsleyField.$element.closest('fieldset');#}
+        {##}
+        {#        if (fieldSet.length > 0) {#}
+        {#            return fieldSet.closest('.checkbox-errors');#}
+        {#        }#}
+        {##}
+        {#        return parsleyField;#}
+        {#    }#}
+        {#;#}
+
+
+        {#$("form").parsley(parsleyConfig);#}
+
     });
 
     window.Parsley.addValidator("requiredIf", {
@@ -64,6 +80,11 @@
             en: 'Value of this field and %s field must be different'
         },
         priority: 1
+    })
+
+    $("input, select").each((idx, inp) => {
+        let name = $(inp).attr("name").split("-");
+        $(inp).attr("data-parsley-errors-container", "#" + name[0] + "_checkbox-errors")
     })
 
     let showTab = (n) => {
