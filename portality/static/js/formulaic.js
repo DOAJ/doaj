@@ -317,10 +317,23 @@ var formulaic = {
                 if (this.isConditionSatisfied({field: field})) {
                     this.controlSelect.container({name: field}).show();
                 } else {
+                    this.removeValues(this.controlSelect.container({name: field}));
                     this.controlSelect.container({name: field}).hide();
                 }
             }
         };
+
+        this.removeValues = (container) => {
+            let inputs = $(container).find("input");
+            console.log(inputs);
+            inputs.each((idx, inp) => {
+                $(inp).val("");
+            })
+            let selects = $(container).find("select");
+            selects.each((idx, sel) => {
+                $(sel).val("").change();
+            })
+        }
 
         this.isConditionSatisfied = function(params) {
             var field = params.field;
