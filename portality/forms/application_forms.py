@@ -67,7 +67,7 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "You must answer YES to continue"}},
-            {"required_value" : {"value" : "y", "message" : "You must answer YES to continue"}}
+            {"required_value" : {"value" : "y"}}
         ],
         "contexts": {
             "editor": {
