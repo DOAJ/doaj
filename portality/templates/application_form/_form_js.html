@@ -132,16 +132,20 @@
             {#let validationResult = parsleyForm.fields[i].validationResult;#}
             {#if (validationResult !== true){#}
             if (id === "apc_charges__review_value") {
-                    let currency = $("select[id='apc_currency']").find('option:selected').val();
-                    let max = $("input[name='apc_max']").val();
-                    if (currency === undefined) {
-                        currency = "";
+                let currency = $("select[id$='apc_currency']");
+                let max = $("input[id$='apc_max']");
+                let result = ""
+                for (let i = 0; i < currency.length; i++){
+                    let curr = $(currency[i]).find('option:selected').text()
+                    let m = $(max[i]).val()
+                    if (m !== "" || curr !== "") {
+                        console.log(curr)
+                        console.log(m)
+                        result += (m === "" ? "" : m) + " " + (curr === "" ? "" : curr) + " " + "<br>";
+                        console.log(result)
                     }
-                    if (max === undefined) {
-                        max = "";
-                    }
-
-                    $(question).html(max + " " + currency);
+                }
+                $(question).html(result);
             }
             else {
                 let name = id.substring(0, id.indexOf("__review_value"));
