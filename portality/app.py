@@ -75,6 +75,9 @@ initialise_index(app, es_connection)
 SPONSORS = open("static_content/_data/sponsors.yml")
 SPONSORS = yaml.load(SPONSORS, Loader=yaml.FullLoader)
 
+VOLUNTEERS = open("static_content/_data/volunteers.yml")
+VOLUNTEERS = yaml.load(VOLUNTEERS, Loader=yaml.FullLoader)
+
 # Configure the Google Analytics tracker
 from portality.lib import analytics
 try:
@@ -146,6 +149,7 @@ def set_current_context():
     '''
     return {
         'sponsors': SPONSORS,
+        'volunteers': VOLUNTEERS,
         'settings': settings,
         'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
