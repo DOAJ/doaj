@@ -109,7 +109,7 @@
         <header class="flex-header">
           <h2 class="flex-header__child">From the blog</h2>
           <p class="flex-header__child">
-            <a href="{{url_for('doaj.news')}}" class="button" target="_blank" rel="noopener">
+            <a href="https://blog.doaj.org/" class="button" target="_blank" rel="noopener">
               See all →
             </a>
           </p>
@@ -238,15 +238,35 @@
                 </a>
               </p>
             </header>
-            <div class="intro">
-              <div class="intro__text">
+            <div class="row intro">
+              <div class="col-sm-8 intro__text">
                 <p>The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.</p>
               </div>
-              <h4>Gold sponsor</h4>
-              <a href="https://www.ieee.org/" class="gold-sponsor" target="_blank" rel="noopener">
-                <img src="img/sponsors/ieee.png" alt="IEEE logo">
-              </a>
             </div>
+            <section>
+              <article>
+                <h4 class="title-list__heading">Gold</h4>
+                {% for sponsor in sponsors.gold %}
+                <figure class="sponsor">
+                  <a href="{{ sponsor.url }}" target="_blank" rel="noopener" title="Go to {{ sponsor.name }}’s site" class="sponsor__link">
+                    <img src="_site/static_content/img/sponsors/{{ sponsor.logo }}" alt="{{ sponsor.name }} logo" class="sponsor__logo"/>
+                  </a>
+                </figure>
+                {% endfor %}
+              </article>
+              <article>
+                <h4 class="title-list__heading">Silver</h4>
+                <div class="row">
+                  {% for sponsor in sponsors.silver %}
+                  <figure class="col-xs-4 sponsor">
+                    <a href="{{ sponsor.url }}" target="_blank" rel="noopener" title="Go to {{ sponsor.name }}’s site" class="sponsor__link">
+                      <img src="_site/static_content/img/sponsors/{{ sponsor.logo }}" alt="{{ sponsor.name }} logo" class="sponsor__logo"/>
+                    </a>
+                  </figure>
+                  {% endfor %}
+                </div>
+              </article>
+            </section>
           </section>
 
           <section>
@@ -271,7 +291,6 @@
                   <p>Learn more</p>
                 </a>
               </article>
-
               <article class="col-sm-6">
                 <a href="/support/publisher-supporters/" class="title-list__link title-list__link--highlighted">
                   <h4 class="title-list__heading">Publisher supporters</h4>
