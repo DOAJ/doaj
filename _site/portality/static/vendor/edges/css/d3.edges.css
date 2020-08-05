@@ -1,0 +1,56 @@
+/* On mouse hover, lighten state color */
+.edges-d3-grouped-us-states-map path:hover {
+    fill-opacity: .7;
+}
+
+/* Style for Custom Tooltip */
+
+.edges-d3-grouped-us-states-tooltip {
+    position: absolute;
+    text-align: center;
+    margin: 10px;
+    font: 12px sans-serif;
+    pointer-events: none;
+    background:rgba(0,0,0,0.9);
+    border:1px solid grey;
+    width:auto;
+    padding:4px;
+    color:white;
+    opacity:0;
+}
+
+.edges-d3-grouped-us-states-tooltip h4 {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Legend Position Style */
+.edges-d3-grouped-us-states-legend {
+    font: 11px sans-serif;
+    position:absolute;
+    left:800px;
+    top:350px;
+}
+
+
+/* On mouse hover, lighten state color */
+.edges-d3-generic-vector-map-container path:hover {
+    fill-opacity: .7 !important;
+}
+/* Style for Custom Tooltip */
+.edges-d3-generic-vector-map-tooltip {
+    position: absolute;
+    text-align: center;
+    width: 200px;
+    /*height: 100px;*/
+    padding: 4px;
+    font: 12px sans-serif;
+    background: white;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.edges-d3-generic-vector-map-pinned {
+    fill-opacity: .5 !important;
+}

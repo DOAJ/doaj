@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{# NOTE: requires suggestions_and_journals.js to be enabled (see _js_includes.html) #}
+
+{# include the title and the "unlock and close" feature #}
+{% set object_type = 'suggestion' %}
+{% set heading_object_type = 'Application' %}
+{% include 'formcontext/_lockable_header.html' %}
+
+{# include the table for comparing applications with journals that have changed #}
+{% include 'formcontext/_application_diff.html' %}
+
+{% if form_context.source.application_status != "rejected"
+    and form_context.source.application_status != 'accepted'
+    and form_context.source.current_journal == None
+    %}
+
+<section class="form-area">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="form-panel with-borders centre-text-container">
+                <p>This button will not save any other changes on this page!</p>
+                <form method="post" action="{{ url_for('admin.application_quick_reject', application_id=form_context.source.id) }}" class="form-horizontal" id="application_quick_reject_form">
+
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label class="control-label col-sm-4" for="reject_reason">Select a reason for rejection:</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" name="reject_reason" id="reject_reason">
+                                        <option value="">Other</option>
+                                        {% for reason in config.get("QUICK_REJECT_REASONS", []) %}
+                                            <option value="{{ reason }}">{{ reason }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5">
+                            <textarea class="form-control" name="additional_reject_information" id="additional_reject_information" placeholder="Enter any additional information here" style="width: 100%"></textarea>
+                        </div>
+
+                        <div class="col-md-2">
+                            <button class="btn btn-danger" type="submit" id="submit_quick_reject">Quick Reject</button>
+                        </div>
+                    </div>
+                    <p><strong>Remember that the selected reject reason and any additional information will be sent to the publisher.</strong></p>
+                </form>
+            </section>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
+    {% if form_context.errors %}
+    <h4 class="red form-status">There is a problem with the submitted form.</h4>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <section class="form-area">
+                {% include 'formcontext/_editorial_panel.html' %}
+                {% include 'formcontext/_save_panel.html' %}
+                {% include 'formcontext/_application_status_panel.html' %}
+                {% include 'formcontext/_account_panel.html' %}
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel-left with-borders">
+                            <h3>Continuation information</h3>
+                            {% autoescape off %}
+                            {{ form_context.render_field_group("continuations") }}
+                            {% endautoescape %}
+                        </section>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-md-6">
+            {% include 'formcontext/_subject_area.html' %}
+        </div>
+
+    </div>
+
+    {# include the base application form which contains all the biblio data #}
+    {% set include_doaj_seal = True %}
+    {% include 'formcontext/_base_application_form.html' %}
+
+
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            {% include 'formcontext/_applicant_area.html' %}
+        </div>
+    </div>
+
+    {% include 'formcontext/_notes_area.html' %}
+
+</form>
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+<link rel="stylesheet" href="/static/vendor/jquery-ui-1.11.1/jquery-ui.min.css?v={{config.get('DOAJ_VERSION')}}">
+<script type="text/javascript" src="/static/vendor/jquery-ui-1.11.1/jquery-ui.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/js/continuations.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+<script type="text/javascript">
+    var notes_deletable = true;
+
+    // When the editor group field is changed, refresh the options for editor
+    var ed_query_url = "{{url_for('admin.eg_associates_dropdown')}}";
+    $("#editor_group").change(function() {load_eds_in_group(ed_query_url);});
+
+    // When the header says the form can't be edited, disable the save buttons.
+    if ($("#info_header").text()) {
+        $(".btn-success").prop('disabled', true);
+    }
+</script>
+{% endblock extra_js_bottom %}

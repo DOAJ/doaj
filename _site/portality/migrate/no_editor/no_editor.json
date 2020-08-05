@@ -1,0 +1,10 @@
+{
+	"types": [
+		{
+			"type" : "suggestion"
+		},
+		{
+			"type": "journal"
+		}
+	]
+}

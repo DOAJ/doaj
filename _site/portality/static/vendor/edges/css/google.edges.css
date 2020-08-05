@@ -1,0 +1,5 @@
+.edges-google-map-view-canvas {
+    width: 100%;
+    height: 600px;
+    max-width: none !important;
+}

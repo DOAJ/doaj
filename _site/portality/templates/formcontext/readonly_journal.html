@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{# include the title and the "unlock and close" feature #}
+{% set heading_object_type = 'Journal' %}
+
+<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
+
+    <h4 class="red form-status">Please note this form is read-only, you cannot save any changes you make here.</h4>
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <section class="form-area">
+                <div class="row">
+                    <div class="col-xs-12">
+                        {% include 'formcontext/_old_journal_fields_panel.html' %}
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-md-6">
+            {% include 'formcontext/_subject_area.html' %}
+        </div>
+
+    </div>
+
+
+    {# include the base application form which contains all the biblio data #}
+    {% include 'formcontext/_base_journal_form.html' %}
+
+    {% include 'formcontext/_notes_area.html' %}
+
+</form>
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+    var notes_deletable = false;
+    var notes_editable = false;
+</script>
+{% endblock extra_js_bottom %}

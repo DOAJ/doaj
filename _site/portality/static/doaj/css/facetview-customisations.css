@@ -1,0 +1,178 @@
+hr {
+    border-color: white;
+}
+
+.label {
+    background-color: #F6BC82;
+    color: black;
+    text-shadow: none;
+}
+
+.label:hover {
+    background-color: #F68B1F;
+    color: white;
+}
+
+#facetview_results {
+    border-top: 0;
+    border-bottom: 0;
+}
+
+#facetview_results .title {
+    font-size: 120%;
+}
+
+#facetview_results .alt_title {
+    color: gray;
+}
+
+.facetview_searchfield {
+    width: auto !important;
+}
+
+.facetview_freetext:focus {
+    border-color: rgba(246, 139, 31, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(246, 139, 31, 0.6);
+}
+
+.facetview_metadata>div {
+    border-color: #F68B1F !important;
+}
+
+#facetview .table-striped tbody tr:nth-child(2n+1) td, #facetview .table-striped tbody tr:nth-child(2n+1) th {
+    background-color: #ffeece;
+}
+
+#facetview tbody.table-striped-inverted tr:nth-child(even) td, #facetview tbody.table-striped tr:nth-child(even) th {
+    background-color: #ffeece;
+}
+#facetview tbody.table-striped-inverted tr:nth-child(odd) td, #facetview tbody.table-striped tr:nth-child(odd) th {
+    background-color: #ffffff;
+}
+
+#facetview .table tbody tr:hover td, #facetview .table tbody tr:hover th {
+    background-color: #ffe2ab;
+}
+
+#facetview table th, #facetview table td{
+    border-top-color: #F68B1F;
+    border-bottom-color: #F68B1F;
+    border-left: 0;
+}
+
+#facetview table {
+    border-top-color: #F68B1F;
+    border-bottom-color: #F68B1F;
+    border-left: 0;
+    border-right: 0;
+    border-collapse: collapse;
+}
+
+#facetview_filters table thead:first-child tr:first-child th:last-child, #facetview_filters table tbody:first-child tr:first-child td:last-child {
+    border-radius: 0;
+    border-top: 1px solid #F68B1F;
+}
+
+#facetview table th:last-child, #facetview table td:last-child {
+    border-radius: 0;
+    border-bottom: 0;
+}
+
+.no-bottom {
+    border-bottom: 0;
+}
+
+#facetview_filters .btn, .facetview_search_options_container .btn {
+    background-color: #F68B1F;
+    background-image: -moz-linear-gradient(center top , #F6EDE5, #F6BC82);
+    background-image: -webkit-linear-gradient(top, #F6EDE5, #F6BC82);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F6EDE5',endColorstr='#F6BC82',GradientType=0);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#F6EDE5',endColorstr='#F6BC82',GradientType=0)";
+    border-color: #F68B1F #F68B1F #F68411;
+}
+
+#facetview_filters .btn:hover, .facetview_search_options_container .btn:hover {
+    filter: none;
+    -ms-filter: none;
+}
+
+.facetview_shorten_url, .facetview_lengthen_url {
+    background-image: none !important;
+    background-color: #f5f5f5 !important;
+    border-color: rgba(0,0,0,0.1) !important;
+}
+
+#facetview_selectedfilters .btn-group {
+    margin-right: 1em;
+}
+
+#facetview_selectedfilters .btn {
+    background-color: #F68B1F;
+    background-image: -moz-linear-gradient(center top , #F6B574, #F68E26);
+    background-image: -webkit-linear-gradient(top, #F6B574, #F68E26);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F6B574',endColorstr='#F68E26',GradientType=0);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#F6B574',endColorstr='#F68E26',GradientType=0)";
+    border-color: #F68B1F #F68B1F #F68411;
+    text-shadow: none;
+}
+
+.facetview_search_options_container select, .facetview_search_options_container input {
+    border-color: #F68B1F;
+    background: #ffffff !important;
+}
+
+.facetview_orderby {
+    width: auto !important;
+}
+
+.facetview_decrement, .facetview_increment {
+    color: #F68B1F !important;
+}
+
+.facetview_decrement:hover, .facetview_increment:hover {
+    text-decoration: none;
+    color: #ff7040 !important;
+}
+
+#facetview_learnmore {
+    background-color: #FFEECE;
+}
+
+#search-progress-bar {
+    width: 100%;
+}
+
+#search-progress-bar > .bar{
+    width: 100%;
+    background-color: #F68B1F;
+    filter: none;
+    -ms-filter: none;
+}
+
+/* admin search page, bulk edit controls */
+
+#admin-bulk-box {
+    border-radius: 10px;
+    border: 2px solid #F68B1F;
+    padding: 10px;
+}
+
+#admin-bulk-label {
+    text-align: center;
+    margin-top: -20px;
+    margin-left: 25%;
+    margin-right: 25%;
+    background: #ffffff
+}
+
+#admin-bulk-box .controls {
+    margin: 0 0 0 0;
+}
+
+#admin-bulk-box .control-group {
+    margin: 5px 0 0 0;
+}
+
+#edit_metadata-container .controls {
+    margin-left: 220px;
+}

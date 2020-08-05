@@ -1,0 +1,12 @@
+<link rel="stylesheet" href="http://localhost:5004/static/widget/simple_search_widget.css">
+
+<form id="doaj-search-form" name="topsearch" action="http://localhost:5004/search" method="POST">
+    <input type="hidden" name="ref" value="ssw">
+    <div class="control-group" id="doaj-search-container">
+        <a href="https://doaj.org/" target="_blank"><img id="doaj-simple-search-logo" src="http://localhost:5004/static/doaj/images/logo_cropped.jpg" alt="Directory of Open Access Journals" title="Directory of Open Access Journals"></a>
+        <div>
+            <input type="text" name="q" placeholder="Search the DOAJ" id="doaj-search-input"/><span id="doaj-search-button-container"><button type="submit" formtarget="_blank" id="doaj-search-button">Search</button></span>
+        </div>
+    </div>
+    <input type="hidden" name="origin" value="ui"/>
+</form>

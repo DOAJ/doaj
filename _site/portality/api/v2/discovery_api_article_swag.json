@@ -1,0 +1,231 @@
+{
+    "notes": "This is a longer string of important things", 
+    "responses": {
+        "200": {
+            "schema": {
+                "properties": {
+                    "pageSize": {
+                        "type": "integer"
+                    }, 
+                    "query": {
+                        "type": "string"
+                    }, 
+                    "timestamp": {
+                        "type": "string", 
+                        "format": "dateTime"
+                    }, 
+                    "total": {
+                        "type": "integer"
+                    }, 
+                    "results": {
+                        "items": {
+                            "type": "object", 
+                            "properties": {
+                                "last_updated": {
+                                    "type": "string", 
+                                    "format": "dateTime"
+                                }, 
+                                "id": {
+                                    "type": "string"
+                                }, 
+                                "bibjson": {
+                                    "type": "object", 
+                                    "properties": {
+                                        "start_page": {
+                                            "type": "integer"
+                                        }, 
+                                        "author": {
+                                            "items": {
+                                                "type": "object", 
+                                                "properties": {
+                                                    "affiliation": {
+                                                        "type": "string"
+                                                    }, 
+                                                    "email": {
+                                                        "type": "string"
+                                                    }, 
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "orcid_id": {
+                                                        "type": "string"
+                                                    }
+                                                }, 
+                                                "title": "author"
+                                            }, 
+                                            "type": "array"
+                                        }, 
+                                        "journal": {
+                                            "type": "object", 
+                                            "properties": {
+                                                "volume": {
+                                                    "type": "string"
+                                                }, 
+                                                "publisher": {
+                                                    "type": "string"
+                                                }, 
+                                                "license": {
+                                                    "items": {
+                                                        "type": "object", 
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string"
+                                                            }, 
+                                                            "type": {
+                                                                "type": "string"
+                                                            }, 
+                                                            "title": {
+                                                                "type": "string"
+                                                            }
+                                                        }, 
+                                                        "title": "license"
+                                                    }, 
+                                                    "type": "array"
+                                                }, 
+                                                "language": {
+                                                    "items": {
+                                                        "type": "string"
+                                                    }, 
+                                                    "type": "array"
+                                                }, 
+                                                "title": {
+                                                    "type": "string"
+                                                }, 
+                                                "country": {
+                                                    "type": "string"
+                                                }, 
+                                                "number": {
+                                                    "type": "string"
+                                                }
+                                            }, 
+                                            "title": "journal"
+                                        }, 
+                                        "title": {
+                                            "type": "string"
+                                        }, 
+                                        "subject": {
+                                            "items": {
+                                                "type": "object", 
+                                                "properties": {
+                                                    "code": {
+                                                        "type": "string"
+                                                    }, 
+                                                    "term": {
+                                                        "type": "string"
+                                                    }, 
+                                                    "scheme": {
+                                                        "type": "string"
+                                                    }
+                                                }, 
+                                                "title": "subject"
+                                            }, 
+                                            "type": "array"
+                                        }, 
+                                        "month": {
+                                            "type": "string"
+                                        }, 
+                                        "link": {
+                                            "items": {
+                                                "type": "object", 
+                                                "properties": {
+                                                    "url": {
+                                                        "type": "string"
+                                                    }, 
+                                                    "type": {
+                                                        "type": "string"
+                                                    }, 
+                                                    "content_type": {
+                                                        "type": "string"
+                                                    }
+                                                }, 
+                                                "title": "link"
+                                            }, 
+                                            "type": "array"
+                                        }, 
+                                        "year": {
+                                            "type": "string"
+                                        }, 
+                                        "keywords": {
+                                            "items": {
+                                                "type": "string"
+                                            }, 
+                                            "type": "array"
+                                        }, 
+                                        "identifier": {
+                                            "items": {
+                                                "type": "object", 
+                                                "properties": {
+                                                    "type": {
+                                                        "type": "string"
+                                                    }, 
+                                                    "id": {
+                                                        "type": "string"
+                                                    }
+                                                }, 
+                                                "title": "identifier"
+                                            }, 
+                                            "type": "array"
+                                        }, 
+                                        "abstract": {
+                                            "type": "string"
+                                        }, 
+                                        "end_page": {
+                                            "type": "string"
+                                        }
+                                    }, 
+                                    "title": "bibjson"
+                                }, 
+                                "created_date": {
+                                    "type": "string", 
+                                    "format": "dateTime"
+                                }
+                            }, 
+                            "title": "Article"
+                        }, 
+                        "type": "array"
+                    }, 
+                    "page": {
+                        "type": "integer"
+                    }
+                }, 
+                "title": "Article search"
+            }
+        }, 
+        "400": {
+            "description": "Bad Request"
+        }
+    }, 
+    "parameters": [
+        {
+            "description": "<div class=\"search-query-docs\"> What you are searching for, e.g. computers <br> <br> You can search inside any field you see in the results or the schema. <a href=\"#specific_field_search\">More details</a> <br> For example, to search for all articles with abstracts containing the word \"shadow\" <pre>bibjson.abstract:\"shadow\"</pre> <a href=\"#short_field_names\">Short-hand names are available</a> for some fields <pre>doi:10.3389/fpsyg.2013.00479</pre> <pre>issn:1874-9496</pre> <pre>license:CC-BY</pre> <pre>title:hydrostatic pressure</pre> </div>", 
+            "required": true, 
+            "type": "string", 
+            "name": "search_query", 
+            "in": "path"
+        }, 
+        {
+            "description": "Which page of the results you wish to see.", 
+            "required": false, 
+            "type": "integer", 
+            "name": "page", 
+            "in": "query"
+        }, 
+        {
+            "description": "How many results per page you wish to see, the default is 10.",
+            "required": false, 
+            "type": "integer", 
+            "name": "pageSize", 
+            "in": "query"
+        }, 
+        {
+            "description": "<div> Substitutions are also available here for convenience <ul> <li>title - order by the normalised, unpunctuated version of the title</li> </ul> For example <pre>title:asc</pre> </div>", 
+            "required": false, 
+            "type": "string", 
+            "name": "sort", 
+            "in": "query"
+        }
+    ], 
+    "tags": [
+        "Search"
+    ]
+}

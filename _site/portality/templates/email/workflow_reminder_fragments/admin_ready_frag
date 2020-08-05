@@ -1,0 +1,2 @@
+There are {{ num }} records in status 'Ready' which are awaiting the attention of a Managing Editor. View them here:
+{{ url }}

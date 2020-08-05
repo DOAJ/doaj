@@ -1,0 +1,23 @@
+{
+	"types": [
+		{
+			"type" : "suggestion",
+			"init_with_model" : false,
+			"keepalive" : "1m",
+			"functions" : [
+				"portality.migrate.continuations.clean_struct.migrate_suggestion",
+				"portality.migrate.continuations.restructure_archiving_policy.migrate_suggestion"
+			]
+		},
+		{
+			"type": "journal",
+			"init_with_model": false,
+			"keepalive": "1m",
+			"functions": [
+				"portality.migrate.continuations.extract_continuations.migrate",
+				"portality.migrate.continuations.clean_struct.migrate_journal",
+				"portality.migrate.continuations.restructure_archiving_policy.migrate_journal"
+			]
+		}
+	]
+}

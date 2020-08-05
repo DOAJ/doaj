@@ -1,0 +1,13 @@
+# In order to install doaj you need to run
+# pip install -r requirements.txt
+# (i.e. target this file with the -r switch on pip).
+
+# first get esprit, specifically the version we know will work (+ it's
+# not on PyPI)
+-e git+https://github.com/CottageLabs/esprit.git@6fc6b24450627077f1d38145e14765f776feba8b#egg=esprit
+-e git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer
+-e git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger
+-e git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix
+
+# now run the normal setup.py and get all the normal PyPI dependencies from there
+-e .

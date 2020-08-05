@@ -1,0 +1,204 @@
+{
+  "parameters": [
+    {
+      "type": "index",
+      "name": "test_id"
+    },
+    {
+      "values": {
+        "no": {},
+        "-": {
+          "constraints": {
+            "tmp_write": {
+              "or": [
+                "success"
+              ]
+            },
+            "articles": {
+              "or": [
+                "0"
+              ]
+            },
+            "journals": {
+              "or": [
+                "0"
+              ]
+            },
+            "store_write": {
+              "or": [
+                "success"
+              ]
+            }
+          }
+        },
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "clean"
+    },
+    {
+      "values": {
+        "no": {},
+        "-": {
+          "constraints": {
+            "tmp_write": {
+              "or": [
+                "success"
+              ]
+            },
+            "articles": {
+              "or": [
+                "0"
+              ]
+            },
+            "journals": {
+              "or": [
+                "0"
+              ]
+            },
+            "store_write": {
+              "or": [
+                "success"
+              ]
+            }
+          }
+        },
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "prune"
+    },
+    {
+      "values": {
+        "-": {
+          "constraints": {
+            "tmp_write": {
+              "or": [
+                "success"
+              ]
+            },
+            "articles": {
+              "or": [
+                "0"
+              ]
+            },
+            "journals": {
+              "or": [
+                "0"
+              ]
+            },
+            "store_write": {
+              "or": [
+                "success"
+              ]
+            }
+          }
+        },
+        "journal": {
+          "constraints": {
+            "articles": {
+              "or": [
+                "0"
+              ]
+            }
+          }
+        },
+        "all": {},
+        "article": {
+          "constraints": {
+            "journals": {
+              "or": [
+                "0"
+              ]
+            }
+          }
+        }
+      },
+      "type": "generated",
+      "name": "types"
+    },
+    {
+      "values": {
+        "2": {},
+        "0": {},
+        "4": {}
+      },
+      "type": "generated",
+      "name": "journals"
+    },
+    {
+      "values": {
+        "2": {},
+        "0": {},
+        "4": {}
+      },
+      "type": "generated",
+      "name": "articles"
+    },
+    {
+      "values": {
+        "3": {}
+      },
+      "type": "generated",
+      "name": "batch_size"
+    },
+    {
+      "values": {
+        "success": {},
+        "fail": {
+          "constraints": {
+            "store_write": {
+              "or": [
+                "success"
+              ]
+            }
+          }
+        }
+      },
+      "type": "generated",
+      "name": "tmp_write"
+    },
+    {
+      "values": {
+        "success": {},
+        "fail": {
+          "constraints": {
+            "tmp_write": {
+              "or": [
+                "success"
+              ]
+            }
+          }
+        }
+      },
+      "type": "generated",
+      "name": "store_write"
+    },
+    {
+      "values": {
+        "error": {
+          "conditions": [
+            {
+              "tmp_write": {
+                "or": [
+                  "fail"
+                ]
+              }
+            },
+            {
+              "store_write": {
+                "or": [
+                  "fail"
+                ]
+              }
+            }
+          ]
+        },
+        "complete": {}
+      },
+      "type": "conditional",
+      "default": "complete",
+      "name": "status"
+    }
+  ]
+}

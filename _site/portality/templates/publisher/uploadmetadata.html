@@ -1,0 +1,168 @@
+{% extends "publisher/publisher_base.html" %}
+
+{% block publisher_content %}
+
+<div class="row" style="margin-top: 20px">
+    <div class="col-md-12">
+        <div class="well">
+            <p>Uploaded files must conform to one of the approved XML formats:</p>
+            <ul>
+                <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
+            </ul>
+            
+            <p>Uploaded files must be &lt; 50Mb. Remote files must be &lt; 250Mb. If you need to upload more data, you should provide multiple files.</p>
+        </div>
+    </div>
+</div>
+
+
+<form id="upload_form" class="form-horizontal" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
+
+    <div class="row">
+        <label for="file" class="col-md-3 control-label">Select a file to upload</label>
+        <div class="col-md-9"><input type="file" name="file"></div>
+    </div>
+    
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-3" style="text-align: right"><strong>OR</strong></div>
+        <div class="col-md-9">&nbsp;</div>
+    </div>
+    
+    <div class="row">
+        <label for="url" class="col-md-3 control-label">Provide a URL where we can download the XML</label>
+        <div class="col-md-9"><input type="text" name="url" placeholder="URL for XML file (250Mb maximum size)" style="width: 80%"></div>
+    </div>
+
+    <div class="row" style="margin-top: 20px">
+        <label for="url" class="col-md-3 control-label">Format of the file</label>
+        <div class="col-md-9">
+            <select name="schema" class="form-control" style="width: 200px">
+                <option value="doaj">DOAJ Native XML</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-3">&nbsp;</div>
+        <div class="col-md-9"><button class="btn btn-success" id="upload">Upload</button></div>
+    </div>
+
+</form>
+
+<hr>
+
+{% if previous|length > 0 %}
+
+    <h3>History of uploads (showing last {{previous|length}})</h3>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table id="previous_files" style="width: 100%; table-layout:fixed" class="tablesorter">
+                <thead>
+                    <tr>
+                        <th style="width: 17%">Upload Date</th>
+                        <th style="width: 20%">Filename</th>
+                        <th style="width: 12%">Format</th>
+                        <th style="width: 15%">Upload Status</th>
+                        <th style="width: 36%">Notes</th>
+                    </tr>
+                </thead>
+            {% for file in previous %}
+                <tr>
+                    <td>{{ file.created_timestamp | utc_timestamp("%d %b %Y %H:%M:%S %Z") }}</td>
+                    <td style="word-wrap: break-word">
+                        {% if file.filename.startswith("http") %}
+                            <a href="{{file.filename}}">{{file.filename}}</a>
+                        {% else %}
+                            {{file.filename}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if file.schema == "doaj" %}
+                            DOAJ Native XML
+                        {% elif file.schema == "mathml" %}
+                            OJS MathML
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if file.status == "incoming" %}
+                            <span style="color: #000066">in submission</span>
+                        {% elif file.status == "validated" %}
+                            <span style="color: #000066">pending</span>
+                        {% elif file.status == "exists" %}
+                            <span style="color: #000066">pending</span>
+                        {% elif file.status == "failed" %}
+                            <span style="color: #660000">processing failed</span>
+                        {% elif file.status == "processed" %}
+                            <span style="color: #006600">successfully processed</span>
+                        {% elif file.status == "partial" %}
+                            <span style="color: #ff3300">partial success</span>
+                        {% endif %}
+                    </td>
+                    <td style="word-wrap:break-word">
+                        {% if file.error %}
+                            {{file.error}}
+                            <a target="_blank" href="{{ url_for('doaj.publishers', _anchor=file.error) }}">(what does this mean?)</a><br>
+                        {% else %}
+                            {% if file.status == "partial" or file.status == "processed" %}
+                                {{ file.imported }} articles imported 
+                                {% if file.imported > 0 %}
+                                    ({{file.new}} new, {{file.updates}} updated)
+                                {% endif %}
+                                {% if file.failed_imports > 0 %}
+                                    ; {{ file.failed_imports }} articles failed
+                                    <a target="_blank" href="{{ url_for('doaj.publishers', _anchor='some_articles_failed') }}">(what does this mean?)</a><br>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        {%  if file.error_details or file.failure_reasons %}
+                            <div id="details_{{ file.id }}" style="display:none">
+                                {% if file.error_details %}{{ file.error_details }}{% endif %}
+                                {% if file.failure_reasons %}
+                                    {% if file.failure_reasons.shared %}
+                                        The following ISSNs in your article metadata are owned by you and another user.  This is a problem at our end, please contact us with the details:<br>
+                                        {{ file.failure_reasons.shared|join(", ") }}
+                                    {% endif %}
+                                    {% if file.failure_reasons.unowned %}
+                                        The following ISSNs in your article metadata are owned by another user, you cannot associate articles with them.  If you believe you should own these ISSNs, please contact us with the details:<br>
+                                        {{ file.failure_reasons.unowned|join(", ") }}
+                                    {% endif %}
+                                    {% if file.failure_reasons.unmatched %}
+                                        The following ISSNs in your article metadata do not appear in DOAJ, you cannot associate articles with them.  If you believe these ISSNs should be associated with a journal you own, please contact us with the details:<br>
+                                        {{ file.failure_reasons.unmatched|join(", ") }}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <a href="#" class="show_error_details" data-id="{{ file.id }}">(show error details)</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>
+    </div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#previous_files").tablesorter();
+
+    $(".show_error_details").click(function(event) {
+        event.preventDefault();
+        var id = $(this).attr("data-id");
+        $("#details_" + id).slideToggle();
+        if ($(this).html() === "(show error details)") {
+            $(this).html("(hide error details)")
+        } else {
+            $(this).html("(show error details)")
+        }
+    })
+})
+</script>
+
+{% endblock %}
+

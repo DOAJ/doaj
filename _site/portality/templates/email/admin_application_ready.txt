@@ -1,0 +1,5 @@
+The application for "{{ application_title }}" has been marked 'Ready' by {{ editor }}. Please review it as soon as possible.
+{{ url_for_application }}
+
+***
+This is an automated message. Please do not reply to this email.

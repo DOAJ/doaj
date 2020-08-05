@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+	<title>jQuery plugin: Tablesorter 2.0 - Filter Widget</title>
+
+	<!-- jQuery -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+
+	<!-- Demo stuff -->
+	<link rel="stylesheet" href="css/jq.css">
+	<script src="js/chili/jquery.chili-2.2.js"></script>
+	<script src="js/chili/recipes.js"></script>
+	<script src="js/docs.js"></script>
+
+	<!-- Tablesorter: required -->
+	<link rel="stylesheet" href="../css/blue/style.css">
+	<script src="../js/jquery.tablesorter.js"></script>
+	<script src="../js/jquery.tablesorter.widgets.js"></script>
+
+	<!-- Tablesorter: optional -->
+	<!-- <script src="../addons/pager/jquery.tablesorter.pager.js"></script> -->
+
+<script id="js">$(function() {
+
+	// call the tablesorter plugin
+	$("table").tablesorter({
+
+		// initialize zebra striping and filter widgets
+		widgets: ["zebra", "filter"],
+
+		// headers: { 5: { sorter: false, filter: false } },
+
+		widgetOptions : {
+
+			// css class applied to the table row containing the filters & the inputs within that row
+			filter_cssFilter : 'tablesorter-filter',
+
+			// If there are child rows in the table (rows with class name from "cssChildRow" option)
+			// and this option is true and a match is found anywhere in the child row, then it will make that row
+			// visible; default is false
+			filter_childRows : false,
+
+			// Set this option to true to use the filter to find text from the start of the column
+			// So typing in "a" will find "albert" but not "frank", both have a's; default is false
+			filter_startsWith : false,
+
+			// Set this option to false to make the searches case sensitive
+			filter_ignoreCase : true,
+
+			// Delay in milliseconds before the filter widget starts searching; This option prevents searching for
+			// every character while typing and should make searching large tables faster.
+			filter_searchDelay : 300,
+
+			// See the filter widget advanced demo on how to use these special functions
+			filter_functions : {}
+
+		}
+// ,debug: true
+	});
+
+});</script>
+
+<script>
+$(function(){
+	// *** widgetfilter_startsWith toggle button ***
+	$('button.toggle').click(function(){
+		var c = $('table')[0].config,
+		// toggle the boolean
+		fsw = !c.widgetOptions.filter_startsWith,
+		fic = !c.widgetOptions.filter_ignoreCase;
+		if ($(this).hasClass('fsw')) {
+			c.widgetOptions.filter_startsWith = fsw;
+			$('#start').html(fsw.toString());
+		} else {
+			c.widgetOptions.filter_ignoreCase = fic;
+			$('#case').html(fic.toString());
+		}
+		// update search after option change; add false to trigger to skip search delay
+		$('input.tablesorter-filter:eq(0)').trigger('search', false);
+	});
+});
+</script>
+
+</head>
+<body>
+<div id="banner">
+	<h1>table<em>sorter</em></h1>
+	<h2>Filter Widget</h2>
+	<h3>Flexible client-side table sorting</h3>
+	<a href="index.html">Back to documentation</a>
+</div>
+<div id="main">
+
+	<p class="tip">
+		<em>NOTE!</em>
+		<ul>
+			<li>In version 2.3.6, these changes were made:
+				<ul>
+					<li>Include filter input boxes placeholder text by adding <code class="hilight">data-placeholder</code> to the column header cell; e.g. <code class="hilight">data-placeholder="First Name"</code>. See the examples in the HTML code block below.</li>
+					<li>Exact match added. Add a quote (single or double) to the end of the string to find an exact match. In the first column enter <code class="hilight">Clark"</code> to only find Clark and not Brandon Clark.</li>
+					<li>Wild cards added:
+						<ul>
+						<li><code class="hilight">?</code> (question mark) finds any single non-space character.<br>In the discount column, adding <code class="hilight">1?%</code> in the filter will find all percentages between "10%" and "19%". In the last column, <code class="hilight">J?n</code> will find "Jun" and "Jan".</li>
+							<li><code class="hilight">*</code> (asterisk) finds multiple non-space characters.<br>In the first column below Enter <code class="hilight">Br*</code> will find multiple names starting with "Br". Now add a space at the end, and "Bruce" will not be included in the results.</li>
+						</ul>
+					</li>
+					<li>Regex method added. Use standard regex within the filter to filter the columns. For example enter <code class="hilight">/20[1-9]\d/</code> or <code class="hilight">/20[^0]\d/</code> in the last column to find all dates greater than 2009.</li>
+				<li>Added <code class="hilight">filter_functions</code> option which allows you to add a custom filter function for a column or to a dropdown list. Please see the <a href="example-widget-filter-custom.html">jQuery filter widget, advanced</a> demo for more details.</a></li>
+				</ul>
+			</li>
+			<li>In version 2.0.19.1, a filter header option and header class name check was added to allow disabling the filter in a specific column.</li>
+			<li>In versions 2.3+, the filter widget can be disabled using any of the following methods, in order of priority:
+				<ul>
+					<li>jQuery data <code class="hilight">data-filter="false"</code>.</li>
+					<li>metadata <code class="hilight">class="{ filter: false }"</code>. This requires the metadata plugin.</li>
+					<li>headers option <code class="hilight">headers : { 0 : { filter: false } }</code>.</li>
+					<li>header class name <code class="hilight">class="filter-false"</code>.</li>
+				</ul>
+			</li>
+			<li>Replaced <code class="hilight">widgetFilterChildRows</code> option with <code class="hilight">widgetOptions.filter_childRows</code> (v2.1).</li>
+			<li>Added <code class="hilight">widgetOptions.filter_startsWith</code> option which when <code class="hilight">true</code>, allows you to search the table from the starting of the table cell text. Use the toggle button to see the difference, and that it can be dynamically changed! (v2.1).</li>
+			<li>Added <code class="hilight">widgetOptions.filter_cssFilter</code> option which allows you to defined the css class applied to the filter row and each search input. (v2.1).</span></li>
+			<li>Added <code class="hilight">widgetOptions.filter_ignoreCase</code> option which makes the search case-insensitive, when <code class="hilight">true</code>. <span class="tip"><em>New! v2.3.4</em></span></li>
+			<li>Added <code class="hilight">widgetOptions.filter_searchDelay</code> option which delays the search giving the user time to type in the search string. <span class="tip"><em>New! v2.3.4</em></span></li>
+			<li>Additional filter widget specific options are included in the javascript below, with explanations.</li>
+			<li>Please note that using the pager plugin with this filter widget will have <em>unexpected results</em> - I haven't found a fix for this problem.</li>
+			<li>This widget uses jQuery's <code class="hilight">.nextUntil()</code> function which is only available is jQuery version 1.4+.</li>
+			<li><strike>As of tablesorter version 2.3, this widget <strong>can no longer be applied to the original plugin</strong>.</strike>. Fixed in v2.3.3.</li>
+		</ul>
+	</p>
+
+	<h1>Demo</h1>
+	<button class="toggle fsw">Toggle</button> filter_startsWith : <span id="start">false</span> (if true, search from beginning of cell content only)<br>
+	<button class="toggle fic">Toggle</button> filter_ignoreCase : <span id="case">true</span> (if false, the search will be case sensitive)
+
+	<div id="demo"><table class="tablesorter">
+	<thead>
+		<tr>
+			<th data-placeholder="Try Br*{space}">First Name</th>
+			<th>Last Name</th>
+			<th>Age</th>
+			<th>Total</th>
+			<th data-placeholder="Try 1?%">Discount</th> <!-- add class="filter-false" to disable the filter in this column -->
+			<th data-placeholder="Try /20[^0]\d/">Date</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Philip Aaron</td>
+			<td>Johnson Sr Esq</td>
+			<td>25</td>
+			<td>$5.95</td>
+			<td>22%</td>
+			<td>Jun 26, 2004 7:22 AM</td>
+		</tr>
+		<tr>
+			<td>Aaron</td>
+			<td>Hibert</td>
+			<td>12</td>
+			<td>$2.99</td>
+			<td>5%</td>
+			<td>Aug 21, 2009 12:21 PM</td>
+		</tr>
+		<tr>
+			<td>Brandon Clark</td>
+			<td>Henry Jr</td>
+			<td>51</td>
+			<td>$42.29</td>
+			<td>18%</td>
+			<td>Oct 13, 2000 1:15 PM</td>
+		</tr>
+		<tr>
+			<td>Peter</td>
+			<td>Parker</td>
+			<td>28</td>
+			<td>$9.99</td>
+			<td>20%</td>
+			<td>Jul 6, 2006 8:14 AM</td>
+		</tr>
+		<tr>
+			<td>John</td>
+			<td>Hood</td>
+			<td>33</td>
+			<td>$19.99</td>
+			<td>25%</td>
+			<td>Dec 10, 2002 5:14 AM</td>
+		</tr>
+		<tr>
+			<td>Clark</td>
+			<td>Kent Sr.</td>
+			<td>18</td>
+			<td>$15.89</td>
+			<td>44%</td>
+			<td>Jan 12, 2003 11:14 AM</td>
+		</tr>
+		<tr>
+			<td>Bruce</td>
+			<td>Almighty Esq</td>
+			<td>45</td>
+			<td>$153.19</td>
+			<td>44%</td>
+			<td>Jan 18, 2021 9:12 AM</td>
+		</tr>
+		<tr>
+			<td>Alex</td>
+			<td>Dumass</td>
+			<td>13</td>
+			<td>$5.29</td>
+			<td>4%</td>
+			<td>Jan 8, 2012 5:11 PM</td>
+		</tr>
+		<tr>
+			<td>Jim</td>
+			<td>Franco</td>
+			<td>24</td>
+			<td>$14.19</td>
+			<td>14%</td>
+			<td>Jan 14, 2004 11:23 AM</td>
+		</tr>
+		<tr>
+			<td>Bruce Lee</td>
+			<td>Evans</td>
+			<td>22</td>
+			<td>$13.19</td>
+			<td>11%</td>
+			<td>Jan 18, 2007 9:12 AM</td>
+		</tr>
+		<tr>
+			<td>Brenda Lee</td>
+			<td>McMasters</td>
+			<td>18</td>
+			<td>$55.20</td>
+			<td>15%</td>
+			<td>Feb 12, 2010 7:23 PM</td>
+		</tr>
+		<tr>
+			<td>Dennis</td>
+			<td>Bronson</td>
+			<td>65</td>
+			<td>$123.00</td>
+			<td>32%</td>
+			<td>Jan 20, 2001 1:12 PM</td>
+		</tr>
+		<tr>
+			<td>Martha</td>
+			<td>delFuego</td>
+			<td>25</td>
+			<td>$22.09</td>
+			<td>17%</td>
+			<td>Jun 11, 2011 10:55 AM</td>
+		</tr>
+	</tbody>
+</table></div>
+
+	<h1>Page Header</h1>
+	<div>
+		<pre class="html">&lt;!-- blue theme stylesheet --&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;../css/blue/style.css&quot;&gt;
+&lt;!-- tablesorter plugin --&gt;
+&lt;script src=&quot;../js/jquery.tablesorter.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- tablesorter widget file - loaded after the plugin --&gt;
+&lt;script src=&quot;../js/jquery.tablesorter.widgets.js&quot;&gt;&lt;/script&gt;</pre>
+	</div>
+
+	<h1>Javascript</h1>
+	<div id="javascript">
+		<pre class="js"></pre>
+	</div>
+
+	<h1>CSS</h1>
+	<div>
+		<pre class="css">/* filter widget, added to style.css themes */
+table.tablesorter thead tr.filters input {
+	width: 95%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+table.tablesorter thead tr.filters, table.tablesorter thead tr.filters td {
+	text-align: center;
+	background: #fff;
+}
+/* optional disabled input styling */
+table.tablesorter thead tr.filters input.disabled {
+	opacity: 0.5;
+	filter: alpha(opacity=50);
+}</pre>
+	</div>
+
+	<h1>HTML</h1>
+	<div id="html">
+		<pre class="html"></pre>
+	</div>
+
+<div class="next-up">
+	<hr />
+	Next up: <a href="example-widget-filter-custom.html">jQuery filter widget, advanced &rsaquo;&rsaquo;</a>
+</div>
+
+</div>
+
+</body>
+</html>
+

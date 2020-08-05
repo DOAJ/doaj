@@ -1,0 +1,42 @@
+/********************************************************
+ *  Selected Filters display
+ */
+
+.edges-bs3-selected-filters-container {
+    border: 1px dotted #cccccc;
+    padding: 10px 10px 10px 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background-color: #f4f4f4;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.edges-bs3-selected-filters-field {
+    margin-right: 15px;
+}
+
+.edges-bs3-selected-filters-fieldname {
+    font-weight: bold;
+    padding-right: 3px;
+}
+
+.edges-bs3-selected-filters-value {
+
+}
+
+.edges-bs3-selected-filters-remove {
+    color: #000000;
+    padding-left: 3px;
+}
+
+.edges-bs3-selected-filters-remove:hover {
+    color: #000000;
+}
+
+.edges-bs3-selected-filters-rel {
+    font-weight: bold;
+    padding-left: 5px;
+    padding-right: 5px;
+}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{# include the title and the "unlock and close" feature #}
+{% set object_type = 'journal' %}
+{% set heading_object_type = 'Journal' %}
+{% include 'formcontext/_lockable_header.html' %}
+
+<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
+    {% if form_context.errors %}
+    <h4 class="red form-status">There is a problem with the submitted form.</h4>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <section class="form-area">
+                {% include 'formcontext/_editorial_panel.html' %}
+                {% include 'formcontext/_save_panel.html' %}
+
+                {% set old_journal_field_html = form_context.render_field_group("old_journal_fields") %}
+                {% if old_journal_field_html %}
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <section class="form-panel-left with-borders">
+                                <h3 class="heading-aligned-with-fields">Old journal information</h3>
+                                {% autoescape off %}
+                                {{ old_journal_field_html }}
+                                {% endautoescape %}
+                            </section>
+                        </div>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+
+        <div class="col-md-6">
+            {% include 'formcontext/_subject_area.html' %}
+        </div>
+    </div>
+
+    {# include the base application form which contains all the biblio data #}
+    {% set include_doaj_seal = False %}
+    {% include 'formcontext/_base_journal_form.html' %}
+
+    <div class="row">
+        <div class="col-md-offset-3 col-md-6">
+            <section class="form-area">
+                {% include 'formcontext/_save_panel.html' %}
+            </section>
+        </div>
+    </div>
+
+    {% include 'formcontext/_notes_area.html' %}
+
+</form>
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+    var notes_deletable = false;
+</script>
+{% endblock extra_js_bottom %}

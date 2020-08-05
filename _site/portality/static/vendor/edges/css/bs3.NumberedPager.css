@@ -1,0 +1,57 @@
+.edges-bs3-numbered-pager-nav {
+    text-align: center;
+}
+
+.edges-bs3-numbered-pager-nav-list {
+    list-style: none;
+    padding: 0px; /* to deal with user agent styles on lists */
+}
+
+.edges-bs3-numbered-pager-nav-list li {
+    display: inline;
+    margin: 0 4px;
+}
+
+.edges-bs3-numbered-pager-nav-list li a {
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    border: 1px solid #d5dee2;
+    white-space: nowrap;
+    text-decoration: none;
+    color: #00557f;
+    background-color: #ffffff;
+}
+
+.edges-bs3-numbered-pager-nav-list li a:hover {
+    color: #e85e13;
+}
+
+.edges-bs3-numbered-pager-prev {
+    width: auto !important;
+    border-color: transparent !important;
+    background-color: transparent !important;
+    margin: 0 4px;
+}
+
+.edges-bs3-numbered-pager-next {
+    width: auto !important;
+    border-color: transparent !important;
+    background-color: transparent !important;
+    margin: 0 4px;
+}
+
+.edges-bs3-numbered-pager-current {
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    border: 1px solid #d5dee2;
+    white-space: nowrap;
+    text-decoration: none;
+    color: #2c3841;
+    background-color: #d4dee4;
+}

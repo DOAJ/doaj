@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% set form_id = "public_application" %}
+{% set form_action = url_for("doaj.public_application") %}
+{% set formulaic_after = url_for("doaj.suggestion_thanks", _anchor='thanks') %}
+{% set js_validation = False %}
+{% set auto_save = 0 %}
+
+{% block content scoped %}
+    {% include "application_form/_form.html" %}
+{% endblock %}
+
+{% block extra_js_bottom scoped %}
+    {% include "application_form/_form_js.html" %}
+{% endblock %}

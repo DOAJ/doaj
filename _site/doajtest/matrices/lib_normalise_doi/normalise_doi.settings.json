@@ -1,0 +1,87 @@
+{
+  "parameters": [
+    {
+      "type": "index",
+      "name": "test_id"
+    },
+    {
+      "values": {
+        "exists": {
+          "constraints": {
+            "prefix": {
+              "nor": [
+                "-"
+              ]
+            },
+            "whitespace": {
+              "nor": [
+                "-"
+              ]
+            }
+          }
+        },
+        "none": {
+          "constraints": {
+            "prefix": {
+              "or": [
+                "-"
+              ]
+            },
+            "whitespace": {
+              "or": [
+                "-"
+              ]
+            }
+          }
+        }
+      },
+      "type": "generated",
+      "name": "doi"
+    },
+    {
+      "values": {
+        "-": {},
+        "doi:": {},
+        "http://dx.doi.org/": {},
+        "info:hdl/": {},
+        "info:doi/": {},
+        "invalid": {},
+        "https://dx.doi.org/": {},
+        "https://doi.org/": {},
+        "none": {},
+        "http://hdl.handle.net/": {},
+        "https://hdl.handle.net/": {},
+        "http://doi.org/": {}
+      },
+      "type": "generated",
+      "name": "prefix"
+    },
+    {
+      "values": {
+        "-": {},
+        "no": {},
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "whitespace"
+    },
+    {
+      "values": {
+        "ValueError": {
+          "conditions": [
+            {
+              "prefix": {
+                "or": [
+                  "invalid"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "type": "conditional",
+      "default": "",
+      "name": "raises"
+    }
+  ]
+}

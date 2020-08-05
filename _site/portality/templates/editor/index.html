@@ -1,0 +1,46 @@
+{% extends "editor/editor_base.html" %}
+
+{% block editor_content %}
+
+<div class="editor-index">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-8"><h1>Your Group Info</h1></div>
+                <div class="col-md-4"><a href="mailto:{{managing_editor}}"><i class="fas fa-envelope"></i> Contact the Managing Editors</a></div>
+            </div>
+
+            {% for group in editor_of %}
+            <div class="row" style="padding: 10px"><div class="col-md-12">
+                <strong>{{group.name}}</strong> (you are the Editor)<br>
+                {% set associates = group.get_associate_accounts() %}
+                {% if associates and associates|length > 0 %}
+                    Associate Editors:
+                    {% for ass in group.get_associate_accounts() %}
+                        <a href="mailto:{{ass.email}}"><i class="fas fa-envelope"></i> {{ass.id}}</a>
+                    {% endfor %}
+                {% else %}
+                    There are no Associate Editors in this group
+                {% endif %}
+            </div></div>
+            {% endfor %}
+
+            {% for group in associate_of %}
+            <div class="row" style="padding: 10px"><div class="col-md-12">
+                <strong>{{group.name}}</strong> (you are an Associate Editor)<br>
+                {% set editor = group.get_editor_account() %}
+                Group Editor: <a href="mailto:{{editor.email}}"><i class="fas fa-envelope"></i> {{editor.id}}</a><br>
+                {% set associates = group.get_associate_accounts() %}
+                {% if associates and associates|length > 0 %}
+                    Associate Editors:
+                    {% for ass in group.get_associate_accounts() %}
+                        <a href="mailto:{{ass.email}}"><i class="fas fa-envelope"></i> {{ass.id}}</a>
+                    {% endfor %}
+                {% endif %}
+            </div></div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

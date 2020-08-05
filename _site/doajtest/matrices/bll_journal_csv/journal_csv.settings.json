@@ -1,0 +1,165 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "prune",
+      "type": "generated",
+      "values": {
+        "False": {},
+        "None": {
+          "constraints": {
+            "tmp_write": {
+              "or": [
+                "success"
+              ]
+            },
+            "main_write": {
+              "or": [
+                "success"
+              ]
+            },
+            "journals": {
+              "or": [
+                "0"
+              ]
+            },
+            "journals_no_issn": {
+              "or": [
+                "0"
+              ]
+            },
+            "journals_with_articles": {
+              "or": [
+                "0"
+              ]
+            }
+          }
+        },
+        "True": {}
+      }
+    },
+    {
+      "name": "tmp_write",
+      "type": "generated",
+      "values": {
+        "success": {},
+        "fail": {
+          "constraints": {
+            "main_write": {
+              "or": [
+                "success"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "main_write",
+      "type": "generated",
+      "values": {
+        "success": {},
+        "fail": {}
+      }
+    },
+    {
+      "name": "journals",
+      "type": "generated",
+      "values": {
+        "3": {},
+        "0": {
+          "constraints": {
+            "journals_with_articles": {
+              "or": [
+                "0"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "journals_no_issn",
+      "type": "generated",
+      "values": {
+        "0": {},
+        "1": {}
+      }
+    },
+    {
+      "name": "not_in_doaj",
+      "type": "generated",
+      "values": {
+        "1": {}
+      }
+    },
+    {
+      "name": "journals_with_articles",
+      "type": "generated",
+      "values": {
+        "3": {
+          "constraints": {
+            "journals": {
+              "or": [
+                "3"
+              ]
+            }
+          }
+        },
+        "0": {},
+        "1": {
+          "constraints": {
+            "journals": {
+              "or": [
+                "3"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "default": "",
+      "name": "raises",
+      "type": "conditional",
+      "values": {
+        "IOError": {
+          "conditions": [
+            {
+              "tmp_write": {
+                "or": [
+                  "fail"
+                ]
+              }
+            },
+            {
+              "main_write": {
+                "or": [
+                  "fail"
+                ]
+              }
+            }
+          ]
+        },
+        "ArgumentException": {
+          "conditions": [
+            {
+              "prune": {
+                "or": [
+                  "None"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "comment",
+      "type": ""
+    }
+  ]
+}

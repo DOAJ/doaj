@@ -1,0 +1,32 @@
+/********************************************************
+* Default results display
+*/
+
+.edges-bs3-results-display-container {
+
+}
+
+.edges-bs3-results-display-record {
+    padding-bottom: 15px;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-bottom: 1px dashed #cccccc;
+}
+
+.edges-bs3-results-display-record:hover {
+    background-color: #eeeeee;
+}
+
+.edges-bs3-results-display-row {
+
+}
+
+.edges-bs3-results-display-field {
+    font-weight: bold;
+    padding-right: 10px;
+}
+
+.edges-bs3-results-display-value {
+
+}

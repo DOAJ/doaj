@@ -1,0 +1,43 @@
+{% extends "admin/admin_base.html" %}
+
+{% block admin_content %}
+
+    <div class="row">
+        <div class="col-md-12">
+
+        {%  if form.type.data == "replaces" %}
+            <h3>{{ current.bibjson().title }} continues...</h3>
+            <p>Please provide the Journal Title and ISSN(s) for the journal that is continued by {{ current.bibjson().title }}.
+                This will create a record in DOAJ so do not use this option if the journal
+                already exists. Once you submit this form, a new journal record will be created and you may edit the other
+                associated metadata fields.</p>
+        {%  endif %}
+        {%  if form.type.data == "is_replaced_by" %}
+            <h3>{{ current.bibjson().title }} is continued by...</h3>
+            <p>Please provide the new Journal Title and new ISSN(s) that continues {{ current.bibjson().title }}. Once
+                you submit this form, a new journal record will be created and you may edit the other associated metadata
+                fields.</p>
+        {% endif %}
+
+        {% from "_formhelpers.html" import render_field_horizontal %}
+        {% from "_formhelpers.html" import render_field %}
+
+            <form method="post" action="{{ url_for('admin.journal_continue', journal_id=current.id) }}" class="form-horizontal wide" id="continuation_form">
+                <fieldset>
+                    {{ render_field_horizontal(form.title, style="width: 400px", placeholder="Enter the journal title here") }}
+                    {{ render_field_horizontal(form.pissn, style="width: 400px", placeholder="Enter the journal print ISSN") }}
+                    {{ render_field_horizontal(form.eissn, style="width: 400px", placeholder="Enter the journal electronic ISSN") }}
+                    <input type="hidden" name="type" value="{{ form.type.data }}">
+                    <button class="btn btn-success">Create</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+
+</script>
+{% endblock %}

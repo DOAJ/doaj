@@ -1,0 +1,8 @@
+{
+	"types": [
+		{
+			"type": "journal",
+			"keepalive": "1m"
+		}
+	]
+}

@@ -1,0 +1,16 @@
+
+    {% if form_context.errors %}
+    <h4 class="red form-status">There is a problem with the form.</h4>
+    {% endif %}
+
+        <div class="row">
+
+            <div class="col-md-12 form-section">
+            The following fields will overwrite existing data in all of your selected journals.  Leave a field blank
+                if you do not want to overwrite it.
+            {% autoescape off %}
+            {{ form_context.render_field_group("main") }}
+            {% endautoescape %}
+
+            </div>
+        </div>

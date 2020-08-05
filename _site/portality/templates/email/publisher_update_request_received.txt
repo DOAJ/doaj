@@ -1,0 +1,13 @@
+Dear Journal Contact for:
+
+{{journal_name}}
+
+Thank you for submitting an update for your journal record. This has been safely logged with us! You will receive an automated email from us when the update request is assigned to an editor and then another email when they start working on it. In the meantime, your original journal record is still visible in DOAJ and you may continue to upload article metadata to us.
+
+Please save this email as a record of when you submitted your update. We cannot give status updates for submissions which are less than 6 months old. Before you contact us requesting information on the status of an update, please check your Spam folder to ensure that a member of our editorial team (a volunteer who may not have a doaj.org email address) has not already contacted you.
+
+Yours faithfully,
+
+The DOAJ Editorial Team
+
+**This is an automated message. Please do not reply to this message.**

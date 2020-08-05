@@ -1,0 +1,32 @@
+{% extends "publisher/publisher_base.html" %}
+
+{% block publisher_content %}
+
+{# NOTE: requires suggestions_and_journals.js to be enabled (see _js_includes.html) #}
+
+<form class="form-horizontal application_journal_form" id="suggest_form">
+
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-9">
+            <h4 class="red">Please note this form is read-only, you cannot make changes here.</h4>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ url_for('publisher.updates_in_progress') }}" class="btn btn-info pull-right">Back</a>
+        </div>
+    </div>
+
+
+    <fieldset>
+        {# include the base application form which contains all the biblio data #}
+        {% include 'formcontext/_base_journal_form.html' %}
+    </fieldset>
+</form>
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $("#suggest_form :input").prop("disabled", true);
+});
+</script>
+{% endblock extra_js_bottom %}

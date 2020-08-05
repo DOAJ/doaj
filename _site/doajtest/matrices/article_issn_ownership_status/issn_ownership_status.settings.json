@@ -1,0 +1,173 @@
+{
+  "parameters": [
+    {
+      "type": "index",
+      "name": "test_id"
+    },
+    {
+      "values": {
+        "exists": {
+          "constraints": {
+            "seen_eissn": {
+              "nor": [
+                "-"
+              ]
+            },
+            "seen_pissn": {
+              "nor": [
+                "-"
+              ]
+            },
+            "article_eissn": {
+              "nor": [
+                "-"
+              ]
+            },
+            "article_pissn": {
+              "nor": [
+                "-"
+              ]
+            }
+          }
+        },
+        "none": {
+          "constraints": {
+            "seen_eissn": {
+              "or": [
+                "-"
+              ]
+            },
+            "seen_pissn": {
+              "or": [
+                "-"
+              ]
+            },
+            "article_eissn": {
+              "or": [
+                "-"
+              ]
+            },
+            "article_pissn": {
+              "or": [
+                "-"
+              ]
+            }
+          }
+        }
+      },
+      "type": "generated",
+      "name": "article"
+    },
+    {
+      "values": {
+        "-": {},
+        "no": {
+          "constraints": {
+            "article_pissn": {
+              "or": [
+                "yes"
+              ]
+            }
+          }
+        },
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "article_eissn"
+    },
+    {
+      "values": {
+        "-": {},
+        "no": {
+          "constraints": {
+            "article_eissn": {
+              "or": [
+                "yes"
+              ]
+            }
+          }
+        },
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "article_pissn"
+    },
+    {
+      "values": {
+        "exists": {},
+        "none": {}
+      },
+      "type": "generated",
+      "name": "owner"
+    },
+    {
+      "values": {
+        "-": {},
+        "no": {},
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "seen_eissn"
+    },
+    {
+      "values": {
+        "-": {},
+        "no": {},
+        "yes": {}
+      },
+      "type": "generated",
+      "name": "seen_pissn"
+    },
+    {
+      "values": {
+        "mix": {
+          "constraints": {
+            "owner": {
+              "or": [
+                "exists"
+              ]
+            }
+          }
+        },
+        "correct": {
+          "constraints": {
+            "owner": {
+              "or": [
+                "exists"
+              ]
+            }
+          }
+        },
+        "incorrect": {},
+        "none": {}
+      },
+      "type": "generated",
+      "name": "journal_owner"
+    },
+    {
+      "values": {
+        "ArgumentException": {
+          "conditions": [
+            {
+              "article": {
+                "or": [
+                  "none"
+                ]
+              }
+            },
+            {
+              "owner": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "type": "conditional",
+      "default": "",
+      "name": "raises"
+    }
+  ]
+}

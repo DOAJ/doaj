@@ -1,0 +1,9 @@
+Dear {{ publisher_name }},
+
+The update which you submitted for "{{ journal_title }}" requires some revisions before it can be accepted. The Editorial Team member responsible for your request will contact you to explain the changes that are needed.
+
+Thank you,
+
+The DOAJ Team
+
+**This is an automated message. Please do not reply to this message.**

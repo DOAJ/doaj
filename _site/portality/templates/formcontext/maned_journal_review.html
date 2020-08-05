@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{# include the title and the "unlock and close" feature #}
+{% set object_type = 'journal' %}
+{% set heading_object_type = 'Journal' %}
+{% include 'formcontext/_lockable_header.html' %}
+
+{%  if job %}
+    {%  set job_url = "/admin/background_jobs?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22" + job.id + "%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%2C%22from%22%3A0%2C%22size%22%3A25%7D" %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-success">
+            Your edit request has been submitted and queued for execution.<br>
+            You can see your request <a href="{{ job_url }}" target="_blank">here</a> in the background jobs interface (opens new tab).<br>
+            You will get an email when your request has been processed; this could take anything from a few minutes to a few hours.<br>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<section class="form-area">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="form-panel with-borders centre-text-container">
+                {% if not job %}
+                    <p class="centre-text-container">This button will not save any other changes on this page!</p>
+                    {% if form_context.source.is_in_doaj() %}
+                      <form method="post" action="{{ url_for('admin.journal_deactivate', journal_id=form_context.source.id) }}" class="form-horizontal" id="journal_deactivate_form">
+                        <fieldset><button class="btn btn-danger" type="submit">Take journal out of the DOAJ</button></fieldset>
+                      </form>
+                    {% else %}
+                      <form method="post" action="{{ url_for('admin.journal_activate', journal_id=form_context.source.id) }}" class="form-horizontal" id="journal_activate_form">
+                        <fieldset><button class="btn btn-success" type="submit">Put journal in the DOAJ</button></fieldset>
+                      </form>
+                    {% endif %}
+                {% else %}
+                    You cannot currently withdraw or reinstate the journal, as a background job to do this is currently active
+                {% endif %}
+            </section>
+        </div>
+    </div>
+</section>
+
+<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form" novalidate>
+    {% if form_context.errors %}
+    <h4 class="red form-status">There is a problem with the submitted form.</h4>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <section class="form-area">
+                {% include 'formcontext/_editorial_panel.html' %}
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel-left with-borders">
+                            <div class="control-group">
+                                <div class="controls" style="text-align: center">
+                                    <button class="btn btn-success save-record" type="submit">SAVE</button>
+                                </div>
+
+                                {% autoescape off %}
+                                {{ form_context.render_field_group("make_all_fields_optional", group_cfg={"label_width" : 4}) }}
+                                {% endautoescape %}
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                {% include 'formcontext/_account_panel.html' %}
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel-left with-borders">
+                            <h3>Continuation information</h3>
+                            <p><strong>To link journals already in DOAJ.</strong></p>
+
+                            {% autoescape off %}
+                            {{ form_context.render_field_group("continuations", group_cfg={"label_width" : 4}) }}
+                            {% endautoescape %}
+
+                            <p><strong>To link a journal in DOAJ with a new journal record.</strong></p>
+                            <p class="centre-text-container">Ensure you've saved any changes here before using these links!</p>
+                            <a href="{{ url_for('admin.journal_continue', journal_id=form_context.source.id) }}?type=replaces">Create a new preceding continuation</a><br>
+                            <a href="{{ url_for('admin.journal_continue', journal_id=form_context.source.id) }}?type=is_replaced_by">Create a new succeeding continuation</a>
+                        </section>
+                    </div>
+                </div>
+
+                {% include 'formcontext/_old_journal_fields_panel.html' %}
+            </section>
+        </div>
+
+        <div class="col-md-6">
+
+            {% include 'formcontext/_subject_area.html' %}
+
+        </div>
+    </div>
+
+    {# include the base form which contains all the biblio data #}
+    {% set include_doaj_seal = False %} {# because we're going to put it somewhere else below #}
+    {% include 'formcontext/_base_journal_form.html' %}
+
+    <div class="row">
+        <div class="col-md-6">
+            {% include 'formcontext/_seal_area.html' %}
+        </div>
+        <div class="col-md-6">
+            <section class="form-area">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <section class="form-panel-right with-borders">
+                            <div class="control-group">
+                                <div class="controls" style="text-align: center">
+                                    <button class="btn btn-success save-record" type="submit">SAVE</button>
+                                </div>
+
+                                {% autoescape off %}
+                                {{ form_context.render_field_group("make_all_fields_optional", group_cfg={"label_width" : 4}) }}
+                                {% endautoescape %}
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    {% include 'formcontext/_notes_area.html' %}
+
+</form>
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+<link rel="stylesheet" href="/static/vendor/jquery-ui-1.11.1/jquery-ui.min.css?v={{config.get('DOAJ_VERSION')}}">
+<script type="text/javascript" src="/static/vendor/jquery-ui-1.11.1/jquery-ui.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/js/continuations.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+<script type="text/javascript">
+    var notes_deletable = true;
+
+    // When the editor group field is changed, refresh the options for editor
+    var ed_query_url = "{{url_for('admin.eg_associates_dropdown')}}";
+    $("#editor_group").change(function() {load_eds_in_group(ed_query_url);})
+</script>
+{% endblock extra_js_bottom %}

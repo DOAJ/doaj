@@ -1,0 +1,138 @@
+{% extends "sidebar-page.html" %}
+
+{% block content %}
+
+<h2>DOAJ widgets</h2>
+<br>
+<div style="padding: 4px">
+<h3>Simple search widget</h3>
+Just copy and paste this on the page on which you want the widget to displayed.
+
+<pre>
+&lt;script src="{{ config.get('BASE_URL') }}/static/widget/simple_search{{ widget_filename_suffix }}.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;div id="doaj-simple-search-widget"&gt;&lt;/div&gt;
+</pre>
+
+<p>Example:</p>
+
+<iframe src="{{ url_for("doaj.ssw_demo") }}" style="width: 100%; height: 150px; border: 0"></iframe>
+
+</div>
+<br>
+<div style="padding: 4px">
+
+<h3>Fixed query widget</h3>
+<p>This renders a set of results from the DOAJ based on a query fixed in JavaScript.</p>
+
+<p>Copy and paste the following code on the page where you want the widget to displayed. The parameter <code>QUERY_OPTIONS</code> takes a subset of
+fields to define which results to retrieve. The example below example displays the journals containing the word 'medicine' in the title, in
+alphabetical order. Configuration via these <code>QUERY_OPTIONS</code> provides a simplified way to display results by keyword.</p>
+
+<p><b>For more control over which results to display, we recommend configuring your query via the <a href="{{ url_for('doaj.search')}}">Search page</a></b> -
+simply use the controls to find the results you want to show then click the <b>share | embed</b> button and copy the text provided in the box below
+'embed this search' for inclusion on your page.</p>
+
+<pre>
+&lt;script type="text/javascript"&gt;
+    !window.jQuery && document.write("&lt;scr" + "ipt type=\"text/javascript\" src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js\"&gt;&lt;/scr" + "ipt&gt;");
+&lt;/script&gt;
+
+&lt;script type="text/javascript"&gt;
+var doaj_url = "{{ config.get('BASE_URL') }}";
+var QUERY_OPTIONS = {
+    query_string : 'medicine',                   // The plain-text query string
+    query_field: 'bibjson.title',                // The field we are querying
+    sort_field: 'index.unpunctitle.exact',       // Field to order results by
+    sort_direction:  'asc',                      // Direction of sort "asc" | "desc"
+    search_operator : 'AND',                     // Which sort operator to use "AND" | "OR"
+    search_type: 'journal',                      // Which type to search upon (omit for both) "article" | "journal"
+    page_size : 5,                               // How many results to show per widget page
+    page_from : 0                                // Which result to start from
+    }
+&lt;/script&gt;
+&lt;script src="{{ config.get('BASE_URL') }}/static/widget/fixed_query{{ widget_filename_suffix }}.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;div id="doaj-fixed-query-widget"&gt;&lt;/div&gt;
+</pre>
+<br>
+Example:
+
+{% if env != 'production' %}
+<div class="alert alert-danger"><b>Dev Note: </b>Make sure BASE_URL is set correctly so that you are actually seeing the widget integration in the correct environment. Otherwise you might see the live widget integrated into your local development version of DOAJ, or other weird combinations like that. The current value of BASE_URL is {{ config.get('BASE_URL') }}. This should match whatever is in your browser address bar.</div>
+{% endif %}
+
+<iframe src="{{ url_for("doaj.fqw_demo") }}" style="width: 100%; height: 650px; border: 0"></iframe>
+
+<br>
+<p>The widget can resize nicely to fit within available horizontal space. Use the <code>page_size</code> property to minimise its
+vertical requirement by reducing the number of results per page.
+Note: the vertical size can fluctuate slightly depending on what is being showed on each page.</p>
+
+<p>You can only embed one fixed query widget per page. If you see strange artifacts in the results, try declaring your page encoding in
+the <code>&lt;head&gt;</code>, i.e. add: <code>&lt;meta charset="utf-8"&gt;</code>.</p>
+
+<br>
+<h4>Configuring via QUERY_OPTIONS</h4>
+<p>There are a handful of options available, all are optional; omit them from <code>QUERY_OPTIONS</code> for the default behaviour.</p>
+
+<table class="table table-striped">
+    <tbody>
+        <tr>
+            <td>query_string</td>
+            <td><b>&lt;plain text&gt;</b> - any text you might put in the search box</td>
+        </tr>
+        <tr>
+            <td>query_field</td>
+            <td>
+                The field to query. Omit for any field, or specify one of these below<br>
+                &emsp;<b>bibjson.title</b> - Title<br>
+                &emsp;<b>bibjson.keywords</b> - Keywords<br>
+                &emsp;<b>index.classification</b>- Subject<br>
+                &emsp;<b>index.issn.exact</b> - ISSN<br>
+                &emsp;<b>bibjson.identifier.id</b> - DOI<br>
+                &emsp;<b>index.country</b> - Country of publisher<br>
+                &emsp;<b>index.language</b> - Journal Language<br>
+                &emsp;<b>index.publisher</b> - Publisher
+            </td>
+        </tr>
+        <tr>
+            <td>sort_field</td>
+            <td>
+                <b>created_date</b> - Date added to DOAJ (default)<br>
+                <b>index.unpunctitle.exact</b> - Title
+            </td>
+        </tr>
+        <tr>
+            <td>sort_direction</td>
+            <td>
+                <b>asc</b> - Ascending (default)<br>
+                <b>desc</b> - Descending
+            </td>
+        </tr>
+        <tr>
+            <td>search_operator</td>
+            <td>
+                <b>AND</b> - AND the terms in the query string. (default)<br>
+                <b>OR</b> - OR the terms in the query string.
+            </td>
+        </tr>
+        <tr>
+            <td>search_type</td>
+            <td>
+                The type of result to show. Omit this property to show results of both type<br>
+                &emsp;<b>journal</b> - Only show journals<br>
+                &emsp;<b>article</b> - Only show articles
+            </td>
+        </tr>
+        <tr>
+            <td>page_size</td>
+            <td><b>&lt;integer&gt;</b> - how many results to show per page, 1+, (default 10)</td>
+        </tr>
+        <tr>
+            <td>page_from</td>
+            <td><b>&lt;integer&gt;</b> - which result to start from initially, 0+, (default 0)</td>
+        </tr>
+    </tbody>
+
+</table>
+</div>
+{% endblock %}

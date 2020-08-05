@@ -1,0 +1,61 @@
+{% extends "sidebar-page.html" %}
+
+{% block content %}
+
+<p>Submit your feedback and questions here. Feedback submitted about a particular journal is treated as confidential.</p>
+
+<p style="color: red"><b>Please read these before you contact us:</b></p>
+<ul style="margin-bottom: 30px;">
+<li><b>I am a publisher and I need help with uploading or deleting article content, or updating my journal's entry in DOAJ.</b><br>
+    <a href="/publisher/">Log into your Publisher Area</a> and click on the 'Help' tab. There you will find tailored help
+    adressing these topics specifically.</li><br>
+<li><b>I cannot login; I do not have a username and password; I want to register</b><br>
+DOAJ is FREE to use. You do not need a username or password unless you have a journal indexed in DOAJ in which case you need a username and password. If you have forgotten your username or password, <a href="/account/forgot">reset them here</a>.</li><br>
+<li><b>I want to publish my article in your journal.</b><br>
+DOAJ is not a journal or a publisher. We do not publish content and you cannot submit papers to us. We are an index of open access 
+    journals.</li><br>
+<li><b>I want my journal indexed in DOAJ. What do I do?</b><br>
+Read our <a href="{{ url_for('doaj.publishers') }}">Information for Publishers</a> page and if your journal fulfills our
+criteria, please <a href="{{ url_for('doaj.suggestion') }}">submit an application</a>.</li><br>
+<li><b>I have submitted a new application. How long do I have to wait?</b><br>
+You should hear from us within 3 months. If you have not received an answer after 6 months, use the form below. Before you do so, you are advised to check your Spam folder for correspondence from us.</li><br>
+<li><b>Please send me articles about subject X.</b><br>
+We do not supply that service. <a href="{{ url_for('doaj.subjects') }}">Use our subject browser</a> to find content you are interested in.</li><br>
+<li><b>Please send me a list of journals on subject X.</b><br>
+We do not supply that service. You can either <a href="{{ url_for('doaj.subjects') }}">use our subject browser</a>, 
+<a href="/faq#metadata">harvest our metadata, or download our journal CSV file</a>.</li>
+</ul>
+
+
+<p><strong>For all other inquiries please use the form below.</strong></p>
+
+    {% from "_formhelpers.html" import render_field_horizontal %}
+    {% from "_formhelpers.html" import render_field %}
+
+<form action="{{ url_for('doaj.contact')}}" method="post" class="form-horizontal" id="contact_form">
+
+    {{ render_field_horizontal(form.email, style="width: 100%; max-width: 400px", placeholder="Please enter your email address") }}
+    <div style="display: none">{{ render_field_horizontal(form.subject, style="width: 400px; height: 50px", placeholder="Please do not modify this field", autocomplete="off") }}</div>
+    {{ render_field_horizontal(form.message, style="width: 100%; max-width: 400px; min-height: 200px", placeholder="Enter your message here") }}
+    {{form.recaptcha_value(id="recaptcha_value")}}
+    <div class="form-group">
+        <div class="submit-with-recaptcha col-md-9 col-md-offset-3">
+            <div id="html_element"></div>
+            <div>
+                <button id="submitBtn" class="btn btn-success" style="margin-top: 2em;"}>Send</button>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+    <script type="text/javascript" src="/static/js/contact.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+{% endblock extra_js_bottom %}
+
+
+

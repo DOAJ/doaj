@@ -1,0 +1,25 @@
+{% extends "editor/editor_base.html" %}
+
+{% block editor_content %}
+
+<div class="row" style="margin-bottom: 3em;">
+  <div class="col-md-12">
+    <h1>Suggested Journal: {{suggestion.bibjson().title}}</h1>
+        {% if suggestion.last_updated %}
+          <h4>Last updated: {{suggestion.last_updated}}</h4>
+        {% endif %}
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <p><strong>You cannot currently edit this application</strong></p>
+
+        <p>The user {{lock.username}} is currently editing this record, and has an edit-lock until <strong><span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></strong></p>
+
+        <p>Please try again later!</p>
+    </div>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,6 @@
+You have {{ num_idle }} application(s) assigned to you which haven't been updated in over {{ x_days }} days,
+including {{ num_very_idle }} which have been unchanged for over {{ y_weeks }} weeks. View these at:
+{{ url }}
+
+This is an automated reminder that is sent out by our system. We really appreciate all the work that you do for DOAJ and realise that you
+are volunteering your time to help us with our review process.

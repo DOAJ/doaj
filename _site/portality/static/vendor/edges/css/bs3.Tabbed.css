@@ -1,0 +1,13 @@
+/********************************************************
+ *  Tabbed template
+ */
+
+.edges-tabbed-container {
+    height: 750px;
+    width: 800px;
+}
+
+.edges-tabbed-container .tab {
+    height: 700px;
+}
+

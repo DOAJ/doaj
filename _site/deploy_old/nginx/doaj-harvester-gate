@@ -1,0 +1,56 @@
+# redirect to SSL version
+#server {
+#    listen          80;
+#    server_name     harvesterdoaj.cottagelabs.com;
+#
+#    # Serve some crucial XML schemas via plain HTTP as well
+#
+#    # Common misspelling of doajArticle**s**.xsd
+#    location =/static/doaj/doajArticle.xsd {
+#        alias /home/cloo/repl/harvester/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+#    }
+#
+#    location =/static/doaj/doajArticles.xsd {
+#        alias /home/cloo/repl/harvester/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+#    }
+#
+#    location =/static/doaj/iso_639-2b.xsd {
+#        alias /home/cloo/repl/harvester/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
+#    }
+#
+#    location / {
+#        return 301 https://$host$request_uri;
+#    }
+#
+#    access_log /var/log/nginx/doaj-harvester.access.log;
+#    error_log /var/log/nginx/doaj-harvester.error.log;
+#}
+
+server {
+    #listen          443 ssl;
+    listen          80;
+    server_name     harvesterdoaj.cottagelabs.com;
+
+    access_log /var/log/nginx/doaj-harvester.access.log;
+    error_log /var/log/nginx/doaj-harvester.error.log;
+
+    include includes/cl-wildcard-ssl.conf;
+
+    proxy_read_timeout 600s;
+    client_max_body_size 50M;
+
+    # Common misspelling of doajArticle**s**.xsd
+    location =/static/doaj/doajArticle.xsd {
+        alias /home/cloo/repl/test/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location / {
+        proxy_pass http://harvesterapps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+}

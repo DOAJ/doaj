@@ -1,0 +1,33 @@
+/********************************************************
+* Default results display
+*/
+
+.edges-bs3-results-fields-by-row-container {
+
+}
+
+.edges-bs3-results-fields-by-row-record {
+    padding-bottom: 15px;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-bottom: 1px dashed #cccccc;
+    overflow-wrap: break-word;
+}
+
+.edges-bs3-results-fields-by-row-record:hover {
+    background-color: #eeeeee;
+}
+
+.edges-bs3-results-fields-by-row-row {
+
+}
+
+.edges-bs3-results-fields-by-row-field {
+    font-weight: bold;
+    padding-right: 10px;
+}
+
+.edges-bs3-results-fields-by-row-value {
+
+}

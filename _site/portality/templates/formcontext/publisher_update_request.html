@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Journal Update Request Form</h2>
+
+<p>This form is only for updating an existing journal in DOAJ. The information in the form below has been copied from
+    the current journal entry. Once you submit the update, it will go to our Editorial Team for review.</p>
+
+<p>You may not change Questions 1, 3-5, and 9-11 (Journal Title, Alternative Title, ISSNs, contact details). If you
+    want to change those, send an email to <a href="mailto:feedback@doaj.org">feedback@doaj.org</a> with the new information.</p>
+
+<p>Guides to filling in this form are also available in <a href="{{ url_for('doaj.translated') }}">other languages</a>
+ (العربية, 中文, فارسی, français, Bahasa Indonesia, Italiano, Polski, Português, Română, Русский, Español, Türkçe, Українська)
+    </p>
+
+<form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
+    {% if form_context.errors %}
+        <h4 class="red form-status">There is a problem with the submitted form.</h4>
+    {% endif %}
+
+    {# include the base application form which contains all the biblio data #}
+    {% set include_doaj_seal = True %}
+    {% include 'formcontext/_base_application_form.html' %}
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <section class="form-area">
+                {% include 'formcontext/_save_panel.html' %}
+            </section>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+	<title>jQuery plugin: Tablesorter 2.0 - Writing custom widgets</title>
+
+	<!-- jQuery -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+
+	<!-- Demo stuff -->
+	<link rel="stylesheet" href="css/jq.css">
+	<script src="js/chili/jquery.chili-2.2.js"></script>
+	<script src="js/chili/recipes.js"></script>
+	<script src="js/docs.js"></script>
+
+	<!-- Tablesorter: required -->
+	<link rel="stylesheet" href="../css/blue/style.css">
+	<script src="../js/jquery.tablesorter.js"></script>
+
+	<!-- Tablesorter: optional -->
+	<script src="../addons/pager/jquery.tablesorter.pager.js"></script>
+
+	<script id="js">$(function() {
+
+	// add new widget called repeatHeaders
+	// ************************************
+	$.tablesorter.addWidget({
+
+		// give the widget an id
+		id: "repeatHeaders",
+
+		// format is called when the on init and when a sorting has finished
+		format: function(table) {
+			var h, i, skip;
+			// cache and collect all TH headers
+			if (!this.headers) {
+				h = this.headers = [];
+				$("thead th",table).each(function() {
+					h.push(
+					"<th>" + $(this).text() + "</th>"
+					);
+				});
+			}
+
+			// remove appended headers by classname
+			$("tr.repeated-header",table).remove();
+
+			// number of rows to skip
+			skip = 4;
+
+			// loop all tr elements and insert a copy of the "headers"
+			for (i = skip; i < table.tBodies[0].rows.length; i += (skip + 1)) {
+				// insert a copy of the table head every X rows
+				$("tbody tr:eq(" + i + ")",table).before(
+					// "remove-me" class was added in case the table needs to be updated, the "remove-me" rows will be
+					// removed prior to the update to prevent including the rows in the update - see "selectorRemove" option
+					$("<tr></tr>").addClass("repeated-header remove-me").html(this.headers.join(""))
+				);
+			}
+		}
+
+	});
+
+	// call the tablesorter plugin and assign widgets with id "zebra" (Default widget in the core) and the newly created "repeatHeaders"
+	$("table").tablesorter({
+		// apply both widgets
+		widgets: ['zebra', 'repeatHeaders']
+	});
+
+});</script>
+</head>
+<body>
+
+<div id="banner">
+	<h1>table<em>sorter</em></h1>
+	<h2>Writing custom widgets</h2>
+	<h3>Flexible client-side table sorting</h3>
+	<a href="index.html">Back to documentation</a>
+</div>
+
+<div id="main">
+	<h1>Demo</h1>
+
+<table class="tablesorter">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Major</th>
+			<th>Sex</th>
+			<th>English</th>
+			<th>Japanese</th>
+			<th>Calculus</th>
+			<th>Geometry</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th>Name</th>
+			<th>Major</th>
+			<th>Sex</th>
+			<th>English</th>
+			<th>Japanese</th>
+			<th>Calculus</th>
+			<th>Geometry</th>
+		</tr>
+	</tfoot>
+	<tbody>
+		<tr>
+			<td>Student01</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>80</td>
+			<td>70</td>
+			<td>75</td>
+			<td>80</td>
+		</tr>
+		<tr>
+			<td>Student02</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>90</td>
+			<td>88</td>
+			<td>100</td>
+			<td>90</td>
+		</tr>
+		<tr>
+			<td>Student03</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>85</td>
+			<td>95</td>
+			<td>80</td>
+			<td>85</td>
+		</tr>
+		<tr>
+			<td>Student04</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>60</td>
+			<td>55</td>
+			<td>100</td>
+			<td>100</td>
+		</tr>
+		<tr>
+			<td>Student05</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>68</td>
+			<td>80</td>
+			<td>95</td>
+			<td>80</td>
+		</tr>
+		<tr>
+			<td>Student06</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>100</td>
+			<td>99</td>
+			<td>100</td>
+			<td>90</td>
+		</tr>
+		<tr>
+			<td>Student07</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>85</td>
+			<td>68</td>
+			<td>90</td>
+			<td>90</td>
+		</tr>
+		<tr>
+			<td>Student08</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>100</td>
+			<td>90</td>
+			<td>90</td>
+			<td>85</td>
+		</tr>
+		<tr>
+			<td>Student09</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>80</td>
+			<td>50</td>
+			<td>65</td>
+			<td>75</td>
+		</tr>
+		<tr>
+			<td>Student10</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>85</td>
+			<td>100</td>
+			<td>100</td>
+			<td>90</td>
+		</tr>
+		<tr>
+			<td>Student11</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>86</td>
+			<td>85</td>
+			<td>100</td>
+			<td>100</td>
+		</tr>
+		<tr>
+			<td>Student12</td>
+			<td>Mathematics</td>
+			<td>female</td>
+			<td>100</td>
+			<td>75</td>
+			<td>70</td>
+			<td>85</td>
+		</tr>
+		<tr>
+			<td>Student13</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>100</td>
+			<td>80</td>
+			<td>100</td>
+			<td>90</td>
+		</tr>
+		<tr>
+			<td>Student14</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>50</td>
+			<td>45</td>
+			<td>55</td>
+			<td>90</td>
+		</tr>
+		<tr>
+			<td>Student15</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>95</td>
+			<td>35</td>
+			<td>100</td>
+			<td>90</td>
+		</tr>
+		<tr>
+			<td>Student16</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>100</td>
+			<td>50</td>
+			<td>30</td>
+			<td>70</td>
+		</tr>
+		<tr>
+			<td>Student17</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>80</td>
+			<td>100</td>
+			<td>55</td>
+			<td>65</td>
+		</tr>
+		<tr>
+			<td>Student18</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>30</td>
+			<td>49</td>
+			<td>55</td>
+			<td>75</td>
+		</tr>
+		<tr>
+			<td>Student19</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>68</td>
+			<td>90</td>
+			<td>88</td>
+			<td>70</td>
+		</tr>
+		<tr>
+			<td>Student20</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>40</td>
+			<td>45</td>
+			<td>40</td>
+			<td>80</td>
+		</tr>
+		<tr>
+			<td>Student21</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>50</td>
+			<td>45</td>
+			<td>100</td>
+			<td>100</td>
+		</tr>
+		<tr>
+			<td>Student22</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>100</td>
+			<td>99</td>
+			<td>100</td>
+			<td>90</td>
+		</tr>
+		<tr>
+			<td>Student23</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>85</td>
+			<td>80</td>
+			<td>80</td>
+			<td>80</td>
+		</tr>
+		<tr>
+			<td>Student24</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>100</td>
+			<td>91</td>
+			<td>13</td>
+			<td>82</td>
+		</tr>
+	</tbody>
+</table>
+
+
+	<h1>Javascript</h1>
+	<h3>Add Widget Template</h3>
+	<div>
+		<pre class="js">// addWidget Template
+// *******************
+$.tablesorter.addWidget({
+	id: 'myWidget',
+	// The init function (added in v2.0.28) is called only after tablesorter has
+	// initialized, but before initial sort & before any of the widgets are applied.
+	init: function(table, allWidgets, thisWidget){
+		// widget initialization code - this is only *RUN ONCE*
+		// but in this example, only the format function is called to from here
+		// to keep the widget backwards compatible with the original tablesorter
+		thisWidget.format(table, true);
+	},
+	format: function(table, initFlag) {
+		// widget code to apply to the table *AFTER EACH SORT*
+		// the initFlag is true when this format is called from the init
+		// function above otherwise initFlag is undefined
+		// * see the saveSort widget for a full example *
+	}
+});</pre>
+	</div>
+
+	<h3>Repeat Headers Widget Code</h3>
+
+	<div id="javascript">
+		<pre class="js"></pre>
+	</div>
+
+<div class="next-up">
+	<hr />
+	Next up: <a href="example-pager.html">Pager plugin &rsaquo;&rsaquo;</a>
+</div>
+
+</div>
+
+</body>
+</html>
+

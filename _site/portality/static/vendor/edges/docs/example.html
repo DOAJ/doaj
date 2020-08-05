@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <!-- jquery ui -->
+    <link rel="stylesheet" href="../vendor/jquery-ui-1.11.1/jquery-ui.css">
+
+    <!-- select2 -->
+    <link rel="stylesheet" type="text/css" href="../vendor/select2-3.5.1/select2.css">
+
+    <!-- bootstrap styles -->
+    <link rel="stylesheet" href="../vendor/bootstrap-3.3.1/css/bootstrap.min.css">
+
+    <!-- nvd3 styles -->
+    <link rel="stylesheet" href="../vendor/nvd3-1.8.1/nv.d3.css">
+
+    <!-- datepicker styles -->
+    <link rel="stylesheet" href="../vendor/bootstrap-daterangepicker-2.1.22/daterangepicker.css">
+
+    <!-- edges styles -->
+    <link rel="stylesheet" href="../css/bs3.Facetview.css">
+    <link rel="stylesheet" href="../css/bs3.Tabbed.css">
+
+    <link rel="stylesheet" href="../css/bs3.BasicRangeSelectorRenderer.css">
+    <link rel="stylesheet" href="../css/bs3.FacetFilterSetterRenderer.css">
+    <link rel="stylesheet" href="../css/bs3.MultiDateRangeRenderer.css">
+    <link rel="stylesheet" href="../css/bs3.NSeparateORTermSelectorRenderer.css">
+    <link rel="stylesheet" href="../css/bs3.NumericRangeEntryRenderer.css">
+    <link rel="stylesheet" href="../css/bs3.ORTermSelectorRenderer.css">
+    <link rel="stylesheet" href="../css/bs3.PagerRenderer.css">
+    <link rel="stylesheet" href="../css/bs3.RefiningANDTermSelectorRenderer.css">
+    <link rel="stylesheet" href="../css/bs3.ResultsDisplayRenderer.css">
+    <link rel="stylesheet" href="../css/bs3.SearchingNotificationRenderer.css">
+    <link rel="stylesheet" href="../css/bs3.SelectedFiltersRenderer.css">
+    <link rel="stylesheet" href="../css/bs3.TabularResultsRenderer.css">
+
+    <link rel="stylesheet" href="../css/google.edges.css">
+    <link rel="stylesheet" href="../css/google.edges.css">
+
+    <title>Edges - example usage</title>
+</head>
+<body>
+
+<div class="container"><div class="content">
+    <div style="margin-top: 30px">
+        <div id="statics"></div>
+    </div>
+    <div style="margin-top: 30px">
+        <div id="edges"></div>
+    </div>
+    <div style="margin-top: 30px">
+        <div id="wna">
+            <div id="map-canvas"></div>
+        </div>
+    </div>
+    <div style="margin-top: 30px">
+        <div id="facetview"></div>
+    </div>
+    <div style="margin-top: 30px">
+        <a href="#" id="managed-url">url for producing the above search</a>
+    </div>
+</div></div>
+
+<!-- jquery -->
+<script type="text/javascript" src="../vendor/jquery-1.11.1/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../vendor/jquery-ui-1.11.1/jquery-ui.js"></script>
+<script type="text/javascript" src="../vendor/select2-3.5.1/select2.min.js"></script>
+
+<!-- nvd3 (+d3) -->
+<!--<script type="text/javascript" src="vendor/d3/d3.v2.js"></script>
+<script type="text/javascript" src="vendor/nvd3/fisheye.js"></script>
+<script type="text/javascript" src="vendor/nvd3/nv.d3.js"></script>-->
+
+<!-- <script type="text/javascript" src="../vendor/d3-v3/d3.min.js"></script> -->
+
+<script type="text/javascript" src="../vendor/d3-3.5.17/d3.min.js"></script>
+
+<script type="text/javascript" src="../vendor/nvd3-1.8.1/nv.d3.js"></script>
+
+<script type="text/javascript" src="../vendor/PapaParse-4.1.2/papaparse.min.js"></script>
+
+<!-- google map include -->
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAHSLLjD8UtfNlczVJluIxzTOPGFOLStyQ"></script>
+
+<script type="text/javascript" src="../src/es.js"></script>
+<script type="text/javascript" src="../src/edges.jquery.js"></script>
+<script type="text/javascript" src="../src/edges.js"></script>
+<script type="text/javascript" src="../src/edges.csv.js"></script>
+
+<script type="text/javascript" src="../src/components/charts.js"></script>
+<script type="text/javascript" src="../src/components/maps.js"></script>
+<script type="text/javascript" src="../src/components/ranges.js"></script>
+<script type="text/javascript" src="../src/components/search.js"></script>
+<script type="text/javascript" src="../src/components/selectors.js"></script>
+<script type="text/javascript" src="../src/components/tables.js"></script>
+
+<!-- <script type="text/javascript" src="../src/renderers/bs3.edges.js"></script> -->
+
+<script type="text/javascript" src="../src/templates/bs3.Facetview.js"></script>
+<script type="text/javascript" src="../src/templates/bs3.Tabbed.js"></script>
+
+<script type="text/javascript" src="../src/renderers/bs3.BasicRangeSelectorRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.FacetFilterSetterRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.SelectedFiltersRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.MultiDateRangeRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.NSeparateORTermSelectorRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.NumericRangeEntryRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.ORTermSelectorRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.PagerRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.RefiningANDTermSelectorRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.ResultsDisplayRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.SearchingNotificationRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.SelectedFiltersRenderer.js"></script>
+<script type="text/javascript" src="../src/renderers/bs3.TabularResultsRenderer.js"></script>
+
+<script type="text/javascript" src="../src/renderers/d3.edges.js"></script>
+<script type="text/javascript" src="../src/renderers/google.edges.js"></script>
+<script type="text/javascript" src="../src/renderers/highcharts.edges.js"></script>
+<script type="text/javascript" src="../src/renderers/nvd3.edges.js"></script>
+
+<script type="text/javascript" src="example.js"></script>
+
+</body>
+</html>

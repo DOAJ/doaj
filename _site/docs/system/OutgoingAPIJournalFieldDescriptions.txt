@@ -1,0 +1,65 @@
+admin.contact.email: Email address of the contact for this journal
+admin.contact.name: Name for the contact for this journal
+admin.in_doaj: Whether the journal appears in the public corpus of DOAJ
+admin.owner: The user ID who owns the journal.  If accessing this via the API
+admin.seal: Does the journal qualify for the DOAJ Seal
+admin.ticked: Is the journal ticked?  This means that it has successfully re-applied for continued presence in DOAJ
+bibjson.allows_fulltext_indexing: See application form Q27 - https://doaj.org/application/new#crawl_permission-container
+bibjson.alternative_title: See application form Q3 - https://doaj.org/application/new#alternative_title-container
+bibjson.apc.average_price: Only required if there are processing charges, see application form Q13 and Q15 - https://doaj.org/application/new#processing_charges-container, https://doaj.org/application/new#processing_charges_amount-container
+bibjson.apc.currency: Only required if there are processing charges, see application form Q13 and Q15 - https://doaj.org/application/new#processing_charges-container, https://doaj.org/application/new#processing_charges_currency-container
+bibjson.apc_url: See application form Q14 - https://doaj.org/application/new#processing_charges_url-container
+bibjson.archiving_policy.policy.domain: The name if either "A national library" or "Other" archiving policy is in bibjson.archiving_policy.policy.name else omitted, as per application form Q25 - https://doaj.org/application/new#digital_archiving_policy-container
+bibjson.archiving_policy.policy.name: The name of the archiving policy.  One from the list on application form Q25 - https://doaj.org/application/new#digital_archiving_policy-container
+bibjson.archiving_policy.url: As per application form Q26 - https://doaj.org/application/new#digital_archiving_policy_url-container
+bibjson.article_statistics.statistics: See application form Q30 - https://doaj.org/application/new#download_statistics-container
+bibjson.article_statistics.url: See application form Q31 - https://doaj.org/application/new#download_statistics_url-container
+bibjson.author_copyright.copyright: See application form Q52 - https://doaj.org/application/new#copyright-container
+bibjson.author_copyright.url: See application form Q53 - https://doaj.org/application/new#copyright_url-container
+bibjson.author_publishing_rights.publishing_rights: see application form Q54 - https://doaj.org/application/new#publishing_rights-container
+bibjson.author_publishing_rights.url: see application form Q55 - https://doaj.org/application/new#publishing_rights_url-container
+bibjson.country: see application form Q12 - https://doaj.org/application/new#country-container
+bibjson.deposit_policy: see application form Q51 - https://doaj.org/application/new#deposit_policy-container
+bibjson.editorial_review.process: see application form Q37 - https://doaj.org/application/new#review_process-container
+bibjson.editorial_review.url: see application form Q38 - https://doaj.org/application/new#review_process_url-container
+bibjson.format: see application form Q33: https://doaj.org/application/new#fulltext_format-container
+bibjson.identifier.id: The ISSN(s) of the journal.  Related bibjson.identifier.type must be "pissn" or "eissn" as needed.
+bibjson.identifier.type: The identifier type.  Should be one of "pissn" or "eissn"
+bibjson.institution: as per application form Q7 - https://doaj.org/application/new#society_institution-container
+bibjson.keywords: as per application form Q34 - https://doaj.org/application/new#keywords-container
+bibjson.language: as per application form Q35 - https://doaj.org/application/new#languages-container
+bibjson.license.BY: Does the licence have an attribution clause.
+bibjson.license.NC: Does the licence have a non-commercial clause.
+bibjson.license.ND: Does the licence have a no-derivatives clause.
+bibjson.license.SA: Does the licence have a share-alike clause.
+bibjson.license.embedded: See application form Q45 - https://doaj.org/application/new#license_embedded-container
+bibjson.license.embedded_example_url: See application form Q46 - https://doaj.org/application/new#license_embedded_url-container
+bibjson.license.open_access: see application form Q50 - https://doaj.org/application/new#open_access-container
+bibjson.license.title: The name of the licence
+bibjson.license.type: The licence type from application form Q47 - https://doaj.org/application/new#license-container
+bibjson.license.url: see application form Q49 - https://doaj.org/application/new#license_url-container
+bibjson.license.version: Licence version, if known.
+bibjson.link.type: name of the type of link in bibjson.link.url.  Allowed values and related application form questions are: "homepage" (Q2), "waiver_policy" (Q24), "editorial_board" (Q36), "aims_scope" (Q39), "author_instructions" (Q40), "oa_statement" (Q44)
+bibjson.link.url: url associated with bibjson.link.type
+bibjson.oa_end.number: final issue number published Open Access.  **Deprecated**
+bibjson.oa_end.volume: final volume number published Open Access.  **Deprecated**
+bibjson.oa_end.year: final year published Open Access.  **Deprecated**
+bibjson.oa_start.number: first issue published Open Access.  **Deprecated**
+bibjson.oa_start.volume: first volume published Open Access.  **Deprecated**
+bibjson.oa_start.year: see application form Q32 - https://doaj.org/application/new#first_fulltext_oa_year-container
+bibjson.persistent_identifier_scheme: see application form Q28 - https://doaj.org/application/new#article_identifiers-container
+bibjson.plagiarism_detection.detection: see application form Q41 - https://doaj.org/application/new#plagiarism_screening-container
+bibjson.plagiarism_detection.url: see application form Q42 - https://doaj.org/application/new#plagiarism_screening_url-container
+bibjson.provider: see application form Q8 - https://doaj.org/application/new#platform-container
+bibjson.publication_time: see application form Q43 - https://doaj.org/application/new#publication_time-container
+bibjson.publisher: see application form Q6 - https://doaj.org/application/new#publisher-container
+bibjson.subject.code: assigned subject code
+bibjson.subject.scheme: assigned subject scheme
+bibjson.subject.term: assigned subject term
+bibjson.submission_charges.average_price: see application form Q19 - https://doaj.org/application/new#submission_charges_amount-container
+bibjson.submission_charges.currency: see application form Q20 - https://doaj.org/application/new#submission_charges_currency-container
+bibjson.submission_charges_url: see application form Q18 - https://doaj.org/application/new#submission_charges_url-container
+bibjson.title: see application form Q1 - https://doaj.org/application/new#title-container
+created_date: Date the record was created in DOAJ.
+id: ID assigned by DOAJ for the record.
+last_updated: Date the record was last updated in DOAJ.

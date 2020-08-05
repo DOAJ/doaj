@@ -1,0 +1,238 @@
+{% extends "sidebar-page.html" %}
+
+{% block page_title %}
+    {% set bibjson = article.bibjson() %}
+    {%  if bibjson.title %}
+        {% set metatitle = bibjson.title + ' | ' + app.config['SERVICE_NAME'] %}
+    {% else %}
+        {% set metatitle = app.config['SERVICE_NAME'] %}
+    {% endif %}
+    <title>{{ metatitle }}</title>
+{% endblock %}
+
+{% block page_desc %}
+    {% set bibjson = article.bibjson() %}
+    <meta name="description" content="Information about the open-access article '{{ bibjson.title }}' in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">
+{% endblock %}
+
+{% block extra_meta_tags %}
+
+{% set bibjson = article.bibjson() %}
+{% set jbib = journal.bibjson() %}
+{% set jtitle, cite = bibjson.vancouver_citation() %}
+{% set issns = bibjson.issns() %}
+{% set doi = bibjson.get_one_identifier("doi") %}
+{% set normalised_doi = article.get_normalised_doi() %}
+
+{% if jtitle %} <meta name="citation_journal_title" content="{{ jtitle }}"> {% endif %}
+{% if jbib.publisher %} <meta name="citation_publisher" content="{{ jbib.publisher }}"> {% endif %}
+{% if doi %} <meta name="citation_doi" content="{{ normalised_doi }}"> {% endif %}
+
+{% for author in bibjson.author %}
+<meta name="citation_author" content="{{author.name}}">
+{% endfor %}
+
+{% if bibjson.title %}<meta name="citation_title" content="{{ bibjson.title }}">{% endif %}
+
+{% if bibjson.get_publication_date("%Y/%m/%d") %}<meta name="citation_publication_date" content="{{ bibjson.get_publication_date("%Y/%m/%d") }}">{% endif %}
+
+{% if bibjson.volume %}<meta name="citation_volume" content="{{ bibjson.volume }}">{% endif %}
+
+{% if bibjson.number %}<meta name="citation_issue" content="{{ bibjson.number }}">{% endif %}
+
+{% if bibjson.start_page %}<meta name="citation_firstpage" content="{{ bibjson.start_page }}">{% endif %}
+{% if bibjson.end_page %}<meta name="citation_lastpage" content="{{ bibjson.end_page }}">{% endif %}
+
+{# Full text link excluded due to Google's note it should be hosted on DOAJ.org, see also https://github.com/DOAJ/doaj/issues/12#issuecomment-91606561 #}
+{# <meta name="citation_pdf_url"
+content="http://www.jbc.org/cgi/reprint/279/6/4034.pdf
+<http://www.jbc.org/cgi/reprint/279/6/4034.pdf> "> (only if the PDF is also
+hosted on DOAJ.org) #}
+
+{% for issn in issns %}
+<meta name="citation_issn" content="{{ issn }}">
+{% endfor %}
+{% endblock %}
+
+
+
+{% block content %}
+
+{%
+    set TYN = {
+        True : "Yes",
+        False : "No",
+    }
+%}
+
+{% set bibjson = article.bibjson() %}
+{% set jbib = journal.bibjson() %}
+{% set jtitle, cite = bibjson.vancouver_citation() %}
+{% set issns = bibjson.issns() %}
+{% set doi = bibjson.get_one_identifier("doi") %}
+{% set normalised_doi = article.get_normalised_doi() %}
+
+<div class="row">
+    <div class="col-md-12">
+        {%  if bibjson.title %}
+            <h1>{{bibjson.title}}</h1>
+        {% else %}
+            <h1>&lt; Article title missing &gt;</h1>
+        {% endif %}
+
+        <p>
+        {# citation #}
+        {% if issns|length > 0 %}
+            <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}">{{jtitle}}</a>. {{cite}}
+        {% else %}
+            {{jtitle}}. {{cite}}
+        {% endif %}
+
+        {# doi #}
+        {% if doi %}
+            {% set url_text = normalised_doi | doi_url | safe %}
+            {% if url_text != "" %}
+                DOI <a href="{{ url_text }}"> {{ normalised_doi }}</a>
+            {% endif %}
+        {% endif %}
+
+        </p>
+    </div>
+
+</div>
+
+<div class="row" style="margin-bottom: 30px; margin-top: 30px">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-5">
+        <div class="box with-borders" style="min-height: 140px">
+            {% if jbib.get_single_url("homepage") %}
+                <p><a href="{{jbib.get_single_url('homepage')}}">Journal Homepage</a></p>
+            {% endif %}
+
+            <p><strong>Journal Title</strong>: {{ jbib.title }}</p>
+
+            {# this next bit has to be all on one line so that the spacing is correct #}
+            {% if jbib.issns()|length > 0 %}
+            <p>
+            <strong>ISSN</strong>:
+            {% for identifier in jbib.get_identifiers(idtype='pissn') %}{{identifier}} (Print){% endfor %}{% for identifier in jbib.get_identifiers(idtype='eissn') %}{% if jbib.get_identifiers(idtype='pissn') %};&nbsp;{% endif %}{{identifier}} (Online){% endfor %}
+            </p>
+            {% endif %}
+
+            {% if jbib.publisher %}
+                <p><strong>Publisher</strong>:&nbsp;{{jbib.publisher}}</p>
+            {% endif %}
+            {% if jbib.institution %}
+                <p><strong>Society/Institution</strong>:&nbsp;{{jbib.institution}}</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="box with-borders" style="min-height: 140px">
+
+            {% for path in bibjson.lcc_paths() %}
+                {% if loop.index0 == 0 %}<p><strong>LCC Subject Category</strong>: {% endif %}
+                {% if loop.index0 > 0 %} | {% endif %}
+                {{ path }}
+                {% if loop.last %}</p>{% endif %}
+            {% endfor %}
+
+
+            {% if jbib.country %}
+                <p><strong>Country of publisher</strong>:&nbsp;{{jbib.country_name()}}</p>
+            {% endif %}
+
+            {% if jbib.language %}
+                <p><strong>Language of fulltext</strong>:&nbsp;{{jbib.language_name()|join(", ")}}</p>
+            {% endif %}
+
+            {% if jbib.format|length > 0 %}
+                <p><strong>Full-text formats available</strong>: {{jbib.format|join(", ")}}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row" style="margin-top: 30px">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-5">
+        <div class="box slim">
+            <p><strong>AUTHORS</strong></p>
+
+            <p>
+                {% for author in bibjson.author %}
+                    {% if author.orcid_id %}<a href="{{author.orcid_id}}"><img src={{ url_for('static', filename='doaj/images/orcid.gif') }} alt="orcid"></a>{% endif %}
+                    <em>{{author.name}}
+                    {% if author.affiliation %} ({{author.affiliation}}){% endif %}
+                    </em><br>
+                {% endfor %}
+            </p>
+
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="box slim">
+            <p><strong>EDITORIAL INFORMATION</strong></p>
+
+            {% if jbib.editorial_review %}
+                {% if jbib.editorial_review.get("process") or jbib.editorial_review.get("url") %}
+                    <p>
+                    {% if jbib.editorial_review.get("url") %}
+                        <a href="{{jbib.editorial_review.get('url')}}">{{jbib.editorial_review.get("process", "Review process unknown")}}</a>
+                    {% else %}
+                        {{jbib.editorial_review.get("process", "Review process unknown")}}
+                    {% endif %}
+                    </p>
+                {% endif %}
+            {% endif %}
+
+            {% if jbib.get_single_url("editorial_board") %}
+                <p><a href="{{jbib.get_single_url('editorial_board')}}">Editorial Board</a></p>
+            {% endif %}
+
+            {% if jbib.get_single_url("author_instructions") %}
+                <p><a href="{{jbib.get_single_url('author_instructions')}}">Instructions for authors</a></p>
+            {% endif %}
+
+            {% if jbib.publication_time %}
+                <p>Time From Submission to Publication: {{jbib.publication_time}} weeks</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+<div class="row" style="margin-top: 30px">
+    <div class="col-md-1">&nbsp;</div>
+    <div class="col-md-10">
+        <div style="padding: 0.5em">
+
+        <p>
+            <strong>
+                Abstract
+                {% if bibjson.get_urls("fulltext") %}
+                    {% for url in bibjson.get_urls("fulltext") %}
+                        | <a href="{{url}}">Full Text</a>
+                    {% endfor %}
+                {% else %}
+                    {% if doi %}
+                        {% set url_text = normalised_doi | doi_url | safe %}
+                        {% if url_text != "" %}
+                            <a href="{{ url_text }}"> Full Text</a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </strong>
+        </p>
+        <p>{{bibjson.abstract}}</p>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

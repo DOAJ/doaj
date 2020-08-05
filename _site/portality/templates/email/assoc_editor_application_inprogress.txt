@@ -1,0 +1,7 @@
+Dear {{ assoc_editor }},
+
+The application for "{{ application_title }}" has not passed review by an Editor or Managing Editor and has been assigned back to you with questions or changes.
+You may access the application via the Editor area: {{ url_for_application }} .
+
+***
+This is an automated message. Please do not reply to this email.

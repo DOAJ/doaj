@@ -1,0 +1,158 @@
+    <div class="container" id="page_header">
+        <div class="row">
+            <div class="col-xs-12 col-md-10" id="logo-container">
+                <a href="{{ url_for('doaj.home') }}"><img src="{{ url_for('static', filename='doaj/images/logo_cropped.jpg') }}" alt="Directory of Open Access Journals" title="Directory of Open Access Journals" /></a>
+            </div>
+            <div class="col-xs-12 col-md-2 centre-text-container" id="header-right-container">
+                <a class="btn" id="btn-support-doaj" href="/membership" alt="Support DOAJ Become a member" title="Support DOAJ Become a member">SUPPORT DOAJ</a>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-orange" id="main-nav">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed btn-navbar" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand {% if request.path == url_for("doaj.home") %}active{% endif %}" href="{{ url_for('doaj.home') }}"><strong>DOAJ</strong>{% if request.path == '/' %} <span class="sr-only">(current)</span>{% endif %}</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li {% if request.path == url_for('doaj.search') %}class="active"{% endif %}>
+                        <a href="{{ url_for('doaj.search') }}" alt="Search or browse DOAJ" title="Search or browse DOAJ">
+                            Search
+                            {% if request.path == url_for('doaj.search') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+                    <li {% if request.path == url_for('doaj.subjects') %}class="active"{% endif %}>
+                        <a href="{{ url_for('doaj.subjects') }}" alt="Browse Subjects" title="Browse Subjects">
+                            Browse Subjects
+                            {% if request.path == url_for('doaj.subjects') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+
+                    <li{% if request.path == url_for('doaj.public_application') %} class="active"{% endif %}>
+                        <a href="{{url_for('doaj.public_application')}}">
+                            Apply
+                            {% if request.path == url_for('doaj.public_application') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+
+                    <li{% if request.path == url_for('doaj.news') %} class="active"{% endif %}>
+                        <a href="{{url_for('doaj.news')}}">
+                            News
+                            {% if request.path == url_for('doaj.news') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+
+                    <li{% if request.path == url_for('doaj.about') %} class="active"{% endif %}>
+                        <a href="{{ url_for('doaj.about') }}" alt="About DOAJ" title="About DOAJ">
+                            About
+                            {% if request.path == url_for('doaj.about') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+
+                    <li{% if request.path == url_for('doaj.publishers') %} class="active"{% endif %}>
+                        <a href="{{url_for('doaj.publishers')}}" alt="Publishers info and metadata upload" title="Publishers info and metadata upload">
+                            For Publishers
+                            {% if request.path == url_for('doaj.publishers') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+
+                    {% if "api2" in config.get("FEATURES") %}
+                    <li{% if request.path.startswith('/api') %} class="active"{% endif %}>
+                        <a href="{{url_for('api_v2.docs')}}" alt="API Documentation" title="API Documentation">
+                            API
+                            {% if request.path.startswith('/api') %} <span class="sr-only">(current)</span>{% endif %}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    {% if not current_user.is_anonymous %}
+
+                        <li{% if request.path.startswith('/account') %} class="active"{% endif %}>
+                            <a alt="view your account" title="view your account" href="{{ url_for('account.index') }}{{current_user.id}}">
+                                <strong>{{current_user.id}}</strong>
+                            </a>
+                        </li>
+
+                        {% if current_user.has_role("admin_area") %}
+                            <li{% if request.path.startswith('/admin') %} class="active"{% endif %}>
+                                <a alt="go to the admin area" title="go to the admin area" href="{{ url_for('admin.index') }}">
+                                    Admin
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if current_user.has_role("editor_area") %}
+                            <li{% if request.path.startswith('/editor') %} class="active"{% endif %}>
+                                <a alt="go to the editor area" title="go to the editor area" href="{{ url_for('editor.index') }}">
+                                    Editor
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if current_user.has_role("publisher") %}
+                            <li{% if request.path.startswith('/publisher') and not request.path.startswith("/publishers") %} class="active"{% endif %}>
+                                <a alt="go to the publisher area" title="go to the publisher area" href="{{ url_for('publisher.index') }}">
+                                    Publisher Area
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
+
+                    {% else %}
+
+                        <li><a alt="login to the DOAJ" title="login to the DOAJ" href="{{ url_for('account.login') }}">Login</a></li>
+
+                    {% endif %}
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+<div class="container">
+    <div class="row"><div class="col-xs-12">
+        <div class="alert-messages">
+
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    {% set category_url_indicator = '+contains-url' %}
+
+                    {% for category, message in messages %}
+                        {% set message_has_url = False %}
+                        {% if category.endswith(category_url_indicator) %}
+                            {% set category = category[:category.rfind(category_url_indicator)] %}
+                            {% set message_has_url = True %}
+                        {% endif %}
+
+                        {# shift from bs2 to bs3 terminology #}
+                        {% if category == "error" %}
+                            {% set category = "danger" %}
+                        {% endif %}
+
+                        <div class="alert alert-{{category}} fade in" data-alert="alert">
+                            <a class="close" data-dismiss="alert" href="#">&times;</a>
+                            {% if message_has_url %}
+                                {{ message | safe }}
+                            {% else %}
+                                {{ message }}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div></div>
+
+</div>

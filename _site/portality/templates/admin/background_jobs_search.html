@@ -1,0 +1,27 @@
+{% extends "admin/admin_base.html" %}
+
+{% block extra_stylesheets %}
+    {% include "_edges_common_css.html" %}
+{% endblock %}
+
+{% block admin_content %}
+
+<div id="background_jobs"></div>
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        adminBackgroundJobsSearchConfig : {
+            searchPath : '/admin_query/background,job/_search'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/admin.background_jobs.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+{% endblock %}
+

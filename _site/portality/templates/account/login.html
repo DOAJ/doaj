@@ -1,0 +1,27 @@
+{% extends "sidebar-page.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-4">
+        &nbsp;
+    </div>
+    <div class="col-md-5">
+    {% from "_formhelpers.html" import render_field %}
+      <form method="post" action="">
+          {{ render_field(form.username, placeholder="your username") }}
+          {{ render_field(form.password, placeholder="********") }}
+          {{ render_field(form.next) }}
+        <div class="actions">
+          <input type="submit" value="Login" class="btn btn-primary" />
+        </div>
+      </form>
+
+      <br><br>
+      <p><a href="{{url_for('account.forgot')}}">I forgot my username/password</a></p>
+    </div>
+    
+</div>
+
+{% endblock %}
+

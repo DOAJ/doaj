@@ -1,0 +1,16 @@
+{
+	"types": [
+		{
+			"type" : "suggestion",
+			"init_with_model" : true,
+			"keepalive" : "1m",
+			"functions" : [
+				"portality.migrate.20180106_1463_ongoing_updates.operations.clear_current_journal",
+				"portality.migrate.20180106_1463_ongoing_updates.operations.relabel_status"
+			],
+			"tasks" : {
+
+			}
+		}
+	]
+}

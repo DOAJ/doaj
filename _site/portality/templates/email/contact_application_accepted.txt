@@ -1,0 +1,20 @@
+Dear {{ journal_contact }},
+
+You are listed as the Journal Contact for {{ journal_title }} which has now been accepted into DOAJ. You can see the entry by searching for the journal: http://bit.ly/1IPWhtD
+
+An email has also been sent to {{ publisher }} who is the account holder for this journal.
+
+It is advantageous for this journal's metadata to be uploaded to DOAJ as this will increase the visibility, impact, distribution and usage* of its content. Please urge {{ publisher }} to do this as soon as possible.
+
+We are absolutely delighted to welcome this journal into DOAJ and look forward to seeing the article metadata soon. Please don't hesitate to contact us if you have any questions.
+
+The DOAJ Team
+
+*Benefits of supplying DOAJ with metadata:
+
+- Our statistics show more than 900 000 page views and 300 000 unique visitors a month to DOAJ from all over the world.
+- Many aggregators, databases, libraries, publishers and search portals collect our free metadata and include it in their products. Examples are Scopus, Serial Solutions and EBSCO.
+- DOAJ is OAI compliant and once an article is in DOAJ, it is automatically harvestable.
+- DOAJ is OpenURL compliant and once an article is in DOAJ, it is automatically linkable.
+- Over 95% of the DOAJ Publisher community said that DOAJ is important for increasing their journal's visibility
+- DOAJ is often cited as a source of quality, open access journals in research and scholarly publishing circles.

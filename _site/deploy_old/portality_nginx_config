@@ -1,0 +1,20 @@
+upstream portality_server {
+    server 127.0.0.1:5004 fail_timeout=0;
+}
+
+server {
+    server_name portality.cottagelabs.com;
+    access_log /var/log/nginx/portality.access.log;
+    server_name_in_redirect off;
+    client_max_body_size 20M;
+    
+    location / {
+        proxy_connect_timeout 75s;
+        proxy_read_timeout 180s;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://portality_server;
+    }
+}
+

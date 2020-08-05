@@ -1,0 +1,14 @@
+version: '2.1'
+
+services:
+  doaj-redis:
+    build: redis/
+    command: "redis-server /usr/local/etc/redis/redis.conf --appendonly yes --port ${HUEY_REDIS_PORT:-6379}"
+    ports:
+        - "${REDIS_BIND_HOST:-127.0.0.1}:${HUEY_REDIS_PORT:-6379}:${HUEY_REDIS_PORT:-6379}"
+    volumes:
+      - doaj_redis_data:/data
+
+
+volumes:
+    doaj_redis_data: {}

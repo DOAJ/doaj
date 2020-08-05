@@ -1,0 +1,16 @@
+Dear {{ publisher_name }},
+
+{{ title }}
+{{ url }}
+
+Thank you for your application which has been safely received! These applications mean a lot to us and we take great care and consideration in reviewing each one. As it happens, we have quite a few in the queue right now but when the time comes to assess yours, we promise to give it the attention it deserves. You will receive an automated email from us when the application
+is assigned to an editor and then another email when they start working on it. It may take up to 6 months before you get a decision from us but please be assured that we are working as hard as we can with the resources we have.
+
+Please save this email as a record of when you submitted your application. We will not reply to emails requesting a status update for applications which are less than 6 months old. Before you contact us requesting an update, please check your spam folder to ensure that a member of our editorial team has not already contacted you. They may not be emailing from a doaj.org email address.
+
+Yours faithfully,
+
+The DOAJ Editorial Team
+
+***
+This is an automated message. Please do not reply to this email.

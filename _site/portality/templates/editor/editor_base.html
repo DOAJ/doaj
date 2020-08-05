@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-md-12">
+      {% include 'editor/nav.html' %}
+
+      {% block editor_content %}
+      {% endblock %}
+
+    </div>
+  </div>
+
+{% endblock %}

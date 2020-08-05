@@ -1,0 +1,18 @@
+{
+  "types": [
+    {
+      "type": "journal",
+      "tasks": {
+        "set_last_manual_update": {"date" : "1970-01-01T00:00:00Z"}
+      },
+      "keepalive": "1m"
+    },
+    {
+      "type": "suggestion",
+      "tasks": {
+        "set_last_manual_update": {"date" : "1970-01-01T00:00:00Z"}
+      },
+      "keepalive": "1m"
+    }
+  ]
+}

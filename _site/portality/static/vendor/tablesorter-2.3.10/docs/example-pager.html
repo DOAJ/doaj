@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+	<title>jQuery plugin: Tablesorter 2.0 - Pager plugin</title>
+
+	<!-- jQuery -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+
+	<!-- Demo stuff -->
+	<link rel="stylesheet" href="css/jq.css">
+	<script src="js/chili/jquery.chili-2.2.js"></script>
+	<script src="js/chili/recipes.js"></script>
+	<script src="js/docs.js"></script>
+
+	<!-- Tablesorter: required -->
+	<link rel="stylesheet" href="../css/blue/style.css">
+	<script src="../js/jquery.tablesorter.js"></script>
+
+	<!-- Tablesorter: optional -->
+	<link rel="stylesheet" href="../addons/pager/jquery.tablesorter.pager.css">
+	<script src="../addons/pager/jquery.tablesorter.pager.js"></script>
+
+	<script id="js">$(function(){
+
+	// **********************************
+	//  Description of ALL pager options
+	// **********************************
+	var pagerOptions = {
+
+		// target the pager markup - see the HTML block below
+		container: $(".pager"),
+
+		// use this url format "http:/mydatabase.com?page={page}&size={size}"
+		ajaxUrl : null,
+
+		// process ajax so that the data object is returned along with the total number of rows
+		// example: { "data" : [{ "ID": 1, "Name": "Foo", "Last": "Bar" }], "total_rows" : 100 }
+		ajaxProcessing: function(ajax){
+			if (ajax && ajax.hasOwnProperty('data')) {
+				// return [ "data", "total_rows" ];
+				return [ ajax.data, ajax.total_rows ];
+			}
+		},
+
+		// output string - default is '{page}/{totalPages}'; possible variables: {page}, {totalPages}, {startRow}, {endRow} and {totalRows}
+		output: '{startRow} to {endRow} ({totalRows})',
+
+		// apply disabled classname to the pager arrows when the rows at either extreme is visible - default is true
+		updateArrows: true,
+
+		// starting page of the pager (zero based index)
+		page: 0,
+
+		// Number of visible rows - default is 10
+		size: 10,
+
+		// if true, the table will remain the same height no matter how many records are displayed. The space is made up by an empty
+		// table row set to a height to compensate; default is false
+		fixedHeight: true,
+
+		// remove rows from the table to speed up the sort of large tables.
+		// setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+		removeRows: false,
+
+		// css class names of pager arrows
+		cssNext: '.next', // next page arrow
+		cssPrev: '.prev', // previous page arrow
+		cssFirst: '.first', // go to first page arrow
+		cssLast: '.last', // go to last page arrow
+		cssPageDisplay: '.pagedisplay', // location of where the "output" is displayed
+		cssPageSize: '.pagesize', // page size selector - select dropdown that sets the "size" option
+
+		// class added to arrows when at the extremes (i.e. prev/first arrows are "disabled" when on the first page)
+		cssDisabled: 'disabled' // Note there is no period "." in front of this class name
+
+	};
+
+	// Initialize tablesorter
+	// ***********************
+	$("table")
+		.tablesorter({
+			widthFixed: true,
+			widgets: ['zebra']
+		})
+
+		// initialize the pager plugin
+		// ****************************
+		.tablesorterPager(pagerOptions)
+
+		// bind to pager events
+		// *********************
+		.bind('pagerChange pagerComplete', function(e,c){
+			var msg = '" event triggered, ' + (e.type === 'pagerChange' ? 'going to' : 'now on') +
+				' page ' + (c.page + 1) + '/' + c.totalPages;
+			$('#display')
+				.append('<li>"' + e.type + msg + '</li>')
+				.find('li:first').remove();
+		});
+
+		// Add two new rows using the "addRows" method
+		// the "update" method doesn't work here because not all rows are
+		// present in the table when the pager is applied ("removeRows" is false)
+		// ***********************************************************************
+		$('button:contains(Add)').click(function(){
+			// add two rows
+			var row = '<tr><td>StudentXX</td><td>Mathematics</td><td>male</td><td>33</td><td>39</td><td>54</td><td>73</td><td><button class="remove" title="Remove this row">X</button></td></tr>' +
+				'<tr><td>StudentYY</td><td>Mathematics</td><td>female</td><td>83</td><td>89</td><td>84</td><td>83</td><td><button class="remove" title="Remove this row">X</button></td></tr>',
+				$row = $(row);
+			$('table')
+				.find('tbody').append($row)
+				.trigger('addRows', [$row]);
+		});
+
+		// Delete a row
+		// *************
+		$('table').delegate('button.remove', 'click' ,function(){
+			var t = $('table');
+			// disabling the pager will restore all table rows
+			t.trigger('disable.pager');
+			// remove chosen row
+			$(this).closest('tr').remove();
+			// restore pager
+			t.trigger('enable.pager');
+		});
+
+		// Destroy pager / Restore pager
+		// **************
+		$('button:contains(Destroy)').click(function(){
+			// Exterminate, annhilate, destroy! http://www.youtube.com/watch?v=LOqn8FxuyFs
+			var $t = $(this);
+			if (/Destroy/.test( $t.text() )){
+				$('table').trigger('destroy.pager');
+				$t.text('Restore Pager');
+			} else {
+				$('table').tablesorterPager(pagerOptions);
+				$t.text('Destroy Pager');
+			}
+		});
+
+		// Disable / Enable
+		// **************
+		$('button:contains(Disable)').click(function(){
+			var mode = /Disable/.test( $(this).text() );
+			$('table').trigger( (mode ? 'disable' : 'enable') + '.pager');
+			$(this).text( (mode ? 'Enable' : 'Disable') + 'Pager');
+		});
+
+});</script>
+</head>
+<body id="pager-demo">
+	<div id="banner">
+		<h1>table<em>sorter</em></h1>
+		<h2>Pager plugin</h2>
+		<h3>Flexible client-side table sorting</h3>
+		<a href="index.html">Back to documentation</a>
+	</div>
+
+	<div id="main">
+
+		<p class="tip">
+			<em>NOTE!</em> The following are not part of the original plugin:
+			<ul>
+				<li>This pager plugin can be applied to the original tablesorter, but there is one exception - setting the <code class="hilight">removeRows</code> option to false will break the sort.</li>
+				<li>There have been lots of changes made in version 2.1, please check out the <a href="#change-log">change log</a> below.</li>
+			</ul>
+		</p>
+
+		<h1>Triggered Events</h1>
+		<ul id="display">
+			<li>Pager events will appear here.</li>
+			<li>&nbsp;</li>
+			<li>&nbsp;</li>
+		</ul>
+
+	<h1>Demo</h1>
+	<br>
+	<button>Add Rows</button> <button>Disable Pager</button> <button>Destroy Pager</button>
+	<br><br>
+	<div class="pager">
+		<img src="../addons/pager/icons/first.png" class="first" alt="First" />
+		<img src="../addons/pager/icons/prev.png" class="prev" alt="Prev" />
+		<span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+		<img src="../addons/pager/icons/next.png" class="next" alt="Next" />
+		<img src="../addons/pager/icons/last.png" class="last" alt="Last" />
+		<select class="pagesize">
+			<option selected="selected" value="10">10</option>
+			<option value="20">20</option>
+			<option value="30">30</option>
+			<option value="40">40</option>
+		</select>
+	</div>
+
+<table class="tablesorter">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Major</th>
+			<th>Sex</th>
+			<th>English</th>
+			<th>Japanese</th>
+			<th>Calculus</th>
+			<th>Geometry</th>
+			<th class="remove sorter-false"></th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<th>Name</th>
+			<th>Major</th>
+			<th>Sex</th>
+			<th>English</th>
+			<th>Japanese</th>
+			<th>Calculus</th>
+			<th>Geometry</th>
+			<th></th>
+		</tr>
+	</tfoot>
+	<tbody>
+		<tr>
+			<td>Student01</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>80</td>
+			<td>70</td>
+			<td>75</td>
+			<td>80</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student02</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>90</td>
+			<td>88</td>
+			<td>100</td>
+			<td>90</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student03</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>85</td>
+			<td>95</td>
+			<td>80</td>
+			<td>85</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student04</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>60</td>
+			<td>55</td>
+			<td>100</td>
+			<td>100</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student05</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>68</td>
+			<td>80</td>
+			<td>95</td>
+			<td>80</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student06</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>100</td>
+			<td>99</td>
+			<td>100</td>
+			<td>90</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student07</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>85</td>
+			<td>68</td>
+			<td>90</td>
+			<td>90</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student08</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>100</td>
+			<td>90</td>
+			<td>90</td>
+			<td>85</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student09</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>80</td>
+			<td>50</td>
+			<td>65</td>
+			<td>75</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student10</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>85</td>
+			<td>100</td>
+			<td>100</td>
+			<td>90</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student11</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>86</td>
+			<td>85</td>
+			<td>100</td>
+			<td>100</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student12</td>
+			<td>Mathematics</td>
+			<td>female</td>
+			<td>100</td>
+			<td>75</td>
+			<td>70</td>
+			<td>85</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student13</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>100</td>
+			<td>80</td>
+			<td>100</td>
+			<td>90</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student14</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>50</td>
+			<td>45</td>
+			<td>55</td>
+			<td>90</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student15</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>95</td>
+			<td>35</td>
+			<td>100</td>
+			<td>90</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student16</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>100</td>
+			<td>50</td>
+			<td>30</td>
+			<td>70</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student17</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>80</td>
+			<td>100</td>
+			<td>55</td>
+			<td>65</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student18</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>30</td>
+			<td>49</td>
+			<td>55</td>
+			<td>75</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student19</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>68</td>
+			<td>90</td>
+			<td>88</td>
+			<td>70</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student20</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>40</td>
+			<td>45</td>
+			<td>40</td>
+			<td>80</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student21</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>50</td>
+			<td>45</td>
+			<td>100</td>
+			<td>100</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr>
+			<td>Student22</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>100</td>
+			<td>99</td>
+			<td>100</td>
+			<td>90</td>
+			<td><button class="remove" title="Remove this row">X</button></td>
+		</tr>
+		<tr><td>Student23</td><td>Mathematics</td><td>male</td><td>82</td><td>77</td><td>0</td><td>79</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student24</td><td>Languages</td><td>female</td><td>100</td><td>91</td><td>13</td><td>82</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student25</td><td>Mathematics</td><td>male</td><td>22</td><td>96</td><td>82</td><td>53</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student26</td><td>Languages</td><td>female</td><td>37</td><td>29</td><td>56</td><td>59</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student27</td><td>Mathematics</td><td>male</td><td>86</td><td>82</td><td>69</td><td>23</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student28</td><td>Languages</td><td>female</td><td>44</td><td>25</td><td>43</td><td>1</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student29</td><td>Mathematics</td><td>male</td><td>77</td><td>47</td><td>22</td><td>38</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student30</td><td>Languages</td><td>female</td><td>19</td><td>35</td><td>23</td><td>10</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student31</td><td>Mathematics</td><td>male</td><td>90</td><td>27</td><td>17</td><td>50</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student32</td><td>Languages</td><td>female</td><td>60</td><td>75</td><td>33</td><td>38</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student33</td><td>Mathematics</td><td>male</td><td>4</td><td>31</td><td>37</td><td>15</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student34</td><td>Languages</td><td>female</td><td>77</td><td>97</td><td>81</td><td>44</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student35</td><td>Mathematics</td><td>male</td><td>5</td><td>81</td><td>51</td><td>95</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student36</td><td>Languages</td><td>female</td><td>70</td><td>61</td><td>70</td><td>94</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student37</td><td>Mathematics</td><td>male</td><td>60</td><td>3</td><td>61</td><td>84</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student38</td><td>Languages</td><td>female</td><td>63</td><td>39</td><td>0</td><td>11</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student39</td><td>Mathematics</td><td>male</td><td>50</td><td>46</td><td>32</td><td>38</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student40</td><td>Languages</td><td>female</td><td>51</td><td>75</td><td>25</td><td>3</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student41</td><td>Mathematics</td><td>male</td><td>43</td><td>34</td><td>28</td><td>78</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student42</td><td>Languages</td><td>female</td><td>11</td><td>89</td><td>60</td><td>95</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student43</td><td>Mathematics</td><td>male</td><td>48</td><td>92</td><td>18</td><td>88</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student44</td><td>Languages</td><td>female</td><td>82</td><td>2</td><td>59</td><td>73</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student45</td><td>Mathematics</td><td>male</td><td>91</td><td>73</td><td>37</td><td>39</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student46</td><td>Languages</td><td>female</td><td>4</td><td>8</td><td>12</td><td>10</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student47</td><td>Mathematics</td><td>male</td><td>89</td><td>10</td><td>6</td><td>11</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student48</td><td>Languages</td><td>female</td><td>90</td><td>32</td><td>21</td><td>18</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student49</td><td>Mathematics</td><td>male</td><td>42</td><td>49</td><td>49</td><td>72</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+		<tr><td>Student50</td><td>Languages</td><td>female</td><td>56</td><td>37</td><td>67</td><td>54</td><td><button class="remove" title="Remove this row">X</button></td></tr>
+	</tbody>
+</table>
+
+<div class="pager">
+	<img src="../addons/pager/icons/first.png" class="first" alt="First" />
+	<img src="../addons/pager/icons/prev.png" class="prev" alt="Prev" />
+	<span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+	<img src="../addons/pager/icons/next.png" class="next" alt="Next" />
+	<img src="../addons/pager/icons/last.png" class="last" alt="Last" />
+	<select class="pagesize">
+		<option selected="selected" value="10">10</option>
+		<option value="20">20</option>
+		<option value="30">30</option>
+		<option value="40">40</option>
+	</select>
+</div>
+
+	<h1>Javascript</h1>
+	<div id="javascript">
+		<pre class="js"></pre>
+	</div>
+
+	<h1>CSS</h1>
+	<div>
+		<pre class="css">/* pager wrapper, div */
+.pager {
+  padding: 5px;
+}
+/* pager wrapper, in thead/tfoot */
+td.pager {
+  background-color: #e6eeee;
+}
+/* pager navigation arrows */
+.pager img {
+  vertical-align: middle;
+  margin-right: 2px;
+}
+/* pager output text */
+.pager .pagedisplay {
+  font-size: 11px;
+  padding: 0 5px 0 5px;
+  width: 50px;
+  text-align: center;
+}
+
+/*** loading ajax indeterminate progress indicator ***/
+#tablesorterPagerLoading {
+  background: rgba(255,255,255,0.8) url(icons/loading.gif) center center no-repeat;
+  position: absolute;
+  z-index: 1000;
+}
+
+/*** css used when "updateArrows" option is true ***/
+/* the pager itself gets a disabled class when the number of rows is less than the size */
+.pager.disabled {
+  display: none;
+}
+/* hide or fade out pager arrows when the first or last row is visible */
+.pager img.disabled {
+  /* visibility: hidden */
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}</pre>
+	</div>
+
+	<h1>HTML</h1>
+	<div id="html">
+		<pre class="html">&lt;table class=&quot;tablesorter&quot;&gt;
+&lt;!-- view page source to see the entire table --&gt;
+&lt;/table&gt;
+
+&lt;!-- pager --&gt;
+&lt;div id=&quot;pager&quot; class=&quot;pager&quot;&gt;
+  &lt;form&gt;
+    &lt;img src=&quot;first.png&quot; class=&quot;first&quot;/&gt;
+    &lt;img src=&quot;prev.png&quot; class=&quot;prev&quot;/&gt;
+    &lt;span class=&quot;pagedisplay&quot;&gt;&lt;/span&gt; &lt;!-- this can be any element, including an input --&gt;
+    &lt;img src=&quot;next.png&quot; class=&quot;next&quot;/&gt;
+    &lt;img src=&quot;last.png&quot; class=&quot;last&quot;/&gt;
+    &lt;select class=&quot;pagesize&quot;&gt;
+      &lt;option selected=&quot;selected&quot; value=&quot;10&quot;&gt;10&lt;/option&gt;
+      &lt;option value=&quot;20&quot;&gt;20&lt;/option&gt;
+      &lt;option value=&quot;30&quot;&gt;30&lt;/option&gt;
+      &lt;option value=&quot;40&quot;&gt;40&lt;/option&gt;
+    &lt;/select&gt;
+  &lt;/form&gt;
+&lt;/div&gt;</pre>
+
+		</div>
+
+	<a id="change-log"></a>
+	<h1>Pager Change Log</h1>
+
+	<h4>Version 2.2.1 (5/4/2012)</h4>
+	<ul>
+		<li>Widgets should now apply properly while the pager is active. Fix for <a href="https://github.com/Mottie/tablesorter/issues/60">issue #60</a>.</li>
+	</ul>
+
+	<h4>Version 2.1.20 (4/28/2012)</h4>
+	<ul>
+		<li>Optimized pager table rebuilding to also use document fragments, and by removing two extra calls that reapplied the current widgets.</li>
+	</ul>
+
+	<h4>Version 2.1.6 (3/22/2012)</h4>
+	<ul>
+		<li>Updated pager css. It wasn't targeting the pager block correctly.</li>
+		<li>Moved pager into the thead and/or tfoot in the <a href="example-pager-ajax.html">pager ajax demo</a>.</li>
+		<li>The pager plugin ajax method should now only target the header column text (not the pager) and first footer row when updating the header text.</li>
+	</ul>
+
+	<h4>Version 2.1.3.1 (3/17/2012)</h4>
+	<ul>
+		<li><a href="https://github.com/rozwell">Rozwell</a> contributed some <a href="https://github.com/Mottie/tablesorter/pull/35">bug fixes</a> that occur when <code class="hilight">cssPageSize</code> is not set. Thanks for sharing!</li>
+	</ul>
+
+	<h4>Version 2.1</h4>
+	<ul>
+		<li>Ajax:
+			<ul>
+				<li>The pager plugin will now interact with a database via JSON. See <a href="example-pager-ajax.html">demo</a> here.</li>
+				<li>Added <code class="hilight">ajaxUrl</code> option which contains the variables <code class="hilight">{page}</code> and <code class="hilight">{size}</code> which will be replaced by the plugin to obtain that data.
+				<pre class="js"><code class="hilight">ajaxUrl : "http:/mydatabase.com?page={page}&size={size}"</code></pre>
+				</li>
+				<li>Another option named <code class="hilight">ajaxProcessing</code> was included to process the data before returning it to the pager plugin. Basically the JSON needs to contain the data to match the example below. An additional required variable is the total number of records or rows needs to be returned.
+
+				<pre class="js"><code class="hilight">// process ajax so that the data object is returned along with the total number of rows
+// example: { "data" : [{ "ID": 1, "Name": "Foo", "Last": "Bar" }], "total_rows" : 100 }
+ajaxProcessing: function(ajax){
+  if (ajax && ajax.hasOwnProperty('data')) {
+    // return [ "data", "total_rows" ];
+    return [ ajax.data, ajax.total_rows ];
+  }
+}</code></pre>
+				</li>
+				<li>I tried to make the plugin interact with a database as flexible as possible, but I'm sure I haven't covered every situation. So any and all feedback is welcome!</li>
+				<li>Also, much thanks to <a href="https://github.com/kachar">kachar</a> for the <a href="https://github.com/Mottie/tablesorter/issues/31">enhancement request</a> and willingness to help test it!</li>
+			</ul>
+		</li>
+		<li>Removed <code class="hilight">positionFixed</code> and <code class="hilight">offset</code> options.</li>
+		<li>Added <code class="hilight">fixedHeight</code> option which replaces the <code class="hilight">positionFixed</code> and <code class="hilight">offset</code> options.
+
+			<ul>
+				<li>If true, it should maintain the height of the table, even when viewing fewer than the set number of records (go to the last page to see this in action).</li>
+				<li>It works by adding an empty row to make up the differences in height.</li>
+				<li>There were some <strong>issues</strong> of the height being incorrect when this option is true. The problems occurred if you add/remove rows + change pager size, or just destroy/enable the pager. I think I fixed it, but if you should find a problem, please <a href="https://github.com/Mottie/tablesorter/issues">report the issue</a> and steps on how to duplicate it.</li>
+			</ul>
+		</li>
+
+		<li>The pager <code class="hilight">container</code> option will now accept class names. So you can add multiple container blocks to control the pager, just as this page now has two, one above and one below.</li>
+		<li>The pager now adds all of its options to the table configuration options within an object named "pager". Basically what this means is that instead of add all of the pager options to be mixed in with the tablesorter options, the pager options have been isolated and can be found by typing this into the browser console: <code class="hilight">$('table')[0].config.pager</code>.</li>
+	</ul>
+
+	<h4>Version 2.0.21.2</h4>
+	<ul>
+		<li>Added <code class="hilight">"disable.pager"</code> and <code class="hilight">"enable.pager"</code> methods added to make it easier to add or delete rows from the table.</li>
+	</ul>
+
+	<h4>Version 2.0.16</h4>
+	<ul>
+		<li>Reduced the number of rows in the demo from 1022 to 50, so you don't have to scroll forever (when the pager is destroyed) to see the code below the table.</li>
+		<li>Added <code class="hilight">"destroy.pager"</code> method will reveal the entire table, remove the pager functionality, and hide the actual pager.</li>
+		<li>Added a new <code class="hilight">addRows</code> method to allow adding new rows while the pager is applied to a table. Using <code class="hilight">"update"</code> would remove all non-visible rows.</li>
+	</ul>
+
+	<h4>Version 2.0.9</h4>
+	<ul>
+		<li>Added <code class="hilight">cssDisabled</code> and <code class="hilight">pagerArrows</code> options which controls the look of the pager and arrows when the pager is on the first or last page.</li>
+		<li>Updated pager functions, removed "separator" option, and added output string formatting (e.g. "1 to 10 (50)").</li>
+	</ul>
+
+	<h4>Version 2.0.7</h4>
+	<ul>
+		<li>Added <code class="hilight">"pagerChange"</code> and <code class="hilight">"pagerComplete"</code> events in version 2.0.7.</li>
+	</ul>
+
+<div class="next-up">
+	<hr />
+	Next up: <a href="example-pager-ajax.html">Pager plugin - Ajax &rsaquo;&rsaquo;</a>
+</div>
+
+</div>
+
+</body>
+</html>
+

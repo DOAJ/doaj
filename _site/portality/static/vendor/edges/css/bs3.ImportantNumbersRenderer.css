@@ -1,0 +1,33 @@
+.edges-bs3-important-numbers-title {
+    text-align: center;
+}
+
+.edges-bs3-important-numbers-graphic {
+    position: relative;
+}
+
+.edges-bs3-important-numbers-img {
+    /* height: 100%; */
+    /*text-align: center;*/
+}
+
+.edges-bs3-important-numbers-img img {
+    height: 100%
+}
+
+.edges-bs3-important-numbers-main {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    font-size: 3em;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 0 3px #ccc;
+}
+
+.edges-bs3-important-numbers-second {
+    font-size: 1.3em;
+    text-align: center;
+}

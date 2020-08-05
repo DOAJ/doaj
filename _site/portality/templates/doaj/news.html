@@ -1,0 +1,24 @@
+{% extends "sidebar-page.html" %}
+
+{% block content %}
+
+<!-- news feed -->
+<div class="row" style="margin-top: 1em;">
+    <div class="col-md-12">
+        <div style="margin: 0.5em 1.5em;">
+            <h2>News</h2>
+            {% for n in news %}
+                <div style="border-bottom: 1px dotted #cccccc; padding: 15px">
+                    <strong><a href="{{n.url}}" target="_blank">{% autoescape off%}{{n.title}}{% endautoescape %}</a></strong><br>
+                    <p>{% autoescape off%}{{n.summary}}{% endautoescape %}&nbsp;<a href="{{n.url}}" target="_blank">Read More...</a></p>
+                    <em>Published {{n.published_formatted()}}</em>
+                </div>
+
+            {% endfor %}
+            <br>
+            <p>Can't find what you're looking for?  Check our <a href="{{blog_url}}" target="_blank">news archive</a></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

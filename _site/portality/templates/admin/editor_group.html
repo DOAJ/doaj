@@ -1,0 +1,81 @@
+{% extends "admin/admin_base.html" %}
+
+{% block admin_content %}
+
+
+<h1>Editor Group</h1>
+<div class="row">
+    <div class="col-md-12">
+
+        {% if there_were_errors %}
+            <h4 class="red">There is a problem with the submitted form.</h4>
+        {% endif %}
+
+        {% from "_formhelpers.html" import render_field_horizontal %}
+
+        <form method="post" action="{{ url_for('admin.editor_group') }}{% if form.group_id.data and form.group_id.data != '' %}/{{form.group_id.data}}{% endif %}" class="form-horizontal" id="editor_group_form">
+            <fieldset>
+                {{ form.group_id }}
+                {{ render_field_horizontal(form.name, style="width: 400px; height: 26px", placeholder="Enter a group name here (must be unique)") }}
+                {{ render_field_horizontal(form.editor, style="width: 200px", placeholder="Editor's User ID", container_style="margin-bottom: 9px") }}
+                {{ render_field_horizontal(form.associates, style="width: 400px", placeholder="Associate Editor User IDs") }}
+
+                <div class="form-group">
+                    <div class="col-md-12"><button class="btn btn-success" type="submit">Save Group</button></div>
+                </div>
+            </fieldset>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+
+
+    function userAutocomplete(prefix, callback) {
+        $.ajax({
+            type : "GET",
+            data : {q : prefix, s : 10},
+            dataType: "json",
+            url: "{{url_for('admin.user_autocomplete')}}",
+            success: function(resp) {
+                var data = {results: resp}
+                callback(data);
+            }
+        })
+    }
+
+    $("#editor").select2({
+        minimumInputLength: 1,
+        query : function(query) {
+            userAutocomplete(query.term, query.callback)
+        },
+        initSelection : function (element, callback) {
+            var data = {id: element.val(), text: element.val()};
+            callback(data);
+        }
+    })
+
+    $("#associates").select2({
+        minimumInputLength: 1,
+        multiple: true,
+        query: function (query) {
+            userAutocomplete(query.term, query.callback)
+        },
+        initSelection : function (element, callback) {
+            var data = [];
+            $(element.val().split(",")).each(function () {
+                data.push({id: this, text: this});
+            });
+            callback(data);
+        }
+    })
+
+
+
+</script>
+
+{% endblock %}

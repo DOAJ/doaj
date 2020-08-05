@@ -1,0 +1,53 @@
+/********************************************************
+ *  Basic Range Selector
+ */
+
+.edges-bs3-basic-range-selector-facet {
+    border-top: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
+}
+
+.edges-bs3-basic-range-selector-header {
+    font-weight: bold;
+    padding-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #eeeeee;
+}
+
+.edges-bs3-basic-range-selector-header a {
+    color: #000000;
+}
+
+.edges-bs3-basic-range-selector-header a:hover {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.edges-bs3-basic-range-selector-result {
+    padding-left: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.edges-bs3-basic-range-selector-result:nth-of-type(odd) {
+    background-color: #ffffff;
+}
+
+.edges-bs3-basic-range-selector-result:nth-of-type(even) {
+    background-color: #f4f4f4;
+}
+
+.edges-bs3-basic-range-selector-result:hover {
+    background-color: #eeeeee;
+}
+
+.edges-bs3-basic-range-selector-value {}
+
+.edges-bs3-basic-range-selector-filter-remove {
+    color: #000000;
+}
+
+.edges-bs3-basic-range-selector-filter-remove:hover {
+    color: #000000;
+}

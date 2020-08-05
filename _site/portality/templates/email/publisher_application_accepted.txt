@@ -1,0 +1,27 @@
+Dear {{ publisher_name }},
+
+An application was submitted for the journal {{ journal_title }} and this has been accepted into DOAJ. An email has also been sent to {{ journal_contact }} whose name was given as the Journal Contact for this journal.
+
+You may access the journal via your Publisher Area: {{ url_root }}/publisher/ using your DOAJ username and password. The Journal Contact does not get an account to access the journal.
+
+If you do not have a DOAJ account already, a separate email will be sent to you with login details. If you do not receive this email then please contact us: {{ url_root }}/contact .)
+
+To increase the visibility, impact, distribution and usage* of your journal content, we urge you to upload the article metadata for this journal as soon as possible. You may do this from the Publisher Area in three ways:
+
+1) Upload Article XML: {{ url_root }}/publisher/uploadfile
+2) Enter Article Metadata: {{ url_root }}/publisher/metadata
+3) Use our API: {{ url_root }}/api/v1/docs
+For help on how to do this read https://doaj.org/publishers#upload and https://doaj.org/features#xml_upload
+
+We are absolutely delighted to welcome this journal into DOAJ and look forward to seeing the article metadata soon. Please don't hesitate to contact us if you have any questions.
+
+The DOAJ Team
+
+*Benefits of supplying DOAJ with metadata:
+
+- Our statistics show more than 900 000 page views and 300 000 unique visitors a month to DOAJ from all over the world.
+- Many aggregators, databases, libraries, publishers and search portals collect our free metadata and include it in their products. Examples are Scopus, Serial Solutions and EBSCO.
+- DOAJ is OAI compliant and once an article is in DOAJ, it is automatically harvestable.
+- DOAJ is OpenURL compliant and once an article is in DOAJ, it is automatically linkable.
+- Over 95% of the DOAJ Publisher community said that DOAJ is important for increasing their journal's visibility
+- DOAJ is often cited as a source of quality, open access journals in research and scholarly publishing circles.

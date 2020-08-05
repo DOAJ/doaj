@@ -1,0 +1,23 @@
+/home/cloo/cron-logs/duplicity.log {
+	monthly
+	missingok
+	compress
+	delaycompress
+	notifempty
+	dateext
+	dateyesterday
+}
+
+/home/cloo/cron-logs/letsencrypt-duplicity.log {
+	monthly
+	missingok
+	compress
+	delaycompress
+	notifempty
+	dateext
+	dateyesterday
+}
+
+# rotate 52       Only keep a year's worth of logs
+# delaycompress   Compress the following time it's run, not immediately
+# dateyesterday   Logs will run up to and include the date in the filename

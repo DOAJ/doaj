@@ -1,0 +1,103 @@
+.edges-bs3-facetview-search-controller .col-md-8 {
+    text-align: right;
+}
+
+.edges-bs3-facetview-search-controller .col-md-6 {
+    text-align: right;
+}
+
+
+.edges-bs3-facetview-search-controller .form-inline .input-group .edges-bs3-search-controller-field {
+    width: 100px;
+}
+
+.edges-bs3-facetview-search-controller .form-inline .input-group .edges-bs3-search-controller-text {
+    width: 300px;
+}
+
+.edges-bs3-facetview-search-controller .col-xs-12:first-child {
+    margin-bottom:  10px;
+}
+
+.edges-bs3-facetview-search-controller .col-xs-6:first-child {
+    margin-bottom:  10px;
+}
+
+@media (min-width: 768px) {
+    .edges-bs3-facetview-search-controller .form-inline .input-group .edges-bs3-search-controller-field {
+        width: auto;
+    }
+
+    .edges-bs3-facetview-search-controller .form-inline .input-group .edges-bs3-search-controller-text {
+        width: 423px;
+    }
+
+    .edges-bs3-facetview-search-controller .col-xs-12:first-child {
+        margin-bottom:  10px;
+    }
+
+    .edges-bs3-facetview-search-controller .col-xs-6:first-child {
+        margin-bottom:  10px;
+    }
+}
+
+@media (min-width: 992px) {
+    .edges-bs3-facetview-search-controller .form-inline .input-group .edges-bs3-search-controller-field {
+        width: 132px;
+    }
+
+    .edges-bs3-facetview-search-controller .form-inline .input-group .edges-bs3-search-controller-text {
+        width: 240px;
+    }
+
+    .edges-bs3-facetview-search-controller .col-md-6 .form-inline .input-group .edges-bs3-search-controller-field {
+        width: 100px;
+    }
+
+    .edges-bs3-facetview-search-controller .col-md-6 .form-inline .input-group .edges-bs3-search-controller-text {
+        width: 167px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .edges-bs3-facetview-search-controller .form-inline .input-group .edges-bs3-search-controller-field {
+        width: auto;
+    }
+
+    .edges-bs3-facetview-search-controller .form-inline .input-group .edges-bs3-search-controller-text {
+        width: 240px;
+    }
+
+    .edges-bs3-facetview-search-controller .col-md-6 .form-inline .input-group .edges-bs3-search-controller-field {
+        width: auto;
+    }
+
+    .edges-bs3-facetview-search-controller .col-md-6 .form-inline .input-group .edges-bs3-search-controller-text {
+        width: 165px;
+    }
+}
+
+.edges-bs3-search-controller-share {
+    border: 1px solid #bce8f1;
+    color: #3a87ad;
+    background-color: #d9edf7;
+    padding: 10px;
+    margin: 10px 0px 10px 0px;
+    border-radius: 5px;
+}
+
+.edges-bs3-search-controller-share-url {
+    width: 100%;
+    max-width: 100%;
+    color: #000000;
+    height: 5em;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.edges-bs3-search-controller-embed {
+    width: 100%;
+    max-width: 100%;
+    color: #000000;
+    height: 5em;
+}

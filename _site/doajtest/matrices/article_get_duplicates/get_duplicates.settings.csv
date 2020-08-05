@@ -1,0 +1,16 @@
+field,test_id,article,owner,doi_duplicates,fulltext_duplicates,overlap,raises
+type,index,generated,generated,generated,generated,generated,conditional
+,,,,,,,
+values,,yes,yes,-,-,-,ArgumentException
+values,,no,no,0,0,0,
+values,,,,1,1,1,
+values,,,,3,3,3,
+,,,,,,,
+constraint article,,no,,-,-,-,
+constraint article,,yes,,!-,!-,!-,
+constraint doi_duplicates,,,,0,,0,
+constraint doi_duplicates,,,,1,,!3,
+constraint fulltext_duplicates,,,,,0,0,
+constraint fulltext_duplicates,,,,,1,!3,
+,,,,,,,
+conditional raises,,no,,,,,ArgumentException

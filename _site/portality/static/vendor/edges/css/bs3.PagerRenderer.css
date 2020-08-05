@@ -1,0 +1,62 @@
+/********************************************************
+ *  Pager
+ */
+
+.edges-bs3-pager-container {
+    padding: 5px;
+    background: #eeeeee;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.edges-bs3-pager-total {
+    font-weight: bold;
+}
+
+@media (min-width: 992px) {
+    .edges-bs3-pager-size {
+        margin-left: 10px;
+    }
+}
+
+.edges-bs3-pager-nav {
+    float: right;
+}
+
+.edges-bs3-pager-first {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.edges-bs3-pager-first.disabled {
+    margin-right: 5px;
+    font-weight: bold;
+    color: #cccccc;
+}
+
+.edges-bs3-pager-prev {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.edges-bs3-pager-prev.disabled {
+    margin-right: 5px;
+    font-weight: bold;
+    color: #cccccc;
+}
+
+.edges-bs3-pager-page {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.edges-bs3-pager-next {
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.edges-bs3-pager-next.disabled {
+    margin-right: 5px;
+    font-weight: bold;
+    color: #cccccc;
+}

@@ -1,0 +1,42 @@
+/********************************************************
+ *  N Separate OR Term Selector
+ */
+
+.edges-bs3-n-separate-or-term-selector-container {
+
+}
+
+.edges-bs3-n-separate-or-term-selector-select {
+
+}
+
+.edges-bs3-n-separate-or-term-selector-label {
+    padding: 5px;
+}
+
+.edges-bs3-n-separate-or-term-selector-container .select2-arrow {
+    border-left: 0px !important;
+    background: #ffffff !important;
+    top: 8px !important;
+}
+
+.edges-bs3-n-separate-or-term-selector-container .select2-chosen {
+    width: 200px !important;
+    line-height: 45px;
+}
+
+.edges-bs3-n-separate-or-term-selector-container .select2-choice {
+    height: 45px;
+    background-image: none;
+    background: #ffffff;
+}
+
+.edges-bs3-n-separate-or-term-selector-container .select2-dropdown-open {
+    border-color: #2C3E50 !important;
+}
+
+/*Note, this style does not appear inside the edges div, so we have to style it globally*/
+.select2-drop-active {
+    border-color: #2C3E50 !important;
+    padding-top: 4px !important;
+}
