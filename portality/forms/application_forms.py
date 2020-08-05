@@ -501,7 +501,7 @@ class FieldDefinitions:
         },
         "validate": [
             "is_url",
-            "required"
+            {"required_if": {"field": "license_display", "value": "y"}}
         ],
         "widgets": [
             "clickable_url"
