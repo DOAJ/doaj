@@ -10,6 +10,7 @@ new ones as required too.
 import os, sys
 import tzlocal
 import pytz
+import yaml
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
 from flask_login import login_user, current_user
@@ -68,71 +69,11 @@ app.register_blueprint(doaj)
 # putting it here ensures it will run under any web server
 initialise_index(app, es_connection)
 
-# The key should correspond to the sponsor logo name in /static/doaj/images/sponsors without the extension for
-# consistency - no code should rely on this though. Sponsors are in tiers: gold, silver, bronze, and patron.
-# Only gold sponsors appear on the front page, and patrons are displayed text-only on the sponsors page alongside
-# the other tiers' logos.
-SPONSORS = {
-    'gold': {
-    },
-    'silver': {
-        'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'https://www.frontiersin.org'},
-        #'hindawi': {'name': 'Hindawi Publishing Corporation', 'logo': 'hindawi.png', 'url': 'https://www.hindawi.com'},
-        'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.svg', 'url': 'http://www.mdpi.com/'},
-        'oclc': {'name': 'OCLC', 'logo': 'oclc.svg', 'url': 'https://www.oclc.org/en-europe/home.html'},
-        #'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.svg', 'url': 'https://www.plos.org/'},
-        'ufm': {'name': 'Danish Agency for Science and Higher Education', 'logo': 'ufm.svg', 'url': 'https://ufm.dk/'},
-        'kbse': {'name': 'National Library of Sweden', 'logo': 'kbse.svg', 'url': 'https://www.kb.se/'},
-        'finnish-learned-soc': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-tsvlogo.svg', 'url': 'https://tsv.fi/en/frontpage'},
-        'nsd': {'name': 'NSD (Norwegian Centre for Research Data)', 'logo': 'nsd.svg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
-        'swedish-research': {'name': 'Swedish Research Council', 'logo': 'swedish-research.svg', 'url': 'https://vr.se/english.html'},
-        #'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
-        'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://publications.copernicus.org/'},
-        'elsevier': {'name': 'Elsevier', 'logo': 'elsevier.svg', 'url': 'https://www.elsevier.com/'}
-
-    },
-    'bronze': {
-        'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'},
-        'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
-        #'1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
-        'aps': {'name': 'American Physical Society', 'logo': 'aps.gif', 'url': 'https://journals.aps.org/'},
-        #'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'},
-        'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.svg', 'url': 'https://cottagelabs.com'},
-        'issn': {'name': 'ISSN (International Standard Serial Number)', 'logo': 'issn.jpg', 'url': 'http://www.issn.org/'},
-        'lund': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'https://www.lunduniversity.lu.se/'},
-        'sage': {'name': 'SAGE Publications', 'logo': 'sage.svg', 'url': 'http://www.sagepublications.com/'},
-        'scielo': {'name': 'SciELO (Scientific Electronic Library Online)', 'logo': 'scielo.svg', 'url': 'http://www.scielo.br/'},
-        #'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.svg', 'url': 'http://www.taylorandfrancisgroup.com/'},
-        'wiley': {'name': 'Wiley', 'logo': 'wiley.svg', 'url': 'https://wiley.com'},
-        'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.svg', 'url': 'http://emeraldpublishing.com/'},
-        #'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.svg', 'url': 'https://www.thieme.com'},
-        #'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tec-mx.png', 'url': 'https://tec.mx/es'},
-        #'brill': {'name': 'BRILL', 'logo': 'brill.jpg', 'url': 'https://brill.com/'},
-        'ubiquity': {'name': 'Ubiquity Press', 'logo': 'ubiquity_press.svg', 'url': 'https://www.ubiquitypress.com/'},
-        #'openedition': {'name': 'Open Edition', 'logo': 'open_edition.svg', 'url': 'https://www.openedition.org'},
-        'iop': {"name": "IOP Publishing", "logo": "iop.jpg", "url": "http://ioppublishing.org/"},
-        #'degruyter': {'name': 'De Gruyter', 'logo': 'degruyter.jpg', 'url': 'https://www.degruyter.com/dg/page/open-access'},
-        'rsc': {'name': 'Royal Society of Chemistry', 'logo': 'rsc.jpg', 'url': 'https://www.rsc.org'},
-        'edp': {'name': 'EDP Sciences', 'logo': 'edp.gif', 'url': 'https://www.edpsciences.org'},
-        'elife': {'name': 'eLife', 'logo': 'elife.png', 'url': 'https://elifesciences.org/'},
-        'karger': {'name': 'Karger', 'logo': 'karger.png', 'url': 'https://www.karger.com/'},
-        'cambridge': {'name': 'Cambridge University Press', 'logo': 'cambridge.png', 'url': 'https://www.cambridge.org/'},
-        'iet': {'name': 'IET (Institution of Engineering and Technology)', 'logo': 'iet.png', 'url': 'https://www.theiet.org/'},
-        'pensoft': {'name': 'Pensoft', 'logo': 'pensoftlogo.svg', 'url': 'https://pensoft.net/'},
-        'plos': {'name': 'PLOS', 'logo': 'plos.png', 'url': 'https://plos.org/'},
-        'apa': {'name': 'APA', 'logo': 'apa.png', 'url': 'https://www.apaopen.org/'},
-        'ieee': {'name': 'IEEE', 'logo': 'ieee.png', 'url': 'https://www.ieee.org/'},
-    },
-    'patron': {
-        #'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
-        #'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.svg', 'url': 'https://www.karger.com/OpenAccess'},
-        #'enago': {'name': 'ENAGO', 'url': 'https://www.enago.com/'},
-    }
-}
-
-# In each tier, create an ordered dictionary sorted alphabetically by sponsor name
-SPONSORS = {k: OrderedDict(sorted(list(v.items()), key=lambda t: t[0])) for k, v in list(SPONSORS.items())}
-
+# Import list of Sponsors from the static site’s data file
+# Only display gold & silver sponsors for now on the homepage
+# The same file is used to display sponsors in the Sponsors page’s full list
+SPONSORS = open("static_content/_data/sponsors.yml")
+SPONSORS = yaml.load(SPONSORS, Loader=yaml.FullLoader)
 
 # Configure the Google Analytics tracker
 from portality.lib import analytics
