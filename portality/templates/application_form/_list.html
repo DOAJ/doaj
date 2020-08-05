@@ -1,4 +1,4 @@
-<div id="{{ f.name }}__container" class=form__question">
+<div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
     <label>
         {% autoescape off %}{{ f.label }}{% endautoescape %}
         {% if f.help("long_help") %}
