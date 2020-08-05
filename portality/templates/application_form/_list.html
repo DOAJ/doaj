@@ -22,7 +22,7 @@
     {% else %}
         {% include entry_template %}
     {% endif %}
-    <div id="checkbox-errors"></div>
+    <div id="{{ f.name }}_checkbox-errors"></div>
 
 
     {% if f.help("short_help") %}

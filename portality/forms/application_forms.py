@@ -779,7 +779,7 @@ class FieldDefinitions:
             "class": "input-xlarge"
         },
         "validate": [
-            {"required_if": {"field": "apc", "value": "y"}}
+            {"required_if": {"field": "apc", "value": "y", "message" : "Currency required because you answered YES to previous question"}}
         ]
 
     }
@@ -794,7 +794,7 @@ class FieldDefinitions:
             "placeholder" : "Highest APC Charged"
         },
         "validate":[
-            {"required_if": {"field": "apc", "value": "y"}}
+            {"required_if": {"field": "apc", "value": "y", "message" : "Value required because you answered YES to previous question"}}
         ]
     }
 
@@ -1943,6 +1943,10 @@ class RequiredIfBuilder:
         html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-required-if"] = settings.get("value")
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
+        if "message" in settings:
+            html_attrs["data-parsley-required-if-message"] = settings["message"]
+        else:
+            html_attrs["data-parsley-required-if-message"] = "This answer is required"
 
     @staticmethod
     def wtforms(field, settings):

@@ -631,6 +631,14 @@ var formulaic = {
                         $(div).append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
                         feather.replace();
                         if (idx !== 0) {
+                            $(div).find("select").attr("required", false);
+                            $(div).find("select").attr("data-parsley-required-if", false);
+                            $(div).find("input").attr("required", false);
+                            $(div).find("input").attr("data-parsley-required-if", false);
+
+                            $(div).find("select").attr("data-parsley-validate-if-empty", "true");
+                            $(div).find("input").attr("data-parsley-validate-if-empty", "true");
+
                             $(div).hide();
                         }
                     })
