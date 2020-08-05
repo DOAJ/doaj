@@ -135,6 +135,7 @@
                 let currency = $("select[id$='apc_currency']");
                 let max = $("input[id$='apc_max']");
                 let result = ""
+                let isValid = true;
                 for (let i = 0; i < currency.length; i++){
                     let curr = $(currency[i]).find('option:selected').text()
                     let m = $(max[i]).val()
@@ -142,7 +143,19 @@
                         result += (m === "" ? "" : m) + " " + (curr === "" ? "" : curr) + " " + "<br>";
                     }
                 }
-                $(question).html(result);
+                console.log($(max[0]).parsley().validationResult)
+                console.log($(currency[0]).parsley().validationResult)
+                if ($(max[0]).parsley().validationResult !== true || ($(currency[0]).parsley().validationResult !== true)) {
+                    isValid = false;
+                }
+                console.log(result)
+                if (result === "" && isValid){
+                    $(question).parent().hide();
+                }
+                else {
+                    $(question).parent().show();
+                    $(question).html(result);
+                }
             }
             else {
                 let name = id.substring(0, id.indexOf("__review_value"));
