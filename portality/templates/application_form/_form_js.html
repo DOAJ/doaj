@@ -139,10 +139,7 @@
                     let curr = $(currency[i]).find('option:selected').text()
                     let m = $(max[i]).val()
                     if (m !== "" || curr !== "") {
-                        console.log(curr)
-                        console.log(m)
                         result += (m === "" ? "" : m) + " " + (curr === "" ? "" : curr) + " " + "<br>";
-                        console.log(result)
                     }
                 }
                 $(question).html(result);
