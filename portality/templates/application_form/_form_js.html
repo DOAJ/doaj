@@ -130,16 +130,27 @@
         review_values.each((idx, question) => {
             let id = $(question).attr('id')
             if (id === "apc_charges__review_value") {
-                    let currency = $("select[id='apc_currency']").find('option:selected').val();
-                    let max = $("input[name='apc_max']").val();
-                    if (currency === undefined) {
-                        currency = "";
+                let currency = $("select[id$='apc_currency']");
+                let max = $("input[id$='apc_max']");
+                let result = ""
+                let isValid = true;
+                for (let i = 0; i < currency.length; i++){
+                    let curr = $(currency[i]).find('option:selected').text()
+                    let m = $(max[i]).val()
+                    if (m !== "" || curr !== "") {
+                        result += (m === "" ? "" : m) + " " + (curr === "" ? "" : curr) + " " + "<br>";
                     }
-                    if (max === undefined) {
-                        max = "";
-                    }
-
-                    $(question).html(max + " " + currency);
+                }
+                if ($(max[0]).parsley().validationResult !== true || ($(currency[0]).parsley().validationResult !== true)) {
+                    isValid = false;
+                }
+                if (result === "" && isValid){
+                    $(question).parent().hide();
+                }
+                else {
+                    $(question).parent().show();
+                    $(question).html(result);
+                }
             }
             else {
                 let name = id.substring(0, id.indexOf("__review_value"));
@@ -172,6 +183,15 @@
 
 
                     } else {
+                        if ($(input).attr("data-parsley-required-if") !== undefined) {
+                            if (input.val() === "" && $(input).parsley().validationResult === true){
+                                $(question).parent().hide();
+                                return;
+                            }
+                            else {
+                                $(question).parent().show();
+                            }
+                        }
                         let type = input.attr("type");
                         if (type === "text" || type === "number") {
                             $(question).html(input.val())
@@ -354,9 +374,6 @@
     }
 
     $("#reviewed").on("click", manage_review_checkboxes);
-
-
-
 
     let currentTab = 0; // Current tab is set to be the first tab (0)
     let previousTab = 0;

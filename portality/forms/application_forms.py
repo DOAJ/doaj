@@ -777,7 +777,11 @@ class FieldDefinitions:
         ],
         "attr": {
             "class": "input-xlarge"
-        }
+        },
+        "validate": [
+            {"required_if": {"field": "apc", "value": "y"}}
+        ]
+
     }
 
     APC_MAX = {
@@ -788,7 +792,10 @@ class FieldDefinitions:
         "datatype": "integer",
         "help" : {
             "placeholder" : "Highest APC Charged"
-        }
+        },
+        "validate":[
+            {"required_if": {"field": "apc", "value": "y"}}
+        ]
     }
 
     HAS_WAIVER = {
