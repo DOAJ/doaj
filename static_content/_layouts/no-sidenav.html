@@ -35,7 +35,7 @@
               <div class="title-list__text">
                 <figure class="portrait">
                   {% if i.photo %}
-                    <div class="portrait__bg-img--3d" style="background-image: url('../../img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                    <div class="portrait__bg-img--3d" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                   {% else %}
                     <div class="portrait__img--empty"></div>
                   {% endif %}
