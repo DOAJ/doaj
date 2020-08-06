@@ -43,14 +43,7 @@
 
         <h4 class="label">Actions</h4>
         <ul class="tags">
-          {% if i.status == 'Under review by an editor' %}
-          <li class="tag">
-            <a href="{{ site.baseurl }}{% link apply/07-review.md %}">
-              <span data-feather="message-circle" aria-hidden="true"></span>
-              <span>Message editor</span>
-            </a>
-          </li>
-          {% else %}
+          {% if i.status != 'Under review by an editor' %}
           <li class="tag">
             <a href="{{ site.baseurl }}{% link apply/07-review.md %}">
               <span data-feather="edit-3" aria-hidden="true"></span>
