@@ -1,11 +1,15 @@
 ---
 layout: apply
-title: Indonesia Accounting Journal
-admin:  true
+title: <span data-feather="eye" aria-hidden="true"></span> Review your answers
+toc: true
 fragment: false
 highlight: false
+number: 7
 ---
 
+Please review your answers before submitting your application.
+
+---
 
 <table>
   <tr>
@@ -118,11 +122,16 @@ highlight: false
 ---
 
 <div class="form__question">
-  <input id="review-1" name="review" type="checkbox" checked>
+  <input id="review-1" name="review" type="checkbox">
   <label for="review-1">I’ve reviewed the answers to my application and confirm that the information provided is accurate and true.</label>
 </div>
 
 <div class="form__question">
-  <input id="review-2" name="review" type="checkbox" checked>
+  <input id="review-2" name="review" type="checkbox">
   <label for="review-2">I understand that, if the information is found to be not sufficient or incomplete, my application will not be considered.</label>
 </div>
+
+<p class="pager-buttons">
+  <a href="{{ site.baseurl }}06-best-practice/" class="pager-buttons__left">Previous</a>
+  <a href="{{ site.baseurl }}thank-you/" class="pager-buttons__right">Submit</a>
+</p>

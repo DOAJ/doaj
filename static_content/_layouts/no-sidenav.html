@@ -22,12 +22,7 @@
       {% if page.highlight %}</div>{% endif %}
 
       <div class="container">
-        {% if page.name == 'subjects.md' %}
-          <!-- Search section: subjects -->
-        {% endif %}
-
-
-        {% if page.name == 'team.md' or page.name == 'team-fragment.md' %}
+        {% if page.relative_path == '_about/team.md' or page.relative_path == '_about/team-fragment.md' %}
           <!-- About section: team -->
           <ul class="row title-list">
             {% for i in site.data.team %}
@@ -60,7 +55,7 @@
             {% endfor %}
           </ul>
 
-        {% elsif page.name == 'ambassadors.md' or page.name == 'ambassadors-fragment.md' %}
+        {% elsif page.relative_path == '_about/ambassadors.md' or page.relative_path == '_about/ambassadors-fragment.md' %}
           <!-- About section: ambassadors -->
           <h2>Ambassadors</h2>
           <ul class="row title-list">
@@ -79,7 +74,7 @@
             {% endfor %}
           </ul>
 
-        {% elsif page.name == 'editorial-subcommittee.md' or page.name == 'editorial-subcommittee-fragment.md' %}
+        {% elsif page.relative_path == '_about/editorial-subcommittee.md' or page.relative_path == '_about/editorial-subcommittee-fragment.md' %}
           <!-- About section: editorial subcommittee -->
           <h2>Members</h2>
           <ul class="row title-list">
@@ -99,7 +94,7 @@
             {% endfor %}
           </ul>
 
-        {% elsif page.name == 'advisory-board-council.md' or page.name == 'advisory-board-council-fragment.md' %}
+        {% elsif page.relative_path == '_about/advisory-board-council.md' or page.relative_path == '_about/advisory-board-council-fragment.md' %}
           <!-- About section: advisory board & council -->
           <h2>Advisory Board</h2>
           <p>The DOAJ Advisory Board was elected by the community to provide advice and expertise to the DOAJ Team. The Board is governed by <a href="https://docs.google.com/document/d/1jXOga20kU61i-vzdQmPtn5uZUckzX8EwU6Zx7Xd3AQ4/edit?usp=sharing">Terms of reference</a>. All board members started in August 2019.</p>
@@ -149,7 +144,7 @@
             {% endfor %}
           </ul>
 
-        {% elsif page.name == 'volunteers.md' or page.name == 'volunteers-fragment.md' %}
+        {% elsif page.relative_path == '_about/volunteers.md' or page.relative_path == '_about/volunteers-fragment.md' %}
           <!-- About section: volunteers -->
           <h2>Editors</h2>
           <ul class="row title-list">

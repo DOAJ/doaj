@@ -30,6 +30,17 @@ sass:
 plugins_dir:
   - jekyll-toc
   - jekyll-target-blank
+collections:
+  about:
+    output: true
+  docs:
+    output: true
+  support:
+    output: true
+  apply:
+    output: true
+  footer:
+    output: true
 
 # TOC settings
 toc:
