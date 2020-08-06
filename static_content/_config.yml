@@ -21,10 +21,12 @@ markdown: kramdown
 exclude:
   - Gemfile
   - Gemfile.lock
+  - css/doaj.scss
 permalink:
   pretty
 sass:
     style: compressed
+    sass_dir: _sass
 plugins_dir:
   - jekyll-toc
   - jekyll-target-blank
