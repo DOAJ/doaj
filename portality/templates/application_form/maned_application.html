@@ -5,22 +5,19 @@
 
 {% extends "layouts/base.html" %}
 
-{% set form_id = "new_form" %}
-{% set form_action = url_for("admin.application") %}
-{% set formulaic_after = url_for("admin.suggestions") %} {# Fixme: this may change to applications #}
-{% if obj %}
-    {% set form_id = url_for("admin.application", application_id=obj.id) %}
-{% endif %}
+{% set formulaic_after = url_for("admin.application", application_id=obj.id) %}
+{% set form_id = "maned_form" %}
+{% set form_action = url_for("admin.application", application_id=obj.id) %}
 
-{% set js_validation = False %}
-{% set auto_save = 30000 %}
+{% set js_validation = True %}
+{% set auto_save = 0 %}
 {% set TAB1 = {"title": "Open access compliance", "fieldsets": ["basic_compliance"]} %}
 {% set TAB2 = {"title": "About the Journal", "fieldsets": ["about_the_journal", "publisher", "society_or_institution"]} %}
 {% set TAB3 = {"title": "Copyright & licensing", "fieldsets": ["licensing", "embedded_licensing", "copyright"]} %}
 {% set TAB4 = {"title": "Editorial", "fieldsets": ["peer_review", "plagiarism", "editorial"]} %}
 {% set TAB5 = {"title": "Business model", "fieldsets": ["apc", "apc_waivers", "other_fees"]} %}
 {% set TAB6 = {"title": "Best practice", "fieldsets": ["archiving_policy", "deposit_policy", "unique_identifiers"]} %}
-{% set TAB_ED = {"title": "Editorial", "fieldsets": ["seal", "quick_reject", "reassign", "status", "reviewers", "continuations", "subject", "notes"]} %}
+{% set TAB_ED = {"title": "Admin", "fieldsets": ["seal", "quick_reject", "reassign", "status", "reviewers", "continuations", "subject", "notes"]} %}
 {% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6, TAB_ED] %}
 
 
@@ -36,6 +33,7 @@
                       action="{{ form_action }}"
                       method="post"
                       data-formulaic-after="{{ formulaic_after }}">
+
                     <div class="tab form-section">
                         {% include "application_form/01-oa-compliance/index.html" %}
                     </div>
@@ -58,7 +56,7 @@
                         {% include "application_form/07-review/index.html" %}
                     </div>
                     <div class="tab form-section">
-                        {% include "application_form/08-editorial/index.html" %}
+                        {% include "application_form/admin/index.html" %}
                     </div>
                     <p class="cannot-submit" id="cannot_save_draft" style="display: none"><i>You cannot save the draft because your application contains some invalid fields. You do not have to provide all required answers but all provided information must have valid format. Please review your answers and try again.</i></p>
                     {% include "application_form/_buttons.html" %}
@@ -68,7 +66,7 @@
 
             <div class="col-md-4">
                 <div >
-                    {% include "application_form/pagination_menu.html" %}
+                    {% include "application_form/pagination_menu_admin.html" %}
                 </div>
                 <div class="row">
                     {% include "application_form/aside_menu.html" %}

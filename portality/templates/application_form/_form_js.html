@@ -212,7 +212,7 @@
             }
             if ($(input).val() !== "True") {
                 result = false;
-                return;
+
             }
         });
         return result;
@@ -362,8 +362,8 @@
 
 
 
-    let currentTab = 5; // Current tab is set to be the first tab (0)
-    let previousTab = 4;
+    let currentTab = 0; // Current tab is set to be the first tab (0)
+    let previousTab = 0;
     let tabs = $(".tab");
     let sections = $(".form-section");
     prepareSections();

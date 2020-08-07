@@ -331,6 +331,7 @@ def application(application_id):
 
     if request.method == "GET":
         fc = ApplicationFormFactory.context("admin")
+        fc.processor(source=ap)
         return fc.render_template(obj=ap)
 
     elif request.method == "POST":

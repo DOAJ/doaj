@@ -1301,6 +1301,8 @@ class FieldDefinitions:
             "note_date",
             "note_id"
         ],
+        "template": "application_form/_list.html",
+        "entry_template": "application_form/_entry_group_horizontal.html",
         "widgets": [
             "multiple_field"
         ]
@@ -1309,18 +1311,22 @@ class FieldDefinitions:
     NOTE = {
         "subfield": True,
         "name": "note",
+        "group": "notes",
         "input": "text"
     }
 
     NOTE_DATE = {
         "subfield": True,
         "name" : "note_date",
-        "input": "text"
+        "group": "notes",
+        "input": "text",
+        "disabled": True
     }
 
     NOTE_ID = {
         "subfield" : True,
         "name": "note_id",
+        "group": "notes",
         "input": "hidden"
     }
 
