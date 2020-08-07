@@ -20,6 +20,7 @@ class MultiFieldValidator(object):
         other_field = form._fields.get(self.other_field_name)
         if other_field is None:
             raise Exception('No field named "{0}" in form'.format(self.other_field_name))
+        return other_field
 
 
 class DataOptional(object):

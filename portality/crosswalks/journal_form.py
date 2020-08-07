@@ -19,6 +19,7 @@ class JournalGenericXWalk(object):
         if form.alternative_title.data:
             bibjson.alternative_title = form.alternative_title.data
 
+        # fixme: is apc no longer multi?
         for apc_record in form.apc_charges.data:
             if not apc_record["apc_currency"] and not apc_record["apc_max"]:
                 continue
@@ -46,10 +47,10 @@ class JournalGenericXWalk(object):
         if form.copyright_url.data:
             bibjson.copyright_url = form.copyright_url.data
 
-        if "publisher_name" in form.publisher.data and form.publisher.data["publisher_name"]:
-            bibjson.publisher_name = form.publisher.data["publisher_name"]
-        if "publisher_country" in form.publisher.data and form.publisher.data["publisher_country"]:
-            bibjson.publisher_country = form.publisher.data["publisher_country"]
+        if form.publisher_name.data:
+            bibjson.publisher_name = form.publisher_name.data
+        if form.publisher_country.data:
+            bibjson.publisher_country = form.publisher_country.data
 
         if form.deposit_policy.data:
             dep_services = [e for e in form.deposit_policy.data if e not in ["Unregistered", "none", "other"]]
@@ -74,10 +75,10 @@ class JournalGenericXWalk(object):
         if form.eissn.data:
             bibjson.eissn = form.eissn.data
 
-        if "institution_name" in form.institution.data and form.institution.data["institution_name"]:
-            bibjson.institution_name = form.institution.data["institution_name"]
-        if "institution_country" in form.institution.data and form.institution.data["institution_country"]:
-            bibjson.institution_country = form.institution.data["institution_country"]
+        if form.institution_name.data:
+            bibjson.institution_name = form.institution_name.data
+        if form.institution_country.data:
+            bibjson.institution_country = form.institution_country.data
 
         if form.keywords.data:
             bibjson.keywords = form.keywords.data
