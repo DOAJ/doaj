@@ -1,0 +1,18 @@
+.cookie-consent {
+  padding: $spacing-02;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 15;
+  background-color: $sanguine;
+  @include typescale-06;
+
+  p, a {
+    line-height: 1;
+    color: $warm-white;
+  }
+
+  .button {
+    float: right;
+  }
+}
