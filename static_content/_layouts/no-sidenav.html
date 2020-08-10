@@ -62,6 +62,13 @@
             {% for i in site.data.ambassadors %}
             <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
+                <figure class="portrait">
+                  {% if i.photo %}
+                <div class="portrait__bg-img--3d" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/ambassadors/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                  {% else %}
+                <div class="portrait__img--empty"></div>
+                  {% endif %}
+                </figure>
                 <p class="label">{{ i.region }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
                 {% if i.bio %}
