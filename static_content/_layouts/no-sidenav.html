@@ -89,6 +89,16 @@
                 <p class="title-list__para">
                   {{ i.bio }}
                 </p>
+                {% if i.coi %}
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
+                    {% for j in i.coi %}
+                    <li><a href="{{ j[1] }}" target="_blank" class="tag">{{ j[0] }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                {% endif %}
               </div>
             </li>
             {% endfor %}
@@ -132,12 +142,14 @@
                   {{ i.institution }}<br/>
                 </p>
                 {% if i.coi %}
-                <p class="title-list__para">
-                  Conflict of interest statement(s):
-                  {% for j in i.coi %}
-                  <a href="{{ j[1] }}" target="_blank">{{ j[0] }}</a>
-                  {% endfor %}
-                </p>
+                <div class="title-list__para">
+                  <h3 class="label label--secondary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
+                    {% for j in i.coi %}
+                    <li><a href="{{ j[1] }}" target="_blank" class="tag">{{ j[0] }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
                 {% endif %}
               </div>
             </li>
