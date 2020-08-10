@@ -1,19 +1,29 @@
-<div class="row">
-    <div class="col-md-12">
-        <ul class="nav nav-tabs">
-            <li{% if request.path == url_for('editor.index') %} class="active"{% endif %}><a href="{{ url_for('editor.index') }}">Group Info</a></li>
+{% set index = url_for("editor.index") %}
+{% set group_journals = url_for('editor.group_journals') %}
+{% set group_apps = url_for('editor.group_suggestions') %}
+{% set ass_journals = url_for('editor.associate_journals') %}
+{% set ass_apps = url_for('editor.associate_suggestions') %}
 
-            {% if current_user.has_role("list_group_journals") %}
-            <li{% if request.path == url_for('editor.group_journals') %} class="active"{% endif %}><a href="{{ url_for('editor.group_journals') }}">Your Group's Journals</a></li>
-            {% endif %}
+{% set tabs = [
+    (index, "Group Info", None),
+    (group_journals, "Your Group's Journals", "list_group_journals"),
+    (group_apps, "Your Group's Applications", "list_group_suggestions"),
+    (ass_journals, "Journals Assigned to You", None),
+    (ass_apps, "Applications Assigned to You", None)
+    ]
+%}
 
-            {% if current_user.has_role("list_group_suggestions") %}
-            <li{% if request.path == url_for('editor.group_suggestions') %} class="active"{% endif %}><a href="{{ url_for('editor.group_suggestions') }}">Your Group's Applications</a></li>
-            {% endif %}
-
-            <li{% if request.path == url_for('editor.associate_journals') %} class="active"{% endif %}><a href="{{ url_for('editor.associate_journals') }}">Journals Assigned to You</a></li>
-
-            <li{% if request.path == url_for('editor.associate_suggestions') %} class="active"{% endif %}><a href="{{ url_for('editor.associate_suggestions') }}">Applications Assigned to You</a></li>
+<div class="tabs">
+    <nav class="tabs__menu">
+        <ul class="tabs__list" role="tablist">
+            {% for url, label, role in tabs %}
+                {% set selected = url == request.path %}
+                {% if role == None or current_user.has_role(role) %}
+                <li class="tabs__item" {% if not selected %}role="presentation"{% endif %}>
+                    <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}">{{ label }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
         </ul>
-    </div>
+    </nav>
 </div>

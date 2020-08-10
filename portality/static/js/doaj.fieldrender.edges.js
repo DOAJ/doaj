@@ -2015,28 +2015,15 @@ $.extend(true, doaj, {
     fieldRender: {
         titleField : function (val, resultobj, renderer) {
             var field = '<span class="title">';
-            var isjournal = false;
-            if (resultobj.bibjson && resultobj.bibjson.journal) {
-                // this is an article
-                field += "<i class='far fa-file-alt'></i>";
-            }
-            else if (resultobj.suggestion) {
-                // this is a suggestion
-                field += "<i class='fas fa-sign-in-alt'></i>";
-            } else {
-                // this is a journal
-                field += "<i class='fas fa-book-open'></i>";
-                isjournal = true;
-            }
             if (resultobj.bibjson.title) {
-                if (isjournal) {
+                if (resultobj.es_type === "journal") {
                     var display = edges.escapeHtml(resultobj.bibjson.title);
                     if (resultobj.admin.in_doaj) {
                         display =  "<a href='/toc/" + doaj.journal_toc_id(resultobj) + "'>" + display + "</a>";
                     }
-                    field += "&nbsp;" + display;
+                    field += display;
                 } else {
-                    field += "&nbsp" + edges.escapeHtml(resultobj.bibjson.title);
+                    field += edges.escapeHtml(resultobj.bibjson.title);
                 }
                 if (resultobj.admin && resultobj.admin.ticked) {
                     field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​";
@@ -2051,32 +2038,33 @@ $.extend(true, doaj, {
         },
 
         authorPays : function(val, resultobj, renderer) {
-            var mapping = {
-                "Y": {"text": "Has charges", "class": "red"},
-                "N": {"text": "No charges", "class": "green"},
-                "CON": {"text": "Conditional charges", "class": "blue"},
-                "NY": {"text": "No info available", "class": ""}
-            };
             var field = "";
-            if (resultobj.bibjson && resultobj.bibjson.author_pays) {
-                if(mapping[resultobj['bibjson']['author_pays']]) {
-                    var result = '<span class=' + mapping[resultobj['bibjson']['author_pays']]['class'] + '>';
-                    result += mapping[resultobj['bibjson']['author_pays']]['text'];
-                    result += '</span>';
-                    field += result;
-                } else {
-                    field += resultobj['bibjson']['author_pays'];
-                }
-                if (resultobj.bibjson && resultobj.bibjson.author_pays_url) {
-                    var url = resultobj.bibjson.author_pays_url;
-                    field += " (see <a href='" + url + "'>" + url + "</a>)"
-                }
-                if (field === "") {
-                    return false
-                }
-                return field
+            if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
+                field += 'Has charges';
+            } else if (edges.hasProp(resultobj, "bibjson.other_charges.has_other_charges") && resultobj.bibjson.other_charges.has_other_charges) {
+                field += 'Has charges';
             }
-            return false;
+            if (field === "") {
+                field = 'No charges';
+            }
+
+            var urls = [];
+            if (edges.hasProp(resultobj, "bibjson.apc.url")) {
+                urls.push(resultobj.bibjson.apc.url);
+            }
+            if (edges.hasProp(resultobj, "bibjson.has_other_charges.url")) {
+                urls.push(resultobj.bibjson.has_other_charges.url)
+            }
+
+            if (urls.length > 0) {
+                field += ' (see ';
+                for (var i = 0; i < urls.length; i++) {
+                    field += '<a href="' + urls[i] + '">' + urls[i] + '</a>';
+                }
+                field += ')';
+            }
+
+            return field ? field : false;
         },
 
         abstract : function (val, resultobj, renderer) {
@@ -2094,28 +2082,29 @@ $.extend(true, doaj, {
         },
 
         journalLicense : function (val, resultobj, renderer) {
-            var title = undefined;
+            var titles = [];
             if (resultobj.bibjson && resultobj.bibjson.journal && resultobj.bibjson.journal.license) {
                 var lics = resultobj["bibjson"]["journal"]["license"];
-                if (lics.length > 0) {
-                    title = lics[0].title
-                }
+                var titles = lics.map(function(x) { return x.type });
             }
             else if (resultobj.bibjson && resultobj.bibjson.license) {
                 var lics = resultobj["bibjson"]["license"];
-                if (lics.length > 0) {
-                    title = lics[0].title
-                }
+                titles = lics.map(function(x) { return x.type });
             }
 
-            if (title) {
-                if (doaj.licenceMap[title]) {
-                    var urls = doaj.licenceMap[title];
-                    // i know i know, i'm not using styles.  the attrs still work and are easier.
-                    return "<a href='" + urls[1] + "' title='" + title + "' target='blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + title + "'></a>"
-                } else {
-                    return title
+            var links = [];
+            if (titles.length > 0) {
+                for (var i = 0; i < titles.length; i++) {
+                    var title = titles[i];
+                    if (doaj.licenceMap[title]) {
+                        var urls = doaj.licenceMap[title];
+                        // i know i know, i'm not using styles.  the attrs still work and are easier.
+                        links.push("<a href='" + urls[1] + "' title='" + title + "' target='blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + title + "'></a>");
+                    } else {
+                        links.push(title);
+                    }
                 }
+                return links.join(" ");
             }
 
             return false;
@@ -2137,32 +2126,30 @@ $.extend(true, doaj, {
         },
 
         links : function (val, resultobj, renderer) {
-            if (resultobj.bibjson && resultobj.bibjson.link) {
-                var ls = resultobj.bibjson.link;
+            if (resultobj.bibjson && resultobj.bibjson.ref) {
+                var urls = [];
+                var ls = Object.keys(resultobj.bibjson.ref);
                 for (var i = 0; i < ls.length; i++) {
-                    var t = ls[i].type;
-                    var label = '';
-                    if (t == 'fulltext') {
-                        label = 'Full text'
-                    } else if (t == 'homepage') {
-                        label = 'Home page'
-                    } else {
-                        label = t.substring(0, 1).toUpperCase() + t.substring(1)
+                    if (ls[i] === "journal") {
+                        var url = resultobj.bibjson.ref[ls[i]];
+                        urls.push("<strong>" + ls[i] + "</strong>: <a href='" + url + "'>" + edges.escapeHtml(url) + "</a>")
                     }
-                    return "<strong>" + label + "</strong>: <a href='" + ls[i].url + "'>" + edges.escapeHtml(ls[i].url) + "</a>"
                 }
+                return urls.join("<br>");
             }
             return false;
         },
 
         issns : function (val, resultobj, renderer) {
-            if (resultobj.bibjson && resultobj.bibjson.identifier) {
-                var ids = resultobj.bibjson.identifier;
+            if (resultobj.bibjson && (resultobj.bibjson.issn || resultobj.bibjson.eissn)) {
+                var issn = resultobj.bibjson.issn;
+                var eissn = resultobj.bibjson.eissn;
                 var issns = [];
-                for (var i = 0; i < ids.length; i++) {
-                    if (ids[i].type === "pissn" || ids[i].type === "eissn") {
-                        issns.push(edges.escapeHtml(ids[i].id))
-                    }
+                if (issn) {
+                    issns.push(edges.escapeHtml(issn));
+                }
+                if (eissn) {
+                    issns.push(edges.escapeHtml(eissn));
                 }
                 return issns.join(", ")
             }
@@ -2222,8 +2209,8 @@ $.extend(true, doaj, {
         },
 
         suggestedOn : function (val, resultobj, renderer) {
-            if (resultobj && resultobj['suggestion'] && resultobj['suggestion']['suggested_on']) {
-                return doaj.iso_datetime2date_and_time(resultobj['suggestion']['suggested_on']);
+            if (resultobj && resultobj['admin'] && resultobj['admin']['date_applied']) {
+                return doaj.iso_datetime2date_and_time(resultobj['admin']['date_applied']);
             } else {
                 return false;
             }

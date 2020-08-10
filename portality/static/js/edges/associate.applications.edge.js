@@ -99,22 +99,8 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "publisher",
                     category: "facet",
-                    field: "bibjson.publisher.exact",
+                    field: "bibjson.publisher.name.exact",
                     display: "Publisher",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "provider",
-                    category: "facet",
-                    field: "bibjson.provider.exact",
-                    display: "Platform, Host, Aggregator",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -155,9 +141,8 @@ $.extend(true, doaj, {
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal Language','field':'index.language'},
-                        {'display':'Publisher','field':'bibjson.publisher'},
-                        {'display':'Alternative Title','field':'bibjson.alternative_title'},
-                        {'display':'Platform, Host, Aggregator','field':'bibjson.provider'}
+                        {'display':'Publisher','field':'bibjson.publisher.name'},
+                        {'display':'Alternative Title','field':'bibjson.alternative_title'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
@@ -233,32 +218,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>Description</strong>: ",
-                                    "field" : "suggestion.description"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre" : "<strong>Contact</strong>: ",
-                                    "field" : "admin.contact.name"
-                                },
-                                {
-                                    "field" : "admin.contact.email"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Application by</strong>: ",
-                                    "field": "suggestion.suggester.name",
-                                    "post" : " "
-                                },
-                                {
-                                    "pre" : "<strong>Applicant email</strong>: ",
-                                    "field": "suggestion.suggester.email"
-                                }
-                            ],
-                            [
-                                {
                                     "pre": "<strong>Classification</strong>: ",
                                     "field": "index.classification"
                                 }
@@ -272,31 +231,13 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre": "<strong>Publisher</strong>: ",
-                                    "field": "bibjson.publisher"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Platform, Host, Aggregator</strong>: ",
-                                    "field": "bibjson.provider"
+                                    "field": "bibjson.publisher.name"
                                 }
                             ],
                             [
                                 {
                                     "pre": "<strong>Publication charges?</strong>: ",
                                     valueFunction: doaj.fieldRender.authorPays
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Started publishing Open Access content in</strong>: ",
-                                    "field": "bibjson.oa_start.year"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Stopped publishing Open Access content in</strong>: ",
-                                    "field": "bibjson.oa_end.year"
                                 }
                             ],
                             [
@@ -348,8 +289,7 @@ $.extend(true, doaj, {
                         'index.language.exact' : 'Journal Language',
                         'index.country.exact' : 'Country of publisher',
                         'index.subject.exact' : 'Subject',
-                        'bibjson.publisher.exact' : 'Publisher',
-                        'bibjson.provider.exact' : 'Platform, Host, Aggregator',
+                        'bibjson.publisher.name.exact' : 'Publisher',
                         'index.license.exact' : 'Journal License'
                     }
                 }),
@@ -367,7 +307,7 @@ $.extend(true, doaj, {
                 search_url: search_url,
                 manageUrl: true,
                 openingQuery : es.newQuery({
-                    sort: {"field" : "suggestion.suggested_on", "order" : "asc"}
+                    sort: {"field" : "admin.date_applied", "order" : "asc"}
                 }),
                 components: components,
                 callbacks : {

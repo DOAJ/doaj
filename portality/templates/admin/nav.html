@@ -18,8 +18,8 @@
 <div class="tabs">
     <nav class="tabs__menu">
         <ul class="tabs__list" role="tablist">
-            {% set selected = url == request.path %}
             {% for url, label in tabs %}
+                {% set selected = url == request.path %}
                 <li class="tabs__item" {% if not selected %}role="presentation"{% endif %}>
                     <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}">{{ label }}</a>
                 </li>
