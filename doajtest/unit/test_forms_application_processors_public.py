@@ -103,6 +103,8 @@ class TestPublicApplicationProcessor(DoajTestCase):
         # pre validate (should do nothing)
         processor.pre_validate()
 
+        processor.validate()
+
         # crosswalk
         processor.form2target()
         assert processor.target is not None

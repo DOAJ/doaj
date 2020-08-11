@@ -28,7 +28,7 @@ class ApplicationService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("reject_application", [
-            {"arg": application, "instance" : models.Suggestion, "allow_none" : False, "arg_name" : "application"},
+            {"arg": application, "instance" : models.Application, "allow_none" : False, "arg_name" : "application"},
             {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
             {"arg" : provenance, "instance" : bool, "allow_none" : False, "arg_name" : "provenance"},
             {"arg" : note, "instance" : str, "allow_none" : True, "arg_name" : "note"},
