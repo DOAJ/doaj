@@ -459,10 +459,10 @@ class FieldDefinitions:
             "required",
             "is_url"
         ],
-        "placeholder": "https://www.my-journal.com/about#licensing",
         "help": {
             "short_help": "Link to the page where the license terms are stated",
-            "doaj_criteria": "You must provide a link to your license terms"
+            "doaj_criteria": "You must provide a link to your license terms",
+            "placeholder": "https://www.my-journal.com/about#licensing",
         },
         "widgets": [
             "clickable_url"
@@ -497,7 +497,8 @@ class FieldDefinitions:
             {"field": "license_display", "value": "y"}
         ],
         "help": {
-            "short_help": "Link to an example article"
+            "short_help": "Link to an example article",
+            "placeholder": "https://www.my-journal.com/articles/article-page"
         },
         "validate": [
             "is_url",
