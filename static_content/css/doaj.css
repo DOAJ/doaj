@@ -1073,10 +1073,6 @@ form {
       margin-top: auto; }
 
 input, select, button, textarea {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   border-radius: 0;
@@ -2761,9 +2757,9 @@ button[type="submit"] {
     background-size: 15px;
     background-color: #5C5956;
     border-color: #5C5956; }
-  #apply .application-nav__list-item--done a:hover, #apply .application-nav__list-item--done a:focus, #apply .application-nav__list-item--done a:active {
-    color: #982E0A;
-    cursor: pointer; }
+    #apply .application-nav__list-item--done a:before:hover, #apply .application-nav__list-item--done a:before:focus, #apply .application-nav__list-item--done a:before:active {
+      color: #982E0A;
+      cursor: pointer; }
   #apply .application-nav__list-item--active a:before {
     background: #FD5A3B;
     color: #282624;
