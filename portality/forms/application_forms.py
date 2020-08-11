@@ -330,7 +330,10 @@ class FieldDefinitions:
         ],
         "widgets": [
             {"autocomplete": {"field": "bibjson.publisher.name.exact"}},
-        ]
+        ],
+        "help": {
+            "placeholder": "Type or select the publisher's name"
+        }
     }
 
     PUBLISHER_COUNTRY = {
@@ -371,7 +374,8 @@ class FieldDefinitions:
             "short_help": "The society or institution responsible for the journal",
             "long_help": ["Some societies or institutions are linked to a journal in some way but are not responsible "
                           "for publishing it. The publisher can be a separate organisation. If your journal is linked to "
-                          "a society or other type of institution, enter that here."]
+                          "a society or other type of institution, enter that here."],
+            "placeholder": "Type or select the society or institution's name"
         },
         "widgets": [
             {"autocomplete": {"field": "bibjson.institution.name.exact"}},
