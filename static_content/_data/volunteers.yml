@@ -10,12 +10,13 @@ ed:
   city: Buenos Aires
   country: Argentina
   language: Spanish
+  featured: true
 
 - name: David Scherer
   area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language:
 
 - name: Emilie Champagne
@@ -24,13 +25,15 @@ ed:
   city: Québec
   country: Canada
   language: French, English
-  
+  featured: true
+
 - name: Fei Yu
   area: Librarianship, sholarly publishing, data management
   year_since:
   city: Brisbane
   country: Australia
   language: Chinese, English
+  featured: true
 
 - name: Geoff Husic
   area: Humanities, Social Sciences
@@ -38,6 +41,7 @@ ed:
   city: Lawrence
   country: USA
   language: Russian, German, English
+  featured: true
 
 - name: Lut Tamam
   area: Medicine
@@ -45,6 +49,7 @@ ed:
   city: Adana
   country: Turkey
   language: Turkish, English
+  featured: true
 
 - name: Natalia Pamuła-Cieślak
   area: Humanities, Social Sciences
@@ -52,6 +57,7 @@ ed:
   city: Toruń
   country: Poland
   language: Polish, English
+  featured: true
 
 - name: Paola Galimberti
   area: Research Evaluation
@@ -106,7 +112,7 @@ ass_ed:
   language: Tamil, Urdu, Hindi, English
 
 - name: Aji Prasetya Wibawa
-  area: 
+  area:
   year_since:
   city:
   country:
@@ -183,7 +189,7 @@ ass_ed:
   language: Italian, English
 
 - name: Anne Lahey
-  area: Libraries, Scholarly communication 
+  area: Libraries, Scholarly communication
   year_since:
   city: Canberra
   country: Australia
@@ -220,7 +226,7 @@ ass_ed:
 - name: Deborah Lins e Nóbrega
   area: Social Sciences
   year_since:
-  city: Brasilia 
+  city: Brasilia
   country: Brazil
   language: Portuguese, English
 
@@ -257,7 +263,7 @@ ass_ed:
   year_since:
   city: Rio Claro- São Paulo
   country: Brazil
-  language: Portuguese, English 
+  language: Portuguese, English
 
 - name: Elli Papadopoulou
   area:
@@ -555,7 +561,7 @@ ass_ed:
 
 - name: Tereza Simandlová
   area: Humanities
-  year_since: 
+  year_since:
   city: Prague
   country: Czech Republic
   language: Czech, Slovak, English

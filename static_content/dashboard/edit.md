@@ -10,7 +10,7 @@ highlight: false
 <table>
   <tr>
     <th>Open access compliance</th>
-    <th><a href="{{ site.baseurl }}{% link apply/01-oa-compliance.md %}">Edit this section</a></th>
+    <th><a href="{{ site.baseurl }}01-oa-compliance/">Edit this section</a></th>
   </tr>
   {% for question in site.data.form-01-oa-compliance %}
   <tr>
@@ -29,7 +29,7 @@ highlight: false
 <table>
   <tr>
     <th>About the journal</th>
-    <th><a href="{{ site.baseurl }}{% link apply/02-about.md %}">Edit this section</a></th>
+    <th><a href="{{ site.baseurl }}02-about/">Edit this section</a></th>
   </tr>
   {% for question in site.data.form-02-about %}
   <tr>
@@ -44,7 +44,7 @@ highlight: false
 <table>
   <tr>
     <th>Copyright & licensing</th>
-    <th><a href="{{ site.baseurl }}{% link apply/03-copyright-licensing.md %}">Edit this section</a></th>
+    <th><a href="{{ site.baseurl }}03-copyright-licensing/">Edit this section</a></th>
   </tr>
   {% for question in site.data.form-03-copyright-licensing %}
   <tr>
@@ -63,7 +63,7 @@ highlight: false
 <table>
   <tr>
     <th>Editorial</th>
-    <th><a href="{{ site.baseurl }}{% link apply/04-editorial.md %}">Edit this section</a></th>
+    <th><a href="{{ site.baseurl }}04-editorial/">Edit this section</a></th>
   </tr>
   {% for question in site.data.form-04-editorial %}
   <tr>
@@ -82,7 +82,7 @@ highlight: false
 <table>
   <tr>
     <th>Business model</th>
-    <th><a href="{{ site.baseurl }}{% link apply/05-business-model.md %}">Edit this section</a></th>
+    <th><a href="{{ site.baseurl }}05-business-model/">Edit this section</a></th>
   </tr>
   {% for question in site.data.form-05-business-model %}
   <tr>
@@ -101,7 +101,7 @@ highlight: false
 <table>
   <tr>
     <th>Best practice</th>
-    <th><a href="{{ site.baseurl }}{% link apply/06-best-practice.md %}">Edit this section</a></th>
+    <th><a href="{{ site.baseurl }}06-best-practice/">Edit this section</a></th>
   </tr>
   {% for question in site.data.form-06-best-practice %}
   <tr>

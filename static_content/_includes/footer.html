@@ -5,11 +5,8 @@
       <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Apply</h2>
         <ul>
-          <li><a href="{{ site.baseurl }}{% link apply/index.md %}">Application form</a></li>
-          <li><a href="{{ site.baseurl }}{% link apply/guide.md %}">Guide to applying</a></li>
-          <li><a href="{{ site.baseurl }}{% link apply/seal.md %}">The DOAJ seal</a></li>
-          <li><a href="{{ site.baseurl }}{% link apply/transparency.md %}">Transparency & best practice</a></li>
-          <li><a href="{{ site.baseurl }}{% link apply/why-index.md %}">Why index your journal in DOAJ?</a></li>
+          <li><a href="/apply/">Application form</a></li>
+          {% include menu-items.html section="apply" %}
         </ul>
       </div>
 
@@ -18,8 +15,6 @@
         <ul>
           <li><a href="">Journals</a></li>
           <li><a href="">Articles</a></li>
-          <li><a href="">Browse by subject</a></li>
-          <li><a href="">Open Knowledge Maps</a></li>
         </ul>
       </div>
 
@@ -27,34 +22,22 @@
         <h2>Documentation</h2>
         <ul>
           <li><a href="">API</a></li>
-          <li><a href="{{ site.baseurl }}{% link docs/oai-pmh.md %}">OAI-PMH</a></li>
-          <li><a href="{{ site.baseurl }}{% link docs/xml.md %}">XML</a></li>
-          <li><a href="{{ site.baseurl }}{% link docs/widgets.md %}">Widgets</a></li>
-          <li><a href="{{ site.baseurl }}{% link docs/public-data-dump.md %}">Public data dump</a></li>
-          <li><a href="{{ site.baseurl }}{% link docs/openurl.md %}">OpenURL</a></li>
+          {% include menu-items.html section="docs" %}
         </ul>
       </div>
 
       <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>About</h2>
         <ul>
-          <li><a href="{{ site.baseurl }}{% link about/index.md %}">History & mission</a></li>
-          <li><a href="{{ site.baseurl }}{% link about/team.md %}">Team</a></li>
-          <li><a href="{{ site.baseurl }}{% link about/ambassadors.md %}">Ambassadors</a></li>
-          <li><a href="{{ site.baseurl }}{% link about/advisory-board-council.md %}">Advisory Board & Council</a></li>
-          <li><a href="{{ site.baseurl }}{% link about/volunteers.md %}">Volunteers</a></li>
-          <li><a href="">News</a></li>
-          <li><a href="{{ site.baseurl }}{% link about/faq.md %}">FAQs</a></li>
+          {% include menu-items.html section="about" %}
+          <li><a href="https://blog.doaj.org" target="_blank">News</a></li>
         </ul>
       </div>
 
       <div class="col-xs-6 col-sm-4 col-lg-2">
         <h2>Support</h2>
         <ul>
-          <li><a href="{{ site.baseurl }}{% link support/index.md %}">Support DOAJ</a></li>
-          <li><a href="{{ site.baseurl }}{% link support/sponsors.md %}">Sponsors</a></li>
-          <li><a href="{{ site.baseurl }}{% link support/publisher-supporters.md %}">Publisher supporters</a></li>
-          <li><a href="{{ site.baseurl }}{% link support/supporters.md %}">Supporters</a></li>
+          {% include menu-items.html section="support" %}
         </ul>
       </div>
 
@@ -62,22 +45,22 @@
         <h2>Stay up to date</h2>
         <ul>
           <li>
-            <a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener noreferrer">
+            <a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">
               <span data-feather="twitter" aria-hidden="true"></span> Twitter
             </a>
           </li>
           <li>
-            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" target="_blank" rel="noopener">
               <span data-feather="facebook" aria-hidden="true"></span> Facebook
             </a>
           </li>
           <li>
-            <a href="https://github.com/DOAJ" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/DOAJ" target="_blank" rel="noopener">
               <span data-feather="github" aria-hidden="true"></span> Github
             </a>
           </li>
           <li>
-            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" target="_blank" rel="noopener">
               <span data-feather="linkedin" aria-hidden="true"></span> Linkedin
             </a>
           </li>
@@ -93,9 +76,7 @@
       <h2 class="sr-only">Legal & admin</h2>
       <div class="col-sm-8">
         <ul>
-          <li><a href="{{ site.baseurl }}{% link about/accessibility.md %}">Accessibility statement</a></li>
-            <li><a href="{{ site.baseurl }}{% link about/privacy.md %}">Privacy</a></li>
-          <li><a href="{{ site.baseurl }}{% link contact.md %}">Contact us</a></li>
+          {% include menu-items.html section="footer" short_title=true %}
           <li><a href="https://is4oa.org/" target="_blank" rel="noopener noreferrer">IS4OA</a></li>
           <li><a href="https://cottagelabs.com/" target="_blank" rel="noopener noreferrer">Cottage Labs LLP</a></li>
         </ul>

@@ -24,4 +24,4 @@ You only need an account if you have a journal in DOAJ or you are a volunteer.
   </p>
 </form>
 
-If you cannot log in, [reset your password]({{ site.baseurl }}{% link password-reset.md %}). If you still cannot login, [contact us]({{ site.baseurl }}{% link contact.md %}).
+If you cannot log in, [reset your password]({{ site.baseurl }}{% link password-reset.md %}). If you still cannot login, [contact us]({{ site.baseurl }}contact/).
