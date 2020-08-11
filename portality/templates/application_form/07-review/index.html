@@ -10,7 +10,7 @@
             <table>
                 <tbody>
                     <th>{{ tab.title }}</th>
-                    <th><a href="#" onclick="showTab({{ t.val }})">Edit this section</a></th>
+                    <th><a href="#" class="button" onclick="showTab({{ t.val }})">Edit this section</a></th>
                     {% set fieldsests = tab.fieldsets %}
                     {% for fieldset in fieldsests %}
                         {% set fs = formulaic_context.fieldset(fieldset) %}
