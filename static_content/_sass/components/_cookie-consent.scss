@@ -1,0 +1,22 @@
+.cookie-consent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-02;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 15;
+  background-color: $warm-black;
+  @include typescale-06;
+
+  p, a {
+    margin: 0;
+    line-height: 1;
+    color: $warm-white;
+  }
+
+  .button {
+    color: $warm-black
+  }
+}

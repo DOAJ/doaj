@@ -67,7 +67,7 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "You must answer YES to continue"}},
-            {"required_value" : {"value" : "y", "message" : "You must answer YES to continue"}}
+            {"required_value" : {"value" : "y"}}
         ],
         "contexts": {
             "editor": {
@@ -330,7 +330,10 @@ class FieldDefinitions:
         ],
         "widgets": [
             {"autocomplete": {"field": "bibjson.publisher.name.exact"}},
-        ]
+        ],
+        "help": {
+            "placeholder": "Type or select the publisher's name"
+        }
     }
 
     PUBLISHER_COUNTRY = {
@@ -371,7 +374,8 @@ class FieldDefinitions:
             "short_help": "The society or institution responsible for the journal",
             "long_help": ["Some societies or institutions are linked to a journal in some way but are not responsible "
                           "for publishing it. The publisher can be a separate organisation. If your journal is linked to "
-                          "a society or other type of institution, enter that here."]
+                          "a society or other type of institution, enter that here."],
+            "placeholder": "Type or select the society or institution's name"
         },
         "widgets": [
             {"autocomplete": {"field": "bibjson.institution.name.exact"}},
@@ -459,10 +463,10 @@ class FieldDefinitions:
             "required",
             "is_url"
         ],
-        "placeholder": "https://www.my-journal.com/about#licensing",
         "help": {
             "short_help": "Link to the page where the license terms are stated",
-            "doaj_criteria": "You must provide a link to your license terms"
+            "doaj_criteria": "You must provide a link to your license terms",
+            "placeholder": "https://www.my-journal.com/about#licensing",
         },
         "widgets": [
             "clickable_url"
@@ -493,15 +497,16 @@ class FieldDefinitions:
         "name": "license_display_example_url",
         "label": "Recent article displaying or embedding a license in the full text",
         "input": "text",
-        "optional": True,
         "conditional": [
             {"field": "license_display", "value": "y"}
         ],
         "help": {
-            "short_help": "Link to an example article"
+            "short_help": "Link to an example article",
+            "placeholder": "https://www.my-journal.com/articles/article-page"
         },
         "validate": [
-            "is_url"
+            "is_url",
+            {"required_if": {"field": "license_display", "value": "y"}}
         ],
         "widgets": [
             "clickable_url"
@@ -777,7 +782,11 @@ class FieldDefinitions:
         ],
         "attr": {
             "class": "input-xlarge"
-        }
+        },
+        "validate": [
+            {"required_if": {"field": "apc", "value": "y", "message" : "Currency required because you answered YES to previous question"}}
+        ]
+
     }
 
     APC_MAX = {
@@ -788,7 +797,10 @@ class FieldDefinitions:
         "datatype": "integer",
         "help" : {
             "placeholder" : "Highest APC Charged"
-        }
+        },
+        "validate":[
+            {"required_if": {"field": "apc", "value": "y", "message" : "Value required because you answered YES to previous question"}}
+        ]
     }
 
     HAS_WAIVER = {
@@ -883,7 +895,7 @@ class FieldDefinitions:
             {"display": "Portico", "value": "Portico", "subfields": ["preservation_service_url"]},
             {"display": "A national library", "value": "national_library", "subfields": ["preservation_service_library", "preservation_service_url"]},
             {"display": "The journal content isn't archived with a long-term preservation service",
-             "value": "none", "exclusive": True},
+             "value": "none", "exclusive": True, "subfields": ["preservation_service_url"]},
             {"display": "Other", "value": "other", "subfields": ["preservation_service_other", "preservation_service_url"]}
         ],
         "help": {
@@ -980,8 +992,8 @@ class FieldDefinitions:
             {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
             {"display": "Héloïse", "value": "Héloïse", "subfields": ["deposit_policy_url"]},
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
-            {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
-            {"display": "Other (including publisher's own site)", "value": "other", "subfields": ["deposit_policy_other"], "subfields": ["deposit_policy_url"]}
+            {"display": "Other (including publisher's own site)", "value": "other", "subfields": ["deposit_policy_other"], "subfields": ["deposit_policy_url"]},
+            {"display": "<i>The journal has no repository policy</i>", "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
@@ -1050,8 +1062,8 @@ class FieldDefinitions:
             {"display": "ARKs", "value": "ARK"},
             {"display": "Handles", "value": "Handles"},
             {"display": "PURLs", "value": "PURL"},
-            {"display": "The journal does not use persistent article identifiers", "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]}
+            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]},
+            {"display": "<i>The journal does not use persistent article identifiers</i>", "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
@@ -1936,6 +1948,10 @@ class RequiredIfBuilder:
         html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-required-if"] = settings.get("value")
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
+        if "message" in settings:
+            html_attrs["data-parsley-required-if-message"] = settings["message"]
+        else:
+            html_attrs["data-parsley-required-if-message"] = "This answer is required"
 
     @staticmethod
     def wtforms(field, settings):

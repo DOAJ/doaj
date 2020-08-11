@@ -1,6 +1,10 @@
 /* Homepage-specific styles  */
 
-#homepage {
+.homepage {
+  a {
+    text-decoration: none;
+  }
+
   .input-group input[type="text"] {
     width: 40%;
   }
@@ -14,16 +18,7 @@
     margin-left: -1px;
   }
 
-  .gold-sponsor {
-    display: block;
-
-    img {
-      height: 75px;
-      width: auto;
-    }
-  }
-
-  aside {
+  .about aside {
     margin-top: $spacing-04;
     padding-top: $spacing-04;
     border-width: 1px 0 0 0;
@@ -37,4 +32,91 @@
       border-width: 0 0 0 1px;
     }
   }
+
+  &__blog {
+    margin-bottom: $spacing-04;
+  }
+
+  &__featured-post,
+  &__other-posts,
+  &__themed-post,
+  &__funding,
+  &__volunteers,
+  &__sponsors {
+    h3:not(.label), h4:not(.label) {
+      @include font-serif;
+    }
+  }
+
+  &__featured-post,
+  &__funding,
+  &__themed-post,
+  &__sponsors {
+    text-align: center;
+    @include typescale-06;
+
+    h4 {
+      margin-top: 0;
+    }
+
+    ul, ol {
+      @include unstyled-list;
+    }
+
+    li {
+      padding: $spacing-04 0;
+      border-bottom: 1px solid rgba($dark-grey, 0.25);
+
+      &:last-child {
+        padding-bottom: 0;
+        border: 0;
+      }
+    }
+  }
+
+  &__volunteers {
+    border-right: 1px dashed rgba($dark-grey, 0.25);
+    border-left: 1px dashed rgba($dark-grey, 0.25);
+
+    h3, h4 {
+      margin-top: 0;
+    }
+
+    article {
+      margin-bottom: $spacing-04;
+
+      &:nth-child(3n+1) {
+        clear: both;
+      }
+
+      p {
+        font-size: smaller;
+        font-weight: 400;
+        text-transform: none;
+        line-height: 1.15;
+        @include font-serif;
+
+        &:first-of-type {
+          margin-bottom: $spacing-01;
+          color: $sanguine;
+        }
+      }
+    }
+  }
+
+  &__featured-post {
+    background-color: $fair-pink;
+  }
+
+  &__other-posts {}
+
+  &__themed-post {
+    background-color: $fair-pink;
+  }
+
+  &__funding {}
+
+  &__volunteers {}
+
+  &__sponsors {}
 }

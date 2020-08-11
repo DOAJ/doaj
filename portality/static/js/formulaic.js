@@ -317,10 +317,22 @@ var formulaic = {
                 if (this.isConditionSatisfied({field: field})) {
                     this.controlSelect.container({name: field}).show();
                 } else {
+                    this.removeValues(this.controlSelect.container({name: field}));
                     this.controlSelect.container({name: field}).hide();
                 }
             }
         };
+
+        this.removeValues = (container) => {
+            let inputs = $(container).find("input");
+            inputs.each((idx, inp) => {
+                $(inp).val("");
+            })
+            let selects = $(container).find("select");
+            selects.each((idx, sel) => {
+                $(sel).val("").change();
+            })
+        }
 
         this.isConditionSatisfied = function(params) {
             var field = params.field;
@@ -588,7 +600,7 @@ var formulaic = {
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" target="_blank" href="' + val + '">' + val + '</a></small></p>');
+                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + val + '">' + val + '</a></small></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
@@ -619,6 +631,14 @@ var formulaic = {
                         $(div).append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
                         feather.replace();
                         if (idx !== 0) {
+                            $(div).find("select").attr("required", false);
+                            $(div).find("select").attr("data-parsley-required-if", false);
+                            $(div).find("input").attr("required", false);
+                            $(div).find("input").attr("data-parsley-required-if", false);
+
+                            $(div).find("select").attr("data-parsley-validate-if-empty", "true");
+                            $(div).find("input").attr("data-parsley-validate-if-empty", "true");
+
                             $(div).hide();
                         }
                     })
