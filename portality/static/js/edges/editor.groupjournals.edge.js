@@ -93,26 +93,6 @@ $.extend(true, doaj, {
                     })
                 }),
                 edges.newRefiningANDTermSelector({
-                    id: "author_pays",
-                    category: "facet",
-                    field: "bibjson.author_pays.exact",
-                    display: "Publication charges?",
-                    deactivateThreshold: 1,
-                    valueMap : {
-                        "N" : "No",
-                        "Y" : "Yes",
-                        "NY" : "No Information",
-                        "CON" : "Conditional"
-                    },
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
                     id: "journal_license",
                     category: "facet",
                     field: "index.license.exact",
@@ -129,22 +109,8 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "publisher",
                     category: "facet",
-                    field: "bibjson.publisher.exact",
+                    field: "bibjson.publisher.name.exact",
                     display: "Publisher",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "platform_host_aggregator",
-                    category: "facet",
-                    field: "bibjson.provider.exact",
-                    display: "Platform, Host, Aggregator",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -244,8 +210,7 @@ $.extend(true, doaj, {
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal Language','field':'index.language'},
-                        {'display':'Publisher','field':'bibjson.publisher'},
-                        {'display':'Platform, Host, Aggregator','field':'bibjson.provider'}
+                        {'display':'Publisher','field':'bibjson.publisher.name'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
@@ -356,12 +321,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Platform, Host, Aggregator</strong>: ",
-                                    "field": "bibjson.provider"
-                                }
-                            ],
-                            [
-                                {
                                     "pre": "<strong>Publication charges?</strong>: ",
                                     valueFunction: doaj.fieldRender.authorPays
                                 }
@@ -376,18 +335,6 @@ $.extend(true, doaj, {
                                 {
                                     "pre": "<strong>Keywords</strong>: ",
                                     "field": "bibjson.keywords"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Started publishing Open Access content in</strong>: ",
-                                    "field": "bibjson.oa_start.year"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Stopped publishing Open Access content in</strong>: ",
-                                    "field": "bibjson.oa_end.year"
                                 }
                             ],
                             [
@@ -421,10 +368,8 @@ $.extend(true, doaj, {
                         "index.has_editor.exact" : "Has Associate Editor?",
                         "admin.editor_group.exact" : "Editor Group",
                         "admin.editor.exact" : "Associate Editor",
-                        "bibjson.author_pays.exact" : "Publication charges?",
                         "index.license.exact" : "Journal License",
-                        "bibjson.publisher.exact" : "Publisher",
-                        "bibjson.provider.exact" : "Platform, Host, Aggregator",
+                        "bibjson.publisher.name.exact" : "Publisher",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",
                         "index.language.exact" : "Journal Language",
@@ -435,12 +380,6 @@ $.extend(true, doaj, {
                         "admin.in_doaj" : {
                             "T" : "True",
                             "F" : "False"
-                        },
-                        "bibjson.author_pays.exact" : {
-                            "N" : "No",
-                            "Y" : "Yes",
-                            "NY" : "No Information",
-                            "CON" : "Conditional"
                         }
                     }
                 }),

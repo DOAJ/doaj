@@ -5,22 +5,22 @@
 {% endblock %}
 
 {% block publisher_content %}
-<div id="publisher_journals"></div>
+<div id="publisher_drafts">TODO</div>
 {% endblock %}
 
 {% block extra_js_bottom %}
 
     <script type="text/javascript">
     $.extend(true, doaj, {
-        publisherJournalsSearchConfig : {
-            journalUpdateUrl : "{{ url_for('publisher.update_request', journal_id="") }}",
-            journalUpdateRequestsUrl : "{{ url_for('publisher.updates_in_progress') }}",
-            searchPath : '/publisher_query/journal/_search'
+        publisherDraftsSearchConfig : {
+            //journalUpdateUrl : "{{ url_for('publisher.update_request', journal_id="") }}",
+            //journalUpdateRequestsUrl : "{{ url_for('publisher.updates_in_progress') }}",
+            //searchPath : '/publisher_query/journal/_search'
         }
     });
     </script>
 
     {% include "_edges_common_js.html" %}
-    <script type="text/javascript" src="/static/js/edges/publisher.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <!-- <script type="text/javascript" src="/static/js/edges/publisher.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script> -->
 
 {% endblock %}

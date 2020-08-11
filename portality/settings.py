@@ -472,14 +472,6 @@ QUERY_ROUTE = {
         #    "result_filters" : ["public_result_filter", "prune_author_emails"],
         #    "dao" : "portality.models.search.JournalArticle",
         #    "required_parameters" : {"ref" : ["fqw", "public_journal_article", "subject_page"]}
-        #},
-        #"article" : {
-        #    "auth" : False,
-        #    "role" : None,
-        #    "query_filters" : ["only_in_doaj"],
-        #    "result_filters" : ["public_result_filter", "prune_author_emails"],
-        #    "dao" : "portality.models.Article",
-        #    "required_parameters" : {"ref" : ["toc"]}
         #}
     },
     "publisher_query" : {

@@ -1,10 +1,12 @@
 {% extends "editor/editor_base.html" %}
 
-{% block extra_stylesheets %}
-    {% include "_edges_common_css.html" %}
-{% endblock %}
+{% include "_edges_common_css.html" %}
 
 {% block editor_content %}
+
+<header class="col-xs-12">
+    <h2>Your Group's Journals</h2>
+</header>
 
 <div id="group_journals"></div>
 
