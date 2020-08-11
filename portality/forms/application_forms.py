@@ -992,8 +992,8 @@ class FieldDefinitions:
             {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
             {"display": "Héloïse", "value": "Héloïse", "subfields": ["deposit_policy_url"]},
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
-            {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
-            {"display": "Other (including publisher's own site)", "value": "other", "subfields": ["deposit_policy_other"], "subfields": ["deposit_policy_url"]}
+            {"display": "Other (including publisher's own site)", "value": "other", "subfields": ["deposit_policy_other"], "subfields": ["deposit_policy_url"]},
+            {"display": "<i>The journal has no repository policy</i>", "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
@@ -1062,8 +1062,8 @@ class FieldDefinitions:
             {"display": "ARKs", "value": "ARK"},
             {"display": "Handles", "value": "Handles"},
             {"display": "PURLs", "value": "PURL"},
-            {"display": "The journal does not use persistent article identifiers", "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]}
+            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]},
+            {"display": "<i>The journal does not use persistent article identifiers</i>", "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
