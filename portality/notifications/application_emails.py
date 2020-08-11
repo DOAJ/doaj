@@ -371,29 +371,20 @@ def send_publisher_update_request_revisions_required(application):
                         journal_title=journal_title)
 
 
-def send_publisher_reject_email(application, note=None, update_request=False, send_to_owner=True, send_to_suggester=False):
+def send_publisher_reject_email(application, note=None, update_request=False):
     """Tell the publisher their application was rejected"""
     journal_title = application.bibjson().title
     date_applied = dates.reformat(application.suggested_on, out_format='%Y-%m-%d')
 
     send_instructions = []
-    if send_to_owner:
-        owner = models.Account.pull(application.owner)
-        if owner is not None:
-            send_instructions.append({
-                "name" : owner.name,
-                "email" : owner.email,
-                "type" : "owner"
-            })
 
-    if send_to_suggester:
-        sug = application.suggester
-        if sug is not None:
-            send_instructions.append({
-                "name" : sug["name"],
-                "email" : sug["email"],
-                "type" : "suggester"
-            })
+    owner = models.Account.pull(application.owner)
+    if owner is not None:
+        send_instructions.append({
+            "name" : owner.name,
+            "email" : owner.email,
+            "type" : "owner"
+        })
 
     if len(send_instructions) == 0:
         raise app_email.EmailException("Application {x} does not have an owner or suggester, cannot send email".format(x=application.id))
