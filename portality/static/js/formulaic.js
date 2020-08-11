@@ -600,7 +600,7 @@ var formulaic = {
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" target="_blank" href="' + val + '">' + val + '</a></small></p>');
+                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + val + '">' + val + '</a></small></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
