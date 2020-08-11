@@ -25,7 +25,7 @@
 }
 
 .parsley-error {
-    border-color: #982E0A;
+    border-color: #FD5A3B;
     border-width: 3px;
 }
 
@@ -115,12 +115,13 @@ li.parsley-type {
     padding: 0.25em 0.5em 0.25em 0.5em;
 }
 
-li > .select2-container .select2-choice {
+.select2-container > a.select2-choice.select2-default {
     padding: 0.25em 0.5em 0.25em 0.5em;
 }
 
-.form__question > .select2-container > a.select2-choice.select2-default {
-    padding: 0.25em 0.5em 0.25em 0.5em;
+.select2-container.parsley-error > a.select2-choice.select2-default {
+    border-color: #FD5A3B;
+    border-width: 3px;
 }
 
 .select2-drop-active {
@@ -148,6 +149,7 @@ li > .select2-container .select2-choice {
 	width: 10%;
 	border: none;
 }
+
 
 .select2-results, .select2-search {
     background: #FEFBF8;
