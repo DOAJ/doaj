@@ -1,6 +1,7 @@
 from portality import models, lcc
 from portality.datasets import licenses
 
+
 class JournalGenericXWalk(object):
     @classmethod
     def is_new_editor_group(cls, form, old):
@@ -348,8 +349,10 @@ class JournalGenericXWalk(object):
 
     @classmethod
     def admin2form(cls, obj, forminfo):
-        # FIXME: make sure we are treating note dates and ids correctly
-        # forminfo['notes'] = obj.ordered_notes
+        forminfo['notes'] = []
+        for n in obj.ordered_notes:
+            note_obj = {'note': n['note'], 'note_date': n['date'], 'note_id': n['id']}
+            forminfo['notes'].append(note_obj)
 
         forminfo['owner'] = obj.owner
         if obj.editor_group is not None:

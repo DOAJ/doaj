@@ -1818,7 +1818,7 @@ def quick_reject(field):
 
 
 def application_statuses(field):
-    return [{'display': d, 'value': v} for (d, v) in Choices.application_status(context='admin')] #fixme - formulaic needs context
+    return [{'display': d, 'value': v} for (v, d) in Choices.application_status(context='admin')] #fixme - formulaic needs context
 
 
 #######################################################
