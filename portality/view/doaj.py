@@ -2,7 +2,7 @@ from flask import Blueprint, request, flash, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 import urllib.request, urllib.parse, urllib.error
-from jinja2.exceptions import TemplateNotFound
+from portality.forms.application_forms import ApplicationFormFactory
 
 from portality import dao
 from portality import models
@@ -86,9 +86,20 @@ def fqw_hit():
     # No content response, whether data there or not.
     return '', 204
 
+
+@blueprint.route("/search/journals", methods=["GET"])
+def journals_search():
+    return render_template("doaj/journals_search.html")
+
+
+@blueprint.route("/search/articles", methods=["GET"])
+def articles_search():
+    return render_template("doaj/articles_search.html")
+
+
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return render_template('doaj/search.html')
+    return redirect(url_for("doaj.journals"), 301)
 
 
 @blueprint.route("/search", methods=['POST'])

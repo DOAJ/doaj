@@ -1,10 +1,25 @@
 {% extends "admin/admin_base.html" %}
 
-{% block extra_stylesheets %}
-    {% include "_edges_common_css.html" %}
-{% endblock %}
+{% include "_edges_common_css.html" %}
 
 {% block admin_content %}
+    <style type="text/css">
+.doaj-bg-results-container {
+    padding-bottom: 15px;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-bottom: 1px dashed #cccccc;
+}
+
+.doaj-bg-results-container:hover {
+    background-color: #eeeeee;
+}
+</style>
+
+    <header class="col-xs-12">
+    <h2>Background Jobs</h2>
+    </header>
 
 <div id="background_jobs"></div>
 

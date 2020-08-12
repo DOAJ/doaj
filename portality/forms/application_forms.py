@@ -2,10 +2,11 @@ from copy import deepcopy
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
 from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, \
-    FormField, FieldList
+    FormField, FieldList, HiddenField
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 
+from portality.formcontext.choices import Choices
 from portality.formcontext.fields import TagListField
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
@@ -23,10 +24,15 @@ from portality.forms.validate import (
     JournalURLInPublicDOAJ,
     DifferentTo,
     RequiredIfOtherValue,
+    OnlyIf,
+    NotIf,
+    GroupMember,
     RequiredValue
 )
 
 from portality.datasets import language_options, country_options, currency_options
+from portality.core import app
+from portality.constants import APPLICATION_STATUSES_ALL
 from portality.regex import ISSN, ISSN_COMPILED
 
 # Stop words used in the keywords field
@@ -67,7 +73,7 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "You must answer YES to continue"}},
-            {"required_value" : {"value" : "y", "message" : "You must answer YES to continue"}}
+            {"required_value" : {"value" : "y"}}
         ],
         "contexts": {
             "editor": {
@@ -330,7 +336,10 @@ class FieldDefinitions:
         ],
         "widgets": [
             {"autocomplete": {"field": "bibjson.publisher.name.exact"}},
-        ]
+        ],
+        "help": {
+            "placeholder": "Type or select the publisher's name"
+        }
     }
 
     PUBLISHER_COUNTRY = {
@@ -371,7 +380,8 @@ class FieldDefinitions:
             "short_help": "The society or institution responsible for the journal",
             "long_help": ["Some societies or institutions are linked to a journal in some way but are not responsible "
                           "for publishing it. The publisher can be a separate organisation. If your journal is linked to "
-                          "a society or other type of institution, enter that here."]
+                          "a society or other type of institution, enter that here."],
+            "placeholder": "Type or select the society or institution's name"
         },
         "widgets": [
             {"autocomplete": {"field": "bibjson.institution.name.exact"}},
@@ -459,10 +469,10 @@ class FieldDefinitions:
             "required",
             "is_url"
         ],
-        "placeholder": "https://www.my-journal.com/about#licensing",
         "help": {
             "short_help": "Link to the page where the license terms are stated",
-            "doaj_criteria": "You must provide a link to your license terms"
+            "doaj_criteria": "You must provide a link to your license terms",
+            "placeholder": "https://www.my-journal.com/about#licensing",
         },
         "widgets": [
             "clickable_url"
@@ -493,15 +503,16 @@ class FieldDefinitions:
         "name": "license_display_example_url",
         "label": "Recent article displaying or embedding a license in the full text",
         "input": "text",
-        "optional": True,
         "conditional": [
             {"field": "license_display", "value": "y"}
         ],
         "help": {
-            "short_help": "Link to an example article"
+            "short_help": "Link to an example article",
+            "placeholder": "https://www.my-journal.com/articles/article-page"
         },
         "validate": [
-            "is_url"
+            "is_url",
+            {"required_if": {"field": "license_display", "value": "y"}}
         ],
         "widgets": [
             "clickable_url"
@@ -777,7 +788,11 @@ class FieldDefinitions:
         ],
         "attr": {
             "class": "input-xlarge"
-        }
+        },
+        "validate": [
+            {"required_if": {"field": "apc", "value": "y", "message" : "Currency required because you answered YES to previous question"}}
+        ]
+
     }
 
     APC_MAX = {
@@ -788,7 +803,10 @@ class FieldDefinitions:
         "datatype": "integer",
         "help" : {
             "placeholder" : "Highest APC Charged"
-        }
+        },
+        "validate":[
+            {"required_if": {"field": "apc", "value": "y", "message" : "Value required because you answered YES to previous question"}}
+        ]
     }
 
     HAS_WAIVER = {
@@ -883,7 +901,7 @@ class FieldDefinitions:
             {"display": "Portico", "value": "Portico", "subfields": ["preservation_service_url"]},
             {"display": "A national library", "value": "national_library", "subfields": ["preservation_service_library", "preservation_service_url"]},
             {"display": "The journal content isn't archived with a long-term preservation service",
-             "value": "none", "exclusive": True},
+             "value": "none", "exclusive": True, "subfields": ["preservation_service_url"]},
             {"display": "Other", "value": "other", "subfields": ["preservation_service_other", "preservation_service_url"]}
         ],
         "help": {
@@ -980,8 +998,8 @@ class FieldDefinitions:
             {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
             {"display": "Héloïse", "value": "Héloïse", "subfields": ["deposit_policy_url"]},
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
-            {"display": "The journal has no repository policy", "value": "none", "exclusive": True},
-            {"display": "Other (including publisher's own site)", "value": "other", "subfields": ["deposit_policy_other"], "subfields": ["deposit_policy_url"]}
+            {"display": "Other (including publisher's own site)", "value": "other", "subfields": ["deposit_policy_other"], "subfields": ["deposit_policy_url"]},
+            {"display": "<i>The journal has no repository policy</i>", "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
@@ -1050,8 +1068,8 @@ class FieldDefinitions:
             {"display": "ARKs", "value": "ARK"},
             {"display": "Handles", "value": "Handles"},
             {"display": "PURLs", "value": "PURL"},
-            {"display": "The journal does not use persistent article identifiers", "value": "none", "exclusive": True},
-            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]}
+            {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]},
+            {"display": "<i>The journal does not use persistent article identifiers</i>", "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
@@ -1250,7 +1268,7 @@ class FieldDefinitions:
         "validate": [
             {"is_issn": {"message": "This is not a valid ISSN"}},   # FIXME: might have to think about how the validators work with a taglist
             {"different_to": {"field": "doaj_continued_by"}},       # FIXME: as above
-            {"not_if" : { "fields" : {"field" : "doaj_discontinued_date"}}},
+            {"not_if" : { "fields" : [{"field" : "doaj_discontinued_date"}]}},
             "issn_in_public_doaj"                                   # FIXME: is this right?
         ]
     }
@@ -1262,7 +1280,7 @@ class FieldDefinitions:
         "validate": [
             {"is_issn": {"message": "This is not a valid ISSN"}}, # FIXME: might have to think about how the validators work with a taglist
             {"different_to": {"field": "doaj_continues"}},  # FIXME: as above
-            {"not_if": {"fields": {"field": "doaj_discontinued_date"}}},
+            {"not_if": {"fields": [{"field": "doaj_discontinued_date"}]}},
             "issn_in_public_doaj"  # FIXME: is this right?
         ]
     }
@@ -1295,6 +1313,8 @@ class FieldDefinitions:
             "note_date",
             "note_id"
         ],
+        "template": "application_form/_list.html",
+        "entry_template": "application_form/_entry_group_horizontal.html",
         "widgets": [
             "multiple_field"
         ]
@@ -1303,18 +1323,22 @@ class FieldDefinitions:
     NOTE = {
         "subfield": True,
         "name": "note",
+        "group": "notes",
         "input": "text"
     }
 
     NOTE_DATE = {
         "subfield": True,
         "name" : "note_date",
-        "input": "text"
+        "group": "notes",
+        "input": "text",
+        "disabled": True
     }
 
     NOTE_ID = {
         "subfield" : True,
         "name": "note_id",
+        "group": "notes",
         "input": "hidden"
     }
 
@@ -1661,7 +1685,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
-    MANED["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    MANED["processor"] = application_processors.AdminApplication
     MANED["templates"]["form"] = "application_form/maned_application.html"
 
 
@@ -1802,11 +1826,11 @@ def iso_currency_list(field):
 
 
 def quick_reject(field):
-    raise NotImplementedError()
+    return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
 
 
 def application_statuses(field):
-    raise NotImplementedError()
+    return [{'display': d, 'value': v} for (v, d) in Choices.application_status(context='admin')] #fixme - formulaic needs context
 
 
 #######################################################
@@ -1836,7 +1860,7 @@ class IsURLBuilder:
     @staticmethod
     def wtforms(field, settings):
         # FIXME: do we want the scheme to be optional?
-        return URLOptionalScheme()
+        return URLOptionalScheme(message=settings.get('message'))
 
 
 class IntRangeBuilder:
@@ -1905,7 +1929,7 @@ class OptionalIfBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return OptionalIf(settings.get("field"), settings.get("message"), settings.get("values", []))
+        return OptionalIf(settings.get("field") or field, settings.get("message"), settings.get("values", []))
 
 
 class IsISSNBuilder:
@@ -1927,7 +1951,7 @@ class DifferentToBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return DifferentTo(settings.get("field"), settings.get("ignore_empty", True), settings.get("message"))
+        return DifferentTo(settings.get("field") or field, settings.get("ignore_empty", True), settings.get("message"))
 
 
 class RequiredIfBuilder:
@@ -1936,40 +1960,51 @@ class RequiredIfBuilder:
         html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-required-if"] = settings.get("value")
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
+        if "message" in settings:
+            html_attrs["data-parsley-required-if-message"] = settings["message"]
+        else:
+            html_attrs["data-parsley-required-if-message"] = "This answer is required"
 
     @staticmethod
     def wtforms(field, settings):
-        return RequiredIfOtherValue(settings.get("field"), settings.get("value"))
+        return RequiredIfOtherValue(settings.get("field") or field, settings.get("value"))
 
 
 class OnlyIfBuilder:
     @staticmethod
     def render(settings, html_attrs):
-        raise NotImplementedError()
+        # FIXME: front end validator for this does not yet exist
+        for f in settings.get('fields'):
+            html_attrs["data-parsley-only-if-field"] = f['field']
+            html_attrs["data-parsley-only-if-value"] = f.get('value', '')
 
     @staticmethod
-    def wtforms(field, settings):
-        raise NotImplementedError()
-
-
-class GroupMemberBuilder:
-    @staticmethod
-    def render(settings, html_attrs):
-        raise NotImplementedError()
-
-    @staticmethod
-    def wtforms(field, settings):
-        raise NotImplementedError()
+    def wtforms(fields, settings):
+        return OnlyIf(settings.get('fields') or fields, settings.get('message'))
 
 
 class NotIfBuildier:
     @staticmethod
     def render(settings, html_attrs):
-        raise NotImplementedError()
+        # FIXME: front end validator for this does not yet exist
+        for f in settings.get('fields'):
+            html_attrs["data-parsley-not-if-field"] = f['field']
+            html_attrs["data-parsley-not-if-value"] = f.get('value', '')
+
+    @staticmethod
+    def wtforms(fields, settings):
+        return NotIf(settings.get('fields') or fields, settings.get('message'))
+
+
+class GroupMemberBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        # FIXME: front end validator for this does not yet exist (do we have an existing one from formcontext?)
+        html_attrs["data-parsley-group-member-field"] = settings.get("group_field")
 
     @staticmethod
     def wtforms(field, settings):
-        raise NotImplementedError()
+        return GroupMember(settings.get('group_field') or field)
 
 
 class RequiredValueBuilder:
@@ -1979,7 +2014,18 @@ class RequiredValueBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        RequiredValue(settings.get("value"), settings.get("message"))
+        return RequiredValue(settings.get("value"), settings.get("message"))
+
+class BigEndDateBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        pass
+        #html_attrs["data-parsley-bigenddate"] = settings.get("value")
+
+    @staticmethod
+    def wtforms(field, settings):
+        pass
+        #RequiredValue(settings.get("value"), settings.get("message"))
 
 
 #########################################################
@@ -2009,6 +2055,7 @@ PYTHON_FUNCTIONS = {
             "group_member" : GroupMemberBuilder.render,
             "not_if" : NotIfBuildier.render,
             "required_value" : RequiredValueBuilder.render,
+            "bigenddate": BigEndDateBuilder.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -2025,7 +2072,8 @@ PYTHON_FUNCTIONS = {
             "only_if" : OnlyIfBuilder.wtforms,
             "group_member" : GroupMemberBuilder.wtforms,
             "not_if" : NotIfBuildier.wtforms,
-            "required_value" : RequiredValueBuilder.wtforms
+            "required_value" : RequiredValueBuilder.wtforms,
+            "bigenddate": BigEndDateBuilder.wtforms
         }
     },
 
@@ -2216,6 +2264,17 @@ class GroupListBuilder(WTFormsBuilder):
         return FieldList(ff, min_entries=repeat_cfg.get("initial", 1))
 
 
+class HiddenFieldBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "hidden"
+
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        return HiddenField(**wtfargs)
+
+
+
 WTFORMS_BUILDERS = [
     RadioBuilder,
     MultiCheckboxBuilder,
@@ -2226,7 +2285,8 @@ WTFORMS_BUILDERS = [
     TagListBuilder,
     IntegerBuilder,
     GroupBuilder,
-    GroupListBuilder
+    GroupListBuilder,
+    HiddenFieldBuilder
 ]
 
 

@@ -1,4 +1,4 @@
-<p class="label">Page 7 of 7</p>
+<p class="label">Page 7 of {{ FORM | length + 1}}</p>
 <h1><span data-feather="eye"></span> Review your answers</h1>
 
 <p>Please review your answers before submitting your application.</p>
@@ -10,13 +10,13 @@
             <table>
                 <tbody>
                     <th>{{ tab.title }}</th>
-                    <th><a href="#" onclick="showTab({{ t.val }})">Edit this section</a></th>
+                    <th><a href="#" class="button" onclick="showTab({{ t.val }})">Edit this section</a></th>
                     {% set fieldsests = tab.fieldsets %}
                     {% for fieldset in fieldsests %}
                         {% set fs = formulaic_context.fieldset(fieldset) %}
                         {% for f in fs.fields() %}
                             <tr>
-                                <td id="{{ f.name }}__review_label">{{ f.label }}</td>
+                                <td id="{{ f.name }}__review_label">{{ f.label | safe }}</td>
                                 <td id="{{ f.name  }}__review_value"></td>
                             </tr>
                         {% endfor %}

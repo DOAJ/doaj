@@ -1,0 +1,70 @@
+# Header menu items
+
+primary:
+  - label: "Support"
+    subitems:
+      - label: "Support DOAJ"
+        url:
+      - label: "Supporters"
+        url:
+      - label: "Sponsors"
+        url:
+      - label: "Publisher supporters"
+        url:
+  - label: "Apply"
+    subitems:
+      - label: "Application form"
+        url:
+      - label: "Guide to applying"
+        url:
+      - label: "The DOAJ Seal"
+        url:
+      - label: "Transparenccy & best practice"
+        url:
+      - label: "Why index your journal in DOAJ?"
+        url:
+secondary:
+  - label: "Search"
+    subitems:
+      - label: "Journals"
+        url:
+      - label: "Articles"
+        url:
+  - label: "Documentation"
+    subitems:
+      - label: "API"
+        url:
+      - label: "OAI-PMH"
+        url:
+      - label: "XML"
+        url:
+      - label: "Widgets"
+        url:
+      - label: "Public data dump"
+        url:
+      - label: "OpenURL"
+        url:
+      - label: "FAQs"
+        url:
+  - label: "About"
+    subitems:
+      - label: "About DOAJ"
+        url:
+      - label: "Team"
+        url:
+      - label: "Ambassadors"
+        url:
+      - label: "Advisory Board & Council"
+        url:
+      - label: "Editorial Subcomittee"
+        url:
+      - label: "Volunteers"
+        url:
+      - label: "News"
+        url:
+footer:
+  accessiblity_statement:
+  privacy:
+  contact:
+  is4oa:
+  cottage_labs:

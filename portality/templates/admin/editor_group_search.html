@@ -1,10 +1,12 @@
 {% extends "admin/admin_base.html" %}
 
-{% block extra_stylesheets %}
-    {% include "_edges_common_css.html" %}
-{% endblock %}
+{% include "_edges_common_css.html" %}
 
 {% block admin_content %}
+
+<header class="col-xs-12">
+    <h2>Editor Groups</h2>
+    </header>
 
 <a href="{{url_for('admin.editor_group')}}"><button class="btn btn-info" style="margin-top: 20px">New Editor Group</button></a>
 

@@ -2,15 +2,14 @@
 
 {% block content %}
   
-  <div class="row">
-    <div class="col-md-12">
+  <main class="container">
+    <h1>Publisher's dashboard</h1>
 
       {% include 'publisher/nav.html' %}
 
       {% block publisher_content %}
       {% endblock %}
 
-    </div>
-  </div>
+  </main>
   
 {% endblock %}

@@ -57,7 +57,16 @@ $.extend(true, doaj, {
             });
 
             var components = [
-
+                edges.newPager({
+                    id: "result-count",
+                    category: "pager",
+                    renderer : edges.bs3.newResultCountRenderer({
+                        countFormat: countFormat,
+                        suffix: " indexed articles",
+                        htmlContainerWrapper: false
+                    })
+                }),
+                /*
                 edges.newRefiningANDTermSelector({
                     id : "volume",
                     category: "facet",
@@ -86,14 +95,24 @@ $.extend(true, doaj, {
                         countFormat: countFormat,
                         hideInactive: true
                     })
+                }),*/
+
+                edges.newFullSearchController({
+                    id: "search-controller",
+                    category: "facet",
+                    renderer : doaj.renderers.newSearchBoxFacetRenderer({
+                        freetextSubmitDelay: 1000,
+                        searchPlaceholder: "Additional keywords",
+                        title: "Search within the results"
+                    })
                 }),
+
                 edges.newDateHistogramSelector({
                     id : "year_published",
                     category: "facet",
                     field: "index.date",
                     interval: "year",
-                    display: "Year",
-                    deactivateThreshold: 1,
+                    display: "Year of publication",
                     displayFormatter : function(val) {
                         return (new Date(parseInt(val))).getUTCFullYear();
                     },
@@ -101,14 +120,14 @@ $.extend(true, doaj, {
                         values.reverse();
                         return values;
                     },
-                    renderer : edges.bs3.newDateHistogramSelectorRenderer({
+                    renderer : doaj.renderers.newDateHistogramSelectorRenderer({
                         open: false,
                         togglable: true,
                         countFormat: countFormat,
-                        hideInactive: true,
-                        shortDisplay: 15
+                        hideInactive: false
                     })
                 }),
+
                 edges.newDateHistogramSelector({
                     id : "month_published",
                     category: "facet",
@@ -126,7 +145,7 @@ $.extend(true, doaj, {
                         // values.reverse();
                         return values;
                     },
-                    renderer : edges.bs3.newDateHistogramSelectorRenderer({
+                    renderer : doaj.renderers.newDateHistogramSelectorRenderer({
                         open: false,
                         togglable: true,
                         countFormat: countFormat,
@@ -134,7 +153,36 @@ $.extend(true, doaj, {
                     })
                 }),
 
+                edges.newFullSearchController({
+                    id: "share_embed",
+                    category: "controller",
+                    urlShortener : doaj.bitlyShortener,
+                    embedSnippet : doaj.publicToC.embedSnippet,
+                    renderer: doaj.renderers.newShareEmbedRenderer({
+                        shareLinkText: '<span data-feather="share-2" aria-hidden="true"></span> Share | <span data-feather="code" aria-hidden="true"></span> Embed'
+                    })
+                }),
+
+                edges.newFullSearchController({
+                    id: "sort_by",
+                    category: "controller",
+                    sortOptions : [
+                        {'display':'Added to DOAJ (newest first)','field':'created_date', "dir" : "desc"},
+                        {'display':'Added to DOAJ (oldest first)','field':'created_date', "dir" : "asc"},
+                        {'display':'Publication date (most recent first)','field':'index.date', "dir" : "desc"},
+                        {'display':'Publication date (less recent first)','field':'index.date', "dir" : "asc"},
+                        {'display':'Title (A-Z)','field':'index.unpunctitle.exact', "dir" : "asc"},
+                        {'display':'Title (Z-A)','field':'index.unpunctitle.exact', "dir" : "desc"},
+                        {'display':'Relevance','field':'_score'}
+                    ],
+                    renderer: edges.bs3.newSortRenderer({
+                        prefix: "Sort by",
+                        dirSwitcher: false
+                    })
+                }),
+
                 // configure the search controller
+                /*
                 edges.newFullSearchController({
                     id: "search-controller",
                     category: "controller",
@@ -158,27 +206,58 @@ $.extend(true, doaj, {
                         shareLinkText : "share | embed"
                     })
                 }),
+                 */
 
-                // the pager, with the explicitly set page size options (see the openingQuery for the initial size)
+                edges.newPager({
+                    id: "rpp",
+                    category: "pager",
+                    renderer : doaj.renderers.newPageSizeRenderer({
+                        sizeOptions: [50, 100, 200],
+                        sizeLabel: "Results per page"
+                    })
+                }),
+
+                edges.newSelectedFilters({
+                    id: "selected-filters",
+                    category: "selected-filters",
+                    ignoreUnknownFilters: true,
+                    fieldDisplays : {
+                        //"bibjson.journal.volume.exact" : "Volume",
+                        //"bibjson.journal.number.exact" : "Issue",
+                        "index.date" : "Year",
+                        "index.date_toc_fv_month" : "Month"
+                    },
+                    rangeFunctions : {
+                        "index.date" : doaj.publicToC.displayYearPeriod,
+                        "index.date_toc_fv_month" : doaj.publicToC.displayMonthPeriod
+                    },
+                    renderer : doaj.renderers.newSelectedFiltersRenderer({})
+                }),
+
+                // selected filters display, with all the fields given their display names
+                /*
+                edges.newSelectedFilters({
+                    id: "selected-filters",
+                    category: "selected-filters",
+                    fieldDisplays : {
+                        "index.classification.exact" : "Subjects",
+                        "bibjson.journal.title.exact" : "Journals",
+                        "index.date" : "Year of publication"
+                    },
+                    rangeFunctions : {
+                        "index.date" : doaj.valueMaps.displayYearPeriod
+                    },
+                    renderer : doaj.renderers.newSelectedFiltersRenderer({})
+                }),*/
+
                 edges.newPager({
                     id: "top-pager",
                     category: "top-pager",
-                    renderer : edges.bs3.newPagerRenderer({
-                        sizeOptions : [10, 25, 50, 100],
+                    renderer : doaj.renderers.newPagerRenderer({
                         numberFormat: countFormat,
-                        scrollSelector: "html, body"
+                        scrollSelector: "#top-pager"
                     })
                 }),
-                edges.newPager({
-                    id: "bottom-pager",
-                    category: "bottom-pager",
-                    renderer : edges.bs3.newPagerRenderer({
-                        sizeOptions : [10, 25, 50, 100],
-                        numberFormat: countFormat,
-                        scrollSelector: "html, body"
-                    })
-                }),
-
                 // results display
                 edges.newResultsDisplay({
                     id: "results",
@@ -186,41 +265,29 @@ $.extend(true, doaj, {
                     renderer : doaj.renderers.newPublicSearchResultRenderer()
                 }),
 
-                // selected filters display, with all the fields given their display names
-                edges.newSelectedFilters({
-                    id: "selected-filters",
-                    category: "selected-filters",
-                    ignoreUnknownFilters: true,
-                    fieldDisplays : {
-                        "bibjson.journal.volume.exact" : "Volume",
-                        "bibjson.journal.number.exact" : "Issue",
-                        "index.date" : "Year",
-                        "index.date_toc_fv_month" : "Month"
-                    },
-                    rangeFunctions : {
-                        "index.date" : doaj.publicToC.displayYearPeriod,
-                        "index.date_toc_fv_month" : doaj.publicToC.displayMonthPeriod
-                    }
-                }),
-
-                // the standard searching notification
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    category: "searching-notification"
+                edges.newPager({
+                    id: "bottom-pager",
+                    category: "bottom-pager",
+                    renderer : doaj.renderers.newPagerRenderer({
+                        numberFormat: countFormat,
+                        scrollSelector: "#top-pager"    // FIXME: these selectors don't work, why not?
+                    })
                 })
             ];
 
             var e = edges.newEdge({
                 selector: selector,
-                template: edges.bs3.newFacetview(),
+                template: doaj.templates.newPublicSearch({
+                    titleBar: false
+                }),
                 search_url: search_url,
                 baseQuery : es.newQuery({
                     must : [
-                        es.newTermsFilter({field: "index.issn.exact", values: doaj.publicToCConfig.tocIssns}),
-                        es.newTermFilter({field: "_type", value: "article"})
+                        es.newTermsFilter({field: "index.issn.exact", values: doaj.publicToCConfig.tocIssns})
                     ]
                 }),
                 openingQuery : es.newQuery({
+                    sort: [{"field" : "created_date", "order" : "desc"}],
                     size: 100
                 }),
                 manageUrl : true,
@@ -228,23 +295,30 @@ $.extend(true, doaj, {
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
+                    },
+                    "edges:post-init" : function() {
+                        feather.replace();
+                    },
+                    "edges:post-render" : function() {
+                        feather.replace();
                     }
                 }
             });
             doaj.publicToC.activeEdges[selector] = e;
 
             $(selector).on("edges:pre-render", function() {
-                var volume = e.getComponent({id: "volume"});
+                //var volume = e.getComponent({id: "volume"});
                 var yearPublished = e.getComponent({id: "year_published"});
 
                 var deactivate = [];
                 var activate = [];
 
+                /*
                 if (volume.filters.length === 0) {
                     deactivate = deactivate.concat(doaj.publicToC.dynamicFacets.volume);
                 } else {
                     activate = activate.concat(doaj.publicToC.dynamicFacets.volume);
-                }
+                }*/
 
                 if (yearPublished.filters.length === 0) {
                     deactivate = deactivate.concat(doaj.publicToC.dynamicFacets.year_published);
@@ -263,16 +337,16 @@ $.extend(true, doaj, {
             });
 
             $(selector).on("edges:pre-query", function() {
-                var volume = e.getComponent({id: "volume"});
+                //var volume = e.getComponent({id: "volume"});
                 var yearPublished = e.getComponent({id: "year_published"});
 
-                var volumeMusts = e.currentQuery.listMust(es.newTermFilter({field: volume.field}));
+                //var volumeMusts = e.currentQuery.listMust(es.newTermFilter({field: volume.field}));
                 var yearMusts =  e.currentQuery.listMust(es.newRangeFilter({field: yearPublished.field}));
 
                 var deactivate = [];
-                if (volumeMusts.length === 0) {
-                    deactivate = deactivate.concat(doaj.publicToC.dynamicFacets.volume);
-                }
+                //if (volumeMusts.length === 0) {
+                //    deactivate = deactivate.concat(doaj.publicToC.dynamicFacets.volume);
+                //}
                 if (yearMusts.length === 0) {
                     deactivate = deactivate.concat(doaj.publicToC.dynamicFacets.year_published);
                 }

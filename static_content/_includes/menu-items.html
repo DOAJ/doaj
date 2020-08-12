@@ -1,0 +1,15 @@
+{% capture section_name %}{{ include.section }}{% endcapture %}
+{% assign section = site[section_name] | sort: 'order' %}
+{% for page in section %}
+{% if page.fragment != true and page.order %}
+<li>
+  <a href="{{ page.url }}"{% if include.header %} class="dropdown__link"{% endif %}>
+    {% if include.short_title %}
+    {{ page.short_title }}
+    {% else %}
+    {{ page.title }}
+    {% endif %}
+  </a>
+</li>
+{% endif %}
+{% endfor %}

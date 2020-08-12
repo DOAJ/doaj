@@ -1,6 +1,7 @@
 from portality import models, lcc
 from portality.datasets import licenses
 
+
 class JournalGenericXWalk(object):
     @classmethod
     def is_new_editor_group(cls, form, old):
@@ -46,10 +47,10 @@ class JournalGenericXWalk(object):
         if form.copyright_url.data:
             bibjson.copyright_url = form.copyright_url.data
 
-        if "publisher_name" in form.publisher.data and form.publisher.data["publisher_name"]:
-            bibjson.publisher_name = form.publisher.data["publisher_name"]
-        if "publisher_country" in form.publisher.data and form.publisher.data["publisher_country"]:
-            bibjson.publisher_country = form.publisher.data["publisher_country"]
+        if form.publisher_name.data:
+            bibjson.publisher_name = form.publisher_name.data
+        if form.publisher_country.data:
+            bibjson.publisher_country = form.publisher_country.data
 
         if form.deposit_policy.data:
             dep_services = [e for e in form.deposit_policy.data if e not in ["Unregistered", "none", "other"]]
@@ -74,10 +75,10 @@ class JournalGenericXWalk(object):
         if form.eissn.data:
             bibjson.eissn = form.eissn.data
 
-        if "institution_name" in form.institution.data and form.institution.data["institution_name"]:
-            bibjson.institution_name = form.institution.data["institution_name"]
-        if "institution_country" in form.institution.data and form.institution.data["institution_country"]:
-            bibjson.institution_country = form.institution.data["institution_country"]
+        if form.institution_name.data:
+            bibjson.institution_name = form.institution_name.data
+        if form.institution_country.data:
+            bibjson.institution_country = form.institution_country.data
 
         if form.keywords.data:
             bibjson.keywords = form.keywords.data
@@ -251,9 +252,8 @@ class JournalGenericXWalk(object):
             forminfo["copyright_author_retains"] = "y" if bibjson.author_retains_copyright else "n"
         forminfo["copyright_url"] = bibjson.copyright_url
 
-        forminfo["publisher"] = {}
-        forminfo["publisher"]["publisher_name"] = bibjson.publisher_name
-        forminfo["publisher"]["publisher_country"] = bibjson.publisher_country
+        forminfo["publisher_name"] = bibjson.publisher_name
+        forminfo["publisher_country"] = bibjson.publisher_country
 
         dep_choices = [x for x, y in ApplicationFormFactory.choices_for("deposit_policy")]
         if bibjson.deposit_policy:
@@ -277,11 +277,10 @@ class JournalGenericXWalk(object):
         forminfo["pissn"] = bibjson.pissn
         forminfo["eissn"] = bibjson.eissn
 
-        forminfo["institution"] = {}
-        forminfo["institution"]["institution_name"] = bibjson.institution_name
-        forminfo["institution"]["institution_country"] = bibjson.institution_country
+        forminfo["institution_name"] = bibjson.institution_name
+        forminfo["institution_country"] = bibjson.institution_country
 
-        forminfo['keywords'] = bibjson.keywords
+        forminfo['keywords'] = bibjson.keywords             # fixme: all keywords are being rendered as one single item
         forminfo['language'] = bibjson.language
 
         license_attributes = []
@@ -296,9 +295,10 @@ class JournalGenericXWalk(object):
         forminfo["license_attributes"] = license_attributes
         forminfo["license"] = ltypes
 
-        forminfo["license_display"] = bibjson.article_license_display
+        if bibjson.article_license_display is not None:
+            forminfo["license_display"] = "y" if bibjson.article_license_display == "embed" else "n"
         forminfo["license_display_example_url"] = bibjson.article_license_display_example_url
-        forminfo["boai"] = bibjson.boai
+        forminfo["boai"] = 'y' if bibjson.boai else 'n'
         forminfo["license_terms_url"] = bibjson.license_terms_url
         forminfo["oa_statement_url"] = bibjson.oa_statement_url
         forminfo["journal_url"] = bibjson.journal_url
@@ -349,8 +349,10 @@ class JournalGenericXWalk(object):
 
     @classmethod
     def admin2form(cls, obj, forminfo):
-        # FIXME: make sure we are treating note dates and ids correctly
-        # forminfo['notes'] = obj.ordered_notes
+        forminfo['notes'] = []
+        for n in obj.ordered_notes:
+            note_obj = {'note': n['note'], 'note_date': n['date'], 'note_id': n['id']}
+            forminfo['notes'].append(note_obj)
 
         forminfo['owner'] = obj.owner
         if obj.editor_group is not None:

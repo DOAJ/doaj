@@ -1,10 +1,10 @@
-<script type="text/javascript" src="/portality/static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/portality/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <!-- get select2 -->
-<script type="text/javascript" src="/portality/static/vendor/select2-3.5.4/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<link rel="stylesheet" type="text/css" href="/portality/static/vendor/select2-3.5.4/select2.css">
-<link href='/portality/static/doaj/css/application_form.css' media='screen' rel='stylesheet' type='text/css' />
-<script type="text/javascript" src="/portality/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/vendor/select2-3.5.4/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<link rel="stylesheet" type="text/css" href="/static/vendor/select2-3.5.4/select2.css">
+<link href='/static/doaj/css/application_form.css' media='screen' rel='stylesheet' type='text/css' />
+<script type="text/javascript" src="/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript">
     jQuery(document).ready(function($) {
         formulaic.active = formulaic.newFormulaic({
@@ -14,6 +14,22 @@
             autoSave: {{ auto_save }},
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
+
+        {#var parsleyConfig = {#}
+        {#    errorsContainer: function(parsleyField) {#}
+        {##}
+        {#        var fieldSet = parsleyField.$element.closest('fieldset');#}
+        {##}
+        {#        if (fieldSet.length > 0) {#}
+        {#            return fieldSet.closest('.checkbox-errors');#}
+        {#        }#}
+        {##}
+        {#        return parsleyField;#}
+        {#    }#}
+        {#;#}
+
+
+        {#$("form").parsley(parsleyConfig);#}
 
     });
 
@@ -64,6 +80,11 @@
             en: 'Value of this field and %s field must be different'
         },
         priority: 1
+    })
+
+    $("input, select").each((idx, inp) => {
+        let name = $(inp).attr("name").split("-");
+        $(inp).attr("data-parsley-errors-container", "#" + name[0] + "_checkbox-errors")
     })
 
     let showTab = (n) => {
@@ -130,16 +151,27 @@
         review_values.each((idx, question) => {
             let id = $(question).attr('id')
             if (id === "apc_charges__review_value") {
-                    let currency = $("select[id='apc_currency']").find('option:selected').val();
-                    let max = $("input[name='apc_max']").val();
-                    if (currency === undefined) {
-                        currency = "";
+                let currency = $("select[id$='apc_currency']");
+                let max = $("input[id$='apc_max']");
+                let result = ""
+                let isValid = true;
+                for (let i = 0; i < currency.length; i++){
+                    let curr = $(currency[i]).find('option:selected').text()
+                    let m = $(max[i]).val()
+                    if (m !== "" || curr !== "") {
+                        result += (m === "" ? "" : m) + " " + (curr === "" ? "" : curr) + " " + "<br>";
                     }
-                    if (max === undefined) {
-                        max = "";
-                    }
-
-                    $(question).html(max + " " + currency);
+                }
+                if ($(max[0]).parsley().validationResult !== true || ($(currency[0]).parsley().validationResult !== true)) {
+                    isValid = false;
+                }
+                if (result === "" && isValid){
+                    $(question).parent().hide();
+                }
+                else {
+                    $(question).parent().show();
+                    $(question).html(result);
+                }
             }
             else {
                 let name = id.substring(0, id.indexOf("__review_value"));
@@ -150,7 +182,7 @@
                     input.each((idx, inp) => {
                         let val = $(inp).find('option:selected').text();
                         if (val !== "") {
-                            result += val + ", ";
+                            result += val + "<br>";
                         }
 
                     })
@@ -158,17 +190,29 @@
                 } else {
                     if (id === "keywords__review_value") {
                         let result = "";
-                        input.each((idx, inp) => {
-                            let val = $(inp).val();
-                            if (val !== "") {
-                                result += $(inp).val() + ", ";
-                                if (idx < input.length - 1) {
-                                    result += ", ";
-                                }
-                            }
-                        });
+                        let this_input = $('#keywords')
+                        let keywords = this_input.val().split(",")
+                        if (keywords.length !== 1) {
+                            $(keywords).each((idx, kw) => {
+                                result += kw + "<br>";
+                            });
+                        }
+                        else {
+                            result = keywords[0];
+                        }
                         $(question).html(result);
+
+
                     } else {
+                        if ($(input).attr("data-parsley-required-if") !== undefined) {
+                            if (input.val() === "" && $(input).parsley().validationResult === true){
+                                $(question).parent().hide();
+                                return;
+                            }
+                            else {
+                                $(question).parent().show();
+                            }
+                        }
                         let type = input.attr("type");
                         if (type === "text" || type === "number") {
                             $(question).html(input.val())
@@ -176,22 +220,15 @@
                             $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>')
                         } else if (type === "radio") {
                             if (input.is(":checked")) {
-                                let val = input.filter(':checked').val()
-                                if (val === "y") {
-                                    $(question).html("Yes");
-                                } else if (val === "n") {
-                                    $(question).html("No");
-                                } else if (val === "") {
-                                } else {
-                                    $(question).html("Oops, something went wrong! You shouldn't see that, please contact support");
-                                }
-
+                                let text = $('label[for=' + $(input.filter(':checked')).attr('id') + ']').text();
+                                $(question).html(text);
                             }
                         } else if (type === "checkbox") {
                             let result = ''
                             input.each((idx, i) => {
                                 if ($(i).is(":checked")) {
-                                    result += $(i).val() + ", ";
+                                    let text = $('label[for=' + $(i).attr('id') + ']').text();
+                                    result += text + "<br>";
                                 }
                             })
                             $(question).html(result)
@@ -358,9 +395,6 @@
     }
 
     $("#reviewed").on("click", manage_review_checkboxes);
-
-
-
 
     let currentTab = 0; // Current tab is set to be the first tab (0)
     let previousTab = 0;

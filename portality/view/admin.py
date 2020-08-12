@@ -48,9 +48,7 @@ def index():
 @login_required
 @ssl_required
 def journals():
-    if not current_user.has_role("admin_journals"):
-        abort(401)
-    return render_template('admin/journals.html', admin_page=True)
+    return redirect(url_for("admin.index"))
 
 
 @blueprint.route("/journals", methods=["POST", "DELETE"])
@@ -312,58 +310,20 @@ def suggestions():
                            admin_page=True,
                            application_status_choices=choices.Choices.application_status("admin"))
 
-# OLD ADMIN APPLICATION FORM
-"""
-@blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
-@login_required
-@ssl_required
-@write_required()
-def suggestion_page(suggestion_id):
-    if not current_user.has_role("edit_suggestion"):
-        abort(401)
-    ap = models.Suggestion.pull(suggestion_id)
-    if ap is None:
-        abort(404)
-
-    # attempt to get a lock on the object
-    try:
-        lockinfo = lock.lock("suggestion", suggestion_id, current_user.id)
-    except lock.Locked as l:
-        return render_template("admin/suggestion_locked.html", suggestion=ap, lock=l.lock, edit_suggestion_page=True)
-
-    if request.method == "GET":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ap)
-        return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
-    elif request.method == "POST":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
-        if fc.validate():
-            try:
-                fc.finalise()
-                flash('Application updated.', 'success')
-                for a in fc.alert:
-                    flash_with_url(a, "success")
-                return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='done'))
-            except formcontext.FormContextException as e:
-                flash(str(e))
-                return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='cannot_edit'))
-        else:
-            return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
-"""
-
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
 @write_required()
 @login_required
 @ssl_required
 def application(application_id):
-    ap = models.Suggestion.pull(application_id)
+    ap = models.Application.pull(application_id)
 
     if ap is None:
         abort(404)
 
     auth_svc = DOAJ.authorisationService()
     try:
-        auth_svc.can_edit_application(current_user, ap)
+        auth_svc.can_edit_application(current_user._get_current_object(), ap)
     except exceptions.AuthoriseException:
         abort(401)
 
@@ -375,20 +335,6 @@ def application(application_id):
     elif request.method == "POST":
         fc = ApplicationFormFactory.context("admin")
 
-        # find out if we're being asked to modify the form, rather than submit it
-        for key in request.form.keys():
-            if key.startswith("field__add"):
-                val = request.form.get(key)
-                processor = fc.processor(formdata=request.form)
-                field = fc.get(val)
-                wtf = field.wtfield
-                wtf.append_entry()
-                return fc.render_template()
-            elif key.startswith("field__remove"):
-                val = request.form.get(key)
-
-        async_def = request.form.get("async")
-
         processor = fc.processor(formdata=request.form)
 
         if processor.validate():
@@ -397,8 +343,8 @@ def application(application_id):
                 flash('Application updated.', 'success')
                 for a in fc.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='done'))
-            except Exception as e: #fixme - what does this raise?
+                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
+            except Exception as e:
                 flash(str(e))
                 return fc.render_template()
         else:

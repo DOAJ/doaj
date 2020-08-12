@@ -18,17 +18,17 @@
 - name: Hea Lim Rhee
   region: South Korea
   bio: "Hea is a senior researcher at Korea Institute of Science and Technology Information (<a href='http://www.kisti.re.kr/eng/' target='_blank'>KISTI</a>), and also the managing editor of KISTI’s Journal of Information Science Theory and Practice (<a href='http://www.jistap.org/journal.do?method=journalintro&journalSeq=J000043' target='_blank'>JISTaP</a>), the first English journal on computer science in Korea.  Hea received her PhD from the University of Pittsburgh and her Master of Science in Information from the University of Michigan, where she specialized in archives and records management."
-  photo:
+  photo: "hea-lim-rhee.jpg"
 
 - name: Hyun Jung Yi
   region: South Korea
   bio: "Hyun Jung Yi holds a PhD in Library and Information Science from Chung-Ang University, Korea. She is a librarian at Hanyang University Guri Hospital, Korea. Currently, she also serves as a member of the Scholarly Committee at the Korean Medical Library Association and as a vice chair of the Committee of Information Management at the <a href='https://www.kcse.org/' target='_blank'>Korean Council of Science Editors</a> (KCSE). Her interests include observing trends in the scholarly publishing market, disseminating open access journals, and enhancing the publishing environment for researchers."
-  photo:
+  photo: "hyun-jung-yi.png"
 
 - name: Ina Smith
   region: Southern Africa
   bio: "Ina holds a Master’s Degree from the University of Pretoria (South Africa) in Computer-Integrated Education, a Higher Education Teaching Diploma, and two degrees (BBibl and BBibl Honors) in Library and Information Science. She is Planning Manager at the Academy of Science of South Africa, and has vast experience of Open Access in general, scholarly research activities, repositories, and Open Access journal management and publishing. Ina is the DOAJ ambassador in the region of Southern Africa."
-  photo:
+  photo: "ina-smith.png"
 
 - name: Ivonne Lujano
   region: Latin America
@@ -75,7 +75,7 @@ of scientific journals in academic communication, academic publishing under the 
   region: South Korea
   bio: "Sun is a medical doctor and holds a PhD from Seoul National University in parasitology. He has been a Professor of Parasitology, College of Medicine, Hallym University, Korea since 1988. He has worked voluntarily as a board member of <a href='https://www.kamje.or.kr/en/main_en' target='_blank'>Korean Association of Medical Journal Editors</a> (1996-2011), <a href='https://www.kcse.org/' target='_blank'>Korean Council of Science Editors </a> (2011-present), and <a href='https://www.asianeditor.org/' target='_blank'>Council of Asian Science Editors</a> (2014-present).
 He has been an editor of Journal of Educational Evaluation for Health Professions since 2005. His goal with DOAJ is to pursue the registration of all open access journals from Korea to DOAJ."
-  photo:
+  photo: "sun-huh.jpg"
 
 - name: Thomas Herve Mboa Nkoudou
   region: West and Central Africa
@@ -85,7 +85,7 @@ He has been an editor of Journal of Educational Evaluation for Health Profession
 - name: Vrushali Dandawate
   region: India & Pakistan
   bio: "Vrushali is Head Librarian at AISSMS College of Engineering College Pune, Maharashtra, India. She completed her Master’s from the University of Pune and has completed a Library Automation and Networking course from IGNOU Open University. She was selected for “International training program on Management of Electronics Information and Digital Library Lib@Web 2013” that ran from October 2013 – December 2013 at University of Antwerp, Belgium. In 2014, she received a grant from VLIR-OUS to attend “VLIR-UOS workshop ‘Training Information Literacy with Southern Partners’, coordinated by the University College Leuven-Limburg (UCLL). She is winner of ALCTS Online Course Grant for Library Professionals from Developing Countries for course Fundamentals Of Collection Development and Management (FCDM) March 2014. She is one of three DOAJ ambassadors in India."
-  photo:
+  photo: vrushali.jpg
 
 - name: Xin Bi
   region: China
@@ -95,4 +95,4 @@ He has been an editor of Journal of Educational Evaluation for Health Profession
 - name: Youngim Jung
   region: South Korea
   bio: "Youngim holds a PhD from Pusan National University in Computer Science and Engineering. She is now a Senior Researcher at Korea Institute of Science and Technology Information developing and managing scholarly publishing systems for supporting domestic societies. Previously, she worked for <a href='http://icolc.net/consortia/135' target='_blank'>KESLI</a>, the national library consortium in South Korea and contributed herself to establish Korea DOI Center. She is a committee member of the <a href='https://www.kcse.org/' target='_blank'>Korean Council of Science Editors</a> (KCSE) and <a href='https://www.asianeditor.org/' target='_blank'>Council of Asian Science Editors</a> (CASE). She has authored publications and communications in the field of Scientometrics, Library Systems and Natural Language Processing."
-  photo:
+  photo: "youngim-jung.jpg"

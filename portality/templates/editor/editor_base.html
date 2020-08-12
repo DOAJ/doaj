@@ -2,14 +2,13 @@
 
 {% block content %}
 
-  <div class="row">
-    <div class="col-md-12">
+  <main class="container">
+    <h1>Editor dashboard</h1>
       {% include 'editor/nav.html' %}
 
       {% block editor_content %}
       {% endblock %}
 
-    </div>
-  </div>
+  </main>
 
 {% endblock %}

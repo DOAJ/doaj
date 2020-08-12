@@ -62,6 +62,14 @@ var doaj = {
         "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "https://creativecommons.org/licenses/by-sa/4.0/"]
     },
 
+    humanYearMonth : function(datestr) {
+        var date = new Date(datestr);
+        var monthnum = date.getUTCMonth();
+        var year = date.getUTCFullYear();
+
+        return doaj.monthmap[monthnum] + " " + String(year);
+    },
+
     humanDate : function(datestr) {
         var date = new Date(datestr);
         var dom = date.getUTCDate();

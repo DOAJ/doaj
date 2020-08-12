@@ -30,6 +30,13 @@ def index():
     return render_template("publisher/index.html")
 
 
+@blueprint.route("/journal")
+@login_required
+@ssl_required
+def journals():
+    return render_template("publisher/journals.html")
+
+
 @blueprint.route("/update_request/<journal_id>", methods=["GET", "POST", "DELETE"])
 @login_required
 @ssl_required

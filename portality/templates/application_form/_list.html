@@ -1,4 +1,4 @@
-<div id="{{ f.name }}__container" class=form__question">
+<div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
     <label>
         {% autoescape off %}{{ f.label }}{% endautoescape %}
         {% if f.help("long_help") %}
@@ -6,7 +6,7 @@
         {% endif %}
         {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
     </label>
-    {% if f.get("hint") %}<p><small>{{ f.hint }}</small></p>{% endif %}
+    {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
     {% if "multiple_field" in f.get("widgets", []) %}
         <div class="removable_field">
             <div class= 'multiple_input'>
@@ -22,10 +22,11 @@
     {% else %}
         {% include entry_template %}
     {% endif %}
+    <div id="{{ f.name }}_checkbox-errors"></div>
 
 
     {% if f.help("short_help") %}
-       <p><small>{{ f.help("short_help") }}</small></p>
+       <p><small>{{ f.help("short_help") | safe }}</small></p>
     {% endif %}
 
     {% include "application_form/modal.html" %}

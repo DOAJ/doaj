@@ -160,22 +160,8 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "publisher",
                     category: "facet",
-                    field: "bibjson.publisher.exact",
+                    field: "bibjson.publisher.name.exact",
                     display: "Publisher",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "platform_host_aggregator",
-                    category: "facet",
-                    field: "bibjson.provider.exact",
-                    display: "Platform, Host, Aggregator",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -219,26 +205,6 @@ $.extend(true, doaj, {
                     field: "index.country.exact",
                     display: "Country of publisher",
                     deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "author_pays",
-                    category: "facet",
-                    field: "bibjson.author_pays.exact",
-                    display: "Publication charges?",
-                    deactivateThreshold: 1,
-                    valueMap : {
-                        "N" : "No",
-                        "Y" : "Yes",
-                        "NY" : "No Information",
-                        "CON" : "Conditional"
-                    },
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
@@ -309,7 +275,7 @@ $.extend(true, doaj, {
                         {'display':'DOI', 'field' : 'bibjson.identifier.id'},
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal Language','field':'index.language'},
-                        {'display':'Publisher','field':'bibjson.publisher'},
+                        {'display':'Publisher','field':'bibjson.publisher.name'},
 
                         {'display':'Article: Abstract','field':'bibjson.abstract'},
                         {'display':'Article: Author\'s name','field':'bibjson.author.name'},
@@ -317,8 +283,7 @@ $.extend(true, doaj, {
                         {'display':'Article: Year','field':'bibjson.year'},
                         {'display':'Article: Journal Title','field':'bibjson.journal.title'},
 
-                        {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
-                        {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'}
+                        {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
@@ -389,31 +354,13 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre": "<strong>Publisher</strong>: ",
-                                    "field": "bibjson.publisher"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Platform, Host, Aggregator</strong>: ",
-                                    "field": "bibjson.provider"
+                                    "field": "bibjson.publisher.name"
                                 }
                             ],
                             [
                                 {
                                     "pre": "<strong>Publication charges?</strong>: ",
                                     "valueFunction": doaj.fieldRender.authorPays
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Started publishing Open Access content in</strong>: ",
-                                    "field": "bibjson.oa_start.year"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Stopped publishing Open Access content in</strong>: ",
-                                    "field": "bibjson.oa_end.year"
                                 }
                             ],
                             [
@@ -565,12 +512,10 @@ $.extend(true, doaj, {
                         "es_type": "Showing",
                         "admin.in_doaj" : "In DOAJ?",
                         "index.language.exact" : "Journal Language",
-                        "bibjson.publisher.exact" : "Publisher",
-                        "bibjson.provider.exact" : "Platform, Host, Aggregator",
+                        "bibjson.publisher.name.exact" : "Publisher",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",
                         "index.country.exact" : "Country of publisher",
-                        "bibjson.author_pays.exact" : "Publication charges?",
                         "index.license.exact" : "Journal License",
                         "bibjson.year.exact" : "Year of publication",
                         "bibjson.journal.title.exact" : "Journal title"
@@ -583,12 +528,6 @@ $.extend(true, doaj, {
                         "admin.in_doaj" : {
                             "T" : "True",
                             "F" : "False"
-                        },
-                        "bibjson.author_pays.exact" : {
-                            "N" : "No",
-                            "Y" : "Yes",
-                            "NY" : "No Information",
-                            "CON" : "Conditional"
                         }
                     }
                 }),
@@ -626,7 +565,6 @@ $.extend(true, doaj, {
                     },
                     edit_metadata : function(context) {
                         autocomplete($('#publisher', context), 'bibjson.publisher.name');
-                        autocomplete($('#platform', context), 'bibjson.provider.name');
                         $('#country', context).select2();
                         autocomplete($('#owner', context), 'id', 'account');
                     }
@@ -666,7 +604,7 @@ $.extend(true, doaj, {
 
                         // now check that at least one field has been completed
                         var found = false;
-                        var fields = ["#publisher", "#platform", "#country", "#owner", "#contact_name", "#contact_email", "#doaj_seal"];
+                        var fields = ["#publisher", "#country", "#owner", "#contact_name", "#contact_email", "#doaj_seal"];
                         for (var i = 0; i < fields.length; i++) {
                             var val = context.find(fields[i]).val();
                             if (val !== "") {
@@ -719,7 +657,6 @@ $.extend(true, doaj, {
                             var data = {
                                 metadata : {
                                     publisher: $('#publisher', context).select2("val"),
-                                    platform: $('#platform', context).select2("val"),
                                     country: $('#country', context).select2("val"),
                                     owner: $('#owner', context).select2("val"),
                                     contact_name: $('#contact_name', context).val(),
