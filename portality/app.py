@@ -72,10 +72,10 @@ initialise_index(app, es_connection)
 # Import list of Sponsors from the static site’s data file
 # Only display gold & silver sponsors for now on the homepage
 # The same file is used to display sponsors in the Sponsors page’s full list
-SPONSORS = open("static_content/_data/sponsors.yml")
+SPONSORS = open(os.path.join(app.config["BASE_FILE_PATH"],"../static_content/_data/sponsors.yml"))
 SPONSORS = yaml.load(SPONSORS, Loader=yaml.FullLoader)
 
-VOLUNTEERS = open("static_content/_data/volunteers.yml")
+VOLUNTEERS = open(os.path.join(app.config["BASE_FILE_PATH"],"../static_content/_data/volunteers.yml"))
 VOLUNTEERS = yaml.load(VOLUNTEERS, Loader=yaml.FullLoader)
 
 # serve static files from multiple potential locations
