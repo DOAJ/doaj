@@ -84,7 +84,9 @@ class JournalGenericXWalk(object):
             bibjson.keywords = form.keywords.data
 
         if form.language.data:
-            bibjson.language = form.language.data  # select multiple field - gives a list back
+            norm_language = [x for x in form.language.data if x != ""]
+            if norm_language:
+                bibjson.language = norm_language  # select multiple field - gives a list back
 
         lurl = form.license_terms_url.data
         if lurl:
@@ -105,14 +107,15 @@ class JournalGenericXWalk(object):
                     sa = True if 'SA' in form.license_attributes.data else False
                 bibjson.add_license(ltype, url=lurl, by=by, nc=nc, nd=nd, sa=sa)
 
+        # FIXME: this is not quite what we planned
         if form.license_display.data:
-            bibjson.article_license_display = form.license_display.data
+            bibjson.article_license_display = ["Embed"] if form.license_display.data == "y" else ["No"]
 
         if form.license_display_example_url.data:
             bibjson.article_license_display_example_url = form.license_display_example_url.data
 
         if form.boai.data:
-            bibjson.boai = form.boai.data
+            bibjson.boai = True if form.boai.data == "y" else False
 
         if form.oa_statement_url.data:
             bibjson.oa_statement_url = form.oa_statement_url.data
@@ -296,7 +299,7 @@ class JournalGenericXWalk(object):
         forminfo["license"] = ltypes
 
         if bibjson.article_license_display is not None:
-            forminfo["license_display"] = "y" if bibjson.article_license_display == "embed" else "n"
+            forminfo["license_display"] = "y" if bibjson.article_license_display == "Embed" else "n"
         forminfo["license_display_example_url"] = bibjson.article_license_display_example_url
         forminfo["boai"] = 'y' if bibjson.boai else 'n'
         forminfo["license_terms_url"] = bibjson.license_terms_url
