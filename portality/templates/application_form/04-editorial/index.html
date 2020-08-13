@@ -1,5 +1,5 @@
 <input type="hidden" name="validated" value="">
-<p class="label">Page 4 of 7</p>
+<p class="label">Page 4 of {{ FORM | length + 1}}</p>
 <h1><span data-feather="user-check"></span> Editorial</h1>
 
 {% set fs = formulaic_context.fieldset("peer_review") %}

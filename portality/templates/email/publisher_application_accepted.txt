@@ -1,6 +1,6 @@
 Dear {{ publisher_name }},
 
-An application was submitted for the journal {{ journal_title }} and this has been accepted into DOAJ. An email has also been sent to {{ journal_contact }} whose name was given as the Journal Contact for this journal.
+An application was submitted for the journal {{ journal_title }} and this has been accepted into DOAJ.
 
 You may access the journal via your Publisher Area: {{ url_root }}/publisher/ using your DOAJ username and password. The Journal Contact does not get an account to access the journal.
 
