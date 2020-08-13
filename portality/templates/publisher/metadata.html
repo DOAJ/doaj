@@ -2,15 +2,20 @@
 
 {% block publisher_content %}
 
-<div class="row">
-    <div class="col-md-12">
-        
+    <header class="col-md-4">
+        <h2>Enter article metadata</h2>
+
+        <div class="alert">
+            <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+    </header>
+
         {% include "formcontext/_error_header.html" %}
         
         {% from "_formhelpers.html" import render_field_horizontal %}
         {% from "_formhelpers.html" import render_field %}
         
-        <form method="post" action="{{ url_for('publisher.metadata') }}" class="form-horizontal" id="article_metadata_form">
+        <form method="post" action="{{ url_for('publisher.metadata') }}" class="col-md-8 form form--compact" id="article_metadata_form">
 
             {% include "formcontext/article_metadata_form.html" %}
 
@@ -19,8 +24,6 @@
             </div>
 
         </form>
-    </div>
-</div>
 
 {% endblock %}
 

@@ -1,22 +1,25 @@
             <fieldset>
-                {{ render_field_horizontal(form.title, style="width: 400px", placeholder="Enter the article title here") }}
-                {{ render_field_horizontal(form.fulltext, style="width: 400px", placeholder="URL to the fulltext of the article") }}
-                {{ render_field_horizontal(form.doi, style="width: 300px", placeholder="10.1234/article-32") }}
+                {{ render_field_horizontal(form.title, placeholder="Enter the article title here") }}
+                {{ render_field_horizontal(form.fulltext, placeholder="URL to the fulltext of the article") }}
+                {{ render_field_horizontal(form.doi, placeholder="10.1234/article-32") }}
 
-                <div class="form-group{% if author_error %} error{% endif %} authors">
-                    <label class="control-label col-md-3">Author(s) <span class="red">*</span></label>
-                    <div class="col-md-9">
+
+
+                <h2 class="form__header">Authors</h2>
+                <div class="form__question">
+                    <div class="input-group{% if author_error %} error{% endif %} authors">
                         {% for subfield in form.authors %}
-                            <div style="margin-bottom: 10px" id="{{subfield.short_name}}-container">
                                 {% for field in subfield.form %}
-                                    <div class="row">
-                                       <label class="col-md-2 col-xs-12">{{field.label.text | safe}}</label>
-                                        {% if field.label.text == "ORCID iD" %}
-                                            <div class="col-md-7 col-xs-12" > {{field(placeholder="https://orcid.org/0000-0000-0000-0000")}} </div>
-                                        {% else %}
-                                            <div class="col-md-7 col-xs-12"> {{field(placeholder=field.label.text)}} </div>
-                                        {% endif %}
+                                    <div class="input-group input-group-authors">
+                                        {{ render_field_horizontal(field) }}
+{#                                       <label class="col-md-2 col-xs-12">{{field.label.text | safe}}</label>#}
+{#                                        {% if field.label.text == "ORCID iD" %}#}
+{#                                            <div class="col-md-7 col-xs-12" > {{field(placeholder="https://orcid.org/0000-0000-0000-0000")}} </div>#}
+{#                                        {% else %}#}
+{#                                            <div class="col-md-7 col-xs-12"> {{field(placeholder=field.label.text)}} </div>#}
+{#                                        {% endif %}#}
                                     </div>
+
                                 {% endfor %}
                                 {% for error in subfield.errors %}
                                     <div class="error" style="width: 200%">
@@ -28,7 +31,6 @@
                                 <button type="submit" id="remove_{{subfield.short_name}}" name="remove_{{subfield.short_name}}" class="btn btn-danger remove_button">
                                   Remove Author
                                 </button>
-                            </div>
                         {% endfor %}
                         <input type="submit" class="btn btn-info" name="more_authors" value="Add More Authors">
                         {% if author_error %}
@@ -41,16 +43,29 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="control-label col-md-3">Publication Date</label>
-                    <div class="col-md-9">
-                        {{form.publication_month(style="width: 75px")}}
-                        {{form.publication_year(style="width: 100px")}}
-                    </div>
+            <h2 class="form__header">Publication date</h2>
+              <div class="form__question">
+                <div class="input-group">
+                  <div class="input-group__input">
+                    {{form.publication_month}}
+                  </div>
+                  <div class="input-group__input">
+                    {{form.publication_year}}
+                  </div>
                 </div>
+              </div>
 
-                {{ render_field_horizontal(form.pissn, style="width: 250px") }}
-                {{ render_field_horizontal(form.eissn, style="width: 250px") }}
+            <h2 class="form__header">ISSNs</h2>
+              <div class="form__question">
+                <div class="input-group">
+                  <div class="input-group__input">
+                    {{ render_field_horizontal(form.pissn)}}
+                  </div>
+                  <div class="input-group__input">
+                    {{ render_field_horizontal(form.eissn) }}
+                  </div>
+                </div>
+              </div>
 
                 <div class="form-group">
                     <label class="control-label col-md-3">Journal</label>
