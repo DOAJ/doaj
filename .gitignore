@@ -1,6 +1,7 @@
 # Local env file
 .env
 env/
+venv/
 
 .brackets.json
 *.pyc
