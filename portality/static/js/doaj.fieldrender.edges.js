@@ -1665,6 +1665,9 @@ $.extend(true, doaj, {
             return edges.instantiate(doaj.renderers.PublicSearchResultRenderer, params, edges.newRenderer);
         },
         PublicSearchResultRenderer : function(params) {
+
+            this.actions = edges.getParam(params.actions, []);
+
             this.namespace = "doaj-public-search";
 
             this.draw = function () {
@@ -1675,20 +1678,13 @@ $.extend(true, doaj, {
 
                 var results = this.component.results;
                 if (results && results.length > 0) {
-                    // list the css classes we'll require
-                    // var recordClasses = edges.css_classes(this.namespace, "record", this);
-
                     // now call the result renderer on each result to build the records
                     frag = "";
                     for (var i = 0; i < results.length; i++) {
                         frag += this._renderResult(results[i]);
-                        // frag += '<div class="row"><div class="col-md-12"><div class="' + recordClasses + '">' + rec + '</div></div></div>';
                     }
                 }
 
-                // finally stick it all together into the container
-                //var containerClasses = edges.css_classes(this.namespace, "container", this);
-                //var container = '<div class="' + containerClasses + '">' + frag + '</div>';
                 this.component.context.html(frag);
                 feather.replace();
 
@@ -1709,8 +1705,6 @@ $.extend(true, doaj, {
                     el.addClass("collapsed").attr("aria-expanded", "false");
                     at.removeClass("in").attr("aria-expanded", "false");
                 }
-
-                // at.slideToggle(300);
             };
 
             this._renderResult = function(resultobj) {
@@ -1810,6 +1804,21 @@ $.extend(true, doaj, {
                             </li>';
                 }
 
+                var actions = "";
+                if (this.actions.length > 0) {
+                    actions = '<h4 class="label">Actions</h4><ul class="tags">';
+                    for (var i = 0; i < this.actions.length; i++) {
+                        var act = this.actions[i];
+                        var actSettings = act(resultobj);
+                        if (actSettings) {
+                            actions += '<li class="tag">\
+                                <a href="' + actSettings.link + '">' + actSettings.label + '</a>\
+                            </li>';
+                        }
+                    }
+                    actions += '</ul>';
+                }
+
                 var frag = '<li class="search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
@@ -1850,6 +1859,7 @@ $.extend(true, doaj, {
                             ' + licenses + '\
                           </li>\
                         </ul>\
+                        ' + actions + '\
                       </aside>\
                     </article>\
                   </li>';
