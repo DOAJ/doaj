@@ -1,13 +1,11 @@
 {% set index = url_for("publisher.index") %}
 {% set journals = url_for('publisher.journals') %}
-{% set updates = url_for('publisher.updates_in_progress') %}
 {% set xml = url_for('publisher.upload_file') %}
 {% set metadata = url_for('publisher.metadata') %}
 
 {% set tabs = [
     (index, "My applications"),
     (journals, "My journals"),
-    (updates, "Update requests"),
     (xml, "Upload article XML"),
     (metadata, "Enter article metadata")
     ]

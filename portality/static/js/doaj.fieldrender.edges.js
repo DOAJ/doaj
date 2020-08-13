@@ -2141,9 +2141,13 @@ $.extend(true, doaj, {
                 var last_updated = "Last updated ";
                 last_updated += doaj.humanDate(resultobj.last_updated);
 
+                var icon = "edit-3";
+                if (accessLink[1] === "View") {
+                    icon = "eye";
+                }
                 var viewOrEdit = '<li class="tag">\
                     <a href="' + accessLink[0] + '">\
-                        <span data-feather="eye" aria-hidden="true"></span>\
+                        <span data-feather="' + icon + '" aria-hidden="true"></span>\
                         <span>' + accessLink[1] + '</span>\
                     </a>\
                 </li>';
@@ -2174,7 +2178,7 @@ $.extend(true, doaj, {
                         <h4 class="label">Status</h4>\
                         <ul>\
                           <li>\
-                            ' + status + '\
+                            <strong>' + status + '</strong>\
                           </li>\
                           ' + completion + '\
                           <li>\
