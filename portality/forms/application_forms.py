@@ -1995,7 +1995,7 @@ class RequiredValueBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        RequiredValue(settings.get("value"), settings.get("message"))
+        return RequiredValue(settings.get("value"), settings.get("message"))
 
 
 #########################################################

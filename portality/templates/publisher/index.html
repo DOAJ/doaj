@@ -1,26 +1,26 @@
 {% extends "publisher/publisher_base.html" %}
 
-{% block extra_stylesheets %}
-    {% include "_edges_common_css.html" %}
-{% endblock %}
-
 {% block publisher_content %}
-<div id="publisher_drafts">TODO</div>
+<div id="publisher_applications"></div>
 {% endblock %}
 
 {% block extra_js_bottom %}
 
     <script type="text/javascript">
     $.extend(true, doaj, {
-        publisherDraftsSearchConfig : {
+        publisherApplicationsSearchConfig : {
+            journalReadOnlyUrl : "{{ url_for('publisher.update_request_readonly', application_id="") }}",
+            tocUrl : "{{ url_for('doaj.toc', identifier="") }}",
+            editPendingUrl : "FIXME",
+            applyUrl: "{{ url_for('apply.public_application', draft_id="") }}",
             //journalUpdateUrl : "{{ url_for('publisher.update_request', journal_id="") }}",
             //journalUpdateRequestsUrl : "{{ url_for('publisher.updates_in_progress') }}",
-            //searchPath : '/publisher_query/journal/_search'
+            searchPath : '/publisher_query/applications/_search'
         }
     });
     </script>
 
     {% include "_edges_common_js.html" %}
-    <!-- <script type="text/javascript" src="/static/js/edges/publisher.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script> -->
+    <script type="text/javascript" src="/static/js/edges/publisher.myapplications.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endblock %}

@@ -460,34 +460,25 @@ QUERY_ROUTE = {
             "role" : None,
             "query_validator" : "public_query_validator",
             "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter", "prune_author_emails"],
+            "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Article",
             "required_parameters" : {"ref" : ["fqw", "public_article", "toc", "subject_page"]}
         },
-        #"journal,article" : {
-        #    "auth" : False,
-        #    "role" : None,
-        #    "query_validator" : "public_query_validator",
-        #    "query_filters" : ["only_in_doaj"],
-        #    "result_filters" : ["public_result_filter", "prune_author_emails"],
-        #    "dao" : "portality.models.search.JournalArticle",
-        #    "required_parameters" : {"ref" : ["fqw", "public_journal_article", "subject_page"]}
-        #}
     },
     "publisher_query" : {
         "journal" : {
             "auth" : True,
             "role" : "publisher",
             "query_filters" : ["owner", "only_in_doaj"],
-            "result_filters" : ["publisher_result_filter", "prune_author_emails"],
+            "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.Journal"
         },
-        "suggestion" : {
+        "applications" : {
             "auth" : True,
             "role" : "publisher",
-            "query_filters" : ["owner", "update_request"],
-            "result_filters" : ["publisher_result_filter", "prune_author_emails"],
-            "dao" : "portality.models.Suggestion"
+            "query_filters" : ["owner"],
+            "result_filters" : ["publisher_result_filter"],
+            "dao" : "portality.models.AllPublisherApplications"
         }
     },
     "admin_query" : {
@@ -590,7 +581,6 @@ QUERY_FILTERS = {
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
     "publisher_result_filter": "portality.lib.query_filters.publisher_result_filter",
-    "prune_author_emails": "portality.lib.query_filters.prune_author_emails",
 
     # source filters
     "private_source": "portality.lib.query_filters.private_source",
