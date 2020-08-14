@@ -790,7 +790,7 @@ class FieldDefinitions:
             "class": "input-xlarge"
         },
         "validate": [
-            {"required_if": {"field": "apc", "value": "y", "message" : "Currency required because you answered YES to previous question"}}
+            #{"required_if": {"field": "apc", "value": "y", "message" : "Currency required because you answered YES to previous question"}}
         ]
 
     }
@@ -805,7 +805,7 @@ class FieldDefinitions:
             "placeholder" : "Highest APC Charged"
         },
         "validate":[
-            {"required_if": {"field": "apc", "value": "y", "message" : "Value required because you answered YES to previous question"}}
+            #{"required_if": {"field": "apc", "value": "y", "message" : "Value required because you answered YES to previous question"}}
         ]
     }
 

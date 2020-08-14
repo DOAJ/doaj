@@ -40,7 +40,7 @@ def public_application(draft_id=None):
         async_def = request.form.get("async")
         draft_id = request.form.get("draft_id")
 
-        if draft_id != "new_form":
+        if draft_id is not None:
             draft_application = models.DraftApplication.pull(draft_id)
             if draft_application is None:
                 abort(404)

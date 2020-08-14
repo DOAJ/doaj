@@ -54,9 +54,6 @@ $.extend(true, doaj, {
                     <div class="row">\
                         <div class="col-md-3">\
                             <aside class="filters">\
-                                <h2 class="label label--underlined filters__heading">\
-                                    <span data-feather="sliders" aria-hidden="true"></span> Refine search results\
-                                </h2>\
                                 <ul class="collapse filters__list" id="filters" aria-expanded="false">\
                                     {{FACETS}}\
                                 </ul>\
@@ -85,6 +82,27 @@ $.extend(true, doaj, {
                     facetContainers += '<li class="filter" id="' + facets[i].id + '"></li>';
                 }
                 frag = frag.replace(/{{FACETS}}/g, facetContainers);
+                edge.context.html(frag);
+            };
+        },
+
+        newPublisherApplications: function (params) {
+            return edges.instantiate(doaj.templates.PublisherApplications, params, edges.newTemplate);
+        },
+        PublisherApplications: function (params) {
+            this.namespace = "doajpublisherapplications";
+
+            this.draw = function (edge) {
+                this.edge = edge;
+
+                var frag = '<div class="row">\
+                    <div class="col-md-12">\
+                        <nav class="pagination" id="top-pager"></nav>\
+                        <ol class="search-results" id="results"></ol>\
+                        <nav class="pagination" id="bottom-pager"></nav>\
+                    </div>\
+                </div>';
+
                 edge.context.html(frag);
             };
         }
@@ -1668,6 +1686,9 @@ $.extend(true, doaj, {
             return edges.instantiate(doaj.renderers.PublicSearchResultRenderer, params, edges.newRenderer);
         },
         PublicSearchResultRenderer : function(params) {
+
+            this.actions = edges.getParam(params.actions, []);
+
             this.namespace = "doaj-public-search";
 
             this.draw = function () {
@@ -1678,20 +1699,13 @@ $.extend(true, doaj, {
 
                 var results = this.component.results;
                 if (results && results.length > 0) {
-                    // list the css classes we'll require
-                    // var recordClasses = edges.css_classes(this.namespace, "record", this);
-
                     // now call the result renderer on each result to build the records
                     frag = "";
                     for (var i = 0; i < results.length; i++) {
                         frag += this._renderResult(results[i]);
-                        // frag += '<div class="row"><div class="col-md-12"><div class="' + recordClasses + '">' + rec + '</div></div></div>';
                     }
                 }
 
-                // finally stick it all together into the container
-                //var containerClasses = edges.css_classes(this.namespace, "container", this);
-                //var container = '<div class="' + containerClasses + '">' + frag + '</div>';
                 this.component.context.html(frag);
                 feather.replace();
 
@@ -1712,8 +1726,6 @@ $.extend(true, doaj, {
                     el.addClass("collapsed").attr("aria-expanded", "false");
                     at.removeClass("in").attr("aria-expanded", "false");
                 }
-
-                // at.slideToggle(300);
             };
 
             this._renderResult = function(resultobj) {
@@ -1813,6 +1825,21 @@ $.extend(true, doaj, {
                             </li>';
                 }
 
+                var actions = "";
+                if (this.actions.length > 0) {
+                    actions = '<h4 class="label">Actions</h4><ul class="tags">';
+                    for (var i = 0; i < this.actions.length; i++) {
+                        var act = this.actions[i];
+                        var actSettings = act(resultobj);
+                        if (actSettings) {
+                            actions += '<li class="tag">\
+                                <a href="' + actSettings.link + '">' + actSettings.label + '</a>\
+                            </li>';
+                        }
+                    }
+                    actions += '</ul>';
+                }
+
                 var frag = '<li class="search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
@@ -1853,6 +1880,7 @@ $.extend(true, doaj, {
                             ' + licenses + '\
                           </li>\
                         </ul>\
+                        ' + actions + '\
                       </aside>\
                     </article>\
                   </li>';
@@ -2010,6 +2038,167 @@ $.extend(true, doaj, {
                 return frag;
             };
         },
+
+        newPublisherApplicationRenderer : function(params) {
+            return edges.instantiate(doaj.renderers.PublisherApplicationRenderer, params, edges.newRenderer);
+        },
+        PublisherApplicationRenderer : function(params) {
+
+            this.actions = edges.getParam(params.actions, []);
+
+            this.namespace = "doaj-publisher-application";
+
+            this.statusMap = {
+                "accepted" : "Accepted to DOAJ",
+                "rejected" : "Application rejected",
+                "update_request" : "Pending",
+                "revisions_required" : "Revisions Required",
+                "pending" : "Pending",
+                "in progress" : "Under review by an editor",
+                "completed" : "Under review by an editor",
+                "on hold" : "Under review by an editor",
+                "ready" : "Under review by an editor"
+            };
+
+            this.draw = function () {
+                var frag = "You do not have any applications yet";
+                if (this.component.results === false) {
+                    frag = "";
+                }
+
+                var results = this.component.results;
+                if (results && results.length > 0) {
+                    // now call the result renderer on each result to build the records
+                    frag = "";
+                    for (var i = 0; i < results.length; i++) {
+                        frag += this._renderResult(results[i]);
+                    }
+                }
+
+                this.component.context.html(frag);
+                feather.replace();
+            };
+
+            this._accessLink = function(resultobj) {
+                if (resultobj.es_type === "draft_application") {
+                    // if it's a draft, just link to the draft edit page
+                    return [doaj.publisherApplicationsSearchConfig.applyUrl + resultobj['id'], "Edit"];
+                } else {
+                    var status = resultobj.admin.application_status;
+
+                    // if it's a pending new application - not sure what we do, it's new!
+                    if (status === "pending") {
+                        return [doaj.publisherApplicationsSearchConfig.editPendingUrl + resultobj['id'], "Edit"];
+                        // if it's an accepted application, link to the ToC
+                    } else if (status === "accepted") {
+                        var issn = resultobj.bibjson.issn;
+                        if (!issn) {
+                            issn = resultobj.bibjson.eissn;
+                        }
+                        if (issn) {
+                            issn = edges.escapeHtml(issn);
+                        }
+                        return [doaj.publisherApplicationsSearchConfig.tocUrl + issn, "View"];
+                        // otherwise just link to the view page
+                    } else {
+                        return [doaj.publisherApplicationsSearchConfig.journalReadOnlyUrl + resultobj['id'], "View"];
+                    }
+                }
+            };
+
+            this._renderResult = function(resultobj) {
+
+                var accessLink = this._accessLink(resultobj);
+
+                var title = "Untitled";
+                if (edges.hasProp(resultobj, "bibjson.title")) {
+                    title = edges.escapeHtml(resultobj.bibjson.title);
+                }
+                if (accessLink) {
+                    title = '<a href="' + accessLink[0] + '">' + title + '</a>';
+                }
+
+                var subtitle = "";
+                if (edges.hasProp(resultobj, "bibjson.alternative_title")) {
+                    subtitle = '<span class="search-results__subheading">' + edges.escapeHtml(resultobj.bibjson.alternative_title) + '</span>';
+                }
+
+                var status = "";
+                if (edges.hasProp(resultobj, "admin.application_status")) {
+                    status = this.statusMap[resultobj.admin.application_status];
+                    if (!status) {
+                        status = "Status is unspecified";
+                    }
+                } else {
+                    status = "Not yet submitted";
+                }
+
+                var completion = "";
+                if (resultobj.es_type === "draft_application") {
+                    // FIXME: how do we calculate completion
+                }
+
+                var last_updated = "Last updated ";
+                last_updated += doaj.humanDate(resultobj.last_updated);
+
+                var icon = "edit-3";
+                if (accessLink[1] === "View") {
+                    icon = "eye";
+                }
+                var viewOrEdit = '<li class="tag">\
+                    <a href="' + accessLink[0] + '">\
+                        <span data-feather="' + icon + '" aria-hidden="true"></span>\
+                        <span>' + accessLink[1] + '</span>\
+                    </a>\
+                </li>';
+
+                var deleteLink = "";
+                if (resultobj.es_type === "draft_application" ||
+                        resultobj.admin.application_status === "pending" ||
+                        resultobj.admin.application_status === "update_request") {
+                    deleteLink = '<li class="tag">\
+                        <a href="#"  data-toggle="modal" data-target="#modal-delete-application">\
+                            <span data-feather="trash-2" aria-hidden="true"></span>\
+                            <span>Delete</span>\
+                        </a>\
+                    </li>';
+                }
+
+                var frag = '<li class="search-results__record">\
+                    <article class="row">\
+                      <div class="col-sm-4 search-results__main">\
+                        <header>\
+                          <h3 class="search-results__heading">\
+                            ' + title + '\
+                            ' + subtitle + '\
+                          </h3>\
+                        </header>\
+                      </div>\
+                      <aside class="col-sm-4 search-results__aside">\
+                        <h4 class="label">Status</h4>\
+                        <ul>\
+                          <li>\
+                            <strong>' + status + '</strong>\
+                          </li>\
+                          ' + completion + '\
+                          <li>\
+                            ' + last_updated + '\
+                          </li>\
+                        </ul>\
+                      </aside>\
+                      <div class="col-sm-4 search-results__aside">\
+                        <h4 class="label">Actions</h4>\
+                        <ul class="tags">\
+                            ' + viewOrEdit + '\
+                            ' + deleteLink + '\
+                        </ul>\
+                      </div>\
+                    </article>\
+                  </li>';
+
+                return frag;
+            };
+        }
     },
 
     fieldRender: {

@@ -141,26 +141,28 @@ class NewApplication(FormProcessor):
         # check for validity
         valid = self.validate()
 
+        # FIXME: if you can only save a valid draft, you cannot save a draft
         # the draft to be saved needs to be valid
+        #if not valid:
+        #    return None
+
+        def _resetDefaults(form):
+            for field in form:
+                if field.errors:
+                    if isinstance(field, FormField):
+                        _resetDefaults(field.form)
+                    elif isinstance(field, FieldList):
+                        for sub in field:
+                            if isinstance(sub, FormField):
+                                _resetDefaults(sub)
+                            else:
+                                sub.data = sub.default
+                    else:
+                        field.data = field.default
+
+        # if not valid, then remove all fields which have validation errors
         if not valid:
-            return None
-        # def _resetDefaults(form):
-        #     for field in form:
-        #         if field.errors:
-        #             if isinstance(field, FormField):
-        #                 _resetDefaults(field.form)
-        #             elif isinstance(field, FieldList):
-        #                 for sub in field:
-        #                     if isinstance(sub, FormField):
-        #                         _resetDefaults(sub)
-        #                     else:
-        #                         sub.data = sub.default
-        #             else:
-        #                 field.data = field.default
-        #
-        # # if not valid, then remove all fields which have validation errors
-        # if not valid:
-        #     _resetDefaults(self.form)
+            _resetDefaults(self.form)
 
         self.form2target()
         draft_application = models.DraftApplication(**self.target.data)

@@ -6,6 +6,7 @@ from portality.lib import es_data_mapping
 from portality.models.v2 import shared_structs
 from portality.models.v2.journal import JournalLikeObject
 from portality.lib.coerce import COERCE_MAP
+from portality.dao import DomainObject
 
 APPLICATION_STRUCT = {
     "objects" : [
@@ -178,6 +179,11 @@ class DraftApplication(Application):
 
     __SEAMLESS_APPLY_STRUCT_ON_INIT__ = False
     __SEAMLESS_CHECK_REQUIRED_ON_INIT__ = False
+
+
+
+class AllPublisherApplications(DomainObject):
+    __type__ = "draft_application,application"
 
 
 MAPPING_OPTS = {
