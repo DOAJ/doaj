@@ -4,10 +4,6 @@
 
     <header class="col-md-4">
         <h2>Enter article metadata</h2>
-
-        <div class="alert">
-            <p>Lorem ipsum dolor sit amet.</p>
-        </div>
     </header>
 
         {% include "formcontext/_error_header.html" %}
@@ -19,10 +15,7 @@
 
             {% include "formcontext/article_metadata_form.html" %}
 
-            <div class="form-group">
-                <div class="col-md-9 col-md-offset-3"><button class="btn btn-success" type="submit">Add Article</button></div>
-            </div>
-
+            <button class="button button--primary" type="submit">Add Article</button>
         </form>
 
 {% endblock %}

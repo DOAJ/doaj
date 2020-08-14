@@ -4,7 +4,8 @@ from datetime import datetime
 
 from flask_login import current_user
 from wtforms import Form, validators
-from wtforms import StringField, TextAreaField, IntegerField, BooleanField, FormField, FieldList, RadioField
+from wtforms import StringField, TextAreaField, BooleanField, FormField, FieldList, RadioField
+from wtforms.fields.html5 import IntegerField
 from wtforms import widgets
 
 from portality import regex
@@ -664,17 +665,17 @@ class ArticleForm(Form):
     doi = StringField("DOI", [OptionalIf("fulltext"), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)], description="(You must provide a DOI and/or a Full-Text URL)")
     authors = FieldList(FormField(AuthorForm), min_entries=1) # We have to do the validation for this at a higher level
     abstract = TextAreaField("Abstract", [validators.Optional()])
-    keywords = StringField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
+    keywords = TagListField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
     fulltext = StringField("Full-Text URL", [OptionalIf("doi"), validators.URL()])
     publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
     publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
-    pissn = DOAJSelectField("Journal ISSN (print version)", [ThisOrThat("eissn")], choices=[]) # choices set at construction
-    eissn = DOAJSelectField("Journal ISSN (online version)", [ThisOrThat("pissn")], choices=[]) # choices set at construction
+    pissn = DOAJSelectField("Print", [ThisOrThat("eissn")], choices=[]) # choices set at construction
+    eissn = DOAJSelectField("Online", [ThisOrThat("pissn")], choices=[]) # choices set at construction
 
-    volume = StringField("Volume Number", [validators.Optional()])
-    number = StringField("Issue Number", [validators.Optional()])
-    start = StringField("Start Page", [validators.Optional()])
-    end = StringField("End Page", [validators.Optional()])
+    volume = IntegerField("Volume", [validators.Optional()])
+    number = IntegerField("Issue", [validators.Optional()])
+    start = IntegerField("Start", [validators.Optional()])
+    end = IntegerField("End", [validators.Optional()])
 
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)

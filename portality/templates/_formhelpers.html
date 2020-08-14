@@ -149,7 +149,7 @@
                 </ul>
             {% endif %}
             {% if field.description %}
-                <p class="help-block">{{ field.description | safe }}</p>
+                <p><small>{{ field.description | safe }}</small></p>
             {% endif %}
         </div>
     {% endif %}
@@ -241,7 +241,7 @@
                   </ul>
                   {% endif %}
                   {% if field.description %}
-                  <p class="help-block">{{ field.description | safe }}</p>
+                  <p><small>{{ field.description | safe }}</small></p>
                   {% endif %}
               {% else %}
                   {% for subfield in field %}

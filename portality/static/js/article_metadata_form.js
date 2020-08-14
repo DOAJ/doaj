@@ -10,7 +10,7 @@ $(document).ready(function() {
         ne.id = 'authors-' + number + '-container';
 
         ne = $(ne);
-        ne.find('[id^=authors-]').each( function () {
+        ne.find('[id^=authors-]').each(function () {
             var ce = $(this);
 
             // reset the value
@@ -28,7 +28,7 @@ $(document).ready(function() {
         });
 
         // we also need to update the remove button
-        ne.find("[id^=remove_authors-]").each(function() {
+        ne.find("[id^=remove_authors-]").each(function () {
             var ce = $(this);
 
             // update the id as above - saving us a closure again
@@ -60,9 +60,9 @@ $(document).ready(function() {
         $("#" + container).remove();
 
         var count = 0;
-        $('[id^=authors-][id$="container"]').each(function() {
+        $('[id^=authors-][id$="container"]').each(function () {
             prepAuthorContainer({
-                element : this,
+                element: this,
                 number: count,
                 reset_value: false
             });
@@ -72,7 +72,7 @@ $(document).ready(function() {
         showHideFirstRemoveButton()
     }
 
-    $('input[name=more_authors]').click( function(event) {
+    $('button[name=more_authors]').click(function (event) {
         event.preventDefault();
 
         // get the last author div in the list
@@ -89,33 +89,73 @@ $(document).ready(function() {
 
         // increment all the numbers
         prepAuthorContainer({
-            element : ne,
-            number : number,
-            reset_value : true
+            element: ne,
+            number: number,
+            reset_value: true
         });
 
         e.after(ne);
 
-        var rem_b = $(".remove_button");
+        var rem_b = $(".remove_field__button");
         rem_b.unbind("click");
         rem_b.click(removeAuthor);
-        if (all_e.length === 1){
+        if (all_e.length === 1) {
             $('#remove_authors-1').css('display', 'inherit')
         }
 
-        showHideFirstRemoveButton()
-	});
-
-    $(".remove_button").click(removeAuthor);
-
-    $("#keywords").select2({
-        minimumInputLength: 1,
-        tags: [],
-        tokenSeparators: [","]
+        showHideFirstRemoveButton();
     });
 
-    $("#pissn").select2();
-    $("#eissn").select2();
     showHideFirstRemoveButton();
+    $(".remove_field__button").click(removeAuthor);
 
-})
+    // $("#pissn").select2({
+    //     allowClear: false,
+    //     width: 'resolve',
+    //     newOption: 'false'
+    // });
+    // $("#eissn").select2({
+    //     allowClear: false,
+    //     width: 'resolve',
+    //     newOption: 'false'
+    // });
+
+
+//     var ajax = {
+//                     url: window.location.protocol + "//" + document.location.host + "/autocomplete/article/bibjson.keywords",
+//                     dataType: 'json',
+//                     data: function (term, page) {
+//                         return {
+//                             q: term
+//                         };
+//                     },
+//                     results: function (data, page) {
+//                         return {results: data["suggestions"]};
+//                     }
+//                 };
+//
+//                 var csc = function (term) {
+//                     return {id: $.trim(term), text: $.trim(term)};
+//                 }
+//
+//
+//                 var initSel = function (element, callback) {
+//                     var data = {id: element.val(), text: element.val()};
+//                     callback(data);
+//                 };
+//
+//                 // apply the create search choice
+//                 $("#keywords").select2({
+//                     multiple: true,
+//                     minimumInputLength: 1,
+//                     ajax: ajax,
+//                     createSearchChoice: csc,
+//                     initSelection: initSel,
+//                     allowClear: false,
+//                     tags: true,
+//                     tokenSeparators: [','],
+//                     maximumSelectionSize: 6,
+//                     width: 'resolve'
+//                 });
+//
+ })
