@@ -16,10 +16,11 @@ class MultiFieldValidator(object):
         self.other_field_name = other_field
         super(MultiFieldValidator, self).__init__(*args, **kwargs)
 
-    def get_other_field(self, form):
-        other_field = form._fields.get(self.other_field_name)
+    @staticmethod
+    def get_other_field(field_name, form):
+        other_field = form._fields.get(field_name)
         if other_field is None:
-            raise Exception('No field named "{0}" in form'.format(self.other_field_name))
+            raise Exception('No field named "{0}" in form'.format(field_name))
         return other_field
 
 
@@ -279,7 +280,7 @@ class ThisOrThat(MultiFieldValidator):
         super(ThisOrThat, self).__init__(other_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
-        other_field = self.get_other_field(form)
+        other_field = self.get_other_field(self.other_field_name, form)
         this = bool(field.data)
         that = bool(other_field.data)
         if not this and not that:
@@ -357,7 +358,7 @@ class DifferentTo(MultiFieldValidator):
         self.message = message
 
     def __call__(self, form, field):
-        other_field = self.get_other_field(form)
+        other_field = self.get_other_field(self.other_field_name, form)
 
         if other_field.data == field.data:
             if self.ignore_empty and (not other_field.data or not field.data):
@@ -375,7 +376,7 @@ class RequiredIfOtherValue(MultiFieldValidator):
         super(RequiredIfOtherValue, self).__init__(other_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
-        other_field = self.get_other_field(form)
+        other_field = self.get_other_field(self.other_field_name, form)
         if isinstance(other_field.data, list):
             match = self.other_value in other_field.data
         else:
@@ -385,15 +386,16 @@ class RequiredIfOtherValue(MultiFieldValidator):
             dr(form, field)
 
 
-class OnlyIf(object):
+class OnlyIf(MultiFieldValidator):
     """ Field only validates if other fields have specific values (or are truthy)"""
-    def __init__(self, other_fields: List[dict], ignore_empty=True, message=None):
+    def __init__(self, other_fields: List[dict], ignore_empty=True, message=None, *args, **kwargs):
         self.other_fields = other_fields
         self.ignore_empty = ignore_empty
         if not message:
             fieldnames = [n['field'] for n in self.other_fields]
             message = "This field can only be selected with valid values in other fields: '{x}'".format(x=fieldnames)
         self.message = message
+        super(OnlyIf, self).__init__(None, *args, **kwargs)
 
     def __call__(self, form, field):
         self.get_other_fields(form)
@@ -413,9 +415,8 @@ class OnlyIf(object):
     def get_other_fields(self, form):
         # populate self.other_fields with the actual fields
         for f in self.other_fields:
-            f['field'] = form._fields.get(f['name'])
-            if f['field'] is None:
-                raise Exception('No field named "{0}" in form'.format(f['name']))
+            fld = self.get_other_field(f, form)
+
 
 
 class NotIf(OnlyIf):

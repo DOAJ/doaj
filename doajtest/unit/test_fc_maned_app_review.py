@@ -47,6 +47,7 @@ APPLICATION_FORM = ApplicationFixtureFactory.make_application_form(role="maned")
 # Main test class
 ######################################################
 
+
 class TestManEdAppReview(DoajTestCase):
 
     def setUp(self):
@@ -79,15 +80,10 @@ class TestManEdAppReview(DoajTestCase):
         # we start by constructing it from source
         formulaic_context = ApplicationFormFactory.context("admin")
         fc = formulaic_context.processor(source=models.Application(**APPLICATION_SOURCE))
-        #formulaic_context2 = ApplicationFormFactory.context("admin")
-        #fc2 = formulaic_context.processor(source=models.Application(**APPLICATION_SOURCE))
         assert isinstance(fc, AdminApplication)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
-        #assert fc.template is not None
-
-        # no need to check form rendering - there are no disabled fields
 
         # now construct it from form data (with a known source)
         fc = formulaic_context.processor(
@@ -107,7 +103,7 @@ class TestManEdAppReview(DoajTestCase):
 
         # run the validation itself
         fc.form.subject.choices = mock_lcc_choices # set the choices allowed for the subject manually (part of the test)
-        assert fc.validate(), fc.form.errors #fixme: URGENT - validation fails even though the TempForm object should validate
+        assert fc.validate(), fc.form.errors
 
         # run the crosswalk (no need to look in detail, xwalks are tested elsewhere)
         fc.form2target()
