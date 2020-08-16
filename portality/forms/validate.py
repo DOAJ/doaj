@@ -66,7 +66,7 @@ class OptionalIf(DataOptional, MultiFieldValidator):
         super(OptionalIf, self).__init__(*args, **kwargs)
 
     def __call__(self, form, field):
-        other_field = self.get_other_field(form)
+        other_field = self.get_other_field(self.other_field_name, form)
 
         # if no values (for other_field) which make this field optional
         # are specified...
@@ -146,7 +146,7 @@ class ExtraFieldRequiredIf(OptionalIf):
 
     def get_extra_field(self, form):
         """Alias get_other_field from the superclass to make its purpose clearer for this class."""
-        return self.get_other_field(form)
+        return self.get_other_field(self.other_field_name, form)
 
 
 class ExclusiveCheckbox(object):
@@ -404,19 +404,23 @@ class OnlyIf(MultiFieldValidator):
             if self.ignore_empty and (not o_f['field'].data or not field.data):
                 continue
             if o_f.get('value') is None:
-                # Succeed if the other field is truthy
+                # No target value supplied - succeed if the other field is truthy
                 if o_f['field'].data:
                     continue
-            elif o_f['field'].data == o_f['value']:
-                # Succeed if the other field has the specified value
-                continue
+            if o_f.get('not') is not None:
+                # Succeed if the value doesn't equal the one specified
+                if o_f['field'].data != o_f['not']:
+                    continue
+            if o_f.get('value') is not None:
+                if o_f['field'].data == o_f['value']:
+                    # Succeed if the other field has the specified value
+                    continue
             raise validators.ValidationError(self.message)
 
     def get_other_fields(self, form):
-        # populate self.other_fields with the actual fields
+        # return the actual fields matching the names in self.other_fields
         for f in self.other_fields:
-            fld = self.get_other_field(f, form)
-
+            f['field'] = self.get_other_field(f['field'], form)
 
 
 class NotIf(OnlyIf):
@@ -445,7 +449,7 @@ class GroupMember(MultiFieldValidator):
         super(GroupMember, self).__init__(group_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
-        group_field = self.get_other_field(form)
+        group_field = self.get_other_field(self.other_field_name, form)
 
         """ Validate the choice of editor, which could be out of sync with the group in exceptional circumstances """
         # lifted from from formcontext

@@ -1164,7 +1164,7 @@ class FieldDefinitions:
                          "are sent to the journal contact with the rejection email."
         },
         "validate": [
-            {"required_if": {"field": "doaj_quick_reject", "value": "other"}}
+            {"required_if": {"field": "quick_reject", "value": "other"}}
         ],
     }
 
@@ -1228,12 +1228,12 @@ class FieldDefinitions:
         "input": "select",
         "options": [],
         "validate" : [
-            { "group_member" : {"group_field" : "doaj_editor_group"}}
+            { "group_member" : {"group_field" : "editor_group"}}
         ],
         "widgets" : [
             # show the members of the selected editor group
             # clear the field if the group is changed
-            { "editor_select" : {"group_field" : "doaj_editor_group"}}
+            { "editor_select" : {"group_field" : "editor_group"}}
         ]
     }
 
@@ -1246,8 +1246,8 @@ class FieldDefinitions:
             {
                 "not_if" : {
                     "fields" : [
-                        {"field" : "doaj_continues"},
-                        {"field" : "doaj_continued_by"}
+                        {"field" : "continues"},
+                        {"field" : "continued_by"}
                     ],
                     "message" : "You cannot enter a discontinued date and continuation information."
                 }
@@ -1267,8 +1267,8 @@ class FieldDefinitions:
         "input": "taglist",
         "validate": [
             {"is_issn": {"message": "This is not a valid ISSN"}},   # FIXME: might have to think about how the validators work with a taglist
-            {"different_to": {"field": "doaj_continued_by"}},       # FIXME: as above
-            {"not_if" : { "fields" : [{"field" : "doaj_discontinued_date"}]}},
+            {"different_to": {"field": "continued_by"}},       # FIXME: as above
+            {"not_if" : { "fields" : [{"field" : "discontinued_date"}]}},
             "issn_in_public_doaj"                                   # FIXME: is this right?
         ]
     }
@@ -1279,8 +1279,8 @@ class FieldDefinitions:
         "input": "taglist",
         "validate": [
             {"is_issn": {"message": "This is not a valid ISSN"}}, # FIXME: might have to think about how the validators work with a taglist
-            {"different_to": {"field": "doaj_continues"}},  # FIXME: as above
-            {"not_if": {"fields": [{"field": "doaj_discontinued_date"}]}},
+            {"different_to": {"field": "continues"}},  # FIXME: as above
+            {"not_if": {"fields": [{"field": "discontinued_date"}]}},
             "issn_in_public_doaj"  # FIXME: is this right?
         ]
     }
