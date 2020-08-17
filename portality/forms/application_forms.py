@@ -27,12 +27,12 @@ from portality.forms.validate import (
     OnlyIf,
     NotIf,
     GroupMember,
-    RequiredValue
+    RequiredValue,
+    BigEndDate
 )
 
 from portality.datasets import language_options, country_options, currency_options
 from portality.core import app
-from portality.constants import APPLICATION_STATUSES_ALL
 from portality.regex import ISSN, ISSN_COMPILED
 from portality import constants
 
@@ -1267,7 +1267,7 @@ class FieldDefinitions:
         "label": "This journal continues an older journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
-            {"is_issn": {"message": "This is not a valid ISSN"}},   # FIXME: might have to think about how the validators work with a taglist
+            {"is_issn_list": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "continued_by"}},       # FIXME: as above
             {"not_if" : { "fields" : [{"field" : "discontinued_date"}]}},
             "issn_in_public_doaj"                                   # FIXME: is this right?
@@ -1279,7 +1279,7 @@ class FieldDefinitions:
         "label": "This journal is continued by a newer version of the journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
-            {"is_issn": {"message": "This is not a valid ISSN"}}, # FIXME: might have to think about how the validators work with a taglist
+            {"is_issn_list": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "continues"}},  # FIXME: as above
             {"not_if": {"fields": [{"field": "discontinued_date"}]}},
             "issn_in_public_doaj"  # FIXME: is this right?
@@ -1880,7 +1880,9 @@ class RequiredBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return validators.InputRequired(message=settings.get("message"))
+        # Fixme: InputRequired needs field.raw_data, but DataRequired needs field.data
+        #return validators.InputRequired(message=settings.get("message"))
+        return validators.DataRequired(message=settings.get("message"))
 
 
 class IsURLBuilder:
@@ -1974,6 +1976,16 @@ class IsISSNBuilder:
         return validators.Regexp(regex=ISSN_COMPILED, message=settings.get("message"))
 
 
+class IsISSNListBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-entry-pattern"] = ISSN
+
+    @staticmethod
+    def wtforms(field, settings):
+        return RegexpOnTagList(regex=ISSN_COMPILED, message=settings.get("message"))
+
+
 class DifferentToBuilder:
     @staticmethod
     def render(settings, html_attrs):
@@ -2047,16 +2059,15 @@ class RequiredValueBuilder:
     def wtforms(field, settings):
         return RequiredValue(settings.get("value"), settings.get("message"))
 
+
 class BigEndDateBuilder:
     @staticmethod
     def render(settings, html_attrs):
-        pass
-        #html_attrs["data-parsley-bigenddate"] = settings.get("value")
+        html_attrs["data-parsley-bigenddate"] = ""
 
     @staticmethod
     def wtforms(field, settings):
-        pass
-        #RequiredValue(settings.get("value"), settings.get("message"))
+        return BigEndDate(settings.get("message"))
 
 
 #########################################################
@@ -2080,6 +2091,7 @@ PYTHON_FUNCTIONS = {
             "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder.render,
             "optional_if": OptionalIfBuilder.render,
             "is_issn": IsISSNBuilder.render,
+            "is_issn_list": IsISSNListBuilder.render,
             "different_to": DifferentToBuilder.render,
             "required_if": RequiredIfBuilder.render,
             "only_if" : OnlyIfBuilder.render,
@@ -2098,6 +2110,7 @@ PYTHON_FUNCTIONS = {
             "journal_url_in_public_doaj" : JournalURLInPublicDOAJBuilder.wtforms,
             "optional_if": OptionalIfBuilder.wtforms,
             "is_issn": IsISSNBuilder.wtforms,
+            "is_issn_list": IsISSNListBuilder.wtforms,
             "different_to": DifferentToBuilder.wtforms,
             "required_if": RequiredIfBuilder.wtforms,
             "only_if" : OnlyIfBuilder.wtforms,

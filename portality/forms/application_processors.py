@@ -108,18 +108,6 @@ class ApplicationProcessor(FormProcessor):
         if apply_notes_by_value:
             self.target.set_notes(tnotes)
 
-    def _associate_new_journal_with_account(self, application, journal):
-        o = models.Account.pull(application.owner)
-        if o:
-            self.add_alert('Account {username} already exists, so simply associating the journal with it.'.format(username=o.id))
-            o.add_journal(journal.id)
-            if not o.has_role('publisher'):
-                o.add_role('publisher')
-            o.save()
-            return o
-        else:
-            raise Exception("No account") # fixme better message
-
 
 class NewApplication(FormProcessor):
     """
@@ -240,13 +228,19 @@ class AdminApplication(ApplicationProcessor):
             else:
                 self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
 
-            # create the user account for the owner and send the notification email # fixme: account will exist, but we still need to associate journal
+            # Add the journal to the account and send the notification email
             try:
-                owner = self._associate_new_journal_with_account(self.target, j)
+                owner = models.Account.pull(j.owner)
+                self.add_alert('Associating the journal with account {username}.'.format(username=owner.id))
+                owner.add_journal(j.id)
+                if not owner.has_role('publisher'):
+                    owner.add_role('publisher')
+                owner.save()
 
                 # for all acceptances, send an email to the owner of the journal
                 self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
-
+            except AttributeError:
+                raise Exception("Account {owner} does not exist".format(owner=j.owner))
             except app_email.EmailException:
                 self.add_alert("Problem sending email to suggester - probably address is invalid")
                 app.logger.exception("Acceptance email to owner failed.")

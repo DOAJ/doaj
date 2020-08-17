@@ -42,7 +42,7 @@ class JournalGenericXWalk(object):
             bibjson.preservation_url = form.preservation_service_url.data
 
         if form.copyright_author_retains.data:
-            bibjson.author_retains_copyright = form.copyright_author_retains.data
+            bibjson.author_retains_copyright = form.copyright_author_retains.data == 'y'
 
         if form.copyright_url.data:
             bibjson.copyright_url = form.copyright_url.data
@@ -112,7 +112,7 @@ class JournalGenericXWalk(object):
             bibjson.article_license_display_example_url = form.license_display_example_url.data
 
         if form.boai.data:
-            bibjson.boai = form.boai.data
+            bibjson.boai = form.boai.data == "y"
 
         if form.oa_statement_url.data:
             bibjson.oa_statement_url = form.oa_statement_url.data
@@ -174,9 +174,9 @@ class JournalGenericXWalk(object):
 
         # continuations information
         if getattr(form, "continues", None):
-            bibjson.replaces = form.replaces.data
+            bibjson.replaces = form.continues.data
         if getattr(form, "continued_by", None):
-            bibjson.is_replaced_by = form.is_replaced_by.data
+            bibjson.is_replaced_by = form.continued_by.data
         if getattr(form, "discontinued_date", None):
             bibjson.discontinued_date = form.discontinued_date.data
 

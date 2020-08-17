@@ -8,6 +8,8 @@ from portality.formcontext.choices import Choices
 from portality.core import app
 from portality.models import Journal, EditorGroup
 
+from datetime import datetime
+
 
 class MultiFieldValidator(object):
     """ A validator that accesses the value of an additional field """
@@ -430,13 +432,13 @@ class NotIf(OnlyIf):
         self.get_other_fields(form)
 
         for o_f in self.other_fields:
-            if self.ignore_empty and (not o_f['field'].data or not field.data):
+            if self.ignore_empty and (not o_f['field_obj'].data or not field.data):
                 continue
             if o_f.get('value') is None:
                 # Fail if the other field is truthy
-                if o_f['field'].data:
+                if o_f['field_obj'].data:
                     validators.ValidationError(self.message)
-            elif o_f['field'].data == o_f['value']:
+            elif o_f['field_obj'].data == o_f['value']:
                 # Fail if the other field has the specified value
                 validators.ValidationError(self.message)
 
@@ -479,3 +481,16 @@ class RequiredValue(object):
     def __call__(self, form, field):
         if field.data != self.value:
             raise validators.ValidationError(self.message.format(value=self.value))
+
+
+class BigEndDate(object):
+    def __init__(self, value, message=None):
+        self.value = value
+        self.message = message or "Bad date"
+
+    def __call__(self, form, field):
+
+        try:
+            datetime.strptime(field.data, '%Y-%m-%d')
+        except Exception:
+            raise validators.ValidationError(self.message)

@@ -73,7 +73,7 @@ class TestManEdAppReview(DoajTestCase):
     def test_01_maned_review_success(self):
         """Give the editor's application form a full workout"""
         acc = models.Account()
-        acc.set_id("richard")
+        acc.set_id("aga")
         acc.add_role("admin")
         ctx = self._make_and_push_test_context(acc=acc)
 
@@ -134,12 +134,18 @@ class TestManEdAppReview(DoajTestCase):
         acc.add_role("admin")
         ctx = self._make_and_push_test_context(acc=acc)
 
+        submitter = models.Account()
+        submitter.set_id("mark")
+        submitter.add_role("publisher")
+        submitter.save(blocking=True)
+
         # There needs to be an existing journal in the index for this test to work
         jsource = JournalFixtureFactory.make_journal_source()
         del jsource["admin"]["related_applications"]
         extant_j = models.Journal(**jsource)
         assert extant_j.last_update_request is None
         extant_j_created_date = extant_j.created_date
+        extant_j.set_owner(submitter.id)
         extant_j.save()
         time.sleep(1)
 
@@ -149,25 +155,27 @@ class TestManEdAppReview(DoajTestCase):
         assert len(h) == 1
 
         # set up an application which is an update on an existing journal
-        s = models.Suggestion(**APPLICATION_SOURCE)
-        s.set_current_journal("abcdefghijk_journal")
+        s = models.Application(**APPLICATION_SOURCE)
+        s.set_current_journal(extant_j.id)
         s.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
         # set up the form which "accepts" this update request
         fd = deepcopy(APPLICATION_FORM)
         fd["application_status"] = constants.APPLICATION_STATUS_ACCEPTED
+        fd['owner'] = submitter.id
         fd = MultiDict(fd)
 
         # create and finalise the form context
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", form_data=fd, source=s)
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(source=s, formdata=fd)
 
         # with app.test_request_context():
-        fc.finalise()
+        fc.finalise(acc)
 
         # let the index catch up
         time.sleep(1)
 
-        j = models.Journal.pull("abcdefghijk_journal")
+        j = models.Journal.pull(extant_j.id)
         assert j is not None
         assert j.created_date == extant_j_created_date
         assert j.last_update_request is not None
@@ -180,11 +188,17 @@ class TestManEdAppReview(DoajTestCase):
         ctx.pop()
 
     def test_03_classification_required(self):
+        acc = models.Account()
+        acc.set_id("steve")
+        acc.add_role("admin")
+        ctx = self._make_and_push_test_context(acc=acc)
+
         # Check we can accept an application with a subject classification present
-        ready_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        ready_application = models.Application(**ApplicationFixtureFactory.make_application_source())
         ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
 
-        fc = formcontext.ApplicationFormFactory.get_form_context(role='admin', source=ready_application)
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(source=ready_application)
 
         # Make changes to the application status via the form, check it validates
         fc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
@@ -206,12 +220,19 @@ class TestManEdAppReview(DoajTestCase):
 
         assert fc.validate()
 
+        ctx.pop()
+
     def test_04_maned_review_continuations(self):
+        acc = models.Account()
+        acc.set_id("steve")
+        acc.add_role("admin")
+        ctx = self._make_and_push_test_context(acc=acc)
+
         # construct it from form data (with a known source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role='admin',
-            form_data=MultiDict(APPLICATION_FORM),
-            source=models.Suggestion(**ApplicationFixtureFactory.make_application_source()))
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            source=models.Application(**ApplicationFixtureFactory.make_application_source()),
+            form_data=MultiDict(APPLICATION_FORM))
 
         # check the form has the continuations data
         assert fc.form.replaces.data == ["1111-1111"]
