@@ -155,16 +155,6 @@ def journal_readonly(journal_id):
     return fc.render_template(edit_journal_page=True)
 
 
-@blueprint.route("/application/thanks", methods=["GET"])
-def application_thanks():
-    return render_template("layouts/static_page.html", page_frag="/apply/thank-you-fragment/index.html")
-
-
-@blueprint.route("/application/draft", methods=["GET"])
-def draft_saved():
-    return render_template("layouts/static_page.html", page_frag="doaj/draft_saved.html")
-
-
 @blueprint.route("/csv")
 @analytics.sends_ga_event(event_category=app.config.get('GA_CATEGORY_JOURNALCSV', 'JournalCSV'), event_action=app.config.get('GA_ACTION_JOURNALCSV', 'Download'))
 def csv_data():

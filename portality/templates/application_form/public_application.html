@@ -1,13 +1,13 @@
+{% extends "layouts/base.html" %}
+
 {% block extra_stylesheets %}
 <!-- get Swagger UI css -->
 
 {% endblock %}
 
-{% extends "layouts/base.html" %}
-
 {% set form_id = "new_form" %}
 {% set form_action = url_for("apply.public_application") %}
-{% set formulaic_after = url_for("doaj.application_thanks", _anchor='thanks') %}
+{% set formulaic_after = url_for("apply.application_thanks") %}
 {% if obj %}
     {% set form_action = url_for("apply.public_application", draft_id=obj.id) %}
     {# {% set form_id = url_for("apply.public_application", draft_id=obj.id) %} #}

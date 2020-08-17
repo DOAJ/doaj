@@ -10,6 +10,15 @@ from portality.forms.application_forms import ApplicationFormFactory
 
 blueprint = Blueprint('apply', __name__)
 
+@blueprint.route("/thanks", methods=["GET"])
+def application_thanks():
+    return render_template("layouts/static_page.html", page_frag="/apply/thank-you-fragment/index.html")
+
+
+@blueprint.route("/draft", methods=["GET"])
+def draft_saved():
+    return render_template("layouts/static_page.html", page_frag="doaj/draft_saved.html")
+
 
 @blueprint.route("/", methods=["GET", "POST"])
 @blueprint.route("/<draft_id>", methods=["GET", "POST"])
@@ -54,7 +63,7 @@ def public_application(draft_id=None):
         if draft == "false":
             if processor.validate():
                 processor.finalise()
-                return redirect(url_for('doaj.application_thanks', _anchor='thanks'))
+                return redirect(url_for('apply.application_thanks', _anchor='thanks'))
             else:
                 return fc.render_template()
 
@@ -63,4 +72,4 @@ def public_application(draft_id=None):
             if async_def is not None:
                 return make_response(json.dumps({"id": the_draft.id}), 200)
             else:
-                return redirect(url_for('doaj.draft_saved'))
+                return redirect(url_for('apply.draft_saved'))

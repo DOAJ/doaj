@@ -14,6 +14,7 @@
             tocUrl : "{{ url_for('doaj.toc', identifier="") }}",
             editPendingUrl : "FIXME",
             applyUrl: "{{ url_for('apply.public_application', draft_id="") }}",
+            deleteLinkTemplate: "{{ url_for("publisher.delete_application", application_id="__application_id__") }}",
             //journalUpdateUrl : "{{ url_for('publisher.update_request', journal_id="") }}",
             //journalUpdateRequestsUrl : "{{ url_for('publisher.updates_in_progress') }}",
             searchPath : '/publisher_query/applications/_search'
