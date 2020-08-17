@@ -42,7 +42,7 @@ def public_application(draft_id=None):
         if draft_id is None:
             draft_id = request.form.get("id")
 
-        if draft_id is not None:
+        if draft_id is not None and draft_application is None:
             draft_application = models.DraftApplication.pull(draft_id)
             if draft_application is None:
                 abort(404)
