@@ -12,6 +12,7 @@ blueprint = Blueprint('apply', __name__)
 
 
 @blueprint.route("/", methods=["GET", "POST"])
+@blueprint.route("/<draft_id>", methods=["GET", "POST"])
 @write_required()
 def public_application(draft_id=None):
 
@@ -38,7 +39,8 @@ def public_application(draft_id=None):
 
         draft = request.form.get("draft")
         async_def = request.form.get("async")
-        draft_id = request.form.get("draft_id")
+        if draft_id is None:
+            draft_id = request.form.get("id")
 
         if draft_id is not None:
             draft_application = models.DraftApplication.pull(draft_id)
@@ -61,4 +63,4 @@ def public_application(draft_id=None):
             if async_def is not None:
                 return make_response(json.dumps({"id": the_draft.id}), 200)
             else:
-                return redirect(url_for('doaj.application_thanks', _anchor='draft'))
+                return redirect(url_for('doaj.draft_saved'))

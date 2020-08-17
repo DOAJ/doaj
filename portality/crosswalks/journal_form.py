@@ -34,7 +34,9 @@ class JournalGenericXWalk(object):
                 pres_services.append(form.preservation_service_other.data)
             bibjson.set_preservation(pres_services, None)
             if "national_library" in form.preservation_service.data and form.preservation_service_library.data:
-                bibjson.add_preservation_library(form.preservation_service_library.data)
+                libs = [x for x in form.preservation_service_library.data if x]
+                for lib in libs:
+                    bibjson.add_preservation_library(lib)
             if "none" in form.preservation_service.data:
                 bibjson.has_preservation = False
 

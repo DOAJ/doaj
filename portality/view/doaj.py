@@ -129,55 +129,9 @@ def subjects():
     return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
 
 
-from portality.forms.application_forms import ApplicationFormFactory
-
-
-
-# @blueprint.route("/application/new", methods=["GET", "POST"])
-# @blueprint.route("/application/new/<draft_id>", methods=["GET", "POST"])
-# @write_required()
-# @login_required
-# def public_application(draft_id=None):
-#     fc = ApplicationFormFactory.context("public")
-#
-#     if request.method == "GET":
-#         if draft_id is None:
-#             return fc.render_template()
-#         draft_application = models.DraftApplication.pull(draft_id)
-#         if draft_application is None:
-#             abort(404)
-#         if draft_application.owner != current_user.id:
-#             abort(404)
-#         fc.processor(source=draft_application)
-#         return fc.render_template(obj=draft_application)
-#
-#     elif request.method == "POST":
-#         draft = request.form.get("draft")
-#         async_def = request.form.get("async")
-#         processor = fc.processor(formdata=request.form)
-#
-#         if draft is not None:
-#             draft_application = None
-#             if draft_id is not None:
-#                 draft_application = models.DraftApplication.pull(draft_id)
-#                 if draft_application is None:
-#                     abort(404)
-#                 if draft_application.owner != current_user.id:
-#                     abort(404)
-#
-#             draft_application = processor.draft(current_user._get_current_object(), id=draft_id)
-#             if async_def is not None:
-#                 return make_response(json.dumps({"id": draft_application.id}), 200)
-#             else:
-#                 return redirect(url_for('doaj.draft_saved'))
-#         else:
-#             if processor.validate():
-#                 processor.finalise(current_user._get_current_object())
-#                 return redirect(url_for('doaj.application_thanks'))
-#             else:
-#                 return fc.render_template()
-# def old_application(draft_id=None):
-#     redirect(url_for("doaj.public_application", **request.args), code=308)
+@blueprint.route("/application/new")
+def old_application():
+     redirect(url_for("apply.public_application", **request.args), code=308)
 
 
 #############################################
@@ -208,7 +162,7 @@ def application_thanks():
 
 @blueprint.route("/application/draft", methods=["GET"])
 def draft_saved():
-    return render_template("doaj/draft_saved.html")
+    return render_template("layouts/static_page.html", page_frag="doaj/draft_saved.html")
 
 
 @blueprint.route("/csv")

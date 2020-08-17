@@ -276,12 +276,16 @@
         let input = $("<input>")
                .attr("type", "hidden")
                .attr("name", "draft").val(true);
-        let input2 = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "draft_id").val($(form).attr("id"));
+
+        //let input2 = $("<input>")
+        //       .attr("type", "hidden")
+        //       .attr("name", "draft_id").val($(form).attr("id"));
         form.append($(input));
-        form.append($(input2));
-        let parsleyForm = $(form).parsley()
+        //form.append($(input2));
+
+        let parsleyForm = $(form).parsley();
+        parsleyForm.destroy();
+        /*
         parsleyForm.validate()
         let result = true;
 
@@ -300,7 +304,8 @@
             $(form).off('form:validate');
             $("#cannot_save_draft").hide();
             parsleyForm._submit();
-        }
+        }*/
+        $(form).submit();
     }
 
     let navigate = (n, showEvenIfInvalid = false) => {

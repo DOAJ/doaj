@@ -1137,7 +1137,7 @@ class FieldDefinitions:
         "validate": [
             {
                 "only_if" : {"fields" : [
-                    {"field" : "license_display", "value" : "Embed"},
+                    {"field" : "license_display", "value" : "y"},
                     {"field" : "copyright_author_retains", "value" : "y"},
                     {"field" : "preservation_service", "not" : "none"},
                     {"field" : "preservation_service_url", "not" : ""},
