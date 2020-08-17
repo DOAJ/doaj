@@ -594,6 +594,9 @@ AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
     "bibjson.institution.name" : "index.institution_ac"
 }
 
+# save the public application form as a draft every 60 seconds
+PUBLIC_FORM_AUTOSAVE = 60000
+
 # ========================
 # MEDIA SETTINGS
 
