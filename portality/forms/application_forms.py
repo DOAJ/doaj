@@ -34,6 +34,7 @@ from portality.datasets import language_options, country_options, currency_optio
 from portality.core import app
 from portality.constants import APPLICATION_STATUSES_ALL
 from portality.regex import ISSN, ISSN_COMPILED
+from portality import constants
 
 # Stop words used in the keywords field
 STOP_WORDS = [
@@ -1804,33 +1805,63 @@ JOURNAL_FORMS = {
 # Options lists
 #######################################################
 
-def iso_country_list(field):
+def iso_country_list(field, formualic_context_name):
     cl = []
     for v, d in country_options:
         cl.append({"display": d, "value": v})
     return cl
 
 
-def iso_language_list(field):
+def iso_language_list(field, formulaic_context_name):
     cl = []
     for v, d in language_options:
         cl.append({"display": d, "value": v})
     return cl
 
 
-def iso_currency_list(field):
+def iso_currency_list(field, formulaic_context_name):
     cl = [{"display" : "Currency", "value" : ""}]
     for v, d in currency_options:
         cl.append({"display": d, "value": v})
     return cl
 
 
-def quick_reject(field):
+def quick_reject(field, formulaic_context_name):
     return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
 
 
-def application_statuses(field):
-    return [{'display': d, 'value': v} for (v, d) in Choices.application_status(context='admin')] #fixme - formulaic needs context
+def application_statuses(field, formulaic_context_name):
+    _application_status_base = [  # This is all the Associate Editor sees
+        ('', ' '),
+        (constants.APPLICATION_STATUS_PENDING, 'Pending'),
+        (constants.APPLICATION_STATUS_IN_PROGRESS, 'In Progress'),
+        (constants.APPLICATION_STATUS_COMPLETED, 'Completed')
+    ]
+
+    _application_status_admin = _application_status_base + [
+        (constants.APPLICATION_STATUS_UPDATE_REQUEST, 'Update Request'),
+        (constants.APPLICATION_STATUS_REVISIONS_REQUIRED, 'Revisions Required'),
+        (constants.APPLICATION_STATUS_ON_HOLD, 'On Hold'),
+        (constants.APPLICATION_STATUS_READY, 'Ready'),
+        (constants.APPLICATION_STATUS_REJECTED, 'Rejected'),
+        (constants.APPLICATION_STATUS_ACCEPTED, 'Accepted')
+    ]
+
+    _application_status_editor = _application_status_base + [
+        (constants.APPLICATION_STATUS_READY, 'Ready'),
+    ]
+
+    status_list = []
+    if formulaic_context_name is None or formulaic_context_name == "admin":
+        status_list = _application_status_admin
+    elif formulaic_context_name == "editor":
+        status_list = _application_status_editor
+    elif formulaic_context_name == "accepted":
+        status_list = [(constants.APPLICATION_STATUS_ACCEPTED, 'Accepted')]  # just the one status - Accepted
+    else:
+        status_list = _application_status_base
+
+    return [{'display': d, 'value': v} for (v, d) in status_list]
 
 
 #######################################################
