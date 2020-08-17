@@ -3,6 +3,7 @@ $.extend(true, doaj, {
     adminApplicationsSearch : {
         activeEdges : {},
 
+        /*
         editSuggestion : function (val, resultobj, renderer) {
             if (resultobj['suggestion']) {
                 // determine the link name
@@ -24,7 +25,7 @@ $.extend(true, doaj, {
                 return result;
             }
             return false;
-        },
+        },*/
 
         relatedJournal : function (val, resultobj, renderer) {
             var result = "";
