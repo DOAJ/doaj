@@ -401,18 +401,18 @@ class OnlyIf(MultiFieldValidator):
         self.get_other_fields(form)
 
         for o_f in self.other_fields:
-            if self.ignore_empty and (not o_f['field'].data or not field.data):
+            if self.ignore_empty and (not o_f['field_obj'].data or not field.data):
                 continue
             if o_f.get('value') is None:
                 # No target value supplied - succeed if the other field is truthy
-                if o_f['field'].data:
+                if o_f['field_obj'].data:
                     continue
             if o_f.get('not') is not None:
                 # Succeed if the value doesn't equal the one specified
-                if o_f['field'].data != o_f['not']:
+                if o_f['field_obj'].data != o_f['not']:
                     continue
             if o_f.get('value') is not None:
-                if o_f['field'].data == o_f['value']:
+                if o_f['field_obj'].data == o_f['value']:
                     # Succeed if the other field has the specified value
                     continue
             raise validators.ValidationError(self.message)
@@ -420,7 +420,7 @@ class OnlyIf(MultiFieldValidator):
     def get_other_fields(self, form):
         # return the actual fields matching the names in self.other_fields
         for f in self.other_fields:
-            f['field'] = self.get_other_field(f['field'], form)
+            f['field_obj'] = self.get_other_field(f['field'], form)
 
 
 class NotIf(OnlyIf):
