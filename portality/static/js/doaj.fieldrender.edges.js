@@ -2443,7 +2443,7 @@ $.extend(true, doaj, {
 
         editSuggestion : function(params) {
             return function (val, resultobj, renderer) {
-                if (resultobj['suggestion']) {
+                if (resultobj.es_type === "application") {
                     // determine the link name
                     var linkName = "Review application";
                     if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
