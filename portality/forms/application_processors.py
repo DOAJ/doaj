@@ -29,6 +29,13 @@ class ApplicationProcessor(FormProcessor):
             self.target.data['id'] = self.source.data['id']
 
         try:
+            if self.source.date_applied is not None:
+                self.target.date_applied = self.source.date_applied
+        except AttributeError:
+            # fixme: should there always be a date_applied? Only true for applications
+            pass
+
+        try:
             if self.source.current_application:
                 self.target.set_current_application(self.source.current_application)
         except AttributeError:

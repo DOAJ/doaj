@@ -10,7 +10,7 @@ SUBJECT_FORM_EXPANDED = {
 }
 
 OWNER_FORM_EXPANDED = {
-    "owner": "Owner"
+    "owner": "publisher"
 }
 
 EDITORIAL_FORM_EXPANDED = {
