@@ -99,7 +99,7 @@ CONTEXT_EXAMPLE = {
 
 from copy import deepcopy
 from wtforms import Form
-from wtforms.fields.core import UnboundField
+from wtforms.fields.core import UnboundField, FieldList, FormField
 from portality.lib import plugin
 from flask import render_template
 import json
@@ -298,6 +298,19 @@ class FormulaicContext(object):
             for f in fs.get("fields", []):
                 if f.get("name") == field_name:
                     return FormulaicField(f, parent)
+
+    def repeatable_fields(self, parent=None):
+        if parent is None:
+            parent = self
+
+        reps = []
+        for fs in self._definition.get("fieldsets", []):
+            for f in fs.get("fields", []):
+                if "repeatable" in f:
+                    reps.append(FormulaicField(f, parent))
+
+        return reps
+
 
     def fieldset(self, fieldset_name):
         for fs in self._definition.get("fieldsets", []):
@@ -728,7 +741,40 @@ class FormProcessor(object):
         This will be run before validation against the form is run.
         Use it to patch the form with any relevant data, such as fields which were disabled
         """
-        pass
+        repeatables = self._formulaic.repeatable_fields()
+        for repeatable in repeatables:
+            wtf = repeatable.wtfield
+            if not isinstance(wtf, FieldList):
+                continue
+
+            # get all of the entries off the field list, leaving the field list temporarily empty
+            entries = []
+            for i in range(len(wtf.entries)):
+                entries.append(wtf.pop_entry())
+
+            # go through each entry, and if it has any data in it put it back onto the list, otherwise
+            # leave it off
+            for entry in entries:
+                if isinstance(entry, FormField):
+                    data = entry.data
+                    has_data = False
+                    for k, v in data.items():
+                        if v:
+                            has_data = True
+                            break
+                    if not has_data:
+                        continue
+                else:
+                    if not entry.data:
+                        continue
+                wtf.append_entry(entry.data)
+
+            # finally, ensure that the minimum number of fields are populated in the list
+            min = repeatable.get("repeatable", {}).get("minimum", 0)
+            if min > len(wtf.entries):
+                for i in range(len(wtf.entries), min):
+                    wtf.append_entry()
+
 
     def patch_target(self):
         """

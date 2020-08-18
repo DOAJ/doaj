@@ -32,7 +32,6 @@ from portality.forms.validate import (
 
 from portality.datasets import language_options, country_options, currency_options
 from portality.core import app
-from portality.constants import APPLICATION_STATUSES_ALL
 from portality.regex import ISSN, ISSN_COMPILED
 
 # Stop words used in the keywords field
@@ -313,6 +312,7 @@ class FieldDefinitions:
         "default" : "",
         "options_fn": "iso_language_list",
         "repeatable": {
+            "minimum" : 1,
             "initial": 5
         },
         "validate": [
@@ -753,6 +753,7 @@ class FieldDefinitions:
         "input": "group",
         "label": "Highest APC charged",
         "repeatable" : {
+            "minimum": 1,
             "initial" : 5
         },
         "conditional": [
@@ -920,6 +921,7 @@ class FieldDefinitions:
         "label": "A national library:",
         "input": "text",
         "repeatable" : {
+            "minimum": 1,
             "initial" : 2
         },
         "help": {
@@ -1849,7 +1851,7 @@ class RequiredBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return validators.InputRequired(message=settings.get("message"))
+        return CustomRequired(message=settings.get("message"))
 
 
 class IsURLBuilder:
@@ -2143,6 +2145,23 @@ class ListWidgetWithSubfields(object):
         return HTMLString(''.join(html))
 
 
+class CustomRequired(object):
+    field_flags = ('required', )
+
+    def __init__(self, message=None):
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data is None or isinstance(field.data, str) and not field.data.strip():
+            if self.message is None:
+                message = field.gettext('This field is required.')
+            else:
+                message = self.message
+
+            field.errors[:] = []
+            raise validators.StopValidation(message)
+
+
 ##########################################################
 # Mapping from configurations to WTForms builders
 ##########################################################
@@ -2192,6 +2211,7 @@ class SelectBuilder(WTFormsBuilder):
         sf = SelectField(**wtfargs)
         if "repeatable" in field:
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+
         return sf
 
 
@@ -2215,6 +2235,7 @@ class TextBuilder(WTFormsBuilder):
         sf = StringField(**wtfargs)
         if "repeatable" in field:
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+
         return sf
 
 
