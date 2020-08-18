@@ -34,7 +34,9 @@ class JournalGenericXWalk(object):
                 pres_services.append(form.preservation_service_other.data)
             bibjson.set_preservation(pres_services, None)
             if "national_library" in form.preservation_service.data and form.preservation_service_library.data:
-                bibjson.add_preservation_library(form.preservation_service_library.data)
+                libs = [x for x in form.preservation_service_library.data if x]
+                for lib in libs:
+                    bibjson.add_preservation_library(lib)
             if "none" in form.preservation_service.data:
                 bibjson.has_preservation = False
 
@@ -42,7 +44,7 @@ class JournalGenericXWalk(object):
             bibjson.preservation_url = form.preservation_service_url.data
 
         if form.copyright_author_retains.data:
-            bibjson.author_retains_copyright = form.copyright_author_retains.data
+            bibjson.author_retains_copyright = form.copyright_author_retains.data == 'y'
 
         if form.copyright_url.data:
             bibjson.copyright_url = form.copyright_url.data
@@ -64,9 +66,11 @@ class JournalGenericXWalk(object):
                 bibjson.deposit_policy_registered = True
 
         if form.review_process.data or form.review_url.data:
-            processes = [e for e in form.review_process.data if e not in ["other"]]
-            if "other" in form.review_process.data and form.review_process_other.data:
-                processes.append(form.review_process_other.data)
+            processes = None
+            if form.review_process.data:
+                processes = [e for e in form.review_process.data if e not in ["other"]]
+                if "other" in form.review_process.data and form.review_process_other.data:
+                    processes.append(form.review_process_other.data)
             bibjson.set_editorial_review(processes, form.review_url.data, form.editorial_board_url.data)
 
         if form.pissn.data:
@@ -115,7 +119,7 @@ class JournalGenericXWalk(object):
             bibjson.article_license_display_example_url = form.license_display_example_url.data
 
         if form.boai.data:
-            bibjson.boai = True if form.boai.data == "y" else False
+            bibjson.boai = form.boai.data == "y"
 
         if form.oa_statement_url.data:
             bibjson.oa_statement_url = form.oa_statement_url.data
@@ -177,9 +181,9 @@ class JournalGenericXWalk(object):
 
         # continuations information
         if getattr(form, "continues", None):
-            bibjson.replaces = form.replaces.data
+            bibjson.replaces = form.continues.data
         if getattr(form, "continued_by", None):
-            bibjson.is_replaced_by = form.is_replaced_by.data
+            bibjson.is_replaced_by = form.continued_by.data
         if getattr(form, "discontinued_date", None):
             bibjson.discontinued_date = form.discontinued_date.data
 

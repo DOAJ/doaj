@@ -2073,10 +2073,37 @@ $.extend(true, doaj, {
                     for (var i = 0; i < results.length; i++) {
                         frag += this._renderResult(results[i]);
                     }
+
+                    var deleteTitleClass = edges.css_classes(this.namespace, "delete-title", this);
+                    var deleteLinkClass = edges.css_classes(this.namespace, "delete-link", this);
+
+                    frag += '<section class="modal in" id="modal-delete-application" tabindex="-1" role="dialog" style="display: none;"> \
+                        <div class="modal__dialog" role="document">\
+                            <h2 class="modal__title">Delete this application</h2>\
+                            <p>Are you sure you want to delete your application for <span class="' + deleteTitleClass + '"></span></p> \
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '">Yes, delete it</a> <a class="button button--secondary" data-dismiss="modal" class="modal__close">No</a>\
+                        </div>\
+                    </section>';
                 }
 
                 this.component.context.html(frag);
                 feather.replace();
+
+                // bindings for delete link handling
+                var deleteSelector = edges.css_class_selector(this.namespace, "delete", this);
+                edges.on(deleteSelector, "click", this, "deleteLinkClicked");
+            };
+
+            this.deleteLinkClicked = function(element) {
+                var deleteTitleSelector = edges.css_class_selector(this.namespace, "delete-title", this);
+                var deleteLinkSelector = edges.css_class_selector(this.namespace, "delete-link", this);
+
+                var el = $(element);
+                var href = el.attr("href");
+                var title = el.attr("data-title");
+
+                this.component.jq(deleteTitleSelector).html(title);
+                this.component.jq(deleteLinkSelector).attr("href", href);
             };
 
             this._accessLink = function(resultobj) {
@@ -2110,10 +2137,11 @@ $.extend(true, doaj, {
 
                 var accessLink = this._accessLink(resultobj);
 
-                var title = "Untitled";
+                var titleText = "Untitled";
                 if (edges.hasProp(resultobj, "bibjson.title")) {
-                    title = edges.escapeHtml(resultobj.bibjson.title);
+                    titleText = edges.escapeHtml(resultobj.bibjson.title);
                 }
+                var title = titleText;
                 if (accessLink) {
                     title = '<a href="' + accessLink[0] + '">' + title + '</a>';
                 }
@@ -2153,11 +2181,15 @@ $.extend(true, doaj, {
                 </li>';
 
                 var deleteLink = "";
+                var deleteLinkTemplate = doaj.publisherApplicationsSearchConfig.deleteLinkTemplate;
+                var deleteLinkUrl = deleteLinkTemplate.replace("__application_id__", resultobj.id);
+                var deleteClass = edges.css_classes(this.namespace, "delete", this);
                 if (resultobj.es_type === "draft_application" ||
                         resultobj.admin.application_status === "pending" ||
                         resultobj.admin.application_status === "update_request") {
                     deleteLink = '<li class="tag">\
-                        <a href="#"  data-toggle="modal" data-target="#modal-delete-application">\
+                        <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-application" class="' + deleteClass + '"\
+                            data-title="' + titleText + '">\
                             <span data-feather="trash-2" aria-hidden="true"></span>\
                             <span>Delete</span>\
                         </a>\
@@ -2411,7 +2443,7 @@ $.extend(true, doaj, {
 
         editSuggestion : function(params) {
             return function (val, resultobj, renderer) {
-                if (resultobj['suggestion']) {
+                if (resultobj.es_type === "application") {
                     // determine the link name
                     var linkName = "Review application";
                     if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {

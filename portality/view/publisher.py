@@ -11,6 +11,7 @@ from portality.formcontext import formcontext
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 from portality.ui.messages import Messages
 from portality import lock
+from portality.models import DraftApplication
 
 from huey.exceptions import TaskException
 
@@ -35,6 +36,26 @@ def index():
 @ssl_required
 def journals():
     return render_template("publisher/journals.html")
+
+
+@blueprint.route("/application/<application_id>/delete", methods=["GET"])
+def delete_application(application_id):
+    # if this is a draft application, we can just remove it
+    draft_application = DraftApplication.pull(application_id)
+    if draft_application is not None:
+        draft_application.delete()
+        return redirect(url_for("publisher.deleted_thanks"))
+
+    # otherwise delegate to the application service to sort this out
+    appService = DOAJ.applicationService()
+    appService.delete_application(application_id, current_user._get_current_object())
+
+    return redirect(url_for("publisher.deleted_thanks"))
+
+
+@blueprint.route("/application/deleted")
+def deleted_thanks():
+    return render_template("layouts/static_page.html", page_frag="publisher/application_deleted.html")
 
 
 @blueprint.route("/update_request/<journal_id>", methods=["GET", "POST", "DELETE"])

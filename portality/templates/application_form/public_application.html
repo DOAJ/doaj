@@ -1,19 +1,20 @@
+{% extends "layouts/base.html" %}
+
 {% block extra_stylesheets %}
 <!-- get Swagger UI css -->
 
 {% endblock %}
 
-{% extends "layouts/base.html" %}
-
 {% set form_id = "new_form" %}
 {% set form_action = url_for("apply.public_application") %}
-{% set formulaic_after = url_for("doaj.application_thanks", _anchor='thanks') %}
+{% set formulaic_after = url_for("apply.application_thanks") %}
 {% if obj %}
-    {% set form_id = url_for("apply.public_application", draft_id=obj.id) %}
+    {% set form_action = url_for("apply.public_application", draft_id=obj.id) %}
+    {# {% set form_id = url_for("apply.public_application", draft_id=obj.id) %} #}
 {% endif %}
 
 {% set js_validation = False %}
-{% set auto_save = 30000 %}
+{% set auto_save = config.get("PUBLIC_FORM_AUTOSAVE", 0) %}
 {% set TAB1 = {"title": "Open access compliance", "fieldsets": ["basic_compliance"]} %}
 {% set TAB2 = {"title": "About the Journal", "fieldsets": ["about_the_journal", "publisher", "society_or_institution"]} %}
 {% set TAB3 = {"title": "Copyright & licensing", "fieldsets": ["licensing", "embedded_licensing", "copyright"]} %}

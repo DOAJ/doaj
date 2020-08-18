@@ -99,7 +99,7 @@ CONTEXT_EXAMPLE = {
 
 from copy import deepcopy
 from wtforms import Form
-from wtforms.fields.core import UnboundField
+from wtforms.fields.core import UnboundField, FieldList, FormField
 from portality.lib import plugin
 from flask import render_template
 import json
@@ -162,7 +162,7 @@ class Formulaic(object):
             expanded_fieldsets.append(fieldset_def)
 
         context_def["fieldsets"] = expanded_fieldsets
-        return FormulaicContext(context_def, self)
+        return FormulaicContext(context_name, context_def, self)
 
     @property
     def wtforms_builders(self):
@@ -176,11 +176,13 @@ class Formulaic(object):
     def javascript_functions(self):
         return self._javascript_functions
 
-    def choices_for(self, field_name):
+    def choices_for(self, field_name, context_name=None):
         field_def = self._definition.get("fields", {}).get(field_name)
         if field_def is None:
             return []
-        return FormulaicField._options2choices(field_def, self.function_map)
+
+        formulaic_context_shell = FormulaicContext(context_name, None, self)
+        return FormulaicField._options2choices(field_def, formulaic_context_shell)
 
     def _process_fields(self, context_name, field_names):
         field_defs = []
@@ -198,12 +200,13 @@ class Formulaic(object):
 
             # if there is an options_fn, expand them into the options field
             if "options_fn" in field_def:
-                opt_fn = self._function_map.get("options", {}).get(field_def["options_fn"])
-                if opt_fn is None:
-                    raise FormulaicException("No function mapping defined for function reference '{x}'".format(x=field_def["options_fn"]))
-                if isinstance(opt_fn, str):
-                    opt_fn = plugin.load_function(opt_fn)
-                field_def["options"] = opt_fn(field_def)
+                field_def["options"] = Formulaic.run_options_fn(field_def, self._function_map.get("options", {}), context_name)
+                # opt_fn = self._function_map.get("options", {}).get(field_def["options_fn"])
+                # if opt_fn is None:
+                #     raise FormulaicException("No function mapping defined for function reference '{x}'".format(x=field_def["options_fn"]))
+                # if isinstance(opt_fn, str):
+                #     opt_fn = plugin.load_function(opt_fn)
+                # field_def["options"] = opt_fn(field_def, context_name)
 
             # and remove the context overrides settings, so they don't bleed to contexts that don't require them
             if "contexts" in field_def:
@@ -213,9 +216,20 @@ class Formulaic(object):
 
         return field_defs
 
+    @classmethod
+    def run_options_fn(cls, field_def, options_function_map, context_name):
+        opt_fn = options_function_map.get(field_def["options_fn"])
+        if opt_fn is None:
+            raise FormulaicException(
+                "No function mapping defined for function reference '{x}'".format(x=field_def["options_fn"]))
+        if isinstance(opt_fn, str):
+            opt_fn = plugin.load_function(opt_fn)
+        return opt_fn(field_def, context_name)
+
 
 class FormulaicContext(object):
-    def __init__(self, definition: dict, parent: Formulaic):
+    def __init__(self, name, definition, parent: Formulaic):
+        self._name = name
         self._definition = definition
         self._formulaic = parent
         self._wtform_class = None
@@ -223,6 +237,10 @@ class FormulaicContext(object):
 
         self._wtform_class = self.wtform_class()
         self._wtform_inst = self.wtform()
+
+    @property
+    def name(self):
+        return self._name
 
     @property
     def wtforms_builders(self):
@@ -268,6 +286,9 @@ class FormulaicContext(object):
         return TempForm
 
     def wtform_class(self):
+        if self._definition is None:
+            return
+
         if self._wtform_class is not None:
             return self._wtform_class
 
@@ -287,6 +308,9 @@ class FormulaicContext(object):
         return self._wtform_class
 
     def wtform(self, formdata=None, data=None):
+        if self._definition is None:
+            return
+
         klazz = self.wtform_class()
         self._wtform_inst = klazz(formdata=formdata, data=data)
         return self._wtform_inst
@@ -298,6 +322,19 @@ class FormulaicContext(object):
             for f in fs.get("fields", []):
                 if f.get("name") == field_name:
                     return FormulaicField(f, parent)
+
+    def repeatable_fields(self, parent=None):
+        if parent is None:
+            parent = self
+
+        reps = []
+        for fs in self._definition.get("fieldsets", []):
+            for f in fs.get("fields", []):
+                if "repeatable" in f:
+                    reps.append(FormulaicField(f, parent))
+
+        return reps
+
 
     def fieldset(self, fieldset_name):
         for fs in self._definition.get("fieldsets", []):
@@ -585,7 +622,7 @@ class FormulaicField(object):
         if "default" in field:
             wtargs["default"] = field.get("default")
         if "options" in field or "options_fn" in field:
-            wtargs["choices"] = cls._options2choices(field, formulaic_context.function_map.get("options", {}))
+            wtargs["choices"] = cls._options2choices(field, formulaic_context)
 
         return builder(formulaic_context, field, wtargs)
 
@@ -597,14 +634,18 @@ class FormulaicField(object):
         return None
 
     @classmethod
-    def _options2choices(self, field, function_map):
+    def _options2choices(self, field, formulaic_context):
+        # function_map = formulaic_context.function_map.get("options", {})
+
         options = field.get("options", [])
         if len(options) == 0 and "options_fn" in field:
-            fnpath = function_map.get(field["options_fn"])
-            if fnpath is None:
-                raise FormulaicException("No function mapping defined for function reference '{x}'".format(x=field["options_fn"]))
-            fn = plugin.load_function(fnpath)
-            options = fn()
+            # options = Formulaic.run_options_fn(field, formulaic_context)
+            options = Formulaic.run_options_fn(field, formulaic_context.function_map.get("options", {}), formulaic_context.name)
+            # fnpath = function_map.get(field["options_fn"])
+            # if fnpath is None:
+            #     raise FormulaicException("No function mapping defined for function reference '{x}'".format(x=field["options_fn"]))
+            # fn = plugin.load_function(fnpath)
+            # options = fn(field, formulaic_context.name)
 
         choices = []
         for o in options:
@@ -728,7 +769,40 @@ class FormProcessor(object):
         This will be run before validation against the form is run.
         Use it to patch the form with any relevant data, such as fields which were disabled
         """
-        pass
+        repeatables = self._formulaic.repeatable_fields()
+        for repeatable in repeatables:
+            wtf = repeatable.wtfield
+            if not isinstance(wtf, FieldList):
+                continue
+
+            # get all of the entries off the field list, leaving the field list temporarily empty
+            entries = []
+            for i in range(len(wtf.entries)):
+                entries.append(wtf.pop_entry())
+
+            # go through each entry, and if it has any data in it put it back onto the list, otherwise
+            # leave it off
+            for entry in entries:
+                if isinstance(entry, FormField):
+                    data = entry.data
+                    has_data = False
+                    for k, v in data.items():
+                        if v:
+                            has_data = True
+                            break
+                    if not has_data:
+                        continue
+                else:
+                    if not entry.data:
+                        continue
+                wtf.append_entry(entry.data)
+
+            # finally, ensure that the minimum number of fields are populated in the list
+            min = repeatable.get("repeatable", {}).get("minimum", 0)
+            if min > len(wtf.entries):
+                for i in range(len(wtf.entries), min):
+                    wtf.append_entry()
+
 
     def patch_target(self):
         """

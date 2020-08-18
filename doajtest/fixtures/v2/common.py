@@ -10,7 +10,7 @@ SUBJECT_FORM_EXPANDED = {
 }
 
 OWNER_FORM_EXPANDED = {
-    "owner": "Owner"
+    "owner": "publisher"
 }
 
 EDITORIAL_FORM_EXPANDED = {
@@ -151,7 +151,7 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "license_attributes" : ["BY", "NC"],
     "license_display" : ["Embed", "Display"],
     "license_display_example_url": "http://licence.embedded",
-    "boai": True,
+    "boai": "y",
     "license": ["Publisher's own license"],
     "license_terms_url" : "http://licence.url",
     "oa_statement_url" : "http://oa.statement",
