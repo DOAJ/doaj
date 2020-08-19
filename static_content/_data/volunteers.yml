@@ -311,6 +311,15 @@ ass_ed:
   language: English
   photo: "oronga.jpg"
   
+
+- name: Faizal Risdianto
+  area: 
+  year_since: "2020"
+  city: 
+  country: 
+  language: English
+  photo: "faizal.jpg"
+  
   
 - name: Francesca Soldati
   area: Science
@@ -417,6 +426,15 @@ ass_ed:
   city: Cambridge
   country: USA
   language: English
+ 
+ 
+- name: Khoirul Fathoni
+  area: 
+  year_since: "2020"
+  city: 
+  country: Indonesia
+  language: Indonesian, English
+  photo:
 
 - name: Kimberly Mears
   area: Medicine
