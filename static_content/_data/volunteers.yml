@@ -543,6 +543,14 @@ ass_ed:
   country: Iran
   language: Farsi, English
 
+- name: Sandra Aceng
+  area:
+  year_since: "2020"
+  city: 
+  country: 
+  language: English
+  photo: "aceng.jpg" 
+
 - name: Sara Ricetto
   area: Open Access, Open Science
   year_since:
