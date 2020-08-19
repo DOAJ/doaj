@@ -30,7 +30,7 @@
               <div class="title-list__text">
                 <figure class="portrait">
                   {% if i.photo %}
-                    <div class="portrait__bg-img--3d" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                    <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                   {% else %}
                     <div class="portrait__img--empty"></div>
                   {% endif %}
@@ -64,7 +64,7 @@
               <div class="title-list__text">
                 <figure class="portrait">
                   {% if i.photo %}
-                <div class="portrait__bg-img--3d" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/ambassadors/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/ambassadors/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                   {% else %}
                 <div class="portrait__img--empty"></div>
                   {% endif %}
@@ -173,6 +173,11 @@
             {% if i.city %}
             <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
+                {% if i.photo %}
+                <figure class="portrait portrait--small">
+                  <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                </figure>
+                {% endif %}
                 <p class="label">{{ i.city }}, {{ i.country }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
                 <p>
@@ -191,6 +196,11 @@
             {% if i.city %}
             <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
+                {% if i.photo %}
+                <figure class="portrait portrait--small">
+                  <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                </figure>
+                {% endif %}
                 <p class="label">{{ i.area }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
                 <p>
