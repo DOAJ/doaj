@@ -562,11 +562,11 @@ ass_ed:
   language: Farsi, English
 
 - name: Sandra Aceng
-  area:
+  area: Social Sciences
   year_since: "2020"
-  city: 
-  country: 
-  language: English
+  city: Kampala
+  country: Uganda
+  language: English, Luo
   photo: "aceng.jpg" 
 
 - name: Sara Ricetto
