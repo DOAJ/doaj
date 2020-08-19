@@ -216,12 +216,6 @@ ass_ed:
   country: USA
   language: English, French
 
-- name: Concha Diez Pastor
-  area: Social Sciences, Technology
-  year_since:
-  city: Madrid
-  country: Spain
-  language: Spanish, English, Italian
 
 - name: Constansy Aleru
   area: Medical Sciences
@@ -399,12 +393,6 @@ ass_ed:
   country: Lebanon
   language: Arabic, French, English
 
-- name: Juan Sebastian Gonzalez
-  area: Science, Technology
-  year_since:
-  city: Bogota
-  country: Colombia
-  language: Spanish, English
 
 - name: Kamil B. Varınca
   area: Science
@@ -650,13 +638,6 @@ ass_ed:
   city: Bangkalan
   country: Indonesia
   language: Indonesian, English
-
-- name: Victor Freitas de Azeredo Barros
-  area: Technology
-  year_since:
-  city: Braga
-  country: Portugal
-  language: Portuguese, English, Spanish
 
 - name: Weronika Kortas
   area: Humanities, Social Sciences
