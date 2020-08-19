@@ -223,6 +223,15 @@ ass_ed:
   country: Spain
   language: Spanish, English, Italian
 
+- name: Constansy Aleru
+  area: Medical Sciences
+  year_since:
+  city: Port Harcourt
+  country: Nigeria
+  language: English, French
+  photo: "ConstancyAleru_AssEd.jpg"
+
+
 - name: Deborah Lins e Nóbrega
   area: Social Sciences
   year_since:
