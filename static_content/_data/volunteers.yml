@@ -295,6 +295,15 @@ ass_ed:
   country: Turkey
   language: Turkish, English
 
+- name: Faith Oronga
+  area: Librarianship
+  year_since: "2020"
+  city: 
+  country: Kenya
+  language: English
+  photo: "oronga.jpg"
+  
+  
 - name: Francesca Soldati
   area: Science
   year_since:
@@ -568,6 +577,14 @@ ass_ed:
   city: Sejong
   country: Korea
   language: Korean, English
+ 
+- name: Souleymane Sogoba
+  area: Statistics
+  year_since: "2020"
+  city: 
+  country: 
+  language: French
+  photo: "sogoba.jpg"
 
 - name: Teodor Mihaela
   area: Humanities, Social Sciences
