@@ -229,7 +229,7 @@ ass_ed:
   city: Port Harcourt
   country: Nigeria
   language: English, French
-  photo: "ConstancyAleru_AssEd.jpg"
+  photo: "aleru.jpg"
 
 
 - name: Deborah Lins e Nóbrega
@@ -336,6 +336,14 @@ ass_ed:
   city:
   country:
   language:
+  
+- name: Handoko
+  area: Information Technology
+  year_since: "2020"
+  city: Padang
+  country: Indonesia
+  language: Indonesian, English
+  photo: "handoko.jpg"
 
 - name: Iryna Kuchma
   area: Humanities, Social Sciences
