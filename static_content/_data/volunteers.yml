@@ -473,6 +473,7 @@ ass_ed:
   city: V.N Gaia
   country: Portugal
   language: Portuguese, Spanish, English
+ 
 
 - name: Mariana Solano Hernandez
   area: Science
@@ -487,6 +488,15 @@ ass_ed:
   city:
   country:
   language:
+
+
+- name: Maryam Jamilah
+  area:
+  year_since: "2020"
+  city:
+  country:
+  language:
+  photo: "jamilah.jpg"
 
 - name: Miguel-Ángel Vera-Baceta
   area: Social Sciences
