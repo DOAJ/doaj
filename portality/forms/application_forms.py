@@ -1,7 +1,7 @@
 from copy import deepcopy
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
-from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, \
+from wtforms import StringField, TextAreaField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, \
     FormField, FieldList, HiddenField
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
@@ -1162,7 +1162,7 @@ class FieldDefinitions:
     QUICK_REJECT_DETAILS = {
         "name": "quick_reject_details",
         "label": "Enter additional information to be sent to the publisher",
-        "input": "text",
+        "input": "textarea",
         "help": {
             "long_help": "The selected reason for rejection, and any additional information you include, "
                          "are sent to the journal contact with the rejection email."
@@ -1328,7 +1328,7 @@ class FieldDefinitions:
         "subfield": True,
         "name": "note",
         "group": "notes",
-        "input": "text"
+        "input": "textarea"
     }
 
     NOTE_DATE = {
@@ -2282,6 +2282,19 @@ class TextBuilder(WTFormsBuilder):
         return sf
 
 
+class TextAreaBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "textarea"
+
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        sf = TextAreaField(**wtfargs)
+        if "repeatable" in field:
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+        return sf
+
+
 class TagListBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
@@ -2346,6 +2359,7 @@ WTFORMS_BUILDERS = [
     SelectBuilder,
     MultiSelectBuilder,
     TextBuilder,
+    TextAreaBuilder,
     TagListBuilder,
     IntegerBuilder,
     GroupBuilder,
