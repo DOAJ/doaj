@@ -1,10 +1,5 @@
+<aside class="highlight highlight--aside editorial-panel" style="width: inherit">
 
-    <p class="label">Page 8 of {{ FORM | length + 1}}</p>
-    <h1><span data-feather="archive"></span>Administrative</h1>
-
-<p>Features for Editorial review.</p>
-
-    <input type="hidden" name="validated" value="">
     {% set fs = formulaic_context.fieldset("seal") %}
     <h2 class="form__header"> {{ fs.label }}</h2>
         {% for f in fs.fields() %}
@@ -57,3 +52,4 @@
     {% if obj %}
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}
+</aside>

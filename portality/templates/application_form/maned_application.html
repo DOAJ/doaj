@@ -25,7 +25,7 @@
 <body id="apply">
     <main class="container">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <section class="page-content">
                     <form id="{{ form_id }}"
                       class="application_form"
@@ -33,7 +33,14 @@
                       action="{{ form_action }}"
                       method="post"
                       data-formulaic-after="{{ formulaic_after }}">
-
+                    <div class="tab form-section">
+                        <div class="col-md-3">
+                            {% include "application_form/admin/index.html" %}
+                        </div>
+                        <div class="col-md-8 col-md-offset-1">
+                            {% include "application_form/07-review/index.html" %}
+                        </div>
+                    </div>
                     <div class="tab form-section">
                         {% include "application_form/01-oa-compliance/index.html" %}
                     </div>
@@ -52,25 +59,10 @@
                     <div class="tab form-section">
                         {% include "application_form/06-best-practice/index.html" %}
                     </div>
-                    <div class="tab form-section">
-                        {% include "application_form/07-review/index.html" %}
-                    </div>
-                    <div class="tab form-section">
-                        {% include "application_form/admin/index.html" %}
-                    </div>
                     <p class="cannot-submit" id="cannot_save_draft" style="display: none"><i>You cannot save the draft because your application contains some invalid fields. You do not have to provide all required answers but all provided information must have valid format. Please review your answers and try again.</i></p>
                     {% include "application_form/_buttons.html" %}
                 </form>
                 </section>
-            </div>
-
-            <div class="col-md-4">
-                <div >
-                    {% include "application_form/pagination_menu_admin.html" %}
-                </div>
-                <div class="row">
-                    {% include "application_form/aside_menu.html" %}
-                </div>
             </div>
         </div>
     </main>
