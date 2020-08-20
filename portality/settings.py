@@ -250,6 +250,7 @@ ROLE_MAP = {
         "associate_editor",     # note, these don't cascade, so we still need to list all the low-level roles
         "edit_journal",
         "edit_suggestion",
+        "edit_application"      # todo: switchover from suggestion to application
         "editor_area",
         "assign_to_associate",
         "list_group_journals",

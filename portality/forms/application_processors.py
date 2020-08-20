@@ -14,6 +14,79 @@ from flask_login import current_user
 from wtforms import FormField, FieldList
 
 
+class NewApplication(FormProcessor):
+    """
+    Public Application Form Context.  This is also a sort of demonstrator as to how to implement
+    one, so it will do unnecessary things like override methods that don't actually need to be overridden.
+
+    This should be used in a context where an unauthenticated user is making a request to put a journal into the
+    DOAJ.  It does not have any edit capacity (i.e. the form can only be submitted once), and it does not provide
+    any form fields other than the essential journal bibliographic, application bibliographc and contact information
+    for the suggester.  On submission, it will set the status to "pending" and the item will be available for review
+    by the editors
+    """
+
+    ############################################################
+    # PublicApplicationForm versions of FormProcessor lifecycle functions
+    ############################################################
+
+    def draft(self, account, id=None, *args, **kwargs):
+        # check for validity
+        valid = self.validate()
+
+        # FIXME: if you can only save a valid draft, you cannot save a draft
+        # the draft to be saved needs to be valid
+        #if not valid:
+        #    return None
+
+        def _resetDefaults(form):
+            for field in form:
+                if field.errors:
+                    if isinstance(field, FormField):
+                        _resetDefaults(field.form)
+                    elif isinstance(field, FieldList):
+                        for sub in field:
+                            if isinstance(sub, FormField):
+                                _resetDefaults(sub)
+                            else:
+                                sub.data = sub.default
+                    else:
+                        field.data = field.default
+
+        # if not valid, then remove all fields which have validation errors
+        if not valid:
+            _resetDefaults(self.form)
+
+        self.form2target()
+        draft_application = models.DraftApplication(**self.target.data)
+        if id is not None:
+            draft_application.set_id(id)
+        draft_application.set_owner(account.id)
+        draft_application.save()
+        return draft_application
+
+    def finalise(self, account, save_target=True, email_alert=True):
+        super(NewApplication, self).finalise()
+
+        # set some administrative data
+        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.target.date_applied = now
+        self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
+        self.target.set_owner(account.id)
+        self.target.set_last_manual_update()
+
+        # Finally save the target
+        if save_target:
+            self.target.save()
+
+        if email_alert:
+            try:
+                emails.send_received_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert(Messages.FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR)
+                app.logger.exception(Messages.FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR)
+
+
 class ApplicationProcessor(FormProcessor):
 
     def _carry_fixed_aspects(self):
@@ -115,91 +188,37 @@ class ApplicationProcessor(FormProcessor):
         if apply_notes_by_value:
             self.target.set_notes(tnotes)
 
+    def _carry_continuations(self):
+        if self.source is None:
+            raise Exception("Cannot carry data from a non-existent source")
 
-class NewApplication(FormProcessor):
-    """
-    Public Application Form Context.  This is also a sort of demonstrator as to how to implement
-    one, so it will do unnecessary things like override methods that don't actually need to be overridden.
-
-    This should be used in a context where an unauthenticated user is making a request to put a journal into the
-    DOAJ.  It does not have any edit capacity (i.e. the form can only be submitted once), and it does not provide
-    any form fields other than the essential journal bibliographic, application bibliographc and contact information
-    for the suggester.  On submission, it will set the status to "pending" and the item will be available for review
-    by the editors
-    """
-
-    ############################################################
-    # PublicApplicationForm versions of FormProcessor lifecycle functions
-    ############################################################
-
-    def draft(self, account, id=None, *args, **kwargs):
-        # check for validity
-        valid = self.validate()
-
-        # FIXME: if you can only save a valid draft, you cannot save a draft
-        # the draft to be saved needs to be valid
-        #if not valid:
-        #    return None
-
-        def _resetDefaults(form):
-            for field in form:
-                if field.errors:
-                    if isinstance(field, FormField):
-                        _resetDefaults(field.form)
-                    elif isinstance(field, FieldList):
-                        for sub in field:
-                            if isinstance(sub, FormField):
-                                _resetDefaults(sub)
-                            else:
-                                sub.data = sub.default
-                    else:
-                        field.data = field.default
-
-        # if not valid, then remove all fields which have validation errors
-        if not valid:
-            _resetDefaults(self.form)
-
-        self.form2target()
-        draft_application = models.DraftApplication(**self.target.data)
-        if id is not None:
-            draft_application.set_id(id)
-        draft_application.set_owner(account.id)
-        draft_application.save()
-        return draft_application
-
-    def finalise(self, account, save_target=True, email_alert=True):
-        super(NewApplication, self).finalise()
-
-        # set some administrative data
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        self.target.date_applied = now
-        self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
-        self.target.set_owner(account.id)
-        self.target.set_last_manual_update()
-
-        # Finally save the target
-        if save_target:
-            self.target.save()
-
-        if email_alert:
-            try:
-                emails.send_received_email(self.target)
-            except app_email.EmailException as e:
-                self.add_alert(Messages.FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR)
-                app.logger.exception(Messages.FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR)
+        try:
+            sbj = self.source.bibjson()
+            tbj = self.target.bibjson()
+            if sbj.replaces:
+                tbj.replaces = sbj.replaces
+            if sbj.is_replaced_by:
+                tbj.is_replaced_by = sbj.is_replaced_by
+            if sbj.discontinued_date:
+                tbj.discontinued_date = sbj.discontinued_date
+        except AttributeError:
+            # this means that the source doesn't know about current_applications, which is fine
+            pass
 
 
 class AdminApplication(ApplicationProcessor):
+    """
+    Managing Editor's Application Review form.  Should be used in a context where the form warrants full
+    admin priviledges.  It will permit conversion of applications to journals, and assignment of owner account
+    as well as assignment to editorial group.
+    """
 
     def patch_target(self):
-        if self.source is None:
-            raise Exception("Can't patch a target from a non-existent source")
+        super(AdminApplication, self).patch_target()
 
-        self._carry_fixed_aspects()
         # This patches the target with things that shouldn't change from the source
-
+        self._carry_fixed_aspects()
         self._merge_notes_forward(allow_delete=True)
-        # Notes
 
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
@@ -215,7 +234,7 @@ class AdminApplication(ApplicationProcessor):
         # if we are allowed to finalise, kick this up to the superclass
         super(AdminApplication, self).finalise()
 
-        # FIXME: may want to factor this out of the suggestionformxwalk
+        # TODO: should these be a BLL feature?
         # If we have changed the editors assigned to this application, let them know.
         is_editor_group_changed = ApplicationFormXWalk.is_new_editor_group(self.form, self.source)
         is_associate_editor_changed = ApplicationFormXWalk.is_new_editor(self.form, self.source)
@@ -393,3 +412,112 @@ class AdminApplication(ApplicationProcessor):
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.exception('Error sending application approved email failed - ' + magic)
+
+
+class EditorApplication(ApplicationProcessor):
+    """
+    Editors Application Review form.  This should be used in a context where an editor who owns an editorial group
+    is accessing an application.  This prevents re-assignment of Editorial group, but permits assignment of associate
+    editor.  It also permits change in application state, except to "accepted"; therefore this form context cannot
+    be used to create journals from applications. Deleting notes is not allowed, but adding is.
+    """
+
+    def pre_validate(self):
+        # TODO: If we're only ever patching disabled fields for validation could we add this to super?
+        super(EditorApplication, self).pre_validate()
+
+        self.form.editor_group.data = self.source.editor_group
+
+        if self.form['status'].is_disabled():
+            self.form.application_status.data = self.source.application_status
+
+    def patch_target(self):
+        super(EditorApplication, self).patch_target()
+
+        self._carry_fixed_aspects()
+        self._merge_notes_forward()
+        self._carry_continuations()
+
+        self.target.set_owner(self.source.owner)
+        self.target.set_editor_group(self.source.editor_group)
+
+    def finalise(self):
+        if self.source is None:
+            raise Exception("You cannot edit a not-existent application")
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
+            raise Exception("You cannot edit applications which have been accepted into DOAJ.")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(EditorApplication, self).finalise()
+
+        # Check the status change is valid
+        # TODO: validation of editorial workflow changes
+        # choices.Choices.validate_status_change('editor', self.source.application_status,
+        #                                        self.target.application_status)
+
+        # FIXME: may want to factor this out of the suggestionformxwalk
+        new_associate_assigned = ApplicationFormXWalk.is_new_editor(self.form, self.source)
+
+        # Save the target
+        self.target.set_last_manual_update()
+        self.target.save()
+
+        # record the event in the provenance tracker
+        models.Provenance.make(current_user, "edit", self.target)
+
+        # if we need to email the associate because they have just been assigned, handle that here.
+        if new_associate_assigned:
+            try:
+                emails.send_assoc_editor_email(self.target)
+            except app_email.EmailException:
+                self.add_alert("Problem sending email to associate editor - probably address is invalid")
+                app.logger.exception('Error sending associate assigned email')
+
+        # If this is the first time this application has been assigned to an editor, notify the publisher.
+        old_ed = self.source.editor
+        if (old_ed is None or old_ed == '') and self.target.editor is not None:
+            is_update_request = self.target.current_journal is not None
+            if is_update_request:
+                alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
+            else:
+                alerts = emails.send_publisher_application_editor_assigned_email(self.target)
+            for alert in alerts:
+                self.add_alert(alert)
+
+        # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
+        if self.source.application_status == constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
+            try:
+                emails.send_assoc_editor_inprogress_email(self.target)
+                self.add_alert(
+                    'An email has been sent to notify the assigned associate editor of the change in status.')
+            except AttributeError as e:
+                magic = str(uuid.uuid1())
+                self.add_alert(
+                    'Couldn\'t find a recipient for this email - check an associate editor is assigned. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                app.logger.exception('No associate editor recipient for failed review email - ' + magic)
+            except app_email.EmailException:
+                magic = str(uuid.uuid1())
+                self.add_alert(
+                    'Sending the failed review email to associate editor didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                app.logger.exception('Error sending failed review email to associate editor - ' + magic)
+
+        # email managing editors if the application was newly set to 'ready'
+        if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
+            # Tell the ManEds who has made the status change - the editor in charge of the group
+            editor_group_name = self.target.editor_group
+            editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
+            editor_group = models.EditorGroup.pull(editor_group_id)
+            editor_acc = editor_group.get_editor_account()
+
+            # record the event in the provenance tracker
+            models.Provenance.make(current_user, "status:ready", self.target)
+
+            editor_id = editor_acc.id
+            try:
+                emails.send_admin_ready_email(self.target, editor_id=editor_id)
+                self.add_alert('A confirmation email has been sent to the Managing Editors.')
+            except app_email.EmailException:
+                magic = str(uuid.uuid1())
+                self.add_alert(
+                    'Hm, sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                app.logger.exception('Error sending ready status email to managing editors - ' + magic)
