@@ -307,11 +307,11 @@ ass_ed:
   
 
 - name: Faizal Risdianto
-  area: 
+  area: Humanities
   year_since: "2020"
-  city: 
-  country: 
-  language: English
+  city: Solo
+  country: Indonesia
+  language: Indonesian, English
   photo: "faizal.jpg"
   
   
@@ -373,7 +373,7 @@ ass_ed:
   language: Ukranian, English, French, Polish
 
 - name: Isabel Margalejo Ferrández
-  area: Librarianship
+  area: Social Sciences
   year_since:
   city: Valencia
   country: Spain
