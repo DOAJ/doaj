@@ -34,7 +34,7 @@ EXAMPLE = {
             ],
             "options_fn" : "function name to generate options",
             "default" : "[default value]",
-            "disabled" : "[disabled: True|False]",
+            "disabled" : "[disabled: True|False OR a function reference string]",
             "conditional" : [   # conditions to AND together
                 {
                     "field" : "[field name]",
@@ -443,6 +443,12 @@ class FormulaicField(object):
 
         raise AttributeError('{name} is not set'.format(name=name))
 
+    @property
+    def parent_context(self):
+        if isinstance(self._formulaic_fieldset, FormulaicContext):
+            return self._formulaic_fieldset
+        return self._formulaic_fieldset._formulaic_context
+
     def get(self, attr, default=None):
         return self._definition.get(attr, default)
 
@@ -480,6 +486,14 @@ class FormulaicField(object):
         if isinstance(opts, list):
             return opts
         return []
+
+    @property
+    def is_disabled(self):
+        differently_abled = self._definition.get("disabled", False)
+        if isinstance(differently_abled, str):
+            fn = self.function_map.get("disabled", {}).get(differently_abled)
+            differently_abled = fn(self, self.parent_context.name)
+        return differently_abled
 
     @property
     def has_conditional(self):
@@ -580,6 +594,9 @@ class FormulaicField(object):
 
         if self.has_options_subfields():
             kwargs["formulaic"] = self
+
+        if self.is_disabled:
+            kwargs["disabled"] = "disabled"
 
         # allow custom args to overwite all other arguments
         if custom_args is not None:

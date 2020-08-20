@@ -1194,6 +1194,7 @@ class FieldDefinitions:
         "validate": [
             "required"
         ],
+        "disabled" : "application_status_disabled",
         "contexts" : {
             "associate_editor" : {
                 "help" : {
@@ -1870,6 +1871,16 @@ def application_statuses(field, formulaic_context_name):
 
 
 #######################################################
+## Conditional disableds
+#######################################################
+
+def application_status_disabled(field, formulaic_context_name):
+    choices = application_statuses(field, formulaic_context_name)
+    field_value = field.wtfield.data
+    return field_value in [c.get("v") for c in choices]
+
+
+#######################################################
 # Validation features
 #######################################################
 
@@ -2084,6 +2095,9 @@ PYTHON_FUNCTIONS = {
         "iso_currency_list": iso_currency_list,
         # "quick_reject" : quick_reject,
         "application_statuses" : application_statuses
+    },
+    "disabled" : {
+        "application_status_disabled" : application_status_disabled
     },
     "validate": {
         "render": {
