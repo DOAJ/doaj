@@ -164,7 +164,10 @@ APPLICATION_FORM_EXPANDED.update(deepcopy(EDITORIAL_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(SEAL_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(WORKFLOW_FORM_EXPANDED))
 
-APPLICATION_FORM = expanded2compact(APPLICATION_FORM_EXPANDED, {"keywords" : ","})
+APPLICATION_FORM = expanded2compact(APPLICATION_FORM_EXPANDED,
+                                    join_lists={"keywords" : ","},
+                                    repeat_lists=["preservation_service_library", "language"]
+                                    )
 
 """
 APPLICATION_FORM["keywords"] = ",".join(APPLICATION_FORM["keywords"])
