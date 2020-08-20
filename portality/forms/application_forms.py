@@ -1154,18 +1154,18 @@ class FieldDefinitions:
 
     QUICK_REJECT = {
         "name": "quick_reject",
-        "label": "Select the reason for rejection",
+        "label": "Reason for rejection",
         "input": "select",
         "options_fn": "quick_reject"
     }
 
     QUICK_REJECT_DETAILS = {
         "name": "quick_reject_details",
-        "label": "Enter additional information to be sent to the publisher",
+        "label": "Additional info",
         "input": "textarea",
         "help": {
-            "long_help": "The selected reason for rejection, and any additional information you include, "
-                         "are sent to the journal contact with the rejection email."
+            "long_help": ["The selected reason for rejection, and any additional information you include, "
+                         "are sent to the journal contact with the rejection email."]
         },
         "validate": [
             {"required_if": {"field": "quick_reject", "value": "other"}}
@@ -1186,7 +1186,7 @@ class FieldDefinitions:
 
     APPLICATION_STATUS = {
         "name": "application_status",
-        "label": "Select status",
+        "label": "Change status",
         "input": "select",
         "options_fn": "application_statuses",
         "validate": [
@@ -1214,7 +1214,7 @@ class FieldDefinitions:
 
     EDITOR_GROUP = {
         "name": "editor_group",
-        "label": "Assign to editor group",
+        "label": "Group",
         "input": "text",
         "widgets": [
             {"autocomplete": {"field": "editor_group"}}
@@ -1228,7 +1228,7 @@ class FieldDefinitions:
 
     EDITOR = {
         "name": "editor",
-        "label": "Assign to individual",
+        "label": "Individual",
         "input": "select",
         "options": [],
         "validate" : [
@@ -1243,7 +1243,7 @@ class FieldDefinitions:
 
     DISCONTINUED_DATE = {
         "name": "discontinued_date",
-        "label": "This journal was discontinued on",
+        "label": "Discontinued on",
         "input": "text",
         "validate" : [
             "bigenddate",
@@ -1267,7 +1267,7 @@ class FieldDefinitions:
 
     CONTINUES = {
         "name": "continues",
-        "label": "This journal continues an older journal with the ISSN(s)",
+        "label": "Continues an older journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},
@@ -1279,7 +1279,7 @@ class FieldDefinitions:
 
     CONTINUED_BY = {
         "name": "continued_by",
-        "label": "This journal is continued by a newer version of the journal with the ISSN(s)",
+        "label": "Continued by a newer version of the journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},
@@ -1523,7 +1523,7 @@ class FieldSetDefinitions:
 
     SEAL = {
         "name": "seal",
-        "label": "DOAJ Seal",
+        "label": "Award the seal",
         "fields": [
             FieldDefinitions.DOAJ_SEAL["name"]
         ]
@@ -1567,9 +1567,9 @@ class FieldSetDefinitions:
         "name": "continuations",
         "label": "Continuations",
         "fields": [
-            FieldDefinitions.DISCONTINUED_DATE["name"],
             FieldDefinitions.CONTINUES["name"],
-            FieldDefinitions.CONTINUED_BY["name"]
+            FieldDefinitions.CONTINUED_BY["name"],
+            FieldDefinitions.DISCONTINUED_DATE["name"]
         ]
     }
 
