@@ -21,8 +21,8 @@ class Cache(DomainObject):
                 "journals" : rec.data.get("journals"),
                 "countries" : rec.data.get("countries"),
                 "abstracts" : rec.data.get("abstracts"),
-                "no-apc-journals" : rec.data.get("no-apc-journals"),
-                "last-updated" : rec.data.get("last-updated")
+                "no_apc" : rec.data.get("no_apc"),
+                "new_journals" : rec.data.get("new_journals")
             }
 
         # if we get to here, then we don't return the cache

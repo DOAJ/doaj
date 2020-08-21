@@ -16,7 +16,7 @@ from portality.models.history import ArticleHistory, JournalHistory
 from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery, NoJournalException
 from portality.models.oaipmh import OAIPMHRecord, OAIPMHJournal, OAIPMHArticle
 from portality.models.atom import AtomRecord
-from portality.models.search import JournalArticle, JournalArticleQuery
+from portality.models.search import JournalArticle, JournalStatsQuery, ArticleStatsQuery
 from portality.models.cache import Cache
 from portality.models.openurl import OpenURLRequest
 from portality.models.provenance import Provenance
