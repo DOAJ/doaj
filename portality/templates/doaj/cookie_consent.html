@@ -1,6 +1,7 @@
-<div id="cookie-consent-banner">
-    This website uses cookies to ensure you get the best experience.
-    <!-- LEGACY ROUTE -->
-    <a href="{{ url_for('doaj.privacy') }}">Learn more</a> |
-    <a class="cookie-consent" href="{{ url_for('doaj.cookie_consent') }}?continue={{ request.path }}">Hide this message</a>
+<div id="cookie-consent" class="cookie-consent">
+    <p>This website uses cookies to ensure you get the best experience.</p>
+    <p>
+        <a class="button" href="{{ url_for('doaj.privacy') }}">Learn more</a>
+        <a class="button" href="{{ url_for('doaj.cookie_consent') }}?continue={{ request.path }}">Hide this message</a>
+    </p>
 </div>
