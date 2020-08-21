@@ -511,8 +511,8 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/articles/article-page"
         },
         "validate": [
-            "is_url",
-            {"required_if": {"field": "license_display", "value": "y"}}
+            {"required_if": {"field": "license_display", "value": "y"}},
+            "is_url"
         ],
         "widgets": [
             "clickable_url"

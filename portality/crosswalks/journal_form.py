@@ -44,7 +44,7 @@ class JournalGenericXWalk(object):
             bibjson.preservation_url = form.preservation_service_url.data
 
         if form.copyright_author_retains.data:
-            bibjson.author_retains_copyright = form.copyright_author_retains.data
+            bibjson.author_retains_copyright = form.copyright_author_retains.data == "y"
 
         if form.copyright_url.data:
             bibjson.copyright_url = form.copyright_url.data
@@ -103,7 +103,7 @@ class JournalGenericXWalk(object):
                     nc = licenses[ltype]['NC']
                     nd = licenses[ltype]['ND']
                     sa = licenses[ltype]['SA']
-                    lurl = licenses[type]["url"]
+                    lurl = licenses[ltype]["url"]
                 elif form.license_attributes.data:
                     by = True if 'BY' in form.license_attributes.data else False
                     nc = True if 'NC' in form.license_attributes.data else False
@@ -119,7 +119,7 @@ class JournalGenericXWalk(object):
             bibjson.article_license_display_example_url = form.license_display_example_url.data
 
         if form.boai.data:
-            bibjson.boai = True if form.boai.data == "y" else False
+            bibjson.boai = form.boai.data == "y"
 
         if form.oa_statement_url.data:
             bibjson.oa_statement_url = form.oa_statement_url.data
@@ -157,8 +157,7 @@ class JournalGenericXWalk(object):
             bibjson.title = form.title.data
 
         if form.apc.data:
-            has_apc = form.apc.data == "y"
-            bibjson.has_apc = has_apc
+            bibjson.has_apc = form.apc.data == "y"
 
         if form.has_other_charges.data:
             has_other = form.has_other_charges.data == "y"
@@ -303,7 +302,7 @@ class JournalGenericXWalk(object):
         forminfo["license"] = ltypes
 
         if bibjson.article_license_display is not None:
-            forminfo["license_display"] = "y" if bibjson.article_license_display == "Embed" else "n"
+            forminfo["license_display"] = "y" if "Embed" in bibjson.article_license_display else "n"
         forminfo["license_display_example_url"] = bibjson.article_license_display_example_url
         forminfo["boai"] = 'y' if bibjson.boai else 'n'
         forminfo["license_terms_url"] = bibjson.license_terms_url

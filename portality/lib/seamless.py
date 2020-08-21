@@ -313,7 +313,11 @@ class SeamlessData(object):
 
         if coerce is not None and val is not None:
             # if you want to coerce and there is something to coerce do it
-            return self._coerce(val, coerce, accept_failure=allow_coerce_failure)
+            try:
+                return self._coerce(val, coerce, accept_failure=allow_coerce_failure)
+            except SeamlessException as e:
+                e.message += "; get_single, path {x}".format(x=path)
+                raise
         else:
             # otherwise return the value
             return val
@@ -329,7 +333,11 @@ class SeamlessData(object):
 
         # first see if we need to coerce the value (and don't coerce None)
         if coerce is not None and val is not None:
-            val = self._coerce(val, coerce, accept_failure=allow_coerce_failure)
+            try:
+                val = self._coerce(val, coerce, accept_failure=allow_coerce_failure)
+            except SeamlessException as e:
+                e.message += "; set_single, path {x}".format(x=context + "." + path)
+                raise
 
         if allowed_values is not None and val not in allowed_values:
             raise SeamlessException("Value '{x}' is not permitted at '{y}'".format(x=val, y=context + "." + path))
@@ -379,7 +387,11 @@ class SeamlessData(object):
 
         # if there is a value, do we want to coerce each of them
         if coerce is not None:
-            coerced = [self._coerce(v, coerce, accept_failure=allow_coerce_failure) for v in val]
+            try:
+                coerced = [self._coerce(v, coerce, accept_failure=allow_coerce_failure) for v in val]
+            except SeamlessException as e:
+                e.message += "; get_list, path {x}".format(x=context + "." + path)
+                raise
             if by_reference:
                 self.set_single(path, coerced)
             return coerced
@@ -406,7 +418,11 @@ class SeamlessData(object):
                 raise SeamlessException("Value '{x}' is not permitted at '{y}'".format(x=val, y=context + "." + path))
 
         # now coerce each of the values, stripping out Nones if necessary
-        val = [self._coerce(v, coerce, accept_failure=allow_coerce_failure) for v in val if v is not None or not ignore_none]
+        try:
+            val = [self._coerce(v, coerce, accept_failure=allow_coerce_failure) for v in val if v is not None or not ignore_none]
+        except SeamlessException as e:
+            e.message += "; set_list, path {x}".format(x=context + "." + path)
+            raise
 
         # check that the cleaned array isn't empty, and if it is behave appropriately
         if len(val) == 0:
@@ -433,7 +449,11 @@ class SeamlessData(object):
 
         # first coerce the value
         if coerce is not None:
-            val = self._coerce(val, coerce, accept_failure=allow_coerce_failure)
+            try:
+                val = self._coerce(val, coerce, accept_failure=allow_coerce_failure)
+            except SeamlessException as e:
+                e.message += "; add_to_list, path {x}".format(x=context + "." + path)
+                raise
         current = self.get_list(path, by_reference=True, context=context)
 
         # if we require the list to be unique, check for the value first

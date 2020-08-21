@@ -383,6 +383,9 @@ class RequiredIfOtherValue(MultiFieldValidator):
         if match:
             dr = validators.DataRequired()
             dr(form, field)
+        else:
+            if not field.data:
+                raise validators.StopValidation()
 
 
 class OnlyIf(object):
