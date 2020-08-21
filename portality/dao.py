@@ -811,10 +811,12 @@ class Facetview2(object):
         return {"term": {term: value}}
 
     @staticmethod
-    def make_query(query_string=None, filters=None, default_operator="OR", sort_parameter=None, sort_order="asc"):
+    def make_query(query_string=None, filters=None, default_operator="OR", sort_parameter=None, sort_order="asc", default_field=None):
         query_part = {"match_all": {}}
         if query_string is not None:
             query_part = {"query_string": {"query": query_string, "default_operator": default_operator}}
+            if default_field is not None:
+                query_part["query_string"]["default_field"] = default_field
         query = {"query": query_part}
 
         if filters is not None:

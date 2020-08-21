@@ -4,13 +4,6 @@
 <!-- get bootstrap js -->
 <script type="text/javascript" src="/static/vendor/bootstrap-3.3.7/js/bootstrap.min.js"></script>
 
-{% if subject_page %}
-
-    <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
-    <script type="text/javascript" src="/static/vendor/jstree-3.0.0-beta10/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
-{% endif %}
-
 {% if not config.get("DEBUG", True) %}
     <!-- Global Site Tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ config.get('GOOGLE_ANALYTICS_ID') }}"></script>
@@ -29,6 +22,7 @@
         <script> (function(h,o,t,j,a,r){ h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)}; h._hjSettings={hjid:{{ config.get("HOTJAR_ID") }},hjsv:6}; a=o.getElementsByTagName('head')[0]; r=o.createElement('script');r.async=1; r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv; a.appendChild(r); })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv='); </script>
     {% endif %}
 
+    {# FIXME: I don't think we need these any more? #}
     {% if edit_suggestion_page or edit_journal_page or subject_page %}
 
         <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
@@ -41,6 +35,7 @@
     {% endif %}
 {% endif %}
 
+{# FIXNE: do we need these any more? #}
 <!-- get tablesorter -->
 <script type="text/javascript" src="/static/vendor/tablesorter-2.3.10/js/jquery.tablesorter.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
@@ -76,15 +71,20 @@
     }, false);
 
     // Back-to-top button
-    topBtn = document.getElementById("top");
+    var topBtn = document.getElementById("top");
 
     window.onscroll = function() {scrollFunction()};
 
     function scrollFunction() {
         if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-            topBtn.style.display = "flex";
+            if (topBtn) {
+                topBtn.style.display = "flex";
+            }
         } else {
-            topBtn.style.display = "none";
+            if (topBtn) {
+                topBtn.style.display = "none";
+            }
+
         }
     }
 
