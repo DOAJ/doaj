@@ -95,7 +95,10 @@ JOURNAL_FORM_EXPANDED.update(NOTES_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(OWNER_FORM_EXPANDED)
 
 
-JOURNAL_FORM = expanded2compact(JOURNAL_FORM_EXPANDED, {"keywords" : ","})
+JOURNAL_FORM = expanded2compact(JOURNAL_FORM_EXPANDED,
+                                    join_lists={"keywords" : ","},
+                                    repeat_lists=["preservation_service_library", "language"]
+                                    )
 
 
 JOURNAL_APIDO_STRUCT = {

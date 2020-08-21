@@ -79,7 +79,7 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         forminfo = cls.obj2form(obj)
         formdata = expanded2compact(forminfo,
                                     join_lists={"keywords" : ","},
-                                    repeat_lists=["preservation_service_library"]
+                                    repeat_lists=["preservation_service_library", "langauge"]
                                     )
         return MultiDict(formdata)
 

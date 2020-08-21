@@ -8,6 +8,8 @@ from portality.formcontext.choices import Choices
 from portality.core import app
 from portality.models import Journal, EditorGroup
 
+from datetime import datetime
+
 
 class MultiFieldValidator(object):
     """ A validator that accesses the value of an additional field """
@@ -16,10 +18,11 @@ class MultiFieldValidator(object):
         self.other_field_name = other_field
         super(MultiFieldValidator, self).__init__(*args, **kwargs)
 
-    def get_other_field(self, form):
-        other_field = form._fields.get(self.other_field_name)
+    @staticmethod
+    def get_other_field(field_name, form):
+        other_field = form._fields.get(field_name)
         if other_field is None:
-            raise Exception('No field named "{0}" in form'.format(self.other_field_name))
+            raise Exception('No field named "{0}" in form'.format(field_name))
         return other_field
 
 
@@ -65,7 +68,7 @@ class OptionalIf(DataOptional, MultiFieldValidator):
         super(OptionalIf, self).__init__(*args, **kwargs)
 
     def __call__(self, form, field):
-        other_field = self.get_other_field(form)
+        other_field = self.get_other_field(self.other_field_name, form)
 
         # if no values (for other_field) which make this field optional
         # are specified...
@@ -145,7 +148,7 @@ class ExtraFieldRequiredIf(OptionalIf):
 
     def get_extra_field(self, form):
         """Alias get_other_field from the superclass to make its purpose clearer for this class."""
-        return self.get_other_field(form)
+        return self.get_other_field(self.other_field_name, form)
 
 
 class ExclusiveCheckbox(object):
@@ -279,7 +282,7 @@ class ThisOrThat(MultiFieldValidator):
         super(ThisOrThat, self).__init__(other_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
-        other_field = self.get_other_field(form)
+        other_field = self.get_other_field(self.other_field_name, form)
         this = bool(field.data)
         that = bool(other_field.data)
         if not this and not that:
@@ -357,7 +360,7 @@ class DifferentTo(MultiFieldValidator):
         self.message = message
 
     def __call__(self, form, field):
-        other_field = self.get_other_field(form)
+        other_field = self.get_other_field(self.other_field_name, form)
 
         if other_field.data == field.data:
             if self.ignore_empty and (not other_field.data or not field.data):
@@ -375,7 +378,7 @@ class RequiredIfOtherValue(MultiFieldValidator):
         super(RequiredIfOtherValue, self).__init__(other_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
-        other_field = self.get_other_field(form)
+        other_field = self.get_other_field(self.other_field_name, form)
         if isinstance(other_field.data, list):
             match = self.other_value in other_field.data
         else:
@@ -388,37 +391,41 @@ class RequiredIfOtherValue(MultiFieldValidator):
                 raise validators.StopValidation()
 
 
-class OnlyIf(object):
+class OnlyIf(MultiFieldValidator):
     """ Field only validates if other fields have specific values (or are truthy)"""
-    def __init__(self, other_fields: List[dict], ignore_empty=True, message=None):
+    def __init__(self, other_fields: List[dict], ignore_empty=True, message=None, *args, **kwargs):
         self.other_fields = other_fields
         self.ignore_empty = ignore_empty
         if not message:
             fieldnames = [n['field'] for n in self.other_fields]
             message = "This field can only be selected with valid values in other fields: '{x}'".format(x=fieldnames)
         self.message = message
+        super(OnlyIf, self).__init__(None, *args, **kwargs)
 
     def __call__(self, form, field):
         self.get_other_fields(form)
 
         for o_f in self.other_fields:
-            if self.ignore_empty and (not o_f['field'].data or not field.data):
+            if self.ignore_empty and (not o_f['field_obj'].data or not field.data):
                 continue
             if o_f.get('value') is None:
-                # Succeed if the other field is truthy
-                if o_f['field'].data:
+                # No target value supplied - succeed if the other field is truthy
+                if o_f['field_obj'].data:
                     continue
-            elif o_f['field'].data == o_f['value']:
-                # Succeed if the other field has the specified value
-                continue
+            if o_f.get('not') is not None:
+                # Succeed if the value doesn't equal the one specified
+                if o_f['field_obj'].data != o_f['not']:
+                    continue
+            if o_f.get('value') is not None:
+                if o_f['field_obj'].data == o_f['value']:
+                    # Succeed if the other field has the specified value
+                    continue
             raise validators.ValidationError(self.message)
 
     def get_other_fields(self, form):
-        # populate self.other_fields with the actual fields
+        # return the actual fields matching the names in self.other_fields
         for f in self.other_fields:
-            f['field'] = form._fields.get(f['name'])
-            if f['field'] is None:
-                raise Exception('No field named "{0}" in form'.format(f['name']))
+            f['field_obj'] = self.get_other_field(f['field'], form)
 
 
 class NotIf(OnlyIf):
@@ -428,13 +435,13 @@ class NotIf(OnlyIf):
         self.get_other_fields(form)
 
         for o_f in self.other_fields:
-            if self.ignore_empty and (not o_f['field'].data or not field.data):
+            if self.ignore_empty and (not o_f['field_obj'].data or not field.data):
                 continue
             if o_f.get('value') is None:
                 # Fail if the other field is truthy
-                if o_f['field'].data:
+                if o_f['field_obj'].data:
                     validators.ValidationError(self.message)
-            elif o_f['field'].data == o_f['value']:
+            elif o_f['field_obj'].data == o_f['value']:
                 # Fail if the other field has the specified value
                 validators.ValidationError(self.message)
 
@@ -447,7 +454,7 @@ class GroupMember(MultiFieldValidator):
         super(GroupMember, self).__init__(group_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
-        group_field = self.get_other_field(form)
+        group_field = self.get_other_field(self.other_field_name, form)
 
         """ Validate the choice of editor, which could be out of sync with the group in exceptional circumstances """
         # lifted from from formcontext
@@ -477,3 +484,16 @@ class RequiredValue(object):
     def __call__(self, form, field):
         if field.data != self.value:
             raise validators.ValidationError(self.message.format(value=self.value))
+
+
+class BigEndDate(object):
+    def __init__(self, value, message=None):
+        self.value = value
+        self.message = message or "Bad date"
+
+    def __call__(self, form, field):
+
+        try:
+            datetime.strptime(field.data, '%Y-%m-%d')
+        except Exception:
+            raise validators.ValidationError(self.message)
