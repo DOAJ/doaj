@@ -210,8 +210,8 @@
                         </li>
                     </ul>
                 </section>
-{#
                 <section class="col-sm-6 homepage__volunteers">
+                {# TODO: replace this with the import Sophy is going to give me ...
                     <header>
                         <h3>Volunteers</h3>
                         <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
@@ -227,27 +227,27 @@
                         {% endif %}
                         {% endfor %}
                     </div>
+                #}
                     <p><a href="/about/volunteers/" class="button">See volunteers →</a></p>
                 </section>
-#}
                 <section class="col-sm-3 homepage__sponsors">
                     <header>
                         <h3 class="label">Sponsors</h3>
                         <p>The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.</p>
-                        <p>
-                            <a href="/support/sponsors/" class="button">See sponsors →</a>
-                        </p>
                     </header>
                     <article>
                         <h4>Gold</h4>
                         {% for sponsor in sponsors.gold %}
                         <figure class="sponsor">
                             <a href="{{ sponsor.url }}" target="_blank" rel="noopener" title="Go to {{ sponsor.name }}’s site" class="sponsor__link">
-                                <img src="_site/static_content/img/sponsors/{{ sponsor.logo }}" alt="{{ sponsor.name }} logo" class="sponsor__logo"/>
+                                <img src="/static_content/img/sponsors/{{ sponsor.logo }}" alt="{{ sponsor.name }} logo" class="sponsor__logo"/>
                             </a>
                         </figure>
                         {% endfor %}
                     </article>
+                    <p>
+                        <a href="/support/sponsors/" class="button">See sponsors →</a>
+                    </p>
                 </section>
 
             </div>
