@@ -259,58 +259,15 @@
         <div class="row">
             <div class="col-sm-3">
                 <h2>Recently-added journals</h2>
-                <p><a href="">See all</a></p>
+                <p><a href="{{ url_for("doaj.journals_search") }}">See all</a></p>
             </div>
             <div class="col-sm-9">
                 <ul class="row mobile-scrollable-row title-list">
+                    {% for r in recent_journals %}
                     <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Journal of Electrical, Electronics and Informatics</a>
+                        <a href="{{ url_for("doaj.toc", identifier=r.bibjson().get_preferred_issn()) }}" class="title-list__link">{{ r.bibjson().title }}</a>
                     </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Journal of Pure and Applied Microbiology</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Çocuk ve Gençlik Ruh Sağlığı Dergisi</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">transLogos: Translation Studies Journal</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Amasya İlahiyat Dergisi</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Computational Methods for Differential Equations</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Танцювальні студії</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Научный журнал Российского НИИ проблем мелиорации</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Ciencia y Educación</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Iranian Journal of Pathology</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Environmental Pollutants & Bioavailability</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Journal of the Egyptian National Cancer Institute</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Известия Томского политехнического университета: Инжиниринг георесурсов</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Curricula: Journal of Teaching and Learning</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Pengarah</a>
-                    </li>
-                    <li class="col-md-3 col-lg-3">
-                        <a href="" class="title-list__link">Journal of Innovation Management</a>
-                    </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>

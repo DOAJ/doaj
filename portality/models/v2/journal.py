@@ -89,7 +89,15 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def find_by_journal_url(cls, url, in_doaj=None, max=10):
         q = JournalURLQuery(url, in_doaj, max)
         result = cls.query(q=q.query())
-        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too (i.e. Suggestion)
+        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too
+        records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+
+    @classmethod
+    def recent(cls, max=10):
+        q = RecentJournalsQuery(max)
+        result = cls.query(q=q.query())
+        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too
         records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
 
@@ -1036,4 +1044,18 @@ class ArticleStatsQuery(object):
                 "include": ["created_date"]
             },
             "sort": [{"created_date": {"order": "desc"}}]
+        }
+
+
+class RecentJournalsQuery(object):
+    def __init__(self, max):
+        self.max = max
+
+    def query(self):
+        return {
+            "query" : {"match_all" : {}},
+            "size" : self.max,
+            "sort" : [
+                {"created_date" : {"order" : "desc"}}
+            ]
         }
