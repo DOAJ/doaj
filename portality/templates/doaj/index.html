@@ -115,7 +115,7 @@
                 {% for n in news[:1] %}
                 <article class="blog__post">
                     <a href="{{ n.url }}" class="blog__link" target="_blank">
-                        <p class="label">{{ n.category }}</p>
+                        {# TODO in the future (right now we don't have category) <p class="label">{{ n.category }}</p> #}
                         <h3 class="blog__title">{{ n.title }}</h3>
                         <p>{% autoescape off%}{{ n.summary }}{% endautoescape %}</p>
                         <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
@@ -137,6 +137,11 @@
                 {% endfor %}
             </div>
 
+            <section class="col-sm-3 homepage__themed-post">
+                <a class="twitter-timeline" data-height="500" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </section>
+
+            {# TODO: we don't have the mechanics for special themed posts yet
             <!-- Special / themed posts; when none: display Twitter feed -->
             <section class="col-sm-3 homepage__themed-post">
                 <h3 class="label">Special post series: Myth busting</h3>
@@ -167,6 +172,7 @@
                     </li>
                 </ol>
             </section>
+            #}
         </div>
     </section>
 
