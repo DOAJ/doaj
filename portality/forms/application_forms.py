@@ -1667,7 +1667,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
-    ASSOCIATE["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    ASSOCIATE["processor"] = application_processors.AssociateApplication
     ASSOCIATE["templates"]["form"] = "application_form/assed_application.html"
 
     EDITOR = deepcopy(PUBLIC)
@@ -1677,7 +1677,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
-    EDITOR["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    EDITOR["processor"] = application_processors.EditorApplication
     EDITOR["templates"]["form"] = "application_form/editor_application.html"
 
     MANED = deepcopy(PUBLIC)

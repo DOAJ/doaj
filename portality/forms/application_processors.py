@@ -13,6 +13,8 @@ from flask_login import current_user
 
 from wtforms import FormField, FieldList
 
+from portality.formcontext.choices import Choices
+
 
 class NewApplication(FormProcessor):
     """
@@ -371,7 +373,7 @@ class AdminApplication(ApplicationProcessor):
                 self.add_alert('A confirmation email has been sent to the Managing Editors.')
             except app_email.EmailException:
                 magic = str(uuid.uuid1())
-                self.add_alert('Hm, sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                self.add_alert('Sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
                 app.logger.exception('Error sending ready status email to managing editors - ' + magic)
 
     def _send_application_approved_email(self, journal_title, publisher_name, email, update_request=False):
@@ -410,7 +412,7 @@ class AdminApplication(ApplicationProcessor):
                 self.add_alert(msg)
         except Exception as e:
             magic = str(uuid.uuid1())
-            self.add_alert('Hm, sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            self.add_alert('Sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.exception('Error sending application approved email failed - ' + magic)
 
 
@@ -451,9 +453,8 @@ class EditorApplication(ApplicationProcessor):
         super(EditorApplication, self).finalise()
 
         # Check the status change is valid
-        # TODO: validation of editorial workflow changes
-        # choices.Choices.validate_status_change('editor', self.source.application_status,
-        #                                        self.target.application_status)
+        # TODO: we want to rid ourselves of the Choices module
+        Choices.validate_status_change('editor', self.source.application_status, self.target.application_status)
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         new_associate_assigned = ApplicationFormXWalk.is_new_editor(self.form, self.source)
@@ -519,5 +520,71 @@ class EditorApplication(ApplicationProcessor):
             except app_email.EmailException:
                 magic = str(uuid.uuid1())
                 self.add_alert(
-                    'Hm, sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                    'Sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
                 app.logger.exception('Error sending ready status email to managing editors - ' + magic)
+
+
+class AssociateApplication(ApplicationProcessor):
+    """
+       Associate Editors Application Review form. This is to be used in a context where an associate editor (fewest rights)
+       needs to access an application for review. This editor cannot change the editorial group or the assigned editor.
+       They also cannot change the owner of the application. They cannot set an application to "Accepted" so this form can't
+       be used to create a journal from an application. They cannot delete, only add notes.
+       """
+
+    def pre_validate(self):
+        if self.form['status'].is_disabled():
+            self.form.application_status.data = self.source.application_status
+
+    def patch_target(self):
+        if self.source is None:
+            raise Exception("You cannot patch a target from a non-existent source")
+
+        self._carry_fixed_aspects()
+        self._merge_notes_forward()
+        self.target.set_owner(self.source.owner)
+        self.target.set_editor_group(self.source.editor_group)
+        self.target.set_editor(self.source.editor)
+        self.target.set_seal(self.source.has_seal())
+        self._carry_continuations()
+
+    def finalise(self):
+        # if we are allowed to finalise, kick this up to the superclass
+        super(AssociateApplication, self).finalise()
+
+        # Check the status change is valid
+        Choices.validate_status_change('associate', self.source.application_status, self.target.application_status)
+
+        # Save the target
+        self.target.set_last_manual_update()
+        self.target.save()
+
+        # record the event in the provenance tracker
+        models.Provenance.make(current_user, "edit", self.target)
+
+        # inform publisher if this was set to 'in progress' from 'pending'
+        if self.source.application_status == constants.APPLICATION_STATUS_PENDING and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
+            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                is_update_request = self.target.current_journal is not None
+                if is_update_request:
+                    alerts = emails.send_publisher_update_request_inprogress_email(self.target)
+                else:
+                    alerts = emails.send_publisher_application_inprogress_email(self.target)
+                for alert in alerts:
+                    self.add_alert(alert)
+            else:
+                self.add_alert(Messages.IN_PROGRESS_NOT_SENT_EMAIL_DISABLED)
+
+        # inform editor if this was newly set to 'completed'
+        if self.source.application_status != constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_COMPLETED:
+            # record the event in the provenance tracker
+            models.Provenance.make(current_user, "status:completed", self.target)
+
+            try:
+                emails.send_editor_completed_email(self.target)
+                self.add_alert('A confirmation email has been sent to notify the editor of the change in status.')
+            except app_email.EmailException:
+                magic = str(uuid.uuid1())
+                self.add_alert(
+                    'Sending the ready status to editor email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                app.logger.exception('Error sending completed status email to editor - ' + magic)

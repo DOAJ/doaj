@@ -126,13 +126,17 @@ def application(application_id):
     except exceptions.AuthoriseException:
         abort(401)
 
+    # Edit role is either associate_editor or editor, depending whether the user is group leader
+    eg = models.EditorGroup.pull_by_key("name", ap.editor_group)
+    role = 'editor' if eg is not None and eg.editor == current_user.id else 'associate_editor'
+
     if request.method == "GET":
-        fc = ApplicationFormFactory.context("editor")
+        fc = ApplicationFormFactory.context(role)
         fc.processor(source=ap)
         return fc.render_template(obj=ap)
 
     elif request.method == "POST":
-        fc = ApplicationFormFactory.context("editor")
+        fc = ApplicationFormFactory.context(role)
 
         processor = fc.processor(formdata=request.form)
 
