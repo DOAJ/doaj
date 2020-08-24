@@ -2,14 +2,13 @@ Supporting DOAJ is the only way to ensure that we can continue to provide you an
 
 You can support us:
 
-+ with an [annual fixed contribution]() (annual automatic payment)
-+ with a longer-term contribution, often over three years, having a greater impact on the future of DOAJ and allowing for more sustainable development
-+ with a [one-time contribution](#make-a-one-time-donation) made via Paypal (on this page)
-+ as a [publisher supporter](/support/publisher-supporter/), if you publish, own or are the editor of an open access journal
++ with a one-time donation - see below.
++ with an annual contribution or a longer-term contribution, often over three years, having a greater impact on the future of DOAJ and allowing for more sustainable development.     ++ Libraries, consortia, all public organisations - see [Supporters page](/support/supporters/)
+  ++ Publishers - see our [publisher supporters page](/support/publisher-supporter/)
 + via [sponsorship](/support/sponsors/)
-  + for more information email [dom@doaj.org](mailto:dom@doaj.org?subject=DOAJ Sponsorship)
+  ++ for more information email [dom@doaj.org](mailto:dom@doaj.org?subject=DOAJ Sponsorship)
 
-All supporters will have their name listed on our site and can use their supporter status and a DOAJ logo for marketing activities.
+Supporting DOAJ will give your organisation a range of benefits.
 
 ## Make a one-time donation
 
