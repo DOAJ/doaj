@@ -7,7 +7,7 @@ from portality.lib.seamless import SeamlessMixin
 from portality.lib.coerce import COERCE_MAP
 
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import string, uuid
 from unidecode import unidecode
@@ -146,6 +146,9 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     @property
     def last_updated_timestamp(self):
         return self.__seamless__.get_single("last_updated", coerce=coerce.to_datestamp())
+
+    def last_updated_since(self, days=0):
+        return self.last_updated_timestamp > (datetime.utcnow() - timedelta(days=days))
 
     def set_last_manual_update(self, date=None):
         if date is None:
