@@ -1,8 +1,18 @@
 from portality import models, lcc
 from portality.datasets import licenses
+from portality.forms.utils import expanded2compact
 
+from werkzeug import MultiDict
 
 class JournalGenericXWalk(object):
+    @classmethod
+    def forminfo2multidict(cls, forminfo):
+        formdata = expanded2compact(forminfo,
+                                    join_lists={"keywords": ",", "subject": ","},
+                                    repeat_lists=["preservation_service_library", "language"]
+                                    )
+        return MultiDict(formdata)
+
     @classmethod
     def is_new_editor_group(cls, form, old):
         old_eg = old.editor_group
