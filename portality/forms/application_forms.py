@@ -2210,7 +2210,7 @@ class CustomRequired(object):
         self.message = message
 
     def __call__(self, form, field):
-        if field.data is None or isinstance(field.data, str) and not field.data.strip():
+        if field.data is None or isinstance(field.data, str) and not field.data.strip() or isinstance(field.data, list) and len(field.data) == 0:
             if self.message is None:
                 message = field.gettext('This field is required.')
             else:

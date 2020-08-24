@@ -129,7 +129,7 @@ APPLICATION_SOURCE = {
         ],
         "owner" : "Owner",
         "related_journal" : "987654321123456789",
-        "seal": True,
+        "seal": False,
         "date_applied" : "2003-01-01T00:00:00Z"
     },
     "bibjson" : JOURNAL_LIKE_BIBJSON
