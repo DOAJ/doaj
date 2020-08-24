@@ -3,11 +3,11 @@ Supporting DOAJ is the only way to ensure that we can continue to provide you an
 You can support us:
 
 + with a one-time donation - see below.
-+ with an annual contribution or a longer-term contribution, often over three years, having a greater impact on the future of DOAJ and allowing for more sustainable developme
-  ++ Libraries, consortia, all public organisations - see [Supporters page](/support/supporters/)
-  ++ Publishers - see our [publisher supporters page](/support/publisher-supporter/)
++ with an annual contribution or a longer-term contribution, often over three years, having a greater impact on the future of DOAJ and allowing for more sustainable development
+  * Libraries, consortia, all public organisations - see [Supporters page](/support/supporters/)
+  * Publishers - see our [publisher supporters page](/support/publisher-supporter/)
 + via [sponsorship](/support/sponsors/)
-  ++ for more information email [dom@doaj.org](mailto:dom@doaj.org?subject=DOAJ Sponsorship)
+  * For more information email [dom@doaj.org](mailto:dom@doaj.org?subject=DOAJ Sponsorship)
 
 Supporting DOAJ will give your organisation a range of benefits.
 
