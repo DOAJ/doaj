@@ -32,7 +32,7 @@ JOURNAL_LIKE_BIBJSON = {
         "has_apc": True
     },
     "article": {
-        "license_display": ["Embed", "Display"],
+        "license_display": ["Embed"],
         "license_display_example_url": "http://licence.embedded",
         "orcid": True,
         "i4oc_open_citations": False
@@ -48,7 +48,7 @@ JOURNAL_LIKE_BIBJSON = {
         "service": ["Sherpa/Romeo", "Store it"],
         "url": "http://deposit.policy"
     },
-    "discontinued_date": "2010-01-01",
+    "discontinued_date": "2001-01-01",
     "editorial": {
         "review_process": ["Open peer review", "some bloke checks it out"],
         "review_url": "http://review.process",

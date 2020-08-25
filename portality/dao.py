@@ -242,7 +242,7 @@ class DomainObject(UserDict, object):
             return None
         else:
             try:
-                return cls(**out.json())
+                rec = out.json()
             except Exception as e:
                 app.logger.exception("Cannot decode JSON. Object: {}, "
                                      "Status Code: {}, "
@@ -253,6 +253,9 @@ class DomainObject(UserDict, object):
                                              out.reason,
                                              str(e)))
                 raise e
+            if "error" in rec and "status" in rec and rec["status"] >= 400:
+                raise Exception("ES returned an error: {x}".format(x=json.dumps(rec)))
+            return cls(**rec)
 
     @classmethod
     def pull_by_key(cls, key, value):
