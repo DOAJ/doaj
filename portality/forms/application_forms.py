@@ -2153,6 +2153,7 @@ JAVASCRIPT_FUNCTIONS = {
     # "autocomplete" : "doaj.forms.widgets.autocomplete",
 
     "clickable_url": "formulaic.widgets.newClickableUrl",
+    "clickable_owner": "formulaic.widgets.newClickableOwner",
     "select": "formulaic.widgets.newSelect",
     "taglist": "formulaic.widgets.newTagList",
     "multiple_field": "formulaic.widgets.newMultipleField",
