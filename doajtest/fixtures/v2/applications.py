@@ -164,17 +164,5 @@ APPLICATION_FORM_EXPANDED.update(deepcopy(EDITORIAL_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(SEAL_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(WORKFLOW_FORM_EXPANDED))
 
-APPLICATION_FORM = expanded2compact(APPLICATION_FORM_EXPANDED, {"keywords" : ","})
-
-"""
-APPLICATION_FORM["keywords"] = ",".join(APPLICATION_FORM["keywords"])
-notes = APPLICATION_FORM["notes"]
-del APPLICATION_FORM["notes"]
-i = 0
-for n in notes:
-    notekey = "notes-" + str(i) + "-note"
-    datekey = "notes-" + str(i) + "-date"
-    APPLICATION_FORM[notekey] = n.get("note")
-    APPLICATION_FORM[datekey] = n.get("date")
-    i += 1
-"""
+from portality.crosswalks.application_form import ApplicationFormXWalk
+APPLICATION_FORM = ApplicationFormXWalk.forminfo2multidict(APPLICATION_FORM_EXPANDED)

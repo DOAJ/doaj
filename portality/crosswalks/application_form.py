@@ -1,8 +1,5 @@
 from portality import models, lcc
 from portality.crosswalks.journal_form import JournalGenericXWalk
-from portality.forms.utils import expanded2compact
-
-from werkzeug import MultiDict
 
 class ApplicationFormXWalk(JournalGenericXWalk):
 
@@ -77,11 +74,7 @@ class ApplicationFormXWalk(JournalGenericXWalk):
     @classmethod
     def obj2formdata(cls, obj):
         forminfo = cls.obj2form(obj)
-        formdata = expanded2compact(forminfo,
-                                    join_lists={"keywords" : ","},
-                                    repeat_lists=["preservation_service_library"]
-                                    )
-        return MultiDict(formdata)
+        return cls.forminfo2multidict(forminfo)
 
     @classmethod
     def obj2form(cls, obj):

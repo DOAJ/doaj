@@ -1,8 +1,18 @@
 from portality import models, lcc
 from portality.datasets import licenses
+from portality.forms.utils import expanded2compact
 
+from werkzeug import MultiDict
 
 class JournalGenericXWalk(object):
+    @classmethod
+    def forminfo2multidict(cls, forminfo):
+        formdata = expanded2compact(forminfo,
+                                    join_lists={"keywords": ",", "subject": ","},
+                                    repeat_lists=["preservation_service_library", "language"]
+                                    )
+        return MultiDict(formdata)
+
     @classmethod
     def is_new_editor_group(cls, form, old):
         old_eg = old.editor_group
@@ -103,7 +113,7 @@ class JournalGenericXWalk(object):
                     nc = licenses[ltype]['NC']
                     nd = licenses[ltype]['ND']
                     sa = licenses[ltype]['SA']
-                    lurl = licenses[type]["url"]
+                    lurl = licenses[ltype]["url"]
                 elif form.license_attributes.data:
                     by = True if 'BY' in form.license_attributes.data else False
                     nc = True if 'NC' in form.license_attributes.data else False
@@ -157,8 +167,7 @@ class JournalGenericXWalk(object):
             bibjson.title = form.title.data
 
         if form.apc.data:
-            has_apc = form.apc.data == "y"
-            bibjson.has_apc = has_apc
+            bibjson.has_apc = form.apc.data == "y"
 
         if form.has_other_charges.data:
             has_other = form.has_other_charges.data == "y"
@@ -303,7 +312,7 @@ class JournalGenericXWalk(object):
         forminfo["license"] = ltypes
 
         if bibjson.article_license_display is not None:
-            forminfo["license_display"] = "y" if bibjson.article_license_display == "Embed" else "n"
+            forminfo["license_display"] = "y" if "Embed" in bibjson.article_license_display else "n"
         forminfo["license_display_example_url"] = bibjson.article_license_display_example_url
         forminfo["boai"] = 'y' if bibjson.boai else 'n'
         forminfo["license_terms_url"] = bibjson.license_terms_url

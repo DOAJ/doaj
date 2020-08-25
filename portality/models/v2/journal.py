@@ -7,7 +7,7 @@ from portality.lib.seamless import SeamlessMixin
 from portality.lib.coerce import COERCE_MAP
 
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import string, uuid
 from unidecode import unidecode
@@ -89,7 +89,15 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def find_by_journal_url(cls, url, in_doaj=None, max=10):
         q = JournalURLQuery(url, in_doaj, max)
         result = cls.query(q=q.query())
-        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too (i.e. Suggestion)
+        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too
+        records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+
+    @classmethod
+    def recent(cls, max=10):
+        q = RecentJournalsQuery(max)
+        result = cls.query(q=q.query())
+        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too
         records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
 
@@ -138,6 +146,9 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     @property
     def last_updated_timestamp(self):
         return self.__seamless__.get_single("last_updated", coerce=coerce.to_datestamp())
+
+    def last_updated_since(self, days=0):
+        return self.last_updated_timestamp > (datetime.utcnow() - timedelta(days=days))
 
     def set_last_manual_update(self, date=None):
         if date is None:
@@ -1036,4 +1047,18 @@ class ArticleStatsQuery(object):
                 "include": ["created_date"]
             },
             "sort": [{"created_date": {"order": "desc"}}]
+        }
+
+
+class RecentJournalsQuery(object):
+    def __init__(self, max):
+        self.max = max
+
+    def query(self):
+        return {
+            "query" : {"match_all" : {}},
+            "size" : self.max,
+            "sort" : [
+                {"created_date" : {"order" : "desc"}}
+            ]
         }

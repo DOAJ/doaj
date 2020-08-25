@@ -25,7 +25,8 @@ blueprint = Blueprint('doaj', __name__)
 @blueprint.route("/")
 def home():
     news = blog.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
-    return render_template('doaj/index.html', news=news)
+    recent_journals = models.Journal.recent(max=16)
+    return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
 
 @blueprint.route('/login/')
 def login():
@@ -99,7 +100,7 @@ def articles_search():
 
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return redirect(url_for("doaj.journals"), 301)
+    return redirect(url_for("doaj.journals_search"), 301)
 
 
 @blueprint.route("/search", methods=['POST'])
@@ -108,20 +109,37 @@ def search_post():
     if request.form.get('origin') != 'ui':
         abort(400)                                              # bad request - we must receive searches from our own UI
 
-    filters = None
-    if not (request.form.get('include_journals') and request.form.get('include_articles')):
-        filters = []
-        if request.form.get('include_journals'):
-            filters.append(dao.Facetview2.make_term_filter("_type", "journal"))
-        elif request.form.get('include_articles'):
-            filters.append(dao.Facetview2.make_term_filter("_type", "article"))
-
-    query = dao.Facetview2.make_query(request.form.get("q"), filters=filters, default_operator="AND")
     ref = request.form.get("ref")
     if ref is None:
-        abort(400)                                                                                # Referrer is required
+        abort(400)  # Referrer is required
+
+    ct = request.form.get("content-type")
+    kw = request.form.get("keywords")
+    field = request.form.get("fields")
+
+    field_map = {
+        "all" : (None, None),
+        "title" : ("bibjson.title", "bibjson.title"),
+        "abstract" : (None, "bibjson.abstract"),
+        "subject" : ("index.classification", "index.classification"),
+        "author" : (None, "bibjson.author.name")
+    }
+    default_field_opts = field_map.get(field, None)
+    default_field = None
+
+    route = ""
+    if not ct or ct == "journals":
+        route = url_for("doaj.journals_search")
+        default_field = default_field_opts[0]
+    elif ct == "articles":
+        route = url_for("doaj.articles_search")
+        default_field = default_field_opts[1]
     else:
-        return redirect(url_for('.search') + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
+        abort(400)
+
+    query = dao.Facetview2.make_query(kw, default_field=default_field, default_operator="AND")
+
+    return redirect(route + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
 
 
 @blueprint.route("/subjects")

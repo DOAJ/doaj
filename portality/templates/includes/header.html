@@ -288,7 +288,9 @@
 <!-- Quick search modal -->
 <section class="modal" id="modal-search" tabindex="-1" role="dialog">
   <div class="modal__dialog" role="document">
-    <form class="quick-search__form" role="search">
+    <form class="quick-search__form" role="search" action="{{ url_for("doaj.search_post") }}" method="post">
+        <input type="hidden" name="ref" value="quick-search">
+        <input type="hidden" name="origin" value="ui">
       <h2 class="modal__title">Quick search</h2>
       <div class="inline-fields">
         <input type="radio" id="quick-search-journals" name="content-type" value="journals" checked>
@@ -306,7 +308,7 @@
           <option value="title">Title</option>
           <option value="abstract">Abstract</option>
           <option value="subject">Subject</option>
-          <option value="subject">Author</option>
+          <option value="author">Author</option>
         </select>
         <button type="submit">
           <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>

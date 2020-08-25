@@ -68,7 +68,7 @@ def public_application(draft_id=None):
                 return redirect(url_for('apply.draft_saved'))
         else:
             if processor.validate():
-                processor.finalise()
+                processor.finalise(current_user._get_current_object())
                 return redirect(url_for('apply.application_thanks', _anchor='thanks'))
             else:
                 return fc.render_template()
