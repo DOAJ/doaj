@@ -46,21 +46,25 @@
 /* Legal stuff */
 
 .legal {
-  padding: $spacing-04 0 0 0;
+  padding: $spacing-04 0;
   border-top: 1px solid $warm-white;
-}
+  @include typescale-06;
 
-.legal p:last-of-type {
-  text-align: right;
-}
+  li {
+    display: inline-block;
+    margin: 0 $spacing-04 0 0;
+  }
 
-.legal li {
-  display: inline-block;
-  margin: 0 $spacing-04 $spacing-04 0;
-}
+  path {
+    fill: $warm-white;
+  }
 
-@media (max-width: 768px) {
-  .legal p:last-of-type {
-    text-align: left;
+  @media (min-width: 768px) {
+    display: flex;
+    justify-content: space-between;
+
+    > div {
+      width: 48%;
+    }
   }
 }

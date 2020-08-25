@@ -72,19 +72,35 @@
       </div>
     </section>
 
-    <section class="row legal">
+    <section class="legal">
       <h2 class="sr-only">Legal & admin</h2>
-      <div class="col-sm-8">
+      <div>
+        <p>© DOAJ {{ site.time | date: '%Y' }} default by all rights reserved unless otherwise specified.</p>
         <ul>
           {% include menu-items.html section="footer" short_title=true %}
+        </ul>
+        <ul>
           <li><a href="https://is4oa.org/" target="_blank" rel="noopener noreferrer">IS4OA</a></li>
           <li><a href="https://cottagelabs.com/" target="_blank" rel="noopener noreferrer">Cottage Labs LLP</a></li>
         </ul>
       </div>
-      <p class="col-sm-4">©2020 DOAJ. The DOAJ site and its metadata are licensed under CC BY-SA.</p>
+      <div>
+        <p>
+          <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener" title="See license summary">{% include svg/cc.svg %} {% include svg/by.svg %} {% include svg/sa.svg %}</a>
+          <br/>
+          <strong>Content</strong> on this site is licensed under a Creative Commons <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) license</a>.
+        </p>
+        <p>
+          <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener" title="See license summary">{% include svg/cc.svg %} {% include svg/zero.svg %}</a>
+          <br/>
+          Copyrights and related rights for <strong>article metadata</strong> waived via <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0 Universal (CC0) Public Domain Dedication</a>.
+        </p>
+      </div>
     </section>
   </div>
 </footer>
+
+
 
 <script>
   // Use Feather icons
