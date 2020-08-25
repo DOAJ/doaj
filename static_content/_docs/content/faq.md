@@ -1,13 +1,3 @@
-## Accessibility
-
-Please be aware that if you disable all Javascript, searching DOAJ won't work properly. This is because some of the code that is required is served by Google's Javascript library. Once this is disabled, DOAJ search will fail.
-
-If you can select which components can be switched off, then you can continue to use DOAJ.
-
-Another Javascript component is [Bootstrap](https://getbootstrap.com/) which is the framework used to build the DOAJ website. This contains Javascript for some of its features.
-
----
-
 ## Contribute
 
 ### How can I contribute to DOAJ?
