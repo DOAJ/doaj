@@ -199,10 +199,13 @@ class JournalGenericXWalk(object):
         # subject information
         if getattr(form, "subject", None):
             new_subjects = []
-            for code in form.subject.data:
+            incoming = form.subject.data
+            if not isinstance(incoming, list):
+                incoming = [x.strip() for x in form.subject.data.split(",")]
+            for code in incoming:
                 sobj = {"scheme": 'LCC', "term": lcc.lookup_code(code), "code": code}
                 new_subjects.append(sobj)
-            bibjson.subjects = new_subjects
+            bibjson.subject = new_subjects
 
     @classmethod
     def form2admin(cls, form, obj):
@@ -390,7 +393,7 @@ class JournalFormXWalk(JournalGenericXWalk):
         cls.form2bibjson(form, bibjson)
 
         # then do the admin fields
-        cls.form2admin(form, bibjson)
+        cls.form2admin(form, journal)
 
         return journal
 

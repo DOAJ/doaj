@@ -44,7 +44,7 @@ class TestCrosswalks(DoajTestCase):
 
     def test_01_journal_form2obj(self):
         pc = ApplicationFormFactory.context("admin")
-        form = pc.wtform(MultiDict(JOURNAL_FORM))
+        form = pc.wtform(JOURNAL_FORM)
 
         obj = JournalFormXWalk.form2obj(form)
 
