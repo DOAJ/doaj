@@ -215,6 +215,12 @@ class AdminApplication(ApplicationProcessor):
     as well as assignment to editorial group.
     """
 
+    def pre_validate(self):
+        # to bypass WTForms insistence that choices on a select field match the value, outside of the actual validation
+        # chain
+        super(AdminApplication, self).pre_validate()
+        self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)] # if self.form.editor.data else [""]
+
     def patch_target(self):
         super(AdminApplication, self).patch_target()
 

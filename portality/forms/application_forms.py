@@ -793,9 +793,8 @@ class FieldDefinitions:
             "class": "input-xlarge"
         },
         "validate": [
-            #{"required_if": {"field": "apc", "value": "y", "message" : "Currency required because you answered YES to previous question"}}
+            {"required_if": {"field": "apc", "value": "y", "message" : "Currency required because you answered YES to previous question"}}
         ]
-
     }
 
     APC_MAX = {
@@ -808,7 +807,7 @@ class FieldDefinitions:
             "placeholder" : "Highest APC Charged"
         },
         "validate":[
-            #{"required_if": {"field": "apc", "value": "y", "message" : "Value required because you answered YES to previous question"}}
+            {"required_if": {"field": "apc", "value": "y", "message" : "Value required because you answered YES to previous question"}}
         ]
     }
 
@@ -1295,7 +1294,7 @@ class FieldDefinitions:
     SUBJECT = {
         "name": "subject",
         "label": "Assign one or a maximum of two subject classifications",
-        "input": "text",
+        "input": "taglist",
         "help": {
             "short_help": "Selecting a subject will not automatically select its sub-categories"
         },
@@ -2221,6 +2220,12 @@ class CustomRequired(object):
             raise validators.StopValidation(message)
 
 
+class NestedFormField(FormField):
+    def validate(self, form, extra_validators=tuple()):
+        self.form.meta.parent_form = form
+        return super().validate(form, extra_validators)
+
+
 ##########################################################
 # Mapping from configurations to WTForms builders
 ##########################################################
@@ -2329,7 +2334,7 @@ class GroupBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         fields = [formulaic_context.get(subfield) for subfield in field.get("subfields", [])]
         klazz = formulaic_context.make_wtform_class(fields)
-        return FormField(klazz)
+        return NestedFormField(klazz)
 
 
 class GroupListBuilder(WTFormsBuilder):

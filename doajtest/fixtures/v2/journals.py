@@ -94,8 +94,12 @@ JOURNAL_FORM_EXPANDED.update(SUBJECT_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(NOTES_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(OWNER_FORM_EXPANDED)
 
-from portality.crosswalks.journal_form import JournalFormXWalk
-JOURNAL_FORM = JournalFormXWalk.forminfo2multidict(JOURNAL_FORM_EXPANDED)
+
+JOURNAL_FORM = expanded2compact(JOURNAL_FORM_EXPANDED,
+                                    join_lists={"keywords" : ",", "subject" : ","},
+                                    repeat_lists=["preservation_service_library", "language"]
+                                    )
+
 
 JOURNAL_APIDO_STRUCT = {
     "objects": ["bibjson", "admin"],

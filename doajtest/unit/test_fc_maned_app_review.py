@@ -23,7 +23,7 @@ def editor_group_pull(cls, field, value):
     eg = models.EditorGroup()
     eg.set_editor("eddie")
     eg.set_associates(["associate", "assan"])
-    eg.set_name("Test Editor Group")
+    eg.set_name("editorgroup")
     return eg
 
 mock_lcc_choices = [
@@ -35,6 +35,7 @@ def mock_lookup_code(code):
     if code == "H": return "Social Sciences"
     if code == "HB1-3840": return "Economic theory. Demography"
     return None
+
 
 #####################################################################
 # Source objects to be used for testing
