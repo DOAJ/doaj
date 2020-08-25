@@ -1151,7 +1151,7 @@ class FieldDefinitions:
         ]
     }
 
-    """
+    # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
     QUICK_REJECT = {
         "name": "quick_reject",
         "label": "Reason for rejection",
@@ -1171,7 +1171,6 @@ class FieldDefinitions:
             {"required_if": {"field": "quick_reject", "value": "other"}}
         ],
     }
-    """
 
     OWNER = {
         "name": "owner",
@@ -1181,7 +1180,8 @@ class FieldDefinitions:
             {"required" : {"message" : "You must confirm the account id"}}
         ],
         "widgets": [
-            {"autocomplete": {"field": "account"}}
+            {"autocomplete": {"field": "account"}},
+            "clickable_owner"       # TODO: frontend implementation
         ]
     }
 
@@ -1531,14 +1531,14 @@ class FieldSetDefinitions:
         ]
     }
 
-    # QUICK_REJECT = {
-    #     "name": "quick_reject",
-    #     "label": "Quick Reject",
-    #     "fields": [
-    #         FieldDefinitions.QUICK_REJECT["name"],
-    #         FieldDefinitions.QUICK_REJECT_DETAILS["name"]
-    #     ]
-    # }
+    QUICK_REJECT = {
+        "name": "quick_reject",
+        "label": "Quick Reject",
+        "fields": [
+            FieldDefinitions.QUICK_REJECT["name"],
+            FieldDefinitions.QUICK_REJECT_DETAILS["name"]
+        ]
+    }
 
     REASSIGN = {
         "name": "reassign",
@@ -1683,7 +1683,7 @@ class ApplicationContextDefinitions:
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
         FieldSetDefinitions.SEAL["name"],
-        #FieldSetDefinitions.QUICK_REJECT["name"],
+        FieldSetDefinitions.QUICK_REJECT["name"],
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
@@ -1831,8 +1831,8 @@ def iso_currency_list(field, formulaic_context_name):
     return cl
 
 
-#def quick_reject(field, formulaic_context_name):
-#    return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
+def quick_reject(field, formulaic_context_name):
+   return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
 
 
 def application_statuses(field, formulaic_context_name):
@@ -2092,7 +2092,7 @@ PYTHON_FUNCTIONS = {
         "iso_country_list": iso_country_list,
         "iso_language_list": iso_language_list,
         "iso_currency_list": iso_currency_list,
-        # "quick_reject" : quick_reject,
+        "quick_reject" : quick_reject,
         "application_statuses" : application_statuses
     },
     "disabled" : {
