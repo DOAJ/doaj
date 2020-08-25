@@ -15,7 +15,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 
 3. Collecting, using and reusing part or all of the journal-level metadata must be done in accordance with the terms of the CC BY-SA license.
 
-4. The article metadata provided to us by publishers, or fetched from EuropePMC, which we then process and display is licensed under a [CC0 license](https://creativecommons.org/share-your-work/public-domain/cc0/). The article-level metadata is available:
+4. The article metadata provided to us by publishers, or fetched from EuropePMC, which we then process and display is availble with a [CC0 waiver](https://creativecommons.org/share-your-work/public-domain/cc0/). The article-level metadata is available:
   + On individual journal “homepages” in DOAJ, for example: https://doaj.org/toc/1932-6203
   + Via our API
   + In our [OAI-PMH feed](/docs/oai-pmh)
