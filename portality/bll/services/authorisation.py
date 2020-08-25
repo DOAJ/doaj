@@ -47,6 +47,25 @@ class AuthorisationService(object):
         if account.is_super:
             return True
 
+        # An editor can edit an application when they are assigned
+        if not account.has_role("edit_suggestion"):
+            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
+
+        # user must be either the "admin.editor" of the suggestion, or the editor of the "admin.editor_group"
+        # is the user the currently assigned editor of the suggestion?
+        passed = False
+        if application.editor == account.id:
+            passed = True
+
+        # now check whether the user is the editor of the editor group
+        eg = models.EditorGroup.pull_by_key("name", application.editor_group)
+        if eg is not None and eg.editor == account.id:
+            passed = True
+
+        # if the user wasn't the editor or the owner of the editor group, unauthorised
+        if not passed:
+            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
+
         if not account.has_role("publisher"):
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
         if account.id != application.owner:

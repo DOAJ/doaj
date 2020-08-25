@@ -13,7 +13,7 @@
     {# {% set form_id = url_for("apply.public_application", draft_id=obj.id) %} #}
 {% endif %}
 
-{% set js_validation = False %}
+{% set js_validation = True %}
 {% set auto_save = config.get("PUBLIC_FORM_AUTOSAVE", 0) %}
 {% set TAB1 = {"title": "Open access compliance", "fieldsets": ["basic_compliance"]} %}
 {% set TAB2 = {"title": "About the Journal", "fieldsets": ["about_the_journal", "publisher", "society_or_institution"]} %}

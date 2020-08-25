@@ -129,7 +129,7 @@ APPLICATION_SOURCE = {
         ],
         "owner" : "Owner",
         "related_journal" : "987654321123456789",
-        "seal": True,
+        "seal": False,
         "date_applied" : "2003-01-01T00:00:00Z"
     },
     "bibjson" : JOURNAL_LIKE_BIBJSON
@@ -164,17 +164,7 @@ APPLICATION_FORM_EXPANDED.update(deepcopy(EDITORIAL_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(SEAL_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(WORKFLOW_FORM_EXPANDED))
 
-APPLICATION_FORM = expanded2compact(APPLICATION_FORM_EXPANDED, {"keywords" : ","})
-
-"""
-APPLICATION_FORM["keywords"] = ",".join(APPLICATION_FORM["keywords"])
-notes = APPLICATION_FORM["notes"]
-del APPLICATION_FORM["notes"]
-i = 0
-for n in notes:
-    notekey = "notes-" + str(i) + "-note"
-    datekey = "notes-" + str(i) + "-date"
-    APPLICATION_FORM[notekey] = n.get("note")
-    APPLICATION_FORM[datekey] = n.get("date")
-    i += 1
-"""
+APPLICATION_FORM = expanded2compact(APPLICATION_FORM_EXPANDED,
+                                    join_lists={"keywords" : ",", "subject" : ","},
+                                    repeat_lists=["preservation_service_library", "language"]
+                                    )

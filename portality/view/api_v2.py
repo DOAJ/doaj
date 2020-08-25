@@ -25,6 +25,11 @@ def api_v2_root():
     return redirect(url_for('.api_spec'))
 
 
+@blueprint.route('/docs')
+def docs():
+    return redirect(url_for('doaj.docs'))
+
+
 @blueprint.route('/swagger.json')
 def api_spec():
     swag = swagger(app)

@@ -4,13 +4,6 @@
 <!-- get bootstrap js -->
 <script type="text/javascript" src="/static/vendor/bootstrap-3.3.7/js/bootstrap.min.js"></script>
 
-{% if subject_page %}
-
-    <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
-    <script type="text/javascript" src="/static/vendor/jstree-3.0.0-beta10/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
-{% endif %}
-
 {% if not config.get("DEBUG", True) %}
     <!-- Global Site Tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ config.get('GOOGLE_ANALYTICS_ID') }}"></script>
@@ -29,6 +22,7 @@
         <script> (function(h,o,t,j,a,r){ h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)}; h._hjSettings={hjid:{{ config.get("HOTJAR_ID") }},hjsv:6}; a=o.getElementsByTagName('head')[0]; r=o.createElement('script');r.async=1; r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv; a.appendChild(r); })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv='); </script>
     {% endif %}
 
+    {# FIXME: I don't think we need these any more? #}
     {% if edit_suggestion_page or edit_journal_page or subject_page %}
 
         <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
@@ -41,6 +35,7 @@
     {% endif %}
 {% endif %}
 
+{# FIXNE: do we need these any more? #}
 <!-- get tablesorter -->
 <script type="text/javascript" src="/static/vendor/tablesorter-2.3.10/js/jquery.tablesorter.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
@@ -62,3 +57,87 @@
 <!-- get the app's js -->
 <script type="text/javascript" src="/static/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
+<script>
+
+    // Use Feather icons
+    feather.replace();
+
+    // Responsive menu
+    var openMenu = document.querySelector(".secondary-nav__menu-toggle");
+    var nav = document.querySelector(".secondary-nav__menu");
+
+    openMenu.addEventListener('click', function() {
+        nav.classList.toggle("secondary-nav__menu-toggle--active");
+    }, false);
+
+    // Back-to-top button
+    var topBtn = document.getElementById("top");
+
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+            if (topBtn) {
+                topBtn.style.display = "flex";
+            }
+        } else {
+            if (topBtn) {
+                topBtn.style.display = "none";
+            }
+
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+
+    // Offset when clicking on anchor link or sidenav link to compensate for fixed header
+    var headerHeight = 70;
+
+    // When on the same page
+    jQuery (function($) {
+        // Tabs
+        $("[role='tab']").click(function(e) {
+            e.preventDefault();
+            $(this).attr("aria-selected", "true");
+            $(this).parent().siblings().children().attr("aria-selected", "false");
+            var tabpanelShow = $(this).attr("href");
+            $(tabpanelShow).attr("aria-hidden", "false");
+            $(tabpanelShow).siblings().attr("aria-hidden", "true");
+        });
+
+        $('a[href*="#"]:not([href="#"])').click(function() {
+            var target = $(this.hash);
+            $('html,body').animate({
+                scrollTop: target.offset().top - headerHeight
+            }, 50, 'linear');
+        });
+        if (location.hash){
+            var id = $(location.hash);
+        }
+
+        $(window).on('load', function() {
+            if (location.hash){
+                $('html,body').animate({
+                    scrollTop: id.offset().top - headerHeight
+                }, 50, 'linear')
+            }
+        });
+    });
+
+    // Coming from another page
+    jQuery (document).ready (function($) {
+        var hash= window.location.hash;
+        if ( hash === '' || hash === '#' || hash === undefined ) return false;
+        var target = $(hash);
+        target = target.length ? target : $('[name=' + hash.slice(1) +']');
+        if (target.length) {
+            $('html,body').animate({
+                scrollTop: target.offset().top - headerHeight //offsets for fixed header
+            }, 50, 'linear');
+        }
+    } );
+</script>

@@ -21,8 +21,11 @@ class MultiFieldValidator(object):
     @staticmethod
     def get_other_field(field_name, form):
         other_field = form._fields.get(field_name)
-        if other_field is None:
-            raise Exception('No field named "{0}" in form'.format(field_name))
+        if not other_field:
+            if hasattr(form.meta, "parent_form"):
+                other_field = MultiFieldValidator.get_other_field(field_name, form.meta.parent_form)
+            else:
+                raise Exception('No field named "{0}" in form (or its parent containers)'.format(field_name))
         return other_field
 
 
@@ -386,6 +389,9 @@ class RequiredIfOtherValue(MultiFieldValidator):
         if match:
             dr = validators.DataRequired()
             dr(form, field)
+        else:
+            if not field.data or not field.data.strip():
+                raise validators.StopValidation()
 
 
 class OnlyIf(MultiFieldValidator):
@@ -400,6 +406,9 @@ class OnlyIf(MultiFieldValidator):
         super(OnlyIf, self).__init__(None, *args, **kwargs)
 
     def __call__(self, form, field):
+        if field.data is None or field.data is False or isinstance(field.data, str) and not field.data.strip():
+            return
+
         self.get_other_fields(form)
 
         for o_f in self.other_fields:

@@ -100,10 +100,11 @@ class ApplicationsCrudApi(CrudApi):
                 if alock is not None: alock.delete()
                 raise Api404Error(jlock, alock)
 
+            # FIXME: needs to be updated to the new application form system
             # convert the incoming application into the web form
-            form = MultiDict(ApplicationFormXWalk.obj2form(ap))
-
+            form = MultiDict(ApplicationFormXWalk.obj2formdata(ap))
             fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
+
             if fc.validate():
                 try:
                     save_target = not dry_run

@@ -5,11 +5,10 @@ from nose.tools import assert_raises
 from werkzeug.datastructures import MultiDict
 
 from portality import constants
-from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory,AccountFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import lcc
 from portality import models
-from portality.formcontext import formcontext
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.forms.application_processors import AdminApplication
 
@@ -23,7 +22,7 @@ def editor_group_pull(cls, field, value):
     eg = models.EditorGroup()
     eg.set_editor("eddie")
     eg.set_associates(["associate", "assan"])
-    eg.set_name("Test Editor Group")
+    eg.set_name("editorgroup")
     return eg
 
 mock_lcc_choices = [
@@ -35,6 +34,7 @@ def mock_lookup_code(code):
     if code == "H": return "Social Sciences"
     if code == "HB1-3840": return "Economic theory. Demography"
     return None
+
 
 #####################################################################
 # Source objects to be used for testing
@@ -209,17 +209,18 @@ class TestManEdAppReview(DoajTestCase):
         # Without a subject classification, we should not be able to set the status to 'accepted'
         no_class_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         del no_class_application.data['bibjson']['subject']
-        fc = formcontext.ApplicationFormFactory.get_form_context(role='admin', source=no_class_application)
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(source=no_class_application)
         # Make changes to the application status via the form
         assert fc.source.bibjson().subjects() == []
         fc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
         assert not fc.validate()
 
+        # TODO: this behaviour has changed to be 'required' in all statuses according to form config
         # However, we should be able to set it to a different status rather than 'accepted'
-        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
-
-        assert fc.validate()
+        #fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        #assert fc.validate(), fc.form.errors
 
         ctx.pop()
 

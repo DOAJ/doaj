@@ -2113,11 +2113,8 @@ $.extend(true, doaj, {
                 } else {
                     var status = resultobj.admin.application_status;
 
-                    // if it's a pending new application - not sure what we do, it's new!
-                    if (status === "pending") {
-                        return [doaj.publisherApplicationsSearchConfig.editPendingUrl + resultobj['id'], "Edit"];
-                        // if it's an accepted application, link to the ToC
-                    } else if (status === "accepted") {
+                    // if it's an accepted application, link to the ToC
+                    if (status === "accepted") {
                         var issn = resultobj.bibjson.issn;
                         if (!issn) {
                             issn = resultobj.bibjson.eissn;
@@ -2185,7 +2182,6 @@ $.extend(true, doaj, {
                 var deleteLinkUrl = deleteLinkTemplate.replace("__application_id__", resultobj.id);
                 var deleteClass = edges.css_classes(this.namespace, "delete", this);
                 if (resultobj.es_type === "draft_application" ||
-                        resultobj.admin.application_status === "pending" ||
                         resultobj.admin.application_status === "update_request") {
                     deleteLink = '<li class="tag">\
                         <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-application" class="' + deleteClass + '"\

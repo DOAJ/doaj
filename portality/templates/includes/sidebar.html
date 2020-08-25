@@ -45,7 +45,7 @@
             {% endfor %}
           </div>
 
-        {% elsif page.name == 'publisher-supporters-fragment.md' %}
+        {% elif page.name == 'publisher-supporters-fragment.md' %}
           <!-- Support section: publisher supporters -->
           <h2>Current publisher supporters</h2>
           <ul class="row title-list">
@@ -56,7 +56,7 @@
             {% endfor %}
           </ul>
 
-        {% elsif page.name == 'supporters-fragment.md' %}
+        {% elif page.name == 'supporters-fragment.md' %}
           <!-- Support section: supporters -->
           {% for i in site.data.supporters %}
             <p>{{ i.name }}, {{ i.url }}</p>
@@ -77,10 +77,10 @@
       <aside class="promo">
         <p class="label">Just so you know&hellip;</p>
 
-        {% assign min = 0 %}
-        {% assign max = site.data.promo.size %}
-        {% assign diff = max | minus: min %}
-        {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
+        {% set min = 0 %}
+        {% set max = site.data.promo.size %}
+        {% set diff = max | minus: min %}
+        {% set random = "now" | date: "%N" | modulo: diff | plus: min %}
 
         <h2 class="promo__heading">{{ site.data.promo[random].title }}</h2>
         <p class="promo__text">

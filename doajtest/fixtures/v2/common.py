@@ -19,7 +19,7 @@ EDITORIAL_FORM_EXPANDED = {
 }
 
 SEAL_FORM_EXPANDED = {
-    "doaj_seal": True,
+    "doaj_seal": False,
 }
 
 JOURNAL_LIKE_BIBJSON = {
@@ -32,7 +32,7 @@ JOURNAL_LIKE_BIBJSON = {
         "has_apc": True
     },
     "article": {
-        "license_display": ["Embed", "Display"],
+        "license_display": ["Embed"],
         "license_display_example_url": "http://licence.embedded",
         "orcid": True,
         "i4oc_open_citations": False
@@ -48,7 +48,7 @@ JOURNAL_LIKE_BIBJSON = {
         "service": ["Sherpa/Romeo", "Store it"],
         "url": "http://deposit.policy"
     },
-    "discontinued_date": "2010-01-01",
+    "discontinued_date": "2001-01-01",
     "editorial": {
         "review_process": ["Open peer review", "some bloke checks it out"],
         "review_url": "http://review.process",
@@ -131,10 +131,8 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "preservation_service_url" : "http://digital.archiving.policy",
     "copyright_author_retains" : "y",
     "copyright_url" : "http://copyright.com",
-    "publisher" : {
-        "publisher_country" : "US",
-        "publisher_name" : "The Publisher"
-    },
+    "publisher_country" : "US",
+    "publisher_name" : "The Publisher",
     "deposit_policy" : ["Sherpa/Romeo", "other"],
     "deposit_policy_other" : "Store it",
     "review_process" : ["Open peer review", "other"],
@@ -142,14 +140,12 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "review_url" : "http://review.process",
     "pissn": "1234-5678",
     "eissn": "9876-5432",
-    "institution" : {
-        "institution_name" : "Society Institution",
-        "institution_country" : "US"
-    },
+    "institution_name" : "Society Institution",
+    "institution_country" : "US",
     "keywords": ["word", "key"],
     "language": ["EN", "FR"],
     "license_attributes" : ["BY", "NC"],
-    "license_display" : ["Embed", "Display"],
+    "license_display" : "y",
     "license_display_example_url": "http://licence.embedded",
     "boai": "y",
     "license": ["Publisher's own license"],

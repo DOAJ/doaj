@@ -1,7 +1,4 @@
 <div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
-    {% if f.has_conditional %}
-        <input type="hidden" class="conditional" id="{{ f.name }}__conditional" name="{{ f.condition_field }}" value="{{ f.condition_value }}">
-    {% endif %}
     <label>
         {% autoescape off %}{{ f.label | safe }}{% endautoescape %}
         {% if f.help("long_help") %}

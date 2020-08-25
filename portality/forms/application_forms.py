@@ -513,8 +513,8 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/articles/article-page"
         },
         "validate": [
-            "is_url",
-            {"required_if": {"field": "license_display", "value": "y"}}
+            {"required_if": {"field": "license_display", "value": "y"}},
+            "is_url"
         ],
         "widgets": [
             "clickable_url"
@@ -793,9 +793,8 @@ class FieldDefinitions:
             "class": "input-xlarge"
         },
         "validate": [
-            #{"required_if": {"field": "apc", "value": "y", "message" : "Currency required because you answered YES to previous question"}}
+            {"required_if": {"field": "apc", "value": "y", "message" : "Currency required because you answered YES to previous question"}}
         ]
-
     }
 
     APC_MAX = {
@@ -808,7 +807,7 @@ class FieldDefinitions:
             "placeholder" : "Highest APC Charged"
         },
         "validate":[
-            #{"required_if": {"field": "apc", "value": "y", "message" : "Value required because you answered YES to previous question"}}
+            {"required_if": {"field": "apc", "value": "y", "message" : "Value required because you answered YES to previous question"}}
         ]
     }
 
@@ -1152,6 +1151,7 @@ class FieldDefinitions:
         ]
     }
 
+    """
     QUICK_REJECT = {
         "name": "quick_reject",
         "label": "Reason for rejection",
@@ -1171,6 +1171,7 @@ class FieldDefinitions:
             {"required_if": {"field": "quick_reject", "value": "other"}}
         ],
     }
+    """
 
     OWNER = {
         "name": "owner",
@@ -1192,6 +1193,7 @@ class FieldDefinitions:
         "validate": [
             "required"
         ],
+        "disabled" : "application_status_disabled",
         "contexts" : {
             "associate_editor" : {
                 "help" : {
@@ -1292,7 +1294,7 @@ class FieldDefinitions:
     SUBJECT = {
         "name": "subject",
         "label": "Assign one or a maximum of two subject classifications",
-        "input": "text",
+        "input": "taglist",
         "help": {
             "short_help": "Selecting a subject will not automatically select its sub-categories"
         },
@@ -1529,14 +1531,14 @@ class FieldSetDefinitions:
         ]
     }
 
-    QUICK_REJECT = {
-        "name": "quick_reject",
-        "label": "Quick Reject",
-        "fields": [
-            FieldDefinitions.QUICK_REJECT["name"],
-            FieldDefinitions.QUICK_REJECT_DETAILS["name"]
-        ]
-    }
+    # QUICK_REJECT = {
+    #     "name": "quick_reject",
+    #     "label": "Quick Reject",
+    #     "fields": [
+    #         FieldDefinitions.QUICK_REJECT["name"],
+    #         FieldDefinitions.QUICK_REJECT_DETAILS["name"]
+    #     ]
+    # }
 
     REASSIGN = {
         "name": "reassign",
@@ -1664,7 +1666,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
-    ASSOCIATE["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    ASSOCIATE["processor"] = application_processors.AssociateApplication
     ASSOCIATE["templates"]["form"] = "application_form/assed_application.html"
 
     EDITOR = deepcopy(PUBLIC)
@@ -1674,14 +1676,14 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
-    EDITOR["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    EDITOR["processor"] = application_processors.EditorApplication
     EDITOR["templates"]["form"] = "application_form/editor_application.html"
 
     MANED = deepcopy(PUBLIC)
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
         FieldSetDefinitions.SEAL["name"],
-        FieldSetDefinitions.QUICK_REJECT["name"],
+        #FieldSetDefinitions.QUICK_REJECT["name"],
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
@@ -1829,8 +1831,8 @@ def iso_currency_list(field, formulaic_context_name):
     return cl
 
 
-def quick_reject(field, formulaic_context_name):
-    return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
+#def quick_reject(field, formulaic_context_name):
+#    return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
 
 
 def application_statuses(field, formulaic_context_name):
@@ -1865,6 +1867,16 @@ def application_statuses(field, formulaic_context_name):
         status_list = _application_status_base
 
     return [{'display': d, 'value': v} for (v, d) in status_list]
+
+
+#######################################################
+## Conditional disableds
+#######################################################
+
+def application_status_disabled(field, formulaic_context_name):
+    choices = application_statuses(field, formulaic_context_name)
+    field_value = field.wtfield.data
+    return field_value in [c.get("v") for c in choices]
 
 
 #######################################################
@@ -2080,8 +2092,11 @@ PYTHON_FUNCTIONS = {
         "iso_country_list": iso_country_list,
         "iso_language_list": iso_language_list,
         "iso_currency_list": iso_currency_list,
-        "quick_reject" : quick_reject,
+        # "quick_reject" : quick_reject,
         "application_statuses" : application_statuses
+    },
+    "disabled" : {
+        "application_status_disabled" : application_status_disabled
     },
     "validate": {
         "render": {
@@ -2195,7 +2210,7 @@ class CustomRequired(object):
         self.message = message
 
     def __call__(self, form, field):
-        if field.data is None or isinstance(field.data, str) and not field.data.strip():
+        if field.data is None or isinstance(field.data, str) and not field.data.strip() or isinstance(field.data, list) and len(field.data) == 0:
             if self.message is None:
                 message = field.gettext('This field is required.')
             else:
@@ -2203,6 +2218,12 @@ class CustomRequired(object):
 
             field.errors[:] = []
             raise validators.StopValidation(message)
+
+
+class NestedFormField(FormField):
+    def validate(self, form, extra_validators=tuple()):
+        self.form.meta.parent_form = form
+        return super().validate(form, extra_validators)
 
 
 ##########################################################
@@ -2326,7 +2347,7 @@ class GroupBuilder(WTFormsBuilder):
     def wtform(formulaic_context, field, wtfargs):
         fields = [formulaic_context.get(subfield) for subfield in field.get("subfields", [])]
         klazz = formulaic_context.make_wtform_class(fields)
-        return FormField(klazz)
+        return NestedFormField(klazz)
 
 
 class GroupListBuilder(WTFormsBuilder):
