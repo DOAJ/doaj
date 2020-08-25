@@ -12,6 +12,9 @@ from portality import lcc
 from portality import models
 from portality.formcontext import formcontext, FormContextException
 
+from portality.forms.application_forms import ApplicationFormFactory
+from portality.forms.application_processors import EditorApplication
+
 
 #####################################################################
 # Mocks required to make some of the lookups work
@@ -81,13 +84,16 @@ class TestEditorAppReview(DoajTestCase):
         ctx = self._make_and_push_test_context(acc=acc)
 
         # we start by constructing it from source
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=models.Suggestion(**APPLICATION_SOURCE))
-        assert isinstance(fc, formcontext.EditorApplicationReview)
+        formulaic_context = ApplicationFormFactory.context("editor")
+        fc = formulaic_context.processor(source=models.Application(**APPLICATION_SOURCE))
+        assert isinstance(fc, EditorApplication)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
-        assert fc.template is not None
+        #assert fc.template is not None
 
+        # TODO: we are no longer testing the render here - should we move this?
+        """
         # check that we can render the form
         # FIXME: we can't easily render the template - need to look into Flask-Testing for this
         # html = fc.render_template(edit_suggestion=True)
@@ -101,6 +107,7 @@ class TestEditorAppReview(DoajTestCase):
         eg_rx = rx_template.replace("{field}", "editor_group")
 
         assert re.search(eg_rx, html)
+        """
 
         # now construct it from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
@@ -108,7 +115,11 @@ class TestEditorAppReview(DoajTestCase):
             form_data=MultiDict(APPLICATION_FORM) ,
             source=models.Suggestion(**APPLICATION_SOURCE))
 
-        assert isinstance(fc, formcontext.EditorApplicationReview)
+        formulaic_context = ApplicationFormFactory.context("editor")
+        fc = formulaic_context.processor(formdata=MultiDict(APPLICATION_FORM),
+                                         source=models.Application(**APPLICATION_SOURCE))
+
+        assert isinstance(fc, EditorApplication)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None

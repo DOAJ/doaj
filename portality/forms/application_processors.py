@@ -436,7 +436,7 @@ class EditorApplication(ApplicationProcessor):
 
         self.form.editor_group.data = self.source.editor_group
 
-        if self.form['status'].is_disabled():
+        if self._formulaic.get('application_status').is_disabled:
             self.form.application_status.data = self.source.application_status
 
     def patch_target(self):

@@ -5,11 +5,10 @@ from nose.tools import assert_raises
 from werkzeug.datastructures import MultiDict
 
 from portality import constants
-from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory,AccountFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import lcc
 from portality import models
-from portality.formcontext import formcontext
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.forms.application_processors import AdminApplication
 
