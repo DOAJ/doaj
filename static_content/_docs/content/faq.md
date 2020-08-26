@@ -56,6 +56,13 @@
 Send the information to [feedback@doaj.org](mailto:feedback@doaj.org). If you are familiar with GitHub, you can [create the bug ticket](https://github.com/DOAJ/doaj/issues/new/choose) yourself. Don’t send us your passwords or API keys.
 
 ---
+## Account
+### When do I need an account?
+If you are not a publisher you do not need an account. All of our content is Open Access and available on our website. If you are a publisher and have lost your account, please [contact us] stating your issn and we will find out what happened.
+### How can I reset my password?
+To reset your password please go here: https://doaj-static.netlify.app/password-reset/. Please [contact us] if you did not get a password reset link. 
+### How can I merge journals into the same account?
+If your institution has several journals that are spread into different accounts and you would like to have a single one, please [contact us].
 
 ## Metadata
 
