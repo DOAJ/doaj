@@ -117,7 +117,7 @@
         if (n === (tabs.length - 1)) {
             //show submit button only if all tabs are validated
             $("#nextBtn").hide();
-            submitButton.show();
+            submitButton.hide();
             draftButton.show();
             let validated = form_validated();
             if (!validated) {
@@ -132,7 +132,6 @@
             nextBtn.html("Next");
             submitButton.hide();
             draftButton.show();
-            submitButton.prop("disabled",false);
         }
         currentTab = n;
         previousTab = n-1;
@@ -390,18 +389,15 @@
     }
 
     let manage_review_checkboxes = () => {
-        if ($("#reviewed").prop("checked")){
-            $("#cannot-submit-checkboxes").hide();
-            $("#submitBtn").prop("disabled", !form_validated());
-        } else {
-            $("#cannot-submit-checkboxes").show();
-            $("#submitBtn").prop("disabled", true);
+        if ($("#reviewed").checked) {
+            form_validated() ? $("#submitBtn").show() : $("#submitBtn").hide()
         }
+
     }
 
     $("#reviewed").on("click", manage_review_checkboxes);
 
-    let currentTab = 0; // Current tab is set to be the first tab (0)
+    let currentTab = 6; // Current tab is set to be the first tab (0)
     let previousTab = 0;
     let tabs = $(".tab");
     let sections = $(".form-section");
