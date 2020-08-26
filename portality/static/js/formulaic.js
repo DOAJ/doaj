@@ -799,7 +799,7 @@ var formulaic = {
 
             this.init = function() {
                 this.elements = $("select[name$='" + this.fieldDef.name + "']")
-                this.elements.select2({  //TODO: select2 is not a function
+                this.elements.select2({
                     allowClear: false,
                     width: 'resolve',
                     newOption: true

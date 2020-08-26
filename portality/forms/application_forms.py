@@ -1813,21 +1813,21 @@ JOURNAL_FORMS = {
 #######################################################
 
 def iso_country_list(field, formualic_context_name):
-    cl = []
+    cl = [{"display" : " ", "value" : ""}]
     for v, d in country_options:
         cl.append({"display": d, "value": v})
     return cl
 
 
 def iso_language_list(field, formulaic_context_name):
-    cl = []
+    cl = [{"display" : " ", "value" : ""}]
     for v, d in language_options:
         cl.append({"display": d, "value": v})
     return cl
 
 
 def iso_currency_list(field, formulaic_context_name):
-    cl = [{"display" : "Currency", "value" : ""}]
+    cl = [{"display" : " ", "value" : ""}]
     for v, d in currency_options:
         cl.append({"display": d, "value": v})
     return cl
