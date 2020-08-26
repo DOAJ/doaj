@@ -149,10 +149,6 @@ class FieldDefinitions:
         "input": "text",
         "optional": True,
         "help": {
-            "long_help": ["The journal title must match what is displayed on the website and what is registered at the "
-                          "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal</a>.",
-                          "For translated titles, you may add the "
-                          "translation as an alternative title."],
             "placeholder": "Ma revue"
         },
         "contexts": {
@@ -324,6 +320,9 @@ class FieldDefinitions:
             {"select": {}},
             "multiple_field"
         ],
+        "help": {
+            "placeholder": "Type or select the language"
+        },
         "attr": {
             "class": "input-xlarge"
         }
@@ -352,7 +351,8 @@ class FieldDefinitions:
         "options_fn": "iso_country_list",
         "help": {
             "long_help": ["The country where the publisher carries out its business operations and is registered."],
-            "doaj_criteria": "You must provide a publisher country"
+            "doaj_criteria": "You must provide a publisher country",
+            "placeholder": "Type or select the country"
         },
         "validate": [
             "required"
@@ -398,6 +398,7 @@ class FieldDefinitions:
         "options_fn": "iso_country_list",
         "help": {
             "short_help": "The country in which the society or institution is based",
+            "placeholder": "Type or select the country",
             "optional": True
         },
         "widgets": [
@@ -472,7 +473,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "help": {
-            "short_help": "Link to the page where the license terms are stated",
+            "short_help": "Link to the page where the license terms are stated on your site.",
             "doaj_criteria": "You must provide a link to your license terms",
             "placeholder": "https://www.my-journal.com/about#licensing",
         },
@@ -635,7 +636,9 @@ class FieldDefinitions:
         "help": {
             "doaj_criteria": "You must provide a URL",
             "placeholder": "https://www.my-journal.com/about#plagiarism",
-            "short_help": "Link to the journal's plagiarism policy"
+            "short_help": "Link to the journal's plagiarism policy",
+            "long_help": ["The page should state that the journal actively checks for plagiarism and explain how this "
+                          "is done (including the name of any software or service used)."]
         },
         "validate": [
             {"required_if": {"field": "plagiarism_detection", "value": "y"}},
@@ -682,7 +685,7 @@ class FieldDefinitions:
 
     AUTHOR_INSTRUCTIONS_URL = {
         "name": "author_instructions_url",
-        "label": "Link to the journal's <b>Instructions for Author</b>",
+        "label": "Link to the journal's <b>Instructions for Authors</b>",
         "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL",
@@ -889,10 +892,9 @@ class FieldDefinitions:
 
     PRESERVATION_SERVICE = {
         "name": "preservation_service",
-        "label": "Long-term preservation service(s) with which the journal is currently archived",
+        "label": "Long-term preservation service(s) where the journal is currently archived",
         "input": "checkbox",
         "multiple": True,
-        "hint": "Select at least one:",
         "options": [
             {"display": "CINES", "value": "CINES", "subfields": ["preservation_service_url"]},
             {"display": "CLOCKSS", "value": "CLOCKSS", "subfields": ["preservation_service_url"]},
@@ -910,7 +912,7 @@ class FieldDefinitions:
             "long_help": [
                 "Only active archiving is accepted; content must be actively deposited in each of the options "
                 "you choose. If the journal is registered with a service but archiving is not yet active, "
-                "choose <i>No</i>.", "PubMed Central covers PMC U.S.A., PMC Canada, and PMC Europe (Wellcome Trust)."]
+                "choose <i>No</i>.", "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."]
         },
         "validate": [
             "required"
@@ -1044,7 +1046,7 @@ class FieldDefinitions:
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
             "doaj_criteria": "You must provide a URL",
-            "short_help": "Link to the policy on the journal's site",
+            "short_help": "Link to the policy in a directory or on publisher site",
             "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
         "validate": [
