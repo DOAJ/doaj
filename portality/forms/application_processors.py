@@ -91,6 +91,11 @@ class NewApplication(FormProcessor):
 
 class ApplicationProcessor(FormProcessor):
 
+    def pre_validate(self):
+        # to bypass WTForms insistence that choices on a select field match the value, outside of the actual validation
+        # chain
+        super(ApplicationProcessor, self).pre_validate()
+
     def _carry_fixed_aspects(self):
         if self.source is None:
             raise Exception("Cannot carry data from a non-existent source")
@@ -219,7 +224,10 @@ class AdminApplication(ApplicationProcessor):
         # to bypass WTForms insistence that choices on a select field match the value, outside of the actual validation
         # chain
         super(AdminApplication, self).pre_validate()
-        self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)] # if self.form.editor.data else [""]
+        self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)]
+
+        # TODO: Should quick_reject be set through this form at all?
+        self.form.quick_reject.choices = [(self.form.quick_reject.data, self.form.quick_reject.data)]
 
     def patch_target(self):
         super(AdminApplication, self).patch_target()
@@ -435,6 +443,7 @@ class EditorApplication(ApplicationProcessor):
         super(EditorApplication, self).pre_validate()
 
         self.form.editor_group.data = self.source.editor_group
+        self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)]
 
         if self._formulaic.get('application_status').is_disabled:
             self.form.application_status.data = self.source.application_status
@@ -539,7 +548,10 @@ class AssociateApplication(ApplicationProcessor):
        """
 
     def pre_validate(self):
-        if self.form['status'].is_disabled():
+        # TODO: If we're only ever patching disabled fields for validation could we add this to super?
+        super(AssociateApplication, self).pre_validate()
+
+        if self._formulaic.get('application_status').is_disabled:
             self.form.application_status.data = self.source.application_status
 
     def patch_target(self):

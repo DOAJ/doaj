@@ -1664,6 +1664,7 @@ class ApplicationContextDefinitions:
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
+        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
@@ -1674,6 +1675,7 @@ class ApplicationContextDefinitions:
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
+        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
