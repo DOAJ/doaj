@@ -8,6 +8,7 @@ import portality.notifications.application_emails as emails
 from portality.ui.messages import Messages
 
 from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.crosswalks.journal_form import JournalFormXWalk
 from flask import url_for, request
 from flask_login import current_user
 
@@ -594,3 +595,73 @@ class AssociateApplication(ApplicationProcessor):
                 self.add_alert(
                     'Sending the ready status to editor email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
                 app.logger.exception('Error sending completed status email to editor - ' + magic)
+
+
+###############################################
+### Journal form processors
+###############################################
+
+class ManEdJournalReview(ApplicationProcessor):
+    """
+    Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
+    admin privileges.  It will permit doing every action.
+    """
+    def patch_target(self):
+        if self.source is None:
+            raise Exception("You cannot patch a target from a non-existent source")
+
+        self._carry_fixed_aspects()
+        self._merge_notes_forward(allow_delete=True)
+
+        # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
+        if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
+            self.target.set_owner(self.source.owner)
+
+    """
+    def _set_choices(self):
+        # The first time this is rendered, it needs to populate the editor drop-down from saved group
+        egn = self.form.editor_group.data
+        self._populate_editor_field(egn)
+    """
+
+    def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+
+        if self.source is None:
+            raise Exception("You cannot edit a not-existent journal")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(ManEdJournalReview, self).finalise()
+
+        # FIXME: may want to factor this out of the suggestionformxwalk
+        # If we have changed the editors assinged to this application, let them know.
+        is_editor_group_changed = JournalFormXWalk.is_new_editor_group(self.form, self.source)
+        is_associate_editor_changed = JournalFormXWalk.is_new_editor(self.form, self.source)
+
+        # Save the target
+        self.target.set_last_manual_update()
+        self.target.save()
+
+        # if we need to email the editor and/or the associate, handle those here
+        if is_editor_group_changed:
+            try:
+                emails.send_editor_group_email(self.target)
+            except app_email.EmailException:
+                self.add_alert("Problem sending email to editor - probably address is invalid")
+                app.logger.exception('Error sending assignment email to editor.')
+        if is_associate_editor_changed:
+            try:
+                emails.send_assoc_editor_email(self.target)
+            except app_email.EmailException:
+                self.add_alert("Problem sending email to associate editor - probably address is invalid")
+                app.logger.exception('Error sending assignment email to associate.')
+
+    def validate(self):
+        # make use of the ability to disable validation, otherwise, let it run
+        if self.form is not None:
+            if self.form.make_all_fields_optional.data:
+                self.pre_validate()
+                return True
+
+        return super(ManEdJournalReview, self).validate()

@@ -164,7 +164,5 @@ APPLICATION_FORM_EXPANDED.update(deepcopy(EDITORIAL_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(SEAL_FORM_EXPANDED))
 APPLICATION_FORM_EXPANDED.update(deepcopy(WORKFLOW_FORM_EXPANDED))
 
-APPLICATION_FORM = expanded2compact(APPLICATION_FORM_EXPANDED,
-                                    join_lists={"keywords" : ",", "subject" : ","},
-                                    repeat_lists=["preservation_service_library", "language"]
-                                    )
+from portality.crosswalks.application_form import ApplicationFormXWalk
+APPLICATION_FORM = ApplicationFormXWalk.forminfo2multidict(APPLICATION_FORM_EXPANDED)
