@@ -1,7 +1,7 @@
 from copy import deepcopy
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
-from wtforms import StringField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, \
+from wtforms import StringField, TextAreaField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, \
     FormField, FieldList, HiddenField
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
@@ -1152,27 +1152,26 @@ class FieldDefinitions:
         ]
     }
 
-    """
+    # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
     QUICK_REJECT = {
         "name": "quick_reject",
-        "label": "Select the reason for rejection",
+        "label": "Reason for rejection",
         "input": "select",
         "options_fn": "quick_reject"
     }
 
     QUICK_REJECT_DETAILS = {
         "name": "quick_reject_details",
-        "label": "Enter additional information to be sent to the publisher",
-        "input": "text",
+        "label": "Additional info",
+        "input": "textarea",
         "help": {
-            "long_help": "The selected reason for rejection, and any additional information you include, "
-                         "are sent to the journal contact with the rejection email."
+            "long_help": ["The selected reason for rejection, and any additional information you include, "
+                         "are sent to the journal contact with the rejection email."]
         },
         "validate": [
             {"required_if": {"field": "quick_reject", "value": "other"}}
         ],
     }
-    """
 
     OWNER = {
         "name": "owner",
@@ -1182,13 +1181,14 @@ class FieldDefinitions:
             {"required" : {"message" : "You must confirm the account id"}}
         ],
         "widgets": [
-            {"autocomplete": {"field": "account"}}
+            {"autocomplete": {"field": "account"}},
+            "clickable_owner"       # TODO: frontend implementation
         ]
     }
 
     APPLICATION_STATUS = {
         "name": "application_status",
-        "label": "Select status",
+        "label": "Change status",
         "input": "select",
         "options_fn": "application_statuses",
         "validate": [
@@ -1217,7 +1217,7 @@ class FieldDefinitions:
 
     EDITOR_GROUP = {
         "name": "editor_group",
-        "label": "Assign to editor group",
+        "label": "Group",
         "input": "text",
         "widgets": [
             {"autocomplete": {"field": "editor_group"}}
@@ -1231,7 +1231,7 @@ class FieldDefinitions:
 
     EDITOR = {
         "name": "editor",
-        "label": "Assign to individual",
+        "label": "Individual",
         "input": "select",
         "options_fn": "editor_choices",
         "validate" : [
@@ -1246,7 +1246,7 @@ class FieldDefinitions:
 
     DISCONTINUED_DATE = {
         "name": "discontinued_date",
-        "label": "This journal was discontinued on",
+        "label": "Discontinued on",
         "input": "text",
         "validate" : [
             "bigenddate",
@@ -1270,7 +1270,7 @@ class FieldDefinitions:
 
     CONTINUES = {
         "name": "continues",
-        "label": "This journal continues an older journal with the ISSN(s)",
+        "label": "Continues an older journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},
@@ -1282,7 +1282,7 @@ class FieldDefinitions:
 
     CONTINUED_BY = {
         "name": "continued_by",
-        "label": "This journal is continued by a newer version of the journal with the ISSN(s)",
+        "label": "Continued by a newer version of the journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},
@@ -1331,7 +1331,7 @@ class FieldDefinitions:
         "subfield": True,
         "name": "note",
         "group": "notes",
-        "input": "text"
+        "input": "textarea"
     }
 
     NOTE_DATE = {
@@ -1526,20 +1526,20 @@ class FieldSetDefinitions:
 
     SEAL = {
         "name": "seal",
-        "label": "DOAJ Seal",
+        "label": "Award the seal",
         "fields": [
             FieldDefinitions.DOAJ_SEAL["name"]
         ]
     }
 
-    # QUICK_REJECT = {
-    #     "name": "quick_reject",
-    #     "label": "Quick Reject",
-    #     "fields": [
-    #         FieldDefinitions.QUICK_REJECT["name"],
-    #         FieldDefinitions.QUICK_REJECT_DETAILS["name"]
-    #     ]
-    # }
+    QUICK_REJECT = {
+        "name": "quick_reject",
+        "label": "Quick Reject",
+        "fields": [
+            FieldDefinitions.QUICK_REJECT["name"],
+            FieldDefinitions.QUICK_REJECT_DETAILS["name"]
+        ]
+    }
 
     REASSIGN = {
         "name": "reassign",
@@ -1570,9 +1570,9 @@ class FieldSetDefinitions:
         "name": "continuations",
         "label": "Continuations",
         "fields": [
-            FieldDefinitions.DISCONTINUED_DATE["name"],
             FieldDefinitions.CONTINUES["name"],
-            FieldDefinitions.CONTINUED_BY["name"]
+            FieldDefinitions.CONTINUED_BY["name"],
+            FieldDefinitions.DISCONTINUED_DATE["name"]
         ]
     }
 
@@ -1665,6 +1665,7 @@ class ApplicationContextDefinitions:
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
+        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
@@ -1675,6 +1676,7 @@ class ApplicationContextDefinitions:
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
+        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
@@ -1684,7 +1686,7 @@ class ApplicationContextDefinitions:
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
         FieldSetDefinitions.SEAL["name"],
-        #FieldSetDefinitions.QUICK_REJECT["name"],
+        FieldSetDefinitions.QUICK_REJECT["name"],
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
@@ -1831,8 +1833,8 @@ def iso_currency_list(field, formulaic_context_name):
     return cl
 
 
-#def quick_reject(field, formulaic_context_name):
-#    return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
+def quick_reject(field, formulaic_context_name):
+   return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
 
 
 def application_statuses(field, formulaic_context):
@@ -2116,7 +2118,7 @@ PYTHON_FUNCTIONS = {
         "iso_country_list": iso_country_list,
         "iso_language_list": iso_language_list,
         "iso_currency_list": iso_currency_list,
-        # "quick_reject" : quick_reject,
+        "quick_reject" : quick_reject,
         "application_statuses" : application_statuses,
         "editor_choices" : editor_choices
     },
@@ -2178,6 +2180,7 @@ JAVASCRIPT_FUNCTIONS = {
     # "autocomplete" : "doaj.forms.widgets.autocomplete",
 
     "clickable_url": "formulaic.widgets.newClickableUrl",
+    "clickable_owner": "formulaic.widgets.newClickableOwner",
     "select": "formulaic.widgets.newSelect",
     "taglist": "formulaic.widgets.newTagList",
     "multiple_field": "formulaic.widgets.newMultipleField",
@@ -2328,6 +2331,19 @@ class TextBuilder(WTFormsBuilder):
         return sf
 
 
+class TextAreaBuilder(WTFormsBuilder):
+    @staticmethod
+    def match(field):
+        return field.get("input") == "textarea"
+
+    @staticmethod
+    def wtform(formulaic_context, field, wtfargs):
+        sf = TextAreaField(**wtfargs)
+        if "repeatable" in field:
+            sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
+        return sf
+
+
 class TagListBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
@@ -2392,6 +2408,7 @@ WTFORMS_BUILDERS = [
     SelectBuilder,
     MultiSelectBuilder,
     TextBuilder,
+    TextAreaBuilder,
     TagListBuilder,
     IntegerBuilder,
     GroupBuilder,

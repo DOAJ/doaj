@@ -149,7 +149,7 @@
                 </ul>
             {% endif %}
             {% if field.description %}
-                <p class="help-block">{{ field.description | safe }}</p>
+                <p><small>{{ field.description | safe }}</small></p>
             {% endif %}
         </div>
     {% endif %}
@@ -200,7 +200,7 @@
 {% macro render_field_horizontal(field, style=None, placeholder="", required=False, container_style="") %}
     {% if field.type == 'FieldList' %}
       {% for subfield in field %}
-        <div>
+        <div class="form__question">
             <label for="{{subfield.short_name}}">{{subfield.label.text | safe}}
             </label>
 
@@ -217,7 +217,7 @@
         </div>
       {% endfor %}
     {% else %}
-      <div>
+      <div class="form__question">
           {% if field.type != 'SubmitField' %}
               <label for="{{field.short_name}}">{{field.label.text | safe}}
               </label>
@@ -241,7 +241,7 @@
                   </ul>
                   {% endif %}
                   {% if field.description %}
-                  <p class="help-block">{{ field.description | safe }}</p>
+                  <p><small>{{ field.description | safe }}</small></p>
                   {% endif %}
               {% else %}
                   {% for subfield in field %}

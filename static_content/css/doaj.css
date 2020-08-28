@@ -1683,6 +1683,24 @@ button[type="submit"] {
       padding-left: 0;
       padding-right: 0; } }
 
+.cookie-consent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.375rem;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 15;
+  background-color: #282624;
+  font-size: .889em; }
+  .cookie-consent p, .cookie-consent a {
+    margin: 0;
+    line-height: 1;
+    color: #FEFBF8; }
+  .cookie-consent .button {
+    color: #282624; }
+
 /* On-hover dropdown menus adapted from Bootstrap
  * Bootstrap v3.4.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 Twitter, Inc.
@@ -1739,6 +1757,24 @@ button[type="submit"] {
 @media (min-width: 769px) {
   .dropdown:hover .dropdown__menu {
     display: block; } }
+.editorial-panel {
+  max-height: 50vh;
+  overflow-y: scroll; }
+  .editorial-panel select, .editorial-panel textarea, .editorial-panel input {
+    width: 100%; }
+  .editorial-panel fieldset {
+    margin: 0;
+    padding: 0.75rem 0;
+    border-top: 1px dashed rgba(92, 89, 86, 0.5); }
+    .editorial-panel fieldset:first-of-type {
+      border: 0; }
+  @media (min-width: 992px) {
+    .editorial-panel {
+      position: fixed;
+      max-height: 75vh; }
+      .editorial-panel select, .editorial-panel textarea, .editorial-panel input, .editorial-panel label, .editorial-panel p {
+        width: 20vw; } }
+
 /* List of filters for search results */
 .filters {
   margin-bottom: 1.5rem;
@@ -1964,6 +2000,9 @@ button[type="submit"] {
   .input-group:last-of-type {
     margin: 0; }
 
+.input-group-authors {
+  flex-flow: column; }
+
 .input-group__input {
   position: relative;
   z-index: 2;
@@ -2009,6 +2048,10 @@ button[type="submit"] {
   color: #282624; }
   .label--secondary a {
     color: #282624; }
+
+.label--tertiary {
+  color: #5C5956;
+  text-transform: none; }
 
 .label--underlined {
   margin-bottom: 1.5rem;
@@ -2757,9 +2800,9 @@ button[type="submit"] {
     background-size: 15px;
     background-color: #5C5956;
     border-color: #5C5956; }
-    #apply .application-nav__list-item--done a:before:hover, #apply .application-nav__list-item--done a:before:focus, #apply .application-nav__list-item--done a:before:active {
-      color: #982E0A;
-      cursor: pointer; }
+  #apply .application-nav__list-item--done a:hover, #apply .application-nav__list-item--done a:focus, #apply .application-nav__list-item--done a:active {
+    color: #982E0A;
+    cursor: pointer; }
   #apply .application-nav__list-item--active a:before {
     background: #FD5A3B;
     color: #282624;
@@ -2807,20 +2850,17 @@ button[type="submit"] {
   letter-spacing: -0.04em; }
 
 /* Homepage-specific styles  */
-#homepage .input-group input[type="text"] {
+.homepage a {
+  text-decoration: none; }
+.homepage .input-group input[type="text"] {
   width: 40%; }
-#homepage .input-group select {
+.homepage .input-group select {
   width: 40%;
   margin-left: -1px; }
-#homepage .input-group input[type="submit"] {
+.homepage .input-group input[type="submit"] {
   width: 20%;
   margin-left: -1px; }
-#homepage .gold-sponsor {
-  display: block; }
-  #homepage .gold-sponsor img {
-    height: 75px;
-    width: auto; }
-#homepage aside {
+.homepage .about aside {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
   border-width: 1px 0 0 0;
@@ -2828,10 +2868,53 @@ button[type="submit"] {
   border-color: #982E0A;
   color: #982E0A; }
   @media (min-width: 769px) {
-    #homepage aside {
+    .homepage .about aside {
       margin-top: 0;
       padding-top: 0;
       border-width: 0 0 0 1px; } }
+.homepage__blog {
+  margin-bottom: 1.5rem; }
+.homepage__featured-post h3:not(.label), .homepage__featured-post h4:not(.label), .homepage__other-posts h3:not(.label), .homepage__other-posts h4:not(.label), .homepage__themed-post h3:not(.label), .homepage__themed-post h4:not(.label), .homepage__funding h3:not(.label), .homepage__funding h4:not(.label), .homepage__volunteers h3:not(.label), .homepage__volunteers h4:not(.label), .homepage__sponsors h3:not(.label), .homepage__sponsors h4:not(.label) {
+  font-family: 'Spectral', serif;
+  letter-spacing: -0.04em; }
+.homepage__featured-post, .homepage__funding, .homepage__themed-post, .homepage__sponsors {
+  text-align: center;
+  font-size: .889em; }
+  .homepage__featured-post h4, .homepage__funding h4, .homepage__themed-post h4, .homepage__sponsors h4 {
+    margin-top: 0; }
+  .homepage__featured-post ul, .homepage__featured-post ol, .homepage__funding ul, .homepage__funding ol, .homepage__themed-post ul, .homepage__themed-post ol, .homepage__sponsors ul, .homepage__sponsors ol {
+    padding-left: 0;
+    margin: 0 0 0.75rem 0;
+    list-style: none; }
+  .homepage__featured-post li, .homepage__funding li, .homepage__themed-post li, .homepage__sponsors li {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(92, 89, 86, 0.25); }
+    .homepage__featured-post li:last-child, .homepage__funding li:last-child, .homepage__themed-post li:last-child, .homepage__sponsors li:last-child {
+      padding-bottom: 0;
+      border: 0; }
+.homepage__volunteers {
+  border-right: 1px dashed rgba(92, 89, 86, 0.25);
+  border-left: 1px dashed rgba(92, 89, 86, 0.25); }
+  .homepage__volunteers h3, .homepage__volunteers h4 {
+    margin-top: 0; }
+  .homepage__volunteers article {
+    margin-bottom: 1.5rem; }
+    .homepage__volunteers article:nth-child(3n+1) {
+      clear: both; }
+    .homepage__volunteers article p {
+      font-size: smaller;
+      font-weight: 400;
+      text-transform: none;
+      line-height: 1.15;
+      font-family: 'Spectral', serif;
+      letter-spacing: -0.04em; }
+      .homepage__volunteers article p:first-of-type {
+        margin-bottom: 0.1875rem;
+        color: #982E0A; }
+.homepage__featured-post {
+  background-color: #F8F3EF; }
+.homepage__themed-post {
+  background-color: #F8F3EF; }
 
 /* Specific to journal detail pages */
 .journal-details h1 span {

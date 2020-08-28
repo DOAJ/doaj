@@ -98,6 +98,6 @@ local_store/tmp/*
 .jekyll-cache/
 .jekyll-metadata
 
-#generated files
-static_content/_site
-static_content/css/*.css
+##generated files
+#static_content/_site
+#static_content/css/*.css

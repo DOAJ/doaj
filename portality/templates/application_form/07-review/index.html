@@ -1,9 +1,3 @@
-<p class="label">Page 7 of {{ FORM | length + 1}}</p>
-<h1><span data-feather="eye"></span> Review your answers</h1>
-
-<p>Please review your answers before submitting your application.</p>
-
-<hr />
 <input type="hidden" name="validated" value="">
     {% set t = { "val": 0} %}
         {% for tab in FORM %}
@@ -27,10 +21,5 @@
             <hr />
         {% endfor %}
 
-
-
 <input type="checkbox" id="reviewed" name="reviewed" value="reviewed">
 <label for="reviewed">I’ve reviewed the answers to my application and confirm that the information provided is accurate and true.</label>
-
-<p class="cannot-submit" id="cannot-submit-checkboxes"><i>You need to agree by checking the boxes above to submit the application.</i></p>
-<p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot submit your answers because your application contains invalid fields. Please review your answers and try again.</i></p>

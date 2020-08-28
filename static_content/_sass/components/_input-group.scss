@@ -13,6 +13,10 @@
   }
 }
 
+.input-group-authors {
+  flex-flow: column;
+}
+
 .input-group__input {
   position: relative;
   z-index: 2;
