@@ -1,16 +1,16 @@
 from doajtest.helpers import DoajTestCase
 
 from portality import models
-from portality.formcontext import formcontext
+from portality.forms.application_forms import JournalFormFactory
+from portality.forms.application_processors import AssEdJournalReview
 from portality import lcc
-
-from werkzeug.datastructures import MultiDict
 
 from doajtest.fixtures import JournalFixtureFactory
 
 #####################################################################
 # Mocks required to make some of the lookups work
 #####################################################################
+
 @classmethod
 def editor_group_pull(cls, field, value):
     eg = models.EditorGroup()
@@ -70,30 +70,21 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         """Give the associate editor's journal form a full workout"""
 
         # we start by constructing it from source
-        fc = formcontext.JournalFormFactory.get_form_context(role="associate_editor", source=models.Journal(**JOURNAL_SOURCE))
-        assert isinstance(fc, formcontext.AssEdJournalReview)
+        formulaic_context = JournalFormFactory.context("associate_editor")
+        fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
+        # fc = formcontext.JournalFormFactory.get_form_context(role="associate_editor", source=models.Journal(**JOURNAL_SOURCE))
+        assert isinstance(fc, AssEdJournalReview)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
-        assert fc.template is not None
-
-        # check that we can render the form
-        # FIXME: we can't easily render the template - need to look into Flask-Testing for this
-        # html = fc.render_template(edit_journal=True)
-        html = fc.render_field_group("editorial")  # these fields should not appear at all
-        assert html == ""
-
-        html = fc.render_field_group("owner")  # these fields should not appear at all
-        assert html == ""
 
         # now construct it from form data (with a known source)
-        fc = formcontext.JournalFormFactory.get_form_context(
-            role="associate_editor",
-            form_data=MultiDict(JOURNAL_FORM),
+        fc = formulaic_context.processor(
+            formdata=JOURNAL_FORM,
             source=models.Journal(**JOURNAL_SOURCE)
         )
 
-        assert isinstance(fc, formcontext.AssEdJournalReview)
+        assert isinstance(fc, AssEdJournalReview)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None

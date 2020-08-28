@@ -1,9 +1,6 @@
 from doajtest.helpers import DoajTestCase
 
-import re
-
 from portality import models
-from portality.formcontext import formcontext
 from portality.forms.application_forms import JournalFormFactory
 from portality.forms.application_processors import EditorJournalReview
 from portality import lcc

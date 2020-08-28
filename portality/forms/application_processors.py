@@ -715,3 +715,33 @@ class EditorJournalReview(ApplicationProcessor):
             except app_email.EmailException:
                 self.add_alert("Problem sending email to associate editor - probably address is invalid")
                 app.logger.exception('Error sending assignment email to associate.')
+
+
+class AssEdJournalReview(ApplicationProcessor):
+    """
+    Associate Editors Journal Review form. This is to be used in a context where an associate editor (fewest rights)
+    needs to access a journal for review. This editor cannot change the editorial group or the assigned editor.
+    They also cannot change the owner of the journal. They cannot delete, only add notes.
+    """
+
+    def patch_target(self):
+        if self.source is None:
+            raise Exception("You cannot patch a target from a non-existent source")
+
+        self._carry_fixed_aspects()
+        self._merge_notes_forward()
+        self.target.set_owner(self.source.owner)
+        self.target.set_editor_group(self.source.editor_group)
+        self.target.set_editor(self.source.editor)
+        self._carry_continuations()
+
+    def finalise(self):
+        if self.source is None:
+            raise Exception("You cannot edit a not-existent journal")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(AssEdJournalReview, self).finalise()
+
+        # Save the target
+        self.target.set_last_manual_update()
+        self.target.save()

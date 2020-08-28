@@ -1736,7 +1736,7 @@ class JournalContextDefinitions:
 
     ASSOCIATE = deepcopy(READ_ONLY)
     ASSOCIATE["name"] = "associate_editor"
-    ASSOCIATE["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    ASSOCIATE["processor"] = application_processors.AssEdJournalReview
     ASSOCIATE["templates"]["form"] = "application_form/assed_journal.html"
 
     EDITOR = deepcopy(READ_ONLY)
