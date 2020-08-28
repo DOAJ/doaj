@@ -1700,7 +1700,7 @@ class ApplicationContextDefinitions:
 
 class JournalContextDefinitions:
     READ_ONLY = {
-        "name": "read_only",
+        "name": "readonly",
         "fieldsets": [
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
             FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
@@ -1731,7 +1731,7 @@ class JournalContextDefinitions:
             "obj2form": JournalFormXWalk.obj2form,
             "form2obj": JournalFormXWalk.form2obj
         },
-        "processor": application_processors.NewApplication # FIXME: enter the real processor
+        "processor": application_processors.ReadOnlyJournal
     }
 
     ASSOCIATE = deepcopy(READ_ONLY)

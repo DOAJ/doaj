@@ -745,3 +745,18 @@ class AssEdJournalReview(ApplicationProcessor):
         # Save the target
         self.target.set_last_manual_update()
         self.target.save()
+
+
+class ReadOnlyJournal(ApplicationProcessor):
+    """
+    Read Only Journal form. Nothing can be changed. Useful for reviewing a journal and an application
+    (or update request) side by side in 2 browser windows or tabs.
+    """
+    def form2target(self):
+        pass  # you can't edit objects using this form
+
+    def patch_target(self):
+        pass  # you can't edit objects using this form
+
+    def finalise(self):
+        raise Exception("You cannot edit journals using the read-only form")

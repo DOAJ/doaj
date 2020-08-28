@@ -15,6 +15,7 @@ from portality.view.forms import ContactUs
 from portality.app_email import send_contact_form
 from portality.lib import analytics
 from portality.ui.messages import Messages
+from portality.forms.application_forms import JournalFormFactory
 
 import json
 import os
@@ -154,6 +155,7 @@ def old_application():
 
 #############################################
 
+# FIXME: this should really live somewhere else more appropirate to who can access it
 @blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
 @login_required
 @ssl_required
@@ -169,8 +171,10 @@ def journal_readonly(journal_id):
     if j is None:
         abort(404)
 
-    fc = formcontext.JournalFormFactory.get_form_context(role='readonly', source=j)
-    return fc.render_template(edit_journal_page=True)
+    fc = JournalFormFactory.context("readonly")
+    fc.processor(source=j)
+    # fc = formcontext.JournalFormFactory.get_form_context(role='readonly', source=j)
+    return fc.render_template(obj=j)
 
 
 @blueprint.route("/csv")

@@ -2,16 +2,16 @@ from nose.tools import assert_raises
 from doajtest.helpers import DoajTestCase
 
 from portality import models
-from portality.formcontext import formcontext
+from portality.forms.application_forms import JournalFormFactory
+from portality.forms.application_processors import ReadOnlyJournal
 from portality import lcc
-
-from werkzeug.datastructures import MultiDict
 
 from doajtest.fixtures import JournalFixtureFactory
 
 #####################################################################
 # Mocks required to make some of the lookups work
 #####################################################################
+
 mock_lcc_choices = [
     ('H', 'Social Sciences'),
     ('HB1-3840', '--Economic theory. Demography')
@@ -59,40 +59,31 @@ class TestReadOnlyJournal(DoajTestCase):
         """Give the read-only journal form a full workout"""
 
         # we start by constructing it from source
-        fc = formcontext.JournalFormFactory.get_form_context(role="readonly", source=models.Journal(**JOURNAL_SOURCE))
-        assert isinstance(fc, formcontext.ReadOnlyJournal)
+        formulaic_context = JournalFormFactory.context("readonly")
+        fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
+        # fc = formcontext.JournalFormFactory.get_form_context(role="readonly", source=models.Journal(**JOURNAL_SOURCE))
+        assert isinstance(fc, ReadOnlyJournal)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
-        assert fc.template is not None
-
-        # check that we can render the form
-        # FIXME: we can't easily render the template - need to look into Flask-Testing for this
-        # html = fc.render_template(edit_journal=True)
-        html = fc.render_field_group("editorial")  # these fields should not appear at all
-        assert html == ""
-
-        html = fc.render_field_group("owner")  # these fields should not appear at all
-        assert html == ""
 
         # now construct it from form data (with a known source)
         journal_obj = models.Journal(**JOURNAL_SOURCE)
         journal_bibjson_obj = journal_obj.bibjson()
-        fc = formcontext.JournalFormFactory.get_form_context(
-            role="readonly",
-            form_data=MultiDict(JOURNAL_FORM),
+        fc = formulaic_context.processor(
+            formdata=JOURNAL_FORM,
             source=journal_obj
         )
 
-        assert isinstance(fc, formcontext.ReadOnlyJournal)
+        assert isinstance(fc, ReadOnlyJournal)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None
 
         # see that form has the correct info from an object (after all, that's the only point of having the form)
         assert fc.form.title.data == journal_bibjson_obj.title
-        assert fc.form.pissn.data == journal_bibjson_obj.get_one_identifier(idtype=journal_bibjson_obj.P_ISSN)
-        assert fc.form.eissn.data == journal_bibjson_obj.get_one_identifier(idtype=journal_bibjson_obj.E_ISSN)
+        assert fc.form.pissn.data == journal_bibjson_obj.pissn
+        assert fc.form.eissn.data == journal_bibjson_obj.eissn
 
         # test each of the workflow components individually ...
 
@@ -109,4 +100,4 @@ class TestReadOnlyJournal(DoajTestCase):
         assert fc.target is None  # can't edit data using this form
 
         # shouldn't be able to finalise, can't edit data using this form
-        assert_raises(formcontext.FormContextException, fc.finalise)
+        assert_raises(Exception, fc.finalise)
