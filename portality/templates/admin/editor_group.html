@@ -32,7 +32,6 @@
 {% block extra_js_bottom %}
 <script type="text/javascript">
 
-
     function userAutocomplete(prefix, callback) {
         $.ajax({
             type : "GET",
@@ -40,11 +39,12 @@
             dataType: "json",
             url: "{{url_for('admin.user_autocomplete')}}",
             success: function(resp) {
-                var data = {results: resp}
+                var data = {results: resp};
                 callback(data);
             }
         })
     }
+
 
     $("#editor").select2({
         minimumInputLength: 1,
@@ -55,7 +55,7 @@
             var data = {id: element.val(), text: element.val()};
             callback(data);
         }
-    })
+    });
 
     $("#associates").select2({
         minimumInputLength: 1,
@@ -70,9 +70,7 @@
             });
             callback(data);
         }
-    })
-
-
+    });
 
 </script>
 
