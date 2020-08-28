@@ -1744,7 +1744,7 @@ class JournalContextDefinitions:
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.REVIEWERS["name"]
     ]
-    EDITOR["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    EDITOR["processor"] = application_processors.EditorJournalReview
     EDITOR["templates"]["form"] = "application_form/editor_journal.html"
 
     MANED = deepcopy(EDITOR)

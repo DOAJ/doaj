@@ -203,21 +203,19 @@ def journal_page(journal_id):
     try:
         lockinfo = lock.lock(constants.LOCK_JOURNAL, journal_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/journal_locked.html", journal=journal, lock=l.lock, edit_journal_page=True)
+        return render_template("admin/journal_locked.html", journal=journal, lock=l.lock)
 
+    fc = JournalFormFactory.context("admin")
     if request.method == "GET":
         job = None
         job_id = request.values.get("job")
         if job_id is not None and job_id != "":
             job = models.BackgroundJob.pull(job_id)
-        fc = JournalFormFactory.context("admin")
         fc.processor(source=journal)
         return fc.render_template(lock=lockinfo, job=job, obj=journal)
 
     elif request.method == "POST":
-        fc = JournalFormFactory.context("admin")
         processor = fc.processor(formdata=request.form, source=journal)
-
         if processor.validate():
             try:
                 processor.finalise()

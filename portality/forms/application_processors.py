@@ -629,13 +629,6 @@ class ManEdJournalReview(ApplicationProcessor):
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
 
-    """
-    def _set_choices(self):
-        # The first time this is rendered, it needs to populate the editor drop-down from saved group
-        egn = self.form.editor_group.data
-        self._populate_editor_field(egn)
-    """
-
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
@@ -677,3 +670,48 @@ class ManEdJournalReview(ApplicationProcessor):
                 return True
 
         return super(ManEdJournalReview, self).validate()
+
+
+class EditorJournalReview(ApplicationProcessor):
+    """
+    Editors Journal Review form.  This should be used in a context where an editor who owns an editorial group
+    is accessing a journal.  This prevents re-assignment of Editorial group, but permits assignment of associate
+    editor.
+    """
+
+    def patch_target(self):
+        if self.source is None:
+            raise Exception("You cannot patch a target from a non-existent source")
+
+        self._carry_fixed_aspects()
+        self.target.set_owner(self.source.owner)
+        self.target.set_editor_group(self.source.editor_group)
+        self._merge_notes_forward()
+        self._carry_continuations()
+
+    def pre_validate(self):
+        super(EditorJournalReview, self).pre_validate()
+
+        self.form.editor_group.data = self.source.editor_group
+        self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)]
+
+    def finalise(self):
+        if self.source is None:
+            raise Exception("You cannot edit a not-existent journal")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(EditorJournalReview, self).finalise()
+
+        email_associate = ApplicationFormXWalk.is_new_editor(self.form, self.source)
+
+        # Save the target
+        self.target.set_last_manual_update()
+        self.target.save()
+
+        # if we need to email the associate, handle that here.
+        if email_associate:
+            try:
+                emails.send_assoc_editor_email(self.target)
+            except app_email.EmailException:
+                self.add_alert("Problem sending email to associate editor - probably address is invalid")
+                app.logger.exception('Error sending assignment email to associate.')

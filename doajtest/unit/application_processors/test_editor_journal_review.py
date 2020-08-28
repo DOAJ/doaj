@@ -4,15 +4,17 @@ import re
 
 from portality import models
 from portality.formcontext import formcontext
+from portality.forms.application_forms import JournalFormFactory
+from portality.forms.application_processors import EditorJournalReview
 from portality import lcc
 
-from werkzeug.datastructures import MultiDict
 
 from doajtest.fixtures import JournalFixtureFactory
 
 #####################################################################
 # Mocks required to make some of the lookups work
 #####################################################################
+
 @classmethod
 def editor_group_pull(cls, field, value):
     eg = models.EditorGroup()
@@ -71,35 +73,21 @@ class TestEditorJournalReview(DoajTestCase):
         """Give the editor's journal form a full workout"""
 
         # we start by constructing it from source
-        fc = formcontext.JournalFormFactory.get_form_context(role="editor", source=models.Journal(**JOURNAL_SOURCE))
-        assert isinstance(fc, formcontext.EditorJournalReview)
+        formulaic_context = JournalFormFactory.context("editor")
+        fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
+        # fc = formcontext.JournalFormFactory.get_form_context(role="editor", source=models.Journal(**JOURNAL_SOURCE))
+        assert isinstance(fc, EditorJournalReview)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
-        assert fc.template is not None
-
-        # check that we can render the form
-        # FIXME: we can't easily render the template - need to look into Flask-Testing for this
-        # html = fc.render_template(edit_journal=True)
-        html = fc.render_field_group("editorial") # we know all these disabled fields are in the editorial section
-        assert html is not None
-        assert html != ""
-
-        # check that the fields that should be disabled are disabled
-        # "editor_group"
-        rx_template = '(<input [^>]*?disabled[^>]+?name="{field}"[^>]*?>)'
-        eg_rx = rx_template.replace("{field}", "editor_group")
-
-        assert re.search(eg_rx, html)
 
         # now construct it from form data (with a known source)
-        fc = formcontext.JournalFormFactory.get_form_context(
-            role="editor",
-            form_data=MultiDict(JOURNAL_FORM) ,
+        fc = formulaic_context.processor(
+            formdata=JOURNAL_FORM,
             source=models.Journal(**JOURNAL_SOURCE)
         )
 
-        assert isinstance(fc, formcontext.EditorJournalReview)
+        assert isinstance(fc, EditorJournalReview)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None
