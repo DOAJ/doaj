@@ -194,6 +194,42 @@
             </li>
           </ul>
         </li>
+      {% if not current_user.is_anonymous %}
+        <li class="dropdown">
+          <a class="dropdown__trigger nav-bar__link" id="menu-about" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
+            My Account
+            <span data-feather="chevron-down" aria-hidden="true"></span>
+          </a>
+          <ul class="dropdown__menu" aria-labelledby="menu-about">
+              {% if current_user.has_role("admin") %}
+            <li>
+              <a href="{{ url_for("admin.index") }}" class="dropdown__link">
+                Admin
+              </a>
+            </li>
+              {% endif %}
+              {% if current_user.has_role("publisher") %}
+            <li>
+              <a href="{{ url_for("publisher.index") }}" class="dropdown__link">
+                Publisher
+              </a>
+            </li>
+            {% endif %}
+          {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
+            <li>
+              <a href="{{ url_for("editor.index") }}" class="dropdown__link">
+                Editor
+              </a>
+            </li>
+              {% endif %}
+            <li>
+              <a href="{{ url_for("account.username", username=current_user.id) }}" class="dropdown__link">
+                Settings
+              </a>
+            </li>
+          </ul>
+        </li>
+      {% endif %}
         <li class="dropdown secondary-nav__item_mobile">
           <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <strong>Support</strong>
@@ -264,7 +300,7 @@
         {% else %}
             <a href="{{ url_for('account.logout') }}" class="nav-bar__link">
                 Logout
-                <span data-feather="log-out"></span>
+                <span data-feather="log-out" aria-hidden="true"></span>
             </a>
         {% endif %}
         </li>
