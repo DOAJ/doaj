@@ -103,7 +103,7 @@ class JournalService(object):
         the_lock = None
         if journal is not None and lock_journal:
             if lock_account is not None:
-                the_lock = lock.lock("journal", journal_id, lock_account.id, lock_timeout)
+                the_lock = lock.lock(constants.LOCK_JOURNAL, journal_id, lock_account.id, lock_timeout)
             else:
                 raise exceptions.ArgumentException("If you specify lock_journal on journal retrieval, you must also provide lock_account")
 

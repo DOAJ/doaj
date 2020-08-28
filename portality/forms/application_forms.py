@@ -1748,7 +1748,6 @@ class JournalContextDefinitions:
     MANED = deepcopy(EDITOR)
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
-        FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
         FieldSetDefinitions.SEAL["name"],

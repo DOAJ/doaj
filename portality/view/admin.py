@@ -26,6 +26,8 @@ from portality.formcontext import formcontext
 from portality.view.forms import EditorGroupForm, MakeContinuation
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.background import BackgroundSummary
+from portality import constants
+from portality.forms.application_forms import JournalFormFactory
 
 blueprint = Blueprint('admin', __name__)
 
@@ -184,39 +186,49 @@ def article_page(article_id):
 @ssl_required
 @write_required()
 def journal_page(journal_id):
-    if not current_user.has_role("edit_journal"):
-        abort(401)
-    ap = models.Journal.pull(journal_id)
-    if ap is None:
+    auth_svc = DOAJ.authorisationService()
+    journal_svc = DOAJ.journalService()
+
+    journal, _ = journal_svc.journal(journal_id)
+    if journal is None:
         abort(404)
+
+    try:
+        auth_svc.can_edit_journal(current_user._get_current_object(), journal)
+    except exceptions.AuthoriseException:
+        abort(401)
 
     # attempt to get a lock on the object
     try:
-        lockinfo = lock.lock("journal", journal_id, current_user.id)
+        lockinfo = lock.lock(constants.LOCK_JOURNAL, journal_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/journal_locked.html", journal=ap, lock=l.lock, edit_journal_page=True)
+        return render_template("admin/journal_locked.html", journal=journal, lock=l.lock, edit_journal_page=True)
 
     if request.method == "GET":
         job = None
         job_id = request.values.get("job")
         if job_id is not None and job_id != "":
             job = models.BackgroundJob.pull(job_id)
-        fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=ap)
-        return fc.render_template(edit_journal_page=True, lock=lockinfo, job=job)
+        fc = JournalFormFactory.context("admin")
+        fc.processor(source=journal)
+        return fc.render_template(lock=lockinfo, job=job, obj=journal)
+
     elif request.method == "POST":
-        fc = formcontext.JournalFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
-        if fc.validate():
+        fc = JournalFormFactory.context("admin")
+        processor = fc.processor(formdata=request.form, source=journal)
+
+        if processor.validate():
             try:
-                fc.finalise()
+                processor.finalise()
                 flash('Journal updated.', 'success')
                 for a in fc.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='done'))
-            except formcontext.FormContextException as e:
+                return redirect(url_for("admin.journal_page", journal_id=journal.id, _anchor='done'))
+            except Exception as e:
                 flash(str(e))
-                return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='cannot_edit'))
+                return redirect(url_for("admin.journal_page", journal_id=journal.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(edit_journal_page=True, lock=lockinfo)
+            return fc.render_template(lock=lockinfo, obj=journal)
 
 ######################################################
 # Endpoints for reinstating/withdrawing journals from the DOAJ
@@ -316,26 +328,32 @@ def suggestions():
 @login_required
 @ssl_required
 def application(application_id):
-    ap = models.Application.pull(application_id)
+    auth_svc = DOAJ.authorisationService()
+    application_svc = DOAJ.applicationService()
+
+    ap, _ = application_svc.application(application_id)
 
     if ap is None:
         abort(404)
 
-    auth_svc = DOAJ.authorisationService()
     try:
         auth_svc.can_edit_application(current_user._get_current_object(), ap)
     except exceptions.AuthoriseException:
         abort(401)
 
+    try:
+        lockinfo = lock.lock(constants.LOCK_APPLICATION, application_id, current_user.id)
+    except lock.Locked as l:
+        return render_template("admin/suggestion_locked.html", suggestion=ap, lock=l.lock, edit_suggestion_page=True)
+
     if request.method == "GET":
         fc = ApplicationFormFactory.context("admin")
         fc.processor(source=ap)
-        return fc.render_template(obj=ap)
+        return fc.render_template(obj=ap, lock=lockinfo)
 
     elif request.method == "POST":
         fc = ApplicationFormFactory.context("admin")
-
-        processor = fc.processor(formdata=request.form)
+        processor = fc.processor(formdata=request.form, source=ap)
 
         if processor.validate():
             try:
@@ -346,9 +364,9 @@ def application(application_id):
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
             except Exception as e:
                 flash(str(e))
-                return fc.render_template()
+                return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template()
+            return fc.render_template(lock=lockinfo)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])
