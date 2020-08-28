@@ -508,7 +508,7 @@ class FormulaicField(object):
         differently_abled = self._definition.get("disabled", False)
         if isinstance(differently_abled, str):
             fn = self.function_map.get("disabled", {}).get(differently_abled)
-            differently_abled = fn(self, self.parent_context.name)
+            differently_abled = fn(self, self.parent_context)
         return differently_abled
 
     @property

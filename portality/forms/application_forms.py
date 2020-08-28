@@ -1899,8 +1899,8 @@ def editor_choices(field, formulaic_context):
 ## Conditional disableds
 #######################################################
 
-def application_status_disabled(field, formulaic_context_name):
-    choices = application_statuses(field, formulaic_context_name)
+def application_status_disabled(field, formulaic_context):
+    choices = application_statuses(field, formulaic_context)
     field_value = field.wtfield.data
     return field_value in [c.get("v") for c in choices]
 
