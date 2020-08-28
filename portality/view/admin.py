@@ -28,6 +28,7 @@ from portality.forms.application_forms import ApplicationFormFactory
 from portality.background import BackgroundSummary
 from portality import constants
 from portality.forms.application_forms import JournalFormFactory
+from portality.crosswalks.application_form import ApplicationFormXWalk
 
 blueprint = Blueprint('admin', __name__)
 
@@ -346,15 +347,15 @@ def application(application_id):
     except lock.Locked as l:
         return render_template("admin/suggestion_locked.html", suggestion=ap, lock=l.lock, edit_suggestion_page=True)
 
+    fc = ApplicationFormFactory.context("admin")
+    form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
+
     if request.method == "GET":
-        fc = ApplicationFormFactory.context("admin")
         fc.processor(source=ap)
-        return fc.render_template(obj=ap, lock=lockinfo)
+        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal)
 
     elif request.method == "POST":
-        fc = ApplicationFormFactory.context("admin")
         processor = fc.processor(formdata=request.form, source=ap)
-
         if processor.validate():
             try:
                 processor.finalise()
@@ -366,7 +367,7 @@ def application(application_id):
                 flash(str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(lock=lockinfo)
+            return fc.render_template(lock=lockinfo, form_diff=form_diff, current_journal=current_journal)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])

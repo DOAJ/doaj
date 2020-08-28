@@ -1,5 +1,5 @@
 from portality import models, lcc
-from portality.crosswalks.journal_form import JournalGenericXWalk
+from portality.crosswalks.journal_form import JournalGenericXWalk, JournalFormXWalk
 
 
 class ApplicationFormXWalk(JournalGenericXWalk):
@@ -88,3 +88,22 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         forminfo['application_status'] = obj.application_status
 
         return forminfo
+
+    @classmethod
+    def update_request_diff(cls, source):
+        diff = None
+        cj = None
+
+        current_journal = source.current_journal
+        if current_journal is not None:
+            cj = models.Journal.pull(current_journal)
+            if cj is not None:
+                jform = JournalFormXWalk.obj2form(cj)
+                if "notes" in jform:
+                    del jform["notes"]
+                aform = ApplicationFormXWalk.obj2form(source)
+                if "notes" in aform:
+                    del aform["notes"]
+                diff = cls.form_diff(jform, aform)
+
+        return diff, cj
