@@ -1669,7 +1669,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
-    ASSOCIATE["templates"]["form"] = "application_form/assed_application.html"
+    ASSOCIATE["templates"]["form"] = "application_form/associate_application.html"
 
     EDITOR = deepcopy(PUBLIC)
     EDITOR["name"] = "editor"

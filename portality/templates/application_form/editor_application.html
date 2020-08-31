@@ -1,8 +1,8 @@
 {% extends "admin/admin_base.html" %}
 
-{% set formulaic_after = url_for("admin.application", application_id=obj.id) %}
-{% set form_id = "maned_form" %}
-{% set form_action = url_for("admin.application", application_id=obj.id) %}
+{% set formulaic_after = url_for("editor.application", application_id=obj.id) %}
+{% set form_id = "ed_form" %}
+{% set form_action = url_for("editor.application", application_id=obj.id) %}
 
 {% set js_validation = True %}
 {% set auto_save = 0 %}
@@ -12,7 +12,8 @@
 {% set TAB4 = {"title": "Editorial", "fieldsets": ["peer_review", "plagiarism", "editorial"]} %}
 {% set TAB5 = {"title": "Business model", "fieldsets": ["apc", "apc_waivers", "other_fees"]} %}
 {% set TAB6 = {"title": "Best practice", "fieldsets": ["archiving_policy", "deposit_policy", "unique_identifiers"]} %}
-{% set TAB_ED = {"title": "Admin", "fieldsets": ["seal", "quick_reject", "reassign", "status", "reviewers", "continuations", "subject", "notes"]} %}
+{#{% set TAB_ED = {"title": "Admin", "fieldsets": ["seal", "quick_reject", "reassign", "status", "reviewers", "continuations", "subject", "notes"]} %}#}
+{% set TAB_ED = {"title": "Admin", "fieldsets": ["status", "reviewers", "subject", "notes"]} %}
 {% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6, TAB_ED] %}
 
 
@@ -30,7 +31,7 @@
                       data-formulaic-after="{{ formulaic_after }}">
                     <div class="tab form-section">
                         <div class="col-md-3">
-                            {% include "application_form/admin/application.html" %}
+                            {% include "application_form/editor/application.html" %}
                         </div>
                         <div class="col-md-8 col-md-offset-1">
                             {% include "application_form/07-review/index.html" %}
