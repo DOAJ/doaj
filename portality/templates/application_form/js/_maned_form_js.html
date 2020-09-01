@@ -1,0 +1,34 @@
+<script type="text/javascript">
+
+    let setup_maned = () => {
+        currentTab = 6;
+        previousTab = 5;
+
+        $(".application-nav__list-item").each((idx, x) => {
+            x.className = "application-nav__list-item application-nav__list-item--active";
+        });
+    }
+
+    let modify_review_page = () => {
+        let page = $(".page");
+        page.removeClass("col-md-8");
+        page.addClass("col-md-12");
+        $(".side-menus").hide();
+    }
+
+    let default_page_view = () => {
+        let page = $(".page");
+        page.removeClass("col-md-12");
+        page.addClass("col-md-8");
+        $(".side-menus").show();
+    }
+
+    let modify_view = () => {
+        if (currentTab === 6) {
+            modify_review_page();
+        }
+        else {
+            default_page_view();
+        }
+    }
+</script>

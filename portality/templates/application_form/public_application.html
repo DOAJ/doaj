@@ -31,6 +31,7 @@
             <div class="col-md-8">
                 <section class="page-content">
                     <form id="{{ form_id }}"
+                      context = "{{ formulaic_context.name }}"
                       class="application_form"
                       novalidate
                       action="{{ form_action }}"
@@ -72,11 +73,12 @@
                     {% include "application_form/aside_menu.html" %}
                 </div>
             </div>
-        </div>
+        <
+            /div>
     </main>
  </body>
 {% endblock %}
 
 {% block extra_js_bottom scoped %}
-    {% include "application_form/_form_js.html" %}
+    {% include "application_form/js/_form_js.html" %}
 {% endblock %}

@@ -140,7 +140,12 @@
             $("#validated-6").val("True");
             prepareReview()
         }
-        fixStepIndicator(n)
+        if (context === "admin") {
+            modify_view();
+        }
+        else if (context === "public") {
+            fixStepIndicator(n)
+        }
         window.scrollTo(0,0);
 
     }
@@ -357,7 +362,7 @@
     let usePaginationMenu = () => {
         $('[id^="page_link-"]').each((i, x) => {
             $(x).on("click", () => {
-                if ($("#validated-" + i).val() === '') {
+                if (context === "public" && $("#validated-" + i).val() === '') {
                     //dev only!
                     //navigate(i);
                     return false;
@@ -397,13 +402,18 @@
 
     $("#reviewed").on("click", manage_review_checkboxes);
 
-    let currentTab = 1; // Current tab is set to be the first tab (0)
+    let context = $(".application_form").attr("context");
+    let currentTab = 0;
     let previousTab = 0;
     let tabs = $(".tab");
     let sections = $(".form-section");
     prepareSections();
     usePaginationMenu();
-    showTab(currentTab); // Display the current tab
+     // Display the current tab
+    if (context === "admin") {
+        setup_maned();
+    }
+    showTab(currentTab);
     {#$("#submitBtn").on("click",onSubmit);#}
     {#$("#draftBtn").on("click", saveDraft);#}
 
