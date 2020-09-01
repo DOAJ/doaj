@@ -525,7 +525,7 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "associate_editor",
             "query_filters" : ["associate"],
-            "dao" : "portality.models.Suggestion"
+            "dao" : "portality.models.Application"
         }
     },
     "editor_query" : {
@@ -539,7 +539,7 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "editor",
             "query_filters" : ["editor"],
-            "dao" : "portality.models.Suggestion"
+            "dao" : "portality.models.Application"
         }
     },
     "api_query" : {

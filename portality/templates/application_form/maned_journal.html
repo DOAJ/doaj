@@ -1,8 +1,8 @@
 {% extends "admin/admin_base.html" %}
 
-{% set formulaic_after = url_for("admin.application", application_id=obj.id) %}
+{% set formulaic_after = url_for("admin.journal_page", journal_id=obj.id) %}
 {% set form_id = "maned_form" %}
-{% set form_action = url_for("admin.application", application_id=obj.id) %}
+{% set form_action = url_for("admin.journal_page", journal_id=obj.id) %}
 
 {% set js_validation = True %}
 {% set auto_save = 0 %}
@@ -12,7 +12,7 @@
 {% set TAB4 = {"title": "Editorial", "fieldsets": ["peer_review", "plagiarism", "editorial"]} %}
 {% set TAB5 = {"title": "Business model", "fieldsets": ["apc", "apc_waivers", "other_fees"]} %}
 {% set TAB6 = {"title": "Best practice", "fieldsets": ["archiving_policy", "deposit_policy", "unique_identifiers"]} %}
-{% set TAB_ED = {"title": "Admin", "fieldsets": ["seal", "quick_reject", "reassign", "status", "reviewers", "continuations", "subject", "notes"]} %}
+{% set TAB_ED = {"title": "Admin", "fieldsets": ["seal", "reassign", "reviewers", "continuations", "subject", "notes", "optional_validation"]} %}
 {% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6, TAB_ED] %}
 
 
@@ -20,7 +20,7 @@
 <body id="apply">
     <main class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-8">
                 <section class="page-content">
                     <form id="{{ form_id }}"
                       class="application_form"
@@ -30,7 +30,7 @@
                       data-formulaic-after="{{ formulaic_after }}">
                     <div class="tab form-section">
                         <div class="col-md-3">
-                            {% include "application_form/admin/application.html" %}
+                            {% include "application_form/admin/journal.html" %}
                         </div>
                         <div class="col-md-8 col-md-offset-1">
                             {% include "application_form/07-review/index.html" %}
@@ -54,10 +54,22 @@
                     <div class="tab form-section">
                         {% include "application_form/06-best-practice/index.html" %}
                     </div>
+                    <div class="tab form-section">
+                        {% include "application_form/07-review/index.html" %}
+                    </div>
                     <p class="cannot-submit" id="cannot_save_draft" style="display: none"><i>You cannot save the draft because your application contains some invalid fields. You do not have to provide all required answers but all provided information must have valid format. Please review your answers and try again.</i></p>
                     {% include "application_form/_buttons.html" %}
                 </form>
                 </section>
+            </div>
+
+            <div class="col-md-4">
+                <div >
+                    {% include "application_form/pagination_menu_admin.html" %}
+                </div>
+                <div class="row">
+                    {% include "application_form/aside_menu.html" %}
+                </div>
             </div>
         </div>
     </main>

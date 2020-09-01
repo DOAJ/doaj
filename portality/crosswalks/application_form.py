@@ -1,8 +1,6 @@
 from portality import models, lcc
-from portality.crosswalks.journal_form import JournalGenericXWalk
-from portality.forms.utils import expanded2compact
+from portality.crosswalks.journal_form import JournalGenericXWalk, JournalFormXWalk
 
-from werkzeug import MultiDict
 
 class ApplicationFormXWalk(JournalGenericXWalk):
 
@@ -77,11 +75,7 @@ class ApplicationFormXWalk(JournalGenericXWalk):
     @classmethod
     def obj2formdata(cls, obj):
         forminfo = cls.obj2form(obj)
-        formdata = expanded2compact(forminfo,
-                                    join_lists={"keywords" : ",", "subject" : ","},
-                                    repeat_lists=["preservation_service_library", "langauge"]
-                                    )
-        return MultiDict(formdata)
+        return cls.forminfo2multidict(forminfo)
 
     @classmethod
     def obj2form(cls, obj):
@@ -94,3 +88,22 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         forminfo['application_status'] = obj.application_status
 
         return forminfo
+
+    @classmethod
+    def update_request_diff(cls, source):
+        diff = None
+        cj = None
+
+        current_journal = source.current_journal
+        if current_journal is not None:
+            cj = models.Journal.pull(current_journal)
+            if cj is not None:
+                jform = JournalFormXWalk.obj2form(cj)
+                if "notes" in jform:
+                    del jform["notes"]
+                aform = ApplicationFormXWalk.obj2form(source)
+                if "notes" in aform:
+                    del aform["notes"]
+                diff = cls.form_diff(jform, aform)
+
+        return diff, cj

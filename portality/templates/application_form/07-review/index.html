@@ -5,6 +5,7 @@
                 <tbody>
                     <th>{{ tab.title }}</th>
                     <th><a href="#" class="button" onclick="showTab({{ t.val }})">Edit this section</a></th>
+                    {% if form_diff %}<th>Previous Value</th>{% endif %}
                     {% set fieldsests = tab.fieldsets %}
                     {% for fieldset in fieldsests %}
                         {% set fs = formulaic_context.fieldset(fieldset) %}
@@ -12,6 +13,14 @@
                             <tr>
                                 <td id="{{ f.name }}__review_label">{{ f.label | safe }}</td>
                                 <td id="{{ f.name  }}__review_value"></td>
+                                {% if form_diff %}
+                                    <td id="{{ f.name }}__review_diff">
+                                        {% if f.name == "subjects" %}
+                                            {{ form_diff.get(f.name, {}).get("a", "") | form_diff_table_subject_expand }}
+                                        {% endif %}
+                                        {{ form_diff.get(f.name, {}).get("a", "") | form_diff_table_comparison_value }}
+                                    </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                     {% endfor %}

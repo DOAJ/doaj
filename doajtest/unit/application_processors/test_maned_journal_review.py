@@ -1,10 +1,9 @@
 from doajtest.helpers import DoajTestCase
 
 from portality import models
-from portality.formcontext import formcontext
 from portality import lcc
-
-from werkzeug.datastructures import MultiDict
+from portality.forms.application_forms import JournalFormFactory
+from portality.forms.application_processors import ManEdJournalReview
 
 from doajtest.fixtures import JournalFixtureFactory
 
@@ -16,6 +15,7 @@ JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
 #####################################################################
 # Mocks required to make some of the lookups work
 #####################################################################
+
 @classmethod
 def editor_group_pull(cls, field, value):
     eg = models.EditorGroup()
@@ -62,23 +62,23 @@ class TestManEdJournalReview(DoajTestCase):
         """Give the Managing Editor's journal form a full workout"""
 
         # we start by constructing it from source
-        fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=models.Journal(**JOURNAL_SOURCE))
-        assert isinstance(fc, formcontext.ManEdJournalReview)
+        formulaic_context = JournalFormFactory.context("admin")
+        fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
+        # fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=models.Journal(**JOURNAL_SOURCE))
+        assert isinstance(fc, ManEdJournalReview)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
-        assert fc.template is not None
 
         # no need to check form rendering - there are no disabled fields
 
         # now construct it from form data (with a known source)
-        fc = formcontext.JournalFormFactory.get_form_context(
-            role="admin",
-            form_data=MultiDict(JOURNAL_FORM),
+        fc = formulaic_context.processor(
+            formdata=JOURNAL_FORM,
             source=models.Journal(**JOURNAL_SOURCE)
         )
 
-        assert isinstance(fc, formcontext.ManEdJournalReview)
+        assert isinstance(fc, ManEdJournalReview)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None
@@ -118,9 +118,9 @@ class TestManEdJournalReview(DoajTestCase):
         """Test optional validation in the Managing Editor's journal form"""
 
         # construct it from form data (with a known source)
-        fc = formcontext.JournalFormFactory.get_form_context(
-            role="admin",
-            form_data=MultiDict(JOURNAL_FORM),
+        formulaic_context = JournalFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            formdata=JOURNAL_FORM,
             source=models.Journal(**JOURNAL_SOURCE)
         )
 
@@ -148,9 +148,9 @@ class TestManEdJournalReview(DoajTestCase):
         """Test the seal checkbox on the maned review form"""
 
         # construct it from form data (with a known source)
-        fc = formcontext.JournalFormFactory.get_form_context(
-            role="admin",
-            form_data=MultiDict(JOURNAL_FORM),
+        formulaic_context = JournalFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            formdata=JOURNAL_FORM,
             source=models.Journal(**JOURNAL_SOURCE)
         )
 
@@ -166,22 +166,22 @@ class TestManEdJournalReview(DoajTestCase):
         assert fc.target.has_seal() is False
 
         # Set the seal to True in the object and check the form reflects this
-        fc.target.set_seal(True)
-        fc.data2form()
+        fc.source.set_seal(True)
+        fc.source2form()
 
         assert fc.form.doaj_seal.data is True
 
     def test_05_maned_review_continuations(self):
         # construct it from form data (with a known source)
-        fc = formcontext.JournalFormFactory.get_form_context(
-            role="admin",
-            form_data=MultiDict(JOURNAL_FORM),
+        formulaic_context = JournalFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            formdata=JOURNAL_FORM,
             source=models.Journal(**JOURNAL_SOURCE)
         )
 
         # check the form has the continuations data
-        assert fc.form.replaces.data == ["1111-1111"]
-        assert fc.form.is_replaced_by.data == ["2222-2222"]
+        assert fc.form.continues.data == ["1111-1111"]
+        assert fc.form.continued_by.data == ["2222-2222"]
         assert fc.form.discontinued_date.data == "2001-01-01"
 
         # run the crosswalk, don't test it at all in this test
@@ -203,20 +203,20 @@ class TestManEdJournalReview(DoajTestCase):
         bj = j.bibjson()    # just checking this works, as it uses an inner DataObj
 
         form = deepcopy(JOURNAL_FORM)
-        form["replaces"] = ""
-        form["is_replaced_by"] = ""
+        form["continues"] = ""
+        form["continued_by"] = ""
         form["discontinued_date"] = ""
 
         # construct it from form data (with a known source)
-        fc = formcontext.JournalFormFactory.get_form_context(
-            role="admin",
-            form_data=MultiDict(form),
+        formulaic_context = JournalFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            formdata=form,
             source=j
         )
 
         # check the form has the continuations data
-        assert fc.form.replaces.data == []
-        assert fc.form.is_replaced_by.data == []
+        assert fc.form.continues.data == []
+        assert fc.form.continued_by.data == []
         assert fc.form.discontinued_date.data == ""
 
         # run the crosswalk, don't test it at all in this test

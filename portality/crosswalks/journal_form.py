@@ -26,6 +26,17 @@ class JournalGenericXWalk(object):
         return old_ed != new_ed and new_ed is not None and new_ed != ""
 
     @classmethod
+    def form_diff(cls, a_formdata, b_formdata):
+        diff = {}
+        for k, v in b_formdata.items():
+            if k in a_formdata and a_formdata[k] != v:
+                diff[k] = {"a" : a_formdata[k], "b" : v}
+            # elif k not in journal_form and q_num != 0:
+            #     diff.append((k, q_num, q.text, Messages.DIFF_TABLE_NOT_PRESENT, v))
+
+        return diff
+
+    @classmethod
     def form2bibjson(cls, form, bibjson):
         if form.alternative_title.data:
             bibjson.alternative_title = form.alternative_title.data

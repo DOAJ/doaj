@@ -18,7 +18,7 @@
     <script type="text/javascript">
     $.extend(true, doaj, {
         associateApplicationsSearchConfig : {
-            applicationEditUrl : "{{ url_for('editor.suggestion_page', suggestion_id='') }}",
+            applicationEditUrl : "{{ url_for('editor.application', application_id='') }}",
             readOnlyJournalUrl: "{{ url_for('doaj.journal_readonly', journal_id="") }}",
             searchPath : '/associate_query/suggestion/_search'
         }

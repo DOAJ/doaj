@@ -1,0 +1,53 @@
+
+    <p class="label">Page 8 of {{ FORM | length + 1}}</p>
+    <h1><span data-feather="archive"></span>Administrative</h1>
+
+<p>Features for Editorial review.</p>
+
+    <input type="hidden" name="validated" value="">
+    {% set fs = formulaic_context.fieldset("seal") %}
+    <h2 class="form__header"> {{ fs.label }}</h2>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+    {% set fs = formulaic_context.fieldset("reassign") %}
+    <h2 class="form__header"> {{ fs.label }}</h2>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+    {% set fs = formulaic_context.fieldset("reviewers") %}
+    <h2 class="form__header"> {{ fs.label }}</h2>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+    {% set fs = formulaic_context.fieldset("continuations") %}
+    <h2 class="form__header"> {{ fs.label }}</h2>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+    {% set fs = formulaic_context.fieldset("subject") %}
+    <h2 class="form__header"> {{ fs.label }}</h2>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+    {% set fs = formulaic_context.fieldset("notes") %}
+    <h2 class="form__header"> {{ fs.label }}</h2>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+    {% set fs = formulaic_context.fieldset("optional_validation") %}
+    <h2 class="form__header"> {{ fs.label }}</h2>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+
+    {% if obj %}
+        <input type="hidden" name="id" value="{{ obj.id }}">
+    {% endif %}
