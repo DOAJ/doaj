@@ -176,13 +176,12 @@ class Formulaic(object):
     def javascript_functions(self):
         return self._javascript_functions
 
-    def choices_for(self, field_name, context_name=None):
+    def choices_for(self, field_name, formulaic_context=None):
         field_def = self._definition.get("fields", {}).get(field_name)
         if field_def is None:
             return []
 
-        formulaic_context_shell = FormulaicContext(context_name, None, self)
-        return FormulaicField._options2choices(field_def, formulaic_context_shell)
+        return FormulaicField._options2choices(field_def, formulaic_context)
 
     def _process_fields(self, context_name, field_names):
         field_defs = []
@@ -198,16 +197,6 @@ class Formulaic(object):
                 for k, v in context_overrides.items():
                     field_def[k] = v
 
-            # if there is an options_fn, expand them into the options field
-            if "options_fn" in field_def:
-                field_def["options"] = Formulaic.run_options_fn(field_def, self._function_map.get("options", {}), context_name)
-                # opt_fn = self._function_map.get("options", {}).get(field_def["options_fn"])
-                # if opt_fn is None:
-                #     raise FormulaicException("No function mapping defined for function reference '{x}'".format(x=field_def["options_fn"]))
-                # if isinstance(opt_fn, str):
-                #     opt_fn = plugin.load_function(opt_fn)
-                # field_def["options"] = opt_fn(field_def, context_name)
-
             # and remove the context overrides settings, so they don't bleed to contexts that don't require them
             if "contexts" in field_def:
                 del field_def["contexts"]
@@ -217,14 +206,16 @@ class Formulaic(object):
         return field_defs
 
     @classmethod
-    def run_options_fn(cls, field_def, options_function_map, context_name):
-        opt_fn = options_function_map.get(field_def["options_fn"])
+    #def run_options_fn(cls, field_def, options_function_map, context_name):
+    def run_options_fn(cls, field_def, formulaic_context):
+        # opt_fn = options_function_map.get(field_def["options_fn"])
+        opt_fn = formulaic_context.function_map.get("options", {}).get(field_def.get("options_fn"))
         if opt_fn is None:
             raise FormulaicException(
                 "No function mapping defined for function reference '{x}'".format(x=field_def["options_fn"]))
         if isinstance(opt_fn, str):
             opt_fn = plugin.load_function(opt_fn)
-        return opt_fn(field_def, context_name)
+        return opt_fn(field_def, formulaic_context)
 
 
 class FormulaicContext(object):
@@ -313,6 +304,28 @@ class FormulaicContext(object):
 
         klazz = self.wtform_class()
         self._wtform_inst = klazz(formdata=formdata, data=data)
+
+        if formdata is not None or data is not None:
+            for fs in self._definition.get("fieldsets", []):
+                for f in fs.get("fields", []):
+                    if "options_fn" in f:
+                        opts = FormulaicField._options2choices(f, self)
+                        wtf = None
+                        if f.get("group") is not None:
+                            wtf = self._wtform_inst[f["group"]]
+                            if isinstance(wtf, FieldList):
+                                for entry in wtf:
+                                    entry[f["name"]].choices = opts
+                            else:
+                                wtf[f["name"]].choices = opts
+                        else:
+                            wtf = self._wtform_inst[f["name"]]
+                            if isinstance(wtf, FieldList):
+                                for entry in wtf:
+                                    entry.choices = opts
+                            else:
+                                wtf.choices = opts
+
         return self._wtform_inst
 
     def get(self, field_name, parent=None):
@@ -334,7 +347,6 @@ class FormulaicContext(object):
                     reps.append(FormulaicField(f, parent))
 
         return reps
-
 
     def fieldset(self, fieldset_name):
         for fs in self._definition.get("fieldsets", []):
@@ -478,7 +490,11 @@ class FormulaicField(object):
     @property
     def wtfield(self):
         name = self._definition.get("name")
-        return getattr(self.wtform_inst, name)
+        if self.wtform_inst is None:
+            return None
+        if hasattr(self.wtform_inst, name):
+            return getattr(self.wtform_inst, name)
+        return None
 
     @property
     def explicit_options(self):
@@ -492,7 +508,7 @@ class FormulaicField(object):
         differently_abled = self._definition.get("disabled", False)
         if isinstance(differently_abled, str):
             fn = self.function_map.get("disabled", {}).get(differently_abled)
-            differently_abled = fn(self, self.parent_context.name)
+            differently_abled = fn(self, self.parent_context)
         return differently_abled
 
     @property
@@ -657,7 +673,7 @@ class FormulaicField(object):
         options = field.get("options", [])
         if len(options) == 0 and "options_fn" in field:
             # options = Formulaic.run_options_fn(field, formulaic_context)
-            options = Formulaic.run_options_fn(field, formulaic_context.function_map.get("options", {}), formulaic_context.name)
+            options = Formulaic.run_options_fn(field, formulaic_context)
             # fnpath = function_map.get(field["options_fn"])
             # if fnpath is None:
             #     raise FormulaicException("No function mapping defined for function reference '{x}'".format(x=field["options_fn"]))

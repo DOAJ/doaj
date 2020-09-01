@@ -35,6 +35,7 @@ from portality.datasets import language_options, country_options, currency_optio
 from portality.core import app
 from portality.regex import ISSN, ISSN_COMPILED
 from portality import constants
+from portality.models import EditorGroup
 
 # Stop words used in the keywords field
 STOP_WORDS = [
@@ -1234,7 +1235,7 @@ class FieldDefinitions:
         "name": "editor",
         "label": "Individual",
         "input": "select",
-        "options": [],
+        "options_fn": "editor_choices",
         "validate" : [
             { "group_member" : {"group_field" : "editor_group"}}
         ],
@@ -1351,7 +1352,7 @@ class FieldDefinitions:
     }
 
     OPTIONAL_VALIDATION = {
-        "name" : "optional_validation",
+        "name" : "make_all_fields_optional",
         "input" : "checkbox",
         "widget" : {
             "optional_validation"
@@ -1666,16 +1667,18 @@ class ApplicationContextDefinitions:
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
+        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
-    ASSOCIATE["templates"]["form"] = "application_form/assed_application.html"
+    ASSOCIATE["templates"]["form"] = "application_form/editor_application.html"
 
     EDITOR = deepcopy(PUBLIC)
     EDITOR["name"] = "editor"
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
+        FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
@@ -1749,13 +1752,12 @@ class JournalContextDefinitions:
     MANED = deepcopy(EDITOR)
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
-        FieldSetDefinitions.REVIEWERS["name"],
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.OPTIONAL_VALIDATION["name"],
         FieldSetDefinitions.SEAL["name"],
         FieldSetDefinitions.CONTINUATIONS["name"]
     ]
-    MANED["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    MANED["processor"] = application_processors.ManEdJournalReview
     MANED["templates"]["form"] = "application_form/maned_journal.html"
 
     BULK_EDIT = {
@@ -1837,7 +1839,7 @@ def quick_reject(field, formulaic_context_name):
    return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
 
 
-def application_statuses(field, formulaic_context_name):
+def application_statuses(field, formulaic_context):
     _application_status_base = [  # This is all the Associate Editor sees
         ('', ' '),
         (constants.APPLICATION_STATUS_PENDING, 'Pending'),
@@ -1858,6 +1860,10 @@ def application_statuses(field, formulaic_context_name):
         (constants.APPLICATION_STATUS_READY, 'Ready'),
     ]
 
+    formulaic_context_name = None
+    if formulaic_context is not None:
+        formulaic_context_name = formulaic_context.name
+
     status_list = []
     if formulaic_context_name is None or formulaic_context_name == "admin":
         status_list = _application_status_admin
@@ -1871,12 +1877,32 @@ def application_statuses(field, formulaic_context_name):
     return [{'display': d, 'value': v} for (v, d) in status_list]
 
 
+def editor_choices(field, formulaic_context):
+    """Set the editor field choices from a given editor group name"""
+    egf = formulaic_context.get("editor_group")
+    wtf = egf.wtfield
+    if wtf is None:
+        return [{"display" : "", "value" : ""}]
+
+    editor_group_name = wtf.data
+    if editor_group_name is None:
+        return [{"display" : "", "value" : ""}]
+    else:
+        eg = EditorGroup.pull_by_key("name", editor_group_name)
+        if eg is not None:
+            editors = [eg.editor]
+            editors += eg.associates
+            editors = list(set(editors))
+            return [{"value" : "", "display" : "Choose an editor"}] + [{"value" : editor, "display" : editor} for editor in editors]
+        else:
+            return [{"display" : "", "value" : ""}]
+
 #######################################################
 ## Conditional disableds
 #######################################################
 
-def application_status_disabled(field, formulaic_context_name):
-    choices = application_statuses(field, formulaic_context_name)
+def application_status_disabled(field, formulaic_context):
+    choices = application_statuses(field, formulaic_context)
     field_value = field.wtfield.data
     return field_value in [c.get("v") for c in choices]
 
@@ -2095,7 +2121,8 @@ PYTHON_FUNCTIONS = {
         "iso_language_list": iso_language_list,
         "iso_currency_list": iso_currency_list,
         "quick_reject" : quick_reject,
-        "application_statuses" : application_statuses
+        "application_statuses" : application_statuses,
+        "editor_choices" : editor_choices
     },
     "disabled" : {
         "application_status_disabled" : application_status_disabled

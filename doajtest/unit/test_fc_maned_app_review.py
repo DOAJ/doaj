@@ -209,6 +209,7 @@ class TestManEdAppReview(DoajTestCase):
         # Without a subject classification, we should not be able to set the status to 'accepted'
         no_class_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         del no_class_application.data['bibjson']['subject']
+
         formulaic_context = ApplicationFormFactory.context("admin")
         fc = formulaic_context.processor(source=no_class_application)
         # Make changes to the application status via the form
@@ -217,7 +218,7 @@ class TestManEdAppReview(DoajTestCase):
 
         assert not fc.validate()
 
-        # TODO: this behaviour has changed to be 'required' in all statuses according to form config
+        # TODO: this behaviour has changed to be 'required' in all statuses according to form config (remove on verify)
         # However, we should be able to set it to a different status rather than 'accepted'
         #fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
         #assert fc.validate(), fc.form.errors

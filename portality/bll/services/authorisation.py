@@ -102,3 +102,36 @@ class AuthorisationService(object):
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.NOT_OWNER)
 
         return True
+
+    def can_edit_journal(self, account: models.Account, journal: models.Journal):
+        """
+        Is the given account allowed to edit the journal record
+
+        :param account: the account doing the action
+        :param journal: the journal the account wants to edit
+        :return:
+        """
+        # if this is the super user, they have all rights
+        if account.is_super:
+            return True
+
+        # An editor can edit an application when they are assigned
+        if not account.has_role("edit_journal"):
+            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
+
+        # user must be either the "admin.editor" of the journal, or the editor of the "admin.editor_group"
+        # is the user the currently assigned editor of the journal?
+        passed = False
+        if journal.editor == account.id:
+            passed = True
+
+        # now check whether the user is the editor of the editor group
+        eg = models.EditorGroup.pull_by_key("name", journal.editor_group)
+        if eg is not None and eg.editor == account.id:
+            passed = True
+
+        # if the user wasn't the editor or the owner of the editor group, unauthorised
+        if passed:
+            return True
+
+        raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
