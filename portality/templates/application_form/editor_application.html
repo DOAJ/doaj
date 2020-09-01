@@ -13,7 +13,11 @@
 {% set TAB5 = {"title": "Business model", "fieldsets": ["apc", "apc_waivers", "other_fees"]} %}
 {% set TAB6 = {"title": "Best practice", "fieldsets": ["archiving_policy", "deposit_policy", "unique_identifiers"]} %}
 {#{% set TAB_ED = {"title": "Admin", "fieldsets": ["seal", "quick_reject", "reassign", "status", "reviewers", "continuations", "subject", "notes"]} %}#}
-{% set TAB_ED = {"title": "Admin", "fieldsets": ["status", "reviewers", "subject", "notes"]} %}
+{%  if formulaic_context == 'editor' %}
+    {% set TAB_ED = {"title": "Admin", "fieldsets": ["status", "reviewers", "subject", "notes"]} %}
+{% else %} {# associate editor #}
+        {% set TAB_ED = {"title": "Admin", "fieldsets": ["status", "subject", "notes"]} %}
+{% endif %}
 {% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6, TAB_ED] %}
 
 

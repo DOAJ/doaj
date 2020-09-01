@@ -22,16 +22,18 @@
             {% endfor %}
         </div>
     </fieldset>
-    <fieldset>
-        {% set fs = formulaic_context.fieldset("reviewers") %}
-        <h3 class="label" type="button" data-toggle="collapse" data-target="#reviewers" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
-        <div class="collapse" id="reviewers" aria-expanded="false">
-            {% for f in fs.fields() %}
-                {% set field_template = f.template %}
-                {%  include field_template %}
-            {% endfor %}
-        </div>
-    </fieldset>
+    {% if formulaic_context.fieldset("reviewers") %}
+        <fieldset>
+            {% set fs = formulaic_context.fieldset("reviewers") %}
+            <h3 class="label" type="button" data-toggle="collapse" data-target="#reviewers" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
+            <div class="collapse" id="reviewers" aria-expanded="false">
+                {% for f in fs.fields() %}
+                    {% set field_template = f.template %}
+                    {%  include field_template %}
+                {% endfor %}
+            </div>
+        </fieldset>
+    {% endif %}
     {#<fieldset>
         {% set fs = formulaic_context.fieldset("continuations") %}
         <h3 class="label" type="button" data-toggle="collapse" data-target="#continuations" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
