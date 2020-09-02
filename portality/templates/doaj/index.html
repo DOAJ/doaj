@@ -45,26 +45,34 @@
             <section class="row mobile-scrollable-row">
                 <h2 class="sr-only">DOAJ in numbers</h2>
                 <p class="col-md-2 stat">
-
-                        <span class="stat__number">{{ statistics.countries }}</span>
-                        <span class="stat__description">countries represented</span>
-
+                    <span class="stat__number">{{ statistics.countries }}</span>
+                    <span class="stat__description">countries represented</span>
                 </p>
                 <p class="col-md-2 stat">
+                    {# link to query for journals published in 2019, need to find a better way to do this #}
+                    <a href="/search/journals?source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22range%22%3A%7B%22created_date%22%3A%7B%22gte%22%3A%221546300800000%22%7D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D">
                         <span class="stat__number">{{ statistics.new_journals }}</span>
                         <span class="stat__description">new journals</span>
+                    </a>
                 </p>
                 <p class="col-md-2 stat">
+                    {# link to query for journals w/out APCs #}
+                    <a href='/search/journals?source=%7B"query"%3A%7B"filtered"%3A%7B"filter"%3A%7B"bool"%3A%7B"must"%3A%5B%7B"term"%3A%7B"bibjson.apc.has_apc"%3Afalse%7D%7D%2C%7B"term"%3A%7B"bibjson.other_charges.has_other_charges"%3Afalse%7D%7D%5D%7D%7D%2C"query"%3A%7B"match_all"%3A%7B%7D%7D%7D%7D%2C"size"%3A50%2C"sort"%3A%5B%7B"created_date"%3A%7B"order"%3A"desc"%7D%7D%5D%7D'>
                         <span class="stat__number">{{ statistics.no_apc }}</span>
                         <span class="stat__description">journals without APC<span style="text-transform: lowercase;">s</span></span>
+                    </a>
                 </p>
                 <p class="col-md-2 stat">
+                    <a href="/search/journals">
                         <span class="stat__number">{{ statistics.journals }}</span>
                         <span class="stat__description">journals</span>
+                    </a>
                 </p>
                 <p class="col-md-2 stat">
+                    <a href="/search/articles">
                         <span class="stat__number">{{ statistics.abstracts }}</span>
                         <span class="stat__description">article abstracts</span>
+                    </a>
                 </p>
             </section>
         </div>
