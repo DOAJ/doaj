@@ -268,7 +268,11 @@
         <div class="row">
             <div class="col-sm-3">
                 <h2>Recently-added journals</h2>
-                <p><a href="{{ url_for("doaj.journals_search") }}">See all</a></p>
+                <p>
+                    <small>
+                        <a href="{{ url_for("doaj.journals_search") }}" class="button">See all</a> <a href="/csv/" class="button">See all in CSV</a>
+                    </small>
+                </p>
             </div>
             <div class="col-sm-9">
                 <ul class="row mobile-scrollable-row title-list">
