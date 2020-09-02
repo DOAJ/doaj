@@ -50,7 +50,7 @@
                 </p>
                 <p class="col-md-2 stat">
                     {# link to query for journals published in 2019, need to find a better way to do this #}
-                    <a href="/search/journals?source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22range%22%3A%7B%22created_date%22%3A%7B%22gte%22%3A%221546300800000%22%7D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D">
+                    <a href='/search/journals?source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22range%22%3A%7B%22created_date%22%3A%7B%22gte%22%3A%221546300800000%22%7D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D'>
                         <span class="stat__number">{{ statistics.new_journals }}</span>
                         <span class="stat__description">new journals</span>
                     </a>
@@ -145,8 +145,9 @@
                 {% endfor %}
             </div>
 
-            <section class="col-sm-3 homepage__themed-post">
-                <a class="twitter-timeline" data-height="500" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <section class="col-sm-3 homepage__themed-post" style="max-height: 75vh; overflow-y: scroll;">
+                <h3 class="label"><a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">Tweets by @doajplus</a></h3>
+                <a class="twitter-timeline" data-chrome="transparent noheader" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </section>
 
             {# TODO: we don't have the mechanics for special themed posts yet
