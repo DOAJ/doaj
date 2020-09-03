@@ -279,6 +279,7 @@ var formulaic = {
         ///////////////////////////////////////////////////////
 
         this.bindConditional = function() {
+            let context = $(this.context[0]).attr("context");
             for (var i = 0; i < this.fieldsets.length; i++) {
                 var fieldset = this.fieldsets[i];
                 for (var j = 0; j < fieldset.fields.length; j++) {
@@ -302,8 +303,13 @@ var formulaic = {
                         }
 
                         // bind a change event for checking conditionals
+
                         var element = this.controlSelect.input({name: condField});
                         edges.on(element, "change.Conditional", this, "checkConditional");
+
+                        if (context === "admin"){
+                            this.checkConditional(element);
+                        }
                     }
                 }
             }
@@ -799,10 +805,11 @@ var formulaic = {
 
             this.init = function() {
                 this.elements = $("select[name$='" + this.fieldDef.name + "']")
-                this.elements.select2({  //TODO: select2 is not a function
+                this.elements.select2({
                     allowClear: false,
                     width: 'resolve',
-                    newOption: true
+                    newOption: true,
+                    placeholder: "Choose a value"
                 });
             };
 
@@ -879,7 +886,6 @@ var formulaic = {
             this.params = params.args;
             let field = $('input[id^="' + this.fieldDef["name"] +'"]')
             this.init = () => {
-
                 return autocomplete("[name='" + this.fieldDef.name + "']", this.params["field"], "journal", 1, true, false);
             }
             this.init()
@@ -894,7 +900,7 @@ function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_
     let include_input = include === undefined ? true : include;
     let allow_clear = allow_clear_input === undefined ? true : allow_clear_input;
 
-    var ajax = {
+    let ajax = {
             url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
             dataType: 'json',
             data: function (term, page) {
