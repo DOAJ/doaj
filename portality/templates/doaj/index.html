@@ -56,7 +56,7 @@
                     </a>
                 </p>
                 <p class="col-md-2 stat">
-                    {# link to query for journals w/out APCs #}
+                    {# TODO: link to query for journals w/out APCs #}
                     <a href='/search/journals?source=%7B"query"%3A%7B"filtered"%3A%7B"filter"%3A%7B"bool"%3A%7B"must"%3A%5B%7B"term"%3A%7B"bibjson.apc.has_apc"%3Afalse%7D%7D%2C%7B"term"%3A%7B"bibjson.other_charges.has_other_charges"%3Afalse%7D%7D%5D%7D%7D%2C"query"%3A%7B"match_all"%3A%7B%7D%7D%7D%7D%2C"size"%3A50%2C"sort"%3A%5B%7B"created_date"%3A%7B"order"%3A"desc"%7D%7D%5D%7D'>
                         <span class="stat__number">{{ statistics.no_apc }}</span>
                         <span class="stat__description">journals without APC<span style="text-transform: lowercase;">s</span></span>
