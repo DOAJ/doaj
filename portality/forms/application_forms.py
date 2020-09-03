@@ -445,7 +445,7 @@ class FieldDefinitions:
         ],
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
-                          "If Creative Commons licensing is not used, then select <i>Publisher’s own license</i> and enter "
+                          "If Creative Commons licensing is not used, then select <em>Publisher’s own license</em> and enter "
                           "more details below."],
             "doaj_criteria": "Content must be licenced",
             "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
@@ -914,15 +914,15 @@ class FieldDefinitions:
             {"display": "PubMed Central (PMC)", "value": "PMC", "subfields": ["preservation_service_url"]},
             {"display": "Portico", "value": "Portico", "subfields": ["preservation_service_url"]},
             {"display": "A national library", "value": "national_library", "subfields": ["preservation_service_library", "preservation_service_url"]},
-            {"display": "The journal content isn’t archived with a long-term preservation service",
-             "value": "none", "exclusive": True, "subfields": ["preservation_service_url"]},
-            {"display": "Other", "value": "other", "subfields": ["preservation_service_other", "preservation_service_url"]}
+            {"display": "Other", "value": "other", "subfields": ["preservation_service_other", "preservation_service_url"]},
+            {"display": "<em>The journal content isn’t archived with a long-term preservation service</em>",
+             "value": "none", "exclusive": True, "subfields": ["preservation_service_url"]}
         ],
         "help": {
             "long_help": [
                 "Only active archiving is accepted; content must be actively deposited in each of the options "
                 "you choose. If the journal is registered with a service but archiving is not yet active, "
-                "choose <i>No</i>.", "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."]
+                "choose <em>No</em>.", "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."]
         },
         "validate": [
             "required"
@@ -1014,7 +1014,7 @@ class FieldDefinitions:
             {"display": "Héloïse", "value": "Héloïse", "subfields": ["deposit_policy_url"]},
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
             {"display": "Other (including publisher’s own site)", "value": "other", "subfields": ["deposit_policy_other"], "subfields": ["deposit_policy_url"]},
-            {"display": "<i>The journal has no repository policy</i>", "value": "none", "exclusive": True}
+            {"display": "<em>The journal has no repository policy</em>", "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
@@ -1084,7 +1084,7 @@ class FieldDefinitions:
             {"display": "Handles", "value": "Handles"},
             {"display": "PURLs", "value": "PURL"},
             {"display": "Other", "value": "other", "subfields": ["persistent_identifiers_other"]},
-            {"display": "<i>The journal does not use persistent article identifiers</i>", "value": "none", "exclusive": True}
+            {"display": "<em>The journal does not use persistent article identifiers</em>", "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
