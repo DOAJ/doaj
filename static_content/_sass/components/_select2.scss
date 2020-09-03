@@ -91,16 +91,6 @@ $s2-size:  20px;
   width: 85%;
   background-color: inherit;
   background-image: none;
-
-  &.parsley-error {
-    & > a {
-      &.select2-choice {
-        &.select2-default {
-          border: 2px solid $grapefruit;
-        }
-      }
-    }
-  }
 }
 
 .select2-results {
@@ -121,17 +111,12 @@ $s2-size:  20px;
   color: $warm-black;
 }
 
-.select2-drop-active {
-  background-color: $warm-white;
-  border: 1px solid $warm-black !important;
-  border-top: none;
-}
-
 .select2-results,
 .select2-search,
 .select2-drop-active {
   background: $warm-white;
   border-top: none;
+  border-color: $warm-black !important;
   font-size: smaller;
 }
 
