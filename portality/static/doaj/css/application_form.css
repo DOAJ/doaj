@@ -62,40 +62,8 @@ li.parsley-type {
     text-decoration: #982E0A;
 }
 
-.multiple_inputs__container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 5;
-}
-
-.add_field__button_div {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    align-items: flex-end;
-}
-
-.multiple_input {
-    height: 100% !important;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 120;
-}
-
-.multiple_input > ul {
-    padding-left: 0;
-    list-style-type:none;
-    margin-top: 0;
-    width: 100%;
-}
-
 .multiple_input > ul > li > label {
     display: none;
-}
-
-.removable_field {
-    display: flex;
-    flex-direction: row;
 }
 
 .form_group {
