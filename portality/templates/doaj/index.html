@@ -69,7 +69,7 @@
                     </a>
                 </p>
                 <p class="col-md-2 stat">
-                    <a href="/search/articles">
+                    <a href="{{ url_for("doaj.articles_search") }}">
                         <span class="stat__number">{{ statistics.abstracts }}</span>
                         <span class="stat__description">article abstracts</span>
                     </a>
