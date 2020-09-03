@@ -165,7 +165,7 @@ class FieldDefinitions:
 
     JOURNAL_URL = {
         "name": "journal_url",
-        "label": "Link to the journal's homepage",
+        "label": "Link to the journal’s homepage",
         "input": "text",
         "validate": [
             "required",
@@ -273,7 +273,7 @@ class FieldDefinitions:
         "input": "taglist",
         "help": {
             "long_help": ["Only 6 keywords are allowed. Choose words that describe the subject matter of the journal "
-                          "and not the journal's qualities.", "Keywords must be in English and separated by a comma."],
+                          "and not the journal’s qualities.", "Keywords must be in English and separated by a comma."],
         },
         "validate": [
             "required",
@@ -341,7 +341,7 @@ class FieldDefinitions:
             {"autocomplete": {"field": "bibjson.publisher.name.exact"}},
         ],
         "help": {
-            "placeholder": "Type or select the publisher's name"
+            "placeholder": "Type or select the publisher’s name"
         },
         "contexts" : {
             "bulk_edit" : {
@@ -393,7 +393,7 @@ class FieldDefinitions:
             "long_help": ["Some societies or institutions are linked to a journal in some way but are not responsible "
                           "for publishing it. The publisher can be a separate organisation. If your journal is linked to "
                           "a society or other type of institution, enter that here."],
-            "placeholder": "Type or select the society or institution's name"
+            "placeholder": "Type or select the society or institution’s name"
         },
         "widgets": [
             {"autocomplete": {"field": "bibjson.institution.name.exact"}},
@@ -441,11 +441,11 @@ class FieldDefinitions:
             {"display": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
             {"display": "CC0", "value": "CC0"},
             {"display": "Public domain", "value": "Public domain"},
-            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True, "subfields": ["license_attributes"]},
+            {"display": "Publisher’s own license", "value": "Publisher’s own license", "exclusive": True, "subfields": ["license_attributes"]},
         ],
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
-                          "If Creative Commons licensing is not used, then select <i>Publisher's own license</i> and enter "
+                          "If Creative Commons licensing is not used, then select <i>Publisher’s own license</i> and enter "
                           "more details below."],
             "doaj_criteria": "Content must be licenced",
             "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
@@ -461,7 +461,7 @@ class FieldDefinitions:
         "input": "checkbox",
         "multiple": True,
         "conditional": [
-            {"field": "license", "value": "Publisher's own license"}
+            {"field": "license", "value": "Publisher’s own license"}
         ],
         "options": [
             {"display": "Attribution", "value": "BY"},
@@ -557,7 +557,7 @@ class FieldDefinitions:
         "label": "Where can we find this information?",
         "input": "text",
         "help": {
-            "short_help": "Link to the journal's copyright terms"
+            "short_help": "Link to the journal’s copyright terms"
         },
         "placeholder": "https://www.my-journal.com/about#licensing",
         "validate": [
@@ -614,7 +614,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL",
-            "short_help": "Link to the journal's peer review policy"
+            "short_help": "Link to the journal’s peer review policy"
         },
         "validate": [
             "required",
@@ -646,7 +646,7 @@ class FieldDefinitions:
         "help": {
             "doaj_criteria": "You must provide a URL",
             "placeholder": "https://www.my-journal.com/about#plagiarism",
-            "short_help": "Link to the journal's plagiarism policy",
+            "short_help": "Link to the journal’s plagiarism policy",
             "long_help": ["The page should state that the journal actively checks for plagiarism and explain how this "
                           "is done (including the name of any software or service used)."]
         },
@@ -661,7 +661,7 @@ class FieldDefinitions:
 
     AIMS_SCOPE_URL = {
         "name": "aims_scope_url",
-        "label": "Link to the journal's <b>Aims & Scope</b>",
+        "label": "Link to the journal’s <b>Aims & Scope</b>",
         "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL",
@@ -678,7 +678,7 @@ class FieldDefinitions:
 
     EDITORIAL_BOARD_URL = {
         "name": "editorial_board_url",
-        "label": "Link to the journal's <b>Editorial board</b>",
+        "label": "Link to the journal’s <b>Editorial board</b>",
         "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL",
@@ -695,7 +695,7 @@ class FieldDefinitions:
 
     AUTHOR_INSTRUCTIONS_URL = {
         "name": "author_instructions_url",
-        "label": "Link to the journal's <b>Instructions for Authors</b>",
+        "label": "Link to the journal’s <b>Instructions for Authors</b>",
         "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL",
@@ -850,7 +850,7 @@ class FieldDefinitions:
             {"field": "has_waiver", "value": "y"}
         ],
         "help": {
-            "short_help": "Link to the journal's waiver information.",
+            "short_help": "Link to the journal’s waiver information.",
             "doaj_criteria": "You must provide a URL"
         },
         "validate": [
@@ -888,7 +888,7 @@ class FieldDefinitions:
             {"field": "has_other_charges", "value": "y"}
         ],
         "help": {
-            "short_help": "Link to the journal's fees information",
+            "short_help": "Link to the journal’s fees information",
             "doaj_criteria": "You must provide a URL"
         },
         "validate": [
@@ -914,7 +914,7 @@ class FieldDefinitions:
             {"display": "PubMed Central (PMC)", "value": "PMC", "subfields": ["preservation_service_url"]},
             {"display": "Portico", "value": "Portico", "subfields": ["preservation_service_url"]},
             {"display": "A national library", "value": "national_library", "subfields": ["preservation_service_library", "preservation_service_url"]},
-            {"display": "The journal content isn't archived with a long-term preservation service",
+            {"display": "The journal content isn’t archived with a long-term preservation service",
              "value": "none", "exclusive": True, "subfields": ["preservation_service_url"]},
             {"display": "Other", "value": "other", "subfields": ["preservation_service_other", "preservation_service_url"]}
         ],
@@ -970,7 +970,7 @@ class FieldDefinitions:
         "label": "Where can we find this information?",
         "input": "text",
         "help": {
-            "short_help": "Link to the preservation and archiving information on the journal's site",
+            "short_help": "Link to the preservation and archiving information on the journal’s site",
             "doaj_criteria": "You must provide a URL",
             "placeholder": "https://www.my-journal.com/about#archiving"
         },
@@ -1013,12 +1013,12 @@ class FieldDefinitions:
             {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
             {"display": "Héloïse", "value": "Héloïse", "subfields": ["deposit_policy_url"]},
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
-            {"display": "Other (including publisher's own site)", "value": "other", "subfields": ["deposit_policy_other"], "subfields": ["deposit_policy_url"]},
+            {"display": "Other (including publisher’s own site)", "value": "other", "subfields": ["deposit_policy_other"], "subfields": ["deposit_policy_url"]},
             {"display": "<i>The journal has no repository policy</i>", "value": "none", "exclusive": True}
         ],
         "help": {
             "long_help": ["Many authors wish to deposit a copy of their paper in an institutional or other repository "
-                          "of their choice. What is the journal's policy for this?",
+                          "of their choice. What is the journal’s policy for this?",
                           "You should state your policy with regard to the different versions of the paper:"
                           "<ul style='list-style-type: none;'>"
                           "<li>Submitted version</li>"
