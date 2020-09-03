@@ -1,0 +1,21 @@
+// Repeatable fields as seen in the language selector of the form
+
+.repeatable-fields ul {
+  @include unstyled-list;
+
+  li {
+    width: 50%;
+
+    + li {
+      margin-top: $spacing-03;
+    }
+  }
+
+  label {
+    @extend .sr-only; // a11y-friendly, can’t add class to the form itself
+  }
+
+  button {
+    border-left: 0;
+  }
+}
