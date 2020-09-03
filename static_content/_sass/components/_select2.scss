@@ -1,0 +1,148 @@
+// Select2 overrides
+
+.select2 {
+	height: 100% !important;
+	width: 100% !important;
+}
+
+.select2-dropdown-open.select2-drop-above,
+.select2-container-multi,
+.select2-container-multi.select2-container-active {
+
+	.select2-choices {
+		border-radius: 0;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		display: block;
+    padding: 0.5em 0.5em 0 0.5em;
+		background: $warm-white;
+		border: 1px solid $warm-black;
+		font-size: smaller;
+    @include font-sans;
+
+		.select2-search-choice {
+      @extend .tag;
+      margin: auto $spacing-02 0.5em 0 !important;
+  		border: 0;
+      box-shadow: none;
+      height: 30px;
+
+      div {
+        margin-left: 20px;
+        line-height: 1.25;
+      }
+		}
+
+    .select2-search-choice-close {
+      background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18 6L6 18' stroke='%23FEFBF8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 6L18 18' stroke='%23FEFBF8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A") !important;
+      background-size: 20px !important;
+      left: 10px !important;
+      top: 5px;
+      height: 20px;
+      width: 20px;
+
+      &:hover {
+        background-position: center;
+      }
+    }
+
+    .select2-search-field {
+      margin-bottom: 0.5em;
+      
+      input {
+        padding: 0;
+        font-size: initial;
+        color: $warm-black;
+      }
+    }
+	}
+}
+
+.select2-container {
+	width: 85%;
+	background-color: inherit;
+	background-image: none;
+
+	.select2-choice {
+		height: 100% !important;
+
+		.select2-arrow {
+			background-image: none;
+			background-color: $warm-white;
+			width: 10%;
+			border: none;
+
+			b {
+				background-size: 1em;
+				background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-down'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat calc(100% - 0.5em) center;
+			}
+
+		}
+
+		& > .select2-chosen {
+			display: inline;
+			vertical-align: -moz-middle-with-baseline;
+		}
+
+	}
+
+	& > a {
+		&.select2-choice {
+			&.select2-default {
+				padding: 0.25em 0.5em 0.25em 0.5em;
+			}
+		}
+	}
+
+	&.parsley-error {
+		& > a {
+			&.select2-choice {
+				&.select2-default {
+					border-color: $grapefruit;
+					border-width: 3px;
+				}
+			}
+		}
+	}
+}
+
+.select2-results {
+	.select2-highlighted,
+  .select2-no-results,
+  .select2-searching,
+  .select2-ajax-error,
+  .select2-selection-limit {
+		background: $warm-white;
+		color: $warm-black;
+	}
+}
+
+.select2-drop.select2-drop-above,
+.select2-drop {
+	border-radius: 0 !important;
+  border-color: $warm-black;
+	color: $warm-black;
+}
+
+.select2-drop-active {
+	background-color: $warm-white;
+	border: 1px solid $warm-black;
+	border-top: none;
+}
+
+.select2-results,
+.select2-search,
+.select2-drop-active {
+	background: $warm-white;
+	border-top: none;
+	font-size: smaller;
+}
+
+
+.select2-search {
+	input {
+		background: $warm-white;
+		border: 1px solid $warm-black;
+	}
+}

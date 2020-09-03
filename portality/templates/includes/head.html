@@ -27,16 +27,19 @@
   <!-- Windows 8 IE 10-->
   <meta name="msapplication-TileColor" content="#F8F3EF">
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
+
+  <meta name="theme-color" content="#282624">
   {% block extra_meta_tags %}{% endblock %}
 
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
-  <!-- TODO: that should depend on page.payout, needs to be improved - see how it's done in static_content -->
-  {% block extra_stylesheets %}{% endblock %}
+
+  {# Page-specific styles #}
+  {% if request.endpoint == 'apply.public_application' %}
+  <link rel="stylesheet" type="text/css" href="/static/vendor/select2-3.5.4/select2.css">
+  <link href='/static/doaj/css/application_form.css' media='screen' rel='stylesheet' type='text/css' />
+  {% endif %}
+
   <link rel="stylesheet" href="/static_content/_site/css/main.css">
-
-  <link rel="stylesheet" href="/static/vendor/select2-3.5.4/select2.css">
-
-  <meta name="theme-color" content="#F8F3EF">
 
   <!-- Feather icons -->
   <script src="https://unpkg.com/feather-icons"></script>
