@@ -760,3 +760,11 @@ class ReadOnlyJournal(ApplicationProcessor):
 
     def finalise(self):
         raise Exception("You cannot edit journals using the read-only form")
+
+
+class ManEdBulkEdit(ApplicationProcessor):
+    """
+    Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
+    admin privileges.  It will permit doing every action.
+    """
+    pass

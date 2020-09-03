@@ -438,8 +438,10 @@ def application_quick_reject(application_id):
 @login_required
 @ssl_required
 def admin_site_search():
-    edit_formcontext = formcontext.ManEdBulkEdit()
-    edit_form = edit_formcontext.render_template()
+    #edit_formcontext = formcontext.ManEdBulkEdit()
+    #edit_form = edit_formcontext.render_template()
+    edit_formulaic_context = JournalFormFactory.context("bulk_edit")
+    edit_form = edit_formulaic_context.render_template()
 
     return render_template("admin/admin_site_search.html",
                            admin_page=True,
@@ -574,6 +576,9 @@ def eg_associates_dropdown():
     return resp
 
 
+####################################################
+## endpoints for bulk edit
+
 class BulkAdminEndpointException(Exception):
     pass
 
@@ -649,10 +654,9 @@ def bulk_edit_journal_metadata():
         raise BulkAdminEndpointException("key 'metadata' not present in request json")
 
     formdata = MultiDict(payload["metadata"])
-    fc = formcontext.JournalFormFactory.get_form_context(
-        role="bulk_edit",
-        form_data=formdata
-    )
+    formulaic_context = JournalFormFactory.context("bulk_edit")
+    fc = formulaic_context.processor(formdata=formdata)
+
     if not fc.validate():
         msg = "Unable to submit your request due to form validation issues: "
         for field in fc.form:
@@ -718,3 +722,5 @@ def bulk_articles_delete():
     )
 
     return make_json_resp(summary.as_dict(), status_code=200)
+
+#################################################

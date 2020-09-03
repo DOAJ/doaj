@@ -12,7 +12,8 @@ from flask_login import logout_user
 from portality import models
 from portality.background import BackgroundException
 from portality.tasks.journal_bulk_edit import journal_manage, JournalBulkEditBackgroundTask
-from portality.formcontext import formcontext
+from portality.forms.application_processors import ManEdBulkEdit
+from portality.forms.application_forms import JournalFormFactory
 
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
 
@@ -92,11 +93,11 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         for ix, j in enumerate(modified_journals):
             assert j, 'modified_journals[{}] is None, does not seem to exist?'
             assert j.notes, "modified_journals[{}] has no notes. It is \n{}".format(ix, json.dumps(j.data, indent=2))
-            assert 'note' in j.notes[-1], json.dumps(j.notes[-1], indent=2)
-            assert j.notes[-1]['note'] == 'Test note', \
+            assert 'note' in j.notes[0], json.dumps(j.ordered_notes[0], indent=2)
+            assert j.ordered_notes[0]['note'] == 'Test note', \
                 "The last note on modified_journals[{}] is {}\n" \
                 "Here is the BackgroundJob audit log:\n{}".format(
-                    ix, j.notes[-1]['note'], json.dumps(job.audit, indent=2)
+                    ix, j.ordered_notes[0]['note'], json.dumps(job.audit, indent=2)
                 )
 
     def test_03_bulk_edit_not_admin(self):
@@ -165,24 +166,18 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
         # test dry run
         summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
-                                 publisher="my replacement publisher",
+                                 publisher_name="my replacement publisher",
                                  doaj_seal=True,
-                                 country="AF",
+                                 publisher_country="AF",
                                  owner="test1",
-                                 platform="my platfo®m",   # stick in a weird character for good measure
-                                 contact_name="my contact",
-                                 contact_email="contact@example.com",
                                  dry_run=True)
         assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
 
         summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
-                                 publisher="my replacement publisher",
+                                 publisher_name="my replacement publisher",
                                  doaj_seal=True,
-                                 country="AF",
+                                 publisher_country="AF",
                                  owner="test1",
-                                 platform="my platfo®m",   # stick in a weird character for good measure
-                                 contact_name="my contact",
-                                 contact_email="contact@example.com",
                                  dry_run=False)
         assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
 
@@ -201,20 +196,19 @@ class TestTaskJournalBulkEdit(DoajTestCase):
             assert j.has_seal()
             assert j.bibjson().country == "AF"
             assert j.owner == "test1"
-            assert j.bibjson().provider == "my platfo®m"
-            assert j.get_latest_contact_name() == "my contact"
-            assert j.get_latest_contact_email() == "contact@example.com"
+
 
     def test_06_bulk_edit_formcontext(self):
         source = JournalFixtureFactory.make_bulk_edit_data()
 
         # we start by constructing it from source
-        fc = formcontext.JournalFormFactory.get_form_context(role="bulk_edit", form_data=MultiDict(source))
-        assert isinstance(fc, formcontext.ManEdBulkEdit)
+        formulaic_context = JournalFormFactory.context("bulk_edit")
+        fc = formulaic_context.processor(formdata=MultiDict(source))
+        # fc = formcontext.JournalFormFactory.get_form_context(role="bulk_edit", form_data=MultiDict(source))
+        assert isinstance(fc, ManEdBulkEdit)
         assert fc.form is not None
         assert fc.source is None
         assert fc.form_data is not None
-        assert fc.template is not None
 
         # test each of the workflow components individually ...
 

@@ -564,8 +564,8 @@ $.extend(true, doaj, {
                         autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
                     },
                     edit_metadata : function(context) {
-                        autocomplete($('#publisher', context), 'bibjson.publisher.name');
-                        $('#country', context).select2();
+                        autocomplete($('#publisher_name', context), 'bibjson.publisher.name');
+                        $('#publisher_country', context).select2();
                         autocomplete($('#owner', context), 'id', 'account');
                     }
                 },
@@ -604,7 +604,7 @@ $.extend(true, doaj, {
 
                         // now check that at least one field has been completed
                         var found = false;
-                        var fields = ["#publisher", "#country", "#owner", "#contact_name", "#contact_email", "#doaj_seal"];
+                        var fields = ["#publisher_name", "#publisher_country", "#owner", "#doaj_seal"];
                         for (var i = 0; i < fields.length; i++) {
                             var val = context.find(fields[i]).val();
                             if (val !== "") {
@@ -613,16 +613,6 @@ $.extend(true, doaj, {
                         }
                         if (!found) {
                             return {valid: false};
-                        }
-
-                        // now check for valid field contents
-                        // quick and dirty email check - this will be done properly server-side
-                        var email = context.find("#contact_email").val();
-                        if (email !== "") {
-                            var match = email.match(/.+\@.+\..+/);
-                            if (match === null) {
-                                return {valid: false, error_id: "invalid_email"};
-                            }
                         }
 
                         return {valid: true};
@@ -656,11 +646,9 @@ $.extend(true, doaj, {
                             }
                             var data = {
                                 metadata : {
-                                    publisher: $('#publisher', context).select2("val"),
-                                    country: $('#country', context).select2("val"),
+                                    publisher: $('#publisher_name', context).select2("val"),
+                                    country: $('#publisher_country', context).select2("val"),
                                     owner: $('#owner', context).select2("val"),
-                                    contact_name: $('#contact_name', context).val(),
-                                    contact_email: $('#contact_email', context).val(),
                                     doaj_seal: seal
                                 }
                             };

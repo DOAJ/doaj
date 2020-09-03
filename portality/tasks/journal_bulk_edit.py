@@ -7,7 +7,8 @@ from werkzeug.datastructures import MultiDict
 
 from portality import models, lock
 from portality.core import app
-from portality.formcontext import formcontext
+# from portality.formcontext import formcontext
+from portality.forms.application_forms import JournalFormFactory
 
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
@@ -82,10 +83,8 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         # if there is metadata, validate it
         if len(metadata.keys()) > 0:
             formdata = MultiDict(metadata)
-            fc = formcontext.JournalFormFactory.get_form_context(
-                role="bulk_edit",
-                form_data=formdata
-            )
+            formulaic_context = JournalFormFactory.context("bulk_edit")
+            fc = formulaic_context.processor(formdata=formdata)
             if not fc.validate():
                 raise BackgroundException("Unable to validate replacement metadata: " + json.dumps(metadata))
 
@@ -98,7 +97,8 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                 job.add_audit_message("Journal with id {} does not exist, skipping".format(journal_id))
                 continue
 
-            fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=j)
+            formulaic_context = JournalFormFactory.context("admin")
+            fc = formulaic_context.processor(source=j)
 
             # turn on the "all fields optional" flag, so that bulk tasks don't cause errors that the user iterface
             # would allow you to bypass
@@ -119,9 +119,6 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                     # if we didn't find the editor group, this is broken anyway, so reset the editor data anyway
                     fc.form.editor.data = None
 
-            if "contact_email" in metadata:
-                fc.form.confirm_contact_email.data = metadata["contact_email"]
-
             for k, v in metadata.items():
                 job.add_audit_message("Setting {f} to {x} for journal {y}".format(f=k, x=v, y=journal_id))
                 fc.form[k].data = v
@@ -130,7 +127,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
             if note:
                 job.add_audit_message("Adding note to for journal {y}".format(y=journal_id))
                 fc.form.notes.append_entry(
-                    {'date': datetime.now().strftime(app.config['DEFAULT_DATE_FORMAT']), 'note': note}
+                    {'note_date': datetime.now().strftime(app.config['DEFAULT_DATE_FORMAT']), 'note': note}
                 )
                 updated = True
             
@@ -138,7 +135,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                 if fc.validate():
                     try:
                         fc.finalise()
-                    except formcontext.FormContextException as e:
+                    except Exception as e:
                         job.add_audit_message("Form context exception while bulk editing journal {} :\n{}".format(journal_id, str(e)))
                 else:
                     data_submitted = {}

@@ -263,6 +263,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     @property
     def ordered_notes(self):
+        """Orders notes by newest first"""
         notes = self.notes
         clusters = {}
         for note in notes:

@@ -28,7 +28,8 @@ from portality.forms.validate import (
     NotIf,
     GroupMember,
     RequiredValue,
-    BigEndDate
+    BigEndDate,
+    ReservedUsernames
 )
 
 from portality.datasets import language_options, country_options, currency_options
@@ -342,6 +343,11 @@ class FieldDefinitions:
         ],
         "help": {
             "placeholder": "Type or select the publisher's name"
+        },
+        "contexts" : {
+            "bulk_edit" : {
+                "validate" : []
+            }
         }
     }
 
@@ -370,6 +376,9 @@ class FieldDefinitions:
             },
             "associate_editor": {
                 "disabled": True
+            },
+            "bulk_edit" : {
+                "validate" : []
             }
         }
     }
@@ -1178,12 +1187,20 @@ class FieldDefinitions:
         "label": "DOAJ Account",
         "input": "text",
         "validate": [
-            {"required" : {"message" : "You must confirm the account id"}}
+            {"required" : {"message" : "You must confirm the account id"}},
+            "reserved_usernames"
         ],
         "widgets": [
             {"autocomplete": {"field": "account"}},
             "clickable_owner"       # TODO: frontend implementation
-        ]
+        ],
+        "contexts" : {
+            "bulk_edit" : {
+                "validate" : [
+                    "reserved_usernames"
+                ]
+            }
+        }
     }
 
     APPLICATION_STATUS = {
@@ -1355,6 +1372,19 @@ class FieldDefinitions:
         "widget" : {
             "optional_validation"
         }
+    }
+
+    # Bulk Edit fields (that couldn't be overriden in the normal way)
+    BULK_DOAJ_SEAL = {
+        "name": "doaj_seal",
+        "label": 'Qualifies for Seal',
+        "input": "select",
+        "default" : "",
+        "options" :[
+            {"value": "", "display" : "Leave unchanged"},
+            {"value" : "True", "display" : "Yes"},
+            {"value" : "False", "display" : "No"}
+        ],
     }
 
 
@@ -1608,8 +1638,8 @@ class FieldSetDefinitions:
         "label" : "Bulk Edit",
         "fields" : [
             FieldDefinitions.PUBLISHER_NAME["name"],
+            FieldDefinitions.BULK_DOAJ_SEAL["name"],
             FieldDefinitions.PUBLISHER_COUNTRY["name"],
-            FieldDefinitions.DOAJ_SEAL["name"],
             FieldDefinitions.OWNER["name"]
         ]
     }
@@ -1764,7 +1794,7 @@ class JournalContextDefinitions:
             FieldSetDefinitions.BULK_EDIT["name"]
         ],
         "templates": {
-            "form" : "application_form/readonly_journal.html",
+            "form" : "application_form/maned_journal_bulk_edit.html",
             "default_field" : "application_form/_field.html",
             "default_group" : "application_form/_group.html"#,
             #"default_list" : "application_form/_list.html"
@@ -1773,7 +1803,7 @@ class JournalContextDefinitions:
             "obj2form": JournalFormXWalk.obj2form,
             "form2obj": JournalFormXWalk.form2obj
         },
-        "processor": application_processors.NewApplication # FIXME: enter the real processor
+        "processor": application_processors.ManEdBulkEdit
     }
 
 
@@ -1908,6 +1938,16 @@ def application_status_disabled(field, formulaic_context):
 #######################################################
 # Validation features
 #######################################################
+
+class ReservedUsernamesBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        return
+
+    @staticmethod
+    def wtforms(field, settings):
+        return ReservedUsernames()
+
 
 class RequiredBuilder:
     @staticmethod
@@ -2160,7 +2200,8 @@ PYTHON_FUNCTIONS = {
             "group_member" : GroupMemberBuilder.wtforms,
             "not_if" : NotIfBuildier.wtforms,
             "required_value" : RequiredValueBuilder.wtforms,
-            "bigenddate": BigEndDateBuilder.wtforms
+            "bigenddate": BigEndDateBuilder.wtforms,
+            "reserved_usernames" : ReservedUsernamesBuilder.wtforms
         }
     },
 
