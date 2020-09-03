@@ -49,7 +49,7 @@
                     <span class="stat__description">countries represented</span>
                 </p>
                 <p class="col-md-2 stat">
-                    {# link to query for journals published in 2019, need to find a better way to do this #}
+                    {# TODO: link to query for journals published in 2019, need to find a better way to do this #}
                     <a href='/search/journals?source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22range%22%3A%7B%22created_date%22%3A%7B%22gte%22%3A%221546300800000%22%7D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D'>
                         <span class="stat__number">{{ statistics.new_journals }}</span>
                         <span class="stat__description">new journals</span>
