@@ -7,18 +7,18 @@ JOURNAL_BIBJSON = {
             "fields" : {
                 "alternative_title" : {"coerce" : "unicode"},
                 "boai" : {"coerce" : "bool"},
-                "eissn" : {"coerce" : "issn"},
-                "pissn" : {"coerce" : "issn"},
+                "eissn" : {"coerce" : "issn", "set__allow_coerce_failure" : True},
+                "pissn" : {"coerce" : "issn", "set__allow_coerce_failure" : True},
                 "discontinued_date" : {"coerce" : "bigenddate"},
                 "publication_time_weeks" : {"coerce" : "integer"},
                 "title" : {"coerce" : "unicode"}
             },
             "lists" : {
-                "is_replaced_by" : {"coerce" : "issn", "contains" : "field"},
+                "is_replaced_by" : {"coerce" : "issn", "contains" : "field", "set__allow_coerce_failure" : True},
                 "keywords" : {"contains" : "field", "coerce" : "unicode_lower"},
                 "language" : {"contains" : "field", "coerce" : "isolang_2letter"},
                 "license" : {"contains" : "object"},
-                "replaces" : {"contains" : "field", "coerce" : "issn"},
+                "replaces" : {"contains" : "field", "coerce" : "issn", "set__allow_coerce_failure" : True},
                 "subject" : {"contains" : "object"}
             },
             "objects" : [
@@ -40,7 +40,7 @@ JOURNAL_BIBJSON = {
                 "apc" : {
                     "fields" : {
                         "has_apc" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "url"}
+                        "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     },
                     "lists" : {
                         "max" : {"contains" : "object"}
@@ -56,7 +56,7 @@ JOURNAL_BIBJSON = {
                 },
                 "article" : {
                     "fields" : {
-                        "license_display_example_url" : {"coerce" : "url"},
+                        "license_display_example_url" : {"coerce" : "url", "set__allow_coerce_failure" : True},
                         "orcid" : {"coerce" : "bool"},
                         "i4oc_open_citations" : {"coerce" : "bool"}
                     },
@@ -67,14 +67,14 @@ JOURNAL_BIBJSON = {
                 "copyright" : {
                     "fields" : {
                         "author_retains" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "url"}
+                        "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     }
                 },
                 "deposit_policy" : {
                     "fields" : {
                         "has_policy" : {"coerce" : "bool"},
                         "is_registered" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "url"}
+                        "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     },
                     "lists" : {
                         "service" : {"contains" : "field", "coerce" : "unicode"}
@@ -82,8 +82,8 @@ JOURNAL_BIBJSON = {
                 },
                 "editorial" : {
                     "fields" : {
-                        "review_url" : {"coerce" : "url"},
-                        "board_url" : {"coerce" : "url"}
+                        "review_url" : {"coerce" : "url", "set__allow_coerce_failure" : True},
+                        "board_url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     },
                     "lists" : {
                         "review_process" : {"contains" : "field", "coerce" : "unicode"}
@@ -92,7 +92,7 @@ JOURNAL_BIBJSON = {
                 "institution" : {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
-                        "country" : {"coerce" : "country_code"}
+                        "country" : {"coerce" : "country_code", "set__allow_coerce_failure" : True}
                     }
                 },
                 "license" : {
@@ -102,13 +102,13 @@ JOURNAL_BIBJSON = {
                         "NC" : {"coerce" : "bool"},
                         "ND" : {"coerce" : "bool"},
                         "SA" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "url"}
+                        "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     }
                 },
                 "other_charges" : {
                     "fields" :{
                         "has_other_charges" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "url"}
+                        "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     }
                 },
                 "pid_scheme" : {
@@ -122,13 +122,13 @@ JOURNAL_BIBJSON = {
                 "plagiarism" : {
                     "fields" : {
                         "detection" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "url"}
+                        "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     }
                 },
                 "preservation": {
                     "fields": {
                         "has_preservation": {"coerce": "bool"},
-                        "url": {"coerce": "url"}
+                        "url": {"coerce" : "url", "set__allow_coerce_failure" : True}
                     },
                     "lists": {
                         "national_library": {"contains" : "field", "coerce": "unicode"},
@@ -138,16 +138,16 @@ JOURNAL_BIBJSON = {
                 "publisher" : {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
-                        "country" : {"coerce" : "country_code"}
+                        "country" : {"coerce" : "country_code", "set__allow_coerce_failure" : True}
                     }
                 },
                 "ref" : {
                     "fields" : {
-                        "oa_statement" : {"coerce" : "url"},
-                        "journal" : {"coerce" : "url"},
-                        "aims_scope" : {"coerce" : "url"},
-                        "author_instructions" : {"coerce" : "url"},
-                        "license_terms" : {"coerce" : "url"},
+                        "oa_statement" : {"coerce" : "url", "set__allow_coerce_failure" : True},
+                        "journal" : {"coerce" : "url", "set__allow_coerce_failure" : True},
+                        "aims_scope" : {"coerce" : "url", "set__allow_coerce_failure" : True},
+                        "author_instructions" : {"coerce" : "url", "set__allow_coerce_failure" : True},
+                        "license_terms" : {"coerce" : "url", "set__allow_coerce_failure" : True},
                     }
                 },
                 "subject" : {
@@ -160,7 +160,7 @@ JOURNAL_BIBJSON = {
                 "waiver" : {
                     "fields" : {
                         "has_waiver" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "url"}
+                        "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     }
                 }
             }
@@ -231,7 +231,8 @@ SHARED_JOURNAL_LIKE = {
                 "language" : {"contains" : "field", "coerce" : "unicode"},
                 "license" : {"contains" : "field", "coerce" : "unicode"},
                 "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
-                "schema_code" : {"contains" : "field", "coerce" : "unicode"}
+                "schema_code" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_codes_tree" : {"contains" : "field", "coerce" : "unicode"}
             }
         }
     }

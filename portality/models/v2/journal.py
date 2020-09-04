@@ -326,6 +326,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         subjects = []
         schema_subjects = []
         schema_codes = []
+        schema_codes_tree = []
         classification = []
         langs = []
         country = None
@@ -384,6 +385,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
         # get the full classification paths for the subjects
         classification_paths = cbib.lcc_paths()
+        schema_codes_tree = cbib.lcc_codes_full_list()
 
         # create an unpunctitle
         if cbib.title is not None:
@@ -436,6 +438,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             index["classification_paths"] = classification_paths
         if len(schema_codes) > 0:
             index["schema_code"] = schema_codes
+        if len(schema_codes_tree) > 0:
+            index["schema_codes_tree"] = schema_codes_tree
 
         self.__seamless__.set_with_struct("index", index)
 

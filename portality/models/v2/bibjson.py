@@ -626,6 +626,23 @@ class JournalLikeBibJSON(SeamlessMixin):
 
         return classification_paths
 
+    def lcc_codes_full_list(self):
+        full_list = set()
+
+        from portality.lcc import lcc  # inline import since this hits the database
+        for subs in self.subjects():
+            scheme = subs.get("scheme")
+            if scheme != "LCC":
+                continue
+            code = subs.get("code")
+            expanded = lcc.expand_codes(code)
+            full_list.update(expanded)
+
+        if None in full_list:
+            print(full_list)
+        return ["LCC:" + x for x in full_list if x is not None]
+
+
     # to help with ToC - we prefer to refer to a journal by E-ISSN, or
     # if not, then P-ISSN
     def get_preferred_issn(self):

@@ -13,6 +13,7 @@ MODELS = {
     "journal": models.Journal,
     "article": models.Article,
     "suggestion": models.Suggestion,
+    "application": models.Application,
     "account": models.Account
 }
 
@@ -49,7 +50,8 @@ def do_upgrade(definition, verbose):
         print("Upgrading", tdef.get("type"))
         batch = []
         total = 0
-        first_page = esprit.raw.search(sconn, tdef.get("type"))
+        type_ = ipt_prefix(tdef.get("type"))
+        first_page = esprit.raw.search(sconn, type_)
         max = first_page.json().get("hits", {}).get("total", 0)
         type_start = datetime.now()
 
@@ -58,7 +60,7 @@ def do_upgrade(definition, verbose):
         }
 
         try:
-            for result in esprit.tasks.scroll(sconn, ipt_prefix(tdef.get("type")), q=tdef.get("query", default_query), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), scan=True):
+            for result in esprit.tasks.scroll(sconn, type_, q=tdef.get("query", default_query), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), scan=True):
                 # learn what kind of model we've got
                 model_class = MODELS.get(tdef.get("type"))
 
@@ -109,7 +111,7 @@ def do_upgrade(definition, verbose):
                 if len(batch) >= batch_size:
                     total += len(batch)
                     print(datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
-                    esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
+                    esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=type_, bulk_type="update")
                     batch = []
                     # do some timing predictions
                     batch_tick = datetime.now()
@@ -123,14 +125,14 @@ def do_upgrade(definition, verbose):
             if len(batch) > 0:
                 total += len(batch)
                 print(datetime.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
-                esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
+                esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=type_, bulk_type="update")
                 batch = []
 
         # Write the last part-batch to index
         if len(batch) > 0:
             total += len(batch)
             print(datetime.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
-            esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
+            esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=type_, bulk_type="update")
 
 
 def _diff(original, current):
