@@ -1,16 +1,20 @@
-{% extends "layouts/sidebar-page.html" %}
+{% extends "layouts/base.html" %}
 
 {% block content %}
+    <main class="page-content">
+        <section class="container">
 
-<h2>OpenURL - no results</h2>
+            <h2>OpenURL - no results</h2>
 
-<p>Sorry, your OpenURL request did not return any results.</p>
+            <p>Sorry, your OpenURL request did not return any results.</p>
 
-<h3>What next?</h3>
-<ul>
-<li>Use the <a href="{{ url_for('doaj.search') }}">Search</a> page to manually find Open Access articles and journals.</li>
-<li>Refer to the <a href="{{ url_for('openurl.help') }}">OpenURL help</a> page to for guidance with using OpenURL.</li>
-<li><a href="{{ url_for('doaj.public_application') }}">Apply</a> for a journal's inclusion into DOAJ <strong>if you are the publisher</strong>.</li>
-</ul>
+            <h3>What next?</h3>
+            <ul>
+            <li>Use the <a href="{{ url_for('doaj.search') }}">Search</a> page to manually find Open Access articles and journals.</li>
+            <li>Refer to the <a href="{{ url_for('openurl.help') }}">OpenURL help</a> page to for guidance with using OpenURL.</li>
+            <li><a href="{{ url_for('apply.public_application') }}">Apply</a> for a journal's inclusion into DOAJ <strong>if you are the publisher</strong>.</li>
+            </ul>
 
+        </section>
+    </main>
 {% endblock %}
