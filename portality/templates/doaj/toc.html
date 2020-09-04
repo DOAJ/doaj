@@ -247,7 +247,7 @@ journal-details
             </article>
 
             <article class="card card--with-icon">
-              {# FIXME: svg imports not present {% include svg/copyright.svg %} #}
+              {% include 'svg/copyright.svg' %}
               <div>
                 <p>The author does <strong>not</strong> retain unrestricted copyrights and publishing rights.</p>
               </div>
@@ -357,7 +357,8 @@ journal-details
                 <dt>Keywords</dt>
                 <dd>
                   {% for keyword in bibjson.keywords %}
-                  <a href="">{{ keyword }}</a>{% if loop.last %}{% else %}, {% endif %}
+                  {# TODO: replace with pre-defined query #}
+                  <a href="../search/journals?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ keyword }}%22%2C%22default_operator%22%3A%22AND%22%2C%22default_field%22%3A%22bibjson.keywords%22%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D" class="tag">{{ keyword }}</a>
                   {% endfor %}
                 </dd>
                 {% endif %}
