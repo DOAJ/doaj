@@ -30,6 +30,22 @@ $.extend(true, doaj, {
                 thousandsSeparator: ","
             });
 
+            var lccNameMap = function(tree) {
+                var nameMap = {};
+                function recurse(ctx) {
+                    for (var i = 0; i < ctx.length; i++) {
+                        var child = ctx[i];
+                        var entry = {};
+                        nameMap["LCC:" + child.id] = child.text;
+                        if (child.children && child.children.length > 0) {
+                            recurse(child.children);
+                        }
+                    }
+                }
+                recurse(tree);
+                return nameMap
+            }(doaj.publicSearchConfig.lccTree);
+
             var components = [
                 edges.newFullSearchController({
                     id: "search-input-bar",
@@ -120,7 +136,7 @@ $.extend(true, doaj, {
                 edges.newTreeBrowser({
                     id: "subject",
                     category: "facet",
-                    field: "index.schema_code.exact",
+                    field: "index.schema_codes_tree.exact",
                     tree: function(tree) {
                         function recurse(ctx) {
                             var displayTree = [];
@@ -324,7 +340,7 @@ $.extend(true, doaj, {
                     ],
                     fieldDisplays : {
                         "index.has_seal.exact" : "With a DOAJ Seal",
-                        "index.classification.exact" : "Subjects",
+                        "index.schema_codes_tree.exact" : "Subject",
                         "index.license.exact" : "Licenses",
                         "bibjson.publisher.name.exact" : "Publishers",
                         "index.country.exact" : "Publishers' countries",
@@ -334,6 +350,15 @@ $.extend(true, doaj, {
                     },
                     rangeFunctions : {
                         "created_date" : doaj.valueMaps.displayYearPeriod
+                    },
+                    valueFunctions : {
+                        "index.schema_codes_tree.exact" : function(code) {
+                            var name = lccNameMap[code];
+                            if (name) {
+                                return name;
+                            }
+                            return code;
+                        }
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         hideValues : [

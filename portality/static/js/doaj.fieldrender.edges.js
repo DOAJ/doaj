@@ -145,7 +145,8 @@ $.extend(true, doaj, {
                         checked = ' checked="checked" ';
                     }
                     // FIXME: putting this in for the moment, just so we can use it in dev
-                    var count = ' <span class="' + countClass + '">(' + entry.count + '/' + entry.childCount + ')</span>';
+                    // var count = ' <span class="' + countClass + '">(' + entry.count + '/' + entry.childCount + ')</span>';
+                    var count = "";
 
                     var frag = '<input class="' + checkboxClass + '" data-value="' + edges.escapeHtml(entry.value) + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
                         <label for="' + id + '" class="filter__label">' + edges.escapeHtml(entry.display) + count + '</label>';
@@ -154,19 +155,43 @@ $.extend(true, doaj, {
                 }
 
                 function recurse(tree) {
-                    var rFrag = "";
+                    var selected = tree;
+
+                    // first check to see if there are any elements at this level that are selected.  If there are,
+                    // that is the only element that we'll render
                     for (var i = 0; i < tree.length; i++) {
                         var entry = tree[i];
+                        if (entry.selected) {
+                            selected = [entry];
+                            break;
+                        }
+                    }
+
+                    // now go through either this tree level or just the selected elements, and render the relevant
+                    // bits of the sub-tree
+                    var anySelected = false;
+                    var rFrag = "";
+                    for (var i = 0; i < selected.length; i++) {
+                        var entry = selected[i];
                         var entryFrag = renderEntry(entry);
                         if (entryFrag === "") {
                             continue;
                         }
+                        if (entry.selected) {
+                            anySelected = true;
+                        }
                         if (entry.children) {
-                            var cFrag = recurse(entry.children);
-                            if (cFrag !== "") {
-                                entryFrag += '<ul class="filter__choices">';
-                                entryFrag += cFrag;
-                                entryFrag += '</ul>';
+                            var childReport = recurse(entry.children);
+                            if (childReport.anySelected) {
+                                anySelected = true;
+                            }
+                            if (childReport.anySelected || entry.selected) {
+                                var cFrag = childReport.frag;
+                                if (cFrag !== "") {
+                                    entryFrag += '<ul class="filter__choices">';
+                                    entryFrag += cFrag;
+                                    entryFrag += '</ul>';
+                                }
                             }
                         }
 
@@ -174,9 +199,10 @@ $.extend(true, doaj, {
                         rFrag += entryFrag;
                         rFrag += '</li>';
                     }
-                    return rFrag;
+                    return {frag : rFrag, anySelected: anySelected};
                 }
-                var treeFrag = recurse(st);
+                var treeReport = recurse(st);
+                var treeFrag = treeReport.frag;
 
                 if (treeFrag === "") {
                     treeFrag = "Loading...";
