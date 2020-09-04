@@ -62,10 +62,6 @@ li.parsley-type {
     text-decoration: #982E0A;
 }
 
-.multiple_input > ul > li > label {
-    display: none;
-}
-
 .form_group {
     display: flex;
     flex-direction: row;
