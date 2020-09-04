@@ -109,6 +109,186 @@ $.extend(true, doaj, {
     },
 
     renderers : {
+        newSubjectBrowser : function(params) {
+            return edges.instantiate(doaj.renderers.SubjectBrowser, params, edges.newRenderer);
+        },
+        SubjectBrowser : function(params) {
+            this.title = edges.getParam(params.title, "");
+
+            this.selectMode = edges.getParam(params.selectMode, "multiple");
+
+            this.hideEmpty = edges.getParam(params.hideEmpty, false);
+
+            this.togglable = edges.getParam(params.togglable, true);
+
+            this.open = edges.getParam(params.open, false);
+
+            this.namespace = "doaj-subject-browser";
+
+            this.draw = function() {
+                // for convenient short references ...
+                var st = this.component.syncTree;
+                var namespace = this.namespace;
+                var that = this;
+
+                var checkboxClass = edges.css_classes(namespace, "selector", this);
+                var countClass = edges.css_classes(namespace, "count", this);
+
+                function renderEntry(entry) {
+                    if (that.hideEmpty && entry.count === 0 && entry.childCount === 0) {
+                        return "";
+                    }
+
+                    var id = edges.safeId(entry.value);
+                    var checked = "";
+                    if (entry.selected) {
+                        checked = ' checked="checked" ';
+                    }
+                    // FIXME: putting this in for the moment, just so we can use it in dev
+                    var count = ' <span class="' + countClass + '">(' + entry.count + '/' + entry.childCount + ')</span>';
+
+                    var frag = '<input class="' + checkboxClass + '" data-value="' + edges.escapeHtml(entry.value) + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
+                        <label for="' + id + '" class="filter__label">' + edges.escapeHtml(entry.display) + count + '</label>';
+
+                    return frag;
+                }
+
+                function recurse(tree) {
+                    var rFrag = "";
+                    for (var i = 0; i < tree.length; i++) {
+                        var entry = tree[i];
+                        var entryFrag = renderEntry(entry);
+                        if (entryFrag === "") {
+                            continue;
+                        }
+                        if (entry.children) {
+                            var cFrag = recurse(entry.children);
+                            if (cFrag !== "") {
+                                entryFrag += '<ul class="filter__choices">';
+                                entryFrag += cFrag;
+                                entryFrag += '</ul>';
+                            }
+                        }
+
+                        rFrag += '<li>';
+                        rFrag += entryFrag;
+                        rFrag += '</li>';
+                    }
+                    return rFrag;
+                }
+                var treeFrag = recurse(st);
+
+                if (treeFrag === "") {
+                    treeFrag = "Loading...";
+                }
+
+
+                /*
+                // sort out all the classes that we're going to be using
+                var resultClass = edges.css_classes(namespace, "result", this);
+                var valClass = edges.css_classes(namespace, "value", this);
+                var filterRemoveClass = edges.css_classes(namespace, "filter-remove", this);
+                var facetClass = edges.css_classes(namespace, "facet", this);
+                var headerClass = edges.css_classes(namespace, "header", this);
+                var selectionsClass = edges.css_classes(namespace, "selections", this);
+                var bodyClass = edges.css_classes(namespace, "body", this);
+                var countClass = edges.css_classes(namespace, "count", this);
+                */
+
+                var toggleId = edges.css_id(namespace, "toggle", this);
+                var resultsId = edges.css_id(namespace, "results", this);
+
+                var toggle = "";
+                if (this.togglable) {
+                    toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
+                }
+                var frag = '<h3 class="filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
+                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                        <ul class="filter__choices">{{FILTERS}}</ul>\
+                    </div>';
+
+                // substitute in the component parts
+                frag = frag.replace(/{{FILTERS}}/g, treeFrag);
+
+                // now render it into the page
+                this.component.context.html(frag);
+                feather.replace();
+
+                // trigger all the post-render set-up functions
+                this.setUIOpen();
+
+                var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
+                edges.on(checkboxSelector, "change", this, "filterToggle");
+
+                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+                edges.on(toggleSelector, "click", this, "toggleOpen");
+                /*
+                // sort out the selectors we're going to be needing
+                var valueSelector = edges.css_class_selector(namespace, "value", this);
+                var filterRemoveSelector = edges.css_class_selector(namespace, "filter-remove", this);
+                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+
+                // for when a value in the facet is selected
+                edges.on(valueSelector, "click", this, "termSelected");
+                // for when the open button is clicked
+                edges.on(toggleSelector, "click", this, "toggleOpen");
+                // for when a filter remove button is clicked
+                edges.on(filterRemoveSelector, "click", this, "removeFilter");
+                 */
+            };
+
+            this.setUIOpen = function () {
+                // the selectors that we're going to use
+                var resultsSelector = edges.css_id_selector(this.namespace, "results", this);
+                var toggleSelector = edges.css_id_selector(this.namespace, "toggle", this);
+
+                var results = this.component.jq(resultsSelector);
+                var toggle = this.component.jq(toggleSelector);
+
+                if (this.open) {
+                    //var i = toggle.find("i");
+                    //for (var j = 0; j < openBits.length; j++) {
+                    //    i.removeClass(openBits[j]);
+                   // }
+                    //for (var j = 0; j < closeBits.length; j++) {
+                    //    i.addClass(closeBits[j]);
+                    //}
+                    //results.show();
+
+                    results.addClass("in").attr("aria-expanded", "true").css({"height": ""});
+                    toggle.removeClass("collapsed").attr("aria-expanded", "true");
+                } else {
+                    //var i = toggle.find("i");
+                    //for (var j = 0; j < closeBits.length; j++) {
+                    //    i.removeClass(closeBits[j]);
+                   // }
+                    //for (var j = 0; j < openBits.length; j++) {
+                     //   i.addClass(openBits[j]);
+                    //}
+                    //results.hide();
+
+                    results.removeClass("in").attr("aria-expanded", "false").css({"height" : "0px"});
+                    toggle.addClass("collapsed").attr("aria-expanded", "false");
+                }
+            };
+
+            this.filterToggle = function(element) {
+                // var filter_id = this.component.jq(element).attr("id");
+                var checked = this.component.jq(element).is(":checked");
+                var value = this.component.jq(element).attr("data-value");
+                if (checked) {
+                    this.component.addFilter({value: value});
+                } else {
+                    this.component.removeFilter({value: value});
+                }
+            };
+
+            this.toggleOpen = function (element) {
+                this.open = !this.open;
+                this.setUIOpen();
+            };
+        },
+
         newFullSearchControllerRenderer: function (params) {
             return edges.instantiate(doaj.renderers.FullSearchControllerRenderer, params, edges.newRenderer);
         },

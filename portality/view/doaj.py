@@ -91,7 +91,7 @@ def fqw_hit():
 
 @blueprint.route("/search/journals", methods=["GET"])
 def journals_search():
-    return render_template("doaj/journals_search.html")
+    return render_template("doaj/journals_search.html", lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/search/articles", methods=["GET"])

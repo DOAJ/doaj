@@ -101,6 +101,7 @@ $.extend(true, doaj, {
 
                 // FIXME: this is an approximation of the subject selector that we actually want, just to get the
                 // ball rolling
+                /*
                 edges.newORTermSelector({
                     id: "subject",
                     category: "facet",
@@ -114,6 +115,47 @@ $.extend(true, doaj, {
                         hideEmpty: false,
                         open: true,
                         togglable: false
+                    })
+                }),*/
+                edges.newTreeBrowser({
+                    id: "subject",
+                    category: "facet",
+                    field: "index.schema_code.exact",
+                    tree: function(tree) {
+                        function recurse(ctx) {
+                            var displayTree = [];
+                            for (var i = 0; i < ctx.length; i++) {
+                                var child = ctx[i];
+                                var entry = {};
+                                entry.display = child.text;
+                                entry.value = "LCC:" + child.id;
+                                if (child.children && child.children.length > 0) {
+                                    entry.children = recurse(child.children);
+                                }
+                                displayTree.push(entry);
+                            }
+                            return displayTree;
+                        }
+                        return recurse(tree);
+                    }(doaj.publicSearchConfig.lccTree),
+                    size: 9999,
+                    nodeMatch: function(node, match_list) {
+                        for (var i = 0; i < match_list.length; i++) {
+                            var m = match_list[i];
+                            if (node.value === m.key) {
+                                return i;
+                            }
+                        }
+                        return -1;
+                    },
+                    filterMatch: function(node, selected) {
+                        return $.inArray(node.value, selected) > -1;
+                    },
+                    renderer: doaj.renderers.newSubjectBrowser({
+                        title: "Subjects",
+                        selectMode: "multiple",
+                        open: true,
+                        hideEmpty: true
                     })
                 }),
 

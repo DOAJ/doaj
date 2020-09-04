@@ -13,7 +13,8 @@
     <script type="text/javascript">
     $.extend(true, doaj, {
         publicSearchConfig : {
-            publicSearchPath : '{{ url_for("query.query", path="journal/_search") }}?ref=public_journal'
+            publicSearchPath : '{{ url_for("query.query", path="journal/_search") }}?ref=public_journal',
+            lccTree: {{ lcc_tree|tojson }}
         }
     });
     </script>
