@@ -64,6 +64,8 @@ class NewApplication(FormProcessor):
         draft_application = models.DraftApplication(**self.target.data)
         if id is not None:
             draft_application.set_id(id)
+
+        draft_application.set_application_status("draft")
         draft_application.set_owner(account.id)
         draft_application.save()
         return draft_application

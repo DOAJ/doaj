@@ -41,14 +41,14 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                edges.newPager({
-                    id: "top-pager",
-                    category: "top-pager",
-                    renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scrollSelector: "#top-pager"
-                    })
-                }),
+                // edges.newPager({
+                //     id: "top-pager",
+                //     category: "top-pager",
+                //     renderer : doaj.renderers.newPagerRenderer({
+                //         numberFormat: countFormat,
+                //         scrollSelector: "#top-pager"
+                //     })
+                // }),
 
                 // results display
                 edges.newResultsDisplay({
@@ -57,22 +57,27 @@ $.extend(true, doaj, {
                     renderer : doaj.renderers.newPublisherApplicationRenderer()
                 }),
 
-                edges.newPager({
-                    id: "bottom-pager",
-                    category: "bottom-pager",
-                    renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scrollSelector: "#top-pager"    // FIXME: these selectors don't work, why not?
-                    })
-                })
+                // edges.newPager({
+                //     id: "bottom-pager",
+                //     category: "bottom-pager",
+                //     renderer : doaj.renderers.newPagerRenderer({
+                //         numberFormat: countFormat,
+                //         scrollSelector: "#top-pager"    // FIXME: these selectors don't work, why not?
+                //     })
+                // })
             ];
-
             var e = edges.newEdge({
                 selector: selector,
                 template: doaj.templates.newPublisherApplications(),
                 search_url: search_url,
                 manageUrl: true,
-                openingQuery: es.newQuery({
+                baseQuery: es.newQuery({
+                    must: [
+                        es.newTermsFilter({
+                            field: "admin.application_status.exact",
+                            values: ["update_request", "revisions_requried", "pending", "in progress", "completed", "on hold", "ready", "draft"]
+                        })
+                    ],
                     sort: [{"field" : "last_updated", "order" : "desc"}],
                     size: 50
                 }),
