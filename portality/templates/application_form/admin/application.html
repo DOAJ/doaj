@@ -74,7 +74,7 @@
             {% endfor %}
         </div>
     </fieldset>
-    {% if obj %}
+    {% if obj %}“
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}
 </aside>
@@ -83,7 +83,7 @@
 <div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
     <div class="modal__dialog" role="document">
         <h3 class="modal__title" id="modalLabel-quick_reject">
-            "{{ fs.label | safe }}"
+            “{{ fs.label | safe }}”
         </h3>
         {% for f in fs.fields() %}
             {% set field_template = f.template %}
