@@ -39,24 +39,6 @@
         }
     }
 
-    $("#submit_quick_reject").on("click", (e) => {
-        e.preventDefault();
-
-
-        let reason = $("#quick_reject option:selected").val();
-        let additional_info = $("#quick_reject_details").val();
-
-        let data = {"reject_reason": reason,
-                    "additional_reject_information": additional_info
-                    };
-
-
-        $.post("/admin/application_quick_reject/" + $("#application_quick_reject_form").attr("data-id"), data, function(data){
-            console.log(data);
-        });
-
-    });
-
     $("#open_quick_reject").on("click", (e) => {
         e.preventDefault();
         $("#modal-quick_reject").show();
