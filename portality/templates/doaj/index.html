@@ -45,26 +45,34 @@
             <section class="row mobile-scrollable-row">
                 <h2 class="sr-only">DOAJ in numbers</h2>
                 <p class="col-md-2 stat">
-
-                        <span class="stat__number">{{ statistics.countries }}</span>
-                        <span class="stat__description">countries represented</span>
-
+                    <span class="stat__number">{{ statistics.countries }}</span>
+                    <span class="stat__description">countries represented</span>
                 </p>
                 <p class="col-md-2 stat">
+                    {# TODO: link to query for journals published in 2019, need to find a better way to do this #}
+                    <a href='/search/journals?source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22range%22%3A%7B%22created_date%22%3A%7B%22gte%22%3A%221546300800000%22%7D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D'>
                         <span class="stat__number">{{ statistics.new_journals }}</span>
                         <span class="stat__description">new journals</span>
+                    </a>
                 </p>
                 <p class="col-md-2 stat">
+                    {# TODO: link to query for journals w/out APCs #}
+                    <a href='/search/journals?source=%7B"query"%3A%7B"filtered"%3A%7B"filter"%3A%7B"bool"%3A%7B"must"%3A%5B%7B"term"%3A%7B"bibjson.apc.has_apc"%3Afalse%7D%7D%2C%7B"term"%3A%7B"bibjson.other_charges.has_other_charges"%3Afalse%7D%7D%5D%7D%7D%2C"query"%3A%7B"match_all"%3A%7B%7D%7D%7D%7D%2C"size"%3A50%2C"sort"%3A%5B%7B"created_date"%3A%7B"order"%3A"desc"%7D%7D%5D%7D'>
                         <span class="stat__number">{{ statistics.no_apc }}</span>
                         <span class="stat__description">journals without APC<span style="text-transform: lowercase;">s</span></span>
+                    </a>
                 </p>
                 <p class="col-md-2 stat">
+                    <a href="{{ url_for("doaj.journals_search") }}">
                         <span class="stat__number">{{ statistics.journals }}</span>
                         <span class="stat__description">journals</span>
+                    </a>
                 </p>
                 <p class="col-md-2 stat">
+                    <a href="{{ url_for("doaj.articles_search") }}">
                         <span class="stat__number">{{ statistics.abstracts }}</span>
                         <span class="stat__description">article abstracts</span>
+                    </a>
                 </p>
             </section>
         </div>
@@ -78,8 +86,8 @@
                 <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.</p>
                 <p>All DOAJ services are free of charge including being indexed. All data is freely available.</p>
                 <p>
-                    <a href="/apply/why-index/">Why index your journal in DOAJ?</a> <br>
-                    <a href="/apply/guide/">How to apply</a>
+                    &rarr; <a href="/apply/why-index/">Why index your journal in DOAJ?</a> <br>
+                    &rarr; <a href="/apply/guide/">How to apply</a>
                 </p>
                 <p>
                     <a href="/apply/" class="button button--secondary">Apply now</a>
@@ -137,8 +145,9 @@
                 {% endfor %}
             </div>
 
-            <section class="col-sm-3 homepage__themed-post">
-                <a class="twitter-timeline" data-height="500" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <section class="col-sm-3 homepage__themed-post" style="max-height: 75vh; overflow-y: scroll;">
+                <h3 class="label"><a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">Tweets by @doajplus</a></h3>
+                <a class="twitter-timeline" data-chrome="transparent noheader" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </section>
 
             {# TODO: we don't have the mechanics for special themed posts yet
@@ -259,7 +268,11 @@
         <div class="row">
             <div class="col-sm-3">
                 <h2>Recently-added journals</h2>
-                <p><a href="{{ url_for("doaj.journals_search") }}">See all</a></p>
+                <p>
+                    <small>
+                        <a href="{{ url_for("doaj.journals_search") }}" class="button">See all</a> <a href="/csv/" class="button">See all in CSV</a>
+                    </small>
+                </p>
             </div>
             <div class="col-sm-9">
                 <ul class="row mobile-scrollable-row title-list">
