@@ -42,14 +42,13 @@
     $("#submit_quick_reject").on("click", (e) => {
         e.preventDefault();
 
-        console.log($(this));
 
-        let reason = $("#quick_reject").filter(':checked').val();
+        let reason = $("#quick_reject option:selected").val();
         let additional_info = $("#quick_reject_details").val();
 
-        let data = {"values": {"reject_reason": reason,
+        let data = {"reject_reason": reason,
                     "additional_reject_information": additional_info
-                    }}
+                    };
         console.log(data)
 
 
