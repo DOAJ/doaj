@@ -1,15 +1,8 @@
 <aside class="highlight highlight--aside editorial-panel" style="width: inherit; margin-top: 1.5rem">
 
-    <form method="post" action="{{ url_for('admin.application_quick_reject', application_id=formulaic_context.id) }}" id="application_quick_reject_form">
-        {% set fs = formulaic_context.fieldset("quick_reject") %}
-        <h3 class="label"> {{ fs.label }}</h3>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
-        <button class="button button--primary" type="submit" id="submit_quick_reject">Reject</button>
-    </form>
-    <hr />
+    <fieldset>
+        <button class="button button--primary" type="submit" id="open_quick_reject" aria-hidden="true" data-toggle="modal" data-target="#modal-quick_reject">Quick Reject</button>
+    </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("reassign") %}
         <h3 class="label" type="button" data-toggle="collapse" data-target="#reassign" aria-expanded="false"> {{ fs.label }}
@@ -85,3 +78,18 @@
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}
 </aside>
+
+{% set fs = formulaic_context.fieldset("quick_reject") %}
+<div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
+    <div class="modal__dialog" role="document">
+        <h3 class="modal__title" id="modalLabel-quick_reject">
+            "{{ fs.label | safe }}"
+        </h3>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+        <button class="button button--primary" type="submit" id="submit_quick_reject">Quick Reject</button>
+        <button type="button" data-dismiss="modal" class="modal__close">Close</button>
+    </div>
+</div>

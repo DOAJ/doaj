@@ -7,6 +7,9 @@
         $(".application-nav__list-item").each((idx, x) => {
             x.className = "application-nav__list-item application-nav__list-item--active";
         });
+
+        $("#submitBtn").hide();
+        $("#saveDraft").hide();
     }
 
     let modify_review_page = () => {
@@ -35,4 +38,30 @@
             default_page_view();
         }
     }
+
+    $("#submit_quick_reject").on("click", (e) => {
+        e.preventDefault();
+
+        console.log($(this));
+
+        let reason = $("#quick_reject").filter(':checked').val();
+        let additional_info = $("#quick_reject_details").val();
+
+        let data = {"values": {"reject_reason": reason,
+                    "additional_reject_information": additional_info
+                    }}
+        console.log(data)
+
+
+
+        $.post("/admin/application_quick_reject/" + "000000000000", data, function(data){
+            console.log(data);
+        });
+
+    });
+
+    $("#open_quick_reject").on("click", (e) => {
+        e.preventDefault();
+        $("#modal-quick_reject").show();
+    })
 </script>
