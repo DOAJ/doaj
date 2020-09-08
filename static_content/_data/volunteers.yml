@@ -510,6 +510,16 @@ ass_ed:
   city: Murcia
   country: Spain
   language: Spanish, English
+  photo: "MiguelAVera.jpg"
+  
+  
+- name: Milton Ramirez
+  area: 
+  year_since:
+  city: 
+  country: Spain
+  language: Spanish, English
+  photo: "MiltonRamirez.jpg"
 
 - name: Muhamad Ratodi
   area: Public Health
