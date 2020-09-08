@@ -7,6 +7,9 @@
         $(".application-nav__list-item").each((idx, x) => {
             x.className = "application-nav__list-item application-nav__list-item--active";
         });
+
+        $("#submitBtn").hide();
+        $("#saveDraft").hide();
     }
 
     let modify_review_page = () => {
@@ -35,4 +38,9 @@
             default_page_view();
         }
     }
+
+    $("#open_quick_reject").on("click", (e) => {
+        e.preventDefault();
+        $("#modal-quick_reject").show();
+    })
 </script>

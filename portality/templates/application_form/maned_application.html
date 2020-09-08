@@ -52,15 +52,33 @@
                         <div class="col-md-3">
                             {% include "application_form/admin/application.html" %}
                         </div>
-                        <div class="col-md-8 col-md-offset-4">
+                        <div class="col-md-7 col-md-offset-2">
                             {% include "application_form/07-review/index.html" %}
                         </div>
                     </div>
                     <div class="buttons">
-                        <p class="cannot-submit" id="cannot_save_draft" style="display: none"><i>You cannot save the draft because your application contains some invalid fields. You do not have to provide all required answers but all provided information must have valid format. Please review your answers and try again.</i></p>
                         {% include "application_form/_buttons.html" %}
                     </div>
                 </form>
+
+                    {% set fs = formulaic_context.fieldset("quick_reject") %}
+                    <div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
+                        <div class="modal__dialog" role="document">
+                            <h3 class="modal__title" id="modalLabel-quick_reject">
+                                “{{ fs.label | safe }}”
+                            </h3>
+                        <p>{{ obj.id }}</p>
+                            <form method="post" data-id="{{ obj.id }}" action="{{ url_for('admin.application_quick_reject', application_id=obj.id) }}" id="application_quick_reject_form">
+                                {% for f in fs.fields() %}
+                                    {% set field_template = f.template %}
+                                    {%  include field_template %}
+                                {% endfor %}
+                                <button class="button button--primary" type="submit" id="submit_quick_reject">Quick Reject</button>
+                            </form>
+                            <button type="button" data-dismiss="modal" class="modal__close">Close</button>
+                        </div>
+                    </div>
+
                 </section>
             </div>
 

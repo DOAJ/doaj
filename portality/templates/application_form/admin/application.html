@@ -1,15 +1,8 @@
 <aside class="highlight highlight--aside editorial-panel" style="width: inherit; margin-top: 1.5rem">
 
-    <form method="post" action="{{ url_for('admin.application_quick_reject', application_id=formulaic_context.id) }}" id="application_quick_reject_form">
-        {% set fs = formulaic_context.fieldset("quick_reject") %}
-        <h3 class="label"> {{ fs.label }}</h3>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
-        <button class="button button--primary" type="submit" id="submit_quick_reject">Reject</button>
-    </form>
-    <hr />
+    <fieldset>
+        <button class="button button--primary" type="submit" id="open_quick_reject" aria-hidden="true" data-toggle="modal" data-target="#modal-quick_reject">Quick Reject</button>
+    </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("reassign") %}
         <h3 class="label" type="button" data-toggle="collapse" data-target="#reassign" aria-expanded="false"> {{ fs.label }}
@@ -81,7 +74,7 @@
             {% endfor %}
         </div>
     </fieldset>
-    {% if obj %}
+    {% if obj %}“
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}
 </aside>
