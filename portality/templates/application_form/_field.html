@@ -9,14 +9,12 @@
     {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
     {% if "multiple_field" in f.get("widgets", []) %}
         <div class="removable_field">
-            <div class="multiple_inputs__container" id="removable_field__{{ f.name }}">
-                <div class= 'multiple_input'>
-                    {{ f.render_form_control() }}
-                </div>
-            </div>
+          <div class="repeatable-fields" id="removable_field__{{ f.name }}">
+              {{ f.render_form_control() }}
+          </div>
             <div class="add_field__button_div">
                 <div class="add_field__button_div">
-                    <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add another </button>
+                    <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add</button>
                 </div>
             </div>
         </div>

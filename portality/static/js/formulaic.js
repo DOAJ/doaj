@@ -809,7 +809,7 @@ var formulaic = {
                     allowClear: false,
                     width: 'resolve',
                     newOption: true,
-                    placeholder: "Choose a value"
+                    placeholder: "Start typing…"
                 });
             };
 
@@ -863,7 +863,7 @@ var formulaic = {
                     ajax: ajax,
                     createSearchChoice: csc,
                     initSelection: initSel,
-                    placeholder: "Choose a value",
+                    placeholder: "Start typing…",
                     allowClear: false,
                     tags: true,
                     tokenSeparators: [','],
@@ -925,7 +925,7 @@ function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_
             ajax: ajax,
             createSearchChoice: csc,
             initSelection : initSel,
-            placeholder: "Choose a value",
+            placeholder: "Start typing…",
             allowClear: allow_clear,
             width: 'resolve'
         });
@@ -935,7 +935,7 @@ function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_
             minimumInputLength: mininput,
             ajax: ajax,
             initSelection : initSel,
-            placeholder: "Choose a value",
+            placeholder: "Start typing…",
             allowClear: allow_clear,
             width: 'resolve'
         });
