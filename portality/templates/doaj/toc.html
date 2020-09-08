@@ -35,6 +35,16 @@ journal-details
     }
 %}
 
+{%
+    set DEPOSIT_POLICY_MAP = {
+      "Sherpa/Romeo" : "https://v2.sherpa.ac.uk/cgi/search/publication/basic?publication_title-auto=",
+      "Diadorim" : "https://diadorim.ibict.br/simple-search?query=",
+      "Héloïse" : "https://heloise.ccsd.cnrs.fr/search/searchreview?parameter_0=",
+      "Dulcinea" : "https://www.accesoabierto.net/dulcinea/lista/REVISTA/",
+    }
+
+%}
+
     {# FIXME for new data model's support of multiple licenses #}
 {# {% set lic = bibjson.licenses[0] %} #}
 
@@ -226,7 +236,7 @@ journal-details
                 <p>
                   {% for license in bibjson.licenses %}
                       {%  set ldata = CC_MAP.get(license.type) %}
-                        <a href="{{ ldata[1] }}" target="_blank" rel="noopener" style="text-decoration: none;">
+                      <a href="{{ ldata[1] }}" target="_blank" rel="noopener">
                         <img src="{{ ldata[0] }}">
                         {#  FIXME: not sure where these svgs are
                           {% if license == "CC BY" %}
@@ -235,7 +245,7 @@ journal-details
                           {% include svg/cc.svg %} {% include svg/by.svg %} {% include svg/nc.svg %}
                           {% endif %}
                         #}
-                    {% if loop.last %}{% else %}<br/>{% endif %}
+                      {% if loop.last %}{% else %}<br/>{% endif %}
                     </a>
                   {% endfor %}
                 </p>
@@ -280,26 +290,11 @@ journal-details
                 </p>
                 <ul>
                   {% for policy in bibjson.deposit_policy %}
+                    {%  set policy_data = DEPOSIT_POLICY_MAP.get(policy) %}
                     <li>
-                      {% if policy == "Sherpa/Romeo" %}
-                      <a href="https://v2.sherpa.ac.uk/cgi/search/publication/basic?publication_title-auto={{ bibjson.title }}" target="_blank" rel="noopener">
+                      <a href="{{ policy_data|safe }}{{ bibjson.title }}" target="_blank" rel="noopener">
                         {{ policy }}
                       </a>
-                      {% elif policy == "Diadorim" %}
-                      <a href="https://diadorim.ibict.br/simple-search?query={{ bibjson.title }}" target="_blank" rel="noopener">
-                        {{ policy }}
-                      </a>
-                      {% elif policy == "Héloïse" %}
-                      <a href="https://heloise.ccsd.cnrs.fr/search/searchreview?parameter_0={{ bibjson.title }}" target="_blank" rel="noopener">
-                        {{ policy }}
-                      </a>
-                      {% elif policy == "Dulcinea" %}
-                      <a href="https://www.accesoabierto.net/dulcinea/lista/REVISTA/{{ bibjson.title }}" target="_blank" rel="noopener">
-                        {{ policy }}
-                      </a>
-                      {% else %}
-                          {{ policy }}
-                      {% endif %}
                     </li>
                   {% endfor %}
                 </ul>
