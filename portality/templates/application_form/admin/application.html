@@ -78,20 +78,3 @@
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}
 </aside>
-
-{% set fs = formulaic_context.fieldset("quick_reject") %}
-<div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
-    <div class="modal__dialog" role="document">
-        <h3 class="modal__title" id="modalLabel-quick_reject">
-            “{{ fs.label | safe }}”
-        </h3>
-        <form method="post" action="{{ url_for('admin.application_quick_reject', application_id=formulaic_context.id) }}" id="application_quick_reject_form">
-            {% for f in fs.fields() %}
-                {% set field_template = f.template %}
-                {%  include field_template %}
-            {% endfor %}
-            <button class="button button--primary" type="submit" id="submit_quick_reject">Quick Reject</button>
-        </form>
-        <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-    </div>
-</div>

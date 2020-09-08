@@ -49,11 +49,9 @@
         let data = {"reject_reason": reason,
                     "additional_reject_information": additional_info
                     };
-        console.log(data)
 
 
-
-        $.post("/admin/application_quick_reject/" + "000000000000", data, function(data){
+        $.post("/admin/application_quick_reject/" + $("#application_quick_reject_form").attr("data-id"), data, function(data){
             console.log(data);
         });
 

@@ -410,7 +410,7 @@ def application_quick_reject(application_id):
     sent = False
     send_report = []
     try:
-        send_report = emails.send_publisher_reject_email(application, note=reason, update_request=update_request, send_to_owner=True, send_to_suggester=True)
+        send_report = emails.send_publisher_reject_email(application, note=reason, update_request=update_request)
         sent = True
     except app_email.EmailException as e:
         pass
