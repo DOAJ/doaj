@@ -480,6 +480,13 @@ QUERY_ROUTE = {
             "query_filters" : ["owner"],
             "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.AllPublisherApplications"
+        },
+        "update_requests" : {
+            "auth" : True,
+            "role" : "publisher",
+            "query_filters" : ["owner", "update_request"],
+            "result_filters" : ["publisher_result_filter"],
+            "dao" : "portality.models.Application"
         }
     },
     "admin_query" : {

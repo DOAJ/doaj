@@ -41,6 +41,7 @@ def owner(q):
 def update_request(q):
     q.clear_match_all()
     q.add_must({"range" : {"created_date" : {"gte" : app.config.get("UPDATE_REQUEST_SHOW_OLDEST")}}})
+    q.add_must({"exists" : {"field" : "admin.current_journal"}})
     return q
 
 

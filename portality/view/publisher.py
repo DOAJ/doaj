@@ -150,6 +150,7 @@ def update_request_readonly(application_id):
     fc = formcontext.ApplicationFormFactory.get_form_context(role="update_request_readonly", source=application)
     return fc.render_template(no_sidebar=True)
 
+
 @blueprint.route('/progress')
 @login_required
 @ssl_required

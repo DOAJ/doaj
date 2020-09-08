@@ -1,6 +1,7 @@
 {% extends "publisher/publisher_base.html" %}
 
 {% block publisher_content %}
+    <header><h2>My update requests</h2></header>
 <div id="publisher_update_requests"></div>
 {% endblock %}
 
@@ -9,9 +10,13 @@
     <script type="text/javascript">
     $.extend(true, doaj, {
         publisherUpdatesSearchConfig : {
-            journalUpdateUrl : "{{ url_for('publisher.update_request', journal_id="") }}",
             journalReadOnlyUrl : "{{ url_for('publisher.update_request_readonly', application_id="") }}",
-            searchPath : '/publisher_query/suggestion/_search'
+            tocUrl : "{{ url_for('doaj.toc', identifier="") }}",
+            editPendingUrl : "FIXME",
+            applyUrl: "{{ url_for('apply.public_application', draft_id="") }}",
+            deleteLinkTemplate: "{{ url_for("publisher.delete_application", application_id="__application_id__") }}",
+            searchPath : '/publisher_query/update_requests/_search',
+            journalUpdateUrl : "{{ url_for('publisher.update_request', journal_id="") }}",
         }
     });
     </script>

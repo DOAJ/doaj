@@ -1175,8 +1175,12 @@ $.extend(true, doaj, {
                 var toggleId = edges.css_id(namespace, "toggle", this);
                 var resultsId = edges.css_id(namespace, "results", this);
 
-                // this is what's displayed in the body if there are no results
+                // this is what's displayed in the body if there are no results or the page is loading
                 var results = "<li>Loading...</li>";
+                if (ts.edge.result) {
+                    results = "<li>No data to show</li>";
+                }
+
 
                 // render a list of the values
                 if (ts.terms.length > 0) {
@@ -2427,6 +2431,344 @@ $.extend(true, doaj, {
                             ' + deleteLink + '\
                         </ul>\
                       </div>\
+                    </article>\
+                  </li>';
+
+                return frag;
+            };
+        },
+
+        newPublisherUpdateRequestRenderer : function(params) {
+            return edges.instantiate(doaj.renderers.PublisherUpdateRequestRenderer, params, edges.newRenderer);
+        },
+        PublisherUpdateRequestRenderer : function(params) {
+
+            this.actions = edges.getParam(params.actions, []);
+
+            this.namespace = "doaj-publisher-update-request";
+
+            this.statusMap = {
+                "accepted" : "Accepted to DOAJ",
+                "rejected" : "Application rejected",
+                "update_request" : "Pending",
+                "revisions_required" : "Revisions Required",
+                "pending" : "Pending",
+                "in progress" : "Under review by an editor",
+                "completed" : "Under review by an editor",
+                "on hold" : "Under review by an editor",
+                "ready" : "Under review by an editor"
+            };
+
+            this.draw = function () {
+                var frag = "You do not have any update requests yet";
+                if (this.component.results === false) {
+                    frag = "";
+                }
+
+                var results = this.component.results;
+                if (results && results.length > 0) {
+                    // now call the result renderer on each result to build the records
+                    frag = "";
+                    for (var i = 0; i < results.length; i++) {
+                        frag += this._renderResult(results[i]);
+                    }
+
+                    var deleteTitleClass = edges.css_classes(this.namespace, "delete-title", this);
+                    var deleteLinkClass = edges.css_classes(this.namespace, "delete-link", this);
+
+                    frag += '<section class="modal in" id="modal-delete-update-request" tabindex="-1" role="dialog" style="display: none;"> \
+                        <div class="modal__dialog" role="document">\
+                            <h2 class="modal__title">Delete this update request</h2>\
+                            <p>Are you sure you want to delete your update request for <span class="' + deleteTitleClass + '"></span></p> \
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '">Yes, delete it</a> <a class="button button--secondary" data-dismiss="modal" class="modal__close">No</a>\
+                        </div>\
+                    </section>';
+                }
+
+                this.component.context.html(frag);
+                feather.replace();
+
+                // bindings for delete link handling
+                var deleteSelector = edges.css_class_selector(this.namespace, "delete", this);
+                edges.on(deleteSelector, "click", this, "deleteLinkClicked");
+            };
+
+            this._renderResult = function(resultobj) {
+                var accessLink = this._accessLink(resultobj);
+
+                var titleText = "Untitled";
+                if (edges.hasProp(resultobj, "bibjson.title")) {
+                    titleText = edges.escapeHtml(resultobj.bibjson.title);
+                }
+                var title = titleText;
+                if (accessLink) {
+                    title = '<a href="' + accessLink[0] + '">' + title + '</a>';
+                }
+
+                var subtitle = "";
+                if (edges.hasProp(resultobj, "bibjson.alternative_title")) {
+                    subtitle = '<span class="search-results__subheading">' + edges.escapeHtml(resultobj.bibjson.alternative_title) + '</span>';
+                }
+
+                var status = "";
+                if (edges.hasProp(resultobj, "admin.application_status")) {
+                    status = this.statusMap[resultobj.admin.application_status];
+                    if (!status) {
+                        status = "Status is unspecified";
+                    }
+                } else {
+                    status = "Not yet submitted";
+                }
+
+                var completion = "";
+                if (resultobj.es_type === "draft_application") {
+                    // FIXME: how do we calculate completion
+                }
+
+                var last_updated = "Last updated ";
+                last_updated += doaj.humanDate(resultobj.last_updated);
+
+                var icon = "edit-3";
+                if (accessLink[1] === "View") {
+                    icon = "eye";
+                }
+                var viewOrEdit = '<li class="tag">\
+                    <a href="' + accessLink[0] + '">\
+                        <span data-feather="' + icon + '" aria-hidden="true"></span>\
+                        <span>' + accessLink[1] + '</span>\
+                    </a>\
+                </li>';
+
+                var deleteLink = "";
+                var deleteLinkTemplate = doaj.publisherUpdatesSearchConfig.deleteLinkTemplate;
+                var deleteLinkUrl = deleteLinkTemplate.replace("__application_id__", resultobj.id);
+                var deleteClass = edges.css_classes(this.namespace, "delete", this);
+                if (resultobj.es_type === "draft_application" ||
+                        resultobj.admin.application_status === "update_request") {
+                    deleteLink = '<li class="tag">\
+                        <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-application" class="' + deleteClass + '"\
+                            data-title="' + titleText + '">\
+                            <span data-feather="trash-2" aria-hidden="true"></span>\
+                            <span>Delete</span>\
+                        </a>\
+                    </li>';
+                }
+
+                var frag = '<li class="search-results__record">\
+                    <article class="row">\
+                      <div class="col-sm-4 search-results__main">\
+                        <header>\
+                          <h3 class="search-results__heading">\
+                            ' + title + '\
+                            ' + subtitle + '\
+                          </h3>\
+                        </header>\
+                      </div>\
+                      <aside class="col-sm-4 search-results__aside">\
+                        <h4 class="label">Status</h4>\
+                        <ul>\
+                          <li>\
+                            <strong>' + status + '</strong>\
+                          </li>\
+                          ' + completion + '\
+                          <li>\
+                            ' + last_updated + '\
+                          </li>\
+                        </ul>\
+                      </aside>\
+                      <div class="col-sm-4 search-results__aside">\
+                        <h4 class="label">Actions</h4>\
+                        <ul class="tags">\
+                            ' + viewOrEdit + '\
+                            ' + deleteLink + '\
+                        </ul>\
+                      </div>\
+                    </article>\
+                  </li>';
+
+                return frag;
+            };
+
+            this.deleteLinkClicked = function(element) {
+                var deleteTitleSelector = edges.css_class_selector(this.namespace, "delete-title", this);
+                var deleteLinkSelector = edges.css_class_selector(this.namespace, "delete-link", this);
+
+                var el = $(element);
+                var href = el.attr("href");
+                var title = el.attr("data-title");
+
+                this.component.jq(deleteTitleSelector).html(title);
+                this.component.jq(deleteLinkSelector).attr("href", href);
+            };
+
+            this._accessLink = function(resultobj) {
+                if (resultobj.es_type === "draft_application") {
+                    // if it's a draft, just link to the draft edit page
+                    return [doaj.publisherUpdatesSearchConfig.applyUrl + resultobj['id'], "Edit"];
+                } else {
+                    var status = resultobj.admin.application_status;
+
+                    // if it's an accepted application, link to the ToC
+                    if (status === "accepted") {
+                        var issn = resultobj.bibjson.issn;
+                        if (!issn) {
+                            issn = resultobj.bibjson.eissn;
+                        }
+                        if (issn) {
+                            issn = edges.escapeHtml(issn);
+                        }
+                        return [doaj.publisherUpdatesSearchConfig.tocUrl + issn, "View"];
+                        // otherwise just link to the view page
+                    } else {
+                        return [doaj.publisherUpdatesSearchConfig.journalReadOnlyUrl + resultobj['id'], "View"];
+                    }
+                }
+            };
+
+            this._renderPublicJournal = function(resultobj) {
+                var seal = "";
+                if (edges.objVal("admin.seal", resultobj, false)) {
+                    seal = '<a href="/apply/seal" class="tag tag--featured">\
+                            <span data-feather="check-circle" aria-hidden="true"></span>\
+                            DOAJ Seal\
+                          </a>';
+                }
+                var issn = resultobj.bibjson.issn;
+                if (!issn) {
+                    issn = resultobj.bibjson.eissn;
+                }
+                if (issn) {
+                    issn = edges.escapeHtml(issn);
+                }
+
+                var subtitle = "";
+                if (edges.hasProp(resultobj, "bibjson.alternative_title")) {
+                    subtitle = '<span class="search-results__subheading">' + edges.escapeHtml(resultobj.bibjson.alternative_title) + '</span>';
+                }
+
+                var published = "";
+                if (edges.hasProp(resultobj, "bibjson.publisher")) {
+                    var name = "";
+                    var country = "";
+                    if (resultobj.bibjson.publisher.name) {
+                        name = 'by <em>' + edges.escapeHtml(resultobj.bibjson.publisher.name) + '</em>';
+                    }
+                    if (resultobj.bibjson.publisher.country && edges.hasProp(resultobj, "index.country")) {
+                        country = 'in <strong>' + edges.escapeHtml(resultobj.index.country) + '</strong>';
+                    }
+                    published = 'Published ' + name + " " + country;
+                }
+
+                // add the subjects
+                var subjects = "";
+                if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
+                    subjects = "<li>" + resultobj.index.classification_paths.join("</li><li>") + "</li>";
+                }
+
+                var update_or_added = "";
+                if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
+                    update_or_added = 'Last updated on ' + doaj.humanDate(resultobj.last_manual_update);
+                } else {
+                    update_or_added = 'Added on ' + doaj.humanDate(resultobj.created_date);
+                }
+
+                // FIXME: this is to present the number of articles indexed, which is not information we currently possess
+                // at search time
+                var articles = "";
+
+                var apcs = '<li>';
+                if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
+                    apcs += "APCs: ";
+                    for (var i = 0; i < resultobj.bibjson.apc.max.length; i++) {
+                        apcs += "<strong>";
+                        var apcRecord = resultobj.bibjson.apc.max[i];
+                        if (apcRecord.hasOwnProperty("price")) {
+                            apcs += edges.escapeHtml(apcRecord.price);
+                        }
+                        if (apcRecord.currency) {
+                            apcs += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
+                        }
+                        apcs += "</strong>";
+                    }
+                } else {
+                    apcs += "<strong>No</strong> charges";
+                }
+                apcs += '</li>';
+
+                var licenses = "";
+                if (resultobj.bibjson.license && resultobj.bibjson.license.length > 0) {
+                    var terms_url = resultobj.bibjson.ref.license_terms;
+                    for (var i = 0; i < resultobj.bibjson.license.length; i++) {
+                        var lic = resultobj.bibjson.license[i];
+                        var license_url = lic.url || terms_url;
+                        licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + edges.escapeHtml(lic.type) + '</a>';
+                    }
+                }
+
+                var language = "";
+                if (resultobj.index.language && resultobj.index.language.length > 0) {
+                    language = '<li>\
+                              Accepts manuscripts in <strong>' + resultobj.index.language.join(", ") + '</strong>\
+                            </li>';
+                }
+
+                var actions = "";
+                if (this.actions.length > 0) {
+                    actions = '<h4 class="label">Actions</h4><ul class="tags">';
+                    for (var i = 0; i < this.actions.length; i++) {
+                        var act = this.actions[i];
+                        var actSettings = act(resultobj);
+                        if (actSettings) {
+                            actions += '<li class="tag">\
+                                <a href="' + actSettings.link + '">' + actSettings.label + '</a>\
+                            </li>';
+                        }
+                    }
+                    actions += '</ul>';
+                }
+
+                var frag = '<li class="search-results__record">\
+                    <article class="row">\
+                      <div class="col-sm-8 search-results__main">\
+                        <header>\
+                          ' + seal + '\
+                          <h3 class="search-results__heading">\
+                            <a href="/toc/' + issn + '">\
+                              ' + edges.escapeHtml(resultobj.bibjson.title) + '\
+                            </a>\
+                            ' + subtitle + '\
+                          </h3>\
+                        </header>\
+                        <div class="search-results__body">\
+                          <ul>\
+                            <li>\
+                              ' + published + '\
+                            </li>\
+                            ' + language + '\
+                          </ul>\
+                          <ul>\
+                            ' + subjects + '\
+                          <ul>\
+                        </div>\
+                      </div>\
+                      <aside class="col-sm-4 search-results__aside">\
+                        <ul>\
+                          <li>\
+                            ' + update_or_added + '\
+                          </li>\
+                          ' + articles + '\
+                          <li>\
+                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>\
+                          </li>\
+                          <li>\
+                            ' + apcs + '\
+                          </li>\
+                          <li>\
+                            ' + licenses + '\
+                          </li>\
+                        </ul>\
+                        ' + actions + '\
+                      </aside>\
                     </article>\
                   </li>';
 
