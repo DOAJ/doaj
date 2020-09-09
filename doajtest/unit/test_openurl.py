@@ -189,6 +189,3 @@ class TestOpenURL(DoajTestCase):
                 assert resp.status_code == 301
                 resp = t_client.get(resp.location)
                 assert resp.status_code == 404
-
-
-
