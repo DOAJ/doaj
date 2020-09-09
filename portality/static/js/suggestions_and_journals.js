@@ -19,7 +19,7 @@ jQuery(document).ready(function($) {
 
         function success_callback(data) {
             var newWindow = window.open('', '_self', ''); //open the current window
-            window.close(url);
+            window.close();
         }
 
         function error_callback(jqXHR, textStatus, errorThrown) {

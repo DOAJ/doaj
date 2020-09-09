@@ -1767,7 +1767,8 @@ button[type="submit"] {
     padding: 0.75rem 0;
     border-top: 1px dashed rgba(92, 89, 86, 0.5); }
     .editorial-panel fieldset:first-of-type {
-      border: 0; }
+      border: 0;
+      margin-bottom: 0.75rem; }
   @media (min-width: 992px) {
     .editorial-panel {
       position: fixed;
