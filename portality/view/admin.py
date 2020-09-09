@@ -365,7 +365,7 @@ def application(application_id):
                 flash(str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(lock=lockinfo, form_diff=form_diff, current_journal=current_journal)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])
