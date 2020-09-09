@@ -1,6 +1,6 @@
 {% extends "publisher/publisher_base.html" %}
 
-{% block tabs_content %}
+{% block publisher_content %}
 <div id="crossref-alert" class="alert-messages">
    <div class="alert alert-message fade in" data-alert="alert">
        <a class="close" data-dismiss="alert" href="#">×</a>
@@ -13,8 +13,8 @@
               <div class="alert">
                 <p>Uploaded files must conform to one of the approved XML formats:</p>
                 <ul>
-                  <li><a href="/portality/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
-                  <li><a href="/portality/static/crossref/crossref4.4.2.xsd">Crossref 4.4.2 XML</a></li>
+                  <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
+                  <li><a href="/static/crossref/crossref4.4.2.xsd">Crossref 4.4.2 XML</a></li>
                 </ul>
               </div>
             </header>
