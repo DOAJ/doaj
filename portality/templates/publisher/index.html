@@ -10,7 +10,7 @@
     <script type="text/javascript">
     $.extend(true, doaj, {
         publisherApplicationsSearchConfig : {
-            journalReadOnlyUrl : "{{ url_for('publisher.update_request_readonly', application_id="") }}",
+            journalReadOnlyUrl : "{{ url_for('publisher.application_readonly', application_id="") }}",
             tocUrl : "{{ url_for('doaj.toc', identifier="") }}",
             editPendingUrl : "FIXME",
             applyUrl: "{{ url_for('apply.public_application', draft_id="") }}",

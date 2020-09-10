@@ -1714,7 +1714,7 @@ class ApplicationContextDefinitions:
     READ_ONLY = deepcopy(PUBLIC)
     READ_ONLY["name"] = "application_read_only"
     READ_ONLY["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
-    READ_ONLY["templates"]["form"] = "application_form/application_read_only.html"
+    READ_ONLY["templates"]["form"] = "application_form/readonly_application.html"
 
     ASSOCIATE = deepcopy(PUBLIC)
     ASSOCIATE["name"] = "associate_editor"

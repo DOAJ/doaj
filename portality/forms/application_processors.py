@@ -726,6 +726,16 @@ class PublisherUpdateRequest(ApplicationProcessor):
             raise e
 
 
+class PublisherUpdateRequestReadOnly(ApplicationProcessor):
+    """
+    Read Only Application form for publishers. Nothing can be changed. Useful to show publishers what they
+    currently have submitted for review
+    """
+
+    def finalise(self):
+        raise Exception("You cannot edit applications using the read-only form")
+
+
 ###############################################
 ### Journal form processors
 ###############################################

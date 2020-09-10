@@ -138,11 +138,11 @@ def update_request(journal_id):
             return fc.render_template(obj=application)
 
 
-@blueprint.route("/view_update_request/<application_id>", methods=["GET", "POST"])
+@blueprint.route("/view_application/<application_id>", methods=["GET"])
 @login_required
 @ssl_required
 @write_required()
-def update_request_readonly(application_id):
+def application_readonly(application_id):
     # DOAJ BLL for this request
     applicationService = DOAJ.applicationService()
     authService = DOAJ.authorisationService()
@@ -153,8 +153,18 @@ def update_request_readonly(application_id):
     except AuthoriseException as e:
         abort(404)
 
-    fc = formcontext.ApplicationFormFactory.get_form_context(role="update_request_readonly", source=application)
-    return fc.render_template(no_sidebar=True)
+    fc = ApplicationFormFactory.context("application_read_only")
+    fc.processor(source=application)
+    # fc = formcontext.ApplicationFormFactory.get_form_context(role="update_request_readonly", source=application)
+    return fc.render_template(obj=application)
+
+
+@blueprint.route("/view_update_request/<application_id>", methods=["GET", "POST"])
+@login_required
+@ssl_required
+@write_required()
+def update_request_readonly(application_id):
+    return redirect(url_for("publisher.application_readonly", application_id=application_id))
 
 
 @blueprint.route('/progress')
