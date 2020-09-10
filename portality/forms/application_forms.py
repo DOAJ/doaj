@@ -159,6 +159,9 @@ class FieldDefinitions:
             },
             "associate_editor": {
                 "disabled": True
+            },
+            "update_request": {
+                "disabled": True
             }
         }
     }
@@ -221,7 +224,15 @@ class FieldDefinitions:
                 "disabled": True
             },
             "update_request": {
-                "disabled": True
+                "disabled": True,
+                "validate" : [
+                    {"optional_if": {"field": "eissn",
+                                     "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                    {"is_issn": {"message": "This is not a valid ISSN"}},
+                    {"different_to": {"field": "eissn",
+                                      "message": "This field must contain a different value to 'ISSN ("
+                                                 "online)'"}}
+                ]
             }
         },
         "asynchronous_warnings": [
@@ -257,7 +268,14 @@ class FieldDefinitions:
                 "disabled": True
             },
             "update_request": {
-                "disabled": True
+                "disabled": True,
+                "validate" : [
+                    {"optional_if": {"field": "pissn",
+                                     "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                    {"is_issn": {"message": "This is not a valid ISSN"}},
+                    {"different_to": {"field": "pissn",
+                                      "message": "This field must contain a different value to 'ISSN (print)'"}}
+                ]
             }
         },
         "asynchronous_warnings": [
@@ -441,7 +459,7 @@ class FieldDefinitions:
             {"display": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
             {"display": "CC0", "value": "CC0"},
             {"display": "Public domain", "value": "Public domain"},
-            {"display": "Publisher’s own license", "value": "Publisher’s own license", "exclusive": True, "subfields": ["license_attributes"]},
+            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True, "subfields": ["license_attributes"]},
         ],
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
@@ -1690,8 +1708,13 @@ class ApplicationContextDefinitions:
 
     UPDATE = deepcopy(PUBLIC)
     UPDATE["name"] = "update_request"
-    UPDATE["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
-    UPDATE["templates"]["form"] = "application_form/update_request.html"
+    UPDATE["processor"] = application_processors.PublisherUpdateRequest
+    UPDATE["templates"]["form"] = "application_form/publisher_update_request.html"
+
+    READ_ONLY = deepcopy(PUBLIC)
+    READ_ONLY["name"] = "application_read_only"
+    READ_ONLY["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
+    READ_ONLY["templates"]["form"] = "application_form/application_read_only.html"
 
     ASSOCIATE = deepcopy(PUBLIC)
     ASSOCIATE["name"] = "associate_editor"
@@ -1818,6 +1841,7 @@ APPLICATION_FORMS = {
     "contexts": {
         ApplicationContextDefinitions.PUBLIC["name"]: ApplicationContextDefinitions.PUBLIC,
         ApplicationContextDefinitions.UPDATE["name"]: ApplicationContextDefinitions.UPDATE,
+        ApplicationContextDefinitions.READ_ONLY["name"]: ApplicationContextDefinitions.READ_ONLY,
         ApplicationContextDefinitions.ASSOCIATE["name"]: ApplicationContextDefinitions.ASSOCIATE,
         ApplicationContextDefinitions.EDITOR["name"]: ApplicationContextDefinitions.EDITOR,
         ApplicationContextDefinitions.MANED["name"]: ApplicationContextDefinitions.MANED

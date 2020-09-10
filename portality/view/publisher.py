@@ -8,6 +8,7 @@ from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.formcontext import formcontext
+from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 from portality.ui.messages import Messages
 from portality import lock
@@ -107,29 +108,34 @@ def update_request(journal_id):
         if alock is not None: alock.delete()
         return redirect(url_for("publisher.updates_in_progress"))
 
+    fc = ApplicationFormFactory.context("update_request")
+
     # if we are requesting the page with a GET, we just want to show the form
     if request.method == "GET":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=application)
-        return fc.render_template(edit_suggestion_page=True)
+        fc.processor(source=application)
+        return fc.render_template(obj=application)
+        #fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=application)
+        #return fc.render_template(edit_suggestion_page=True)
 
     # if we are requesting the page with a POST, we need to accept the data and handle it
     elif request.method == "POST":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=request.form, source=application)
-        if fc.validate():
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=request.form, source=application)
+        processor = fc.processor(formdata=request.form, source=application)
+        if processor.validate():
             try:
-                fc.finalise()
+                processor.finalise()
                 Messages.flash(Messages.APPLICATION_UPDATE_SUBMITTED_FLASH)
                 for a in fc.alert:
                     Messages.flash_with_url(a, "success")
                 return redirect(url_for("publisher.updates_in_progress"))
-            except formcontext.FormContextException as e:
+            except Exception as e:
                 Messages.flash(str(e))
                 return redirect(url_for("publisher.update_request", journal_id=journal_id, _anchor='cannot_edit'))
             finally:
                 if jlock is not None: jlock.delete()
                 if alock is not None: alock.delete()
         else:
-            return fc.render_template(edit_suggestion_page=True)
+            return fc.render_template(obj=application)
 
 
 @blueprint.route("/view_update_request/<application_id>", methods=["GET", "POST"])

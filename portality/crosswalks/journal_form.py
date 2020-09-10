@@ -220,11 +220,12 @@ class JournalGenericXWalk(object):
 
     @classmethod
     def form2admin(cls, form, obj):
-        for formnote in form.notes.data:
-            if formnote["note"]:
-                note_date = formnote["note_date"]
-                note_id = formnote["note_id"]
-                obj.add_note(formnote["note"], date=note_date, id=note_id)
+        if getattr(form, "notes", None):
+            for formnote in form.notes.data:
+                if formnote["note"]:
+                    note_date = formnote["note_date"]
+                    note_id = formnote["note_id"]
+                    obj.add_note(formnote["note"], date=note_date, id=note_id)
 
         if getattr(form, 'owner', None):
             owner = form.owner.data

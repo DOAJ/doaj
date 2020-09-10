@@ -611,6 +611,121 @@ class AssociateApplication(ApplicationProcessor):
                 app.logger.exception('Error sending completed status email to editor - ' + magic)
 
 
+class PublisherUpdateRequest(ApplicationProcessor):
+
+    def pre_validate(self):
+        if self.source is None:
+            raise Exception("You cannot validate a form from a non-existent source")
+
+        super(ApplicationProcessor, self).pre_validate()
+
+        # carry forward the disabled fields
+        bj = self.source.bibjson()
+        self.form.title.data = bj.title
+        self.form.alternative_title.data = bj.alternative_title
+
+        pissn = bj.pissn
+        if pissn == "": pissn = None
+        self.form.pissn.data = pissn
+
+        eissn = bj.eissn
+        if eissn == "": eissn = None
+        self.form.eissn.data = eissn
+
+    def patch_target(self):
+        if self.source is None:
+            raise Exception("You cannot patch a target from a non-existent source")
+
+        self._carry_subjects_and_seal()
+        self._carry_fixed_aspects()
+        self._merge_notes_forward()
+        self.target.set_owner(self.source.owner)
+        self.target.set_editor_group(self.source.editor_group)
+        self.target.set_editor(self.source.editor)
+        self._carry_continuations()
+
+        # we carry this over for completeness, although it will be overwritten in the finalise() method
+        self.target.set_application_status(self.source.application_status)
+
+    def finalise(self, save_target=True, email_alert=True):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+        if self.source is None:
+            raise Exception("You cannot edit a not-existent application")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(PublisherUpdateRequest, self).finalise()
+
+        # set the status to update_request (if not already)
+        self.target.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
+
+        # Save the target
+        self.target.set_last_manual_update()
+        if save_target:
+            saved = self.target.save()
+            if saved is None:
+                raise Exception("Save on application failed")
+
+        # obtain the related journal, and attach the current application id to it
+        journal_id = self.target.current_journal
+        from portality.bll.doaj import DOAJ
+        journalService = DOAJ.journalService()
+        if journal_id is not None:
+            journal, _ = journalService.journal(journal_id)
+            if journal is not None:
+                journal.set_current_application(self.target.id)
+                if save_target:
+                    saved = journal.save()
+                    if saved is None:
+                        raise Exception("Save on journal failed")
+            else:
+                self.target.remove_current_journal()
+
+        # email the publisher to tell them we received their update request
+        if email_alert:
+            try:
+                self._send_received_email()
+            except app_email.EmailException as e:
+                self.add_alert("We were unable to send you an email confirmation - possible problem with your email address")
+                app.logger.exception('Error sending reapplication received email to publisher')
+
+    def _carry_subjects_and_seal(self):
+        # carry over the subjects
+        source_subjects = self.source.bibjson().subject
+        self.target.bibjson().subject = source_subjects
+
+        # carry over the seal
+        self.target.set_seal(self.source.has_seal())
+
+    def _send_received_email(self):
+        acc = models.Account.pull(self.target.owner)
+        if acc is None:
+            self.add_alert("Unable to locate account for specified owner")
+            return
+
+        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
+
+        to = [acc.email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - update request received"
+
+        try:
+            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                app_email.send_mail(to=to,
+                                    fro=fro,
+                                    subject=subject,
+                                    template_name="email/publisher_update_request_received.txt",
+                                    journal_name=journal_name,
+                                    username=self.target.owner
+                )
+                self.add_alert('A confirmation email has been sent to ' + acc.email + '.')
+        except app_email.EmailException as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the "update request received" email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
+
 ###############################################
 ### Journal form processors
 ###############################################

@@ -5,7 +5,7 @@ import rstr
 
 from portality import constants
 from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED
-from doajtest.fixtures.v2.journals import JOURNAL_SOURCE, JOURNAL_FORM_EXPANDED
+from doajtest.fixtures.v2.journals import JOURNAL_SOURCE, JOURNAL_FORM_EXPANDED, JOURNAL_FORM
 from portality.formcontext import forms
 from portality.lib import dates
 from portality.models.v2.application import Application
@@ -48,16 +48,9 @@ class ApplicationFixtureFactory(object):
         if role == "assed" or role == "editor":
             del form["editor_group"]
         elif role == "publisher":
-            UPDATE_REQUEST_FORMINFO = deepcopy(JOURNAL_FORM_EXPANDED)
-            UPDATE_REQUEST_FORMINFO.update(deepcopy(SUGGESTION))
-
-            form = deepcopy(UPDATE_REQUEST_FORMINFO)
-            form["keywords"] = ",".join(form["keywords"])
+            form = deepcopy(JOURNAL_FORM)
             del form["pissn"]
             del form["eissn"]
-            del form["contact_name"]
-            del form["contact_email"]
-            del form["confirm_contact_email"]
 
         return form
 

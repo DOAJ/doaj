@@ -146,6 +146,6 @@ def application(application_id):
                 return redirect(url_for("editor.application", application_id=ap.id, _anchor='done'))
             except Exception as e:
                 flash(str(e))
-                return fc.render_template()
+                return fc.render_template(obj=ap)
         else:
-            return fc.render_template()
+            return fc.render_template(obj=ap)
