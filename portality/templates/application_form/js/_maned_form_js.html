@@ -43,4 +43,34 @@
         e.preventDefault();
         $("#modal-quick_reject").show();
     })
+
+    let unlock = (params) => {
+        let type = params.type;
+        let id = params.id;
+
+        let success_callback = (data) => {
+            window.open('', '_self', ''); //open the current window
+            window.close();
+        }
+
+        let error_callback = (jqXHR, textStatus, errorThrown) => {
+            alert("error releasing lock: " + textStatus + " " + errorThrown)
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/service/unlock/" + type + "/" + id,
+            contentType: "application/json",
+            dataType: "json",
+            success : success_callback,
+            error: error_callback
+        })
+    }
+
+    $("#unlock").click(function(event) {
+        event.preventDefault();
+        let id = $(this).attr("data-id");
+        let type = $(this).attr("data-type");
+        unlock({type : type, id : id})
+    });
 </script>
