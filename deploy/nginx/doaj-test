@@ -5,6 +5,15 @@ server {
     return 301 https://$host$request_uri;
 }
 
+upstream doaj_apps {
+    server localhost:5050;
+}
+
+upstream doaj_index {
+    server 10.131.191.132:9200;
+    server 10.131.191.133:9200;
+}
+
 server {
     listen          443 ssl;
     server_name     testdoaj.cottagelabs.com;
@@ -19,7 +28,7 @@ server {
     client_max_body_size 50M;
 
     location / {
-        proxy_pass http://localhost:5050/;
+        proxy_pass http://doaj_apps;
     }
     location =/robots.txt {
         alias /home/cloo/doaj/src/doaj/deploy/robots-test.txt;
@@ -42,7 +51,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/testdoaj.cottagelabs.com/privkey.pem;
 
     location / {
-        proxy_pass http://localhost:9200;
+        proxy_pass http://doaj_index;
     }
 }
 
