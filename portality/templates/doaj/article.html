@@ -84,7 +84,7 @@ hosted on DOAJ.org) #}
 
       <h1>
         {%  if bibjson.title %}
-        {{bibjson.title}}
+        {{ bibjson.title | safe }}
         {% else %}
         <em>[Article title missing]</em>
         {% endif %}
