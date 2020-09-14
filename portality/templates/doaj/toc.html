@@ -17,12 +17,12 @@ journal-details
 {% block content %}
 
 {%- set CC_MAP = {
-        "CC BY" : ["/static/doaj/images/cc/by.png", "https://creativecommons.org/licenses/by/4.0/", ["svg/cc.svg", "svg/by.svg"]],
-        "CC BY-NC" : ["/static/doaj/images/cc/by-nc.png", "https://creativecommons.org/licenses/by-nc/4.0/", ["svg/cc.svg", "svg/by.svg"]],
-        "CC BY-NC-ND" : ["/static/doaj/images/cc/by-nc-nd.png", "https://creativecommons.org/licenses/by-nc-nd/4.0/", ["svg/cc.svg", "svg/by.svg"]],
-        "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "https://creativecommons.org/licenses/by-nc-sa/4.0/", ["svg/cc.svg", "svg/by.svg"]],
-        "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "https://creativecommons.org/licenses/by-nd/4.0/", ["svg/cc.svg", "svg/by.svg"]],
-        "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "https://creativecommons.org/licenses/by-sa/4.0/", ["svg/cc.svg", "svg/by.svg"]]
+        "CC BY" : ["/static/doaj/images/cc/by.png", "https://creativecommons.org/licenses/by/4.0/", ["by"]],
+        "CC BY-NC" : ["/static/doaj/images/cc/by-nc.png", "https://creativecommons.org/licenses/by-nc/4.0/", ["by", "nc"]],
+        "CC BY-NC-ND" : ["/static/doaj/images/cc/by-nc-nd.png", "https://creativecommons.org/licenses/by-nc-nd/4.0/", ["by", "nc", "nd"]],
+        "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "https://creativecommons.org/licenses/by-nc-sa/4.0/", ["by", "nc", "sa"]],
+        "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "https://creativecommons.org/licenses/by-nd/4.0/", ["by", "nd"]],
+        "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "https://creativecommons.org/licenses/by-sa/4.0/", ["by", "sa"]]
     }
 -%}
 
@@ -235,18 +235,19 @@ journal-details
                 </p>
                 <p>
                   {% for license in bibjson.licenses %}
-                      {%  set ldata = CC_MAP.get(license.type) %}
-                      <a href="{{ ldata[1] }}" target="_blank" rel="noopener">
-                        <img src="{{ ldata[0] }}">
-                        {#  FIXME: not sure where these svgs are
-                          {% if license == "CC BY" %}
-                          {% include svg/cc.svg %} {% include svg/by.svg %}
-                          {% elsif license == "CC BY-NC" %}
-                          {% include svg/cc.svg %} {% include svg/by.svg %} {% include svg/nc.svg %}
-                          {% endif %}
-                        #}
-                      {% if loop.last %}{% else %}<br/>{% endif %}
-                    </a>
+                    {%  set ldata = CC_MAP.get(license.type) %}
+                    <a href="{{ ldata[1] }}" target="_blank" rel="noopener" style="text-decoration: none;">
+                      {% include 'svg/cc.svg' %}
+                      {% for license_option in ldata[2] %}
+                      {# TODO: how do we display public domain licenses + publishers’ own? #}
+                      {# TODO: there’s probably a better way to do this #}
+                        {% if license_option == 'by' %}{% include 'svg/by.svg' %}{% endif %}
+                        {% if license_option == 'nc' %}{% include 'svg/nc.svg' %}{% endif %}
+                        {% if license_option == 'nd' %}{% include 'svg/nd.svg' %}{% endif %}
+                        {% if license_option == 'sa' %}{% include 'svg/sa.svg' %}{% endif %}
+                      {% endfor %}
+                    {% if loop.last %}{% else %}<br/>{% endif %}
+                  </a>
                   {% endfor %}
                 </p>
                 {% endif %}
