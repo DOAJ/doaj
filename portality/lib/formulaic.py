@@ -840,8 +840,7 @@ class FormProcessor(object):
         """
         Patch the target with data from the source.  This will be run by the finalise method (unless you override it)
         """
-        if self.source is None:
-            raise Exception("Can't patch a target from a non-existent source")
+        pass
 
     def finalise(self, *args, **kwargs):
         """
