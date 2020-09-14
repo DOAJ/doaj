@@ -7,7 +7,7 @@
     color: $dark-grey;
     font-weight: 400;
   }
-  
+
   .three-col {
     display: flex;
     justify-content: space-between;
@@ -29,5 +29,9 @@
         width: calc(100%/3 - 40px);
       }
     }
+  }
+
+  .tabs__menu {
+    margin-bottom: $spacing-04;
   }
 }
