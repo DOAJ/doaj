@@ -17,12 +17,13 @@ journal-details
 {% block content %}
 
 {%- set CC_MAP = {
-        "CC BY" : ["/static/doaj/images/cc/by.png", "https://creativecommons.org/licenses/by/4.0/", ["by"]],
-        "CC BY-NC" : ["/static/doaj/images/cc/by-nc.png", "https://creativecommons.org/licenses/by-nc/4.0/", ["by", "nc"]],
-        "CC BY-NC-ND" : ["/static/doaj/images/cc/by-nc-nd.png", "https://creativecommons.org/licenses/by-nc-nd/4.0/", ["by", "nc", "nd"]],
-        "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "https://creativecommons.org/licenses/by-nc-sa/4.0/", ["by", "nc", "sa"]],
-        "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "https://creativecommons.org/licenses/by-nd/4.0/", ["by", "nd"]],
-        "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "https://creativecommons.org/licenses/by-sa/4.0/", ["by", "sa"]]
+        "CC BY" : ["https://creativecommons.org/licenses/by/4.0/", ["by"]],
+        "CC BY-NC" : ["https://creativecommons.org/licenses/by-nc/4.0/", ["by", "nc"]],
+        "CC BY-NC-ND" : ["https://creativecommons.org/licenses/by-nc-nd/4.0/", ["by", "nc", "nd"]],
+        "CC BY-NC-SA" : ["https://creativecommons.org/licenses/by-nc-sa/4.0/", ["by", "nc", "sa"]],
+        "CC BY-ND" : ["https://creativecommons.org/licenses/by-nd/4.0/", ["by", "nd"]],
+        "CC BY-SA" : ["https://creativecommons.org/licenses/by-sa/4.0/", ["by", "sa"]],
+        "Public Domain" : ["https://creativecommons.org/publicdomain/zero/1.0/", ["zero"]],
     }
 -%}
 
@@ -238,13 +239,14 @@ journal-details
                     {%  set ldata = CC_MAP.get(license.type) %}
                     <a href="{{ ldata[1] }}" target="_blank" rel="noopener" style="text-decoration: none;">
                       {% include 'svg/cc.svg' %}
-                      {% for license_option in ldata[2] %}
+                      {% for license_option in ldata[1] %}
                       {# TODO: how do we display public domain licenses + publishers’ own? #}
                       {# TODO: there’s probably a better way to do this #}
                         {% if license_option == 'by' %}{% include 'svg/by.svg' %}{% endif %}
                         {% if license_option == 'nc' %}{% include 'svg/nc.svg' %}{% endif %}
                         {% if license_option == 'nd' %}{% include 'svg/nd.svg' %}{% endif %}
                         {% if license_option == 'sa' %}{% include 'svg/sa.svg' %}{% endif %}
+                        {% if license_option == 'zero' %}{% include 'svg/zero.svg' %}{% endif %}
                       {% endfor %}
                     {% if loop.last %}{% else %}<br/>{% endif %}
                   </a>
