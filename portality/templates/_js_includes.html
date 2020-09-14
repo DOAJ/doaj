@@ -2,7 +2,9 @@
 <script type="text/javascript" src="/static/vendor/jquery-3.4.0/jquery-3.4.0.min.js"></script>
 
 <!-- get bootstrap js -->
-<script type="text/javascript" src="/static/vendor/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+{# TODO: this is probably not the right place to keep this file #}
+{# I’m using a much smaller & reduced version of Boostrap’s JS, with some modified classes and only the components we need #}
+<script type="text/javascript" src="/static_content/_site/js/vendors/bootstrap.js"></script>
 
 {% if not config.get("DEBUG", True) %}
     <!-- Global Site Tag (gtag.js) - Google Analytics -->
@@ -35,7 +37,7 @@
     {% endif %}
 {% endif %}
 
-{# FIXNE: do we need these any more? #}
+{# FIXME: do we need these any more? #}
 <!-- get tablesorter -->
 <script type="text/javascript" src="/static/vendor/tablesorter-2.3.10/js/jquery.tablesorter.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
