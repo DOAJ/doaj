@@ -866,7 +866,7 @@ var formulaic = {
                     placeholder: "Start typing…",
                     allowClear: false,
                     tags: true,
-                    tokenSeparators: [','],
+                    tokenSeparators: [',', ";"],
                     maximumSelectionSize: this.args["maximumSelectionSize"],
                     width: 'resolve'
                 });
