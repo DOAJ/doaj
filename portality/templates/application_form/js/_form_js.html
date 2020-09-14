@@ -30,7 +30,8 @@
         {#$("form").parsley(parsleyConfig);#}
 
     });
-
+</script>
+<script type="text/javascript">
     window.Parsley.addValidator("requiredIf", {
         validateString : function(value, requirement, parsleyInstance) {
             let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
@@ -275,18 +276,24 @@
     let savedraft = () => {
         let form = $(".application_form");
         $(form).attr('novalidate', 'novalidate');
-        let input = $("<input>")
+        var draftEl = $("input[name=draft]");
+        if (draftEl.length === 0) {
+            let input = $("<input>")
                .attr("type", "hidden")
                .attr("name", "draft").val(true);
+            form.append($(input));
+        } else {
+            draftEl.val(true);
+        }
 
         //let input2 = $("<input>")
         //       .attr("type", "hidden")
         //       .attr("name", "draft_id").val($(form).attr("id"));
-        form.append($(input));
+
         //form.append($(input2));
 
-        //let parsleyForm = $(form).parsley();
-        //parsleyForm.destroy();
+        let parsleyForm = $(form).parsley();
+        parsleyForm.destroy();
         /*
         parsleyForm.validate()
         let result = true;

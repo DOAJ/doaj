@@ -2259,6 +2259,7 @@ $.extend(true, doaj, {
             this.namespace = "doaj-publisher-application";
 
             this.statusMap = {
+                "draft" : "Not yet submitted",
                 "accepted" : "Accepted to DOAJ",
                 "rejected" : "Application rejected",
                 "update_request" : "Pending",
