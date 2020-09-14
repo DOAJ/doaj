@@ -172,16 +172,21 @@ hosted on DOAJ.org) #}
         <h2 class="sr-only">Keywords</h2>
         <ul class="tags">
           {% for j in bibjson.keywords %}
-          <li class="tag">{{ j }}</li>
+          <li class="tag">
+            {# TODO: replace with pre-defined query #}
+            <a href="../search/articles?ref=homepage-box&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ j }}%22%2C%22default_operator%22%3A%22AND%22%7D%7D%7D">
+              {{ j }}
+            </a>
+          </li>
           {% endfor %}
         </ul>
         {% endif %}
 
         {% if doi %}
-        <!-- Dimensions badges -->
+        {# Dimensions badge #}
         <p>
           <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
-          <span class="__dimensions_badge_embed__" data-doi="{{ normalised_doi }}" data-legend="never"></span>
+          <span class="__dimensions_badge_embed__" data-doi="{{ normalised_doi }}" data-legend="never" data-hide-zero-citations="true"></span>
         </p>
         {% endif %}
       </section>
