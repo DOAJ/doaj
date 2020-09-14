@@ -236,7 +236,9 @@ journal-details
                 </p>
                 <p>
                   {% for license in bibjson.licenses %}
-                    {%  set ldata = CC_MAP.get(license.type) %}
+                  {% set ldata = CC_MAP.get(license.type) %}
+                  {% if license.type == "Publisher's own license" %}
+                  {% else %}
                     <a href="{{ ldata[1] }}" target="_blank" rel="noopener" style="text-decoration: none;">
                       {% include 'svg/cc.svg' %}
                       {% for license_option in ldata[1] %}
@@ -250,6 +252,7 @@ journal-details
                       {% endfor %}
                     {% if loop.last %}{% else %}<br/>{% endif %}
                   </a>
+                  {% endif %}
                   {% endfor %}
                 </p>
                 {% endif %}
