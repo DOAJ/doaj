@@ -125,7 +125,7 @@ function setCookieConsent(event) {
         type: "GET",
         url: "/cookie_consent",
         success: function() {
-            $("#cookie-consent-banner").remove();
+            $("#cookie-consent").remove();
         },
         error : function() {
             alert("We weren't able to set your cookie consent preferences, please try again later.");
