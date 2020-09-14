@@ -2529,6 +2529,7 @@ $.extend(true, doaj, {
                 var last_updated = "Last updated ";
                 last_updated += doaj.humanDate(resultobj.last_updated);
 
+                /*
                 var icon = "edit-3";
                 if (accessLink[1] === "View") {
                     icon = "eye";
@@ -2539,6 +2540,7 @@ $.extend(true, doaj, {
                         <span>' + accessLink[1] + '</span>\
                     </a>\
                 </li>';
+                 */
 
                 var deleteLink = "";
                 var deleteLinkTemplate = doaj.publisherUpdatesSearchConfig.deleteLinkTemplate;
@@ -2554,6 +2556,24 @@ $.extend(true, doaj, {
                         </a>\
                     </li>';
                 }
+
+                var actions = "";
+                if (this.actions.length > 0) {
+                    actions = '<h4 class="label">Actions</h4><ul class="tags">';
+                    for (var i = 0; i < this.actions.length; i++) {
+                        var act = this.actions[i];
+                        var actSettings = act(resultobj);
+                        if (actSettings) {
+                            actions += '<li class="tag">\
+                                <a href="' + actSettings.link + '">' + actSettings.label + '</a>\
+                            </li>';
+                        }
+                    }
+                    actions += deleteLink;
+                    actions += '</ul>';
+                }
+
+
 
                 var frag = '<li class="search-results__record">\
                     <article class="row">\
@@ -2578,11 +2598,7 @@ $.extend(true, doaj, {
                         </ul>\
                       </aside>\
                       <div class="col-sm-4 search-results__aside">\
-                        <h4 class="label">Actions</h4>\
-                        <ul class="tags">\
-                            ' + viewOrEdit + '\
-                            ' + deleteLink + '\
-                        </ul>\
+                        ' + actions + '\
                       </div>\
                     </article>\
                   </li>';
@@ -2603,26 +2619,21 @@ $.extend(true, doaj, {
             };
 
             this._accessLink = function(resultobj) {
-                if (resultobj.es_type === "draft_application") {
-                    // if it's a draft, just link to the draft edit page
-                    return [doaj.publisherUpdatesSearchConfig.applyUrl + resultobj['id'], "Edit"];
-                } else {
-                    var status = resultobj.admin.application_status;
+                var status = resultobj.admin.application_status;
 
-                    // if it's an accepted application, link to the ToC
-                    if (status === "accepted") {
-                        var issn = resultobj.bibjson.issn;
-                        if (!issn) {
-                            issn = resultobj.bibjson.eissn;
-                        }
-                        if (issn) {
-                            issn = edges.escapeHtml(issn);
-                        }
-                        return [doaj.publisherUpdatesSearchConfig.tocUrl + issn, "View"];
-                        // otherwise just link to the view page
-                    } else {
-                        return [doaj.publisherUpdatesSearchConfig.journalReadOnlyUrl + resultobj['id'], "View"];
+                // if it's an accepted application, link to the ToC
+                if (status === "accepted") {
+                    var issn = resultobj.bibjson.issn;
+                    if (!issn) {
+                        issn = resultobj.bibjson.eissn;
                     }
+                    if (issn) {
+                        issn = edges.escapeHtml(issn);
+                    }
+                    return [doaj.publisherUpdatesSearchConfig.tocUrl + issn, "View"];
+                    // otherwise just link to the view page
+                } else {
+                    return [doaj.publisherUpdatesSearchConfig.journalReadOnlyUrl + resultobj['id'], "View"];
                 }
             };
 

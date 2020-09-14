@@ -14,7 +14,7 @@ $.extend(true, doaj, {
             if (resultobj.admin && resultobj.admin.current_application) {
                 var idquery = '%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22' + resultobj['id'] + '%22%7D%7D%7D';
                 result.link = doaj.publisherJournalsSearchConfig.journalUpdateRequestsUrl + "?source=" + idquery;
-                result.label = 'View current update request';
+                result.label = 'View Update';
             } else {
                 result.link = doaj.publisherJournalsSearchConfig.journalUpdateUrl + resultobj['id'];
                 result.label = 'Update';

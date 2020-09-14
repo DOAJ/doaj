@@ -15,12 +15,13 @@ $.extend(true, doaj, {
                 var result = {label : "", link : ""};
                 var status = resultobj.admin.application_status;
                 result.link = doaj.publisherUpdatesSearchConfig.journalReadOnlyUrl + resultobj['id'];
-                result.label = "View";
+                result.label = '<span data-feather="eye" aria-hidden="true"></span><span>View</span>';
 
                 if (status === "update_request" || status === "revisions_required") {
                     result.link = doaj.publisherUpdatesSearchConfig.journalUpdateUrl + resultobj.admin.current_journal;
-                    result.label = "Edit";
+                    result.label = '<span data-feather="edit-3" aria-hidden="true"></span><span>Edit</span>';
                 }
+                return result;
             }
             return false;
         },
@@ -122,23 +123,30 @@ $.extend(true, doaj, {
                 //     })
                 // }),
 
+                edges.newPager({
+                    id: "rpp",
+                    category: "pager",
+                    renderer : doaj.renderers.newPageSizeRenderer({
+                        sizeOptions: [50, 100, 200],
+                        sizeLabel: "Results per page"
+                    })
+                }),
+
                 // the pager, with the explicitly set page size options (see the openingQuery for the initial size)
                 edges.newPager({
                     id: "top-pager",
                     category: "top-pager",
-                    renderer: edges.bs3.newPagerRenderer({
-                        sizeOptions: [10, 25, 50, 100],
+                    renderer : doaj.renderers.newPagerRenderer({
                         numberFormat: countFormat,
-                        scrollSelector: "html, body"
+                        scrollSelector: "#top-pager"
                     })
                 }),
                 edges.newPager({
                     id: "bottom-pager",
                     category: "bottom-pager",
-                    renderer: edges.bs3.newPagerRenderer({
-                        sizeOptions: [10, 25, 50, 100],
+                    renderer : doaj.renderers.newPagerRenderer({
                         numberFormat: countFormat,
-                        scrollSelector: "html, body"
+                        scrollSelector: "#top-pager"    // FIXME: these selectors don't work, why not?
                     })
                 }),
 
@@ -302,7 +310,8 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays: {
                         'admin.application_status.exact': 'Application Status'
-                    }
+                    },
+                    renderer : doaj.renderers.newSelectedFiltersRenderer()
                 })
             ];
 
