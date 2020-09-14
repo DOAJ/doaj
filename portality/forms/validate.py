@@ -503,3 +503,20 @@ class BigEndDate(object):
             datetime.strptime(field.data, '%Y-%m-%d')
         except Exception:
             raise validators.ValidationError(self.message)
+
+
+class CustomRequired(object):
+    field_flags = ('required', )
+
+    def __init__(self, message=None):
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data is None or isinstance(field.data, str) and not field.data.strip() or isinstance(field.data, list) and len(field.data) == 0:
+            if self.message is None:
+                message = field.gettext('This field is required.')
+            else:
+                message = self.message
+
+            field.errors[:] = []
+            raise validators.StopValidation(message)

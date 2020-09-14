@@ -29,7 +29,8 @@ from portality.forms.validate import (
     GroupMember,
     RequiredValue,
     BigEndDate,
-    ReservedUsernames
+    ReservedUsernames,
+    CustomRequired
 )
 
 from portality.datasets import language_options, country_options, currency_options
@@ -2298,23 +2299,6 @@ class ListWidgetWithSubfields(object):
         return HTMLString(''.join(html))
 
 
-class CustomRequired(object):
-    field_flags = ('required', )
-
-    def __init__(self, message=None):
-        self.message = message
-
-    def __call__(self, form, field):
-        if field.data is None or isinstance(field.data, str) and not field.data.strip() or isinstance(field.data, list) and len(field.data) == 0:
-            if self.message is None:
-                message = field.gettext('This field is required.')
-            else:
-                message = self.message
-
-            field.errors[:] = []
-            raise validators.StopValidation(message)
-
-
 class NestedFormField(FormField):
     def validate(self, form, extra_validators=tuple()):
         self.form.meta.parent_form = form
@@ -2391,10 +2375,11 @@ class TextBuilder(WTFormsBuilder):
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
+        if "filters" not in wtfargs:
+            wtfargs["filters"] = (lambda x: x.strip() if x is not None else x,)
         sf = StringField(**wtfargs)
         if "repeatable" in field:
             sf = FieldList(sf, min_entries=field.get("repeatable", {}).get("initial", 1))
-
         return sf
 
 

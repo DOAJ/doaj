@@ -122,17 +122,7 @@ def send_publisher_update_request_editor_assigned_email(application):
 
 def send_publisher_application_editor_assigned_email(application):
     """ Send email to publisher informing them an editor has been assigned """
-
-    contact_name = application.get_latest_contact_name()
-    contact_email = application.get_latest_contact_email()
-    send_list = [
-        {
-            "name" : contact_name,
-            "email" : contact_email,
-            "sent_alert" : Messages.SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL,
-            "not_sent_alert" : Messages.NOT_SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL
-        }
-    ]
+    send_list = []
 
     owner = models.Account.pull(application.owner)
     if owner is not None:
@@ -289,16 +279,7 @@ def send_publisher_application_inprogress_email(application):
     """Tell the publisher the application is underway"""
     journal_title = application.bibjson().title
 
-    contact_name = application.get_latest_contact_name()
-    contact_email = application.get_latest_contact_email()
-    send_list = [
-        {
-            "name" : contact_name,
-            "email" : contact_email,
-            "sent_alert" : Messages.SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL,
-            "not_sent_alert" : Messages.NOT_SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL
-        }
-    ]
+    send_list = []
 
     owner = models.Account.pull(application.owner)
     if owner is not None:
@@ -332,9 +313,9 @@ def send_publisher_application_inprogress_email(application):
 
 def send_received_email(application):
     """ Email the publisher when an application is received """
-    suggester = application.suggester
+    owner = models.Account.pull(application.owner)
 
-    to = [suggester.get("email")]
+    to = [owner.email]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - your application to DOAJ has been received"
 
@@ -342,7 +323,7 @@ def send_received_email(application):
                         fro=fro,
                         subject=subject,
                         template_name="email/publisher_application_received.txt",
-                        publisher_name=suggester.get("name", "Applicant"),
+                        publisher_name=owner.name,
                         title=application.bibjson().title,
                         url=application.bibjson().get_single_url(urltype="homepage"))
 
