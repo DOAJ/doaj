@@ -166,7 +166,7 @@ journal-details
                     {% if bibjson.other_charges_url %}
                         and there are {% if bibjson.other_charges_url %}<a href="{% if bibjson.other_charges_url %}" target="_blank" rel="noopener">{% endif %}other charges{% if bibjson.other_charges_url %}</a>{% endif %}
                     {% else %}
-                      and there are <strong>no other charges</strong>
+                      and there are <strong>no other charges.</strong>
                     {% endif %}
                   </p>
                 {% endif %}
@@ -195,14 +195,23 @@ journal-details
                   <li><a href="{{ bibjson.editorial_board_url }}" target="_blank" rel="noopener">Editorial Board</a></li>
                   {% endif %}
 
-                    {% if bibjson.editorial_review_process or bibjson.editorial_review_url %}
-                    <li><strong>{% if bibjson.editorial_review_url %}<a href="{{ bibjson.editorial_review_url }}" target="_blank" rel="noopener">{% endif %}{% if bibjson.editorial_review_process %}{{ bibjson.editorial_review_process|join(", ") }}{% else %}Review process unknown{% endif %}{% if bibjson.editorial_review_url %}</a>{% endif %}</strong></li>
-                    {% endif %}
+                  {% if bibjson.editorial_review_process or bibjson.editorial_review_url %}
+                  <li>
+                    <strong>
+                      {% if bibjson.editorial_review_url %}<a href="{{ bibjson.editorial_review_url }}" target="_blank" rel="noopener">{% endif %}
+                      {% if bibjson.editorial_review_process %}
+                      {{ bibjson.editorial_review_process|join(", ") }}
+                      {% else %}Review process unknown
+                      {% endif %}
+                      {% if bibjson.editorial_review_url %}</a>{% endif %}
+                    </strong>
+                  </li>
+                  {% endif %}
 
                 </ul>
                 {% if bibjson.plagiarism_detection %}
                 <p>
-                  &rarr; This journal checks for plagiarism
+                  &rarr; This journal checks for plagiarism.
                 </p>
                 {% endif %}
               </div>
