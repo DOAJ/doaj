@@ -54,11 +54,6 @@
   {% if bibjson.end_page %}
   <meta name="citation_lastpage" content="{{ bibjson.end_page }}">
   {% endif %}
-  {# Full text link excluded due to Google's note it should be hosted on DOAJ.org, see also https://github.com/DOAJ/doaj/issues/12#issuecomment-91606561 #}
-  {# <meta name="citation_pdf_url"
-  content="http://www.jbc.org/cgi/reprint/279/6/4034.pdf
-  <http://www.jbc.org/cgi/reprint/279/6/4034.pdf> "> (only if the PDF is also
-  hosted on DOAJ.org) #}
   {% for issn in issns %}
   <meta name="citation_issn" content="{{ issn }}">
   {% endfor %}
