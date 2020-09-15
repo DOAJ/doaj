@@ -114,7 +114,7 @@ $.extend(true, doaj, {
 
                 var titleBarFrag = "";
                 if (this.titleBar) {
-                    titleBarFrag = '<header class="search__header" style="background-image: url(\'/static/doaj/images/search-background.jpg\')"> \
+                    titleBarFrag = '<header class="search__header"> \
                         <p class="label">Search</p>\n \
                         <h1>' + this.title + ' \
                             <span data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-help" type="button"></span><span class="sr-only">Help</span> \
