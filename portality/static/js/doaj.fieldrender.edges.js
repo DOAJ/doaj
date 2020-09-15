@@ -2263,14 +2263,15 @@ $.extend(true, doaj, {
                             anames.push(field);
                         }
                     }
-                    authors += '<li>' + anames.join("</li><li>") + '</li>';
+                    authors += '<li>' + anames.join(",&nbsp;</li><li>") + '</li>';
                     authors += '</ul>';
+
                 }
 
                 var keywords = "";
                 if (edges.hasProp(resultobj, "bibjson.keywords") && resultobj.bibjson.keywords.length > 0) {
                     keywords = '<h4>Article keywords</h4><ul>';
-                    keywords+= '<li>' + resultobj.bibjson.keywords.join(", ") + '</li>';
+                    keywords+= '<li>' + resultobj.bibjson.keywords.join(",&nbsp;</li><li>") + '</li>';
                     keywords += '</ul>';
                 }
 
