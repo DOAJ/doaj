@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>{% block page_title %}Directory of Open Access Journals{% endblock %}</title>
-  <meta name="description" content="DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.">
+  <meta name="description" content="{% block meta_description %}DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.{% endblock %}">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 
   <!-- PWA -->
@@ -56,7 +56,7 @@
 <body class="{% block body_class %}{% endblock %}">
 
   {% include "includes/header.html" %}
-  
+
   {% block main_panel %}
   {% block content %}{% endblock %}
   {% endblock %}

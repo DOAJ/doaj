@@ -2,20 +2,24 @@
 
 {% block body_class %}article-details{% endblock %}
 
-{% block page_title %}
+{%- block page_title -%}
 {% set bibjson = article.bibjson() %}
-{%  if bibjson.title %}
-{% set metatitle = bibjson.title + ' | ' + app.config['SERVICE_NAME'] %}
+{%- if bibjson.title -%}
+{% set metatitle = bibjson.title %}
 {% else %}
 {% set metatitle = app.config['SERVICE_NAME'] %}
-{% endif %}
-{{ metatitle }} &ndash; DOAJ
-{% endblock %}
+{%- endif -%}
+{{ metatitle }} – DOAJ
+{%- endblock -%}
 
-{% block page_desc %}
+{%- block meta_description -%}
   {% set bibjson = article.bibjson() %}
-  <meta name="description" content="Information about the open-access article '{{ bibjson.title }}' in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">
-{% endblock %}
+  {%- if bibjson.abstract -%}
+    {{ bibjson.abstract | striptags | truncate(160) }}
+  {% else %}
+    More about this open access article on DOAJ. {{ app.config['SERVICE_TAGLINE'] }}
+  {%- endif -%}
+{%- endblock -%}
 
 {% block extra_meta_tags %}
   {% set bibjson = article.bibjson() %}
