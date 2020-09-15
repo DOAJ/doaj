@@ -829,7 +829,7 @@ $.extend(true, doaj, {
                 var sizeSelectId = edges.css_classes(this.namespace, "page-size", this);
 
                 // the number of records per page
-                var sizer = '<label for="">' + this.sizeLabel + '</label><select class="' + sizeSelectClass + '" name="' + sizeSelectId + '">{{SIZES}}</select>';
+                var sizer = '<label for="' + sizeSelectId + '">' + this.sizeLabel + '</label><select class="' + sizeSelectClass + '" name="' + sizeSelectId + '" id="' + sizeSelectId + '">{{SIZES}}</select>';
                 var sizeopts = "";
                 var optarr = this.sizeOptions.slice(0);
                 if (this.component.pageSize && $.inArray(this.component.pageSize, optarr) === -1) {
