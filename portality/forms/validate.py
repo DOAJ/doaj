@@ -205,8 +205,8 @@ class URLOptionalScheme(validators.Regexp):
         # apparently, a TLD can be 63 bytes long (we've seen up to 18)
         tld_part = (require_tld and r'\.[a-z]{2,63}' or '')
         # the original regex - the URL scheme is not optional
-        # regex = r'^[a-z]+://([^/:]+s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
-        regex = r'^([a-z]+://){0,1}?([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
+        regex = r'^[a-z]+://{0,1}?([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
+        # regex = r'^([a-z]+://){0,1}?([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
         super(URLOptionalScheme, self).__init__(regex, re.IGNORECASE, message)
 
     def __call__(self, form, field, message=None):

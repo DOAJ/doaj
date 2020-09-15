@@ -1486,6 +1486,9 @@ input[disabled] {
   color: #5C5956;
   font-style: italic; }
 
+input[disabled] + label {
+  color: #5C5956; }
+
 .button--primary {
   position: relative;
   left: 0;
