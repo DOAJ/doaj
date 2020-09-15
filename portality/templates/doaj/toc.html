@@ -273,10 +273,11 @@ journal-details
             <article class="card card--with-icon">
               <span data-feather="archive" aria-hidden="true"></span>
               <div>
+                {# TODO: this isn’t working and it should be one policy per list item, not all of them
                 <p>Articles digitally archived in:</p>
                 <ul>
                   <li>{{ bibjson.flattened_archiving_policies|join(", ") }}</li>
-                </ul>
+                </ul>#}
 
                 {% if bibjson.preservation_url %}
                 <p>
@@ -298,9 +299,13 @@ journal-details
                   {% for policy in bibjson.deposit_policy %}
                     {%  set policy_data = DEPOSIT_POLICY_MAP.get(policy) %}
                     <li>
+                      {% if policy == "Sherpa/Romeo" or policy == "Diadorim" or policy == "Héloïse" or policy == "Dulcinea" %}
                       <a href="{{ policy_data|safe }}{{ bibjson.title }}" target="_blank" rel="noopener">
                         {{ policy }}
                       </a>
+                      {% else %}
+                      {{ policy }}
+                      {% endif %}
                     </li>
                   {% endfor %}
                 </ul>
