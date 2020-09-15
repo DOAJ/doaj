@@ -1885,8 +1885,13 @@ def iso_language_list(field, formulaic_context_name):
 
 def iso_currency_list(field, formulaic_context_name):
     cl = [{"display" : " ", "value" : ""}]
+    quick_pick = []
     for v, d in currency_options:
+        if v in ["GBP", "USD", "EUR"]:
+            quick_pick.append({"display": d, "value": v})
         cl.append({"display": d, "value": v})
+    if len(quick_pick) > 0:
+        cl = quick_pick + cl
     return cl
 
 

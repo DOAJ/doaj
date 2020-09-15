@@ -17,9 +17,9 @@ def _generate_country_options():
 def _generate_currency_options():
     currency_options_ = [(CURRENCY_DEFAULT, CURRENCY_DEFAULT)]
 
-    for cu in sorted(pycountry.currencies, key=lambda x: x.alpha_3):
+    for cu in sorted(pycountry.currencies, key=lambda x: x.name):
         try:
-            currency_options_.append((cu.alpha_3, '{code} - {name}'.format(code=cu.alpha_3, name=cu.name)))
+            currency_options_.append((cu.alpha_3, '{name} ({code})'.format(code=cu.alpha_3, name=cu.name)))
         except AttributeError:
             continue
 
