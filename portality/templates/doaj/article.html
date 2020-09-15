@@ -3,59 +3,66 @@
 {% block body_class %}article-details{% endblock %}
 
 {% block page_title %}
-    {% set bibjson = article.bibjson() %}
-    {%  if bibjson.title %}
-        {% set metatitle = bibjson.title + ' | ' + app.config['SERVICE_NAME'] %}
-    {% else %}
-        {% set metatitle = app.config['SERVICE_NAME'] %}
-    {% endif %}
-    {{ metatitle }} &ndash; DOAJ
+{% set bibjson = article.bibjson() %}
+{%  if bibjson.title %}
+{% set metatitle = bibjson.title + ' | ' + app.config['SERVICE_NAME'] %}
+{% else %}
+{% set metatitle = app.config['SERVICE_NAME'] %}
+{% endif %}
+{{ metatitle }} &ndash; DOAJ
 {% endblock %}
 
 {% block page_desc %}
-    {% set bibjson = article.bibjson() %}
-    <meta name="description" content="Information about the open-access article '{{ bibjson.title }}' in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">
+  {% set bibjson = article.bibjson() %}
+  <meta name="description" content="Information about the open-access article '{{ bibjson.title }}' in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">
 {% endblock %}
 
 {% block extra_meta_tags %}
-{% set bibjson = article.bibjson() %}
-{% set jbib = journal.bibjson() %}
-{% set jtitle, cite = bibjson.vancouver_citation() %}
-{% set issns = bibjson.issns() %}
-{% set doi = bibjson.get_one_identifier("doi") %}
-{% set normalised_doi = article.get_normalised_doi() %}
-
-{% if jtitle %} <meta name="citation_journal_title" content="{{ jtitle }}"> {% endif %}
-{% if jbib.publisher %} <meta name="citation_publisher" content="{{ jbib.publisher }}"> {% endif %}
-{% if doi %} <meta name="citation_doi" content="{{ normalised_doi }}"> {% endif %}
-
-{% for author in bibjson.author %}
-<meta name="citation_author" content="{{author.name}}">
-{% endfor %}
-
-{% if bibjson.title %}<meta name="citation_title" content="{{ bibjson.title }}">{% endif %}
-
-{% if bibjson.get_publication_date("%Y/%m/%d") %}<meta name="citation_publication_date" content="{{ bibjson.get_publication_date("%Y/%m/%d") }}">{% endif %}
-
-{% if bibjson.volume %}<meta name="citation_volume" content="{{ bibjson.volume }}">{% endif %}
-
-{% if bibjson.number %}<meta name="citation_issue" content="{{ bibjson.number }}">{% endif %}
-
-{% if bibjson.start_page %}<meta name="citation_firstpage" content="{{ bibjson.start_page }}">{% endif %}
-{% if bibjson.end_page %}<meta name="citation_lastpage" content="{{ bibjson.end_page }}">{% endif %}
-
-{# Full text link excluded due to Google's note it should be hosted on DOAJ.org, see also https://github.com/DOAJ/doaj/issues/12#issuecomment-91606561 #}
-{# <meta name="citation_pdf_url"
-content="http://www.jbc.org/cgi/reprint/279/6/4034.pdf
-<http://www.jbc.org/cgi/reprint/279/6/4034.pdf> "> (only if the PDF is also
-hosted on DOAJ.org) #}
-
-{% for issn in issns %}
-<meta name="citation_issn" content="{{ issn }}">
-{% endfor %}
+  {% set bibjson = article.bibjson() %}
+  {% set jbib = journal.bibjson() %}
+  {% set jtitle, cite = bibjson.vancouver_citation() %}
+  {% set issns = bibjson.issns() %}
+  {% set doi = bibjson.get_one_identifier("doi") %}
+  {% set normalised_doi = article.get_normalised_doi() %}
+  {% if jtitle %}
+  <meta name="citation_journal_title" content="{{ jtitle }}">
+  {% endif %}
+  {% if jbib.publisher %}
+  <meta name="citation_publisher" content="{{ jbib.publisher }}">
+  {% endif %}
+  {% if doi %}
+  <meta name="citation_doi" content="{{ normalised_doi }}">
+  {% endif %}
+  {% for author in bibjson.author %}
+  <meta name="citation_author" content="{{author.name}}">
+  {% endfor %}
+  {% if bibjson.title %}
+  <meta name="citation_title" content="{{ bibjson.title }}">
+  {% endif %}
+  {% if bibjson.get_publication_date("%Y/%m/%d") %}
+  <meta name="citation_publication_date" content="{{ bibjson.get_publication_date("%Y/%m/%d") }}">
+  {% endif %}
+  {% if bibjson.volume %}
+  <meta name="citation_volume" content="{{ bibjson.volume }}">
+  {% endif %}
+  {% if bibjson.number %}
+  <meta name="citation_issue" content="{{ bibjson.number }}">
+  {% endif %}
+  {% if bibjson.start_page %}
+  <meta name="citation_firstpage" content="{{ bibjson.start_page }}">
+  {% endif %}
+  {% if bibjson.end_page %}
+  <meta name="citation_lastpage" content="{{ bibjson.end_page }}">
+  {% endif %}
+  {# Full text link excluded due to Google's note it should be hosted on DOAJ.org, see also https://github.com/DOAJ/doaj/issues/12#issuecomment-91606561 #}
+  {# <meta name="citation_pdf_url"
+  content="http://www.jbc.org/cgi/reprint/279/6/4034.pdf
+  <http://www.jbc.org/cgi/reprint/279/6/4034.pdf> "> (only if the PDF is also
+  hosted on DOAJ.org) #}
+  {% for issn in issns %}
+  <meta name="citation_issn" content="{{ issn }}">
+  {% endfor %}
 {% endblock %}
-
-
 
 {% block content %}
 
