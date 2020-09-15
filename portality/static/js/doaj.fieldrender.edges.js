@@ -137,7 +137,7 @@ $.extend(true, doaj, {
                                 <ul class="collapse filters__list" id="filters" aria-expanded="false">\
                                     {{FACETS}}\
                                 </ul>\
-                                <p class="input-group" id="share_embed"></p>\
+                                <p id="share_embed"></p>\
                         </div>\
                             \
                         <div class="col-md-9">\
@@ -1069,8 +1069,8 @@ $.extend(true, doaj, {
                 //     clearFrag = '<div class="col-md-1 col-xs-12">' + clearFrag + "</div>";
                 //}
 
-                var sr1 = '<label for="keywords" class="sr-only">Search by keywords:</label>';
-                var sr2 = '<label for="fields" class="sr-only">In the field:</label>';
+                var sr1 = '<label for="' + textId + '" class="sr-only">Search by keywords</label>';
+                var sr2 = '<label for="' + searchFieldId + '" class="sr-only">In the field</label>';
                 var frag = '<div class="input-group">' + sr1 + searchBox + sr2 + field_select + button + '</div>';
 
                 comp.context.html(frag);
@@ -2211,7 +2211,7 @@ $.extend(true, doaj, {
                           </ul>\
                           <ul>\
                             ' + subjects + '\
-                          <ul>\
+                          </ul>\
                         </div>\
                       </div>\
                       <aside class="col-sm-4 search-results__aside">\
@@ -2901,7 +2901,7 @@ $.extend(true, doaj, {
                           </ul>\
                           <ul>\
                             ' + subjects + '\
-                          <ul>\
+                          </ul>\
                         </div>\
                       </div>\
                       <aside class="col-sm-4 search-results__aside">\
