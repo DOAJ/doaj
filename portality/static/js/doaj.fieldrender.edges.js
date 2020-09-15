@@ -886,42 +886,26 @@ $.extend(true, doaj, {
                 var shareButtonFrag = "";
                 var shareButtonClass = edges.css_classes(this.namespace, "toggle-share", this);
                 var modalId = edges.css_id(this.namespace, "modal", this);
-                shareButtonFrag = '<button href="#" data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' input_group__input" type="button">' + this.shareLinkText + '</button>';
+                shareButtonFrag = '<button href="#" data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + '" type="button">' + this.shareLinkText + '</button>';
 
                 var shorten = "";
                 if (this.component.urlShortener) {
                     var shortenClass = edges.css_classes(this.namespace, "shorten", this);
-                    shorten = '<div class="' + shortenClass + '">Share a link to this search</div>'
+                    shorten = '<p>Share a link to this search</p>'
                 }
                 var embed = "";
                 if (this.component.embedSnippet) {
                     var embedClass = edges.css_classes(this.namespace, "embed", this);
-                    embed = '<div class="row">\
-                        <div class="col-md-12">\
-                            Embed this search in your webpage\
-                        </div>\
-                    </div>\
-                    <div class="row">\
-                        <div class="col-md-12">\
-                            <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>\
-                        </div>\
-                    </div>';
+                    embed = '<p>Embed this search in your site</p>\
+                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>';
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
                 var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this);
                 var shareFrag = '<div class="' + shareBoxClass + '">\
-                    <div class="row">\
-                        <div class="col-md-11">\
-                            ' + shorten + '\
-                        </div>\
-                    </div>\
-                    <div class="row">\
-                        <div class="col-md-12">\
-                            <textarea style="width: 100%; height: 150px" readonly class="' + shareUrlClass + '"></textarea>\
-                            <button class="input_group__input ' + shortenButtonClass + '">shorten url</button>\
-                        </div>\
-                    </div>\
+                    ' + shorten + '\
+                    <textarea style="width: 100%; height: 150px" readonly class="' + shareUrlClass + '"></textarea>\
+                    <p><button class="' + shortenButtonClass + '">shorten url</button></p>\
                     ' + embed + '\
                 </div>';
 

@@ -113,7 +113,7 @@ $.extend(true, doaj, {
                     urlShortener : doaj.bitlyShortener,
                     embedSnippet : doaj.publicSearch.embedSnippet,
                     renderer: doaj.renderers.newShareEmbedRenderer({
-                        shareLinkText: '<span data-feather="share-2" aria-hidden="true"></span> Share | <span data-feather="code" aria-hidden="true"></span> Embed'
+                        shareLinkText: '<span data-feather="share-2" aria-hidden="true"></span> Share or embed'
                     })
                 }),
 
