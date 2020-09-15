@@ -18,7 +18,6 @@
 {% endblock %}
 
 {% block extra_meta_tags %}
-
 {% set bibjson = article.bibjson() %}
 {% set jbib = journal.bibjson() %}
 {% set jtitle, cite = bibjson.vancouver_citation() %}
