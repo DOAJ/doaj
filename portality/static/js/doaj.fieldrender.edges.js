@@ -898,7 +898,8 @@ $.extend(true, doaj, {
                 if (this.component.embedSnippet) {
                     var embedClass = edges.css_classes(this.namespace, "embed", this);
                     embed = '<p>Embed this search in your site</p>\
-                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>';
+                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>\
+                    <p><a class="button button--secondary" data-dismiss="modal" class="modal__close">Close</a></p>';
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
