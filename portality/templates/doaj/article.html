@@ -164,7 +164,7 @@ hosted on DOAJ.org) #}
           </p>
         </header>
         {% if bibjson.abstract %}
-        <p class="article-details__abstract">{{bibjson.abstract}}</p>
+        <p class="article-details__abstract">{{ bibjson.abstract | striptags }}</p>
         {% else %}
         <em class="article-details__abstract--empty">No abstracts available.</em>
         {% endif %}
@@ -172,11 +172,11 @@ hosted on DOAJ.org) #}
         {% if bibjson.keywords %}
         <h2 class="sr-only">Keywords</h2>
         <ul class="tags">
-          {% for j in bibjson.keywords %}
+          {% for keyword in bibjson.keywords %}
           <li class="tag">
             {# TODO: replace with pre-defined query #}
             <a href="../search/articles?ref=homepage-box&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ j }}%22%2C%22default_operator%22%3A%22AND%22%7D%7D%7D">
-              {{ j }}
+              {{ keyword }}
             </a>
           </li>
           {% endfor %}
