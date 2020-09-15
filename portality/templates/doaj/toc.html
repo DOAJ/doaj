@@ -8,11 +8,17 @@ journal-details
     {% set metatitle = bibjson.title %}
     {% if current_volume %}{% set metatitle = metatitle + ', ' + 'Volume ' + current_volume %}{% endif %}
     {% if current_issue %}{% set metatitle = metatitle + ', ' + 'Issue ' + current_issue %}{% endif %}
-    {% set metatitle = metatitle + ' | ' + app.config['SERVICE_NAME'] %}
-    {{ metatitle }} &ndash; DOAJ
+    {% set metatitle = metatitle %}
+    {{ metatitle }} – DOAJ
 {% endblock %}
 
-{% block page_desc %}<meta name="description" content="Information about the open-access journal {{ bibjson.title }} in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">{% endblock %}
+{%- block meta_description -%}
+  {%- if bibjson.keywords -%}
+    A peer-reviewed, open access journal in {% for keyword in bibjson.keywords %}{% if loop.last %} & {% elif loop.first %}{% else %}, {% endif %}{{ keyword }}{% endfor %}.
+  {% else %}
+    More about this peer-reviewed, open access journal on DOAJ.
+  {%- endif -%}
+{%- endblock -%}
 
 {% block content %}
 
