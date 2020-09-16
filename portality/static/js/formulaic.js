@@ -683,7 +683,6 @@ var formulaic = {
                                         if (data === null) {
                                             data = {id: i, text: ""};
                                         }
-                                        console.log(data)
                                         $(thisInput).select2('data', {id: data.id, text: data.text});
 
                                     }
@@ -693,6 +692,14 @@ var formulaic = {
                                 }
                             }
                             this.count--;
+                            $(this.divs[this.count + 1]).find("select, input[id^='" + this.fieldDef["name"] + "']").each((idx, inp) => {
+                                if ($(inp).is("select")){
+                                    $(inp).select2('data', {id: this.count + 1, text: ""});
+                                }
+                                else {
+                                    $(inp).val("");
+                                }
+                            })
                             $(this.divs[this.count + 1]).hide();
                             if (this.count === 0) {
                                 $(this.remove_btns[0]).hide();
@@ -743,6 +750,7 @@ var formulaic = {
                                     $(this.fields[i]).select2('data', {id: data.id, text: data.text});
                                 }
                                 this.count--;
+                                $(this.fields[this.count + 1]).select2('data', {id: this.count + 1, text: ""})
                                 $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').hide();
                                 if (this.count === 0) {
                                     $(this.remove_btns[0]).hide();
@@ -789,6 +797,7 @@ var formulaic = {
                                 }
 
                                 this.count--;
+                                $(this.fields[this.count + 1]).val("");
                                 let last_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
                                 $(last_input).hide();
                                 if (this.count === 0) {
