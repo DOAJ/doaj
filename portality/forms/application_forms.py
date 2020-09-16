@@ -6,13 +6,13 @@ from wtforms import StringField, TextAreaField, IntegerField, BooleanField, Radi
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 
-from portality.formcontext.choices import Choices
+from portality import regex
 from portality.formcontext.fields import TagListField
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.forms import application_processors
 from portality.forms.validate import (
-    URLOptionalScheme,
+    HTTPURL,
     OptionalIf,
     ExclusiveCheckbox,
     ExtraFieldRequiredIf,
@@ -351,7 +351,7 @@ class FieldDefinitions:
 
     PUBLISHER_NAME = {
         "name": "publisher_name",
-        "label": "Name",
+        "label": "Publisher Name",
         "input": "text",
         "validate": [
             "required"
@@ -371,7 +371,7 @@ class FieldDefinitions:
 
     PUBLISHER_COUNTRY = {
         "name": "publisher_country",
-        "label": "Country",
+        "label": "Publisher Country",
         "input": "select",
         "default": "",
         "options_fn": "iso_country_list",
@@ -404,7 +404,7 @@ class FieldDefinitions:
 
     INSTITUTION_NAME = {
         "name": "institution_name",
-        "label": "Name",
+        "label": "Society/Institution Name",
         "input": "text",
         "optional": True,
         "help": {
@@ -421,7 +421,7 @@ class FieldDefinitions:
 
     INSTITUTION_COUNTRY = {
         "name": "institution_country",
-        "label": "Country",
+        "label": "Society/Institution Country",
         "input": "select",
         "default" : "",
         "options_fn": "iso_country_list",
@@ -464,7 +464,7 @@ class FieldDefinitions:
         ],
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
-                          "If Creative Commons licensing is not used, then select <em>Publisher’s own license</em> and enter "
+                          "If Creative Commons licensing is not used, then select <em>Publisher's own license</em> and enter "
                           "more details below."],
             "doaj_criteria": "Content must be licenced",
             "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
@@ -480,7 +480,7 @@ class FieldDefinitions:
         "input": "checkbox",
         "multiple": True,
         "conditional": [
-            {"field": "license", "value": "Publisher’s own license"}
+            {"field": "license", "value": "Publisher's own license"}
         ],
         "options": [
             {"display": "Attribution", "value": "BY"},
@@ -2000,11 +2000,12 @@ class IsURLBuilder:
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["type"] = "url"
+        html_attrs["pattern"] = regex.HTTP_URL
+        html_attrs["data-parsley-pattern"] = regex.HTTP_URL
 
     @staticmethod
     def wtforms(field, settings):
-        # FIXME: do we want the scheme to be optional?
-        return URLOptionalScheme(message=settings.get('message'))
+        return HTTPURL(message=settings.get('message'))
 
 
 class IntRangeBuilder:

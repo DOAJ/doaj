@@ -9,6 +9,7 @@ from portality.core import app
 from portality.models import Journal, EditorGroup
 
 from datetime import datetime
+from portality import regex
 
 
 class MultiFieldValidator(object):
@@ -186,7 +187,7 @@ class ExclusiveCheckbox(object):
             # passed to the constructor
 
 
-class URLOptionalScheme(validators.Regexp):
+class HTTPURL(validators.Regexp):
     # copied from (around) https://github.com/wtforms/wtforms/blob/master/wtforms/validators.py#L375
     # TODO: Check whether this needs bringing up to date after the python 3 / dependency upgrades
     """
@@ -201,20 +202,15 @@ class URLOptionalScheme(validators.Regexp):
     :param message:
         Error message to raise in case of a validation error.
     """
-    def __init__(self, require_tld=True, message=None):
-        # apparently, a TLD can be 63 bytes long (we've seen up to 18)
-        tld_part = (require_tld and r'\.[a-z]{2,63}' or '')
-        # the original regex - the URL scheme is not optional
-        regex = r'^[a-z]+://{0,1}?([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
-        # regex = r'^([a-z]+://){0,1}?([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
-        super(URLOptionalScheme, self).__init__(regex, re.IGNORECASE, message)
+    def __init__(self, message=None):
+        super(HTTPURL, self).__init__(regex.HTTP_URL, re.IGNORECASE, message)
 
     def __call__(self, form, field, message=None):
         message = self.message
         if message is None:
             message = field.gettext('Invalid URL.')
 
-        super(URLOptionalScheme, self).__call__(form, field, message)
+        super(HTTPURL, self).__call__(form, field, message)
 
 
 class MaxLen(object):

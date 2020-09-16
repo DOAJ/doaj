@@ -600,7 +600,7 @@ var formulaic = {
                 var that = $(element);
                 var val = that.val();
 
-                if (val) {
+                if (val && (val.substring(0,7) === "http://" || val.substring(0,8) === "https://") && val.length > 10) {
                     if (this.link) {
                         this.link.attr("href", val);
                         this.link.html(val);
@@ -612,7 +612,7 @@ var formulaic = {
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
                     }
-                } else {
+                } else if (this.link) {
                     this.link.remove();
                     this.link = false;
                 }
@@ -887,7 +887,7 @@ var formulaic = {
             this.params = params.args;
             let field = $('input[id^="' + this.fieldDef["name"] +'"]')
             this.init = () => {
-                return autocomplete("[name='" + this.fieldDef.name + "']", this.params["field"], "journal", 1, true, false);
+                return autocomplete("[name='" + this.fieldDef.name + "']", this.params["field"], "journal", 1, true, true);
             }
             this.init()
         }
@@ -926,7 +926,7 @@ function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_
             ajax: ajax,
             createSearchChoice: csc,
             initSelection : initSel,
-            placeholder: "Start typing…",
+            //placeholder: "Start typing…",
             allowClear: allow_clear,
             width: 'resolve'
         });
@@ -936,7 +936,7 @@ function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_
             minimumInputLength: mininput,
             ajax: ajax,
             initSelection : initSel,
-            placeholder: "Start typing…",
+            //placeholder: "Start typing…",
             allowClear: allow_clear,
             width: 'resolve'
         });

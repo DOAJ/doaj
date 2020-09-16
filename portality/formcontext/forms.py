@@ -12,7 +12,7 @@ from portality import regex
 from portality.core import app
 
 from portality.formcontext.fields import DOAJSelectField, DOAJSelectMultipleField, URLField, TagListField, DisabledTextField, PermissiveSelectField, OptionalRadioField
-from portality.forms.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, \
+from portality.forms.validate import HTTPURL, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, \
     MaxLen, RegexpOnTagList, ReservedUsernames, ThisOrThat
 
 from portality.formcontext.choices import Choices
@@ -33,7 +33,7 @@ class JournalInformation(Form):
     """All the bibliographic metadata associated with a journal in the DOAJ"""
 
     title = StringField('Journal Title', [validators.DataRequired()])
-    url = URLField('URL', [validators.DataRequired(), URLOptionalScheme()])
+    url = URLField('URL', [validators.DataRequired(), HTTPURL()])
     alternative_title = StringField('Alternative Title', [validators.Optional()])
     pissn = StringField('Journal ISSN (print version)',
                         [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
@@ -76,7 +76,7 @@ class JournalInformation(Form):
     #                                 choices=Choices.processing_charges()
     #                                 )
     processing_charges_url = URLField('Enter the URL where this information can be found',
-                                      [validators.DataRequired(), URLOptionalScheme()],
+                                      [validators.DataRequired(), HTTPURL()],
                                       # description='This field is optional if you have selected "No" above'
                                       )
     processing_charges_amount = IntegerField('Amount',
@@ -109,7 +109,7 @@ class JournalInformation(Form):
     #                            )
     waiver_policy_url = URLField('Enter the URL where this information can be found',
                                  [validators.Optional(),
-                                  URLOptionalScheme()]
+                                  HTTPURL()]
                                  )
     # digital_archiving_policy = DOAJSelectMultipleField('What digital archiving policy does the journal use?',
     #                                                    [
@@ -134,7 +134,7 @@ class JournalInformation(Form):
                                        )
     preservation_url = URLField('Enter the URL where this information can be found',
                                 [validators.Optional(),
-                                 URLOptionalScheme()],
+                                 HTTPURL()],
                                 description='This field is optional if you selected "No policy in place".',
                                 )
     # crawl_permission = RadioField('Does the journal allow software/spiders to automatically crawl the journal content (also known as text mining)?',
@@ -183,7 +183,7 @@ class JournalInformation(Form):
                                         description="You can select multiple languages."
                                         )
     editorial_board_url = URLField('What is the URL for the Editorial Board page?',
-                                   [validators.DataRequired(), URLOptionalScheme()],
+                                   [validators.DataRequired(), HTTPURL()],
                                    description='A journal must have an editor and an editorial board. Only in the case of Arts and Humanities journals we will accept a form of editorial review using only two editors and no editorial board. Where an editorial board is present, members must be clearly identifiable with their names and affiliation information.'
                                    )
 
@@ -196,14 +196,14 @@ class JournalInformation(Form):
                                      )
     review_process_url = URLField('Enter the URL where this information can be found',
                                   [validators.Optional(),
-                                   URLOptionalScheme()],
+                                   HTTPURL()],
                                   description='This field is optional if you have selected "None" above.'
                                   )
     aims_scope_url = URLField("What is the URL for the journal's Aims & Scope",
-                              [validators.DataRequired(), URLOptionalScheme()]
+                              [validators.DataRequired(), HTTPURL()]
                               )
     author_instructions_url = URLField("What is the URL for the journal's instructions for authors?",
-                                       [validators.DataRequired(), URLOptionalScheme()]
+                                       [validators.DataRequired(), HTTPURL()]
                                        )
     # plagiarism_screening = RadioField('Does the journal have a policy of screening for plagiarism?',
     #                                   [validators.DataRequired()],
@@ -215,11 +215,11 @@ class JournalInformation(Form):
                                     )
     plagiarism_screening_url = URLField("Enter the URL where this information can be found",
                                         [validators.Optional(),
-                                         URLOptionalScheme()],
+                                         HTTPURL()],
                                         description="The URL should state that the journal actively checks for plagiarism and detail how this is done."
                                         )
     oa_statement_url = URLField("What is the URL for the journal's Open Access statement?",
-                                [validators.DataRequired(), URLOptionalScheme()]
+                                [validators.DataRequired(), HTTPURL()]
                                 )
     license_display = DOAJSelectField('Does the journal embed or display licensing information in its articles?',
                                  [validators.DataRequired()],
@@ -228,7 +228,7 @@ class JournalInformation(Form):
                                 )
     license_display_example_url = URLField("Please provide a URL to an example page with embedded licensing information",
                                    [validators.Optional(),
-                                    URLOptionalScheme()]
+                                    HTTPURL()]
                                    )
     # license = RadioField("Does the journal allow reuse and remixing of content in accordance with a Creative Commons license or <em>other</em> type of license with similar conditions (Select 'Other')?",
     #     [validators.DataRequired(), ExtraFieldRequiredIf('license_other', reqval=Choices.licence_val("other"))],
@@ -244,7 +244,7 @@ class JournalInformation(Form):
         widget=widgets.ListWidget(prefix_label=False),
         )
     license_url = URLField("Enter the URL on your site where your license terms are stated",
-                           [validators.Optional(), URLOptionalScheme()]
+                           [validators.Optional(), HTTPURL()]
                            )
     boai = RadioField(
         "Does the journal allow readers to <em>read, download, copy, distribute, print, search, or link to the full texts of its articles</em> and allow readers to <em>use them for any other lawful purpose</em>?",
@@ -264,7 +264,7 @@ class JournalInformation(Form):
     #     )
     deposit_policy_service = StringField('Deposit Policy (Other)')
     deposit_policy_url = URLField('Enter the URL where this information can be found',
-                                  [validators.Optional(), URLOptionalScheme()]
+                                  [validators.Optional(), HTTPURL()]
                                   )
     deposit_policy_is_registered = RadioField('Is deposit policy registered?',
                                [validators.DataRequired()],
@@ -275,7 +275,7 @@ class JournalInformation(Form):
     #                        choices=Choices.other_charges()
     #                        )
     copyright_url = URLField('Enter the URL where this information can be found',
-                             [validators.Optional(), URLOptionalScheme()]
+                             [validators.Optional(), HTTPURL()]
                              )
 
     # other_charges = RadioField('Do any other charges apply?',
@@ -284,7 +284,7 @@ class JournalInformation(Form):
     #                        )
 
     other_charges_url = URLField('Enter the URL where this information can be found',
-                                 [validators.Optional(), URLOptionalScheme()])
+                                 [validators.Optional(), HTTPURL()])
 
     article_orcid = RadioField('Is orcid provided for this article?',
                                [validators.DataRequired()],
