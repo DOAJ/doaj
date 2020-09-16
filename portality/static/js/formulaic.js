@@ -676,7 +676,20 @@ var formulaic = {
                                 let thisInputs = $(thisDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
                                 let nextInputs = $(nextDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
                                 for (let j = 0; j < thisInputs.length; j++){
-                                    $(thisInputs[j]).val($(nextInputs[j]).val());
+                                    let thisInput = $(thisInputs[j]);
+                                    let nextInput = $(nextInputs[j])
+                                    if (thisInput.is("select")){
+                                        let data = $(nextInput).select2('data')
+                                        if (data === null) {
+                                            data = {id: i, text: ""};
+                                        }
+                                        console.log(data)
+                                        $(thisInput).select2('data', {id: data.id, text: data.text});
+
+                                    }
+                                    else {
+                                        $(thisInputs[j]).val($(nextInputs[j]).val());
+                                    }
                                 }
                             }
                             this.count--;
