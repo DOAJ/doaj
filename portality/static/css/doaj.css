@@ -291,8 +291,9 @@ blockquote {
 
 /* Site note */
 
-.alert .alert-danger a {
-  color: #a94442
+.alert.alert-danger a {
+  color: #a94442;
+    text-decoration: underline;
 }
 
 /*#site-note {*/
