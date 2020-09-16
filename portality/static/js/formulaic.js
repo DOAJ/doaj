@@ -484,13 +484,14 @@ var formulaic = {
 
             var checked = jqel.is(":checked");
             var elements = this.controlSelect.input({name: name});
+            var that = this;
             elements.each(function() {
-                var that = $(this);
-                if (checked && that.val() !== value) {
-                    that.prop("checked", false);
-                    that.prop('disabled', true);
+                if (checked && $(this).val() !== value) {
+                    $(this).prop("checked", false);
+                    $(this).prop('disabled', true);
+                    that.checkConditional(this);
                 } else {
-                    that.prop('disabled', false);
+                    $(this).prop('disabled', false);
                 }
             });
         };

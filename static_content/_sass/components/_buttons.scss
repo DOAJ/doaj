@@ -58,6 +58,10 @@ input[disabled] {
   font-style: italic;
 }
 
+input[disabled] + label {
+  color: rgba($dark-grey, 0.5)
+}
+
 // "Flat 3D"-style buttons for CTA buttons only
 .button--primary {
   position: relative;
