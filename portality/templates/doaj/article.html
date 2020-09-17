@@ -179,7 +179,7 @@
                         <ul class="tags">
                             {% for keyword in bibjson.keywords %}
                                 <li class="tag">
-                                    <a href="../search/articles?ref=article-page&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ keyword|safe }}%22%2C%22default_operator%22%3A%22AND%22%7D%7D%7D">
+                                    <a href="{{ url_for("doaj.articles_search") }}?ref=article-page&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ keyword|safe }}%22%2C%22default_operator%22%3A%22AND%22%7D%7D%7D">
                                         {{ keyword }}
                                     </a>
                                 </li>
