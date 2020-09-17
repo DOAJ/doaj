@@ -124,3 +124,17 @@ function setCookieConsent(event) {
         }
     })
 }
+
+function dissmissSiteNote(event) {
+    event.preventDefault();
+    $.ajax({
+        type: "GET",
+        url: "/dismiss_site_note",
+        success: function() {
+            $("#site-note").remove();
+        },
+        error : function() {
+            alert("Something went wrong, we weren't able to dismiss this note. Please try again later.");
+        }
+    })
+}
