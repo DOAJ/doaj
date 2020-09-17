@@ -1,7 +1,6 @@
 <div id="cookie-consent" class="cookie-consent">
-    <p>This website uses cookies to ensure you get the best experience.</p>
+    <p>This website uses cookies to ensure you get the best experience. <a href="/privacy/" style="text-decoration: underline;">Learn more about DOAJ’s privacy policy.</a></p>
     <p>
-        <a class="button" href="{{ url_for('doaj.privacy') }}">Learn more</a>
-        <a class="button" href="{{ url_for('doaj.cookie_consent') }}?continue={{ request.path }}">Hide this message</a>
+        <a class="button" id="cookie-consent-hide" href="{{ url_for('doaj.cookie_consent') }}?continue={{ request.path }}">Hide this message</a>
     </p>
 </div>
