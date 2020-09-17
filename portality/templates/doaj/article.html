@@ -3,237 +3,236 @@
 {% block body_class %}article-details{% endblock %}
 
 {%- block page_title -%}
-{% set bibjson = article.bibjson() %}
-{%- if bibjson.title -%}
-{% set metatitle = bibjson.title %}
-{% else %}
-{% set metatitle = app.config['SERVICE_NAME'] %}
-{%- endif -%}
-{{ metatitle }} – DOAJ
+    {% set bibjson = article.bibjson() %}
+    {%- if bibjson.title -%}
+        {% set metatitle = bibjson.title %}
+    {% else %}
+        {% set metatitle = app.config['SERVICE_NAME'] %}
+    {%- endif -%}
+    {{ metatitle }} – DOAJ
 {%- endblock -%}
 
 {%- block meta_description -%}
-  {% set bibjson = article.bibjson() %}
-  {%- if bibjson.abstract -%}
-    {{ bibjson.abstract | striptags | truncate(160) }}
-  {% else %}
-    More about this open access article on DOAJ. {{ app.config['SERVICE_TAGLINE'] }}
-  {%- endif -%}
+    {% set bibjson = article.bibjson() %}
+    {%- if bibjson.abstract -%}
+        {{ bibjson.abstract | striptags | truncate(160) }}
+    {% else %}
+        More about this open access article on DOAJ. {{ app.config['SERVICE_TAGLINE'] }}
+    {%- endif -%}
 {%- endblock -%}
 
 {% block extra_meta_tags %}
-  {% set bibjson = article.bibjson() %}
-  {% set jbib = journal.bibjson() %}
-  {% set jtitle, cite = bibjson.vancouver_citation() %}
-  {% set issns = bibjson.issns() %}
-  {% set doi = bibjson.get_one_identifier("doi") %}
-  {% set normalised_doi = article.get_normalised_doi() %}
-  {% if jtitle %}
-  <meta name="citation_journal_title" content="{{ jtitle }}">
-  {% endif %}
-  {% if jbib.publisher %}
-  <meta name="citation_publisher" content="{{ jbib.publisher }}">
-  {% endif %}
-  {% if doi %}
-  <meta name="citation_doi" content="{{ normalised_doi }}">
-  {% endif %}
-  {% for author in bibjson.author %}
-  <meta name="citation_author" content="{{author.name}}">
-  {% endfor %}
-  {% if bibjson.title %}
-  <meta name="citation_title" content="{{ bibjson.title }}">
-  {% endif %}
-  {% if bibjson.get_publication_date("%Y/%m/%d") %}
-  <meta name="citation_publication_date" content="{{ bibjson.get_publication_date("%Y/%m/%d") }}">
-  {% endif %}
-  {% if bibjson.volume %}
-  <meta name="citation_volume" content="{{ bibjson.volume }}">
-  {% endif %}
-  {% if bibjson.number %}
-  <meta name="citation_issue" content="{{ bibjson.number }}">
-  {% endif %}
-  {% if bibjson.start_page %}
-  <meta name="citation_firstpage" content="{{ bibjson.start_page }}">
-  {% endif %}
-  {% if bibjson.end_page %}
-  <meta name="citation_lastpage" content="{{ bibjson.end_page }}">
-  {% endif %}
-  {% for issn in issns %}
-  <meta name="citation_issn" content="{{ issn }}">
-  {% endfor %}
+    {% set bibjson = article.bibjson() %}
+    {% set jbib = journal.bibjson() %}
+    {% set jtitle, cite = bibjson.vancouver_citation() %}
+    {% set issns = bibjson.issns() %}
+    {% set doi = bibjson.get_one_identifier("doi") %}
+    {% set normalised_doi = article.get_normalised_doi() %}
+    {% if jtitle %}
+        <meta name="citation_journal_title" content="{{ jtitle }}">
+    {% endif %}
+    {% if jbib.publisher %}
+        <meta name="citation_publisher" content="{{ jbib.publisher }}">
+    {% endif %}
+    {% if doi %}
+        <meta name="citation_doi" content="{{ normalised_doi }}">
+    {% endif %}
+    {% for author in bibjson.author %}
+        <meta name="citation_author" content="{{author.name}}">
+    {% endfor %}
+    {% if bibjson.title %}
+        <meta name="citation_title" content="{{ bibjson.title }}">
+    {% endif %}
+    {% if bibjson.get_publication_date("%Y/%m/%d") %}
+        <meta name="citation_publication_date" content="{{ bibjson.get_publication_date("%Y/%m/%d") }}">
+    {% endif %}
+    {% if bibjson.volume %}
+        <meta name="citation_volume" content="{{ bibjson.volume }}">
+    {% endif %}
+    {% if bibjson.number %}
+        <meta name="citation_issue" content="{{ bibjson.number }}">
+    {% endif %}
+    {% if bibjson.start_page %}
+        <meta name="citation_firstpage" content="{{ bibjson.start_page }}">
+    {% endif %}
+    {% if bibjson.end_page %}
+        <meta name="citation_lastpage" content="{{ bibjson.end_page }}">
+    {% endif %}
+    {% for issn in issns %}
+        <meta name="citation_issn" content="{{ issn }}">
+    {% endfor %}
 {% endblock %}
 
 {% block content %}
 
-{%
-    set TYN = {
-        True : "Yes",
-        False : "No",
-    }
-%}
+    {%
+            set TYN = {
+                True : "Yes",
+                False : "No",
+            }
+            %}
 
-{% set bibjson = article.bibjson() %}
-{% set jbib = journal.bibjson() %}
-{% set jtitle, cite = bibjson.vancouver_citation() %}
-{% set issns = bibjson.issns() %}
-{% set doi = bibjson.get_one_identifier("doi") %}
-{% set normalised_doi = article.get_normalised_doi() %}
+    {% set bibjson = article.bibjson() %}
+    {% set jbib = journal.bibjson() %}
+    {% set jtitle, cite = bibjson.vancouver_citation() %}
+    {% set issns = bibjson.issns() %}
+    {% set doi = bibjson.get_one_identifier("doi") %}
+    {% set normalised_doi = article.get_normalised_doi() %}
 
-<main class="page-content article-summary">
-  <div class="highlight">
-    <header class="container">
-      <p class="label">
-        <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}">{{jtitle}}</a>
-        ({{ bibjson.get_publication_date(date_format="%Y-%m-%d") }})
-      </p>
+    <main class="page-content article-summary">
+        <div class="highlight">
+            <header class="container">
+                <p class="label">
+                    <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}">{{jtitle}}</a>
+                    ({{ bibjson.get_publication_date(date_format="%Y-%m-%d") }})
+                </p>
 
-      <h1>
-        {%  if bibjson.title %}
-        {{ bibjson.title | safe }}
-        {% else %}
-        <em>[Article title missing]</em>
-        {% endif %}
-      </h1>
+                <h1>
+                    {%  if bibjson.title %}
+                        {{ bibjson.title | safe }}
+                    {% else %}
+                        <em>[Article title missing]</em>
+                    {% endif %}
+                </h1>
 
-      <div class="row article-details__meta">
-        {% if bibjson.author %}
-        <div class="col-md-6 col-lg-6">
-          <ul>
-            {% for author in bibjson.author %}
-            <li>{{author.name}}{% if loop.last %}{% else %}, {% endif %}</li>
-            {% endfor %}
-          </ul>
+                <div class="row article-details__meta">
+                    {% if bibjson.author %}
+                        <div class="col-md-6 col-lg-6">
+                            <ul>
+                                {% for author in bibjson.author %}
+                                    <li>{{author.name}}{% if loop.last %}{% else %}, {% endif %}</li>
+                                {% endfor %}
+                            </ul>
 
-          {# TODO: do not display this block if there are no affiliations or ORCiDs #}
-          <p>
-            <a class="button" type="button" data-toggle="collapse" data-target="#authors-affiliations" aria-expanded="false">
-              Affiliations
-              <span data-feather="plus" aria-hidden="true"></span>
-            </a>
-          </p>
-          <dl id="authors-affiliations" class="collapse" aria-expanded="false">
-            {% for author in bibjson.author %}
-              <dt>{{author.name}}</dt>
-              {% if author.orcid_id %}
-                <dd><a href="{{author.orcid_id}}">ORCiD</a></dd>
-              {% endif %}
-              {% if author.affiliation %}
-                <dd>{{author.affiliation}}</dd>
-              {% endif %}
-            {% endfor %}
-          </dl>
+                            {# TODO: do not display this block if there are no affiliations or ORCiDs #}
+                            <p>
+                                <a class="button" type="button" data-toggle="collapse" data-target="#authors-affiliations" aria-expanded="false">
+                                    Affiliations
+                                    <span data-feather="plus" aria-hidden="true"></span>
+                                </a>
+                            </p>
+                            <dl id="authors-affiliations" class="collapse" aria-expanded="false">
+                                {% for author in bibjson.author %}
+                                    <dt>{{author.name}}</dt>
+                                    {% if author.orcid_id %}
+                                        <dd><a href="{{author.orcid_id}}">ORCiD</a></dd>
+                                    {% endif %}
+                                    {% if author.affiliation %}
+                                        <dd>{{author.affiliation}}</dd>
+                                    {% endif %}
+                                {% endfor %}
+                            </dl>
+                        </div>
+                    {% endif %}
+
+                    <dl class="col-md-6 col-lg-6">
+                        {% if doi %}
+                            <dt>DOI</dt>
+                            <dd>
+                                {% set url_text = normalised_doi | doi_url | safe %}
+                                <a href="{{ url_text }}" target="_blank" rel="noopener">{{ url_text }}</a>
+                            </dd>
+                        {% endif %}
+
+                        {% if jbib.volume or jbib.number %}
+                            <dt>Journal volume & issue</dt>
+                            <dd>
+                                {% if jbib.volume %}Vol. {{ jbib.volume }}{% endif %}{% if jbib.volume and jbib.number %},{% endif %}
+                                {% if jbib.number %}no. {{ jbib.number }}{% endif %}
+                            </dd>
+                        {% endif %}
+                    </dl>
+                </div>
+
+            </header>
         </div>
-        {% endif %}
 
-        <dl class="col-md-6 col-lg-6">
-          {% if doi %}
-          <dt>DOI</dt>
-          <dd>
-            {% set url_text = normalised_doi | doi_url | safe %}
-            <a href="{{ url_text }}" target="_blank" rel="noopener">{{ url_text }}</a>
-          </dd>
-          {% endif %}
+        <div class="container">
+            <div class="row">
+                <section class="col-md-8">
+                    <header class="flex-header">
+                        <h2 class="flex-header__child">Abstract</h2>
+                        <p class="flex-header__child">
+                            {% if bibjson.get_urls("fulltext") %}
+                                {% for url in bibjson.get_urls("fulltext") %}
+                                    <a href="{{url}}" class="button button--primary" target="_blank" rel="noopener" role="button">Read online</a>
+                                {% endfor %}
+                            {% else %}
+                                {% if doi %}
+                                    {% set url_text = normalised_doi | doi_url | safe %}
+                                    {% if url_text != "" %}
+                                        <a href="{{url_text}}" class="button button--primary" target="_blank" rel="noopener" role="button">Read online</a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
 
-          {% if jbib.volume or jbib.number %}
-          <dt>Journal volume & issue</dt>
-          <dd>
-            {% if jbib.volume %}Vol. {{ jbib.volume }}{% endif %}{% if jbib.volume and jbib.number %},{% endif %}
-            {% if jbib.number %}no. {{ jbib.number }}{% endif %}
-          </dd>
-          {% endif %}
-        </dl>
-      </div>
+                        </p>
+                    </header>
+                    {% if bibjson.abstract %}
+                        <p class="article-details__abstract">{{ bibjson.abstract | striptags }}</p>
+                    {% else %}
+                        <em class="article-details__abstract--empty">No abstracts available.</em>
+                    {% endif %}
 
-    </header>
-  </div>
+                    {% if bibjson.keywords %}
+                        <h2 class="sr-only">Keywords</h2>
+                        <ul class="tags">
+                            {% for keyword in bibjson.keywords %}
+                                <li class="tag">
+                                    <a href="../search/articles?ref=article-page&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ keyword|safe }}%22%2C%22default_operator%22%3A%22AND%22%7D%7D%7D">
+                                        {{ keyword }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
 
-  <div class="container">
-    <div class="row">
-      <section class="col-md-8">
-        <header class="flex-header">
-          <h2 class="flex-header__child">Abstract</h2>
-          <p class="flex-header__child">
-            {% if bibjson.get_urls("fulltext") %}
-              {% for url in bibjson.get_urls("fulltext") %}
-                <a href="{{url}}" class="button button--primary" target="_blank" rel="noopener" role="button">Read online</a>
-              {% endfor %}
-            {% else %}
-              {% if doi %}
-                {% set url_text = normalised_doi | doi_url | safe %}
-                {% if url_text != "" %}
-                  <a href="{{url_text}}" class="button button--primary" target="_blank" rel="noopener" role="button">Read online</a>
-                {% endif %}
-              {% endif %}
-            {% endif %}
+                    {% if doi %}
+                        {# Dimensions badge #}
+                        <p>
+                            <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
+                            <span class="__dimensions_badge_embed__" data-doi="{{ normalised_doi }}" data-legend="never" data-hide-zero-citations="true"></span>
+                        </p>
+                    {% endif %}
+                </section>
 
-          </p>
-        </header>
-        {% if bibjson.abstract %}
-        <p class="article-details__abstract">{{ bibjson.abstract | striptags }}</p>
-        {% else %}
-        <em class="article-details__abstract--empty">No abstracts available.</em>
-        {% endif %}
+                <aside class="col-md-4">
+                    <h2>Published in <em>{{jtitle}}</em></h2>
+                    <dl>
+                        {% if jbib.issns()|length > 0 %}
+                            <dt>ISSN</dt>
+                            {% for identifier in jbib.get_identifiers(idtype='pissn') %}<dd>{{identifier}} (Print)</dd>{% endfor %}
+                            {% for identifier in jbib.get_identifiers(idtype='eissn') %}<dd>{{identifier}} (Online)</dd>{% endfor %}
+                        {% endif %}
 
-        {% if bibjson.keywords %}
-        <h2 class="sr-only">Keywords</h2>
-        <ul class="tags">
-          {% for keyword in bibjson.keywords %}
-          <li class="tag">
-            {# TODO: replace with pre-defined query #}
-            <a href="../search/articles?ref=homepage-box&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ j }}%22%2C%22default_operator%22%3A%22AND%22%7D%7D%7D">
-              {{ keyword }}
-            </a>
-          </li>
-          {% endfor %}
-        </ul>
-        {% endif %}
+                        {% if jbib.publisher %}
+                            <dt>Publisher</dt>
+                            <dd>{{jbib.publisher}}</dd>
+                        {% endif %}
 
-        {% if doi %}
-        {# Dimensions badge #}
-        <p>
-          <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
-          <span class="__dimensions_badge_embed__" data-doi="{{ normalised_doi }}" data-legend="never" data-hide-zero-citations="true"></span>
-        </p>
-        {% endif %}
-      </section>
+                        {% if jbib.country %}
+                            <dt>Country of publisher</dt>
+                            <dd>{{jbib.country_name()}}</dd>
+                        {% endif %}
 
-      <aside class="col-md-4">
-        <h2>Published in <em>{{jtitle}}</em></h2>
-        <dl>
-          {% if jbib.issns()|length > 0 %}
-          <dt>ISSN</dt>
-          {% for identifier in jbib.get_identifiers(idtype='pissn') %}<dd>{{identifier}} (Print)</dd>{% endfor %}
-          {% for identifier in jbib.get_identifiers(idtype='eissn') %}<dd>{{identifier}} (Online)</dd>{% endfor %}
-          {% endif %}
+                        {% for path in bibjson.lcc_paths() %}
+                            {% if loop.index0 == 0 %}<dt>LCC subjects</dt>{% endif %}
+                            <dd>{{ path }}</dd>
+                        {% endfor %}
 
-          {% if jbib.publisher %}
-          <dt>Publisher</dt>
-          <dd>{{jbib.publisher}}</dd>
-          {% endif %}
+                        {% if jbib.get_single_url("homepage") %}
+                            <dt>Website</dt>
+                            <dd><a href="{{jbib.get_single_url('homepage')}}">{{jbib.get_single_url('homepage')}}</a></dd>
+                        {% endif %}
+                    </dl>
 
-          {% if jbib.country %}
-          <dt>Country of publisher</dt>
-          <dd>{{jbib.country_name()}}</dd>
-          {% endif %}
+                    <p>
+                        <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}" class="button secondary-button">About the journal</a>
+                    </p>
 
-          {% for path in bibjson.lcc_paths() %}
-          {% if loop.index0 == 0 %}<dt>LCC subjects</dt>{% endif %}
-          <dd>{{ path }}</dd>
-          {% endfor %}
+                </aside>
+            </div>
 
-          {% if jbib.get_single_url("homepage") %}
-          <dt>Website</dt>
-          <dd><a href="{{jbib.get_single_url('homepage')}}">{{jbib.get_single_url('homepage')}}</a></dd>
-          {% endif %}
-        </dl>
-
-        <p>
-          <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}" class="button secondary-button">About the journal</a>
-        </p>
-
-      </aside>
-    </div>
-
-  </div>
-</main>
+        </div>
+    </main>
 {% endblock %}
