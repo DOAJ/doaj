@@ -39,6 +39,19 @@ def cookie_consent():
     return resp
 
 
+@blueprint.route("/dismiss_site_note")
+def dismiss_site_note():
+    cont = request.values.get("continue")
+    if cont is not None:
+        resp = redirect(cont)
+    else:
+        resp = make_response()
+    # set a cookie that lasts for one year
+    resp.set_cookie(app.config.get("SITE_NOTE_KEY"), app.config.get("SITE_NOTE_COOKIE_VALUE"), max_age=app.config.get("SITE_NOTE_SLEEP"))
+    return resp
+
+
+
 @blueprint.route("/news")
 def news():
     news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))

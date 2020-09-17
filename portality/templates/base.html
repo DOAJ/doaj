@@ -60,10 +60,13 @@
     {% include "doaj/cookie_consent.html" %}
 {% endif %}
 
-
 {% include 'header.html' %}
 
 <div class="container">
+
+{% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
+    {% include config.get("SITE_NOTE_TEMPLATE") %}
+{% endif %}
 
     {% block main_panel %}
     <div class="content">
@@ -87,6 +90,7 @@
     <script type="text/javascript">
     jQuery(document).ready(function() {
         $(".cookie-consent").on("click", setCookieConsent);
+        $(".site-note-dismiss").on("click", dissmissSiteNote);
     });
     </script>
 

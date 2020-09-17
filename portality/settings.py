@@ -897,11 +897,16 @@ ELASTIC_APM = {
 }
 
 ########################################
-## Consent Cookie
+## Consent Cookie and other Top-Level dismissable notes
 
 CONSENT_COOKIE_KEY = "doaj-cookie-consent"
 
-
+# site notes, which can be configured to run any time with any content
+SITE_NOTE_ACTIVE = True
+SITE_NOTE_KEY = "doaj-site-note"
+SITE_NOTE_SLEEP = 604800    # every 7 days
+SITE_NOTE_COOKIE_VALUE = "You have seen our most recent site wide announcement"
+SITE_NOTE_TEMPLATE = "doaj/site_note.html"
 
 #############################################
 ## Harvester Configuration
