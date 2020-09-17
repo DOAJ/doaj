@@ -416,11 +416,11 @@ class JournalLikeBibJSON(SeamlessMixin):
     def preservation_services(self):
         pres = self.preservation
         if pres is None:
-            return None
+            return []
         if "service" in pres:
             return pres["service"]
         else:
-            return None
+            return []
 
     @property
     def preservation_library(self):
@@ -730,6 +730,9 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def flattened_archiving_policies(self):
+        summary = self.preservation_summary
+        if summary is None:
+            return []
         return [": ".join(p) if isinstance(p, list) else p for p in self.preservation_summary]
 
     # vocab of known identifier types
