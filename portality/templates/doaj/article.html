@@ -2,61 +2,66 @@
 
 {% block body_class %}article-details{% endblock %}
 
-{% block page_title %}
-    {% set bibjson = article.bibjson() %}
-    {%  if bibjson.title %}
-        {% set metatitle = bibjson.title + ' | ' + app.config['SERVICE_NAME'] %}
-    {% else %}
-        {% set metatitle = app.config['SERVICE_NAME'] %}
-    {% endif %}
-    {{ metatitle }} &ndash; DOAJ
-{% endblock %}
+{%- block page_title -%}
+{% set bibjson = article.bibjson() %}
+{%- if bibjson.title -%}
+{% set metatitle = bibjson.title %}
+{% else %}
+{% set metatitle = app.config['SERVICE_NAME'] %}
+{%- endif -%}
+{{ metatitle }} – DOAJ
+{%- endblock -%}
 
-{% block page_desc %}
-    {% set bibjson = article.bibjson() %}
-    <meta name="description" content="Information about the open-access article '{{ bibjson.title }}' in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">
-{% endblock %}
+{%- block meta_description -%}
+  {% set bibjson = article.bibjson() %}
+  {%- if bibjson.abstract -%}
+    {{ bibjson.abstract | striptags | truncate(160) }}
+  {% else %}
+    More about this open access article on DOAJ. {{ app.config['SERVICE_TAGLINE'] }}
+  {%- endif -%}
+{%- endblock -%}
 
 {% block extra_meta_tags %}
-
-{% set bibjson = article.bibjson() %}
-{% set jbib = journal.bibjson() %}
-{% set jtitle, cite = bibjson.vancouver_citation() %}
-{% set issns = bibjson.issns() %}
-{% set doi = bibjson.get_one_identifier("doi") %}
-{% set normalised_doi = article.get_normalised_doi() %}
-
-{% if jtitle %} <meta name="citation_journal_title" content="{{ jtitle }}"> {% endif %}
-{% if jbib.publisher %} <meta name="citation_publisher" content="{{ jbib.publisher }}"> {% endif %}
-{% if doi %} <meta name="citation_doi" content="{{ normalised_doi }}"> {% endif %}
-
-{% for author in bibjson.author %}
-<meta name="citation_author" content="{{author.name}}">
-{% endfor %}
-
-{% if bibjson.title %}<meta name="citation_title" content="{{ bibjson.title }}">{% endif %}
-
-{% if bibjson.get_publication_date("%Y/%m/%d") %}<meta name="citation_publication_date" content="{{ bibjson.get_publication_date("%Y/%m/%d") }}">{% endif %}
-
-{% if bibjson.volume %}<meta name="citation_volume" content="{{ bibjson.volume }}">{% endif %}
-
-{% if bibjson.number %}<meta name="citation_issue" content="{{ bibjson.number }}">{% endif %}
-
-{% if bibjson.start_page %}<meta name="citation_firstpage" content="{{ bibjson.start_page }}">{% endif %}
-{% if bibjson.end_page %}<meta name="citation_lastpage" content="{{ bibjson.end_page }}">{% endif %}
-
-{# Full text link excluded due to Google's note it should be hosted on DOAJ.org, see also https://github.com/DOAJ/doaj/issues/12#issuecomment-91606561 #}
-{# <meta name="citation_pdf_url"
-content="http://www.jbc.org/cgi/reprint/279/6/4034.pdf
-<http://www.jbc.org/cgi/reprint/279/6/4034.pdf> "> (only if the PDF is also
-hosted on DOAJ.org) #}
-
-{% for issn in issns %}
-<meta name="citation_issn" content="{{ issn }}">
-{% endfor %}
+  {% set bibjson = article.bibjson() %}
+  {% set jbib = journal.bibjson() %}
+  {% set jtitle, cite = bibjson.vancouver_citation() %}
+  {% set issns = bibjson.issns() %}
+  {% set doi = bibjson.get_one_identifier("doi") %}
+  {% set normalised_doi = article.get_normalised_doi() %}
+  {% if jtitle %}
+  <meta name="citation_journal_title" content="{{ jtitle }}">
+  {% endif %}
+  {% if jbib.publisher %}
+  <meta name="citation_publisher" content="{{ jbib.publisher }}">
+  {% endif %}
+  {% if doi %}
+  <meta name="citation_doi" content="{{ normalised_doi }}">
+  {% endif %}
+  {% for author in bibjson.author %}
+  <meta name="citation_author" content="{{author.name}}">
+  {% endfor %}
+  {% if bibjson.title %}
+  <meta name="citation_title" content="{{ bibjson.title }}">
+  {% endif %}
+  {% if bibjson.get_publication_date("%Y/%m/%d") %}
+  <meta name="citation_publication_date" content="{{ bibjson.get_publication_date("%Y/%m/%d") }}">
+  {% endif %}
+  {% if bibjson.volume %}
+  <meta name="citation_volume" content="{{ bibjson.volume }}">
+  {% endif %}
+  {% if bibjson.number %}
+  <meta name="citation_issue" content="{{ bibjson.number }}">
+  {% endif %}
+  {% if bibjson.start_page %}
+  <meta name="citation_firstpage" content="{{ bibjson.start_page }}">
+  {% endif %}
+  {% if bibjson.end_page %}
+  <meta name="citation_lastpage" content="{{ bibjson.end_page }}">
+  {% endif %}
+  {% for issn in issns %}
+  <meta name="citation_issn" content="{{ issn }}">
+  {% endfor %}
 {% endblock %}
-
-
 
 {% block content %}
 
@@ -84,9 +89,9 @@ hosted on DOAJ.org) #}
 
       <h1>
         {%  if bibjson.title %}
-        {{bibjson.title}}
+        {{ bibjson.title | safe }}
         {% else %}
-        <i>[Article title missing]</i>
+        <em>[Article title missing]</em>
         {% endif %}
       </h1>
 
@@ -99,6 +104,7 @@ hosted on DOAJ.org) #}
             {% endfor %}
           </ul>
 
+          {# TODO: do not display this block if there are no affiliations or ORCiDs #}
           <p>
             <a class="button" type="button" data-toggle="collapse" data-target="#authors-affiliations" aria-expanded="false">
               Affiliations
@@ -163,7 +169,7 @@ hosted on DOAJ.org) #}
           </p>
         </header>
         {% if bibjson.abstract %}
-        <p class="article-details__abstract">{{bibjson.abstract}}</p>
+        <p class="article-details__abstract">{{ bibjson.abstract | striptags }}</p>
         {% else %}
         <em class="article-details__abstract--empty">No abstracts available.</em>
         {% endif %}
@@ -171,17 +177,22 @@ hosted on DOAJ.org) #}
         {% if bibjson.keywords %}
         <h2 class="sr-only">Keywords</h2>
         <ul class="tags">
-          {% for j in bibjson.keywords %}
-          <li class="tag">{{ j }}</li>
+          {% for keyword in bibjson.keywords %}
+          <li class="tag">
+            {# TODO: replace with pre-defined query #}
+            <a href="../search/articles?ref=homepage-box&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ j }}%22%2C%22default_operator%22%3A%22AND%22%7D%7D%7D">
+              {{ keyword }}
+            </a>
+          </li>
           {% endfor %}
         </ul>
         {% endif %}
 
         {% if doi %}
-        <!-- Dimensions badges -->
+        {# Dimensions badge #}
         <p>
           <script async src="https://badge.dimensions.ai/badge.js" charset="utf-8"></script>
-          <span class="__dimensions_badge_embed__" data-doi="{{ normalised_doi }}" data-legend="never"></span>
+          <span class="__dimensions_badge_embed__" data-doi="{{ normalised_doi }}" data-legend="never" data-hide-zero-citations="true"></span>
         </p>
         {% endif %}
       </section>

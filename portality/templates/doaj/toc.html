@@ -8,21 +8,28 @@ journal-details
     {% set metatitle = bibjson.title %}
     {% if current_volume %}{% set metatitle = metatitle + ', ' + 'Volume ' + current_volume %}{% endif %}
     {% if current_issue %}{% set metatitle = metatitle + ', ' + 'Issue ' + current_issue %}{% endif %}
-    {% set metatitle = metatitle + ' | ' + app.config['SERVICE_NAME'] %}
-    {{ metatitle }} &ndash; DOAJ
+    {% set metatitle = metatitle %}
+    {{ metatitle }} – DOAJ
 {% endblock %}
 
-{% block page_desc %}<meta name="description" content="Information about the open-access journal {{ bibjson.title }} in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">{% endblock %}
+{%- block meta_description -%}
+  {%- if bibjson.keywords -%}
+    A peer-reviewed, open access journal in {% for keyword in bibjson.keywords %}{% if loop.last %} & {% elif loop.first %}{% else %}, {% endif %}{{ keyword }}{% endfor %}.
+  {% else %}
+    More about this peer-reviewed, open access journal on DOAJ.
+  {%- endif -%}
+{%- endblock -%}
 
 {% block content %}
 
 {%- set CC_MAP = {
-        "CC BY" : ["/static/doaj/images/cc/by.png", "https://creativecommons.org/licenses/by/4.0/", ["svg/cc.svg", "svg/by.svg"]],
-        "CC BY-NC" : ["/static/doaj/images/cc/by-nc.png", "https://creativecommons.org/licenses/by-nc/4.0/", ["svg/cc.svg", "svg/by.svg"]],
-        "CC BY-NC-ND" : ["/static/doaj/images/cc/by-nc-nd.png", "https://creativecommons.org/licenses/by-nc-nd/4.0/", ["svg/cc.svg", "svg/by.svg"]],
-        "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "https://creativecommons.org/licenses/by-nc-sa/4.0/", ["svg/cc.svg", "svg/by.svg"]],
-        "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "https://creativecommons.org/licenses/by-nd/4.0/", ["svg/cc.svg", "svg/by.svg"]],
-        "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "https://creativecommons.org/licenses/by-sa/4.0/", ["svg/cc.svg", "svg/by.svg"]]
+        "CC BY" : ["https://creativecommons.org/licenses/by/4.0/", ["by"]],
+        "CC BY-NC" : ["https://creativecommons.org/licenses/by-nc/4.0/", ["by", "nc"]],
+        "CC BY-NC-ND" : ["https://creativecommons.org/licenses/by-nc-nd/4.0/", ["by", "nc", "nd"]],
+        "CC BY-NC-SA" : ["https://creativecommons.org/licenses/by-nc-sa/4.0/", ["by", "nc", "sa"]],
+        "CC BY-ND" : ["https://creativecommons.org/licenses/by-nd/4.0/", ["by", "nd"]],
+        "CC BY-SA" : ["https://creativecommons.org/licenses/by-sa/4.0/", ["by", "sa"]],
+        "Public Domain" : ["https://creativecommons.org/publicdomain/zero/1.0/", ["zero"]],
     }
 -%}
 
@@ -33,6 +40,16 @@ journal-details
         False : "No",
         "False": "No"
     }
+%}
+
+{%
+    set DEPOSIT_POLICY_MAP = {
+      "Sherpa/Romeo" : "https://v2.sherpa.ac.uk/cgi/search/publication/basic?publication_title-auto=",
+      "Diadorim" : "https://diadorim.ibict.br/simple-search?query=",
+      "Héloïse" : "https://heloise.ccsd.cnrs.fr/search/searchreview?parameter_0=",
+      "Dulcinea" : "https://www.accesoabierto.net/dulcinea/lista/REVISTA/",
+    }
+
 %}
 
     {# FIXME for new data model's support of multiple licenses #}
@@ -155,7 +172,7 @@ journal-details
                     {% if bibjson.other_charges_url %}
                         and there are {% if bibjson.other_charges_url %}<a href="{% if bibjson.other_charges_url %}" target="_blank" rel="noopener">{% endif %}other charges{% if bibjson.other_charges_url %}</a>{% endif %}
                     {% else %}
-                      and there are <strong>no other charges</strong>
+                      and there are <strong>no other charges.</strong>
                     {% endif %}
                   </p>
                 {% endif %}
@@ -184,14 +201,23 @@ journal-details
                   <li><a href="{{ bibjson.editorial_board_url }}" target="_blank" rel="noopener">Editorial Board</a></li>
                   {% endif %}
 
-                    {% if bibjson.editorial_review_process or bibjson.editorial_review_url %}
-                    <li><strong>{% if bibjson.editorial_review_url %}<a href="{{ bibjson.editorial_review_url }}" target="_blank" rel="noopener">{% endif %}{% if bibjson.editorial_review_process %}{{ bibjson.editorial_review_process|join(", ") }}{% else %}Review process unknown{% endif %}{% if bibjson.editorial_review_url %}</a>{% endif %}</strong></li>
-                    {% endif %}
+                  {% if bibjson.editorial_review_process or bibjson.editorial_review_url %}
+                  <li>
+                    <strong>
+                      {% if bibjson.editorial_review_url %}<a href="{{ bibjson.editorial_review_url }}" target="_blank" rel="noopener">{% endif %}
+                      {% if bibjson.editorial_review_process %}
+                      {{ bibjson.editorial_review_process|join(", ") }}
+                      {% else %}Review process unknown
+                      {% endif %}
+                      {% if bibjson.editorial_review_url %}</a>{% endif %}
+                    </strong>
+                  </li>
+                  {% endif %}
 
                 </ul>
                 {% if bibjson.plagiarism_detection %}
                 <p>
-                  &rarr; This journal checks for plagiarism
+                  &rarr; This journal checks for plagiarism.
                 </p>
                 {% endif %}
               </div>
@@ -225,18 +251,23 @@ journal-details
                 </p>
                 <p>
                   {% for license in bibjson.licenses %}
-                      {%  set ldata = CC_MAP.get(license.type) %}
-                        <a href="{{ ldata[1] }}" target="_blank" rel="noopener" style="text-decoration: none;">
-                        <img src="{{ ldata[0] }}">
-                        {#  FIXME: not sure where these svgs are
-                          {% if license == "CC BY" %}
-                          {% include svg/cc.svg %} {% include svg/by.svg %}
-                          {% elsif license == "CC BY-NC" %}
-                          {% include svg/cc.svg %} {% include svg/by.svg %} {% include svg/nc.svg %}
-                          {% endif %}
-                        #}
+                  {% set ldata = CC_MAP.get(license.type) %}
+                  {% if license.type == "Publisher's own license" %}
+                  {% else %}
+                    <a href="{{ ldata[1] }}" target="_blank" rel="noopener" style="text-decoration: none;">
+                      {% include 'svg/cc.svg' %}
+                      {% for license_option in ldata[1] %}
+                      {# TODO: how do we display public domain licenses + publishers’ own? #}
+                      {# TODO: there’s probably a better way to do this #}
+                        {% if license_option == 'by' %}{% include 'svg/by.svg' %}{% endif %}
+                        {% if license_option == 'nc' %}{% include 'svg/nc.svg' %}{% endif %}
+                        {% if license_option == 'nd' %}{% include 'svg/nd.svg' %}{% endif %}
+                        {% if license_option == 'sa' %}{% include 'svg/sa.svg' %}{% endif %}
+                        {% if license_option == 'zero' %}{% include 'svg/zero.svg' %}{% endif %}
+                      {% endfor %}
                     {% if loop.last %}{% else %}<br/>{% endif %}
-                    </a>
+                  </a>
+                  {% endif %}
                   {% endfor %}
                 </p>
                 {% endif %}
@@ -247,7 +278,7 @@ journal-details
             </article>
 
             <article class="card card--with-icon">
-              {# FIXME: svg imports not present {% include svg/copyright.svg %} #}
+              {% include 'svg/copyright.svg' %}
               <div>
                 <p>The author does <strong>not</strong> retain unrestricted copyrights and publishing rights.</p>
               </div>
@@ -257,10 +288,11 @@ journal-details
             <article class="card card--with-icon">
               <span data-feather="archive" aria-hidden="true"></span>
               <div>
+                {# TODO: this isn’t working and it should be one policy per list item, not all of them
                 <p>Articles digitally archived in:</p>
                 <ul>
                   <li>{{ bibjson.flattened_archiving_policies|join(", ") }}</li>
-                </ul>
+                </ul>#}
 
                 {% if bibjson.preservation_url %}
                 <p>
@@ -280,25 +312,14 @@ journal-details
                 </p>
                 <ul>
                   {% for policy in bibjson.deposit_policy %}
+                    {%  set policy_data = DEPOSIT_POLICY_MAP.get(policy) %}
                     <li>
-                      {% if policy == "Sherpa/Romeo" %}
-                      <a href="https://v2.sherpa.ac.uk/cgi/search/publication/basic?publication_title-auto={{ bibjson.title }}" target="_blank" rel="noopener">
-                        {{ policy }}
-                      </a>
-                      {% elif policy == "Diadorim" %}
-                      <a href="https://diadorim.ibict.br/simple-search?query={{ bibjson.title }}" target="_blank" rel="noopener">
-                        {{ policy }}
-                      </a>
-                      {% elif policy == "Héloïse" %}
-                      <a href="https://heloise.ccsd.cnrs.fr/search/searchreview?parameter_0={{ bibjson.title }}" target="_blank" rel="noopener">
-                        {{ policy }}
-                      </a>
-                      {% elif policy == "Dulcinea" %}
-                      <a href="https://www.accesoabierto.net/dulcinea/lista/REVISTA/{{ bibjson.title }}" target="_blank" rel="noopener">
+                      {% if policy == "Sherpa/Romeo" or policy == "Diadorim" or policy == "Héloïse" or policy == "Dulcinea" %}
+                      <a href="{{ policy_data|safe }}{{ bibjson.title }}" target="_blank" rel="noopener">
                         {{ policy }}
                       </a>
                       {% else %}
-                          {{ policy }}
+                      {{ policy }}
                       {% endif %}
                     </li>
                   {% endfor %}
@@ -357,7 +378,8 @@ journal-details
                 <dt>Keywords</dt>
                 <dd>
                   {% for keyword in bibjson.keywords %}
-                  <a href="">{{ keyword }}</a>{% if loop.last %}{% else %}, {% endif %}
+                  {# TODO: replace with pre-defined query #}
+                  <a href="../search/journals?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ keyword }}%22%2C%22default_operator%22%3A%22AND%22%2C%22default_field%22%3A%22bibjson.keywords%22%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D" class="tag">{{ keyword }}</a>
                   {% endfor %}
                 </dd>
                 {% endif %}

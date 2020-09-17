@@ -10,3 +10,11 @@
   line-height: 1.55;
   @include font-serif;
 }
+
+.article-details__abstract--empty {
+  padding: $spacing-05 $spacing-03;
+  display: block;
+  background: $fair-pink;
+  text-align: center;
+  @include typescale-03;
+}

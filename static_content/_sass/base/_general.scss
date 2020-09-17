@@ -102,6 +102,7 @@ strong, b {
 a {
   text-decoration: underline;
   color: $warm-black;
+  overflow-wrap: break-word;
 
   &:hover,
   &:focus,

@@ -2,6 +2,10 @@
 
 .article-summary {
 
+  aside {
+    margin-bottom: $spacing-04;
+  }
+
   ul {
     @include unstyled-list($inline: true);
   }
