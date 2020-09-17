@@ -353,3 +353,8 @@
     </form>
   </div>
 </section>
+
+{# global site note #}
+{% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
+    {% include config.get("SITE_NOTE_TEMPLATE") %}
+{% endif %}
