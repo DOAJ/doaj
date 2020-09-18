@@ -1293,6 +1293,9 @@ $.extend(true, doaj, {
             // whether counts of 0 should prevent the value being rendered
             this.hideEmpty = edges.getParam(params.hideEmpty, false);
 
+            // don't display the facet at all if there is no data to display
+            this.hideIfNoData = edges.getParam(params.hideIfNoData, true);
+
             // namespace to use in the page
             this.namespace = "doaj-or-term-selector";
 
@@ -1301,16 +1304,13 @@ $.extend(true, doaj, {
                 var ts = this.component;
                 var namespace = this.namespace;
 
-                // sort out all the classes that we're going to be using
-                var resultClass = edges.css_classes(namespace, "result", this);
-                var valClass = edges.css_classes(namespace, "value", this);
-                var filterRemoveClass = edges.css_classes(namespace, "filter-remove", this);
-                var facetClass = edges.css_classes(namespace, "facet", this);
-                var headerClass = edges.css_classes(namespace, "header", this);
-                var selectionsClass = edges.css_classes(namespace, "selections", this);
-                var bodyClass = edges.css_classes(namespace, "body", this);
-                var countClass = edges.css_classes(namespace, "count", this);
+                if (this.hideIfNoData && ts.edge.result && ts.terms.length === 0) {
+                    this.context.html("");
+                    return;
+                }
 
+                // sort out all the classes that we're going to be using
+                var countClass = edges.css_classes(namespace, "count", this);
                 var checkboxClass = edges.css_classes(namespace, "selector", this);
 
                 var toggleId = edges.css_id(namespace, "toggle", this);
