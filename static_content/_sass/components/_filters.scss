@@ -7,13 +7,14 @@
 }
 
 .filters__heading {
-  margin-bottom: $spacing-04;
-  cursor: default;
+  margin-top: 0;
 
-  svg {
-    height: 15px;
+  @media (min-width: 992px) {
+      @include sr-only; // visually hide on larger devicess
   }
 }
+
+
 
 .filters__list {
   @include unstyled-list;
