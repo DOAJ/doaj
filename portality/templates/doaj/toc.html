@@ -169,12 +169,12 @@
                                                     {% endfor %}
                                                 {% endif %}
                                             {% else %}
-                                                There are <strong class="label label--large">No APC<span style="text-transform: lowercase;">s</span></strong> (<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">article processing charges</a>) to publish with this journal
+                                                There are <strong class="label label--large">No APC<span style="text-transform: lowercase;">s</span></strong> (<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">article processing charges</a>) to publish with this journal.
                                             {% endif %}
 
                                             {# Other charges #}
-                                            {% if bibjson.other_charges_url %}
-                                                and there are {% if bibjson.other_charges_url %}<a href="{% if bibjson.other_charges_url %}" target="_blank" rel="noopener">{% endif %}other charges{% if bibjson.other_charges_url %}</a>{% endif %}
+                                            {% if bibjson.has_other_charges %}
+                                                and there are {% if bibjson.other_charges_url %}<a href="{% if bibjson.other_charges_url %}" target="_blank" rel="noopener">{% endif %}other charges{% if bibjson.other_charges_url %}</a>.{% endif %}
                                             {% else %}
                                                 and there are <strong>no other charges.</strong>
                                             {% endif %}
@@ -262,7 +262,7 @@
                                             {% for license in bibjson.licenses %}
                                                 {% set ldata = CC_MAP.get(license.type) %}
 
-                                                <a href="{{ ldata[1] }}" target="_blank" rel="noopener" style="text-decoration: none;">
+                                                <a href="{{ ldata[0] }}" target="_blank" rel="noopener" style="text-decoration: none;">
                                                     {% if license.type != "Publisher's own license" %}
                                                         {% include 'svg/cc.svg' %}
                                                     {% endif %}
@@ -271,12 +271,12 @@
                                                         {# TODO: there’s probably a better way to do this #}
                                                         {# RJ Note: I have adjusted this bit of the template to do this slightly better, but until we have journals
                                                             with multiple lincenses we're not sure how weird it will look #}
-                                                        {% if license_option == 'by' %}{% include 'svg/by.svg' %}{% endif %}
-                                                        {% if license_option == 'nc' %}{% include 'svg/nc.svg' %}{% endif %}
-                                                        {% if license_option == 'nd' %}{% include 'svg/nd.svg' %}{% endif %}
-                                                        {% if license_option == 'sa' %}{% include 'svg/sa.svg' %}{% endif %}
+                                                        {% if license_option == 'by' %}{% include 'svg/by.svg' %}<span class="sr-only">Attribution</span>{% endif %}
+                                                        {% if license_option == 'nc' %}{% include 'svg/nc.svg' %}<span class="sr-only">Non-Commercial</span>{% endif %}
+                                                        {% if license_option == 'nd' %}{% include 'svg/nd.svg' %}<span class="sr-only">No Derivatives</span>{% endif %}
+                                                        {% if license_option == 'sa' %}{% include 'svg/sa.svg' %}<span class="sr-only">Share Alike</span>{% endif %}
                                                     {% endfor %}
-                                                    {% if license.type == 'CC0' %}{% include 'svg/zero.svg' %}{% endif %}
+                                                    {% if license.type == 'CC0' %}{% include 'svg/zero.svg' %}<span class="sr-only">Public Domain</span>{% endif %}
                                                     {% if loop.last %}{% else %}<br/>{% endif %}
                                                 </a>
 
@@ -383,7 +383,7 @@
                                 <span data-feather="tag" aria-hidden="true"></span>
                                 <dl>
                                     {% for path in bibjson.lcc_paths() %}
-                                        {% if loop.index0 == 0 %}<dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span></a></dt>{% endif %}
+                                        {% if loop.index0 == 0 %}<dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span><span class="sr-only">Look up the Library of Congress Classification Outline</span></a></dt>{% endif %}
                                         <dd>{{ path }}</dd>
                                     {% endfor %}
 
