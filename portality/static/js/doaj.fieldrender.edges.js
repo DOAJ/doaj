@@ -54,6 +54,9 @@ $.extend(true, doaj, {
                     <div class="row">\
                         <div class="col-md-3">\
                             <aside class="filters">\
+                                <h2 class="label label--underlined filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
+                                    <span data-feather="sliders" aria-hidden="true"></span> Refine search results <span data-feather="chevron-down" aria-hidden="true"></span>\
+                                </h2>\
                                 <ul class="collapse filters__list" id="filters" aria-expanded="false">\
                                     {{FACETS}}\
                                 </ul>\
