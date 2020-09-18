@@ -232,7 +232,7 @@ $.extend(true, doaj, {
                         {'display':'Title (Z-A)','field':'index.unpunctitle.exact', "dir" : "desc"},
                         {'display':'Relevance','field':'_score'}
                     ],
-                    renderer: edges.bs3.newSortRenderer({
+                    renderer: doaj.renderers.newSortRenderer({
                         prefix: "Sort by",
                         dirSwitcher: false
                     })
