@@ -1,0 +1,10 @@
+{
+    "batch" : 10000,
+	"types": [
+		{
+			"type" : "article",
+			"init_with_model": true,
+			"keepalive" : "10m"
+		}
+	]
+}

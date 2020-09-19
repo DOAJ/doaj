@@ -14,6 +14,12 @@ So in this directory, just run
 
     python migrate.py
 
+Finally, run a basic migration on the articles:
+```
+python portality/upgrade.py -u portality/migrate/20200423_af_redesign/patch_20200919_migrate.json
+```
+
+
 ## Cleanup
 
 Once the migration has successfully run, and you have confirmed that everything
