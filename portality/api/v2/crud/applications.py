@@ -7,7 +7,7 @@ from portality import models
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException, NoSuchObjectException
 from portality import lock
-from portality.formcontext import formcontext
+# from portality.formcontext import formcontext
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.forms.application_forms import ApplicationFormFactory
 from werkzeug.datastructures import MultiDict
@@ -100,17 +100,18 @@ class ApplicationsCrudApi(CrudApi):
                 if alock is not None: alock.delete()
                 raise Api404Error(jlock, alock)
 
-            # FIXME: needs to be updated to the new application form system
             # convert the incoming application into the web form
-            form = MultiDict(ApplicationFormXWalk.obj2formdata(ap))
-            fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
+            form = ApplicationFormXWalk.obj2formdata(ap)
+            formulaic_context = ApplicationFormFactory.context("update_request")
+            fc = formulaic_context.processor(formdata=form, source=vanilla_ap)
+            # fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
 
             if fc.validate():
                 try:
                     save_target = not dry_run
                     fc.finalise(save_target=save_target, email_alert=False)
                     return fc.target
-                except formcontext.FormContextException as e:
+                except Exception as e:
                     raise Api400Error(str(e))
                 finally:
                     if jlock is not None: jlock.delete()
@@ -129,7 +130,7 @@ class ApplicationsCrudApi(CrudApi):
             form = ApplicationFormXWalk.obj2formdata(ap)
 
             # create a template that will hold all the values we want to persist across the form submission
-            template = models.Suggestion()
+            template = models.Application()
             template.set_owner(account.id)
 
             fc = ApplicationFormFactory.context("public")
@@ -139,7 +140,7 @@ class ApplicationsCrudApi(CrudApi):
                     save_target = not dry_run
                     processor.finalise(account, save_target=save_target, email_alert=False)
                     return processor.target
-                except formcontext.FormContextException as e:
+                except Exception as e:
                     raise Api400Error(str(e))
             else:
                 raise Api400Error(cls._validation_message(processor))
@@ -205,7 +206,7 @@ class ApplicationsCrudApi(CrudApi):
             raise Api400Error(str(e))
 
         # now see if there's something for us to update
-        ap = models.Suggestion.pull(id)
+        ap = models.Application.pull(id)
         if ap is None:
             raise Api404Error()
 
@@ -214,9 +215,6 @@ class ApplicationsCrudApi(CrudApi):
 
         # now augment the suggestion object with all the additional information it requires
         #
-        # suggester name and email from the user account
-        new_ap.set_suggester(account.name, account.email)
-
         # they are not allowed to set "subject"
         new_ap.bibjson().remove_subjects()
 
@@ -251,14 +249,17 @@ class ApplicationsCrudApi(CrudApi):
                 raise Api404Error()
 
             # convert the incoming application into the web form
-            form = MultiDict(ApplicationFormXWalk.obj2form(new_ap))
+            form = ApplicationFormXWalk.obj2formdata(new_ap)
+            formulaic_context = ApplicationFormFactory.context("update_request")
+            fc = formulaic_context.processor(formdata=form, source=vanilla_ap)
 
-            fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
+            #form = MultiDict(ApplicationFormXWalk.obj2form(new_ap))
+            #fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
             if fc.validate():
                 try:
                     fc.finalise(email_alert=False)
                     return fc.target
-                except formcontext.FormContextException as e:
+                except Exception as e:
                     raise Api400Error(str(e))
                 finally:
                     if jlock is not None: jlock.delete()
@@ -277,14 +278,23 @@ class ApplicationsCrudApi(CrudApi):
                     raise Api404Error()
 
             # convert the incoming application into the web form
-            form = MultiDict(ApplicationFormXWalk.obj2form(new_ap))
+            form = ApplicationFormXWalk.obj2formdata(new_ap)
 
-            fc = formcontext.ApplicationFormFactory.get_form_context(form_data=form, source=ap)
+            # create a template that will hold all the values we want to persist across the form submission
+            template = models.Application()
+            template.set_owner(account.id)
+            template.set_id(id)
+
+            formulaic_context = ApplicationFormFactory.context("public")
+            fc = formulaic_context.processor(form, template)
+
+            # form = MultiDict(ApplicationFormXWalk.obj2form(new_ap))
+            # fc = formcontext.ApplicationFormFactory.get_form_context(form_data=form, source=ap)
             if fc.validate():
                 try:
-                    fc.finalise(email_alert=False)
+                    fc.finalise(account, email_alert=False)
                     return fc.target
-                except formcontext.FormContextException as e:
+                except Exception as e:
                     raise Api400Error(str(e))
             else:
                 raise Api400Error(cls._validation_message(fc))

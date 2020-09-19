@@ -9,10 +9,10 @@ from portality.api.v2.crud.applications import ApplicationsCrudApi
 from portality.api.v2.data_objects.application import IncomingApplication, OutgoingApplication
 from portality.formcontext import FormContextException, formcontext
 from portality.lib.seamless import SeamlessException
-
+from portality.forms.application_processors import ApplicationProcessor
 
 def mock_finalise_exception(self, *args, **kwargs):
-    raise FormContextException("test exception")
+    raise Exception("test exception")
 
 
 def mock_custom_validate_always_pass(self, *args, **kwargs):
@@ -90,11 +90,12 @@ class TestCrudApplication(DoajTestCase):
         with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
+        # Removed, as we're no longer validating URLs at the object level
         # invalid domain in archiving_policy
-        data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["preservation"]["url"] = "abcd://abcd"
-        with self.assertRaises(SeamlessException):
-            ia = IncomingApplication(data)
+        # data = ApplicationFixtureFactory.incoming_application()
+        # data["bibjson"]["preservation"]["url"] = "abcd://abcd"
+        # with self.assertRaises(SeamlessException):
+        #     ia = IncomingApplication(data)
 
         # too many keywords
         data = ApplicationFixtureFactory.incoming_application()
@@ -122,10 +123,8 @@ class TestCrudApplication(DoajTestCase):
         assert a.id != "ignore_me"
         assert a.created_date != "2001-01-01T00:00:00Z"
         assert a.last_updated != "2001-01-01T00:00:00Z"
-        assert a['admin']['applicant']["name"] == "Tester"
-        assert a['admin']['applicant']["email"] == "test@test.com"
         assert a.owner == "test"
-        assert a.suggested_on is not None
+        assert a.date_applied is not None
         assert len(a.bibjson().keywords) > 1
 
         # check the stuff that should default
@@ -135,7 +134,7 @@ class TestCrudApplication(DoajTestCase):
         preservation = a.bibjson().preservation
         assert preservation.get("has_preservation")
         assert len(preservation.get("service")) == 3, "expected 3, got: {}".format(len(preservation.get("service")))
-        assert preservation.get("national_library") == "Trinity"
+        assert set(preservation.get("national_library")) == set(["Trinity", "Imperial"])
         assert "CLOCKSS" in preservation.get("service")
         assert "LOCKSS" in preservation.get("service")
         assert "A safe place" in preservation.get("service")
@@ -185,7 +184,8 @@ class TestCrudApplication(DoajTestCase):
             a = ApplicationsCrudApi.create(data, account)
 
         # if a formcontext exception is raised on finalise
-        formcontext.FormContext.finalise = mock_finalise_exception
+        ApplicationProcessor.finalise = mock_finalise_exception
+        # formcontext.FormContext.finalise = mock_finalise_exception
         with self.assertRaises(Api400Error):
             data = ApplicationFixtureFactory.incoming_application()
             del data["admin"]["current_journal"]
@@ -195,15 +195,14 @@ class TestCrudApplication(DoajTestCase):
             except Api400Error as e:
                 assert str(e) == "test exception"
                 raise
-        formcontext.FormContext.finalise = self.old_finalise
+        # formcontext.FormContext.finalise = self.old_finalise
+        ApplicationProcessor.finalise = self.old_finalise
 
         # validation fails on the formcontext
         IncomingApplication.custom_validate = mock_custom_validate_always_pass
         with self.assertRaises(Api400Error):
             data = ApplicationFixtureFactory.incoming_application()
             del data["admin"]["current_journal"]
-            # a duff email should trigger the form validation failure
-            data["admin"]["contact"]["email"] = "not an email address"
             publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
             try:
                 a = ApplicationsCrudApi.create(data, publisher)
@@ -240,7 +239,8 @@ class TestCrudApplication(DoajTestCase):
         journal.set_id(journal.makeid())
         journal.set_owner(publisher.id)
         journal.save(blocking=True)
-        formcontext.FormContext.finalise = mock_finalise_exception
+        # formcontext.FormContext.finalise = mock_finalise_exception
+        ApplicationProcessor.finalise = mock_finalise_exception
         with self.assertRaises(Api400Error):
             data = ApplicationFixtureFactory.incoming_application()
             data["admin"]["current_journal"] = journal.id
@@ -250,7 +250,8 @@ class TestCrudApplication(DoajTestCase):
             except Api400Error as e:
                 assert str(e) == "test exception"
                 raise
-        formcontext.FormContext.finalise = self.old_finalise
+        # formcontext.FormContext.finalise = self.old_finalise
+        ApplicationProcessor.finalise = self.old_finalise
 
         # validation fails on the formcontext
         publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
@@ -332,12 +333,13 @@ class TestCrudApplication(DoajTestCase):
         assert ba.deposit_policy[0] == "sherpa/romeo"
         assert ba.deposit_policy[1] == "other"
 
+        # Removed, as we now allow coerce failure
         # now test some failures
         # invalid country name
-        data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["publisher"]["country"] = "LandLand"
-        with self.assertRaises(SeamlessException):
-            ia = IncomingApplication(data)
+        # data = ApplicationFixtureFactory.incoming_application()
+        # data["bibjson"]["publisher"]["country"] = "LandLand"
+        # with self.assertRaises(SeamlessException):
+        #     ia = IncomingApplication(data)
 
         # invalid currency name
         data = ApplicationFixtureFactory.incoming_application()
@@ -345,11 +347,12 @@ class TestCrudApplication(DoajTestCase):
         with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
+        # Removed as we now allow url coerce failures in the model
         # an invalid url
-        data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["apc"]["url"] = "Two streets down on the left"
-        with self.assertRaises(SeamlessException):
-            ia = IncomingApplication(data)
+        # data = ApplicationFixtureFactory.incoming_application()
+        # data["bibjson"]["apc"]["url"] = "Two streets down on the left"
+        # with self.assertRaises(SeamlessException):
+        #     ia = IncomingApplication(data)
 
         # invalid bool
         data = ApplicationFixtureFactory.incoming_application()
@@ -363,11 +366,12 @@ class TestCrudApplication(DoajTestCase):
         with self.assertRaises(SeamlessException):
             ia = IncomingApplication(data)
 
+        # Removed as we now allow coerce failure on the model
         # invalid language code
-        data = ApplicationFixtureFactory.incoming_application()
-        data["bibjson"]["language"] = ["Hagey Pagey"]
-        with self.assertRaises(SeamlessException):
-            ia = IncomingApplication(data)
+        # data = ApplicationFixtureFactory.incoming_application()
+        # data["bibjson"]["language"] = ["Hagey Pagey"]
+        # with self.assertRaises(SeamlessException):
+        #     ia = IncomingApplication(data)
 
     def test_05_outgoing_application_do(self):
         # make a blank one
@@ -636,10 +640,8 @@ class TestCrudApplication(DoajTestCase):
         assert a.id != "ignore_me"
         assert a.created_date != "2001-01-01T00:00:00Z"
         assert a.last_updated != "2001-01-01T00:00:00Z"
-        assert a["admin"]["applicant"]["name"] == "Tester"           # The suggester should be the owner of the existing journal
-        assert a["admin"]["applicant"]["email"] == "test@test.com"
         assert a.owner == "test"
-        assert a.suggested_on is not None
+        assert a.date_applied is not None
         assert a.bibjson().issns() == ["9999-8888", "7777-6666"] or a.bibjson().issns() == ["7777-6666", "9999-8888"]
         assert a.bibjson().title == "not changed"
 

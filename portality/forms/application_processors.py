@@ -208,7 +208,7 @@ class NewApplication(ApplicationProcessor):
         if save_target:
             self.target.save()
             # a draft may have been saved, so also remove that
-            models.DraftApplication.remove_by_id(self.target.id)
+            models.DraftApplication.remove_by_id(self.target.id)    # FIXME: application ids do not persist from draft, so this won't work
 
         if email_alert:
             try:
