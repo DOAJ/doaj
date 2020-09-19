@@ -62,22 +62,10 @@ $.extend(true, doaj, {
                     })
                 }),
 
-                // FIXME: this is an approximation of the subject selector that we actually want, just to get the
-                // ball rolling
-                edges.newORTermSelector({
-                    id: "subject",
-                    category: "facet",
-                    field: "index.classification.exact",
-                    display: "Subjects",
-                    size: 40,
-                    syncCounts: false,
-                    lifecycle: "static",
-                    renderer : doaj.renderers.newORTermSelectorRenderer({
-                        showCount: false,
-                        hideEmpty: false,
-                        open: true,
-                        togglable: false
-                    })
+                // Subject Browser
+                ///////////////////////////////////
+                doaj.components.subjectBrowser({
+                    tree: doaj.publicSearchConfig.lccTree
                 }),
 
                 edges.newORTermSelector({
@@ -161,12 +149,15 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays : {
-                        "index.classification.exact" : "Subjects",
+                        "index.schema_codes_tree.exact" : "Subject",
                         "bibjson.journal.title.exact" : "Journals",
                         "index.date" : "Year of publication"
                     },
                     rangeFunctions : {
                         "index.date" : doaj.valueMaps.displayYearPeriod
+                    },
+                    valueFunctions : {
+                        "index.schema_codes_tree.exact" : doaj.valueMaps.schemaCodeToNameClosure(doaj.publicSearchConfig.lccTree)
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({})
                 }),

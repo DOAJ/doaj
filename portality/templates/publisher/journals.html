@@ -11,7 +11,8 @@
         publisherJournalsSearchConfig : {
             journalUpdateUrl : "{{ url_for('publisher.update_request', journal_id="") }}",
             journalUpdateRequestsUrl : "{{ url_for('publisher.updates_in_progress') }}",
-            searchPath : '/publisher_query/journal/_search'
+            searchPath : '/publisher_query/journal/_search',
+            lccTree: {{ lcc_tree|tojson }}
         }
     });
     </script>

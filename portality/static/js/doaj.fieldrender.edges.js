@@ -19,7 +19,82 @@ $.extend(true, doaj, {
             var field = params.field;
             var display = (new Date(parseInt(from))).getUTCFullYear();
             return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
+        },
+
+        schemaCodeToNameClosure : function(tree) {
+            var nameMap = {};
+            function recurse(ctx) {
+                for (var i = 0; i < ctx.length; i++) {
+                    var child = ctx[i];
+                    var entry = {};
+                    nameMap["LCC:" + child.id] = child.text;
+                    if (child.children && child.children.length > 0) {
+                        recurse(child.children);
+                    }
+                }
+            }
+            recurse(tree);
+
+            return function(code) {
+                var name = nameMap[code];
+                if (name) {
+                    return name;
+                }
+                return code;
+            }
         }
+    },
+
+    components : {
+        subjectBrowser : function(params) {
+            var tree = params.tree;
+            var hideEmpty = edges.getParam(params.hideEmpty, false);
+
+            return edges.newTreeBrowser({
+                id: "subject",
+                category: "facet",
+                field: "index.schema_codes_tree.exact",
+                tree: function(tree) {
+                    function recurse(ctx) {
+                        var displayTree = [];
+                        for (var i = 0; i < ctx.length; i++) {
+                            var child = ctx[i];
+                            var entry = {};
+                            entry.display = child.text;
+                            entry.value = "LCC:" + child.id;
+                            if (child.children && child.children.length > 0) {
+                                entry.children = recurse(child.children);
+                            }
+                            displayTree.push(entry);
+                        }
+                        return displayTree;
+                    }
+                    return recurse(tree);
+                }(tree),
+                size: 9999,
+                nodeMatch: function(node, match_list) {
+                    for (var i = 0; i < match_list.length; i++) {
+                        var m = match_list[i];
+                        if (node.value === m.key) {
+                            return i;
+                        }
+                    }
+                    return -1;
+                },
+                filterMatch: function(node, selected) {
+                    return $.inArray(node.value, selected) > -1;
+                },
+                nodeIndex : function(node) {
+                    return node.display.toLowerCase();
+                },
+                renderer: doaj.renderers.newSubjectBrowser({
+                    title: "Subjects",
+                    selectMode: "multiple",
+                    open: true,
+                    hideEmpty: hideEmpty
+                })
+            })
+        },
     },
 
     templates : {

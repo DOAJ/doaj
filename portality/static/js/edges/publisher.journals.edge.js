@@ -46,43 +46,6 @@ $.extend(true, doaj, {
                     })
                 }),
 
-                // edges.newFilterSetter({
-                //     id : "see_journals",
-                //     category: "facet",
-                //     filters : [
-                //         {
-                //             id: "with_seal",
-                //             display: "With a DOAJ Seal&nbsp;&nbsp;<span data-feather=\"check-circle\" aria-hidden=\"true\"></span>",
-                //             must : [
-                //                 es.newTermFilter({
-                //                     field: "index.has_seal.exact",
-                //                     value: "Yes"
-                //                 })
-                //             ]
-                //         },
-                //         {
-                //             id : "no_charges",
-                //             display: "Without APCs or other fees",
-                //             must : [
-                //                 es.newTermFilter({
-                //                     field: "bibjson.apc.has_apc",
-                //                     value: false
-                //                 }),
-                //                 es.newTermFilter({
-                //                     field: "bibjson.other_charges.has_other_charges",
-                //                     value: false
-                //                 })
-                //             ]
-                //         }
-                //     ],
-                //     renderer : doaj.renderers.newFacetFilterSetterRenderer({
-                //         facetTitle : "See journals...",
-                //         open: true,
-                //         togglable: false,
-                //         showCount: false
-                //     })
-                // }),
-
                 edges.newORTermSelector({
                     id: "journal_licence",
                     category: "facet",
@@ -99,22 +62,11 @@ $.extend(true, doaj, {
                     })
                 }),
 
-                // FIXME: this is an approximation of the subject selector that we actually want, just to get the
-                // ball rolling
-                edges.newORTermSelector({
-                    id: "subject",
-                    category: "facet",
-                    field: "index.classification.exact",
-                    display: "Subjects",
-                    size: 40,
-                    syncCounts: false,
-                    lifecycle: "static",
-                    renderer : doaj.renderers.newORTermSelectorRenderer({
-                        showCount: false,
-                        hideEmpty: false,
-                        open: true,
-                        togglable: false
-                    })
+                // Subject Browser
+                ///////////////////////////////////
+                doaj.components.subjectBrowser({
+                    tree: doaj.publisherJournalsSearchConfig.lccTree,
+                    hideEmpty: true
                 }),
 
                 edges.newORTermSelector({
@@ -132,99 +84,6 @@ $.extend(true, doaj, {
                         togglable: true
                     })
                 }),
-
-                // edges.newORTermSelector({
-                //     id: "language",
-                //     category: "facet",
-                //     field: "index.language.exact",
-                //     display: "Languages",
-                //     size: 40,
-                //     syncCounts: false,
-                //     lifecycle: "update",
-                //     orderBy: "count",
-                //     orderDir: "desc",
-                //     renderer : doaj.renderers.newORTermSelectorRenderer({
-                //         showCount: true,
-                //         hideEmpty: false,
-                //         open: false,
-                //         togglable: true
-                //     })
-                // }),
-
-
-
-                // edges.newORTermSelector({
-                //     id: "publisher",
-                //     category: "facet",
-                //     field: "bibjson.publisher.name.exact",
-                //     display: "Publishers",
-                //     size: 40,
-                //     syncCounts: false,
-                //     lifecycle: "update",
-                //     orderBy: "count",
-                //     orderDir: "desc",
-                //     renderer : doaj.renderers.newORTermSelectorRenderer({
-                //         showCount: true,
-                //         hideEmpty: false,
-                //         open: false,
-                //         togglable: true
-                //     })
-                // }),
-
-                // edges.newORTermSelector({
-                //     id: "country_publisher",
-                //     category: "facet",
-                //     field: "index.country.exact",
-                //     display: "Publishers' countries",
-                //     size: 40,
-                //     syncCounts: false,
-                //     lifecycle: "update",
-                //     orderBy: "count",
-                //     orderDir: "desc",
-                //     renderer : doaj.renderers.newORTermSelectorRenderer({
-                //         showCount: true,
-                //         hideEmpty: false,
-                //         open: false,
-                //         togglable: true
-                //     })
-                // }),
-
-                // edges.newORTermSelector({
-                //     id: "peer_review",
-                //     category: "facet",
-                //     field: "bibjson.editorial.review_process.exact",
-                //     display: "Peer review types",
-                //     size: 99,
-                //     syncCounts: false,
-                //     lifecycle: "update",
-                //     renderer : doaj.renderers.newORTermSelectorRenderer({
-                //         showCount: true,
-                //         hideEmpty: false,
-                //         open: false,
-                //         togglable: true
-                //     })
-                // }),
-
-                // edges.newDateHistogramSelector({
-                //     id : "year_added",
-                //     category: "facet",
-                //     field: "created_date",
-                //     interval: "year",
-                //     display: "Date added",
-                //     displayFormatter : function(val) {
-                //         return (new Date(parseInt(val))).getUTCFullYear();
-                //     },
-                //     sortFunction : function(values) {
-                //         values.reverse();
-                //         return values;
-                //     },
-                //     renderer : doaj.renderers.newDateHistogramSelectorRenderer({
-                //         open: false,
-                //         togglable: true,
-                //         countFormat: countFormat,
-                //         hideInactive: false
-                //     })
-                // }),
 
                 edges.newFullSearchController({
                     id: "sort_by",
@@ -274,7 +133,7 @@ $.extend(true, doaj, {
                     ],
                     fieldDisplays : {
                         "index.has_seal.exact" : "With a DOAJ Seal",
-                        "index.classification.exact" : "Subjects",
+                        "index.schema_codes_tree.exact" : "Subject",
                         "index.license.exact" : "Licenses",
                         "bibjson.publisher.name.exact" : "Publishers",
                         "index.country.exact" : "Publishers' countries",
@@ -284,6 +143,9 @@ $.extend(true, doaj, {
                     },
                     rangeFunctions : {
                         "created_date" : doaj.valueMaps.displayYearPeriod
+                    },
+                    valueFunctions : {
+                        "index.schema_codes_tree.exact" : doaj.valueMaps.schemaCodeToNameClosure(doaj.publisherJournalsSearchConfig.lccTree)
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         hideValues : [
