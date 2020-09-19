@@ -167,11 +167,14 @@ $.extend(true, doaj, {
                     filterMatch: function(node, selected) {
                         return $.inArray(node.value, selected) > -1;
                     },
+                    nodeIndex : function(node) {
+                        return node.display.toLowerCase();
+                    },
                     renderer: doaj.renderers.newSubjectBrowser({
                         title: "Subjects",
                         selectMode: "multiple",
                         open: true,
-                        hideEmpty: true
+                        hideEmpty: false
                     })
                 }),
 

@@ -132,10 +132,63 @@ $.extend(true, doaj, {
                 // for convenient short references ...
                 var st = this.component.syncTree;
                 var namespace = this.namespace;
+                // var that = this;
+
+                // var checkboxClass = edges.css_classes(namespace, "selector", this);
+                // var countClass = edges.css_classes(namespace, "count", this);
+
+                var treeReport = this._renderTree({tree: st, selectedPathOnly: false, showOneLevel: true});
+                var treeFrag = treeReport.frag;
+
+                if (treeFrag === "") {
+                    treeFrag = "Loading...";
+                }
+
+                var toggleId = edges.css_id(namespace, "toggle", this);
+                var resultsId = edges.css_id(namespace, "results", this);
+                var searchId = edges.css_id(namespace, "search", this);
+                var filteredId = edges.css_id(namespace, "filtered", this);
+                var mainListId = edges.css_id(namespace, "main", this);
+
+                var toggle = "";
+                if (this.togglable) {
+                    toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
+                }
+                var frag = '<h3 class="filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
+                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                        <label for="' + searchId + '" class="sr-only">Search subjects</label>\
+                        <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="Search subjects">\
+                        <ul class="filter__choices" id="' + filteredId + '" style="display:none"></ul>\
+                        <ul class="filter__choices" id="' + mainListId + '">{{FILTERS}}</ul>\
+                    </div>';
+
+                // substitute in the component parts
+                frag = frag.replace(/{{FILTERS}}/g, treeFrag);
+
+                // now render it into the page
+                this.component.context.html(frag);
+                feather.replace();
+
+                // trigger all the post-render set-up functions
+                this.setUIOpen();
+
+                var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
+                edges.on(checkboxSelector, "change", this, "filterToggle");
+
+                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
+                edges.on(toggleSelector, "click", this, "toggleOpen");
+
+                var searchSelector = edges.css_id_selector(namespace, "search", this);
+                edges.on(searchSelector, "keyup", this, "filterSubjects");
+            };
+
+            this._renderTree = function(params) {
+                var st = edges.getParam(params.tree, []);
+                var selectedPathOnly = edges.getParam(params.selectedPathOnly, true);
+                var showOneLevel = edges.getParam(params.showOneLevel, true);
                 var that = this;
 
-                var checkboxClass = edges.css_classes(namespace, "selector", this);
-                var countClass = edges.css_classes(namespace, "count", this);
+                var checkboxClass = edges.css_classes(this.namespace, "selector", this);
 
                 function renderEntry(entry) {
                     if (that.hideEmpty && entry.count === 0 && entry.childCount === 0) {
@@ -152,7 +205,7 @@ $.extend(true, doaj, {
                     var count = "";
 
                     var frag = '<input class="' + checkboxClass + '" data-value="' + edges.escapeHtml(entry.value) + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
-                        <label for="' + id + '" class="filter__label">' + edges.escapeHtml(entry.display) + count + '</label>';
+                        <label for="' + id + '" class="filter__label">' + entry.display + count + '</label>';
 
                     return frag;
                 }
@@ -162,11 +215,13 @@ $.extend(true, doaj, {
 
                     // first check to see if there are any elements at this level that are selected.  If there are,
                     // that is the only element that we'll render
-                    for (var i = 0; i < tree.length; i++) {
-                        var entry = tree[i];
-                        if (entry.selected) {
-                            selected = [entry];
-                            break;
+                    if (selectedPathOnly) {
+                        for (var i = 0; i < tree.length; i++) {
+                            var entry = tree[i];
+                            if (entry.selected) {
+                                selected = [entry];
+                                break;
+                            }
                         }
                     }
 
@@ -188,12 +243,22 @@ $.extend(true, doaj, {
                             if (childReport.anySelected) {
                                 anySelected = true;
                             }
-                            if (childReport.anySelected || entry.selected) {
-                                var cFrag = childReport.frag;
-                                if (cFrag !== "") {
-                                    entryFrag += '<ul class="filter__choices">';
-                                    entryFrag += cFrag;
-                                    entryFrag += '</ul>';
+                            // only attach the children frag if, first any of these are true:
+                            // - one of the children is selected
+                            // - the entry itself is selected
+                            // - we don't want to only show the selected path
+                            if (!selectedPathOnly || childReport.anySelected || entry.selected) {
+                                // Then, another level (separated out to save my brain from the tortuous logic)
+                                // only attach the children frag if, any of these are true:
+                                // - the entry or one of its children is selected
+                                // - we want to show more than one level at a time
+                                if (childReport.anySelected || entry.selected || !showOneLevel) {
+                                    var cFrag = childReport.frag;
+                                    if (cFrag !== "") {
+                                        entryFrag += '<ul class="filter__choices">';
+                                        entryFrag += cFrag;
+                                        entryFrag += '</ul>';
+                                    }
                                 }
                             }
                         }
@@ -204,66 +269,8 @@ $.extend(true, doaj, {
                     }
                     return {frag : rFrag, anySelected: anySelected};
                 }
-                var treeReport = recurse(st);
-                var treeFrag = treeReport.frag;
 
-                if (treeFrag === "") {
-                    treeFrag = "Loading...";
-                }
-
-
-                /*
-                // sort out all the classes that we're going to be using
-                var resultClass = edges.css_classes(namespace, "result", this);
-                var valClass = edges.css_classes(namespace, "value", this);
-                var filterRemoveClass = edges.css_classes(namespace, "filter-remove", this);
-                var facetClass = edges.css_classes(namespace, "facet", this);
-                var headerClass = edges.css_classes(namespace, "header", this);
-                var selectionsClass = edges.css_classes(namespace, "selections", this);
-                var bodyClass = edges.css_classes(namespace, "body", this);
-                var countClass = edges.css_classes(namespace, "count", this);
-                */
-
-                var toggleId = edges.css_id(namespace, "toggle", this);
-                var resultsId = edges.css_id(namespace, "results", this);
-
-                var toggle = "";
-                if (this.togglable) {
-                    toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
-                }
-                var frag = '<h3 class="filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
-                        <ul class="filter__choices">{{FILTERS}}</ul>\
-                    </div>';
-
-                // substitute in the component parts
-                frag = frag.replace(/{{FILTERS}}/g, treeFrag);
-
-                // now render it into the page
-                this.component.context.html(frag);
-                feather.replace();
-
-                // trigger all the post-render set-up functions
-                this.setUIOpen();
-
-                var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
-                edges.on(checkboxSelector, "change", this, "filterToggle");
-
-                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
-                edges.on(toggleSelector, "click", this, "toggleOpen");
-                /*
-                // sort out the selectors we're going to be needing
-                var valueSelector = edges.css_class_selector(namespace, "value", this);
-                var filterRemoveSelector = edges.css_class_selector(namespace, "filter-remove", this);
-                var toggleSelector = edges.css_id_selector(namespace, "toggle", this);
-
-                // for when a value in the facet is selected
-                edges.on(valueSelector, "click", this, "termSelected");
-                // for when the open button is clicked
-                edges.on(toggleSelector, "click", this, "toggleOpen");
-                // for when a filter remove button is clicked
-                edges.on(filterRemoveSelector, "click", this, "removeFilter");
-                 */
+                return recurse(st);
             };
 
             this.setUIOpen = function () {
@@ -275,27 +282,9 @@ $.extend(true, doaj, {
                 var toggle = this.component.jq(toggleSelector);
 
                 if (this.open) {
-                    //var i = toggle.find("i");
-                    //for (var j = 0; j < openBits.length; j++) {
-                    //    i.removeClass(openBits[j]);
-                   // }
-                    //for (var j = 0; j < closeBits.length; j++) {
-                    //    i.addClass(closeBits[j]);
-                    //}
-                    //results.show();
-
                     results.addClass("in").attr("aria-expanded", "true").css({"height": ""});
                     toggle.removeClass("collapsed").attr("aria-expanded", "true");
                 } else {
-                    //var i = toggle.find("i");
-                    //for (var j = 0; j < closeBits.length; j++) {
-                    //    i.removeClass(closeBits[j]);
-                   // }
-                    //for (var j = 0; j < openBits.length; j++) {
-                     //   i.addClass(openBits[j]);
-                    //}
-                    //results.hide();
-
                     results.removeClass("in").attr("aria-expanded", "false").css({"height" : "0px"});
                     toggle.addClass("collapsed").attr("aria-expanded", "false");
                 }
@@ -315,6 +304,87 @@ $.extend(true, doaj, {
             this.toggleOpen = function (element) {
                 this.open = !this.open;
                 this.setUIOpen();
+            };
+
+            this.filterSubjects = function(element) {
+                var st = this.component.syncTree;
+                var term = $(element).val();
+                var that = this;
+
+                var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
+                var mainSelector = edges.css_id_selector(this.namespace, "main", this);
+                var filterEl = this.component.jq(filterSelector);
+                var mainEl = this.component.jq(mainSelector);
+
+                if (term === "") {
+                    filterEl.html("");
+                    filterEl.hide();
+                    mainEl.show();
+                    return;
+                }
+                if (term.length < 3) {
+                    filterEl.html("<li>Enter 3 characters or more to search</li>");
+                    filterEl.show();
+                    mainEl.hide();
+                    return;
+                }
+                term = term.toLowerCase();
+
+                function entryMatch(entry) {
+                    if (that.hideEmpty && entry.count === 0 && entry.childCount === 0) {
+                        return false;
+                    }
+
+                    var matchTerm = entry.index;
+                    var includes =  matchTerm.includes(term);
+                    if (includes) {
+                        var idx = matchTerm.indexOf(term);
+                        var display = entry.display;
+                        return display.substring(0, idx) + "<strong>" + display.substring(idx, idx + term.length) + "</strong>" + display.substring(idx + term.length);
+                    }
+                }
+
+                function recurse(tree) {
+                    var filteredLayer = [];
+                    for (var i = 0; i < tree.length; i++) {
+                        var entry = tree[i];
+                        var childReport = [];
+                        if (entry.children) {
+                            childReport = recurse(entry.children);
+                        }
+                        var selfMatch = entryMatch(entry);
+                        if (selfMatch || childReport.length > 0) {
+                            var newEntry = $.extend({}, entry);
+                            delete newEntry.children;
+                            if (selfMatch) {
+                                newEntry.display = selfMatch;
+                            }
+                            if (childReport.length > 0) {
+                                newEntry.children = childReport;
+                            }
+                            filteredLayer.push(newEntry);
+                        }
+                    }
+                    return filteredLayer;
+                }
+
+                var filtered = recurse(st);
+
+                if (filtered.length > 0) {
+                    var displayReport = this._renderTree({tree: filtered, selectedPathOnly: false, showOneLevel: false});
+
+                    filterEl.html(displayReport.frag);
+                    mainEl.hide();
+                    filterEl.show();
+
+                    var checkboxSelector = edges.css_class_selector(this.namespace, "selector", this);
+                    edges.on(checkboxSelector, "change", this, "filterToggle");
+                } else {
+                    filterEl.html("<li>No subjects match your search</li>");
+                    mainEl.hide();
+                    filterEl.show();
+                }
+
             };
         },
 
