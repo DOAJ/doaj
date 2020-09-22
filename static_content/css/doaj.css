@@ -994,7 +994,8 @@ strong, b {
 
 a {
   text-decoration: underline;
-  color: #282624; }
+  color: #282624;
+  overflow-wrap: break-word; }
   a:hover, a:focus, a:active {
     color: #FD5A3B;
     text-decoration: none; }
@@ -1322,6 +1323,8 @@ fieldset {
     padding-top: 0; }
 
 /* Abstracts in accordions */
+.article-summary aside {
+  margin-bottom: 1.5rem; }
 .article-summary ul {
   padding-left: 0;
   margin: 0 0 0.75rem 0;
@@ -3068,6 +3071,13 @@ button[type="submit"] {
   font-family: 'Spectral', serif;
   letter-spacing: -0.04em; }
 
+.article-details__abstract--empty {
+  padding: 3rem 0.75rem;
+  display: block;
+  background: #F8F3EF;
+  text-align: center;
+  font-size: 1.424em; }
+
 /* Homepage-specific styles  */
 .homepage a {
   text-decoration: none; }
@@ -3156,6 +3166,8 @@ button[type="submit"] {
     @media (min-width: 1280px) {
       .journal-details .three-col > section {
         width: calc(100%/3 - 40px); } }
+.journal-details .tabs__menu {
+  margin-bottom: 1.5rem; }
 
 .search__header {
   padding: 1.5rem;
