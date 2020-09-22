@@ -13,6 +13,7 @@ from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, Backgro
 from portality.ui.messages import Messages
 from portality import lock
 from portality.models import DraftApplication
+from portality.lcc import lcc_jstree
 
 from huey.exceptions import TaskException
 
@@ -36,7 +37,7 @@ def index():
 @login_required
 @ssl_required
 def journals():
-    return render_template("publisher/journals.html")
+    return render_template("publisher/journals.html", lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/application/<application_id>/delete", methods=["GET"])

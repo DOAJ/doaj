@@ -638,8 +638,6 @@ class JournalLikeBibJSON(SeamlessMixin):
             expanded = lcc.expand_codes(code)
             full_list.update(expanded)
 
-        if None in full_list:
-            print(full_list)
         return ["LCC:" + x for x in full_list if x is not None]
 
 

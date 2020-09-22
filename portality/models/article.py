@@ -383,6 +383,7 @@ class Article(DomainObject):
         subjects = []
         schema_subjects = []
         schema_codes = []
+        schema_codes_tree = []
         classification = []
         langs = []
         country = None
@@ -468,6 +469,7 @@ class Article(DomainObject):
 
         # normalise the classification paths, so we only store the longest ones
         classification_paths = lcc.longest(classification_paths)
+        schema_codes_tree = cbib.lcc_codes_full_list()
 
         # create an unpunctitle
         if cbib.title is not None:
@@ -537,6 +539,8 @@ class Article(DomainObject):
             self.data["index"]["doi"] = doi
         if fulltext is not None:
             self.data["index"]["fulltext"] = fulltext
+        if len(schema_codes_tree) > 0:
+            self.data["index"]["schema_codes_tree"] = schema_codes_tree
 
     def prep(self):
         self._generate_index()
@@ -832,6 +836,20 @@ class ArticleBibJSON(GenericBibJSON):
                 citation += end
 
         return jtitle.strip(), citation
+
+    def lcc_codes_full_list(self):
+        full_list = set()
+
+        from portality.lcc import lcc  # inline import since this hits the database
+        for subs in self.subjects():
+            scheme = subs.get("scheme")
+            if scheme != "LCC":
+                continue
+            code = subs.get("code")
+            expanded = lcc.expand_codes(code)
+            full_list.update(expanded)
+
+        return ["LCC:" + x for x in full_list if x is not None]
 
 ARTICLE_BIBJSON_EXTENSION = {
     "objects" : ["bibjson"],

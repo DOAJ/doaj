@@ -108,7 +108,7 @@ def journals_search():
 
 @blueprint.route("/search/articles", methods=["GET"])
 def articles_search():
-    return render_template("doaj/articles_search.html")
+    return render_template("doaj/articles_search.html", lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/search", methods=['GET'])

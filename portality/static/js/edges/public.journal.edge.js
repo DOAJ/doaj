@@ -30,22 +30,6 @@ $.extend(true, doaj, {
                 thousandsSeparator: ","
             });
 
-            var lccNameMap = function(tree) {
-                var nameMap = {};
-                function recurse(ctx) {
-                    for (var i = 0; i < ctx.length; i++) {
-                        var child = ctx[i];
-                        var entry = {};
-                        nameMap["LCC:" + child.id] = child.text;
-                        if (child.children && child.children.length > 0) {
-                            recurse(child.children);
-                        }
-                    }
-                }
-                recurse(tree);
-                return nameMap
-            }(doaj.publicSearchConfig.lccTree);
-
             var components = [
                 edges.newFullSearchController({
                     id: "search-input-bar",
@@ -115,65 +99,9 @@ $.extend(true, doaj, {
                     })
                 }),
 
-                // FIXME: this is an approximation of the subject selector that we actually want, just to get the
-                // ball rolling
-                /*
-                edges.newORTermSelector({
-                    id: "subject",
-                    category: "facet",
-                    field: "index.classification.exact",
-                    display: "Subjects",
-                    size: 40,
-                    syncCounts: false,
-                    lifecycle: "static",
-                    renderer : doaj.renderers.newORTermSelectorRenderer({
-                        showCount: false,
-                        hideEmpty: false,
-                        open: true,
-                        togglable: false
-                    })
-                }),*/
-                edges.newTreeBrowser({
-                    id: "subject",
-                    category: "facet",
-                    field: "index.schema_codes_tree.exact",
-                    tree: function(tree) {
-                        function recurse(ctx) {
-                            var displayTree = [];
-                            for (var i = 0; i < ctx.length; i++) {
-                                var child = ctx[i];
-                                var entry = {};
-                                entry.display = child.text;
-                                entry.value = "LCC:" + child.id;
-                                if (child.children && child.children.length > 0) {
-                                    entry.children = recurse(child.children);
-                                }
-                                displayTree.push(entry);
-                            }
-                            return displayTree;
-                        }
-                        return recurse(tree);
-                    }(doaj.publicSearchConfig.lccTree),
-                    size: 9999,
-                    nodeMatch: function(node, match_list) {
-                        for (var i = 0; i < match_list.length; i++) {
-                            var m = match_list[i];
-                            if (node.value === m.key) {
-                                return i;
-                            }
-                        }
-                        return -1;
-                    },
-                    filterMatch: function(node, selected) {
-                        return $.inArray(node.value, selected) > -1;
-                    },
-                    renderer: doaj.renderers.newSubjectBrowser({
-                        title: "Subjects",
-                        selectMode: "multiple",
-                        open: true,
-                        hideEmpty: true
-                    })
-                }),
+                // Subject Browser
+                ///////////////////////////////////
+                doaj.components.subjectBrowser({tree: doaj.publicSearchConfig.lccTree}),
 
                 edges.newORTermSelector({
                     id: "language",
@@ -352,13 +280,7 @@ $.extend(true, doaj, {
                         "created_date" : doaj.valueMaps.displayYearPeriod
                     },
                     valueFunctions : {
-                        "index.schema_codes_tree.exact" : function(code) {
-                            var name = lccNameMap[code];
-                            if (name) {
-                                return name;
-                            }
-                            return code;
-                        }
+                        "index.schema_codes_tree.exact" : doaj.valueMaps.schemaCodeToNameClosure(doaj.publicSearchConfig.lccTree)
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         hideValues : [
