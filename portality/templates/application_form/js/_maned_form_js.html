@@ -12,6 +12,10 @@
         $("#saveDraft").hide();
     }
 
+    let _generate_values_preview = () => {
+
+    }
+
     let modify_review_page = () => {
         let page = $(".page");
         page.removeClass("col-md-8");
@@ -19,6 +23,7 @@
         let buttons = $(".buttons");
         buttons.addClass("col-md-8 col-md-offset-4")
         $(".side-menus").hide();
+        _generate_values_preview();
     }
 
     let default_page_view = () => {

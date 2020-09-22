@@ -17,6 +17,9 @@
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
                 {%  include field_template %}
+                <p>
+                    <small>Assigned: <strong><code class="admin_value_preview" id="reassign-value"></code></strong></small>
+                </p>
             {% endfor %}
         </div>
     </fieldset>
@@ -28,6 +31,9 @@
                 {% set field_template = f.template %}
                 {%  include field_template %}
             {% endfor %}
+            <p>
+                <small>Status: <strong><code class="admin_value_preview" id="status-value"></code></strong></small>
+            </p>
         </div>
     </fieldset>
     <fieldset>
@@ -38,6 +44,9 @@
                 {% set field_template = f.template %}
                 {%  include field_template %}
             {% endfor %}
+            <p>
+                <small>Assigned: <strong><code class="admin_value_preview" id="reviewers-value"></code></strong></small>
+            </p>
         </div>
     </fieldset>
     <fieldset>
@@ -58,6 +67,9 @@
                 {% set field_template = f.template %}
                 {%  include field_template %}
             {% endfor %}
+            <p>
+                <small>Selected: <strong><code class="admin_value_preview" id="subject-value"></code></strong></small>
+            </p>
         </div>
     </fieldset>
     <fieldset>
