@@ -3,7 +3,7 @@
 
 
     <fieldset class="editorial-panel__buttons">
-{#        TODO: change suggestion to variable #}
+        {#        TODO: change suggestion to variable #}
         <h3 class="label"> LOCKED FOR EDITING UNTIL <span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></h3>
         <button class="button button--secondary" id="unlock" data-type="suggestion" data-id="{{obj.id}}">Unlock & Close</button>
         <button class="button button--primary" type="submit" id="open_quick_reject" data-toggle="modal" data-target="#modal-quick_reject">Quick Reject</button>
@@ -17,11 +17,11 @@
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
                 {%  include field_template %}
-                <p>
-                    <small>Assigned: <strong><code class="admin_value_preview" id="reassign-value"></code></strong></small>
-                </p>
             {% endfor %}
         </div>
+        <p>
+            <small>Assigned: <strong><code class="admin_value_preview" id="reassign-value"></code></strong></small>
+        </p>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("status") %}
@@ -31,10 +31,10 @@
                 {% set field_template = f.template %}
                 {%  include field_template %}
             {% endfor %}
-            <p>
-                <small>Status: <strong><code class="admin_value_preview" id="status-value"></code></strong></small>
-            </p>
         </div>
+        <p>
+            <small>Status: <strong><code class="admin_value_preview" id="status-value"></code></strong></small>
+        </p>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("reviewers") %}
@@ -44,10 +44,10 @@
                 {% set field_template = f.template %}
                 {%  include field_template %}
             {% endfor %}
-            <p>
-                <small>Assigned: <strong><code class="admin_value_preview" id="reviewers-value"></code></strong></small>
-            </p>
         </div>
+        <p>
+            <small>Assigned: <strong><code class="admin_value_preview" id="reviewers-value"></code></strong></small>
+        </p>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("continuations") %}
@@ -67,10 +67,11 @@
                 {% set field_template = f.template %}
                 {%  include field_template %}
             {% endfor %}
-            <p>
-                <small>Selected: <strong><code class="admin_value_preview" id="subject-value"></code></strong></small>
-            </p>
+
         </div>
+        <p>
+            <small>Selected: <strong><code class="admin_value_preview" id="subject-value"></code></strong></small>
+        </p>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("seal") %}

@@ -13,7 +13,16 @@
     }
 
     let _generate_values_preview = () => {
-
+        $(".admin_value_preview").each((i,elem) => {
+            let id = $(elem).attr("id").split("-")[0];
+            let inputs = $("#"+id).find("select, input")
+            if (inputs.length === 1) {
+                $(elem).html($(inputs[0]).val())
+            }
+            else if (inputs.length === 2){
+                $(elem).html($(inputs[0]).val() + " (" + $(inputs[1]).val() + ")")
+            }
+        })
     }
 
     let modify_review_page = () => {
