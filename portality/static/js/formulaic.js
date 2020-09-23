@@ -332,13 +332,19 @@ var formulaic = {
         this.removeValues = (container) => {
             let inputs = $(container).find("input");
             inputs.each((idx, inp) => {
-                $(inp).val("");
-            })
+                let el = $(inp);
+                let type = el.attr("type");
+                if (type === "checkbox" || type === "radio") {
+                    el.prop("checked", false);
+                } else {
+                    el.val("");
+                }
+            });
             let selects = $(container).find("select");
             selects.each((idx, sel) => {
                 $(sel).val("").change();
-            })
-        }
+            });
+        };
 
         this.isConditionSatisfied = function(params) {
             var field = params.field;

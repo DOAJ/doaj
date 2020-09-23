@@ -840,7 +840,10 @@ class FieldDefinitions:
         },
         "validate":[
             {"required_if": {"field": "apc", "value": "y", "message" : "Value required because you answered YES to previous question"}}
-        ]
+        ],
+        "attr": {
+            "min": "1"
+        }
     }
 
     HAS_WAIVER = {
@@ -870,7 +873,8 @@ class FieldDefinitions:
         ],
         "help": {
             "short_help": "Link to the journal’s waiver information.",
-            "doaj_criteria": "You must provide a URL"
+            "doaj_criteria": "You must provide a URL",
+             "placeholder": "https://www.my-journal.com/about#waiver"
         },
         "validate": [
             {"required_if": {"field": "has_waiver", "value": "y"}},
@@ -950,7 +954,7 @@ class FieldDefinitions:
 
     PRESERVATION_SERVICE_LIBRARY = {
         "name": "preservation_service_library",
-        "label": "A national library:",
+        "label": "A national library",
         "input": "text",
         "repeatable" : {
             "minimum": 1,

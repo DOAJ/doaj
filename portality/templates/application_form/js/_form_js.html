@@ -155,6 +155,8 @@
         let review_values = $("td[id$='__review_value']")
         review_values.each((idx, question) => {
             let id = $(question).attr('id')
+            // TODO: think about how to generalise this.  If we add more fields like this or
+            // change the apc_charges bit then it will need updating
             if (id === "apc_charges__review_value") {
                 let currency = $("select[id$='apc_currency']");
                 let max = $("input[id$='apc_max']");
@@ -180,7 +182,7 @@
             }
             else {
                 let name = id.substring(0, id.indexOf("__review_value"));
-                let input = $("input[name='" + name + "']");
+                let input = $("input[name^='" + name + "']");
                 if (input.length === 0) {  //it's not input but select
                     input = $("[name^='" + name + "']");
                     let result = "";
