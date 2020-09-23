@@ -117,7 +117,7 @@ $.extend(doaj, {
                 // ... and run a function that displays the correct step indicator:
                 if(n === this.tabs.length - 1) {
                     // this.jq("#validated-" + n).val("True");
-                    this.prepareReview()
+                    this.prepareReview();
                 }
                 if (this.context === "admin") {
                     // this.modify_view();
@@ -271,28 +271,27 @@ $.extend(doaj, {
             };
 
             this.navigate = (n, showEvenIfInvalid = false) => {
-                var that = this;
 
                 // Hide the current tab:
                 // let form = $('#' + '{{ form_id }}');
 
                 this.form.parsley().whenValidate({
-                    group: 'block-' + that.currentTab
-                }).done(function () {
-                    // $("#validated-" + that.currentTab).val("True");
-                    that.tabValidationState[that.currentTab].state = "valid";
-                    that.previousTab = n-1;
-                    that.currentTab = n;
+                    group: 'block-' + this.currentTab
+                }).done(() => {
+                    // $("#validated-" + this.currentTab).val("True");
+                    this.tabValidationState[this.currentTab].state = "valid";
+                    this.previousTab = n-1;
+                    this.currentTab = n;
                     // Otherwise, display the correct tab:
-                    that.showTab(that.currentTab);
-                }).fail(function () {
-                    // $("#validated-" + that.currentTab).val("False");
-                    that.tabValidationState[that.currentTab].state = "invalid";
+                    this.showTab(this.currentTab);
+                }).fail(() => {
+                    // $("#validated-" + this.currentTab).val("False");
+                    this.tabValidationState[this.currentTab].state = "invalid";
                     if (showEvenIfInvalid){
-                        that.previousTab = n-1;
-                        that.currentTab = n;
+                        this.previousTab = n-1;
+                        this.currentTab = n;
                         // Otherwise, display the correct tab:
-                        that.showTab(that.currentTab);
+                        this.showTab(this.currentTab);
                     }
 
                 });
@@ -334,14 +333,13 @@ $.extend(doaj, {
             };
 
             this.prepareSections = () => {
-                var that = this;
 
                 this.sections.each((idx, section) => {
                     $(section).find("input, select").each((i, input) => {
                         $(input).attr('data-parsley-group', 'block-' + idx);
                     });
 
-                    //if (idx < that.sections.length){
+                    //if (idx < this.sections.length){
                     //    let hiddenInputs = $("[name='validated']");
                     //    $(hiddenInputs[idx]).attr('id', 'validated-' + idx);
                     //}
