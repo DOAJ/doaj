@@ -1398,7 +1398,7 @@ class FieldDefinitions:
     # Bulk Edit fields (that couldn't be overriden in the normal way)
     BULK_DOAJ_SEAL = {
         "name": "doaj_seal",
-        "label": 'Qualifies for Seal',
+        "label": 'Award the Seal',
         "input": "select",
         "default" : "",
         "options" :[
