@@ -16,12 +16,10 @@
             autoSave: {{ auto_save }},
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
-    });
-</script>
 
-<script type="text/javascript">
-    doaj.af.init({
-        currentTab: 0,
-        previousTab: 0
+        doaj.af.active = doaj.af.newApplicationForm({
+            currentTab: 0,
+            previousTab: 0
+        });
     });
 </script>

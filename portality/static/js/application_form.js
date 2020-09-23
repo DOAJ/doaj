@@ -1,334 +1,391 @@
 $.extend(doaj, {
     af: {
-        state : {
-            context: false,
-            currentTab: 0,
-            previousTab: 0,
-            tabs: false,
-            sections: false
+        active: false,
+
+        newApplicationForm: (params) => {
+            return edges.instantiate(doaj.af.ApplicationForm, params);
         },
+        ApplicationForm: function(params) {
+            this.currentTab = params.hasOwnProperty("currentTab") ? params.currentTab : 0;
+            this.previousTab = params.hasOwnProperty("previousTab") ? params.previousTab : 0;
 
-        init: (params) => {
-            doaj.af.state.currentTab = params.hasOwnProperty("currentTab") ? params.currentTab : 0;
-            doaj.af.state.previousTab = params.hasOwnProperty("previousTab") ? params.previousTab : 0;
+            this.form = $(".application_form");
+            this.context = this.form.attr("context");
+            this.tabs = $(".tab");
+            this.sections = $(".form-section");
 
-            $("input, select").each((idx, inp) => {
-                let name = $(inp).attr("name").split("-");
-                $(inp).attr("data-parsley-errors-container", "#" + name[0] + "_checkbox-errors")
-            });
+            this.tabValidationState = [];
 
-            $("#reviewed").on("click", doaj.af.manage_review_checkboxes);
+            this.jq = (selector) => {
+                return $(selector, this.form);
+            };
 
-            doaj.af.state.context = $(".application_form").attr("context");
-            doaj.af.state.tabs = $(".tab");
-            doaj.af.state.sections = $(".form-section");
+            this.init = () => {
+                this.jq("input, select").each((idx, inp) => {
+                    let name = $(inp).attr("name");
+                    // console.log(name);
+                    if (name) {
+                        name = name.split("-");
+                        $(inp).attr("data-parsley-errors-container", "#" + name[0] + "_checkbox-errors");
+                    }
+                });
 
-            doaj.af.prepareSections();
-            doaj.af.usePaginationMenu();
-             // Display the current tab
-            if (doaj.af.state.context === "admin") {
-                setup_maned();
-            }
-            // $(".application_form").parsley().validate();
-            doaj.af.state.currentTab = -1;
-            for (let i = 0; i < doaj.af.state.tabs.length; i++) {
-                next();
-                // showTab(i);
-            }
-            doaj.af.state.currentTab = 0;
-            showTab(doaj.af.state.currentTab);
-        },
+                let reviewedSelector = this.jq("#reviewed");
+                edges.on(reviewedSelector, "click", this, "manage_review_checkboxes");
+                // $("#reviewed").on("click", doaj.af.manage_review_checkboxes);
 
-        showTab: (n) => {
-            // This function will display the specified tab of the form ...
-            //hide all other tabs
-            if (n < sections.length-1){
-                let hiddenField = $("#validated-" + n);
-                if (hiddenField.val() === "") {
-                    hiddenField.val("False");
+                for (let i = 0; i < this.tabs.length; i++) {
+                    this.tabValidationState.push({"state" : "unvalidated"});
                 }
-            }
 
-            tabs.each((idx, tab) => {
-                $(tab).hide();
-            });
+                this.prepareSections();
+                // this.usePaginationMenu();
 
-            let submitButton = $("#submitBtn");
-            let draftButton = $("#draftBtn");
-            $(tabs[n]).show();
-            $("#cannot_save_draft").hide();
-            submitButton.hide();
-            draftButton.show();
-            // ... and fix the Previous/Next buttons:
-            if (n === 0) {
-                $("#prevBtn").hide();
-            } else {
-                $("#prevBtn").show();
-            }
+                // Display the current tab
+                if (this.context === "admin") {
+                    // this.setup_maned();
+                }
+                // $(".application_form").parsley().validate();
+                //this.currentTab = -1;
+                //for (let i = 0; i < this.tabs.length; i++) {
+                //    this.next();
+                    // showTab(i);
+                //}
+                // this.currentTab = 0;
+                this.showTab(this.currentTab);
 
-            if (n === (tabs.length - 1)) {
-                //show submit button only if all tabs are validated
-                $("#nextBtn").hide();
+                let nextSelector = this.jq("#nextBtn");
+                let prevSelector = this.jq("#prevBtn");
+                let submitSelector = this.jq("#submitBtn");
+                let draftSelector = this.jq("#saveDraft");
+
+                edges.on(nextSelector, "click", this, "next");
+                edges.on(prevSelector, "click", this, "prev");
+                edges.on(submitSelector, "click", this, "submitapplication");
+                edges.on(draftSelector, "click", this, "savedraft");
+            };
+
+            this.showTab = (n) => {
+                // This function will display the specified tab of the form ...
+                //hide all other tabs
+                // if (n < this.sections.length-1){
+                //     let hiddenField = this.jq("#validated-" + n);
+                //     if (hiddenField.val() === "") {
+                //         hiddenField.val("False");
+                //     }
+                // }
+
+                this.tabs.each((idx, tab) => {
+                    $(tab).hide();
+                });
+
+                let submitButton = this.jq("#submitBtn");
+                let draftButton = this.jq("#draftBtn");
+                $(this.tabs[n]).show();
+                this.jq("#cannot_save_draft").hide();
                 submitButton.hide();
                 draftButton.show();
-                let validated = form_validated();
-                if (!validated) {
-                    $("#cannot-submit-invalid-fields").show();
+                // ... and fix the Previous/Next buttons:
+                if (n === 0) {
+                    this.jq("#prevBtn").hide();
                 } else {
-                    $("#cannot-submit-invalid-fields").hide();
+                    this.jq("#prevBtn").show();
                 }
 
-            } else {
-                let nextBtn = $("#nextBtn");
-                nextBtn.show();
-                nextBtn.html("Next");
-                submitButton.hide();
-                draftButton.show();
-            }
-            currentTab = n;
-            previousTab = n-1;
-            // ... and run a function that displays the correct step indicator:
-            if(n === 6) {
-                $("#validated-6").val("True");
-                prepareReview()
-            }
-            if (context === "admin") {
-                modify_view();
-            }
-            else if (context === "public") {
-                fixStepIndicator(n)
-            }
-            window.scrollTo(0,0);
-        },
+                if (n === (this.tabs.length - 1)) {
+                    //show submit button only if all tabs are validated
+                    this.jq("#nextBtn").hide();
+                    submitButton.hide();
+                    draftButton.show();
+                    let validated = this.form_validated();
+                    if (!validated) {
+                        this.jq("#cannot-submit-invalid-fields").show();
+                    } else {
+                        this.jq("#cannot-submit-invalid-fields").hide();
+                        submitButton.show();
+                    }
 
-        prepareReview: () => {
-            let review_values = $("td[id$='__review_value']");
-            review_values.each((idx, question) => {
-                let id = $(question).attr('id');
-                // TODO: think about how to generalise this.  If we add more fields like this or
-                // change the apc_charges bit then it will need updating
-                if (id === "apc_charges__review_value") {
-                    let currency = $("select[id$='apc_currency']");
-                    let max = $("input[id$='apc_max']");
-                    let result = "";
-                    let isValid = true;
-                    for (let i = 0; i < currency.length; i++){
-                        let curr = $(currency[i]).find('option:selected').text();
-                        let m = $(max[i]).val();
-                        if (m !== "" || curr !== "") {
-                            result += (m === "" ? "" : m) + " " + (curr === "" ? "" : curr) + " " + "<br>";
+                } else {
+                    let nextBtn = this.jq("#nextBtn");
+                    nextBtn.show();
+                    nextBtn.html("Next");
+                    submitButton.hide();
+                    draftButton.show();
+                }
+                this.currentTab = n;
+                this.previousTab = n-1;
+                // ... and run a function that displays the correct step indicator:
+                if(n === this.tabs.length - 1) {
+                    // this.jq("#validated-" + n).val("True");
+                    this.prepareReview()
+                }
+                if (this.context === "admin") {
+                    // this.modify_view();
+                }
+                else if (this.context === "public") {
+                    this.updateStepIndicator();
+                    // this.fixStepIndicator(n)
+                }
+                window.scrollTo(0,0);
+            };
+
+            this.prepareReview = () => {
+                let review_values = $("td[id$='__review_value']");
+                review_values.each((idx, question) => {
+                    let id = $(question).attr('id');
+                    // TODO: think about how to generalise this.  If we add more fields like this or
+                    // change the apc_charges bit then it will need updating
+                    if (id === "apc_charges__review_value") {
+                        let currency = $("select[id$='apc_currency']");
+                        let max = $("input[id$='apc_max']");
+                        let result = "";
+                        let isValid = true;
+                        for (let i = 0; i < currency.length; i++){
+                            let curr = $(currency[i]).find('option:selected').text();
+                            let m = $(max[i]).val();
+                            if (m !== "" || curr !== "") {
+                                result += (m === "" ? "" : m) + " " + (curr === "" ? "" : curr) + " " + "<br>";
+                            }
+                        }
+                        if ($(max[0]).parsley().validationResult !== true || ($(currency[0]).parsley().validationResult !== true)) {
+                            isValid = false;
+                        }
+                        if (result === "" && isValid){
+                            $(question).parent().hide();
+                        }
+                        else {
+                            $(question).parent().show();
+                            $(question).html(result);
                         }
                     }
-                    if ($(max[0]).parsley().validationResult !== true || ($(currency[0]).parsley().validationResult !== true)) {
-                        isValid = false;
-                    }
-                    if (result === "" && isValid){
-                        $(question).parent().hide();
-                    }
                     else {
-                        $(question).parent().show();
-                        $(question).html(result);
-                    }
-                }
-                else {
-                    let name = id.substring(0, id.indexOf("__review_value"));
-                    let input = $("input[name^='" + name + "']");
-                    if (input.length === 0) {  //it's not input but select
-                        input = $("[name^='" + name + "']");
-                        let result = "";
-                        input.each((idx, inp) => {
-                            let val = $(inp).find('option:selected').text();
-                            if (val !== "") {
-                                result += val + "<br>";
-                            }
-
-                        })
-                        $(question).html(result);
-                    } else {
-                        if (id === "keywords__review_value") {
+                        let name = id.substring(0, id.indexOf("__review_value"));
+                        let input = $("input[name^='" + name + "']");
+                        if (input.length === 0) {  //it's not input but select
+                            input = $("[name^='" + name + "']");
                             let result = "";
-                            let this_input = $('#keywords')
-                            let keywords = this_input.val().split(",")
-                            if (keywords.length !== 1) {
-                                $(keywords).each((idx, kw) => {
-                                    result += kw + "<br>";
-                                });
-                            }
-                            else {
-                                result = keywords[0];
-                            }
+                            input.each((idx, inp) => {
+                                let val = $(inp).find('option:selected').text();
+                                if (val !== "") {
+                                    result += val + "<br>";
+                                }
+
+                            });
                             $(question).html(result);
-
-
                         } else {
-                            if ($(input).attr("data-parsley-required-if") !== undefined) {
-                                if (input.val() === "" && $(input).parsley().validationResult === true){
-                                    $(question).parent().hide();
-                                    return;
+                            if (id === "keywords__review_value") {
+                                let result = "";
+                                let this_input = $('#keywords');
+                                let keywords = this_input.val().split(",");
+                                if (keywords.length !== 1) {
+                                    $(keywords).each((idx, kw) => {
+                                        result += kw + "<br>";
+                                    });
                                 }
                                 else {
-                                    $(question).parent().show();
+                                    result = keywords[0];
                                 }
-                            }
-                            let type = input.attr("type");
-                            if (type === "text" || type === "number") {
-                                $(question).html(input.val())
-                            } else if (type === "url") {
-                                $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>')
-                            } else if (type === "radio") {
-                                if (input.is(":checked")) {
-                                    let text = $('label[for=' + $(input.filter(':checked')).attr('id') + ']').text();
-                                    $(question).html(text);
-                                }
-                            } else if (type === "checkbox") {
-                                let result = ''
-                                input.each((idx, i) => {
-                                    if ($(i).is(":checked")) {
-                                        let text = $('label[for=' + $(i).attr('id') + ']').text();
-                                        result += text + "<br>";
+                                $(question).html(result);
+
+
+                            } else {
+                                if ($(input).attr("data-parsley-required-if") !== undefined) {
+                                    if (input.val() === "" && $(input).parsley().validationResult === true){
+                                        $(question).parent().hide();
+                                        return;
                                     }
-                                })
-                                $(question).html(result)
+                                    else {
+                                        $(question).parent().show();
+                                    }
+                                }
+                                let type = input.attr("type");
+                                if (type === "text" || type === "number") {
+                                    $(question).html(input.val())
+                                } else if (type === "url") {
+                                    $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>')
+                                } else if (type === "radio") {
+                                    if (input.is(":checked")) {
+                                        let text = $('label[for=' + $(input.filter(':checked')).attr('id') + ']').text();
+                                        $(question).html(text);
+                                    }
+                                } else if (type === "checkbox") {
+                                    let result = '';
+                                    input.each((idx, i) => {
+                                        if ($(i).is(":checked")) {
+                                            let text = $('label[for=' + $(i).attr('id') + ']').text();
+                                            result += text + "<br>";
+                                        }
+                                    });
+                                    $(question).html(result)
+                                }
                             }
                         }
                     }
+
+                })
+            };
+
+            this.form_validated = () => {
+                let result = true;
+                let inputs = this.jq("[name^='validated']");
+                $(inputs).each((idx, input) => {
+                    if (idx === inputs.length-1) {
+                        return result;
+                    }
+                    if ($(input).val() !== "True") {
+                        result = false;
+                        return;
+                    }
+                });
+                return result;
+            };
+
+            this.next = () => {
+                this.navigate(this.currentTab + 1);
+            };
+
+            this.prev = () => {
+                this.navigate(this.currentTab - 1, true);
+            };
+
+            this.submitaplication = () => {
+                let parsleyForm = this.form.parsley();
+                this.form.submit();
+            };
+
+            this.savedraft = () => {
+                this.form.attr('novalidate', 'novalidate');
+                var draftEl = $("input[name=draft]");
+                if (draftEl.length === 0) {
+                    let input = $("<input>")
+                       .attr("type", "hidden")
+                       .attr("name", "draft").val(true);
+                    this.form.append($(input));
+                } else {
+                    draftEl.val(true);
                 }
 
-            })
-        },
+                let parsleyForm = this.form.parsley();
+                parsleyForm.destroy();
+                this.form.submit();
+            };
 
-        form_validated: () => {
-            let result = true;
-            let inputs = $("[name^='validated']");
-            $(inputs).each((idx, input) => {
-                if (idx === inputs.length-1) {
-                    return result;
-                }
-                if ($(input).val() !== "True") {
-                    result = false;
-                    return;
-                }
-            });
-            return result;
-        },
+            this.navigate = (n, showEvenIfInvalid = false) => {
+                var that = this;
 
-        next: () => {
-            navigate(currentTab + 1);
-        },
+                // Hide the current tab:
+                // let form = $('#' + '{{ form_id }}');
 
-        prev: () => {
-            navigate(currentTab - 1, true);
-        },
-
-        submitaplication: () => {
-            let form = $("form");
-            let parsleyForm = $(form).parsley();
-            $(form).submit();
-        },
-
-        savedraft: () => {
-            let form = $(".application_form");
-            $(form).attr('novalidate', 'novalidate');
-            var draftEl = $("input[name=draft]");
-            if (draftEl.length === 0) {
-                let input = $("<input>")
-                   .attr("type", "hidden")
-                   .attr("name", "draft").val(true);
-                form.append($(input));
-            } else {
-                draftEl.val(true);
-            }
-
-            let parsleyForm = $(form).parsley();
-            parsleyForm.destroy();
-            $(form).submit();
-        },
-
-        navigate: (n, showEvenIfInvalid = false) => {
-            // Hide the current tab:
-            var form = $('#' + '{{ form_id }}');
-            form.parsley().whenValidate({
-                group: 'block-' + currentTab
-            }).done(function () {
-                $("#validated-" + currentTab).val("True");
-                previousTab = n-1;
-                currentTab = n;
-                // Otherwise, display the correct tab:
-                showTab(currentTab);
-            }).fail(function () {
-                $("#validated-" + currentTab).val("False");
-                if (showEvenIfInvalid){
-                    previousTab = n-1;
-                    currentTab = n;
+                this.form.parsley().whenValidate({
+                    group: 'block-' + that.currentTab
+                }).done(function () {
+                    // $("#validated-" + that.currentTab).val("True");
+                    that.tabValidationState[that.currentTab].state = "valid";
+                    that.previousTab = n-1;
+                    that.currentTab = n;
                     // Otherwise, display the correct tab:
-                    showTab(currentTab);
-                }
+                    that.showTab(that.currentTab);
+                }).fail(function () {
+                    // $("#validated-" + that.currentTab).val("False");
+                    that.tabValidationState[that.currentTab].state = "invalid";
+                    if (showEvenIfInvalid){
+                        that.previousTab = n-1;
+                        that.currentTab = n;
+                        // Otherwise, display the correct tab:
+                        that.showTab(that.currentTab);
+                    }
 
-            });
-        },
+                });
+            };
 
-        fixStepIndicator: (n) => {
-            // This function removes the "active" class of all steps...
-            $(".application-nav__list-item").each((idx, x) => {
-                let hiddenField = $("#validated-" + idx);
-                if (idx === n) {
-                    x.className = "application-nav__list-item application-nav__list-item--active";
-                }
-                else {
-                    if (hiddenField.val() === "True") {
-                        x.className = "application-nav__list-item application-nav__list-item--done";
-                    } else if (hiddenField.val() === "False") {
-                        x.className = "application-nav__list-item application-nav__list-item--invalid";
+            this.updateStepIndicator = () => {
+                var that = this;
+                // This function removes the "active" class of all steps...
+                $(".application-nav__list-item").each((idx, x) => {
+                    if (idx === that.currentTab) {
+                        x.className = "application-nav__list-item application-nav__list-item--active";
                     }
                     else {
-                        x.className = "application-nav__list-item";
+                        if (that.tabValidationState[idx].state === "valid") {
+                            x.className = "application-nav__list-item application-nav__list-item--done";
+                        } else if (that.tabValidationState[idx].state === "invalid") {
+                            x.className = "application-nav__list-item application-nav__list-item--invalid";
+                        }
+                        else {
+                            x.className = "application-nav__list-item";
+                        }
                     }
-                }
-            });
-            //... and adds the "active" class to the current step:
+                });
+                //... and adds the "active" class to the current step:
 
-            $("#page_link-" + n).className = "page_link";
-        },
+                $("#page_link-" + this.currentTab).className = "page_link";
+            };
 
-        usePaginationMenu: () => {
-            $('[id^="page_link-"]').each((i, x) => {
-                $(x).on("click", () => {
-                    if (context === "public" && $("#validated-" + i).val() === '') {
-                        //dev only!
-                        //navigate(i);
-                        return false;
-                    } else {
-                        navigate(i, true);
+            this.fixStepIndicator = (n) => {
+                // This function removes the "active" class of all steps...
+                this.jq(".application-nav__list-item").each((idx, x) => {
+                    let hiddenField = $("#validated-" + idx);
+                    if (idx === n) {
+                        x.className = "application-nav__list-item application-nav__list-item--active";
                     }
-
+                    else {
+                        if (hiddenField.val() === "True") {
+                            x.className = "application-nav__list-item application-nav__list-item--done";
+                        } else if (hiddenField.val() === "False") {
+                            x.className = "application-nav__list-item application-nav__list-item--invalid";
+                        }
+                        else {
+                            x.className = "application-nav__list-item";
+                        }
+                    }
                 });
-            });
-        },
+                //... and adds the "active" class to the current step:
 
-        prepareSections: () => {
-            sections.each((idx, section) => {
+                this.jq("#page_link-" + n).className = "page_link";
+            };
 
-                $(section).find("input, select").each((i, input) => {
-                    $(input).attr('data-parsley-group', 'block-' + idx);
+            this.usePaginationMenu = () => {
+                var that = this;
+                this.jq('[id^="page_link-"]').each((i, x) => {
+                    $(x).on("click", () => {
+                        if (that.context === "public" && $("#validated-" + i).val() === '') {
+                            //dev only!
+                            //navigate(i);
+                            return false;
+                        } else {
+                            that.navigate(i, true);
+                        }
+                    });
+                });
+            };
+
+            this.prepareSections = () => {
+                var that = this;
+
+                this.sections.each((idx, section) => {
+                    $(section).find("input, select").each((i, input) => {
+                        $(input).attr('data-parsley-group', 'block-' + idx);
+                    });
+
+                    //if (idx < that.sections.length){
+                    //    let hiddenInputs = $("[name='validated']");
+                    //    $(hiddenInputs[idx]).attr('id', 'validated-' + idx);
+                    //}
                 });
 
-                if (idx < sections.length){
-                    let hiddenInputs = $("[name='validated']");
-                    $(hiddenInputs[idx]).attr('id', 'validated-' + idx);
+                this.jq('[id^="page_link-"]').each((i, menu) =>  {
+                    $(menu).className = "page_link--disabled";
+                });
+            };
+
+            this.manage_review_checkboxes = () => {
+                if (this.jq("#reviewed").checked) {
+                    this.form_validated() ? this.jq("#submitBtn").show() : this.jq("#submitBtn").hide()
                 }
+            };
 
-            });
-
-            $('[id^="page_link-"]').each((i, menu) =>  {
-                $(menu).className = "page_link--disabled";
-            });
-        },
-
-        manage_review_checkboxes: () => {
-            if ($("#reviewed").checked) {
-                form_validated() ? $("#submitBtn").show() : $("#submitBtn").hide()
-            }
-
+            // construct
+            this.init();
         }
     }
 });
