@@ -39,7 +39,7 @@ $.extend(doaj, {
                 }
 
                 this.prepareSections();
-                // this.usePaginationMenu();
+                this.useStepIndicator();
 
                 // Display the current tab
                 if (this.context === "admin") {
@@ -299,16 +299,14 @@ $.extend(doaj, {
             };
 
             this.updateStepIndicator = () => {
-                var that = this;
-                // This function removes the "active" class of all steps...
                 $(".application-nav__list-item").each((idx, x) => {
-                    if (idx === that.currentTab) {
+                    if (idx === this.currentTab) {
                         x.className = "application-nav__list-item application-nav__list-item--active";
                     }
                     else {
-                        if (that.tabValidationState[idx].state === "valid") {
+                        if (this.tabValidationState[idx].state === "valid") {
                             x.className = "application-nav__list-item application-nav__list-item--done";
-                        } else if (that.tabValidationState[idx].state === "invalid") {
+                        } else if (this.tabValidationState[idx].state === "invalid") {
                             x.className = "application-nav__list-item application-nav__list-item--invalid";
                         }
                         else {
@@ -321,39 +319,15 @@ $.extend(doaj, {
                 $("#page_link-" + this.currentTab).className = "page_link";
             };
 
-            this.fixStepIndicator = (n) => {
-                // This function removes the "active" class of all steps...
-                this.jq(".application-nav__list-item").each((idx, x) => {
-                    let hiddenField = $("#validated-" + idx);
-                    if (idx === n) {
-                        x.className = "application-nav__list-item application-nav__list-item--active";
-                    }
-                    else {
-                        if (hiddenField.val() === "True") {
-                            x.className = "application-nav__list-item application-nav__list-item--done";
-                        } else if (hiddenField.val() === "False") {
-                            x.className = "application-nav__list-item application-nav__list-item--invalid";
-                        }
-                        else {
-                            x.className = "application-nav__list-item";
-                        }
-                    }
-                });
-                //... and adds the "active" class to the current step:
-
-                this.jq("#page_link-" + n).className = "page_link";
-            };
-
-            this.usePaginationMenu = () => {
-                var that = this;
-                this.jq('[id^="page_link-"]').each((i, x) => {
+            this.useStepIndicator = () => {
+                $('[id^="page_link-"]').each((i, x) => {
                     $(x).on("click", () => {
-                        if (that.context === "public" && $("#validated-" + i).val() === '') {
+                        if (this.context === "public" && this.tabValidationState[i].state === 'unvalidated') {
                             //dev only!
                             //navigate(i);
                             return false;
                         } else {
-                            that.navigate(i, true);
+                            this.navigate(i, true);
                         }
                     });
                 });
