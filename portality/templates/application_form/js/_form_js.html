@@ -422,7 +422,15 @@
     if (context === "admin") {
         setup_maned();
     }
+    // $(".application_form").parsley().validate();
+    currentTab = -1;
+    for (let i = 0; i < tabs.length; i++) {
+        next();
+        // showTab(i);
+    }
+    currentTab = 0;
     showTab(currentTab);
+
     {#$("#submitBtn").on("click",onSubmit);#}
     {#$("#draftBtn").on("click", saveDraft);#}
 
