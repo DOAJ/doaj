@@ -60,22 +60,6 @@ $.extend(true, doaj, {
                     })
                 }),
 
-                // edges.newRefiningANDTermSelector({
-                //     id: "application_status",
-                //     category: "facet",
-                //     field: "admin.application_status.exact",
-                //     display: "Application Status",
-                //     deactivateThreshold: 1,
-                //     valueFunction: doaj.publisherUpdatesSearch.publisherStatusMap,
-                //     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                //         controls: false,
-                //         open: true,
-                //         togglable: false,
-                //         countFormat: countFormat,
-                //         hideInactive: true
-                //     })
-                // }),
-
                 edges.newFullSearchController({
                     id: "sort_by",
                     category: "controller",
@@ -93,35 +77,6 @@ $.extend(true, doaj, {
                         dirSwitcher: false
                     })
                 }),
-
-
-                // configure the search controller
-                // edges.newFullSearchController({
-                //     id: "search-controller",
-                //     category: "controller",
-                //     sortOptions: [
-                //         {'display': 'Date created', 'field': 'created_date'},
-                //         {'display': 'Last updated', 'field': 'last_manual_update'},
-                //         {'display': 'Title', 'field': 'index.unpunctitle.exact'}
-                //     ],
-                //     fieldOptions: [
-                //         {'display': 'Title', 'field': 'index.title'},
-                //         {'display': 'Alternative Title', 'field': 'bibjson.alternative_title'},
-                //         {'display': 'Subject', 'field': 'index.subject'},
-                //         {'display': 'Classification', 'field': 'index.classification'},
-                //         {'display': 'ISSN', 'field': 'index.issn.exact'},
-                //         {'display': 'Country of publisher', 'field': 'index.country'},
-                //         {'display': 'Journal Language', 'field': 'index.language'},
-                //         {'display': 'Publisher', 'field': 'bibjson.publisher'},
-                //         {'display': 'Platform, Host, Aggregator', 'field': 'bibjson.provider'}
-                //     ],
-                //     defaultOperator: "AND",
-                //     renderer: doaj.renderers.newFullSearchControllerRenderer({
-                //         freetextSubmitDelay: 1000,
-                //         searchButton: true,
-                //         searchPlaceholder: "Search Update Requests in progress"
-                //     })
-                // }),
 
                 edges.newPager({
                     id: "rpp",
@@ -160,149 +115,6 @@ $.extend(true, doaj, {
                         ]
                     })
                 }),
-
-                // edges.newResultsDisplay({
-                //     id: "results",
-                //     category: "results",
-                //     renderer: edges.bs3.newResultsFieldsByRowRenderer({
-                //         noResultsText: "<p>You do not have any active update requests that meet your search criteria</p>" +
-                //             "<p>If you have not set any search criteria, you do not have any update requests at this time.</p>",
-                //         rowDisplay: [
-                //             [
-                //                 {
-                //                     valueFunction: doaj.fieldRender.titleField
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": '<span class="alt_title">Alternative title: ',
-                //                     "field": "bibjson.alternative_title",
-                //                     "post": "</span>"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Date applied</strong>: ",
-                //                     valueFunction: doaj.fieldRender.suggestedOn
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Last updated</strong>: ",
-                //                     valueFunction: doaj.fieldRender.lastManualUpdate
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>ISSN(s)</strong>: ",
-                //                     valueFunction: doaj.fieldRender.issns
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Application status</strong>: ",
-                //                     valueFunction: doaj.fieldRender.applicationStatus
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Description</strong>: ",
-                //                     "field": "suggestion.description"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Contact</strong>: ",
-                //                     "field": "admin.contact.name"
-                //                 },
-                //                 {
-                //                     "field": "admin.contact.email"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Application by</strong>: ",
-                //                     "field": "suggestion.suggester.name",
-                //                     "post": " "
-                //                 },
-                //                 {
-                //                     "pre": "<strong>Applicant email</strong>: ",
-                //                     "field": "suggestion.suggester.email"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Classification</strong>: ",
-                //                     "field": "index.classification"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Keywords</strong>: ",
-                //                     "field": "bibjson.keywords"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Publisher</strong>: ",
-                //                     "field": "bibjson.publisher"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Platform, Host, Aggregator</strong>: ",
-                //                     "field": "bibjson.provider"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Publication charges?</strong>: ",
-                //                     valueFunction: doaj.fieldRender.authorPays
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Started publishing Open Access content in</strong>: ",
-                //                     "field": "bibjson.oa_start.year"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Stopped publishing Open Access content in</strong>: ",
-                //                     "field": "bibjson.oa_end.year"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Country of publisher</strong>: ",
-                //                     valueFunction: doaj.fieldRender.countryName
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Journal Language</strong>: ",
-                //                     "field": "bibjson.language"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<strong>Journal License</strong>: ",
-                //                     valueFunction: doaj.fieldRender.journalLicense
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     valueFunction: doaj.fieldRender.links
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     valueFunction: doaj.publisherUpdatesSearch.editUpdateRequest
-                //                 }
-                //             ]
-                //         ]
-                //     })
-                // }),
 
                 // selected filters display, with all the fields given their display names
                 edges.newSelectedFilters({

@@ -2697,7 +2697,7 @@ $.extend(true, doaj, {
                 if (resultobj.es_type === "draft_application" ||
                         resultobj.admin.application_status === "update_request") {
                     deleteLink = '<li class="tag">\
-                        <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-application" class="' + deleteClass + '"\
+                        <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-update-request" class="' + deleteClass + '"\
                             data-title="' + titleText + '">\
                             <span data-feather="trash-2" aria-hidden="true"></span>\
                             <span>Delete</span>\
