@@ -8,6 +8,7 @@ $.extend(doaj, {
         ApplicationForm: function(params) {
             this.currentTab = params.hasOwnProperty("currentTab") ? params.currentTab : 0;
             this.previousTab = params.hasOwnProperty("previousTab") ? params.previousTab : 0;
+            this.draft_id = params.hasOwnProperty("draft_id") ? params.draft_id : 0;
 
             this.form = $(".application_form");
             this.context = this.form.attr("context");
@@ -52,6 +53,12 @@ $.extend(doaj, {
                     // showTab(i);
                 //}
                 // this.currentTab = 0;
+
+                if (this.draft_id !== 0) {
+                    this.validateTabs();
+                    this.updateStepIndicator(0);
+                }
+
                 this.showTab(this.currentTab);
 
                 let nextSelector = this.jq("#nextBtn");
@@ -124,10 +131,22 @@ $.extend(doaj, {
                 }
                 else if (this.context === "public") {
                     this.updateStepIndicator();
-                    // this.fixStepIndicator(n)
                 }
                 window.scrollTo(0,0);
             };
+
+            this.validateTabs = () => {
+                for (let i = 0; i < this.tabs.length - 1; i++) {
+                    this.form.parsley().whenValidate({
+                        group: 'block-' + i
+                    }).done(() => {
+                        this.tabValidationState[i].state = "valid";
+                    }).fail(() => {
+                        this.tabValidationState[i].state = "invalid";
+                    });
+                }
+                this.tabValidationState[this.tabs.length-1].state = "valid";
+            }
 
             this.prepareReview = () => {
                 let review_values = $("td[id$='__review_value']");
