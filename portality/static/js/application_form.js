@@ -157,7 +157,10 @@ $.extend(doaj, {
                         break;
                     }
                     if (this.isTabEmpty(i)) {
-                        this.tabValidationState[i].state = "unvalidated"
+                        this.tabValidationState[i].state = "unvalidated";
+                        this.jq("[data-parsley-group=block-" + i + "]").each((idx, inp) => {
+                            $(inp).parsley().reset();
+                        });
                     }
                 }
                 this.updateStepIndicator();
