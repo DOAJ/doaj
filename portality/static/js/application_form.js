@@ -8,7 +8,8 @@ $.extend(doaj, {
         ApplicationForm: function(params) {
             this.currentTab = params.hasOwnProperty("currentTab") ? params.currentTab : 0;
             this.previousTab = params.hasOwnProperty("previousTab") ? params.previousTab : 0;
-            this.draft_id = params.hasOwnProperty("draft_id") ? params.draft_id : 0;
+            this.draft_id = params.hasOwnProperty("draft_id") && params.draft_id !== undefined ? params.draft_id : 0;
+            this.form_diff = params.hasOwnProperty("form_diff") && params.form_diff !== "" ? params.form_diff : 0;
 
             this.form = $(".application_form");
             this.context = this.form.attr("context");
@@ -44,7 +45,7 @@ $.extend(doaj, {
 
                 // Display the current tab
                 if (this.context === "admin") {
-                    // this.setup_maned();
+                    //this.setup_maned();
                 }
                 // $(".application_form").parsley().validate();
                 //this.currentTab = -1;
@@ -199,6 +200,16 @@ $.extend(doaj, {
             };
 
             this.prepareReview = () => {
+                for (let i = 0; i < formulaic.active.fieldsets.length; i++){
+                    this._generate_section_header();
+                    $(formulaic.active.fieldsets[i]).each(() => {
+                        if (1){     //field should be shown
+                        }
+                    })
+                }
+            }
+
+            this.prepareReview_old = () => {
                 let review_values = $("td[id$='__review_value']");
                 review_values.each((idx, question) => {
                     let id = $(question).attr('id');
