@@ -255,27 +255,18 @@ class OAI_DC_Journal(OAI_DC):
             set_text(pub, bibjson.publisher)
 
         # We have removed the list of URLs in in model v2, so we need to gather the URLS one by one
-        if bibjson.oa_statement_url is not None:
-            urlel = etree.SubElement(oai_dc, self.DC + "relation")
-            set_text(urlel, bibjson.oa_statement_url)
+        all_urls = [
+            bibjson.oa_statement_url,
+            bibjson.journal_url,
+            bibjson.aims_scope_url,
+            bibjson.author_instructions_url,
+            bibjson.waiver_url
+        ]
+        all_urls_dedupe = list(set(filter(None.__ne__, all_urls)))
 
-        if bibjson.journal_url is not None:
+        for link in all_urls_dedupe:
             urlel = etree.SubElement(oai_dc, self.DC + "relation")
-            set_text(urlel, bibjson.journal_url)
-
-        if bibjson.aims_scope_url is not None:
-            urlel = etree.SubElement(oai_dc, self.DC + "relation")
-            set_text(urlel, bibjson.aims_scope_url)
-
-        if bibjson.author_instructions_url is not None:
-            urlel = etree.SubElement(oai_dc, self.DC + "relation")
-            set_text(urlel, bibjson.author_instructions_url)
-
-        if bibjson.waiver_url is not None:
-            urlel = etree.SubElement(oai_dc, self.DC + "relation")
-            set_text(urlel, bibjson.waiver_url)
-
-        # URLs end
+            set_text(urlel, link)
 
         created = etree.SubElement(oai_dc, self.DC + "date")
         set_text(created, normalise_date(record.created_date))
