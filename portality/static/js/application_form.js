@@ -8,13 +8,14 @@ $.extend(doaj, {
         ApplicationForm: function(params) {
             this.currentTab = params.hasOwnProperty("currentTab") ? params.currentTab : 0;
             this.previousTab = params.hasOwnProperty("previousTab") ? params.previousTab : 0;
-            this.draft_id = params.hasOwnProperty("draft_id") && params.draft_id !== undefined ? params.draft_id : 0;
+            // this.draft_id = params.hasOwnProperty("draft_id") && params.draft_id !== undefined ? params.draft_id : 0;
             this.form_diff = params.hasOwnProperty("form_diff") && params.form_diff !== "" ? params.form_diff : 0;
 
             this.form = $(".application_form");
             this.context = this.form.attr("context");
             this.tabs = $(".tab");
             this.sections = $(".form-section");
+            this.draft_id = false;
 
             this.tabValidationState = [];
 
@@ -23,6 +24,11 @@ $.extend(doaj, {
             };
 
             this.init = () => {
+                let draftEl = $("input[name=id]", this.form);
+                if (draftEl) {
+                    this.draft_id = draftEl.val();
+                }
+
                 this.jq("input, select").each((idx, inp) => {
                     let name = $(inp).attr("name");
                     // console.log(name);
@@ -55,7 +61,7 @@ $.extend(doaj, {
                 //}
                 // this.currentTab = 0;
 
-                if (this.draft_id !== 0) {
+                if (this.draft_id) {
                     // this.validateTabs();
                     this.prepDraftView();
                 }
@@ -164,6 +170,18 @@ $.extend(doaj, {
                         });
                     }
                 }
+                let tripwire = false;
+                for (let i = 0; i < this.tabValidationState.length - 1; i++) {
+                    let tvs = this.tabValidationState[i];
+                    if (tvs.state === "unvalidated") {
+                        tripwire = true;
+                        break;
+                    }
+                }
+                if (!tripwire) {
+                    this.tabValidationState[this.tabValidationState.length - 1].state = "valid";
+                }
+
                 this.updateStepIndicator();
             };
 
@@ -200,13 +218,13 @@ $.extend(doaj, {
             };
 
             this.prepareReview = () => {
-                for (let i = 0; i < formulaic.active.fieldsets.length; i++){
-                    this._generate_section_header();
-                    $(formulaic.active.fieldsets[i]).each(() => {
-                        if (1){     //field should be shown
-                        }
-                    })
-                }
+                // for (let i = 0; i < formulaic.active.fieldsets.length; i++){
+                //     this._generate_section_header();
+                //     $(formulaic.active.fieldsets[i]).each(() => {
+                //         if (1){     //field should be shown
+                //         }
+                //     })
+                // }
             }
 
             this.prepareReview_old = () => {
@@ -328,7 +346,7 @@ $.extend(doaj, {
                 this.navigate(this.currentTab - 1, true);
             };
 
-            this.submitaplication = () => {
+            this.submitapplication = () => {
                 let parsleyForm = this.form.parsley();
                 this.form.submit();
             };

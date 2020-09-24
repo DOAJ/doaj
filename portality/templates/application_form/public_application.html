@@ -56,6 +56,10 @@
                     <p class="cannot-submit" id="cannot_save_draft" style="display: none"><i>You cannot save the draft because your application contains some invalid fields. You do not have to provide all required answers but all provided information must have valid format. Please review your answers and try again.</i></p>
                     <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot submit the application because it contains some invalid fields. Please review your answers and try again.</i></p>
                     {% include "application_form/_buttons.html" %}
+
+                    {% if obj %}
+                        <input type="hidden" name="id" value="{{ obj.id }}">
+                    {% endif %}
                 </form>
                 </section>
             </div>
