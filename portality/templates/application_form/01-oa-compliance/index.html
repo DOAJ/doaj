@@ -17,15 +17,8 @@
     to read, download, copy, distribute, print, search, or link to the full texts of articles, crawl them for indexing,
     pass them as data to software, or use them for any other lawful purpose. </p>
 
-<input type="hidden" name="validated" value="">
-
 {% set fs = formulaic_context.fieldset("basic_compliance") %}
     {% for f in fs.fields() %}
         {% set field_template = f.template %}
         {%  include field_template %}
     {% endfor %}
-
-
-{% if obj %}
-    <input type="hidden" name="id" value="{{ obj.id }}">
-{% endif %}

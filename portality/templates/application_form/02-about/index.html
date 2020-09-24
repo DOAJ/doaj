@@ -1,24 +1,20 @@
-<input type="hidden" name="validated" value="">
-                    <p class="label">Page 2 of {{ FORM | length + 1}}</p>
-                    <h1><span data-feather="edit-3"></span> About the journal</h1>
+<p class="label">Page 2 of {{ FORM | length + 1}}</p>
+<h1><span data-feather="edit-3"></span> About the journal</h1>
 
-                    {% set fs = formulaic_context.fieldset("about_the_journal") %}
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-                    {% set fs = formulaic_context.fieldset("publisher") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-                    {% set fs = formulaic_context.fieldset("society_or_institution") %}
-                    <h2 class="form__header"> {{ fs.label }}</h2>
-                        {% for f in fs.fields() %}
-                            {% set field_template = f.template %}
-                            {%  include field_template %}
-                        {% endfor %}
-{% if obj %}
-                        <input type="hidden" name="id" value="{{ obj.id }}">
-                    {% endif %}
+{% set fs = formulaic_context.fieldset("about_the_journal") %}
+{% for f in fs.fields() %}
+    {% set field_template = f.template %}
+    {%  include field_template %}
+{% endfor %}
+{% set fs = formulaic_context.fieldset("publisher") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+{% for f in fs.fields() %}
+    {% set field_template = f.template %}
+    {%  include field_template %}
+{% endfor %}
+{% set fs = formulaic_context.fieldset("society_or_institution") %}
+<h2 class="form__header"> {{ fs.label }}</h2>
+{% for f in fs.fields() %}
+    {% set field_template = f.template %}
+    {%  include field_template %}
+{% endfor %}

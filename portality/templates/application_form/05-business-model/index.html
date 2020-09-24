@@ -1,4 +1,3 @@
-<input type="hidden" name="validated" value="">
 <p class="label">Page 5 of {{ FORM | length + 1}}</p>
 <h1><span data-feather="dollar-sign"></span>Business Model</h1>
 {% set fs = formulaic_context.fieldset("apc") %}
@@ -19,7 +18,3 @@
         {% set field_template = f.template %}
         {%  include field_template %}
     {% endfor %}
-
-{% if obj %}
-    <input type="hidden" name="id" value="{{ obj.id }}">
-{% endif %}

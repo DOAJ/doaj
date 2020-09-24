@@ -9,7 +9,6 @@
 <hr />
 
 
-    <input type="hidden" name="validated" value="">
     {% set fs = formulaic_context.fieldset("archiving_policy") %}
     <h2 class="form__header"> {{ fs.label }}</h2>
         {% for f in fs.fields() %}
@@ -28,10 +27,4 @@
             {% set field_template = f.template %}
             {%  include field_template %}
         {% endfor %}
-
-
-
-    {% if obj %}
-        <input type="hidden" name="id" value="{{ obj.id }}">
-    {% endif %}
 

@@ -1,4 +1,3 @@
-<input type="hidden" name="validated" value="">
 <p class="label">Page 3 of {{ FORM | length + 1}}</p>
 <h1>© Copyright & licensing</h1>
 
@@ -20,7 +19,3 @@
         {% set field_template = f.template %}
         {%  include field_template %}
     {% endfor %}
-
-{% if obj %}
-    <input type="hidden" name="id" value="{{ obj.id }}">
-{% endif %}

@@ -351,17 +351,21 @@ $.extend(doaj, {
                 });
             };
 
+            // this.prepareStepIndicatorForDraft = () => {
+            //     this.sections.each((idx, section) => {
+            //         let inputs = this.jq(section).find("input, select").filter(() => {
+            //             return this.value !== "" && this.value !== "0";
+            //         });
+            //         console.log(inputs)
+            //     });
+            // };
+
             this.prepareSections = () => {
 
                 this.sections.each((idx, section) => {
                     $(section).find("input, select").each((i, input) => {
                         $(input).attr('data-parsley-group', 'block-' + idx);
                     });
-
-                    //if (idx < this.sections.length){
-                    //    let hiddenInputs = $("[name='validated']");
-                    //    $(hiddenInputs[idx]).attr('id', 'validated-' + idx);
-                    //}
                 });
 
                 this.jq('[id^="page_link-"]').each((i, menu) =>  {
