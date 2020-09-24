@@ -55,8 +55,8 @@ $.extend(doaj, {
                 // this.currentTab = 0;
 
                 if (this.draft_id !== 0) {
-                    this.validateTabs();
-                    this.updateStepIndicator(0);
+                    // this.validateTabs();
+                    this.prepDraftView();
                 }
 
                 this.showTab(this.currentTab);
@@ -70,6 +70,21 @@ $.extend(doaj, {
                 edges.on(prevSelector, "click", this, "prev");
                 edges.on(submitSelector, "click", this, "submitapplication");
                 edges.on(draftSelector, "click", this, "savedraft");
+            };
+
+            this.destroyParsley = function() {
+                if (this.activeParsley) {
+                    this.activeParsley.destroy();
+                    this.activeParsley = false;
+                    this.context.off("submit.Parsley");
+                }
+                // $(".has-error").removeClass("has-error");
+            };
+
+            this.bounceParsley = function() {
+                if (!this.doValidation) { return; }
+                this.destroyParsley();
+                this.activeParsley = this.context.parsley();
             };
 
             this.showTab = (n) => {
@@ -135,6 +150,19 @@ $.extend(doaj, {
                 window.scrollTo(0,0);
             };
 
+            this.prepDraftView = () => {
+                this.validateTabs();
+                for (let i = this.tabValidationState.length - 1; i >= 0; i--) {
+                    if (this.tabValidationState[i].state === "valid") {
+                        break;
+                    }
+                    if (this.isTabEmpty(i)) {
+                        this.tabValidationState[i].state = "unvalidated"
+                    }
+                }
+                this.updateStepIndicator();
+            };
+
             this.validateTabs = () => {
                 for (let i = 0; i < this.tabs.length - 1; i++) {
                     this.form.parsley().whenValidate({
@@ -145,8 +173,27 @@ $.extend(doaj, {
                         this.tabValidationState[i].state = "invalid";
                     });
                 }
-                this.tabValidationState[this.tabs.length-1].state = "valid";
-            }
+                this.tabValidationState[this.tabs.length-1].state = "unvalidated";
+            };
+
+            this.isTabEmpty = (n) => {
+                let section = $(this.sections[n]);
+                let inputs = section.find(":input");
+                for (let i = 0; i < inputs.length; i++) {
+                    let inp = $(inputs[i]);
+                    let type = $(inp).attr("type");
+                    if (type === "radio" || type === "checkbox") {
+                        if (inp.is(":checked")) {
+                            return false;
+                        }
+                    } else {
+                        if (inp.val() !== "") {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            };
 
             this.prepareReview = () => {
                 let review_values = $("td[id$='__review_value']");
@@ -350,15 +397,6 @@ $.extend(doaj, {
                     });
                 });
             };
-
-            // this.prepareStepIndicatorForDraft = () => {
-            //     this.sections.each((idx, section) => {
-            //         let inputs = this.jq(section).find("input, select").filter(() => {
-            //             return this.value !== "" && this.value !== "0";
-            //         });
-            //         console.log(inputs)
-            //     });
-            // };
 
             this.prepareSections = () => {
 
