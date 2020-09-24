@@ -71,6 +71,7 @@ $.extend(true, doaj, {
                     }
                     return recurse(tree);
                 }(tree),
+                pruneTree: true,
                 size: 9999,
                 nodeMatch: function(node, match_list) {
                     for (var i = 0; i < match_list.length; i++) {
@@ -89,9 +90,9 @@ $.extend(true, doaj, {
                 },
                 renderer: doaj.renderers.newSubjectBrowser({
                     title: "Subjects",
-                    selectMode: "multiple",
                     open: true,
-                    hideEmpty: hideEmpty
+                    hideEmpty: hideEmpty,
+                    showCounts: false
                 })
             })
         },
@@ -201,6 +202,8 @@ $.extend(true, doaj, {
 
             this.open = edges.getParam(params.open, false);
 
+            this.showCounts = edges.getParam(params.showCounts, false);
+
             this.namespace = "doaj-subject-browser";
 
             this.draw = function() {
@@ -275,9 +278,12 @@ $.extend(true, doaj, {
                     if (entry.selected) {
                         checked = ' checked="checked" ';
                     }
-                    // FIXME: putting this in for the moment, just so we can use it in dev
-                    // var count = ' <span class="' + countClass + '">(' + entry.count + '/' + entry.childCount + ')</span>';
+
                     var count = "";
+                    if (that.showCounts) {
+                        var countClass = edges.css_classes(that.namespace, "count", that);
+                        count = ' <span class="' + countClass + '">(' + entry.count + '/' + entry.childCount + ')</span>';
+                    }
 
                     var frag = '<input class="' + checkboxClass + '" data-value="' + edges.escapeHtml(entry.value) + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
                         <label for="' + id + '" class="filter__label">' + entry.display + count + '</label>';
