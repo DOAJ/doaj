@@ -1,4 +1,4 @@
-<aside class="highlight highlight--aside editorial-panel" style="width: inherit; margin-top: 1.5rem">
+<aside class="highlight highlight--aside editorial-panel" style="margin-top: 1.5rem">
 
 
 
@@ -20,7 +20,7 @@
             {% endfor %}
         </div>
         <p>
-            <small>Assigned: <strong><code class="admin_value_preview" id="reassign-value"></code></strong></small>
+            <small>Assigned: <strong><code class="admin_value_preview" id="reassign-value" data-source="#owner"></code></strong></small>
         </p>
     </fieldset>
     <fieldset>
@@ -33,7 +33,7 @@
             {% endfor %}
         </div>
         <p>
-            <small>Status: <strong><code class="admin_value_preview" id="status-value"></code></strong></small>
+            <small>Status: <strong><code class="admin_value_preview" id="status-value" data-source="#application_status"></code></strong></small>
         </p>
     </fieldset>
     <fieldset>
@@ -46,7 +46,10 @@
             {% endfor %}
         </div>
         <p>
-            <small>Assigned: <strong><code class="admin_value_preview" id="reviewers-value"></code></strong></small>
+            <small>
+                Group: <strong><code class="admin_value_preview" id="reviewers-value" data-source="#editor_group"></code></strong>
+                Editor: <strong><code class="admin_value_preview" id="reviewers-value" data-source="#editor"></code></strong>
+            </small>
         </p>
     </fieldset>
     <fieldset>
@@ -70,7 +73,7 @@
 
         </div>
         <p>
-            <small>Selected: <strong><code class="admin_value_preview" id="subject-value"></code></strong></small>
+            <small>Selected: <strong><code class="admin_value_preview" id="subject-value" data-source="#subject"></code></strong></small>
         </p>
     </fieldset>
     <fieldset>

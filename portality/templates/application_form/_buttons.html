@@ -2,8 +2,11 @@
     <p class="pager-buttons">
         <button type="button" id="prevBtn" class="button button--secondary pager-buttons__left">Previous</button>
         <button type="button" id="nextBtn" class="button button--secondary pager-buttons__right">Next</button>
-        <a id="submitBtn" class="button button--primary pager-buttons__right">Submit</a>
-        <a id="saveDraft" class="button button--secondary pager-buttons__center">Save the draft</a>
+
+        {% if formulaic_context.name == "public" %}
+            <a id="submitBtn" class="button button--primary pager-buttons__right">Submit</a>
+            <a id="saveDraft" class="button button--secondary pager-buttons__center">Save the draft</a>
+        {% endif %}
 
     </p>
 {% endblock %}

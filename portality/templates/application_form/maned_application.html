@@ -50,10 +50,10 @@
                         {% include "application_form/06-best-practice/index.html" %}
                     </div>
                     <div class="tab form-section row">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             {% include "application_form/admin/application.html" %}
                         </div>
-                        <div class="col-md-7 col-md-offset-2">
+                        <div class="col-md-8">
                             {% include "application_form/07-review/index.html" %}
                         </div>
                     </div>
@@ -98,6 +98,5 @@
 {% endblock %}
 
 {% block extra_js_bottom scoped %}
-    {% include "application_form/js/_maned_form_js.html" %}
     {% include "application_form/js/_form_js.html" %}
 {% endblock %}

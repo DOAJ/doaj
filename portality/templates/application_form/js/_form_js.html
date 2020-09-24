@@ -17,10 +17,11 @@
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
 
-        doaj.af.active = doaj.af.newApplicationForm({
-            currentTab: 0,
-            previousTab: 0,
-            form_diff: "{{ form_diff }}"
+        doaj.af.active = doaj.af.applicationFormFactory({
+            //currentTab: 0,
+            //previousTab: 0,
+            // form_diff: "{{ form_diff }}"
         });
+        doaj.af.active.init();
     });
 </script>

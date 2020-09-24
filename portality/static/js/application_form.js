@@ -2,13 +2,25 @@ $.extend(doaj, {
     af: {
         active: false,
 
-        newApplicationForm: (params) => {
+        applicationFormFactory : (params) => {
+            let form = $(".application_form");
+            let context = form.attr("context");
+            switch (context) {
+                case "public":
+                    return doaj.af.newPublicApplicationForm(params);
+                case "admin":
+                    return doaj.af.newManEdApplicationForm(params);
+                default:
+                    throw "Could not extract a context from the form";
+            }
+        },
+
+        newApplicationForm: function(params) {
             return edges.instantiate(doaj.af.ApplicationForm, params);
         },
         ApplicationForm: function(params) {
             this.currentTab = params.hasOwnProperty("currentTab") ? params.currentTab : 0;
             this.previousTab = params.hasOwnProperty("previousTab") ? params.previousTab : 0;
-            // this.draft_id = params.hasOwnProperty("draft_id") && params.draft_id !== undefined ? params.draft_id : 0;
             this.form_diff = params.hasOwnProperty("form_diff") && params.form_diff !== "" ? params.form_diff : 0;
 
             this.form = $(".application_form");
@@ -23,12 +35,7 @@ $.extend(doaj, {
                 return $(selector, this.form);
             };
 
-            this.init = () => {
-                let draftEl = $("input[name=id]", this.form);
-                if (draftEl) {
-                    this.draft_id = draftEl.val();
-                }
-
+            this.init = function() {
                 this.jq("input, select").each((idx, inp) => {
                     let name = $(inp).attr("name");
                     // console.log(name);
@@ -38,10 +45,6 @@ $.extend(doaj, {
                     }
                 });
 
-                let reviewedSelector = this.jq("#reviewed");
-                edges.on(reviewedSelector, "click", this, "manage_review_checkboxes");
-                // $("#reviewed").on("click", doaj.af.manage_review_checkboxes);
-
                 for (let i = 0; i < this.tabs.length; i++) {
                     this.tabValidationState.push({"state" : "unvalidated"});
                 }
@@ -49,61 +52,23 @@ $.extend(doaj, {
                 this.prepareSections();
                 this.useStepIndicator();
 
-                // Display the current tab
-                if (this.context === "admin") {
-                    //this.setup_maned();
-                }
-                // $(".application_form").parsley().validate();
-                //this.currentTab = -1;
-                //for (let i = 0; i < this.tabs.length; i++) {
-                //    this.next();
-                    // showTab(i);
-                //}
-                // this.currentTab = 0;
-
-                if (this.draft_id) {
-                    // this.validateTabs();
-                    this.prepDraftView();
-                }
-
                 this.showTab(this.currentTab);
 
                 let nextSelector = this.jq("#nextBtn");
                 let prevSelector = this.jq("#prevBtn");
-                let submitSelector = this.jq("#submitBtn");
-                let draftSelector = this.jq("#saveDraft");
+                let sectionSelector = $(".edit_this_section");
 
                 edges.on(nextSelector, "click", this, "next");
                 edges.on(prevSelector, "click", this, "prev");
-                edges.on(submitSelector, "click", this, "submitapplication");
-                edges.on(draftSelector, "click", this, "savedraft");
+                edges.on(sectionSelector, "click", this, "editSectionClicked");
             };
 
-            this.destroyParsley = function() {
-                if (this.activeParsley) {
-                    this.activeParsley.destroy();
-                    this.activeParsley = false;
-                    this.context.off("submit.Parsley");
-                }
-                // $(".has-error").removeClass("has-error");
+            this.editSectionClicked = function(element) {
+                let target = $(element).attr("data-section");
+                this.showTab(target);
             };
 
-            this.bounceParsley = function() {
-                if (!this.doValidation) { return; }
-                this.destroyParsley();
-                this.activeParsley = this.context.parsley();
-            };
-
-            this.showTab = (n) => {
-                // This function will display the specified tab of the form ...
-                //hide all other tabs
-                // if (n < this.sections.length-1){
-                //     let hiddenField = this.jq("#validated-" + n);
-                //     if (hiddenField.val() === "") {
-                //         hiddenField.val("False");
-                //     }
-                // }
-
+            this.showTab = function(n) {
                 this.tabs.each((idx, tab) => {
                     $(tab).hide();
                 });
@@ -157,7 +122,7 @@ $.extend(doaj, {
                 window.scrollTo(0,0);
             };
 
-            this.prepDraftView = () => {
+            this.prepDraftView = function() {
                 this.validateTabs();
                 for (let i = this.tabValidationState.length - 1; i >= 0; i--) {
                     if (this.tabValidationState[i].state === "valid") {
@@ -185,7 +150,7 @@ $.extend(doaj, {
                 this.updateStepIndicator();
             };
 
-            this.validateTabs = () => {
+            this.validateTabs = function() {
                 for (let i = 0; i < this.tabs.length - 1; i++) {
                     this.form.parsley().whenValidate({
                         group: 'block-' + i
@@ -198,7 +163,7 @@ $.extend(doaj, {
                 this.tabValidationState[this.tabs.length-1].state = "unvalidated";
             };
 
-            this.isTabEmpty = (n) => {
+            this.isTabEmpty = function(n) {
                 let section = $(this.sections[n]);
                 let inputs = section.find(":input");
                 for (let i = 0; i < inputs.length; i++) {
@@ -217,7 +182,7 @@ $.extend(doaj, {
                 return true;
             };
 
-            this.prepareReview = () => {
+            this.prepareReview = function() {
                 // for (let i = 0; i < formulaic.active.fieldsets.length; i++){
                 //     this._generate_section_header();
                 //     $(formulaic.active.fieldsets[i]).each(() => {
@@ -225,9 +190,9 @@ $.extend(doaj, {
                 //         }
                 //     })
                 // }
-            }
+            };
 
-            this.prepareReview_old = () => {
+            this.prepareReview_old = function() {
                 let review_values = $("td[id$='__review_value']");
                 review_values.each((idx, question) => {
                     let id = $(question).attr('id');
@@ -323,7 +288,7 @@ $.extend(doaj, {
                 })
             };
 
-            this.form_validated = () => {
+            this.form_validated = function() {
                 let result = true;
                 let inputs = this.jq("[name^='validated']");
                 $(inputs).each((idx, input) => {
@@ -338,20 +303,20 @@ $.extend(doaj, {
                 return result;
             };
 
-            this.next = () => {
+            this.next = function() {
                 this.navigate(this.currentTab + 1);
             };
 
-            this.prev = () => {
+            this.prev = function() {
                 this.navigate(this.currentTab - 1, true);
             };
 
-            this.submitapplication = () => {
+            this.submitapplication = function() {
                 let parsleyForm = this.form.parsley();
                 this.form.submit();
             };
 
-            this.savedraft = () => {
+            this.savedraft = function() {
                 this.form.attr('novalidate', 'novalidate');
                 var draftEl = $("input[name=draft]");
                 if (draftEl.length === 0) {
@@ -368,7 +333,7 @@ $.extend(doaj, {
                 this.form.submit();
             };
 
-            this.navigate = (n, showEvenIfInvalid = false) => {
+            this.navigate = function(n, showEvenIfInvalid = false) {
 
                 // Hide the current tab:
                 // let form = $('#' + '{{ form_id }}');
@@ -395,7 +360,7 @@ $.extend(doaj, {
                 });
             };
 
-            this.updateStepIndicator = () => {
+            this.updateStepIndicator = function() {
                 $(".application-nav__list-item").each((idx, x) => {
                     if (idx === this.currentTab) {
                         x.className = "application-nav__list-item application-nav__list-item--active";
@@ -416,7 +381,7 @@ $.extend(doaj, {
                 $("#page_link-" + this.currentTab).className = "page_link";
             };
 
-            this.useStepIndicator = () => {
+            this.useStepIndicator = function() {
                 $('[id^="page_link-"]').each((i, x) => {
                     $(x).on("click", () => {
                         if (this.context === "public" && this.tabValidationState[i].state === 'unvalidated') {
@@ -430,7 +395,7 @@ $.extend(doaj, {
                 });
             };
 
-            this.prepareSections = () => {
+            this.prepareSections = function() {
 
                 this.sections.each((idx, section) => {
                     $(section).find("input, select").each((i, input) => {
@@ -443,14 +408,143 @@ $.extend(doaj, {
                 });
             };
 
-            this.manage_review_checkboxes = () => {
+            this.unlock = function(params) {
+                let type = params.type;
+                let id = params.id;
+
+                let success_callback = (data) => {
+                    window.open('', '_self', ''); //open the current window
+                    window.close();
+                };
+
+                let error_callback = (jqXHR, textStatus, errorThrown) => {
+                    alert("error releasing lock: " + textStatus + " " + errorThrown)
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/service/unlock/" + type + "/" + id,
+                    contentType: "application/json",
+                    dataType: "json",
+                    success : success_callback,
+                    error: error_callback
+                })
+            }
+        },
+
+        newPublicApplicationForm : function(params) {
+            return edges.instantiate(doaj.af.PublicApplicationForm, params, doaj.af.newApplicationForm)
+        },
+        PublicApplicationForm : function(params) {
+            this.init = function() {
+                let draftEl = $("input[name=id]", this.form);
+                if (draftEl) {
+                    this.draft_id = draftEl.val();
+                }
+
+                let reviewedSelector = this.jq("#reviewed");
+                edges.on(reviewedSelector, "click", this, "manage_review_checkboxes");
+
+                if (this.draft_id) {
+                    this.prepDraftView();
+                }
+
+                let submitSelector = this.jq("#submitBtn");
+                let draftSelector = this.jq("#saveDraft");
+
+                edges.on(submitSelector, "click", this, "submitapplication");
+                edges.on(draftSelector, "click", this, "savedraft");
+
+                edges.up(this, "init");
+            };
+
+            this.manage_review_checkboxes = function() {
                 if (this.jq("#reviewed").checked) {
                     this.form_validated() ? this.jq("#submitBtn").show() : this.jq("#submitBtn").hide()
                 }
             };
+        },
 
-            // construct
-            this.init();
+        newManEdApplicationForm : function(params) {
+            return edges.instantiate(doaj.af.ManEdApplicationForm, params, doaj.af.newApplicationForm)
+        },
+        ManEdApplicationForm : function(params) {
+            this.init = function() {
+                this.currentTab = 6;
+                this.previousTab = 5;
+
+                $(".application-nav__list-item").each((idx, x) => {
+                    x.className = "application-nav__list-item application-nav__list-item--active";
+                });
+
+                $("#open_quick_reject").on("click", (e) => {
+                    e.preventDefault();
+                    $("#modal-quick_reject").show();
+                });
+
+                $("#unlock").click(function(event) {
+                    event.preventDefault();
+                    let id = $(this).attr("data-id");
+                    let type = $(this).attr("data-type");
+                    unlock({type : type, id : id})
+                });
+
+                edges.up(this, "init");
+            };
+
+            this.showTab = function(n) {
+                edges.up(this, "showTab", [n]);
+
+                if (this.currentTab === 6) {
+                    this._modifyReviewPage();
+                } else {
+                    this._defaultPageView();
+                }
+            };
+
+            this._modifyReviewPage = function() {
+                let page = $(".page");
+                page.removeClass("col-md-8");
+                page.addClass("col-md-12");
+                let buttons = $(".buttons");
+                buttons.addClass("col-md-8 col-md-offset-4");
+                $(".side-menus").hide();
+                this._generate_values_preview();
+            };
+
+            this._defaultPageView = function() {
+                let page = $(".page");
+                page.removeClass("col-md-12");
+                page.addClass("col-md-8");
+                let buttons = $(".buttons");
+                buttons.removeClass("col-md-8 col-md-offset-4");
+                $(".side-menus").show();
+            };
+
+            this._generate_values_preview = function() {
+                $(".admin_value_preview").each((i,elem) => {
+                    let sourceId = $(elem).attr("data-source");
+                    let input = $(sourceId);
+                    let type = input.attr("type");
+                    if (input.val()) {
+                        $(elem).html(input.val());
+                    } else {
+                        $(elem).html("[no value]");
+                    }
+
+
+                    // let id = $(elem).attr("id").split("-")[0];
+                    // let inputs = $("#"+id).find("select, input");
+                    //
+                    // if (inputs.length === 1) {
+                    //     $(elem).html($(inputs[0]).val())
+                    // } else if (inputs.length === 2){
+                    //     $(elem).html($(inputs[0]).val() + " (" + $(inputs[1]).val() + ")")
+                    // } else {
+                    //     $(elem).html("[no value]");
+                    // }
+                })
+            };
         }
     }
 });

@@ -6,7 +6,7 @@
             <table>
                 <tbody>
                     <th>{{ tab.title }}</th>
-                    <th><a href="#" class="button" onclick="showTab({{ t.val }})">Edit this section</a></th>
+                    <th><a href="#" class="button edit_this_section" data-section={{ t.val }}>Edit this section</a></th>
                     {% if form_diff %}<th>Previous Value</th>{% endif %}
                     {% set fieldsests = tab.fieldsets %}
                     {% for fieldset in fieldsests %}
