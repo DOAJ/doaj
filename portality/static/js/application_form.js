@@ -3,19 +3,6 @@ $.extend(doaj, {
     af: {
         active: false,
 
-        applicationFormFactory : (params) => {
-            let form = $('.application_form');
-            let context = form.attr('context');
-            switch (context) {
-                case 'public':
-                    return new this.PublicApplicationForm(params);
-                case 'admin':
-                    return new this.ManEdApplicationForm(params);
-                default:
-                    throw 'Could not extract a context from the form';
-            }
-        },
-
         ApplicationForm: class {
 
             constructor(params) {
@@ -429,113 +416,126 @@ $.extend(doaj, {
                     error: error_callback
                 });
             }
-        },
-
-        PublicApplicationForm: class extends this.ApplicationForm {
-            constructor(params) {
-                super(params);
-                let draftEl = $('input[name=id]', this.form);
-                if (draftEl) {
-                    this.draft_id = draftEl.val();
-                }
-
-                let reviewedSelector = this.jq('#reviewed');
-                edges.on(reviewedSelector, 'click', this, 'manage_review_checkboxes');
-
-                if (this.draft_id) {
-                    this.prepDraftView();
-                }
-
-                let submitSelector = this.jq('#submitBtn');
-                let draftSelector = this.jq('#saveDraft');
-
-                edges.on(submitSelector, 'click', this, 'submitapplication');
-                edges.on(draftSelector, 'click', this, 'savedraft');
-
-                edges.up(this, 'init');
-            }
-
-            manage_review_checkboxes() {
-                let submitBtn = this.jq('#submitBtn');
-                if (this.jq('#reviewed').checked) {
-                    if(this.form_validated()){
-                        submitBtn.show()
-                    }
-                    else {
-                        submitBtn.hide();
-                    }
-                }
-            }
-        },
-
-        ManEdApplicationForm: class extends this.ApplicationForm {
-            constructor(params) {
-                super(params);
-                this.currentTab = 6;
-                this.previousTab = 5;
-
-                $('.application-nav__list-item').each((idx, x) => {
-                    x.className = 'application-nav__list-item application-nav__list-item--active';
-                });
-
-                $('#open_quick_reject').on('click', (e) => {
-                    e.preventDefault();
-                    $('#modal-quick_reject').show();
-                });
-
-                $('#unlock').click(function(event) {
-                    event.preventDefault();
-                    let id = $(this).attr('data-id');
-                    let type = $(this).attr('data-type');
-                    unlock({type : type, id : id});
-                });
-
-                edges.up(this, 'init');
-            }
-
-            showTab (n) {
-                edges.up(this, 'showTab', [n]);
-
-                if (this.currentTab === 6) {
-                    this._modifyReviewPage();
-                } else {
-                    this._defaultPageView();
-                }
-            }
-
-            _modifyReviewPage() {
-                let page = $('.page');
-                page.removeClass('col-md-8');
-                page.addClass('col-md-12');
-                let buttons = $('.buttons');
-                buttons.addClass('col-md-8 col-md-offset-4');
-                $('.side-menus').hide();
-                this._generate_values_preview();
-            }
-
-            _defaultPageView() {
-                let page = $('.page');
-                page.removeClass('col-md-12');
-                page.addClass('col-md-8');
-                let buttons = $('.buttons');
-                buttons.removeClass('col-md-8 col-md-offset-4');
-                $('.side-menus').show();
-            }
-
-            _generate_values_preview() {
-                $('.admin_value_preview').each((i,elem) => {
-                    let sourceId = $(elem).attr('data-source');
-                    let input = $(sourceId);
-                    if (input.val()) {
-                        $(elem).html(input.val());
-                    } else {
-                        $(elem).html('[no value]');
-                    }
-                });
-            }
         }
     }
 });
+
+doaj.af.PublicApplicationForm= class extends doaj.af.ApplicationForm {
+    constructor(params) {
+        super(params);
+        let draftEl = $('input[name=id]', this.form);
+        if (draftEl) {
+            this.draft_id = draftEl.val();
+        }
+
+        let reviewedSelector = this.jq('#reviewed');
+        edges.on(reviewedSelector, 'click', this, 'manage_review_checkboxes');
+
+        if (this.draft_id) {
+            this.prepDraftView();
+        }
+
+        let submitSelector = this.jq('#submitBtn');
+        let draftSelector = this.jq('#saveDraft');
+
+        edges.on(submitSelector, 'click', this, 'submitapplication');
+        edges.on(draftSelector, 'click', this, 'savedraft');
+
+        edges.up(this, 'init');
+    }
+
+    manage_review_checkboxes() {
+        let submitBtn = this.jq('#submitBtn');
+        if (this.jq('#reviewed').checked) {
+            if(this.form_validated()){
+                submitBtn.show()
+            }
+            else {
+                submitBtn.hide();
+            }
+        }
+    }
+};
+
+doaj.af.ManEdApplicationForm = class extends doaj.af.ApplicationForm {
+    constructor(params) {
+        super(params);
+        this.currentTab = 6;
+        this.previousTab = 5;
+
+        $('.application-nav__list-item').each((idx, x) => {
+            x.className = 'application-nav__list-item application-nav__list-item--active';
+        });
+
+        $('#open_quick_reject').on('click', (e) => {
+            e.preventDefault();
+            $('#modal-quick_reject').show();
+        });
+
+        $('#unlock').click(function(event) {
+            event.preventDefault();
+            let id = $(this).attr('data-id');
+            let type = $(this).attr('data-type');
+            unlock({type : type, id : id});
+        });
+
+        edges.up(this, 'init');
+    }
+
+    showTab (n) {
+        edges.up(this, 'showTab', [n]);
+
+        if (this.currentTab === 6) {
+            this._modifyReviewPage();
+        } else {
+            this._defaultPageView();
+        }
+    }
+
+    _modifyReviewPage() {
+        let page = $('.page');
+        page.removeClass('col-md-8');
+        page.addClass('col-md-12');
+        let buttons = $('.buttons');
+        buttons.addClass('col-md-8 col-md-offset-4');
+        $('.side-menus').hide();
+        this._generate_values_preview();
+    }
+
+    _defaultPageView() {
+        let page = $('.page');
+        page.removeClass('col-md-12');
+        page.addClass('col-md-8');
+        let buttons = $('.buttons');
+        buttons.removeClass('col-md-8 col-md-offset-4');
+        $('.side-menus').show();
+    }
+
+    _generate_values_preview() {
+        $('.admin_value_preview').each((i,elem) => {
+            let sourceId = $(elem).attr('data-source');
+            let input = $(sourceId);
+            if (input.val()) {
+                $(elem).html(input.val());
+            } else {
+                $(elem).html('[no value]');
+            }
+        });
+    }
+};
+
+doaj.af.applicationFormFactory = (params) => {
+    let form = $('.application_form');
+    let context = form.attr('context');
+    switch (context) {
+        case 'public':
+            return new doaj.af.PublicApplicationForm(params);
+        case 'admin':
+            return new doaj.af.ManEdApplicationForm(params);
+        default:
+            throw 'Could not extract a context from the form';
+    }
+}
 
 window.Parsley.addValidator('requiredIf', {
     validateString : function(value, requirement, parsleyInstance) {
