@@ -1,11 +1,11 @@
-<link href='/static/doaj/css/application_form.css' media='screen' rel='stylesheet' type='text/css' />
+<link href='../../../static/doaj/css/application_form.css' media='screen' rel='stylesheet' type='text/css' />
 
-<script type="text/javascript" src="/static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="../../../static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="../../../static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <!-- get select2 -->
 {# <script type="text/javascript" src="/static/vendor/select2-3.5.4/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script> #}
-<script type="text/javascript" src="/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/js/application_form.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="../../../static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="../../../static/js/application_form.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <script type="text/javascript">
     jQuery(document).ready(function($) {
@@ -22,6 +22,6 @@
             //previousTab: 0,
             // form_diff: "{{ form_diff }}"
         });
-        doaj.af.active.init();
+        af.active.init();
     });
 </script>

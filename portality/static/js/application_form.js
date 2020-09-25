@@ -1,52 +1,48 @@
+'use strict';
 $.extend(doaj, {
     af: {
         active: false,
 
         applicationFormFactory : (params) => {
-            let form = $(".application_form");
-            let context = form.attr("context");
+            let form = $('.application_form');
+            let context = form.attr('context');
             switch (context) {
-                case "public":
-                    return doaj.af.newPublicApplicationForm(params);
-                case "admin":
-                    return doaj.af.newManEdApplicationForm(params);
+                case 'public':
+                    return new this.PublicApplicationForm(params);
+                case 'admin':
+                    return new this.ManEdApplicationForm(params);
                 default:
-                    throw "Could not extract a context from the form";
+                    throw 'Could not extract a context from the form';
             }
         },
 
-        newApplicationForm: function(params) {
-            return edges.instantiate(doaj.af.ApplicationForm, params);
-        },
-        ApplicationForm: function(params) {
-            this.currentTab = params.hasOwnProperty("currentTab") ? params.currentTab : 0;
-            this.previousTab = params.hasOwnProperty("previousTab") ? params.previousTab : 0;
-            this.form_diff = params.hasOwnProperty("form_diff") && params.form_diff !== "" ? params.form_diff : 0;
+        ApplicationForm: class {
 
-            this.form = $(".application_form");
-            this.context = this.form.attr("context");
-            this.tabs = $(".tab");
-            this.sections = $(".form-section");
-            this.draft_id = false;
+            constructor(params) {
+                this.currentTab = params.hasOwnProperty('currentTab') ? params.currentTab : 0;
+                this.previousTab = params.hasOwnProperty('previousTab') ? params.previousTab : 0;
+                this.form_diff = params.hasOwnProperty('form_diff') && params.form_diff !== '' ? params.form_diff : 0;
 
-            this.tabValidationState = [];
+                this.form = $('.application_form');
+                this.context = this.form.attr('context');
+                this.tabs = $('.tab');
+                this.sections = $('.form-section');
+                this.draft_id = false;
 
-            this.jq = (selector) => {
-                return $(selector, this.form);
-            };
+                this.tabValidationState = [];
 
-            this.init = function() {
-                this.jq("input, select").each((idx, inp) => {
-                    let name = $(inp).attr("name");
+
+                this.jq('input, select').each((idx, inp) => {
+                    let name = $(inp).attr('name');
                     // console.log(name);
                     if (name) {
-                        name = name.split("-");
-                        $(inp).attr("data-parsley-errors-container", "#" + name[0] + "_checkbox-errors");
+                        name = name.split('-');
+                        $(inp).attr('data-parsley-errors-container', '#' + name[0] + '_checkbox-errors');
                     }
                 });
 
                 for (let i = 0; i < this.tabs.length; i++) {
-                    this.tabValidationState.push({"state" : "unvalidated"});
+                    this.tabValidationState.push({'state' : 'unvalidated'});
                 }
 
                 this.prepareSections();
@@ -54,55 +50,59 @@ $.extend(doaj, {
 
                 this.showTab(this.currentTab);
 
-                let nextSelector = this.jq("#nextBtn");
-                let prevSelector = this.jq("#prevBtn");
-                let sectionSelector = $(".edit_this_section");
+                let nextSelector = this.jq('#nextBtn');
+                let prevSelector = this.jq('#prevBtn');
+                let sectionSelector = $('.edit_this_section');
 
-                edges.on(nextSelector, "click", this, "next");
-                edges.on(prevSelector, "click", this, "prev");
-                edges.on(sectionSelector, "click", this, "editSectionClicked");
-            };
+                edges.on(nextSelector, 'click', this, 'next');
+                edges.on(prevSelector, 'click', this, 'prev');
+                edges.on(sectionSelector, 'click', this, 'editSectionClicked');
+            }
 
-            this.editSectionClicked = function(element) {
-                let target = $(element).attr("data-section");
+            jq(selector) {
+                return $(selector, this.form);
+            }
+
+            editSectionClicked (element) {
+                let target = $(element).attr('data-section');
                 this.showTab(target);
-            };
+            }
 
-            this.showTab = function(n) {
+            showTab(n) {
                 this.tabs.each((idx, tab) => {
                     $(tab).hide();
                 });
 
-                let submitButton = this.jq("#submitBtn");
-                let draftButton = this.jq("#draftBtn");
+                let submitButton = this.jq('#submitBtn');
+                let draftButton = this.jq('#draftBtn');
                 $(this.tabs[n]).show();
-                this.jq("#cannot_save_draft").hide();
+                this.jq('#cannot_save_draft').hide();
                 submitButton.hide();
                 draftButton.show();
                 // ... and fix the Previous/Next buttons:
                 if (n === 0) {
-                    this.jq("#prevBtn").hide();
+                    this.jq('#prevBtn').hide();
                 } else {
-                    this.jq("#prevBtn").show();
+                    this.jq('#prevBtn').show();
                 }
 
                 if (n === (this.tabs.length - 1)) {
                     //show submit button only if all tabs are validated
-                    this.jq("#nextBtn").hide();
+                    this.jq('#nextBtn').hide();
                     submitButton.hide();
                     draftButton.show();
                     let validated = this.form_validated();
                     if (!validated) {
-                        this.jq("#cannot-submit-invalid-fields").show();
+                        this.jq('#cannot-submit-invalid-fields').show();
                     } else {
-                        this.jq("#cannot-submit-invalid-fields").hide();
+                        this.jq('#cannot-submit-invalid-fields').hide();
                         submitButton.show();
                     }
 
                 } else {
-                    let nextBtn = this.jq("#nextBtn");
+                    let nextBtn = this.jq('#nextBtn');
                     nextBtn.show();
-                    nextBtn.html("Next");
+                    nextBtn.html('Next');
                     submitButton.hide();
                     draftButton.show();
                 }
@@ -110,27 +110,27 @@ $.extend(doaj, {
                 this.previousTab = n-1;
                 // ... and run a function that displays the correct step indicator:
                 if(n === this.tabs.length - 1) {
-                    // this.jq("#validated-" + n).val("True");
+                    // this.jq('#validated-' + n).val('True');
                     this.prepareReview();
                 }
-                if (this.context === "admin") {
+                if (this.context === 'admin') {
                     // this.modify_view();
                 }
-                else if (this.context === "public") {
+                else if (this.context === 'public') {
                     this.updateStepIndicator();
                 }
                 window.scrollTo(0,0);
-            };
+            }
 
-            this.prepDraftView = function() {
+            prepDraftView() {
                 this.validateTabs();
                 for (let i = this.tabValidationState.length - 1; i >= 0; i--) {
-                    if (this.tabValidationState[i].state === "valid") {
+                    if (this.tabValidationState[i].state === 'valid') {
                         break;
                     }
                     if (this.isTabEmpty(i)) {
-                        this.tabValidationState[i].state = "unvalidated";
-                        this.jq("[data-parsley-group=block-" + i + "]").each((idx, inp) => {
+                        this.tabValidationState[i].state = 'unvalidated';
+                        this.jq('[data-parsley-group=block-' + i + ']').each((idx, inp) => {
                             $(inp).parsley().reset();
                         });
                     }
@@ -138,51 +138,51 @@ $.extend(doaj, {
                 let tripwire = false;
                 for (let i = 0; i < this.tabValidationState.length - 1; i++) {
                     let tvs = this.tabValidationState[i];
-                    if (tvs.state === "unvalidated") {
+                    if (tvs.state === 'unvalidated') {
                         tripwire = true;
                         break;
                     }
                 }
                 if (!tripwire) {
-                    this.tabValidationState[this.tabValidationState.length - 1].state = "valid";
+                    this.tabValidationState[this.tabValidationState.length - 1].state = 'valid';
                 }
 
                 this.updateStepIndicator();
-            };
+            }
 
-            this.validateTabs = function() {
+            validateTabs() {
                 for (let i = 0; i < this.tabs.length - 1; i++) {
                     this.form.parsley().whenValidate({
                         group: 'block-' + i
                     }).done(() => {
-                        this.tabValidationState[i].state = "valid";
+                        this.tabValidationState[i].state = 'valid';
                     }).fail(() => {
-                        this.tabValidationState[i].state = "invalid";
+                        this.tabValidationState[i].state = 'invalid';
                     });
                 }
-                this.tabValidationState[this.tabs.length-1].state = "unvalidated";
-            };
+                this.tabValidationState[this.tabs.length-1].state = 'unvalidated';
+            }
 
-            this.isTabEmpty = function(n) {
+            isTabEmpty (n) {
                 let section = $(this.sections[n]);
-                let inputs = section.find(":input");
+                let inputs = section.find(':input');
                 for (let i = 0; i < inputs.length; i++) {
                     let inp = $(inputs[i]);
-                    let type = $(inp).attr("type");
-                    if (type === "radio" || type === "checkbox") {
-                        if (inp.is(":checked")) {
+                    let type = $(inp).attr('type');
+                    if (type === 'radio' || type === 'checkbox') {
+                        if (inp.is(':checked')) {
                             return false;
                         }
                     } else {
-                        if (inp.val() !== "") {
+                        if (inp.val() !== '') {
                             return false;
                         }
                     }
                 }
                 return true;
-            };
+            }
 
-            this.prepareReview = function() {
+            prepareReview() {
                 // for (let i = 0; i < formulaic.active.fieldsets.length; i++){
                 //     this._generate_section_header();
                 //     $(formulaic.active.fieldsets[i]).each(() => {
@@ -190,30 +190,30 @@ $.extend(doaj, {
                 //         }
                 //     })
                 // }
-            };
+            }
 
-            this.prepareReview_old = function() {
-                let review_values = $("td[id$='__review_value']");
+            prepareReview_old() {
+                let review_values = $('td[id$="__review_value"]');
                 review_values.each((idx, question) => {
                     let id = $(question).attr('id');
                     // TODO: think about how to generalise this.  If we add more fields like this or
                     // change the apc_charges bit then it will need updating
-                    if (id === "apc_charges__review_value") {
-                        let currency = $("select[id$='apc_currency']");
-                        let max = $("input[id$='apc_max']");
-                        let result = "";
+                    if (id === 'apc_charges__review_value') {
+                        let currency = $('select[id$="apc_currency"]');
+                        let max = $('input[id$="apc_max"]');
+                        let result = '';
                         let isValid = true;
                         for (let i = 0; i < currency.length; i++){
                             let curr = $(currency[i]).find('option:selected').text();
                             let m = $(max[i]).val();
-                            if (m !== "" || curr !== "") {
-                                result += (m === "" ? "" : m) + " " + (curr === "" ? "" : curr) + " " + "<br>";
+                            if (m !== '' || curr !== '') {
+                                result += (m === '' ? '' : m) + ' ' + (curr === '' ? '' : curr) + ' ' + '<br>';
                             }
                         }
                         if ($(max[0]).parsley().validationResult !== true || ($(currency[0]).parsley().validationResult !== true)) {
                             isValid = false;
                         }
-                        if (result === "" && isValid){
+                        if (result === '' && isValid){
                             $(question).parent().hide();
                         }
                         else {
@@ -222,27 +222,27 @@ $.extend(doaj, {
                         }
                     }
                     else {
-                        let name = id.substring(0, id.indexOf("__review_value"));
-                        let input = $("input[name^='" + name + "']");
+                        let name = id.substring(0, id.indexOf('__review_value'));
+                        let input = $('input[name^="' + name + '"]');
                         if (input.length === 0) {  //it's not input but select
-                            input = $("[name^='" + name + "']");
-                            let result = "";
+                            input = $('[name^="' + name + '"]');
+                            let result = '';
                             input.each((idx, inp) => {
                                 let val = $(inp).find('option:selected').text();
-                                if (val !== "") {
-                                    result += val + "<br>";
+                                if (val !== '') {
+                                    result += val + '<br>';
                                 }
 
                             });
                             $(question).html(result);
                         } else {
-                            if (id === "keywords__review_value") {
-                                let result = "";
+                            if (id === 'keywords__review_value') {
+                                let result = '';
                                 let this_input = $('#keywords');
-                                let keywords = this_input.val().split(",");
+                                let keywords = this_input.val().split(',');
                                 if (keywords.length !== 1) {
                                     $(keywords).each((idx, kw) => {
-                                        result += kw + "<br>";
+                                        result += kw + '<br>';
                                     });
                                 }
                                 else {
@@ -252,8 +252,8 @@ $.extend(doaj, {
 
 
                             } else {
-                                if ($(input).attr("data-parsley-required-if") !== undefined) {
-                                    if (input.val() === "" && $(input).parsley().validationResult === true){
+                                if ($(input).attr('data-parsley-required-if') !== undefined) {
+                                    if (input.val() === '' && $(input).parsley().validationResult === true){
                                         $(question).parent().hide();
                                         return;
                                     }
@@ -261,68 +261,67 @@ $.extend(doaj, {
                                         $(question).parent().show();
                                     }
                                 }
-                                let type = input.attr("type");
-                                if (type === "text" || type === "number") {
-                                    $(question).html(input.val())
-                                } else if (type === "url") {
-                                    $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>')
-                                } else if (type === "radio") {
-                                    if (input.is(":checked")) {
+                                let type = input.attr('type');
+                                if (type === 'text' || type === 'number') {
+                                    $(question).html(input.val());
+                                } else if (type === 'url') {
+                                    $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>');
+                                } else if (type === 'radio') {
+                                    if (input.is(':checked')) {
                                         let text = $('label[for=' + $(input.filter(':checked')).attr('id') + ']').text();
                                         $(question).html(text);
                                     }
-                                } else if (type === "checkbox") {
+                                } else if (type === 'checkbox') {
                                     let result = '';
                                     input.each((idx, i) => {
-                                        if ($(i).is(":checked")) {
+                                        if ($(i).is(':checked')) {
                                             let text = $('label[for=' + $(i).attr('id') + ']').text();
-                                            result += text + "<br>";
+                                            result += text + '<br>';
                                         }
                                     });
-                                    $(question).html(result)
+                                    $(question).html(result);
                                 }
                             }
                         }
                     }
 
-                })
-            };
+                });
+            }
 
-            this.form_validated = function() {
+            form_validated() {
                 let result = true;
-                let inputs = this.jq("[name^='validated']");
+                let inputs = this.jq('[name^="validated"]');
                 $(inputs).each((idx, input) => {
                     if (idx === inputs.length-1) {
                         return result;
                     }
-                    if ($(input).val() !== "True") {
+                    if ($(input).val() !== 'True') {
                         result = false;
                         return;
                     }
                 });
                 return result;
-            };
+            }
 
-            this.next = function() {
+            next() {
                 this.navigate(this.currentTab + 1);
-            };
+            }
 
-            this.prev = function() {
+            prev() {
                 this.navigate(this.currentTab - 1, true);
-            };
+            }
 
-            this.submitapplication = function() {
-                let parsleyForm = this.form.parsley();
+            submitapplication() {
                 this.form.submit();
-            };
+            }
 
-            this.savedraft = function() {
+            savedraft() {
                 this.form.attr('novalidate', 'novalidate');
-                var draftEl = $("input[name=draft]");
+                let draftEl = $('input[name=draft]');
                 if (draftEl.length === 0) {
-                    let input = $("<input>")
-                       .attr("type", "hidden")
-                       .attr("name", "draft").val(true);
+                    let input = $('<input>')
+                        .attr('type', 'hidden')
+                        .attr('name', 'draft').val(true);
                     this.form.append($(input));
                 } else {
                     draftEl.val(true);
@@ -331,9 +330,9 @@ $.extend(doaj, {
                 let parsleyForm = this.form.parsley();
                 parsleyForm.destroy();
                 this.form.submit();
-            };
+            }
 
-            this.navigate = function(n, showEvenIfInvalid = false) {
+            navigate (n, showEvenIfInvalid = false) {
 
                 // Hide the current tab:
                 // let form = $('#' + '{{ form_id }}');
@@ -341,15 +340,15 @@ $.extend(doaj, {
                 this.form.parsley().whenValidate({
                     group: 'block-' + this.currentTab
                 }).done(() => {
-                    // $("#validated-" + this.currentTab).val("True");
-                    this.tabValidationState[this.currentTab].state = "valid";
+                    // $('#validated-' + this.currentTab).val('True');
+                    this.tabValidationState[this.currentTab].state = 'valid';
                     this.previousTab = n-1;
                     this.currentTab = n;
                     // Otherwise, display the correct tab:
                     this.showTab(this.currentTab);
                 }).fail(() => {
-                    // $("#validated-" + this.currentTab).val("False");
-                    this.tabValidationState[this.currentTab].state = "invalid";
+                    // $('#validated-' + this.currentTab).val('False');
+                    this.tabValidationState[this.currentTab].state = 'invalid';
                     if (showEvenIfInvalid){
                         this.previousTab = n-1;
                         this.currentTab = n;
@@ -358,33 +357,33 @@ $.extend(doaj, {
                     }
 
                 });
-            };
+            }
 
-            this.updateStepIndicator = function() {
-                $(".application-nav__list-item").each((idx, x) => {
+            updateStepIndicator() {
+                $('.application-nav__list-item').each((idx, x) => {
                     if (idx === this.currentTab) {
-                        x.className = "application-nav__list-item application-nav__list-item--active";
+                        x.className = 'application-nav__list-item application-nav__list-item--active';
                     }
                     else {
-                        if (this.tabValidationState[idx].state === "valid") {
-                            x.className = "application-nav__list-item application-nav__list-item--done";
-                        } else if (this.tabValidationState[idx].state === "invalid") {
-                            x.className = "application-nav__list-item application-nav__list-item--invalid";
+                        if (this.tabValidationState[idx].state === 'valid') {
+                            x.className = 'application-nav__list-item application-nav__list-item--done';
+                        } else if (this.tabValidationState[idx].state === 'invalid') {
+                            x.className = 'application-nav__list-item application-nav__list-item--invalid';
                         }
                         else {
-                            x.className = "application-nav__list-item";
+                            x.className = 'application-nav__list-item';
                         }
                     }
                 });
-                //... and adds the "active" class to the current step:
+                //... and adds the 'active' class to the current step:
 
-                $("#page_link-" + this.currentTab).className = "page_link";
-            };
+                $('#page_link-' + this.currentTab).className = 'page_link';
+            }
 
-            this.useStepIndicator = function() {
+            useStepIndicator() {
                 $('[id^="page_link-"]').each((i, x) => {
-                    $(x).on("click", () => {
-                        if (this.context === "public" && this.tabValidationState[i].state === 'unvalidated') {
+                    $(x).on('click',() => {
+                        if (this.context === 'public' && this.tabValidationState[i].state === 'unvalidated') {
                             //dev only!
                             //navigate(i);
                             return false;
@@ -393,165 +392,154 @@ $.extend(doaj, {
                         }
                     });
                 });
-            };
+            }
 
-            this.prepareSections = function() {
+            prepareSections() {
 
                 this.sections.each((idx, section) => {
-                    $(section).find("input, select").each((i, input) => {
+                    $(section).find('input, select').each((i, input) => {
                         $(input).attr('data-parsley-group', 'block-' + idx);
                     });
                 });
 
                 this.jq('[id^="page_link-"]').each((i, menu) =>  {
-                    $(menu).className = "page_link--disabled";
+                    $(menu).className = 'page_link--disabled';
                 });
-            };
+            }
 
-            this.unlock = function(params) {
+            unlock (params) {
                 let type = params.type;
                 let id = params.id;
 
-                let success_callback = (data) => {
+                let success_callback = () => {
                     window.open('', '_self', ''); //open the current window
                     window.close();
                 };
 
                 let error_callback = (jqXHR, textStatus, errorThrown) => {
-                    alert("error releasing lock: " + textStatus + " " + errorThrown)
+                    window.alert('error releasing lock: ' + textStatus + ' ' + errorThrown);
                 };
 
                 $.ajax({
-                    type: "POST",
-                    url: "/service/unlock/" + type + "/" + id,
-                    contentType: "application/json",
-                    dataType: "json",
+                    type: 'POST',
+                    url: '/service/unlock/' + type + '/' + id,
+                    contentType: 'application/json',
+                    dataType: 'json',
                     success : success_callback,
                     error: error_callback
-                })
+                });
             }
         },
 
-        newPublicApplicationForm : function(params) {
-            return edges.instantiate(doaj.af.PublicApplicationForm, params, doaj.af.newApplicationForm)
-        },
-        PublicApplicationForm : function(params) {
-            this.init = function() {
-                let draftEl = $("input[name=id]", this.form);
+        PublicApplicationForm: class extends this.ApplicationForm {
+            constructor(params) {
+                super(params);
+                let draftEl = $('input[name=id]', this.form);
                 if (draftEl) {
                     this.draft_id = draftEl.val();
                 }
 
-                let reviewedSelector = this.jq("#reviewed");
-                edges.on(reviewedSelector, "click", this, "manage_review_checkboxes");
+                let reviewedSelector = this.jq('#reviewed');
+                edges.on(reviewedSelector, 'click', this, 'manage_review_checkboxes');
 
                 if (this.draft_id) {
                     this.prepDraftView();
                 }
 
-                let submitSelector = this.jq("#submitBtn");
-                let draftSelector = this.jq("#saveDraft");
+                let submitSelector = this.jq('#submitBtn');
+                let draftSelector = this.jq('#saveDraft');
 
-                edges.on(submitSelector, "click", this, "submitapplication");
-                edges.on(draftSelector, "click", this, "savedraft");
+                edges.on(submitSelector, 'click', this, 'submitapplication');
+                edges.on(draftSelector, 'click', this, 'savedraft');
 
-                edges.up(this, "init");
-            };
+                edges.up(this, 'init');
+            }
 
-            this.manage_review_checkboxes = function() {
-                if (this.jq("#reviewed").checked) {
-                    this.form_validated() ? this.jq("#submitBtn").show() : this.jq("#submitBtn").hide()
+            manage_review_checkboxes() {
+                let submitBtn = this.jq('#submitBtn');
+                if (this.jq('#reviewed').checked) {
+                    if(this.form_validated()){
+                        submitBtn.show()
+                    }
+                    else {
+                        submitBtn.hide();
+                    }
                 }
-            };
+            }
         },
 
-        newManEdApplicationForm : function(params) {
-            return edges.instantiate(doaj.af.ManEdApplicationForm, params, doaj.af.newApplicationForm)
-        },
-        ManEdApplicationForm : function(params) {
-            this.init = function() {
+        ManEdApplicationForm: class extends this.ApplicationForm {
+            constructor(params) {
+                super(params);
                 this.currentTab = 6;
                 this.previousTab = 5;
 
-                $(".application-nav__list-item").each((idx, x) => {
-                    x.className = "application-nav__list-item application-nav__list-item--active";
+                $('.application-nav__list-item').each((idx, x) => {
+                    x.className = 'application-nav__list-item application-nav__list-item--active';
                 });
 
-                $("#open_quick_reject").on("click", (e) => {
+                $('#open_quick_reject').on('click', (e) => {
                     e.preventDefault();
-                    $("#modal-quick_reject").show();
+                    $('#modal-quick_reject').show();
                 });
 
-                $("#unlock").click(function(event) {
+                $('#unlock').click(function(event) {
                     event.preventDefault();
-                    let id = $(this).attr("data-id");
-                    let type = $(this).attr("data-type");
-                    unlock({type : type, id : id})
+                    let id = $(this).attr('data-id');
+                    let type = $(this).attr('data-type');
+                    unlock({type : type, id : id});
                 });
 
-                edges.up(this, "init");
-            };
+                edges.up(this, 'init');
+            }
 
-            this.showTab = function(n) {
-                edges.up(this, "showTab", [n]);
+            showTab (n) {
+                edges.up(this, 'showTab', [n]);
 
                 if (this.currentTab === 6) {
                     this._modifyReviewPage();
                 } else {
                     this._defaultPageView();
                 }
-            };
+            }
 
-            this._modifyReviewPage = function() {
-                let page = $(".page");
-                page.removeClass("col-md-8");
-                page.addClass("col-md-12");
-                let buttons = $(".buttons");
-                buttons.addClass("col-md-8 col-md-offset-4");
-                $(".side-menus").hide();
+            _modifyReviewPage() {
+                let page = $('.page');
+                page.removeClass('col-md-8');
+                page.addClass('col-md-12');
+                let buttons = $('.buttons');
+                buttons.addClass('col-md-8 col-md-offset-4');
+                $('.side-menus').hide();
                 this._generate_values_preview();
-            };
+            }
 
-            this._defaultPageView = function() {
-                let page = $(".page");
-                page.removeClass("col-md-12");
-                page.addClass("col-md-8");
-                let buttons = $(".buttons");
-                buttons.removeClass("col-md-8 col-md-offset-4");
-                $(".side-menus").show();
-            };
+            _defaultPageView() {
+                let page = $('.page');
+                page.removeClass('col-md-12');
+                page.addClass('col-md-8');
+                let buttons = $('.buttons');
+                buttons.removeClass('col-md-8 col-md-offset-4');
+                $('.side-menus').show();
+            }
 
-            this._generate_values_preview = function() {
-                $(".admin_value_preview").each((i,elem) => {
-                    let sourceId = $(elem).attr("data-source");
+            _generate_values_preview() {
+                $('.admin_value_preview').each((i,elem) => {
+                    let sourceId = $(elem).attr('data-source');
                     let input = $(sourceId);
-                    let type = input.attr("type");
                     if (input.val()) {
                         $(elem).html(input.val());
                     } else {
-                        $(elem).html("[no value]");
+                        $(elem).html('[no value]');
                     }
-
-
-                    // let id = $(elem).attr("id").split("-")[0];
-                    // let inputs = $("#"+id).find("select, input");
-                    //
-                    // if (inputs.length === 1) {
-                    //     $(elem).html($(inputs[0]).val())
-                    // } else if (inputs.length === 2){
-                    //     $(elem).html($(inputs[0]).val() + " (" + $(inputs[1]).val() + ")")
-                    // } else {
-                    //     $(elem).html("[no value]");
-                    // }
-                })
-            };
+                });
+            }
         }
     }
 });
 
-window.Parsley.addValidator("requiredIf", {
+window.Parsley.addValidator('requiredIf', {
     validateString : function(value, requirement, parsleyInstance) {
-        let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
+        let field = parsleyInstance.$element.attr('data-parsley-required-if-field');
         if ($('[name="' + field + '"]').filter(':checked').val() === requirement){
             return !!value;
         }
@@ -563,7 +551,7 @@ window.Parsley.addValidator("requiredIf", {
     priority: 33
 });
 
-window.Parsley.addValidator("requiredvalue", {
+window.Parsley.addValidator('requiredvalue', {
     validateString : function(value, requirement) {
         return (value === requirement);
     },
@@ -573,9 +561,9 @@ window.Parsley.addValidator("requiredvalue", {
     priority: 32
 });
 
-window.Parsley.addValidator("optionalIf", {
-    validateString : function(value, requirement) {
-        theOtherField = $("[name = " + requirement + "]");
+window.Parsley.addValidator('optionalIf', {
+    validateString : function(value) {
+        let theOtherField = $('[name = " + requirement + "]');
         if (!!value || !!($(theOtherField)).val()) {
             $(theOtherField).parsley().reset();
             return true;
@@ -588,9 +576,9 @@ window.Parsley.addValidator("optionalIf", {
     priority: 300
 });
 
-window.Parsley.addValidator("differentTo", {
-    validateString : function(value, requirement) {
-      return (!value || ($("[name = " + requirement + "]")).val() !== value)
+window.Parsley.addValidator('differentTo', {
+    validateString : function(value) {
+      return (!value || ($('[name = " + requirement + "]')).val() !== value);
     },
     messages: {
         en: 'Value of this field and %s field must be different'
