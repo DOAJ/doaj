@@ -405,45 +405,47 @@ class OnlyIf(MultiFieldValidator):
         if field.data is None or field.data is False or isinstance(field.data, str) and not field.data.strip():
             return
 
-        self.get_other_fields(form)
+        others = self.get_other_fields(form)
 
         for o_f in self.other_fields:
-            if self.ignore_empty and (not o_f['field_obj'].data or not field.data):
+            other = others[o_f["field"]]
+            if self.ignore_empty and (not other.data or not field.data):
                 continue
             if o_f.get('value') is None:
                 # No target value supplied - succeed if the other field is truthy
-                if o_f['field_obj'].data:
+                if other.data:
                     continue
             if o_f.get('not') is not None:
                 # Succeed if the value doesn't equal the one specified
-                if o_f['field_obj'].data != o_f['not']:
+                if other.data != o_f['not']:
                     continue
             if o_f.get('value') is not None:
-                if o_f['field_obj'].data == o_f['value']:
+                if other.data == o_f['value']:
                     # Succeed if the other field has the specified value
                     continue
             raise validators.ValidationError(self.message)
 
     def get_other_fields(self, form):
         # return the actual fields matching the names in self.other_fields
-        for f in self.other_fields:
-            f['field_obj'] = self.get_other_field(f['field'], form)
+        others = {f["field"]: self.get_other_field(f["field"], form) for f in self.other_fields}
+        return others
 
 
 class NotIf(OnlyIf):
     """ Field only validates if other fields DO NOT have specific values (or are truthy)"""
 
     def __call__(self, form, field):
-        self.get_other_fields(form)
+        others = self.get_other_fields(form)
 
         for o_f in self.other_fields:
-            if self.ignore_empty and (not o_f['field_obj'].data or not field.data):
+            other = others[o_f["field"]]
+            if self.ignore_empty and (not other.data or not field.data):
                 continue
             if o_f.get('value') is None:
                 # Fail if the other field is truthy
-                if o_f['field_obj'].data:
+                if other.data:
                     validators.ValidationError(self.message)
-            elif o_f['field_obj'].data == o_f['value']:
+            elif other.data == o_f['value']:
                 # Fail if the other field has the specified value
                 validators.ValidationError(self.message)
 
