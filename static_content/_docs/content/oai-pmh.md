@@ -2,11 +2,11 @@
 
 {:.tabular-list}
 - `Identify`
-  - Access the [base Identify endpoint](http://www.doaj.org/oai?verb=Identify).
+  - Access the [base Identify endpoint](/oai?verb=Identify).
 - `ListSets`
-  - DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in. Access the [full list of the sets](http://www.doaj.org/oai?verb=ListSets).
+  - DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in. Access the [full list of the sets](/oai?verb=ListSets).
 - `ListMetadataFormats`
-  - DOAJ currently supports only `oai_dc`; access [the metadata formats](http://www.doaj.org/oai?verb=ListMetadataFormats).
+  - DOAJ currently supports only `oai_dc`; access [the metadata formats](/oai?verb=ListMetadataFormats).
 
 The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Journal field:
 
@@ -16,7 +16,7 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
 | `identifier`  | The ISSNs of the journal \(both print and electronic\) or a link back to the DOAJ record for this journal                                                                                                                                                                                                |
 | `subject`     | Free\-text keywords or formal subject classifications\. Formal classifications are prefixed by their scheme \(e\.g\. CLASSIFICATION:Science\), except in the case of Library of Congress Classification\. LCC subjects are denoted by an additional attribute on this element, xsi:type="dcterms:LCSH"\. |
 | `language`    | The languages that can appear in this journal                                                                                                                                                                                                                                                            |
-| `relation`    | Links to related resources: the journal home page and the journal author\-pays link if relevant                                                                                                                                                                                                          |
+| `relation`    | Links to related resources (if present): the journal home page, open access statement, author instructions, aims, and waiver pages                                                                                                                                                                                                     |
 | `rights`      | The journal's content re\-use policy\. Will be one of the Creative Commons licences                                                                                                                                                                                                                      |
 | `publisher`   | The publisher/provider of the journal                                                                                                                                                                                                                                                                    |
 | `type`        | The type of the object; always contains "journal"                                                                                                                                                                                                                                                        |
