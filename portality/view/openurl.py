@@ -41,6 +41,7 @@ def openurl():
     else:
         abort(404)
 
+
 def parse_query(query, req):
     """
     Create the model which holds the query
