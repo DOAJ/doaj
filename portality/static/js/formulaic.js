@@ -1022,7 +1022,7 @@ var formulaic = {
                 var widgetId = edges.css_id(this.ns, this.fieldDef.name);
 
                 this.input = $("[name=" + this.fieldDef.name + "]");
-                // this.input.hide();
+                this.input.hide();
 
                 this.input.after('<div id="' + containerId + '"><div id="' + widgetId + '"></div></div>');
 
@@ -1036,7 +1036,7 @@ var formulaic = {
                                 var child = ctx[i];
                                 var entry = {};
                                 entry.display = child.text;
-                                entry.value = "LCC:" + child.id;
+                                entry.value = child.id;
                                 if (child.children && child.children.length > 0) {
                                     entry.children = recurse(child.children);
                                 }
