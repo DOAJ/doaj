@@ -529,6 +529,8 @@ $.extend(doaj, {
             return edges.instantiate(doaj.af.ManEdApplicationForm, params, doaj.af.newApplicationForm)
         },
         ManEdApplicationForm : function(params) {
+            this.formDiff = edges.getParam(params.formDiff, false);
+
             this.init = function() {
                 this.currentTab = 6;
                 this.previousTab = 5;

@@ -20,7 +20,9 @@
         doaj.af.active = doaj.af.applicationFormFactory({
             //currentTab: 0,
             //previousTab: 0,
-            // form_diff: "{{ form_diff }}"
+        {% if form_diff %}
+            formDiff: {{ form_diff|tojson }}
+        {% endif %}
         });
         doaj.af.active.init();
     });
