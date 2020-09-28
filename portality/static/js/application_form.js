@@ -524,7 +524,7 @@ $.extend(doaj, {
             this._generate_values_preview = function() {
                 $(".admin_value_preview").each((i,elem) => {
                     let sourceId = $(elem).attr("data-source");
-                    let input = $(sourceId);
+                    let input = $(":input").filter(sourceId);
                     let type = input.attr("type");
                     if (input.val()) {
                         $(elem).html(input.val());

@@ -23,10 +23,11 @@
     {% endif %}
     <div id="{{ f.name }}_checkbox-errors"></div>
 
+{#
     {% if f.wtfield.errors %}
         <div class="backend-errors">{{ f.wtfield.errors }}</div>
     {% endif %}
-
+#}
     {% if f.help("short_help") %}
        <p><small>{{ f.help("short_help") | safe }}</small></p>
     {% endif %}
