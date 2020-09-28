@@ -1,3 +1,4 @@
+"use strict";
 $.extend(doaj, {
     af: {
         active: false,
@@ -19,6 +20,15 @@ $.extend(doaj, {
             return edges.instantiate(doaj.af.ApplicationForm, params);
         },
         ApplicationForm: function(params) {
+            this.TABS = [
+                {title: "Open access compliance", fieldsets: ["basic_compliance"]},
+                {title: "About the Journal", fieldsets: ["about_the_journal", "publisher", "society_or_institution"]},
+                {title: "Copyright & licensing", fieldsets: ["licensing", "embedded_licensing", "copyright"]},
+                {title: "Editorial", fieldsets: ["peer_review", "plagiarism", "editorial"]},
+                {title: "Business model", fieldsets: ["apc", "apc_waivers", "other_fees"]},
+                {title: "Best practice", fieldsets: ["archiving_policy", "deposit_policy", "unique_identifiers"]},
+            ];
+
             this.currentTab = params.hasOwnProperty("currentTab") ? params.currentTab : 0;
             this.previousTab = params.hasOwnProperty("previousTab") ? params.previousTab : 0;
             this.form_diff = params.hasOwnProperty("form_diff") && params.form_diff !== "" ? params.form_diff : 0;
@@ -38,7 +48,6 @@ $.extend(doaj, {
             this.init = function() {
                 this.jq("input, select").each((idx, inp) => {
                     let name = $(inp).attr("name");
-                    // console.log(name);
                     if (name) {
                         name = name.split("-");
                         $(inp).attr("data-parsley-errors-container", "#" + name[0] + "_checkbox-errors");
@@ -110,7 +119,6 @@ $.extend(doaj, {
                 this.previousTab = n-1;
                 // ... and run a function that displays the correct step indicator:
                 if(n === this.tabs.length - 1) {
-                    // this.jq("#validated-" + n).val("True");
                     this.prepareReview();
                 }
                 if (this.context === "admin") {
@@ -183,13 +191,14 @@ $.extend(doaj, {
             };
 
             this.prepareReview = function() {
-                // for (let i = 0; i < formulaic.active.fieldsets.length; i++){
-                //     this._generate_section_header();
-                //     $(formulaic.active.fieldsets[i]).each(() => {
-                //         if (1){     //field should be shown
-                //         }
-                //     })
-                // }
+                let review_table = this.jq("#review_table");
+                this.TABS.forEach((tab, i) => {
+                    review_table.append("<th>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th>");
+                    tab.fieldsets.forEach((fs) => {
+                        let field = formulaic.active.fieldsets.find(elem => elem.name === fs);
+                    });
+
+                });
             };
 
             this.prepareReview_old = function() {
@@ -337,11 +346,10 @@ $.extend(doaj, {
 
                 // Hide the current tab:
                 // let form = $('#' + '{{ form_id }}');
-
+                console.log(this.currentTab)
                 this.form.parsley().whenValidate({
-                    group: 'block-' + this.currentTab
+                    group: "block-" + this.currentTab
                 }).done(() => {
-                    // $("#validated-" + this.currentTab).val("True");
                     this.tabValidationState[this.currentTab].state = "valid";
                     this.previousTab = n-1;
                     this.currentTab = n;
@@ -433,10 +441,12 @@ $.extend(doaj, {
         },
 
         newPublicApplicationForm : function(params) {
-            return edges.instantiate(doaj.af.PublicApplicationForm, params, doaj.af.newApplicationForm)
+            return edges.instantiate(doaj.af.PublicApplicationForm, params, doaj.af.newApplicationForm);
         },
+
         PublicApplicationForm : function(params) {
             this.init = function() {
+                edges.up(this, "init", [params]);
                 let draftEl = $("input[name=id]", this.form);
                 if (draftEl) {
                     this.draft_id = draftEl.val();
@@ -575,7 +585,7 @@ window.Parsley.addValidator("requiredvalue", {
 
 window.Parsley.addValidator("optionalIf", {
     validateString : function(value, requirement) {
-        theOtherField = $("[name = " + requirement + "]");
+        let theOtherField = $("[name = " + requirement + "]");
         if (!!value || !!($(theOtherField)).val()) {
             $(theOtherField).parsley().reset();
             return true;
