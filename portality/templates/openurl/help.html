@@ -1,33 +1,37 @@
-{% extends "layouts/sidebar-page.html" %}
+{% extends "layouts/base.html" %}
 
 {% block content %}
+    <main class="page-content">
+        <section class="container">
 
-<h2>Help</h2>
-<p>Advice for using the DOAJ's OpenURL feature.</p>
+            <h2>Help</h2>
+            <p>Advice for using the DOAJ's OpenURL feature.</p>
 
-<h3>OpenURL on DOAJ</h3>
-<p>
-    OpenURL is for retrieving a resource using a structured URL format. On the DOAJ, the parameters included in the
-    request are passed to our search interface, which provides the top result. This means that using OpenURL isn't
-    guaranteed to find your result 100% of the time, even if it exists.
-</p>
+            <h3>OpenURL on DOAJ</h3>
+            <p>
+                OpenURL is for retrieving a resource using a structured URL format. On the DOAJ, the parameters included in the
+                request are passed to our search interface, which provides the top result. This means that using OpenURL isn't
+                guaranteed to find your result 100% of the time, even if it exists.
+            </p>
 
-<h3>Improving Results</h3>
-<p>
-    There are a few things you can try if you keep seeing the "not found" page or the wrong result:
-    <ul>
-        <li>Use a trustworthy field - identifiers like ISSN are more reliable than free text like title.</li>
-        <li>Check each parameter is correct - ensure there are no typos or strange formatting and that the parameter labels are correct.</li>
-        <li>Reduce constraints - remove some parameters, e.g. remove specific volume and issue because these may not be present in our index.</li>
-        <li>Use OpenURL 1.0 (see below) - this will remove the rewriting step from the process.</li>
-    </ul>
-</p>
+            <h3>Improving Results</h3>
+            <p>
+                There are a few things you can try if you keep seeing the "not found" page or the wrong result:
+                <ul>
+                    <li>Use a trustworthy field - identifiers like ISSN are more reliable than free text like title.</li>
+                    <li>Check each parameter is correct - ensure there are no typos or strange formatting and that the parameter labels are correct.</li>
+                    <li>Reduce constraints - remove some parameters, e.g. remove specific volume and issue because these may not be present in our index.</li>
+                    <li>Use OpenURL 1.0 (see below) - this will remove the rewriting step from the process.</li>
+                </ul>
+            </p>
 
-<h3>Supported OpenURL version</h3>
-<p>
-    The DOAJ prefers to receive OpenURL 1.0 requests, namely those following the
-    <a href="http://alcme.oclc.org/openurl/servlet/OAIHandler/extension?verb=GetMetadata&metadataPrefix=mtx&identifier=info:ofi/fmt:kev:mtx:journal">fmt:kev:mtx:journal</a> schema.
-    However, if the old "0.1" syntax is used, the DOAJ will rewrite it to the new syntax and try again. You will see a redirect to an OpenURL 1.0 URL then the result.
-</p>
+            <h3>Supported OpenURL version</h3>
+            <p>
+                The DOAJ prefers to receive OpenURL 1.0 requests, namely those following the
+                <a href="http://alcme.oclc.org/openurl/servlet/OAIHandler/extension?verb=GetMetadata&metadataPrefix=mtx&identifier=info:ofi/fmt:kev:mtx:journal">fmt:kev:mtx:journal</a> schema.
+                However, if the old "0.1" syntax is used, the DOAJ will rewrite it to the new syntax and try again. You will see a redirect to an OpenURL 1.0 URL then the result.
+            </p>
 
+        </section>
+    </main>
 {% endblock %}

@@ -9,6 +9,7 @@ from freezegun import freeze_time
 from flask import url_for
 import time
 
+
 class TestClient(DoajTestCase):
     @classmethod
     def setUpClass(cls):
