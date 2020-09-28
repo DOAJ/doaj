@@ -3,16 +3,13 @@
     {% from "_formhelpers.html" import render_field %}
 
     <form method="post" action="">
-    <input type="hidden" name="next" value="/apply" />
         <div class="form__question">
-      {{ render_field(form.username, placeholder="your username") }}
+            {{ render_field(form.username, placeholder="your username") }}
         </div>
         <div class="form__question">
-      {{ render_field(form.password, placeholder="********") }}
+            {{ render_field(form.password, placeholder="********") }}
         </div>
-        <div class="form__question">
-      {{ render_field(form.next) }}
-        </div>
+        {{ render_field(form.next) }}
       <input type="submit" class="button button--primary" value="Log in" />
     </form>
 

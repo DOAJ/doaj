@@ -24,7 +24,7 @@ def index():
     return render_template("account/users.html")
 
 
-@blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
+@blueprint.route('/<username>', methods=['GET', 'POST', 'DELETE'])
 @login_required
 @ssl_required
 @write_required()
@@ -33,8 +33,8 @@ def username(username):
 
     if acc is None:
         abort(404)
-    elif ( request.method == 'DELETE' or
-            ( request.method == 'POST' and request.values.get('submit', False) == 'Delete' ) ):
+    elif (request.method == 'DELETE' or
+            (request.method == 'POST' and request.values.get('submit', False) == 'Delete')):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
         else:
@@ -52,12 +52,13 @@ def username(username):
         if newdata.get('id', False):
             if newdata['id'] != username:
                 acc = models.Account.pull(newdata['id'])
-        if request.values.get('submit', False) == 'Generate':
+        if request.values.get('submit', False) == 'Generate a new API Key':
             acc.generate_api_key()
         for k, v in newdata.items():
             if k not in ['marketing_consent', 'submit', 'password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
-                acc.data[k] = v
-        if 'password' in newdata and not newdata['password'].startswith('sha1'):
+                if acc.data.get(k, None) != v:
+                    acc.data[k] = v
+        if 'password' in newdata and len(newdata['password']) > 0 and not newdata['password'].startswith('sha1'):
             if newdata.get("confirm", "") == "":
                 flash("You must enter your password in both the new password and confirmation box", "error")
                 return render_template('account/view.html', account=acc)
@@ -246,6 +247,7 @@ def existscheck(form, field):
 
 
 class RegisterForm(RedirectForm):
+    _id = StringField('ID')
     name = StringField('Name', [validators.Length(min=3, max=64)])
     email = StringField('Email Address', [
         validators.DataRequired(),

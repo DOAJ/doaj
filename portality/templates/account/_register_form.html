@@ -4,23 +4,31 @@
 
     <form method="post" action="">
         <input type="hidden" name="next" value="/register" />
+            {% if current_user.is_authenticated and current_user.has_role("create_user") %}
+            {# Admins can specify a user ID #}
             <div class="form__question">
-          {{ render_field(form.name, placeholder="Firstname Lastname") }}
+                {{ render_field(form._id) }}
+            </div>
+            {% endif %}
+            <div class="form__question">
+                {{ render_field(form.name, placeholder="Firstname Lastname") }}
             </div>
             <div class="form__question">
-          {{ render_field(form.email, placeholder="user@example.com") }}
+                {{ render_field(form.email, placeholder="user@example.com") }}
             </div>
             <div class="form__question">
-          {{ render_field(form.password, placeholder="********") }}
+                {{ render_field(form.password, placeholder="********") }}
             </div>
             <div class="form__question">
-          {{ render_field(form.password_confirm, placeholder="********") }}
+                {{ render_field(form.password_confirm, placeholder="********") }}
             </div>
-          {% if current_user.is_authenticated and current_user.has_role("create_user") %}
-              <div class="form__question">
+            {% if current_user.is_authenticated and current_user.has_role("create_user") %}
+                {# Admins can specify a user ID #}
+                <div class="form__question">
                 {{ render_field(form.roles) }}
-              </div>
-          {% endif %}
+                </div>
+            {% endif %}
+            {{ render_field(form.next) }}
         <div class="actions">
           <input type="submit" value="Register" />
         </div>
