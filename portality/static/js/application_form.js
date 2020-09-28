@@ -219,8 +219,9 @@ $.extend(doaj, {
             this.determineFieldsValue = function(name) {
                 let inputs = this.jq("[id='" + name + "']");
                 if (inputs.length === 0) {
-                    return "no easy inputs"
-                    inputs = $("input,select").filter(function(){ return this.id.match(name+"-/[0-9]");});
+                    console.log(name);
+                    inputs = this.jq("input,select[id^='" + name + "-']");
+                    console.log(inputs);
                 }
                 if (inputs.length === 1) {
                     let type = inputs.attr("type");
