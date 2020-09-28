@@ -197,7 +197,6 @@ $.extend(doaj, {
                     tab.fieldsets.forEach((fs) => {
                         let fieldset = formulaic.active.fieldsets.find(elem => elem.name === fs);
                         fieldset.fields.forEach((f) => {
-                            console.log(f);
                             if (!f.hasOwnProperty("conditional")) {
                                 let value = this.determineFieldsValue(f.name);
                                 let html = `
@@ -218,27 +217,27 @@ $.extend(doaj, {
             };
 
             this.determineFieldsValue = function(name) {
-                return "does not matter now"
                 let inputs = this.jq("[id='" + name + "']");
                 if (inputs.length === 0) {
+                    return "no easy inputs"
                     inputs = $("input,select").filter(function(){ return this.id.match(name+"-/[0-9]");});
                 }
                 if (inputs.length === 1) {
                     let type = inputs.attr("type");
                     if (type === "text" || type === "number" || type === "url") {
-                        return input.val();
+                        return inputs.val();
                     }
                 } else if (inputs.length > 1) {
                     let type = inputs[0].attr("type");
                     if (type === "radio") {
-                        input.each((idx, i) => {
+                        inputs.each((idx, i) => {
                             if ($(i).is(":checked")) {
                                 return $(i).val();
                             }
                         });
                     } else if (type === "checkbox") {
                         let result = [];
-                        input.each((idx, i) => {
+                        inputs.each((idx, i) => {
                             if ($(i).is(":checked")) {
                                 result.push($(i).val());
                             }
