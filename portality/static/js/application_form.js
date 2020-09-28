@@ -220,7 +220,7 @@ $.extend(doaj, {
                 let inputs = this.jq("[id='" + name + "']");
                 if (inputs.length === 0) {
                     console.log(name);
-                    inputs = this.jq("input,select[id^='" + name + "-']");
+                    inputs = this.jq(":input").filter("[id^='" + name + "-']");
                     console.log(inputs);
                 }
                 if (inputs.length === 1) {
@@ -229,13 +229,14 @@ $.extend(doaj, {
                         return inputs.val();
                     }
                 } else if (inputs.length > 1) {
-                    let type = inputs[0].attr("type");
+                    let type = $(inputs[0]).attr("type");
                     if (type === "radio") {
-                        inputs.each((idx, i) => {
-                            if ($(i).is(":checked")) {
-                                return $(i).val();
+                        for (let i = 0; i < inputs.length; i++) {
+                            let input = $(inputs[i]);
+                            if (input.is(":checked")) {
+                                return input.val();
                             }
-                        });
+                        }
                     } else if (type === "checkbox") {
                         let result = [];
                         inputs.each((idx, i) => {
@@ -249,7 +250,7 @@ $.extend(doaj, {
                     }
 
                 }
-            }
+            };
 
             this.prepareReview_old = function() {
                 let review_values = $("td[id$='__review_value']");
