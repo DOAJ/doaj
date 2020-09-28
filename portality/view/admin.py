@@ -221,7 +221,7 @@ def journal_page(journal_id):
             try:
                 processor.finalise()
                 flash('Journal updated.', 'success')
-                for a in fc.alert:
+                for a in processor.alert:
                     flash_with_url(a, "success")
                 return redirect(url_for("admin.journal_page", journal_id=journal.id, _anchor='done'))
             except Exception as e:
@@ -359,7 +359,7 @@ def application(application_id):
             try:
                 processor.finalise(current_user)
                 flash('Application updated.', 'success')
-                for a in fc.alert:
+                for a in processor.alert:
                     flash_with_url(a, "success")
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
             except Exception as e:

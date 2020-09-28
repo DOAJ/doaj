@@ -63,9 +63,12 @@ var doaj = {
 
             $(window).on('load', function() {
                 if (location.hash){
-                    $('html,body').animate({
-                        scrollTop: id.offset().top - headerHeight
-                    }, 50, 'linear')
+                    let offset = id.offset();
+                    if (offset) {
+                        $('html,body').animate({
+                            scrollTop: offset.top - headerHeight
+                        }, 50, 'linear')
+                    }
                 }
             });
         });
@@ -82,6 +85,14 @@ var doaj = {
                 }, 50, 'linear');
             }
         } );
+
+        jQuery(document).ready(function($) {
+            $(".flash_close").on("click", function(event) {
+                event.preventDefault();
+                var container = $(this).parents(".flash_container");
+                container.remove();
+            })
+        });
     },
 
     bitlyShortener : function(query, success_callback, error_callback) {
