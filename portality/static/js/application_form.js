@@ -195,11 +195,61 @@ $.extend(doaj, {
                 this.TABS.forEach((tab, i) => {
                     review_table.append("<th>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th>");
                     tab.fieldsets.forEach((fs) => {
-                        let field = formulaic.active.fieldsets.find(elem => elem.name === fs);
+                        let fieldset = formulaic.active.fieldsets.find(elem => elem.name === fs);
+                        fieldset.fields.forEach((f) => {
+                            console.log(f);
+                            if (!f.hasOwnProperty("conditional")) {
+                                let value = this.determineFieldsValue(f.name);
+                                let html = `
+                            <tr>
+                                <td id="` + f.name + `__review_label">` + f.label + `</td>
+                                <td id="` + f.name + `__review_value">` + value +`</td>
+                            </tr>
+                            `;
+                                review_table.append(html);
+                            }
+                            else {
+
+                            }
+                        })
                     });
 
                 });
             };
+
+            this.determineFieldsValue = function(name) {
+                return "does not matter now"
+                let inputs = this.jq("[id='" + name + "']");
+                if (inputs.length === 0) {
+                    inputs = $("input,select").filter(function(){ return this.id.match(name+"-/[0-9]");});
+                }
+                if (inputs.length === 1) {
+                    let type = inputs.attr("type");
+                    if (type === "text" || type === "number" || type === "url") {
+                        return input.val();
+                    }
+                } else if (inputs.length > 1) {
+                    let type = inputs[0].attr("type");
+                    if (type === "radio") {
+                        input.each((idx, i) => {
+                            if ($(i).is(":checked")) {
+                                return $(i).val();
+                            }
+                        });
+                    } else if (type === "checkbox") {
+                        let result = [];
+                        input.each((idx, i) => {
+                            if ($(i).is(":checked")) {
+                                result.push($(i).val());
+                            }
+                        });
+                        return result;
+                    } else {
+                        return "Something went wrong, question not found."
+                    }
+
+                }
+            }
 
             this.prepareReview_old = function() {
                 let review_values = $("td[id$='__review_value']");
@@ -346,7 +396,6 @@ $.extend(doaj, {
 
                 // Hide the current tab:
                 // let form = $('#' + '{{ form_id }}');
-                console.log(this.currentTab)
                 this.form.parsley().whenValidate({
                     group: "block-" + this.currentTab
                 }).done(() => {
