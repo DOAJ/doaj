@@ -583,7 +583,512 @@ var formulaic = {
         };
     },
 
+    edges : {
+        newTreeBrowser : function(params) {
+            return edges.instantiate(formulaic.edges.TreeBrowser, params, edges.newComponent);
+        },
+        TreeBrowser : function(params) {
+            this.tree = edges.getParam(params.tree, {});
+
+            this.sourceInput = edges.getParam(params.sourceInput, false);
+
+            this.nodeMatch = edges.getParam(params.nodeMatch, false);
+
+            this.filterMatch = edges.getParam(params.filterMatch, false);
+
+            this.nodeIndex = edges.getParam(params.nodeIndex, false);
+
+            this.syncTree = [];
+
+            this.parentIndex = {};
+
+            this.nodeCount = 0;
+
+            this.selected = [];
+
+            this.init = function(edge) {
+                // first kick the request up to the superclass
+                edges.newSelector().init.call(this, edge);
+
+                var text = this.sourceInput.val();
+                if (text !== "") {
+                    this.selected = text.split(",").map(function(x) {return x.trim()})
+                } else {
+                    this.selected = [];
+                }
+            };
+
+
+            this.synchronise = function() {
+
+                this.syncTree = $.extend(true, [], this.tree);
+                var selected = this.selected;
+                var that = this;
+
+                function recurse(tree, path) {
+                    var anySelected = false;
+                    var childCount = 0;
+
+                    for (var i = 0; i < tree.length; i++) {
+                        var node = tree[i];
+                        that.nodeCount++;
+
+                        that.parentIndex[node.value] = $.extend(true, [], path);
+
+                        if (that.filterMatch(node, selected)) {
+                            node.selected = true;
+                            anySelected = true;
+                        }
+
+                        if (that.nodeIndex) {
+                            node.index = that.nodeIndex(node);
+                        } else {
+                            node.index = node.display;
+                        }
+
+                        if (node.children) {
+                            path.push(node.value);
+                            var childReport = recurse(node.children, path);
+                            path.pop();
+                            if (childReport.anySelected) {
+                                node.selected = true;
+                                anySelected = true;
+                            }
+                            childCount += childReport.childCount;
+                            node.childCount = childReport.childCount;
+                        } else {
+                            node.childCount = 0;
+                        }
+
+                    }
+                    return {anySelected: anySelected, childCount: childCount}
+                }
+                var path = [];
+                recurse(this.syncTree, path);
+            };
+
+            this.addFilter = function(params) {
+                var value = params.value;
+                var parents = this.parentIndex[value];
+                var terms = [params.value];
+                var clearOthers = edges.getParam(params.clearOthers, false);
+
+                var newValues = $.extend(true, [], this.selected);
+
+                // if there is, just add the term to it (removing and parent terms along the way)
+                if (newValues.length > 0) {
+                    newValues.sort();
+
+                    // if this is an exclusive filter that clears all others, just do that
+                    if (clearOthers) {
+                        newValues = [];
+                    }
+
+                    // next, if there are any terms left, remove all the parent terms
+                    for (var i = 0; i < parents.length; i++) {
+                        var parent = parents[i];
+                        var location = $.inArray(parent, newValues);
+                        if (location !== -1) {
+                            newValues.splice(location, 1);
+                        }
+                    }
+
+                    // now add all the provided terms
+                    var hadTermAlready = 0;
+                    for (var i = 0; i < terms.length; i++) {
+                        var term = terms[i];
+                        if ($.inArray(term, newValues) !== -1) {
+                            hadTermAlready++;
+                        } else {
+                            newValues.push(term);
+                        }
+                    }
+                } else {
+                    newValues = terms;
+                }
+
+                // store the new values on the object and in the form
+                this.selected = newValues;
+                this.sourceInput.val(newValues.join(","));
+                this.edge.cycle();
+                return true;
+            };
+
+            this.removeFilter = function(params) {
+                var term = params.value;
+
+                var newValues = $.extend(true, [], this.selected);
+
+                if (newValues.length > 0) {
+                    var location = $.inArray(term, newValues);
+                    if (location !== -1) {
+                        // the filter we are being asked to remove is the actual selected one
+                        newValues.splice(location, 1);
+                    } else {
+                        // the filter we are being asked to remove may be a parent of the actual selected one
+                        // first get all the parent sets of the values that are currently in force
+                        var removes = [];
+                        for (var i = 0; i < newValues.length; i++) {
+                            var val = newValues[i];
+                            var parentSet = this.parentIndex[val];
+                            if ($.inArray(term, parentSet) > -1) {
+                                removes.push(val);
+                            }
+                        }
+                        for (var i = 0; i < removes.length; i++) {
+                            var location = $.inArray(removes[i], newValues);
+                            if (location !== -1) {
+                                newValues.splice(location, 1);
+                            }
+                        }
+                    }
+
+                    var grandparents = this.parentIndex[term];
+                    if (grandparents.length > 0) {
+                        var immediate = grandparents[grandparents.length - 1];
+                        newValues.push(immediate);
+                    }
+                }
+
+                // reset the search page to the start and then trigger the next query
+                // store the new values on the object and in the form
+                this.selected = newValues;
+                this.sourceInput.val(newValues.join(","));
+                this.edge.cycle();
+            };
+        },
+
+        newSubjectBrowser : function(params) {
+            return edges.instantiate(formulaic.edges.SubjectBrowser, params, edges.newRenderer);
+        },
+        SubjectBrowser : function(params) {
+            this.title = edges.getParam(params.title, "");
+
+            this.hideEmpty = edges.getParam(params.hideEmpty, false);
+
+            this.namespace = "formulaic-subject-browser";
+
+            this.draw = function() {
+                // for convenient short references ...
+                var st = this.component.syncTree;
+                var namespace = this.namespace;
+                // var that = this;
+
+                // var checkboxClass = edges.css_classes(namespace, "selector", this);
+                // var countClass = edges.css_classes(namespace, "count", this);
+
+                var treeReport = this._renderTree({tree: st, selectedPathOnly: false, showOneLevel: true});
+                var treeFrag = treeReport.frag;
+
+                if (treeFrag === "") {
+                    treeFrag = "Loading...";
+                }
+
+                var toggleId = edges.css_id(namespace, "toggle", this);
+                var resultsId = edges.css_id(namespace, "results", this);
+                var searchId = edges.css_id(namespace, "search", this);
+                var filteredId = edges.css_id(namespace, "filtered", this);
+                var mainListId = edges.css_id(namespace, "main", this);
+
+                var toggle = "";
+                if (this.togglable) {
+                    toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
+                }
+                var frag = '<h3 class="filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
+                    <div class="filter__body collapse in" aria-expanded="false" id="' + resultsId + '">\
+                        <label for="' + searchId + '" class="sr-only">Search subjects</label>\
+                        <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="Search subjects">\
+                        <ul class="filter__choices" id="' + filteredId + '" style="display:none"></ul>\
+                        <ul class="filter__choices" id="' + mainListId + '">{{FILTERS}}</ul>\
+                    </div>';
+
+                // substitute in the component parts
+                frag = frag.replace(/{{FILTERS}}/g, treeFrag);
+
+                // now render it into the page
+                this.component.context.html(frag);
+                feather.replace();
+
+                var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
+                edges.on(checkboxSelector, "change", this, "filterToggle");
+
+                var searchSelector = edges.css_id_selector(namespace, "search", this);
+                edges.on(searchSelector, "keyup", this, "filterSubjects");
+            };
+
+            this._renderTree = function(params) {
+                var st = edges.getParam(params.tree, []);
+                var selectedPathOnly = edges.getParam(params.selectedPathOnly, true);
+                var showOneLevel = edges.getParam(params.showOneLevel, true);
+                var that = this;
+
+                var checkboxClass = edges.css_classes(this.namespace, "selector", this);
+
+                function renderEntry(entry) {
+                    if (that.hideEmpty && entry.count === 0 && entry.childCount === 0) {
+                        return "";
+                    }
+
+                    var id = edges.safeId(entry.value);
+                    var checked = "";
+                    if (entry.selected) {
+                        checked = ' checked="checked" ';
+                    }
+                    // FIXME: putting this in for the moment, just so we can use it in dev
+                    // var count = ' <span class="' + countClass + '">(' + entry.count + '/' + entry.childCount + ')</span>';
+                    var count = "";
+
+                    var frag = '<input class="' + checkboxClass + '" data-value="' + edges.escapeHtml(entry.value) + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
+                        <label for="' + id + '" class="filter__label">' + entry.display + count + '</label>';
+
+                    return frag;
+                }
+
+                function recurse(tree) {
+                    var selected = tree;
+
+                    // first check to see if there are any elements at this level that are selected.  If there are,
+                    // that is the only element that we'll render
+                    if (selectedPathOnly) {
+                        for (var i = 0; i < tree.length; i++) {
+                            var entry = tree[i];
+                            if (entry.selected) {
+                                selected = [entry];
+                                break;
+                            }
+                        }
+                    }
+
+                    // now go through either this tree level or just the selected elements, and render the relevant
+                    // bits of the sub-tree
+                    var anySelected = false;
+                    var rFrag = "";
+                    for (var i = 0; i < selected.length; i++) {
+                        var entry = selected[i];
+                        var entryFrag = renderEntry(entry);
+                        if (entryFrag === "") {
+                            continue;
+                        }
+                        if (entry.selected) {
+                            anySelected = true;
+                        }
+                        if (entry.children) {
+                            var childReport = recurse(entry.children);
+                            if (childReport.anySelected) {
+                                anySelected = true;
+                            }
+                            // only attach the children frag if, first any of these are true:
+                            // - one of the children is selected
+                            // - the entry itself is selected
+                            // - we don't want to only show the selected path
+                            if (!selectedPathOnly || childReport.anySelected || entry.selected) {
+                                // Then, another level (separated out to save my brain from the tortuous logic)
+                                // only attach the children frag if, any of these are true:
+                                // - the entry or one of its children is selected
+                                // - we want to show more than one level at a time
+                                if (childReport.anySelected || entry.selected || !showOneLevel) {
+                                    var cFrag = childReport.frag;
+                                    if (cFrag !== "") {
+                                        entryFrag += '<ul class="filter__choices">';
+                                        entryFrag += cFrag;
+                                        entryFrag += '</ul>';
+                                    }
+                                }
+                            }
+                        }
+
+                        rFrag += '<li>';
+                        rFrag += entryFrag;
+                        rFrag += '</li>';
+                    }
+                    return {frag : rFrag, anySelected: anySelected};
+                }
+
+                return recurse(st);
+            };
+
+            this.filterToggle = function(element) {
+                // var filter_id = this.component.jq(element).attr("id");
+                var checked = this.component.jq(element).is(":checked");
+                var value = this.component.jq(element).attr("data-value");
+                if (checked) {
+                    this.component.addFilter({value: value});
+                } else {
+                    this.component.removeFilter({value: value});
+                }
+            };
+
+            this.filterSubjects = function(element) {
+                var st = this.component.syncTree;
+                var term = $(element).val();
+                var that = this;
+
+                var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
+                var mainSelector = edges.css_id_selector(this.namespace, "main", this);
+                var filterEl = this.component.jq(filterSelector);
+                var mainEl = this.component.jq(mainSelector);
+
+                if (term === "") {
+                    filterEl.html("");
+                    filterEl.hide();
+                    mainEl.show();
+                    return;
+                }
+                if (term.length < 3) {
+                    filterEl.html("<li>Enter 3 characters or more to search</li>");
+                    filterEl.show();
+                    mainEl.hide();
+                    return;
+                }
+                term = term.toLowerCase();
+
+                function entryMatch(entry) {
+                    if (that.hideEmpty && entry.count === 0 && entry.childCount === 0) {
+                        return false;
+                    }
+
+                    var matchTerm = entry.index;
+                    var includes =  matchTerm.includes(term);
+                    if (includes) {
+                        var idx = matchTerm.indexOf(term);
+                        var display = entry.display;
+                        return display.substring(0, idx) + "<strong>" + display.substring(idx, idx + term.length) + "</strong>" + display.substring(idx + term.length);
+                    }
+                }
+
+                function recurse(tree) {
+                    var filteredLayer = [];
+                    for (var i = 0; i < tree.length; i++) {
+                        var entry = tree[i];
+                        var childReport = [];
+                        if (entry.children) {
+                            childReport = recurse(entry.children);
+                        }
+                        var selfMatch = entryMatch(entry);
+                        if (selfMatch || childReport.length > 0) {
+                            var newEntry = $.extend({}, entry);
+                            delete newEntry.children;
+                            if (selfMatch) {
+                                newEntry.display = selfMatch;
+                            }
+                            if (childReport.length > 0) {
+                                newEntry.children = childReport;
+                            }
+                            filteredLayer.push(newEntry);
+                        }
+                    }
+                    return filteredLayer;
+                }
+
+                var filtered = recurse(st);
+
+                if (filtered.length > 0) {
+                    var displayReport = this._renderTree({tree: filtered, selectedPathOnly: false, showOneLevel: false});
+
+                    filterEl.html(displayReport.frag);
+                    mainEl.hide();
+                    filterEl.show();
+
+                    var checkboxSelector = edges.css_class_selector(this.namespace, "selector", this);
+                    edges.on(checkboxSelector, "change", this, "filterToggle");
+                } else {
+                    filterEl.html("<li>No subjects match your search</li>");
+                    mainEl.hide();
+                    filterEl.show();
+                }
+
+            };
+        },
+    },
+
     widgets : {
+        newSubjectTree : function(params) {
+            return edges.instantiate(formulaic.widgets.SubjectTree, params);
+        },
+        SubjectTree : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+
+            this.input = false;
+
+            this.ns = "formulaic-subjecttree";
+
+            this.init = function() {
+
+                var tree = doaj.af.lccTree;
+
+                var containerId = edges.css_id(this.ns, "container");
+                var containerSelector = edges.css_id_selector(this.ns, "container");
+                var widgetId = edges.css_id(this.ns, this.fieldDef.name);
+
+                this.input = $("[name=" + this.fieldDef.name + "]");
+                // this.input.hide();
+
+                this.input.after('<div id="' + containerId + '"><div id="' + widgetId + '"></div></div>');
+
+                var subjectBrowser = formulaic.edges.newTreeBrowser({
+                    id: widgetId,
+                    sourceInput: this.input,
+                    tree: function(tree) {
+                        function recurse(ctx) {
+                            var displayTree = [];
+                            for (var i = 0; i < ctx.length; i++) {
+                                var child = ctx[i];
+                                var entry = {};
+                                entry.display = child.text;
+                                entry.value = "LCC:" + child.id;
+                                if (child.children && child.children.length > 0) {
+                                    entry.children = recurse(child.children);
+                                }
+                                displayTree.push(entry);
+                            }
+                            return displayTree;
+                        }
+                        return recurse(tree);
+                    }(tree),
+                    nodeMatch: function(node, match_list) {
+                        for (var i = 0; i < match_list.length; i++) {
+                            var m = match_list[i];
+                            if (node.value === m.key) {
+                                return i;
+                            }
+                        }
+                        return -1;
+                    },
+                    filterMatch: function(node, selected) {
+                        return $.inArray(node.value, selected) > -1;
+                    },
+                    nodeIndex : function(node) {
+                        return node.display.toLowerCase();
+                    },
+                    renderer: formulaic.edges.newSubjectBrowser({
+                        title: "Subjects"
+                    })
+                });
+
+                var e = edges.newEdge({
+                    selector: containerSelector,
+                    manageUrl : false,
+                    components : [
+                        subjectBrowser
+                    ],
+                    callbacks : {
+                        "edges:query-fail" : function() {
+                            alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
+                        },
+                        "edges:post-init" : function() {
+                            feather.replace();
+                        },
+                        "edges:post-render" : function() {
+                            feather.replace();
+                        }
+                    }
+                });
+            };
+
+            this.init();
+        },
+
         newClickableUrl : function(params) {
             return edges.instantiate(formulaic.widgets.ClickableUrl, params)
         },

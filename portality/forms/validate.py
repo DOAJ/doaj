@@ -496,7 +496,8 @@ class BigEndDate(object):
         self.message = message or "Bad date"
 
     def __call__(self, form, field):
-
+        if not field.data:
+            return
         try:
             datetime.strptime(field.data, '%Y-%m-%d')
         except Exception:

@@ -1345,7 +1345,7 @@ class FieldDefinitions:
             "required",
             {"max_tags": {"max": 2, "message" : "You have chosen too many"}}        # required and max 2 should mean [min 1 max 2] to as per spec
         ],
-        "widget": [
+        "widgets": [
             "subject_tree"
         ]
     }
@@ -2179,7 +2179,7 @@ class RequiredValueBuilder:
 class BigEndDateBuilder:
     @staticmethod
     def render(settings, html_attrs):
-        html_attrs["data-parsley-bigenddate"] = ""
+        html_attrs["data-parsley-entry-pattern"] = "\d{4}-\d{2}-\d{2}"
 
     @staticmethod
     def wtforms(field, settings):
@@ -2262,7 +2262,8 @@ JAVASCRIPT_FUNCTIONS = {
     "select": "formulaic.widgets.newSelect",
     "taglist": "formulaic.widgets.newTagList",
     "multiple_field": "formulaic.widgets.newMultipleField",
-    "autocomplete": "formulaic.widgets.newAutocomplete"
+    "autocomplete": "formulaic.widgets.newAutocomplete",
+    "subject_tree" : "formulaic.widgets.newSubjectTree"
 }
 
 

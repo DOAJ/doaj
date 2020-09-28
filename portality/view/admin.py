@@ -17,6 +17,7 @@ from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_p
 from portality.core import app
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, article_bulk_delete
 from portality.bll import DOAJ, exceptions
+from portality.lcc import lcc_jstree
 
 # from portality.formcontext import emails
 import portality.notifications.application_emails as emails
@@ -350,13 +351,13 @@ def application(application_id):
 
     if request.method == "GET":
         fc.processor(source=ap)
-        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal)
+        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
         if processor.validate():
             try:
-                processor.finalise()
+                processor.finalise(current_user)
                 flash('Application updated.', 'success')
                 for a in fc.alert:
                     flash_with_url(a, "success")
@@ -365,7 +366,7 @@ def application(application_id):
                 flash(str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])
