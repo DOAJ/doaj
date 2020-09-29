@@ -232,16 +232,17 @@ $.extend(doaj, {
                         for (let i = 0; i < inputs.length; i++) {
                             let input = $(inputs[i]);
                             if (input.is(":checked")) {
-                                 return $('label[for=' + $(input.filter(':checked')).attr('id') + ']').text();
+                                 return $("label[for=" + $(input.filter(":checked")).attr("id") + "]").text();
                             }
                         }
                     } else if (type === "checkbox") {
                         let result = [];
-                        inputs.each((idx, i) => {
-                            if ($(i).is(":checked")) {
-                                result.push($(i).text());
+                        for (let i = 0; i < inputs.length; i++) {
+                            let input = $(inputs[i]);
+                            if (input.is(":checked")) {
+                                result.push($("label[for='" + $(input.filter(":checked")).attr("id") + "']").text());
                             }
-                        });
+                        }
                         return result;
                     } else {
                         return "Something went wrong, question not found."
