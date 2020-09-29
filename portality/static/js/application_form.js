@@ -30,6 +30,9 @@ $.extend(doaj, {
             this.draft_id = false;
 
             this.tabValidationState = [];
+            for (let i = 0; i < this.tabs.length; i++) {
+                this.tabValidationState.push({"state" : "unvalidated"});
+            }
 
             this.jq = (selector) => {
                 return $(selector, this.form);
@@ -44,10 +47,6 @@ $.extend(doaj, {
                         $(inp).attr("data-parsley-errors-container", "#" + name[0] + "_checkbox-errors");
                     }
                 });
-
-                for (let i = 0; i < this.tabs.length; i++) {
-                    this.tabValidationState.push({"state" : "unvalidated"});
-                }
 
                 this.prepareSections();
                 this.useStepIndicator();
@@ -113,17 +112,15 @@ $.extend(doaj, {
                     // this.jq("#validated-" + n).val("True");
                     this.prepareReview();
                 }
-                if (this.context === "admin") {
-                    // this.modify_view();
-                }
-                else if (this.context === "public") {
+                //if (this.context === "public") {
                     this.updateStepIndicator();
-                }
+                //}
                 window.scrollTo(0,0);
             };
 
-            this.prepDraftView = function() {
+            this.prepNavigation = function() {
                 this.validateTabs();
+                this.checkBackendValidationFailures();
                 for (let i = this.tabValidationState.length - 1; i >= 0; i--) {
                     if (this.tabValidationState[i].state === "valid") {
                         break;
@@ -150,14 +147,25 @@ $.extend(doaj, {
                 this.updateStepIndicator();
             };
 
+            this.checkBackendValidationFailures = function() {
+                for (let i = 0; i < this.tabs.length - 1; i++) {
+                    var tab = $(this.tabs[i]);
+                    var errors = tab.find(".backend_validation_errors");
+                    if (errors.length > 0) {
+                        this.tabValidationState[i].state = "invalid";
+                    }
+                }
+            };
+
             this.validateTabs = function() {
+                var that = this;
                 for (let i = 0; i < this.tabs.length - 1; i++) {
                     this.form.parsley().whenValidate({
                         group: 'block-' + i
                     }).done(() => {
-                        this.tabValidationState[i].state = "valid";
+                        that.tabValidationState[i].state = "valid";
                     }).fail(() => {
-                        this.tabValidationState[i].state = "invalid";
+                        that.tabValidationState[i].state = "invalid";
                     });
                 }
                 this.tabValidationState[this.tabs.length-1].state = "unvalidated";
@@ -446,7 +454,7 @@ $.extend(doaj, {
                 edges.on(reviewedSelector, "click", this, "manage_review_checkboxes");
 
                 if (this.draft_id) {
-                    this.prepDraftView();
+                    this.prepNavigation();
                 }
 
                 let submitSelector = this.jq("#submitBtn");
@@ -472,6 +480,7 @@ $.extend(doaj, {
             this.init = function() {
                 this.currentTab = 6;
                 this.previousTab = 5;
+                var that = this;
 
                 $(".application-nav__list-item").each((idx, x) => {
                     x.className = "application-nav__list-item application-nav__list-item--active";
@@ -486,8 +495,10 @@ $.extend(doaj, {
                     event.preventDefault();
                     let id = $(this).attr("data-id");
                     let type = $(this).attr("data-type");
-                    unlock({type : type, id : id})
+                    that.unlock({type : type, id : id})
                 });
+
+                this.prepNavigation();
 
                 edges.up(this, "init");
             };
@@ -531,18 +542,6 @@ $.extend(doaj, {
                     } else {
                         $(elem).html("[no value]");
                     }
-
-
-                    // let id = $(elem).attr("id").split("-")[0];
-                    // let inputs = $("#"+id).find("select, input");
-                    //
-                    // if (inputs.length === 1) {
-                    //     $(elem).html($(inputs[0]).val())
-                    // } else if (inputs.length === 2){
-                    //     $(elem).html($(inputs[0]).val() + " (" + $(inputs[1]).val() + ")")
-                    // } else {
-                    //     $(elem).html("[no value]");
-                    // }
                 })
             };
         }

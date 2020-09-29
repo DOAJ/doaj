@@ -1,0 +1,9 @@
+{% if formulaic_context.wtform_inst.errors %}
+    This form has errors which prevented its submission.  The following fields are invalid:
+<ul>
+    {% for field, errors in formulaic_context.wtform_inst.errors.items() %}
+        {% set field_def = formulaic_context.get(field) %}
+    <li>{{ field_def.label }}</li>
+    {% endfor %}
+</ul>
+{% endif %}

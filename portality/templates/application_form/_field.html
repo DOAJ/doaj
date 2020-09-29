@@ -21,13 +21,19 @@
     {% else %}
         {{ f.render_form_control() }}
     {% endif %}
+
     <div id="{{ f.name }}_checkbox-errors"></div>
 
-{#
     {% if f.wtfield.errors %}
-        <div class="backend-errors">{{ f.wtfield.errors }}</div>
+    <div class="backend_validation_errors">
+        <ul class="parsley-errors-list filled" aria-hidden="false">
+            {% for error in f.wtfield.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
     {% endif %}
-#}
+
     {% if f.help("short_help") %}
        <p><small>{{ f.help("short_help") | safe }}</small></p>
     {% endif %}

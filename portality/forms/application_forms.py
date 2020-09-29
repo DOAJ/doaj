@@ -173,8 +173,7 @@ class FieldDefinitions:
         "input": "text",
         "validate": [
             "required",
-            "is_url",
-            "journal_url_in_public_doaj"  # Check whether the journal url is already in a public DOAJ record
+            "is_url"
         ],
         "widgets": [
             "clickable_url"
@@ -183,6 +182,13 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com"
         },
         "contexts": {
+            "public" : {
+                "validate": [
+                    "required",
+                    "is_url",
+                    "journal_url_in_public_doaj"  # Check whether the journal url is already in a public DOAJ record
+                ],
+            },
             "editor": {
                 "disabled": True
             },
@@ -214,10 +220,20 @@ class FieldDefinitions:
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "eissn", "message": "This field must contain a different value to 'ISSN ("
-                                                           "online)'"}},
-            "issn_in_public_doaj"
+                                                           "online)'"}}
         ],
         "contexts": {
+            "public" : {
+                "validate": [
+                    {"optional_if": {"field": "eissn",
+                                     "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                    {"is_issn": {"message": "This is not a valid ISSN"}},
+                    {"different_to": {"field": "eissn",
+                                      "message": "This field must contain a different value to 'ISSN ("
+                                                 "online)'"}},
+                    "issn_in_public_doaj"
+                ],
+            },
             "editor": {
                 "disabled": True
             },
@@ -225,15 +241,7 @@ class FieldDefinitions:
                 "disabled": True
             },
             "update_request": {
-                "disabled": True,
-                "validate" : [
-                    {"optional_if": {"field": "eissn",
-                                     "message": "You must provide one or both of an online ISSN or a print ISSN"}},
-                    {"is_issn": {"message": "This is not a valid ISSN"}},
-                    {"different_to": {"field": "eissn",
-                                      "message": "This field must contain a different value to 'ISSN ("
-                                                 "online)'"}}
-                ]
+                "disabled": True
             }
         },
         "asynchronous_warnings": [
@@ -258,10 +266,19 @@ class FieldDefinitions:
             {"optional_if": {"field": "pissn",
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "pissn", "message" : "This field must contain a different value to 'ISSN (print)'"}},
-            "issn_in_public_doaj"
+            {"different_to": {"field": "pissn", "message" : "This field must contain a different value to 'ISSN (print)'"}}
         ],
         "contexts": {
+            "public" : {
+                "validate" : [
+                    {"optional_if": {"field": "pissn",
+                                     "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                    {"is_issn": {"message": "This is not a valid ISSN"}},
+                    {"different_to": {"field": "pissn",
+                                      "message": "This field must contain a different value to 'ISSN (print)'"}},
+                    "issn_in_public_doaj"
+                ]
+            },
             "editor": {
                 "disabled": True
             },
