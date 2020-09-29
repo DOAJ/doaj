@@ -198,7 +198,7 @@ $.extend(doaj, {
                     tab.fieldsets.forEach((fs) => {
                         let fieldset = formulaic.active.fieldsets.find(elem => elem.name === fs);
                         fieldset.fields.forEach((f) => {
-                            if (!f.hasOwnProperty("conditional")) {
+                            if (!f.hasOwnProperty("conditional") || formulaic.active.isConditionSatisfied({field: f.name})){
                                 let value = this.determineFieldsValue(f.name);
                                 let html = `
                             <tr>
@@ -207,9 +207,6 @@ $.extend(doaj, {
                             </tr>
                             `;
                                 review_table.append(html);
-                            }
-                            else {
-
                             }
                         });
                     });
