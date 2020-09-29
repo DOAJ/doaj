@@ -65,11 +65,9 @@ $.extend(doaj, {
 
                 let nextSelector = this.jq("#nextBtn");
                 let prevSelector = this.jq("#prevBtn");
-                let sectionSelector = $(".edit_this_section");
 
                 edges.on(nextSelector, "click", this, "next");
                 edges.on(prevSelector, "click", this, "prev");
-                edges.on(sectionSelector, "click", this, "editSectionClicked");
             };
 
             this.editSectionClicked = function(element) {
@@ -194,6 +192,8 @@ $.extend(doaj, {
                 let review_table = this.jq("#review_table");
                 this.TABS.forEach((tab, i) => {
                     review_table.append("<th>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th>");
+                    let sectionSelector = $(".edit_this_section");
+                    edges.on(sectionSelector, "click", this, "editSectionClicked");
                     tab.fieldsets.forEach((fs) => {
                         let fieldset = formulaic.active.fieldsets.find(elem => elem.name === fs);
                         fieldset.fields.forEach((f) => {
@@ -219,9 +219,7 @@ $.extend(doaj, {
             this.determineFieldsValue = function(name) {
                 let inputs = this.jq("[id='" + name + "']");
                 if (inputs.length === 0) {
-                    console.log(name);
                     inputs = this.jq(":input").filter("[id^='" + name + "-']");
-                    console.log(inputs);
                 }
                 if (inputs.length === 1) {
                     let type = inputs.attr("type");
@@ -234,14 +232,14 @@ $.extend(doaj, {
                         for (let i = 0; i < inputs.length; i++) {
                             let input = $(inputs[i]);
                             if (input.is(":checked")) {
-                                return input.val();
+                                 return $('label[for=' + $(input.filter(':checked')).attr('id') + ']').text();
                             }
                         }
                     } else if (type === "checkbox") {
                         let result = [];
                         inputs.each((idx, i) => {
                             if ($(i).is(":checked")) {
-                                result.push($(i).val());
+                                result.push($(i).text());
                             }
                         });
                         return result;
