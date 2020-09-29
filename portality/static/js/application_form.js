@@ -198,7 +198,7 @@ $.extend(doaj, {
                     tab.fieldsets.forEach((fs) => {
                         let fieldset = formulaic.active.fieldsets.find(elem => elem.name === fs);
                         fieldset.fields.forEach((f) => {
-                            if (!f.hasOwnProperty("conditional") || formulaic.active.isConditionSatisfied({field: f.name})){
+                            if (f.label !== undefined && !f.hasOwnProperty("conditional") || formulaic.active.isConditionSatisfied({field: f.name})){
                                 let value = this.determineFieldsValue(f.name);
                                 let text = this.convertValueToText(value);
                                 let html = `
