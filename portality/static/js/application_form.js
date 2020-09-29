@@ -190,6 +190,7 @@ $.extend(doaj, {
 
             this.prepareReview = function() {
                 let review_table = this.jq("#review_table");
+                review_table.html("");
                 this.TABS.forEach((tab, i) => {
                     review_table.append("<th>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th>");
                     let sectionSelector = $(".edit_this_section");
@@ -210,45 +211,43 @@ $.extend(doaj, {
                             else {
 
                             }
-                        })
+                        });
                     });
 
                 });
             };
 
             this.determineFieldsValue = function(name) {
-                let inputs = this.jq("[id='" + name + "']");
+                let inputs = this.jq(":input[id='" + name + "']");
                 if (inputs.length === 0) {
-                    inputs = this.jq(":input").filter("[id^='" + name + "-']");
+                    inputs = this.jq(":input[id^='" + name + "-']");
                 }
-                if (inputs.length === 1) {
-                    let type = inputs.attr("type");
+                let result = [];
+                for (let i = 0; i < inputs.length; i++) {
+                    let input = $(inputs[i]);
+                    let type = input.attr("type");
                     if (type === "text" || type === "number" || type === "url") {
-                        return inputs.val();
+                        result.push(input.val());
                     }
-                } else if (inputs.length > 1) {
-                    let type = $(inputs[0]).attr("type");
-                    if (type === "radio") {
-                        for (let i = 0; i < inputs.length; i++) {
-                            let input = $(inputs[i]);
-                            if (input.is(":checked")) {
-                                 return $("label[for=" + $(input.filter(":checked")).attr("id") + "]").text();
-                            }
+                    else if (type === "radio") {
+                        if (input.is(":checked")) {
+                             result.push( $("label[for=" + $(input.filter(":checked")).attr("id") + "]").text());
                         }
-                    } else if (type === "checkbox") {
-                        let result = [];
-                        for (let i = 0; i < inputs.length; i++) {
-                            let input = $(inputs[i]);
-                            if (input.is(":checked")) {
-                                result.push($("label[for='" + $(input.filter(":checked")).attr("id") + "']").text());
-                            }
-                        }
-                        return result;
-                    } else {
-                        return "Something went wrong, question not found."
                     }
+                    else if (type === "checkbox") {
+                        if (input.is(":checked")) {
+                            result.push($("label[for='" + $(input.filter(":checked")).attr("id") + "']").text());
+                        }
+                    }
+                    else if (type === undefined) {        //it means it is select, not input
+                        result.push(input.find("option:selected").text());
+                    }
+                    else {
 
+                        result.push("Something went wrong, question not found.");
+                    }
                 }
+                return result;
             };
 
             this.prepareReview_old = function() {
