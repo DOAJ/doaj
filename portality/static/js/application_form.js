@@ -200,10 +200,11 @@ $.extend(doaj, {
                         fieldset.fields.forEach((f) => {
                             if (!f.hasOwnProperty("conditional") || formulaic.active.isConditionSatisfied({field: f.name})){
                                 let value = this.determineFieldsValue(f.name);
+                                let text = this.convertValueToText(value);
                                 let html = `
                             <tr>
                                 <td id="` + f.name + `__review_label">` + f.label + `</td>
-                                <td id="` + f.name + `__review_value">` + value +`</td>
+                                <td id="` + f.name + `__review_value">` + text +`</td>
                             </tr>
                             `;
                                 review_table.append(html);
@@ -247,100 +248,17 @@ $.extend(doaj, {
                 return result;
             };
 
-            this.prepareReview_old = function() {
-                let review_values = $("td[id$='__review_value']");
-                review_values.each((idx, question) => {
-                    let id = $(question).attr('id');
-                    // TODO: think about how to generalise this.  If we add more fields like this or
-                    // change the apc_charges bit then it will need updating
-                    if (id === "apc_charges__review_value") {
-                        let currency = $("select[id$='apc_currency']");
-                        let max = $("input[id$='apc_max']");
-                        let result = "";
-                        let isValid = true;
-                        for (let i = 0; i < currency.length; i++){
-                            let curr = $(currency[i]).find('option:selected').text();
-                            let m = $(max[i]).val();
-                            if (m !== "" || curr !== "") {
-                                result += (m === "" ? "" : m) + " " + (curr === "" ? "" : curr) + " " + "<br>";
-                            }
-                        }
-                        if ($(max[0]).parsley().validationResult !== true || ($(currency[0]).parsley().validationResult !== true)) {
-                            isValid = false;
-                        }
-                        if (result === "" && isValid){
-                            $(question).parent().hide();
-                        }
-                        else {
-                            $(question).parent().show();
-                            $(question).html(result);
-                        }
+            this.convertValueToText = function(value){
+                value = value.filter(v=>(v!=="" && v!==" "));
+                let result = "";
+                if (value.length > 0){
+                   result = value[0];
+                    for (let i = 1; i < value.length; i++){
+                        result = result + ", " + value[i];
                     }
-                    else {
-                        let name = id.substring(0, id.indexOf("__review_value"));
-                        let input = $("input[name^='" + name + "']");
-                        if (input.length === 0) {  //it's not input but select
-                            input = $("[name^='" + name + "']");
-                            let result = "";
-                            input.each((idx, inp) => {
-                                let val = $(inp).find('option:selected').text();
-                                if (val !== "") {
-                                    result += val + "<br>";
-                                }
-
-                            });
-                            $(question).html(result);
-                        } else {
-                            if (id === "keywords__review_value") {
-                                let result = "";
-                                let this_input = $('#keywords');
-                                let keywords = this_input.val().split(",");
-                                if (keywords.length !== 1) {
-                                    $(keywords).each((idx, kw) => {
-                                        result += kw + "<br>";
-                                    });
-                                }
-                                else {
-                                    result = keywords[0];
-                                }
-                                $(question).html(result);
-
-
-                            } else {
-                                if ($(input).attr("data-parsley-required-if") !== undefined) {
-                                    if (input.val() === "" && $(input).parsley().validationResult === true){
-                                        $(question).parent().hide();
-                                        return;
-                                    }
-                                    else {
-                                        $(question).parent().show();
-                                    }
-                                }
-                                let type = input.attr("type");
-                                if (type === "text" || type === "number") {
-                                    $(question).html(input.val())
-                                } else if (type === "url") {
-                                    $(question).html('<a href=' + input.val() + '>' + input.val() + '</a>')
-                                } else if (type === "radio") {
-                                    if (input.is(":checked")) {
-                                        let text = $('label[for=' + $(input.filter(':checked')).attr('id') + ']').text();
-                                        $(question).html(text);
-                                    }
-                                } else if (type === "checkbox") {
-                                    let result = '';
-                                    input.each((idx, i) => {
-                                        if ($(i).is(":checked")) {
-                                            let text = $('label[for=' + $(i).attr('id') + ']').text();
-                                            result += text + "<br>";
-                                        }
-                                    });
-                                    $(question).html(result)
-                                }
-                            }
-                        }
-                    }
-
-                })
+                }
+                console.log(result);
+                return result;
             };
 
             this.form_validated = function() {
