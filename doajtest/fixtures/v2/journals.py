@@ -6,7 +6,7 @@ from doajtest.fixtures.v2.common import EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EX
     OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED
 
 from portality.forms.utils import expanded2compact
-from portality.formcontext import forms
+from portality.regex import ISSN_COMPILED
 
 class JournalFixtureFactory(object):
     @staticmethod
@@ -28,8 +28,8 @@ class JournalFixtureFactory(object):
             if fakemonth > 9:
                 fakemonth = 9
             template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
-            template["bibjson"]["pissn"] = rstr.xeger(forms.ISSN_REGEX)
-            template["bibjson"]["eissn"] = rstr.xeger(forms.ISSN_REGEX)
+            template["bibjson"]["pissn"] = rstr.xeger(ISSN_COMPILED)
+            template["bibjson"]["eissn"] = rstr.xeger(ISSN_COMPILED)
             template['admin']['in_doaj'] = in_doaj
             template['bibjson']['title'] = 'Test Title {}'.format(i)
             journal_sources.append(deepcopy(template))

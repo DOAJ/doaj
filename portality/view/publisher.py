@@ -126,7 +126,7 @@ def update_request(journal_id):
             try:
                 processor.finalise()
                 Messages.flash(Messages.APPLICATION_UPDATE_SUBMITTED_FLASH)
-                for a in fc.alert:
+                for a in processor.alert:
                     Messages.flash_with_url(a, "success")
                 return redirect(url_for("publisher.updates_in_progress"))
             except Exception as e:

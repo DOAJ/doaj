@@ -2,10 +2,17 @@
 
 <script type="text/javascript" src="/static/vendor/parsley-2.9.2/parsley.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
 <!-- get select2 -->
 {# <script type="text/javascript" src="/static/vendor/select2-3.5.4/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script> #}
 <script type="text/javascript" src="/static/js/formulaic.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/js/application_form.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+{% if lcc_tree %}
+<script type="text/javascript">
+    doaj.af.lccTree = {{ lcc_tree|tojson }}
+</script>
+{% endif %}
 
 <script type="text/javascript">
     jQuery(document).ready(function($) {
@@ -23,5 +30,6 @@
         {% endif %}
         });
         doaj.af.active.init();
+
     });
 </script>
