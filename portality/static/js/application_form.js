@@ -198,7 +198,7 @@ $.extend(doaj, {
                     tab.fieldsets.forEach((fs) => {
                         let fieldset = formulaic.active.fieldsets.find(elem => elem.name === fs);
                         fieldset.fields.forEach((f) => {
-                            if (f.label !== undefined && !f.hasOwnProperty("conditional") || formulaic.active.isConditionSatisfied({field: f.name})){
+                            if (f.label !== undefined && !f.hasOwnProperty("conditional") || (f.subfield === undefined && formulaic.active.isConditionSatisfied({field: f.name}))){
                                 let value = this.determineFieldsValue(f.name);
                                 let text = this.convertValueToText(value);
                                 let html = `
@@ -285,7 +285,6 @@ $.extend(doaj, {
             };
 
             this.submitapplication = function() {
-                let parsleyForm = this.form.parsley();
                 this.form.submit();
             };
 
@@ -439,7 +438,7 @@ $.extend(doaj, {
         },
 
         newManEdApplicationForm : function(params) {
-            return edges.instantiate(doaj.af.ManEdApplicationForm, params, doaj.af.newApplicationForm)
+            return edges.instantiate(doaj.af.ManEdApplicationForm, params, doaj.af.newApplicationForm);
         },
         ManEdApplicationForm : function(params) {
             this.formDiff = edges.getParam(params.formDiff, false);
@@ -500,7 +499,6 @@ $.extend(doaj, {
                 $(".admin_value_preview").each((i,elem) => {
                     let sourceId = $(elem).attr("data-source");
                     let input = $(sourceId);
-                    let type = input.attr("type");
                     if (input.val()) {
                         $(elem).html(input.val());
                     } else {
@@ -527,7 +525,7 @@ $.extend(doaj, {
 window.Parsley.addValidator("requiredIf", {
     validateString : function(value, requirement, parsleyInstance) {
         let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
-        if ($('[name="' + field + '"]').filter(':checked').val() === requirement){
+        if ($("[name='" + field + "']").filter(":checked").val() === requirement){
             return !!value;
         }
         return true;
@@ -565,10 +563,21 @@ window.Parsley.addValidator("optionalIf", {
 
 window.Parsley.addValidator("differentTo", {
     validateString : function(value, requirement) {
-      return (!value || ($("[name = " + requirement + "]")).val() !== value)
+      return (!value || ($("[name = " + requirement + "]")).val() !== value);
     },
     messages: {
         en: 'Value of this field and %s field must be different'
     },
     priority: 1
 });
+
+window.Parsley.addValidator("onlyIf", {
+    validateString : function(value, requirement, parsleyInstance) {
+        let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
+        return true;
+    },
+    messages: {
+        en: 'This only can be true when requirements are met'
+    },
+    priority: 1
+})
