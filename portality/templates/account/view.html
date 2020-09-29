@@ -31,7 +31,7 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                <h2>Hi {{ account.id }}</h2>
+                                <h2>Hi {{ account.name if account.name else account.id }}</h2>
                                 {% if account.role|length > 0 %}
                                     <p><strong>Role(s)</strong>: {{ account.role|join(", ") }}
                                 {% endif %}
@@ -41,7 +41,7 @@
                                     </div>
                                     <div class="col-md-4" style="padding: 0">
                                         <form action="" method="POST">
-                                            <input type="submit" class="btn btn-success" name="submit" value="Generate a new API Key" style="float: right">
+                                            <input type="submit" class="button button--secondary" name="submit" value="Generate a new API Key" style="float: right">
                                         </form>
                                     </div>
                                 {% endif %}
@@ -72,7 +72,7 @@
                                         <input type="password" name="confirm" placeholder="confirm your new password">
 
                                         <br/>
-                                        <input type="submit" class="btn btn-success" name="submit" value="Update Account" style="float: right; width: 35%">
+                                        <input type="submit" class="button button--primary" name="submit" value="Update Account" style="float: right; width: 35%">
                                     </form>
                                 </div>
 
@@ -87,7 +87,7 @@
                                                 <input type="radio" name="confirm" value="confirm">&nbsp;&nbsp;yes, I'm sure
                                             </span>
                                             <span class="col-md-4">
-                                                <input type="submit" name="submit" value="Delete" class="btn btn-danger"
+                                                <input type="submit" name="submit" value="Delete" class="button button--primary"
                                                        style="float: right">
                                             </span>
                                         </form>
@@ -128,7 +128,7 @@
                                 own marketing purposes</p>
                             <p>DOAJ does not share your name and email address with any other organisation.
                                 Please read our full privacy policy <a href="/privacy">here</a>.</p>
-                            <input type="submit" class="btn btn-success" name="submit" value="Save Settings" style="float: right; width: 50%">
+                            <input type="submit" class="button button--primary" name="submit" value="Save Settings" style="float: right; width: 50%">
                         </form>
                     </aside>
                 </div>

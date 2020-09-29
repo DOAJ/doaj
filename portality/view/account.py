@@ -145,6 +145,7 @@ def login():
         flash('Invalid credentials', 'error')
         # to do: choose which template should be generated
     if request.args.get("redirected") == "apply":
+        form['next'].data = url_for("apply.public_application")
         return render_template('account/login_to_apply.html', form=form)
     return render_template('account/login.html', form=form)
 
@@ -247,7 +248,7 @@ def existscheck(form, field):
 
 
 class RegisterForm(RedirectForm):
-    _id = StringField('ID')
+    identifier = StringField('ID')
     name = StringField('Name', [validators.Length(min=3, max=64)])
     email = StringField('Email Address', [
         validators.DataRequired(),
@@ -258,9 +259,7 @@ class RegisterForm(RedirectForm):
         validators.DataRequired(),
         validators.EqualTo('password_confirm', message='Passwords must match')
     ])
-    password_confirm = PasswordField('Repeat Password', [
-        validators.DataRequired()
-    ])
+    password_confirm = PasswordField('Repeat Password', [validators.DataRequired()])
     roles = StringField('Roles')
 
 
@@ -285,9 +284,17 @@ def register():
             roles=[r.strip() for r in form.roles.data.split(',')]
         )
         account.set_password(form.password.data)
+        if form.identifier.data:
+            account.set_id(form.identifier.data)
         account.save()
         flash('Account created for ' + account.id + '. If not listed below, refresh the page to catch up.', 'success')
-        return redirect('/account')
+
+        # If this isn't admin 3rd party creation, login the user
+        if not current_user.is_authenticated:
+            login_user(account, remember=True)
+
+        #return redirect(get_redirect_target(form=form)) #fixme: redirect
+        return redirect(url_for("account.username", username=current_user.id))
     if request.method == 'POST' and not form.validate():
         flash('Please correct the errors', 'error')
     return render_template('account/register.html', form=form)

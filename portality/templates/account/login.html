@@ -12,7 +12,7 @@
 
                     {% include "account/_login_form.html" %}
 
-                    <p>If you cannot log in, <a href="/password-reset/">reset your password</a>. If you still cannot login, <a href="/contact/">contact us</a>.</p>
+                    <p>If you cannot log in, <a href="{{ url_for("account.forgot") }}">reset your password</a>. If you still cannot login, <a href="/contact">contact us</a>.</p>
 
                 </div>
             </div>
