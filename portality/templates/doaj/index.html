@@ -3,45 +3,13 @@
 {% block body_class %}homepage{% endblock %}
 
 {% block content %}
-<style>
-
-.homepage .primary-nav,
-.homepage .secondary-nav {
-  background-color:  transparent;
-}
-
-.homepage .secondary-nav {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
-.homepage .secondary-nav .nav-bar {
-  border: 0;
-}
-
-.homepage > header {
-  background-color: #F8F3EF;
-  background-image: url('/static/doaj/images/bg/01.jpeg');
-  background-size: cover;
-  mix-blend-mode: multiply;
-}
-
-.homepage .volunteers {
-  background-color: #F8F3EF;
-  background-image: url('/static/doaj/images/bg/07.jpeg');
-  background-size: cover;
-  mix-blend-mode: multiply;
-}
-
-</style>
-
 <main class="page-content">
     <!-- About -->
-    <section class="highlight">
+    <section class="highlight homepage__about">
       <div class="container">
-        <h2 class="sr-only">About</h2>
           <div class="row">
               <section class="col-sm-6">
-                  <h3 class="label">About the directory</h3>
+                  <h2 class="label">About the directory</h2>
                   <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.</p>
                   <p>All DOAJ services are free of charge including being indexed. All data is freely available.</p>
                   <p>&rarr; <a href="/apply/why-index/">Why index your journal in DOAJ?</a></p>
@@ -52,7 +20,7 @@
               </section>
 
               <section class="col-sm-6">
-                  <h3 class="label">Funding</h3>
+                  <h2 class="label">Funding</h2>
                   <p>
                       DOAJ is independent. All funding is via donations.
                   </p>
@@ -79,21 +47,19 @@
 
     <!-- Blog -->
     <section class="container homepage__blog">
-        <h2 class="label">From the blog</h2>
-        <p><a href="https://blog.doaj.org/" class="button" target="_blank" rel="noopener">See all &rarr;</a></p>
+        <h2 class="label label--secondary">From the blog</h2>
+        <p>&rarr; <a href="https://blog.doaj.org/" target="_blank" rel="noopener">All blog posts</a></p>
 
         <div class="row">
             {# Latest posts #}
             <div class="col-md-8">
                 <div class="row">
-                    <figure class="col-md-6">
-                        <!--<img src="/static/doaj/images/bg/06.jpeg" height="100"/>-->
-                    </figure>
                     {% for n in news[:1] %}
-                    <article class="col-md-6">
-                        <a href="{{ n.url }}" class="blog__link" target="_blank">
+                    <article>
+                        <div class="col-md-6 blog-img" aria-hidden="true"></div>
+                        <a href="{{ n.url }}" target="_blank" class="col-md-6">
                             {# TODO in the future (right now we don't have category) <p class="label">{{ n.category }}</p> #}
-                            <h3 class="blog__title">{{ n.title }}</h3>
+                            <h3>{{ n.title }}</h3>
                             <p>{% autoescape off%}{{ n.summary }}{% endautoescape %}</p>
                             <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
                         </a>
@@ -101,19 +67,20 @@
                     {% endfor %}
 
                     {% for n in news[1:] %}
-                    <article class="col-md-3">
-                        <a href="{{ n.url }}" class="blog__link" target="_blank">
-                            <h3 class="blog__title">{{ n.title }}</h3>
+                    <article class="col-sm-3 col-md-3">
+                        <a href="{{ n.url }}" target="_blank">
+                            <h3>{{ n.title|safe }}</h3>
                             <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
                         </a>
                     </article>
                     {% endfor %}
+
                 </div>
             </div>
 
             {# Twitter feed #}
-            <section class="col-md-4 homepage__themed-post" style="max-height: 75vh; overflow-y: scroll;">
-                <h3 class="label"><a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">Tweets by @doajplus</a></h3>
+            <section class="col-md-4 twitter-embed" style="max-height: 75vh; overflow-y: scroll;">
+                <h2 class="label"><a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">Tweets by @doajplus</a></h2>
                 <a class="twitter-timeline" data-chrome="transparent noheader" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </section>
         </div>
@@ -153,39 +120,28 @@
     </section>
 
     <!-- Volunteers -->
-    <section class="volunteers">
+    <section class="homepage__volunteers">
         <div class="container">
-            <h2 class="label">Volunteers</h2>
-            <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
-            <p>&rarr; <a href="/about/volunteers/">See our volunteers</a></p>
+          <header>
+              <h2 class="label">Volunteers</h2>
+              <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
+              <p>&rarr; <a href="/about/volunteers/">See our volunteers</a></p>
+          </header>
 
             <div class="row">
-                <article class="col-xs-2 col-md-4">
-                    <figure class="portrait">
-                        <div class="portrait__bg portrait__bg-img--3d" style="background-image: url('../../img/team/clara.jpg')" alt="Portrait of Clara Armengou"></div>
-                    </figure>
-                    <h3>Alicia Aparicio</h3>
-                    <p>Humanities, Social Sciences</p>
-                    <p>Buenos Aires, Argentina  <br/>Spanish</p>
-                </article>
-
-                <article class="col-xs-2 col-md-4">
-                    <figure class="portrait">
-                        <div class="portrait__bg portrait__bg-img--3d" style="background-image: url('../../img/team/clara.jpg')" alt="Portrait of Clara Armengou"></div>
-                    </figure>
-                    <h3>Alicia Aparicio</h3>
-                    <p>Humanities, Social Sciences</p>
-                    <p>Buenos Aires, Argentina  <br/>Spanish</p>
-                </article>
-
-                <article class="col-xs-2 col-md-4">
-                    <figure class="portrait">
-                        <div class="portrait__bg portrait__bg-img--3d" style="background-image: url('../../img/team/clara.jpg')" alt="Portrait of Clara Armengou"></div>
-                    </figure>
-                    <h3>Alicia Aparicio</h3>
-                    <p>Humanities, Social Sciences</p>
-                    <p>Buenos Aires, Argentina  <br/>Spanish</p>
-                </article>
+                {% for volunteer in volunteers.ed %}
+                {% if volunteer.featured == true %}
+                    <article class="col-md-4">
+                        {# TODO: Still need volunteer photos
+                        <figure class="portrait portrait__img--split">
+                            <div class="portrait__bg portrait__bg-img--3d" style="background-image: url('../../img/team/clara.jpg')" alt="Portrait of {{ volunteer.name }}"></div>
+                        </figure>#}
+                        <p class="label label--secondary"><small>{{ volunteer.area }}</small></p>
+                        <h3>{{ volunteer.name }}</h3>
+                        <p class="label label--tertiary">{{ volunteer.city }}, {{ volunteer.country }}</span> ({{ volunteer.language }})</p>
+                    </article>
+                {% endif %}
+                {% endfor %}
             </div>
         </div>
     </section>
@@ -193,13 +149,13 @@
     <!-- New journals -->
     <section class="container">
         <div class="row">
-            <div class="col-sm-4">
-                <h2 class="label">Recently-added journals</h2>
+            <header class="col-sm-4">
+                <h2 class="label label--secondary">Recently-added journals</h2>
                 <p>DOAJ’s team of managing editors, editors, and volunteers work together with publishers to index new journals. As soon as they’re accepted, these journals are displayed on our website, freely accessible to everyone.</p>
                 {# TODO: Make sure these links work #}
                 <p>&rarr; <a href="/rss/">See RSS feed</a></p>
                 <p>&rarr; <a href="/csv/">Download all journals as CSV</a></p>
-            </div>
+            </header>
             <div class="col-sm-8">
                 <ul class="row mobile-scrollable-row title-list">
                     {% for r in recent_journals %}
