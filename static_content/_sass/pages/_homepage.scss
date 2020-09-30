@@ -2,18 +2,25 @@
 
 .homepage {
 
-  // Reset default nav styles for homepage only
-  .primary-nav,
-  .secondary-nav {
-    background-color:  transparent;
+  // Change default nav styles for homepage only
+  .primary-nav {
+    background-color: $warm-black;
+
+    a {
+      color: $warm-white;
+    }
+
+    .logo path {
+      fill: $warm-white;
+    }
   }
 
   .secondary-nav {
     background-color: rgba(0, 0, 0, 0.1);
-  }
 
-  .secondary-nav .nav-bar {
-    border: 0;
+    .nav-bar {
+      border: 0;
+    }
   }
 
   a {
