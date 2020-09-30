@@ -25,6 +25,13 @@
   mix-blend-mode: multiply;
 }
 
+.homepage .volunteers {
+  background-color: #F8F3EF;
+  background-image: url('/static/doaj/images/bg/07.jpeg');
+  background-size: cover;
+  mix-blend-mode: multiply;
+}
+
 </style>
 
 <main class="page-content">
@@ -76,46 +83,44 @@
         <p><a href="https://blog.doaj.org/" class="button" target="_blank" rel="noopener">See all &rarr;</a></p>
 
         <div class="row">
-          {# Latest posts #}
-          <div class="col-md-8">
-            <div class="row">
-              <figure class="col-md-6">
-                <!--<img src="/static/doaj/images/bg/06.jpeg" height="100"/>-->
-              </figure>
-              {% for n in news[:1] %}
-              <article class="col-md-6">
-                  <a href="{{ n.url }}" class="blog__link" target="_blank">
-                      {# TODO in the future (right now we don't have category) <p class="label">{{ n.category }}</p> #}
-                      <h3 class="blog__title">{{ n.title }}</h3>
-                      <p>{% autoescape off%}{{ n.summary }}{% endautoescape %}</p>
-                      <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
-                  </a>
-              </article>
-              {% endfor %}
+            {# Latest posts #}
+            <div class="col-md-8">
+                <div class="row">
+                    <figure class="col-md-6">
+                        <!--<img src="/static/doaj/images/bg/06.jpeg" height="100"/>-->
+                    </figure>
+                    {% for n in news[:1] %}
+                    <article class="col-md-6">
+                        <a href="{{ n.url }}" class="blog__link" target="_blank">
+                            {# TODO in the future (right now we don't have category) <p class="label">{{ n.category }}</p> #}
+                            <h3 class="blog__title">{{ n.title }}</h3>
+                            <p>{% autoescape off%}{{ n.summary }}{% endautoescape %}</p>
+                            <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
+                        </a>
+                    </article>
+                    {% endfor %}
 
-              {% for n in news[1:] %}
-              <article class="col-md-3">
-                  <a href="{{ n.url }}" class="blog__link" target="_blank">
-                      <h3 class="blog__title">{{ n.title }}</h3>
-                      <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
-                  </a>
-              </article>
-              {% endfor %}
+                    {% for n in news[1:] %}
+                    <article class="col-md-3">
+                        <a href="{{ n.url }}" class="blog__link" target="_blank">
+                            <h3 class="blog__title">{{ n.title }}</h3>
+                            <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
+                        </a>
+                    </article>
+                    {% endfor %}
+                </div>
             </div>
-          </div>
 
-
-
-          {# Twitter feed #}
-          <section class="col-md-4 homepage__themed-post" style="max-height: 75vh; overflow-y: scroll;">
-              <h3 class="label"><a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">Tweets by @doajplus</a></h3>
-              <a class="twitter-timeline" data-chrome="transparent noheader" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-          </section>
+            {# Twitter feed #}
+            <section class="col-md-4 homepage__themed-post" style="max-height: 75vh; overflow-y: scroll;">
+                <h3 class="label"><a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">Tweets by @doajplus</a></h3>
+                <a class="twitter-timeline" data-chrome="transparent noheader" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </section>
         </div>
 
         {# TODO: we don't have the mechanics for special themed posts yet
         <!-- Special / themed posts; when none: display Twitter feed -->
-        <section class="col-sm-3 homepage__themed-post">
+        <section class="col-md-4 homepage__themed-post">
             <h3 class="label">Special post series: Myth busting</h3>
             <ol>
                 <li>
@@ -147,78 +152,40 @@
         #}
     </section>
 
-    <!-- Community -->
-    <section class="highlight">
+    <!-- Volunteers -->
+    <section class="volunteers">
         <div class="container">
-            <h2 class="sr-only">Community</h2>
-            <div class="row">
-                <section class="col-sm-3 homepage__funding">
-                    <header>
-                        <h3 class="label">Funding</h3>
-                        <p>Some organisations and publishers support DOAJ with either a one-off payment or an annual payment.</p>
-                        <p>
-                            <a href="/support/" class="button">Support us →</a>
-                        </p>
-                    </header>
-                    <ul>
-                        <li>
-                            <article>
-                                <h4>Supporters</h4>
-                                <p>DOAJ Membership is recommended for those who can support us with a long-term annual fixed contribution.</p>
-                                <a href="/support/supporters/">
-                                    <p>Learn more</p>
-                                </a>
-                            </article>
-                        </li>
-                        <li>
-                            <article>
-                                <h4>Publisher supporters</h4>
-                                <p>If you publish or own an Open Access journal, you may prefer to become a Publisher Supporter with DOAJ.</p>
-                                <a href="/support/publisher-supporters/">
-                                    <p>Learn more</p>
-                                </a>
-                            </article>
-                        </li>
-                    </ul>
-                </section>
-                <section class="col-sm-6 homepage__volunteers">
-                    <header>
-                        <h3>Volunteers</h3>
-                        <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
-                    </header>
-                    <div class="row">
-                        {% for volunteer in volunteers.ed %}
-                            {% if volunteer.featured %}
-                                <article class="col-xs-4">
-                                    <h4>{{ volunteer.name }}</h4>
-                                    <p>{{ volunteer.area }}</p>
-                                    <p>{{ volunteer.city }}, {{ volunteer.country }}<br/>{{ volunteer.language }}</p>
-                                </article>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                    <p><a href="/about/volunteers/" class="button">See volunteers →</a></p>
-                </section>
-                <section class="col-sm-3 homepage__sponsors">
-                    <header>
-                        <h3 class="label">Sponsors</h3>
-                        <p>The DOAJ Sponsors provide larger amounts of crucial funding on an annual basis.</p>
-                    </header>
-                    <article>
-                        <h4>Gold</h4>
-                        {% for sponsor in sponsors.gold %}
-                        <figure class="sponsor">
-                            <a href="{{ sponsor.url }}" target="_blank" rel="noopener" title="Go to {{ sponsor.name }}’s site" class="sponsor__link">
-                                <img src="/static_content/img/sponsors/{{ sponsor.logo }}" alt="{{ sponsor.name }} logo" class="sponsor__logo"/>
-                            </a>
-                        </figure>
-                        {% endfor %}
-                    </article>
-                    <p>
-                        <a href="/support/sponsors/" class="button">See sponsors →</a>
-                    </p>
-                </section>
+            <h2 class="label">Volunteers</h2>
+            <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
+            <p>&rarr; <a href="/about/volunteers/">See our volunteers</a></p>
 
+            <div class="row">
+                <article class="col-xs-2 col-md-4">
+                    <figure class="portrait">
+                        <div class="portrait__bg portrait__bg-img--3d" style="background-image: url('../../img/team/clara.jpg')" alt="Portrait of Clara Armengou"></div>
+                    </figure>
+                    <h3>Alicia Aparicio</h3>
+                    <p>Humanities, Social Sciences</p>
+                    <p>Buenos Aires, Argentina  <br/>Spanish</p>
+                </article>
+
+                <article class="col-xs-2 col-md-4">
+                    <figure class="portrait">
+                        <div class="portrait__bg portrait__bg-img--3d" style="background-image: url('../../img/team/clara.jpg')" alt="Portrait of Clara Armengou"></div>
+                    </figure>
+                    <h3>Alicia Aparicio</h3>
+                    <p>Humanities, Social Sciences</p>
+                    <p>Buenos Aires, Argentina  <br/>Spanish</p>
+                </article>
+
+                <article class="col-xs-2 col-md-4">
+                    <figure class="portrait">
+                        <div class="portrait__bg portrait__bg-img--3d" style="background-image: url('../../img/team/clara.jpg')" alt="Portrait of Clara Armengou"></div>
+                    </figure>
+                    <h3>Alicia Aparicio</h3>
+                    <p>Humanities, Social Sciences</p>
+                    <p>Buenos Aires, Argentina  <br/>Spanish</p>
+                </article>
             </div>
         </div>
     </section>
@@ -226,20 +193,14 @@
     <!-- New journals -->
     <section class="container">
         <div class="row">
-            <div class="col-sm-3">
-                <h2>Recently-added journals</h2>
-                <p>
-                    <small>
-                        <a href="{{ url_for("doaj.journals_search") }}" class="button">See all</a>
-                    </small>
-                </p>
-                <p>
-                    <small>
-                        <a href="{{ url_for("doaj.csv_data") }}" class="button">See all in CSV</a>
-                    </small>
-                </p>
+            <div class="col-sm-4">
+                <h2 class="label">Recently-added journals</h2>
+                <p>DOAJ’s team of managing editors, editors, and volunteers work together with publishers to index new journals. As soon as they’re accepted, these journals are displayed on our website, freely accessible to everyone.</p>
+                {# TODO: Make sure these links work #}
+                <p>&rarr; <a href="/rss/">See RSS feed</a></p>
+                <p>&rarr; <a href="/csv/">Download all journals as CSV</a></p>
             </div>
-            <div class="col-sm-9">
+            <div class="col-sm-8">
                 <ul class="row mobile-scrollable-row title-list">
                     {% for r in recent_journals %}
                     <li class="col-md-3 col-lg-3">
