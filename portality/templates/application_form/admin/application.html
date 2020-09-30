@@ -78,11 +78,11 @@
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("seal") %}
-        <h3 class="label"> {{ fs.label }}</h3>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
+        <h3 class="label">{{ fs.label }}</h3>
+            {% for f in fs.fields() %}
+                {% set field_template = f.template %}
+                {%  include field_template %}
+            {% endfor %}
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("notes") %}

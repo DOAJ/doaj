@@ -571,11 +571,36 @@ window.Parsley.addValidator("differentTo", {
 
 window.Parsley.addValidator("onlyIf", {
     validateString : function(value, requirement, parsleyInstance) {
-        let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
-        return true;
+        if (!!value){
+            let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
+            console.log(field);
+            return true;
+        }
+        else {
+            console.log("not checked");
+            return true;
+        }
     },
     messages: {
         en: 'This only can be true when requirements are met'
     },
     priority: 1
-})
+});
+
+window.Parsley.addValidator("onlyIf", {
+    validateString : function(value, requirement, parsleyInstance) {
+        if (!!value){
+            let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
+            console.log(field);
+            return true;
+        }
+        else {
+            console.log("not checked");
+            return true;
+        }
+    },
+    messages: {
+        en: 'This only can be true when requirements are met'
+    },
+    priority: 1
+});
