@@ -1,30 +1,74 @@
 /* Homepage-specific styles  */
 
 .homepage {
+
+  // Reset default nav styles for homepage only
+  .primary-nav,
+  .secondary-nav {
+    background-color:  transparent;
+  }
+
+  .secondary-nav {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .secondary-nav .nav-bar {
+    border: 0;
+  }
+
   a {
     text-decoration: none;
   }
 
-  .input-group input[type="text"] {
-    width: 40%;
+  h2 {
+    margin-bottom: $spacing-04;
   }
 
-  .input-group select {
-    width: 40%;
-    margin-left: -1px;
-  }
-  .input-group input[type="submit"] {
-    width: 20%;
-    margin-left: -1px;
+  h3 {
+    margin-top: 0;
+    @include font-serif;
+    font-weight: 600;
   }
 
-  .about aside {
+  time {
+    color: $dark-grey;
+  }
+
+  .page-header {
+    background-color: #F8F3EF;
+    background-image: url('/static/doaj/images/bg/01.jpeg');
+    background-size: cover;
+    background-blend-mode: multiply;
+  }
+
+  .page-content > section {
+    padding-top: $spacing-05;
+    padding-bottom: $spacing-05;
+  }
+
+  &__search {
+
+    .input-group input[type="text"] {
+      width: 40%;
+    }
+
+    .input-group select {
+      width: 40%;
+      margin-left: -1px;
+    }
+    .input-group input[type="submit"] {
+      width: 20%;
+      margin-left: -1px;
+    }
+
+  }
+
+  &__about section {
     margin-top: $spacing-04;
     padding-top: $spacing-04;
-    border-width: 1px 0 0 0;
+    border-width: 0 0 1px 0;
     border-style: dashed;
     border-color: $sanguine;
-    color: $sanguine;
 
     @media (min-width: 769px) {
       margin-top: 0;
@@ -35,88 +79,55 @@
 
   &__blog {
     margin-bottom: $spacing-04;
-  }
-
-  &__featured-post,
-  &__other-posts,
-  &__themed-post,
-  &__funding,
-  &__volunteers,
-  &__sponsors {
-    h3:not(.label), h4:not(.label) {
-      @include font-serif;
-    }
-  }
-
-  &__featured-post,
-  &__funding,
-  &__themed-post,
-  &__sponsors {
-    text-align: center;
-    @include typescale-06;
-
-    h4 {
-      margin-top: 0;
-    }
-
-    ul, ol {
-      @include unstyled-list;
-    }
-
-    li {
-      padding: $spacing-04 0;
-      border-bottom: 1px solid rgba($dark-grey, 0.25);
-
-      &:last-child {
-        padding-bottom: 0;
-        border: 0;
-      }
-    }
-  }
-
-  &__volunteers {
-    border-right: 1px dashed rgba($dark-grey, 0.25);
-    border-left: 1px dashed rgba($dark-grey, 0.25);
-
-    h3, h4 {
-      margin-top: 0;
-    }
 
     article {
       margin-bottom: $spacing-04;
 
-      &:nth-child(3n+1) {
-        clear: both;
+      &:first-of-type a {
+        margin-top: $spacing-03;
+        margin-bottom: $spacing-05;
+        display: block;
       }
 
-      p {
-        font-size: smaller;
-        font-weight: 400;
-        text-transform: none;
-        line-height: 1.15;
-        @include font-serif;
-
-        &:first-of-type {
-          margin-bottom: $spacing-01;
-          color: $sanguine;
-        }
+      &:not(:first-of-type) h3 {
+        @include typescale-06;
       }
+
+      &:nth-of-type(6) {
+        clear: both; // Make sure fifth blog post starts on new line
+      }
+    }
+
+    .blog-img {
+      background-image: url('/static/doaj/images/bg/06.jpeg');
+      background-size: cover;
+      height: 375px;
+    }
+
+    .twitter-embed {
+      background-color: $fair-pink;
+      text-align: center;
     }
   }
 
-  &__featured-post {
+  &__volunteers {
     background-color: $fair-pink;
+    background-image: url('/static/doaj/images/bg/02.jpeg');
+    background-size: cover;
+    background-blend-mode: multiply;
+
+    header {
+      margin: 0 auto $spacing-05 auto;
+      width: 50vw;
+      text-align: center;
+    }
+
+    article {
+      margin-bottom: $spacing-05;
+    }
+
+    p {
+      margin-bottom: $spacing-03;
+    }
   }
-
-  &__other-posts {}
-
-  &__themed-post {
-    background-color: $fair-pink;
-  }
-
-  &__funding {}
-
-  &__volunteers {}
-
-  &__sponsors {}
 }
