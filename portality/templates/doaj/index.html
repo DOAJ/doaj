@@ -3,185 +3,148 @@
 {% block body_class %}homepage{% endblock %}
 
 {% block content %}
+<style>
+
+.homepage .primary-nav,
+.homepage .secondary-nav {
+  background-color:  transparent;
+}
+
+.homepage .secondary-nav {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.homepage .secondary-nav .nav-bar {
+  border: 0;
+}
+
+.homepage > header {
+  background-color: #F8F3EF;
+  background-image: url('/static/doaj/images/bg/01.jpeg');
+  background-size: cover;
+  mix-blend-mode: multiply;
+}
+
+</style>
+
 <main class="page-content">
-    <!-- Search bar -->
-    <section class="highlight">
-        <div class="container">
-            <p class="label">The Directory of Open Access Journals</p>
-            <h1>Find open access journals & articles.</h1>
-            <form class="row" role="search" action="{{ url_for("doaj.search_post") }}" method="post">
-                <input type="hidden" name="ref" value="homepage-box">
-                <input type="hidden" name="origin" value="ui">
-                <div class="col-xs-12 col-md-8">
-                    <div class="inline-fields">
-                        <input type="radio" id="journals" name="content-type" value="journals" checked>
-                        <label for="journals">Journals</label>
-                        <input type="radio" id="articles" name="content-type" value="articles">
-                        <label for="articles">Articles</label>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-md-8">
-                    <div class="input-group">
-                        <label for="keywords" class="sr-only">Search by keywords:</label>
-                        <input class="input-group__input" type="text" name="keywords" id="keywords" required>
-
-                        <label for="fields" class="sr-only">In the field:</label>
-                        <select class="input-group__input" name="fields" id="fields">
-                            <option value="all">In all fields</option>
-                            <option value="title">Title</option>
-                            <option value="abstract">Abstract</option>
-                            <option value="subject">Subject</option>
-                            <option value="author">Author</option>
-                        </select>
-
-                        <button class="input-group__input" type="submit">
-                            <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-
-            <section class="row mobile-scrollable-row">
-                <h2 class="sr-only">DOAJ in numbers</h2>
-                <p class="col-md-2 stat">
-                    <span class="stat__number">{{ statistics.countries }}</span>
-                    <span class="stat__description">countries represented</span>
-                </p>
-                <p class="col-md-2 stat">
-                    {# FIXME: link to query for journals published in 2019, need to find a better way to do this #}
-                    {# <a href='/search/journals?source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22range%22%3A%7B%22created_date%22%3A%7B%22gte%22%3A%221546300800000%22%7D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D'> #}
-                        <span class="stat__number">{{ statistics.new_journals }}</span>
-                        <span class="stat__description">new journals</span>
-                    {# </a> #}
-                </p>
-                <p class="col-md-2 stat">
-                    <a href='/search/journals?source=%7B"query"%3A%7B"filtered"%3A%7B"filter"%3A%7B"bool"%3A%7B"must"%3A%5B%7B"term"%3A%7B"bibjson.apc.has_apc"%3Afalse%7D%7D%2C%7B"term"%3A%7B"bibjson.other_charges.has_other_charges"%3Afalse%7D%7D%5D%7D%7D%2C"query"%3A%7B"match_all"%3A%7B%7D%7D%7D%7D%2C"size"%3A50%2C"sort"%3A%5B%7B"created_date"%3A%7B"order"%3A"desc"%7D%7D%5D%7D'>
-                        <span class="stat__number">{{ statistics.no_apc }}</span>
-                        <span class="stat__description">journals without APC<span style="text-transform: lowercase;">s</span></span>
-                    </a>
-                </p>
-                <p class="col-md-2 stat">
-                    <a href="{{ url_for("doaj.journals_search") }}">
-                        <span class="stat__number">{{ statistics.journals }}</span>
-                        <span class="stat__description">journals</span>
-                    </a>
-                </p>
-                <p class="col-md-2 stat">
-                    <a href="{{ url_for("doaj.articles_search") }}">
-                        <span class="stat__number">{{ statistics.abstracts }}</span>
-                        <span class="stat__description">article abstracts</span>
-                    </a>
-                </p>
-            </section>
-        </div>
-    </section>
-
     <!-- About -->
-    <section class="container about">
-        <div class="row">
-            <div class="col-sm-6">
-                <h2 class="sr-only">About</h2>
-                <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.</p>
-                <p>All DOAJ services are free of charge including being indexed. All data is freely available.</p>
-                <p>
-                    &rarr; <a href="/apply/why-index/">Why index your journal in DOAJ?</a> <br>
-                    &rarr; <a href="/apply/guide/">How to apply</a>
-                </p>
-                <p>
-                    <a href="/apply/" class="button button--secondary">Apply now</a>
-                </p>
-            </div>
+    <section class="highlight">
+      <div class="container">
+        <h2 class="sr-only">About</h2>
+          <div class="row">
+              <section class="col-sm-6">
+                  <h3 class="label">About the directory</h3>
+                  <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.</p>
+                  <p>All DOAJ services are free of charge including being indexed. All data is freely available.</p>
+                  <p>&rarr; <a href="/apply/why-index/">Why index your journal in DOAJ?</a></p>
+                  <p>&rarr; <a href="/apply/guide/">How to apply</a></p>
+                  <p>
+                      <a href="/apply/" class="button button--secondary">Apply now</a>
+                  </p>
+              </section>
 
-            <aside class="col-sm-6">
-                <h3 class="sr-only">Supporting or applying to DOAJ</h3>
-                <p>
-                    DOAJ is independent. All funding is via donations, 22% of which comes from sponsors and 78% from supporters.
-                </p>
-                <p>
-                    <a href="/support/" class="button button--primary">Support DOAJ</a>
-                </p>
-                <p>
-                    Journal publishers don’t need to donate to be part of DOAJ.
-                </p>
-            </aside>
-        </div>
+              <section class="col-sm-6">
+                  <h3 class="label">Funding</h3>
+                  <p>
+                      DOAJ is independent. All funding is via donations.
+                  </p>
+                  <div class="row">
+                    <p class="col-xs-6 stat">
+                        <span class="stat__number">22%</span>
+                        <span class="stat__description">from sponsors</span>
+                    </p>
+                    <p class="col-xs-6 stat">
+                        <span class="stat__number">78%</span>
+                        <span class="stat__description">from supporters</span>
+                    </p>
+                  </div>
+                  <p>
+                      <a href="/support/" class="button button--secondary">Support DOAJ</a>
+                  </p>
+                  <p>
+                      Journal publishers don’t need to donate to be part of DOAJ.
+                  </p>
+              </section>
+          </div>
+      </div>
     </section>
 
     <!-- Blog -->
     <section class="container homepage__blog">
-        <header class="flex-header">
-            <h2 class="flex-header__child">From the blog</h2>
-            <p class="flex-header__child">
-                <a href="https://blog.doaj.org/" class="button" target="_blank" rel="noopener">See all &rarr;</a>
-            </p>
-        </header>
+        <h2 class="label">From the blog</h2>
+        <p><a href="https://blog.doaj.org/" class="button" target="_blank" rel="noopener">See all &rarr;</a></p>
 
         <div class="row">
-            <section class="col-sm-3 homepage__featured-post">
-                {% for n in news[:1] %}
-                <article class="blog__post">
-                    <a href="{{ n.url }}" class="blog__link" target="_blank">
-                        {# TODO in the future (right now we don't have category) <p class="label">{{ n.category }}</p> #}
-                        <h3 class="blog__title">{{ n.title }}</h3>
-                        <p>{% autoescape off%}{{ n.summary }}{% endautoescape %}</p>
-                        <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
-                    </a>
-                </article>
-                {% endfor %}
-            </section>
+          {# Latest posts #}
+          <div class="col-md-8">
+            <div class="row">
+              <figure class="col-md-6">
+                <!--<img src="/static/doaj/images/bg/06.jpeg" height="100"/>-->
+              </figure>
+              {% for n in news[:1] %}
+              <article class="col-md-6">
+                  <a href="{{ n.url }}" class="blog__link" target="_blank">
+                      {# TODO in the future (right now we don't have category) <p class="label">{{ n.category }}</p> #}
+                      <h3 class="blog__title">{{ n.title }}</h3>
+                      <p>{% autoescape off%}{{ n.summary }}{% endautoescape %}</p>
+                      <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
+                  </a>
+              </article>
+              {% endfor %}
 
-            <div class="col-sm-6 homepage__other-posts">
-                {% for n in news[1:] %}
-                <article class="blog__post">
-                    <a href="{{ n.url }}" class="blog__link" target="_blank">
-                        <p class="label">{{ n.category }}</p>
-                        <h3 class="blog__title">{{ n.title }}</h3>
-                        <p>{% autoescape off%}{{ n.summary }}{% endautoescape %}</p>
-                        <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
-                    </a>
-                </article>
-                {% endfor %}
+              {% for n in news[1:] %}
+              <article class="col-md-3">
+                  <a href="{{ n.url }}" class="blog__link" target="_blank">
+                      <h3 class="blog__title">{{ n.title }}</h3>
+                      <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
+                  </a>
+              </article>
+              {% endfor %}
             </div>
+          </div>
 
-            <section class="col-sm-3 homepage__themed-post" style="max-height: 75vh; overflow-y: scroll;">
-                <h3 class="label"><a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">Tweets by @doajplus</a></h3>
-                <a class="twitter-timeline" data-chrome="transparent noheader" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-            </section>
 
-            {# TODO: we don't have the mechanics for special themed posts yet
-            <!-- Special / themed posts; when none: display Twitter feed -->
-            <section class="col-sm-3 homepage__themed-post">
-                <h3 class="label">Special post series: Myth busting</h3>
-                <ol>
-                    <li>
-                        <article>
-                            <a href="">
-                                <h4>Myth: “All open access journals can be listed on DOAJ”</h4>
-                            </a>
-                            <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
-                        </article>
-                    </li>
-                    <li>
-                        <article>
-                            <a href="">
-                                <h4>Myth: “Journals must meet the DOAJ seal criteria to be indexed”</h4>
-                            </a>
-                            <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
-                        </article>
-                    </li>
-                    <li>
-                        <article>
-                            <a href="">
-                                <h4>Myth: “DOAJ indexes predatory journals”</h4>
-                            </a>
-                            <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
-                        </article>
-                    </li>
-                </ol>
-            </section>
-            #}
+
+          {# Twitter feed #}
+          <section class="col-md-4 homepage__themed-post" style="max-height: 75vh; overflow-y: scroll;">
+              <h3 class="label"><a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">Tweets by @doajplus</a></h3>
+              <a class="twitter-timeline" data-chrome="transparent noheader" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+          </section>
         </div>
+
+        {# TODO: we don't have the mechanics for special themed posts yet
+        <!-- Special / themed posts; when none: display Twitter feed -->
+        <section class="col-sm-3 homepage__themed-post">
+            <h3 class="label">Special post series: Myth busting</h3>
+            <ol>
+                <li>
+                    <article>
+                        <a href="">
+                            <h4>Myth: “All open access journals can be listed on DOAJ”</h4>
+                        </a>
+                        <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
+                    </article>
+                </li>
+                <li>
+                    <article>
+                        <a href="">
+                            <h4>Myth: “Journals must meet the DOAJ seal criteria to be indexed”</h4>
+                        </a>
+                        <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
+                    </article>
+                </li>
+                <li>
+                    <article>
+                        <a href="">
+                            <h4>Myth: “DOAJ indexes predatory journals”</h4>
+                        </a>
+                        <time datetime="2019-10-03"><small>3 Oct 2019</small></time>
+                    </article>
+                </li>
+            </ol>
+        </section>
+        #}
     </section>
 
     <!-- Community -->
