@@ -1136,8 +1136,8 @@ var formulaic = {
             return edges.instantiate(formulaic.widgets.multipleField, params)
         },
         multipleField: function(params) {
-            this.fieldDef = params.fieldDef
-            this.max = this.fieldDef["repeatable"]["initial"] - 1
+            this.fieldDef = params.fieldDef;
+            this.max = this.fieldDef["repeatable"]["initial"] - 1;
 
             this.init = () => {
                 if (this.fieldDef["input"] === "group") {
