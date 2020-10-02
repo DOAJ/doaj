@@ -75,3 +75,11 @@ li.parsley-type {
 .form_group > input {
     width: 30%;
 }
+
+[name="notes__group"] {
+    display: block;
+}
+
+[name="notes__group"] input[disabled][value=""] {
+    display: none
+}

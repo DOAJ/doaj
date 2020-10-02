@@ -1,4 +1,5 @@
 <div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
+    {% set label %}
     <label>
         {% autoescape off %}{{ f.label | safe }}{% endautoescape %}
         {% if f.help("long_help") %}
@@ -6,6 +7,12 @@
         {% endif %}
         {% if f.optional %}<span class="form__question--optional">(Optional)</span>{% endif %}
     </label>
+    {% endset %}
+
+    {% if f.wtfield.__class__.__name__ != "BooleanField"  %}
+        {{ label }}
+    {% endif %}
+
     {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
     {% if "multiple_field" in f.get("widgets", []) %}
         <div class="removable_field">
@@ -20,6 +27,10 @@
         </div>
     {% else %}
         {{ f.render_form_control() }}
+    {% endif %}
+
+    {% if f.wtfield.__class__.__name__ == "BooleanField"  %}
+        {{ label }}
     {% endif %}
 
     <div id="{{ f.name }}_checkbox-errors"></div>

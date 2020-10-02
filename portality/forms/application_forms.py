@@ -1375,8 +1375,8 @@ class FieldDefinitions:
             "initial" : 1
         },
         "subfields": [
-            "note",
             "note_date",
+            "note",
             "note_id"
         ],
         "template": "application_form/_list.html",
