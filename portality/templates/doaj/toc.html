@@ -223,9 +223,11 @@
 
                                     </ul>
                                     {% if bibjson.plagiarism_detection %}
+                                    {% if bibjson.plagiarism_detection.get("detection") or bibjson.plagiarism_detection.get("url") %}
                                         <p>
-                                            &rarr; This journal checks for plagiarism.
+                                            &rarr; This journal <a href="{{bibjson.plagiarism_detection.get('url')}}" target="_blank" rel="noopener noreferrer">checks for plagiarism</a>.
                                         </p>
+                                    {% endif %}
                                     {% endif %}
                                 </div>
                             </article>
