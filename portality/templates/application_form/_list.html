@@ -7,18 +7,30 @@
         {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
     </label>
     {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
-    {% if "multiple_field" in f.get("widgets", []) %}
+    {% if "multiple_field" in f.get("widgets", []) or "infinite_repeat" in f.get("widgets", []) %}
+        {% set add_button %}
+            <div class="add_field__button_div">
+                <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add </button>
+            </div>
+        {% endset %}
+
+        {% if f.repeatable.add_button_placement == "top" %}
+            {{ add_button }}
+        {% endif %}
+
         <div class="removable_field">
             <div class= 'multiple_input'>
                 {% for entry in f.wtfield %}
                     {% set entry_template = f.entry_template %}
-                        {% include entry_template %}
+                    {% include entry_template %}
                 {% endfor %}
             </div>
-            <div class="add_field__button_div">
-                <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add </button>
-            </div>
         </div>
+
+        {% if f.repeatable.add_button_lacement != "top" %}
+            {{ add_button }}
+        {% endif %}
+
     {% else %}
         {% include entry_template %}
     {% endif %}

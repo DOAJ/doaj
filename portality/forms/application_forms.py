@@ -1390,7 +1390,8 @@ class FieldDefinitions:
         "input": "group",
         "label": "Note",
         "repeatable" : {
-            "initial" : 1
+            "initial" : 1,
+            "add_button_placement" : "top"
         },
         "subfields": [
             "note_date",
@@ -1400,7 +1401,7 @@ class FieldDefinitions:
         "template": "application_form/_list.html",
         "entry_template": "application_form/_entry_group_horizontal.html",
         "widgets": [
-            "multiple_field"
+            "infinite_repeat"
         ]
     }
 
@@ -2168,10 +2169,9 @@ class RequiredIfBuilder:
 class OnlyIfBuilder:
     @staticmethod
     def render(settings, html_attrs):
-        # FIXME: front end validator for this does not yet exist
+        html_attrs["data-parsley-only-if-fields"] = ",".join([f["field"] for f in settings.get("fields", [])])
         for f in settings.get('fields'):
-            html_attrs["data-parsley-only-if-field"] = f['field']
-            html_attrs["data-parsley-only-if-value"] = f.get('value', '')
+            html_attrs["data-parsley-only-if__" + f["field"]] = f.get('value', '')
 
     @staticmethod
     def wtforms(fields, settings):
@@ -2181,7 +2181,6 @@ class OnlyIfBuilder:
 class NotIfBuildier:
     @staticmethod
     def render(settings, html_attrs):
-        # FIXME: front end validator for this does not yet exist
         for f in settings.get('fields'):
             html_attrs["data-parsley-not-if-field"] = f['field']
             html_attrs["data-parsley-not-if-value"] = f.get('value', '')
@@ -2298,6 +2297,7 @@ JAVASCRIPT_FUNCTIONS = {
     "select": "formulaic.widgets.newSelect",
     "taglist": "formulaic.widgets.newTagList",
     "multiple_field": "formulaic.widgets.newMultipleField",
+    "infinite_repeat": "formulaic.widgets.newInfiniteRepeat",
     "autocomplete": "formulaic.widgets.newAutocomplete",
     "subject_tree" : "formulaic.widgets.newSubjectTree"
 }

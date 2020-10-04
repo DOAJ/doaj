@@ -76,7 +76,6 @@
         {% set fs = formulaic_context.fieldset("notes") %}
         <h3 class="label" type="button" data-toggle="collapse" data-target="#notes" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
         <div class="collapse" id="notes" aria-expanded="false">
-
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
                 {%  include field_template %}

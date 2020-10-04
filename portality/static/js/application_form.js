@@ -672,7 +672,7 @@ window.Parsley.addValidator("onlyIf", {
     priority: 1
 });
 
-window.Parsley.addValidator("onlyIf", {
+window.Parsley.addValidator("notIf", {
     validateString : function(value, requirement, parsleyInstance) {
         if (!!value){
             let field = parsleyInstance.$element.attr("data-parsley-required-if-field");

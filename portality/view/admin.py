@@ -212,8 +212,8 @@ def journal_page(journal_id):
         job_id = request.values.get("job")
         if job_id is not None and job_id != "":
             job = models.BackgroundJob.pull(job_id)
+            flash("Job to withdraw/reinstate journal has been submitted")
         fc.processor(source=journal)
-        flash("Job to withdraw/reinstate journal has been submitted");
         return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree)
 
     elif request.method == "POST":

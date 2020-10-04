@@ -80,6 +80,16 @@ li.parsley-type {
     display: block;
 }
 
+[name="notes__group"] input[disabled] {
+    width: 100%;
+}
+
 [name="notes__group"] input[disabled][value=""] {
     display: none
 }
+
+[name="notes__group"] textarea {
+    resize: vertical;
+    width: 100%;
+}
+

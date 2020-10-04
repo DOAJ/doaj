@@ -1173,10 +1173,87 @@ var formulaic = {
             this.init();
         },
 
-        newMultipleField : function(params) {
-            return edges.instantiate(formulaic.widgets.multipleField, params)
+        newInfiniteRepeat : function(params) {
+            return edges.instantiate(formulaic.widgets.InfiniteRepeat, params)
         },
-        multipleField: function(params) {
+        InfiniteRepeat: function(params) {
+            this.fieldDef = params.fieldDef;
+
+            this.idRx = /(.+?-)(\d+)(-.+)/;
+
+            this.init = function() {
+                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
+                for (var i = 0 ; i < this.divs.length; i++) {
+                    var div = $(this.divs[i]);
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    feather.replace();
+                }
+
+                this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+                this.removeFieldBtns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+
+                edges.on(this.addFieldBtn, "click", this, "addField");
+                edges.on(this.removeFieldBtns, "click", this, "removeField");
+            };
+
+            this.addField = function() {
+                var first = $(this.divs[0]);
+
+                var currentLargest = -1;
+                for (var i = 0; i < this.divs.length; i++) {
+                    var div = $(this.divs[i]);
+                    var id = div.find(":input").attr("id");
+                    var match = id.match(this.idRx);
+                    var thisId = parseInt(match[2]);
+                    if (thisId > currentLargest) {
+                        currentLargest = thisId;
+                    }
+                }
+                var newId = currentLargest + 1;
+
+                var template = first.html();
+                var frag = '<div class="form_group" name="' + this.fieldDef["name"] + '__group">' + template + '</div>';
+                var jqt = $(frag);
+                var that = this;
+                jqt.find(":input").each(function() {
+                    var id = $(this).attr("id");
+                    var match = id.match(that.idRx);
+                    if (match) {
+                        var bits = id.split(that.idRx);
+                        var newName = bits[1] + newId + bits[3];
+                        $(this).attr("id", newName).attr("name", newName).val("");
+                    } else {
+                        // could be the remove button
+                        if (id.substring(0, "remove_field".length) === "remove_field") {
+                            $(this).attr("id", "remove_field__" + that.fieldDef["name"] + "--id_" + newId);
+                        }
+                    }
+                });
+
+                var topPlacement = this.fieldDef.repeatable.add_button_placement === "top";
+                if (topPlacement) {
+                    first.before(jqt);
+                } else {
+                    $(this.divs[this.divs.length - 1]).after(jqt);
+                }
+
+                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
+                this.removeFieldBtns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                edges.on(this.removeFieldBtns, "click", this, "removeField");
+            };
+
+            this.removeField = function(element) {
+                var container = $(element).parents("div[name='" + this.fieldDef["name"] + "__group']");
+                container.remove();
+            };
+
+            this.init();
+        },
+
+        newMultipleField : function(params) {
+            return edges.instantiate(formulaic.widgets.MultipleField, params)
+        },
+        MultipleField: function(params) {
             this.fieldDef = params.fieldDef;
             this.max = this.fieldDef["repeatable"]["initial"] - 1;
 
