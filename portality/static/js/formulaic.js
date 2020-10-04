@@ -1089,6 +1089,47 @@ var formulaic = {
             this.init();
         },
 
+        newClickableOwner : function(params) {
+            return edges.instantiate(formulaic.widgets.ClickableOwner, params)
+        },
+        ClickableOwner : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+
+            this.ns = "formulaic-clickableowner";
+
+            this.link = false;
+
+            this.init = function() {
+                var elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                edges.on(elements, "change.ClickableOwner", this, "updateOwner");
+                this.updateOwner(elements);
+            };
+
+            this.updateOwner = function(element) {
+                var that = $(element);
+                var val = that.val();
+
+                if (val) {
+                    if (this.link) {
+                        this.link.attr("href", "/account/" + val);
+                    } else {
+                        var classes = edges.css_classes(this.ns, "visit");
+                        var id = edges.css_id(this.ns, this.fieldDef.name);
+                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">go to account page</a></small></p>');
+
+                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                        this.link = $(selector, this.form.context);
+                    }
+                } else if (this.link) {
+                    this.link.remove();
+                    this.link = false;
+                }
+            };
+
+            this.init();
+        },
+
         newClickableUrl : function(params) {
             return edges.instantiate(formulaic.widgets.ClickableUrl, params)
         },
