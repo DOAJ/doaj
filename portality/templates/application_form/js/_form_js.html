@@ -24,11 +24,15 @@
             fieldsets : {{ formulaic_context.ui_settings|tojson }}
         });
 
-        doaj.af.active = doaj.af.applicationFormFactory({
-        {% if form_diff %}
-            formDiff: {{ form_diff|tojson }}
+        {% if factory == "journal" %}
+            doaj.af.active = doaj.af.journalFormFactory({});
+        {% else %}
+            doaj.af.active = doaj.af.applicationFormFactory({
+            {% if form_diff %}
+                formDiff: {{ form_diff|tojson }}
+            {% endif %}
+            });
         {% endif %}
-        });
         doaj.af.active.init();
 
     });

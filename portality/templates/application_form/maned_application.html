@@ -16,44 +16,43 @@
             <div class="col-md-8 page">
                 <section class="page-content">
                     <form id="{{ form_id }}"
-                      context = "{{ formulaic_context.name }}"
+                      data-context = "{{ formulaic_context.name }}"
                       class="application_form"
                       novalidate
                       action="{{ form_action }}"
                       method="post"
                       data-formulaic-after="{{ formulaic_after }}"
-                      draft_id="{{ obj.id }}"
                     >
-                    <div class="tab form-section">
-                        {% include "application_form/01-oa-compliance/index.html" %}
-                    </div>
-                    <div class="tab form-section">
-                        {% include "application_form/02-about/index.html" %}
-                    </div>
-                    <div class="tab form-section">
-                        {% include "application_form/03-copyright-licensing/index.html" %}
-                    </div>
-                    <div class="tab form-section">
-                        {% include "application_form/04-editorial/index.html" %}
-                    </div>
-                    <div class="tab form-section">
-                        {% include "application_form/05-business-model/index.html" %}
-                    </div>
-                    <div class="tab form-section">
-                        {% include "application_form/06-best-practice/index.html" %}
-                    </div>
-                    <div class="tab form-section row">
-                        <div class="col-md-4">
-                            {% include "application_form/admin/application.html" %}
+                        <div class="tab form-section">
+                            {% include "application_form/01-oa-compliance/index.html" %}
                         </div>
-                        <div class="col-md-8">
-                            {% include "application_form/07-review/index.html" %}
+                        <div class="tab form-section">
+                            {% include "application_form/02-about/index.html" %}
                         </div>
-                    </div>
-                    <div class="buttons">
-                        {% include "application_form/_buttons.html" %}
-                    </div>
-                </form>
+                        <div class="tab form-section">
+                            {% include "application_form/03-copyright-licensing/index.html" %}
+                        </div>
+                        <div class="tab form-section">
+                            {% include "application_form/04-editorial/index.html" %}
+                        </div>
+                        <div class="tab form-section">
+                            {% include "application_form/05-business-model/index.html" %}
+                        </div>
+                        <div class="tab form-section">
+                            {% include "application_form/06-best-practice/index.html" %}
+                        </div>
+                        <div class="tab form-section row">
+                            <div class="col-md-4">
+                                {% include "application_form/admin/application.html" %}
+                            </div>
+                            <div class="col-md-8">
+                                {% include "application_form/07-review/index.html" %}
+                            </div>
+                        </div>
+                        <div class="buttons">
+                            {% include "application_form/_buttons.html" %}
+                        </div>
+                    </form>
 
                     {% set fs = formulaic_context.fieldset("quick_reject") %}
                     <div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">

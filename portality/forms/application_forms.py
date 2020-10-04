@@ -1161,9 +1161,18 @@ class FieldDefinitions:
             "long_help": ["An <a href='https://orcid.org/'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
                          "authors."],
         },
-        "validate": [
-            "required"
-        ]
+        "contexts" : {
+            "public" : {
+                "validate": [
+                    "required"
+                ]
+            },
+            "update_request" : {
+                "validate" : [
+                    "required"
+                ]
+            }
+        }
     }
 
     OPEN_CITATIONS = {
@@ -1177,9 +1186,18 @@ class FieldDefinitions:
         "help": {
             "long_help": ["The <a href='https://i4oc.org/#goals' target='_blank'>I4OC standards</a> ask that citations are structured, separable, and open. "],
         },
-        "validate": [
-            "required"
-        ]
+        "contexts" : {
+            "public" : {
+                "validate": [
+                    "required"
+                ]
+            },
+            "update_request" : {
+                "validate" : [
+                    "required"
+                ]
+            }
+        }
     }
 
     #######################################
@@ -1410,6 +1428,7 @@ class FieldDefinitions:
 
     OPTIONAL_VALIDATION = {
         "name" : "make_all_fields_optional",
+        "label" : "Allow save without validation",
         "input" : "checkbox",
         "widget" : {
             "optional_validation"

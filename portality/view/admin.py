@@ -213,7 +213,8 @@ def journal_page(journal_id):
         if job_id is not None and job_id != "":
             job = models.BackgroundJob.pull(job_id)
         fc.processor(source=journal)
-        return fc.render_template(lock=lockinfo, job=job, obj=journal)
+        flash("Job to withdraw/reinstate journal has been submitted");
+        return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=journal)
@@ -228,7 +229,7 @@ def journal_page(journal_id):
                 flash(str(e))
                 return redirect(url_for("admin.journal_page", journal_id=journal.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(lock=lockinfo, obj=journal)
+            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
 
 ######################################################
 # Endpoints for reinstating/withdrawing journals from the DOAJ

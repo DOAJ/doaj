@@ -5,12 +5,23 @@ $.extend(doaj, {
 
         applicationFormFactory : (params) => {
             let form = $(".application_form");
-            let context = form.attr("context");
+            let context = form.attr("data-context");
             switch (context) {
                 case "public":
                     return doaj.af.newPublicApplicationForm(params);
                 case "admin":
                     return doaj.af.newManEdApplicationForm(params);
+                default:
+                    throw "Could not extract a context from the form";
+            }
+        },
+
+        journalFormFactory : (params) => {
+            let form = $(".application_form");
+            let context = form.attr("data-context");
+            switch (context) {
+                case "admin":
+                    return doaj.af.newManEdJournalForm(params);
                 default:
                     throw "Could not extract a context from the form";
             }
@@ -34,7 +45,7 @@ $.extend(doaj, {
             this.form_diff = params.hasOwnProperty("form_diff") && params.form_diff !== "" ? params.form_diff : 0;
 
             this.form = $(".application_form");
-            this.context = this.form.attr("context");
+            this.context = this.form.attr("data-context");
             this.tabs = $(".tab");
             this.sections = $(".form-section");
             this.draft_id = false;
@@ -461,6 +472,75 @@ $.extend(doaj, {
                 $("#open_quick_reject").on("click", (e) => {
                     e.preventDefault();
                     $("#modal-quick_reject").show();
+                });
+
+                $("#unlock").click(function(event) {
+                    event.preventDefault();
+                    let id = $(this).attr("data-id");
+                    let type = $(this).attr("data-type");
+                    that.unlock({type : type, id : id})
+                });
+
+                this.prepNavigation();
+
+                edges.up(this, "init");
+            };
+
+            this.showTab = function(n) {
+                edges.up(this, "showTab", [n]);
+
+                if (this.currentTab === 6) {
+                    this._modifyReviewPage();
+                } else {
+                    this._defaultPageView();
+                }
+            };
+
+            this._modifyReviewPage = function() {
+                let page = $(".page");
+                page.removeClass("col-md-8");
+                page.addClass("col-md-12");
+                let buttons = $(".buttons");
+                buttons.addClass("col-md-8 col-md-offset-4");
+                $(".side-menus").hide();
+                this._generate_values_preview();
+            };
+
+            this._defaultPageView = function() {
+                let page = $(".page");
+                page.removeClass("col-md-12");
+                page.addClass("col-md-8");
+                let buttons = $(".buttons");
+                buttons.removeClass("col-md-8 col-md-offset-4");
+                $(".side-menus").show();
+            };
+
+            this._generate_values_preview = function() {
+                $(".admin_value_preview").each((i,elem) => {
+                    let sourceId = $(elem).attr("data-source");
+                    let input = $(":input").filter(sourceId);
+                    let type = input.attr("type");
+                    if (input.val()) {
+                        $(elem).html(input.val());
+                    } else {
+                        $(elem).html("[no value]");
+                    }
+                })
+            };
+        },
+
+        newManEdJournalForm : function(params) {
+            return edges.instantiate(doaj.af.ManEdJournalForm, params, doaj.af.newApplicationForm);
+        },
+        ManEdJournalForm : function(params) {
+
+            this.init = function() {
+                this.currentTab = 6;
+                this.previousTab = 5;
+                var that = this;
+
+                $(".application-nav__list-item").each((idx, x) => {
+                    x.className = "application-nav__list-item application-nav__list-item--active";
                 });
 
                 $("#unlock").click(function(event) {
