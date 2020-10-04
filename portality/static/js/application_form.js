@@ -219,6 +219,11 @@ $.extend(doaj, {
                             if (f.label !== undefined && !f.hasOwnProperty("conditional") || (f.subfield === undefined && formulaic.active.isConditionSatisfied({field: f.name}))){
                                 let value = this.determineFieldsValue(f.name);
                                 let text = this.convertValueToText(value);
+
+                                if (f.validate && $.inArray("is_url", f.validate) !== -1) {
+                                    text = '<a href="' + text + '" target="_blank">' + text + '</a>';
+                                }
+
                                 let html = `
                             <tr>
                                 <td id="` + f.name + `__review_label">` + f.label + `</td>
