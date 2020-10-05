@@ -493,11 +493,8 @@ class TestModels(DoajTestCase):
 
     def test_09_account(self):
         # Make a new account
-        acc = models.Account.make_account(
-            username='mrs_user',
-            email='user@example.com',
-            roles=['api', 'associate_editor'],
-        )
+        acc = models.Account.make_account(email='user@example.com', username='mrs_user',
+                                          roles=['api', 'associate_editor'])
 
         # Check the new user has the right roles
         assert acc.has_role('api')
@@ -509,11 +506,7 @@ class TestModels(DoajTestCase):
         assert acc.api_key is not None
 
         # Make another account with no API access
-        acc2 = models.Account.make_account(
-            username='mrs_user2',
-            email='user@example.com',
-            roles=['editor']
-        )
+        acc2 = models.Account.make_account(email='user@example.com', username='mrs_user2', roles=['editor'])
         assert not acc2.has_role('api')
 
         # Ensure we don't get an api key

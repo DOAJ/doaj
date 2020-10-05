@@ -7,6 +7,7 @@ from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
 
+
 class Account(DomainObject, UserMixin):
     __type__ = 'account'
 
@@ -16,33 +17,40 @@ class Account(DomainObject, UserMixin):
         super(Account, self).__init__(**kwargs)
 
     @classmethod
-    def make_account(cls, username, name=None, email=None, roles=None, associated_journal_ids=None):
-        if not roles:
+    def make_account(cls, email, username=None, name=None, roles=None, associated_journal_ids=None):
+        if roles is None:
             roles = []
 
-        if not associated_journal_ids:
+        if associated_journal_ids is None:
             associated_journal_ids = []
 
-        a = cls.pull(username)
+        # If we have an existing account with these credentials, supply it
+        a = cls.pull(username) or cls.pull_by_email(email)
         if a:
             return a
 
-        a = Account(id=username)
+        # Create a new account
+        _id = username or cls.new_short_uuid()
+        a = Account(id=_id)
+        a.set_email(email)
         a.set_name(name) if name else None
-        a.set_email(email) if email else None
 
         for role in roles:
             a.add_role(role)
-
         for jid in associated_journal_ids:
             a.add_journal(jid)
+
+        # New accounts don't have passwords set - create a reset token for password.
         reset_token = uuid.uuid4().hex
         # give them 14 days to create their first password if timeout not specified in config
-        a.set_reset_token(reset_token, app.config.get("PASSWORD_CREATE_TIMEOUT", app.config.get('PASSWORD_RESET_TIMEOUT', 86400) * 14))
+        a.set_reset_token(reset_token, app.config.get("PASSWORD_CREATE_TIMEOUT",
+                                                      app.config.get('PASSWORD_RESET_TIMEOUT', 86400) * 14))
         return a
 
     @classmethod
-    def pull_by_email(cls, email):
+    def pull_by_email(cls, email: str):
+        if email is None:
+            return None
         res = cls.query(q='email:"' + email + '"')
         if res.get('hits', {}).get('total', 0) == 1:
             return cls(**res['hits']['hits'][0]['_source'])
@@ -63,7 +71,7 @@ class Account(DomainObject, UserMixin):
                 ed = datetime.strptime(expires, "%Y-%m-%dT%H:%M:%SZ")
                 if ed < datetime.now():
                     return None
-            except:
+            except ValueError:
                 return None
         return cls(**obs[0])
 
@@ -94,7 +102,7 @@ class Account(DomainObject, UserMixin):
     def check_password(self, password):
         try:
             return check_password_hash(self.data['password'], password)
-        except:
+        except KeyError:
             app.logger.error("Problem with user '{}' account: no password field".format(self.data['id']))
             raise
 
@@ -215,4 +223,3 @@ class Account(DomainObject, UserMixin):
             return trunc_uuid
         else:
             return cls.new_short_uuid()
-

@@ -6,7 +6,7 @@ from typing import List
 
 from portality.formcontext.choices import Choices
 from portality.core import app
-from portality.models import Journal, EditorGroup
+from portality.models import Journal, EditorGroup, Account
 
 from datetime import datetime
 from portality import regex
@@ -519,3 +519,29 @@ class CustomRequired(object):
 
             field.errors[:] = []
             raise validators.StopValidation(message)
+
+
+class EmailAvailable(object):
+    def __init__(self, message=None):
+        if not message:
+            message = "Email address is already in use"
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data is not None:
+            existing = Account.pull_by_email(field.data)
+            if existing is not None:
+                raise validators.ValidationError(self.message)
+
+
+class IdAvailable(object):
+    def __init__(self, message=None):
+        if not message:
+            message = "Account ID already in use"
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data is not None:
+            existing = Account.pull(field.data)
+            if existing is not None:
+                raise validators.ValidationError(self.message)

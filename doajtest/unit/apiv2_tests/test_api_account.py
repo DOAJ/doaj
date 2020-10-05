@@ -36,7 +36,8 @@ class TestAPIClient(DoajTestCase):
 
     def test_01_api_role(self):
         """test the new roles added for the API"""
-        a1 = models.Account.make_account(username="a1_user", name="a1_name", email="a1@example.com", roles=["user", "api"], associated_journal_ids=[])
+        a1 = models.Account.make_account(email="a1@example.com", username="a1_user", name="a1_name",
+                                         roles=["user", "api"], associated_journal_ids=[])
         a1.save(blocking=True)
 
         # Check an API key was generated on account creation
@@ -53,11 +54,13 @@ class TestAPIClient(DoajTestCase):
 
     def test_02_api_required_decorator(self):
         """test the api_key_required decorator"""
-        a1 = models.Account.make_account(username="a1_user", name="a1_name", email="a1@example.com", roles=["user", "api"], associated_journal_ids=[])
+        a1 = models.Account.make_account(email="a1@example.com", username="a1_user", name="a1_name",
+                                         roles=["user", "api"], associated_journal_ids=[])
         a1_key = a1.api_key
         a1.save(blocking=True)               # a1 has api access
 
-        a2 = models.Account.make_account(username="a2_user", name="a2_name", email="a2@example.com", roles=["user", "api"], associated_journal_ids=[])
+        a2 = models.Account.make_account(email="a2@example.com", username="a2_user", name="a2_name",
+                                         roles=["user", "api"], associated_journal_ids=[])
         a2_key = a2.api_key     # user gets the key before access is removed
         a2.remove_role('api')
         a2.save(blocking=True)               # a2 does not have api access.
@@ -73,11 +76,13 @@ class TestAPIClient(DoajTestCase):
 
     def test_03_api_optional_decorator(self):
         """test the api_key_optional decorator"""
-        a1 = models.Account.make_account(username="a1_user", name="a1_name", email="a1@example.com", roles=["user", "api"], associated_journal_ids=[])
+        a1 = models.Account.make_account(email="a1@example.com", username="a1_user", name="a1_name",
+                                         roles=["user", "api"], associated_journal_ids=[])
         a1_key = a1.api_key
         a1.save(blocking=True)               # a1 has api access
 
-        a2 = models.Account.make_account(username="a2_user", name="a2_name", email="a2@example.com", roles=["user", "api"], associated_journal_ids=[])
+        a2 = models.Account.make_account(email="a2@example.com", username="a2_user", name="a2_name",
+                                         roles=["user", "api"], associated_journal_ids=[])
         a2_key = a2.api_key     # user gets the key before access is removed
         a2.remove_role('api')
         a2.save(blocking=True)               # a2 does not have api access.

@@ -14,11 +14,6 @@
             <div class="form__question">
                 {{ render_field(form.email, placeholder="user@example.com") }}
             </div>
-            <div class="form__question">
-                {{ render_field(form.password, placeholder="********") }}
-                <br/>
-                {{ render_field(form.password_confirm, placeholder="********") }}
-            </div>
             {% if current_user.is_authenticated and current_user.has_role("create_user") %}
                 {# Admins can specify a user ID #}
                 <div class="form__question">

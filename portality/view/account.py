@@ -3,14 +3,14 @@ import uuid, json
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
 from flask_login import login_user, logout_user, current_user, login_required
-from wtforms import StringField, HiddenField, PasswordField, ValidationError, validators, Form
+from wtforms import StringField, HiddenField, PasswordField, validators, Form
 
+from portality import util, app_email
 from portality.core import app
 from portality.decorators import ssl_required, write_required
-from portality import models
-from portality import util, app_email
-
-from portality.forms.validate import ReservedUsernames
+from portality.models import Account
+from portality.forms.validate import EmailAvailable, ReservedUsernames, IdAvailable
+from portality.notifications.application_emails import send_account_created_email
 
 blueprint = Blueprint('account', __name__)
 
@@ -29,7 +29,7 @@ def index():
 @ssl_required
 @write_required()
 def username(username):
-    acc = models.Account.pull(username)
+    acc = Account.pull(username)
 
     if acc is None:
         abort(404)
@@ -51,7 +51,7 @@ def username(username):
         newdata = request.json if request.json else request.values
         if newdata.get('id', False):
             if newdata['id'] != username:
-                acc = models.Account.pull(newdata['id'])
+                acc = Account.pull(newdata['id'])
         if request.values.get('submit', False) == 'Generate a new API Key':
             acc.generate_api_key()
         for k, v in newdata.items():
@@ -117,7 +117,7 @@ class RedirectForm(Form):
 
 
 class LoginForm(RedirectForm):
-    username = StringField('E-mail address or username', [validators.DataRequired()])
+    user = StringField('E-mail address', [validators.DataRequired()])
     password = PasswordField('Password', [validators.DataRequired()])
 
 
@@ -128,10 +128,15 @@ def login():
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
     if request.method == 'POST' and form.validate():
         password = form.password.data
-        username = form.username.data
-        user = models.Account.pull(username)
-        if user is None:
-            user = models.Account.pull_by_email(username)
+        username = form.user.data
+
+        # If our settings allow, try getting the user account by ID first, then by email address
+        if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
+            user = Account.pull(username) or Account.pull_by_email(username)
+        else:
+            user = Account.pull_by_email(username)
+
+        # If we have a verified user account, proceed to attempt login
         try:
             if user is not None and user.check_password(password):
                 login_user(user, remember=True)
@@ -140,7 +145,8 @@ def login():
             else:
                 flash('Incorrect username/password', 'error')
         except KeyError:
-            abort(500)
+            abort(500)  # fixme: this may be the case where password is unverified - notify the user?
+
     if request.method == 'POST' and not form.validate():
         flash('Invalid credentials', 'error')
         # to do: choose which template should be generated
@@ -158,9 +164,8 @@ def forgot():
     if request.method == 'POST':
         # get hold of the user account
         un = request.form.get('un', "")
-        account = models.Account.pull(un)
-        if account is None:
-            account = models.Account.pull_by_email(un)
+        account = Account.pull(un) or Account.pull_by_email(un)
+
         if account is None:
             util.flash_with_url('Hm, sorry, your account username / email address is not recognised.' + CONTACT_INSTR, 'error')
             return render_template('account/forgot.html')
@@ -174,21 +179,19 @@ def forgot():
         account.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
         account.save()
 
-        sep = "/"
-        if request.url_root.endswith("/"):
-            sep = ""
-        reset_url = request.url_root + sep + "account/reset/" + reset_token
+        reset_url = url_for('account.reset', reset_token=account.reset_token, _external=True)
 
-        to = [account.data['email']]
+        to = [account.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', app.config['ADMIN_EMAIL'])
         subject = app.config.get("SERVICE_NAME", "") + " - password reset"
         try:
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
-                                template_name="email/password_reset.txt",
-                                account_id=account.id,
+                                template_name="email/account_password_reset.txt",
+                                email=account.email,
                                 reset_url=reset_url,
+                                forgot_pw_url=url_for('account.forgot', _external=True)
                                 )
             flash('Instructions to reset your password have been sent to you. Please check your emails.')
             if app.config.get('DEBUG', False):
@@ -207,7 +210,7 @@ def forgot():
 @ssl_required
 @write_required()
 def reset(reset_token):
-    account = models.Account.get_by_reset_token(reset_token)
+    account = Account.get_by_reset_token(reset_token)
     if account is None:
         abort(404)
 
@@ -226,7 +229,7 @@ def reset(reset_token):
         account.set_password(pw)
         account.remove_reset_token()
         account.save()
-        flash("Password has been reset", "success")
+        flash("New password has been set", "success")
 
         # log the user in
         login_user(account, remember=True)
@@ -241,25 +244,15 @@ def logout():
     return redirect('/')
 
 
-def existscheck(form, field):
-    test = models.Account.pull(form.w.data)
-    if test:
-        raise ValidationError('Taken! Please try another.')
-
-
 class RegisterForm(RedirectForm):
-    identifier = StringField('ID')
+    identifier = StringField('ID', [ReservedUsernames(), IdAvailable()])
     name = StringField('Name', [validators.Length(min=3, max=64)])
     email = StringField('Email Address', [
         validators.DataRequired(),
         validators.Length(min=3, max=254),
-        validators.Email(message='Must be a valid email address')
+        validators.Email(message='Must be a valid email address'),
+        EmailAvailable()
     ])
-    password = PasswordField('Password', [
-        validators.DataRequired(),
-        validators.EqualTo('password_confirm', message='Passwords must match')
-    ])
-    password_confirm = PasswordField('Repeat Password', [validators.DataRequired()])
     roles = StringField('Roles')
 
 
@@ -275,26 +268,22 @@ def register():
         # Redirect if the user is already registered and don't have permission to create new ones
         return redirect('/account')
 
-    form = RegisterForm(request.form, csrf_enabled=False, roles='api')
+    form = RegisterForm(request.form, csrf_enabled=False, roles='api', identifier=Account.new_short_uuid())
     if request.method == 'POST' and form.validate():
-        account = models.Account.make_account(
-            name=form.name.data,
-            username=models.Account.new_short_uuid(),
-            email=form.email.data,
-            roles=[r.strip() for r in form.roles.data.split(',')]
-        )
-        account.set_password(form.password.data)
-        if form.identifier.data:
-            account.set_id(form.identifier.data)
+        account = Account.make_account(email=form.email.data, username=form.identifier.data, name=form.name.data,
+                                       roles=[r.strip() for r in form.roles.data.split(',')])
         account.save()
-        flash('Account created for ' + account.id + '. If not listed below, refresh the page to catch up.', 'success')
 
-        # If this isn't admin 3rd party creation, login the user
-        if not current_user.is_authenticated:
-            login_user(account, remember=True)
+        send_account_created_email(account)
 
-        #return redirect(get_redirect_target(form=form)) #fixme: redirect
-        return redirect(url_for("account.username", username=current_user.id))
+        if current_user.is_authenticated:
+            flash('Account created for ' + account.email + '.', 'success')
+        else:
+            flash('Thank you, please verify email address ' + form.email.data + ' to set your password and login.',
+                  'success')
+
+        return redirect(get_redirect_target(form=form))
+
     if request.method == 'POST' and not form.validate():
         flash('Please correct the errors', 'error')
     return render_template('account/register.html', form=form)

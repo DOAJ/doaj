@@ -397,3 +397,26 @@ def send_publisher_reject_email(application, note=None, update_request=False):
                                 note=note)
 
     return send_instructions
+
+
+def send_account_created_email(account):
+    reset_url = url_for('account.reset', reset_token=account.reset_token, _external=True)
+    forgot_pw_url = url_for('account.forgot', _external=True)
+
+    password_create_timeout_seconds = int(
+        app.config.get("PASSWORD_CREATE_TIMEOUT", app.config.get('PASSWORD_RESET_TIMEOUT', 86400) * 14))
+    password_create_timeout_days = password_create_timeout_seconds / (60 * 60 * 24)
+
+    to = [account.email]
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME", "") + " - account created, please verify your email address"
+
+    app_email.send_mail(to=to,
+                        fro=fro,
+                        subject=subject,
+                        template_name="email/account_created.txt",
+                        reset_url=reset_url,
+                        email=account.email,
+                        timeout_days=password_create_timeout_days,
+                        forgot_pw_url=forgot_pw_url
+                        )
