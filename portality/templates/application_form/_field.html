@@ -35,6 +35,12 @@
 
     <div id="{{ f.name }}_checkbox-errors"></div>
 
+    {% if form_diff %}
+        {% if f.name in form_diff %}
+            <strong>WAS: {{ form_diff[f.name].a }}</strong>
+        {% endif %}
+    {% endif %}
+
     {% if f.wtfield.errors %}
     <div class="backend_validation_errors">
         <ul class="parsley-errors-list filled" aria-hidden="false">
