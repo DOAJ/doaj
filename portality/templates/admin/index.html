@@ -3,11 +3,11 @@
 {% include "_edges_common_css.html" %}
 
 {% block admin_content %}
-    <header class="col-xs-12">
+<header>
     <h2>Journals</h2>
-    </header>
+</header>
 
-    <div id="admin_journals"></div>
+<div id="admin_journals"></div>
 
 {% endblock %}
 
@@ -27,5 +27,3 @@
     <script type="text/javascript" src="/static/js/edges/admin.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endblock %}
-
-

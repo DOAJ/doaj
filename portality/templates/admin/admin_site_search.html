@@ -4,7 +4,7 @@
 
 {% block admin_content %}
 
-<header class="col-xs-12">
+<header>
     <h2>Journals and Articles</h2>
 </header>
 
@@ -18,20 +18,18 @@
                 <form class="form-horizontal" id="journal_bulk_form">
                     <fieldset>
                         <div class="form-group" id="bulk_action-container">
-                            <div class="col-md-12">
-                                <select class="multiformbox-selector form-control" id="bulk_action" name="bulk_action">
-                                    <option selected value="">Select action...</option>
-                                    <option value="withdraw">Withdraw from DOAJ</option>
-                                    <option value="reinstate">Reinstate into DOAJ</option>
-                                    <option value="edit_metadata">Journal: edit metadata ...</option>
-                                    <option value="editor_group">Journal: Assign to editor group...</option>
-                                    <option value="note">Journal: Add a note...</option>
+                            <select class="multiformbox-selector form-control" id="bulk_action" name="bulk_action">
+                                <option selected value="">Select action...</option>
+                                <option value="withdraw">Withdraw from DOAJ</option>
+                                <option value="reinstate">Reinstate into DOAJ</option>
+                                <option value="edit_metadata">Journal: edit metadata ...</option>
+                                <option value="editor_group">Journal: Assign to editor group...</option>
+                                <option value="note">Journal: Add a note...</option>
 
-                                    {%  if current_user.has_role("ultra_bulk_delete") %}
-                                    <option value="delete">Delete records</option>
-                                    {%  endif %}
-                                </select>
-                            </div>
+                                {%  if current_user.has_role("ultra_bulk_delete") %}
+                                <option value="delete">Delete records</option>
+                                {%  endif %}
+                            </select>
                         </div>
                         <div class="form-group multiformbox-container" style="display: none" id="editor_group-container">
                             <div class="col-md-12">
@@ -52,16 +50,12 @@
                             {% endautoescape %}
                         </div>
                         <div class="form-group">
-                            <div class="col-md-12">
-                                <button id="bulk-submit" class="btn btn-danger pull-right multiformbox-submit" disabled="disabled">Submit</button>
-                            </div>
+                            <button id="bulk-submit" class="btn btn-danger pull-right multiformbox-submit" disabled="disabled">Submit</button>
                         </div>
                         <div class="form-group" id="bulk_help-container">
-                            <div class="col-md-12">
-                                <p id="any_type_error" class="red multiformbox-error" style="display: none">You need to select an option in the "Journals vs. Articles facet" to use this option</p>
-                                <p id="journal_type_error" class="red multiformbox-error" style="display:none">You need to select "Journal" from the "Journals vs. Articles facet" to use this option</p>
-                                <p id="invalid_email" class="red multiformbox-error" style="display:none">Please enter a valid email address for the contact</p>
-                            </div>
+                            <p id="any_type_error" class="red multiformbox-error" style="display: none">You need to select an option in the "Journals vs. Articles facet" to use this option</p>
+                            <p id="journal_type_error" class="red multiformbox-error" style="display:none">You need to select "Journal" from the "Journals vs. Articles facet" to use this option</p>
+                            <p id="invalid_email" class="red multiformbox-error" style="display:none">Please enter a valid email address for the contact</p>
                         </div>
                     </fieldset>
                 </form>

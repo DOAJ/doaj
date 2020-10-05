@@ -4,9 +4,9 @@
 
 {% block admin_content %}
 
-<header class="col-xs-12">
+<header>
     <h2>Editor Groups</h2>
-    </header>
+</header>
 
 <a href="{{url_for('admin.editor_group')}}"><button class="btn btn-info" style="margin-top: 20px">New Editor Group</button></a>
 
@@ -29,4 +29,3 @@
     <script type="text/javascript" src="/static/js/edges/admin.editor_groups.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endblock %}
-

@@ -4,7 +4,7 @@ $.extend(true, doaj, {
         activeEdges: {},
 
         editUserLink : function (val, resultobj, renderer) {
-            var result = '<a class="edit_user_link" href="';
+            var result = '<a class="edit_user_link button" href="';
             result += doaj.userSearchConfig.userEditUrl;
             result += resultobj['id'];
             result += '" target="_blank"';
@@ -25,7 +25,7 @@ $.extend(true, doaj, {
                     }
                 }
             };
-            return '<a style="margin-left: 10px; margin-right: 10px" href="/admin/journals?source=' + encodeURIComponent(JSON.stringify(q)) + '">View Journals</a>'
+            return '<br/><a class="button" href="/admin/journals?source=' + encodeURIComponent(JSON.stringify(q)) + '">View Journals</a>'
         },
 
         init : function(params) {
@@ -110,9 +110,9 @@ $.extend(true, doaj, {
                         rowDisplay : [
                             [
                                 {
-                                    "pre" : "<strong>",
+                                    "pre" : "<h3>",
                                     "field" : "id",
-                                    "post" : "</strong>"
+                                    "post" : "</h3>"
                                 }
                             ],
                             [

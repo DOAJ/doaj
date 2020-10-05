@@ -8,19 +8,17 @@ $.extend(true, doaj, {
                 // if it's not a suggestion or an article .. (it's a
                 // journal!)
                 // we really need to expose _type ...
-                var result = '<a class="edit_journal_link" href="';
+                var result = '<br/><a class="edit_journal_link button" href="';
                 result += doaj.adminJournalsSearchConfig.journalEditUrl;
                 result += resultobj['id'];
                 result += '/continue?type=replaces" target="_blank"';
                 result += '>Make a preceding continuation</a>';
 
-                result += "<span>&nbsp;|&nbsp;</span>";
-
-                result += '<a class="edit_journal_link" href="';
+                result += '<a class="edit_journal_link button" href="';
                 result += doaj.adminJournalsSearchConfig.journalEditUrl;
                 result += resultobj['id'];
                 result += '/continue?type=is_replaced_by" target="_blank"';
-                result += '>Make a succeeding continuation</a>';
+                result += '>Make a succeeding continuation</a><br/><br/>';
 
                 return result;
             }

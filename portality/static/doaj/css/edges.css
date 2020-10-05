@@ -1,0 +1,89 @@
+/* Edges overrides: hopefully a temporary file */
+
+[class^="edges-bs3-"],
+[class^="edges-bs3-"] a {
+  color: #282624;
+}
+
+.edges-bs3-refiningand-term-selector-header,
+.edges-bs3-datehistogram-selector-header {
+  font-weight: 400;
+  padding: 0;
+  background-color: transparent;
+}
+
+.edges-bs3-refiningand-term-selector-facet,
+.edges-bs3-datehistogram-selector-facet {
+  border: 0;
+}
+
+.edges-bs3-refiningand-term-selector-facet a,
+.edges-bs3-datehistogram-selector-facet a {
+  text-decoration: none;
+}
+
+.edges-bs3-refiningand-term-selector-facet a:hover,
+.edges-bs3-datehistogram-selector-facet a:hover {
+  font-weight: 400;
+}
+
+.edges-bs3-refiningand-term-selector-result {
+  cursor: pointer;
+}
+
+.edges-bs3-refiningand-term-selector-controls {
+  padding: 0.75rem 0.375rem 0 0.375rem;
+  border: 0;
+  background-color: transparent;
+}
+
+.edges-bs3-refiningand-term-selector-controls button {
+  padding: 0.1875rem;
+  font-size: smaller;
+}
+
+.edges-bs3-refiningand-term-selector-result:nth-of-type(odd) {
+  background-color: transparent;
+}
+
+.edges-bs3-refiningand-term-selector-result:nth-of-type(even) {
+  background-color: #F8F3EF;
+}
+
+.edges-bs3-refiningand-term-selector-result {
+  padding: 0.375rem;
+}
+
+.edges-bs3-pager-container {
+  background: none;
+}
+
+.edges-bs3-selected-filters-container {
+  border: 0;
+  background-color: #F8F3EF;
+  font-size: .889em;
+}
+
+.edges-bs3-results-fields-by-row-record {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  border: 0;
+  background-color: #F8F3EF;
+  cursor: pointer;
+  font-size: .889em;
+}
+
+.edges-bs3-results-fields-by-row-record:hover {
+  background-color: #F8F3EF;
+}
+
+.edges-bs3-results-fields-by-row-record h3 {
+  margin-top: 0;
+}
+
+.edges-bs3-pager-prev.disabled,
+.edges-bs3-pager-first.disabled {
+  color: #5C5956;
+  font-style: italic;
+  font-weight: 400;
+}

@@ -4,11 +4,11 @@
 
 {% block admin_content %}
 
-        <header class="col-xs-12">
+<header>
     <h2>Users</h2>
-    </header>
+</header>
 
-{% if current_user.has_role("create_user") %}<p><a href="/account/register" class="btn btn-info" style="margin-top: 20px;">create new user</a></p>{% endif %}
+{% if current_user.has_role("create_user") %}<p><a href="/account/register" class="button button--primary">create new user</a></p>{% endif %}
 
 <div id="users"></div>
 

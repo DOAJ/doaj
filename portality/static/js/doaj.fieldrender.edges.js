@@ -503,8 +503,8 @@ $.extend(true, doaj, {
                 var clearClass = edges.css_classes(this.namespace, "reset", this);
                 var clearFrag = "";
                 if (this.clearButton) {
-                    clearFrag = '<button type="button" class="' + clearClass + '" title="Clear all search and sort parameters and start again"> \
-                            <span class="glyphicon glyphicon-remove"></span> \
+                    clearFrag = '<button type="button" class="tag ' + clearClass + '" title="Clear all search and sort parameters and start again"> \
+                            Clear all \
                         </button>';
                 }
 
@@ -567,21 +567,21 @@ $.extend(true, doaj, {
                 var searchClasses = edges.css_classes(this.namespace, "searchcombo", this);
                 var searchBox = '<div class="input-group ' + searchClasses + '"> \
                                 ' + field_select + '\
-                                <input type="text" id="' + textId + '" class="' + textClass + ' form-control input-sm" name="q" value="" placeholder="' + this.searchPlaceholder + '"/> \
+                                <input type="text" id="' + textId + '" class="' + textClass + ' form-control input-sm" name="q" value="" placeholder="' + this.searchPlaceholder + '" style="margin-left: -1px; width: 60%;"/> \
                                 ' + searchFrag + ' \
                     </div>';
 
-                if (clearFrag !== "") {
-                    clearFrag = '<div class="col-md-3 col-xs-12">' + clearFrag + "</div>";
+                if (searchBox !== "") {
+                    searchBox = searchBox;
                 }
                 if (sortOptions !== "") {
-                    sortOptions = '<div class="col-md-9 col-xs-12">' + sortOptions + "</div>";
+                    sortOptions = '<div class="col-xs-6">' + sortOptions + '</div>';
                 }
-                if (searchBox !== "") {
-                    searchBox = '<div class="col-xs-12">' + searchBox + "</div>";
+                if (clearFrag !== "") {
+                    clearFrag = '<div class="col-xs-6" style="text-align: right;">' + clearFrag + '</div>';
                 }
 
-                var frag = '<div class="row">' + clearFrag + sortOptions + searchBox + '</div>';
+                var frag = searchBox + '<div class="row">' + sortOptions + clearFrag + '</div>';
 
                 comp.context.html(frag);
 
@@ -652,10 +652,10 @@ $.extend(true, doaj, {
                 var directionSelector = edges.css_class_selector(this.namespace, "direction", this);
                 var el = this.component.jq(directionSelector);
                 if (this.component.sortDir === 'asc') {
-                    el.html('sort <i class="glyphicon glyphicon-arrow-up"></i> by');
+                    el.html('sort ↑ by');
                     el.attr('title', 'Current order ascending. Click to change to descending');
                 } else {
-                    el.html('sort <i class="glyphicon glyphicon-arrow-down"></i> by');
+                    el.html('sort ↓ by');
                     el.attr('title', 'Current order descending. Click to change to ascending');
                 }
             };
@@ -3076,7 +3076,7 @@ $.extend(true, doaj, {
 
     fieldRender: {
         titleField : function (val, resultobj, renderer) {
-            var field = '<span class="title">';
+            var field = '<h3>';
             if (resultobj.bibjson.title) {
                 if (resultobj.es_type === "journal") {
                     var display = edges.escapeHtml(resultobj.bibjson.title);
@@ -3091,9 +3091,9 @@ $.extend(true, doaj, {
                     field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​";
                 }
                 if (resultobj.admin && resultobj.admin.seal) {
-                    field += "&nbsp<img src='/static/doaj/images/seal_short.png' width='16px' height='16px' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal'>​​";
+                    field += " <br/><small><span class='tag tag--featured'>DOAJ Seal</span></small>​​";
                 }
-                return field + "</span>"
+                return field + "</h3>"
             } else {
                 return false;
             }
@@ -3327,11 +3327,11 @@ $.extend(true, doaj, {
                     // if it's not a suggestion or an article .. (it's a
                     // journal!)
                     // we really need to expose _type ...
-                    var result = '<a class="edit_journal_link" href="';
+                    var result = '<p><a class="edit_journal_link button button--secondary" href="';
                     result += params.editUrl;
                     result += resultobj['id'];
                     result += '" target="_blank"';
-                    result += '>Edit this journal</a>';
+                    result += '>Edit this journal</a></p>';
                     return result;
                 }
                 return false;

@@ -19,7 +19,7 @@ $.extend(true, doaj, {
         },
 
         editEditorGroup : function (val, resultobj, renderer) {
-            var result = '<a style="padding-left: 10px; padding-right: 10px" class="edit_editor_group_link" href="';
+            var result = '<a class="edit_editor_group_link button" href="';
             result += doaj.adminEditorGroupSearchConfig.editorGroupEditUrl;
             result += resultobj['id'];
             result += '" target="_blank"';
@@ -28,7 +28,7 @@ $.extend(true, doaj, {
         },
 
         deleteEditorGroup : function (val, resultobj, renderer) {
-            var result = '<a class="delete_editor_group_link" href="';
+            var result = '<br/><a class="delete_editor_group_link button" href="';
             result += doaj.adminEditorGroupSearchConfig.editorGroupEditUrl;
             result += resultobj['id'];
             result += '" target="_blank"';
@@ -117,9 +117,9 @@ $.extend(true, doaj, {
                         rowDisplay : [
                             [
                                 {
-                                    "pre" : "<strong>",
+                                    "pre" : "<h3>",
                                     "field" : "name",
-                                    "post" : "</strong>"
+                                    "post" : "</h3>"
                                 }
                             ],
                             [
