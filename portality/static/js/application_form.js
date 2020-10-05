@@ -209,6 +209,7 @@ $.extend(doaj, {
             this.prepareReview = function() {
                 let review_table = this.jq("#review_table");
                 review_table.html("");
+                var that = this;
                 this.TABS.forEach((tab, i) => {
                     review_table.append("<th>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th>");
                     let sectionSelector = $(".edit_this_section");
@@ -216,6 +217,10 @@ $.extend(doaj, {
                     tab.fieldsets.forEach((fs) => {
                         let fieldset = formulaic.active.fieldsets.find(elem => elem.name === fs);
                         fieldset.fields.forEach((f) => {
+                            if (that.formDiff && that.formDiff[f.name]) {
+                                var was = that.formDiff[f.name].a;
+                                was = that.displayableDiffValue(was);
+                            }
                             if (f.label !== undefined && !f.hasOwnProperty("conditional") || (f.subfield === undefined && formulaic.active.isConditionSatisfied({field: f.name}))){
                                 let value = this.determineFieldsValue(f.name);
                                 let text = this.convertValueToText(value);
@@ -224,18 +229,55 @@ $.extend(doaj, {
                                     text = '<a href="' + text + '" target="_blank">' + text + '</a>';
                                 }
 
+                                let diff = "";
+                                if (was) {
+                                    diff = `<tr><td>&nbsp;<strong>WAS</strong></td><td><strong>` + was + `</strong></td></tr>`;
+                                }
+
                                 let html = `
                             <tr>
                                 <td id="` + f.name + `__review_label">` + f.label + `</td>
                                 <td id="` + f.name + `__review_value">` + text +`</td>
                             </tr>
-                            `;
+                            ` + diff;
                                 review_table.append(html);
                             }
                         });
                     });
 
                 });
+            };
+
+            this.displayableDiffValue = function(was) {
+                // FIXME: this is pretty unaware, it includes a bunch of assumptions which work for now but which
+                // could be made more formal by knowing about the field it's formatting for
+                if (!was || was.length === 0) {
+                    return "-- no value --"
+                }
+
+                if (Array.isArray(was)) {
+                    var displayable = [];
+                    for (var i = 0; i < was.length; i++) {
+                        displayable.push(this.displayableDiffValue(was[i]));
+                    }
+                    return displayable.join(", ");
+                } else if (typeof was === "object") {
+                    var keys = Object.keys(was);
+                    var displayable = [];
+                    for (var i = 0; i < keys.length; i++) {
+                        var key = keys[i];
+                        displayable.push(this.displayableDiffValue(was[key]));
+                    }
+                    return displayable.join(" ");
+                } else {
+                    if (was === "y") {
+                        return "Yes";
+                    }
+                    if (was === "n") {
+                        return "No";
+                    }
+                    return was;
+                }
             };
 
             this.determineFieldsValue = function(name) {
@@ -654,6 +696,7 @@ window.Parsley.addValidator("differentTo", {
     priority: 1
 });
 
+/*
 window.Parsley.addValidator("onlyIf", {
     validateString : function(value, requirement, parsleyInstance) {
         if (!!value){
@@ -689,3 +732,4 @@ window.Parsley.addValidator("notIf", {
     },
     priority: 1
 });
+ */
