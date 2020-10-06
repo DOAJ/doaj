@@ -3296,11 +3296,11 @@ $.extend(true, doaj, {
                         linkName = "Review update";
                     }
 
-                    var result = '<br/><a class="edit_suggestion_link button href="';
+                    var result = '<p><a class="edit_suggestion_link button href="';
                     result += params.editUrl;
                     result += resultobj['id'];
                     result += '" target="_blank"';
-                    result += '>' + linkName + '</a>';
+                    result += '>' + linkName + '</a></p>';
                     return result;
                 }
                 return false;
@@ -3310,11 +3310,11 @@ $.extend(true, doaj, {
         readOnlyJournal : function(params) {
             return function (val, resultobj, renderer) {
                 if (resultobj.admin && resultobj.admin.current_journal) {
-                    var result = '<a style="margin-left: 10px; margin-right: 10px" class="readonly_journal_link" href="';
+                    var result = '<br/><p><a class="readonly_journal_link button" href="';
                     result += params.readOnlyJournalUrl;
                     result += resultobj.admin.current_journal;
                     result += '" target="_blank"';
-                    result += '>View journal being updated</a>';
+                    result += '>View journal being updated</a></p>';
                     return result;
                 }
                 return false;
