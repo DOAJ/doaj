@@ -33,7 +33,7 @@ def username(username):
 
     if acc is None:
         abort(404)
-    elif (request.method == 'DELETE' or
+    if (request.method == 'DELETE' or
             (request.method == 'POST' and request.values.get('submit', False) == 'Delete')):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
@@ -45,6 +45,7 @@ def username(username):
             acc.delete()
             flash('Account ' + acc.id + ' deleted')
             return redirect(url_for('.index'))
+
     elif request.method == 'POST':
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
@@ -55,7 +56,7 @@ def username(username):
         if request.values.get('submit', False) == 'Generate a new API Key':
             acc.generate_api_key()
         for k, v in newdata.items():
-            if k not in ['marketing_consent', 'submit', 'password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
+            if k in ['name']:
                 if acc.data.get(k, None) != v:
                     acc.data[k] = v
         if 'password' in newdata and len(newdata['password']) > 0 and not newdata['password'].startswith('sha1'):
@@ -66,6 +67,28 @@ def username(username):
                 flash("Your password and confirmation do not match", "error")
                 return render_template('account/view.html', account=acc)
             acc.set_password(newdata['password'])
+
+        if 'email' in newdata and len(newdata['email']) > 0 and newdata['email'] != acc.email:
+            if newdata.get("email_confirm", "") == "":
+                flash("You must enter the new email address in the confirmation box", "error")
+                return render_template('account/view.html', account=acc)
+            if newdata["email_confirm"] != newdata["email"]:
+                flash("Your email and email confirmation do not match", "error")
+                return render_template('account/view.html', account=acc)
+
+            acc.set_email(newdata['email'])
+
+            # If the user updated their own email address, invalidate the password and require verification again.
+            if current_user.id == acc.id:
+                acc.clear_password()
+                reset_token = uuid.uuid4().hex
+                acc.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
+                send_account_created_email(acc)
+                acc.save()
+                logout_user()
+                flash("Email address updated. You have been logged out for email address verification.")
+                return redirect(url_for('doaj.home'))
+
         # only super users can re-write roles
         if "role" in newdata and current_user.is_super:
             new_roles = [r.strip() for r in newdata.get("role").split(",")]
@@ -77,7 +100,8 @@ def username(username):
         acc.save()
         flash("Record updated")
         return render_template('account/view.html', account=acc)
-    else:
+
+    else:  # GET
         if util.request_wants_json():
             resp = make_response(
                 json.dumps(acc.data, sort_keys=True, indent=4) )
@@ -145,7 +169,11 @@ def login():
             else:
                 flash('Incorrect username/password', 'error')
         except KeyError:
-            abort(500)  # fixme: this may be the case where password is unverified - notify the user?
+            # Account has no password set, the user needs to reset or use an existing valid reset link
+            FORGOT_INSTR = '<a href="{url}">&lt;click here&gt;</a> to try again.'.format(url=url_for('.forgot'))
+            util.flash_with_url('Account verification is incomplete. Check your emails for the link or ' + FORGOT_INSTR,
+                                'error')
+            return redirect(url_for('doaj.home'))
 
     if request.method == 'POST' and not form.validate():
         flash('Invalid credentials', 'error')
@@ -238,7 +266,7 @@ def reset(reset_token):
         account.set_password(pw)
         account.remove_reset_token()
         account.save()
-        flash("New password has been set", "success")
+        flash("New password has been set and you're now logged in.", "success")
 
         # log the user in
         login_user(account, remember=True)
@@ -277,7 +305,7 @@ def register():
         # Redirect if the user is already registered and don't have permission to create new ones
         return redirect('/account')
 
-    form = RegisterForm(request.form, csrf_enabled=False, roles='api', identifier=Account.new_short_uuid())
+    form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
     if request.method == 'POST' and form.validate():
         account = Account.make_account(email=form.email.data, username=form.identifier.data, name=form.name.data,
                                        roles=[r.strip() for r in form.roles.data.split(',')])
