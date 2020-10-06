@@ -224,6 +224,8 @@ ASSOC_ED_NOTIFICATION_STATUSES = [
 # ========================
 # user login settings
 
+LOGIN_VIA_ACCOUNT_ID = False
+
 # amount of time a reset token is valid for (86400 is 24 hours)
 PASSWORD_RESET_TIMEOUT = 86400
 # amount of time a reset token for a new account is valid for

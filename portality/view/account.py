@@ -117,7 +117,7 @@ class RedirectForm(Form):
 
 
 class LoginForm(RedirectForm):
-    user = StringField('E-mail address', [validators.DataRequired()])
+    user = StringField('E-mail Address', [validators.DataRequired()])
     password = PasswordField('Password', [validators.DataRequired()])
 
 
@@ -206,16 +206,25 @@ def forgot():
     return render_template('account/forgot.html')
 
 
+class ResetForm(Form):
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
+
+
 @blueprint.route("/reset/<reset_token>", methods=["GET", "POST"])
 @ssl_required
 @write_required()
 def reset(reset_token):
+    form = ResetForm(request.form, csrf_enabled=False)
     account = Account.get_by_reset_token(reset_token)
     if account is None:
         abort(404)
 
     if request.method == "GET":
-        return render_template("account/reset.html", account=account)
+        return render_template("account/reset.html", account=account, form=form)
 
     elif request.method == "POST":
         # check that the passwords match, and bounce if not
@@ -223,7 +232,7 @@ def reset(reset_token):
         conf = request.values.get("confirm")
         if pw != conf:
             flash("Passwords do not match - please try again", "error")
-            return render_template("account/reset.html", account=account)
+            return render_template("account/reset.html", account=account, form=form)
 
         # update the user's account
         account.set_password(pw)
@@ -282,7 +291,9 @@ def register():
             flash('Thank you, please verify email address ' + form.email.data + ' to set your password and login.',
                   'success')
 
-        return redirect(get_redirect_target(form=form))
+        return redirect(url_for('doaj.home'))
+
+        # return redirect(get_redirect_target(form=form)) # fixme: redirect
 
     if request.method == 'POST' and not form.validate():
         flash('Please correct the errors', 'error')

@@ -1,26 +1,29 @@
-{% extends "layouts/sidebar-page.html" %}
+{% extends "layouts/base.html" %}
 
 {% block content %}
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="well">
-            <h3>Forgot your password</h3>
-            <p>If you forgot your password, provide your username or email on the right and click "reset your password now".</p>
-            <p>NOTE that you must know your correct username or email, and you must have access to the account associated 
-            to the email address you used, as your password reset instructions will be sent there.</p>
-            <p>If you do not know these things, contact us directly for further help.</p>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="well">
-            <form method="POST" action="">
-                <h3>Provide your username or email:</h3>
-                <input type="text" name="un"><br>
-                <input type="submit" value="Reset your password now" class="btn btn-primary">
-            </form>
-        </div>
-    </div>
-</div>
+    <main class="page-content">
+        <section class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="well">
+                        <h3>Forgot your password</h3>
+                        <p>If you forgot your password, provide your username or email on the right and click "reset your password now".</p>
+                        <p>NOTE that you must know your correct username or email, and you must have access to the account associated
+                        to the email address you used, as your password reset instructions will be sent there.</p>
+                        <p>If you do not know these things, contact us directly for further help.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="well">
+                        <form method="POST" action="">
+                            <h3>Provide your username or email:</h3>
+                            <input type="text" name="un"><br>
+                            <input type="submit" value="Reset your password now" class="btn btn-primary">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 {% endblock %}
 

@@ -1,33 +1,24 @@
-{% extends "layouts/sidebar-page.html" %}
+{% extends "layouts/base.html" %}
 
 {% block content %}
 
-<h1 style="margin-bottom: 40px">Hi {{account.id}}: Reset Your Password</h1>
+    <main class="page-content">
+        <section class="container">
+            <div class="row">
+                <div class="col-md-8">
 
-<div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <form action="" method="POST" class="form-horizontal">
-            <div class="form-group">
-                <label for="password" class="col-md-3">New Password</label>
-                <div class="col-md-9">
-                    <input type="password" name="password" placeholder="New password">
+                    <h3>Hi {{ account.name or account.email }}</h3>
+
+                    <p>Please set your new password.</p>
+
+                    {% include "account/_reset_form.html" %}
+
+                    <p>If you have any difficulties with your account, please <a href="/contact">contact us</a>.</p>
+
                 </div>
             </div>
-            <div class="form-group">
-                <label for="password" class="col-md-3">Confirm your new password</label>
-                <div class="col-md-9">
-                    <input type="password" name="confirm" placeholder="Confirm password">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-9 col-md-offset-3">
-                    <input type="submit" class="btn btn-success" name="submit" value="Update">
-                </div>
-            </div>
-        </form>
-    </div>
-    
-</div>
+        </section>
+      </main>
 
 {% endblock %}
 
