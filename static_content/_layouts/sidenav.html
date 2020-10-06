@@ -207,7 +207,7 @@
 
             {% elsif page.relative_path == '_support/supporters.md' or page.relative_path == '_support/supporters-fragment.md' %}
               <!-- Support section: supporters -->
-              <ul class="row bleed title-list">
+              {% comment %}<ul class="row bleed title-list">
                 {% for i in site.data.supporters %}
                 <li class="col-sm-6 col-md-3">
                   <div class="title-list__text">
@@ -225,8 +225,7 @@
                   </div>
                 </li>
                 {% endfor %}
-              </ul>
-              </ul>
+              </ul>{% endcomment %}
 
             {% endif %}
           </section>
