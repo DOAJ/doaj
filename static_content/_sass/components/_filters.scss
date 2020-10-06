@@ -62,6 +62,14 @@
   svg {
     vertical-align: middle;
   }
+
+  .filter__choices {
+    margin-top: $spacing-02;
+    margin-left: $spacing-02;
+    padding-left: $spacing-02;
+    border-left: 1px solid $sanguine;
+    overflow-y: visible;
+  }
 }
 
 .filter__label {
