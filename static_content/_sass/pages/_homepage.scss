@@ -31,10 +31,6 @@
     text-decoration: none;
   }
 
-  h2 {
-    margin-bottom: $spacing-04;
-  }
-
   h3 {
     margin-top: 0;
     @include font-serif;
@@ -43,6 +39,10 @@
 
   time {
     color: $dark-grey;
+  }
+
+  section h2 {
+    margin-bottom: $spacing-04;
   }
 
   .page-header {
@@ -101,7 +101,7 @@
       }
 
       &:not(:first-of-type) h3 {
-        @include typescale-06;
+        font-size: 1em;
       }
 
       &:nth-of-type(6) {
