@@ -27,7 +27,7 @@
 .search-results__heading {
   margin: 0 0 $spacing-03 0;
   font-weight: 600;
-  @include typescale-02;
+  font-size: 1em;
 
   svg {
     margin-left: $spacing-01;
