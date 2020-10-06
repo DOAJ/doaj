@@ -156,4 +156,25 @@
       width: 25%;
     }
   }
+
+  @media print {
+    .form-section {
+      display: block !important;
+    }
+
+    aside,
+    button,
+    input[type="submit"],
+    hr,
+    .application-nav,
+    .secondary-nav,
+    .nav-bar,
+    .page-footer,
+    .form-section:last-of-type,
+    .label,
+    .form__long-help,
+    .pager-buttons {
+      display: none !important;
+    }
+  }
 }
