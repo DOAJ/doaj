@@ -41,6 +41,8 @@
 
 .modal__title {
   margin: 0 0 $spacing-04 0;
+  padding-bottom: $spacing-03;
+  border-bottom: 1px solid $dark-grey;
   @include font-sans;
 }
 
