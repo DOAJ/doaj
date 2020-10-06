@@ -146,4 +146,14 @@
   hr {
     background-color: $grapefruit;
   }
+
+  // Only used in review page
+  table {
+    @include typescale-06;
+
+    th:first-child,
+    td:first-child {
+      width: 25%;
+    }
+  }
 }
