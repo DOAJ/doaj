@@ -62,10 +62,19 @@ The example file below contains only one record.
     <title language="eng">Roses and Lilies</title>
     <authors>
       <author>
-        <name>Fritz Haber</name>
+        <name>Nathalia Cardoso de Azevedo</name>
         <affiliationId>1</affiliationId>
         <affiliationId>2</affiliationId>
         <affiliationId>3</affiliationId>
+        <orcid_id>https://orcid.org/0000-0002-7868-417X</orcid_id>
+      </author>
+    </authors>
+    <authors>
+      <author>
+        <name>Sergio Fernando Tavares</name>
+        <affiliationId>1</affiliationId>
+        <affiliationId>2</affiliationId>
+        <orcid_id>https://orcid.org/0000-0001-6492-7911</orcid_id>
       </author>
     </authors>
     <affiliationsList>

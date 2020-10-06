@@ -1,4 +1,4 @@
-Publisher supporters can choose to make a contribution that is relative to the size of their business, or an amount of their choice. This can be a one-off or recurring annual payment.
+Publisher supporters, you can choose to support us with a contribution that is relative to the size of their business, or with an amount of your choice. You can choose a one-off payment or a recurring annual payment.
 
 {:.tabular-list}
 - Extra large
@@ -15,3 +15,4 @@ Publisher supporters can choose to make a contribution that is relative to the s
   - GBP £200 per year
 
 ## Our publisher supporters
+The publishers below have chosen to show their commitment to quality open access by supporting DOAJ. We thank them! Without them, our work would not be possible.
