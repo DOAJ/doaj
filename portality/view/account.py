@@ -40,7 +40,7 @@ def username(username):
         else:
             conf = request.values.get("confirm")
             if conf is None or conf != "confirm":
-                flash('check the box to confirm you really mean it!', "error")
+                flash('Check the box to confirm you really mean it!', "error")
                 return render_template('account/view.html', account=acc)
             acc.delete()
             flash('Account ' + acc.id + ' deleted')
@@ -192,14 +192,19 @@ def forgot():
     if request.method == 'POST':
         # get hold of the user account
         un = request.form.get('un', "")
-        account = Account.pull(un) or Account.pull_by_email(un)
+        if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
+            account = Account.pull(un) or Account.pull_by_email(un)
+        else:
+            account = Account.pull_by_email(un)
 
         if account is None:
-            util.flash_with_url('Hm, sorry, your account username / email address is not recognised.' + CONTACT_INSTR, 'error')
+            util.flash_with_url('Error - your account username / email address is not recognised.' + CONTACT_INSTR,
+                                'error')
             return render_template('account/forgot.html')
 
         if not account.data.get('email'):
-            util.flash_with_url('Hm, sorry, your account does not have an associated email address.' + CONTACT_INSTR, 'error')
+            util.flash_with_url('Error - your account does not have an associated email address.' + CONTACT_INSTR,
+                                'error')
             return render_template('account/forgot.html')
 
         # if we get to here, we have a user account to reset
@@ -226,7 +231,7 @@ def forgot():
                 flash('Debug mode - url for reset is ' + reset_url)
         except Exception as e:
             magic = str(uuid.uuid1())
-            util.flash_with_url('Hm, sorry - sending the password reset email didn\'t work.' + CONTACT_INSTR + ' It would help us if you also quote this magic number: ' + magic + ' . Thank you!', 'error')
+            util.flash_with_url('Error - sending the password reset email didn\'t work.' + CONTACT_INSTR + ' It would help us if you also quote this magic number: ' + magic + ' . Thank you!', 'error')
             if app.config.get('DEBUG', False):
                 flash('Debug mode - url for reset is ' + reset_url)
             app.logger.error(magic + "\n" + repr(e))
