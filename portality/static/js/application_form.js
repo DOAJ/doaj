@@ -481,7 +481,7 @@ $.extend(doaj, {
                 }
 
                 let reviewedSelector = this.jq("#reviewed");
-                edges.on(reviewedSelector, "click", this, "manage_review_checkboxes");
+                edges.on(reviewedSelector, "click", this, "manage_review_checkboxes", false, false, false);
 
                 if (this.draft_id) {
                     this.prepNavigation();
@@ -510,7 +510,7 @@ $.extend(doaj, {
         UpdateRequestForm : function(params) {
             this.init = function() {
                 let reviewedSelector = this.jq("#reviewed");
-                edges.on(reviewedSelector, "click", this, "manage_review_checkboxes");
+                edges.on(reviewedSelector, "click", this, "manage_review_checkboxes", false, false, false);
 
                 this.prepNavigation();
 
