@@ -167,7 +167,7 @@ def login():
                 flash('Welcome back.', 'success')
                 return redirect(get_redirect_target(form=form))
             else:
-                flash('Incorrect username/password', 'error')
+                form.password.errors.append("Incorrect username / password")
         except KeyError:
             # Account has no password set, the user needs to reset or use an existing valid reset link
             FORGOT_INSTR = '<a href="{url}">&lt;click here&gt;</a> to try again.'.format(url=url_for('.forgot'))
@@ -175,9 +175,6 @@ def login():
                                 'error')
             return redirect(url_for('doaj.home'))
 
-    if request.method == 'POST' and not form.validate():
-        flash('Invalid credentials', 'error')
-        # to do: choose which template should be generated
     if request.args.get("redirected") == "apply":
         form['next'].data = url_for("apply.public_application")
         return render_template('account/login_to_apply.html', form=form)
@@ -228,12 +225,12 @@ def forgot():
                                 )
             flash('Instructions to reset your password have been sent to you. Please check your emails.')
             if app.config.get('DEBUG', False):
-                flash('Debug mode - url for reset is ' + reset_url)
+                util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(reset_url))
         except Exception as e:
             magic = str(uuid.uuid1())
             util.flash_with_url('Error - sending the password reset email didn\'t work.' + CONTACT_INSTR + ' It would help us if you also quote this magic number: ' + magic + ' . Thank you!', 'error')
             if app.config.get('DEBUG', False):
-                flash('Debug mode - url for reset is ' + reset_url)
+                util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(reset_url))
             app.logger.error(magic + "\n" + repr(e))
 
     return render_template('account/forgot.html')
@@ -256,10 +253,7 @@ def reset(reset_token):
     if account is None:
         abort(404)
 
-    if request.method == "GET":
-        return render_template("account/reset.html", account=account, form=form)
-
-    elif request.method == "POST":
+    if request.method == "POST" and form.validate():
         # check that the passwords match, and bounce if not
         pw = request.values.get("password")
         conf = request.values.get("confirm")
@@ -276,6 +270,8 @@ def reset(reset_token):
         # log the user in
         login_user(account, remember=True)
         return redirect(url_for('doaj.home'))
+
+    return render_template("account/reset.html", account=account, form=form)
 
 
 @blueprint.route('/logout')
@@ -318,15 +314,17 @@ def register():
 
         send_account_created_email(account)
 
+        if app.config.get('DEBUG', False):
+            util.flash_with_url('Debug mode - url for verify is <a href={0}>{0}</a>'.format(url_for('account.reset', reset_token=account.reset_token, _external=True)))
+
         if current_user.is_authenticated:
             flash('Account created for ' + account.email + '.', 'success')
         else:
             flash('Thank you, please verify email address ' + form.email.data + ' to set your password and login.',
                   'success')
 
+        # We must redirect home because the user now needs to verify their email address.
         return redirect(url_for('doaj.home'))
-
-        # return redirect(get_redirect_target(form=form)) # fixme: redirect
 
     if request.method == 'POST' and not form.validate():
         flash('Please correct the errors', 'error')
