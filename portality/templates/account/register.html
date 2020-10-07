@@ -1,40 +1,42 @@
-{% extends "layouts/sidebar-page.html" %}
+{% extends "layouts/base.html" %}
+
+{% block extra_stylesheets %}
+    <!-- get the select2 css -->
+    <link rel="stylesheet" type="text/css" href="/static/vendor/select2-3.5.4/select2.css?v={{config.get('DOAJ_VERSION')}}">
+{% endblock %}
 
 {% block content %}
-{% from "_formhelpers.html" import render_field %}
+    <main class="page-content">
+        <section class="container">
+            <div class="row">
+                <div class="col-md-8">
+                  <h1>Register</h1>
+                    {% if current_user.is_authenticated %}
+                        <p>Create a new user account.</p>
+                    {% else %}
+                        <p>DOAJ is free to use without logging in.</p>
 
-<h1>Create a new user account</h1>
+                        <p>You only need an account if you wish to create an application for a journal's inclusion in the DOAJ or you are a volunteer.</p>
+                    {% endif %}
 
-<div class="row">
-    <div class="col-md-5">
-        <form id="signupform" method="post" action="{{url_for('account.register')}}" class="form-horizontal" style="margin-top: 20px;">
-            {{ render_field(form.w) }}
-            {{ render_field(form.n) }}
-            {{ render_field(form.s, placeholder="********") }}
-            {{ render_field(form.c, placeholder="********") }}
-            {# Check current user role is super incase public registration is activated at some point #}
-            {% if current_user.is_super %}
-                {{ render_field(form.roles) }}
-            {% endif %}
-            <div class="actions">
-                <input id="signup" type="submit" value="Create User" class="btn btn-primary" />
+                    {% include "account/_register_form.html" %}
+
+                    <p>If you have difficulty registering, <a href="/contact">contact us</a>.</p>
+
+                </div>
             </div>
-        </form>
-    </div>
-    <div class="col-md-5">
-    </div>
-</div>
-
-
+        </section>
+      </main>
 {% endblock %}
 
 {% block extra_js_bottom %}
+    {% if current_user.is_authenticated and current_user.has_role("create_user") %}
+    <!-- select2 for role picker on admin create user form -->
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+        $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
+    });
+    </script>
+{% endif %}
 
-<script type="text/javascript">
-jQuery(document).ready(function($) {
-    $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
-});
-</script>
-
-{% endblock extra_js_bottom %}
-
+{% endblock %}

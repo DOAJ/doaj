@@ -48,7 +48,8 @@ class TestApiErrors(DoajTestCase):
 
     def test_03_api_401(self):
         # make a user account for the authorisation test
-        a1 = models.Account.make_account(username="a1_user", name="a1_name", email="a1@example.com", roles=["user", "api"], associated_journal_ids=[])
+        a1 = models.Account.make_account(email="a1@example.com", username="a1_user", name="a1_name",
+                                         roles=["user", "api"], associated_journal_ids=[])
         a1_key = a1.api_key
         a1.save()               # a1 has api access
 

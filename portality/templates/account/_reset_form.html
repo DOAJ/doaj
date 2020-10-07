@@ -1,0 +1,13 @@
+{% block reset_form %}
+
+    {% from "_formhelpers.html" import render_field %}
+
+    <form method="post" action="">
+        <div class="form__question">
+            {{ render_field(form.password, placeholder="********") }}
+            {{ render_field(form.confirm, placeholder="********") }}
+        </div>
+      <input type="submit" class="button button--primary" value="Update" />
+    </form>
+
+{% endblock %}

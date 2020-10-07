@@ -15,9 +15,9 @@
 
                     <h2 id="log-in-to-your-account">Log in to your account</h2>
 
-                    <p>→ Don’t have an account? <a href="/register/">Register here</a>.</p>
+                    <p>→ Don’t have an account? <a href="{{ url_for("account.register") }}">Register here</a>.</p>
                         {% include "account/_login_form.html" %}
-                    <p>If you cannot log in, <a href="/password-reset/">reset your password</a>. If you still cannot login, <a href="/contact/">contact us</a>.</p>
+                    <p>If you cannot log in, <a href={{ url_for("account.forgot") }}>reset your password</a>. If you still cannot login, <a href="/contact">contact us</a>.</p>
                 </section>
             </div>
           <div class="col-md-4">

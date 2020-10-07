@@ -9,16 +9,11 @@ class TestAdminEditMetadata(DoajTestCase):
 
     def setUp(self):
         super(TestAdminEditMetadata, self).setUp()
-        admin_account = Account.make_account(username="admin",
-                                             name="Admin",
-                                             email="admin@test.com",
-                                             roles=["admin"])
+        admin_account = Account.make_account(email="admin@test.com", username="admin", name="Admin", roles=["admin"])
         admin_account.set_password('password123')
         admin_account.save()
 
-        publisher_account = Account.make_account(username="publisher",
-                                                 name="Publisher",
-                                                 email="publisher@test.com",
+        publisher_account = Account.make_account(email="publisher@test.com", username="publisher", name="Publisher",
                                                  roles=["publisher"])
         publisher_account.set_password('password456')
         publisher_account.save(blocking=True)

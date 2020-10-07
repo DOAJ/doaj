@@ -136,6 +136,11 @@ STATIC_PATHS = [
 
 
 # =======================
+# Account settings
+
+PUBLIC_REGISTER = False
+
+# =======================
 # email settings
 
 # Settings for Flask-Mail. Set in app.cfg
@@ -218,6 +223,8 @@ ASSOC_ED_NOTIFICATION_STATUSES = [
 
 # ========================
 # user login settings
+
+LOGIN_VIA_ACCOUNT_ID = False
 
 # amount of time a reset token is valid for (86400 is 24 hours)
 PASSWORD_RESET_TIMEOUT = 86400

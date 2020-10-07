@@ -11,9 +11,7 @@ class TestCrudReturnValues(DoajTestCase):
     def setUp(self):
         super(TestCrudReturnValues, self).setUp()
 
-        account = models.Account.make_account(username="test",
-                                              name="Tester",
-                                              email="test@test.com",
+        account = models.Account.make_account(email="test@test.com", username="test", name="Tester",
                                               roles=["publisher", "api"],
                                               associated_journal_ids=['abcdefghijk_journal'])
         account.set_password('password123')

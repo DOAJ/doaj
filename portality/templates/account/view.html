@@ -1,138 +1,147 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
+    <main class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <section class="page-content" id="userview">
+                    <p></p>
 
-{% if current_user.has_role("list_users") %}
-    <p><a href="/account">view a list of all user accounts</a>
-{% endif %}
-
-{% if current_user.has_role("admin_journals") %}
-    {% set Q1 = '{ "query":{"filtered":{"filter":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
-    {% set Q2 = '"}}]}},"query":{"match_all":{}}}}}' %}
-    <p><a href="/admin/journals?source={{Q1}}{{account.id}}{{Q2}}">view a list of this user's journals</a>
-{% endif %}
-
-{% if current_user.id == account.id or current_user.is_super %}
-
-    <div class="row">
-        <div class="col-md-12">
-            {% if current_user.id != account.id %}
-                <div class="alert alert-danger"><strong>NOTE</strong> you are editing a user account that is not your own.  Be careful!</div>
-            {% endif %}
-            <h2>Hi {{ account.id }}</h2>
-            {%  if account.role|length > 0 %}
-                <p><strong>Role(s)</strong>: {{account.role|join(", ")}}
-            {% endif %}
-            {% if account.api_key %}
-                <p><strong>API Key</strong>: <code>{{account.api_key}}</code>
-            {% endif %}
-        </div>
-    </div>
-
-    <h3>Edit your details</h3>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="grey_bordered_div">
-                <h4>Update your account name</h4>
-                <form action="" method="POST">
-                    {% if account.name %}
-                        <input type="text" name="name" value="{{account.name}}">
-                    {% else %}
-                        <input type="text" name="name" value="" placeholder="enter your account name">
+                    {% if current_user.id != account.id %}
+                        <div class="alert alert-danger"><strong>NOTE</strong> you are editing a user account
+                            that is not your own. Be careful!
+                        </div>
                     {% endif %}
-                    <input type="submit" class="btn btn-success" name="submit" value="Update" style="float: right">
-                </form>
-                <h4>Update your email address</h4>
-                <form action="" method="POST">
-                    {% if account.email %}
-                        <input type="text" name="email" value="{{account.email}}">
-                    {% else %}
-                        <input type="text" name="email" value="" placeholder="enter your email address">
+
+                    {% if current_user.has_role("list_users") %}
+                        <div class="col-md-6" style="padding-left: 0">
+                            <a href="/account">View a list of all user accounts</a>
+                        </div>
                     {% endif %}
-                    <input type="submit" class="btn btn-success" name="submit" value="Update" style="float: right">
-                </form>
-            </div>
 
-            {% if account.has_role('api') %}
-            <div class="grey_bordered_div">
-                <form action="" method="POST">
-                    <div>
-                        <h4 style="width: 90%; display: inline">Generate a new API Key</h4>
-                        <input type="submit" class="btn btn-success" name="submit" value="Generate" style="float: right">
-                    </div>
-                </form>
-            </div>
-            {% endif %}
-
-            <div class="grey_bordered_div">
-                <h4>Edit your user roles</h4>
-                <form action="" method="POST">
-                    {% if current_user.is_super %}
-                        <input id="editable_role" type="text" name="role" value="{{account.role|join(',')}}" style="width: 70%">
-                        <input type="submit" class="btn btn-success" name="submit" value="Update" style="display: inline; float: right">
-                    {% else %}
-                        <input type="text" name="role" value="{{account.role|join(',')}}" disabled="disabled">
-                        <input type="submit" class="btn btn-success" name="submit" value="Update" disabled="disabled" style="float: right">
+                    {% if current_user.has_role("admin_journals") %}
+                        {% set Q1 = '{"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
+                        {% set Q2 = '"}}]}},"query":{"match_all":{}}}}}' %}
+                        <div class="col-md-6" style="float: right; padding-right: 0">
+                            <a href="/admin/journals?source={{Q1}}{{account.id}}{{Q2}}">View this user's journals</a>
+                        </div>
                     {% endif %}
-                </form>
+
+                    {% if current_user.id == account.id or current_user.is_super %}
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>Hi {{ account.name if account.name else account.email }}</h2>
+                                {% if account.role|length > 0 %}
+                                    <p><strong>Role(s)</strong>: {{ account.role|join(", ") }}
+                                {% endif %}
+                                {% if account.api_key %}
+                                    <div class="col-md-8" style="padding: 0">
+                                        <p><strong>API Key</strong>: <code>{{ account.api_key }}</code>
+                                    </div>
+                                    <div class="col-md-4" style="padding: 0">
+                                        <form action="" method="POST">
+                                            <input type="submit" class="button" name="submit" value="Generate a new API Key" style="float: right">
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <h3>Edit your details</h3>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form__question" style="margin-top: 1rem">
+                                    <form action="" method="POST">
+                                        <label for="name">Account name</label>
+                                        <input type="text" name="name" value="{{ account.name if account.name else '' }}" placeholder="Firstname Lastname">
+
+                                        <label for="email">Email address</label>
+                                        <input type="text" name="email" value="{{ account.email if account.email else '' }}" placeholder="enter your email address">
+                                        <label for="email_confirm">Confirm email address</label>
+                                        <input type="text" name="email_confirm" value="" placeholder="confirm email address change">
+                                        <div style="width: 80%; padding-top:0.5rem">
+                                            <p><small><strong>NOTE: </strong>Changing your email address will log you out. You will need to verify the new email address and enter a new password.</small></p>
+                                        </div>
+
+                                        <label for="roles">User roles</label>
+                                        {% if current_user.is_super %}
+                                            <input id="editable_role" type="text" name="role"
+                                                   value="{{ account.role|join(',') }}" style="width: 75%">
+                                        {% else %}
+                                            <input type="text" name="role" value="{{ account.role|join(',') }}" disabled="disabled">
+                                        {% endif %}
+
+                                        <label for="password">Change password</label>
+                                        <input type="password" name="password" placeholder="********">
+
+                                        <label for="confirm">Confirm password</label>
+                                        <input type="password" name="confirm" placeholder="********">
+
+                                        <br/>
+                                        <input type="submit" class="button button--primary" name="submit" value="Update Account" style="float: right; width: 35%">
+                                    </form>
+                                </div>
+
+                                <hr/>
+
+                                {% if current_user.is_super %}
+                                    <div class="form__question">
+                                        <label for="submit">Delete this account</label>
+                                        <p>(This <strong>irrevocably</strong> deletes the account)</p>
+                                        <form action="" method="POST">
+                                            <span class="col-md-8">
+                                                <input type="radio" name="confirm" value="confirm">&nbsp;&nbsp;yes, I'm sure
+                                            </span>
+                                            <span class="col-md-4">
+                                                <input type="submit" name="submit" value="Delete" class="button"
+                                                       style="float: right">
+                                            </span>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    {% else %}
+                        <h2>{{ account.id }}</h2>
+                        <p>You are not logged in as this user. Use the <a href="/account/login">login page</a> if you want to change this</p>
+                    {% endif %}
+
+                </section>
             </div>
 
-            <div class="grey_bordered_div">
-                <h4>Change your password</h4>
-                <form action="" method="POST">
-                    <input type="password" name="password" placeholder="new password"><br>
-                    <input type="password" name="confirm" placeholder="confirm your new password">
-                    <input type="submit" class="btn btn-success" name="submit" value="Update" style="float: right">
-                </form>
+            <div class="col-md-5">
+                <div>
+                    <aside class="highlight highlight--aside">
+                        <strong>Marketing Consent</strong>
+                        <form action="" method="POST">
+                            <p>As part of our duty to you, our members, your DOAJ account must have an email
+                                address because we will use it to contact you about important account and
+                                journal information such as: security updates; updates needed to your
+                                journal entries; problems with article metadata, etc. As a membership
+                                organisation, we have a legal obligation to do this.</p>
+                            <p>We also send out occasional marketing emails, such as publisher surveys,
+                                opinion polls, newsletters and new functionality alerts. For those emails,
+                                we need your consent to use your email address. (You may come back here and
+                                change your response at any time.)</p>
+                            <p><input type="radio" name="marketing_consent"
+                                      {% if account.marketing_consent %}checked="checked"{% endif %}
+                                      value="true"> I consent to DOAJ using my email address for its own
+                                marketing purposes</p>
+                            <p><input type="radio" name="marketing_consent"
+                                      {% if account.marketing_consent == False %}checked="checked"{% endif %}
+                                      value="false"> I do not consent to DOAJ using my email address for its
+                                own marketing purposes</p>
+                            <p>DOAJ does not share your name and email address with any other organisation.
+                                Please read our full privacy policy <a href="/privacy">here</a>.</p>
+                            <input type="submit" class="button" name="submit" value="Save Settings" style="float: right; width: 50%">
+                        </form>
+                    </aside>
+                </div>
             </div>
-
-            {% if current_user.is_super %}
-            <div class="grey_bordered_div">
-                <h4>Delete this account</h4>
-                <p>(This <strong>irrevocably</strong> deletes the account)</p>
-                <form action="" method="POST">
-                    <span class="col-md-8">
-                        <input type="radio" name="confirm" value="confirm">&nbsp;&nbsp;yes, I'm sure
-                    </span>
-                    <span class="col-md-4">
-                        <input type="submit" name="submit" value="Delete" class="btn btn-danger" style="float: right">
-                    </span>
-                </form>
-            </div>
-            {% endif %}
-
         </div>
-
-        <div class="col-md-6">
-            <div class="grey_bordered_div">
-                <h4>Marketing Consent</h4>
-                <form action="" method="POST">
-                    <p>As part of our duty to you, our members, your DOAJ account must have an email address because we will use it to contact you about important account and journal information such as: security updates; updates needed to your journal entries; problems with article metadata, etc. As a membership organisation, we have a legal obligation to do this.</p>
-                    <p>We also send out occasional marketing emails, such as publisher surveys, opinion polls, newsletters and new functionality alerts. For those emails, we need your consent to use your email address. (You may come back here and change your response at any time.)</p>
-                    <p><input type="radio" name="marketing_consent" {% if account.marketing_consent %}checked="checked"{% endif %} value="true"> I consent to DOAJ using my email address for its own marketing purposes</p>
-                    <p><input type="radio" name="marketing_consent" {% if account.marketing_consent == False %}checked="checked"{% endif %} value="false"> I do not consent to DOAJ using my email address for its own marketing purposes</p>
-                    <p>DOAJ does not share your name and email address with any other organisation. Please read our full privacy policy <a href="/privacy">here</a>.</p>
-                    <input type="submit" class="btn btn-success" name="submit" value="Save Settings" style="float: right">
-                </form>
-            </div>
-        </div>
-
-    </div>
-
-{% else %}
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="hero-unit">
-                <h2>{{ account.id }}</h2>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <p>You are not logged in as this user. Use the <a href="/account/login">login page</a> if you want to change this</p>
-        </div>
-    </div>
-
-{% endif %}
+    </main>
 
 {% endblock %}
 
