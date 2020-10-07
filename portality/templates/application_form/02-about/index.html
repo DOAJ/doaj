@@ -1,4 +1,4 @@
-<p class="label">Page 2 of {{ FORM | length + 1}}</p>
+{% if not notabs %}<p class="label">Page 2 of {{ FORM | length + 1}}</p>{% endif %}
 <h1><span data-feather="edit-3"></span> About the journal</h1>
 
 {% set fs = formulaic_context.fieldset("about_the_journal") %}

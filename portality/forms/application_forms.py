@@ -1252,7 +1252,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             {"autocomplete": {"field": "account"}},
-            "clickable_owner"       # TODO: frontend implementation
+            "clickable_owner"
         ],
         "contexts" : {
             "bulk_edit" : {

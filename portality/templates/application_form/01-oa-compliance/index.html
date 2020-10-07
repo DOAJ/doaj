@@ -1,7 +1,8 @@
 
-<p class="label">Page 1 of {{ FORM | length + 1}}</p>
+{% if not notabs %}<p class="label">Page 1 of {{ FORM | length + 1}}</p>{% endif %}
 <h1><span data-feather="unlock"></span> Open access compliance</h1>
 
+{% if formulaic_context.name == "public" %}
 <p>You are now logged in. When you submit your application, it will be registered to this account.</p>
 
 <p>Your progress is automatically saved and you can return to this application at any time.</p>
@@ -9,6 +10,7 @@
 <p>The application form takes approximately <strong>30 minutes</strong> to complete.</p>
 
 <hr />
+{% endif %}
 
 <p>DOAJ only accepts fully open access journals</p>
 

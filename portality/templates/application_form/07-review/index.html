@@ -3,28 +3,7 @@
             <h1>{{ obj.data.bibjson.title }}</h1>
         {% endif %}
             <table id="review_table">
-                <tbody>
-{#                    {% if form_diff %}<th>Previous Value</th>{% endif %}#}
-{#                    {% set fieldsests = tab.fieldsets %}#}
-{#                    {% for fieldset in fieldsests %}#}
-{#                        {% set fs = formulaic_context.fieldset(fieldset) %}#}
-{#                        {% for f in fs.fields() %}#}
-{#                            <tr>#}
-{#                                <td id="{{ f.name }}__review_label">{{ f.label | safe }}</td>#}
-{#                                <td id="{{ f.name  }}__review_value"></td>#}
-{#                                {% if form_diff %}#}
-{#                                    <td id="{{ f.name }}__review_diff">#}
-{#                                        {% if f.name == "subjects" %}#}
-{#                                            {{ form_diff.get(f.name, {}).get("a", "") | form_diff_table_subject_expand }}#}
-{#                                        {% endif %}#}
-{#                                        {{ form_diff.get(f.name, {}).get("a", "") | form_diff_table_comparison_value }}#}
-{#                                    </td>#}
-{#                                {% endif %}#}
-{#                            </tr>#}
-{#                        {% endfor %}#}
-{#                    {% endfor %}#}
-{#                {% if t.update({"val": t.val + 1}) %}{% endif %}#}
-                </tbody>
+                <tbody>{# JS fills in this gap #}</tbody>
             </table>
             <hr />
 

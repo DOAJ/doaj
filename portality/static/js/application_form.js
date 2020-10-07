@@ -33,6 +33,8 @@ $.extend(doaj, {
             return edges.instantiate(doaj.af.ApplicationForm, params);
         },
         ApplicationForm: function(params) {
+            this.tabbed = true;
+
             this.TABS = [
                 {title: "Open access compliance", fieldsets: ["basic_compliance"]},
                 {title: "About the Journal", fieldsets: ["about_the_journal", "publisher", "society_or_institution"]},
@@ -87,6 +89,13 @@ $.extend(doaj, {
             };
 
             this.showTab = function(n) {
+                if (!this.tabbed) {
+                    this.tabs.each((idx, tab) => {
+                        $(tab).show();
+                    });
+                    return;
+                }
+
                 this.tabs.each((idx, tab) => {
                     $(tab).hide();
                 });
@@ -534,8 +543,9 @@ $.extend(doaj, {
             this.formDiff = edges.getParam(params.formDiff, false);
 
             this.init = function() {
-                this.currentTab = 6;
-                this.previousTab = 5;
+                this.tabbed = false;
+                //this.currentTab = 6;
+                // this.previousTab = 5;
                 var that = this;
 
                 $(".application-nav__list-item").each((idx, x) => {
@@ -555,38 +565,39 @@ $.extend(doaj, {
                 });
 
                 this.prepNavigation();
+                this._generate_values_preview();
 
                 edges.up(this, "init");
             };
 
-            this.showTab = function(n) {
-                edges.up(this, "showTab", [n]);
+            // this.showTab = function(n) {
+            //     edges.up(this, "showTab", [n]);
+            //
+            //     if (this.currentTab === 6) {
+            //         this._modifyReviewPage();
+            //     } else {
+            //         this._defaultPageView();
+            //     }
+            // };
 
-                if (this.currentTab === 6) {
-                    this._modifyReviewPage();
-                } else {
-                    this._defaultPageView();
-                }
-            };
-
-            this._modifyReviewPage = function() {
-                let page = $(".page");
-                page.removeClass("col-md-8");
-                page.addClass("col-md-12");
-                let buttons = $(".buttons");
-                buttons.addClass("col-md-8 col-md-offset-4");
-                $(".side-menus").hide();
-                this._generate_values_preview();
-            };
-
-            this._defaultPageView = function() {
-                let page = $(".page");
-                page.removeClass("col-md-12");
-                page.addClass("col-md-8");
-                let buttons = $(".buttons");
-                buttons.removeClass("col-md-8 col-md-offset-4");
-                $(".side-menus").show();
-            };
+            // this._modifyReviewPage = function() {
+            //     let page = $(".page");
+            //     page.removeClass("col-md-8");
+            //     page.addClass("col-md-12");
+            //     let buttons = $(".buttons");
+            //     buttons.addClass("col-md-8 col-md-offset-4");
+            //     $(".side-menus").hide();
+            //     this._generate_values_preview();
+            // };
+            //
+            // this._defaultPageView = function() {
+            //     let page = $(".page");
+            //     page.removeClass("col-md-12");
+            //     page.addClass("col-md-8");
+            //     let buttons = $(".buttons");
+            //     buttons.removeClass("col-md-8 col-md-offset-4");
+            //     $(".side-menus").show();
+            // };
 
             this._generate_values_preview = function() {
                 $(".admin_value_preview").each((i,elem) => {

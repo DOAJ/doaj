@@ -1,4 +1,4 @@
-<p class="label">Page 5 of {{ FORM | length + 1}}</p>
+{% if not notabs %}<p class="label">Page 5 of {{ FORM | length + 1}}</p>{% endif %}
 <h1><span data-feather="dollar-sign"></span>Business Model</h1>
 {% set fs = formulaic_context.fieldset("apc") %}
 <h2 class="form__header"> {{ fs.label }}</h2>

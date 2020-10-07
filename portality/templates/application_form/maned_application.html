@@ -6,6 +6,7 @@
 
 {% set js_validation = True %}
 {% set auto_save = 0 %}
+{% set notabs = true %}
 
 
 {% block content scoped %}
@@ -13,9 +14,8 @@
     <main class="container">
         {% include "application_form/_backend_validation.html" %}
         <div class="row">
-            <div class="col-md-8 page">
-                <section class="page-content">
-                    <form id="{{ form_id }}"
+
+            <form id="{{ form_id }}"
                       data-context = "{{ formulaic_context.name }}"
                       class="application_form"
                       novalidate
@@ -23,6 +23,10 @@
                       method="post"
                       data-formulaic-after="{{ formulaic_after }}"
                     >
+
+                <div class="col-md-8 page">
+                    <section class="page-content">
+
                         <div class="tab form-section">
                             {% include "application_form/01-oa-compliance/index.html" %}
                         </div>
@@ -41,50 +45,45 @@
                         <div class="tab form-section">
                             {% include "application_form/06-best-practice/index.html" %}
                         </div>
-                        <div class="tab form-section row">
-                            <div class="col-md-4">
-                                {% include "application_form/admin/application.html" %}
-                            </div>
-                            <div class="col-md-8">
-                                {% include "application_form/07-review/index.html" %}
-                            </div>
-                        </div>
+{#                        <div class="tab form-section row">#}
+{#                            <div class="col-md-4">#}
+{#                                {% include "application_form/admin/application.html" %}#}
+{#                            </div>#}
+{#                            <div class="col-md-8">#}
+{#                                {% include "application_form/07-review/index.html" %}#}
+{#                            </div>#}
+{#                        </div>#}
                         <div class="buttons">
                             {% include "application_form/_buttons.html" %}
                         </div>
-                    </form>
-
-                    {% set fs = formulaic_context.fieldset("quick_reject") %}
-                    <div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
-                        <div class="modal__dialog" role="document">
-                            <h3 class="modal__title" id="modalLabel-quick_reject">
-                                “{{ fs.label | safe }}”
-                            </h3>
-                        <p>{{ obj.id }}</p>
-                            <form method="post" data-id="{{ obj.id }}" action="{{ url_for('admin.application_quick_reject', application_id=obj.id) }}" id="application_quick_reject_form">
-                                {% for f in fs.fields() %}
-                                    {% set field_template = f.template %}
-                                    {%  include field_template %}
-                                {% endfor %}
-                                <button class="button button--primary" type="submit" id="submit_quick_reject">Quick Reject</button>
-                            </form>
-                            <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-                        </div>
-                    </div>
 
                 </section>
             </div>
-
             <div class="col-md-4 side-menus">
-                <div >
-                    {% include "application_form/pagination_menu.html" %}
-                </div>
-                <div class="row">
-                    {% include "application_form/aside_menu.html" %}
-                </div>
+                {% include "application_form/admin/application.html" %}
             </div>
 
+            </form>
         </div>
+
+        {% set fs = formulaic_context.fieldset("quick_reject") %}
+        <div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
+            <div class="modal__dialog" role="document">
+                <h3 class="modal__title" id="modalLabel-quick_reject">
+                    “{{ fs.label | safe }}”
+                </h3>
+            <p>{{ obj.id }}</p>
+                <form method="post" data-id="{{ obj.id }}" action="{{ url_for('admin.application_quick_reject', application_id=obj.id) }}" id="application_quick_reject_form">
+                    {% for f in fs.fields() %}
+                        {% set field_template = f.template %}
+                        {%  include field_template %}
+                    {% endfor %}
+                    <button class="button button--primary" type="submit" id="submit_quick_reject">Quick Reject</button>
+                </form>
+                <button type="button" data-dismiss="modal" class="modal__close">Close</button>
+            </div>
+        </div>
+
     </main>
  </body>
 {% endblock %}
