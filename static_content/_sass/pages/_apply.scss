@@ -149,6 +149,7 @@
 
   // Only used in review page
   table {
+      table-layout: fixed;
     @include typescale-06;
 
     th:first-child,
@@ -158,6 +159,10 @@
   }
 
   @media print {
+    html {
+      font-size: 10px !important;
+    }
+
     .form-section {
       display: block !important;
     }
