@@ -1504,7 +1504,12 @@ var formulaic = {
 
 
                 var initSel = function (element, callback) {
-                    var data = {id: element.val(), text: element.val()};
+                    var initial = element.val();
+                    var entries = initial.split(",");
+                    var data = [];
+                    for (var i = 0; i < entries.length; i++) {
+                        data.push({id: entries[i], text: entries[i]});
+                    }
                     callback(data);
                 };
 

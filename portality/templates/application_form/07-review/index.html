@@ -28,7 +28,9 @@
             </table>
             <hr />
 
-{% if formulaic_context.name == "public" %}
-<input type="checkbox" id="reviewed" name="reviewed" value="reviewed">
-<label for="reviewed">I’ve reviewed the answers to my application and confirm that the information provided is accurate and true.</label>
+{% if formulaic_context.name == "public" or formulaic_context.name == "update_request" %}
+    <div class="form__question">
+        <input type="checkbox" id="reviewed" name="reviewed" value="reviewed">
+        <label for="reviewed">I’ve reviewed the answers to my application and confirm that the information provided is accurate and true.</label>
+    </div>
 {% endif %}

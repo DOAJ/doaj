@@ -11,6 +11,8 @@ $.extend(doaj, {
                     return doaj.af.newPublicApplicationForm(params);
                 case "admin":
                     return doaj.af.newManEdApplicationForm(params);
+                case "update_request":
+                    return doaj.af.newUpdateRequestForm(params);
                 default:
                     throw "Could not extract a context from the form";
             }
@@ -472,7 +474,7 @@ $.extend(doaj, {
 
         PublicApplicationForm : function(params) {
             this.init = function() {
-                edges.up(this, "init", [params]);
+                // edges.up(this, "init");
                 let draftEl = $("input[name=id]", this.form);
                 if (draftEl) {
                     this.draft_id = draftEl.val();
@@ -495,7 +497,31 @@ $.extend(doaj, {
             };
 
             this.manage_review_checkboxes = function() {
-                if (this.jq("#reviewed").checked) {
+                if (this.jq("#reviewed").is(":checked")) {
+                    this.form_validated() ? this.jq("#submitBtn").show() : this.jq("#submitBtn").hide()
+                }
+            };
+        },
+
+        newUpdateRequestForm : function(params) {
+            return edges.instantiate(doaj.af.UpdateRequestForm, params, doaj.af.newApplicationForm);
+        },
+
+        UpdateRequestForm : function(params) {
+            this.init = function() {
+                let reviewedSelector = this.jq("#reviewed");
+                edges.on(reviewedSelector, "click", this, "manage_review_checkboxes");
+
+                this.prepNavigation();
+
+                let submitSelector = this.jq("#submitBtn");
+                edges.on(submitSelector, "click", this, "submitapplication");
+
+                edges.up(this, "init");
+            };
+
+            this.manage_review_checkboxes = function() {
+                if (this.jq("#reviewed").is(":checked")) {
                     this.form_validated() ? this.jq("#submitBtn").show() : this.jq("#submitBtn").hide()
                 }
             };
