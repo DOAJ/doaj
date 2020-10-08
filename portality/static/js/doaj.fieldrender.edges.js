@@ -220,7 +220,7 @@ $.extend(true, doaj, {
                 var treeFrag = treeReport.frag;
 
                 if (treeFrag === "") {
-                    treeFrag = "Loading...";
+                    treeFrag = "Loading…";
                 }
 
                 var toggleId = edges.css_id(namespace, "toggle", this);
@@ -1317,7 +1317,7 @@ $.extend(true, doaj, {
                 var resultsId = edges.css_id(namespace, "results", this);
 
                 // this is what's displayed in the body if there are no results or the page is loading
-                var results = "<li>Loading...</li>";
+                var results = "<li class='loading'><div></div><div></div><div></div><span class='sr-only'>Loading choices…</span></li>";
                 if (ts.edge.result) {
                     results = "<li>No data to show</li>";
                 }
@@ -1566,7 +1566,7 @@ $.extend(true, doaj, {
                 var resultsId = edges.css_id(namespace, "results", this);
 
                 // this is what's displayed in the body if there are no results
-                var results = "<li>Loading...</li>";
+                var results = "<li class='loading'><div></div><div></div><div></div><span class='sr-only'>Loading choices…</span></li>";
                 if (ts.values !== false) {
                     results = "<li>No data available</li>";
                 }
