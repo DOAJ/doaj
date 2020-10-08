@@ -95,7 +95,7 @@
             {% endfor %}
         </div>
     </fieldset>
-    <button class="button button--primary button button--primary button--primary_editorial" type="submit">Save</button>
+    <button  id="submitBtn" class="button button--primary button button--primary button--primary_editorial" type="submit">Save</button>
     {% if obj %}
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}

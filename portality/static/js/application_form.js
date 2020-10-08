@@ -360,6 +360,7 @@ $.extend(doaj, {
             };
 
             this.submitapplication = function() {
+                this.form.parsley();
                 this.form.submit();
             };
 
@@ -544,13 +545,8 @@ $.extend(doaj, {
 
             this.init = function() {
                 this.tabbed = false;
-                //this.currentTab = 6;
-                // this.previousTab = 5;
-                var that = this;
 
-                $(".application-nav__list-item").each((idx, x) => {
-                    x.className = "application-nav__list-item application-nav__list-item--active";
-                });
+                var that = this;
 
                 $("#open_quick_reject").on("click", (e) => {
                     e.preventDefault();
@@ -564,40 +560,13 @@ $.extend(doaj, {
                     that.unlock({type : type, id : id})
                 });
 
-                this.prepNavigation();
                 this._generate_values_preview();
+
+                let submitSelector = this.jq("#submitBtn");
+                edges.on(submitSelector, "click", this, "submitapplication");
 
                 edges.up(this, "init");
             };
-
-            // this.showTab = function(n) {
-            //     edges.up(this, "showTab", [n]);
-            //
-            //     if (this.currentTab === 6) {
-            //         this._modifyReviewPage();
-            //     } else {
-            //         this._defaultPageView();
-            //     }
-            // };
-
-            // this._modifyReviewPage = function() {
-            //     let page = $(".page");
-            //     page.removeClass("col-md-8");
-            //     page.addClass("col-md-12");
-            //     let buttons = $(".buttons");
-            //     buttons.addClass("col-md-8 col-md-offset-4");
-            //     $(".side-menus").hide();
-            //     this._generate_values_preview();
-            // };
-            //
-            // this._defaultPageView = function() {
-            //     let page = $(".page");
-            //     page.removeClass("col-md-12");
-            //     page.addClass("col-md-8");
-            //     let buttons = $(".buttons");
-            //     buttons.removeClass("col-md-8 col-md-offset-4");
-            //     $(".side-menus").show();
-            // };
 
             this._generate_values_preview = function() {
                 $(".admin_value_preview").each((i,elem) => {
