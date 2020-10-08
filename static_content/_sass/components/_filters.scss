@@ -7,7 +7,12 @@
 }
 
 .filters__heading {
-  margin-top: 0;
+  margin-bottom: $spacing-04;
+  cursor: default;
+
+  svg {
+    height: 15px;
+  }
 }
 
 .filters__list {
@@ -24,9 +29,6 @@
 
 .filter__heading {
   margin: auto 0 $spacing-03 0;
-  font-size: 1em;
-  color: $warm-black;
-  @include font-sans;
 
   svg {
     float: right;

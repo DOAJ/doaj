@@ -1,5 +1,7 @@
 .pagination {
   text-align: center;
+  color: rgba($warm-black, 0.75);
+  font-style: italic;
   @include typescale-06;
 
   ul {
@@ -23,9 +25,16 @@
     }
   }
 
+  strong {
+    color: $warm-black;
+    font-style: normal;
+  }
+
   a {
     text-decoration: none;
-    color: $dark-grey;
+    color: $sanguine;
+    font-style: normal;
+    font-weight: 600;
   }
 
   .feather {
