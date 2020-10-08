@@ -130,8 +130,8 @@ $.extend(true, doaj, {
                     <div class="row">\
                         <div class="col-md-3">\
                             <aside class="filters">\
-                              <h2 class="label label--underlined filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
-                                <span data-feather="sliders" aria-hidden="true"></span> Refine search results \
+                              <h2 class="filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
+                                <span data-feather="sliders" aria-hidden="true"></span> Refine search results: \
                                 <span data-feather="chevron-down" aria-hidden="true"></span>\
                               </h2>\
                                 <ul class="collapse filters__list" id="filters" aria-expanded="false">\
@@ -141,6 +141,7 @@ $.extend(true, doaj, {
                         </div>\
                             \
                         <div class="col-md-9">\
+                            <aside id="selected-filters"></aside>\
                             <nav class="search-options">\
                                 <h3 class="sr-only">Display options</h3>\
                                 <div class="row">\
@@ -148,7 +149,6 @@ $.extend(true, doaj, {
                                     <div class="col-xs-6 search-options__right" id="rpp"></div>\
                                 </div>\
                             </nav>\
-                            <aside id="selected-filters"></aside>\
                             <nav class="pagination" id="top-pager"></nav>\
                             <ol class="search-results" id="results"></ol>\
                             <nav class="pagination" id="bottom-pager"></nav>\
@@ -752,7 +752,7 @@ $.extend(true, doaj, {
                 var textId = edges.css_id(this.namespace, "text", this);
 
                 //var frag = '<div class="row">' + clearFrag + sortOptions + searchBox + '</div>';
-                var frag = '<h3 class="filter__heading">' + edges.escapeHtml(this.title) + '</h3>\
+                var frag = '<h3 class="label label--secondary filter__heading">' + edges.escapeHtml(this.title) + '</h3>\
                     <label for="' + textId + '" class="sr-only">' + edges.escapeHtml(this.title) + '</label>\
                     <input type="text" name="' + textId + '" id="' + textId + '" class="filter__search ' + textClass + '" placeholder="' + this.searchPlaceholder + '">';
 
@@ -1212,7 +1212,7 @@ $.extend(true, doaj, {
                         </li>';
                 }
 
-                var frag = '<h3 class="filter__heading">' + this.facetTitle + '</h3>\
+                var frag = '<h3 class="label label--secondary filter__heading">' + this.facetTitle + '</h3>\
                     <ul class="filter__choices">{{FILTERS}}</ul>';
 
                 // substitute in the component parts
@@ -1413,7 +1413,7 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<h3 class="filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
+                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
                     <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
                     </div>';
@@ -1660,7 +1660,7 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<h3 class="filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
+                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
                     <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
                     </div>';
