@@ -148,22 +148,6 @@ doaj.af.BaseApplicationForm = class {
         return result;
     };
 
-    form_validated() {
-        // FIXME: this won't work, replace with a call to parsley, I guess
-        let result = true;
-        let inputs = this.jq("[name^='validated']");
-        $(inputs).each((idx, input) => {
-            if (idx === inputs.length-1) {
-                return result;
-            }
-            if ($(input).val() !== "True") {
-                result = false;
-                return;
-            }
-        });
-        return result;
-    };
-
     submitapplication() {
         this.form.parsley();
         this.form.submit();
@@ -248,15 +232,15 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         if (n === (this.tabs.length - 1)) {
             //show submit button only if all tabs are validated
             this.jq("#nextBtn").hide();
-            submitButton.hide();
+            submitButton.show().attr("disabled", "disabled");
             draftButton.show();
-            let validated = this.form_validated();
-            if (!validated) {
-                this.jq("#cannot-submit-invalid-fields").show();
-            } else {
+
+            this.form.parsley().whenValidate().done(() => {
                 this.jq("#cannot-submit-invalid-fields").hide();
-                submitButton.show();
-            }
+                submitButton.removeAttr("disabled");
+            }).fail(() => {
+                this.jq("#cannot-submit-invalid-fields").show();
+            });
 
         } else {
             let nextBtn = this.jq("#nextBtn");
@@ -304,6 +288,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         }
 
         this.updateStepIndicator();
+        this.form.parsley().reset();
     };
 
     checkBackendValidationFailures() {
