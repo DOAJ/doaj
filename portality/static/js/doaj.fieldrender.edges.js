@@ -2353,9 +2353,9 @@ $.extend(true, doaj, {
                     <article class="row">\
                       <div class="col-sm-8 search-results__main article-summary">\
                         <header>\
-                          <p class="label">\
+                          <p class="label"><a href="/toc/' + issns[0] + 'target="_blank">\
                             ' + edges.escapeHtml(journal) + ' ' + date + '\
-                          </p>\
+                          </a></p>\
                           <h3 class="search-results__heading">\
                             <a href="/article/' + resultobj.id + '" class="">\
                               ' + title + '\
@@ -2374,7 +2374,7 @@ $.extend(true, doaj, {
                             <a href="' + ftl + '" target="_blank" rel="noopener">Read online <span data-feather="external-link" aria-hidden="true"></span></a>\
                           </li>\
                           <li>\
-                            <a href="/toc/' + issns[0] + '" target="_blank" rel="noopener">Journal Table of Contents</a>\
+                            <a href="/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
                           </li>\
                           <li>\
                             ' + license + '\
