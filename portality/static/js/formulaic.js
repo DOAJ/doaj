@@ -279,7 +279,6 @@ var formulaic = {
         ///////////////////////////////////////////////////////
 
         this.bindConditional = function() {
-            let context = $(this.context[0]).attr("context");
             for (var i = 0; i < this.fieldsets.length; i++) {
                 var fieldset = this.fieldsets[i];
                 for (var j = 0; j < fieldset.fields.length; j++) {
@@ -303,13 +302,11 @@ var formulaic = {
                         }
 
                         // bind a change event for checking conditionals
-
                         var element = this.controlSelect.input({name: condField});
                         edges.on(element, "change.Conditional", this, "checkConditional");
 
-                        if (context === "admin"){
-                            this.checkConditional(element);
-                        }
+                        // then actually check the conditional
+                        this.checkConditional(element);
                     }
                 }
             }
