@@ -58,6 +58,13 @@ class Account(DomainObject, UserMixin):
             return None
 
     @classmethod
+    def email_in_use(cls, email: str):
+        if email is None:
+            return None
+        res = cls.query(q='email:"' + email + '"')
+        return res.get('hits', {}).get('total', 0) > 0
+
+    @classmethod
     def get_by_reset_token(cls, reset_token, not_expired=True):
         res = cls.query(q='reset_token.exact:"' + reset_token + '"')
         obs = [hit.get("_source") for hit in res.get("hits", {}).get("hits", [])]

@@ -9,7 +9,7 @@ from portality import util, app_email
 from portality.core import app
 from portality.decorators import ssl_required, write_required
 from portality.models import Account
-from portality.forms.validate import EmailAvailable, ReservedUsernames, IdAvailable
+from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
 from portality.notifications.application_emails import send_account_created_email
 
 blueprint = Blueprint('account', __name__)
@@ -22,6 +22,24 @@ def index():
     if not current_user.has_role("list_users"):
         abort(401)
     return render_template("account/users.html")
+
+
+class UserEditForm(Form):
+    id = StringField('ID', [IgnoreUnchanged(), ReservedUsernames(), IdAvailable()])
+    name = StringField('Account name', [DataOptional(), validators.Length(min=3, max=64)])
+    email = StringField('Email Address', [
+        IgnoreUnchanged(),
+        validators.Length(min=3, max=254),
+        validators.Email(message='Must be a valid email address'),
+        EmailAvailable(),
+        validators.EqualTo('email_confirm', message='Email confirmation must match'),
+    ])
+    email_confirm = StringField('Confirm email address')
+    roles = StringField('User roles')
+    password = PasswordField('Change password', [
+        validators.EqualTo('confirm', message='Passwords must match'),
+    ])
+    confirm = PasswordField('Confirm password')
 
 
 @blueprint.route('/<username>', methods=['GET', 'POST', 'DELETE'])
@@ -41,7 +59,7 @@ def username(username):
             conf = request.values.get("confirm")
             if conf is None or conf != "confirm":
                 flash('Check the box to confirm you really mean it!', "error")
-                return render_template('account/view.html', account=acc)
+                return render_template('account/view.html', account=acc, form=UserEditForm(obj=acc))
             acc.delete()
             flash('Account ' + acc.id + ' deleted')
             return redirect(url_for('.index'))
@@ -49,33 +67,27 @@ def username(username):
     elif request.method == 'POST':
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
+
+        form = UserEditForm(obj=acc, formdata=request.form)
+
+        if not form.validate():
+            return render_template('account/view.html', account=acc, form=form)
+
         newdata = request.json if request.json else request.values
-        if newdata.get('id', False):
-            if newdata['id'] != username:
-                acc = Account.pull(newdata['id'])
         if request.values.get('submit', False) == 'Generate a new API Key':
             acc.generate_api_key()
-        for k, v in newdata.items():
-            if k in ['name']:
-                if acc.data.get(k, None) != v:
-                    acc.data[k] = v
+        if 'id' in newdata and len(newdata['id']) > 0:
+            if newdata['id'] != current_user.id == acc.id:
+                flash('You may not edit the ID of your own account', 'error')
+                return render_template('account/view.html', account=acc, form=form)
+            else:
+                acc.delete()        # request for the old record to be deleted from ES
+                acc.set_id(newdata['id'])
+        if 'name' in newdata:
+            acc.set_name(newdata['name'])
         if 'password' in newdata and len(newdata['password']) > 0 and not newdata['password'].startswith('sha1'):
-            if newdata.get("confirm", "") == "":
-                flash("You must enter your password in both the new password and confirmation box", "error")
-                return render_template('account/view.html', account=acc)
-            if newdata["confirm"] != newdata["password"]:
-                flash("Your password and confirmation do not match", "error")
-                return render_template('account/view.html', account=acc)
             acc.set_password(newdata['password'])
-
         if 'email' in newdata and len(newdata['email']) > 0 and newdata['email'] != acc.email:
-            if newdata.get("email_confirm", "") == "":
-                flash("You must enter the new email address in the confirmation box", "error")
-                return render_template('account/view.html', account=acc)
-            if newdata["email_confirm"] != newdata["email"]:
-                flash("Your email and email confirmation do not match", "error")
-                return render_template('account/view.html', account=acc)
-
             acc.set_email(newdata['email'])
 
             # If the user updated their own email address, invalidate the password and require verification again.
@@ -87,11 +99,14 @@ def username(username):
                 acc.save()
                 logout_user()
                 flash("Email address updated. You have been logged out for email address verification.")
+                if app.config.get('DEBUG', False):
+                    reset_url = url_for('account.reset', reset_token=acc.reset_token, _external=True)
+                    util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(reset_url))
                 return redirect(url_for('doaj.home'))
 
         # only super users can re-write roles
-        if "role" in newdata and current_user.is_super:
-            new_roles = [r.strip() for r in newdata.get("role").split(",")]
+        if "roles" in newdata and current_user.is_super:
+            new_roles = [r.strip() for r in newdata.get("roles").split(",")]
             acc.set_role(new_roles)
 
         if "marketing_consent" in newdata:
@@ -99,17 +114,17 @@ def username(username):
 
         acc.save()
         flash("Record updated")
-        return render_template('account/view.html', account=acc)
+        return render_template('account/view.html', account=acc, form=form)
 
     else:  # GET
         if util.request_wants_json():
             resp = make_response(
-                json.dumps(acc.data, sort_keys=True, indent=4) )
+                json.dumps(acc.data, sort_keys=True, indent=4))
             resp.mimetype = "application/json"
             return resp
         else:
-            # do an mget on the journals, so that we can present them to the user
-            return render_template('account/view.html', account=acc)
+            form = UserEditForm(obj=acc)
+            return render_template('account/view.html', account=acc, form=form)
 
 
 def get_redirect_target(form=None):
@@ -170,7 +185,7 @@ def login():
                 form.password.errors.append("Incorrect username / password")
         except KeyError:
             # Account has no password set, the user needs to reset or use an existing valid reset link
-            FORGOT_INSTR = '<a href="{url}">&lt;click here&gt;</a> to try again.'.format(url=url_for('.forgot'))
+            FORGOT_INSTR = '<a href="{url}">&lt;click here&gt;</a> to send a new reset link.'.format(url=url_for('.forgot'))
             util.flash_with_url('Account verification is incomplete. Check your emails for the link or ' + FORGOT_INSTR,
                                 'error')
             return redirect(url_for('doaj.home'))
@@ -284,7 +299,7 @@ def logout():
 
 class RegisterForm(RedirectForm):
     identifier = StringField('ID', [ReservedUsernames(), IdAvailable()])
-    name = StringField('Name', [validators.Length(min=3, max=64)])
+    name = StringField('Name', [validators.Optional(), validators.Length(min=3, max=64)])
     email = StringField('Email Address', [
         validators.DataRequired(),
         validators.Length(min=3, max=254),
@@ -318,7 +333,7 @@ def register():
             util.flash_with_url('Debug mode - url for verify is <a href={0}>{0}</a>'.format(url_for('account.reset', reset_token=account.reset_token, _external=True)))
 
         if current_user.is_authenticated:
-            flash('Account created for ' + account.email + '.', 'success')
+            util.flash_with_url('Account created for {0}. View Account: <a href={1}>{1}</a>'.format(account.email, url_for('.username', username=account.id)))
         else:
             flash('Thank you, please verify email address ' + form.email.data + ' to set your password and login.',
                   'success')
