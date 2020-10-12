@@ -313,13 +313,10 @@ class RegisterForm(RedirectForm):
 @ssl_required
 @write_required()
 def register():
-    if not app.config.get('PUBLIC_REGISTER', False):
-        abort(401)
-
-    # 3rd-party registration only for those with create_user role
-    if current_user.is_authenticated and not current_user.has_role("create_user"):
-        # Redirect if the user is already registered and don't have permission to create new ones
-        return redirect('/account')
+    # 3rd-party registration only for those with create_user role, only allow public registration when configured
+    if current_user.is_authenticated and not current_user.has_role("create_user") \
+            or current_user.is_anonymous and app.config.get('PUBLIC_REGISTER', False) is False:
+        abort(401)      # todo: we may need a template to explain this since it's linked from the application form
 
     form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
     if request.method == 'POST' and form.validate():
