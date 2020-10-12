@@ -195,6 +195,9 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         edges.on(nextSelector, "click", this, "next");
         edges.on(prevSelector, "click", this, "prev");
+
+        let reviewedSelector = this.jq("#reviewed");
+        edges.on(reviewedSelector, "click", this, "manage_review_checkboxes", false, false, false);
     }
 
     useStepIndicator() {
@@ -237,7 +240,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
             this.form.parsley().whenValidate().done(() => {
                 this.jq("#cannot-submit-invalid-fields").hide();
-                submitButton.removeAttr("disabled");
+                this.manage_review_checkboxes();
             }).fail(() => {
                 this.jq("#cannot-submit-invalid-fields").show();
             });
@@ -386,6 +389,12 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         $("#page_link-" + this.currentTab).className = "page_link";
     };
+
+    manage_review_checkboxes() {
+        if (this.jq("#reviewed").is(":checked")) {
+            this.jq("#submitBtn").show().removeAttr("disabled");
+        }
+    };
 };
 
 doaj.af.newEditorialApplicationForm = function(params) {
@@ -492,9 +501,6 @@ doaj.af.PublicApplicationForm = class extends doaj.af.TabbedApplicationForm {
             this.draft_id = draftEl.val();
         }
 
-        let reviewedSelector = this.jq("#reviewed");
-        edges.on(reviewedSelector, "click", this, "manage_review_checkboxes", false, false, false);
-
         if (this.draft_id) {
             this.prepNavigation();
         }
@@ -519,12 +525,6 @@ doaj.af.PublicApplicationForm = class extends doaj.af.TabbedApplicationForm {
         parsleyForm.destroy();
         this.form.submit();
     };
-
-    manage_review_checkboxes() {
-        if (this.jq("#reviewed").is(":checked")) {
-            this.jq("#submitBtn").show();
-        }
-    };
 };
 
 doaj.af.newUpdateRequestForm = function(params) {
@@ -534,17 +534,7 @@ doaj.af.newUpdateRequestForm = function(params) {
 doaj.af.UpdateRequestForm = class extends doaj.af.TabbedApplicationForm {
     constructor(params) {
         super(params);
-
-        let reviewedSelector = this.jq("#reviewed");
-        edges.on(reviewedSelector, "click", this, "manage_review_checkboxes", false, false, false);
-
         this.prepNavigation();
-    };
-
-    manage_review_checkboxes() {
-        if (this.jq("#reviewed").is(":checked")) {
-            this.jq("#submitBtn").show();
-        }
     };
 };
 

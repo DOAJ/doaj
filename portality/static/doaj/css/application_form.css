@@ -93,3 +93,6 @@ li.parsley-type {
     width: 100%;
 }
 
+a[id="submitBtn"][disabled] {
+    background: #cccccc;
+}
