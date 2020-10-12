@@ -41,24 +41,9 @@
                             {% include "application_form/07-review/index.html" %}
                         </div>
                     </div>
-                    <div class="tab form-section">
-                        {% include "application_form/01-oa-compliance/index.html" %}
-                    </div>
-                    <div class="tab form-section">
-                        {% include "application_form/02-about/index.html" %}
-                    </div>
-                    <div class="tab form-section">
-                        {% include "application_form/03-copyright-licensing/index.html" %}
-                    </div>
-                    <div class="tab form-section">
-                        {% include "application_form/04-editorial/index.html" %}
-                    </div>
-                    <div class="tab form-section">
-                        {% include "application_form/05-business-model/index.html" %}
-                    </div>
-                    <div class="tab form-section">
-                        {% include "application_form/06-best-practice/index.html" %}
-                    </div>
+
+                    {% include "application_form/_fieldsets.html" %}
+
                     <p class="cannot-submit" id="cannot_save_draft" style="display: none"><i>You cannot save the draft because your application contains some invalid fields. You do not have to provide all required answers but all provided information must have valid format. Please review your answers and try again.</i></p>
                     {% include "application_form/_buttons.html" %}
                 </form>

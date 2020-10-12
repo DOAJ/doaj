@@ -21,24 +21,9 @@
                       action="{{ form_action }}"
                       method="post"
                       data-formulaic-after="{{ formulaic_after }}">
-                        <div class="tab form-section">
-                            {% include "application_form/01-oa-compliance/index.html" %}
-                        </div>
-                        <div class="tab form-section">
-                            {% include "application_form/02-about/index.html" %}
-                        </div>
-                        <div class="tab form-section">
-                            {% include "application_form/03-copyright-licensing/index.html" %}
-                        </div>
-                        <div class="tab form-section">
-                            {% include "application_form/04-editorial/index.html" %}
-                        </div>
-                        <div class="tab form-section">
-                            {% include "application_form/05-business-model/index.html" %}
-                        </div>
-                        <div class="tab form-section">
-                            {% include "application_form/06-best-practice/index.html" %}
-                        </div>
+
+                        {% include "application_form/_fieldsets.html" %}
+
                         <div class="tab form-section">
                             <div class="col-md-3">
                                 {% include "application_form/admin/journal.html" %}
