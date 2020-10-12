@@ -1,0 +1,33 @@
+{% block edit_user_form %}
+
+    {% from "_formhelpers.html" import render_field %}
+
+    <form action="" method="POST">
+        {% if current_user.is_super %}
+            {{ render_field(form.id, style="width: 75%") }}
+            <br/>
+        {% endif %}
+
+        {{ render_field(form.name, placeholder="Firstname Lastname") }}
+        <br/>
+        {{ render_field(form.email, placeholder="enter your email address") }}
+        <br/>
+        {{ render_field(form.email_confirm, value='', placeholder="confirm email address change") }}
+        <div style="width: 80%; padding-top:0.5rem">
+            <p><small><strong>NOTE: </strong>Changing your email address will log you out. You will need to verify the new email address and enter a new password.</small></p>
+        </div>
+        {% if current_user.is_super %}
+            {{ render_field(form.roles, value=account.role|join(','), style="width: 75%") }}
+        {% else %}
+            <label for="roles">User roles</label>
+            <input type="text" name="roles" value="{{ account.role|join(', ') }}" disabled="disabled">
+        {% endif %}
+        <br/>
+        {{ render_field(form.password, placeholder="********") }}
+        <br/>
+        {{ render_field(form.confirm, placeholder="********") }}
+
+        <br/>
+        <input type="submit" class="button button--primary" name="submit" value="Update Account" style="float: right; width: 35%">
+    </form>
+{% endblock %}

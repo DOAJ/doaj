@@ -33,11 +33,11 @@
                             <div class="col-md-12">
                                 <h2>Hi {{ account.name if account.name else account.email }}</h2>
                                 {% if account.role|length > 0 %}
-                                    <p><strong>Role(s)</strong>: {{ account.role|join(", ") }}
+                                    <p><strong>Role(s)</strong>: {{ account.role|join(", ") }}</p>
                                 {% endif %}
                                 {% if account.api_key %}
                                     <div class="col-md-8" style="padding: 0">
-                                        <p><strong>API Key</strong>: <code>{{ account.api_key }}</code>
+                                    <p><strong>API Key</strong>: <code>{{ account.api_key }}</code></p>
                                     </div>
                                     <div class="col-md-4" style="padding: 0">
                                         <form action="" method="POST">
@@ -52,35 +52,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form__question" style="margin-top: 1rem">
-                                    <form action="" method="POST">
-                                        <label for="name">Account name</label>
-                                        <input type="text" name="name" value="{{ account.name if account.name else '' }}" placeholder="Firstname Lastname">
-
-                                        <label for="email">Email address</label>
-                                        <input type="text" name="email" value="{{ account.email if account.email else '' }}" placeholder="enter your email address">
-                                        <label for="email_confirm">Confirm email address</label>
-                                        <input type="text" name="email_confirm" value="" placeholder="confirm email address change">
-                                        <div style="width: 80%; padding-top:0.5rem">
-                                            <p><small><strong>NOTE: </strong>Changing your email address will log you out. You will need to verify the new email address and enter a new password.</small></p>
-                                        </div>
-
-                                        <label for="roles">User roles</label>
-                                        {% if current_user.is_super %}
-                                            <input id="editable_role" type="text" name="role"
-                                                   value="{{ account.role|join(',') }}" style="width: 75%">
-                                        {% else %}
-                                            <input type="text" name="role" value="{{ account.role|join(',') }}" disabled="disabled">
-                                        {% endif %}
-
-                                        <label for="password">Change password</label>
-                                        <input type="password" name="password" placeholder="********">
-
-                                        <label for="confirm">Confirm password</label>
-                                        <input type="password" name="confirm" placeholder="********">
-
-                                        <br/>
-                                        <input type="submit" class="button button--primary" name="submit" value="Update Account" style="float: right; width: 35%">
-                                    </form>
+                                    {% include 'account/_edit_user_form.html' %}
                                 </div>
 
                                 <hr/>
@@ -149,7 +121,7 @@
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-    $('#editable_role').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"]})
+    $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"]})
 });
 </script>
 
