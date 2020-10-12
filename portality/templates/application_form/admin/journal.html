@@ -7,7 +7,7 @@
         {% if job %}
             {% set withdraw_reinstate = "Withdrawing" if obj.is_in_doaj() else "Reinstating" %}
         {% endif %}
-        <button class="button button--primary" type="submit" id="open_withdraw_reinstate" data-toggle="modal" data-target="#modal-withdraw_reinstate">{{ withdraw_reinstate }}</button>
+        <button class="button button--primary" type="button" id="open_withdraw_reinstate" data-toggle="modal" data-target="#modal-withdraw_reinstate">{{ withdraw_reinstate }}</button>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("reassign") %}
@@ -89,7 +89,7 @@
             {%  include field_template %}
         {% endfor %}
     </fieldset>
-    <button class="button button--primary button button--primary button--primary_editorial" type="submit">Save</button>
+    <button id="submitBtn" class="button button--primary button button--primary button--primary_editorial" type="submit">Save</button>
     {% if obj %}
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}

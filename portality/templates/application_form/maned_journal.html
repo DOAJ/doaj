@@ -6,75 +6,59 @@
 
 {% set js_validation = True %}
 {% set auto_save = 0 %}
+{% set notabs = true %}
 
 {% block content scoped %}
 <body id="apply">
     <main class="container">
         {% include "application_form/_backend_validation.html" %}
         <div class="row">
-            <div class="col-md-8 page">
-                <section class="page-content">
-                    <form id="{{ form_id }}"
+
+            <form id="{{ form_id }}"
                       data-context = "{{ formulaic_context.name }}"
                       class="application_form"
                       novalidate
                       action="{{ form_action }}"
                       method="post"
-                      data-formulaic-after="{{ formulaic_after }}">
+                      data-formulaic-after="{{ formulaic_after }}"
+                    >
 
+                <div class="col-md-8 page">
+                    <section class="page-content">
                         {% include "application_form/_fieldsets.html" %}
+                    </section>
+                </div>
+                <div class="col-md-4 side-menus">
+                    {% include "application_form/admin/journal.html" %}
+                </div>
 
-                        <div class="tab form-section">
-                            <div class="col-md-3">
-                                {% include "application_form/admin/journal.html" %}
-                            </div>
-                            <div class="col-md-8 col-md-offset-1">
-                                {% include "application_form/07-review/index.html" %}
-                            </div>
-                        </div>
-                        <div class="buttons">
-                            {% include "application_form/_buttons.html" %}
-                        </div>
+            </form>
+        </div>
+
+        <div class="modal" id="modal-withdraw_reinstate" tabindex="-1" role="dialog" aria-labelledby="modalLabel-withdraw_reinstate">
+            <div class="modal__dialog" role="document">
+                {% set action_label = "Withdraw" if obj.is_in_doaj() else "Reinstate" %}
+                {% set message = "Are you sure you want to " + action_label + " " + obj.id %}
+
+                {% if job %}
+                    {% set action_label = "Withdrawing" if obj.is_in_doaj() else "Reinstating" %}
+                    {% set job_url = "/admin/background_jobs?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22" + job.id + "%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%2C%22from%22%3A0%2C%22size%22%3A25%7D" %}
+                    {% set message = "There is currently a background job " + action_label + " " + obj.id + ".  You can view the progress of this job <a href='" + job_url + "' target='_blank'>here</a> (opens in new tab). You will get an email when your request has been processed; this could take anything from a few minutes to a few hours." %}
+                {% endif %}
+                <h3 class="modal__title" id="modalLabel-withdraw_reinstate">
+                    {{action_label}}
+                </h3>
+                <p>{% autoescape off %}{{ message }}{% endautoescape %}</p>
+                {% if not job %}
+                    {% set action = url_for("admin.journal_activate", journal_id=obj.id) %}
+                    {% if obj.is_in_doaj() %}
+                        {% set action = url_for("admin.journal_deactivate", journal_id=obj.id) %}
+                    {% endif %}
+                    <form method="post" action="{{ action }}" id="journal_witdraw_reinstate">
+                        <button class="button button--primary" type="submit" id="submit_quick_reject">{{ action_label }}</button>
                     </form>
-
-
-                    <div class="modal" id="modal-withdraw_reinstate" tabindex="-1" role="dialog" aria-labelledby="modalLabel-withdraw_reinstate">
-                        <div class="modal__dialog" role="document">
-                            {% set action_label = "Withdraw" if obj.is_in_doaj() else "Reinstate" %}
-                            {% set message = "Are you sure you want to " + action_label + " " + obj.id %}
-
-                            {% if job %}
-                                {% set action_label = "Withdrawing" if obj.is_in_doaj() else "Reinstating" %}
-                                {% set job_url = "/admin/background_jobs?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22" + job.id + "%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%2C%22from%22%3A0%2C%22size%22%3A25%7D" %}
-                                {% set message = "There is currently a background job " + action_label + " " + obj.id + ".  You can view the progress of this job <a href='" + job_url + "' target='_blank'>here</a> (opens in new tab). You will get an email when your request has been processed; this could take anything from a few minutes to a few hours." %}
-                            {% endif %}
-                            <h3 class="modal__title" id="modalLabel-withdraw_reinstate">
-                                {{action_label}}
-                            </h3>
-                            <p>{% autoescape off %}{{ message }}{% endautoescape %}</p>
-                            {% if not job %}
-                                {% set action = url_for("admin.journal_activate", journal_id=obj.id) %}
-                                {% if obj.is_in_doaj() %}
-                                    {% set action = url_for("admin.journal_deactivate", journal_id=obj.id) %}
-                                {% endif %}
-                                <form method="post" action="{{ action }}" id="journal_witdraw_reinstate">
-                                    <button class="button button--primary" type="submit" id="submit_quick_reject">{{ action_label }}</button>
-                                </form>
-                            {% endif %}
-                            <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-                        </div>
-                    </div>
-
-                </section>
-            </div>
-
-            <div class="col-md-4 side-menus">
-                <div >
-                    {% include "application_form/pagination_menu.html" %}
-                </div>
-                <div class="row">
-                    {% include "application_form/aside_menu.html" %}
-                </div>
+                {% endif %}
+                <button type="button" data-dismiss="modal" class="modal__close">Close</button>
             </div>
         </div>
     </main>

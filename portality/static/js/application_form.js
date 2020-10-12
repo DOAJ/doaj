@@ -411,7 +411,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             $(sec).show();
         });
 
-
+        var that = this;
         $("#unlock").click(function(event) {
             event.preventDefault();
             let id = $(this).attr("data-id");
@@ -567,6 +567,15 @@ doaj.af.newManEdJournalForm = function(params) {
 doaj.af.ManEdJournalForm = class extends doaj.af.EditorialApplicationForm {
     constructor(params) {
         super(params);
+    }
+
+    submitapplication() {
+        this.form.parsley();
+        let optional = this.jq("#make_all_fields_optional").is(":checked");
+        if (optional) {
+            this.form.parsley().destroy();
+        }
+        this.form.submit();
     }
 };
 
