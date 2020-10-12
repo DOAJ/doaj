@@ -28,3 +28,5 @@ Supporting DOAJ will give your organisation a range of benefits.
     <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
   </div>
 </form>
+
+_You will be redirected to Paypal’s website._
