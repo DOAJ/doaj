@@ -1146,6 +1146,10 @@ var formulaic = {
                 // TODO: should work as-you-type by changing "change" to "keyup" event; doesn't work in edges
                 //edges.on(elements, "change.ClickableUrl", this, "updateUrl");
                 edges.on(elements, "keyup.ClickableUrl", this, "updateUrl");
+
+                for (var i = 0; i < elements.length; i++) {
+                    this.updateUrl(elements[i]);
+                }
             };
 
             this.updateUrl = function(element) {
