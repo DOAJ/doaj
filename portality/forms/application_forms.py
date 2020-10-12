@@ -1401,7 +1401,7 @@ class FieldDefinitions:
         "template": "application_form/_list.html",
         "entry_template": "application_form/_entry_group_horizontal.html",
         "widgets": [
-            "infinite_repeat"
+            {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}}
         ]
     }
 
@@ -1409,7 +1409,8 @@ class FieldDefinitions:
         "subfield": True,
         "name": "note",
         "group": "notes",
-        "input": "textarea"
+        "input": "textarea",
+        "disabled": True
     }
 
     NOTE_DATE = {

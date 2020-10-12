@@ -96,3 +96,7 @@ li.parsley-type {
 a[id="submitBtn"][disabled] {
     background: #cccccc;
 }
+
+.editorial-panel {
+    position: static !important;
+}

@@ -407,6 +407,11 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         this.formDiff = edges.getParam(params.formDiff, false);
 
+        this.sections.each((idx, sec) => {
+            $(sec).show();
+        });
+
+
         $("#unlock").click(function(event) {
             event.preventDefault();
             let id = $(this).attr("data-id");

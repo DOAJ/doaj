@@ -1182,6 +1182,7 @@ var formulaic = {
         },
         InfiniteRepeat: function(params) {
             this.fieldDef = params.fieldDef;
+            this.args = params.args;
 
             this.idRx = /(.+?-)(\d+)(-.+)/;
 
@@ -1189,7 +1190,7 @@ var formulaic = {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 for (var i = 0 ; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none"><span data-feather="x" /></button>'));
                     feather.replace();
                 }
 
@@ -1220,19 +1221,28 @@ var formulaic = {
                 var jqt = $(frag);
                 var that = this;
                 jqt.find(":input").each(function() {
-                    var id = $(this).attr("id");
+                    var el = $(this);
+                    var id = el.attr("id");
+
                     var match = id.match(that.idRx);
                     if (match) {
                         var bits = id.split(that.idRx);
                         var newName = bits[1] + newId + bits[3];
-                        $(this).attr("id", newName).attr("name", newName).val("");
+                        el.attr("id", newName).attr("name", newName).val("");
                     } else {
                         // could be the remove button
                         if (id.substring(0, "remove_field".length) === "remove_field") {
-                            $(this).attr("id", "remove_field__" + that.fieldDef["name"] + "--id_" + newId);
+                            el.attr("id", "remove_field__" + that.fieldDef["name"] + "--id_" + newId);
+                            el.show();
                         }
                     }
                 });
+                if (this.args.enable_on_repeat) {
+                    for (var i = 0; i < this.args.enable_on_repeat.length; i++) {
+                        var enables = jqt.find(that.args.enable_on_repeat[i]);
+                        enables.removeAttr("disabled");
+                    }
+                }
 
                 var topPlacement = this.fieldDef.repeatable.add_button_placement === "top";
                 if (topPlacement) {

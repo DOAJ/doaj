@@ -14,7 +14,7 @@
     {% endif %}
 
     {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
-    {% if "multiple_field" in f.get("widgets", []) or "infinte_repeat" in f.get("widgets", []) %}
+    {% if f.has_widget("multiple_field") or f.has_widget("infinite_repeat") %}
         <div class="removable_field">
           <div class="repeatable-fields" id="removable_field__{{ f.name }}">
               {{ f.render_form_control() }}

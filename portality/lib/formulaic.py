@@ -595,6 +595,15 @@ class FormulaicField(object):
         wtf = self.wtfield
         return wtf.errors
 
+    def has_widget(self, widget_name):
+        for w in self._definition.get("widgets", []):
+            if w == widget_name:
+                return True
+            if isinstance(w, dict):
+                if widget_name in w:
+                    return True
+        return False
+
     def render_form_control(self, custom_args=None, wtfinst=None):
         kwargs = deepcopy(self._definition.get("attr", {}))
         if "placeholder" in self._definition.get("help", {}):

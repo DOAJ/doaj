@@ -240,11 +240,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         self.__seamless__.delete("admin.contact")
 
     def add_note(self, note, date=None, id=None):
-        if date is None:
+        if not date:
             date = dates.now()
         obj = {"date": date, "note": note, "id": id}
         self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
-        if id is None:
+        if not id:
             obj["id"] = uuid.uuid4()
         self.__seamless__.add_to_list_with_struct("admin.notes", obj)
 
@@ -267,10 +267,13 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         notes = self.notes
         clusters = {}
         for note in notes:
+            if "date" not in note:
+                note["date"] = "1970-01-01T00:00:00Z"   # this really means something is broken with note date setting, which needs to be fixed
             if note["date"] not in clusters:
                 clusters[note["date"]] = [note]
             else:
                 clusters[note["date"]].append(note)
+
         ordered_keys = sorted(list(clusters.keys()), reverse=True)
         ordered = []
         for key in ordered_keys:
