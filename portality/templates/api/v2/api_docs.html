@@ -4,8 +4,9 @@
     <link href='/static/vendor/swagger-ui/src/main/html/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
     <link href='/static/vendor/swagger-ui/src/main/html/css/reset.css' media='print' rel='stylesheet' type='text/css'/>
     <link href='/static/vendor/swagger-ui/src/main/html/css/print.css' media='print' rel='stylesheet' type='text/css'/>
-    <link href='/static/doaj/css/doaj_api.css' media='screen' rel='stylesheet' type='text/css' />
 
+<!-- get DOAJ swagger overrides -->
+    <link href='/static/doaj/css/doaj_api.css' media='screen' rel='stylesheet' type='text/css' />
 {% endblock %}
 
 {% extends "layouts/base.html" %}
@@ -48,17 +49,7 @@
                     <h1> DOAJ API documentation </h1>
                     {% include "api/v2/swagger_description.html" %}
                     <div id="swagger-section" class="swagger-section">
-                            {# FIXME: probably not the best place for style overrides #}
-                            <style>
-                                .swagger-section ul {
-                                    padding-left: 0;
-                                    margin-left: 0;
-                                }
-                                .swagger-section a {
-                                    width: 65px !important;
-                                }
-                            </style>
-                            <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+                        <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
                     </div>
                     {% include "api/v2/extra_docs.html" %}
                 </section>
