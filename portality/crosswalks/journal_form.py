@@ -76,15 +76,13 @@ class JournalGenericXWalk(object):
             bibjson.publisher_country = form.publisher_country.data
 
         if form.deposit_policy.data:
-            dep_services = [e for e in form.deposit_policy.data if e not in ["Unregistered", "none", "other"]]
+            dep_services = [e for e in form.deposit_policy.data if e not in ["none", "other"]]
             if "other" in form.deposit_policy.data and form.deposit_policy_other.data:
                 dep_services.append(form.deposit_policy_other.data)
             if dep_services:
                 bibjson.deposit_policy = dep_services
-            if "Unregistered" in form.deposit_policy.data:
-                bibjson.deposit_policy_registered = False
-            elif len(dep_services) > 0:
-                bibjson.deposit_policy_registered = True
+            else:
+                bibjson.has_deposit_policy = False
 
         if form.review_process.data or form.review_url.data:
             processes = None
@@ -295,8 +293,8 @@ class JournalGenericXWalk(object):
                 forminfo["deposit_policy"].append("other")
         if "deposit_policy" not in forminfo:
             forminfo["deposit_policy"] = []
-        if bibjson.deposit_policy_registered is False and len(forminfo["deposit_policy"]) == 0:
-            forminfo["deposit_policy"].append("Unregistered")
+        if bibjson.has_deposit_policy is False and len(forminfo["deposit_policy"]) == 0:
+            forminfo["deposit_policy"].append("none")
 
         review_choices = [x for x, y in ApplicationFormFactory.choices_for("review_process")]
         if bibjson.editorial_review_process:

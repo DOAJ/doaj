@@ -290,14 +290,6 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.set_with_struct("deposit_policy.has_policy", val)
 
     @property
-    def deposit_policy_registered(self):
-        return self.__seamless__.get_single("deposit_policy.is_registered")
-
-    @deposit_policy_registered.setter
-    def deposit_policy_registered(self, val):
-        self.__seamless__.set_with_struct("deposit_policy.is_registered", val)
-
-    @property
     def deposit_policy_url(self):
         return self.__seamless__.get_single("deposit_policy.url")
 

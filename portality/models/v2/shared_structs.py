@@ -73,7 +73,7 @@ JOURNAL_BIBJSON = {
                 "deposit_policy" : {
                     "fields" : {
                         "has_policy" : {"coerce" : "bool"},
-                        "is_registered" : {"coerce" : "bool"},
+                        "is_registered" : {"coerce" : "bool"},  # FIXME: this is no longer used, but remains to aid development where databases already contain this field
                         "url" : {"coerce" : "url", "set__allow_coerce_failure" : True}
                     },
                     "lists" : {
