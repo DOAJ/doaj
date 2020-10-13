@@ -469,6 +469,9 @@ var formulaic = {
                 var name = exclusiveFields[i];
                 var elements = this.controlSelect.input({name: name});
                 edges.on(elements, "change.Exclusive", this, "checkExclusive");
+                for (var j = 0; j < elements.length; j++) {
+                    this.checkExclusive(elements[j]);
+                }
             }
         };
 
@@ -1100,7 +1103,9 @@ var formulaic = {
             this.init = function() {
                 var elements = this.form.controlSelect.input({name: this.fieldDef.name});
                 edges.on(elements, "change.ClickableOwner", this, "updateOwner");
-                this.updateOwner(elements);
+                for (var i = 0; i < elements.length; i++) {
+                    this.updateOwner(elements[i]);
+                }
             };
 
             this.updateOwner = function(element) {
@@ -1270,7 +1275,7 @@ var formulaic = {
 
             this.init = () => {
                 if (this.fieldDef["input"] === "group") {
-                    this.divs = $("div[name='" + this.fieldDef["name"] + "__group']")
+                    this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
 
                     this.count = 0;
 
@@ -1288,7 +1293,7 @@ var formulaic = {
 
                             $(div).hide();
                         }
-                    })
+                    });
 
                     this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
                     $(this.remove_btns[0]).hide();
@@ -1304,12 +1309,12 @@ var formulaic = {
                             $(this.addFieldBtn).hide();
                         }
 
-                    })
+                    });
 
                     $(this.remove_btns).each((idx, btn) => {
                         $(btn).on("click", () => {
                             let thisDiv = $(btn).parent();
-                            let nextDiv = $(thisDiv)
+                            let nextDiv = $(thisDiv);
                             for (let i = idx; i < this.count; i++) {
                                 thisDiv = nextDiv;
                                 nextDiv = nextDiv.next();
@@ -1317,9 +1322,9 @@ var formulaic = {
                                 let nextInputs = $(nextDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
                                 for (let j = 0; j < thisInputs.length; j++){
                                     let thisInput = $(thisInputs[j]);
-                                    let nextInput = $(nextInputs[j])
+                                    let nextInput = $(nextInputs[j]);
                                     if (thisInput.is("select")){
-                                        let data = $(nextInput).select2('data')
+                                        let data = $(nextInput).select2('data');
                                         if (data === null) {
                                             data = {id: i, text: ""};
                                         }
@@ -1339,7 +1344,7 @@ var formulaic = {
                                 else {
                                     $(inp).val("");
                                 }
-                            })
+                            });
                             $(this.divs[this.count + 1]).hide();
                             if (this.count === 0) {
                                 $(this.remove_btns[0]).hide();
@@ -1352,12 +1357,12 @@ var formulaic = {
 
                 } else {
                     let tag = this.fieldDef["input"] === "select" ? "select" : "input";
-                    this.fields = $(tag + '[id^="' + this.fieldDef["name"] + '-"]')
+                    this.fields = $(tag + '[id^="' + this.fieldDef["name"] + '-"]');
 
                     this.count = 0;
                     if (tag === "select"){
                         this.fields.each((idx, f) => {
-                            let s2_input = $(f).select2()
+                            let s2_input = $(f).select2();
                             $(s2_input).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
                             feather.replace();
                             if (idx !== 0) {
@@ -1365,7 +1370,7 @@ var formulaic = {
                                 $(s2_input).attr("data-parsley-validate-if-empty", "true");
                                 $(s2_input).closest('li').hide();
                             }
-                        })
+                        });
                         this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
                         $(this.remove_btns[0]).hide();
                         this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
@@ -1379,7 +1384,7 @@ var formulaic = {
                                 $(this.addFieldBtn).hide();
                             }
 
-                        })
+                        });
                         $(this.remove_btns).each((idx, btn) => {
                             $(btn).on("click", (event) => {
                                 for (let i = idx; i < this.count; i++) {
@@ -1409,7 +1414,7 @@ var formulaic = {
                                 $(f).attr("data-parsley-validate-if-empty", "true");
                                 $(f).parent().hide();
                             }
-                        })
+                        });
                         this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '-"]');
                         $(this.remove_btns[0]).hide();
                         this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
@@ -1425,11 +1430,11 @@ var formulaic = {
                                 $(this.addFieldBtn).hide();
                             }
 
-                        })
+                        });
                         $(this.remove_btns).each((idx, btn) => {
                             $(btn).on("click", (event) => {
                                 for (let i = idx; i < this.count; i++) {
-                                    let data = $(this.fields[i + 1]).val()
+                                    let data = $(this.fields[i + 1]).val();
                                     if (data === null) {
                                         data = "";
                                     }
@@ -1451,7 +1456,7 @@ var formulaic = {
                     }
 
                 }
-            }
+            };
             this.init()
         },
 
@@ -1467,7 +1472,7 @@ var formulaic = {
             this.elements = false;
 
             this.init = function() {
-                this.elements = $("select[name$='" + this.fieldDef.name + "']")
+                this.elements = $("select[name$='" + this.fieldDef.name + "']");
                 this.elements.select2({
                     allowClear: false,
                     width: 'resolve',
@@ -1511,7 +1516,7 @@ var formulaic = {
                         return null;
                     }
                     return {id: $.trim(term), text: $.trim(term)};
-                }
+                };
 
 
                 var initSel = function (element, callback) {
@@ -1555,7 +1560,7 @@ var formulaic = {
             let field = $('input[id^="' + this.fieldDef["name"] +'"]')
             this.init = () => {
                 return autocomplete("[name='" + this.fieldDef.name + "']", this.params["field"], "journal", 1, true, true);
-            }
+            };
             this.init()
         }
 
