@@ -1,9 +1,8 @@
 {% extends "publisher/publisher_base.html" %}
 
 {% set form_id = "update_request" %}
-{% set formulaic_after = url_for("publisher.updates_in_progress") %}
 {% set form_action = url_for("publisher.update_request", journal_id=obj.current_journal) %}
-
+{% set formulaic_after = url_for("publisher.updates_in_progress") %}
 
 {% set js_validation = True %}
 {% set auto_save = 0 %}
@@ -15,10 +14,11 @@
 {% set TAB6 = {"title": "Best practice", "fieldsets": ["archiving_policy", "deposit_policy", "unique_identifiers"]} %}
 {% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6] %}
 
-{% block publisher_content %}
+{% block publisher_content scoped %}
 
 <body id="apply">
     <main class="container">
+        {% include "application_form/_backend_validation.html" %}
         <div class="row">
             <div class="col-md-8">
                 <section class="page-content">
@@ -47,16 +47,15 @@
 
                         {% include "application_form/_fieldsets.html" %}
 
-                    <div class="tab form-section">
-                        {% include "application_form/07-review/index.html" %}
-                    </div>
-                    <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot submit the application because it contains some invalid fields. Please review your answers and try again.</i></p>
-                    {% include "application_form/_buttons.html" %}
+                        <div class="tab form-section">
+                            {% include "application_form/07-review/index.html" %}
+                        </div>
+                        <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot submit the application because it contains some invalid fields. Please review your answers and try again.</i></p>
+                        {% include "application_form/_buttons.html" %}
 
-                    {% if obj %}
                         <input type="hidden" name="id" value="{{ obj.id }}">
-                    {% endif %}
-                </form>
+
+                    </form>
                 </section>
             </div>
 

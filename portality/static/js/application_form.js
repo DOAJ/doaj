@@ -264,7 +264,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         window.scrollTo(0,0);
     };
 
-    prepNavigation() {
+    prepNavigation(clearErrors = true) {
         this.validateTabs();
         this.checkBackendValidationFailures();
         for (let i = this.tabValidationState.length - 1; i >= 0; i--) {
@@ -291,7 +291,9 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         }
 
         this.updateStepIndicator();
-        this.form.parsley().reset();
+        if (clearErrors) {
+            this.form.parsley().reset();
+        }
     };
 
     checkBackendValidationFailures() {
@@ -539,7 +541,7 @@ doaj.af.newUpdateRequestForm = function(params) {
 doaj.af.UpdateRequestForm = class extends doaj.af.TabbedApplicationForm {
     constructor(params) {
         super(params);
-        this.prepNavigation();
+        this.prepNavigation(false);
     };
 };
 
