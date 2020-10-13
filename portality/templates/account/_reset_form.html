@@ -5,6 +5,7 @@
     <form method="post" action="">
         <div class="form__question">
             {{ render_field(form.password, placeholder="********") }}
+            <br/>
             {{ render_field(form.confirm, placeholder="********") }}
         </div>
       <input type="submit" class="button button--primary" value="Update" />

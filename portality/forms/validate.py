@@ -529,8 +529,8 @@ class EmailAvailable(object):
 
     def __call__(self, form, field):
         if field.data is not None:
-            existing = Account.pull_by_email(field.data)
-            if existing is not None:
+            existing = Account.email_in_use(field.data)
+            if existing is True:
                 raise validators.ValidationError(self.message)
 
 
@@ -545,3 +545,19 @@ class IdAvailable(object):
             existing = Account.pull(field.data)
             if existing is not None:
                 raise validators.ValidationError(self.message)
+
+
+class IgnoreUnchanged(object):
+    """
+    Disables validation when the input is unchanged and stops the validation chain from continuing.
+
+    If input is the same as before, also removes prior errors (such as processing errors)
+    from the field.
+
+    """
+    field_flags = ('optional', )
+
+    def __call__(self, form, field):
+        if field.data and field.object_data and field.data == field.object_data:
+            field.errors[:] = []
+            raise validators.StopValidation()
