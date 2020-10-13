@@ -1,5 +1,5 @@
-<p>This page documents the first version of the DOAJ API, v.{{ config.get("API_VERSION") }}</p>
-<p>Base URL: <a href="{{ config.get("BASE_API_URL") }}" target="_blank">{{ config.get("BASE_API_URL") }}</a></p>
+<p>This page documents the second version of the DOAJ API, v.{{ api_version }}</p>
+<p>Base URL: <a href="{{ base_url }}" target="_blank">{{ base_url }}</a></p>
 
 <h2 id="intro">Using this live documentation page</h2>
 <p>This page contains a list of all routes available via the DOAJ API. It also serves as a live demo page.
@@ -11,7 +11,11 @@ common questions and answers on API usage.</p>
 
 <h2 id="intro_auth">Authenticated routes</h2>
 {% if account_url != None %}
-<p>Note that some routes require authentication. You must request us to enable the API key on your DOAJ account page. You can view your key for later reference at {{ account_url }}. Español: Tenga en cuenta que algunas rutas requieren autenticación. Debe solicitarnos habilitar la clave API en la página de su cuenta de DOAJ. Puede ver su clave para referencia futura en {{ account_url }}.</p>
+<p>Note that some routes require authentication. You must request us to enable the API key on your DOAJ account page.
+    You can view your key for later reference at <a href="{{ account_url }}">{{ account_url }}</a>.
+    <br/>
+    Español: Tenga en cuenta que algunas rutas requieren autenticación. Debe solicitarnos habilitar la clave API en la página de su cuenta de DOAJ.
+    Puede ver su clave para referencia futura en <a href="{{ account_url }}">{{ account_url }}</a>.</p>
 {% else %}
 <p>Note that some routes require authentication and are only available to publishers who submit data to DOAJ or other collaborators who integrate more closely with DOAJ.
 If you think you could benefit from integrating more closely with DOAJ by using these routes, please <a href="{{ contact_us_url }}">contact us</a>.
