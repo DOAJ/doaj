@@ -69,7 +69,7 @@ SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 
 # elasticsearch settings
-ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
+ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://localhost:9200') # remember the http:// or https://
 ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
@@ -83,8 +83,8 @@ ES_TERMS_LIMIT = 1024
 APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in production.cfg (or dev.cfg etc)
 
 # huey/redis settings
-HUEY_REDIS_HOST = '127.0.0.1'
-HUEY_REDIS_PORT = 6379
+HUEY_REDIS_HOST = os.getenv('HUEY_REDIS_HOST', '127.0.0.1')
+HUEY_REDIS_PORT = os.getenv('HUEY_REDIS_PORT', 6379)
 HUEY_EAGER = False
 
 #  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
