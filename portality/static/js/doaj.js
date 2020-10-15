@@ -18,15 +18,12 @@ var doaj = {
         window.onscroll = function() {scrollFunction()};
 
         function scrollFunction() {
-            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                if (topBtn) {
+            if (topBtn) {
+                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
                     topBtn.style.display = "flex";
-                }
-            } else {
-                if (topBtn) {
+                } else {
                     topBtn.style.display = "none";
                 }
-
             }
         }
 
@@ -51,7 +48,7 @@ var doaj = {
                 $(tabpanelShow).siblings().attr("aria-hidden", "true");
             });
 
-            $('a[href*="#"]:not([href="#"])').click(function() {
+            $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
                 var target = $(this.hash);
                 $('html,body').animate({
                     scrollTop: target.offset().top - headerHeight
