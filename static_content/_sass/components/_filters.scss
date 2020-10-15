@@ -8,9 +8,11 @@
 
 .filters__heading {
   margin-top: 0;
+  margin-bottom: $spacing-04;
+  cursor: default;
 
-  @media (min-width: 992px) {
-      @include sr-only; // visually hide on larger devicess
+  svg {
+    height: 15px;
   }
 }
 
