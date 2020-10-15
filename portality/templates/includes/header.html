@@ -10,8 +10,13 @@
       <div class="row">
         <div class="col-xs-4 col-sm-6">
           <a href="/" class="logo">
+            {# a11y: only h1 when it’s the homepage; otherwise h1 should solely be used for the page title #}
+            {% if request.endpoint == 'doaj.home' %}
             <h1 class="sr-only">The Directory of Open Access Journals</h1>
-            {% include "includes/logo.svg" %}
+            {% else %}
+            <h2 class="sr-only">The Directory of Open Access Journals</h2>
+            {% endif %}
+            {% include "svg/logo.svg" %}
           </a>
         </div>
         <nav class="col-xs-8 col-sm-6">
@@ -64,7 +69,7 @@
                 </li>
                 <li>
                   <a href="/apply/seal" class="dropdown__link">
-                    The DOAJ seal
+                    The DOAJ Seal
                   </a>
                 </li>
                 <li>
@@ -149,6 +154,9 @@
                 OpenURL
               </a>
             </li>
+            <li>
+              <a href="/about/faq/" class="dropdown__link">FAQs</a>
+            </li>
           </ul>
         </li>
         <li class="dropdown">
@@ -164,7 +172,7 @@
             </li>
             <li>
               <a href="/about/team" class="dropdown__link">
-                Team
+                DOAJ team
               </a>
             </li>
             <li>
@@ -178,18 +186,16 @@
               </a>
             </li>
             <li>
+              <a href="/about/editorial-subcommittee/" class="dropdown__link">Editorial Subcommittee</a>
+            </li>
+            <li>
               <a href="/about/volunteers" class="dropdown__link">
                 Volunteers
               </a>
             </li>
             <li>
-              <a href="/news" class="dropdown__link dropdown__link--is-disabled">
+              <a href="https://blog.doaj.org" target="_blank" rel="noopener noreferrer" class="dropdown__link">
                 News
-              </a>
-            </li>
-            <li>
-              <a href="/about/faq" class="dropdown__link">
-                FAQs
               </a>
             </li>
           </ul>
@@ -276,7 +282,7 @@
             </li>
             <li>
               <a href="/apply/seal" class="dropdown__link">
-                The DOAJ seal
+                The DOAJ Seal
               </a>
             </li>
             <li>
