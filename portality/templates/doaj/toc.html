@@ -56,16 +56,11 @@
         <header>
             <p>
                 {% if journal.last_updated_since(days=30) %}
-                    <span class="label label--secondary">
-        <span data-feather="clock" aria-hidden="true"></span>
-        Updated recently
-      </span>
+                <span class="label label--secondary">
+                    <span data-feather="clock" aria-hidden="true"></span>
+                    Updated recently
+                </span>
                 {% endif %}
-                <span class="label">
-        <span data-feather="book-open" aria-hidden="true"></span>
-        {# this next bit has to be all on one line so that the spacing is correct #}
-        {% if bibjson.pissn %}{{bibjson.pissn}} (Print){% endif %}{% if bibjson.eissn %}{% if bibjson.pissn %}&nbsp;/ {% endif %}{{bibjson.eissn}} (Online){% endif %}
-      </span>
             </p>
 
             <h1>
@@ -74,6 +69,14 @@
                     <span aria-hidden="true">{{ bibjson.alternative_title }}</span>
                 {% endif %}
             </h1>
+
+            <p>
+                <span class="label">
+                    <span data-feather="book-open" aria-hidden="true"></span>
+                    {# this next bit has to be all on one line so that the spacing is correct #}
+                    {% if bibjson.pissn %}{{bibjson.pissn}} (Print){% endif %}{% if bibjson.eissn %}{% if bibjson.pissn %}&nbsp;/ {% endif %}{{bibjson.eissn}} (Online){% endif %}
+                </span>
+            </p>
 
             {% if bibjson.discontinued_date %}
                 <p>Ceased publication on <strong>{{ bibjson.discontinued_datestamp.strftime("%d %B %Y") }}</strong></p>
@@ -113,7 +116,7 @@
 
             {%- set seal = journal.has_seal() -%}
             {% if seal %}
-                <a href="#" class="tag tag--featured">
+                <a href="/apply/seal/" class="tag tag--featured">
                     <span data-feather="check-circle" aria-hidden="true"></span>
                     DOAJ Seal
                 </a>
@@ -169,12 +172,12 @@
                                                     {% endfor %}
                                                 {% endif %}
                                             {% else %}
-                                                There are <strong class="label label--large">No APC<span style="text-transform: lowercase;">s</span></strong> (<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">article processing charges</a>) to publish with this journal
+                                                There are <strong class="label label--large">No APC<span style="text-transform: lowercase;">s</span></strong> (<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">article processing charges</a>) to publish with this journal.
                                             {% endif %}
 
                                             {# Other charges #}
-                                            {% if bibjson.other_charges_url %}
-                                                and there are {% if bibjson.other_charges_url %}<a href="{% if bibjson.other_charges_url %}" target="_blank" rel="noopener">{% endif %}other charges{% if bibjson.other_charges_url %}</a>{% endif %}
+                                            {% if bibjson.has_other_charges %}
+                                                and there are {% if bibjson.other_charges_url %}<a href="{% if bibjson.other_charges_url %}" target="_blank" rel="noopener">{% endif %}other charges{% if bibjson.other_charges_url %}</a>.{% endif %}
                                             {% else %}
                                                 and there are <strong>no other charges.</strong>
                                             {% endif %}
@@ -220,9 +223,11 @@
 
                                     </ul>
                                     {% if bibjson.plagiarism_detection %}
+                                    {% if bibjson.plagiarism_detection.get("detection") or bibjson.plagiarism_detection.get("url") %}
                                         <p>
-                                            &rarr; This journal checks for plagiarism.
+                                            &rarr; This journal <a href="{{bibjson.plagiarism_detection.get('url')}}" target="_blank" rel="noopener noreferrer">checks for plagiarism</a>.
                                         </p>
+                                    {% endif %}
                                     {% endif %}
                                 </div>
                             </article>
@@ -262,7 +267,7 @@
                                             {% for license in bibjson.licenses %}
                                                 {% set ldata = CC_MAP.get(license.type) %}
 
-                                                <a href="{{ ldata[1] }}" target="_blank" rel="noopener" style="text-decoration: none;">
+                                                <a href="{{ ldata[0] }}" target="_blank" rel="noopener" style="text-decoration: none;">
                                                     {% if license.type != "Publisher's own license" %}
                                                         {% include 'svg/cc.svg' %}
                                                     {% endif %}
@@ -271,12 +276,12 @@
                                                         {# TODO: there’s probably a better way to do this #}
                                                         {# RJ Note: I have adjusted this bit of the template to do this slightly better, but until we have journals
                                                             with multiple lincenses we're not sure how weird it will look #}
-                                                        {% if license_option == 'by' %}{% include 'svg/by.svg' %}{% endif %}
-                                                        {% if license_option == 'nc' %}{% include 'svg/nc.svg' %}{% endif %}
-                                                        {% if license_option == 'nd' %}{% include 'svg/nd.svg' %}{% endif %}
-                                                        {% if license_option == 'sa' %}{% include 'svg/sa.svg' %}{% endif %}
+                                                        {% if license_option == 'by' %}{% include 'svg/by.svg' %}<span class="sr-only">Attribution</span>{% endif %}
+                                                        {% if license_option == 'nc' %}{% include 'svg/nc.svg' %}<span class="sr-only">Non-Commercial</span>{% endif %}
+                                                        {% if license_option == 'nd' %}{% include 'svg/nd.svg' %}<span class="sr-only">No Derivatives</span>{% endif %}
+                                                        {% if license_option == 'sa' %}{% include 'svg/sa.svg' %}<span class="sr-only">Share Alike</span>{% endif %}
                                                     {% endfor %}
-                                                    {% if license.type == 'CC0' %}{% include 'svg/zero.svg' %}{% endif %}
+                                                    {% if license.type == 'CC0' %}{% include 'svg/zero.svg' %}<span class="sr-only">Public Domain</span>{% endif %}
                                                     {% if loop.last %}{% else %}<br/>{% endif %}
                                                 </a>
 
@@ -293,6 +298,7 @@
                                 {% include 'svg/copyright.svg' %}
                                 <div>
                                     <p>The author does <strong>not</strong> retain unrestricted copyrights and publishing rights.</p>
+
                                 </div>
                             </article>
 
@@ -321,7 +327,7 @@
                                     <span data-feather="upload-cloud" aria-hidden="true"></span>
                                     <div>
                                         <p>
-                                            <a href="{{ bibjson.deposit_policy_url }}" target="_blank" rel="noopener">Deposit policy</a> with:
+                                            Deposit policy with:
                                         </p>
                                         <ul>
                                             {% for policy in bibjson.deposit_policy %}
@@ -383,7 +389,7 @@
                                 <span data-feather="tag" aria-hidden="true"></span>
                                 <dl>
                                     {% for path in bibjson.lcc_paths() %}
-                                        {% if loop.index0 == 0 %}<dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span></a></dt>{% endif %}
+                                        {% if loop.index0 == 0 %}<dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span><span class="sr-only">Look up the Library of Congress Classification Outline</span></a></dt>{% endif %}
                                         <dd>{{ path }}</dd>
                                     {% endfor %}
 

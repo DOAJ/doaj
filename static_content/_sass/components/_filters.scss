@@ -7,6 +7,7 @@
 }
 
 .filters__heading {
+  margin-top: 0;
   margin-bottom: $spacing-04;
   cursor: default;
 
@@ -14,6 +15,8 @@
     height: 15px;
   }
 }
+
+
 
 .filters__list {
   @include unstyled-list;
