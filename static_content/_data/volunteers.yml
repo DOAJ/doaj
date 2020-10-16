@@ -488,14 +488,6 @@ ass_ed:
   country: Costa Rica
   language: Spanish, English
 
-- name: Marianne Gagnon
-  area:
-  year_since:
-  city:
-  country:
-  language:
-
-
 - name: Maryam Jamilah
   area:
   year_since: "2020"
@@ -599,13 +591,6 @@ ass_ed:
   city: Milan
   country: Italy
   language: Italian, English, German
-
-- name: Sergiy Nazarovets
-  area: Scientometrics; Library Science
-  year_since:
-  city: Kyiv
-  country: Ukraine
-  language: Ukranian, English
 
 - name: Simone Rosenkranz
   area:
