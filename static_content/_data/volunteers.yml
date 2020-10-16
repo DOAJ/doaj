@@ -512,6 +512,14 @@ ass_ed:
   language: Spanish, English
   photo: "MiguelAVera.jpg"
   
+- name: Milagro Castro
+  area: Social Sciences
+  year_since:
+  city:
+  country: Costa Rica
+  language: Spanish, English
+  photo: "MilagroCastro.jpg"
+  
   
 - name: Milton Ramirez
   area: 
