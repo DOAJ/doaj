@@ -15,4 +15,5 @@ Publisher supporters, you can choose to support us with a contribution that is r
   - GBP £200 per year
 
 ## Our publisher supporters
+
 The publishers below have chosen to show their commitment to quality open access by supporting DOAJ. We thank them! Without them, our work would not be possible.

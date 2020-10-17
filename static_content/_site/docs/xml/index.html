@@ -659,6 +659,8 @@
             <p class="label">Docs</p>
             <h1>XML</h1>
 
+            
+
             <p>Article metadata is provided to DOAJ by publishers on the understanding that the data will then be available for free, to be distributed to any third party who wants it.</p>
 
 <p>We do not check metadata quality as we ingest it — this is the publisher’s responsibility — so any errors (for example, typos in author names, URLs, or DOI) will not be corrected. Users of our metadata may contact us to ask for metadata to be  corrected.</p>
@@ -669,7 +671,7 @@
   <li>First convert your article metadata into an accepted XML format: DOAJ or Crossref.
     <ul>
       <li>It must be structured correctly.</li>
-      <li>Its format must follow a set of rules laid out in the <a href="/static/doaj/doajArticles.xsd">DOAJ XML schema file</a>, or the rules laid out in <a href="https://support.crossref.org/hc/en-us/articles/214530063-Crossref-XSD-schema-quick-reference" target="_blank" rel="noopener">Crossref’s schema file</a>.</li>
+      <li>Its format must follow a set of rules laid out in the <a href="/static/doaj/doajArticles.xsd">DOAJ XML schema file</a>, or the rules laid out in <a href="https://www.crossref.org/education/content-registration/crossrefs-metadata-deposit-schema/crossref-xsd-schema-quick-reference/" target="_blank" rel="noopener">Crossref’s schema file</a>.</li>
     </ul>
   </li>
   <li>If you are creating DOAJ XML manually, try <a href="https://jsonformatter.org/xml-formatter" target="_blank" rel="noopener">formatting</a> and <a href="https://www.xmlvalidation.com/" target="_blank" rel="noopener">validating</a> the file before you upload it to us.</li>
@@ -868,8 +870,13 @@
 <p>The <a href="http://www.doaj.org/static/doaj/doajArticles.xsd" target="_blank" rel="noopener">doajArticles.xsd</a> file specifies what may or may not be uploaded to the database.</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;xs:schema</span> <span class="na">xmlns:xs=</span><span class="s">"http://www.w3.org/2001/XMLSchema"</span> <span class="na">xmlns:iso_639-2b=</span><span class="s">"https://doaj.org/schemas/iso_639-2b/1.0"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;xs:import</span> <span class="na">namespace=</span><span class="s">"https://doaj.org/schemas/iso_639-2b/1.0"</span> <span class="na">schemaLocation=</span><span class="s">"https://doaj.org/static/doaj/iso_639-2b.xsd"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;xs:schema</span> 
+           <span class="na">version =</span> <span class="s">"1.3"</span>
+           <span class="na">xmlns:xs=</span><span class="s">"http://www.w3.org/2001/XMLSchema"</span> 
+           <span class="na">xmlns:iso_639-2b=</span><span class="s">"https://doaj.org/schemas/iso_639-2b/1.1"</span><span class="nt">&gt;</span>
+  
+  <span class="nt">&lt;xs:import</span> <span class="na">namespace=</span><span class="s">"https://doaj.org/schemas/iso_639-2b/1.1"</span> 
+             <span class="na">schemaLocation=</span><span class="s">"https://doaj.org/static/doaj/iso_639-2b.xsd"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;xs:annotation&gt;</span>
       <span class="nt">&lt;xs:documentation&gt;</span>
         This schema determines allowable xml file formats
@@ -997,7 +1004,6 @@
 
 
 
-            <!-- Display data pages -->
             
           </section>
         </div>

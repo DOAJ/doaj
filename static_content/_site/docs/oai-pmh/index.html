@@ -681,25 +681,27 @@
             <p class="label">Docs</p>
             <h1>OAI-PMH</h1>
 
+            
+
             <h2 id="journal-feed">Journal feed</h2>
 
 <ul class="tabular-list">
   <li>
 <code class="language-plaintext highlighter-rouge">Identify</code>
     <ul>
-      <li>Access the <a href="http://www.doaj.org/oai?verb=Identify" target="_blank" rel="noopener">base Identify endpoint</a>.</li>
+      <li>Access the <a href="/oai?verb=Identify">base Identify endpoint</a>.</li>
     </ul>
   </li>
   <li>
 <code class="language-plaintext highlighter-rouge">ListSets</code>
     <ul>
-      <li>DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in. Access the <a href="http://www.doaj.org/oai?verb=ListSets" target="_blank" rel="noopener">full list of the sets</a>.</li>
+      <li>DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in. Access the <a href="/oai?verb=ListSets">full list of the sets</a>.</li>
     </ul>
   </li>
   <li>
 <code class="language-plaintext highlighter-rouge">ListMetadataFormats</code>
     <ul>
-      <li>DOAJ currently supports only <code class="language-plaintext highlighter-rouge">oai_dc</code>; access <a href="http://www.doaj.org/oai?verb=ListMetadataFormats" target="_blank" rel="noopener">the metadata formats</a>.</li>
+      <li>DOAJ currently supports only <code class="language-plaintext highlighter-rouge">oai_dc</code>; access <a href="/oai?verb=ListMetadataFormats">the metadata formats</a>.</li>
     </ul>
   </li>
 </ul>
@@ -732,7 +734,7 @@
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">relation</code></td>
-      <td>Links to related resources: the journal home page and the journal author-pays link if relevant</td>
+      <td>Links to related resources (if present): the journal home page, open access statement, author instructions, aims, and waiver pages</td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">rights</code></td>
@@ -1154,7 +1156,6 @@
 
 
 
-            <!-- Display data pages -->
             
           </section>
         </div>
