@@ -232,14 +232,15 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "sagala.jpg"
-  
-  
+
+
 - name: Deborah Lins e Nóbrega
   area: Social Sciences
   year_since:
   city: Brasilia
   country: Brazil
   language: Portuguese, English
+  photo: "DéborahLins.jpeg"
 
 - name: Dedi Rahman Nur
   area: Social Sciences
@@ -300,11 +301,11 @@ ass_ed:
 - name: Faith Oronga
   area: Librarianship
   year_since: "2020"
-  city: 
+  city:
   country: Kenya
   language: English
   photo: "oronga.jpg"
-  
+
 
 - name: Faizal Risdianto
   area: Humanities
@@ -313,8 +314,8 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "faizal.jpg"
-  
-  
+
+
 - name: Francesca Soldati
   area: Science
   year_since:
@@ -356,7 +357,7 @@ ass_ed:
   city:
   country:
   language:
-  
+
 - name: Handoko
   area: Information Technology
   year_since: "2020"
@@ -385,6 +386,7 @@ ass_ed:
   city: Mérida
   country: Venezuela
   language: Spanish, English
+  photo: "JacintoDavila.png"
 
 - name: Jamila Jaber
   area: Library and Information Science
@@ -414,12 +416,12 @@ ass_ed:
   city: Cambridge
   country: USA
   language: English
- 
- 
+
+
 - name: Khoirul Fathoni
-  area: 
+  area:
   year_since: "2020"
-  city: 
+  city:
   country: Indonesia
   language: Indonesian, English
   photo:
@@ -479,7 +481,7 @@ ass_ed:
   city: V.N Gaia
   country: Portugal
   language: Portuguese, Spanish, English
- 
+
 
 - name: Mariana Solano Hernandez
   area: Science
@@ -502,8 +504,8 @@ ass_ed:
   city: Murcia
   country: Spain
   language: Spanish, English
-  photo: "MiguelAVera.jpg"
-  
+  photo: "MiguelAVera.jpeg"
+
 - name: Milagro Castro
   area: Social Sciences
   year_since:
@@ -511,12 +513,11 @@ ass_ed:
   country: Costa Rica
   language: Spanish, English
   photo: "MilagroCastro.jpg"
-  
-  
+
 - name: Milton Ramirez
-  area: 
+  area:
   year_since:
-  city: 
+  city:
   country: Spain
   language: Spanish, English
   photo: "MiltonRamirez.jpg"
@@ -583,7 +584,7 @@ ass_ed:
   city: Kampala
   country: Uganda
   language: English, Luo
-  photo: "aceng.jpg" 
+  photo: "aceng.jpg"
 
 - name: Sara Ricetto
   area: Open Access, Open Science
@@ -612,7 +613,7 @@ ass_ed:
   city: Sejong
   country: Korea
   language: Korean, English
- 
+
 - name: Souleymane Sogoba
   area: Statistics
   year_since: "2020"
