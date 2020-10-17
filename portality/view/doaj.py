@@ -431,12 +431,32 @@ def google_webmaster_tools():
     return 'google-site-verification: googlebdb21861de30fe30.html'
 
 
+@blueprint.route("/accessibility/")
+def accessibility():
+    return render_template("layouts/static_page.html", page_frag="/accessibility/index-fragment/index.html")
+
+
+@blueprint.route("/privacy/")
+def privacy():
+    return render_template("layouts/static_page.html", page_frag="/privacy/index-fragment/index.html")
+
+
+@blueprint.route("/contact/")
+def contact_us():
+    return render_template("layouts/static_page.html", page_frag="/contact/index-fragment/index.html")
+
+
+@blueprint.route("/terms/")
+def terms():
+    return render_template("layouts/static_page.html", page_frag="/terms/index-fragment/index.html")
+
+
 @blueprint.route("/support/")
 def support():
-    return render_template("layouts/static_page.html", page_frag="/support/index-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="support/index-fragment/index.html")
 
 
-@blueprint.route("/sponsorship/")
+@blueprint.route("/support/sponsors/")
 def sponsors():
     return render_template("layouts/static_page.html", page_frag="support/sponsors-fragment/index.html")
 
@@ -500,6 +520,11 @@ def openurl():
     return render_template("layouts/static_page.html", page_frag="/docs/openurl-fragment/index.html")
 
 
+@blueprint.route("/docs/faq/")
+def faq():
+    return render_template("layouts/static_page.html", page_frag="/docs/faq-fragment/index.html")
+
+
 @blueprint.route("/about/")
 def about():
     return render_template("layouts/static_page.html", page_frag="/about/index-fragment/index.html")
@@ -515,14 +540,14 @@ def abc():
     return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council-fragment/index.html")
 
 
+@blueprint.route("/about/editorial-subcommittee/")
+def abc():
+    return render_template("layouts/static_page.html", page_frag="/about/editorial-subcommittee-fragment/index.html")
+
+
 @blueprint.route("/about/volunteers/")
 def volunteers():
     return render_template("layouts/static_page.html", page_frag="/about/volunteers-fragment/index.html")
-
-
-@blueprint.route("/about/faq/")
-def faq():
-    return render_template("layouts/static_page.html", page_frag="/about/faq-fragment/index.html")
 
 
 @blueprint.route("/about/team/")
