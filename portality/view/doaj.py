@@ -453,12 +453,12 @@ def terms():
 
 @blueprint.route("/support/")
 def support():
-    return render_template("layouts/static_page.html", page_frag="support/index-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/support/index-fragment/index.html")
 
 
 @blueprint.route("/support/sponsors/")
 def sponsors():
-    return render_template("layouts/static_page.html", page_frag="support/sponsors-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/support/sponsors-fragment/index.html")
 
 
 @blueprint.route("/support/publisher-supporters/")
@@ -541,7 +541,7 @@ def abc():
 
 
 @blueprint.route("/about/editorial-subcommittee/")
-def abc():
+def editorial_subcommittee():
     return render_template("layouts/static_page.html", page_frag="/about/editorial-subcommittee-fragment/index.html")
 
 
