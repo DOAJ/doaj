@@ -170,7 +170,7 @@
           <h2>Editors</h2>
           <ul class="row title-list">
             {% for i in site.data.volunteers.ed %}
-            {% if i.city %}
+            {% if i.area %}
             <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 {% if i.photo %}
@@ -178,7 +178,7 @@
                   <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                 </figure>
                 {% endif %}
-                <p class="label">{{ i.city }}, {{ i.country }}</p>
+                <p class="label">{% if i.city %}{{ i.city }}, {% endif %}{{ i.country }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
                 <p>
                   {{ i.area }}<br/>
@@ -193,7 +193,7 @@
           <h2>Associate editors</h2>
           <ul class="row title-list">
             {% for i in site.data.volunteers.ass_ed %}
-            {% if i.city %}
+            {% if i.area %}
             <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 {% if i.photo %}
@@ -201,10 +201,10 @@
                   <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                 </figure>
                 {% endif %}
-                <p class="label">{{ i.area }}</p>
+                <p class="label">{% if i.city %}{{ i.city }}, {% endif %}{{ i.country }}</p>
                 <h3 class="title-list__heading">{{ i.name }}</h3>
                 <p>
-                  {{ i.city }}, {{ i.country }}<br/>
+                  {{ i.area }}<br/>
                   {{ i.language }}<br/>
                 </p>
               </div>
