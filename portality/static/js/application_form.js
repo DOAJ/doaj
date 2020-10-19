@@ -16,6 +16,8 @@ doaj.af.applicationFormFactory = (params) => {
             return doaj.af.newUpdateRequestForm(params);
         case "application_read_only":
             return doaj.af.newReadOnlyApplicationForm(params);
+        case "editor":
+            return doaj.af.newEditorApplicationForm(params);
         default:
             throw "Could not extract a context from the form";
     }
