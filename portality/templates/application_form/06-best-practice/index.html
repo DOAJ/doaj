@@ -1,12 +1,10 @@
 
 {% if not notabs %}<p class="label">Page 6 of {{ FORM | length + 1}}</p>{% endif %}
     <h1><span data-feather="archive"></span> Best practice</h1>
-
-<p>The best practices in this section adhere to publishing standards based around findability, preserving the content and ethical publishing practices.</p>
-
-<p>We encourage journals to adopt these best practices but they are <strong>not</strong> mandatory for DOAJ indexing.</p>
-
-<hr />
+    <div class="alert alert--message">
+        <p>The best practices in this section adhere to publishing standards based around findability, preserving the content and ethical publishing practices.</p>
+        <p>We encourage journals to adopt these best practices but they are <strong>not</strong> mandatory for DOAJ indexing.</p>
+    </div>
 
 
     {% set fs = formulaic_context.fieldset("archiving_policy") %}
@@ -27,4 +25,3 @@
             {% set field_template = f.template %}
             {%  include field_template %}
         {% endfor %}
-
