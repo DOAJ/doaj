@@ -14,6 +14,8 @@ doaj.af.applicationFormFactory = (params) => {
             return doaj.af.newManEdApplicationForm(params);
         case "update_request":
             return doaj.af.newUpdateRequestForm(params);
+        case "application_read_only":
+            return doaj.af.newReadOnlyApplicationForm(params);
         default:
             throw "Could not extract a context from the form";
     }
@@ -38,6 +40,8 @@ doaj.af.BaseApplicationForm = class {
         this.form = $(".application_form");
         this.context = this.form.attr("data-context");
         this.sections = $(".form-section");
+
+        this.editSectionsFromReview = true;
 
         this.jq("input, select").each((idx, inp) => {
             let name = $(inp).attr("name");
@@ -66,16 +70,17 @@ doaj.af.BaseApplicationForm = class {
         review_table.html("");
         var that = this;
         this.TABS.forEach((tab, i) => {
-            review_table.append("<th>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th>");
-            let sectionSelector = $(".edit_this_section");
-            edges.on(sectionSelector, "click", this, "editSectionClicked");
+            if (this.editSectionsFromReview) {
+                review_table.append("<th>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th>");
+                let sectionSelector = $(".edit_this_section");
+                edges.on(sectionSelector, "click", this, "editSectionClicked");
+            } else {
+                review_table.append("<th colspan='2'>" + tab.title + "</th>");
+            }
+
             tab.fieldsets.forEach((fs) => {
                 let fieldset = formulaic.active.fieldsets.find(elem => elem.name === fs);
                 fieldset.fields.forEach((f) => {
-                    // if (that.formDiff && that.formDiff[f.name]) {
-                    //     var was = that.formDiff[f.name].a;
-                    //     was = that.displayableDiffValue(was);
-                    // }
                     if (f.label !== undefined && !f.hasOwnProperty("conditional") || (f.subfield === undefined && formulaic.active.isConditionSatisfied({field: f.name}))){
                         let value = this.determineFieldsValue(f.name);
                         let text = this.convertValueToText(value);
@@ -84,17 +89,12 @@ doaj.af.BaseApplicationForm = class {
                             text = '<a href="' + text + '" target="_blank">' + text + '</a>';
                         }
 
-                        let diff = "";
-                        // if (was) {
-                        //     diff = `<tr><td>&nbsp;<strong>WAS</strong></td><td><strong>` + was + `</strong></td></tr>`;
-                        // }
-
                         let html = `
                     <tr>
                         <td id="` + f.name + `__review_label">` + f.label + `</td>
                         <td id="` + f.name + `__review_value">` + text +`</td>
                     </tr>
-                    ` + diff;
+                    `;
                         review_table.append(html);
                     }
                 });
@@ -543,6 +543,18 @@ doaj.af.UpdateRequestForm = class extends doaj.af.TabbedApplicationForm {
         super(params);
         this.prepNavigation(false);
     };
+};
+
+doaj.af.newReadOnlyApplicationForm = function(params) {
+    return new doaj.af.ReadOnlyApplicationForm(params);
+};
+
+doaj.af.ReadOnlyApplicationForm = class extends doaj.af.TabbedApplicationForm {
+    constructor(params) {
+        super(params);
+        this.editSectionsFromReview = false;
+        this.showTab(this.tabs.length - 1);
+    }
 };
 
 doaj.af.newManEdApplicationForm = function(params) {
