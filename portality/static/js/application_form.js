@@ -29,6 +29,8 @@ doaj.af.journalFormFactory = (params) => {
     switch (context) {
         case "admin":
             return doaj.af.newManEdJournalForm(params);
+        case "editor":
+            return doaj.af.newEditorJournalForm(params);
         default:
             throw "Could not extract a context from the form";
     }
@@ -603,6 +605,15 @@ doaj.af.ManEdJournalForm = class extends doaj.af.EditorialApplicationForm {
     }
 };
 
+doaj.af.newEditorJournalForm = function(params) {
+    return new doaj.af.EditorJournalForm(params);
+};
+
+doaj.af.EditorJournalForm = class extends doaj.af.EditorialApplicationForm {
+    constructor(params) {
+        super(params);
+    }
+};
 
 window.Parsley.addValidator("requiredIf", {
     validateString : function(value, requirement, parsleyInstance) {

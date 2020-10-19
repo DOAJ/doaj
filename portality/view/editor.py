@@ -74,7 +74,7 @@ def journal_page(journal_id):
 
     # # now check whether the user is the editor of the editor group
     role = "associate_editor"
-    eg = models.EditorGroup.pull_by_key("name", j.editor_group)
+    eg = models.EditorGroup.pull_by_key("name", journal.editor_group)
     if eg is not None and eg.editor == current_user.id:
         role = "editor"
 
@@ -82,19 +82,17 @@ def journal_page(journal_id):
     try:
         lockinfo = lock.lock(constants.LOCK_JOURNAL, journal_id, current_user.id)
     except lock.Locked as l:
-        return render_template("editor/journal_locked.html", journal=journal, lock=l.lock)
+        return render_template("editor/journal_locked.html", journal=journal, lock=l.lock, lcc_tree=lcc_jstree)
 
     fc = JournalFormFactory.context(role)
 
     if request.method == "GET":
         fc.processor(source=journal)
-        # fc = formcontext.JournalFormFactory.get_form_context(role=role, source=j)
-        return fc.render_template(lock=lockinfo, obj=journal)
+        return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=journal)
-        # fc = formcontext.JournalFormFactory.get_form_context(role=role, form_data=request.form, source=j)
-        if processor.validate():
+        if processor.validate(current_user):
             try:
                 processor.finalise()
                 flash('Journal updated.', 'success')
@@ -105,7 +103,7 @@ def journal_page(journal_id):
                 flash(str(e))
                 return redirect(url_for("editor.journal_page", journal_id=journal.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(lock=lockinfo, obj=journal)
+            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
