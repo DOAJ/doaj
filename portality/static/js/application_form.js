@@ -565,13 +565,21 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
     constructor(params) {
         super(params);
 
-        var that = this;
-
         $("#open_quick_reject").on("click", (e) => {
             e.preventDefault();
             $("#modal-quick_reject").show();
         });
     };
+};
+
+doaj.af.newEditorApplicationForm = function(params) {
+    return new doaj.af.EditorApplicationForm(params);
+};
+
+doaj.af.EditorApplicationForm = class extends doaj.af.EditorialApplicationForm {
+    constructor(params) {
+        super(params);
+    }
 };
 
 doaj.af.newManEdJournalForm = function(params) {

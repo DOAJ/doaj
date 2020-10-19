@@ -1,6 +1,14 @@
-<aside class="highlight highlight--aside editorial-panel" style="width: inherit">
+<aside class="highlight highlight--aside editorial-panel" style="margin-top: 1.5rem">
 
-    {#<fieldset>
+
+
+    <fieldset class="editorial-panel__buttons">
+        {#        TODO: change suggestion to variable #}
+        <h3 class="label"> LOCKED FOR EDITING UNTIL <span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></h3>
+        <button class="button button--secondary" id="unlock" data-type="suggestion" data-id="{{obj.id}}">Unlock & Close</button>
+    </fieldset>
+{#
+    <fieldset>
         {% set fs = formulaic_context.fieldset("reassign") %}
         <h3 class="label" type="button" data-toggle="collapse" data-target="#reassign" aria-expanded="false"> {{ fs.label }}
             <span data-feather="plus" aria-hidden="true"></span>
@@ -11,7 +19,11 @@
                 {%  include field_template %}
             {% endfor %}
         </div>
-    </fieldset>#}
+        <p>
+            <small>Assigned: <strong><code class="admin_value_preview" id="reassign-value" data-source="#owner"></code></strong></small>
+        </p>
+    </fieldset>
+#}
     <fieldset>
         {% set fs = formulaic_context.fieldset("status") %}
         <h3 class="label" type="button" data-toggle="collapse" data-target="#status" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
@@ -21,20 +33,28 @@
                 {%  include field_template %}
             {% endfor %}
         </div>
+        <p>
+            <small>Status: <strong><code class="admin_value_preview" id="status-value" data-source="#application_status"></code></strong></small>
+        </p>
     </fieldset>
-    {% if formulaic_context.fieldset("reviewers") %}
-        <fieldset>
-            {% set fs = formulaic_context.fieldset("reviewers") %}
-            <h3 class="label" type="button" data-toggle="collapse" data-target="#reviewers" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
-            <div class="collapse" id="reviewers" aria-expanded="false">
-                {% for f in fs.fields() %}
-                    {% set field_template = f.template %}
-                    {%  include field_template %}
-                {% endfor %}
-            </div>
-        </fieldset>
-    {% endif %}
-    {#<fieldset>
+    <fieldset>
+        {% set fs = formulaic_context.fieldset("reviewers") %}
+        <h3 class="label" type="button" data-toggle="collapse" data-target="#reviewers" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
+        <div class="collapse" id="reviewers" aria-expanded="false">
+            {% for f in fs.fields() %}
+                {% set field_template = f.template %}
+                {%  include field_template %}
+            {% endfor %}
+        </div>
+        <p>
+            <small>
+                Group: <strong><code class="admin_value_preview" id="reviewers-value" data-source="#editor_group"></code></strong>
+                Editor: <strong><code class="admin_value_preview" id="reviewers-value" data-source="#editor"></code></strong>
+            </small>
+        </p>
+    </fieldset>
+{#
+    <fieldset>
         {% set fs = formulaic_context.fieldset("continuations") %}
         <h3 class="label" type="button" data-toggle="collapse" data-target="#continuations" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
         <div class="collapse" id="continuations" aria-expanded="false">
@@ -43,7 +63,8 @@
                 {%  include field_template %}
             {% endfor %}
         </div>
-    </fieldset>#}
+    </fieldset>
+    #}
     <fieldset>
         {% set fs = formulaic_context.fieldset("subject") %}
         <h3 class="label" type="button" data-toggle="collapse" data-target="#subject" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
@@ -52,16 +73,22 @@
                 {% set field_template = f.template %}
                 {%  include field_template %}
             {% endfor %}
+
         </div>
+        <p>
+            <small>Selected: <strong><code class="admin_value_preview" id="subject-value" data-source="#subject"></code></strong></small>
+        </p>
     </fieldset>
-    {#<fieldset>
+{#
+    <fieldset>
         {% set fs = formulaic_context.fieldset("seal") %}
-        <h3 class="label"> {{ fs.label }}</h3>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
-    </fieldset>#}
+        <h3 class="label">{{ fs.label }}</h3>
+            {% for f in fs.fields() %}
+                {% set field_template = f.template %}
+                {%  include field_template %}
+            {% endfor %}
+    </fieldset>
+    #}
     <fieldset>
         {% set fs = formulaic_context.fieldset("notes") %}
         <h3 class="label" type="button" data-toggle="collapse" data-target="#notes" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
@@ -73,6 +100,7 @@
             {% endfor %}
         </div>
     </fieldset>
+    <button id="submitBtn" class="button button--primary button button--primary button--primary_editorial" type="submit">Save</button>
     {% if obj %}
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}

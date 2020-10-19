@@ -6,10 +6,12 @@ from portality.core import app
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality import models
 from portality.bll import DOAJ, exceptions
+from portality.lcc import lcc_jstree
 
 from portality import lock
 from portality.forms.application_forms import ApplicationFormFactory, JournalFormFactory
 from portality import constants
+from portality.crosswalks.application_form import ApplicationFormXWalk
 
 from portality.util import flash_with_url
 
@@ -111,7 +113,6 @@ def journal_page(journal_id):
 @login_required
 @ssl_required
 def application(application_id):
-    # todo: this looks very much like the admin review form admin.application: can we refactor to be the same endpoint?
     ap = models.Application.pull(application_id)
 
     if ap is None:
@@ -123,29 +124,36 @@ def application(application_id):
     except exceptions.AuthoriseException:
         abort(401)
 
+    try:
+        lockinfo = lock.lock(constants.LOCK_APPLICATION, application_id, current_user.id)
+    except lock.Locked as l:
+        return render_template("editor/suggestion_locked.html", suggestion=ap, lock=l.lock, edit_suggestion_page=True)
+
+    form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
+
     # Edit role is either associate_editor or editor, depending whether the user is group leader
     eg = models.EditorGroup.pull_by_key("name", ap.editor_group)
     role = 'editor' if eg is not None and eg.editor == current_user.id else 'associate_editor'
+    fc = ApplicationFormFactory.context(role)
 
     if request.method == "GET":
-        fc = ApplicationFormFactory.context(role)
         fc.processor(source=ap)
-        return fc.render_template(obj=ap)
+        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
+                                  lcc_tree=lcc_jstree)
 
     elif request.method == "POST":
-        fc = ApplicationFormFactory.context(role)
-
-        processor = fc.processor(formdata=request.form)
-
+        processor = fc.processor(formdata=request.form, source=ap)
         if processor.validate():
             try:
-                processor.finalise()
+                processor.finalise(current_user)
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
                 return redirect(url_for("editor.application", application_id=ap.id, _anchor='done'))
             except Exception as e:
                 flash(str(e))
-                return fc.render_template(obj=ap)
+                return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
+                                  lcc_tree=lcc_jstree)
         else:
-            return fc.render_template(obj=ap)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
+                                  lcc_tree=lcc_jstree)
