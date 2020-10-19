@@ -1,0 +1,8 @@
+.errors {
+  @include unstyled-list;
+  padding: $spacing-02;
+  width: 75%;
+  background-color: $fair-pink;
+  color: $sanguine;
+  font-style: italic;
+}
