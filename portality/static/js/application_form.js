@@ -18,6 +18,8 @@ doaj.af.applicationFormFactory = (params) => {
             return doaj.af.newReadOnlyApplicationForm(params);
         case "editor":
             return doaj.af.newEditorApplicationForm(params);
+        case "associate_editor":
+            return doaj.af.newAssociateApplicationForm(params);
         default:
             throw "Could not extract a context from the form";
     }
@@ -583,6 +585,16 @@ doaj.af.newEditorApplicationForm = function(params) {
 };
 
 doaj.af.EditorApplicationForm = class extends doaj.af.EditorialApplicationForm {
+    constructor(params) {
+        super(params);
+    }
+};
+
+doaj.af.newAssociateApplicationForm = function(params) {
+    return new doaj.af.AssociateApplicationForm(params);
+};
+
+doaj.af.AssociateApplicationForm = class extends doaj.af.EditorialApplicationForm {
     constructor(params) {
         super(params);
     }

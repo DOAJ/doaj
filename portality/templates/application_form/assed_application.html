@@ -1,0 +1,44 @@
+{% extends "editor/editor_base.html" %}
+
+{% set form_id = "assed_form" %}
+{% set formulaic_after = url_for("editor.application", application_id=obj.id) %}
+{% set form_action = url_for("editor.application", application_id=obj.id) %}
+
+{% set js_validation = True %}
+{% set auto_save = 0 %}
+{% set notabs = true %}
+
+{% block editor_content scoped %}
+<body id="apply">
+    <main class="container">
+        {% include "application_form/_backend_validation.html" %}
+        <div class="row">
+            <div class="col-md-12">
+                <section class="page-content">
+                    <form id="{{ form_id }}"
+                        data-context="{{ formulaic_context.name }}"
+                      class="application_form"
+                      novalidate
+                      action="{{ form_action }}"
+                      method="post"
+                      data-formulaic-after="{{ formulaic_after }}">
+
+                        <div class="col-md-8 page">
+                            <section class="page-content">
+                                {% include "application_form/_fieldsets.html" %}
+                            </section>
+                        </div>
+                        <div class="col-md-4 side-menus">
+                            {% include "application_form/assed/application.html" %}
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </main>
+ </body>
+{% endblock %}
+
+{% block extra_js_bottom scoped %}
+    {% include "application_form/js/_form_js.html" %}
+{% endblock %}
