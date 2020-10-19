@@ -28,7 +28,7 @@ ed:
   featured: true
 
 - name: Fei Yu
-  area: Librarianship, sholarly publishing, data management
+  area: Librarianship, Scholarly publishing, Data management
   year_since:
   city: Brisbane
   country: Australia
@@ -74,14 +74,14 @@ ed:
   language: Persian, English, Azeri
 
 - name: S.Suharto
-  area: Humanities, social sciences
+  area: Humanities, Social sciences
   year_since:
   city: Semarang
   country: Indonesia
   language: Indonesian, English
 
 - name: Scott Richard St. Louis
-  area: Humanities, social sciences, technology
+  area: Humanities, Social sciences, Technology
   year_since:
   city: Ann Arbor
   country: United States
@@ -189,7 +189,7 @@ ass_ed:
   language: Italian, English
 
 - name: Anne Lahey
-  area: Libraries, Scholarly communication
+  area: Libraries, Scholarly Communication
   year_since:
   city: Canberra
   country: Australia
@@ -651,7 +651,7 @@ ass_ed:
   language: Polish, English
 
 - name: Yaping Liu
-  area: Medical and Healthcare management
+  area: Medical and Healthcare Management
   year_since:
   city: Sydney
   country: Australia
