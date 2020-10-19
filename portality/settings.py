@@ -461,7 +461,7 @@ QUERY_ROUTE = {
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Journal",
-            "required_parameters" : {"ref" : ["fqw", "public_journal", "subject_page"]}
+            "required_parameters" : {"ref" : ["ssw", "public_journal", "subject_page"]}
         },
         "article" : {
             "auth" : False,
@@ -470,8 +470,18 @@ QUERY_ROUTE = {
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Article",
-            "required_parameters" : {"ref" : ["fqw", "public_article", "toc", "subject_page"]}
+            "required_parameters" : {"ref" : ["public_article", "toc", "subject_page"]}
         },
+        # back-compat for fixed query widget
+        "journal,article" : {
+            "auth" : False,
+            "role" : None,
+            "query_validator" : "public_query_validator",
+            "query_filters" : ["only_in_doaj", "strip_facets", "es_type_fix"],
+            "result_filters" : ["public_result_filter", "add_fqw_facets", "fqw_back_compat"],
+            "dao" : "portality.models.JournalArticle",
+            "required_parameters" : {"ref" : ["fqw"]}
+        }
     },
     "publisher_query" : {
         "journal" : {
@@ -592,10 +602,14 @@ QUERY_FILTERS = {
     "update_request" : "portality.lib.query_filters.update_request",
     "associate" : "portality.lib.query_filters.associate",
     "editor" : "portality.lib.query_filters.editor",
+    "strip_facets" : "portality.lib.query_filters.strip_facets",
+    "es_type_fix" : "portality.lib.query_filters.es_type_fix",
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
     "publisher_result_filter": "portality.lib.query_filters.publisher_result_filter",
+    "add_fqw_facets" : "portality.lib.query_filters.add_fqw_facets",
+    "fqw_back_compat" : "portality.lib.query_filters.fqw_back_compat",
 
     # source filters
     "private_source": "portality.lib.query_filters.private_source",

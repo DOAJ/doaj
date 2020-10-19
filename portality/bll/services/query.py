@@ -191,6 +191,14 @@ class Query(object):
     def has_facets(self):
         return "facets" in self.q or "aggregations" in self.q or "aggs" in self.q
 
+    def clear_facets(self):
+        if "facets" in self.q:
+            del self.q["facets"]
+        if "aggregations" in self.q:
+            del self.q["aggregations"]
+        if "aggs" in self.q:
+            del self.q["aggs"]
+
     def size(self):
         if "size" in self.q:
             try:
