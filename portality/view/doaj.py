@@ -130,6 +130,9 @@ def search_post():
     kw = request.form.get("keywords")
     field = request.form.get("fields")
 
+    if kw is None:
+        kw = request.form.get("q")  # back-compat for the simple search widget
+
     field_map = {
         "all" : (None, None),
         "title" : ("bibjson.title", "bibjson.title"),
@@ -143,10 +146,12 @@ def search_post():
     route = ""
     if not ct or ct == "journals":
         route = url_for("doaj.journals_search")
-        default_field = default_field_opts[0]
+        if default_field_opts:
+            default_field = default_field_opts[0]
     elif ct == "articles":
         route = url_for("doaj.articles_search")
-        default_field = default_field_opts[1]
+        if default_field_opts:
+            default_field = default_field_opts[1]
     else:
         abort(400)
 

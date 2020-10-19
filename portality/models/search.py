@@ -1,9 +1,7 @@
 from portality.dao import DomainObject
 from portality.models.cache import Cache
 from portality.models import Journal, Article
-import sys
-import locale
-from copy import deepcopy
+
 
 class JournalArticle(DomainObject):
     __type__ = 'journal,article'
