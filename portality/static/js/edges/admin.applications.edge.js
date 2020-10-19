@@ -3,30 +3,6 @@ $.extend(true, doaj, {
     adminApplicationsSearch : {
         activeEdges : {},
 
-        /*
-        editSuggestion : function (val, resultobj, renderer) {
-            if (resultobj['suggestion']) {
-                // determine the link name
-                var linkName = "Review application";
-                if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
-                    linkName = "View finished application";
-                    if (resultobj.admin.related_journal) {
-                        linkName = "View finished update";
-                    }
-                } else if (resultobj.admin.current_journal) {
-                    linkName = "Review update";
-                }
-
-                var result = '<a class="edit_suggestion_link" href="';
-                result += doaj.adminApplicationsSearchConfig.applicationEditUrl;
-                result += resultobj['id'];
-                result += '" target="_blank"';
-                result += '>' + linkName + '</a>';
-                return result;
-            }
-            return false;
-        },*/
-
         relatedJournal : function (val, resultobj, renderer) {
             var result = "";
             if (resultobj.admin) {

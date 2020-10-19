@@ -3296,7 +3296,7 @@ $.extend(true, doaj, {
                         linkName = "Review update";
                     }
 
-                    var result = '<p><a class="edit_suggestion_link button href="';
+                    var result = '<p><a class="edit_suggestion_link button" href="';
                     result += params.editUrl;
                     result += resultobj['id'];
                     result += '" target="_blank"';
