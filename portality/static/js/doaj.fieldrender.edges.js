@@ -2111,7 +2111,7 @@ $.extend(true, doaj, {
             this._renderPublicJournal = function(resultobj) {
                 var seal = "";
                 if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="/apply/seal" class="tag tag--featured">\
+                    seal = '<a href="/apply/seal" class="tag tag--featured" target="_blank">\
                             <span data-feather="check-circle" aria-hidden="true"></span>\
                             DOAJ Seal\
                           </a>';
@@ -2801,7 +2801,7 @@ $.extend(true, doaj, {
             this._renderPublicJournal = function(resultobj) {
                 var seal = "";
                 if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="/apply/seal" class="tag tag--featured">\
+                    seal = '<a href="/apply/seal" class="tag tag--featured" target="_blank">\
                             <span data-feather="check-circle" aria-hidden="true"></span>\
                             DOAJ Seal\
                           </a>';
