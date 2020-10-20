@@ -51,11 +51,24 @@ button[type="submit"] {
 
 button:disabled,
 button[disabled],
-input[disabled] {
-  background-color: $fair-pink;
-  border-color: $fair-pink;
-  color: $dark-grey;
+input[disabled],
+.button[disabled] {
+  background-color: rgba($dark-grey, 0.5);
+  border-color: rgba($dark-grey, 0.5);
+  color: $warm-black;
+  box-shadow: none;
   font-style: italic;
+  cursor: not-allowed;
+
+  &:hover,
+  &:active,
+  &:focus {
+    left: 0;
+    top: 0;
+    background-color: rgba($dark-grey, 0.5) !important;
+    border-color: rgba($dark-grey, 0.5) !important;
+    color: $warm-black !important;
+  }
 }
 
 input[disabled] + label {
