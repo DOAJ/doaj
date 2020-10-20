@@ -35,6 +35,8 @@ doaj.af.journalFormFactory = (params) => {
             return doaj.af.newEditorJournalForm(params);
         case "associate_editor":
             return doaj.af.newAssociateJournalForm(params);
+        case "readonly":
+            return doaj.af.newReadOnlyJournalForm(params);
         default:
             throw "Could not extract a context from the form";
     }
@@ -636,6 +638,18 @@ doaj.af.newAssociateJournalForm = function(params) {
 doaj.af.AssociateJournalForm = class extends doaj.af.EditorialApplicationForm {
     constructor(params) {
         super(params);
+    }
+};
+
+doaj.af.newReadOnlyJournalForm = function(params) {
+    return new doaj.af.ReadOnlyJournalForm(params);
+};
+
+doaj.af.ReadOnlyJournalForm = class extends doaj.af.TabbedApplicationForm {
+    constructor(params) {
+        super(params);
+        this.editSectionsFromReview = false;
+        this.showTab(this.tabs.length - 1);
     }
 };
 

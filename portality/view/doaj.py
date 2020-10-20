@@ -190,8 +190,7 @@ def journal_readonly(journal_id):
 
     fc = JournalFormFactory.context("readonly")
     fc.processor(source=j)
-    # fc = formcontext.JournalFormFactory.get_form_context(role='readonly', source=j)
-    return fc.render_template(obj=j)
+    return fc.render_template(obj=j, lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/csv")

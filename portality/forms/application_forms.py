@@ -1815,9 +1815,9 @@ class JournalContextDefinitions:
             FieldSetDefinitions.OTHER_FEES["name"],
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
-            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"],
-            FieldSetDefinitions.SUBJECT["name"],
-            FieldSetDefinitions.NOTES["name"]
+            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]#,
+            # FieldSetDefinitions.SUBJECT["name"],
+            #FieldSetDefinitions.NOTES["name"]
         ],
         "templates": {
             "form" : "application_form/readonly_journal.html",
