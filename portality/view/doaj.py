@@ -464,6 +464,7 @@ def publisher_supporters():
 def supporters():
     return render_template("layouts/static_page.html", page_frag="/support/supporters-fragment/index.html")
 
+
 @blueprint.route("/apply/guide/")
 def guide():
     return render_template("layouts/static_page.html", page_frag="/apply/guide-fragment/index.html")
@@ -619,3 +620,9 @@ def old_faq():
 @blueprint.route("/publishers")
 def publishers():
     return render_template("layouts/static_page.html")
+
+
+# Redirects necessitated by new templates
+@blueprint.route("/password-reset/")
+def new_password_reset():
+    return redirect(url_for('account.forgot'), code=301)
