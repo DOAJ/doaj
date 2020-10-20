@@ -168,7 +168,7 @@ class RedirectForm(Form):
 
 
 class LoginForm(RedirectForm):
-    user = StringField('E-mail Address', [validators.DataRequired()])
+    user = StringField('E-mail address or username', [validators.DataRequired()])
     password = PasswordField('Password', [validators.DataRequired()])
 
 
