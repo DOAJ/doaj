@@ -59,7 +59,7 @@
                         <div class="col-md-6 blog-img" aria-hidden="true"></div>
                         <a href="{{ n.url }}" target="_blank" class="col-md-6">
                             {# TODO in the future (right now we don't have category) <p class="label">{{ n.category }}</p> #}
-                            <h3>{{ n.title }}</h3>
+                            <h3>{{ n.title|safe }}</h3>
                             <p>{% autoescape off%}{{ n.summary }}{% endautoescape %}</p>
                             <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
                         </a>
