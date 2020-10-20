@@ -39,25 +39,21 @@
   background: $grapefruit;
   color: $warm-black;
 
-  a {
-    color: $warm-black;
-
-    &:hover, &:focus, &:active {
-      color: $warm-white;
-
-      svg {
-        stroke: $warm-white;
-      }
-    }
-  }
-
   svg {
     stroke: $warm-black;
   }
 
+  a {
+    color: $warm-black;
+  }
+
   &:hover, &:focus, &:active {
-    background: $sanguine;
+    background-color: $warm-black;
     color: $warm-white;
+
+    svg {
+      stroke: $warm-white;
+    }
   }
 }
 
