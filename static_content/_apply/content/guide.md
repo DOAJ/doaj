@@ -107,6 +107,19 @@ Journals that are rejected must wait 6 months from the date of rejection before 
 
 ---
 
+##Recommendations
+
+We recommend that:
+- journals use a plagiarism checking software. You must specify the name and make of the software.
+
+- the journal publishes ORCiD IDs with the articles.
+
+- the ORCiD IDs of editorial board members and reviewers are displayed.
+
+- publishers make all citations available according to the [I4OC goals](https://i4oc.org/#goals).
+
+---
+
 ## Additional criteria for some journal types
 
 {:.tabular-list}
@@ -170,7 +183,7 @@ Please ensure that, if you do apply again after the exclusion period, the journa
 
 ## Appeals
 
-If you would like to appeal against a decision to reject your application or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, [managing-editors@doaj.org](mailto:managing-editors@doaj.org).
+If you would like to appeal against a decision to reject your application for more than 6 months or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, [managing-editors@doaj.org](mailto:managing-editors@doaj.org).
 
 The appeal should contain the following information:
 - Journal title
