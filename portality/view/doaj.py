@@ -436,7 +436,7 @@ def privacy():
 
 
 @blueprint.route("/contact/")
-def contact_us():
+def contact():
     return render_template("layouts/static_page.html", page_frag="/contact-fragment.html")
 
 
