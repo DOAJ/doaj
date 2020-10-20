@@ -111,7 +111,7 @@ def articles_search():
     return render_template("doaj/articles_search.html", lcc_tree=lcc_jstree)
 
 
-@blueprint.route("/search", methods=['GET'])
+@blueprint.route("/search/", methods=['GET'])
 def search():
     return redirect(url_for("doaj.journals_search"), 301)
 
@@ -158,17 +158,6 @@ def search_post():
     query = dao.Facetview2.make_query(kw, default_field=default_field, default_operator="AND")
 
     return redirect(route + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
-
-
-@blueprint.route("/subjects")
-def subjects():
-    return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
-
-
-@blueprint.route("/application/new")
-def old_application():
-     redirect(url_for("apply.public_application", **request.args), code=308)
-
 
 #############################################
 
@@ -388,7 +377,8 @@ def article_page(identifier=None):
 
     return render_template('doaj/article.html', article=article, journal=journal)
 
-@blueprint.route("/contact", methods=["GET", "POST"])
+
+@blueprint.route("/contact/", methods=["GET", "POST"])
 def contact():
     if request.method == "GET":
         form = ContactUs()
@@ -441,7 +431,7 @@ def support():
     return render_template("layouts/static_page.html", page_frag="/support/index-fragment/index.html")
 
 
-@blueprint.route("/sponsorship/")
+@blueprint.route("/support/sponsors/")
 def sponsors():
     return render_template("layouts/static_page.html", page_frag="support/sponsors-fragment/index.html")
 
@@ -520,12 +510,17 @@ def abc():
     return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council-fragment/index.html")
 
 
+@blueprint.route("/about/editorial-subcommittee/")
+def editorial():
+    return render_template("layouts/static_page.html", page_frag="/about/editorial-subcommittee-fragment/index.html")
+
+
 @blueprint.route("/about/volunteers/")
 def volunteers():
     return render_template("layouts/static_page.html", page_frag="/about/volunteers-fragment/index.html")
 
 
-@blueprint.route("/about/faq/")
+@blueprint.route("/docs/faq/")
 def faq():
     return render_template("layouts/static_page.html", page_frag="/about/faq-fragment/index.html")
 
@@ -535,7 +530,33 @@ def team():
     return render_template("layouts/static_page.html", page_frag="/about/team-fragment/index.html")
 
 
+@blueprint.route("/accessibility/")
+def accessibility():
+    return render_template("layouts/static_page.html", page_frag="/about/accessibility-fragment/index.html")
+
+
+@blueprint.route("/privacy/")
+def privacy():
+    return render_template("layouts/static_page.html", page_frag="/about/privacy-fragment/index.html")
+
+
+@blueprint.route("/terms/")
+def terms():
+    return render_template("layouts/static_page.html", page_frag="/about/terms-fragment/index.html")
+
+
 # LEGACY ROUTES
+@blueprint.route("/subjects")
+def subjects():
+    # return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
+    return redirect(url_for("doaj.journals_search"), 301)
+
+
+@blueprint.route("/application/new")
+def old_application():
+    return redirect(url_for("apply.public_application", **request.args), code=308)
+
+
 @blueprint.route("/<cc>/mejorespracticas")
 @blueprint.route("/<cc>/boaspraticas")
 @blueprint.route("/<cc>/bestpractice")
@@ -589,11 +610,6 @@ def old_openurl():
 @blueprint.route("/faq")
 def old_faq():
     return redirect(url_for("doaj.faq", **request.args), code=308)
-
-
-@blueprint.route("/privacy")
-def privacy():
-    return render_template("layouts/static_page.html")
 
 
 @blueprint.route("/publishers")
