@@ -93,7 +93,6 @@
             </div>
         </div>
     </div>
-    <!-- class secondary-nav-... should depend on if page.highlight != false -->
     <nav class="secondary-nav {% if endpoint|length == 1 or endpoint[endpoint|length-1] in highlighted %} secondary-nav--precedes-highlight {% endif %}">
         <div class="container">
             <a href="#" class="secondary-nav__menu-toggle" aria-label="Click to open menu">
@@ -314,6 +313,38 @@
         </div>
     </nav>
 
+    {# Flash notifications #}
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            <section class="container">
+              {% set category_url_indicator = '+contains-url' %}
+
+              {% for category, message in messages %}
+                  {% set message_has_url = False %}
+                  {% if category.endswith(category_url_indicator) %}
+                      {% set category = category[:category.rfind(category_url_indicator)] %}
+                      {% set message_has_url = True %}
+                  {% endif %}
+
+                  {# shift from bs2 to bs3 terminology #}
+                  {% if category == "error" %}
+                      {% set category = "danger" %}
+                  {% endif %}
+
+                  <p class="alert alert--{{category}} flash_container">
+                      <span data-feather="alert-octagon" aria-hidden="true"></span>
+                      {% if message_has_url %}
+                          {{ message | safe }}
+                      {% else %}
+                          {{ message }}
+                      {% endif %}
+                      <a class="flash_close alert__close" href="#">(Dismiss)</a>
+                  </p>
+              {% endfor %}
+            </section>
+        {% endif %}
+    {% endwith %}
+
     {# Display large search header on homepage only #}
     {% if request.endpoint == 'doaj.home' %}
         <section class="homepage__search">
@@ -393,19 +424,7 @@
     {% endif %}
 </header>
 
-{#{% if page.fragment == false %}#}
-{#<!-- Admin-only edit buttons -->#}
-{#<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/{{ page.section|downcase }}/content/{{ page.name }}" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>#}
-{##}
-{#{% assign current_page = page.name %}#}
-{#{% assign size = current_page | size | minus: 3 %}#}
-{##}
-{#{% if page.name == 'ambassadors.md' or page.name == 'advisory-board-council.md' or page.name == 'publisher-supporters.md' or page.name == 'sponsors.md' or page.name == 'supporters.md' or page.name == 'team.md' or page.name == 'volunteers.md' %}#}
-{#<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/_data/{{ current_page | slice: 0, size }}.yml" target="_blank" rel="noopener"><span class="sr-only">Edit data content</span><span data-feather="database" aria-hidden="true"></span></a>#}
-{#{% endif %}#}
-{#{% endif %}#}
-
-<!-- Quick search modal -->
+{# Quick search modal #}
 <section class="modal" id="modal-search" tabindex="-1" role="dialog">
     <div class="modal__dialog" role="document">
         <form class="quick-search__form" role="search" action="{{ url_for("doaj.search_post") }}" method="post">
@@ -443,35 +462,3 @@
 {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
     {% include config.get("SITE_NOTE_TEMPLATE") %}
 {% endif %}
-
-{# flash messages #}
-{% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-        <section class="container">
-          {% set category_url_indicator = '+contains-url' %}
-
-          {% for category, message in messages %}
-              {% set message_has_url = False %}
-              {% if category.endswith(category_url_indicator) %}
-                  {% set category = category[:category.rfind(category_url_indicator)] %}
-                  {% set message_has_url = True %}
-              {% endif %}
-
-              {# shift from bs2 to bs3 terminology #}
-              {% if category == "error" %}
-                  {% set category = "danger" %}
-              {% endif %}
-
-              <p class="alert alert--{{category}} flash_container">
-                  <span data-feather="alert-octagon" aria-hidden="true"></span>
-                  {% if message_has_url %}
-                      {{ message | safe }}
-                  {% else %}
-                      {{ message }}
-                  {% endif %}
-                  <a class="flash_close alert__close" href="#">(Dismiss)</a>
-              </p>
-          {% endfor %}
-        </section>
-    {% endif %}
-{% endwith %}
