@@ -1,6 +1,6 @@
 Widgets are tools that allow you to embed DOAJ into your site. There are two widgets available:
 
-1. A Simple Search widget which embeds a search box on your page. Upon submitting the search, the user is taken to their search results on DOAJ.
+1. A Simple Journal Search widget which embeds a search box on your page. Upon submitting the search, the user is taken to their journal search results on DOAJ.
 2. A Fixed Query widget which allows you to embed, into your site, a specific set of results from a predefined DOAJ search.
 
 ## Simple Search

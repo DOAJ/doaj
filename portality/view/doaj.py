@@ -425,6 +425,26 @@ def google_webmaster_tools():
     return 'google-site-verification: googlebdb21861de30fe30.html'
 
 
+@blueprint.route("/accessibility/")
+def accessibility():
+    return render_template("layouts/static_page.html", page_frag="/accessibility/index-fragment/index.html")
+
+
+@blueprint.route("/privacy/")
+def privacy():
+    return render_template("layouts/static_page.html", page_frag="/privacy/index-fragment/index.html")
+
+
+@blueprint.route("/contact/")
+def contact_us():
+    return render_template("layouts/static_page.html", page_frag="/contact/index-fragment/index.html")
+
+
+@blueprint.route("/terms/")
+def terms():
+    return render_template("layouts/static_page.html", page_frag="/terms/index-fragment/index.html")
+
+
 @blueprint.route("/support/")
 def support():
     return render_template("layouts/static_page.html", page_frag="/support/index-fragment/index.html")
@@ -432,7 +452,7 @@ def support():
 
 @blueprint.route("/support/sponsors/")
 def sponsors():
-    return render_template("layouts/static_page.html", page_frag="support/sponsors-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/support/sponsors-fragment/index.html")
 
 
 @blueprint.route("/support/publisher-supporters/")
@@ -494,6 +514,11 @@ def openurl():
     return render_template("layouts/static_page.html", page_frag="/docs/openurl-fragment/index.html")
 
 
+@blueprint.route("/docs/faq/")
+def faq():
+    return render_template("layouts/static_page.html", page_frag="/docs/faq-fragment/index.html")
+
+
 @blueprint.route("/about/")
 def about():
     return render_template("layouts/static_page.html", page_frag="/about/index-fragment/index.html")
@@ -510,7 +535,7 @@ def abc():
 
 
 @blueprint.route("/about/editorial-subcommittee/")
-def editorial():
+def editorial_subcommittee():
     return render_template("layouts/static_page.html", page_frag="/about/editorial-subcommittee-fragment/index.html")
 
 
@@ -519,29 +544,9 @@ def volunteers():
     return render_template("layouts/static_page.html", page_frag="/about/volunteers-fragment/index.html")
 
 
-@blueprint.route("/docs/faq/")
-def faq():
-    return render_template("layouts/static_page.html", page_frag="/about/faq-fragment/index.html")
-
-
 @blueprint.route("/about/team/")
 def team():
     return render_template("layouts/static_page.html", page_frag="/about/team-fragment/index.html")
-
-
-@blueprint.route("/accessibility/")
-def accessibility():
-    return render_template("layouts/static_page.html", page_frag="/about/accessibility-fragment/index.html")
-
-
-@blueprint.route("/privacy/")
-def privacy():
-    return render_template("layouts/static_page.html", page_frag="/about/privacy-fragment/index.html")
-
-
-@blueprint.route("/terms/")
-def terms():
-    return render_template("layouts/static_page.html", page_frag="/about/terms-fragment/index.html")
 
 
 # LEGACY ROUTES

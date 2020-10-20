@@ -26,6 +26,8 @@
             <p class="label">Docs</p>
             <h1>Widgets</h1>
 
+            
+
             <p>Widgets are tools that allow you to embed DOAJ into your site. There are two widgets available:</p>
 
 <ol>
@@ -69,7 +71,7 @@
 <h3 id="configuring-via-query_options">Configuring via <code class="language-plaintext highlighter-rouge">QUERY_OPTIONS</code>
 </h3>
 
-<p>There are a handful of options available. All are optional; omit them from <code class="language-plaintext highlighter-rouge">QUERY_OPTIONS</code> for the default behaviour.</p>
+<p>The parameter <code class="language-plaintext highlighter-rouge">QUERY_OPTIONS</code> takes a subset of fields to define which results to retrieve. The example above displays, in alphabetical order, journals that contain the word <code class="language-plaintext highlighter-rouge">medicine</code> in the title. Configuration via these <code class="language-plaintext highlighter-rouge">QUERY_OPTIONS</code> provides a simplified way to display results by keyword. There are a handful of options available. All are optional; omit them from <code class="language-plaintext highlighter-rouge">QUERY_OPTIONS</code> for the default behaviour.</p>
 
 <ul class="tabular-list">
   <li>
@@ -159,19 +161,14 @@
   </li>
 </ul>
 
-<p>The parameter <code class="language-plaintext highlighter-rouge">QUERY_OPTIONS</code> takes a subset of fields to define which results to retrieve. The example above displays the journals containing the word <code class="language-plaintext highlighter-rouge">medicine</code> in the title and in alphabetical order. Configuration via these <code class="language-plaintext highlighter-rouge">QUERY_OPTIONS</code> provides a simplified way to display results by keyword.</p>
-
-<p>For more control over which results to display, we recommend configuring your query via the <em>Search</em> page. Use the controls to find the results you want to show then click the <em>Share</em> button and copy the text provided in the box below <em>Embed this search</em> for inclusion on your page.</p>
+<p>For more control over which results to display, configure your query on the <a href="/search/journals/">Search</a> page. Use the controls to find the results you want to show then click the ‘Share’ button and copy the shortened URL provided for inclusion on your page.</p>
 
 <p>The widget can be resized to fit within available horizontal space. Use the <code class="language-plaintext highlighter-rouge">page_size</code> property to minimise its vertical requirement by reducing the number of results per page.</p>
 
-<p>Note: the vertical size can change depending on the number of results shown on each page.</p>
-
-<p>You can only embed one fixed query widget per page. If you see strange characters in the results, try declaring the encoding in the <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code> element of your HTML page by adding <code class="language-plaintext highlighter-rouge">&lt;meta charset="utf-8"&gt;</code>.</p>
+<p>Notes: The vertical size can change depending on the number of results shown on each page. You can only embed one fixed query widget per page. If you see strange characters in the results, try declaring the encoding in the <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code> element of your HTML page by adding <code class="language-plaintext highlighter-rouge">&lt;meta charset="utf-8"&gt;</code>.</p>
 
 
 
-            <!-- Display data pages -->
             
           </section>
         </div>

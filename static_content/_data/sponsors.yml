@@ -1,9 +1,6 @@
 # List of sponsors separated by tiers (gold, silver, bronze)
 
 gold:
-- name: IEEE
-  url: https://www.ieee.org/
-  logo: ieee.png
 
 silver:
 - name: Copernicus Publications
