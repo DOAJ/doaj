@@ -1,11 +1,15 @@
 /* Alert boxes */
 
 .alert {
-  display: inline-block;
   padding: $spacing-03;
-  margin: 0 0 $spacing-04 0;
+  margin: $spacing-02 0;
   background-color: $fair-pink;
+  border: 1px dashed $grapefruit;
   @include typescale-06;
+
+  &__close {
+    float: right;
+  }
 
   code {
     background-color: rgba($dark-grey, 0.1);
