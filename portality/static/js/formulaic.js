@@ -794,7 +794,7 @@ var formulaic = {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<h3 class="filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
+                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
                     <div class="filter__body collapse in" aria-expanded="false" id="' + resultsId + '">\
                         <label for="' + searchId + '" class="sr-only">Search subjects</label>\
                         <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="Search subjects">\
