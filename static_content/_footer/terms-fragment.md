@@ -7,7 +7,7 @@ section: About
 toc: true
 sticky_sidenav: true
 highlight: false
-permalink: /terms/
+permalink: terms-fragment
 ---
 
 {% include_relative content/terms.md %}

@@ -1,5 +1,5 @@
 ---
-layout: sidenav
+layout: no-sidenav
 fragment: false
 title: Contact us
 short_title: Contact

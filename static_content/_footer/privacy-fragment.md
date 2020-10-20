@@ -7,7 +7,7 @@ section: About
 toc: true
 sticky_sidenav: true
 highlight: false
-permalink: /privacy/
+permalink: privacy-fragment
 ---
 
 {% include_relative content/privacy.md %}
