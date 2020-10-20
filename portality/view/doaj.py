@@ -376,36 +376,36 @@ def article_page(identifier=None):
 
     return render_template('doaj/article.html', article=article, journal=journal)
 
-
-@blueprint.route("/contact/", methods=["GET", "POST"])
-def contact():
-    if request.method == "GET":
-        form = ContactUs()
-        if current_user.is_authenticated:
-            form.email.data = current_user.email
-        return render_template("doaj/contact.html", form=form)
-    elif request.method == "POST":
-        prepop = request.values.get("ref")
-        form = ContactUs(request.form)
-
-        if current_user.is_authenticated and (form.email.data is None or form.email.data == ""):
-            form.email.data = current_user.email
-
-        if prepop is not None:
-            return render_template("doaj/contact.html", form=form)
-
-        if not form.validate():
-            return render_template("doaj/contact.html", form=form)
-
-        data = _verify_recaptcha(form.recaptcha_value.data)
-        if data["success"]:
-            send_contact_form(form)
-            flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
-            form = ContactUs()
-            return render_template("doaj/contact.html", form=form)
-        else:
-            flash("Your form could not be submitted,", "error")
-            return render_template("doaj/contact.html", form=form)
+# Not using this form for now but we might bring it back later
+# @blueprint.route("/contact/", methods=["GET", "POST"])
+# def contact():
+#     if request.method == "GET":
+#         form = ContactUs()
+#         if current_user.is_authenticated:
+#             form.email.data = current_user.email
+#         return render_template("doaj/contact.html", form=form)
+#     elif request.method == "POST":
+#         prepop = request.values.get("ref")
+#         form = ContactUs(request.form)
+#
+#         if current_user.is_authenticated and (form.email.data is None or form.email.data == ""):
+#             form.email.data = current_user.email
+#
+#         if prepop is not None:
+#             return render_template("doaj/contact.html", form=form)
+#
+#         if not form.validate():
+#             return render_template("doaj/contact.html", form=form)
+#
+#         data = _verify_recaptcha(form.recaptcha_value.data)
+#         if data["success"]:
+#             send_contact_form(form)
+#             flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
+#             form = ContactUs()
+#             return render_template("doaj/contact.html", form=form)
+#         else:
+#             flash("Your form could not be submitted,", "error")
+#             return render_template("doaj/contact.html", form=form)
 
 def _verify_recaptcha(g_recaptcha_response):
     with urllib.request.urlopen('https://www.google.com/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY") + '&response=' + g_recaptcha_response) as url:
@@ -427,22 +427,22 @@ def google_webmaster_tools():
 
 @blueprint.route("/accessibility/")
 def accessibility():
-    return render_template("layouts/static_page.html", page_frag="/accessibility/index-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/accessibility-fragment.html")
 
 
 @blueprint.route("/privacy/")
 def privacy():
-    return render_template("layouts/static_page.html", page_frag="/privacy/index-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/privacy-fragment.html")
 
 
 @blueprint.route("/contact/")
 def contact_us():
-    return render_template("layouts/static_page.html", page_frag="/contact/index-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/contact-fragment.html")
 
 
 @blueprint.route("/terms/")
 def terms():
-    return render_template("layouts/static_page.html", page_frag="/terms/index-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/terms-fragment.html")
 
 
 @blueprint.route("/support/")

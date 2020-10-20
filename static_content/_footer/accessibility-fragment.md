@@ -7,7 +7,7 @@ section: About
 toc: true
 sticky_sidenav: true
 highlight: false
-permalink: /accessibility/
+permalink: accessibility-fragment
 ---
 
 {% include_relative content/accessibility.md %}
