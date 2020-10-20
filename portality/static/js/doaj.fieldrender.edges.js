@@ -126,18 +126,19 @@ $.extend(true, doaj, {
                 }
 
                 var frag = titleBarFrag + '\
+                    <p id="share_embed"></p>\
                     <h2 id="result-count"></h2>\
                     <div class="row">\
                         <div class="col-md-3">\
                             <aside class="filters">\
                               <h2 class="filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
-                                <span data-feather="sliders" aria-hidden="true"></span> Refine search results: \
+                                <span data-feather="sliders" aria-hidden="true"></span> Refine search results \
                                 <span data-feather="chevron-down" aria-hidden="true"></span>\
                               </h2>\
-                                <ul class="collapse filters__list" id="filters" aria-expanded="false">\
-                                    {{FACETS}}\
-                                </ul>\
-                                <p id="share_embed"></p>\
+                              <ul class="collapse filters__list" id="filters" aria-expanded="false">\
+                                  {{FACETS}}\
+                              </ul>\
+                            </aside>\
                         </div>\
                             \
                         <div class="col-md-9">\
