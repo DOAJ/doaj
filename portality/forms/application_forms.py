@@ -2041,15 +2041,18 @@ class RequiredBuilder:
 
 
 class IsURLBuilder:
+    msg = "Please enter a valid URL. It should start with http or https"
+
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["type"] = "url"
         html_attrs["pattern"] = regex.HTTP_URL
         html_attrs["data-parsley-pattern"] = regex.HTTP_URL
+        html_attrs["data-parsley-pattern-message"] = IsURLBuilder.msg
 
     @staticmethod
     def wtforms(field, settings):
-        return HTTPURL(message=settings.get('message'))
+        return HTTPURL(message=settings.get('message', IsURLBuilder.msg))
 
 
 class IntRangeBuilder:
