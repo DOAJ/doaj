@@ -702,21 +702,33 @@ window.Parsley.addValidator("differentTo", {
     priority: 1
 });
 
-/*
 window.Parsley.addValidator("onlyIf", {
     validateString : function(value, requirement, parsleyInstance) {
         if (!!value){
-            let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
-            console.log(field);
+            let fields = requirement.split(",");
+            for (var i = 0; i < fields.length; i++) {
+                let field = fields[i];
+                let value = parsleyInstance.$element.attr("data-parsley-only-if-value_" + field);
+                let not = parsleyInstance.$element.attr("data-parsley-only-if-not_" + field);
+                if (value) {
+                     if ($("[name=" + field + "]").val() !== value) {
+                         return false;
+                     }
+                }
+                if (not) {
+                    if ($("[name=" + field + "]").val() === not) {
+                         return false;
+                     }
+                }
+            }
             return true;
         }
         else {
-            console.log("not checked");
             return true;
         }
     },
     messages: {
-        en: 'This only can be true when requirements are met'
+        en: 'This only can be set when requirements are met'
     },
     priority: 1
 });
@@ -724,12 +736,16 @@ window.Parsley.addValidator("onlyIf", {
 window.Parsley.addValidator("notIf", {
     validateString : function(value, requirement, parsleyInstance) {
         if (!!value){
-            let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
-            console.log(field);
+            let fields = requirement.split(",");
+            for (var i = 0; i < fields.length; i++) {
+                let field = fields[i];
+                if (!!$("[name=" + field + "]").val()) {
+                     return false;
+                 }
+            }
             return true;
         }
         else {
-            console.log("not checked");
             return true;
         }
     },
@@ -738,4 +754,3 @@ window.Parsley.addValidator("notIf", {
     },
     priority: 1
 });
- */

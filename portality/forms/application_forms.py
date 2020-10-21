@@ -1815,9 +1815,7 @@ class JournalContextDefinitions:
             FieldSetDefinitions.OTHER_FEES["name"],
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
-            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]#,
-            # FieldSetDefinitions.SUBJECT["name"],
-            #FieldSetDefinitions.NOTES["name"]
+            FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
         ],
         "templates": {
             "form" : "application_form/readonly_journal.html",
@@ -1833,11 +1831,15 @@ class JournalContextDefinitions:
     }
 
     ASSOCIATE = deepcopy(READ_ONLY)
+    ASSOCIATE["fieldsets"] += [
+        FieldSetDefinitions.SUBJECT["name"],
+        FieldSetDefinitions.NOTES["name"]
+    ]
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["processor"] = application_processors.AssEdJournalReview
     ASSOCIATE["templates"]["form"] = "application_form/assed_journal.html"
 
-    EDITOR = deepcopy(READ_ONLY)
+    EDITOR = deepcopy(ASSOCIATE)
     EDITOR["name"] = "editor"
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.REVIEWERS["name"]
@@ -2143,7 +2145,6 @@ class IsISSNListBuilder:
 class DifferentToBuilder:
     @staticmethod
     def render(settings, html_attrs):
-        # FIXME: front end validator for this does not yet exist
         html_attrs["data-parsley-different-to"] = settings.get("field")
 
     @staticmethod
@@ -2170,9 +2171,12 @@ class RequiredIfBuilder:
 class OnlyIfBuilder:
     @staticmethod
     def render(settings, html_attrs):
-        html_attrs["data-parsley-only-if-fields"] = ",".join([f["field"] for f in settings.get("fields", [])])
+        html_attrs["data-parsley-only-if"] = ",".join([f["field"] for f in settings.get("fields", [])])
         for f in settings.get('fields'):
-            html_attrs["data-parsley-only-if__" + f["field"]] = f.get('value', '')
+            if "value" in f:
+                html_attrs["data-parsley-only-if-value_" + f["field"]] = f["value"]
+            if "not" in f:
+                html_attrs["data-parsley-only-if-not_" + f["field"]] = f["not"]
 
     @staticmethod
     def wtforms(fields, settings):
@@ -2182,9 +2186,7 @@ class OnlyIfBuilder:
 class NotIfBuildier:
     @staticmethod
     def render(settings, html_attrs):
-        for f in settings.get('fields'):
-            html_attrs["data-parsley-not-if-field"] = f['field']
-            html_attrs["data-parsley-not-if-value"] = f.get('value', '')
+        html_attrs["data-parsley-not-if"] = ",".join([f.get("field") for f in settings.get("fields", [])])
 
     @staticmethod
     def wtforms(fields, settings):
