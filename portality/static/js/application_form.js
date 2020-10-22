@@ -494,13 +494,39 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             let sourceId = $(elem).attr("data-source");
             let input = $(":input").filter(sourceId);
             let type = input.attr("type");
-            if (input.val()) {
-                $(elem).html(input.val());
+            let val = input.val();
+
+            if (val && sourceId === "#subject") {
+                val = this.lccCodeToText(val);
+            }
+
+            if (val) {
+                $(elem).html(val);
             } else {
                 $(elem).html("[no value]");
             }
         })
     };
+
+    lccCodeToText(code) {
+        function recurse(code, tree) {
+            for (var i = 0; i < tree.length; i++) {
+                var node = tree[i];
+                if (node.id === code) {
+                    return node.text;
+                }
+
+                if (node.children) {
+                    let text = recurse(code, node.children);
+                    if (text) {
+                        return text;
+                    }
+                }
+            }
+            return false;
+        }
+        return recurse(code, doaj.af.lccTree)
+    }
 };
 
 doaj.af.newPublicApplicationForm = function(params) {
