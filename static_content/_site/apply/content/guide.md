@@ -36,12 +36,12 @@ Open access journals published in any language may apply.
 
 - The journal must have its own dedicated URL and homepage that is accessible from any location
 - The website must be clear and easy to navigate
-- The journal  should adhere to the guidelines described in the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency/)
+- The journal  should adhere to the guidelines described in the Principles of Transparency and Best Practice in Scholarly Publishing
 - Each article must be available as an individual, full-text article
   - one unique URL per article
   - HTML or PDF, as a minimum
 
-The following information must be available online, and easily accessible from the journal homepage:
+The following information must be available online, and linked to from the journal homepage:
 - Open access policy
 - Aims and scope
 - Editorial board (including institutional affiliations of all members)
@@ -71,7 +71,7 @@ The following information must be available online, and easily accessible from t
 
 ---
 
-### Editorial process
+### Quality control process
 
 - A journal must have an editor and an editorial board.
   - The editorial board must be listed on the website.
@@ -140,17 +140,12 @@ Journals that are rejected must wait 6 months from the date of rejection before 
 
 ## The application process
 
-1. Once you have submitted your application, you will see a _Thank You_ screen and will be sent an automated confirmation email.
+1. Your application is successfully submitted when you see a _Thank You_ screen and receive a confirmation email.
   - If you do not receive that email, contact us.
-2. You will receive another automated email telling you when your application has been picked up for review. Every application goes through up to four rounds of assessment.
-3. One of our Associate Editors might contact you during the review process.
-  - We will automatically reject the application if we receive no response to our emails after one month. Check your spam folder frequently.
-  - Be aware that the Associate Editor who is reviewing your application is a volunteer and may not be emailing you from a doaj.org email address.
-4. You will receive a third email informing you that a decision has been made:
-  - If your application is accepted, another email is sent with your account details. You need these to upload article metadata and to send us updates about your journal.
-  - If your application is rejected, the email will detail on what grounds the application failed our review.
-    - You may not submit another application for the same journal for six months.
-    - If you re-apply, we expect the journal to demonstrate very clearly that our recommendations have been implemented.
+2. Your application will then be reviewed. You may receive an email alerting you when this process has started.
+3. One of our volunteer Associate Editors might contact you as part of the review process. Please answer any questions they send you. This helps us process your application correctly. Be aware that we will reject an application if, after one month, we haven't received answers to our questions.
+4. The person reviewing your application may be a volunteer and therefore will not have a doaj.org email address. Check your spam folder frequently just in case the emails have ended up there.
+5. If your application is accepted, an email is sent to you with your account details. You need these to log in and upload article metadata, send us updates about your journal, or manage your account.
 
 ### Time from submission to decision
 

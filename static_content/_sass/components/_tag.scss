@@ -60,3 +60,13 @@
     color: $warm-white;
   }
 }
+
+.tag--secondary {
+  background: $fair-pink;
+  color: $warm-black;
+
+  a, svg {
+    color: $warm-black;
+    stroke: $warm-black;
+  }
+}

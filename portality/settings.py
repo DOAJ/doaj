@@ -134,12 +134,6 @@ STATIC_PATHS = [
     "../static_content"
 ]
 
-
-# =======================
-# Account settings
-
-PUBLIC_REGISTER = False
-
 # =======================
 # email settings
 
@@ -222,16 +216,6 @@ ASSOC_ED_NOTIFICATION_STATUSES = [
 ]
 
 # ========================
-# user login settings
-
-LOGIN_VIA_ACCOUNT_ID = False
-
-# amount of time a reset token is valid for (86400 is 24 hours)
-PASSWORD_RESET_TIMEOUT = 86400
-# amount of time a reset token for a new account is valid for
-PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
-
-# ========================
 # publisher settings
 
 # the earliest date accepted on the publisher's 'enter article metadata' form.
@@ -245,9 +229,16 @@ TICK_THRESHOLD = '2014-03-19T00:00:00Z'
 # authorisation settings
 
 # Can people register publicly? If false, only the superuser can create new accounts
-# PUBLIC_REGISTER = False
+PUBLIC_REGISTER = True
 
 SUPER_USER_ROLE = "admin"
+
+LOGIN_VIA_ACCOUNT_ID = True
+
+# amount of time a reset token is valid for (86400 is 24 hours)
+PASSWORD_RESET_TIMEOUT = 86400
+# amount of time a reset token for a new account is valid for
+PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 #"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
 TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api", "ultra_bulk_delete"]

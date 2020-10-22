@@ -8,9 +8,7 @@
 }
 
 .search-options__right {
-  text-align: right;
-
-  select {
-    float: right;
-  }
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
 }

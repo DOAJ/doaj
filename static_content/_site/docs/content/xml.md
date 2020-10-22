@@ -6,7 +6,7 @@ We do not check metadata quality as we ingest it — this is the publisher's res
 
 + First convert your article metadata into an accepted XML format: DOAJ or Crossref.
   + It must be structured correctly.
-  + Its format must follow a set of rules laid out in the [DOAJ XML schema file](/static/doaj/doajArticles.xsd), or the rules laid out in [Crossref’s schema file](https://support.crossref.org/hc/en-us/articles/214530063-Crossref-XSD-schema-quick-reference).
+  + Its format must follow a set of rules laid out in the [DOAJ XML schema file](/static/doaj/doajArticles.xsd), or the rules laid out in [Crossref’s schema file](https://www.crossref.org/education/content-registration/crossrefs-metadata-deposit-schema/crossref-xsd-schema-quick-reference/).
 + If you are creating DOAJ XML manually, try [formatting](https://jsonformatter.org/xml-formatter) and [validating](https://www.xmlvalidation.com/) the file before you upload it to us.
 + If you are exporting XML from an OJS plugin, you can [upload the file](/publisher/uploadfile) immediately.
 
@@ -62,10 +62,19 @@ The example file below contains only one record.
     <title language="eng">Roses and Lilies</title>
     <authors>
       <author>
-        <name>Fritz Haber</name>
+        <name>Nathalia Cardoso de Azevedo</name>
         <affiliationId>1</affiliationId>
         <affiliationId>2</affiliationId>
         <affiliationId>3</affiliationId>
+        <orcid_id>https://orcid.org/0000-0002-7868-417X</orcid_id>
+      </author>
+    </authors>
+    <authors>
+      <author>
+        <name>Sergio Fernando Tavares</name>
+        <affiliationId>1</affiliationId>
+        <affiliationId>2</affiliationId>
+        <orcid_id>https://orcid.org/0000-0001-6492-7911</orcid_id>
       </author>
     </authors>
     <affiliationsList>
@@ -103,8 +112,13 @@ The [doajArticles.xsd](http://www.doaj.org/static/doaj/doajArticles.xsd) file sp
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:iso_639-2b="https://doaj.org/schemas/iso_639-2b/1.0">
-  <xs:import namespace="https://doaj.org/schemas/iso_639-2b/1.0" schemaLocation="https://doaj.org/static/doaj/iso_639-2b.xsd">
+<xs:schema 
+           version = "1.3"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:iso_639-2b="https://doaj.org/schemas/iso_639-2b/1.1">
+  
+  <xs:import namespace="https://doaj.org/schemas/iso_639-2b/1.1" 
+             schemaLocation="https://doaj.org/static/doaj/iso_639-2b.xsd">
     <xs:annotation>
       <xs:documentation>
         This schema determines allowable xml file formats

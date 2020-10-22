@@ -22,7 +22,9 @@
 
           {% if page.relative_path == '_support/publisher-supporters.md' or page.relative_path == '_support/publisher-supporters-fragment.md' %}
           <aside class="highlight highlight--aside">
-            <h2>Become a publisher supporter</h2>
+            <h2 class="label">Become a publisher supporter</h2>
+
+            <p><em>You will be redirected to Paypal’s website.</em></p>
 
             <div class="tabs">
               <nav class="tabs__menu">
@@ -73,7 +75,8 @@
 
           {% if page.relative_path == '_support/supporters.md' or page.relative_path == '_support/publisher-supporters-fragment.md' %}
           <aside class="highlight highlight--aside">
-            <h2>Become a yearly supporter</h2>
+            <h2 class="label">Become a yearly supporter</h2>
+            <p><em>You will be redirected to Paypal’s website.</em></p>
             <p>Please select your currency and organisation type for an annually-recurring payment.</p>
 
             <div class="tabs">
@@ -157,11 +160,9 @@
             {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
             <h1>{{ page.title }}</h1>
 
-            {{ content }}
-
-            <!-- Display data pages -->
             {% if page.relative_path == '_support/sponsors.md' or page.relative_path == '_support/sponsors-fragment.md' %}
-              <!-- Support section: sponsors -->
+              {% comment %} Support section: sponsors {% endcomment %}
+              {% if site.data.sponsors.gold %}
               <h3><span data-feather="award" aria-hidden="true" class="stroke-gold"></span> Gold sponsor</h3>
               <div class="row">
                 {% for i in site.data.sponsors.gold %}
@@ -172,6 +173,7 @@
                 </div>
                 {% endfor %}
               </div>
+              {% endif %}
 
               <h3><span data-feather="award" aria-hidden="true" class="stroke-silver"></span> Silver sponsors</h3>
               <div class="row">
@@ -194,9 +196,12 @@
                 </div>
                 {% endfor %}
               </div>
+            {% endif %}
 
-            {% elsif page.relative_path == '_support/publisher-supporters.md' or page.relative_path == '_support/publisher-supporters-fragment.md' %}
-              <!-- Support section: publisher supporters -->
+            {{ content }}
+
+            {% if page.relative_path == '_support/publisher-supporters.md' or page.relative_path == '_support/publisher-supporters-fragment.md' %}
+              {% comment %} Support section: publisher supporters {% endcomment %}
               <ul class="row title-list">
                 {% for i in site.data.publisher-supporters %}
                   <li class="col-md-3">
@@ -206,8 +211,8 @@
               </ul>
 
             {% elsif page.relative_path == '_support/supporters.md' or page.relative_path == '_support/supporters-fragment.md' %}
-              <!-- Support section: supporters -->
-              <ul class="row bleed title-list">
+              {% comment %} Support section: supporters {% endcomment %}
+              {% comment %}<ul class="row bleed title-list">
                 {% for i in site.data.supporters %}
                 <li class="col-sm-6 col-md-3">
                   <div class="title-list__text">
@@ -225,8 +230,7 @@
                   </div>
                 </li>
                 {% endfor %}
-              </ul>
-              </ul>
+              </ul>{% endcomment %}
 
             {% endif %}
           </section>

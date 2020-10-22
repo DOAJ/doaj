@@ -111,7 +111,7 @@ def articles_search():
     return render_template("doaj/articles_search.html", lcc_tree=lcc_jstree)
 
 
-@blueprint.route("/search", methods=['GET'])
+@blueprint.route("/search/", methods=['GET'])
 def search():
     return redirect(url_for("doaj.journals_search"), 301)
 
@@ -158,17 +158,6 @@ def search_post():
     query = dao.Facetview2.make_query(kw, default_field=default_field, default_operator="AND")
 
     return redirect(route + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
-
-
-@blueprint.route("/subjects")
-def subjects():
-    return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
-
-
-@blueprint.route("/application/new")
-def old_application():
-     redirect(url_for("apply.public_application", **request.args), code=308)
-
 
 #############################################
 
@@ -387,35 +376,36 @@ def article_page(identifier=None):
 
     return render_template('doaj/article.html', article=article, journal=journal)
 
-@blueprint.route("/contact", methods=["GET", "POST"])
-def contact():
-    if request.method == "GET":
-        form = ContactUs()
-        if current_user.is_authenticated:
-            form.email.data = current_user.email
-        return render_template("doaj/contact.html", form=form)
-    elif request.method == "POST":
-        prepop = request.values.get("ref")
-        form = ContactUs(request.form)
-
-        if current_user.is_authenticated and (form.email.data is None or form.email.data == ""):
-            form.email.data = current_user.email
-
-        if prepop is not None:
-            return render_template("doaj/contact.html", form=form)
-
-        if not form.validate():
-            return render_template("doaj/contact.html", form=form)
-
-        data = _verify_recaptcha(form.recaptcha_value.data)
-        if data["success"]:
-            send_contact_form(form)
-            flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
-            form = ContactUs()
-            return render_template("doaj/contact.html", form=form)
-        else:
-            flash("Your form could not be submitted,", "error")
-            return render_template("doaj/contact.html", form=form)
+# Not using this form for now but we might bring it back later
+# @blueprint.route("/contact/", methods=["GET", "POST"])
+# def contact():
+#     if request.method == "GET":
+#         form = ContactUs()
+#         if current_user.is_authenticated:
+#             form.email.data = current_user.email
+#         return render_template("doaj/contact.html", form=form)
+#     elif request.method == "POST":
+#         prepop = request.values.get("ref")
+#         form = ContactUs(request.form)
+#
+#         if current_user.is_authenticated and (form.email.data is None or form.email.data == ""):
+#             form.email.data = current_user.email
+#
+#         if prepop is not None:
+#             return render_template("doaj/contact.html", form=form)
+#
+#         if not form.validate():
+#             return render_template("doaj/contact.html", form=form)
+#
+#         data = _verify_recaptcha(form.recaptcha_value.data)
+#         if data["success"]:
+#             send_contact_form(form)
+#             flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
+#             form = ContactUs()
+#             return render_template("doaj/contact.html", form=form)
+#         else:
+#             flash("Your form could not be submitted,", "error")
+#             return render_template("doaj/contact.html", form=form)
 
 def _verify_recaptcha(g_recaptcha_response):
     with urllib.request.urlopen('https://www.google.com/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY") + '&response=' + g_recaptcha_response) as url:
@@ -435,14 +425,34 @@ def google_webmaster_tools():
     return 'google-site-verification: googlebdb21861de30fe30.html'
 
 
+@blueprint.route("/accessibility/")
+def accessibility():
+    return render_template("layouts/static_page.html", page_frag="/accessibility-fragment.html")
+
+
+@blueprint.route("/privacy/")
+def privacy():
+    return render_template("layouts/static_page.html", page_frag="/privacy-fragment.html")
+
+
+@blueprint.route("/contact/")
+def contact():
+    return render_template("layouts/static_page.html", page_frag="/contact-fragment.html")
+
+
+@blueprint.route("/terms/")
+def terms():
+    return render_template("layouts/static_page.html", page_frag="/terms-fragment.html")
+
+
 @blueprint.route("/support/")
 def support():
     return render_template("layouts/static_page.html", page_frag="/support/index-fragment/index.html")
 
 
-@blueprint.route("/sponsorship/")
+@blueprint.route("/support/sponsors/")
 def sponsors():
-    return render_template("layouts/static_page.html", page_frag="support/sponsors-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/support/sponsors-fragment/index.html")
 
 
 @blueprint.route("/support/publisher-supporters/")
@@ -453,6 +463,7 @@ def publisher_supporters():
 @blueprint.route("/support/supporters/")
 def supporters():
     return render_template("layouts/static_page.html", page_frag="/support/supporters-fragment/index.html")
+
 
 @blueprint.route("/apply/guide/")
 def guide():
@@ -504,6 +515,11 @@ def openurl():
     return render_template("layouts/static_page.html", page_frag="/docs/openurl-fragment/index.html")
 
 
+@blueprint.route("/docs/faq/")
+def faq():
+    return render_template("layouts/static_page.html", page_frag="/docs/faq-fragment/index.html")
+
+
 @blueprint.route("/about/")
 def about():
     return render_template("layouts/static_page.html", page_frag="/about/index-fragment/index.html")
@@ -519,14 +535,14 @@ def abc():
     return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council-fragment/index.html")
 
 
+@blueprint.route("/about/editorial-subcommittee/")
+def editorial_subcommittee():
+    return render_template("layouts/static_page.html", page_frag="/about/editorial-subcommittee-fragment/index.html")
+
+
 @blueprint.route("/about/volunteers/")
 def volunteers():
     return render_template("layouts/static_page.html", page_frag="/about/volunteers-fragment/index.html")
-
-
-@blueprint.route("/about/faq/")
-def faq():
-    return render_template("layouts/static_page.html", page_frag="/about/faq-fragment/index.html")
 
 
 @blueprint.route("/about/team/")
@@ -535,6 +551,17 @@ def team():
 
 
 # LEGACY ROUTES
+@blueprint.route("/subjects")
+def subjects():
+    # return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
+    return redirect(url_for("doaj.journals_search"), 301)
+
+
+@blueprint.route("/application/new")
+def old_application():
+    return redirect(url_for("apply.public_application", **request.args), code=308)
+
+
 @blueprint.route("/<cc>/mejorespracticas")
 @blueprint.route("/<cc>/boaspraticas")
 @blueprint.route("/<cc>/bestpractice")
@@ -590,11 +617,12 @@ def old_faq():
     return redirect(url_for("doaj.faq", **request.args), code=308)
 
 
-@blueprint.route("/privacy")
-def privacy():
-    return render_template("layouts/static_page.html")
-
-
 @blueprint.route("/publishers")
 def publishers():
     return render_template("layouts/static_page.html")
+
+
+# Redirects necessitated by new templates
+@blueprint.route("/password-reset/")
+def new_password_reset():
+    return redirect(url_for('account.forgot'), code=301)

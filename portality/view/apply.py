@@ -10,7 +10,8 @@ from portality.forms.application_forms import ApplicationFormFactory
 
 blueprint = Blueprint('apply', __name__)
 
-@blueprint.route("/thanks", methods=["GET"])
+
+@blueprint.route("/thank-you", methods=["GET"])
 def application_thanks():
     return render_template("layouts/static_page.html", page_frag="/apply/thank-you-fragment/index.html")
 

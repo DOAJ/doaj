@@ -8,19 +8,23 @@
   border: 1px solid $sanguine;
 }
 
-.portrait__img {
-  mix-blend-mode: multiply;
+.portrait--small {
+  width: 50%;
+
+  .portrait__bg-img {
+    height: $spacing-06;
+  }
 }
 
-.portrait__img--split {
-  width: 50%;
+.portrait__img {
+  mix-blend-mode: multiply;
 }
 
 .portrait__img--empty {
   height: $spacing-06 * 2;
 }
 
-.portrait__bg-img--3d {
+.portrait__bg-img {
   position: relative;
   width:  100%;
   height: $spacing-06 * 2;

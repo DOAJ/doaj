@@ -28,7 +28,7 @@ ed:
   featured: true
 
 - name: Fei Yu
-  area: Librarianship, sholarly publishing, data management
+  area: Librarianship, Scholarly publishing, Data management
   year_since:
   city: Brisbane
   country: Australia
@@ -74,14 +74,14 @@ ed:
   language: Persian, English, Azeri
 
 - name: S.Suharto
-  area: Humanities, social sciences
+  area: Humanities, Social sciences
   year_since:
   city: Semarang
   country: Indonesia
   language: Indonesian, English
 
 - name: Scott Richard St. Louis
-  area: Humanities, social sciences, technology
+  area: Humanities, Social sciences, Technology
   year_since:
   city: Ann Arbor
   country: United States
@@ -189,7 +189,7 @@ ass_ed:
   language: Italian, English
 
 - name: Anne Lahey
-  area: Libraries, Scholarly communication
+  area: Libraries, Scholarly Communication
   year_since:
   city: Canberra
   country: Australia
@@ -216,12 +216,23 @@ ass_ed:
   country: USA
   language: English, French
 
-- name: Concha Diez Pastor
-  area: Social Sciences, Technology
+
+- name: Constansy Aleru
+  area: Medical Sciences
   year_since:
-  city: Madrid
-  country: Spain
-  language: Spanish, English, Italian
+  city: Port Harcourt
+  country: Nigeria
+  language: English, French
+  photo: "aleru.jpg"
+
+- name: Danner Sagala
+  area: Science
+  year_since: "2020"
+  city: Bengkulu
+  country: Indonesia
+  language: Indonesian, English
+  photo: "sagala.jpg"
+
 
 - name: Deborah Lins e Nóbrega
   area: Social Sciences
@@ -229,6 +240,7 @@ ass_ed:
   city: Brasilia
   country: Brazil
   language: Portuguese, English
+  photo: "DéborahLins.jpeg"
 
 - name: Dedi Rahman Nur
   area: Social Sciences
@@ -286,6 +298,24 @@ ass_ed:
   country: Turkey
   language: Turkish, English
 
+- name: Faith Oronga
+  area: Librarianship
+  year_since: "2020"
+  city:
+  country: Kenya
+  language: English
+  photo: "oronga.jpg"
+
+
+- name: Faizal Risdianto
+  area: Humanities
+  year_since: "2020"
+  city: Solo
+  country: Indonesia
+  language: Indonesian, English
+  photo: "faizal.jpg"
+
+
 - name: Francesca Soldati
   area: Science
   year_since:
@@ -328,6 +358,14 @@ ass_ed:
   country:
   language:
 
+- name: Handoko
+  area: Information Technology
+  year_since: "2020"
+  city: Padang
+  country: Indonesia
+  language: Indonesian, English
+  photo: "handoko.jpg"
+
 - name: Iryna Kuchma
   area: Humanities, Social Sciences
   year_since:
@@ -336,7 +374,7 @@ ass_ed:
   language: Ukranian, English, French, Polish
 
 - name: Isabel Margalejo Ferrández
-  area: Librarianship
+  area: Social Sciences
   year_since:
   city: Valencia
   country: Spain
@@ -348,6 +386,7 @@ ass_ed:
   city: Mérida
   country: Venezuela
   language: Spanish, English
+  photo: "JacintoDavila.png"
 
 - name: Jamila Jaber
   area: Library and Information Science
@@ -356,12 +395,6 @@ ass_ed:
   country: Lebanon
   language: Arabic, French, English
 
-- name: Juan Sebastian Gonzalez
-  area: Science, Technology
-  year_since:
-  city: Bogota
-  country: Colombia
-  language: Spanish, English
 
 - name: Kamil B. Varınca
   area: Science
@@ -383,6 +416,15 @@ ass_ed:
   city: Cambridge
   country: USA
   language: English
+
+
+- name: Khoirul Fathoni
+  area:
+  year_since: "2020"
+  city:
+  country: Indonesia
+  language: Indonesian, English
+  photo:
 
 - name: Kimberly Mears
   area: Medicine
@@ -440,6 +482,7 @@ ass_ed:
   country: Portugal
   language: Portuguese, Spanish, English
 
+
 - name: Mariana Solano Hernandez
   area: Science
   year_since:
@@ -447,12 +490,13 @@ ass_ed:
   country: Costa Rica
   language: Spanish, English
 
-- name: Marianne Gagnon
+- name: Maryam Jamilah
   area:
-  year_since:
+  year_since: "2020"
   city:
   country:
   language:
+  photo: "jamilah.jpg"
 
 - name: Miguel-Ángel Vera-Baceta
   area: Social Sciences
@@ -460,6 +504,23 @@ ass_ed:
   city: Murcia
   country: Spain
   language: Spanish, English
+  photo: "MiguelAVera.jpeg"
+
+- name: Milagro Castro
+  area: Social Sciences
+  year_since:
+  city:
+  country: Costa Rica
+  language: Spanish, English
+  photo: "MilagroCastro.jpg"
+
+- name: Milton Ramirez
+  area:
+  year_since:
+  city:
+  country: Spain
+  language: Spanish, English
+  photo: "MiltonRamirez.jpg"
 
 - name: Muhamad Ratodi
   area: Public Health
@@ -517,19 +578,20 @@ ass_ed:
   country: Iran
   language: Farsi, English
 
+- name: Sandra Aceng
+  area: Social Sciences
+  year_since: "2020"
+  city: Kampala
+  country: Uganda
+  language: English, Luo
+  photo: "aceng.jpg"
+
 - name: Sara Ricetto
   area: Open Access, Open Science
   year_since:
   city: Milan
   country: Italy
   language: Italian, English, German
-
-- name: Sergiy Nazarovets
-  area: Scientometrics; Library Science
-  year_since:
-  city: Kyiv
-  country: Ukraine
-  language: Ukranian, English
 
 - name: Simone Rosenkranz
   area:
@@ -552,6 +614,14 @@ ass_ed:
   country: Korea
   language: Korean, English
 
+- name: Souleymane Sogoba
+  area: Statistics
+  year_since: "2020"
+  city: Bamako
+  country: Mali
+  language: French
+  photo: "sogoba1.jpg"
+
 - name: Teodor Mihaela
   area: Humanities, Social Sciences
   year_since:
@@ -573,13 +643,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Victor Freitas de Azeredo Barros
-  area: Technology
-  year_since:
-  city: Braga
-  country: Portugal
-  language: Portuguese, English, Spanish
-
 - name: Weronika Kortas
   area: Humanities, Social Sciences
   year_since:
@@ -588,7 +651,7 @@ ass_ed:
   language: Polish, English
 
 - name: Yaping Liu
-  area: Medical and Healthcare management
+  area: Medical and Healthcare Management
   year_since:
   city: Sydney
   country: Australia

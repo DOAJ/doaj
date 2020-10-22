@@ -30,22 +30,22 @@
                             </a>
                             <ul class="dropdown__menu" aria-labelledby="action-menu-support">
                                 <li>
-                                    <a href="/support" class="dropdown__link">
+                                    <a href="/support/" class="dropdown__link">
                                         Support DOAJ
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/sponsorship" class="dropdown__link">
+                                    <a href="/support/sponsors/" class="dropdown__link">
                                         Sponsors
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/support/publisher-supporters" class="dropdown__link">
+                                    <a href="/support/publisher-supporters/" class="dropdown__link">
                                         Publisher supporters
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/support/supporters" class="dropdown__link">
+                                    <a href="/support/supporters/" class="dropdown__link">
                                         Supporters
                                     </a>
                                 </li>
@@ -155,7 +155,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/about/faq/" class="dropdown__link">FAQs</a>
+                            <a href="/docs/faq/" class="dropdown__link">FAQs</a>
                         </li>
                     </ul>
                 </li>
@@ -248,17 +248,17 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/support/sponsors" class="dropdown__link">
+                            <a href="/support/sponsors/" class="dropdown__link">
                                 Sponsors
                             </a>
                         </li>
                         <li>
-                            <a href="/support/publisher-supporters" class="dropdown__link">
+                            <a href="/support/publisher-supporters/" class="dropdown__link">
                                 Publisher supporters
                             </a>
                         </li>
                         <li>
-                            <a href="/support/supporters" class="dropdown__link">
+                            <a href="/support/supporters/" class="dropdown__link">
                                 Supporters
                             </a>
                         </li>
@@ -447,34 +447,31 @@
 {# flash messages #}
 {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
-        <div class="container">
-            <div class="row"><div class="col-xs-12">
-                <div class="alert-messages">
-                    {% set category_url_indicator = '+contains-url' %}
+        <section class="container">
+          {% set category_url_indicator = '+contains-url' %}
 
-                    {% for category, message in messages %}
-                        {% set message_has_url = False %}
-                        {% if category.endswith(category_url_indicator) %}
-                            {% set category = category[:category.rfind(category_url_indicator)] %}
-                            {% set message_has_url = True %}
-                        {% endif %}
+          {% for category, message in messages %}
+              {% set message_has_url = False %}
+              {% if category.endswith(category_url_indicator) %}
+                  {% set category = category[:category.rfind(category_url_indicator)] %}
+                  {% set message_has_url = True %}
+              {% endif %}
 
-                        {# shift from bs2 to bs3 terminology #}
-                        {% if category == "error" %}
-                            {% set category = "danger" %}
-                        {% endif %}
+              {# shift from bs2 to bs3 terminology #}
+              {% if category == "error" %}
+                  {% set category = "danger" %}
+              {% endif %}
 
-                        <div class="alert alert-{{category}} flash_container">
-                            <a class="flash_close" href="#">&times;</a>
-                            {% if message_has_url %}
-                                {{ message | safe }}
-                            {% else %}
-                                {{ message }}
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            </div></div>
-        </div>
+              <p class="alert alert--{{category}} flash_container">
+                  <span data-feather="alert-octagon" aria-hidden="true"></span>
+                  {% if message_has_url %}
+                      {{ message | safe }}
+                  {% else %}
+                      {{ message }}
+                  {% endif %}
+                  <a class="flash_close alert__close" href="#">(Dismiss)</a>
+              </p>
+          {% endfor %}
+        </section>
     {% endif %}
 {% endwith %}

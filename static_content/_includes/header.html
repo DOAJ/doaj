@@ -97,10 +97,21 @@
           </ul>
         </li>
         {% if page.url == '/dashboard/' %}
-        <li class="dropdown primary-nav__item_desktop">
-          <a href="{{ site.baseurl }}" class="nav-bar__link" type="button">
+        {% comment %}
+        Only displayed when logged in
+        Also only display sections in which there is content
+        (e.g. do not display Publisher if logged-in user does not have access to Publisher data)
+        {% endcomment %}
+        <li class="dropdown">
+          <a class="dropdown__trigger nav-bar__link" id="menu-account" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
             My account
+            <span data-feather="chevron-down" aria-hidden="true"></span>
           </a>
+          <ul class="dropdown__menu" aria-labelledby="menu-account">
+            <li><a href="" class="dropdown__link" target="_blank">Admin</a></li>
+            <li><a href="" class="dropdown__link" target="_blank">Publisher</a></li>
+            <li><a href="" class="dropdown__link" target="_blank">Editor</a></li>
+          </ul>
         </li>
         {% endif %}
         <li class="dropdown secondary-nav__item_mobile">

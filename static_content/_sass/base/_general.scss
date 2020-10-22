@@ -105,14 +105,10 @@ a {
   overflow-wrap: break-word;
   word-wrap: break-word;
 
-  &:hover {
-    color: $grapefruit;
-    text-decoration: none;
-  }
-
+  &:hover,
   &:focus,
   &:active {
-    background-color: rgba($grapefruit, 0.25);
+    color: $grapefruit;
     text-decoration: none;
   }
 }
