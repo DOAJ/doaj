@@ -1233,6 +1233,8 @@ var formulaic = {
             this.args = params.args;
 
             this.idRx = /(.+?-)(\d+)(-.+)/;
+            this.template = "";
+            this.container = false;
 
             this.init = function() {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
@@ -1240,6 +1242,26 @@ var formulaic = {
                     var div = $(this.divs[i]);
                     div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none"><span data-feather="x" /></button>'));
                     feather.replace();
+                }
+
+                this.template = $(this.divs[0]).html();
+                this.container = $(this.divs[0]).parents(".multiple_input");
+
+                if (this.divs.length === 1) {
+                    let div = $(this.divs[0]);
+                    let inputs = div.find(":input");
+                    let tripwire = false;
+                    for (var i = 0; i < inputs.length; i++) {
+                        if ($(inputs[i]).val()) {
+                            tripwire = true;
+                            break;
+                        }
+                    }
+                    if (!tripwire) {
+                        // the field is empty
+                        $(this.divs[0]).remove();
+                        this.divs = [];
+                    }
                 }
 
                 this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
@@ -1250,8 +1272,6 @@ var formulaic = {
             };
 
             this.addField = function() {
-                var first = $(this.divs[0]);
-
                 var currentLargest = -1;
                 for (var i = 0; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
@@ -1264,8 +1284,7 @@ var formulaic = {
                 }
                 var newId = currentLargest + 1;
 
-                var template = first.html();
-                var frag = '<div class="form_group" name="' + this.fieldDef["name"] + '__group">' + template + '</div>';
+                var frag = '<div class="form_group" name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
                 var jqt = $(frag);
                 var that = this;
                 jqt.find(":input").each(function() {
@@ -1293,11 +1312,16 @@ var formulaic = {
                 }
 
                 var topPlacement = this.fieldDef.repeatable.add_button_placement === "top";
-                if (topPlacement) {
-                    first.before(jqt);
+                if (this.divs.length > 0) {
+                    if (topPlacement) {
+                        $(this.divs[0]).before(jqt);
+                    } else {
+                        $(this.divs[this.divs.length - 1]).after(jqt);
+                    }
                 } else {
-                    $(this.divs[this.divs.length - 1]).after(jqt);
+                    this.container.append(jqt);
                 }
+
 
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 this.removeFieldBtns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
