@@ -1179,6 +1179,52 @@ var formulaic = {
             this.init();
         },
 
+        newFullContents : function(params) {
+            return edges.instantiate(formulaic.widgets.FullContents, params)
+        },
+        FullContents : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+
+            this.ns = "formulaic-fullcontents";
+
+            this.container = false;
+
+            this.init = function() {
+                var elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                // TODO: should work as-you-type by changing "change" to "keyup" event; doesn't work in edges
+                //edges.on(elements, "change.ClickableUrl", this, "updateUrl");
+                edges.on(elements, "keyup.FullContents", this, "updateContents");
+
+                for (var i = 0; i < elements.length; i++) {
+                    this.updateContents(elements[i]);
+                }
+            };
+
+            this.updateContents = function(element) {
+                var that = $(element);
+                var val = that.val();
+
+                if (val) {
+                    if (this.container) {
+                        this.container.html('<small>Full contents: ' + val + '</small>');
+                    } else {
+                        var classes = edges.css_classes(this.ns, "contents");
+                        var id = edges.css_id(this.ns, this.fieldDef.name);
+                        that.after('<p id="' + id + '" class="' + classes + '"><small>Full contents: ' + val + '</small></p>');
+
+                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                        this.container = $(selector, this.form.context);
+                    }
+                } else if (this.link) {
+                    this.container.remove();
+                    this.container = false;
+                }
+            };
+
+            this.init();
+        },
+
         newInfiniteRepeat : function(params) {
             return edges.instantiate(formulaic.widgets.InfiniteRepeat, params)
         },

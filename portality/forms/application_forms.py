@@ -133,6 +133,9 @@ class FieldDefinitions:
         "validate": [
             "required"
         ],
+        "widgets": [
+            "full_contents"
+        ],
         "contexts": {
             "editor": {
                 "disabled": True
@@ -154,6 +157,9 @@ class FieldDefinitions:
         "help": {
             "placeholder": "Ma revue"
         },
+        "widgets": [
+            "full_contents"
+        ],
         "contexts": {
             "editor": {
                 "disabled": True
@@ -375,6 +381,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             {"autocomplete": {"type" : "journal", "field": "bibjson.publisher.name.exact"}},
+            "full_contents"
         ],
         "help": {
             "placeholder": "Type or select the publisher’s name"
@@ -433,6 +440,7 @@ class FieldDefinitions:
         },
         "widgets": [
             {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}},
+            "full_contents"
         ]
     }
 
@@ -2281,23 +2289,10 @@ PYTHON_FUNCTIONS = {
             "bigenddate": BigEndDateBuilder.wtforms,
             "reserved_usernames" : ReservedUsernamesBuilder.wtforms
         }
-    },
-
-    # "all_urls_the_same" : "portality.formcontext.validators.all_urls_the_same",
-    # "to_lower" : "portality.formcontext.postprocessing.to_lower",
-    # "warn_on_value" : "portality.formcontext.validators.warn_on_value",
-    # "clickable_url" : "portality.formcontext.widgets.clickable_url",
+    }
 }
 
 JAVASCRIPT_FUNCTIONS = {
-    # "required_value" : "doaj.forms.validators.requiredValue",
-    # "required" : "doaj.forms..validators.required",
-    # "is_url" : "doaj.forms.validators.isUrl",
-    # "max_tags" : "doaj.forms.validators.maxTags",
-    # "stop_words" : "doaj.forms.validators.stopWords",
-    # "int_range" : "doaj.forms.validators.intRange",
-    # "autocomplete" : "doaj.forms.widgets.autocomplete",
-
     "clickable_url": "formulaic.widgets.newClickableUrl",
     "clickable_owner": "formulaic.widgets.newClickableOwner",
     "select": "formulaic.widgets.newSelect",
@@ -2305,7 +2300,8 @@ JAVASCRIPT_FUNCTIONS = {
     "multiple_field": "formulaic.widgets.newMultipleField",
     "infinite_repeat": "formulaic.widgets.newInfiniteRepeat",
     "autocomplete": "formulaic.widgets.newAutocomplete",
-    "subject_tree" : "formulaic.widgets.newSubjectTree"
+    "subject_tree" : "formulaic.widgets.newSubjectTree",
+    "full_contents" : "formulaic.widgets.newFullContents"
 }
 
 
