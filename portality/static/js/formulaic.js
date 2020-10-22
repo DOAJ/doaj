@@ -1557,16 +1557,64 @@ var formulaic = {
         Autocomplete: function(params){
             this.fieldDef = params.fieldDef;
             this.params = params.args;
-            let field = $('input[id^="' + this.fieldDef["name"] +'"]')
-            this.init = () => {
-                return autocomplete("[name='" + this.fieldDef.name + "']", this.params["field"], "journal", 1, true, true);
+
+            this.init = function() {
+                let doc_type = this.params.type || "journal";
+                let doc_field = this.params.field;
+                let mininput = this.params.min_input === undefined ? 3 : this.params.min_input;
+                let include_input = this.params.include === undefined ? true : this.params.include;
+                let allow_clear = this.params.allow_clear_input === undefined ? true : this.params.allow_clear_input;
+
+                let ajax = {
+                    url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
+                    dataType: 'json',
+                    data: function (term, page) {
+                        return {
+                            q: term
+                        };
+                    },
+                    results: function (data, page) {
+                        return { results: data["suggestions"] };
+                    }
+                };
+
+                var csc = function(term) {return {"id":term, "text": term};};
+
+                var initSel = function (element, callback) {
+                    var data = {id: element.val(), text: element.val()};
+                    callback(data);
+                };
+
+                let selector = "[name='" + this.fieldDef.name + "']";
+
+                if (include_input) {
+                    // apply the create search choice
+                    $(selector).select2({
+                        minimumInputLength: mininput,
+                        ajax: ajax,
+                        createSearchChoice: csc,
+                        initSelection : initSel,
+                        allowClear: allow_clear,
+                        width: 'resolve'
+                    });
+                } else {
+                    // go without the create search choice option
+                    $(selector).select2({
+                        minimumInputLength: mininput,
+                        ajax: ajax,
+                        initSelection : initSel,
+                        allowClear: allow_clear,
+                        width: 'resolve'
+                    });
+                }
             };
+
             this.init()
         }
-
     }
 };
 
+/*
 function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_input, tagfield) {
     let doc_type = doc || "journal";
     let mininput = min_input === undefined ? 3 : min_input;
@@ -1614,3 +1662,4 @@ function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_
         });
     }
 }
+*/

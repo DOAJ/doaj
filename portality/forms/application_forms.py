@@ -374,7 +374,7 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
-            {"autocomplete": {"field": "bibjson.publisher.name.exact"}},
+            {"autocomplete": {"type" : "journal", "field": "bibjson.publisher.name.exact"}},
         ],
         "help": {
             "placeholder": "Type or select the publisher’s name"
@@ -432,7 +432,7 @@ class FieldDefinitions:
             "placeholder": "Type or select the society or institution’s name"
         },
         "widgets": [
-            {"autocomplete": {"field": "bibjson.institution.name.exact"}},
+            {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}},
         ]
     }
 
@@ -1251,7 +1251,7 @@ class FieldDefinitions:
             "reserved_usernames"
         ],
         "widgets": [
-            {"autocomplete": {"field": "account"}},
+            {"autocomplete": {"type" : "account", "field": "id"}},
             "clickable_owner"
         ],
         "contexts" : {
@@ -1297,7 +1297,7 @@ class FieldDefinitions:
         "label": "Group",
         "input": "text",
         "widgets": [
-            {"autocomplete": {"field": "editor_group"}}
+            {"autocomplete": {"type" : "editor_group", "field": "name"}}
         ],
         "contexts" : {
             "editor" : {
