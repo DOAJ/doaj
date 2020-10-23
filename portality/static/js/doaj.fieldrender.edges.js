@@ -1822,6 +1822,7 @@ $.extend(true, doaj, {
                 }
 
                 var fields = Object.keys(sf.mustFilters);
+                var showClear = false;
                 for (var i = 0; i < fields.length; i++) {
                     var field = fields[i];
                     var def = sf.mustFilters[field];
@@ -1834,10 +1835,12 @@ $.extend(true, doaj, {
                         filters += ' <span data-feather="x" aria-hidden="true"></span>';
                         filters += "</a>";
                         filters += "</li>";
+                        showClear = true;
                     } else {
                         if ($.inArray(field, this.omit) > -1) {
                             continue;
                         }
+                        showClear = true;
 
                         // then render any filters that have values
                         for (var j = 0; j < def.values.length; j++) {
@@ -1866,7 +1869,16 @@ $.extend(true, doaj, {
                             filters += "</li>";
                         }
                     }
-                    filters += "</span>";
+                }
+
+                if (showClear) {
+                    var clearClass = edges.css_classes(this.namespace, "clear", this);
+                    var clearFrag = '<a href="#" class="' + clearClass + '" title="Clear all search and sort parameters and start again"> \
+                            CLEAR ALL \
+                            <span data-feather="x" aria-hidden="true"></span>\
+                        </a>';
+
+                    filters += '<li class="tag ' + valClass + '">' + clearFrag + '</li>';
                 }
 
                 if (filters === "" && this.ifNoFilters) {
@@ -1882,6 +1894,10 @@ $.extend(true, doaj, {
                     // click handler for when a filter remove button is clicked
                     var removeSelector = edges.css_class_selector(ns, "remove", this);
                     edges.on(removeSelector, "click", this, "removeFilter");
+
+                    // click handler for when the clear button is clicked
+                    var clearSelector = edges.css_class_selector(ns, "clear", this);
+                    edges.on(clearSelector, "click", this, "clearFilters");
                 } else {
                     sf.context.html("");
                 }
@@ -1937,6 +1953,10 @@ $.extend(true, doaj, {
 
                 this.component.removeFilter(bool, ft, field, value);
             };
+
+            this.clearFilters = function() {
+                this.component.clearSearch();
+            }
         },
 
         newPagerRenderer: function (params) {
