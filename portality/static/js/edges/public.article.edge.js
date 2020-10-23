@@ -107,6 +107,23 @@ $.extend(true, doaj, {
                     })
                 }),
 
+                edges.newORTermSelector({
+                    id: "seal",
+                    category: "facet",
+                    field: "index.has_seal.exact",
+                    display: "Journal has the Seal",
+                    syncCounts: false,
+                    lifecycle: "update",
+                    orderBy: "count",
+                    orderDir: "desc",
+                    renderer : doaj.renderers.newORTermSelectorRenderer({
+                        showCount: true,
+                        hideEmpty: false,
+                        open: false,
+                        togglable: true
+                    })
+                }),
+
                 edges.newFullSearchController({
                     id: "share_embed",
                     category: "controller",
