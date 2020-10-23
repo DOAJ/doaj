@@ -6,6 +6,7 @@ from portality.models.harvester import HarvesterProgressReport as Report
 from portality.models.harvester import HarvestState
 from portality.lib.dataobj import DataObjException
 
+
 class HarvesterWorkflow(object):
 
     @classmethod
@@ -102,7 +103,7 @@ class HarvesterWorkflow(object):
             article.is_api_valid()
         except DataObjException as e:
             app.logger.info("Article for Account:{y} was not API valid ... skipping".format(y=account_id))
-            Report.record_error(article.get_identifier("doi") + " - " + str(e))
+            Report.record_error((article.get_identifier("doi") or "< DOI MISSING >") + " - " + str(e))
             return False
 
         # FIXME: in production, we will need a way to get the account_id's api_key
@@ -117,7 +118,7 @@ class HarvesterWorkflow(object):
             id, loc = doaj.create_article(article)
         except doajclient.DOAJException as e:
             app.logger.info("Article caused DOAJException: {m} ... skipping".format(m=str(e)))
-            Report.record_error(article.get_identifier("doi") + " - " + str(e))
+            Report.record_error((article.get_identifier("doi") or "< DOI MISSING >") + " - " + str(e))
             return False
         app.logger.info("Created article in DOAJ for Account:{x} with ID: {y}".format(x=account_id, y=id))
         return True
