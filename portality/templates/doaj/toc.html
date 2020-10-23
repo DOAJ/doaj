@@ -295,8 +295,20 @@
                             <article class="card card--with-icon">
                                 {% include 'svg/copyright.svg' %}
                                 <div>
-                                    <p>The author does <strong>not</strong> retain unrestricted copyrights and publishing rights.</p>
-
+                                    <p>
+                                      The author
+                                      {% if bibjson.author_retains_copyright %}
+                                      <strong>retains</strong>
+                                      {% else %}
+                                      <strong>does not retain</strong>
+                                      {% endif %}
+                                      <strong>unrestricted</strong> copyrights and publishing rights.
+                                    </p>
+                                    {% if bibjson.copyright_url %}
+                                    <p>
+                                        &rarr; Learn more about their <a href="{{ bibjson.copyright_url }}" target="_blank" rel="noopener">copyright policy</a>.
+                                    </p>
+                                    {% endif %}
                                 </div>
                             </article>
 
