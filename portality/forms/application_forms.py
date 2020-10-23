@@ -919,8 +919,9 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
-            "long_help": ["Declare all other charges: editorial processing charges, colour charges, submission fees, "
-                          "page charges, membership fees, print subscription costs, other supplementary charges"],
+            "long_help": ["Declare all other charges: editorial processing charges, language editing fees, "
+                          "colour charges, submission fees, page charges, membership fees, print subscription costs, "
+                          "other supplementary charges"],
             "doaj_criteria": "You must declare any other charges if they exist"
         },
         "validate": [
@@ -1018,7 +1019,7 @@ class FieldDefinitions:
         "label": "Where can we find this information?",
         "input": "text",
         "help": {
-            "short_help": "Link to the preservation and archiving information on the journal’s site",
+            "short_help": "Link to the preservation and archiving information",
             "doaj_criteria": "You must provide a URL",
             "placeholder": "https://www.my-journal.com/about#archiving"
         },
