@@ -871,7 +871,7 @@ $.extend(true, doaj, {
             ////////////////////////////////////////
             // state variables
 
-            this.shareBoxOpen = false;
+            // this.shareBoxOpen = false;
 
             this.showShortened = false;
 
@@ -879,7 +879,7 @@ $.extend(true, doaj, {
 
             this.draw = function () {
                 // reset these on each draw
-                this.shareBoxOpen = false;
+                // this.shareBoxOpen = false;
                 this.showShortened = false;
 
                 var comp = this.component;
@@ -940,26 +940,16 @@ $.extend(true, doaj, {
             this.toggleShare = function(element) {
                 var shareUrlSelector = edges.css_class_selector(this.namespace, "share-url", this);
                 var textarea = this.component.jq(shareUrlSelector);
-                if (this.shareBoxOpen) {
-                    textarea.val("");
-                    if (this.component.embedSnippet) {
-                        var embedSelector = edges.css_class_selector(this.namespace, "embed", this);
-                        var embedTextarea = this.component.jq(embedSelector);
-                        embedTextarea.val("");
-                    }
-                    this.shareBoxOpen = false;
+
+                if (this.showShortened) {
+                    textarea.val(this.component.shortUrl);
                 } else {
-                    if (this.showShortened) {
-                        textarea.val(this.component.shortUrl);
-                    } else {
-                        textarea.val(this.component.edge.fullUrl());
-                    }
-                    if (this.component.embedSnippet) {
-                        var embedSelector = edges.css_class_selector(this.namespace, "embed", this);
-                        var embedTextarea = this.component.jq(embedSelector);
-                        embedTextarea.val(this.component.embedSnippet(this));
-                    }
-                    this.shareBoxOpen = true;
+                    textarea.val(this.component.edge.fullUrl());
+                }
+                if (this.component.embedSnippet) {
+                    var embedSelector = edges.css_class_selector(this.namespace, "embed", this);
+                    var embedTextarea = this.component.jq(embedSelector);
+                    embedTextarea.val(this.component.embedSnippet(this));
                 }
             };
 
@@ -974,16 +964,16 @@ $.extend(true, doaj, {
 
             this.updateShortUrl = function() {
                 var shareUrlSelector = edges.css_class_selector(this.namespace, "share-url", this);
-                var shortenSelector = edges.css_class_selector(this.namespace, "shorten", this);
+                var shortenSelector = edges.css_class_selector(this.namespace, "shorten-url", this);
                 var textarea = this.component.jq(shareUrlSelector);
-                var button = this.component.jq(shortenSelector).find("button");
+                var button = this.component.jq(shortenSelector);
                 if (this.showShortened) {
                     textarea.val(this.component.edge.fullUrl());
-                    button.html('<span class="glyphicon glyphicon-resize-small"></span>shorten url');
+                    button.html('shorten url');
                     this.showShortened = false;
                 } else {
                     textarea.val(this.component.shortUrl);
-                    button.html('<span class="glyphicon glyphicon-resize-full"></span>original url');
+                    button.html('original url');
                     this.showShortened = true;
                 }
             };
