@@ -2126,6 +2126,7 @@ class OptionalIfBuilder:
     def render(settings, html_attrs):
         html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-optional-if"] = settings.get("field")
+        html_attrs["data-parsley-optional-if-message"] = settings.get("message")
 
     @staticmethod
     def wtforms(field, settings):
@@ -2137,6 +2138,7 @@ class IsISSNBuilder:
     def render(settings, html_attrs):
         html_attrs["pattern"] = ISSN
         html_attrs["data-parsley-pattern"] = ISSN
+        html_attrs["data-parsley-pattern-message"] = settings.get("message")
 
     @staticmethod
     def wtforms(field, settings):
