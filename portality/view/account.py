@@ -36,10 +36,10 @@ class UserEditForm(Form):
     ])
     email_confirm = StringField('Confirm email address')
     roles = StringField('User roles')
-    password = PasswordField('Change password', [
-        validators.EqualTo('confirm', message='Passwords must match'),
+    password_change = PasswordField('Change password', [
+        validators.EqualTo('password_confirm', message='Passwords must match'),
     ])
-    confirm = PasswordField('Confirm password')
+    password_confirm = PasswordField('Confirm password')
 
 
 @blueprint.route('/<username>', methods=['GET', 'POST', 'DELETE'])
@@ -56,8 +56,8 @@ def username(username):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
         else:
-            conf = request.values.get("confirm")
-            if conf is None or conf != "confirm":
+            conf = request.values.get("delete_confirm")
+            if conf is None or conf != "delete_confirm":
                 flash('Check the box to confirm you really mean it!', "error")
                 return render_template('account/view.html', account=acc, form=UserEditForm(obj=acc))
             acc.delete()
@@ -85,8 +85,8 @@ def username(username):
                 acc.set_id(newdata['id'])
         if 'name' in newdata:
             acc.set_name(newdata['name'])
-        if 'password' in newdata and len(newdata['password']) > 0 and not newdata['password'].startswith('sha1'):
-            acc.set_password(newdata['password'])
+        if 'password_change' in newdata and len(newdata['password_change']) > 0 and not newdata['password_change'].startswith('sha1'):
+            acc.set_password(newdata['password_change'])
         if 'email' in newdata and len(newdata['email']) > 0 and newdata['email'] != acc.email:
             acc.set_email(newdata['email'])
 
@@ -100,7 +100,7 @@ def username(username):
                 logout_user()
                 flash("Email address updated. You have been logged out for email address verification.")
                 if app.config.get('DEBUG', False):
-                    reset_url = url_for('account.reset', reset_token=acc.reset_token, _external=True)
+                    reset_url = url_for('account.reset', reset_token=acc.reset_token)
                     util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(reset_url))
                 return redirect(url_for('doaj.home'))
 
@@ -327,7 +327,7 @@ def register():
         send_account_created_email(account)
 
         if app.config.get('DEBUG', False):
-            util.flash_with_url('Debug mode - url for verify is <a href={0}>{0}</a>'.format(url_for('account.reset', reset_token=account.reset_token, _external=True)))
+            util.flash_with_url('Debug mode - url for verify is <a href={0}>{0}</a>'.format(url_for('account.reset', reset_token=account.reset_token)))
 
         if current_user.is_authenticated:
             util.flash_with_url('Account created for {0}. View Account: <a href={1}>{1}</a>'.format(account.email, url_for('.username', username=account.id)))

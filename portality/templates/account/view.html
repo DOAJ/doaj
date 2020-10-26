@@ -23,7 +23,7 @@
                         {% set Q1 = '{"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
                         {% set Q2 = '"}}]}},"query":{"match_all":{}}}}}' %}
                         <div class="col-md-6" style="float: right; padding-right: 0">
-                            <a href="/admin/journals?source={{Q1}}{{account.id}}{{Q2}}">View this user's journals</a>
+                            <a href="/admin/?source={{Q1}}{{account.id}}{{Q2}}">View this user's journals</a>
                         </div>
                     {% endif %}
 
@@ -35,7 +35,7 @@
                                 {% if account.role|length > 0 %}
                                     <p><strong>Role(s)</strong>: {{ account.role|join(", ") }}</p>
                                 {% endif %}
-                                {% if account.api_key %}
+                                {% if account.has_role("api") %}
                                     <div class="col-md-8" style="padding: 0">
                                     <p><strong>API Key</strong>: <code>{{ account.api_key }}</code></p>
                                     </div>
@@ -63,7 +63,8 @@
                                         <p>(This <strong>irrevocably</strong> deletes the account)</p>
                                         <form action="" method="POST">
                                             <span class="col-md-8">
-                                                <input type="radio" name="confirm" value="confirm">&nbsp;&nbsp;yes, I'm sure
+                                                <input type="checkbox" name="delete_confirm" id="delete_confirm" value="delete_confirm">
+                                                <label for="delete_confirm">yes, I'm sure</label>
                                             </span>
                                             <span class="col-md-4">
                                                 <input type="submit" name="submit" value="Delete" class="button"
@@ -97,14 +98,16 @@
                                 opinion polls, newsletters and new functionality alerts. For those emails,
                                 we need your consent to use your email address. (You may come back here and
                                 change your response at any time.)</p>
-                            <p><input type="radio" name="marketing_consent"
+                            <p><input type="radio" name="marketing_consent" id="marketing_consent_yes"
                                       {% if account.marketing_consent %}checked="checked"{% endif %}
-                                      value="true"> I consent to DOAJ using my email address for its own
-                                marketing purposes</p>
-                            <p><input type="radio" name="marketing_consent"
+                                      value="true">
+                                <label for="marketing_consent_yes">I consent to DOAJ using my email address for its own
+                                    marketing purposes</label></p>
+                            <p><input type="radio" name="marketing_consent" id="marketing_consent_no"
                                       {% if account.marketing_consent == False %}checked="checked"{% endif %}
-                                      value="false"> I do not consent to DOAJ using my email address for its
-                                own marketing purposes</p>
+                                      value="false">
+                                <label for="marketing_consent_no">I do not consent to DOAJ using my email address for its
+                                    own marketing purposes</label></p>
                             <p>DOAJ does not share your name and email address with any other organisation.
                                 Please read our full privacy policy <a href="/privacy">here</a>.</p>
                             <input type="submit" class="button" name="submit" value="Save Settings" style="float: right; width: 50%">

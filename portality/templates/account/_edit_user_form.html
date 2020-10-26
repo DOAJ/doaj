@@ -23,9 +23,9 @@
             <input type="text" name="roles" value="{{ account.role|join(', ') }}" disabled="disabled">
         {% endif %}
         <br/>
-        {{ render_field(form.password, placeholder="********") }}
+        {{ render_field(form.password_change, placeholder="********") }}
         <br/>
-        {{ render_field(form.confirm, placeholder="********") }}
+        {{ render_field(form.password_confirm, placeholder="********") }}
 
         <br/>
         <input type="submit" class="button button--primary" name="submit" value="Update Account" style="float: right; width: 35%">
