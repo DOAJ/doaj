@@ -1166,6 +1166,7 @@ class FieldDefinitions:
             {"display": "Yes", "value": "y"},
             {"display": "No", "value": "n"}
         ],
+        "default" : "",
         "help": {
             "long_help": ["An <a href='https://orcid.org/'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
                          "authors."],
@@ -1192,6 +1193,7 @@ class FieldDefinitions:
             {"display": "Yes", "value": "y"},
             {"display": "No", "value": "n"}
         ],
+        "default" : "",
         "help": {
             "long_help": ["The <a href='https://i4oc.org/#goals' target='_blank'>I4OC standards</a> ask that citations are structured, separable, and open. "],
         },
@@ -2357,6 +2359,10 @@ class NestedFormField(FormField):
         return super().validate(form, extra_validators)
 
 
+class UnconstrainedRadioField(RadioField):
+    def pre_validate(self, form):
+        return
+
 ##########################################################
 # Mapping from configurations to WTForms builders
 ##########################################################
@@ -2369,7 +2375,7 @@ class RadioBuilder(WTFormsBuilder):
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
         wtfargs["widget"] = ListWidgetWithSubfields()
-        return RadioField(**wtfargs)
+        return UnconstrainedRadioField(**wtfargs)
 
 
 class MultiCheckboxBuilder(WTFormsBuilder):

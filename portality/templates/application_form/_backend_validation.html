@@ -1,4 +1,5 @@
 {% if formulaic_context.wtform_inst.errors %}
+    <div class="backend_validation_errors">
     This form has errors which prevented its submission.  The following fields are invalid:
 <ul>
     {% for field, errors in formulaic_context.wtform_inst.errors.items() %}
@@ -6,4 +7,5 @@
     <li>{{ field_def.label }}</li>
     {% endfor %}
 </ul>
+    </div>
 {% endif %}
