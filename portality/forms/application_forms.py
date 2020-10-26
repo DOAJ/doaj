@@ -605,12 +605,25 @@ class FieldDefinitions:
         },
         "placeholder": "https://www.my-journal.com/about#licensing",
         "validate": [
-            "required",
             "is_url"
         ],
         "widgets": [
             "clickable_url"
-        ]
+        ],
+        "contexts": {
+            "public": {
+                "validate": [
+                    "required",
+                    "is_url"
+                ]
+            },
+            "update_request": {
+                "validate": [
+                    "required"
+                    "is_url"
+                ]
+            }
+        }
     }
 
     REVIEW_PROCESS = {
@@ -1109,16 +1122,33 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
         "validate": [
-            {"required_if": {"field": "deposit_policy", "value": "Sherpa/Romeo"}},
-            {"required_if": {"field": "deposit_policy", "value": "Dulcinea"}},
-            {"required_if": {"field": "deposit_policy", "value": "Héloïse"}},
-            {"required_if": {"field": "deposit_policy", "value": "Diadorim"}},
-            {"required_if": {"field": "deposit_policy", "value": "other"}},
             "is_url"
         ],
         "widgets": [
             "clickable_url"
-        ]
+        ],
+        "contexts" : {
+            "public" : {
+                "validate": [
+                    {"required_if": {"field": "deposit_policy", "value": "Sherpa/Romeo"}},
+                    {"required_if": {"field": "deposit_policy", "value": "Dulcinea"}},
+                    {"required_if": {"field": "deposit_policy", "value": "Héloïse"}},
+                    {"required_if": {"field": "deposit_policy", "value": "Diadorim"}},
+                    {"required_if": {"field": "deposit_policy", "value": "other"}},
+                    "is_url"
+                ]
+            },
+            "update_request" : {
+                "validate" : [
+                    {"required_if": {"field": "deposit_policy", "value": "Sherpa/Romeo"}},
+                    {"required_if": {"field": "deposit_policy", "value": "Dulcinea"}},
+                    {"required_if": {"field": "deposit_policy", "value": "Héloïse"}},
+                    {"required_if": {"field": "deposit_policy", "value": "Diadorim"}},
+                    {"required_if": {"field": "deposit_policy", "value": "other"}},
+                    "is_url"
+                ]
+            }
+        }
     }
 
     PERSISTENT_IDENTIFIERS = {
