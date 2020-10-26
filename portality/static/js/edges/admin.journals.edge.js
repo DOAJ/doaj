@@ -171,6 +171,22 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
+
+                edges.newRefiningANDTermSelector({
+                    id: "author_pays",
+                    category: "facet",
+                    field: "index.has_apc.exact",
+                    display: "APC?",
+                    deactivateThreshold: 1,
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: false,
+                        togglable: true,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+
                 edges.newRefiningANDTermSelector({
                     id: "journal_license",
                     category: "facet",
