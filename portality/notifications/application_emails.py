@@ -420,3 +420,20 @@ def send_account_created_email(account):
                         timeout_days=password_create_timeout_days,
                         forgot_pw_url=forgot_pw_url
                         )
+
+
+def send_account_password_reset_email(account):
+    reset_url = url_for('account.reset', reset_token=account.reset_token, _external=True)
+
+    to = [account.email]
+    fro = app.config.get('SYSTEM_EMAIL_FROM', app.config['ADMIN_EMAIL'])
+    subject = app.config.get("SERVICE_NAME", "") + " - password reset"
+
+    app_email.send_mail(to=to,
+                        fro=fro,
+                        subject=subject,
+                        template_name="email/account_password_reset.txt",
+                        email=account.email,
+                        reset_url=reset_url,
+                        forgot_pw_url=url_for('account.forgot', _external=True)
+                        )

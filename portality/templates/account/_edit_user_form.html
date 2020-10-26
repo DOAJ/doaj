@@ -2,11 +2,12 @@
 
     {% from "_formhelpers.html" import render_field %}
 
-    <form action="" method="POST">
-        {% if current_user.is_super %}
+    <form id="edit_user" action="" method="POST">
+
+        {# {% if current_user.is_super %}
             {{ render_field(form.id, style="width: 75%") }}
             <br/>
-        {% endif %}
+        {% endif %}#}
 
         {{ render_field(form.name, placeholder="Firstname Lastname") }}
         <br/>

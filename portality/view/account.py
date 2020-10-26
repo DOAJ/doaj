@@ -5,12 +5,12 @@ from flask import render_template, abort
 from flask_login import login_user, logout_user, current_user, login_required
 from wtforms import StringField, HiddenField, PasswordField, validators, Form
 
-from portality import util, app_email
+from portality import util
 from portality.core import app
 from portality.decorators import ssl_required, write_required
 from portality.models import Account
 from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
-from portality.notifications.application_emails import send_account_created_email
+from portality.notifications.application_emails import send_account_created_email, send_account_password_reset_email
 
 blueprint = Blueprint('account', __name__)
 
@@ -25,7 +25,10 @@ def index():
 
 
 class UserEditForm(Form):
-    id = StringField('ID', [IgnoreUnchanged(), ReservedUsernames(), IdAvailable()])
+
+    # Let's not allow anyone to change IDs - there lies madness and destruction (referential integrity)
+    # id = StringField('ID', [IgnoreUnchanged(), ReservedUsernames(), IdAvailable()])
+
     name = StringField('Account name', [DataOptional(), validators.Length(min=3, max=64)])
     email = StringField('Email Address', [
         IgnoreUnchanged(),
@@ -76,33 +79,19 @@ def username(username):
         newdata = request.json if request.json else request.values
         if request.values.get('submit', False) == 'Generate a new API Key':
             acc.generate_api_key()
-        if 'id' in newdata and len(newdata['id']) > 0:
-            if newdata['id'] != current_user.id == acc.id:
-                flash('You may not edit the ID of your own account', 'error')
-                return render_template('account/view.html', account=acc, form=form)
-            else:
-                acc.delete()        # request for the old record to be deleted from ES
-                acc.set_id(newdata['id'])
+
+        # if 'id' in newdata and len(newdata['id']) > 0:
+        #     if newdata['id'] != current_user.id == acc.id:
+        #         flash('You may not edit the ID of your own account', 'error')
+        #         return render_template('account/view.html', account=acc, form=form)
+        #     else:
+        #         acc.delete()        # request for the old record to be deleted from ES
+        #         acc.set_id(newdata['id'])
+
         if 'name' in newdata:
             acc.set_name(newdata['name'])
         if 'password_change' in newdata and len(newdata['password_change']) > 0 and not newdata['password_change'].startswith('sha1'):
             acc.set_password(newdata['password_change'])
-        if 'email' in newdata and len(newdata['email']) > 0 and newdata['email'] != acc.email:
-            acc.set_email(newdata['email'])
-
-            # If the user updated their own email address, invalidate the password and require verification again.
-            if current_user.id == acc.id:
-                acc.clear_password()
-                reset_token = uuid.uuid4().hex
-                acc.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
-                send_account_created_email(acc)
-                acc.save()
-                logout_user()
-                flash("Email address updated. You have been logged out for email address verification.")
-                if app.config.get('DEBUG', False):
-                    reset_url = url_for('account.reset', reset_token=acc.reset_token)
-                    util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(reset_url))
-                return redirect(url_for('doaj.home'))
 
         # only super users can re-write roles
         if "roles" in newdata and current_user.is_super:
@@ -111,6 +100,29 @@ def username(username):
 
         if "marketing_consent" in newdata:
             acc.set_marketing_consent(newdata["marketing_consent"] == "true")
+
+        if 'email' in newdata and len(newdata['email']) > 0 and newdata['email'] != acc.email:
+            acc.set_email(newdata['email'])
+
+            # If the user updated their own email address, invalidate the password and require verification again.
+            if current_user.id == acc.id:
+                acc.clear_password()
+                reset_token = uuid.uuid4().hex
+                acc.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
+                try:
+                    send_account_password_reset_email(acc)
+                    flash("Email address updated. You have been logged out for email address verification.")
+                except Exception:
+                    flash('Error - Could not send verification, aborting email change', 'error')
+                    return render_template('account/view.html', account=acc, form=form)
+                acc.save()
+                logout_user()
+
+                if app.config.get('DEBUG', False):
+                    reset_url = url_for('account.reset', reset_token=acc.reset_token)
+                    util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(reset_url))
+
+                return redirect(url_for('doaj.home'))
 
         acc.save()
         flash("Record updated")
@@ -182,7 +194,7 @@ def login():
                 flash('Welcome back.', 'success')
                 return redirect(get_redirect_target(form=form))
             else:
-                form.password.errors.append("Incorrect username / password")
+                form.password.errors.append('The password you entered is incorrect. Try again or <a href="{0}">reset your password</a>.'.format(url_for(".forgot")))
         except KeyError:
             # Account has no password set, the user needs to reset or use an existing valid reset link
             FORGOT_INSTR = '<a href="{url}">&lt;click here&gt;</a> to send a new reset link.'.format(url=url_for('.forgot'))
@@ -224,29 +236,17 @@ def forgot():
         account.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
         account.save()
 
-        reset_url = url_for('account.reset', reset_token=account.reset_token, _external=True)
-
-        to = [account.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', app.config['ADMIN_EMAIL'])
-        subject = app.config.get("SERVICE_NAME", "") + " - password reset"
         try:
-            app_email.send_mail(to=to,
-                                fro=fro,
-                                subject=subject,
-                                template_name="email/account_password_reset.txt",
-                                email=account.email,
-                                reset_url=reset_url,
-                                forgot_pw_url=url_for('account.forgot', _external=True)
-                                )
+            send_account_password_reset_email(account)
             flash('Instructions to reset your password have been sent to you. Please check your emails.')
-            if app.config.get('DEBUG', False):
-                util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(reset_url))
         except Exception as e:
             magic = str(uuid.uuid1())
             util.flash_with_url('Error - sending the password reset email didn\'t work.' + CONTACT_INSTR + ' It would help us if you also quote this magic number: ' + magic + ' . Thank you!', 'error')
-            if app.config.get('DEBUG', False):
-                util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(reset_url))
             app.logger.error(magic + "\n" + repr(e))
+
+        if app.config.get('DEBUG', False):
+            util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(
+                url_for('account.reset', reset_token=account.reset_token)))
 
     return render_template('account/forgot.html')
 
@@ -331,6 +331,7 @@ def register():
 
         if current_user.is_authenticated:
             util.flash_with_url('Account created for {0}. View Account: <a href={1}>{1}</a>'.format(account.email, url_for('.username', username=account.id)))
+            return redirect(url_for('.index'))
         else:
             flash('Thank you, please verify email address ' + form.email.data + ' to set your password and login.',
                   'success')
