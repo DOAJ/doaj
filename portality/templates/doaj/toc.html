@@ -332,7 +332,7 @@
                                                 {%  set policy_data = DEPOSIT_POLICY_MAP.get(policy) %}
                                                 <li>
                                                     {% if policy == "Sherpa/Romeo" or policy == "Diadorim" or policy == "Héloïse" or policy == "Dulcinea" %}
-                                                        <a href="{{ policy_data|safe }}{{ bibjson.title }}" target="_blank" rel="noopener">
+                                                        <a href="{{ policy_data|safe }}{{ bibjson.get_preferred_issn() }}" target="_blank" rel="noopener">
                                                             {{ policy }}
                                                         </a>
                                                     {% else %}
