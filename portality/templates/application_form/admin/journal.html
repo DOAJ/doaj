@@ -89,6 +89,7 @@
             {%  include field_template %}
         {% endfor %}
     </fieldset>
+    <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot save the journal because it contains some invalid fields. Please review the answers and admin fields and try again.</i></p>
     <button id="submitBtn" class="button button--primary button button--primary button--primary_editorial" type="submit">Save</button>
     {% if obj %}
         <input type="hidden" name="id" value="{{ obj.id }}">

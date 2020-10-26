@@ -527,6 +527,22 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         }
         return recurse(code, doaj.af.lccTree)
     }
+
+    submitapplication() {
+        this.form.parsley();
+        let optional = this.jq("#make_all_fields_optional").is(":checked");
+        if (optional) {
+            this.form.parsley().destroy();
+        } else {
+            this.form.parsley().whenValidate().done(() => {
+                this.jq("#cannot-submit-invalid-fields").hide();
+
+            }).fail(() => {
+                this.jq("#cannot-submit-invalid-fields").show();
+            });
+        }
+        this.form.submit();
+    }
 };
 
 doaj.af.newPublicApplicationForm = function(params) {
@@ -635,15 +651,6 @@ doaj.af.newManEdJournalForm = function(params) {
 doaj.af.ManEdJournalForm = class extends doaj.af.EditorialApplicationForm {
     constructor(params) {
         super(params);
-    }
-
-    submitapplication() {
-        this.form.parsley();
-        let optional = this.jq("#make_all_fields_optional").is(":checked");
-        if (optional) {
-            this.form.parsley().destroy();
-        }
-        this.form.submit();
     }
 };
 

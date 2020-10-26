@@ -1391,7 +1391,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "subject_tree"
-        ]
+        ],
     }
 
     NOTES = {

@@ -22,6 +22,7 @@
         <p>
             <small>Assigned: <strong><code class="admin_value_preview" id="reassign-value" data-source="#owner"></code></strong></small>
         </p>
+        <div id="owner_checkbox-errors"></div>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("status") %}
@@ -75,6 +76,7 @@
         <p>
             <small>Selected: <strong><code class="admin_value_preview" id="subject-value" data-source="#subject"></code></strong></small>
         </p>
+        <div id="subject_checkbox-errors"></div>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("seal") %}
@@ -95,6 +97,7 @@
             {% endfor %}
         </div>
     </fieldset>
+    <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot save the application because it contains some invalid fields. Please review the answers and admin fields and try again.</i></p>
     <button id="submitBtn" class="button button--primary button button--primary button--primary_editorial" type="submit">Save</button>
     {% if obj %}
         <input type="hidden" name="id" value="{{ obj.id }}">

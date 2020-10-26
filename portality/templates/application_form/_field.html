@@ -33,7 +33,9 @@
         {{ label }}
     {% endif %}
 
+    {% if f.name not in ["subject", "owner"] %} {# subject and owner have custom error boxes #}
     <div id="{{ f.name }}_checkbox-errors"></div>
+    {% endif %}
 
     {% if form_diff %}
         {% if f.name in form_diff %}
