@@ -207,6 +207,8 @@ $.extend(true, doaj, {
 
             this.namespace = "doaj-subject-browser";
 
+            this.lastScroll = 0;
+
             this.draw = function() {
                 // for convenient short references ...
                 var st = this.component.syncTree;
@@ -251,6 +253,9 @@ $.extend(true, doaj, {
 
                 // trigger all the post-render set-up functions
                 this.setUIOpen();
+
+                var mainListSelector = edges.css_id_selector(namespace, "main", this);
+                this.component.jq(mainListSelector).scrollTop(this.lastScroll);
 
                 var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
                 edges.on(checkboxSelector, "change", this, "filterToggle");
@@ -374,9 +379,12 @@ $.extend(true, doaj, {
             };
 
             this.filterToggle = function(element) {
+                var mainListSelector = edges.css_id_selector(this.namespace, "main", this);
+                this.lastScroll = this.component.jq(mainListSelector).scrollTop();
+                var el = this.component.jq(element);
                 // var filter_id = this.component.jq(element).attr("id");
-                var checked = this.component.jq(element).is(":checked");
-                var value = this.component.jq(element).attr("data-value");
+                var checked = el.is(":checked");
+                var value = el.attr("data-value");
                 if (checked) {
                     this.component.addFilter({value: value});
                 } else {
