@@ -36,10 +36,10 @@ class UserEditForm(Form):
     ])
     email_confirm = StringField('Confirm email address')
     roles = StringField('User roles')
-    password = PasswordField('Change password', [
-        validators.EqualTo('confirm', message='Passwords must match'),
+    password_change = PasswordField('Change password', [
+        validators.EqualTo('password_confirm', message='Passwords must match'),
     ])
-    confirm = PasswordField('Confirm password')
+    password_confirm = PasswordField('Confirm password')
 
 
 @blueprint.route('/<username>', methods=['GET', 'POST', 'DELETE'])
@@ -56,8 +56,8 @@ def username(username):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
         else:
-            conf = request.values.get("confirm")
-            if conf is None or conf != "confirm":
+            conf = request.values.get("delete_confirm")
+            if conf is None or conf != "delete_confirm":
                 flash('Check the box to confirm you really mean it!', "error")
                 return render_template('account/view.html', account=acc, form=UserEditForm(obj=acc))
             acc.delete()
@@ -85,8 +85,8 @@ def username(username):
                 acc.set_id(newdata['id'])
         if 'name' in newdata:
             acc.set_name(newdata['name'])
-        if 'password' in newdata and len(newdata['password']) > 0 and not newdata['password'].startswith('sha1'):
-            acc.set_password(newdata['password'])
+        if 'password_change' in newdata and len(newdata['password_change']) > 0 and not newdata['password_change'].startswith('sha1'):
+            acc.set_password(newdata['password_change'])
         if 'email' in newdata and len(newdata['email']) > 0 and newdata['email'] != acc.email:
             acc.set_email(newdata['email'])
 
