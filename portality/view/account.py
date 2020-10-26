@@ -100,7 +100,7 @@ def username(username):
                 logout_user()
                 flash("Email address updated. You have been logged out for email address verification.")
                 if app.config.get('DEBUG', False):
-                    reset_url = url_for('account.reset', reset_token=acc.reset_token, _external=True)
+                    reset_url = url_for('account.reset', reset_token=acc.reset_token)
                     util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(reset_url))
                 return redirect(url_for('doaj.home'))
 
@@ -327,7 +327,7 @@ def register():
         send_account_created_email(account)
 
         if app.config.get('DEBUG', False):
-            util.flash_with_url('Debug mode - url for verify is <a href={0}>{0}</a>'.format(url_for('account.reset', reset_token=account.reset_token, _external=True)))
+            util.flash_with_url('Debug mode - url for verify is <a href={0}>{0}</a>'.format(url_for('account.reset', reset_token=account.reset_token)))
 
         if current_user.is_authenticated:
             util.flash_with_url('Account created for {0}. View Account: <a href={1}>{1}</a>'.format(account.email, url_for('.username', username=account.id)))
