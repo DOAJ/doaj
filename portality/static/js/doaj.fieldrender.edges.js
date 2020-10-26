@@ -3212,7 +3212,7 @@ $.extend(true, doaj, {
                 for (var i = 0; i < ls.length; i++) {
                     if (ls[i] === "journal") {
                         var url = resultobj.bibjson.ref[ls[i]];
-                        urls.push("<strong>" + ls[i] + "</strong>: <a href='" + url + "'>" + edges.escapeHtml(url) + "</a>")
+                        urls.push("<strong>Home page</strong>: <a href='" + url + "'>" + edges.escapeHtml(url) + "</a>")
                     }
                 }
                 return urls.join("<br>");
