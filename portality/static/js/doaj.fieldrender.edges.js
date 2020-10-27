@@ -512,7 +512,7 @@ $.extend(true, doaj, {
                 var clearClass = edges.css_classes(this.namespace, "reset", this);
                 var clearFrag = "";
                 if (this.clearButton) {
-                    clearFrag = '<button type="button" class="tag ' + clearClass + '" title="Clear all search and sort parameters and start again"> \
+                    clearFrag = '<button type="button" class="tag tag--secondary ' + clearClass + '" title="Clear all search and sort parameters and start again"> \
                             Clear all \
                         </button>';
                 }
@@ -1877,7 +1877,7 @@ $.extend(true, doaj, {
                             <span data-feather="x" aria-hidden="true"></span>\
                         </a>';
 
-                    filters += '<li class="tag ' + valClass + '">' + clearFrag + '</li>';
+                    filters += '<li class="tag tag--secondary ' + valClass + '">' + clearFrag + '</li>';
                 }
 
                 if (filters === "" && this.ifNoFilters) {
