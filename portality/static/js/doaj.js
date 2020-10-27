@@ -46,6 +46,18 @@ var doaj = {
           prevScrollPos = currentScrollPos;
         }
 
+        // Tabs
+        jQuery (function($) {
+            $("[role='tab']").click(function(e) {
+                e.preventDefault();
+                $(this).attr("aria-selected", "true");
+                $(this).parent().siblings().children().attr("aria-selected", "false");
+                var tabpanelShow = $(this).attr("href");
+                $(tabpanelShow).attr("aria-hidden", "false");
+                $(tabpanelShow).siblings().attr("aria-hidden", "true");
+            });
+        });
+
         // Close flash notifications
         jQuery(document).ready(function($) {
             $(".flash_close").on("click", function(event) {
