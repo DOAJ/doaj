@@ -64,7 +64,7 @@
   font-size: smaller;
 
   .form__header {
-    margin-top: $spacing-04;
+    margin: $spacing-04 0 $spacing-03 0;
     font-size: 1em;
     font-weight: 600;
   }
@@ -72,8 +72,9 @@
   .form__question {
     margin: 0 0 $spacing-04 0;
 
-    &:first-child {
-      margin-top: $spacing-05;
+    input[type="checkbox"]+label,
+    input[type="radio"]+label {
+      font-size: 1em;
     }
   }
 }
