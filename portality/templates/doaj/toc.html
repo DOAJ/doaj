@@ -207,21 +207,19 @@
                                         {% if bibjson.editorial_board_url %}
                                             <li><a href="{{ bibjson.editorial_board_url }}" target="_blank" rel="noopener">Editorial Board</a></li>
                                         {% endif %}
-
                                         {% if bibjson.editorial_review_process or bibjson.editorial_review_url %}
                                             <li>
-                                                <strong>
-                                                    {% if bibjson.editorial_review_url %}<a href="{{ bibjson.editorial_review_url }}" target="_blank" rel="noopener">{% endif %}
-                                                    {% if bibjson.editorial_review_process %}
-                                                        {{ bibjson.editorial_review_process|join(", ") }}
-                                                    {% else %}Review process unknown
-                                                    {% endif %}
-                                                    {% if bibjson.editorial_review_url %}</a>{% endif %}
-                                                </strong>
+                                            {% if bibjson.editorial_review_url %}<a href="{{ bibjson.editorial_review_url }}" target="_blank" rel="noopener">{% endif %}
+                                            {% if bibjson.editorial_review_process %}
+                                                {{ bibjson.editorial_review_process|join(", ") }}
+                                            {% else %}Review process unknown
+                                            {% endif %}
+                                            {% if bibjson.editorial_review_url %}</a>{% endif %}
                                             </li>
                                         {% endif %}
-
                                     </ul>
+
+
                                     {% if bibjson.plagiarism_detection %}
                                         <p>
                                             &rarr; This journal <a href="{{bibjson.plagiarism_url}}" target="_blank" rel="noopener noreferrer">checks for plagiarism</a>.
