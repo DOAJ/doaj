@@ -11,6 +11,10 @@
   &:last-of-type {
     margin: 0;
   }
+
+  input[type="number"] {
+    width: 75%;
+  }
 }
 
 .input-group-authors {
