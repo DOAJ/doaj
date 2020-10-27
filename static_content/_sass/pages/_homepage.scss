@@ -4,6 +4,7 @@
 
   // Change default nav styles for homepage only
   .primary-nav {
+    top: 0 !important;
     background-color: $warm-black;
 
     a {

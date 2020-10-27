@@ -33,56 +33,20 @@ var doaj = {
             document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
         }
 
-        // Offset when clicking on anchor link or sidenav link to compensate for fixed header
-        var headerHeight = 70;
+        // Hide header menu on down scroll; display on scroll up
+        var prevScrollPos = window.pageYOffset;
+        window.onscroll = function() {
+        var currentScrollPos = window.pageYOffset;
 
-        // When on the same page
-        jQuery (function($) {
-            // Tabs
-            $("[role='tab']").click(function(e) {
-                e.preventDefault();
-                $(this).attr("aria-selected", "true");
-                $(this).parent().siblings().children().attr("aria-selected", "false");
-                var tabpanelShow = $(this).attr("href");
-                $(tabpanelShow).attr("aria-hidden", "false");
-                $(tabpanelShow).siblings().attr("aria-hidden", "true");
-            });
+          if (prevScrollPos > currentScrollPos) {
+            document.getElementById("primary-nav").style.top = "0";
+          } else {
+            document.getElementById("primary-nav").style.top = "-50px";
+          }
+          prevScrollPos = currentScrollPos;
+        }
 
-            $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
-                var target = $(this.hash);
-                $('html,body').animate({
-                    scrollTop: target.offset().top - headerHeight
-                }, 50, 'linear');
-            });
-            if (location.hash){
-                var id = $(location.hash);
-            }
-
-            $(window).on('load', function() {
-                if (location.hash){
-                    let offset = id.offset();
-                    if (offset) {
-                        $('html,body').animate({
-                            scrollTop: offset.top - headerHeight
-                        }, 50, 'linear')
-                    }
-                }
-            });
-        });
-
-        // Coming from another page
-        jQuery (document).ready (function($) {
-            var hash= window.location.hash;
-            if ( hash === '' || hash === '#' || hash === undefined ) return false;
-            var target = $(hash);
-            target = target.length ? target : $('[name=' + hash.slice(1) +']');
-            if (target.length) {
-                $('html,body').animate({
-                    scrollTop: target.offset().top - headerHeight //offsets for fixed header
-                }, 50, 'linear');
-            }
-        } );
-
+        // Close flash notifications
         jQuery(document).ready(function($) {
             $(".flash_close").on("click", function(event) {
                 event.preventDefault();
