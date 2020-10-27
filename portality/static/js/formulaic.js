@@ -1591,7 +1591,7 @@ var formulaic = {
 
                 var initSel = function (element, callback) {
                     var initial = element.val();
-                    var entries = initial.split(",").map(x =>x.trim()).filter(x => x !== "");
+                    var entries = initial.split(",").map(x => x.trim()).filter(x => x !== "");
                     var data = [];
                     for (var i = 0; i < entries.length; i++) {
                         data.push({id: entries[i], text: entries[i]});

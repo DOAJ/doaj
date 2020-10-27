@@ -188,8 +188,6 @@ class ExclusiveCheckbox(object):
 
 
 class HTTPURL(validators.Regexp):
-    # copied from (around) https://github.com/wtforms/wtforms/blob/master/wtforms/validators.py#L375
-    # TODO: Check whether this needs bringing up to date after the python 3 / dependency upgrades
     """
     Simple regexp based url validation. Much like the email validator, you
     probably want to validate the url later by other means if the url must
@@ -210,7 +208,8 @@ class HTTPURL(validators.Regexp):
         if message is None:
             message = field.gettext('Invalid URL.')
 
-        super(HTTPURL, self).__call__(form, field, message)
+        if field.data:
+            super(HTTPURL, self).__call__(form, field, message)
 
 
 class MaxLen(object):
