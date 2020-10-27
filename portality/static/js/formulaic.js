@@ -1616,9 +1616,70 @@ var formulaic = {
 
             };
 
-                this.init();
-            },
+            this.init();
+        },
 
+        newLoadEditors: function(params) {
+            return edges.instantiate(formulaic.widgets.LoadEditors, params);
+        },
+
+        LoadEditors: function(params) {
+            this.fieldDef = params.fieldDef;
+            this.params = params.args;
+
+            this.groupField = false
+            this.editorField = false;
+
+            this.init = function() {
+                this.groupField = $("[name='" + this.fieldDef.name + "']");
+                this.editorField = $("[name='" + this.params.field + "']");
+                edges.on(this.groupField, "change", this, "updateEditors");
+            };
+
+            this.updateEditors = function(element) {
+                var ed_group_name = $(element).val();
+                var ed_query_url = "/admin/dropdown/eg_associates";
+
+                // var ed_group_name = $("#s2id_editor_group").find('span').text();
+                var that = this;
+                $.ajax({
+                    type : "GET",
+                    data : {egn : ed_group_name},
+                    dataType: "json",
+                    url: ed_query_url,
+                    success: function(resp)
+                    {
+                        // Get the options for the drop-down from our ajax request
+                        var assoc_options = [];
+                        if (resp != null)
+                        {
+                            assoc_options = [["", "Choose an editor"]];
+
+                            for (var i=0; i<resp.length; i++)
+                            {
+                                assoc_options = assoc_options.concat([[resp[i], resp[i]]]);
+                            }
+                        }
+                        else
+                        {
+                            assoc_options = [["", ""]];
+                        }
+
+                        // Set the editor drop-down options to be the chosen group's associates
+                        // var ed_field = $("#editor");
+                        that.editorField.empty();
+
+                        for (var j=0; j < assoc_options.length; j++) {
+                            that.editorField.append(
+                                $("<option></option>").attr("value", assoc_options[j][0]).text(assoc_options[j][1])
+                            );
+                        }
+                    }
+                })
+            };
+
+            this.init();
+        },
 
         newAutocomplete: function(params){
             return edges.instantiate(formulaic.widgets.Autocomplete, params);

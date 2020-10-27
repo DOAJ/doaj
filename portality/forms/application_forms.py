@@ -1343,6 +1343,12 @@ class FieldDefinitions:
         "contexts" : {
             "editor" : {
                 "disabled" : True
+            },
+            "admin" : {
+                "widgets" : [
+                    {"autocomplete": {"type": "editor_group", "field": "name"}},
+                    {"load_editors" : {"field" : "editor"}}
+                ]
             }
         }
     }
@@ -1354,11 +1360,6 @@ class FieldDefinitions:
         "options_fn": "editor_choices",
         "validate" : [
             { "group_member" : {"group_field" : "editor_group"}}
-        ],
-        "widgets" : [
-            # show the members of the selected editor group
-            # clear the field if the group is changed
-            { "editor_select" : {"group_field" : "editor_group"}}
         ]
     }
 
@@ -2336,7 +2337,8 @@ JAVASCRIPT_FUNCTIONS = {
     "infinite_repeat": "formulaic.widgets.newInfiniteRepeat",
     "autocomplete": "formulaic.widgets.newAutocomplete",
     "subject_tree" : "formulaic.widgets.newSubjectTree",
-    "full_contents" : "formulaic.widgets.newFullContents"
+    "full_contents" : "formulaic.widgets.newFullContents",
+    "load_editors" : "formulaic.widgets.newLoadEditors",
 }
 
 
