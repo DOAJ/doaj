@@ -3106,9 +3106,6 @@ $.extend(true, doaj, {
                 } else {
                     field += edges.escapeHtml(resultobj.bibjson.title);
                 }
-                if (resultobj.admin && resultobj.admin.ticked) {
-                    field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​";
-                }
                 if (resultobj.admin && resultobj.admin.seal) {
                     field += " <br/><small><span class='tag tag--featured'>DOAJ Seal</span></small>​​";
                 }
