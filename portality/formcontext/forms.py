@@ -661,12 +661,12 @@ class AuthorForm(Form):
 
 
 class ArticleForm(Form):
-    title = StringField("Article Title", [validators.DataRequired()])
+    title = StringField("Article title", [validators.DataRequired()])
     doi = StringField("DOI", [OptionalIf("fulltext"), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)], description="(You must provide either a Full-Text URL or a DOI or both)")
     authors = FieldList(FormField(AuthorForm), min_entries=1) # We have to do the validation for this at a higher level
     abstract = TextAreaField("Abstract", [validators.Optional()])
     keywords = TagListField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
-    fulltext = StringField("Full-Text URL", [OptionalIf("doi"), validators.URL()])
+    fulltext = StringField("Full-text URL", [OptionalIf("doi"), validators.URL()])
     publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
     publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
     pissn = DOAJSelectField("Print", [ThisOrThat("eissn")], choices=[]) # choices set at construction

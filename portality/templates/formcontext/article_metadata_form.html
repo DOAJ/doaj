@@ -14,9 +14,9 @@
                                     <div class="form__question">
                                        <label>{{field.label.text | safe}}</label>
                                         {% if field.label.text == "ORCID iD" %}
-                                            <div> {{field(placeholder="https://orcid.org/0000-0000-0000-0000")}} </div>
+                                            {{field(placeholder="https://orcid.org/0000-0000-0000-0000")}}
                                         {% else %}
-                                            <div> {{field}} </div>
+                                            {{field}}
                                         {% endif %}
                                     </div>
                                 {% endfor %}
