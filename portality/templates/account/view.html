@@ -35,6 +35,7 @@
                                 {% if account.role|length > 0 %}
                                     <p><strong>Role(s)</strong>: {{ account.role|join(", ") }}</p>
                                 {% endif %}
+                                <p><strong>ID</strong>: <code>{{ account.id }}</code></p>
                                 {% if account.has_role("api") %}
                                     <div class="col-md-8" style="padding: 0">
                                     <p><strong>API Key</strong>: <code>{{ account.api_key }}</code></p>
@@ -124,9 +125,24 @@
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
+    // Populate select2 role picker
     $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"]})
+
+    // Scroll to errors
+    let firstError = $('.errors')[0];
+    if (firstError) {
+            $(window).scrollTop($(firstError).offset().top - 100)
+    }
+
+    // If the user is editing their own account, make them confirm when email address is updated
+    {% if current_user.id == account.id %}
+        $('form#edit_user').submit(function () {
+            if ($('input#email_confirm').val() !== "") {
+                return confirm('Are you sure you want to change email address?\nYou will be logged out and will need to verify your account again to continue.');
+            }
+        });
+    {% endif %}
 });
 </script>
 
 {% endblock extra_js_bottom %}
-

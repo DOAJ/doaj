@@ -144,7 +144,7 @@
             {% if field.errors %}
                 <ul class="errors">
                     {% for error in field.errors %}
-                    <li>{{ error }}</li>
+                    <li>{{ error | safe }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
