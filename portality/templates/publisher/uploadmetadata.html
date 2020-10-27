@@ -95,11 +95,11 @@
                         {% elif file.status == "exists" %}
                             <span style="color: #000066">pending</span>
                         {% elif file.status == "failed" %}
-                            <span style="color: #660000">processing failed</span>
+                            <span style="color: #660000"><span data-feather="alert-octagon" aria-hidden="true"></span>processing failed</span>
                         {% elif file.status == "processed" %}
-                            <span style="color: #006600">successfully processed</span>
+                            <span style="color: #006600"><span data-feather="thumbs-up" aria-hidden="true"></span>successfully processed</span>
                         {% elif file.status == "partial" %}
-                            <span style="color: #ff3300">partial success</span>
+                            <span style="color: #ff3300"><span data-feather="alert-triangle" aria-hidden="true"></span>partial success</span>
                         {% endif %}
                     </td>
                     <td style="word-wrap:break-word">
