@@ -74,6 +74,7 @@
     padding-left: $spacing-02;
     border-left: 1px solid $sanguine;
     overflow-y: visible;
+    max-height: -moz-max-content; // Firefox fix
     max-height: fit-content;
   }
 }
