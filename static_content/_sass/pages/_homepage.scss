@@ -2,22 +2,9 @@
 
 .homepage {
 
-  // Change default nav styles for homepage only
+  // Override style for homepage only
   .primary-nav {
     top: 0 !important;
-    background-color: $warm-black;
-
-    a {
-      color: $warm-white;
-    }
-
-    .dropdown__menu {
-      background-color: $warm-black;
-    }
-
-    .logo path {
-      fill: $warm-white;
-    }
   }
 
   .secondary-nav {

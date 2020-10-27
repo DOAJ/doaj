@@ -5,10 +5,22 @@
   width: 100vw;
   z-index: 10;
   height: 50px;
-  background-color: $fair-pink;
+  background-color: $warm-black;
   transition: top 0.3s;
   text-transform: uppercase;
   font-weight: 600;
+
+  a {
+    color: $warm-white;
+  }
+
+  .dropdown__menu {
+    background-color: $warm-black;
+  }
+
+  .logo path {
+    fill: $warm-white;
+  }
 
   @media (max-width: 768px) {
     .nav-bar {
