@@ -146,8 +146,8 @@ $.extend(true, doaj, {
                             <nav class="search-options">\
                                 <h3 class="sr-only">Display options</h3>\
                                 <div class="row">\
-                                    <div class="col-xs-6" id="sort_by"></div>\
-                                    <div class="col-xs-6 search-options__right" id="rpp"></div>\
+                                    <div class="col-sm-6" id="sort_by"></div>\
+                                    <div class="col-sm-6 search-options__right" id="rpp"></div>\
                                 </div>\
                             </nav>\
                             <nav class="pagination" id="top-pager"></nav>\
