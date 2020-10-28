@@ -12,7 +12,7 @@
       <h3 class="form__header">Author</h3>
       {% for field in subfield.form %}
       <div class="form__question">
-        <label>{{field.label.text | safe}}</label>
+        <label for="{{ field.id }}">{{field.label.text | safe}}</label>
         {% if field.label.text == "ORCID iD" %}
         {{field(placeholder="https://orcid.org/0000-0000-0000-0000")}}
         {% else %}
