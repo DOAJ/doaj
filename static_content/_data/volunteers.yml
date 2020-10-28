@@ -201,7 +201,16 @@ ass_ed:
   city: York
   country: United Kingdom
   language: English
-
+  
+- name: Carlos Alegre
+  area: Social Sciences
+  year_since:
+  city: Rosario
+  country: Argentina
+  language: Spanish, English
+  photo: "CarlosAlegre.jpg"
+ 
+  
 - name: Christine Davidian
   area: Technology
   year_since:
