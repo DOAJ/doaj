@@ -565,6 +565,14 @@ ass_ed:
   country: USA
   language: English
 
+- name: Roberto Sarmiento
+  area: Engineering
+  year_since:
+  city: San Luis Potosi
+  country: Mexico
+  language: Spanish, English
+
+
 - name: S. Mohammad Amini
   area: Science
   year_since:
