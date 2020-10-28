@@ -1,8 +1,8 @@
 <fieldset>
   <h3 class="form__header">Article</h3>
     {{ render_field_horizontal(form.title) }}
-    {{ render_field_horizontal(form.fulltext) }}
-    {{ render_field_horizontal(form.doi) }}
+    {{ render_field_horizontal(form.fulltext, placeholder="https://www.example.com") }}
+    {{ render_field_horizontal(form.doi, placeholder="10.1234/article-32") }}
 </fieldset>
 
 <fieldset>
@@ -12,11 +12,11 @@
       <h3 class="form__header">Author</h3>
       {% for field in subfield.form %}
       <div class="form__question">
-        <label for="{{ field.id }}">{{field.label.text | safe}}</label>
+        <label for="{{ field.id }}">{{ field.label.text | safe }}</label>
         {% if field.label.text == "ORCID iD" %}
-        {{field(placeholder="https://orcid.org/0000-0000-0000-0000")}}
+          {{ field(placeholder="https://orcid.org/0000-0000-0000-0000") }}
         {% else %}
-        {{field}}
+          {{ field }}
         {% endif %}
       </div>
       {% endfor %}
