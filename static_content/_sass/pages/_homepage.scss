@@ -33,8 +33,14 @@
     color: $dark-grey;
   }
 
-  section h2 {
-    margin-bottom: $spacing-04;
+  section {
+    header {
+      margin-bottom: $spacing-05;
+    }
+
+    h2 {
+      margin-bottom: $spacing-04;
+    }
   }
 
   .page-header {
@@ -118,11 +124,6 @@
     background-image: url('/static/doaj/images/bg/02.jpeg');
     background-size: cover;
     background-blend-mode: multiply;
-
-    header {
-      margin: 0 auto $spacing-05 auto;
-      text-align: center;
-    }
 
     article {
       margin-bottom: $spacing-05;
