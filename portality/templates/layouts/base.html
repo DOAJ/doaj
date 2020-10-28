@@ -61,22 +61,20 @@
         {% block content %}{% endblock %}
     {% endblock %}
 
+    {% include "includes/footer.html" %}
+
     {% include '_js_includes.html' %}
 
     {% block extra_js_bottom %}{% endblock extra_js_bottom %}
 
-  {% include "includes/footer.html" %}
-
-  {% if not request.cookies.get("doaj-consent") %}
-
-    <script type="text/javascript">
-    jQuery(document).ready(function() {
-        $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
-        $(".site-note-dismiss").on("click", dissmissSiteNote);
-    });
-    </script>
-
-  {% endif %}
+    {% if not request.cookies.get("doaj-consent") %}
+      <script type="text/javascript">
+      jQuery(document).ready(function() {
+          $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
+          $(".site-note-dismiss").on("click", dissmissSiteNote);
+      });
+      </script>
+    {% endif %}
 
 </body>
 </html>

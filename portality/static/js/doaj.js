@@ -12,12 +12,11 @@ var doaj = {
             nav.classList.toggle("secondary-nav__menu-toggle--active");
         }, false);
 
-        // Back-to-top button
+        var prevScrollPos = window.pageYOffset;
         var topBtn = document.getElementById("top");
 
-        window.onscroll = function() {scrollFunction()};
-
-        function scrollFunction() {
+        // Display back-to-top button on scroll
+        function displayTopBtn() {
             if (topBtn) {
                 if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
                     topBtn.style.display = "flex";
@@ -27,24 +26,23 @@ var doaj = {
             }
         }
 
-        // When the user clicks on the button, scroll to the top of the document
-        function topFunction() {
-            document.body.scrollTop = 0; // For Safari
-            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-        }
-
         // Hide header menu on down scroll; display on scroll up
-        var prevScrollPos = window.pageYOffset;
-        window.onscroll = function() {
-        var currentScrollPos = window.pageYOffset;
+        function hideNav() {
+            var currentScrollPos = window.pageYOffset;
 
-          if (prevScrollPos > currentScrollPos) {
-            document.getElementById("primary-nav").style.top = "0";
-          } else {
-            document.getElementById("primary-nav").style.top = "-50px";
-          }
-          prevScrollPos = currentScrollPos;
+            if (prevScrollPos > currentScrollPos) {
+                document.getElementById("primary-nav").style.top = "0";
+            } else {
+                document.getElementById("primary-nav").style.top = "-50px";
+            }
+
+            prevScrollPos = currentScrollPos;
         }
+
+        window.onscroll = function() {
+            displayTopBtn();
+            hideNav();
+        };
 
         // Tabs
         jQuery (function($) {
@@ -64,7 +62,7 @@ var doaj = {
                 event.preventDefault();
                 var container = $(this).parents(".flash_container");
                 container.remove();
-            })
+            });
         });
     },
 
