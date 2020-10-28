@@ -1,3 +1,7 @@
+{% extends "layouts/base.html" %}
+
+{% block page_title %}API &ndash; {% endblock %}
+
 {% block extra_stylesheets %}
 <!-- get Swagger UI css -->
     <link href='/portality/static/vendor/swagger-ui/src/main/html/css/reset.css' media='screen' rel='stylesheet' type='text/css'/>
@@ -7,10 +11,6 @@
     <link href='/portality/static/doaj/css/doaj_api.css' media='screen' rel='stylesheet' type='text/css' />
 
 {% endblock %}
-
-{% block page_title %}API &ndash; {% endblock %}
-
-{% extends "layouts/base.html" %}
 
 {% block content %}
     <main class="container">
