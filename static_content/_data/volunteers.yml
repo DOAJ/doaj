@@ -202,13 +202,6 @@ ass_ed:
   country: United Kingdom
   language: English
 
-- name: Chitu Okoli
-  area: Technology
-  year_since:
-  city: Paris
-  country: France
-  language: English, French
-
 - name: Christine Davidian
   area: Technology
   year_since:
@@ -217,7 +210,7 @@ ass_ed:
   language: English, French
 
 
-- name: Constansy Aleru
+- name: Constancy Aleru
   area: Medical Sciences
   year_since:
   city: Port Harcourt
@@ -298,7 +291,7 @@ ass_ed:
   country: Turkey
   language: Turkish, English
 
-- name: Faith Oronga
+- name: Faith Oronga Amatika-Omondi
   area: Librarianship
   year_since: "2020"
   city:
@@ -534,7 +527,7 @@ ass_ed:
   year_since:
   city: Bejaia
   country: Algeria
-  language: Arabic, French, Engish, Kabyle
+  language: Arabic, French, English, Kabyle
 
 - name: Oleksii Vasyliev
   area: Science, Technology
