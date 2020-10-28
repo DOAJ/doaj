@@ -402,6 +402,7 @@ ass_ed:
   city: Baghdad
   country: Iraq
   language: Arabic, English, Swedish
+  photo: "karima.jpg"
 
 - name: Katharine Dunn
   area: Scholarly Publishing
