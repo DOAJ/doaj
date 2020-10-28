@@ -112,12 +112,15 @@ button[type="submit"] {
   }
 }
 
-.button--secondary {
+.button--secondary,
+input[type="submit"].button--secondary,
+button[type="submit"].button--secondary {
   position: relative;
   left: 0;
   top: 0;
   transition: all 0.15s ease;
   border-color: $warm-black;
+  background-color: $fair-pink;
   box-shadow: $spacing-01 $spacing-01 0 0 $warm-black;
   color: $warm-black;
 

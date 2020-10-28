@@ -5,6 +5,7 @@
   margin-bottom: 0;
   padding-bottom: $spacing-03;
   border-bottom: 1px solid rgba($dark-grey, 0.5);
+  width: 75%;
 
   + .form__question {
     margin-top: $spacing-03;
@@ -62,6 +63,10 @@
 /* Compact form */
 .form--compact {
   font-size: smaller;
+
+  fieldset {
+    margin: 0;
+  }
 
   .form__header {
     margin: $spacing-04 0 $spacing-03 0;
