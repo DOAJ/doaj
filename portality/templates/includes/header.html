@@ -23,29 +23,29 @@
                     <h2 class="sr-only">Main actions</h2>
                     <ul class="nav-bar">
                         <li class="dropdown primary-nav__item_desktop">
-                            <a href="/support" class="dropdown__trigger nav-bar__link" id="action-menu-support" role="button" aria-haspopup="true" aria-expanded="false">
+                            <a href="{{ url_for('doaj.support') }}" class="dropdown__trigger nav-bar__link" id="action-menu-support" role="button" aria-haspopup="true" aria-expanded="false">
                                 <span data-feather="heart" aria-hidden="true"></span>
                                 Support
                                 <span data-feather="chevron-down" aria-hidden="true"></span>
                             </a>
                             <ul class="dropdown__menu" aria-labelledby="action-menu-support">
                                 <li>
-                                    <a href="/support/" class="dropdown__link">
+                                    <a href="{{ url_for('doaj.support') }}" class="dropdown__link">
                                         Support DOAJ
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/support/sponsors/" class="dropdown__link">
+                                    <a href="{{ url_for('doaj.sponsors') }}" class="dropdown__link">
                                         Sponsors
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/support/publisher-supporters/" class="dropdown__link">
+                                    <a href="{{ url_for('doaj.publisher_supporters') }}" class="dropdown__link">
                                         Publisher supporters
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/support/supporters/" class="dropdown__link">
+                                    <a href="{{ url_for('doaj.supporters') }}" class="dropdown__link">
                                         Supporters
                                     </a>
                                 </li>
@@ -63,28 +63,28 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/apply/guide" class="dropdown__link">
+                                    <a href="{{ url_for('doaj.guide') }}" class="dropdown__link">
                                         Guide to applying
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/apply/seal" class="dropdown__link">
+                                    <a href="{{ url_for('doaj.seal') }}" class="dropdown__link">
                                         The DOAJ Seal
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/apply/transparency" class="dropdown__link">
+                                    <a href="{{ url_for('doaj.transparency') }}" class="dropdown__link">
                                         Transparency & best practice
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="/apply/why-index" class="dropdown__link">
+                                    <a href="{{ url_for('doaj.why_index') }}" class="dropdown__link">
                                         Why index your journal in DOAJ?
                                     </a>
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0">
+                        <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0" role="button">
                             <span data-feather="search" aria-hidden="true"></span>
                             <span class="sr-only"> Search</span>
                         </li>
@@ -106,12 +106,12 @@
                     </span>
                     <ul class="dropdown__menu" aria-labelledby="menu-journals-articles">
                         <li>
-                            <a href="{{ url_for("doaj.journals_search") }}" class="dropdown__link">
+                            <a href="{{ url_for('doaj.journals_search') }}" class="dropdown__link">
                                 Journals
                             </a>
                         </li>
                         <li>
-                            <a href="{{ url_for("doaj.articles_search") }}" class="dropdown__link">
+                            <a href="{{ url_for('doaj.articles_search') }}" class="dropdown__link">
                                 Articles
                             </a>
                         </li>
@@ -124,37 +124,37 @@
                     </span>
                     <ul class="dropdown__menu" aria-labelledby="menu-data">
                         <li>
-                            <a href="/docs/api" class="dropdown__link">
+                            <a href="{{ url_for('doaj.docs') }}" class="dropdown__link">
                                 API
                             </a>
                         </li>
                         <li>
-                            <a href="/docs/oai-pmh" class="dropdown__link">
+                            <a href="{{ url_for('doaj.oai_pmh') }}" class="dropdown__link">
                                 OAI-PMH
                             </a>
                         </li>
                         <li>
-                            <a href="/docs/xml" class="dropdown__link">
+                            <a href="{{ url_for('doaj.xml') }}" class="dropdown__link">
                                 XML
                             </a>
                         </li>
                         <li>
-                            <a href="/docs/widgets" class="dropdown__link">
+                            <a href="{{ url_for('doaj.widgets') }}" class="dropdown__link">
                                 Widgets
                             </a>
                         </li>
                         <li>
-                            <a href="/docs/public-data-dump" class="dropdown__link">
+                            <a href="{{ url_for('doaj.public_data_dump') }}" class="dropdown__link">
                                 Public data dump
                             </a>
                         </li>
                         <li>
-                            <a href="/docs/openurl" class="dropdown__link">
+                            <a href="{{ url_for('doaj.openurl') }}" class="dropdown__link">
                                 OpenURL
                             </a>
                         </li>
                         <li>
-                            <a href="/docs/faq/" class="dropdown__link">FAQs</a>
+                            <a href="{{ url_for('doaj.faq') }}" class="dropdown__link">FAQs</a>
                         </li>
                     </ul>
                 </li>
@@ -165,35 +165,35 @@
                     </span>
                     <ul class="dropdown__menu" aria-labelledby="menu-about">
                         <li>
-                            <a href="/about/" class="dropdown__link">
+                            <a href="{{ url_for('doaj.about') }}" class="dropdown__link">
                                 About DOAJ
                             </a>
                         </li>
                         <li>
-                            <a href="/about/team" class="dropdown__link">
+                            <a href="{{ url_for('doaj.team') }}" class="dropdown__link">
                                 DOAJ team
                             </a>
                         </li>
                         <li>
-                            <a href="/about/ambassadors" class="dropdown__link">
+                            <a href="{{ url_for('doaj.ambassadors') }}" class="dropdown__link">
                                 Ambassadors
                             </a>
                         </li>
                         <li>
-                            <a href="/about/advisory-board-council" class="dropdown__link">
+                            <a href="{{ url_for('doaj.abc') }}" class="dropdown__link">
                                 Advisory Board & Council
                             </a>
                         </li>
                         <li>
-                            <a href="/about/editorial-subcommittee/" class="dropdown__link">Editorial Subcommittee</a>
+                            <a href="{{ url_for('doaj.editorial_subcommittee') }}" class="dropdown__link">Editorial Subcommittee</a>
                         </li>
                         <li>
-                            <a href="/about/volunteers" class="dropdown__link">
+                            <a href="{{ url_for('doaj.volunteers') }}" class="dropdown__link">
                                 Volunteers
                             </a>
                         </li>
                         <li>
-                            <a href="https://blog.doaj.org" target="_blank" rel="noopener noreferrer" class="dropdown__link">
+                            <a href="https://blog.doaj.org" target="_blank" rel="noopener" class="dropdown__link">
                                 News
                             </a>
                         </li>
@@ -208,27 +208,27 @@
                         <ul class="dropdown__menu" aria-labelledby="menu-about">
                             {% if current_user.has_role("admin") %}
                                 <li>
-                                    <a href="{{ url_for("admin.index") }}" class="dropdown__link">
+                                    <a href="{{ url_for('admin.index') }}" class="dropdown__link">
                                         Admin
                                     </a>
                                 </li>
                             {% endif %}
                             {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
                                 <li>
-                                    <a href="{{ url_for("editor.index") }}" class="dropdown__link">
+                                    <a href="{{ url_for('editor.index') }}" class="dropdown__link">
                                         Editor
                                     </a>
                                 </li>
                             {% endif %}
                             {% if current_user.has_role("publisher") %}
                                 <li>
-                                    <a href="{{ url_for("publisher.index") }}" class="dropdown__link">
+                                    <a href="{{ url_for('publisher.index') }}" class="dropdown__link">
                                         Publisher
                                     </a>
                                 </li>
                             {% endif %}
                             <li>
-                                <a href="{{ url_for("account.username", username=current_user.id) }}" class="dropdown__link">
+                                <a href="{{ url_for('account.username', username=current_user.id) }}" class="dropdown__link">
                                     Settings
                                 </a>
                             </li>
@@ -242,22 +242,22 @@
                     </span>
                     <ul class="dropdown__menu" aria-labelledby="menu-support">
                         <li>
-                            <a href="/support/" class="dropdown__link">
+                            <a href="{{ url_for('doaj.support') }}" class="dropdown__link">
                                 Support DOAJ
                             </a>
                         </li>
                         <li>
-                            <a href="/support/sponsors/" class="dropdown__link">
+                            <a href="{{ url_for('doaj.sponsors') }}" class="dropdown__link">
                                 Sponsors
                             </a>
                         </li>
                         <li>
-                            <a href="/support/publisher-supporters/" class="dropdown__link">
+                            <a href="{{ url_for('doaj.publisher_supporters') }}" class="dropdown__link">
                                 Publisher supporters
                             </a>
                         </li>
                         <li>
-                            <a href="/support/supporters/" class="dropdown__link">
+                            <a href="{{ url_for('doaj.supporters') }}" class="dropdown__link">
                                 Supporters
                             </a>
                         </li>
@@ -275,22 +275,22 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/apply/guide" class="dropdown__link">
+                            <a href="{{ url_for('doaj.guide') }}" class="dropdown__link">
                                 Guide to applying
                             </a>
                         </li>
                         <li>
-                            <a href="/apply/seal" class="dropdown__link">
+                            <a href="{{ url_for('doaj.seal') }}" class="dropdown__link">
                                 The DOAJ Seal
                             </a>
                         </li>
                         <li>
-                            <a href="/apply/transparency" class="dropdown__link">
+                            <a href="{{ url_for('doaj.transparency') }}" class="dropdown__link">
                                 Transparency & best practice
                             </a>
                         </li>
                         <li>
-                            <a href="/apply/why-index" class="dropdown__link">
+                            <a href="{{ url_for('doaj.why_index') }}" class="dropdown__link">
                                 Why index your journal in DOAJ?
                             </a>
                         </li>
@@ -338,7 +338,7 @@
                       {% else %}
                           {{ message }}
                       {% endif %}
-                      <a class="flash_close alert__close" href="#">(Dismiss)</a>
+                      <span class="flash_close alert__close" role="button">(Dismiss)</span>
                   </p>
               {% endfor %}
             </section>
@@ -351,7 +351,7 @@
             <div class="container">
                 <p class="label">The Directory of Open Access Journals</p>
                 <h1>Find open access journals & articles.</h1>
-                <form class="row" role="search" action="{{ url_for("doaj.search_post") }}" method="post">
+                <form class="row" role="search" action="{{ url_for('doaj.search_post') }}" method="post">
                     <input type="hidden" name="ref" value="homepage-box">
                     <input type="hidden" name="origin" value="ui">
                     <div class="col-xs-12 col-md-8">
@@ -394,26 +394,26 @@
                     </p>
                     {# TODO: define query for recent journals, six months? 1 year? #}
                     {# <p class="col-md-2 stat">
-                  <a href='/search/journals?source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22range%22%3A%7B%22created_date%22%3A%7B%22gte%22%3A%221546300800000%22%7D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D'>
+                  <a href='{{ url_for('doaj.journals_search')?source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22range%22%3A%7B%22created_date%22%3A%7B%22gte%22%3A%221546300800000%22%7D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D'>
                       <span class="stat__number">{{ statistics.new_journals }}</span>
                       <span class="stat__description">new journals</span>
                   </a>
               </p>#}
                     <p class="col-md-2 stat">
                         {# TODO: link to query for journals w/out APCs #}
-                        <a href='/search/journals?source=%7B"query"%3A%7B"filtered"%3A%7B"filter"%3A%7B"bool"%3A%7B"must"%3A%5B%7B"term"%3A%7B"bibjson.apc.has_apc"%3Afalse%7D%7D%2C%7B"term"%3A%7B"bibjson.other_charges.has_other_charges"%3Afalse%7D%7D%5D%7D%7D%2C"query"%3A%7B"match_all"%3A%7B%7D%7D%7D%7D%2C"size"%3A50%2C"sort"%3A%5B%7B"created_date"%3A%7B"order"%3A"desc"%7D%7D%5D%7D'>
+                        <a href='{{ url_for('doaj.journals_search') }}?source=%7B"query"%3A%7B"filtered"%3A%7B"filter"%3A%7B"bool"%3A%7B"must"%3A%5B%7B"term"%3A%7B"bibjson.apc.has_apc"%3Afalse%7D%7D%2C%7B"term"%3A%7B"bibjson.other_charges.has_other_charges"%3Afalse%7D%7D%5D%7D%7D%2C"query"%3A%7B"match_all"%3A%7B%7D%7D%7D%7D%2C"size"%3A50%2C"sort"%3A%5B%7B"created_date"%3A%7B"order"%3A"desc"%7D%7D%5D%7D'>
                             <span class="stat__number">{{ statistics.no_apc }}</span>
                             <span class="stat__description">journals without APC<span style="text-transform: lowercase;">s</span></span>
                         </a>
                     </p>
                     <p class="col-md-2 stat">
-                        <a href="{{ url_for("doaj.journals_search") }}">
+                        <a href="{{ url_for('doaj.journals_search') }}">
                             <span class="stat__number">{{ statistics.journals }}</span>
                             <span class="stat__description">journals</span>
                         </a>
                     </p>
                     <p class="col-md-2 stat">
-                        <a href="{{ url_for("doaj.articles_search") }}">
+                        <a href="{{ url_for('doaj.articles_search') }}">
                             <span class="stat__number">{{ statistics.abstracts }}</span>
                             <span class="stat__description">article abstracts</span>
                         </a>
@@ -427,7 +427,7 @@
 {# Quick search modal #}
 <section class="modal" id="modal-search" tabindex="-1" role="dialog">
     <div class="modal__dialog" role="document">
-        <form class="quick-search__form" role="search" action="{{ url_for("doaj.search_post") }}" method="post">
+        <form class="quick-search__form" role="search" action="{{ url_for('doaj.search_post') }}" method="post">
             <input type="hidden" name="ref" value="quick-search">
             <input type="hidden" name="origin" value="ui">
             <h2 class="modal__title">Quick search</h2>
