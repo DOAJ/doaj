@@ -23,7 +23,7 @@
                     <h2 class="sr-only">Main actions</h2>
                     <ul class="nav-bar">
                         <li class="dropdown primary-nav__item_desktop">
-                            <a href="/support" class="dropdown__trigger nav-bar__link" id="action-menu-support" type="button" aria-haspopup="true" aria-expanded="false">
+                            <a href="/support" class="dropdown__trigger nav-bar__link" id="action-menu-support" role="button" aria-haspopup="true" aria-expanded="false">
                                 <span data-feather="heart" aria-hidden="true"></span>
                                 Support
                                 <span data-feather="chevron-down" aria-hidden="true"></span>
@@ -52,7 +52,7 @@
                             </ul>
                         </li>
                         <li class="dropdown primary-nav__item_desktop">
-                            <a href="/apply/" class="dropdown__trigger nav-bar__link" id="action-menu-apply" type="button" aria-haspopup="true" aria-expanded="false">
+                            <a href="/apply/" class="dropdown__trigger nav-bar__link" id="action-menu-apply" role="button" aria-haspopup="true" aria-expanded="false">
                                 Apply
                                 <span data-feather="chevron-down" aria-hidden="true"></span>
                             </a>
@@ -95,15 +95,15 @@
     </div>
     <nav class="secondary-nav {% if endpoint|length == 1 or endpoint[endpoint|length-1] in highlighted %} secondary-nav--precedes-highlight {% endif %}">
         <div class="container">
-            <a href="#" class="secondary-nav__menu-toggle" aria-label="Click to open menu">
+            <span class="secondary-nav__menu-toggle" aria-label="Click to open menu" role="button">
                 <span data-feather="menu" aria-hidden="true"></span> <h2 class="secondary-nav__header">Menu</h2>
-            </a>
+            </span>
             <ul class="nav-bar secondary-nav__menu">
                 <li class="dropdown">
-                    <a class="dropdown__trigger nav-bar__link" id="menu-journals-articles" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
+                    <span class="dropdown__trigger nav-bar__link" id="menu-journals-articles" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
                         Search
                         <span data-feather="chevron-down" aria-hidden="true"></span>
-                    </a>
+                    </span>
                     <ul class="dropdown__menu" aria-labelledby="menu-journals-articles">
                         <li>
                             <a href="{{ url_for("doaj.journals_search") }}" class="dropdown__link">
@@ -118,10 +118,10 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown__trigger nav-bar__link" id="menu-data" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
+                    <span class="dropdown__trigger nav-bar__link" id="menu-data" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
                         Documentation
                         <span data-feather="chevron-down" aria-hidden="true"></span>
-                    </a>
+                    </span>
                     <ul class="dropdown__menu" aria-labelledby="menu-data">
                         <li>
                             <a href="/docs/api" class="dropdown__link">
@@ -159,10 +159,10 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a class="dropdown__trigger nav-bar__link" id="menu-about" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
+                    <span class="dropdown__trigger nav-bar__link" id="menu-about" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
                         About
                         <span data-feather="chevron-down" aria-hidden="true"></span>
-                    </a>
+                    </span>
                     <ul class="dropdown__menu" aria-labelledby="menu-about">
                         <li>
                             <a href="/about/" class="dropdown__link">
@@ -201,10 +201,10 @@
                 </li>
                 {% if not current_user.is_anonymous %}
                     <li class="dropdown">
-                        <a class="dropdown__trigger nav-bar__link" id="menu-about" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
+                        <span class="dropdown__trigger nav-bar__link" id="menu-about" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
                             My Account
                             <span data-feather="chevron-down" aria-hidden="true"></span>
-                        </a>
+                        </span>
                         <ul class="dropdown__menu" aria-labelledby="menu-about">
                             {% if current_user.has_role("admin") %}
                                 <li>
@@ -236,10 +236,10 @@
                     </li>
                 {% endif %}
                 <li class="dropdown secondary-nav__item_mobile">
-                    <a class="dropdown__trigger nav-bar__link" id="menu-support" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="dropdown__trigger nav-bar__link" id="menu-support" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <strong>Support</strong>
                         <span data-feather="chevron-down" aria-hidden="true"></span>
-                    </a>
+                    </span>
                     <ul class="dropdown__menu" aria-labelledby="menu-support">
                         <li>
                             <a href="/support/" class="dropdown__link">
@@ -264,10 +264,10 @@
                     </ul>
                 </li>
                 <li class="dropdown secondary-nav__item_mobile">
-                    <a class="dropdown__trigger nav-bar__link" id="menu-apply" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="dropdown__trigger nav-bar__link" id="menu-apply" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <strong>Apply</strong>
                         <span data-feather="chevron-down" aria-hidden="true"></span>
-                    </a>
+                    </span>
                     <ul class="dropdown__menu" aria-labelledby="menu-apply">
                         <li>
                             <a href="/apply/" class="dropdown__link">
@@ -454,7 +454,7 @@
                 </button>
             </div>
         </form>
-        <p><a class="button button--secondary" data-dismiss="modal">Close</a></p>
+        <p><span class="button button--secondary" data-dismiss="modal" role="button">Close</span></p>
     </div>
 </section>
 
