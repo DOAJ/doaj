@@ -9,7 +9,7 @@
   <div class="form-group{% if author_error %} error{% endif %} authors">
     {% for subfield in form.authors %}
     <div id="{{subfield.short_name}}-container">
-      <h3 class="form__header">Author</h3>
+      <h3 class="form__header">Author <em>(required)</em></h3>
       {% for field in subfield.form %}
       <div class="form__question">
         <label for="{{ field.id }}">{{ field.label.text | safe }}</label>

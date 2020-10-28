@@ -661,7 +661,7 @@ class AuthorForm(Form):
 
 
 class ArticleForm(Form):
-    title = StringField("Article title", [validators.DataRequired()])
+    title = StringField("Article title <em>(required)</em>", [validators.DataRequired()])
     doi = StringField("DOI", [OptionalIf("fulltext"), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)], description="(You must provide either a Full-Text URL or a DOI or both)")
     authors = FieldList(FormField(AuthorForm), min_entries=1) # We have to do the validation for this at a higher level
     abstract = TextAreaField("Abstract", [validators.Optional()])
