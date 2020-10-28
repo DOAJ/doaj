@@ -12,10 +12,9 @@ var doaj = {
             nav.classList.toggle("secondary-nav__menu-toggle--active");
         }, false);
 
-        var prevScrollPos = window.pageYOffset;
+        // Display back-to-top button on scroll
         var topBtn = document.getElementById("top");
 
-        // Display back-to-top button on scroll
         function displayTopBtn() {
             if (topBtn) {
                 if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
@@ -27,6 +26,8 @@ var doaj = {
         }
 
         // Hide header menu on down scroll; display on scroll up
+        var prevScrollPos = window.pageYOffset;
+
         function hideNav() {
             var currentScrollPos = window.pageYOffset;
 
