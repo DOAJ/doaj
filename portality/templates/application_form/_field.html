@@ -19,11 +19,9 @@
           <div class="repeatable-fields" id="removable_field__{{ f.name }}">
               {{ f.render_form_control() }}
           </div>
-            <div class="add_field__button_div">
-                <div class="add_field__button_div">
-                    <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add</button>
-                </div>
-            </div>
+          <p class="add_field__button_div">
+              <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add</button>
+          </p>
         </div>
     {% else %}
         {{ f.render_form_control() }}
