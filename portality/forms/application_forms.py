@@ -80,10 +80,15 @@ class FieldDefinitions:
             {"required_value" : {"value" : "y"}}
         ],
         "contexts": {
+            "admin" : {
+                "validate" : []
+            },
             "editor": {
+                "validate" : [],
                 "disabled": True
             },
             "associate_editor": {
+                "validate" : [],
                 "disabled": True
             }
         },
