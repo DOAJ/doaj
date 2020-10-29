@@ -433,7 +433,7 @@ def application_quick_reject(application_id):
         flash(msg, flash_type)
 
     # redirect the user back to the edit page
-    return redirect(url_for('.suggestion_page', suggestion_id=application_id))
+    return redirect(url_for('.application', application_id=application_id))
 
 
 @blueprint.route("/admin_site_search", methods=["GET"])
