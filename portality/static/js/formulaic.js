@@ -1345,188 +1345,240 @@ var formulaic = {
 
             this.init = () => {
                 if (this.fieldDef["input"] === "group") {
-                    this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
-
-                    this.count = 0;
-
-                    this.divs.each((idx, div) => {
-                        $(div).append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
-                        feather.replace();
-                        if (idx !== 0) {
-                            $(div).find("select").attr("required", false);
-                            $(div).find("select").attr("data-parsley-required-if", false);
-                            $(div).find("input").attr("required", false);
-                            $(div).find("input").attr("data-parsley-required-if", false);
-
-                            $(div).find("select").attr("data-parsley-validate-if-empty", "true");
-                            $(div).find("input").attr("data-parsley-validate-if-empty", "true");
-
-                            $(div).hide();
-                        }
-                    });
-
-                    this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
-                    $(this.remove_btns[0]).hide();
-                    this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
-
-                    this.addFieldBtn.on("click", () => {
-                        $(this.divs[this.count + 1]).show();
-                        this.count++;
-                        if (this.count > 0) {
-                            $(this.remove_btns[0]).show();
-                        }
-                        if (this.count === this.max) {
-                            $(this.addFieldBtn).hide();
-                        }
-
-                    });
-
-                    $(this.remove_btns).each((idx, btn) => {
-                        $(btn).on("click", () => {
-                            let thisDiv = $(btn).parent();
-                            let nextDiv = $(thisDiv);
-                            for (let i = idx; i < this.count; i++) {
-                                thisDiv = nextDiv;
-                                nextDiv = nextDiv.next();
-                                let thisInputs = $(thisDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
-                                let nextInputs = $(nextDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
-                                for (let j = 0; j < thisInputs.length; j++){
-                                    let thisInput = $(thisInputs[j]);
-                                    let nextInput = $(nextInputs[j]);
-                                    if (thisInput.is("select")){
-                                        let data = $(nextInput).select2('data');
-                                        if (data === null) {
-                                            data = {id: i, text: ""};
-                                        }
-                                        $(thisInput).select2('data', {id: data.id, text: data.text});
-
-                                    }
-                                    else {
-                                        $(thisInputs[j]).val($(nextInputs[j]).val());
-                                    }
-                                }
-                            }
-                            this.count--;
-                            $(this.divs[this.count + 1]).find("select, input[id^='" + this.fieldDef["name"] + "']").each((idx, inp) => {
-                                if ($(inp).is("select")){
-                                    $(inp).select2('data', {id: this.count + 1, text: ""});
-                                }
-                                else {
-                                    $(inp).val("");
-                                }
-                            });
-                            $(this.divs[this.count + 1]).hide();
-                            if (this.count === 0) {
-                                $(this.remove_btns[0]).hide();
-                            }
-                            if (this.count < this.max) {
-                                $(this.addFieldBtn).show();
-                            }
-                        })
-                    })
-
+                    this._setupRepeatingGroup();
                 } else {
-                    let tag = this.fieldDef["input"] === "select" ? "select" : "input";
-                    this.fields = $(tag + '[id^="' + this.fieldDef["name"] + '-"]');
+                    this._setupRepeatingIndividual();
+                }
+                feather.replace();
+            };
 
-                    this.count = 0;
-                    if (tag === "select"){
-                        this.fields.each((idx, f) => {
-                            let s2_input = $(f).select2();
-                            $(s2_input).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
-                            feather.replace();
-                            if (idx !== 0) {
-                                $(s2_input).attr("required", false);
-                                $(s2_input).attr("data-parsley-validate-if-empty", "true");
-                                $(s2_input).closest('li').hide();
-                            }
-                        });
-                        this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
-                        $(this.remove_btns[0]).hide();
-                        this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
-                        this.addFieldBtn.on("click", () => {
-                            $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').show();
+            this._setupIndividualSelect2 = function() {
+                for (var idx = 0; idx < this.fields.length; idx++) {
+                    let f = this.fields[idx];
+                    let s2_input = $($(f).select2());
+                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    if (idx !== 0) {
+                        s2_input.attr("required", false);
+                        s2_input.attr("data-parsley-validate-if-empty", "true");
+                        if (!s2_input.val()) {
+                            s2_input.closest('li').hide();
+                        } else {
                             this.count++;
-                            if (this.count > 0) {
-                                $(this.remove_btns[0]).show();
-                            }
-                            if (this.count === this.max) {
-                                $(this.addFieldBtn).hide();
-                            }
+                        }
+                    }
+                }
 
-                        });
-                        $(this.remove_btns).each((idx, btn) => {
-                            $(btn).on("click", (event) => {
-                                for (let i = idx; i < this.count; i++) {
-                                    let data = $(this.fields[i + 1]).select2('data')
+                this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                if (this.count === 0) {
+                    $(this.remove_btns[0]).hide();
+                }
+
+                this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+                this.addFieldBtn.on("click", () => {
+                    $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').show();
+                    this.count++;
+                    if (this.count > 0) {
+                        $(this.remove_btns[0]).show();
+                    }
+                    if (this.count >= this.max) {
+                        $(this.addFieldBtn).hide();
+                    }
+                });
+
+                if (this.count >= this.max) {
+                    this.addFieldBtn.hide();
+                }
+
+                $(this.remove_btns).each((idx, btn) => {
+                    $(btn).on("click", (event) => {
+                        for (let i = idx; i < this.count; i++) {
+                            let data = $(this.fields[i + 1]).select2('data');
+                            if (data === null) {
+                                data = {id: i, text: ""};
+                            }
+                            $(this.fields[i]).select2('data', {id: data.id, text: data.text});
+                        }
+                        this.count--;
+                        $(this.fields[this.count + 1]).select2('data', {id: this.count + 1, text: ""});
+                        $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').hide();
+                        if (this.count === 0) {
+                            $(this.remove_btns[0]).hide();
+                        }
+                        if (this.count < this.max) {
+                            $(this.addFieldBtn).show();
+                        }
+                    })
+                })
+            };
+
+            this._setupIndividualField = function() {
+                for (var idx = 0; idx < this.fields.length; idx++) {
+                    let f = this.fields[idx];
+                    let jqf = $(f);
+                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    if (idx !== 0) {
+                        jqf.attr("required", false);
+                        jqf.attr("data-parsley-validate-if-empty", "true");
+                        if (!jqf.val()) {
+                            jqf.parent().hide();
+                        } else {
+                            this.count++;
+                        }
+                    }
+                }
+
+                this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '-"]');
+                if (this.count === 0) {
+                    $(this.remove_btns[0]).hide();
+                }
+
+                this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+                this.addFieldBtn.on("click", () => {
+                    let next_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
+                    // TODO: why .show() does not work?
+                    $(next_input).show();
+                    this.count++;
+                    if (this.count > 0) {
+                        $(this.remove_btns[0]).show();
+                    }
+                    if (this.count >= this.max) {
+                        $(this.addFieldBtn).hide();
+                    }
+                });
+
+                if (this.count >= this.max) {
+                    this.addFieldBtn.hide();
+                }
+
+                $(this.remove_btns).each((idx, btn) => {
+                    $(btn).on("click", (event) => {
+                        for (let i = idx; i < this.count; i++) {
+                            let data = $(this.fields[i + 1]).val();
+                            if (data === null) {
+                                data = "";
+                            }
+                            $(this.fields[i]).val(data);
+                        }
+
+                        this.count--;
+                        $(this.fields[this.count + 1]).val("");
+                        let last_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
+                        $(last_input).hide();
+                        if (this.count === 0) {
+                            $(this.remove_btns[0]).hide();
+                        }
+                        if (this.count < this.max) {
+                            $(this.addFieldBtn).show();
+                        }
+                    })
+                });
+            };
+
+            this._setupRepeatingIndividual = function() {
+                let tag = this.fieldDef["input"] === "select" ? "select" : "input";
+                this.fields = $(tag + '[id^="' + this.fieldDef["name"] + '-"]');
+                this.count = 0;
+
+                if (tag === "select"){
+                    this._setupIndividualSelect2();
+                } else {
+                    this._setupIndividualField();
+                }
+            };
+
+            this._setupRepeatingGroup = function() {
+                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
+                this.count = 0;
+
+                for (var idx = 0; idx < this.divs.length; idx++) {
+                    let div = $(this.divs[idx]);
+                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+
+                    if (idx !== 0) {
+                        let inputs = div.find(":input");
+                        var hasVal = false;
+                        for (var j = 0; j < inputs.length; j++) {
+                            $(inputs[j]).attr("required", false)
+                                .attr("data-parsley-required-if", false)
+                                .attr("data-parsley-validate-if-empty", "true");
+                            if ($(inputs[j]).val()) {
+                                hasVal = true;
+                            }
+                        }
+                        if (!hasVal) {
+                            div.hide();
+                        } else {
+                            this.count++;
+                        }
+                    }
+                }
+
+                this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                if (this.count === 0) {
+                    $(this.remove_btns[0]).hide();
+                }
+
+                this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+                this.addFieldBtn.on("click", () => {
+                    $(this.divs[this.count + 1]).show();
+                    this.count++;
+                    if (this.count > 0) {
+                        $(this.remove_btns[0]).show();
+                    }
+                    if (this.count === this.max) {
+                        $(this.addFieldBtn).hide();
+                    }
+                });
+
+                if (this.count >= this.max) {
+                    this.addFieldBtn.hide();
+                }
+
+                $(this.remove_btns).each((idx, btn) => {
+                    $(btn).on("click", () => {
+                        let thisDiv = $(btn).parent();
+                        let nextDiv = $(thisDiv);
+                        for (let i = idx; i < this.count; i++) {
+                            thisDiv = nextDiv;
+                            nextDiv = nextDiv.next();
+                            let thisInputs = $(thisDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
+                            let nextInputs = $(nextDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
+                            for (let j = 0; j < thisInputs.length; j++){
+                                let thisInput = $(thisInputs[j]);
+                                let nextInput = $(nextInputs[j]);
+                                if (thisInput.is("select")){
+                                    let data = $(nextInput).select2('data');
                                     if (data === null) {
                                         data = {id: i, text: ""};
                                     }
-                                    $(this.fields[i]).select2('data', {id: data.id, text: data.text});
+                                    $(thisInput).select2('data', {id: data.id, text: data.text});
+
                                 }
-                                this.count--;
-                                $(this.fields[this.count + 1]).select2('data', {id: this.count + 1, text: ""})
-                                $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').hide();
-                                if (this.count === 0) {
-                                    $(this.remove_btns[0]).hide();
+                                else {
+                                    $(thisInputs[j]).val($(nextInputs[j]).val());
                                 }
-                                if (this.count < this.max) {
-                                    $(this.addFieldBtn).show();
-                                }
-                            })
-                        })
-                    } else {
-                        this.fields.each((idx, f) => {
-                            $(f).after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
-                            feather.replace();
-                            if (idx !== 0) {
-                                $(f).attr("required", false);
-                                $(f).attr("data-parsley-validate-if-empty", "true");
-                                $(f).parent().hide();
+                            }
+                        }
+                        this.count--;
+                        $(this.divs[this.count + 1]).find("select, input[id^='" + this.fieldDef["name"] + "']").each((idx, inp) => {
+                            if ($(inp).is("select")){
+                                $(inp).select2('data', {id: this.count + 1, text: ""});
+                            }
+                            else {
+                                $(inp).val("");
                             }
                         });
-                        this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '-"]');
-                        $(this.remove_btns[0]).hide();
-                        this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
-                        this.addFieldBtn.on("click", () => {
-                            let next_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
-                            // TODO: why .show() does not work?
-                            $(next_input).show();
-                            this.count++;
-                            if (this.count > 0) {
-                                $(this.remove_btns[0]).show();
-                            }
-                            if (this.count === this.max) {
-                                $(this.addFieldBtn).hide();
-                            }
-
-                        });
-                        $(this.remove_btns).each((idx, btn) => {
-                            $(btn).on("click", (event) => {
-                                for (let i = idx; i < this.count; i++) {
-                                    let data = $(this.fields[i + 1]).val();
-                                    if (data === null) {
-                                        data = "";
-                                    }
-                                    $(this.fields[i]).val(data);
-                                }
-
-                                this.count--;
-                                $(this.fields[this.count + 1]).val("");
-                                let last_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
-                                $(last_input).hide();
-                                if (this.count === 0) {
-                                    $(this.remove_btns[0]).hide();
-                                }
-                                if (this.count < this.max) {
-                                    $(this.addFieldBtn).show();
-                                }
-                            })
-                        })
-                    }
-
-                }
+                        $(this.divs[this.count + 1]).hide();
+                        if (this.count === 0) {
+                            $(this.remove_btns[0]).hide();
+                        }
+                        if (this.count < this.max) {
+                            $(this.addFieldBtn).show();
+                        }
+                    })
+                })
             };
+
             this.init()
         },
 
