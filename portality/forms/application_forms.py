@@ -467,12 +467,12 @@ class FieldDefinitions:
             "class": "input-xlarge"
         },
         "contexts": {
-            "editor": {
-                "disabled": True
-            },
-            "associate_editor": {
-                "disabled": True
-            }
+            #"editor": {
+            #    "disabled": True
+            #},
+            #"associate_editor": {
+            #    "disabled": True
+            #}
         }
     }
 
