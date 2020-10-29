@@ -497,7 +497,15 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             let val = input.val();
 
             if (val && sourceId === "#subject") {
-                val = this.lccCodeToText(val);
+                let vals = val.split(",").map(x => x.trim());
+                let texts = [];
+                for (var i = 0; i < vals.length; i++) {
+                    let text = this.lccCodeToText(vals[i]);
+                    if (text) {
+                        texts.push(text);
+                    }
+                }
+                val = texts.join(", ");
             }
 
             if (val) {
