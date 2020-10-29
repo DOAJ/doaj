@@ -2,7 +2,7 @@
 This script can be run to generate a CSV output of accounts which have the same email address
 
 ```
-python accounts_with_same_email.py -o accounts_email.csv
+python accounts_with_same_email.py -o accounts_email.csv [-a]
 ```
 """
 import csv
@@ -30,11 +30,25 @@ def users_with_emails():
         yield models.Account(**acc)
 
 
+def users_with_journals_and_emails():
+    """ Get accounts for all users with journals in the DOAJ """
+    for acc in esprit.tasks.scroll(conn, ipt_prefix('account'), q=HAS_EMAIL, page_size=100, keepalive='1m'):
+        acct = models.Account(**acc)
+        journal_ids = acct.journal
+        if journal_ids is not None:
+            for j in journal_ids:
+                journal = models.Journal.pull(j)
+                if journal is not None and journal.is_in_doaj():
+                    yield acct
+                    break
+
+
 if __name__ == "__main__":
 
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--out", help="output file path")
+    parser.add_argument("-a", "--all", help="all users (defaults to users with journals in doaj)", action="store_true")
     args = parser.parse_args()
 
     if not args.out:
@@ -53,7 +67,9 @@ if __name__ == "__main__":
         # To minimise how many accounts we need to initialise a second time, keep a set of ids to write to the csv
         duplicated_ids = set()
 
-        for account in users_with_emails():
+        users = users_with_emails() if args.all else users_with_journals_and_emails()
+
+        for account in users:
             # for simplicity we just write out our account with duplicated email when found, sort later via spreadsheet
             if account.email in emails_seen:
                 writer.writerow([
