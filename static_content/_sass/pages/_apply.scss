@@ -158,19 +158,25 @@
     }
   }
 
+  // Print styles for form previeew PDF
   @media print {
-    html {
-      font-size: 10px !important;
+    .form {
+      font-size: 10pt !important;
     }
 
     .form-section {
       display: block !important;
     }
 
+    .form__question{
+      margin: $spacing-03 0 0 0;
+    }
+
     aside,
     button,
     input[type="submit"],
     hr,
+    .alert,
     .application-nav,
     .secondary-nav,
     .nav-bar,

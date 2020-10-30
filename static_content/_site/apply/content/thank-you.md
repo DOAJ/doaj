@@ -1,5 +1,3 @@
-## Thank you for your application.
-
 You will receive an automated email from us, confirming that your application has been received, in the next few minutes. Please [contact us]({{ site.baseurl }}contact/) if you don’t receive it.
 
 You will receive two more status updates if your application is assigned to an editorial group for review. If a Managing editor processes your application, this step is skipped.

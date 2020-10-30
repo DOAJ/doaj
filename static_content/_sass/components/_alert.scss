@@ -11,6 +11,10 @@
     float: right;
   }
 
+  &--message {
+    border: 1px solid $warm-black;
+  }
+
   code {
     background-color: rgba($dark-grey, 0.1);
   }

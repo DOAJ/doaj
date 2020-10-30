@@ -9,7 +9,9 @@
     @include unstyled-list;
 
     li {
-      flex: 1 1 0;
+      &:nth-child(3) {
+        flex: 0.5;
+      }
 
       &:first-child,
       &:nth-child(2) {
@@ -40,5 +42,7 @@
   .feather {
     position: relative;
     top: $spacing-01;
+
+
   }
 }

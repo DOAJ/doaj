@@ -2,21 +2,9 @@
 
 .homepage {
 
-  // Change default nav styles for homepage only
+  // Override style for homepage only
   .primary-nav {
-    background-color: $warm-black;
-
-    a {
-      color: $warm-white;
-    }
-
-    .dropdown__menu {
-      background-color: $warm-black;
-    }
-
-    .logo path {
-      fill: $warm-white;
-    }
+    top: 0 !important;
   }
 
   .secondary-nav {
@@ -25,6 +13,10 @@
     .nav-bar {
       border: 0;
     }
+  }
+
+  .page-content {
+    padding-top: 0;
   }
 
   a {
@@ -41,8 +33,14 @@
     color: $dark-grey;
   }
 
-  section h2 {
-    margin-bottom: $spacing-04;
+  section {
+    header {
+      margin-bottom: $spacing-05;
+    }
+
+    h2 {
+      margin-bottom: $spacing-04;
+    }
   }
 
   .page-header {
@@ -126,12 +124,6 @@
     background-image: url('/static/doaj/images/bg/02.jpeg');
     background-size: cover;
     background-blend-mode: multiply;
-
-    header {
-      margin: 0 auto $spacing-05 auto;
-      width: 50vw;
-      text-align: center;
-    }
 
     article {
       margin-bottom: $spacing-05;

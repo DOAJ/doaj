@@ -7,48 +7,48 @@
        Crossref schema is still loading, uploading your file may take a bit longer than usual.
    </div>
 </div>
-    <header class="col-md-4">
-              <h2>Upload article XML</h2>
+<header class="col-md-4">
+  <h2>Upload article XML</h2>
 
-              <div class="alert">
-                <p>Uploaded files must conform to one of the approved XML formats:</p>
-                <ul>
-                  <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
-                  <li><a href="/static/crossref/crossref4.4.2.xsd">Crossref 4.4.2 XML</a></li>
-                </ul>
-              </div>
-            </header>
+  <div class="alert">
+    <p>Uploaded files must conform to one of the approved XML formats:</p>
+    <ul>
+      <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
+      <li><a href="/static/crossref/crossref4.4.2.xsd">Crossref 4.4.2 XML</a></li>
+    </ul>
+  </div>
+</header>
 
-            <form id="upload_form" class="col-md-8 form" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
-              <div class="form__question">
-                <label for="upload-xml-file">Select a file</label>
-                  <input type="file" id="upload-xml-file" name="file">
-                <p><small>Must be less than 50Mb.</small></p>
-              </div>
+<form id="upload_form" class="col-md-8 form form--compact" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
+  <fieldset>
+    <h3 class="form__header">Article XML</h3>
+    <div class="form__question">
+      <label for="upload-xml-file">Select a file</label>
+      <input type="file" id="upload-xml-file" name="file">
+      <p><small>Must be less than 50Mb.</small></p>
+    </div>
+    <p>• <strong>OR</strong> •</p>
+    <div class="form__question">
+      <label for="upload-xml-link">Upload from a link</label>
+      <input type="url" id="upload-xml-link" name="upload-xml-link" placeholder="https://www.example.com">
+      <p><small>Must be less than 250Mb.</small></p>
+    </div>
 
-              <p>• <strong>OR</strong> •</p>
-
-              <div class="form__question">
-                <label for="upload-xml-link">Upload from a link</label>
-                  <input type="url" id="upload-xml-link" name="upload-xml-link" placeholder="https://www.example.com">
-                <p><small>Must be less than 250Mb.</small></p>
-              </div>
-
-              <div class="form__question">
-                <label for="upload-xml-format">File format</label>
-                <select name="schema" class="form-control" id="upload-xml-format" require>
-                {% if schema == '' or schema == 'doaj' %}
-                    <option value="doaj" selected>DOAJ Native XML</option>
-                    <option value="crossref">Crossref 4.4.2 XML</option>
-                {% else %}
-                    <option value="doaj">DOAJ Native XML</option>
-                    <option value="crossref" selected>Crossref 4.4.2 XML</option>
-                {% endif %}
-            </select>
-              </div>
-
-              <button type="submit" id="upload" class="button button--primary">Upload</button>
-            </form>
+    <div class="form__question">
+      <label for="upload-xml-format">File format</label>
+      <select name="schema" class="form-control" id="upload-xml-format" require>
+        {% if schema == '' or schema == 'doaj' %}
+        <option value="doaj" selected>DOAJ Native XML</option>
+        <option value="crossref">Crossref 4.4.2 XML</option>
+        {% else %}
+        <option value="doaj">DOAJ Native XML</option>
+        <option value="crossref" selected>Crossref 4.4.2 XML</option>
+        {% endif %}
+      </select>
+    </div>
+  </fieldset>
+  <button type="submit" id="upload" class="button button--primary">Upload</button>
+</form>
 
 <hr>
 
@@ -95,11 +95,11 @@
                         {% elif file.status == "exists" %}
                             <span style="color: #000066">pending</span>
                         {% elif file.status == "failed" %}
-                            <span style="color: #660000">processing failed</span>
+                            <span style="color: #660000"><span data-feather="alert-octagon" aria-hidden="true"></span>processing failed</span>
                         {% elif file.status == "processed" %}
-                            <span style="color: #006600">successfully processed</span>
+                            <span style="color: #006600"><span data-feather="thumbs-up" aria-hidden="true"></span>successfully processed</span>
                         {% elif file.status == "partial" %}
-                            <span style="color: #ff3300">partial success</span>
+                            <span style="color: #ff3300"><span data-feather="alert-triangle" aria-hidden="true"></span>partial success</span>
                         {% endif %}
                     </td>
                     <td style="word-wrap:break-word">

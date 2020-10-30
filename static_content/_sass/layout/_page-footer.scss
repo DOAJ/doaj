@@ -3,6 +3,7 @@
 /* Footer */
 
 .page-footer {
+  margin-top: $spacing-05;
   position: absolute;
   z-index: 100;
   width: 100%;
@@ -43,7 +44,7 @@
   }
 }
 
-/* Legal stuff */
+// Legal stuff
 
 .legal {
   padding: $spacing-04 0;

@@ -583,7 +583,7 @@ class FieldDefinitions:
 
     COPYRIGHT_AUTHOR_RETAINS = {
         "name": "copyright_author_retains",
-        "label": "For all the licenses you have indicated above, do authors or their institutions retain the copyright "
+        "label": "For all the licenses you have indicated above, do authors retain the copyright "
                  "<b>and</b> full publishing rights without restrictions?",
         "input": "radio",
         "options": [
