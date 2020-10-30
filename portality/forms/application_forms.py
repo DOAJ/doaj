@@ -116,6 +116,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ],
         "attr": {
@@ -139,6 +140,7 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
+            "trim_whitespace",
             "full_contents"
         ],
         "contexts": {
@@ -163,6 +165,7 @@ class FieldDefinitions:
             "placeholder": "Ma revue"
         },
         "widgets": [
+            "trim_whitespace",
             "full_contents"
         ],
         "contexts": {
@@ -187,6 +190,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ],
         "help": {
@@ -233,6 +237,9 @@ class FieldDefinitions:
             {"different_to": {"field": "eissn", "message": "This field must contain a different value to 'ISSN ("
                                                            "online)'"}}
         ],
+        "widgets" : [
+            "trim_whitespace"
+        ],
         "contexts": {
             "public" : {
                 "validate": [
@@ -278,6 +285,9 @@ class FieldDefinitions:
                              "message": "You must provide one or both of an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "pissn", "message" : "This field must contain a different value to 'ISSN (print)'"}}
+        ],
+        "widgets" : [
+            "trim_whitespace"
         ],
         "contexts": {
             "public" : {
@@ -385,6 +395,7 @@ class FieldDefinitions:
             "required"
         ],
         "widgets": [
+            "trim_whitespace",
             {"autocomplete": {"type" : "journal", "field": "bibjson.publisher.name.exact"}},
             "full_contents"
         ],
@@ -444,6 +455,7 @@ class FieldDefinitions:
             "placeholder": "Type or select the society or institution’s name"
         },
         "widgets": [
+            "trim_whitespace",
             {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}},
             "full_contents"
         ]
@@ -537,6 +549,7 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/about#licensing",
         },
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ]
     }
@@ -577,6 +590,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ]
     }
@@ -613,6 +627,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ],
         "contexts": {
@@ -665,6 +680,9 @@ class FieldDefinitions:
         "validate": [
             {"required_if": {"field": "review_process", "value": "other"}}
         ],
+        "widgets" : [
+            "trim_whitespace",
+        ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
         ]
@@ -683,6 +701,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ]
     }
@@ -717,6 +736,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ]
     }
@@ -734,6 +754,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ]
     }
@@ -751,6 +772,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ]
     }
@@ -768,6 +790,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ]
     }
@@ -821,6 +844,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ]
     }
@@ -924,6 +948,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ]
     }
@@ -963,6 +988,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ]
     }
@@ -1015,6 +1041,7 @@ class FieldDefinitions:
             {"warn_on_value": {"value": "None"}}
         ],
         "widgets": [
+            "trim_whitespace",
             "multiple_field"
         ]
     }
@@ -1029,6 +1056,9 @@ class FieldDefinitions:
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
+        ],
+        "widgets" : [
+            "trim_whitespace"
         ]
     }
 
@@ -1065,6 +1095,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ]
     }
@@ -1109,6 +1140,9 @@ class FieldDefinitions:
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
+        ],
+        "widgets" : [
+            "trim_whitespace"
         ]
     }
 
@@ -1130,6 +1164,7 @@ class FieldDefinitions:
             "is_url"
         ],
         "widgets": [
+            "trim_whitespace",
             "clickable_url"
         ],
         "contexts" : {
@@ -1190,6 +1225,9 @@ class FieldDefinitions:
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
+        ],
+        "widgets" : [
+            "trim_whitespace"
         ]
     }
 
@@ -2344,6 +2382,7 @@ JAVASCRIPT_FUNCTIONS = {
     "subject_tree" : "formulaic.widgets.newSubjectTree",
     "full_contents" : "formulaic.widgets.newFullContents",
     "load_editors" : "formulaic.widgets.newLoadEditors",
+    "trim_whitespace" : "formulaic.widgets.newTrimWhitespace"
 }
 
 

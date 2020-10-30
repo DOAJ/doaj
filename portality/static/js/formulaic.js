@@ -1132,6 +1132,39 @@ var formulaic = {
             this.init();
         },
 
+        newTrimWhitespace : function(params) {
+            return edges.instantiate(formulaic.widgets.TrimWhitespace, params)
+        },
+        TrimWhitespace : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+
+            this.ns = "formulaic-trimwhitespace";
+
+            this.link = false;
+
+            this.init = function () {
+                var elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                edges.on(elements, "focus.TrimWhitespace", this, "trim");
+                edges.on(elements, "blur.TrimWhitespace", this, "trim");
+
+                for (var i = 0; i < elements.length; i++) {
+                    this.trim(elements[i]);
+                }
+            };
+
+            this.trim = function(element) {
+                var that = $(element);
+                var val = that.val();
+                var nv = val.trim();
+                if (nv !== val) {
+                    that.val(nv);
+                }
+            };
+
+            this.init();
+        },
+
         newClickableUrl : function(params) {
             return edges.instantiate(formulaic.widgets.ClickableUrl, params)
         },
