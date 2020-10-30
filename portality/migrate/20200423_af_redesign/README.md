@@ -15,6 +15,7 @@ So in this directory, just run
     python migrate.py
 
 Finally, run a basic migration on the articles:
+
 ```
 python portality/upgrade.py -u portality/migrate/20200423_af_redesign/patch_20200919_migrate.json
 ```
@@ -83,4 +84,14 @@ Then run the trivial migration:
 
 ```
 python portality/upgrade.py -u portality/migrate/20200423_af_redesign/patch_20200904_migrate.json
+```
+
+## Set 'has preservation' to False when there is a URL but no services
+
+Sets `has_preservation=False` to records when there is a preservation url, but no preservation service selected
+
+Run
+
+```
+python has_preservation_fix_for_test.py
 ```

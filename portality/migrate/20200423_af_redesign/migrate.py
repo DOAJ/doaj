@@ -348,6 +348,8 @@ def bibjson_migration(source, target):
         if policy_url == "":
             policy_url = None
         tbj.set_preservation(known, policy_url)
+        if len(known) == 0:
+            tbj.has_preservation = False
     if nat_lib is not None:
         tbj.add_preservation_library(nat_lib)
 
