@@ -189,12 +189,15 @@ def login():
 
         # If we have a verified user account, proceed to attempt login
         try:
-            if user is not None and user.check_password(password):
-                login_user(user, remember=True)
-                flash('Welcome back.', 'success')
-                return redirect(get_redirect_target(form=form))
+            if user is not None:
+                if user.check_password(password):
+                    login_user(user, remember=True)
+                    flash('Welcome back.', 'success')
+                    return redirect(get_redirect_target(form=form))
+                else:
+                    form.password.errors.append('The password you entered is incorrect. Try again or <a href="{0}">reset your password</a>.'.format(url_for(".forgot")))
             else:
-                form.password.errors.append('The password you entered is incorrect. Try again or <a href="{0}">reset your password</a>.'.format(url_for(".forgot")))
+                form.user.errors.append('Account not recognised. If you entered an email address, try your username instead.')
         except KeyError:
             # Account has no password set, the user needs to reset or use an existing valid reset link
             FORGOT_INSTR = '<a href="{url}">&lt;click here&gt;</a> to send a new reset link.'.format(url=url_for('.forgot'))
