@@ -908,7 +908,7 @@ $.extend(true, doaj, {
                     var embedClass = edges.css_classes(this.namespace, "embed", this);
                     embed = '<p>Embed this search in your site</p>\
                     <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>\
-                    <p><a class="button button--secondary" data-dismiss="modal" class="modal__close">Close</a></p>';
+                    <p><button class="button button--secondary" data-dismiss="modal" class="modal__close">Close</button></p>';
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
@@ -2453,7 +2453,7 @@ $.extend(true, doaj, {
                         <div class="modal__dialog" role="document">\
                             <h2 class="modal__title">Delete this application</h2>\
                             <p>Are you sure you want to delete your application for <span class="' + deleteTitleClass + '"></span></p> \
-                            <a href="#" class="button button--primary ' + deleteLinkClass + '">Yes, delete it</a> <a class="button button--secondary" data-dismiss="modal" class="modal__close">No</a>\
+                            <button href="#" class="button button--primary ' + deleteLinkClass + '">Yes, delete it</button> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
@@ -2642,7 +2642,7 @@ $.extend(true, doaj, {
                         <div class="modal__dialog" role="document">\
                             <h2 class="modal__title">Delete this update request</h2>\
                             <p>Are you sure you want to delete your update request for <span class="' + deleteTitleClass + '"></span></p> \
-                            <a href="#" class="button button--primary ' + deleteLinkClass + '">Yes, delete it</a> <a class="button button--secondary" data-dismiss="modal" class="modal__close">No</a>\
+                            <button href="#" class="button button--primary ' + deleteLinkClass + '">Yes, delete it</button> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
