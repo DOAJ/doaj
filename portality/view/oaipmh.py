@@ -130,10 +130,9 @@ def decode_set_spec(setspec):
     # switch the ~ for =
     setspec = setspec.replace("~", "=")
 
-    # base64 decode
-    decoded = base64.urlsafe_b64decode(setspec)
-
     try:
+        # base64 decode
+        decoded = base64.urlsafe_b64decode(setspec)
         decoded = decoded.decode("utf-8")
     except:
         raise SetSpecException()
