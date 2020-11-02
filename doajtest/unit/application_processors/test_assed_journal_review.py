@@ -19,11 +19,6 @@ def editor_group_pull(cls, field, value):
     eg.set_name("Test Editor Group")
     return eg
 
-mock_lcc_choices = [
-    ('H', 'Social Sciences'),
-    ('HB1-3840', '--Economic theory. Demography')
-]
-
 def mock_lookup_code(code):
     if code == "H": return "Social Sciences"
     if code == "HB1-3840": return "Economic theory. Demography"
@@ -47,18 +42,12 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         self.editor_group_pull = models.EditorGroup.pull_by_key
         models.EditorGroup.pull_by_key = editor_group_pull
 
-        self.old_lcc_choices = lcc.lcc_choices
-        lcc.lcc_choices = mock_lcc_choices
-
         self.old_lookup_code = lcc.lookup_code
         lcc.lookup_code = mock_lookup_code
 
     def tearDown(self):
         super(TestAssociateEditorJournalReview, self).tearDown()
-
         models.EditorGroup.pull_by_key = self.editor_group_pull
-        lcc.lcc_choices = self.old_lcc_choices
-
         lcc.lookup_code = self.old_lookup_code
 
 
@@ -92,7 +81,6 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         # test each of the workflow components individually ...
 
         # run the validation itself
-        fc.form.subject.choices = mock_lcc_choices # set the choices allowed for the subject manually (part of the test)
         assert fc.validate(), fc.form.errors
 
         # run the crosswalk (no need to look in detail, xwalks are tested elsewhere)

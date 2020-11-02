@@ -82,15 +82,6 @@ class TestCrosswalks(DoajTestCase):
 
         compare = deepcopy(APPLICATION_FORMINFO)
         assert form == compare, diff_dicts(form, compare, 'xwalked', 'fixture')
-        
-    def test_04_application_license_other_text_broken(self):
-        af = APPLICATION_FORM
-        af["license_other"] = "None",
-
-        form = forms.ManEdApplicationReviewForm(formdata=MultiDict(af))
-        obj = ApplicationFormXWalk.form2obj(form)
-
-        assert obj.bibjson().get_license_type() == "None"
 
     def test_05_doaj_article_xml_xwalk(self):
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
