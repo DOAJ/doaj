@@ -276,7 +276,8 @@ class RegexpOnTagList(object):
 
 
 class ThisOrThat(MultiFieldValidator):
-    def __init__(self, other_field_name, *args, **kwargs):
+    def __init__(self, other_field_name, message=None, *args, **kwargs):
+        self.message = message
         super(ThisOrThat, self).__init__(other_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
@@ -284,7 +285,9 @@ class ThisOrThat(MultiFieldValidator):
         this = bool(field.data)
         that = bool(other_field.data)
         if not this and not that:
-            raise validators.ValidationError("Either this field or " + other_field.label.text + " is required")
+            if not self.message:
+                self.message = "Either this field or " + other_field.label.text + " is required"
+            raise validators.ValidationError(self.message)
 
 
 class ReservedUsernames(object):
