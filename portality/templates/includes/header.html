@@ -52,13 +52,13 @@
                             </ul>
                         </li>
                         <li class="dropdown primary-nav__item_desktop">
-                            <a href="/apply/" class="dropdown__trigger nav-bar__link" id="action-menu-apply" role="button" aria-haspopup="true" aria-expanded="false">
+                            <a href="{{ url_for('apply.public_application') }}" class="dropdown__trigger nav-bar__link" id="action-menu-apply" role="button" aria-haspopup="true" aria-expanded="false">
                                 Apply
                                 <span data-feather="chevron-down" aria-hidden="true"></span>
                             </a>
                             <ul class="dropdown__menu" aria-labelledby="action-menu-apply">
                                 <li>
-                                    <a href="/apply/" class="dropdown__link">
+                                    <a href="{{ url_for('apply.public_application') }}" class="dropdown__link">
                                         Application form
                                     </a>
                                 </li>
