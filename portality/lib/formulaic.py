@@ -348,6 +348,19 @@ class FormulaicContext(object):
 
         return reps
 
+    def disabled_fields(self, parent=None):
+        if parent is None:
+            parent = self
+
+        disableds = []
+        for fs in self._definition.get("fieldsets", []):
+            for f in fs.get("fields", []):
+                field = FormulaicField(f, parent)
+                if field.is_disabled:
+                    disableds.append(field)
+
+        return disableds
+
     def fieldset(self, fieldset_name):
         for fs in self._definition.get("fieldsets", []):
             if fs.get("name") == fieldset_name:
@@ -844,6 +857,21 @@ class FormProcessor(object):
             if min > len(wtf.entries):
                 for i in range(len(wtf.entries), min):
                     wtf.append_entry()
+
+        # patch over any disabled fields
+        # FIXME: this is very problematic, I don't think we can reset disabled fields here, as the nature
+        # by which they are reset is dependent on how the post-processing on the form happens, and that's not
+        # something we can do generally in this function.  It probably belongs in the specific form processor
+        """
+        disableds = self._formulaic.disabled_fields()
+        if len(disableds) > 0:
+            alt_formulaic = self._formulaic.__class__(self._formulaic.name, self._formulaic._definition, self._formulaic._formulaic)
+            other_processor = alt_formulaic.processor(source=self.source)
+            other_form = other_processor.form
+            for dis in disableds:
+                wtf = dis.wtfield
+                wtf.data = other_form._fields[dis.get("name")].data
+        """
 
     def patch_target(self):
         """
