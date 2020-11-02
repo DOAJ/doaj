@@ -502,7 +502,7 @@ class FieldDefinitions:
             {"display": "CC BY-NC-ND", "value": "CC BY-NC-ND"},
             {"display": "CC0", "value": "CC0"},
             {"display": "Public domain", "value": "Public domain"},
-            {"display": "Publisher's own license", "value": "Publisher's own license", "exclusive": True, "subfields": ["license_attributes"]},
+            {"display": "Publisher's own license", "value": "Publisher's own license", "subfields": ["license_attributes"]},
         ],
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
