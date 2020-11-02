@@ -27,18 +27,21 @@ def api_v2_root():
 
 @blueprint.route('/docs')
 def docs():
-    return redirect(url_for('doaj.docs'))
+    account_url = None
+    if current_user.is_authenticated:
+        account_url = url_for('account.username', username=current_user.id, _external=True,
+                              _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
+    return render_template('api/v2/api_docs.html',
+                           api_version=API_VERSION_NUMBER,
+                           base_url=url_for('.api_v2_root', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
+                           contact_us_url=url_for('doaj.contact'),
+                           account_url=account_url)
 
 
 @blueprint.route('/swagger.json')
 def api_spec():
     swag = swagger(app)
     swag['info']['title'] = ""
-
-    # Generate the swagger description from the Jinja template
-    account_url = None
-    if current_user.is_authenticated:
-        account_url = url_for('account.username', username=current_user.id, _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
     swag['info']['version'] = API_VERSION_NUMBER
     swag['info']['base_url'] = app.config.get("BASE_URL")
 

@@ -22,11 +22,15 @@
 
 ul,
 ol {
-  list-style: initial;
+    list-style: initial;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
 }
 
 .swagger-section .swagger-ui-wrap .footer {
     visibility: hidden;
 }
 
-
+.swagger-section a {
+    width: 4rem !important;
+}
