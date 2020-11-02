@@ -2,7 +2,7 @@
 <html dir="ltr" lang="en">
 <head>
   <meta charset="utf-8">
-  <title>{% block page_title %}Directory of Open Access Journals{% endblock %}</title>
+  <title>{% block page_title %}{% endblock %} Directory of Open Access Journals (DOAJ)</title>
   <meta name="description" content="{% block meta_description %}DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.{% endblock %}">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 
@@ -53,7 +53,7 @@
     {% include "doaj/cookie_consent.html" %}
 {% endif %}
 
-<body class="{% block body_class %}{% endblock %}">
+<body class="{% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
 
   {% include "includes/header.html" %}
 
@@ -61,22 +61,20 @@
         {% block content %}{% endblock %}
     {% endblock %}
 
+    {% include "includes/footer.html" %}
+
     {% include '_js_includes.html' %}
 
     {% block extra_js_bottom %}{% endblock extra_js_bottom %}
 
-  {% include "includes/footer.html" %}
-
-  {% if not request.cookies.get("doaj-consent") %}
-
-    <script type="text/javascript">
-    jQuery(document).ready(function() {
-        $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
-        $(".site-note-dismiss").on("click", dissmissSiteNote);
-    });
-    </script>
-
-  {% endif %}
+    {% if not request.cookies.get("doaj-consent") %}
+      <script type="text/javascript">
+      jQuery(document).ready(function() {
+          $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
+          $(".site-note-dismiss").on("click", dissmissSiteNote);
+      });
+      </script>
+    {% endif %}
 
 </body>
 </html>

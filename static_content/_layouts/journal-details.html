@@ -230,7 +230,7 @@
                     {% assign lcc_codes = journal.lcc | split: "|" %}
                     <dd>
                       {% for code in lcc_codes %}
-                        <a href="{{ site.baseurl }}{% link search/journals.md %}">{{ code }}</a>{% if forloop.last %}{% else %}, {% endif %}
+                        <a href="#">{{ code }}</a>{% if forloop.last %}{% else %}, {% endif %}
                       {% endfor %}
                     </dd>
 

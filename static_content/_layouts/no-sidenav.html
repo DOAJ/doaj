@@ -17,6 +17,19 @@
             <div class="col-md-8">
               {{ content }}
             </div>
+
+            {% if page.aside %}
+            <div class="col-md-4">
+              <aside class="promo">
+                <p class="label">Just so you know&hellip;</p>
+                <h2 class="promo__heading">Editorial disclaimer</h2>
+                <p class="promo__text">
+                  You are responsible for providing accurate information when submitting your application. If the information provided is not sufficient or is incomplete, the application may be rejected.
+                  <a href="{{ site.baseurl }}guide#editorial-disclaimer" class="promo__link">Read our full disclaimer</a>
+                </p>
+              </aside>
+            </div>
+            {% endif %}
           </div>
         </header>
       {% if page.highlight %}</div>{% endif %}

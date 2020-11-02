@@ -9,9 +9,9 @@
     {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
     {% if f.has_widget("multiple_field") or f.has_widget("infinite_repeat") %}
         {% set add_button %}
-            <div class="add_field__button_div">
+            <p class="add_field__button_div">
                 <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add </button>
-            </div>
+            </p>
         {% endset %}
 
         {% if f.repeatable.add_button_placement == "top" %}

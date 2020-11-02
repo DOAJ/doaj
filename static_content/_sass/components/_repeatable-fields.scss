@@ -4,6 +4,7 @@
   @include unstyled-list;
 
   li {
+    @extend .input-group;
     width: 50%;
 
     + li {

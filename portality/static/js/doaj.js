@@ -12,12 +12,10 @@ var doaj = {
             nav.classList.toggle("secondary-nav__menu-toggle--active");
         }, false);
 
-        // Back-to-top button
+        // Display back-to-top button on scroll
         var topBtn = document.getElementById("top");
 
-        window.onscroll = function() {scrollFunction()};
-
-        function scrollFunction() {
+        function displayTopBtn() {
             if (topBtn) {
                 if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
                     topBtn.style.display = "flex";
@@ -27,18 +25,28 @@ var doaj = {
             }
         }
 
-        // When the user clicks on the button, scroll to the top of the document
-        function topFunction() {
-            document.body.scrollTop = 0; // For Safari
-            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        // Hide header menu on down scroll; display on scroll up
+        var prevScrollPos = window.pageYOffset;
+
+        function hideNav() {
+            var currentScrollPos = window.pageYOffset;
+
+            if (prevScrollPos > currentScrollPos) {
+                document.getElementById("primary-nav").style.top = "0";
+            } else {
+                document.getElementById("primary-nav").style.top = "-50px";
+            }
+
+            prevScrollPos = currentScrollPos;
         }
 
-        // Offset when clicking on anchor link or sidenav link to compensate for fixed header
-        var headerHeight = 70;
+        window.onscroll = function() {
+            displayTopBtn();
+            hideNav();
+        };
 
-        // When on the same page
+        // Tabs
         jQuery (function($) {
-            // Tabs
             $("[role='tab']").click(function(e) {
                 e.preventDefault();
                 $(this).attr("aria-selected", "true");
@@ -47,48 +55,15 @@ var doaj = {
                 $(tabpanelShow).attr("aria-hidden", "false");
                 $(tabpanelShow).siblings().attr("aria-hidden", "true");
             });
-
-            $('a[href*="#"]:not([href="#"]):not([role="tab"])').click(function() {
-                var target = $(this.hash);
-                $('html,body').animate({
-                    scrollTop: target.offset().top - headerHeight
-                }, 50, 'linear');
-            });
-            if (location.hash){
-                var id = $(location.hash);
-            }
-
-            $(window).on('load', function() {
-                if (location.hash){
-                    let offset = id.offset();
-                    if (offset) {
-                        $('html,body').animate({
-                            scrollTop: offset.top - headerHeight
-                        }, 50, 'linear')
-                    }
-                }
-            });
         });
 
-        // Coming from another page
-        jQuery (document).ready (function($) {
-            var hash= window.location.hash;
-            if ( hash === '' || hash === '#' || hash === undefined ) return false;
-            var target = $(hash);
-            target = target.length ? target : $('[name=' + hash.slice(1) +']');
-            if (target.length) {
-                $('html,body').animate({
-                    scrollTop: target.offset().top - headerHeight //offsets for fixed header
-                }, 50, 'linear');
-            }
-        } );
-
+        // Close flash notifications
         jQuery(document).ready(function($) {
             $(".flash_close").on("click", function(event) {
                 event.preventDefault();
                 var container = $(this).parents(".flash_container");
                 container.remove();
-            })
+            });
         });
     },
 

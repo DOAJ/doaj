@@ -1,26 +1,28 @@
 {% extends "layouts/base.html" %}
 
-{% block content %}
-    <main class="page-content">
-        <section class="container">
-            <div class="row">
-                <div class="col-md-6">
-                        <h3>Unable to login</h3>
-                    <p>If you forgot your password, or if your password reset link has expired,
-                        enter your email address in the box and click "reset your password".</p>
-                    <p><strong>NOTE: </strong>You must know your correct email, and you must have access to the account associated
-                    to the email address you used, as your password reset instructions will be sent there.</p>
-                    <p>If you do not know these things, <a href="/contact">contact us directly</a> for further help.</p>
-                </div>
-                <div class="col-md-6">
-                    <form method="POST" action="">
-                        <h3>Email address</h3>
-                        <input style="width: 70%" type="text" name="un"><br>
-                        <input type="submit" value="Reset your password" class="btn btn-primary">
-                    </form>
-                </div>
-            </div>
-        </section>
-    </main>
-{% endblock %}
+{% block page_title %}Reset your password &ndash; {% endblock %}
 
+{% block content %}
+<main class="page-content">
+    <section class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Reset your password</h1>
+                <p>If you forgot your password, or if your password reset link has expired,
+                    enter your email address or account username in the box and click "reset your password".</p>
+                <p><strong>NOTE: </strong>You must know your correct email, and you must have access to the account associated
+                to the email address you used, as your password reset instructions will be sent there.</p>
+                <p>If you do not know these things, <a href="/contact">contact us directly</a> for further help.</p>
+            </div>
+            <br/>
+            <div class="col-md-6">
+                <form method="POST" action="">
+                    <label for="email">Email address or username</label>
+                    <input style="width: 70%" type="text" name="un" id="email"><br>
+                    <input type="submit" value="Reset your password" class="button button--primary">
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

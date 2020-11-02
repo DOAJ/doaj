@@ -126,18 +126,19 @@ $.extend(true, doaj, {
                 }
 
                 var frag = titleBarFrag + '\
+                    <p id="share_embed"></p>\
                     <h2 id="result-count"></h2>\
                     <div class="row">\
                         <div class="col-md-3">\
                             <aside class="filters">\
                               <h2 class="filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
-                                <span data-feather="sliders" aria-hidden="true"></span> Refine search results: \
+                                <span data-feather="sliders" aria-hidden="true"></span> Refine search results \
                                 <span data-feather="chevron-down" aria-hidden="true"></span>\
                               </h2>\
-                                <ul class="collapse filters__list" id="filters" aria-expanded="false">\
-                                    {{FACETS}}\
-                                </ul>\
-                                <p id="share_embed"></p>\
+                              <ul class="collapse filters__list" id="filters" aria-expanded="false">\
+                                  {{FACETS}}\
+                              </ul>\
+                            </aside>\
                         </div>\
                             \
                         <div class="col-md-9">\
@@ -145,8 +146,8 @@ $.extend(true, doaj, {
                             <nav class="search-options">\
                                 <h3 class="sr-only">Display options</h3>\
                                 <div class="row">\
-                                    <div class="col-xs-6" id="sort_by"></div>\
-                                    <div class="col-xs-6 search-options__right" id="rpp"></div>\
+                                    <div class="col-sm-6" id="sort_by"></div>\
+                                    <div class="col-sm-6 search-options__right" id="rpp"></div>\
                                 </div>\
                             </nav>\
                             <nav class="pagination" id="top-pager"></nav>\
@@ -236,7 +237,7 @@ $.extend(true, doaj, {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
                 var placeholder = 'Search ' + this.component.nodeCount + ' subjects';
-                var frag = '<h3 class="filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
+                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
                     <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
                         <label for="' + searchId + '" class="sr-only">' + placeholder + '</label>\
                         <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '">\
@@ -511,7 +512,7 @@ $.extend(true, doaj, {
                 var clearClass = edges.css_classes(this.namespace, "reset", this);
                 var clearFrag = "";
                 if (this.clearButton) {
-                    clearFrag = '<button type="button" class="tag ' + clearClass + '" title="Clear all search and sort parameters and start again"> \
+                    clearFrag = '<button type="button" class="tag tag--secondary ' + clearClass + '" title="Clear all search and sort parameters and start again"> \
                             Clear all \
                         </button>';
                 }
@@ -1876,7 +1877,7 @@ $.extend(true, doaj, {
                             <span data-feather="x" aria-hidden="true"></span>\
                         </a>';
 
-                    filters += '<li class="tag ' + valClass + '">' + clearFrag + '</li>';
+                    filters += '<li class="tag tag--secondary ' + valClass + '">' + clearFrag + '</li>';
                 }
 
                 if (filters === "" && this.ifNoFilters) {
@@ -2110,7 +2111,7 @@ $.extend(true, doaj, {
             this._renderPublicJournal = function(resultobj) {
                 var seal = "";
                 if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="/apply/seal" class="tag tag--featured">\
+                    seal = '<a href="/apply/seal" class="tag tag--featured" target="_blank">\
                             <span data-feather="check-circle" aria-hidden="true"></span>\
                             DOAJ Seal\
                           </a>';
@@ -2800,7 +2801,7 @@ $.extend(true, doaj, {
             this._renderPublicJournal = function(resultobj) {
                 var seal = "";
                 if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="/apply/seal" class="tag tag--featured">\
+                    seal = '<a href="/apply/seal" class="tag tag--featured" target="_blank">\
                             <span data-feather="check-circle" aria-hidden="true"></span>\
                             DOAJ Seal\
                           </a>';
@@ -3104,9 +3105,6 @@ $.extend(true, doaj, {
                     field += display;
                 } else {
                     field += edges.escapeHtml(resultobj.bibjson.title);
-                }
-                if (resultobj.admin && resultobj.admin.ticked) {
-                    field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​";
                 }
                 if (resultobj.admin && resultobj.admin.seal) {
                     field += " <br/><small><span class='tag tag--featured'>DOAJ Seal</span></small>​​";

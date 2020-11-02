@@ -168,7 +168,7 @@
                 {% for i in site.data.sponsors.gold %}
                 <div class="col-xs-6 sponsor">
                   <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
-                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                    <img src="{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
                   </a>
                 </div>
                 {% endfor %}
@@ -180,7 +180,7 @@
                 {% for i in site.data.sponsors.silver %}
                 <div class="col-xs-4 sponsor">
                   <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
-                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                    <img src="{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
                   </a>
                 </div>
                 {% endfor %}
@@ -191,7 +191,7 @@
                 {% for i in site.data.sponsors.bronze %}
                 <div class="col-xs-4 sponsor">
                   <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
-                    <img src="../../img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                    <img src="{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
                   </a>
                 </div>
                 {% endfor %}

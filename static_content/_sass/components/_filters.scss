@@ -7,7 +7,6 @@
 }
 
 .filters__heading {
-  margin-top: 0;
   margin-bottom: $spacing-04;
   cursor: default;
 
@@ -55,7 +54,7 @@
 .filter__choices {
   max-height: $spacing-07;
   height: auto;
-  overflow-y: scroll;
+  overflow-y: auto;
   @include unstyled-list;
 
   li {
@@ -75,6 +74,7 @@
     padding-left: $spacing-02;
     border-left: 1px solid $sanguine;
     overflow-y: visible;
+    max-height: -moz-max-content; // Firefox fix
     max-height: fit-content;
   }
 }
