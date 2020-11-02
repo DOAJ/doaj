@@ -9,7 +9,7 @@
     {% if current_volume %}{% set metatitle = metatitle + ', ' + 'Volume ' + current_volume %}{% endif %}
     {% if current_issue %}{% set metatitle = metatitle + ', ' + 'Issue ' + current_issue %}{% endif %}
     {% set metatitle = metatitle %}
-    {{ metatitle }} – 
+    {{ metatitle }} –
 {% endblock %}
 
 {%- block meta_description -%}
@@ -378,7 +378,9 @@
                                 <dl>
                                     {% if bibjson.publisher_name %}
                                         <dt>Publisher</dt>
-                                        <dd>{{bibjson.publisher_name}}{% if bibjson.publisher_country %}, {{bibjson.publisher_country_name()}}{% endif %}</dd>
+                                        <dd>
+                                          <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22terms%22%3A%7B%22bibjson.publisher.name.exact%22%3A%5B%22{{ bibjson.publisher_name|safe }}%22%5D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D" target="_blank">{{bibjson.publisher_name}}</a>{% if bibjson.publisher_country %}, {{bibjson.publisher_country_name()}}{% endif %}
+                                        </dd>
                                     {% endif %}
 
                                     {% if bibjson.institution_name %}
