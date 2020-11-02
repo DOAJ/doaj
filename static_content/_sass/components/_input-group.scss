@@ -8,6 +8,10 @@
   border-collapse: separate;
   width: 100%;
 
+  input, select, button {
+    margin-bottom: $spacing-02;
+  }
+
   &:last-of-type {
     margin: 0;
   }
