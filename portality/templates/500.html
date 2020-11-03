@@ -1,13 +1,14 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-    <main class="page-content">
-        <section class="container">
-            <h2>Oops! Something went wrong.</h2>
-
-            <p>An error has occurred. It looks like something has gone wrong.</p>
-            <p>Please contact us using the <a href="/contact" target="_blank">Contact Form</a>.</p>
-        </section>
-    </main>
-
+<main class="container page-content">
+    <section class="col-md-offset-3 col-md-6">
+        <h1><strong>500 &mdash;</strong> <br/>Internal server error</h1>
+        <p>An error has occurred. It looks like something has gone wrong.</p>
+        <p>
+            <strong>If you are looking for a specific journal</strong>, it might have been withdrawn from the index.<br/><br/>
+            <a href="{{ url_for('doaj.contact') }}" class="button">Contact us</a>
+        </p>
+    </section>
+</main>
 {% endblock %}

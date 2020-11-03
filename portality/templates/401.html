@@ -1,15 +1,14 @@
 {% extends "layouts/base.html" %}
 
 {% block content %}
-    <main class="page-content">
-        <section class="container">
-
-
-        <h2>Unauthorised</h2>
-
+<main class="container page-content">
+    <section class="col-md-offset-3 col-md-6">
+        <h1><strong>401 &mdash;</strong> <br/>Unauthorised</h1>
         <p>Sorry, you are not authorised to view this.</p>
-        </section>
-    </main>
-
-
+        <p>
+            <strong>If you are looking for a specific journal</strong>, it might have been withdrawn from the index.<br/><br/>
+            <a href="{{ url_for('doaj.contact') }}" class="button">Contact us</a>
+        </p>
+    </section>
+</main>
 {% endblock %}
