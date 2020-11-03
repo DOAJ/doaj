@@ -411,7 +411,7 @@
                                         <dt>Keywords</dt>
                                         <dd>
                                             {% for keyword in bibjson.keywords %}
-                                                <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ keyword|safe }}%22%2C%22default_operator%22%3A%22AND%22%2C%22default_field%22%3A%22bibjson.keywords%22%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D" class="tag">{{ keyword }}</a>
+                                                <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ keyword|safe }}%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D" class="tag">{{ keyword }}</a>
                                             {% endfor %}
                                         </dd>
                                     {% endif %}
