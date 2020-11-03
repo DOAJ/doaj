@@ -899,7 +899,7 @@ class JournalLikeBibJSON(SeamlessMixin):
             return lobj['type']
         return None
         """
-        raise RuntimeError("get_lcense_type is not back compat")
+        raise RuntimeError("get_license_type is not back compat")
 
     @property
     def editorial_review(self):

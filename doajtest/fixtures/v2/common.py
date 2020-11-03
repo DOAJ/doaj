@@ -1,7 +1,7 @@
 NOTES_FORM_EXPANDED = {
     'notes': [
-        {'date': '2014-05-22T00:00:00Z', 'note': 'Second Note'},
-        {'date': '2014-05-21T14:02:45Z', 'note': 'First Note'}
+        {'note_date': '2014-05-22T00:00:00Z', 'note': 'Second Note', "note_id" : "abcd"},
+        {'note_date': '2014-05-21T14:02:45Z', 'note': 'First Note', "note_id" : "1234"}
     ]
 }
 

@@ -744,27 +744,39 @@ window.Parsley.addValidator("differentTo", {
 });
 
 window.Parsley.addValidator("onlyIf", {
-    validateString : function(value, requirement, parsleyInstance) {
+    validateMultiple : function(values, requirement, parsleyInstance) {
+        let value = values[0];
         if (!!value){
             let fields = requirement.split(",");
             for (var i = 0; i < fields.length; i++) {
                 let field = fields[i];
-                let value = parsleyInstance.$element.attr("data-parsley-only-if-value_" + field);
+                let otherValue = parsleyInstance.$element.attr("data-parsley-only-if-value_" + field);
                 let not = parsleyInstance.$element.attr("data-parsley-only-if-not_" + field);
-                if (value) {
-                     if ($("[name=" + field + "]").val() !== value) {
-                         return false;
-                     }
+
+                let other = $("[name=" + field + "]");
+                let type = other.attr("type");
+                if (type === "checkbox" || type === "radio") {
+                    let checked = other.filter(":checked");
+                    if (checked.length === 0) {
+                        return false;
+                    }
+                    other = checked;
                 }
+
+                if (otherValue) {
+                    if (other.val() !== otherValue) {
+                        return false;
+                    }
+                }
+
                 if (not) {
-                    if ($("[name=" + field + "]").val() === not) {
+                    if (other.val() === not) {
                          return false;
-                     }
+                    }
                 }
             }
             return true;
-        }
-        else {
+        } else {
             return true;
         }
     },
@@ -780,13 +792,23 @@ window.Parsley.addValidator("notIf", {
             let fields = requirement.split(",");
             for (var i = 0; i < fields.length; i++) {
                 let field = fields[i];
-                if (!!$("[name=" + field + "]").val()) {
+
+                let other = $("[name=" + field + "]");
+                let type = other.attr("type");
+                if (type === "checkbox" || type === "radio") {
+                    let checked = other.filter(":checked");
+                    if (checked.length === 0) {
+                        return false;
+                    }
+                    other = checked;
+                }
+
+                if (!!other.val()) {
                      return false;
-                 }
+                }
             }
             return true;
-        }
-        else {
+        } else {
             return true;
         }
     },

@@ -38,6 +38,11 @@ class JournalGenericXWalk(object):
 
     @classmethod
     def form2bibjson(cls, form, bibjson):
+        # pre-strip all the form content whitespace
+        for field in form:
+            if hasattr(field.data, "strip"):
+                field.data = field.data.strip()
+
         if form.alternative_title.data:
             bibjson.alternative_title = form.alternative_title.data
 
