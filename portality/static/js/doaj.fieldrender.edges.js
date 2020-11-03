@@ -146,8 +146,8 @@ $.extend(true, doaj, {
                             <nav class="search-options">\
                                 <h3 class="sr-only">Display options</h3>\
                                 <div class="row">\
-                                    <div class="col-sm-6" id="sort_by"></div>\
-                                    <div class="col-sm-6 search-options__right" id="rpp"></div>\
+                                    <form class="col-sm-6" id="sort_by"></form>\
+                                    <form class="col-sm-6 search-options__right" id="rpp"></form>\
                                 </div>\
                             </nav>\
                             <nav class="pagination" id="top-pager"></nav>\
@@ -3006,7 +3006,7 @@ $.extend(true, doaj, {
                 }
 
                 // assemble the final fragment and render it into the component's context
-                var frag = '<div class="row"><div class="col-md-12">{{SORT}}</div></div>';
+                var frag = '{{SORT}}';
                 frag = frag.replace(/{{SORT}}/g, sortOptions);
 
                 comp.context.html(frag);
