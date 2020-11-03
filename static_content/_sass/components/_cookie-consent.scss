@@ -17,6 +17,11 @@
   }
 
   .button {
-    color: $warm-black
+    color: $warm-black;
+
+    &:hover, &:active, &:focus {
+      color: $warm-white;
+      border-color: $warm-white;
+    }
   }
 }
