@@ -400,14 +400,18 @@
                                 <dl>
                                     {% for path in bibjson.lcc_paths() %}
                                         {% if loop.index0 == 0 %}<dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span><span class="sr-only">Look up the Library of Congress Classification Outline</span></a></dt>{% endif %}
-                                        <dd>{{ path }}</dd>
+                                        <dd>
+                                            <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ path }}%22%2C%22default_operator%22%3A%22AND%22%2C%22default_field%22%3A%22index.classification%22%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D">
+                                                {{ path }}
+                                            </a>
+                                        </dd>
                                     {% endfor %}
 
                                     {% if bibjson.keywords %}
                                         <dt>Keywords</dt>
                                         <dd>
                                             {% for keyword in bibjson.keywords %}
-                                                <a href="{{ url_for("doaj.journals_search") }}?ref=toc&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ keyword|safe }}%22%2C%22default_operator%22%3A%22AND%22%2C%22default_field%22%3A%22bibjson.keywords%22%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D" class="tag">{{ keyword }}</a>
+                                                <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ keyword|safe }}%22%2C%22default_operator%22%3A%22AND%22%2C%22default_field%22%3A%22bibjson.keywords%22%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D" class="tag">{{ keyword }}</a>
                                             {% endfor %}
                                         </dd>
                                     {% endif %}
