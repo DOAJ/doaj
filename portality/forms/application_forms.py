@@ -1123,7 +1123,7 @@ class FieldDefinitions:
                           "<li>Accepted version (Author Accepted Manuscript)</li>"
                           "<li>Published version (Version of Record)</li>"
                           "</ul>",
-                          "For a journal to qualify for the DOAJ Seal, it must allow all versions to be deposited in an institutional or other repository of the author's choice without embargo.,"
+                          "For a journal to qualify for the DOAJ Seal, it must allow all versions to be deposited in an institutional or other repository of the author's choice without embargo."
                           ]},
         "validate": [
             "required"
