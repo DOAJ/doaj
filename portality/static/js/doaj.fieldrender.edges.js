@@ -120,7 +120,7 @@ $.extend(true, doaj, {
                             <span data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-help" type="button"></span><span class="sr-only">Help</span> \
                         </h1> \
                         <div class="row">\
-                            <div id="search-input-bar" class="col-md-9"></div>\
+                            <form id="search-input-bar" class="col-md-9" role="search"></form>\
                         </div>\
                     </header>';
                 }
@@ -1062,8 +1062,8 @@ $.extend(true, doaj, {
 
                 var searchClass = edges.css_classes(this.namespace, "search", this);
                 var button = '<button class="' + searchClass + ' input-group__input" type="submit">\
-                        <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>\
-                    </button>';
+                              <span data-feather="search" aria-hidden="true"></span>\
+                              <span class="sr-only"> Search</span></button>';
 
                 // if (clearFrag !== "") {
                 //     clearFrag = '<div class="col-md-1 col-xs-12">' + clearFrag + "</div>";
