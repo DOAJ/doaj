@@ -1,18 +1,22 @@
 {% extends "layouts/base.html" %}
 
+{% block page_title %}404: Page not found &ndash; {% endblock %}
+
+{% block body_class %}error-page{% endblock %}
+
 {% block content %}
-    <main class="page-content">
-        <section class="container">
-
-            <h2>An error has occured</h2>
-
-            <p>Uh-oh! An error has occured. It looks like something has gone wrong.</p>
-            <p>If you are trying to reset your password, the link expires after 24 hours. Try resetting the password again and see if a new
-            link works.</p>
-            <p>If you are looking for a piece of content, it looks like that item has either been removed from DOAJ or has moved. Send
-            feedback to us by using the <a href="/contact" target="_blank">Contact Form</a>.</p>
-
-        </section>
-    </main>
-
+<main class="container page-content">
+    <section class="col-md-offset-3 col-md-6">
+        <h1><strong>404 &mdash;</strong> <br/>Page not found!</h1>
+        <p>That didn't work. The content you are looking for may have moved.</p>
+        <p>
+            <strong>If you are trying to reset your password</strong>, the link may have expired.<br/><br/>
+            <a href="{{ url_for('account.forgot') }}" class="button">Try resetting the password again</a>
+        </p>
+        <p>
+            <strong>If you are looking for a specific journal</strong>, it might have been withdrawn from the index.<br/><br/>
+            <a href="{{ url_for('doaj.contact') }}" class="button">Contact us</a>
+        </p>
+    </section>
+</main>
 {% endblock %}
