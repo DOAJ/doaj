@@ -2218,6 +2218,9 @@ $.extend(true, doaj, {
                           <h3 class="search-results__heading">\
                             <a href="/toc/' + issn + '">\
                               ' + edges.escapeHtml(resultobj.bibjson.title) + '\
+                              <sup>\
+                                <span data-feather="link" aria-hidden="true"></span>\
+                              </sup>\
                             </a>\
                             ' + subtitle + '\
                           </h3>\
