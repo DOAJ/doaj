@@ -30,7 +30,7 @@ class UserEditForm(Form):
     # id = StringField('ID', [IgnoreUnchanged(), ReservedUsernames(), IdAvailable()])
 
     name = StringField('Account name', [DataOptional(), validators.Length(min=3, max=64)])
-    email = StringField('Email Address', [
+    email = StringField('Email address', [
         IgnoreUnchanged(),
         validators.Length(min=3, max=254),
         validators.Email(message='Must be a valid email address'),
@@ -303,7 +303,7 @@ def logout():
 class RegisterForm(RedirectForm):
     identifier = StringField('ID', [ReservedUsernames(), IdAvailable()])
     name = StringField('Name', [validators.Optional(), validators.Length(min=3, max=64)])
-    email = StringField('Email Address', [
+    email = StringField('Email address', [
         validators.DataRequired(),
         validators.Length(min=3, max=254),
         validators.Email(message='Must be a valid email address'),

@@ -2,33 +2,39 @@
 
     {% from "_formhelpers.html" import render_field %}
 
-    <form id="edit_user" action="" method="POST">
+    <form id="edit_user" class="form form--compact" action="" method="POST">
 
         {# {% if current_user.is_super %}
-            {{ render_field(form.id, style="width: 75%") }}
+            {{ render_field(form.id) }}
             <br/>
         {% endif %}#}
 
-        {{ render_field(form.name, placeholder="Firstname Lastname") }}
-        <br/>
-        {{ render_field(form.email, placeholder="enter your email address") }}
-        <br/>
-        {{ render_field(form.email_confirm, value='', placeholder="confirm email address change") }}
-        <div style="width: 80%; padding-top:0.5rem">
-            <p><small><strong>NOTE: </strong>Changing your email address will log you out. You will need to verify the new email address and enter a new password.</small></p>
-        </div>
         {% if current_user.is_super %}
-            {{ render_field(form.roles, value=account.role|join(','), style="width: 75%") }}
+        <div class="form__question">
+            {{ render_field(form.roles, value=account.role|join(',')) }}
+        </div>
         {% else %}
+
+        <div class="form__question">{{ render_field(form.name, placeholder="Firstname Lastname") }}</div>
+
+        <p class="alert">
+          <strong>NOTE: </strong>Changing your email address will log you out. You will need to verify the new email address and enter a new password.
+        </p>
+
+        <div class="form__question">{{ render_field(form.email, placeholder="name@email.com") }}</div>
+        <div class="form__question">{{ render_field(form.email_confirm, value='', placeholder="name@email.com") }}</div>
+
+        <div class="form__question">
             <label for="roles">User roles</label>
             <input type="text" name="roles" value="{{ account.role|join(', ') }}" disabled="disabled">
+        </div>
         {% endif %}
-        <br/>
-        {{ render_field(form.password_change, placeholder="********") }}
-        <br/>
+        <div class="form__question">
+            {{ render_field(form.password_change, placeholder="********") }}
+        </div>
+        <div class="form__question">
         {{ render_field(form.password_confirm, placeholder="********") }}
-
-        <br/>
-        <input type="submit" class="button button--primary" name="submit" value="Update Account" style="float: right; width: 35%">
+        </div>
+        <input type="submit" class="button button--secondary" name="submit" value="Update account">
     </form>
 {% endblock %}

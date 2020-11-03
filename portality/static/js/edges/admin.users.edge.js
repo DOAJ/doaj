@@ -68,11 +68,11 @@ $.extend(true, doaj, {
                         {'display':'Created Date','field':'created_date'},
                         {'display':'Last Modified Date','field':'last_updated'},
                         {'display':'User ID','field':'id'},
-                        {'display':'Email Address','field':'email'}
+                        {'display':'Email address','field':'email'}
                     ],
                     fieldOptions: [
                         {'display':'User ID','field':'id'},
-                        {'display':'Email Address','field':'email'}
+                        {'display':'Email address','field':'email'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
