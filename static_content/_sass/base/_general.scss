@@ -71,10 +71,22 @@ dl {
   dt {
     color: $dark-grey;
     @include typescale-06;
+
+    &:not(:first-child) {
+      margin-top: $spacing-04;
+    }
+  }
+
+  dd {
+    margin: 0;
+
+    + dd {
+      margin-bottom: $spacing-02;
+    }
   }
 }
 
-p, blockquote, dd, ul, ol {
+p, blockquote, ul, ol {
   margin: 0 0 $spacing-04 0;
 
   &:last-child {
