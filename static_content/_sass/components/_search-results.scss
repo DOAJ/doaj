@@ -37,10 +37,13 @@
 
   a {
     display: block;
-    text-decoration: none;
 
     &:hover, &:active, &:focus {
       color: $grapefruit;
+    }
+
+    @media (min-width: 769px) {
+      text-decoration: none;
     }
   }
 }
