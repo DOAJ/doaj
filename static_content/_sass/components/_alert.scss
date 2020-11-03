@@ -16,6 +16,16 @@
     border: 1px solid $warm-black;
   }
 
+  &--danger {
+    background-color: $grapefruit;
+    border: 0;
+
+    svg path,
+    svg line {
+      stroke: $warm-white;
+    }
+  }
+
   code {
     background-color: rgba($dark-grey, 0.1);
   }
