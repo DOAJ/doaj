@@ -17,17 +17,13 @@
 
         <div class="form__question">{{ render_field(form.name, placeholder="Firstname Lastname") }}</div>
 
-        <p class="alert">
+        <p class="alert" style="width: 75%;">
           <strong>NOTE: </strong>Changing your email address will log you out. You will need to verify the new email address and enter a new password.
         </p>
 
         <div class="form__question">{{ render_field(form.email, placeholder="name@email.com") }}</div>
         <div class="form__question">{{ render_field(form.email_confirm, value='', placeholder="name@email.com") }}</div>
 
-        <div class="form__question">
-            <label for="roles">User roles</label>
-            <input type="text" name="roles" value="{{ account.role|join(', ') }}" disabled="disabled">
-        </div>
         {% endif %}
         <div class="form__question">
             {{ render_field(form.password_change, placeholder="********") }}

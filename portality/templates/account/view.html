@@ -5,7 +5,9 @@
         <div class="row">
             <div class="col-md-8">
                 <section class="page-content" id="userview">
-                    <p></p>
+                    {% if current_user.has_role("list_users") %}
+                        <p class="label"><a href="/account">&larr; View all user accounts</a></p>
+                    {% endif %}
 
                     {% if current_user.id != account.id %}
                         <p class="alert alert--danger">
@@ -14,18 +16,15 @@
                         </p>
                     {% endif %}
 
-                    {% if current_user.has_role("list_users") %}
-                        <a href="/account" class="button">View all user accounts</a>
-                    {% endif %}
-
-                    {% if current_user.has_role("admin_journals") %}
-                        {% set Q1 = '{"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
-                        {% set Q2 = '"}}]}},"query":{"match_all":{}}}}}' %}
-                        <a href="/admin/?source={{Q1}}{{account.id}}{{Q2}}" class="button">View this user’s journals</a>
-                    {% endif %}
-
                     {% if current_user.id == account.id or current_user.is_super %}
                         <h1>Hi {{ account.name if account.name else account.email }}!</h1>
+
+                        {% if current_user.has_role("admin_journals") %}
+                            {% set Q1 = '{"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
+                            {% set Q2 = '"}}]}},"query":{"match_all":{}}}}}' %}
+                            <p><a href="/admin/?source={{Q1}}{{account.id}}{{Q2}}" class="button">View this user’s journals</a></p>
+                        {% endif %}
+
                         <dl>
                             {% if account.role|length > 0 %}
                                 <dt>Role(s)</dt>
@@ -54,9 +53,8 @@
                         <h2>Edit your details</h2>
                         {% include 'account/_edit_user_form.html' %}
 
-                        <hr/>
-
-                        {% if current_user.is_super %}
+                        {% if current_user.is_super %}à
+                            <hr/>
                             <h2>Delete this account</h2>
                             <p>This <strong>irrevocably</strong> deletes the account.</p>
                             <form action="" method="POST">
