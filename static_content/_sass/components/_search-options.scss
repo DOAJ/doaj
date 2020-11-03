@@ -8,7 +8,9 @@
 }
 
 .search-options__right {
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
+  @media (min-width: 769px) {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+  }
 }
