@@ -713,7 +713,7 @@ window.Parsley.addValidator("requiredvalue", {
         return (value === requirement);
     },
     messages: {
-        en: 'DOAJ only indexed open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.'
+        en: 'DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.'
     },
     priority: 32
 });
