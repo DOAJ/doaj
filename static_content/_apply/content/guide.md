@@ -107,7 +107,7 @@ Journals that are rejected must wait 6 months from the date of rejection before 
 
 ---
 
-##Recommendations
+## Recommendations
 
 We recommend that:
 - journals use a plagiarism checking software. You must specify the name and make of the software.
@@ -124,13 +124,13 @@ We recommend that:
 
 {:.tabular-list}
 - ### Arts and humanities journals
-   - For these disciplines only, DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
+   - For these disciplines ([pages 10-16 only](http://uis.unesco.org/sites/default/files/documents/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
 
 - ### Clinical case reports journals
    - DOAJ only considers case reports as research if they include the retrospective analysis of more than three clinical cases and/or a literature review. Before applying, make sure that the journal has published at least five articles per year that meet this definition.
 
 - ### Conference proceedings journals
-   - For DOAJ to include journals that are dedicated to publishing conference proceedings, the journal must have an ISSN and a permanent editorial or advisory board providing editorial oversight. Papers from each published conference must be peer reviewed according to DOAJ criteria. Full text of all conference papers must be available. Individual conference proceedings will not be indexed.
+   - For DOAJ to include journals that are dedicated to publishing conference proceedings, the journal must have an ISSN and a permanent editorial or advisory board providing editorial oversight. Papers from each published conference must be peer-reviewed according to DOAJ criteria. Full text of all conference papers must be available. Individual conference proceedings will not be indexed.
    
 - ### Data journals
    - DOAJ will accept journals publishing research articles about data or datasets, but not journals that simply link to datasets or announce their availability.
