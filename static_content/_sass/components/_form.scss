@@ -34,9 +34,12 @@
     }
   }
 
+  input[type="checkbox"] + label {
+    display: table;
+  }
+
   input[type="checkbox"] + label,
   input[type="radio"] + label {
-    display: table;
     font-size: 1rem;
   }
 }
