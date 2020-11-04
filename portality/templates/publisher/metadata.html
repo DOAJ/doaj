@@ -1,26 +1,25 @@
 {% extends "publisher/publisher_base.html" %}
 
 {% block publisher_content %}
-
+<div class="row">
     <header class="col-md-4">
         <h2>Enter article metadata</h2>
     </header>
 
         {% include "formcontext/_error_header.html" %}
-        
+
         {% from "_formhelpers.html" import render_field_horizontal %}
         {% from "_formhelpers.html" import render_field %}
-        
+
         <form method="post" action="{{ url_for('publisher.metadata') }}" class="col-md-8 form form--compact" id="article_metadata_form">
 
             {% include "formcontext/article_metadata_form.html" %}
 
             <button class="button button--primary" type="submit">Add Article</button>
         </form>
-
+</div>
 {% endblock %}
 
 {% block extra_js_bottom %}
     <script type="text/javascript" src="/static/js/article_metadata_form.js"></script>
 {% endblock %}
-
