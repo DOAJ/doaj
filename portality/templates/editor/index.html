@@ -2,7 +2,7 @@
 
 {% block editor_content %}
 {% for group in editor_of %}
-    <h2>Your group &mdash; <br/><em>{{group.name}}</em></h2>
+    <h2>Your group &mdash; <br/><strong>{{group.name}}</strong></h2>
     <p>&rarr; You are the <strong>Editor</strong></p>
     {% set associates = group.get_associate_accounts() %}
     <p>
@@ -20,7 +20,7 @@
 {% endfor %}
 
 {% for group in associate_of %}
-    <h2>Your group &mdash; <br/><em>{{group.name}}</em></h2>
+    <h2>Your group &mdash; <br/><strong>{{group.name}}</strong></h2>
     <p>&rarr; You are an <strong>Associate Editor</strong></p>
     {% set editor = group.get_editor_account() %}
     <p>

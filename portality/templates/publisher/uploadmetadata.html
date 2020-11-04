@@ -1,160 +1,155 @@
 {% extends "publisher/publisher_base.html" %}
 
 {% block publisher_content %}
-<div id="crossref-alert" class="alert-messages">
-   <div class="alert alert--message fade in" data-alert="alert">
-       <a class="close" data-dismiss="alert" href="#">×</a>
-       Crossref schema is still loading, uploading your file may take a bit longer than usual.
-   </div>
+<div id="crossref-alert" class="alert alert--message fade in" data-alert="alert">
+   Crossref schema is still loading, uploading your file may take a bit longer than usual.
+   <span class="alert__close" data-dismiss="alert" role="button">(Dismiss)</span>
 </div>
-<header class="col-md-4">
-  <h2>Upload article XML</h2>
 
-  <div class="alert">
-    <p>Uploaded files must conform to one of the approved XML formats:</p>
-    <ul>
-      <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
-      <li><a href="/static/crossref/crossref4.4.2.xsd">Crossref 4.4.2 XML</a></li>
-    </ul>
-  </div>
-</header>
+<div class="row">
+  <header class="col-md-4">
+    <h2>Upload article XML</h2>
 
-<form id="upload_form" class="col-md-8 form form--compact" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
-  <fieldset>
-    <h3 class="form__header">Article XML</h3>
-    <div class="form__question">
-      <label for="upload-xml-file">Select a file</label>
-      <input type="file" id="upload-xml-file" name="file">
-      <p><small>Must be less than 50Mb.</small></p>
+    <div class="alert">
+      <p>Uploaded files must conform to one of the approved XML formats:</p>
+      <ul>
+        <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
+        <li><a href="/static/crossref/crossref4.4.2.xsd">Crossref 4.4.2 XML</a></li>
+      </ul>
     </div>
-    <p>• <strong>OR</strong> •</p>
-    <div class="form__question">
-      <label for="upload-xml-link">Upload from a link</label>
-      <input type="url" id="upload-xml-link" name="upload-xml-link" placeholder="https://www.example.com">
-      <p><small>Must be less than 250Mb.</small></p>
-    </div>
+  </header>
 
-    <div class="form__question">
-      <label for="upload-xml-format">File format</label>
-      <select name="schema" class="form-control" id="upload-xml-format" require>
-        {% if schema == '' or schema == 'doaj' %}
-        <option value="doaj" selected>DOAJ Native XML</option>
-        <option value="crossref">Crossref 4.4.2 XML</option>
-        {% else %}
-        <option value="doaj">DOAJ Native XML</option>
-        <option value="crossref" selected>Crossref 4.4.2 XML</option>
-        {% endif %}
-      </select>
-    </div>
-  </fieldset>
-  <button type="submit" id="upload" class="button button--primary">Upload</button>
-</form>
+  <form id="upload_form" class="col-md-8 form form--compact" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
+    <fieldset>
+      <h3 class="form__header">Article XML</h3>
+      <div class="form__question">
+        <label for="upload-xml-file">Select a file</label>
+        <input type="file" id="upload-xml-file" name="file">
+        <p><small>Must be less than 50Mb.</small></p>
+      </div>
+      <p>• <strong>OR</strong> •</p>
+      <div class="form__question">
+        <label for="upload-xml-link">Upload from a link</label>
+        <input type="url" id="upload-xml-link" name="upload-xml-link" placeholder="https://www.example.com">
+        <p><small>Must be less than 250Mb.</small></p>
+      </div>
+
+      <div class="form__question">
+        <label for="upload-xml-format">File format</label>
+        <select name="schema" class="form-control" id="upload-xml-format" require>
+          {% if schema == '' or schema == 'doaj' %}
+          <option value="doaj" selected>DOAJ Native XML</option>
+          <option value="crossref">Crossref 4.4.2 XML</option>
+          {% else %}
+          <option value="doaj">DOAJ Native XML</option>
+          <option value="crossref" selected>Crossref 4.4.2 XML</option>
+          {% endif %}
+        </select>
+      </div>
+    </fieldset>
+    <button type="submit" id="upload" class="button button--primary">Upload</button>
+  </form>
+</div>
 
 <hr>
 
 {% if previous|length > 0 %}
+<h2>History of uploads (showing last {{previous|length}})</h2>
 
-    <h3>History of uploads (showing last {{previous|length}})</h3>
+<table id="previous_files" style="width: 100%; table-layout:fixed" class="tablesorter">
+    <thead>
+        <tr>
+            <th style="width: 17%">Upload Date</th>
+            <th style="width: 20%">Filename</th>
+            <th style="width: 12%">Format</th>
+            <th style="width: 15%">Upload Status</th>
+            <th style="width: 36%">Notes</th>
+        </tr>
+    </thead>
+{% for file in previous %}
+    <tr>
+        <td>{{ file.created_timestamp | utc_timestamp("%d %b %Y %H:%M:%S %Z") }}</td>
+        <td style="word-wrap: break-word">
+            {% if file.filename.startswith("http") %}
+                <a href="{{file.filename}}">{{file.filename}}</a>
+            {% else %}
+                {{file.filename}}
+            {% endif %}
+        </td>
+        <td>
+            {% if file.schema == "doaj" %}
+                DOAJ Native XML
+            {%  elif file.schema == "crossref" %}
+                Crossref XML
+            {% elif file.schema == "mathml" %}
+                OJS MathML
+            {% endif %}
+        </td>
+        <td>
+            {% if file.status == "incoming" %}
+                <span style="color: #000066">in submission</span>
+            {% elif file.status == "validated" %}
+                <span style="color: #000066">pending</span>
+            {% elif file.status == "exists" %}
+                <span style="color: #000066">pending</span>
+            {% elif file.status == "failed" %}
+                <span style="color: #660000"><span data-feather="alert-octagon" aria-hidden="true"></span>processing failed</span>
+            {% elif file.status == "processed" %}
+                <span style="color: #006600"><span data-feather="thumbs-up" aria-hidden="true"></span>successfully processed</span>
+            {% elif file.status == "partial" %}
+                <span style="color: #ff3300"><span data-feather="alert-triangle" aria-hidden="true"></span>partial success</span>
+            {% endif %}
+        </td>
+        <td style="word-wrap:break-word">
+            {% if file.error %}
+                {{file.error}}
+                {% if file.error == "One or more articles failed to ingest; entire batch ingest halted" %}
+                    <a target="_blank" href="{{ url_for('doaj.publishers', _anchor="Reasons for individual article import failures") }}">(what does this mean?)</a><br>
+                {% else %}
+                    <a target="_blank" href="{{ url_for('doaj.publishers', _anchor=file.error) }}">(what does this mean?)</a><br>
+                {% endif %}
+            {% else %}
+                {% if file.status == "partial" or file.status == "processed" %}
+                    {{ file.imported }} articles imported
+                    {% if file.imported > 0 %}
+                        ({{file.new}} new, {{file.updates}} updated)
+                    {% endif %}
+                    {% if file.failed_imports > 0 %}
+                        ; {{ file.failed_imports }} articles failed
+                        <a target="_blank" href="{{ url_for('doaj.publishers', _anchor='some_articles_failed') }}">(what does this mean?)</a><br>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+            {%  if file.error_details or file.failure_reasons %}
+                <div id="details_{{ file.id }}" style="display:none">
+                    {% if file.error_details %}
+                        {{ file.error_details }}
+                    {% endif %}
 
-    <div class="row">
-        <div class="col-md-12">
-            <table id="previous_files" style="width: 100%; table-layout:fixed" class="tablesorter">
-                <thead>
-                    <tr>
-                        <th style="width: 17%">Upload Date</th>
-                        <th style="width: 20%">Filename</th>
-                        <th style="width: 12%">Format</th>
-                        <th style="width: 15%">Upload Status</th>
-                        <th style="width: 36%">Notes</th>
-                    </tr>
-                </thead>
-            {% for file in previous %}
-                <tr>
-                    <td>{{ file.created_timestamp | utc_timestamp("%d %b %Y %H:%M:%S %Z") }}</td>
-                    <td style="word-wrap: break-word">
-                        {% if file.filename.startswith("http") %}
-                            <a href="{{file.filename}}">{{file.filename}}</a>
-                        {% else %}
-                            {{file.filename}}
+                    {% if file.failure_reasons %}
+                        {% if file.failure_reasons.shared %}
+                            The following ISSNs in your article metadata are owned by you and another user.  This is a problem at our end, please contact us with the details:<br>
+                            {{ file.failure_reasons.shared|join(", ") }}
+                            <br>
                         {% endif %}
-                    </td>
-                    <td>
-                        {% if file.schema == "doaj" %}
-                            DOAJ Native XML
-                        {%  elif file.schema == "crossref" %}
-                            Crossref XML
-                        {% elif file.schema == "mathml" %}
-                            OJS MathML
+                        {% if file.failure_reasons.unowned %}
+                            The following ISSNs in your article metadata are owned by another user, you cannot associate articles with them.  If you believe you should own these ISSNs, please contact us with the details:<br>
+                            {{ file.failure_reasons.unowned|join(", ") }}
+                            <br>
                         {% endif %}
-                    </td>
-                    <td>
-                        {% if file.status == "incoming" %}
-                            <span style="color: #000066">in submission</span>
-                        {% elif file.status == "validated" %}
-                            <span style="color: #000066">pending</span>
-                        {% elif file.status == "exists" %}
-                            <span style="color: #000066">pending</span>
-                        {% elif file.status == "failed" %}
-                            <span style="color: #660000"><span data-feather="alert-octagon" aria-hidden="true"></span>processing failed</span>
-                        {% elif file.status == "processed" %}
-                            <span style="color: #006600"><span data-feather="thumbs-up" aria-hidden="true"></span>successfully processed</span>
-                        {% elif file.status == "partial" %}
-                            <span style="color: #ff3300"><span data-feather="alert-triangle" aria-hidden="true"></span>partial success</span>
+                        {% if file.failure_reasons.unmatched %}
+                            The following ISSNs in your article metadata do not appear in DOAJ, you cannot associate articles with them.  If you believe these ISSNs should be associated with a journal you own, please contact us with the details:<br>
+                            {{ file.failure_reasons.unmatched|join(", ") }}
+                            <br>
                         {% endif %}
-                    </td>
-                    <td style="word-wrap:break-word">
-                        {% if file.error %}
-                            {{file.error}}
-                            {% if file.error == "One or more articles failed to ingest; entire batch ingest halted" %}
-                                <a target="_blank" href="{{ url_for('doaj.publishers', _anchor="Reasons for individual article import failures") }}">(what does this mean?)</a><br>
-                            {% else %}
-                                <a target="_blank" href="{{ url_for('doaj.publishers', _anchor=file.error) }}">(what does this mean?)</a><br>
-                            {% endif %}
-                        {% else %}
-                            {% if file.status == "partial" or file.status == "processed" %}
-                                {{ file.imported }} articles imported
-                                {% if file.imported > 0 %}
-                                    ({{file.new}} new, {{file.updates}} updated)
-                                {% endif %}
-                                {% if file.failed_imports > 0 %}
-                                    ; {{ file.failed_imports }} articles failed
-                                    <a target="_blank" href="{{ url_for('doaj.publishers', _anchor='some_articles_failed') }}">(what does this mean?)</a><br>
-                                {% endif %}
-                            {% endif %}
-                        {% endif %}
-                        {%  if file.error_details or file.failure_reasons %}
-                            <div id="details_{{ file.id }}" style="display:none">
-                                {% if file.error_details %}
-                                    {{ file.error_details }}
-                                {% endif %}
-
-                                {% if file.failure_reasons %}
-                                    {% if file.failure_reasons.shared %}
-                                        The following ISSNs in your article metadata are owned by you and another user.  This is a problem at our end, please contact us with the details:<br>
-                                        {{ file.failure_reasons.shared|join(", ") }}
-                                        <br>
-                                    {% endif %}
-                                    {% if file.failure_reasons.unowned %}
-                                        The following ISSNs in your article metadata are owned by another user, you cannot associate articles with them.  If you believe you should own these ISSNs, please contact us with the details:<br>
-                                        {{ file.failure_reasons.unowned|join(", ") }}
-                                        <br>
-                                    {% endif %}
-                                    {% if file.failure_reasons.unmatched %}
-                                        The following ISSNs in your article metadata do not appear in DOAJ, you cannot associate articles with them.  If you believe these ISSNs should be associated with a journal you own, please contact us with the details:<br>
-                                        {{ file.failure_reasons.unmatched|join(", ") }}
-                                        <br>
-                                    {% endif %}
-                                {% endif %}
-                            </div>
-                            <a href="#" class="show_error_details" data-id="{{ file.id }}">(show error details)</a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </table>
-        </div>
-    </div>
-
+                    {% endif %}
+                </div>
+                <a href="#" class="show_error_details" data-id="{{ file.id }}">(show error details)</a>
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}
+</table>
 {% endif %}
 
 {% endblock %}
