@@ -112,7 +112,7 @@ Journals that are rejected must wait 6 months from the date of rejection before 
 We recommend that:
 - journals use a plagiarism checking software. You must specify the name and make of the software.
 
-- publishers are fully transparent about their operational costs in relation to publication fees.
+- publishers are fully transparent about their publication fees and other fees.
 
 - the journal publishes ORCiD IDs with the articles.
 
