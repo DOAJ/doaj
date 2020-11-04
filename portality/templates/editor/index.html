@@ -1,8 +1,9 @@
 {% extends "editor/editor_base.html" %}
 
 {% block editor_content %}
-<p class="label">User ID: <em>{{ current_user.id }}</em></p>
-<h1>Your group(s)</h1>
+<h1>
+  <span style="font-weight: normal;">Hi <em>{{ current_user.id }}!</em></span><br/>Your group(s):
+</h1>
   {% if 'editor' in current_user.role %}
     {% for group in editor_of %}
         <h2>Editor of <strong>{{group.name}}</strong></h2>
