@@ -6,11 +6,11 @@
 </h1>
   {% if 'editor' in current_user.role %}
     {% for group in editor_of %}
-        <h2>Editor of <strong>{{group.name}}</strong></h2>
+        <h2>&mdash; Editor of <strong>{{group.name}}</strong></h2>
         {% set associates = group.get_associate_accounts() %}
         <p>
         {% if associates and associates|length > 0 %}
-            <h3>Associate editors:</h3>
+            <p class="label label--tertiary">Associate editors:</<p>
             <ul class="tags">
             {% for ass in group.get_associate_accounts() %}
                 <li class="tag"><a href="mailto:{{ass.email}}"><span data-feather="mail" aria-hidden="true"></span> {{ass.id}}</a></li>
@@ -27,7 +27,7 @@
         <h2>Associate Editor of <strong>{{group.name}}</strong></h2>
         {% set editor = group.get_editor_account() %}
         <p>
-        <h3>Group editor:</h3>
+        <p class="label label--tertiary">Group editor:</p>
         <p><a href="mailto:{{editor.email}}" class="tag"><span data-feather="mail" aria-hidden="true"></span> {{editor.id}}</a><p>
         {% set associates = group.get_associate_accounts() %}
         {% if associates and associates|length > 0 %}
