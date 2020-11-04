@@ -389,7 +389,7 @@ class FieldDefinitions:
 
     PUBLISHER_NAME = {
         "name": "publisher_name",
-        "label": "Publisher Name",
+        "label": "Publisher’s name",
         "input": "text",
         "validate": [
             "required"
@@ -411,7 +411,7 @@ class FieldDefinitions:
 
     PUBLISHER_COUNTRY = {
         "name": "publisher_country",
-        "label": "Publisher Country",
+        "label": "Publisher’s country",
         "input": "select",
         "default": "",
         "options_fn": "iso_country_list",
@@ -444,7 +444,7 @@ class FieldDefinitions:
 
     INSTITUTION_NAME = {
         "name": "institution_name",
-        "label": "Society/Institution Name",
+        "label": "Society or institution’s name",
         "input": "text",
         "optional": True,
         "help": {
@@ -463,7 +463,7 @@ class FieldDefinitions:
 
     INSTITUTION_COUNTRY = {
         "name": "institution_country",
-        "label": "Society/Institution Country",
+        "label": "Society or institution’s country",
         "input": "select",
         "default" : "",
         "options_fn": "iso_country_list",
@@ -1123,7 +1123,7 @@ class FieldDefinitions:
                           "<li>Accepted version (Author Accepted Manuscript)</li>"
                           "<li>Published version (Version of Record)</li>"
                           "</ul>",
-                          "For a journal to qualify for the DOAJ Seal, it must allow all versions to be deposited in an institutional or other repository of the author's choice without embargo."
+                          "For a journal to qualify for the DOAJ Seal, it must allow all versions to be deposited in an institutional or other repository of the author’s choice without embargo."
                           ]},
         "validate": [
             "required"
@@ -1612,7 +1612,7 @@ class FieldSetDefinitions:
 
     PEER_REVIEW = {
         "name": "peer_review",
-        "label": "Peer Review",
+        "label": "Peer review",
         "fields": [
             FieldDefinitions.REVIEW_PROCESS["name"],
             FieldDefinitions.REVIEW_PROCESS_OTHER["name"],
@@ -1642,7 +1642,7 @@ class FieldSetDefinitions:
 
     APC = {
         "name": "apc",
-        "label": "Article Processing Charges",
+        "label": "Article processing charges (APCs)",
         "fields": [
             FieldDefinitions.APC["name"],
             FieldDefinitions.APC_URL["name"],
@@ -1672,7 +1672,7 @@ class FieldSetDefinitions:
 
     ARCHIVING_POLICY = {
         "name": "archiving_policy",
-        "label": "Archiving Policy",
+        "label": "Archiving policy",
         "fields": [
             FieldDefinitions.PRESERVATION_SERVICE["name"],
             FieldDefinitions.PRESERVATION_SERVICE_LIBRARY["name"],
@@ -1683,7 +1683,7 @@ class FieldSetDefinitions:
 
     REPOSITORY_POLICY = {
         "name": "deposit_policy",
-        "label": "Repository Policy",
+        "label": "Repository policy",
         "fields": [
             FieldDefinitions.DEPOSIT_POLICY["name"],
             FieldDefinitions.DEPOSIT_POLICY_OTHER["name"],
@@ -1693,7 +1693,7 @@ class FieldSetDefinitions:
 
     UNIQUE_IDENTIFIERS = {
         "name": "unique_identifiers",
-        "label": "Unique Identifiers & structured Data",
+        "label": "Unique identifiers & structured data",
         "fields": [
             FieldDefinitions.PERSISTENT_IDENTIFIERS["name"],
             FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"],
@@ -1712,7 +1712,7 @@ class FieldSetDefinitions:
 
     QUICK_REJECT = {
         "name": "quick_reject",
-        "label": "Quick Reject",
+        "label": "Quick reject",
         "fields": [
             FieldDefinitions.QUICK_REJECT["name"],
             FieldDefinitions.QUICK_REJECT_DETAILS["name"]
@@ -1783,7 +1783,7 @@ class FieldSetDefinitions:
 
     BULK_EDIT = {
         "name" : "bulk_edit",
-        "label" : "Bulk Edit",
+        "label" : "Bulk edit",
         "fields" : [
             FieldDefinitions.PUBLISHER_NAME["name"],
             FieldDefinitions.BULK_DOAJ_SEAL["name"],

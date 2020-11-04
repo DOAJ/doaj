@@ -5,13 +5,13 @@
 {% if formulaic_context.name == "public" %}
 <div class="alert alert--message">
     <p>You are now logged in. When you submit your application, it will be registered to this account. Please note:</p>
-    <ul>
+    <ol>
       <li>The application form takes approximately <strong>30 minutes</strong> to complete.</li>
       <li>Your progress is automatically saved.</li>
       <li>You can return to this application at any time by clicking <a href="{{ url_for("publisher.index") }}" target="_blank"><em>My account</em> &rarr; <em>Publisher</em></a> at the top.</li>
       <li>You can <a href="#" onclick="window.print()">print or download</a> a preview of the form in PDF.</li>
       <li>You must apply online.</li>
-    </ul>
+    </ol>
 </div>
 {% endif %}
 
