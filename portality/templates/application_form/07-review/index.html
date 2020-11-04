@@ -1,15 +1,19 @@
-    {% set t = { "val": 0} %}
-        {% if obj %}
-            <h1>{{ obj.data.bibjson.title }}</h1>
-        {% endif %}
-            <table id="review_table">
-                <tbody>{# JS fills in this gap #}</tbody>
-            </table>
-            <hr />
+{% if not notabs %}<p class="label">Page 7 of {{ FORM | length + 1}}</p>{% endif %}
+{% set t = { "val": 0} %}
+{% if obj %}
+  <h1>{{ obj.data.bibjson.title }}</h1>
+{% else %}
+  <h1><span data-feather="eye"></span> Review your answers</h1>
+{% endif %}
+
+<table id="review_table">
+  <tbody>{# JS fills in this gap #}</tbody>
+</table>
+<hr />
 
 {% if formulaic_context.name == "public" or formulaic_context.name == "update_request" %}
-    <div class="form__question">
-        <input type="checkbox" id="reviewed" name="reviewed" value="reviewed">
-        <label for="reviewed">I’ve reviewed the answers to my application and confirm that the information provided is accurate and true.</label>
-    </div>
+<div class="form__question">
+  <input type="checkbox" id="reviewed" name="reviewed" value="reviewed">
+  <label for="reviewed">I’ve reviewed the answers to my application and confirm that the information provided is accurate and true.</label>
+</div>
 {% endif %}
