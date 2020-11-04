@@ -1,45 +1,43 @@
 {% extends "admin/admin_base.html" %}
 
+{% block body_class %}no-sidenav-page{% endblock %}
+
 {% block content %}
 {% set object_type = 'article' %}
 {% set heading_object_type = 'Article' %}
 {% set form_context = form_context %}
 
-<div class="row" style="margin-bottom: 20px">
-    <div class="col-md-9">
-        <h1>{{ heading_object_type }}: {{form_context.source.bibjson().title}}</h1>
-        {% if form_context.source.last_updated %}
-          <h4>Last updated: {{form_context.source.last_updated}}</h4>
-        {% endif %}
-        {% if form_context.source.current_journal %}
-            <h4 style="margin-top: 1em;"><a href="{{ url_for('doaj.journal_readonly', journal_id=form_context.source.current_journal) }}" target="_blank">View associated journal</a></h4>
-        {% endif %}
-    </div>
-</div>
+<main class="container page-content">
+  {% if form_context.source.last_updated %}
+  <p class="label">Last updated: {{form_context.source.last_updated}}</p>
+  {% endif %}
+  <h1>
+    {{ heading_object_type }} &mdash; <br/>
+    <em>{{form_context.source.bibjson().title}}</em>
+  </h1>
+  {% if form_context.source.current_journal %}
+  <p>
+    <a href="{{ url_for('doaj.journal_readonly', journal_id=form_context.source.current_journal) }}" target="_blank" class="button">View associated journal</a>
+  </p>
+  {% endif %}
 
-<div class="row">
-  <div class="col-md-12">
+  <div class="row">
+    <div class="col-md-8">
+      {% include "formcontext/_error_header.html" %}
 
-    {% include "formcontext/_error_header.html" %}
+      {% from "_formhelpers.html" import render_field_horizontal %}
+      {% from "_formhelpers.html" import render_field %}
 
-    {% from "_formhelpers.html" import render_field_horizontal %}
-    {% from "_formhelpers.html" import render_field %}
-
-      <form method="post" action="{{ url_for('admin.article_page', article_id=form_context.source.id) }}" class="form-horizontal" id="article_metadata_form">
-
+      <form method="post" action="{{ url_for('admin.article_page', article_id=form_context.source.id) }}" class="form form--compact" id="article_metadata_form">
         {% include "formcontext/article_metadata_form.html" %}
-
-        <div class="form-group">
-            <div class="col-md-9 col-md-offset-3"><button class="btn btn-success" type="submit">Update Article</button></div>
-        </div>
-
-    </form>
-        </div>
-            </div>
+        <button class="button button--primary" type="submit">Update Article</button>
+      </form>
+    </div>
+  </div>
+</main>
 
 {% endblock %}
 
 {% block extra_js_bottom %}
-    <script type="text/javascript" src="/static/js/article_metadata_form.js"></script>
+<script type="text/javascript" src="/static/js/article_metadata_form.js"></script>
 {% endblock %}
-
