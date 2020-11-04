@@ -112,11 +112,15 @@ Journals that are rejected must wait 6 months from the date of rejection before 
 We recommend that:
 - journals use a plagiarism checking software. You must specify the name and make of the software.
 
+- publishers are fully transparent about their operational costs in relation to publication fees.
+
 - the journal publishes ORCiD IDs with the articles.
 
 - the ORCiD IDs of editorial board members and reviewers are displayed.
 
 - publishers make all citations available according to the [I4OC goals](https://i4oc.org/#goals).
+
+- the journal uses an archiving scheme which is a registered Keeper in the [Keepers Registry](https://keepers.issn.org/)
 
 ---
 
