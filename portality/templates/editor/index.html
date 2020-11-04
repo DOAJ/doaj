@@ -1,42 +1,44 @@
 {% extends "editor/editor_base.html" %}
 
 {% block editor_content %}
-{% for group in editor_of %}
-    <h2>Your group &mdash; <br/><strong>{{group.name}}</strong></h2>
-    <p>&rarr; You are the <strong>Editor</strong></p>
-    {% set associates = group.get_associate_accounts() %}
-    <p>
-    {% if associates and associates|length > 0 %}
-        <h3>Associate editors</h3>
-        <ul class="tags">
-        {% for ass in group.get_associate_accounts() %}
-            <li class="tag"><a href="mailto:{{ass.email}}"><span data-feather="mail" aria-hidden="true"></span> {{ass.id}}</a></li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        There are no Associate Editors in this group
-    {% endif %}
-    </p>
-{% endfor %}
+<p class="label">User ID: <em>{{ current_user.id }}</em></p>
+<h1>Your group(s)</h1>
+  {% if 'editor' in current_user.role %}
+    {% for group in editor_of %}
+        <h2>Editor of <strong>{{group.name}}</strong></h2>
+        {% set associates = group.get_associate_accounts() %}
+        <p>
+        {% if associates and associates|length > 0 %}
+            <h3>Associate editors:</h3>
+            <ul class="tags">
+            {% for ass in group.get_associate_accounts() %}
+                <li class="tag"><a href="mailto:{{ass.email}}"><span data-feather="mail" aria-hidden="true"></span> {{ass.id}}</a></li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p class="alert" style="display: inline-block;">There are no Associate Editors in this group.</p>
+        {% endif %}
+        </p>
+    {% endfor %}
 
-{% for group in associate_of %}
-    <h2>Your group &mdash; <br/><strong>{{group.name}}</strong></h2>
-    <p>&rarr; You are an <strong>Associate Editor</strong></p>
-    {% set editor = group.get_editor_account() %}
-    <p>
-    <h3>Group editor</h3>
-    <p><a href="mailto:{{editor.email}}" class="tag"><span data-feather="mail" aria-hidden="true"></span> {{editor.id}}</a><p>
-    {% set associates = group.get_associate_accounts() %}
-    {% if associates and associates|length > 0 %}
-        <h3>Other associate editors</h3>
-        <ul class="tags">
-        {% for ass in group.get_associate_accounts() %}
-            <li class="tag"><a href="mailto:{{ass.email}}"><span data-feather="mail" aria-hidden="true"></span> {{ass.id}}</a></li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-    </p>
-{% endfor %}
-
+  {% elif 'associate_editor' in current_user.role %}
+    {% for group in associate_of %}
+        <h2>Associate Editor of <strong>{{group.name}}</strong></h2>
+        {% set editor = group.get_editor_account() %}
+        <p>
+        <h3>Group editor:</h3>
+        <p><a href="mailto:{{editor.email}}" class="tag"><span data-feather="mail" aria-hidden="true"></span> {{editor.id}}</a><p>
+        {% set associates = group.get_associate_accounts() %}
+        {% if associates and associates|length > 0 %}
+            <h3>Other associate editors:</h3>
+            <ul class="tags">
+            {% for ass in group.get_associate_accounts() %}
+                <li class="tag"><a href="mailto:{{ass.email}}"><span data-feather="mail" aria-hidden="true"></span> {{ass.id}}</a></li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        </p>
+    {% endfor %}
+  {% endif %}
 <p><a href="mailto:{{managing_editor}}" class="button">Contact the Managing Editors</a></p>
 {% endblock %}
