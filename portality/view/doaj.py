@@ -492,7 +492,7 @@ def oai_pmh():
 
 @blueprint.route('/docs/api/')
 def docs():
-    return render_template('api/v2/api_docs.html', page_title="API")
+    return redirect(url_for('api_v2.docs'))
 
 
 @blueprint.route("/docs/xml/")

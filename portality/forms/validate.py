@@ -329,7 +329,7 @@ class ISSNInPublicDOAJ(object):
 class JournalURLInPublicDOAJ(object):
     def __init__(self, message=None):
         if not message:
-            message = "This ISSN already appears in the public DOAJ database"
+            message = "This Journal URL already appears in the public DOAJ database"
         self.message = message
 
     def __call__(self, form, field):

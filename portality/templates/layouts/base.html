@@ -37,12 +37,10 @@
 
   <link rel="stylesheet" type="text/css" href="/static/vendor/select2-3.5.4/select2.css">
 
-  {# Page-specific styles #}
-  {# {% if request.endpoint == 'apply.public_application' %}
-  <link rel="stylesheet" type="text/css" href="/static/vendor/select2-3.5.4/select2.css">
-  <link href='/static/doaj/css/application_form.css' media='screen' rel='stylesheet' type='text/css' />
-  {% endif %} #}
+  {# Page-specific styles  todo: select2 could possibly go here #}
+  {% block extra_stylesheets %}{% endblock %}
 
+  <!-- Main CSS -->
   <link rel="stylesheet" href="/static_content/_site/css/main.css">
 
   <!-- Feather icons -->
