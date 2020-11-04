@@ -13,12 +13,12 @@ blueprint = Blueprint('apply', __name__)
 
 @blueprint.route("/thank-you", methods=["GET"])
 def application_thanks():
-    return render_template("layouts/static_page.html", page_frag="/apply/thank-you-fragment/index.html")
+    return render_template("layouts/static_page.html", page_frag="/apply/thank-you-fragment/index.html", page_title="Thank you")
 
 
 @blueprint.route("/draft", methods=["GET"])
 def draft_saved():
-    return render_template("layouts/static_page.html", page_frag="doaj/draft_saved.html")
+    return render_template("layouts/static_page.html", page_frag="doaj/draft_saved.html", page_title="Draft saved")
 
 
 @blueprint.route("/", methods=["GET", "POST"])
@@ -73,4 +73,3 @@ def public_application(draft_id=None):
                 return redirect(url_for('apply.application_thanks', _anchor='thanks'))
             else:
                 return fc.render_template()
-
