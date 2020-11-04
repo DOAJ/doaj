@@ -21,7 +21,8 @@
     border: 0;
 
     svg path,
-    svg line {
+    svg line,
+    svg polygon {
       stroke: $warm-white;
     }
   }
@@ -33,6 +34,5 @@
   svg {
     height: 1em;
     vertical-align: middle;
-    stroke: $grapefruit;
   }
 }
