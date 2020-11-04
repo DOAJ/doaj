@@ -58,51 +58,152 @@ Send the information to [feedback@doaj.org](mailto:feedback@doaj.org). If you ar
 ---
 ## Account
 ### When do I need an account?
-If you are not a publisher you do not need an account. All of our content is Open Access and available on our website. If you are a publisher and have lost your account, please [contact us] stating your issn and we will find out what happened.
+If you are not a publisher you do not need an account. All of our content is Open Access and available on our website. If you are a publisher and have lost your account, please [contact us](/contact) stating your issn and we will find out what happened.
 ### How can I reset my password?
-To reset your password please go here: https://doaj-static.netlify.app/password-reset/. Please [contact us] if you did not get a password reset link. 
+[Reset your password here.](/password-reset/). Please [contact us](/contact/) if you did not get a password reset link. 
 ### How can I merge journals into the same account?
-If your institution has several journals that are spread into different accounts and you would like to have a single one, please [contact us].
+If your institution has several journals that are spread into different accounts and you would like to have a single one, please [contact us](/contact/).
 
 ## Metadata
 
-### How can I get journal metadata from DOAJ?
+### Failed XML uploads explained
 
-#### API
+This section describes the possible error messages that you may see when you upload an article XML file to DOAJ. Depending on the message in the "Notes" column of your [uploads]({{ url_for('publisher.upload_file') }}) table, some corrective actions may be available to you.
 
-A [search API]() is available. Some functions require an API key. To get your API key, go to your account page. If no API key is available, [contact us]().
+In cases where there is no action to be taken, or the suggested actions have not successfully resolved the issues, please [contact us]({{ url_for('doaj.contact') }}) with the following details:
 
-#### Atom feed
+*   The time of the file upload
+*   The exact error message as it appears in the "Notes" column
+*   Your publisher account username
+*   A copy of the file you had problems with
+*   A screenshot of your File upload area
 
-We have [an Atom feed](/feed) of journals which is updated every time a new journal is added to DOAJ.
+#### <a id="some_articles_failed"></a>X articles imported (Y new, Z updated); N articles failed
 
-#### Crawling
+**Reason**: From within the provided file, there were some successful article imports (X), but one or more failed article imports (N)
 
-You may crawl DOAJ as long as you follow our good behaviour guidelines for crawling:
-+ follow our robot.txt file http://doaj.org/robots.txt
-+ use our sitemap
-+ obey our rate limit
+**Resolution**: Individual articles can fail for a number of reasons. See the section [Reasons for individual article import failures](#Reasons for individual article import failures) below
 
-If your crawler hits our servers too often, or your crawler starts to affect DOAJ's performance in any way, then your access will be restricted or even blocked. (It's faster and easier for you to collect our metadata if you connect via the API.)
+#### <a id="All articles in file failed to import"></a>All articles in file failed to import
 
-#### CSV file
+**Reason**: From within the uploaded file, there were no successful article imports and one or more failed article imports
 
-You can download the list of journals as a CSV (comma-separated) file. This can be imported into any compatible analysis program. The CSV file is updated every 30 minutes.
-  + Download the file to your computer
-  + Import the file into a spreadsheet processing program (like Excel or OpenOffice)
-  +  Make sure you choose Unicode (UTF-8) as the file origin.
+**Resolution**: Individual articles can fail for a number of reasons. See the section [Reasons for individual article import failures](#Reasons for individual article import failures) below
 
-#### Data dumps
+#### <a id="Error occurred ingesting the records in the document"></a>Error occurred ingesting the records in the document
 
-You can [download all of our journal and article metadata]() as two static files. They are refreshed weekly.
+**Reason**: An unexpected software exception occurred - you may have found a bug!
 
-#### OAI-PMH
+**Resolution**: Please [contact us]({{ url_for('doaj.contact') }}) immediately with the relevant details.
 
-DOAJ supports the OAI protocol for metadata harvesting (OAI-PMH). Any OAI compatible service can obtain records from DOAJ. The base URL is `http://www.doaj.org/oai`. You can add most OAI verbs and other commands directly on to that. There is a full description of this service on the [OAI-PMH documentation page](). Our current OAI offering is standardised around Dublin Core.
+#### <a id="Unanticipated error when importing articles"></a>Unanticipated error when importing articles
 
-### Why do some journals have no or very little article metadata in DOAJ?
+**Reason**: Something unexpected happened when we tried to import your articles - you may have found a bug!
 
-We do not yet crawl publisher sites to collect article metadata. Instead, we ask publishers to upload the metadata to us. If a journal in DOAJ has no articles, it is because the metadata hasn't been sent to us.
+**Resolution**: Please [contact us]({{ url_for('doaj.contact') }}) immediately with the details:
+
+1.  Your user account
+2.  The contact details for the person reporting the bug (or at least a proxy for them, so that we can request more details). That might be you or someone working on your behalf.
+3.  Was the problem repeatable? Did you try several times with the same result?
+4.  What environment are you in? Specifically browser, or if not in the browser then any useful information about your API client such as the user agent.
+5.  At what time the incident occurred. Both date and time ideally. If it happened several times, then all dates/times that were recorded, or a range.
+6.  What were you trying to do? As much detail and context as possible. Send a screenshot! An image helps.
+7.  What happened, what error message was received? Provide the exact error message, don't paraphrase. A screenshot could be provided here.
+8.  Which area of the system did this happen in? Generally, in the UI/API/OAI, and ideally specifically: which URL were you on when it happened, or which URL were you trying to access?
+9.  Send copies of any data you sent to the system. For example, article XML files uploaded, or payloads send to the API, if available.
+10. What had you expected to happen?
+
+We may also ask you to supply the file that you tried to upload, so please keep a copy of it until the issue is resolved.
+
+#### <a id="The file at the URL was too large"></a>The file at the URL was too large
+
+**Reason**: A URL (either HTTP or FTP) you provided to the form field "Provide a URL where we can download the XML" led to a file which was larger than 250Mb
+
+**Resolution**: Please provide a smaller file in either case. You can split the articles across two or more schema valid documents, and make them available to us separately.
+
+#### <a id="The URL could not be accessed"></a>The URL could not be accessed
+
+**Reason 1**: The HTTP URL you provided could not be resolved to a resource on the web (e.g. your web server responded with a 404 Not Found)
+
+**Resolution 1**: Check the following regarding the URL your provided to the form field "Provide a URL where we can download the XML":
+
+*   That the URL is the correct URL
+*   That there are no access restrictions on the URL. For example, authentication is required, or the URL is IP restricted to within your organisation.
+
+**Reason 2**: The download from an HTTP URL you provided failed part way through for an unspecified reason
+
+**Resolution 2**: Re-try the upload, as this may be an intermittent network issue.
+
+If you are still unable to get the upload to work after a several attempts, please [contact us]({{ url_for('doaj.contact') }}) with the relevant details.
+
+#### <a id="Unable to parse file"></a>Unable to parse file
+
+**Reason**: The XML file you provided (either downloaded from a URL or uploaded via the web form) could not be read as an XML file
+
+**Resolution**: Check that the file really is valid XML.
+
+In some cases this will be easy - you may have uploaded/provided the wrong file, so double-check that it is the correct one. You'd get this error, for example, if you have uploaded a Word document or a PDF by mistake.
+
+In other cases files can look very much like XML, but still be invalid. They should be run through an XML validator to ensure they have the correct structure and that there are no illegal characters.
+
+Sometimes, special characters - especially those in scientific articles - are submitted in the wrong format. XML does not support many special characters as-is but those that it does can be [found on Wikipedia](https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Predefined_entities_in_XML).
+
+You can use one of these validators to check your XML:
+
+*   [W3C Validator](http://www.utilities-online.info/xsdvalidation/) - paste the contents of the XML into the left-hand box on this page
+*   [W3Schools](https://www.w3schools.com/xml/xml_validator.asp) - paste the contents of the XML into one of the boxes on this page
+*   [xmlvalidation.com](https://www.xmlvalidation.com/) - paste the contents of the XML into one of the boxes on this page, or upload the file
+
+#### <a id="Unable to parse XML file"></a>Unable to parse XML file
+
+See ["Unable to parse file"](#Unable to parse file)
+
+#### <a id="Unable to validate document with identified schema"></a>Unable to validate document with identified schema
+
+**Reason**: No XML schema could be found which would read the provided XML document (in particular, the DOAJ standard schema)
+
+**Resolution**: Check that the file conforms to the DOAJ schema, using a validator.
+
+Often the problem arises because the XML is missing a required tag. If you try to upload XML to DOAJ that is missing a specific tag, such as <publicationDate> then the schema validation will fail. You can see exactly [which tags are required here]({{ url_for('doaj.features', _anchor='xml_upload') }}).
+
+If you are trying to upload a file that was automatically generated by the OJS DOAJ plugin, then you should first contact OJS for help.
+
+The DOAJ schema is on our site, here: [http://doaj.org/static/doaj/doajArticles.xsd](http://doaj.org/static/doaj/doajArticles.xsd)
+
+To validate the provided XML against the schema, you can use one of these services:
+
+*   [W3C Validator](http://www.utilities-online.info/xsdvalidation) - paste the contents of the XML into the left-hand box on this page, and the contents of the schema (XSD) into the right-hand box.
+*   [freeformatter.com](http://www.freeformatter.com/xml-validator-xsd.html) - paste the contents of the XML into the top box, and the contents of the schema (XSD) into the bottom box. Or, instead, provide a URL to either of them (you can use the URL [http://doaj.org/static/doaj/doajArticles.xsd](http://doaj.org/static/doaj/doajArticles.xsd) for the DOAJ schema)
+
+If both of these services regard the provided XML as schema valid, please [contact us]({{ url_for('doaj.contact') }}) with the relevant details.
+
+#### <a id="Reasons for individual article import failures"></a>Reasons for individual article import failures
+
+**Reason**: Article belongs to a journal that does not belong to your user account
+
+You can only upload XML for the journals that are IN DOAJ and that appear in the list under 'Your Journals' in the publisher area. If you have more than one account and you would like to merge them, please contact us.
+
+The Article's stated ISSNs must match to a journal that is owned by the user account from which you are providing the XML file. If the ISSNs do not match any journals or match a journal that is owned by a different account, the import of that article will fail.
+
+Note that it is also possible that if an article has more than one ISSN (i.e. an E-ISSN and a P-ISSN), that those ISSNs could match more than one Journal (one ISSN matching one journal, the other ISSN matching another). If both matched journals are owned by your account, this will not stop the article from being imported, but if one of the matched journals is owned by a different account this will cause the import of the article to fail.
+
+A journal may have two ISSNs: an ISSN for the print version and an ISSN for the electronic version. Sometimes the ISSNs of the journal have changed. If you need to have the ISSNs of your DOAJ record updated, please [contact us]({{ url_for('doaj.contact') }}) and we will check that the ISSNs are registered at www.issn.org and will then update the record accordingly.
+
+**Resolution**: Check that all the Article ISSNs in the file are correct
+
+If you believe all the ISSNs for the articles are correct, please [contact us]({{ url_for('doaj.contact') }}) with the relevant details.
+
+#### <a id="One or more articles in this batch have duplicate identifiers"></a>One or more articles in this batch have duplicate identifiers
+
+**Reason**: At least two of the articles in the uploaded file contain the same DOI and/or the same fulltext url
+
+**Resolution**: Ensure that there are no duplicated articles in the file. Ensure that you are using the correct DOIs and URLs for all the articles.
+
+#### <a id="One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted"></a>One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted
+
+**Reason**: At least one of your articles matched two or more other articles already in DOAJ, and as a result we don't know which one to update.
+
+**Resolution**: Ensure that all your articles have the correct DOI and Fulltext links. If you still don't have any luck, please [contact us]({{ url_for('doaj.contact') }}) with the details; we may need to clean up your existing articles manually.
 
 ---
 
