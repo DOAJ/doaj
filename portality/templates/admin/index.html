@@ -3,16 +3,12 @@
 {% include "_edges_common_css.html" %}
 
 {% block admin_content %}
-<header>
-    <h2>Journals</h2>
-</header>
+<h1>Journals</h1>
 
 <div id="admin_journals"></div>
-
 {% endblock %}
 
 {% block extra_js_bottom %}
-
     <script type="text/javascript">
     $.extend(true, doaj, {
         adminJournalsSearchConfig : {
@@ -25,5 +21,4 @@
 
     {% include "_edges_common_js.html" %}
     <script type="text/javascript" src="/static/js/edges/admin.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
 {% endblock %}

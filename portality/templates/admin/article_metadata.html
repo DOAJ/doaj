@@ -1,40 +1,38 @@
 {% extends "admin/admin_base.html" %}
 
-{% block body_class %}no-sidenav-page{% endblock %}
-
-{% block content %}
+{% block admin_content %}
 {% set object_type = 'article' %}
 {% set heading_object_type = 'Article' %}
 {% set form_context = form_context %}
 
-<main class="container page-content">
-  {% if form_context.source.last_updated %}
-  <p class="label">Last updated: {{form_context.source.last_updated}}</p>
-  {% endif %}
-  <h1>
-    {{ heading_object_type }} &mdash; <br/>
-    <em>{{form_context.source.bibjson().title}}</em>
-  </h1>
-  {% if form_context.source.current_journal %}
-  <p>
-    <a href="{{ url_for('doaj.journal_readonly', journal_id=form_context.source.current_journal) }}" target="_blank" class="button">View associated journal</a>
-  </p>
-  {% endif %}
-
-  <div class="row">
-    <div class="col-md-8">
-      {% include "formcontext/_error_header.html" %}
-
-      {% from "_formhelpers.html" import render_field_horizontal %}
-      {% from "_formhelpers.html" import render_field %}
-
-      <form method="post" action="{{ url_for('admin.article_page', article_id=form_context.source.id) }}" class="form form--compact" id="article_metadata_form">
-        {% include "formcontext/article_metadata_form.html" %}
-        <button class="button button--primary" type="submit">Update Article</button>
-      </form>
-    </div>
+<div class="row">
+  <div class="col-md-6">
+    {% if form_context.source.last_updated %}
+    <p class="label">Last updated: {{form_context.source.last_updated}}</p>
+    {% endif %}
+    <h1>
+      {{ heading_object_type }} &mdash; <br/>
+      <em>{{form_context.source.bibjson().title}}</em>
+    </h1>
+    {% if form_context.source.current_journal %}
+    <p>
+      <a href="{{ url_for('doaj.journal_readonly', journal_id=form_context.source.current_journal) }}" target="_blank" class="button">View associated journal</a>
+    </p>
+    {% endif %}
   </div>
-</main>
+
+  <div class="col-md-6">
+    {% include "formcontext/_error_header.html" %}
+
+    {% from "_formhelpers.html" import render_field_horizontal %}
+    {% from "_formhelpers.html" import render_field %}
+
+    <form method="post" action="{{ url_for('admin.article_page', article_id=form_context.source.id) }}" class="form form--compact" id="article_metadata_form">
+      {% include "formcontext/article_metadata_form.html" %}
+      <button class="button button--primary" type="submit">Update Article</button>
+    </form>
+  </div>
+</div>
 
 {% endblock %}
 

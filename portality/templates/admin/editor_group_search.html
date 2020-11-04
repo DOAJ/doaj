@@ -3,15 +3,11 @@
 {% include "_edges_common_css.html" %}
 
 {% block admin_content %}
+<h1>Editor groups</h1>
 
-<header>
-    <h2>Editor Groups</h2>
-</header>
-
-<a href="{{url_for('admin.editor_group')}}"><button class="btn btn-info" style="margin-top: 20px">New Editor Group</button></a>
+<p><a href="{{url_for('admin.editor_group')}}" class="button button--secondary">New editor group</a></p>
 
 <div id="editor_groups"></div>
-
 {% endblock %}
 
 {% block extra_js_bottom %}

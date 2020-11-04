@@ -1,32 +1,26 @@
 {% extends "admin/admin_base.html" %}
 
 {% block admin_content %}
-
-
-<h1>Editor Group</h1>
 <div class="row">
-    <div class="col-md-12">
+  <div class="col-md-6">
+    <h1>Editor group</h1>
+    {% include "formcontext/_error_header.html" %}
+  </div>
 
-        {% include "formcontext/_error_header.html" %}
+  <div class="col-md-6">
+    {% from "_formhelpers.html" import render_field_horizontal %}
 
-        {% from "_formhelpers.html" import render_field_horizontal %}
-
-        <form method="post" action="{{ url_for('admin.editor_group') }}{% if form.group_id.data and form.group_id.data != '' %}/{{form.group_id.data}}{% endif %}" class="form-horizontal" id="editor_group_form">
-            <fieldset>
-                {{ form.group_id }}
-                {{ render_field_horizontal(form.name, style="width: 400px; height: 26px", placeholder="Enter a group name here (must be unique)") }}
-                {{ render_field_horizontal(form.editor, style="width: 200px", placeholder="Editor's User ID", container_style="margin-bottom: 9px") }}
-                {{ render_field_horizontal(form.associates, style="width: 400px", placeholder="Associate Editor User IDs") }}
-
-                <div class="form-group">
-                    <div class="col-md-12"><button class="btn btn-success" type="submit">Save Group</button></div>
-                </div>
-            </fieldset>
-        </form>
-
-    </div>
+    <form method="post" action="{{ url_for('admin.editor_group') }}{% if form.group_id.data and form.group_id.data != '' %}/{{form.group_id.data}}{% endif %}" class="form form--compact" id="editor_group_form">
+      <fieldset>
+        {{ form.group_id }}
+        {{ render_field_horizontal(form.name, placeholder="Enter a unique group name") }}
+        {{ render_field_horizontal(form.editor, placeholder="Editor’s user ID") }}
+        {{ render_field_horizontal(form.associates, placeholder="Associate editor user IDs") }}
+        <button class="button button--primary" type="submit">Save Group</button>
+      </fieldset>
+    </form>
+  </div>
 </div>
-
 {% endblock %}
 
 {% block extra_js_bottom %}

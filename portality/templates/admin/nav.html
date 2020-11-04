@@ -2,16 +2,16 @@
 {% set applications = url_for("admin.suggestions") %}
 {% set users = url_for("account.index") %}
 {% set site_search = url_for("admin.admin_site_search") %}
-{% set editor_gorups = url_for("admin.editor_group_search") %}
+{% set editor_groups = url_for("admin.editor_group_search") %}
 {% set bg = url_for("admin.background_jobs_search") %}
 
 {% set tabs = [
     (journals, "Journals"),
-    (applications, "Applications/Update Requests"),
+    (applications, "Applications/update requests"),
     (users, "Users"),
-    (site_search, "Journals and Articles"),
-    (editor_gorups, "Editor Groups"),
-    (bg, "Background Jobs")
+    (site_search, "Journals & articles"),
+    (editor_groups, "Editor groups"),
+    (bg, "Background jobs")
     ]
 %}
 
