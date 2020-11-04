@@ -81,7 +81,7 @@ doaj.af.BaseApplicationForm = class {
         var that = this;
         this.TABS.forEach((tab, i) => {
             if (this.editSectionsFromReview) {
-                review_table.append("<th>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th>");
+                review_table.append("<tr><th>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th></tr>");
                 let sectionSelector = $(".edit_this_section");
                 edges.on(sectionSelector, "click", this, "editSectionClicked");
             } else {
