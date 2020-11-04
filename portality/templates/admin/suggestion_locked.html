@@ -11,8 +11,9 @@
       <p class="label">Last updated: {{suggestion.last_updated}}</p>
     {% endif %}
   </div>
+  
   <div class="col-md-6">
-    <p><strong>You cannot currently edit this application</strong></p>
+    <p class="alert">You <strong>cannot</strong> currently edit this application</p>
 
     <p>The user <span class="tag">{{lock.username}}</span> is currently editing this record, and has an edit-lock until <strong><span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></strong></p>
 

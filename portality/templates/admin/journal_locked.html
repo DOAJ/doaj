@@ -7,12 +7,12 @@
       Journal &mdash;<br/>
       {{journal.bibjson().title}}
     </h1>
-  </div>
-  <div class="col-md-6">
     {% if journal.last_updated %}
       <p class="label">Last updated: {{journal.last_updated}}</p>
     {% endif %}
-
+  </div>
+  
+  <div class="col-md-6">
     <p class="alert">You <strong>cannot</strong> currently edit this journal</p>
 
     <p>The user <span class="tag">{{lock.username}}</span> is currently editing this record, and has an edit-lock until <strong><span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></strong></p>

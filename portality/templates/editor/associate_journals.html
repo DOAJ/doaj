@@ -3,14 +3,12 @@
 {% include "_edges_common_css.html" %}
 
 {% block editor_content %}
-<h2>Journals assigned to you</h2>
+<h1>Journals assigned to you</h1>
 
 <div id="associate_journals"></div>
-
 {% endblock %}
 
 {% block extra_js_bottom %}
-
     <script type="text/javascript">
     $.extend(true, doaj, {
         associateJournalsSearchConfig : {
@@ -22,5 +20,4 @@
 
     {% include "_edges_common_js.html" %}
     <script type="text/javascript" src="/static/js/edges/associate.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
 {% endblock %}

@@ -5,7 +5,7 @@
 {% block admin_content %}
 <h1>Users</h1>
 
-{% if current_user.has_role("create_user") %}<p><a href="/account/register" class="button button--primary">create new user</a></p>{% endif %}
+{% if current_user.has_role("create_user") %}<p><a href="/account/register" class="button button--secondary">create new user</a></p>{% endif %}
 
 <div id="users"></div>
 

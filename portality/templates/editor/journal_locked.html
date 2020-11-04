@@ -1,25 +1,23 @@
 {% extends "editor/editor_base.html" %}
 
 {% block editor_content %}
-
-<div class="row" style="margin-bottom: 3em;">
-  <div class="col-md-12">
-    <h1>Journal: {{journal.bibjson().title}}</h1>
+<div class="row">
+  <div class="col-md-6">
+    <h1>
+      Journal &mdash; <br/>
+      {{suggestion.bibjson().title}}
+    </h1>
     {% if journal.last_updated %}
-      <h4>Last updated: {{journal.last_updated}}</h4>
+      <p class="label">Last updated: {{journal.last_updated}}</p>
     {% endif %}
   </div>
+
+  <div class="col-md-6">
+    <p class="alert">You <strong>cannot</strong> currently edit this journal</p>
+
+    <p>The user <span class="tag">{{lock.username}}</span> is currently editing this record, and has an edit-lock until <strong><span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></strong></p>
+
+    <p>Please try again later!</p>
+  </div>
 </div>
-
-<div class="row">
-    <div class="col-md-12">
-        <p><strong>You cannot currently edit this journal</strong></p>
-
-        <p>The user {{lock.username}} is currently editing this record, and has an edit-lock until <strong><span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></strong></p>
-
-        <p>Please try again later!</p>
-    </div>
-</div>
-
 {% endblock %}
-
