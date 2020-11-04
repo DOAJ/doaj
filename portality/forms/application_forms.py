@@ -565,8 +565,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Licensing information must be displayed or embedded on every PDF or in the full text of the "
                           "HTML articles.",
-                          "We do not accept licensing information that is only displayed in other parts of "
-                          "the site."],
+                          "Only displaying licensing information on other parts of the site is not accepted."],
             "seal_criteria": "If the answer is Embed"
         },
         "validate": [
