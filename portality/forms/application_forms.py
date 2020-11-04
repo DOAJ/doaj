@@ -1240,7 +1240,7 @@ class FieldDefinitions:
         ],
         "default" : "",
         "help": {
-            "long_help": ["An <a href='https://orcid.org/'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
+            "long_help": ["An <a href='https://orcid.org/' target='_blank' rel='noopener'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
                          "authors."],
         },
         "contexts" : {
