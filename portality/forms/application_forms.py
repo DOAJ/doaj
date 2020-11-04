@@ -1487,7 +1487,8 @@ class FieldDefinitions:
         "entry_template": "application_form/_entry_group_horizontal.html",
         "widgets": [
             {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}}
-        ]
+        ],
+        "merge_disabled" : "merge_disabled_notes"
     }
 
     NOTE = {
@@ -2093,7 +2094,30 @@ def editor_choices(field, formulaic_context):
 def application_status_disabled(field, formulaic_context):
     choices = application_statuses(field, formulaic_context)
     field_value = field.wtfield.data
-    return field_value in [c.get("v") for c in choices]
+    return field_value not in [c.get("value") for c in choices]
+
+
+#######################################################
+## Merge disabled
+#######################################################
+
+def merge_disabled_notes(notes_group, original_form):
+    merged = []
+    wtf = notes_group.wtfield
+    for entry in wtf.entries:
+        if entry.data.get("note") != "":
+            merged.append(entry)
+    for entry in original_form.notes.entries:
+        merged.append(entry)
+
+    while True:
+        try:
+            wtf.pop_entry()
+        except IndexError:
+            break
+
+    for m in merged:
+        wtf.append_entry(m.data)
 
 
 #######################################################
@@ -2329,6 +2353,9 @@ PYTHON_FUNCTIONS = {
     },
     "disabled" : {
         "application_status_disabled" : application_status_disabled
+    },
+    "merge_disabled" : {
+        "merge_disabled_notes" : merge_disabled_notes
     },
     "validate": {
         "render": {

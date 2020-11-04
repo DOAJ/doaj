@@ -537,7 +537,8 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     }
 
     submitapplication() {
-        this.form.parsley();
+        this.form.parsley().destroy();  // FIXME: only for testing back-end validation
+        /*
         let optional = this.jq("#make_all_fields_optional").is(":checked");
         if (optional) {
             this.form.parsley().destroy();
@@ -548,7 +549,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             }).fail(() => {
                 this.jq("#cannot-submit-invalid-fields").show();
             });
-        }
+        }*/
         this.form.submit();
     }
 };
