@@ -2,22 +2,22 @@
 
 ### How can I contribute to DOAJ?
 
-1. [Support us]() with a financial donation
+1. [Support us](/support/) with a financial donation
   + All donations received are spent on DOAJ activities or developments.
-2. If you have evidence that a journal in DOAJ might be questionable, [contact us]().
+2. If you have evidence that a journal in DOAJ might be questionable, [contact us](/contact/).
   + All information shared with DOAJ is done so in confidence and is never published.
-3. If you find a broken link or something that is out of date or incomplete, [contact us]().
+3. If you find a broken link or something that is out of date or incomplete, [contact us](/contact/).
   + We are always grateful when our users are our eyes and ears.
 4. Become a volunteer
   + From time to time, we put out a call for volunteers. Follow us on [Twitter](https://twitter.com/doajplus) or [our blog](https://blog.doaj.org/) to find out when the next call is published.
 
 ### I have found a broken link. What should I do?
 
-  [Contact us]() with the details. For broken links in articles, include the journal's ISSN, title and the title of the article.
+  [Contact us](/contact/) with the details. For broken links in articles, include the journal's ISSN, title and the title of the article.
 
 ### I think that a questionable journal is indexed in DOAJ. What should I do?
 
-  Please [contact us]() with the details, including the ISSN, and we will investigate. Information shared with DOAJ is done so in confidence.
+  Please [contact us](/contact/) with the details, including the ISSN, and we will investigate. Information shared with DOAJ is done so in confidence.
 
 ### I know a journal which should be in DOAJ but isn’t. What should I do?
 
@@ -25,7 +25,7 @@
 
 ### The journal I am looking for isn't in DOAJ. Why? What should I do?
 
-  Maybe the journal hasn't applied to us or its application is still in progress. It may be that the journal was removed from DOAJ. [Contact us]() to see if the journal has a pending application.
+  Maybe the journal hasn't applied to us or its application is still in progress. It may be that the journal was removed from DOAJ. [Contact us](/contact/) to see if the journal has a pending application.
 
 ### How do I report a bug or ask for technical help?
 
@@ -68,7 +68,7 @@ If your institution has several journals that are spread into different accounts
 
 ### Failed XML uploads explained
 
-This section describes the possible error messages that you may see when you upload an article XML file to DOAJ. Depending on the message in the "Notes" column of your [uploads]({{ url_for('publisher.upload_file') }}) table, some corrective actions may be available to you.
+This section describes the possible error messages that you may see when you upload an article XML file to DOAJ. Depending on the message in the "Notes" column of your [History of uploads](/publisher/uploadfile) table, some corrective actions may be available to you.
 
 In cases where there is no action to be taken, or the suggested actions have not successfully resolved the issues, please [contact us]({{ url_for('doaj.contact') }}) with the following details:
 
@@ -94,13 +94,13 @@ In cases where there is no action to be taken, or the suggested actions have not
 
 **Reason**: An unexpected software exception occurred - you may have found a bug!
 
-**Resolution**: Please [contact us]({{ url_for('doaj.contact') }}) immediately with the relevant details.
+**Resolution**: Please [contact us](/contact/) immediately with the relevant details.
 
 #### <a id="Unanticipated error when importing articles"></a>Unanticipated error when importing articles
 
 **Reason**: Something unexpected happened when we tried to import your articles - you may have found a bug!
 
-**Resolution**: Please [contact us]({{ url_for('doaj.contact') }}) immediately with the details:
+**Resolution**: Please [contact us](/contact/) immediately with the details:
 
 1.  Your user account
 2.  The contact details for the person reporting the bug (or at least a proxy for them, so that we can request more details). That might be you or someone working on your behalf.
@@ -134,7 +134,7 @@ We may also ask you to supply the file that you tried to upload, so please keep 
 
 **Resolution 2**: Re-try the upload, as this may be an intermittent network issue.
 
-If you are still unable to get the upload to work after a several attempts, please [contact us]({{ url_for('doaj.contact') }}) with the relevant details.
+If you are still unable to get the upload to work after a several attempts, please [contact us](/contact/) with the relevant details.
 
 #### <a id="Unable to parse file"></a>Unable to parse file
 
@@ -164,7 +164,7 @@ See ["Unable to parse file"](#Unable to parse file)
 
 **Resolution**: Check that the file conforms to the DOAJ schema, using a validator.
 
-Often the problem arises because the XML is missing a required tag. If you try to upload XML to DOAJ that is missing a specific tag, such as <publicationDate> then the schema validation will fail. You can see exactly [which tags are required here]({{ url_for('doaj.features', _anchor='xml_upload') }}).
+Often the problem arises because the XML is missing a required tag. If you try to upload XML to DOAJ that is missing a specific tag, such as <publicationDate> then the schema validation will fail. You can see exactly [which tags are required here](/docs/xml/).
 
 If you are trying to upload a file that was automatically generated by the OJS DOAJ plugin, then you should first contact OJS for help.
 
@@ -173,9 +173,9 @@ The DOAJ schema is on our site, here: [http://doaj.org/static/doaj/doajArticles.
 To validate the provided XML against the schema, you can use one of these services:
 
 *   [W3C Validator](http://www.utilities-online.info/xsdvalidation) - paste the contents of the XML into the left-hand box on this page, and the contents of the schema (XSD) into the right-hand box.
-*   [freeformatter.com](http://www.freeformatter.com/xml-validator-xsd.html) - paste the contents of the XML into the top box, and the contents of the schema (XSD) into the bottom box. Or, instead, provide a URL to either of them (you can use the URL [http://doaj.org/static/doaj/doajArticles.xsd](http://doaj.org/static/doaj/doajArticles.xsd) for the DOAJ schema)
+*   [freeformatter.com](https://www.freeformatter.com/xml-validator-xsd.html) - paste the contents of the XML into the top box, and the contents of the schema (XSD) into the bottom box. Or, instead, provide a URL to either of them (you can use the URL [http://doaj.org/static/doaj/doajArticles.xsd](http://doaj.org/static/doaj/doajArticles.xsd) for the DOAJ schema)
 
-If both of these services regard the provided XML as schema valid, please [contact us]({{ url_for('doaj.contact') }}) with the relevant details.
+If both of these services regard the provided XML as schema valid, please [contact us](/contact/) with the relevant details.
 
 #### <a id="Reasons for individual article import failures"></a>Reasons for individual article import failures
 
@@ -187,11 +187,11 @@ The Article's stated ISSNs must match to a journal that is owned by the user acc
 
 Note that it is also possible that if an article has more than one ISSN (i.e. an E-ISSN and a P-ISSN), that those ISSNs could match more than one Journal (one ISSN matching one journal, the other ISSN matching another). If both matched journals are owned by your account, this will not stop the article from being imported, but if one of the matched journals is owned by a different account this will cause the import of the article to fail.
 
-A journal may have two ISSNs: an ISSN for the print version and an ISSN for the electronic version. Sometimes the ISSNs of the journal have changed. If you need to have the ISSNs of your DOAJ record updated, please [contact us]({{ url_for('doaj.contact') }}) and we will check that the ISSNs are registered at www.issn.org and will then update the record accordingly.
+A journal may have two ISSNs: an ISSN for the print version and an ISSN for the electronic version. Sometimes the ISSNs of the journal have changed. If you need to have the ISSNs of your DOAJ record updated, please [contact us](/contact/) and we will check that the ISSNs are registered at [the ISSN Portal](https://portal.issn.org/) and will then update the record accordingly.
 
 **Resolution**: Check that all the Article ISSNs in the file are correct
 
-If you believe all the ISSNs for the articles are correct, please [contact us]({{ url_for('doaj.contact') }}) with the relevant details.
+If you believe all the ISSNs for the articles are correct, please [contact us](/contact/) with the relevant details.
 
 #### <a id="One or more articles in this batch have duplicate identifiers"></a>One or more articles in this batch have duplicate identifiers
 
@@ -203,7 +203,7 @@ If you believe all the ISSNs for the articles are correct, please [contact us]({
 
 **Reason**: At least one of your articles matched two or more other articles already in DOAJ, and as a result we don't know which one to update.
 
-**Resolution**: Ensure that all your articles have the correct DOI and Fulltext links. If you still don't have any luck, please [contact us]({{ url_for('doaj.contact') }}) with the details; we may need to clean up your existing articles manually.
+**Resolution**: Ensure that all your articles have the correct DOI and Fulltext links. If you still don't have any luck, please [contact us](/contact/) with the details; we may need to clean up your existing articles manually.
 
 ---
 
@@ -220,21 +220,3 @@ The rights of the site-generated metadata in the Atom feed are listed in the fee
 DOAJ is a Python/Flask web app with a JSON document store. The code is open source and can be found in [our GitHub repository](https://github.com/DOAJ/doaj).
 
 DOAJ uses Bootstrap which is the framework used to build the DOAJ website. This contains some Javascript for some of its features.
-
----
-
-## Finding content in DOAJ
-
-### Browsing by subject
-
-The subject classifications used to [Browse by subject]() page are structured as follows:
-
-+ subjects separated by a full stop (.) are part of the same category. For example: 'Philosophy. Psychology. Religion' is one category.
-+ where two subjects are separated by a colon (:), the second subject is a subcategory of the first. For example: 'Philosophy. Psychology. Religion: Philosophy (General)'. This journal has been categorised as General Philosophy.
-+ where subjects are separated by a pipe (\|), the second category has no relation to the first. For example: 'Philosophy. Psychology. Religion: Philosophy (General) \| Social Sciences: Social sciences (General)' means that this journal has been categorised both as General Philosophy and General Social Sciences.
-
-### Searching by keyword
-
-You can choose to filter your search results by ‘keyword’.
-
-Journal keywords are chosen by the person applying for a journal. They are reviewed and edited by the DOAJ Team. They are more arbitrary than the subject classification.
