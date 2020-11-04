@@ -5,6 +5,7 @@
 
   li {
     @extend .input-group;
+    margin-bottom: 0;
     width: 50%;
 
     + li {

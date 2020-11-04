@@ -53,8 +53,8 @@ button:disabled,
 button[disabled],
 input[disabled],
 .button[disabled] {
-  background-color: rgba($dark-grey, 0.5);
-  border-color: rgba($dark-grey, 0.5);
+  background-color: rgba($dark-grey, 0.15);
+  border: 0;
   color: $warm-black;
   box-shadow: none;
   font-style: italic;

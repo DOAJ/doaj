@@ -1,6 +1,17 @@
 /* General form styles
    Question = groups paragraph text, label, input for a single question */
 
+.form {
+
+  textarea {
+    height: 20vh;
+  }
+
+  button {
+    margin: $spacing-03 0;
+  }
+}
+
 .form__header {
   margin-bottom: 0;
   padding-bottom: $spacing-03;
@@ -77,13 +88,13 @@
   }
 
   .form__header {
-    margin: $spacing-04 0 $spacing-03 0;
+    margin: $spacing-03 0;
     font-size: 1em;
     font-weight: 600;
   }
 
   .form__question {
-    margin: 0 0 $spacing-04 0;
+    margin: 0 0 $spacing-03 0;
 
     input[type="checkbox"]+label,
     input[type="radio"]+label {

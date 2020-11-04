@@ -25,7 +25,6 @@ $s2-size:  20px;
     min-height: 46px;
     background: $warm-white;
     border: 1px solid $warm-black;
-    font-size: smaller;
     @include font-sans;
 
     .select2-search-choice {
@@ -37,7 +36,7 @@ $s2-size:  20px;
 
       div {
         margin-left: $s2-size;
-        line-height: 1.25;
+        line-height: 1.15;
       }
     }
 
@@ -62,7 +61,7 @@ $s2-size:  20px;
     }
 
     .select2-search-choice-close {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FEFBF8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") !important;
       background-repeat: no-repeat;
       background-size: $s2-size !important;
       right: 30px !important;
@@ -70,9 +69,9 @@ $s2-size:  20px;
       top: 5px;
       height: $s2-size;
       width: $s2-size;
-      font-size: 1em;
 
       &:hover {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FD5A3B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-x'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") !important;
         background-position: center !important;
       }
     }
