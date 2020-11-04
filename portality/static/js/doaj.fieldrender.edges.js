@@ -1304,7 +1304,7 @@ $.extend(true, doaj, {
                 var namespace = this.namespace;
 
                 if (this.hideIfNoData && ts.edge.result && ts.terms.length === 0) {
-                    this.context.html("");
+                    this.component.context.html("");
                     return;
                 }
 

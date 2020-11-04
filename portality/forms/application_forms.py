@@ -639,7 +639,7 @@ class FieldDefinitions:
             },
             "update_request": {
                 "validate": [
-                    "required"
+                    "required",
                     "is_url"
                 ]
             }
