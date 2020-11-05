@@ -2026,7 +2026,7 @@ def iso_currency_list(field, formulaic_context_name):
 
 
 def quick_reject(field, formulaic_context_name):
-   return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
+   return [{"display": "Other", "value" : ""}] + [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
 
 
 def application_statuses(field, formulaic_context):
