@@ -45,7 +45,9 @@ class ArticleFormXWalk(object):
         # keywords
         keywords = form.keywords.data
         if keywords is not None and keywords is not []:
-            ks = [k.strip() for k in keywords.split(",")]
+            if isinstance(keywords, str):
+                keywords = keywords.split(",")
+            ks = [k.strip() for k in keywords]
             bibjson.set_keywords(ks)
 
         # fulltext
