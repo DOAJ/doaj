@@ -41,8 +41,11 @@ def public_application(draft_id=None):
         fc = ApplicationFormFactory.context("public")
         if draft_application is not None:
             fc.processor(source=draft_application)
+
+        draft_data = None
         if draft_application is None:   # we always set a draft id, which means that whenver the browser reloads this page from cache, the id is stable and no duplicates are created
             draft_data = {"id" : models.DraftApplication.makeid()}
+        
         return fc.render_template(obj=draft_application, draft_data=draft_data)
 
     elif request.method == "POST":

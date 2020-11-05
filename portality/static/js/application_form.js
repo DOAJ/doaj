@@ -405,6 +405,8 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
     manage_review_checkboxes() {
         if (this.jq("#reviewed").is(":checked")) {
             this.jq("#submitBtn").show().removeAttr("disabled");
+        } else {
+            this.jq("#submitBtn").show().attr("disabled", "disabled");
         }
     };
 };
