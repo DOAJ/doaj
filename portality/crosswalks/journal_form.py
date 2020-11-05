@@ -333,7 +333,8 @@ class JournalGenericXWalk(object):
         if bibjson.article_license_display is not None and len(bibjson.article_license_display) > 0:
             forminfo["license_display"] = "y" if "Embed" in bibjson.article_license_display else "n"
         forminfo["license_display_example_url"] = bibjson.article_license_display_example_url
-        forminfo["boai"] = 'y' if bibjson.boai else 'n'
+        if bibjson.boai is not None:
+            forminfo["boai"] = 'y' if bibjson.boai else 'n'
         forminfo["license_terms_url"] = bibjson.license_terms_url
         forminfo["oa_statement_url"] = bibjson.oa_statement_url
         forminfo["journal_url"] = bibjson.journal_url

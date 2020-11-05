@@ -2466,6 +2466,19 @@ class UnconstrainedRadioField(RadioField):
     def pre_validate(self, form):
         return
 
+    def process_data(self, value):
+        if value:
+            super(UnconstrainedRadioField, self).process_data(value)
+        else:
+            self.data = None
+
+    # def process_formdata(self, valuelist):
+    #     if valuelist:
+    #         try:
+    #             self.data = self.coerce(valuelist[0])
+    #         except ValueError:
+    #             raise ValueError(self.gettext('Invalid Choice: could not coerce'))
+
 ##########################################################
 # Mapping from configurations to WTForms builders
 ##########################################################
