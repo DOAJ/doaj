@@ -32,16 +32,18 @@ def public_application(draft_id=None):
     draft_application = None
     if draft_id is not None:
         draft_application = models.DraftApplication.pull(draft_id)
-        if draft_application is None:
-            abort(404)
-        if draft_application.owner != current_user.id:
+        #if draft_application is None:
+        #    abort(404)
+        if draft_application is not None and draft_application.owner != current_user.id:
             abort(404)
 
     if request.method == "GET":
         fc = ApplicationFormFactory.context("public")
         if draft_application is not None:
             fc.processor(source=draft_application)
-        return fc.render_template(obj=draft_application)
+        if draft_application is None:   # we always set a draft id, which means that whenver the browser reloads this page from cache, the id is stable and no duplicates are created
+            draft_data = {"id" : models.DraftApplication.makeid()}
+        return fc.render_template(obj=draft_application, draft_data=draft_data)
 
     elif request.method == "POST":
 
@@ -54,9 +56,9 @@ def public_application(draft_id=None):
 
         if draft_id is not None and draft_application is None:
             draft_application = models.DraftApplication.pull(draft_id)
-            if draft_application is None:
-                abort(404)
-            if draft_application.owner != current_user.id:
+            #if draft_application is None:
+            #    abort(404)
+            if draft_application is not None and draft_application.owner != current_user.id:
                 abort(404)
 
         processor = fc.processor(formdata=request.form)
