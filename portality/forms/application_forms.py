@@ -1331,7 +1331,6 @@ class FieldDefinitions:
         "label": "DOAJ Account",
         "input": "text",
         "validate": [
-            {"required" : {"message" : "You must confirm the account id"}},
             "reserved_usernames"
         ],
         "widgets": [
@@ -1339,8 +1338,9 @@ class FieldDefinitions:
             "clickable_owner"
         ],
         "contexts" : {
-            "bulk_edit" : {
+            "associate_editor" : {
                 "validate" : [
+                    {"required": {"message": "You must confirm the account id"}},
                     "reserved_usernames"
                 ]
             }
@@ -1462,12 +1462,19 @@ class FieldDefinitions:
             "short_help": "Selecting a subject will not automatically select its sub-categories"
         },
         "validate": [
-            "required",
-            {"max_tags": {"max": 2, "message" : "You have chosen too many"}}        # required and max 2 should mean [min 1 max 2] to as per spec
+            {"max_tags": {"max": 2, "message": "You have chosen too many"}}
         ],
         "widgets": [
             "subject_tree"
         ],
+        "contexts" : {
+            "associate_editor" : {
+                "validate" : [
+                    "required",
+                    {"max_tags": {"max": 2, "message": "You have chosen too many"}}
+                ]
+            }
+        }
     }
 
     NOTES = {
