@@ -106,9 +106,9 @@
                         {% if file.error %}
                             {{file.error}}
                             {% if file.error == "One or more articles failed to ingest; entire batch ingest halted" %}
-                                <a target="_blank" href="{{ url_for('doaj.publishers', _anchor="Reasons for individual article import failures") }}">(what does this mean?)</a><br>
+                                <a target="_blank" href="{{ url_for('doaj.faq', _anchor="Reasons for individual article import failures") }}">(what does this mean?)</a><br>
                             {% else %}
-                                <a target="_blank" href="{{ url_for('doaj.publishers', _anchor=file.error) }}">(what does this mean?)</a><br>
+                                <a target="_blank" href="{{ url_for('doaj.faq', _anchor=file.error) }}">(what does this mean?)</a><br>
                             {% endif %}
                         {% else %}
                             {% if file.status == "partial" or file.status == "processed" %}
@@ -118,7 +118,7 @@
                                 {% endif %}
                                 {% if file.failed_imports > 0 %}
                                     ; {{ file.failed_imports }} articles failed
-                                    <a target="_blank" href="{{ url_for('doaj.publishers', _anchor='some_articles_failed') }}">(what does this mean?)</a><br>
+                                    <a target="_blank" href="{{ url_for('doaj.faq', _anchor='some_articles_failed') }}">(what does this mean?)</a><br>
                                 {% endif %}
                             {% endif %}
                         {% endif %}
