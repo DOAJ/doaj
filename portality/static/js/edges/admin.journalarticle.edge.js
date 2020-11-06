@@ -532,7 +532,8 @@ $.extend(true, doaj, {
                         "index.country.exact" : "Country of publisher",
                         "index.license.exact" : "Journal License",
                         "bibjson.year.exact" : "Year of publication",
-                        "bibjson.journal.title.exact" : "Journal title"
+                        "bibjson.journal.title.exact" : "Journal title",
+                        "index.has_apc.exact" : "Publication charges?"
                     },
                     valueMaps : {
                         "es_type" : {
