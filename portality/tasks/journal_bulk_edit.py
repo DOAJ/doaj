@@ -120,8 +120,12 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                     fc.form.editor.data = None
 
             for k, v in metadata.items():
-                job.add_audit_message("Setting {f} to {x} for journal {y}".format(f=k, x=v, y=journal_id))
-                fc.form[k].data = v
+                if k != "change_doaj_seal":
+                    job.add_audit_message("Setting {f} to {x} for journal {y}".format(f=k, x=v, y=journal_id))
+                    fc.form[k].data = v
+                else:
+                    if v:
+                        fc.doaj_seal.data = v
                 updated = True
 
             if note:

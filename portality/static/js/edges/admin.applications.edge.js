@@ -415,7 +415,7 @@ $.extend(true, doaj, {
                         'index.subject.exact' : 'Subject',
                         'bibjson.publisher.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
-                        'bibjson.author_pays.exact' : 'Publication charges?',
+                        "index.has_apc.exact" : "Publication charges?",
                         'index.license.exact' : 'Journal License'
                     },
                     valueMaps : {

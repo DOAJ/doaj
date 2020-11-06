@@ -304,7 +304,8 @@ $.extend(true, doaj, {
                         'index.country.exact' : 'Country of publisher',
                         'index.subject.exact' : 'Subject',
                         'bibjson.publisher.name.exact' : 'Publisher',
-                        'index.license.exact' : 'Journal License'
+                        'index.license.exact' : 'Journal License',
+                        "index.has_apc.exact" : "Publication charges?"
                     }
                 }),
 

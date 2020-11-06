@@ -7,7 +7,8 @@ from portality import constants
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.formcontext import formcontext
+from portality.forms.application_forms import ApplicationFormFactory
+
 
 UPDATE_REQUEST_SOURCE_TEST_1 = ApplicationFixtureFactory.make_update_request_source()
 UPDATE_REQUEST_SOURCE_TEST_2 = ApplicationFixtureFactory.make_update_request_source()
@@ -81,25 +82,34 @@ class TestPublicApplicationEmails(DoajTestCase):
         self.app_test.logger.removeHandler(self.read_info)
 
     def test_01_public_application_email(self):
-        application = models.Suggestion(**UPDATE_REQUEST_SOURCE_TEST_1)
+        application = models.Application(**UPDATE_REQUEST_SOURCE_TEST_1)
+
+        account = models.Account()
+        account.set_id("testing")
+        account.set_email("testing@example.com")
+        account.save(blocking=True)
+
+        application.set_owner(account.id)
 
         # Construct an application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role=None,
-            source=application
-        )
-        assert isinstance(fc, formcontext.PublicApplication)
+        fc = ApplicationFormFactory.context("public")
+        processor = fc.processor(source=application)
+        #fc = formcontext.ApplicationFormFactory.get_form_context(
+        #    role=None,
+        #    source=application
+        #)
+        #assert isinstance(fc, formcontext.PublicApplication)
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
         with self.app_test.test_request_context():
-            fc.finalise()
+            processor.finalise(account)
         # Use the captured info stream to get email send logs
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email sent:
         #   * to the applicant, informing them the application was received
         public_template = re.escape('publisher_application_received.txt')
-        public_to = re.escape('suggester@email.com')
+        public_to = re.escape(account.email)
         public_subject = "Directory of Open Access Journals - your application to DOAJ has been received"
         public_email_matched = re.search(email_log_regex % (public_template, public_to, public_subject),
                                          info_stream_contents,

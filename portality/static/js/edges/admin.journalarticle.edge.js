@@ -532,7 +532,8 @@ $.extend(true, doaj, {
                         "index.country.exact" : "Country of publisher",
                         "index.license.exact" : "Journal License",
                         "bibjson.year.exact" : "Year of publication",
-                        "bibjson.journal.title.exact" : "Journal title"
+                        "bibjson.journal.title.exact" : "Journal title",
+                        "index.has_apc.exact" : "Publication charges?"
                     },
                     valueMaps : {
                         "es_type" : {
@@ -652,7 +653,7 @@ $.extend(true, doaj, {
                     },
                     edit_metadata : {
                         data : function(context) {
-                            var seal = $('#doaj_seal', context).val();
+                            var seal = $('#change_doaj_seal', context).val();
                             if (seal === "True") {
                                 seal = true;
                             } else if (seal === "False") {
@@ -660,10 +661,10 @@ $.extend(true, doaj, {
                             }
                             var data = {
                                 metadata : {
-                                    publisher: $('#publisher_name', context).select2("val"),
-                                    country: $('#publisher_country', context).select2("val"),
+                                    publisher_name: $('#publisher_name', context).select2("val"),
+                                    publisher_country: $('#publisher_country', context).select2("val"),
                                     owner: $('#owner', context).select2("val"),
-                                    doaj_seal: seal
+                                    change_doaj_seal: seal
                                 }
                             };
                             return data;

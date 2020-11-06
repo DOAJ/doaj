@@ -262,8 +262,8 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
             submitButton.hide();
             draftButton.show();
         }
-        this.currentTab = n;
-        this.previousTab = n-1;
+        this.currentTab = parseInt(n);
+        this.previousTab = this.currentTab-1;
         // ... and run a function that displays the correct step indicator:
         if(n === this.tabs.length - 1) {
             this.prepareReview();
@@ -364,16 +364,16 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
             group: "block-" + this.currentTab
         }).done(() => {
             this.tabValidationState[this.currentTab].state = "valid";
-            this.previousTab = n-1;
-            this.currentTab = n;
+            this.currentTab = parseInt(n);
+            this.previousTab = this.currentTab-1;
             // Otherwise, display the correct tab:
             this.showTab(this.currentTab);
         }).fail(() => {
             // $("#validated-" + this.currentTab).val("False");
             this.tabValidationState[this.currentTab].state = "invalid";
             if (showEvenIfInvalid){
-                this.previousTab = n-1;
-                this.currentTab = n;
+                this.currentTab = parseInt(n);
+                this.previousTab = this.currentTab-1;
                 // Otherwise, display the correct tab:
                 this.showTab(this.currentTab);
             }
@@ -405,6 +405,8 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
     manage_review_checkboxes() {
         if (this.jq("#reviewed").is(":checked")) {
             this.jq("#submitBtn").show().removeAttr("disabled");
+        } else {
+            this.jq("#submitBtn").show().attr("disabled", "disabled");
         }
     };
 };

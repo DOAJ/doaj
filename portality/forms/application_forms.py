@@ -638,7 +638,7 @@ class FieldDefinitions:
             },
             "update_request": {
                 "validate": [
-                    "required"
+                    "required",
                     "is_url"
                 ]
             }
@@ -1330,7 +1330,6 @@ class FieldDefinitions:
         "label": "DOAJ Account",
         "input": "text",
         "validate": [
-            {"required" : {"message" : "You must confirm the account id"}},
             "reserved_usernames"
         ],
         "widgets": [
@@ -1338,8 +1337,9 @@ class FieldDefinitions:
             "clickable_owner"
         ],
         "contexts" : {
-            "bulk_edit" : {
+            "associate_editor" : {
                 "validate" : [
+                    {"required": {"message": "You must confirm the account id"}},
                     "reserved_usernames"
                 ]
             }
@@ -1461,12 +1461,19 @@ class FieldDefinitions:
             "short_help": "Selecting a subject will not automatically select its sub-categories"
         },
         "validate": [
-            "required",
-            {"max_tags": {"max": 2, "message" : "You have chosen too many"}}        # required and max 2 should mean [min 1 max 2] to as per spec
+            {"max_tags": {"max": 2, "message": "You have chosen too many"}}
         ],
         "widgets": [
             "subject_tree"
         ],
+        "contexts" : {
+            "associate_editor" : {
+                "validate" : [
+                    "required",
+                    {"max_tags": {"max": 2, "message": "You have chosen too many"}}
+                ]
+            }
+        }
     }
 
     NOTES = {
@@ -1486,7 +1493,8 @@ class FieldDefinitions:
         "entry_template": "application_form/_entry_group_horizontal.html",
         "widgets": [
             {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}}
-        ]
+        ],
+        "merge_disabled" : "merge_disabled_notes"
     }
 
     NOTE = {
@@ -2024,7 +2032,7 @@ def iso_currency_list(field, formulaic_context_name):
 
 
 def quick_reject(field, formulaic_context_name):
-   return [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
+   return [{"display": "Other", "value" : ""}] + [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
 
 
 def application_statuses(field, formulaic_context):
@@ -2092,7 +2100,30 @@ def editor_choices(field, formulaic_context):
 def application_status_disabled(field, formulaic_context):
     choices = application_statuses(field, formulaic_context)
     field_value = field.wtfield.data
-    return field_value in [c.get("v") for c in choices]
+    return field_value not in [c.get("value") for c in choices]
+
+
+#######################################################
+## Merge disabled
+#######################################################
+
+def merge_disabled_notes(notes_group, original_form):
+    merged = []
+    wtf = notes_group.wtfield
+    for entry in wtf.entries:
+        if entry.data.get("note") != "":
+            merged.append(entry)
+    for entry in original_form.notes.entries:
+        merged.append(entry)
+
+    while True:
+        try:
+            wtf.pop_entry()
+        except IndexError:
+            break
+
+    for m in merged:
+        wtf.append_entry(m.data)
 
 
 #######################################################
@@ -2329,6 +2360,9 @@ PYTHON_FUNCTIONS = {
     "disabled" : {
         "application_status_disabled" : application_status_disabled
     },
+    "merge_disabled" : {
+        "merge_disabled_notes" : merge_disabled_notes
+    },
     "validate": {
         "render": {
             "required": RequiredBuilder.render,
@@ -2437,6 +2471,19 @@ class NestedFormField(FormField):
 class UnconstrainedRadioField(RadioField):
     def pre_validate(self, form):
         return
+
+    def process_data(self, value):
+        if value:
+            super(UnconstrainedRadioField, self).process_data(value)
+        else:
+            self.data = None
+
+    # def process_formdata(self, valuelist):
+    #     if valuelist:
+    #         try:
+    #             self.data = self.coerce(valuelist[0])
+    #         except ValueError:
+    #             raise ValueError(self.gettext('Invalid Choice: could not coerce'))
 
 ##########################################################
 # Mapping from configurations to WTForms builders

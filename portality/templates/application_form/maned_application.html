@@ -36,6 +36,7 @@
             </form>
         </div>
 
+    {% if obj.application_status not in ["accepted", "rejected"] %}
         {% set fs = formulaic_context.fieldset("quick_reject") %}
         <div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
             <div class="modal__dialog" role="document">
@@ -53,6 +54,7 @@
                 <button type="button" data-dismiss="modal" class="modal__close">Close</button>
             </div>
         </div>
+    {% endif %}
 
     </main>
  </body>

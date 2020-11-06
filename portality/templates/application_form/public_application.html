@@ -44,6 +44,8 @@
 
                     {% if obj %}
                         <input type="hidden" name="id" value="{{ obj.id }}">
+                    {% elif draft_data %}
+                        <input type="hidden" name="id" value="{{ draft_data.id }}">
                     {% endif %}
                 </form>
                 </section>

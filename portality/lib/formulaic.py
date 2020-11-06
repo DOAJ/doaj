@@ -633,8 +633,10 @@ class FormulaicField(object):
         if self.has_options_subfields():
             kwargs["formulaic"] = self
 
+        add_data_as_choice = False
         if self.is_disabled:
             kwargs["disabled"] = "disabled"
+            add_data_as_choice = True
 
         # allow custom args to overwite all other arguments
         if custom_args is not None:
@@ -646,6 +648,10 @@ class FormulaicField(object):
             wtf = wtfinst
         else:
             wtf = self.wtfield
+
+        if add_data_as_choice and hasattr(wtf, "choices") and wtf.data not in [c[0] for c in wtf.choices]:
+            wtf.choices += [(wtf.data, wtf.data)]
+
         return wtf(**kwargs)
 
     @classmethod
@@ -859,19 +865,27 @@ class FormProcessor(object):
                     wtf.append_entry()
 
         # patch over any disabled fields
-        # FIXME: this is very problematic, I don't think we can reset disabled fields here, as the nature
-        # by which they are reset is dependent on how the post-processing on the form happens, and that's not
-        # something we can do generally in this function.  It probably belongs in the specific form processor
-        """
         disableds = self._formulaic.disabled_fields()
         if len(disableds) > 0:
             alt_formulaic = self._formulaic.__class__(self._formulaic.name, self._formulaic._definition, self._formulaic._formulaic)
             other_processor = alt_formulaic.processor(source=self.source)
             other_form = other_processor.form
             for dis in disableds:
-                wtf = dis.wtfield
-                wtf.data = other_form._fields[dis.get("name")].data
-        """
+                if dis.get("group") is not None:
+                    dis = self._formulaic.get(dis.get("group"))
+
+                if dis.get("merge_disabled"):
+                    self._merge_disabled(dis, other_form)
+                else:
+                    wtf = dis.wtfield
+                    wtf.data = other_form._fields[dis.get("name")].data
+
+    def _merge_disabled(self, disabled, other_form):
+        fnref = disabled.get("merge_disabled")
+        fn = self._formulaic.function_map.get("merge_disabled", {}).get(fnref)
+        if not fn:
+            raise FormulaicException("No merge_disabled function defined {x}".format(x=fnref))
+        fn(disabled, other_form)
 
     def patch_target(self):
         """

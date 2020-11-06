@@ -443,14 +443,19 @@ class EditorApplication(ApplicationProcessor):
     """
 
     def pre_validate(self):
-        # TODO: If we're only ever patching disabled fields for validation could we add this to super?
+        # Call to super sets all the basic disabled fields
         super(EditorApplication, self).pre_validate()
 
-        self.form.editor_group.data = self.source.editor_group
+        # although the editor_group field is handled by the general pre-validator, we still need to set the choices
+        # self.form.editor_group.data = self.source.editor_group
         self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)]
 
-        if self._formulaic.get('application_status').is_disabled:
-            self.form.application_status.data = self.source.application_status
+        # This is no longer necessary, is handled by the main pre_validate function
+        #if self._formulaic.get('application_status').is_disabled:
+        #    self.form.application_status.data = self.source.application_status
+        # but we do still need to add the overwritten status to the choices for validation
+        if self.form.application_status.data not in [c[0] for c in self.form.application_status.choices]:
+            self.form.application_status.choices.append((self.form.application_status.data, self.form.application_status.data))
 
     def patch_target(self):
         super(EditorApplication, self).patch_target()
@@ -552,11 +557,16 @@ class AssociateApplication(ApplicationProcessor):
        """
 
     def pre_validate(self):
-        # TODO: If we're only ever patching disabled fields for validation could we add this to super?
+        # Call to super sets all the basic disabled fields
         super(AssociateApplication, self).pre_validate()
 
-        if self._formulaic.get('application_status').is_disabled:
-            self.form.application_status.data = self.source.application_status
+        # no longer necessary, handled by superclass pre_validate
+        #if self._formulaic.get('application_status').is_disabled:
+        #    self.form.application_status.data = self.source.application_status
+        # but we do still need to add the overwritten status to the choices for validation
+        if self.form.application_status.data not in [c[0] for c in self.form.application_status.choices]:
+            self.form.application_status.choices.append(
+                (self.form.application_status.data, self.form.application_status.data))
 
     def patch_target(self):
         if self.source is None:
@@ -620,18 +630,19 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         super(ApplicationProcessor, self).pre_validate()
 
+        # no longer required, handled by call to superclass pre_validate
         # carry forward the disabled fields
-        bj = self.source.bibjson()
-        self.form.title.data = bj.title
-        self.form.alternative_title.data = bj.alternative_title
+        #bj = self.source.bibjson()
+        #self.form.title.data = bj.title
+        #self.form.alternative_title.data = bj.alternative_title
 
-        pissn = bj.pissn
-        if pissn == "": pissn = None
-        self.form.pissn.data = pissn
+        #pissn = bj.pissn
+        #if pissn == "": pissn = None
+        #self.form.pissn.data = pissn
 
-        eissn = bj.eissn
-        if eissn == "": eissn = None
-        self.form.eissn.data = eissn
+        #eissn = bj.eissn
+        #if eissn == "": eissn = None
+        #self.form.eissn.data = eissn
 
     def patch_target(self):
         if self.source is None:
@@ -818,9 +829,11 @@ class EditorJournalReview(ApplicationProcessor):
         self._carry_continuations()
 
     def pre_validate(self):
+        # call to super handles all the basic disabled field
         super(EditorJournalReview, self).pre_validate()
 
-        self.form.editor_group.data = self.source.editor_group
+        # although the superclass sets the value of the disabled field, we still need to set the choices
+        # self.form.editor_group.data = self.source.editor_group
         self.form.editor.choices = [(self.form.editor.data, self.form.editor.data)]
 
     def finalise(self):

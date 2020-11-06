@@ -92,3 +92,7 @@ li.parsley-type {
     resize: vertical;
     width: 100%;
 }
+
+.editorial-panel {
+    position: static !important;
+}
