@@ -652,7 +652,7 @@ $.extend(true, doaj, {
                     },
                     edit_metadata : {
                         data : function(context) {
-                            var seal = $('#doaj_seal', context).val();
+                            var seal = $('#change_doaj_seal', context).val();
                             if (seal === "True") {
                                 seal = true;
                             } else if (seal === "False") {
@@ -660,10 +660,10 @@ $.extend(true, doaj, {
                             }
                             var data = {
                                 metadata : {
-                                    publisher: $('#publisher_name', context).select2("val"),
-                                    country: $('#publisher_country', context).select2("val"),
+                                    publisher_name: $('#publisher_name', context).select2("val"),
+                                    publisher_country: $('#publisher_country', context).select2("val"),
                                     owner: $('#owner', context).select2("val"),
-                                    doaj_seal: seal
+                                    change_doaj_seal: seal
                                 }
                             };
                             return data;
