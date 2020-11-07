@@ -166,6 +166,8 @@ class JournalGenericXWalk(object):
                 schemes.append(form.persistent_identifiers_other.data)
             if len(schemes) > 0:
                 bibjson.pid_scheme = schemes
+            else:
+                bibjson.has_pid_scheme = False
 
         if form.plagiarism_detection.data:
             has_detection = form.plagiarism_detection.data == "y"
@@ -349,6 +351,8 @@ class JournalGenericXWalk(object):
             forminfo["persistent_identifiers_other"] = " ".join([x for x in bibjson.pid_scheme if x not in pid_choices])
             if len(forminfo["persistent_identifiers_other"]) > 0:
                 forminfo["persistent_identifiers"].append("other")
+        if not bibjson.has_pid_scheme:
+            forminfo["persistent_identifiers"] = ["none"]
 
         if bibjson.plagiarism_detection is not None:
             forminfo["plagiarism_detection"] = "y" if bibjson.plagiarism_detection else "n"

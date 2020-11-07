@@ -371,6 +371,8 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.set_with_struct("pid_scheme.scheme", schemes)
         if len(schemes) > 0:
             self.__seamless__.set_with_struct("pid_scheme.has_pid_scheme", True)
+        else:
+            self.__seamless__.set_with_struct("pid_scheme.has_pid_scheme", False)
 
     def add_pid_scheme(self, scheme):
         self.__seamless__.add_to_list_with_struct("pid_scheme.scheme", scheme)

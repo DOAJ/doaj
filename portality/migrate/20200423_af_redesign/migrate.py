@@ -36,6 +36,17 @@ CC_URLS = {
     "CC BY-SA": "https://creativecommons.org/licenses/by-sa/4.0/"
 }
 
+known_licenses = [
+    "CC BY",
+    "CC BY-NC",
+    "CC BY-NC-ND",
+    "CC BY-NC-SA",
+    "CC BY-ND",
+    "CC BY-SA",
+    "CCO",
+    "Public domain"
+]
+
 permissive_bibjson_struct = {
     "fields": {
         "alternative_title": {"coerce": "unicode"},
@@ -348,8 +359,8 @@ def bibjson_migration(source, target):
         if policy_url == "":
             policy_url = None
         tbj.set_preservation(known, policy_url)
-        if len(known) == 0:
-            tbj.has_preservation = False
+    if len(known) == 0:
+        tbj.has_preservation = False
     if nat_lib is not None:
         tbj.add_preservation_library(nat_lib)
 
@@ -425,6 +436,9 @@ def bibjson_migration(source, target):
             typeurl = lurl
         if typeurl is None:
             typeurl = CC_URLS.get(lurl)
+
+        if ltype not in known_licenses:
+            ltype = "Publisher's own license"
 
         tbj.add_license(ltype, typeurl, by=by, sa=sa, nc=nc, nd=nd)
 
