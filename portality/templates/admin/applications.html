@@ -7,41 +7,35 @@
 
 <div class="bulk-action-feedback alert alert-success" style="display: none"></div>
 
-<div style="padding-bottom: 20px; margin-top: 20px">
-    <div class="row">
-        <div class="col-md-12">
-            <div id="admin-bulk-box" class="pull-right">
-                <label id="admin-bulk-label">Bulk Edit Records</label>
-                <form class="form-horizontal" id="suggestion_bulk_form">
-                    <fieldset>
-                        <div class="form-group" id="bulk_action-container">
-                            <select class="form-control multiformbox-selector" id="bulk_action" name="bulk_action" style="width: 250px;">
-                                <option selected value="">Select action...</option>
-                                <option value="application_status">Change status</option>
-                                <option value="editor_group">Assign to editor group</option>
-                                <option value="note">Add a note</option>
-                            </select>
-                        </div>
-                        <div class="form-group multiformbox-container" style="display: none" id="application_status-container">
-                            <select class="form-control" id="application_status" name="application_status" style="width: 250px">
-                                {% for choice in application_status_choices %}
-                                    <option value="{{ choice[0] }}">{{ choice[1] }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group multiformbox-container" style="display: none" id="editor_group-container">
-                            <input id="editor_group" name="editor_group" class="" style="width: 250px;" type="text" value="">
-                        </div>
-                        <div class="form-group multiformbox-container" style="display: none" id="note-container">
-                            <textarea id="note" name="note" class="form-control" style="width: 240px;" placeholder="Type note here..."></textarea>
-                        </div>
-                        <button id="bulk-submit" class="button pull-right multiformbox-submit" disabled="disabled">Submit
-                        </button>
-                    </fieldset>
-                </form>
+<div id="admin-bulk-box" class="pull-right">
+    <label id="admin-bulk-label">Bulk Edit Records</label>
+    <form class="form-horizontal" id="suggestion_bulk_form">
+        <fieldset>
+            <div class="form-group" id="bulk_action-container">
+                <select class="form-control multiformbox-selector" id="bulk_action" name="bulk_action" style="width: 250px;">
+                    <option selected value="">Select action...</option>
+                    <option value="application_status">Change status</option>
+                    <option value="editor_group">Assign to editor group</option>
+                    <option value="note">Add a note</option>
+                </select>
             </div>
-        </div>
-    </div>
+            <div class="form-group multiformbox-container" style="display: none" id="application_status-container">
+                <select class="form-control" id="application_status" name="application_status" style="width: 250px">
+                    {% for choice in application_status_choices %}
+                        <option value="{{ choice[0] }}">{{ choice[1] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group multiformbox-container" style="display: none" id="editor_group-container">
+                <input id="editor_group" name="editor_group" class="" style="width: 250px;" type="text" value="">
+            </div>
+            <div class="form-group multiformbox-container" style="display: none" id="note-container">
+                <textarea id="note" name="note" class="form-control" style="width: 240px;" placeholder="Type note here..."></textarea>
+            </div>
+            <button id="bulk-submit" class="button pull-right multiformbox-submit" disabled="disabled">Submit
+            </button>
+        </fieldset>
+    </form>
 </div>
 
 <div id="admin_applications"></div>

@@ -8,34 +8,29 @@
 {% set auto_save = 0 %}
 {% set notabs = true %}
 
-
 {% block content scoped %}
 <body id="apply">
     <main class="container">
         {% include "application_form/_edit_status.html" %}
         {% include "application_form/_backend_validation.html" %}
-        <div class="row">
+        <form id="{{ form_id }}"
+              data-context="{{ formulaic_context.name }}"
+              class="row application_form form form--compact"
+              novalidate
+              action="{{ form_action }}"
+              method="post"
+              data-formulaic-after="{{ formulaic_after }}"
+                >
 
-            <form id="{{ form_id }}"
-                  data-context="{{ formulaic_context.name }}"
-                  class="row application_form form form--compact"
-                  novalidate
-                  action="{{ form_action }}"
-                  method="post"
-                  data-formulaic-after="{{ formulaic_after }}"
-                    >
-
-                <div class="col-md-8 page">
-                    <section class="page-content">
-                        {% include "application_form/_fieldsets.html" %}
-                    </section>
-                </div>
-                <div class="col-md-4 side-menus">
-                    {% include "application_form/admin/application.html" %}
-                </div>
-
-            </form>
-        </div>
+            <div class="col-md-8 page">
+                <section class="page-content">
+                    {% include "application_form/_fieldsets.html" %}
+                </section>
+            </div>
+            <div class="col-md-4 side-menus">
+                {% include "application_form/admin/application.html" %}
+            </div>
+        </form>
 
     {% if obj.application_status not in ["accepted", "rejected"] %}
         {% set fs = formulaic_context.fieldset("quick_reject") %}

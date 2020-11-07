@@ -12,28 +12,24 @@
 <body id="apply">
     <main class="container">
         {% include "application_form/_backend_validation.html" %}
-        <div class="row">
+        <form id="{{ form_id }}"
+              data-context="{{ formulaic_context.name }}"
+              class="row application_form form form--compact"
+              novalidate
+              action="{{ form_action }}"
+              method="post"
+              data-formulaic-after="{{ formulaic_after }}"
+                >
 
-            <form id="{{ form_id }}"
-                  data-context = "{{ formulaic_context.name }}"
-                  class="row application_form form form--compact"
-                  novalidate
-                  action="{{ form_action }}"
-                  method="post"
-                  data-formulaic-after="{{ formulaic_after }}"
-                    >
-
-                <div class="col-md-8 page">
-                    <section class="page-content">
-                        {% include "application_form/_fieldsets.html" %}
-                    </section>
-                </div>
-                <div class="col-md-4 side-menus">
-                    {% include "application_form/admin/journal.html" %}
-                </div>
-
-            </form>
-        </div>
+            <div class="col-md-8 page">
+                <section class="page-content">
+                    {% include "application_form/_fieldsets.html" %}
+                </section>
+            </div>
+            <div class="col-md-4 side-menus">
+                {% include "application_form/admin/journal.html" %}
+            </div>
+        </form>
 
         <div class="modal" id="modal-withdraw_reinstate" tabindex="-1" role="dialog" aria-labelledby="modalLabel-withdraw_reinstate">
             <div class="modal__dialog" role="document">
