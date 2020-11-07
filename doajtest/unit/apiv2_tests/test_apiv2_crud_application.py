@@ -198,11 +198,13 @@ class TestCrudApplication(DoajTestCase):
         # formcontext.FormContext.finalise = self.old_finalise
         ApplicationProcessor.finalise = self.old_finalise
 
-        # validation fails on the formcontext
+        # validation fails at formulaic form processor
         IncomingApplication.custom_validate = mock_custom_validate_always_pass
         with self.assertRaises(Api400Error):
             data = ApplicationFixtureFactory.incoming_application()
             del data["admin"]["current_journal"]
+            # a bungled URL should trigger the form validation failure
+            data["bibjson"]["plagiarism"]["url"] = "quite frankly not a URL"
             publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
             try:
                 a = ApplicationsCrudApi.create(data, publisher)

@@ -194,6 +194,10 @@ class NewApplication(ApplicationProcessor):
         draft_application.save()
         return draft_application
 
+    def patch_target(self):
+        """ The API uses the application form to update applications, so we must carry fixed aspects here """
+        self._carry_fixed_aspects()
+
     def finalise(self, account, save_target=True, email_alert=True):
         super(NewApplication, self).finalise()
 

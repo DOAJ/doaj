@@ -149,11 +149,12 @@ def put_mappings(conn, mappings):
     # for each mapping (a class may supply multiple), create a mapping, or mapping and index
     for key, mapping in iter(mappings.items()):
         altered_key = mutate_mapping(conn, key, mapping)
+        ix = conn.index or altered_key
         if not esprit.raw.type_exists(conn, altered_key, es_version=es_version):
             r = esprit.raw.put_mapping(conn, altered_key, mapping, es_version=es_version)
-            print("Creating ES Type + Mapping for", altered_key, "; status:", r.status_code)
+            print("Creating ES Type + Mapping in index {0} for {1}; status: {2}".format(ix, key, r.status_code))
         else:
-            print("ES Type + Mapping already exists for", key)
+            print("ES Type + Mapping already exists in index {0} for {1}".format(ix, key))
 
 
 def initialise_index(app, conn):

@@ -23,14 +23,13 @@ class TestApiErrors(DoajTestCase):
             assert response.mimetype == 'application/json'
 
             # But the rest of the app gives the HTML 404
-            response = t_client.get('/about')
+            response = t_client.get('/about', follow_redirects=True)
             assert response.status_code == 200
             assert response.mimetype == 'text/html'
 
             response = t_client.get('/not_about')
             assert response.status_code == 404
             assert response.mimetype == 'text/html'
-
 
     def test_02_api_400(self):
 
