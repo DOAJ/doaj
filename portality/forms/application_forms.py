@@ -170,12 +170,6 @@ class FieldDefinitions:
             "full_contents"
         ],
         "contexts": {
-            "editor": {
-                "disabled": True
-            },
-            "associate_editor": {
-                "disabled": True
-            },
             "update_request": {
                 "disabled": True
             }
@@ -204,12 +198,6 @@ class FieldDefinitions:
                     "is_url",
                     "journal_url_in_public_doaj"  # Check whether the journal url is already in a public DOAJ record
                 ],
-            },
-            "editor": {
-                "disabled": True
-            },
-            "associate_editor": {
-                "disabled": True
             }
         },
         "asynchronous_warnings": [
@@ -398,14 +386,6 @@ class FieldDefinitions:
         ],
         "attr": {
             "class": "input-xlarge"
-        },
-        "contexts": {
-            "editor": {
-                "disabled": True
-            },
-            "associate_editor": {
-                "disabled": True
-            }
         }
     }
 
@@ -477,9 +457,6 @@ class FieldDefinitions:
             "class": "input-xlarge"
         },
         "contexts": {
-            "editor": {
-                "disabled": True
-            },
             "associate_editor": {
                 "disabled": True
             },
@@ -524,14 +501,6 @@ class FieldDefinitions:
         ],
         "attr": {
             "class": "input-xlarge"
-        },
-        "contexts": {
-            #"editor": {
-            #    "disabled": True
-            #},
-            #"associate_editor": {
-            #    "disabled": True
-            #}
         }
     }
 
