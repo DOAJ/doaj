@@ -1193,7 +1193,8 @@ class FieldDefinitions:
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
             "doaj_criteria": "You must provide a URL",
-            "short_help": "Link to the policy in a directory or on publisher site",
+            "short_help": "Link to the policy in the selected directory or on "
+                          "publisher’s site",
             "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
         "validate": [
