@@ -103,12 +103,17 @@ class FieldDefinitions:
         "label": "The journal website must display its open access statement. Where can we find this information?",
         "input": "text",
         "help": {
-            "long_help": ["Here is an example of a suitable Open Access statement that meets our criteria:<blockquote>"
-                          "This is an open access journal which means that all content is freely available without charge"
-                          "to the user or his/her institution. Users are allowed to read, download, copy, distribute,"
-                          "print, search, or link to the full texts of the articles, or use them for any other lawful"
-                          "purpose, without asking prior permission from the publisher or the author. This is in accordance"
-                          "with the BOAI definition of open access.</blockquote>"],
+            "long_help": ["Here is an example of a suitable Open Access "
+                          "statement that meets our criteria: <blockquote>This"
+                          " is an open access journal which means that all "
+                          "content is freely available without charge to the "
+                          "user or his/her institution. Users are allowed to "
+                          "read, download, copy, distribute, print, search, or"
+                          " link to the full texts of the articles, or use "
+                          "them for any other lawful purpose, without asking "
+                          "prior permission from the publisher or the author. "
+                          "This is in accordance with the BOAI definition of "
+                          "open access.</blockquote>"],
             "short_help": "Link to the journal’s open access statement",
             "placeholder": "https://www.my-journal.com/open-access"
         },
