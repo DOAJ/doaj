@@ -2376,7 +2376,7 @@ $.extend(true, doaj, {
                     <article class="row">\
                       <div class="col-sm-8 search-results__main article-summary">\
                         <header>\
-                          <p class="label"><a href="/toc/' + issns[0] + 'target="_blank">\
+                          <p class="label"><a href="/toc/' + issns[0] + '" target="_blank">\
                             ' + edges.escapeHtml(journal) + ' ' + date + '\
                           </a></p>\
                           <h3 class="search-results__heading">\
