@@ -8,7 +8,7 @@ from flask_cors import CORS
 from jinja2 import FileSystemLoader
 from lxml import etree
 
-from portality import settings
+from portality import settings, constants
 from portality.bll import exceptions
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping
@@ -187,6 +187,7 @@ def setup_jinja(app):
     app.jinja_env.add_extension('jinja2.ext.loopcontrols')
     app.jinja_env.globals['getattr'] = getattr
     app.jinja_env.globals['type'] = type
+    app.jinja_env.globals['constants'] = constants
     app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates',
                                              os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_site',
                                              os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_includes',
