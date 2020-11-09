@@ -281,9 +281,11 @@ class ApplicationsCrudApi(CrudApi):
             form = ApplicationFormXWalk.obj2formdata(new_ap)
 
             # create a template that will hold all the values we want to persist across the form submission
+            # todo: is this nearly _carry_fixed_aspects() in the application processors?
             template = models.Application()
             template.set_owner(account.id)
             template.set_id(id)
+            template.set_created(ap.created_date)
 
             formulaic_context = ApplicationFormFactory.context("public")
             fc = formulaic_context.processor(form, template)

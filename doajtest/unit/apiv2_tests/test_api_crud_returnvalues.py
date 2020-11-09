@@ -16,11 +16,8 @@ class TestCrudReturnValues(DoajTestCase):
                                               associated_journal_ids=['abcdefghijk_journal'])
         account.set_password('password123')
         self.api_key = account.api_key
+        self.account = account
         account.save()
-
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.set_owner(account.id)
-        journal.save()
         time.sleep(1)
 
     def tearDown(self):
@@ -112,6 +109,11 @@ class TestCrudReturnValues(DoajTestCase):
     def test_03_articles_crud(self):
         # add some data to the index with a Create
         user_data = ArticleFixtureFactory.make_article_source()
+
+        # Add a journal so we can assign articles to it
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(self.account.id)
+        journal.save(blocking=True)
 
         with self.app_test.test_client() as t_client:
             # log into the app as our user
