@@ -2,7 +2,7 @@
 
     <fieldset class="editorial-panel__buttons">
         <h3 class="label"> LOCKED FOR EDITING UNTIL <span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></h3>
-        <button class="button button--secondary" id="unlock" data-type="journal" data-id="{{obj.id}}">Unlock & Close</button>
+        <button type="button" class="button button--secondary" id="unlock" data-type="journal" data-id="{{obj.id}}">Unlock & Close</button>
         {% set withdraw_reinstate = "Withdraw" if obj.is_in_doaj() else "Reinstate" %}
         {% if job %}
             {% set withdraw_reinstate = "Withdrawing" if obj.is_in_doaj() else "Reinstating" %}
@@ -90,58 +90,8 @@
         {% endfor %}
     </fieldset>
     <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot save the journal because it contains some invalid fields. Please review the answers and admin fields and try again.</i></p>
-    <button id="submitBtn" class="button button--primary button button--primary button--primary_editorial" type="submit">Save</button>
+    <button id="submitBtn" class="button button--primary button button--primary button--primary_editorial" type="button">Save</button>
     {% if obj %}
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}
 </aside>
-
-
-{#
-    {% set fs = formulaic_context.fieldset("seal") %}
-    <h2 class="form__header"> {{ fs.label }}</h2>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
-    {% set fs = formulaic_context.fieldset("reassign") %}
-    <h2 class="form__header"> {{ fs.label }}</h2>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
-    {% set fs = formulaic_context.fieldset("reviewers") %}
-    <h2 class="form__header"> {{ fs.label }}</h2>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
-    {% set fs = formulaic_context.fieldset("continuations") %}
-    <h2 class="form__header"> {{ fs.label }}</h2>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
-    {% set fs = formulaic_context.fieldset("subject") %}
-    <h2 class="form__header"> {{ fs.label }}</h2>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
-    {% set fs = formulaic_context.fieldset("notes") %}
-    <h2 class="form__header"> {{ fs.label }}</h2>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
-    {% set fs = formulaic_context.fieldset("optional_validation") %}
-    <h2 class="form__header"> {{ fs.label }}</h2>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
-
-    {% if obj %}
-        <input type="hidden" name="id" value="{{ obj.id }}">
-    {% endif %}
-#}
