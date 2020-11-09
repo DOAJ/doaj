@@ -1738,7 +1738,7 @@ var formulaic = {
                         var assoc_options = [];
                         if (resp != null)
                         {
-                            assoc_options = [["", "Choose an editor"]];
+                            assoc_options = [["", "No editor assigned"]];
 
                             for (var i=0; i<resp.length; i++)
                             {

@@ -2089,7 +2089,7 @@ def editor_choices(field, formulaic_context):
             editors = [eg.editor]
             editors += eg.associates
             editors = list(set(editors))
-            return [{"value" : "", "display" : "Choose an editor"}] + [{"value" : editor, "display" : editor} for editor in editors]
+            return [{"value" : "", "display" : "No editor assigned"}] + [{"value" : editor, "display" : editor} for editor in editors]
         else:
             return [{"display" : "", "value" : ""}]
 
