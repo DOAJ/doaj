@@ -1,6 +1,7 @@
 /* Alert boxes */
 
 .alert {
+  display: inline-block;
   padding: $spacing-03;
   margin: $spacing-02 0;
   background-color: $fair-pink;
