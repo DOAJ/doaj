@@ -253,11 +253,34 @@ class FieldDefinitions:
                     "issn_in_public_doaj"
                 ],
             },
+            "admin" : {
+                "help": {
+                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal</a>",
+                                  "The ISSN must match what is given on the journal website."],
+                    "placeholder": "",
+                    "doaj_criteria": "ISSN must be provided"
+                }
+            },
             "editor": {
-                "disabled": True
+                "disabled": True,
+                "help": {
+                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal.</a>",
+                                  "The ISSN must match what is given on the journal website."],
+                    "placeholder": "",
+                    "doaj_criteria": "ISSN must be provided"
+                },
             },
             "associate_editor": {
-                "disabled": True
+                "disabled": True,
+                "help": {
+                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal.</a>",
+                                  "The ISSN must match what is given on the journal website."],
+                    "placeholder": "",
+                    "doaj_criteria": "ISSN must be provided"
+                }
             },
             "update_request": {
                 "disabled": True
@@ -301,11 +324,34 @@ class FieldDefinitions:
                     "issn_in_public_doaj"
                 ]
             },
+            "admin" : {
+                "help": {
+                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal</a>",
+                                  "The ISSN must match what is given on the journal website."],
+                    "placeholder": "",
+                    "doaj_criteria": "ISSN must be provided"
+                }
+            },
             "editor": {
-                "disabled": True
+                "disabled": True,
+                "help": {
+                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal.</a>",
+                                  "The ISSN must match what is given on the journal website."],
+                    "placeholder": "",
+                    "doaj_criteria": "ISSN must be provided"
+                },
             },
             "associate_editor": {
-                "disabled": True
+                "disabled": True,
+                "help": {
+                    "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
+                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal.</a>",
+                                  "The ISSN must match what is given on the journal website."],
+                    "placeholder": "",
+                    "doaj_criteria": "ISSN must be provided"
+                }
             },
             "update_request": {
                 "disabled": True,
