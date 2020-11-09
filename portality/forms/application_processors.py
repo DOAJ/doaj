@@ -199,7 +199,7 @@ class NewApplication(ApplicationProcessor):
         if self.source is not None:
             self._carry_fixed_aspects()
 
-    def finalise(self, account, save_target=True, email_alert=True):
+    def finalise(self, account, save_target=True, email_alert=True, id=None):
         super(NewApplication, self).finalise()
 
         # set some administrative data
@@ -208,12 +208,19 @@ class NewApplication(ApplicationProcessor):
         self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
         self.target.set_owner(account.id)
         self.target.set_last_manual_update()
+        
+        if id:
+            replacing = models.Application.pull(id)
+            if replacing is None or replacing.application_status == constants.APPLICATION_STATUS_PENDING:
+                if replacing.owner == account.id:   # I've laid it out like this just for readability
+                    self.target.set_id(id)
 
         # Finally save the target
         if save_target:
             self.target.save()
             # a draft may have been saved, so also remove that
-            models.DraftApplication.remove_by_id(self.target.id)    # FIXME: application ids do not persist from draft, so this won't work
+            if id:
+                models.DraftApplication.remove_by_id(id)
 
         if email_alert:
             try:
@@ -221,6 +228,7 @@ class NewApplication(ApplicationProcessor):
             except app_email.EmailException as e:
                 self.add_alert(Messages.FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR)
                 app.logger.exception(Messages.FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR)
+
 
 class AdminApplication(ApplicationProcessor):
     """

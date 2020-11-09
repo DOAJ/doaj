@@ -1,4 +1,5 @@
 import json
+import uuid
 
 from flask import Blueprint, render_template, abort, redirect, url_for, request, make_response
 from flask_login import current_user
@@ -31,6 +32,12 @@ def public_application(draft_id=None):
 
     draft_application = None
     if draft_id is not None:
+        # validate that we've been given a UUID4
+        try:
+            uuid.UUID(draft_id, version=4)
+        except:
+            abort(400)
+
         draft_application = models.DraftApplication.pull(draft_id)
         #if draft_application is None:
         #    abort(404)
@@ -57,12 +64,21 @@ def public_application(draft_id=None):
         if draft_id is None:
             draft_id = request.form.get("id")
 
+        if draft_id is not None:
+            # validate that we've been given a UUID
+            try:
+                uuid.UUID(draft_id, version=4)
+            except:
+                abort(400)
+
         if draft_id is not None and draft_application is None:
             draft_application = models.DraftApplication.pull(draft_id)
             #if draft_application is None:
             #    abort(404)
             if draft_application is not None and draft_application.owner != current_user.id:
                 abort(404)
+
+
 
         processor = fc.processor(formdata=request.form)
 
@@ -74,7 +90,7 @@ def public_application(draft_id=None):
                 return redirect(url_for('apply.draft_saved'))
         else:
             if processor.validate():
-                processor.finalise(current_user._get_current_object())
+                processor.finalise(current_user._get_current_object(), id=draft_id)
                 return redirect(url_for('apply.application_thanks', _anchor='thanks'))
             else:
                 return fc.render_template()
