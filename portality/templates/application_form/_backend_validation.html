@@ -4,7 +4,7 @@
 <ul>
     {% for field, errors in formulaic_context.wtform_inst.errors.items() %}
         {% set field_def = formulaic_context.get(field) %}
-    <li>{{ field_def.label }}</li>
+        <li><a href="#question__{{ field_def.name }}">{{ field_def.label }}</a></li>
     {% endfor %}
 </ul>
     </div>
