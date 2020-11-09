@@ -1,0 +1,24 @@
+// Table used in review page of app form
+
+.review-table {
+  table-layout: fixed;
+  @include typescale-06;
+
+  &__header {
+    background: $warm-black;
+
+    th {
+      &:first-child {
+        padding-left: $spacing-03;
+      }
+    }
+  }
+
+  .label {
+    color: $warm-white;
+  }
+
+  .button {
+    float: right;
+  }
+}

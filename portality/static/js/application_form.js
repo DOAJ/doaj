@@ -76,12 +76,12 @@ doaj.af.BaseApplicationForm = class {
     }
 
     prepareReview() {
-        let review_table = this.jq("#review_table");
+        let review_table = this.jq("#review_table tbody");
         review_table.html("");
         var that = this;
         this.TABS.forEach((tab, i) => {
             if (this.editSectionsFromReview) {
-                review_table.append("<tr><th>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th></tr>");
+                review_table.append("<tr class='review-table__header'><th class='label'>" + tab.title + "</th><th><a href='#' class='button edit_this_section' data-section=" + i + ">Edit this section</a></th></tr>");
                 let sectionSelector = $(".edit_this_section");
                 edges.on(sectionSelector, "click", this, "editSectionClicked");
             } else {
