@@ -699,8 +699,23 @@ doaj.af.ReadOnlyJournalForm = class extends doaj.af.TabbedApplicationForm {
 window.Parsley.addValidator("requiredIf", {
     validateString : function(value, requirement, parsleyInstance) {
         let field = parsleyInstance.$element.attr("data-parsley-required-if-field");
-        if ($("[name='" + field + "']").filter(":checked").val() === requirement){
-            return !!value;
+        if (typeof requirement !== "string") {
+            requirement = requirement.toString();
+        }
+
+        let requirements = requirement.split(",");
+
+        let other = $("[name='" + field + "']");
+        let type = other.attr("type");
+        if (type === "checkbox" || type === "radio") {
+            let otherVal = other.filter(":checked").val();
+            if ($.inArray(otherVal, requirements) > -1) {
+                return !!value;
+            }
+        } else {
+            if ($.inArray(other.val(), requirements) > -1) {
+                return !!value;
+            }
         }
         return true;
     },

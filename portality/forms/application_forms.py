@@ -1510,7 +1510,22 @@ class FieldDefinitions:
             "short_help": "Selecting a subject will not automatically select its sub-categories"
         },
         "validate": [
-            {"max_tags": {"max": 2, "message": "You have chosen too many"}}
+            {"max_tags": {"max": 2, "message": "You have chosen too many"}},
+            {"required_if" : {"field" : "application_status",
+                              "value" : [
+                                    constants.APPLICATION_STATUS_IN_PROGRESS,
+                                    constants.APPLICATION_STATUS_READY,
+                                    constants.APPLICATION_STATUS_COMPLETED,
+                                    constants.APPLICATION_STATUS_ACCEPTED
+                              ],
+                              "message" : "This field is required when setting the Application Status to {x}, {y}, {z} or {a}".format(
+                                  x=constants.APPLICATION_STATUS_IN_PROGRESS,
+                                  y=constants.APPLICATION_STATUS_READY,
+                                  z=constants.APPLICATION_STATUS_COMPLETED,
+                                  a=constants.APPLICATION_STATUS_ACCEPTED
+                              )
+                            }
+             }
         ],
         "widgets": [
             "subject_tree"
@@ -2334,8 +2349,12 @@ class DifferentToBuilder:
 class RequiredIfBuilder:
     @staticmethod
     def render(settings, html_attrs):
+        val = settings.get("value")
+        if isinstance(val, list):
+            val = ",".join(val)
+
         html_attrs["data-parsley-validate-if-empty"] = "true"
-        html_attrs["data-parsley-required-if"] = settings.get("value")
+        html_attrs["data-parsley-required-if"] = val
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
         if "message" in settings:
             html_attrs["data-parsley-required-if-message"] = settings["message"]
@@ -2344,7 +2363,7 @@ class RequiredIfBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return RequiredIfOtherValue(settings.get("field") or field, settings.get("value"))
+        return RequiredIfOtherValue(settings.get("field") or field, settings.get("value"), settings.get("message"))
 
 
 class OnlyIfBuilder:

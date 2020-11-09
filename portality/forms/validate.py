@@ -398,18 +398,37 @@ class RequiredIfOtherValue(MultiFieldValidator):
     Makes a field required, if the user has selected a specific value in another field
     """
 
-    def __init__(self, other_field_name, other_value, *args, **kwargs):
+    def __init__(self, other_field_name, other_value, message=None, *args, **kwargs):
         self.other_value = other_value
+        self.message = message if message is not None else "This field is required when {x} is {y}".format(x=other_field_name, y=other_value)
         super(RequiredIfOtherValue, self).__init__(other_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
         other_field = self.get_other_field(self.other_field_name, form)
+        if isinstance(self.other_value, list):
+            self._match_list(form, field, other_field)
+        else:
+            self._match_single(form, field, other_field)
+
+    def _match_single(self, form, field, other_field):
         if isinstance(other_field.data, list):
             match = self.other_value in other_field.data
         else:
             match = other_field.data == self.other_value
         if match:
-            dr = validators.DataRequired()
+            dr = validators.DataRequired(self.message)
+            dr(form, field)
+        else:
+            if not field.data or not field.data.strip():
+                raise validators.StopValidation()
+
+    def _match_list(self, form, field, other_field):
+        if isinstance(other_field.data, list):
+            match = len(list(set(self.other_value) & set(other_field.data))) > 0
+        else:
+            match = other_field.data in self.other_value
+        if match:
+            dr = validators.DataRequired(self.message)
             dr(form, field)
         else:
             if not field.data or not field.data.strip():
