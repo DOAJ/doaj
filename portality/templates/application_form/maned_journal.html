@@ -10,7 +10,8 @@
 
 {% block content scoped %}
 <body id="apply">
-    <main class="container">
+    <main class="container page-content">
+        <h1>{{ obj.bibjson().title }}</h1>
         {% include "application_form/_backend_validation.html" %}
         <form id="{{ form_id }}"
               data-context="{{ formulaic_context.name }}"
