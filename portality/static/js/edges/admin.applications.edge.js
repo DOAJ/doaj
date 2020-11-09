@@ -413,7 +413,7 @@ $.extend(true, doaj, {
                         'index.language.exact' : 'Journal Language',
                         'index.country.exact' : 'Country of publisher',
                         'index.subject.exact' : 'Subject',
-                        'bibjson.publisher.exact' : 'Publisher',
+                        'bibjson.publisher.name.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
                         "index.has_apc.exact" : "Publication charges?",
                         'index.license.exact' : 'Journal License'
