@@ -817,7 +817,7 @@ class FieldDefinitions:
         "datatype": "integer",
         "validate": [
             "required",
-            {"int_range": {"gte": 1, "lte": 52}}
+            {"int_range": {"gte": 1, "lte": 100}}
         ],
         "asynchronous_warning": [
             {"int_range": {"lte": 2}}
