@@ -128,7 +128,7 @@ $.extend(true, doaj, {
                                     value: false
                                 })
                             ],
-                            display : "Without APCs or other fees"
+                            display : "Without publication fees"
                         }
                     ],
                     fieldDisplays : {
