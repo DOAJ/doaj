@@ -65,7 +65,7 @@ STOP_WORDS = [
 class FieldDefinitions:
     BOAI = {
         "name": "boai",
-        "label": "Does the journal adhere to this definition of open access?",
+        "label": "Does the journal adhere to DOAJ’s definition of open access?",
         "input": "radio",
         "options": [
             {"display": "Yes", "value": "y"},
