@@ -1147,7 +1147,7 @@ class FieldDefinitions:
 
     DEPOSIT_POLICY_OTHER = {
         "name": "deposit_policy_other",
-        "label": "Other repository",
+        "label": "Name of website where policy is registered",
         "input": "text",
         "conditional": [{"field": "deposit_policy", "value": "other"}],
         "validate": [
