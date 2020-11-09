@@ -9,7 +9,7 @@
     {% else %}
         {% set metatitle = app.config['SERVICE_NAME'] %}
     {%- endif -%}
-    {{ metatitle }} – 
+    {{ metatitle }} –
 {%- endblock -%}
 
 {%- block meta_description -%}
@@ -115,7 +115,7 @@
                                 {% for author in bibjson.author %}
                                     <dt>{{author.name}}</dt>
                                     {% if author.orcid_id %}
-                                        <dd><a href="{{author.orcid_id}}">ORCiD</a></dd>
+                                        <dd><a href="{{author.orcid_id}}" target="_blank" rel="noopener">ORCiD</a></dd>
                                     {% endif %}
                                     {% if author.affiliation %}
                                         <dd>{{author.affiliation}}</dd>
