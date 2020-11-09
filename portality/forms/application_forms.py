@@ -30,7 +30,8 @@ from portality.forms.validate import (
     RequiredValue,
     BigEndDate,
     ReservedUsernames,
-    CustomRequired
+    CustomRequired,
+    OwnerExists
 )
 
 from portality.datasets import language_options, country_options, currency_options
@@ -1330,17 +1331,19 @@ class FieldDefinitions:
         "label": "DOAJ Account",
         "input": "text",
         "validate": [
-            "reserved_usernames"
+            "reserved_usernames",
+            "owner_exists"
         ],
         "widgets": [
-            {"autocomplete": {"type" : "account", "field": "id"}},
+            {"autocomplete": {"type" : "account", "field": "id", "include" : False}},
             "clickable_owner"
         ],
         "contexts" : {
             "associate_editor" : {
                 "validate" : [
                     {"required": {"message": "You must confirm the account id"}},
-                    "reserved_usernames"
+                    "reserved_usernames",
+                    "owner_exists"
                 ]
             }
         }
@@ -2140,6 +2143,16 @@ class ReservedUsernamesBuilder:
         return ReservedUsernames()
 
 
+class OwnerExistsBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        return
+
+    @staticmethod
+    def wtforms(field, settings):
+        return OwnerExists()
+
+
 class RequiredBuilder:
     @staticmethod
     def render(settings, html_attrs):
@@ -2399,7 +2412,8 @@ PYTHON_FUNCTIONS = {
             "not_if" : NotIfBuildier.wtforms,
             "required_value" : RequiredValueBuilder.wtforms,
             "bigenddate": BigEndDateBuilder.wtforms,
-            "reserved_usernames" : ReservedUsernamesBuilder.wtforms
+            "reserved_usernames" : ReservedUsernamesBuilder.wtforms,
+            "owner_exists" : OwnerExistsBuilder.wtforms
         }
     }
 }

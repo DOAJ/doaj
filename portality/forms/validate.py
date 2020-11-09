@@ -313,6 +313,30 @@ class ReservedUsernames(object):
         return cls().__validate(username)
 
 
+class OwnerExists(object):
+    """
+    A username validator. When applied to fields containing usernames it ensures that the username
+    exists
+    """
+    def __init__(self, message='The "{reserved}" user does not exist. Please choose an existing username, or create a new account first.', *args, **kwargs):
+        self.message = message
+
+    def __call__(self, form, field):
+        return self.__validate(field.data)
+
+    def __validate(self, username):
+        if not isinstance(username, str):
+            raise validators.ValidationError('Invalid username (not a string) passed to OwnerExists validator.')
+
+        acc = Account.pull(username)
+        if not acc:
+            raise validators.ValidationError(self.message.format(reserved=username))
+
+    @classmethod
+    def validate(cls, username):
+        return cls().__validate(username)
+
+
 class ISSNInPublicDOAJ(object):
     def __init__(self, message=None):
         if not message:
