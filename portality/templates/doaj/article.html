@@ -134,11 +134,16 @@
                             </dd>
                         {% endif %}
 
-                        {% if jbib.volume or jbib.number %}
+                        {% if bibjson.volume or bibjson.number %}
                             <dt>Journal volume & issue</dt>
                             <dd>
-                                {% if jbib.volume %}Vol. {{ jbib.volume }}{% endif %}{% if jbib.volume and jbib.number %},{% endif %}
-                                {% if jbib.number %}no. {{ jbib.number }}{% endif %}
+                                {% if bibjson.volume %}Vol. {{ bibjson.volume }}{% endif %}{% if bibjson.volume and bibjson.number %},{% endif %}
+                                {% if bibjson.number %}no. {{ bibjson.number }}{% endif %}<br/>
+                                {% if bibjson.start_page %}
+                                  {% if bibjson.end_page %}pp.{% else %}p.{% endif %}
+                                  {{ bibjson.start_page }}
+                                  {% if bibjson.end_page %}&ndash; {{ bibjson.end_page }}{% endif %}
+                                {% endif %}
                             </dd>
                         {% endif %}
                     </dl>
