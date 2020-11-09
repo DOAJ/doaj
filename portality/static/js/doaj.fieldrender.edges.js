@@ -67,6 +67,7 @@ $.extend(true, doaj, {
                             }
                             displayTree.push(entry);
                         }
+                        displayTree.sort((a, b) => a.display > b.display);
                         return displayTree;
                     }
                     return recurse(tree);
