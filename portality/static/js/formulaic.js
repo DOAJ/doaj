@@ -1705,6 +1705,28 @@ var formulaic = {
             this.init();
         },
 
+        newTagEntry : function(params) {
+            return edges.instantiate(formulaic.widgets.TagEntry, params);
+        },
+        TagEntry : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+            this.args = params.args;
+
+            this.ns = "formulaic-tagentry";
+
+            this.init = function() {
+                $("[name='" + this.fieldDef.name + "']").select2({
+                    minimumInputLength: 1,
+                    tags: [],
+                    tokenSeparators: [','],
+                    width: 'resolve'
+                });
+            };
+
+            this.init();
+        },
+
         newLoadEditors: function(params) {
             return edges.instantiate(formulaic.widgets.LoadEditors, params);
         },
@@ -1713,7 +1735,7 @@ var formulaic = {
             this.fieldDef = params.fieldDef;
             this.params = params.args;
 
-            this.groupField = false
+            this.groupField = false;
             this.editorField = false;
 
             this.init = function() {

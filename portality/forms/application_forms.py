@@ -1459,6 +1459,9 @@ class FieldDefinitions:
                 }
             },
             "issn_in_public_doaj"                                   # FIXME: is this right?
+        ],
+        "widgets" : [
+            "tagentry"
         ]
     }
 
@@ -1476,6 +1479,9 @@ class FieldDefinitions:
                 }
             },
             "issn_in_public_doaj"  # FIXME: is this right?
+        ],
+        "widgets" : [
+            "tagentry"
         ]
     }
 
@@ -2468,6 +2474,7 @@ JAVASCRIPT_FUNCTIONS = {
     "clickable_owner": "formulaic.widgets.newClickableOwner",
     "select": "formulaic.widgets.newSelect",
     "taglist": "formulaic.widgets.newTagList",
+    "tagentry" : "formulaic.widgets.newTagEntry",
     "multiple_field": "formulaic.widgets.newMultipleField",
     "infinite_repeat": "formulaic.widgets.newInfiniteRepeat",
     "autocomplete": "formulaic.widgets.newAutocomplete",
