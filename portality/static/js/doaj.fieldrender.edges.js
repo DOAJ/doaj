@@ -2117,7 +2117,7 @@ $.extend(true, doaj, {
                             DOAJ Seal\
                           </a>';
                 }
-                var issn = resultobj.bibjson.issn;
+                var issn = resultobj.bibjson.pissn;
                 if (!issn) {
                     issn = resultobj.bibjson.eissn;
                 }
