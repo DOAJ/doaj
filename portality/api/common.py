@@ -149,6 +149,7 @@ def created(obj, location):
     resp.status_code = 201
     return resp
 
+
 def bulk_created(ids_and_locations):
     app.logger.info("Sending 201 Created for bulk request")
     out = []
@@ -162,6 +163,7 @@ def bulk_created(ids_and_locations):
     resp = respond(json.dumps(out), 201)
     resp.status_code = 201
     return resp
+
 
 def no_content():
     return respond("", 204)
@@ -182,6 +184,7 @@ def jsonify_models(models):
 
     return respond(data, 200, metadata=metadata)
 
+
 def generate_link_headers(metadata):
     """
     Generate Link: HTTP headers for API navigation.
@@ -198,6 +201,7 @@ def generate_link_headers(metadata):
 
     return str(LinkHeader(links))  # RFC compliant headers e.g.
        # <http://example.com/foo>; rel=next, <http://example.com/bar>; rel=last
+
 
 def respond(data, status, metadata=None):
     # avoid subtle bugs, don't use mutable objects as default vals in Python
@@ -259,6 +263,7 @@ def forbidden(error):
     t['status'] = 'forbidden'
     t['error'] = str(error) + " (ref: {y})".format(y=magic)
     return respond(json.dumps(t), 403)
+
 
 @app.errorhandler(Api500Error)
 def bad_request(error):

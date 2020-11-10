@@ -80,6 +80,7 @@ with open(os.path.join(app.config["BASE_FILE_PATH"],"../static_content/_data/spo
 with open(os.path.join(app.config["BASE_FILE_PATH"],"../static_content/_data/volunteers.yml")) as f:
     VOLUNTEERS = yaml.load(f, Loader=yaml.FullLoader)
 
+
 # serve static files from multiple potential locations
 # this allows us to override the standard static file handling with our own dynamic version
 @app.route("/static/<path:filename>")
@@ -144,12 +145,14 @@ def legacy_doaj_XML_schema():
             mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
             )
 
+
 @app.route("/isCrossrefLoaded")
 def is_crossref_loaded():
     if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").isAlive():
         return "false"
     else:
         return "true"
+
 
 # FIXME: this used to calculate the site stats on request, but for the time being
 # this is an unnecessary overhead, so taking it out.  Will need to put something
@@ -185,6 +188,7 @@ def bytes_to_filesize(size):
         scale += 1
     return "{size:.1f}{unit}".format(size=size, unit=units[scale])
 
+
 @app.template_filter('utc_timestamp')
 def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
     """
@@ -212,8 +216,6 @@ def doi_url(doi):
         return "https://doi.org/" + normalise_doi(doi)
     except ValueError:
         return ""
-
-
 
 
 @app.template_filter('form_diff_table_comparison_value')
@@ -291,54 +293,58 @@ def standard_authentication():
                     login_user(user, remember=False)
 
 
-if 'api' in app.config['FEATURES']:
+# Register configured API versions
+features = app.config.get('FEATURES', [])
+if 'api1' in features or 'api2' in features:
     @app.route('/api/')
     def api_directory():
-        return jsonify(
-            {
-                'api_versions': [
-                    {
-                        'version': '1.0.0',
-                        'base_url': url_for('api_v1.api_spec', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
-                        'note': 'First version of the DOAJ API',
-                        'docs_url': url_for('api_v1.docs', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
-                    }
-                ]
-            }
-        )
-
-if 'api2' in app.config['FEATURES']:
-    @app.route('/api2/')
-    def api_directory():
-        return jsonify(
-            {
-                'api_versions': [
-                    {
-                        'version': '2.0.0',
-                        'base_url': url_for('api_v2.api_spec', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
-                        'note': 'Second version of the DOAJ API',
-                        'docs_url': url_for('api_v2.docs', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
-                    }
-                ]
-            }
-        )
+        vers = []
+        # NOTE: we never could run API v1 and v2 at the same time.
+        # This code is here for future reference to add additional API versions
+        if 'api1' in features:
+            vers.append(
+                {
+                    'version': '1.0.0',
+                    'base_url': url_for('api_v1.api_spec', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
+                    'note': 'First version of the DOAJ API',
+                    'docs_url': url_for('api_v1.docs', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
+                }
+            )
+        if 'api2' in features:
+            vers.append(
+                {
+                    'version': '2.0.0',
+                    'base_url': url_for('api_v2.api_spec', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
+                    'note': 'Second version of the DOAJ API',
+                    'docs_url': url_for('api_v2.docs', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
+                }
+            )
+        return jsonify({'api_versions': vers})
 
 
 @app.errorhandler(400)
 def page_not_found(e):
     return render_template('400.html'), 400
 
+
 @app.errorhandler(401)
 def page_not_found(e):
     return render_template('401.html'), 401
+
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
+
 @app.errorhandler(500)
 def page_not_found(e):
     return render_template('500.html'), 500
+
 
 if __name__ == "__main__":
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)
