@@ -8,8 +8,8 @@
   <br/>
   {% endif %}#}
 
-  {# User role #}
   <fieldset>
+    {# User role #}
     {% if current_user.is_super %}
     <div class="form__question">
       {{ render_field(form.roles, value=account.role|join(','), style="width: 75%") }}
@@ -22,11 +22,11 @@
       {% endfor %}
     </dl>
     {% endif %}
-  </fieldset>
 
-  {# Full name #}
-  <fieldset class="form__question">
-    {{ render_field(form.name, placeholder="Firstname Lastname") }}
+    {# Full name #}
+    <div class="form__question">
+      {{ render_field(form.name, placeholder="Firstname Lastname") }}
+    </div>
   </fieldset>
 
   {# Email address #}
@@ -43,7 +43,7 @@
   </fieldset>
 
   {# Password change #}
-  <fieldset>
+  <fieldset class="row">
     <div class="form__question">
       {{ render_field(form.password_change, placeholder="********") }}
     </div>
