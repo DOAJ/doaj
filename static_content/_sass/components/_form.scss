@@ -80,7 +80,9 @@
   font-size: smaller;
 
   fieldset {
-    margin: 0;
+    margin: $spacing-04 0;
+    padding: $spacing-03;
+    background-color: $fair-pink;
   }
 
   small {
