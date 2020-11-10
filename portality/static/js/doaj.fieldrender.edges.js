@@ -2491,7 +2491,7 @@ $.extend(true, doaj, {
 
                     // if it's an accepted application, link to the ToC
                     if (status === "accepted") {
-                        var issn = resultobj.bibjson.issn;
+                        var issn = resultobj.bibjson.pissn;
                         if (!issn) {
                             issn = resultobj.bibjson.eissn;
                         }
@@ -2788,7 +2788,7 @@ $.extend(true, doaj, {
 
                 // if it's an accepted application, link to the ToC
                 if (status === "accepted") {
-                    var issn = resultobj.bibjson.issn;
+                    var issn = resultobj.bibjson.pissn;
                     if (!issn) {
                         issn = resultobj.bibjson.eissn;
                     }
@@ -2810,7 +2810,7 @@ $.extend(true, doaj, {
                             DOAJ Seal\
                           </a>';
                 }
-                var issn = resultobj.bibjson.issn;
+                var issn = resultobj.bibjson.pissn;
                 if (!issn) {
                     issn = resultobj.bibjson.eissn;
                 }
@@ -3236,8 +3236,8 @@ $.extend(true, doaj, {
         },
 
         issns : function (val, resultobj, renderer) {
-            if (resultobj.bibjson && (resultobj.bibjson.issn || resultobj.bibjson.eissn)) {
-                var issn = resultobj.bibjson.issn;
+            if (resultobj.bibjson && (resultobj.bibjson.pissn || resultobj.bibjson.eissn)) {
+                var issn = resultobj.bibjson.pissn;
                 var eissn = resultobj.bibjson.eissn;
                 var issns = [];
                 if (issn) {
