@@ -53,9 +53,10 @@ class Account(DomainObject, UserMixin):
             return None
         res = cls.query(q='email:"' + email + '"')
         if res.get('hits', {}).get('total', 0) == 1:
-            return cls(**res['hits']['hits'][0]['_source'])
-        else:
-            return None
+            acc = cls(**res['hits']['hits'][0]['_source'])
+            if acc.email == email:                # Only return the account if it was an exact match with supplied email
+                return acc
+        return None
 
     @classmethod
     def email_in_use(cls, email: str):
