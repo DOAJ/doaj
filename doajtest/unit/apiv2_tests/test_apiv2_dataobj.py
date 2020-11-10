@@ -24,13 +24,10 @@ class TestAPIDataObj(DoajTestCase):
             do.nonexistent_attribute
 
     def test_02_create_from_model(self):
-        expected_struct = JournalFixtureFactory.make_journal_apido_struct()
         do = OutgoingJournal.from_model(self.jm)
-        # FIXME: broken test - struct has changed, lots more set__allow_coerce_failure have been added - what does the test achieve anyway?
-        #assert do.__seamless_struct__.raw == expected_struct, "do._struct:\n {}, \n expected_struct:\n {}".format(do.__seamless_struct__.raw, expected_struct)
-        self.check_do(do, expected_struct)
+        self.check_do(do)
 
-    def check_do(self, do, expected_struct):
+    def check_do(self, do):
         assert isinstance(do, SeamlessMixin), 'Declared as "SeamlessMixin" but not a Data Object?'
         assert do.data["id"] == self.jm.id
         assert do.data["created_date"] == self.jm.created_date
@@ -51,13 +48,6 @@ class TestAPIDataObj(DoajTestCase):
             "do.data['bibjson'].other_charges.other_charges_url:\n{},\nself.jm.bibjson().other_charges_url:\n{}" \
                 .format(do.data["bibjson"]["other_charges"]["other_charges_url"], self.jm.bibjson().other_charges_url)
         assert do.data['bibjson']["publication_time_weeks"] == self.jm.bibjson().publication_time_weeks
-
-        for o in expected_struct['structs']['bibjson']['objects']:
-            assert isinstance(do.data["bibjson"][o], dict), '{0} declared as "object" but not a dicts?'.format(o)
-
-        for l in expected_struct['structs']['bibjson']['lists']:
-            assert isinstance(do.data["bibjson"][l], list), '{0} declared as "list" but not a list?'.format(l)
-
         assert do.data["bibjson"]["preservation"]["url"] == self.jm.bibjson().preservation_url
         assert isinstance(do.data["bibjson"]["preservation"]["service"], list)
 

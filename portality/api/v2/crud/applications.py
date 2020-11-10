@@ -222,7 +222,7 @@ class ApplicationsCrudApi(CrudApi):
         applicationService = DOAJ.applicationService()
         authService = DOAJ.authorisationService()
 
-        # if a current_journal is specified on the incoming data
+        # if a current_journal is specified on the incoming data then it's an update request
         if new_ap.current_journal is not None:
             # once an application has a current_journal specified, you can't change it
             if new_ap.current_journal != ap.current_journal:
@@ -253,8 +253,6 @@ class ApplicationsCrudApi(CrudApi):
             formulaic_context = ApplicationFormFactory.context("update_request")
             fc = formulaic_context.processor(formdata=form, source=vanilla_ap)
 
-            #form = MultiDict(ApplicationFormXWalk.obj2form(new_ap))
-            #fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
             if fc.validate():
                 try:
                     fc.finalise(email_alert=False)
@@ -280,21 +278,12 @@ class ApplicationsCrudApi(CrudApi):
             # convert the incoming application into the web form
             form = ApplicationFormXWalk.obj2formdata(new_ap)
 
-            # create a template that will hold all the values we want to persist across the form submission
-            # todo: is this nearly _carry_fixed_aspects() in the application processors?
-            template = models.Application()
-            template.set_owner(account.id)
-            template.set_id(id)
-            template.set_created(ap.created_date)
-
             formulaic_context = ApplicationFormFactory.context("public")
-            fc = formulaic_context.processor(form, template)
+            fc = formulaic_context.processor(form)
 
-            # form = MultiDict(ApplicationFormXWalk.obj2form(new_ap))
-            # fc = formcontext.ApplicationFormFactory.get_form_context(form_data=form, source=ap)
             if fc.validate():
                 try:
-                    fc.finalise(account, email_alert=False)
+                    fc.finalise(account, id=id, email_alert=False)
                     return fc.target
                 except Exception as e:
                     raise Api400Error(str(e))

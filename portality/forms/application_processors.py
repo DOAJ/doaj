@@ -194,11 +194,6 @@ class NewApplication(ApplicationProcessor):
         draft_application.save()
         return draft_application
 
-    def patch_target(self):
-        """ The API uses the application form to update applications, so we must carry fixed aspects here """
-        if self.source is not None:
-            self._carry_fixed_aspects()
-
     def finalise(self, account, save_target=True, email_alert=True, id=None):
         super(NewApplication, self).finalise()
 
@@ -211,9 +206,12 @@ class NewApplication(ApplicationProcessor):
 
         if id:
             replacing = models.Application.pull(id)
-            if replacing is None or replacing.application_status == constants.APPLICATION_STATUS_PENDING:
-                if replacing.owner == account.id:   # I've laid it out like this just for readability
+            if replacing is None:
+                self.target.set_id(id)
+            else:
+                if replacing.application_status == constants.APPLICATION_STATUS_PENDING and replacing.owner == account.id:
                     self.target.set_id(id)
+                    self.target.set_created(replacing.created_date)
 
         # Finally save the target
         if save_target:
