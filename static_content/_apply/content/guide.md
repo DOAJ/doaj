@@ -1,9 +1,9 @@
-<label for="languages">Show me this guide in&hellip;</label>
+<!-- <label for="languages">Show me this guide in&hellip;</label>
 <select name="languages" id="languages">
   <option value="en">English</option>
   <option value="fr">Français</option>
   <option value="es">Español</option>
-</select>
+</select> -->
 
 Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them.
 
