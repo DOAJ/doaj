@@ -208,7 +208,7 @@ class NewApplication(ApplicationProcessor):
         self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
         self.target.set_owner(account.id)
         self.target.set_last_manual_update()
-        
+
         if id:
             replacing = models.Application.pull(id)
             if replacing is None or replacing.application_status == constants.APPLICATION_STATUS_PENDING:

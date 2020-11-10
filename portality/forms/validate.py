@@ -404,7 +404,12 @@ class RequiredIfOtherValue(MultiFieldValidator):
         super(RequiredIfOtherValue, self).__init__(other_field_name, *args, **kwargs)
 
     def __call__(self, form, field):
-        other_field = self.get_other_field(self.other_field_name, form)
+        # attempt to get the other field - if it doesn't exist, just take this as valid
+        try:
+            other_field = self.get_other_field(self.other_field_name, form)
+        except:
+            return
+
         if isinstance(self.other_value, list):
             self._match_list(form, field, other_field)
         else:
@@ -538,7 +543,7 @@ class RequiredValue(object):
 class BigEndDate(object):
     def __init__(self, value, message=None):
         self.value = value
-        self.message = message or "Bad date"
+        self.message = message or "Date must be a big-end formatted date (e.g. 2020-11-23)"
 
     def __call__(self, form, field):
         if not field.data:

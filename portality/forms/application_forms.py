@@ -1428,23 +1428,21 @@ class FieldDefinitions:
         "label": "Discontinued on",
         "input": "text",
         "validate" : [
-            "bigenddate",
+            {"bigenddate" : {"message" : "Date must be a big-end formatted date (e.g. 2020-11-23)"}},
             {
                 "not_if" : {
                     "fields" : [
                         {"field" : "continues"},
                         {"field" : "continued_by"}
                     ],
-                    "message" : "You cannot enter a discontinued date and continuation information."
+                    "message" : "You cannot enter both a discontinued date and continuation information."
                 }
             }
         ],
         "help" : {
-            "short_help" : "If the day of the month is not known, please use '01'"
-        },
-        "widgets" : [
-            "datepicker"
-        ]
+            "short_help" : "Please enter the discontinued date in the form YYYY-MM-DD (e.g. 2020-11-23).  "
+                           "If the day of the month is not known, please use '01' (e.g. 2020-11-01)"
+        }
     }
 
     CONTINUES = {
@@ -1454,7 +1452,12 @@ class FieldDefinitions:
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "continued_by"}},       # FIXME: as above
-            {"not_if" : { "fields" : [{"field" : "discontinued_date"}]}},
+            {
+                "not_if" : {
+                    "fields" : [{"field" : "discontinued_date"}],
+                    "message" : "You cannot enter both continuation information and a discontinued date"
+                }
+            },
             "issn_in_public_doaj"                                   # FIXME: is this right?
         ]
     }
@@ -1466,7 +1469,12 @@ class FieldDefinitions:
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "continues"}},  # FIXME: as above
-            {"not_if": {"fields": [{"field": "discontinued_date"}]}},
+            {
+                "not_if": {
+                    "fields": [{"field": "discontinued_date"}],
+                    "message": "You cannot enter both continuation information and a discontinued date"
+                }
+            },
             "issn_in_public_doaj"  # FIXME: is this right?
         ]
     }
@@ -2354,6 +2362,8 @@ class NotIfBuildier:
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-not-if"] = ",".join([f.get("field") for f in settings.get("fields", [])])
+        if settings.get("message"):
+            html_attrs["data-parsley-not-if-message"] = settings.get("message")
 
     @staticmethod
     def wtforms(fields, settings):
@@ -2384,7 +2394,8 @@ class RequiredValueBuilder:
 class BigEndDateBuilder:
     @staticmethod
     def render(settings, html_attrs):
-        html_attrs["data-parsley-entry-pattern"] = "\d{4}-\d{2}-\d{2}"
+        html_attrs["data-parsley-pattern"] = "\d{4}-\d{2}-\d{2}"
+        html_attrs["data-parsley-pattern-message"] = settings.get("message")
 
     @staticmethod
     def wtforms(field, settings):
