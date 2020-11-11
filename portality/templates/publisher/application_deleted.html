@@ -1,4 +1,8 @@
-<main class="container">
-    <h3>Your application has been deleted</h3>
-    <p>Return to your <a href="{{ url_for("publisher.index") }}">Publisher's dashboard</a>.</p>
-</main>
+{% extends "layouts/single_col_page.html" %}
+
+{% block page_title %}Your application has been deleted{% endblock %}
+{% block title %}Your application has been deleted{% endblock %}
+
+{% block single_col_content %}
+<p>Return to the <a href="{{ url_for('publisher.index') }}">Publisher’s dashboard</a>.</p> 
+{% endblock %}
