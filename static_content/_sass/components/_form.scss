@@ -79,6 +79,10 @@
 .form--compact {
   font-size: smaller;
 
+  h1 {
+    margin-top: 0;
+  }
+
   fieldset {
     margin: $spacing-04 0;
     padding: $spacing-03;
