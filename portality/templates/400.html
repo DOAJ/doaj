@@ -1,18 +1,17 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/single_col_page.html" %}
 
-{% block content %}
-<main class="container page-content">
-    <section class="col-md-offset-3 col-md-6">
-        <h1><strong>400 &mdash;</strong> <br/>Bad request!</h1>
-        <p>Uh-oh! An error has occured. It looks like something has gone wrong.</p>
-        <p>
-            <strong>If you are trying to reset your password</strong>, the link may have expired.<br/><br/>
-            <a href="{{ url_for('account.forgot') }}" class="button">Try resetting the password again</a>
-        </p>
-        <p>
-            <strong>If you are looking for a specific journal</strong>, it might have been withdrawn from the index.<br/><br/>
-            <a href="{{ url_for('doaj.contact') }}" class="button">Contact us</a>
-        </p>
-    </section>
-</main>
+{% block body_class %}error-page{% endblock %}
+{% block page_title %}400: Bad request &ndash; {% endblock %}
+{% block title %}<strong>400 &mdash;</strong> <br/>Bad request!{% endblock %}
+
+{% block single_col_content %}
+<p>Uh-oh! An error has occured. It looks like something has gone wrong.</p>
+<p>
+    <strong>If you are trying to reset your password</strong>, the link may have expired.<br/><br/>
+    <a href="{{ url_for('account.forgot') }}" class="button">Try resetting the password again</a>
+</p>
+<p>
+    <strong>If you are looking for a specific journal</strong>, it might have been withdrawn from the index.<br/><br/>
+    <a href="{{ url_for('doaj.contact') }}" class="button">Contact us</a>
+</p>
 {% endblock %}

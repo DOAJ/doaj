@@ -1,14 +1,13 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/single_col_page.html" %}
 
-{% block content %}
-<main class="container page-content">
-    <section class="col-md-offset-3 col-md-6">
-        <h1><strong>500 &mdash;</strong> <br/>Internal server error</h1>
-        <p>An error has occurred. It looks like something has gone wrong.</p>
-        <p>
-            <strong>If you are looking for a specific journal</strong>, it might have been withdrawn from the index.<br/><br/>
-            <a href="{{ url_for('doaj.contact') }}" class="button">Contact us</a>
-        </p>
-    </section>
-</main>
+{% block body_class %}error-page{% endblock %}
+{% block page_title %}500: Internal server error &ndash; {% endblock %}
+{% block title %}<strong>500 &mdash;</strong> <br/>Internal server error{% endblock %}
+
+{% block single_col_content %}
+<p>An error has occurred. It looks like something has gone wrong.</p>
+<p>
+    <strong>If you are looking for a specific journal</strong>, it might have been withdrawn from the index.<br/><br/>
+    <a href="{{ url_for('doaj.contact') }}" class="button">Contact us</a>
+</p>
 {% endblock %}
