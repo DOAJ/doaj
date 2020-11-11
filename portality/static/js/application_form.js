@@ -85,7 +85,7 @@ doaj.af.BaseApplicationForm = class {
                 let sectionSelector = $(".edit_this_section");
                 edges.on(sectionSelector, "click", this, "editSectionClicked");
             } else {
-                review_table.append("<th colspan='2'>" + tab.title + "</th>");
+                review_table.append("<tr class='review-table__header'><th class='label' colspan='2'>" + tab.title + "</th>");
             }
 
             tab.fieldsets.forEach((fs) => {
