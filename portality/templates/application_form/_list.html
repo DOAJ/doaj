@@ -38,7 +38,18 @@
 
     {% if form_diff %}
         {% if f.name in form_diff %}
-            <strong>WAS: {{ form_diff[f.name].a }}</strong>
+        <p class="alert alert--message">
+          <strong>WAS:</strong>
+          <em>
+            {% if form_diff[f.name].a == 'n' %}
+              No
+            {% elif form_diff[f.name].a == 'y' %}
+              Yes
+            {% else %}
+              {{ form_diff[f.name].a }}
+            {% endif %}
+          </em>
+        </p>
         {% endif %}
     {% endif %}
 
