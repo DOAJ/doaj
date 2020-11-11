@@ -2457,7 +2457,7 @@ $.extend(true, doaj, {
                         <div class="modal__dialog" role="document">\
                             <h2 class="modal__title">Delete this application</h2>\
                             <p>Are you sure you want to delete your application for <span class="' + deleteTitleClass + '"></span></p> \
-                            <button href="#" class="button button--primary ' + deleteLinkClass + '">Yes, delete it</button> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
@@ -2646,7 +2646,7 @@ $.extend(true, doaj, {
                         <div class="modal__dialog" role="document">\
                             <h2 class="modal__title">Delete this update request</h2>\
                             <p>Are you sure you want to delete your update request for <span class="' + deleteTitleClass + '"></span></p> \
-                            <button href="#" class="button button--primary ' + deleteLinkClass + '">Yes, delete it</button> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
