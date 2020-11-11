@@ -226,7 +226,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def pull(cls, id_):
         """Retrieve object by id."""
-        if id_ is None:
+        if id_ is None or id_ == '':
             return None
 
         # swallow any network exceptions
