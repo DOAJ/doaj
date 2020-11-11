@@ -3111,7 +3111,9 @@ $.extend(true, doaj, {
                     field += edges.escapeHtml(resultobj.bibjson.title);
                 }
                 if (resultobj.admin && resultobj.admin.seal) {
-                    field += " <br/><small><span class='tag tag--featured'>DOAJ Seal</span></small>​​";
+                    field += "<p><span class='tag tag--featured'>\
+                              <span data-feather='check-circle' aria-hidden='true'></span>\
+                              DOAJ Seal</span></p>​​";
                 }
                 return field + "</h3>"
             } else {
