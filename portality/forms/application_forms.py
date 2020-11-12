@@ -65,7 +65,7 @@ STOP_WORDS = [
 class FieldDefinitions:
     BOAI = {
         "name": "boai",
-        "label": "Does the journal adhere to this definition of open access?",
+        "label": "Does the journal adhere to DOAJ’s definition of open access?",
         "input": "radio",
         "options": [
             {"display": "Yes", "value": "y"},
@@ -103,12 +103,17 @@ class FieldDefinitions:
         "label": "The journal website must display its open access statement. Where can we find this information?",
         "input": "text",
         "help": {
-            "long_help": ["Here is an example of a suitable Open Access statement that meets our criteria:<blockquote>"
-                          "This is an open access journal which means that all content is freely available without charge"
-                          "to the user or his/her institution. Users are allowed to read, download, copy, distribute,"
-                          "print, search, or link to the full texts of the articles, or use them for any other lawful"
-                          "purpose, without asking prior permission from the publisher or the author. This is in accordance"
-                          "with the BOAI definition of open access.</blockquote>"],
+            "long_help": ["Here is an example of a suitable Open Access "
+                          "statement that meets our criteria: <blockquote>This"
+                          " is an open access journal which means that all "
+                          "content is freely available without charge to the "
+                          "user or his/her institution. Users are allowed to "
+                          "read, download, copy, distribute, print, search, or"
+                          " link to the full texts of the articles, or use "
+                          "them for any other lawful purpose, without asking "
+                          "prior permission from the publisher or the author. "
+                          "This is in accordance with the BOAI definition of "
+                          "open access.</blockquote>"],
             "short_help": "Link to the journal’s open access statement",
             "placeholder": "https://www.my-journal.com/open-access"
         },
@@ -524,7 +529,7 @@ class FieldDefinitions:
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
                           "If Creative Commons licensing is not used, then select <em>Publisher's own license</em> and enter "
                           "more details below."],
-            "doaj_criteria": "Content must be licenced",
+            "doaj_criteria": "Content must be licensed",
             "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
         },
         "validate": [
@@ -547,7 +552,7 @@ class FieldDefinitions:
             {"display": "No Commercial Usage", "value": "NC"}
         ],
         "help": {
-            "doaj_criteria": "Content must be licenced"
+            "doaj_criteria": "Content must be licensed"
         }
     }
 
@@ -579,9 +584,10 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
-            "long_help": ["Licensing information must be displayed or embedded on every PDF or in the full text of the "
-                          "HTML articles.",
-                          "Only displaying licensing information on other parts of the site is not accepted."],
+            "long_help": ["It is recommended that licensing information is "
+                          "included in full text articles. Answer <strong>Yes"
+                          "</strong> if licensing is displayed or embedded in "
+                          "all versions of each article."],
             "seal_criteria": "If the answer is Embed"
         },
         "validate": [
@@ -623,6 +629,12 @@ class FieldDefinitions:
             "required"
         ],
         "help": {
+            "long_help": ["Answer <strong>No</strong> if authors transfer "
+                          "copyright or assign exclusive rights to the publisher"
+                          " (including commercial rights). <br/><br/> Answer "
+                          "<strong>Yes</strong> only if authors publishing "
+                          "under any license allowed by the journal "
+                          "retain all rights."],
             "seal_criteria": "The author must retain the copyright"
         },
         "asynchronous_warnings": [
@@ -677,6 +689,9 @@ class FieldDefinitions:
             {"display": "Other", "value": "other", "subfields": ["review_process_other"]}
         ],
         "help": {
+            "long_help": ["Enter all types of review used by the journal for "
+                          "research articles. Note that editorial review is "
+                          "only accepted for arts and humanities journals."],
             "doaj_criteria": "Peer review must be carried out"
         },
         "validate": [
@@ -725,6 +740,12 @@ class FieldDefinitions:
         "name": "plagiarism_detection",
         "label": "Does the journal routinely screen article submissions for plagiarism?",
         "input": "radio",
+        "help": {
+            "long_help": ["Screening for plagiarism is recommended, but is not"
+                          " a requirement for inclusion in DOAJ. If the "
+                          "journal does screen for plagiarism, state the "
+                          "services(s) used on your website."],
+        },
         "options": [
             {"display": "Yes", "value": "y", "subfields": ["review_process_other"]},
             {"display": "No", "value": "n"}
@@ -817,7 +838,7 @@ class FieldDefinitions:
         "datatype": "integer",
         "validate": [
             "required",
-            {"int_range": {"gte": 1, "lte": 52}}
+            {"int_range": {"gte": 1, "lte": 100}}
         ],
         "asynchronous_warning": [
             {"int_range": {"lte": 2}}
@@ -1147,7 +1168,7 @@ class FieldDefinitions:
 
     DEPOSIT_POLICY_OTHER = {
         "name": "deposit_policy_other",
-        "label": "Other repository",
+        "label": "Name of website where policy is registered",
         "input": "text",
         "conditional": [{"field": "deposit_policy", "value": "other"}],
         "validate": [
@@ -1172,7 +1193,8 @@ class FieldDefinitions:
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
             "doaj_criteria": "You must provide a URL",
-            "short_help": "Link to the policy in a directory or on publisher site",
+            "short_help": "Link to the policy in the selected directory or on "
+                          "publisher’s site",
             "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
         "validate": [
@@ -1648,7 +1670,7 @@ class FieldSetDefinitions:
 
     EMBEDDED_LICENSING = {
         "name": "embedded_licensing",
-        "label": "Embedded licences",
+        "label": "Embedded licenses",
         "fields": [
             FieldDefinitions.LICENSE_DISPLAY["name"],
             FieldDefinitions.LICENSE_DISPLAY_EXAMPLE_URL["name"]

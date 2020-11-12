@@ -60,7 +60,7 @@
                         <a href="{{ n.url }}" target="_blank" rel="noopener" class="col-md-6">
                             {# TODO in the future (right now we don't have category) <p class="label">{{ n.category }}</p> #}
                             <h3>{{ n.title|safe }}</h3>
-                            <p>{% autoescape off%}{{ n.summary }}{% endautoescape %}</p>
+                            <p>{% autoescape off%}{{ n.summary|truncate(200) }}{% endautoescape %}</p>
                             <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
                         </a>
                     </article>
@@ -124,7 +124,7 @@
         <div class="container">
           <header>
               <h2 class="label">Volunteers</h2>
-              <p>DOAJ would not be able to do the work that it does, at the capacity that it has, without the help of its volunteers.</p>
+              <p>DOAJ would not be able to do the work that we do without our volunteers..</p>
               <p>&rarr; <a href="/about/volunteers/">See our volunteers</a></p>
           </header>
 

@@ -238,9 +238,9 @@ class PrivateContext(FormContext):
             if field in self.form.data:
                 if self.form[field].data:
                     if not self.form[field].description:
-                        self.form[field].description = 'Full contents: ' + self.form[field].data
+                        self.form[field].description = '<small>Full contents: ' + self.form[field].data + '</small>'
                     else:
-                        self.form[field].description += '<br><br>Full contents: ' + self.form[field].data
+                        self.form[field].description += '<br><br><small>Full contents: ' + self.form[field].data + '</small>'
 
     def _expand_url_descriptions(self, fields):
         # add the contents of a few fields to their descriptions since select2 autocomplete
@@ -249,9 +249,9 @@ class PrivateContext(FormContext):
             if field in self.form.data:
                 if self.form[field].data:
                     if not self.form[field].description:
-                        self.form[field].description = 'Full contents: <a href=' + self.form[field].data + " target='_blank'>" + self.form[field].data + "</a>"
+                        self.form[field].description = '<small>Full contents: <a href=' + self.form[field].data + " target='_blank'>" + self.form[field].data + "</a><small>"
                     else:
-                        self.form[field].description += '<br><br>Full contents: <a href=' + self.form[field].data + " target='_blank'>" + self.form[field].data + "</a>"
+                        self.form[field].description += '<br><br><small>Full contents: <a href=' + self.form[field].data + " target='_blank'>" + self.form[field].data + "</a><small>"
 
     def _carry_fixed_aspects(self):
         if self.source is None:
@@ -1838,4 +1838,3 @@ class AdminMetadataArticleForm(MetadataForm):
     def render_template(self, **kwargs):
         self._check_for_author_errors(**kwargs)
         return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
-

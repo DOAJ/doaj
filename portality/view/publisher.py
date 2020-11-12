@@ -57,7 +57,7 @@ def delete_application(application_id):
 
 @blueprint.route("/application/deleted")
 def deleted_thanks():
-    return render_template("layouts/static_page.html", page_frag="publisher/application_deleted.html")
+    return render_template("publisher/application_deleted.html")
 
 
 @blueprint.route("/update_request/<journal_id>", methods=["GET", "POST", "DELETE"])
@@ -188,7 +188,7 @@ def upload_file():
         if schema is None:
             schema = ""
         return render_template('publisher/uploadmetadata.html', previous=previous, schema=schema)
-    
+
     # otherwise we are dealing with a POST - file upload or supply of url
     f = request.files.get("file")
     schema = request.values.get("schema")
@@ -212,11 +212,11 @@ def upload_file():
     if f is not None and f.filename != "":
         flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
         return resp
-    
+
     if url is not None and url != "":
         flash("File reference successfully received - it will be processed shortly", "success")
         return resp
-    
+
     flash("No file or URL provided", "error")
     return resp
 
@@ -230,7 +230,7 @@ def metadata():
     if request.method == "GET":
         fc = formcontext.ArticleFormFactory.get_from_context(user=user, role="publisher")
         return fc.render_template()
-    
+
     # if this is a post request, a form button has been hit and we need to do
     # a bunch of work
     elif request.method == "POST":
@@ -269,4 +269,3 @@ def _validate_authors(form, require=1):
         if name is not None and name != "":
             counted += 1
     return counted >= require
-

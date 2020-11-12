@@ -7,57 +7,43 @@
 
 <div class="bulk-action-feedback alert alert-success" style="display: none"></div>
 
-<div style="padding-bottom: 20px; margin-top: 20px">
+<div id="admin-bulk-box">
+    <h2>Bulk edit records</h2>
     <div class="row">
-        <div class="col-md-12">
-            <div id="admin-bulk-box" class="pull-right">
-                <label id="admin-bulk-label">Bulk Edit Records</label>
-                <form class="form-horizontal" id="journal_bulk_form">
-                    <fieldset>
-                        <div class="form-group" id="bulk_action-container">
-                            <select class="multiformbox-selector form-control" id="bulk_action" name="bulk_action">
-                                <option selected value="">Select action...</option>
-                                <option value="withdraw">Withdraw from DOAJ</option>
-                                <option value="reinstate">Reinstate into DOAJ</option>
-                                <option value="edit_metadata">Journal: edit metadata ...</option>
-                                <option value="editor_group">Journal: Assign to editor group...</option>
-                                <option value="note">Journal: Add a note...</option>
+      <form class="col-md-6 form form--compact" id="journal_bulk_form">
+          <div id="bulk_action-container">
+              <select class="multiformbox-selector form__question" id="bulk_action" name="bulk_action">
+                  <option selected value="">Select action…</option>
+                  <option value="withdraw">Withdraw from DOAJ</option>
+                  <option value="reinstate">Reinstate into DOAJ</option>
+                  <option value="edit_metadata">Journal: edit metadata…</option>
+                  <option value="editor_group">Journal: Assign to editor group…</option>
+                  <option value="note">Journal: Add a note…</option>
 
-                                {%  if current_user.has_role("ultra_bulk_delete") %}
-                                <option value="delete">Delete records</option>
-                                {%  endif %}
-                            </select>
-                        </div>
-                        <div class="form-group multiformbox-container" style="display: none" id="editor_group-container">
-                            <div class="col-md-12">
-                                <input id="editor_group" name="editor_group" style="width: 250px;" type="text" value="" placeholder="Enter new editor group">
-                            </div>
-                        </div>
-                        <div class="form-group multiformbox-container" style="display: none" id="note-container">
-                            <div class="col-md-12">
-                                <textarea class="form-control" id="note" name="note" style="width: 240px;" placeholder="Type note here..."></textarea>
-                            </div>
-                        </div>
-                        <div class="multiformbox-container col-md-12" style="display: none" id="edit_metadata-container">
-                            <p style="margin-top: 15px; font-style: italic">Note that bulk editing journals via this form behaves as if you have used the individual Journal edit form
-                            for each selected record and selected the "Allow incomplete form" checkbox.  You will NOT receive validation
-                            errors for records which are missing required fields.</p>
-                            {% autoescape off %}
-                            {{ edit_form }}
-                            {% endautoescape %}
-                        </div>
-                        <div class="form-group">
-                            <button id="bulk-submit" class="btn btn-danger pull-right multiformbox-submit" disabled="disabled">Submit</button>
-                        </div>
-                        <div class="form-group" id="bulk_help-container">
-                            <p id="any_type_error" class="red multiformbox-error" style="display: none">You need to select an option in the "Journals vs. Articles facet" to use this option</p>
-                            <p id="journal_type_error" class="red multiformbox-error" style="display:none">You need to select "Journal" from the "Journals vs. Articles facet" to use this option</p>
-                            <p id="invalid_email" class="red multiformbox-error" style="display:none">Please enter a valid email address for the contact</p>
-                        </div>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
+                  {%  if current_user.has_role("ultra_bulk_delete") %}
+                  <option value="delete">Delete records</option>
+                  {%  endif %}
+              </select>
+          </div>
+          <div id="bulk_help-container">
+              <p id="any_type_error" class="alert multiformbox-error" style="display: none">You need to select an option in the <em>Journals vs. Articles</em> facet to use this option.</p>
+              <p id="journal_type_error" class="alert multiformbox-error" style="display:none">You need to select “Journal” from the <em>Journals vs. Articles</em> facet to use this option.</p>
+              <p id="invalid_email" class="alert multiformbox-error" style="display:none">Please enter a valid email address for the contact.</p>
+          </div>
+          <div class="multiformbox-container form__question" style="display: none" id="editor_group-container">
+              <input id="editor_group" name="editor_group" type="text" value="" placeholder="Enter new editor group">
+          </div>
+          <div class="multiformbox-container form__question" style="display: none" id="note-container">
+              <textarea class="form-control" id="note" name="note" placeholder="Type note here…"></textarea>
+          </div>
+          <div class="multiformbox-container" style="display: none" id="edit_metadata-container">
+              <p class=" alert alert--message">Bulk editing journals via this form behaves as if you have used the <em>individual Journal edit form</em> for each selected record and selected the <em>Allow incomplete form</em> checkbox. <br/><strong>You will NOT receive validation errors</strong> for records which are missing required fields.</p>
+              {% autoescape off %}
+              {{ edit_form }}
+              {% endautoescape %}
+          </div>
+          <button id="bulk-submit" class="multiformbox-submit button" disabled="disabled">Submit</button>
+      </form>
     </div>
 </div>
 

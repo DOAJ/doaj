@@ -2376,7 +2376,7 @@ $.extend(true, doaj, {
                     <article class="row">\
                       <div class="col-sm-8 search-results__main article-summary">\
                         <header>\
-                          <p class="label"><a href="/toc/' + issns[0] + 'target="_blank">\
+                          <p class="label"><a href="/toc/' + issns[0] + '" target="_blank">\
                             ' + edges.escapeHtml(journal) + ' ' + date + '\
                           </a></p>\
                           <h3 class="search-results__heading">\
@@ -2457,7 +2457,7 @@ $.extend(true, doaj, {
                         <div class="modal__dialog" role="document">\
                             <h2 class="modal__title">Delete this application</h2>\
                             <p>Are you sure you want to delete your application for <span class="' + deleteTitleClass + '"></span></p> \
-                            <button href="#" class="button button--primary ' + deleteLinkClass + '">Yes, delete it</button> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
@@ -2646,7 +2646,7 @@ $.extend(true, doaj, {
                         <div class="modal__dialog" role="document">\
                             <h2 class="modal__title">Delete this update request</h2>\
                             <p>Are you sure you want to delete your update request for <span class="' + deleteTitleClass + '"></span></p> \
-                            <button href="#" class="button button--primary ' + deleteLinkClass + '">Yes, delete it</button> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
@@ -3111,7 +3111,9 @@ $.extend(true, doaj, {
                     field += edges.escapeHtml(resultobj.bibjson.title);
                 }
                 if (resultobj.admin && resultobj.admin.seal) {
-                    field += " <br/><small><span class='tag tag--featured'>DOAJ Seal</span></small>​​";
+                    field += "<p><span class='tag tag--featured'>\
+                              <span data-feather='check-circle' aria-hidden='true'></span>\
+                              DOAJ Seal</span></p>​​";
                 }
                 return field + "</h3>"
             } else {

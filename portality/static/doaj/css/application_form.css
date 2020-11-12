@@ -24,7 +24,9 @@
   display: none;
 }
 
-.parsley-error {
+.parsley-error,
+.parsley-error .select2-choices,
+.parsley-error .select2-choice {
     border-color: #FD5A3B;
     border-width: 3px;
 }

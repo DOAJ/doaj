@@ -174,7 +174,7 @@ table {
 
   th, td {
     vertical-align: top;
-    padding: $spacing-03 $spacing-02;
+    padding: $spacing-03;
 
     &:first-child {
       padding-left: 0;
@@ -185,7 +185,6 @@ table {
     text-align: left;
     font-weight: 400;
     color: $dark-grey;
-    @include typescale-06;
   }
 
   td:last-child {

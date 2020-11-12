@@ -571,9 +571,6 @@ $.extend(true, doaj, {
             var mfb = doaj.multiFormBox.newMultiFormBox({
                 edge : e,
                 selector: "#admin-bulk-box",
-                widths: {
-                    edit_metadata: "600px"
-                },
                 bindings : {
                     editor_group : function(context) {
                         autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);

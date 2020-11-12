@@ -78,7 +78,7 @@ $.extend(true, doaj, {
                         },
                         {
                             id : "no_charges",
-                            display: "Without APCs or other fees",
+                            display: "Without publication fees",
                             must : [
                                 es.newTermFilter({
                                     field: "bibjson.apc.has_apc",
@@ -263,7 +263,7 @@ $.extend(true, doaj, {
                                     value: false
                                 })
                             ],
-                            display : "Without APCs or other fees"
+                            display : "Without publication fees"
                         }
                     ],
                     fieldDisplays : {
