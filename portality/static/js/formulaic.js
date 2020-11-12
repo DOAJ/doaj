@@ -1690,7 +1690,7 @@ var formulaic = {
             this.init = function() {
                 this.elements = $("select[name$='" + this.fieldDef.name + "']");
                 this.elements.select2({
-                    allowClear: false,
+                    allowClear: true,
                     width: 'resolve',
                     newOption: true,
                     placeholder: "Start typing…"
