@@ -1479,8 +1479,7 @@ class FieldDefinitions:
                     "fields" : [{"field" : "discontinued_date"}],
                     "message" : "You cannot enter both continuation information and a discontinued date"
                 }
-            },
-            "issn_in_public_doaj"                                   # FIXME: is this right?
+            }
         ],
         "widgets" : [
             "tagentry"
@@ -1499,8 +1498,7 @@ class FieldDefinitions:
                     "fields": [{"field": "discontinued_date"}],
                     "message": "You cannot enter both continuation information and a discontinued date"
                 }
-            },
-            "issn_in_public_doaj"  # FIXME: is this right?
+            }
         ],
         "widgets" : [
             "tagentry"
