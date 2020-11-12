@@ -61,7 +61,7 @@ var doaj = {
         jQuery(document).ready(function($) {
             $(".flash_close").on("click", function(event) {
                 event.preventDefault();
-                var container = $(this).parents(".flash_container");
+                var container = $(this).parents(".alert");
                 container.remove();
             });
         });
