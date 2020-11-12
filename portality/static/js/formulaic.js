@@ -1682,15 +1682,16 @@ var formulaic = {
         Select : function(params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
-            this.args = params.args;    // TODO: no args currently supported
+            this.args = params.args;
 
             this.ns = "formulaic-select";
             this.elements = false;
 
             this.init = function() {
+                let allow_clear = this.args.allow_clear || false;
                 this.elements = $("select[name$='" + this.fieldDef.name + "']");
                 this.elements.select2({
-                    allowClear: true,
+                    allowClear: allow_clear,
                     width: 'resolve',
                     newOption: true,
                     placeholder: "Start typing…"

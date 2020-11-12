@@ -502,7 +502,7 @@ class FieldDefinitions:
             "placeholder": "Type or select the country"
         },
         "widgets": [
-            {"select": {}}
+            {"select": {"allow_clear" : True}}
         ],
         "attr": {
             "class": "input-xlarge"
