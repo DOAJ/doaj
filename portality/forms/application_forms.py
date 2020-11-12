@@ -1561,7 +1561,8 @@ class FieldDefinitions:
         "template": "application_form/_list.html",
         "entry_template": "application_form/_entry_group_horizontal.html",
         "widgets": [
-            {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}}
+            {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}},
+            "note_modal"
         ],
         "merge_disabled" : "merge_disabled_notes"
     }
@@ -2503,7 +2504,8 @@ JAVASCRIPT_FUNCTIONS = {
     "subject_tree" : "formulaic.widgets.newSubjectTree",
     "full_contents" : "formulaic.widgets.newFullContents",
     "load_editors" : "formulaic.widgets.newLoadEditors",
-    "trim_whitespace" : "formulaic.widgets.newTrimWhitespace"
+    "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",
+    "note_modal" : "formulaic.widgets.newNoteModal"
 }
 
 

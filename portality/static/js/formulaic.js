@@ -1259,6 +1259,66 @@ var formulaic = {
             this.init();
         },
 
+        newNoteModal : function(params) {
+            return edges.instantiate(formulaic.widgets.NoteModal, params)
+        },
+        NoteModal : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+
+            this.ns = "formulaic-notemodal";
+
+            this.container = false;
+
+            this.init = function() {
+                var viewClass = edges.css_classes(this.ns, "view");
+                var closeClass = edges.css_classes(this.ns, "close");
+
+                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
+                for (var i = 0; i < this.divs.length; i++) {
+                    var container = $(this.divs[i]);
+                    var modalId = "modal-" + this.fieldDef["name"] + "-" + i;
+
+                    var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
+                    var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
+
+                    container.append('<a href="#" class="' + viewClass + '">view note</a>');
+                    container.append(`
+                        <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
+                            <div class="modal__dialog" role="document">
+                                <p class="label">NOTE</p> 
+                                <h3 class="modal__title">
+                                    ` + date.val() + `
+                                </h3>        
+                                ` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `                        
+                                <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                var viewSelector = edges.css_class_selector(this.ns, "view");
+                edges.on(viewSelector, "click", this, "showModal");
+
+                var closeSelector = edges.css_class_selector(this.ns, "close");
+                edges.on(closeSelector, "click", this, "closeModal");
+            };
+
+            this.showModal = function(element) {
+                var that = $(element);
+                var modal = that.siblings(".modal");
+                modal.show();
+            };
+
+            this.closeModal = function(element) {
+                var that = $(element);
+                var modal = that.parents(".modal");
+                modal.hide();
+            };
+
+            this.init();
+        },
+
         newInfiniteRepeat : function(params) {
             return edges.instantiate(formulaic.widgets.InfiniteRepeat, params)
         },
@@ -1852,53 +1912,3 @@ var formulaic = {
         }
     }
 };
-
-/*
-function autocomplete(selector, doc_field, doc, min_input, include, allow_clear_input, tagfield) {
-    let doc_type = doc || "journal";
-    let mininput = min_input === undefined ? 3 : min_input;
-    let include_input = include === undefined ? true : include;
-    let allow_clear = allow_clear_input === undefined ? true : allow_clear_input;
-
-    let ajax = {
-            url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
-            dataType: 'json',
-            data: function (term, page) {
-                return {
-                    q: term
-                };
-            },
-            results: function (data, page) {
-                return { results: data["suggestions"] };
-            }
-        };
-    var csc = function(term) {return {"id":term, "text": term};};
-    var initSel = function (element, callback) {
-            var data = {id: element.val(), text: element.val()};
-            callback(data);
-        };
-
-    if (include_input) {
-        // apply the create search choice
-        $(selector).select2({
-            minimumInputLength: mininput,
-            ajax: ajax,
-            createSearchChoice: csc,
-            initSelection : initSel,
-            //placeholder: "Start typing…",
-            allowClear: allow_clear,
-            width: 'resolve'
-        });
-    } else {
-        // go without the create search choice option
-        $(selector).select2({
-            minimumInputLength: mininput,
-            ajax: ajax,
-            initSelection : initSel,
-            //placeholder: "Start typing…",
-            allowClear: allow_clear,
-            width: 'resolve'
-        });
-    }
-}
-*/
