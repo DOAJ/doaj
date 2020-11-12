@@ -631,6 +631,13 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
             e.preventDefault();
             $("#modal-quick_reject").show();
         });
+
+        $("#submit_quick_reject").on("click", function(event) {
+            if ($("#quick_reject").val() === "" && $("#quick_reject_details").val() === "") {
+                alert("When selecting 'Other' as a reason for rejection, you must provide additional information");
+                event.preventDefault();
+            }
+        });
     };
 };
 
