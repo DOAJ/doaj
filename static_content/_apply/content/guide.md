@@ -1,9 +1,9 @@
-<label for="languages">Show me this guide in&hellip;</label>
+<!-- <label for="languages">Show me this guide in&hellip;</label>
 <select name="languages" id="languages">
   <option value="en">English</option>
   <option value="fr">Français</option>
   <option value="es">Español</option>
-</select>
+</select> -->
 
 Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them.
 
@@ -107,17 +107,34 @@ Journals that are rejected must wait 6 months from the date of rejection before 
 
 ---
 
+## Recommendations
+
+We recommend that:
+- journals use a plagiarism checking software. You must specify the name and make of the software.
+
+- publishers are fully transparent about their publication fees and other fees.
+
+- the journal publishes ORCiD IDs with the articles.
+
+- the ORCiD IDs of editorial board members and reviewers are displayed.
+
+- publishers make all citations available according to the [I4OC goals](https://i4oc.org/#goals).
+
+- the journal uses an archiving scheme which is a registered Keeper in the [Keepers Registry](https://keepers.issn.org/)
+
+---
+
 ## Additional criteria for some journal types
 
 {:.tabular-list}
 - ### Arts and humanities journals
-   - For these disciplines only, DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
+   - For these disciplines ([pages 10-16 only](http://uis.unesco.org/sites/default/files/documents/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
 
 - ### Clinical case reports journals
    - DOAJ only considers case reports as research if they include the retrospective analysis of more than three clinical cases and/or a literature review. Before applying, make sure that the journal has published at least five articles per year that meet this definition.
 
 - ### Conference proceedings journals
-   - For DOAJ to include journals that are dedicated to publishing conference proceedings, the journal must have an ISSN and a permanent editorial or advisory board providing editorial oversight. Papers from each published conference must be peer reviewed according to DOAJ criteria. Full text of all conference papers must be available. Individual conference proceedings will not be indexed.
+   - For DOAJ to include journals that are dedicated to publishing conference proceedings, the journal must have an ISSN and a permanent editorial or advisory board providing editorial oversight. Papers from each published conference must be peer-reviewed according to DOAJ criteria. Full text of all conference papers must be available. Individual conference proceedings will not be indexed.
    
 - ### Data journals
    - DOAJ will accept journals publishing research articles about data or datasets, but not journals that simply link to datasets or announce their availability.
@@ -170,7 +187,7 @@ Please ensure that, if you do apply again after the exclusion period, the journa
 
 ## Appeals
 
-If you would like to appeal against a decision to reject your application or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, [managing-editors@doaj.org](mailto:managing-editors@doaj.org).
+If you would like to appeal against a decision to reject your application for more than 6 months or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, [managing-editors@doaj.org](mailto:managing-editors@doaj.org).
 
 The appeal should contain the following information:
 - Journal title

@@ -201,14 +201,16 @@ ass_ed:
   city: York
   country: United Kingdom
   language: English
-
-- name: Chitu Okoli
-  area: Technology
+  
+- name: Carlos Alegre
+  area: Social Sciences
   year_since:
-  city: Paris
-  country: France
-  language: English, French
-
+  city: Rosario
+  country: Argentina
+  language: Spanish, English
+  photo: "CarlosAlegre.jpg"
+ 
+  
 - name: Christine Davidian
   area: Technology
   year_since:
@@ -217,7 +219,7 @@ ass_ed:
   language: English, French
 
 
-- name: Constansy Aleru
+- name: Constancy Aleru
   area: Medical Sciences
   year_since:
   city: Port Harcourt
@@ -298,7 +300,7 @@ ass_ed:
   country: Turkey
   language: Turkish, English
 
-- name: Faith Oronga
+- name: Faith Oronga Amatika-Omondi
   area: Librarianship
   year_since: "2020"
   city:
@@ -409,6 +411,7 @@ ass_ed:
   city: Baghdad
   country: Iraq
   language: Arabic, English, Swedish
+  photo: "karima.jpg"
 
 - name: Katharine Dunn
   area: Scholarly Publishing
@@ -509,7 +512,7 @@ ass_ed:
 - name: Milagro Castro
   area: Social Sciences
   year_since:
-  city:
+  city: Palmares
   country: Costa Rica
   language: Spanish, English
   photo: "MilagroCastro.jpg"
@@ -534,7 +537,7 @@ ass_ed:
   year_since:
   city: Bejaia
   country: Algeria
-  language: Arabic, French, Engish, Kabyle
+  language: Arabic, French, English, Kabyle
 
 - name: Oleksii Vasyliev
   area: Science, Technology
@@ -570,6 +573,14 @@ ass_ed:
   city: Philadelphia
   country: USA
   language: English
+
+- name: Roberto Sarmiento
+  area: Engineering
+  year_since:
+  city: San Luis Potosi
+  country: Mexico
+  language: Spanish, English
+
 
 - name: S. Mohammad Amini
   area: Science
