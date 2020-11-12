@@ -1420,7 +1420,7 @@ class FieldDefinitions:
         "label": "Group",
         "input": "text",
         "widgets": [
-            {"autocomplete": {"type" : "editor_group", "field": "name"}}
+            {"autocomplete": {"type" : "editor_group", "field": "name", "include" : False}}
         ],
         "contexts" : {
             "editor" : {
@@ -1428,7 +1428,7 @@ class FieldDefinitions:
             },
             "admin" : {
                 "widgets" : [
-                    {"autocomplete": {"type": "editor_group", "field": "name"}},
+                    {"autocomplete": {"type": "editor_group", "field": "name", "include" : False}},
                     {"load_editors" : {"field" : "editor"}}
                 ]
             }
