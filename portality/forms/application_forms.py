@@ -496,10 +496,10 @@ class FieldDefinitions:
         "input": "select",
         "default" : "",
         "options_fn": "iso_country_list",
+        "optional": True,
         "help": {
             "short_help": "The country in which the society or institution is based",
-            "placeholder": "Type or select the country",
-            "optional": True
+            "placeholder": "Type or select the country"
         },
         "widgets": [
             {"select": {}}
