@@ -97,15 +97,6 @@ class ArticleFormXWalk(object):
         if add_journal_info:
             article.add_journal_metadata()
 
-        """
-        # before finalising, we need to determine whether this is a new article
-        # or an update
-        duplicate = self.get_duplicate(article, limit_to_owner)
-        # print duplicate
-        if duplicate is not None:
-            article.merge(duplicate) # merge will take the old id, so this will overwrite
-        """
-
         return article
 
     @classmethod
@@ -136,12 +127,8 @@ class ArticleFormXWalk(object):
                 form.authors.append_entry(author)
 
         if bibjson.keywords:
-            form.keywords.data = ""
-            for k in bibjson.keywords:
-                if form.keywords.data == "":
-                    form.keywords.data = k
-                else:
-                    form.keywords.data = form.keywords.data + "," + k
+            form.keywords.data = bibjson.keywords
+
         url = bibjson.get_single_url("fulltext")
         if url:
             form.fulltext.data = url
