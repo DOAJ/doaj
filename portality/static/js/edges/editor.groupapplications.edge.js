@@ -216,7 +216,7 @@ $.extend(true, doaj, {
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
-                        freetextSubmitDelay: 1000,
+                        freetextSubmitDelay: -1,
                         searchButton: true,
                         searchPlaceholder: "Search Applications in your Group(s)"
                     })

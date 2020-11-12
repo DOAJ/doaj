@@ -71,7 +71,7 @@ $.extend(true, doaj, {
                     id: "search-controller",
                     category: "facet",
                     renderer : doaj.renderers.newSearchBoxFacetRenderer({
-                        freetextSubmitDelay: 1000,
+                        freetextSubmitDelay: -1,
                         searchPlaceholder: "Additional keywords",
                         title: "Search within the results"
                     })
