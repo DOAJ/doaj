@@ -109,16 +109,29 @@ $(document).ready(function() {
     showHideFirstRemoveButton();
     $(".remove_field__button").click(removeAuthor);
 
-    // $("#pissn").select2({
-    //     allowClear: false,
-    //     width: 'resolve',
-    //     newOption: 'false'
-    // });
-    // $("#eissn").select2({
-    //     allowClear: false,
-    //     width: 'resolve',
-    //     newOption: 'false'
-    // });
+    $("#pissn").select2({
+        allowClear: false,
+        width: 'resolve',
+        newOption: 'false'
+    });
+    $("#eissn").select2({
+        allowClear: false,
+        width: 'resolve',
+        newOption: 'false'
+    });
+
+    $("#keywords").select2({
+        multiple: true,
+        minimumInputLength: 1,
+        //ajax: ajax,
+        //createSearchChoice: csc,
+        //initSelection: initSel,
+        allowClear: false,
+        tags: [],
+        tokenSeparators: [','],
+        //maximumSelectionSize: 6,
+        width: 'resolve'
+    })
 
 
 //     var ajax = {
