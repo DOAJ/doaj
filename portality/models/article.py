@@ -1,18 +1,17 @@
-import json
+import string
+import warnings
 
+from unidecode import unidecode
+from functools import reduce
+from copy import deepcopy
+from datetime import datetime
+
+from portality import datasets, constants
 from portality.dao import DomainObject
 from portality.models import Journal
 from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article specifically uses the v1 BibJSON
 from portality.models.v1 import shared_structs
-from copy import deepcopy
-from datetime import datetime
-from portality import datasets, constants
-from portality.core import app
 from portality.lib import normalise
-
-import string
-from unidecode import unidecode
-from functools import reduce
 
 
 class NoJournalException(Exception):
@@ -710,6 +709,12 @@ class ArticleBibJSON(GenericBibJSON):
         self._set_with_struct("author", authors)
 
     def add_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+
+        :return:
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         lobj = {"title": licence_title, "type": licence_type}
         if url is not None:
             lobj["url"] = url
@@ -720,6 +725,12 @@ class ArticleBibJSON(GenericBibJSON):
         self._add_to_list_with_struct("journal.license", lobj)
 
     def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+
+        :return:
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         lobj = {"title": licence_title, "type": licence_type}
         if url is not None:
             lobj["url"] = url
@@ -730,6 +741,12 @@ class ArticleBibJSON(GenericBibJSON):
         self._set_with_struct("journal.license", lobj)
 
     def get_journal_license(self):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+
+        :return:
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         lics = self._get_list("journal.license")
         if len(lics) == 0:
             return None
@@ -737,9 +754,21 @@ class ArticleBibJSON(GenericBibJSON):
 
     @property
     def journal_licenses(self):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+
+        :return:
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         return self._get_list("journal.license")
 
     def remove_journal_licences(self):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+
+        :return:
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         self._delete("journal.license")
 
     def get_publication_date(self, date_format='%Y-%m-%dT%H:%M:%SZ'):
