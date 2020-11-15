@@ -1,10 +1,11 @@
 """
 Delete all non-editorial user accounts not assigned to a journal
 
-python accounts_delete_pub_no_journal.py
+python accounts_delete_pub_no_journal.py [-r deletion_report.csv]
 """
 
 import esprit
+import csv
 from portality.core import app
 from portality import models
 
@@ -31,21 +32,38 @@ def delete_accounts_by_id(conn, id_list):
     esprit.raw.bulk_delete(conn, 'account', id_list)
 
 
+def write_csv(filename, id_list):
+    with open(filename, "w", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Roles"])
+
+        for _id in id_list:
+            account = models.Account.pull(_id)
+            writer.writerow([
+                account.id,
+                account.name,
+                account.email,
+                account.created_date,
+                account.last_updated,
+                account.role
+            ])
+
+
 if __name__ == "__main__":
 
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--out", help="output file path")
+    parser.add_argument("-r", "--report", help="report accounts to CSV (specify filename)")
     args = parser.parse_args()
-
-    if not args.out:
-        print("Please specify an output file path with the -o option")
-        parser.print_help()
-        exit()
 
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
     accounts_to_delete = accounts_with_no_journals(conn)
+
+    if args.report:
+        print("Writing CSV summary of accounts to delete")
+        write_csv(args.report, accounts_to_delete)
+        exit()
 
     # Make sure the user is super serious about doing this.
     resp = input("\nDelete {0} Accounts - are you sure? [y/N]\n".format(len(accounts_to_delete)))
