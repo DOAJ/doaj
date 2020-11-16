@@ -32,10 +32,10 @@ input[type="button"],
     color: $warm-white;
   }
 
-  svg {
+  .feather {
     position: relative;
     top: 0.1em;
-    height: 1em;
+    height: 0.75em;
   }
 
   + .button {

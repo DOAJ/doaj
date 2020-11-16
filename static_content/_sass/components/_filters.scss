@@ -7,15 +7,10 @@
 }
 
 .filters__heading {
-  margin-bottom: $spacing-04;
-  cursor: default;
-
   svg {
-    height: 15px;
+    height: 0.75em;
   }
 }
-
-
 
 .filters__list {
   @include unstyled-list;
@@ -83,14 +78,24 @@
   font-size: 1em !important;
 }
 
-// Mobile-only accordion
+// Display header like a button when on smaller viewports
+@media (max-width: 991px) {
+  .filters__heading {
+    display: inline-block;
+    margin: 0;
+    padding: $spacing-03;
+    cursor: pointer;
+    border: 1px solid $warm-black;
+    background-color: $fair-pink;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    @include typescale-06;
+  }
+}
 
+// Mobile-only accordion
 @media (min-width: 992px) {
   .filters {
-
-    .filters__heading .feather-chevron-down {
-      display: none;
-    }
 
     .filters__list {
       display: block;
