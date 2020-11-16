@@ -434,6 +434,10 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         });
 
         this._generate_values_preview();
+
+        this.form.find(":input").on("change", () => {
+            this._generate_values_preview();
+        })
     }
 
     displayableDiffValue(was) {

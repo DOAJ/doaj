@@ -710,6 +710,7 @@ var formulaic = {
                 // store the new values on the object and in the form
                 this.selected = newValues;
                 this.sourceInput.val(newValues.join(","));
+                this.sourceInput.trigger("change");
                 this.edge.cycle();
                 return true;
             };
@@ -754,6 +755,7 @@ var formulaic = {
                 // store the new values on the object and in the form
                 this.selected = newValues;
                 this.sourceInput.val(newValues.join(","));
+                this.sourceInput.trigger("change");
                 this.edge.cycle();
             };
         },
@@ -1020,11 +1022,20 @@ var formulaic = {
                 var containerId = edges.css_id(this.ns, "container");
                 var containerSelector = edges.css_id_selector(this.ns, "container");
                 var widgetId = edges.css_id(this.ns, this.fieldDef.name);
+                var modalOpenClass = edges.css_classes(this.ns, "open");
+                var closeClass = edges.css_classes(this.ns, "close");
 
                 this.input = $("[name=" + this.fieldDef.name + "]");
                 this.input.hide();
 
-                this.input.after('<div id="' + containerId + '"><div id="' + widgetId + '"></div></div>');
+                this.input.after('<a href="#" class="button ' + modalOpenClass + '">Open Subject Classifier</a>');
+                this.input.after(`<div class="modal" id="` + containerId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
+                                    <div class="modal__dialog" role="document">
+                                        <p class="label">Subject Classifications</p>
+                                        <div id="` + widgetId + `"></div>
+                                        <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
+                                    </div>
+                                 </div>`);
 
                 var subjectBrowser = formulaic.edges.newTreeBrowser({
                     id: widgetId,
@@ -1085,6 +1096,23 @@ var formulaic = {
                         }
                     }
                 });
+
+                var modalOpenSelector = edges.css_class_selector(this.ns, "open");
+                edges.on(modalOpenSelector, "click", this, "openModal");
+
+                var closeSelector = edges.css_class_selector(this.ns, "close");
+                edges.on(closeSelector, "click", this, "closeModal");
+            };
+
+            this.openModal = function() {
+                var containerSelector = edges.css_id_selector(this.ns, "container");
+                $(containerSelector).show();
+            };
+
+            this.closeModal = function() {
+                var containerSelector = edges.css_id_selector(this.ns, "container");
+                $(containerSelector).hide();
+                this.input.trigger("change");
             };
 
             this.init();
