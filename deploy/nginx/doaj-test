@@ -18,6 +18,10 @@ server {
     listen          443 ssl;
     server_name     testdoaj.cottagelabs.com;
 
+    # Separate doajtest app htpasswd file to include additional users
+    auth_basic "Restricted";
+    auth_basic_user_file /etc/nginx/doajtest_users;
+
     ssl_certificate /etc/letsencrypt/live/testdoaj.cottagelabs.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/testdoaj.cottagelabs.com/privkey.pem;
 
@@ -54,5 +58,3 @@ server {
         proxy_pass http://doaj_index;
     }
 }
-
-
