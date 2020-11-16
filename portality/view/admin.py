@@ -403,6 +403,11 @@ def application_quick_reject(application_id):
     if update_request:
         abort(400)
 
+    if application.owner is None:
+        Messages.flash_with_url(Messages.ADMIN__QUICK_REJECT__NO_OWNER, "error")
+        # redirect the user back to the edit page
+        return redirect(url_for('.application', application_id=application_id))
+
     # reject the application
     applicationService.reject_application(application, current_user._get_current_object(), note=note)
 
