@@ -1138,13 +1138,21 @@ $.extend(true, doaj, {
 
             this.changeSearchField = function (element) {
                 var val = this.component.jq(element).val();
-                this.component.setSearchField(val);
+                this.component.setSearchField(val, false);
+
+                var textIdSelector = edges.css_id_selector(this.namespace, "text", this);
+                var text = this.component.jq(textIdSelector).val();
+                this.component.setSearchText(text);
             };
 
             this.setSearchText = function (element) {
                 this.focusSearchBox = true;
                 var val = this.component.jq(element).val();
-                this.component.setSearchText(val);
+                this.component.setSearchText(val, false);
+
+                var searchFieldIdSelector = edges.css_id_selector(this.namespace, "fields", this);
+                var field = this.component.jq(searchFieldIdSelector).val();
+                this.component.setSearchField(val);
             };
 
             this.clearSearch = function (element) {
