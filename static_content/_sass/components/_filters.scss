@@ -62,6 +62,10 @@
     vertical-align: middle;
   }
 
+  strong {
+    background: $fair-pink;
+  }
+
   // subheadings / filters within filters
   .filter__choices {
     margin-top: $spacing-02;
