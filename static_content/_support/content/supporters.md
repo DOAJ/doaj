@@ -1,4 +1,4 @@
-We are proud that over 80% of DOAJ's funding comes from public academic organisations (libraries, library consortia, universities, research centres). Without this vital support, we would not be able to continue to provide the five star service that the research community expects of us. 
+We are proud that over 80% of DOAJ's funding comes from academic organisations (libraries, library consortia, universities, research centres). Without this vital support, we would not be able to continue to provide the five star service that the research community expects of us. 
 
 These organisations support DOAJ with an annual or a sustaining contribution. A sustaining contribution, securing more funding to DOAJ upfront, is discounted and often over 3 years. Committing larger amounts of funding has a greater impact on DOAJ’s future and allows for more sustainable development.
 
