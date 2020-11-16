@@ -268,9 +268,12 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         if(n === this.tabs.length - 1) {
             this.prepareReview();
         }
-        //if (this.context === "public") {
-            this.updateStepIndicator();
-        //}
+        this.updateStepIndicator();
+
+        // We want the window to scroll to the top, but for some reason in Firefox window.scrollTo(0,0) doesn't
+        // work here.  We think it's a bug in Firefox.  By issuing a small scrollBy first, it somehow snaps
+        // Firefox out of it, and then the scrollTo works.
+        window.scrollBy(-100, -100);
         window.scrollTo(0,0);
     };
 
@@ -845,3 +848,4 @@ window.Parsley.addValidator("notIf", {
     },
     priority: 1
 });
+
