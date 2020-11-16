@@ -3,7 +3,7 @@ from flask import flash
 
 class Messages(object):
     ADMIN__QUICK_REJECT__NO_OWNER = """There is no user attached to this application. 
-        <a href="https://testdoaj.cottagelabs.com/account/register">Create the user account first</a>."""
+        <a href="https://testdoaj.cottagelabs.com/account/register" target="_blank">Create the user account first</a>."""
 
     APPLICATION_UPDATE_SUBMITTED_FLASH = ("""
         Your update request has been submitted. You may make further changes until the DOAJ Editorial Team picks it up
