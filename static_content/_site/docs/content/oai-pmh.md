@@ -41,7 +41,7 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
       <dc:identifier>1330-4860</dc:identifier>
       <dc:identifier>1846-3878</dc:identifier>
       <dc:identifier>
-        http://doaj.org/search?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22id%22%3A%229dfe4879964541069dff9bb6d15b65a2%22%7D%7D%5D%7D%7D%7D
+        http://doaj.org/toc/9dfe4879964541069dff9bb6d15b65a2
       </dc:identifier>
       <dc:subject>economics</dc:subject>
       <dc:subject>post-socialist Europe</dc:subject>
@@ -133,7 +133,7 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
       <dc:identifier>0102-311X</dc:identifier>
       <dc:identifier>1678-4464</dc:identifier>
       <dc:identifier>
-        http://doaj.org/search?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22id%22%3A%222f032c66cd6047bdadaf0eddd7ab3341%22%7D%7D%5D%7D%7D%7D
+        https://doaj.org/article/2f032c66cd6047bdadaf0eddd7ab3341
       </dc:identifier>
       <dc:date>2006-01-01T00:00:00Z</dc:date>
       <dc:relation>
