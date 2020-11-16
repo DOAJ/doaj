@@ -101,6 +101,29 @@ def es_type_fix(q):
     return q
 
 
+def last_update_fallback(q):
+    s = q.sort()
+    if s is None or len(s) == 0:
+        return q
+
+    add_created_sort = False
+    sort_order = None
+    for sortby in s:
+        if "last_manual_update" in sortby:
+            sort_order = sortby["last_manual_update"].get("order")
+            add_created_sort = True
+            break
+
+    if add_created_sort:
+        params = {}
+        if sort_order is not None:
+            params["order"] = sort_order
+        s.append({"created_date" : params})
+
+    q.set_sort(s)
+    return q
+
+
 # results filters
 #################
 

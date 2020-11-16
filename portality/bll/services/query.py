@@ -224,6 +224,11 @@ class Query(object):
             fields = [fields]
         self.q["_source"]["include"] = list(set(self.q["_source"]["include"] + fields))
 
+    def sort(self):
+        return self.q.get("sort")
+
+    def set_sort(self, s):
+        self.q["sort"] = s
 
 class QueryFilterException(Exception):
     pass
