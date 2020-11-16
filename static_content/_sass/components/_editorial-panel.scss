@@ -10,7 +10,7 @@
   @media (min-width: 992px) {
     position: -webkit-sticky;
     position: sticky;
-    top: 0;
+    top: 60px; // sticky header + 10px 
     max-height: 70vh;
 
     select, textarea, input, label, p {
