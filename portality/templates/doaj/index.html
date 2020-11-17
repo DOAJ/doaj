@@ -58,9 +58,11 @@
                     <article>
                         <div class="col-md-6 blog-img" aria-hidden="true"></div>
                         <a href="{{ n.url }}" target="_blank" rel="noopener" class="col-md-6">
-                            {# TODO in the future (right now we don't have category) <p class="label">{{ n.category }}</p> #}
+                            {# TODO: in the future (right now we don't have category) <p class="label">{{ n.category }}</p> #}
                             <h3>{{ n.title|safe }}</h3>
-                            <p>{% autoescape off%}{{ n.summary|truncate(200) }}{% endautoescape %}</p>
+                            {# TODO: figure out why "more-links" is inserted in the summary
+                              <p>{% autoescape off%}{{ n.summary|truncate(200) }}{% endautoescape %}</p>
+                            #}
                             <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
                         </a>
                     </article>
