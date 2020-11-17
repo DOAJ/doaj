@@ -12,10 +12,10 @@
                   <h2 class="label">About the directory</h2>
                   <p>DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.</p>
                   <p>All DOAJ services are free of charge including being indexed. All data is freely available.</p>
-                  <p>&rarr; <a href="/apply/why-index/">Why index your journal in DOAJ?</a></p>
-                  <p>&rarr; <a href="/apply/guide/">How to apply</a></p>
+                  <p>&rarr; <a href="{{ url_for('doaj.why_index') }}">Why index your journal in DOAJ?</a></p>
+                  <p>&rarr; <a href="{{ url_for('doaj.guide') }}">How to apply</a></p>
                   <p>
-                      <a href="/apply/" class="button button--secondary">Apply now</a>
+                      <a href="{{ url_for('apply.public_application') }}" class="button button--secondary">Apply now</a>
                   </p>
               </section>
 
@@ -35,7 +35,7 @@
                     </p>
                   </div>
                   <p>
-                      <a href="/support/" class="button button--secondary">Support DOAJ</a>
+                      <a href="{{ url_for('doaj.support') }}" class="button button--secondary">Support DOAJ</a>
                   </p>
                   <p>
                       Journal publishers don’t need to donate to be part of DOAJ.
@@ -48,40 +48,41 @@
     <!-- Blog -->
     <section class="container homepage__blog">
         <h2 class="label label--secondary">From the blog</h2>
-        <p>&rarr; <a href="https://blog.doaj.org/" target="_blank" rel="noopener">All blog posts</a></p>
+        <p><a href="https://blog.doaj.org/" class="button" target="_blank" rel="noopener">&rarr; All blog posts</a></p>
 
         <div class="row">
             {# Latest posts #}
             <div class="col-md-8">
                 <div class="row">
-                    {% for n in news[:1] %}
+                    {#
+                      {% for n in news[:1] %}
                     <article>
                         <div class="col-md-6 blog-img" aria-hidden="true"></div>
                         <a href="{{ n.url }}" target="_blank" rel="noopener" class="col-md-6">
-                            {# TODO: in the future (right now we don't have category) <p class="label">{{ n.category }}</p> #}
+                            TODO: in the future (right now we don't have category) <p class="label">{{ n.category }}</p>
                             <h3>{{ n.title|safe }}</h3>
-                            {# TODO: figure out why "more-links" is inserted in the summary
+                            TODO: figure out why "more-links" is inserted in the summary
                               <p>{% autoescape off%}{{ n.summary|truncate(200) }}{% endautoescape %}</p>
-                            #}
+
                             <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
                         </a>
                     </article>
                     {% endfor %}
+                    #}
 
-                    {% for n in news[1:] %}
-                    <article class="col-sm-3 col-md-3">
+                    {% for n in news %}
+                    <article class="col-sm-4 col-md-4">
                         <a href="{{ n.url }}" target="_blank" rel="noopener">
                             <h3>{{ n.title|safe }}</h3>
                             <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
                         </a>
                     </article>
                     {% endfor %}
-
                 </div>
             </div>
 
             {# Twitter feed #}
-            <section class="col-md-4 twitter-embed" style="max-height: 75vh; overflow-y: scroll;">
+            <section class="col-md-4 twitter-embed" style="max-height: 50vh; overflow-y: scroll;">
                 <h2 class="label"><a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">Tweets by @doajplus</a></h2>
                 <a class="twitter-timeline" data-chrome="transparent noheader" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </section>
@@ -127,7 +128,7 @@
           <header>
               <h2 class="label">Volunteers</h2>
               <p>DOAJ would not be able to do the work that we do without our volunteers..</p>
-              <p>&rarr; <a href="/about/volunteers/">See our volunteers</a></p>
+              <p><a href="{{ url_for('doaj.volunteers') }}" class="button">&rarr; See our volunteers</a></p>
           </header>
 
             <div class="row">
@@ -155,14 +156,14 @@
                 <h2 class="label label--secondary">Recently-added journals</h2>
                 <p>DOAJ’s team of managing editors, editors, and volunteers work together with publishers to index new journals. As soon as they’re accepted, these journals are displayed on our website, freely accessible to everyone.</p>
                 {# TODO: Make sure these links work #}
-                <p>&rarr; <a href="{{ url_for("atom.feed") }}">See Atom feed</a></p>
-                <p>&rarr; <a href="{{ url_for("doaj.csv_data") }}">Download all journals as CSV</a></p>
+                <p>&rarr; <a href="{{ url_for('atom.feed') }}">See Atom feed</a></p>
+                <p>&rarr; <a href="{{ url_for('doaj.csv_data') }}">Download all journals as CSV</a></p>
             </header>
             <div class="col-sm-8">
                 <ul class="row mobile-scrollable-row title-list">
                     {% for r in recent_journals %}
                     <li class="col-xs-6 col-md-3 col-lg-3">
-                        <a href="{{ url_for("doaj.toc", identifier=r.bibjson().get_preferred_issn()) }}" class="title-list__link">{{ r.bibjson().title }}</a>
+                        <a href="{{ url_for('doaj.toc', identifier=r.bibjson().get_preferred_issn()) }}" class="title-list__link">{{ r.bibjson().title }}</a>
                     </li>
                     {% endfor %}
                 </ul>
