@@ -851,13 +851,17 @@ class FieldDefinitions:
 
     APC = {
         "name": "apc",
-        "label": "Does the journal require payment of article processing charges (APCs)?",
+        "label": "Does the journal charge fees for publishing an article (APCs)?",
         "input": "radio",
         "options": [
             {"display": "Yes", "value": "y", "subfields": ["apc_charges"]},
             {"display": "No", "value": "n"}
         ],
         "help": {
+            "long_help": ["Publication fees are sometimes called "
+                          "article processing charges (APCs). You should answer"
+                          " Yes if any fee is required from the author for "
+                          "publishing their paper."],
             "doaj_criteria": "You must tell us about any APCs"
         },
         "validate": [
@@ -865,13 +869,80 @@ class FieldDefinitions:
         ]
     }
 
+    APC_CHARGES = {
+        "name": "apc_charges",
+        "input": "group",
+        "label": "Highest fee charged",
+        "repeatable": {
+            "minimum": 1,
+            "initial": 5
+        },
+        "conditional": [
+            {"field": "apc", "value": "y"}
+        ],
+        "help": {
+            "long_help": [" If the journal charges a range of fees for "
+                          "publication of an article, enter the highest fee. "
+                          "If the fee can be paid in more than one currency, "
+                          "you may list them here."]
+        },
+        "subfields": [
+            "apc_currency",
+            "apc_max"
+        ],
+        "template": "application_form/_list.html",
+        "entry_template": "application_form/_entry_group_horizontal.html",
+        "widgets": [
+            "multiple_field"
+        ]
+    }
+
+    APC_CURRENCY = {
+        "subfield": True,
+        "group": "apc_charges",
+        "name": "apc_currency",
+        "input": "select",
+        "options_fn": "iso_currency_list",
+        "default": "",
+        "help": {
+            "placeholder": "Currency"
+        },
+        "widgets": [
+            {"select": {}}
+        ],
+        "attr": {
+            "class": "input-xlarge"
+        },
+        "validate": [
+            {"required_if": {"field": "apc", "value": "y", "message": "Currency required because you answered YES to previous question"}}
+        ]
+    }
+
+    APC_MAX = {
+        "subfield": True,
+        "group": "apc_charges",
+        "name": "apc_max",
+        "input": "number",
+        "datatype": "integer",
+        "help": {
+            "placeholder": "Highest fee charged"
+        },
+        "validate":[
+            {"required_if": {"field": "apc", "value": "y", "message": "Required because you answered YES to previous question"}}
+        ],
+        "attr": {
+            "min": "1"
+        }
+    }
+
     APC_URL = {
         "name": "apc_url",
         "label": "Where can we find this information?",
         "input": "text",
         "help": {
-            "short_help": "Link to the page where this is stated. The page must declare <b>whether or not</b> APCs "
-                          "are charged.",
+            "short_help": "Link to the page where this is stated. The page "
+                          "must declare <b>whether or not</b> there is a fee "
+                          "to publish an article in the journal.",
             "doaj_criteria": "You must provide a URL",
             "placeholder": "https://www.my-journal.com/about#apc"
         },
@@ -885,82 +956,22 @@ class FieldDefinitions:
         ]
     }
 
-    APC_CHARGES = {
-        "name": "apc_charges",
-        "input": "group",
-        "label": "Highest APC charged",
-        "repeatable" : {
-            "minimum": 1,
-            "initial" : 5
-        },
-        "conditional": [
-            {"field": "apc", "value": "y"}
-        ],
-        "help": {
-            "long_help": ["If the journal charges different APCs, you must enter the highest APC charged. If more than "
-                          "one currency is used, add a new line"]
-        },
-        "subfields": [
-            "apc_currency",
-            "apc_max"
-        ],
-        "template" : "application_form/_list.html",
-        "entry_template" : "application_form/_entry_group_horizontal.html",
-        "widgets": [
-            "multiple_field"
-        ]
-    }
-
-    APC_CURRENCY = {
-        "subfield": True,
-        "group" : "apc_charges",
-        "name": "apc_currency",
-        "input": "select",
-        "options_fn": "iso_currency_list",
-        "default" : "",
-        "help": {
-            "placeholder": "Currency"
-        },
-        "widgets": [
-            {"select": {}}
-        ],
-        "attr": {
-            "class": "input-xlarge"
-        },
-        "validate": [
-            {"required_if": {"field": "apc", "value": "y", "message" : "Currency required because you answered YES to previous question"}}
-        ]
-    }
-
-    APC_MAX = {
-        "subfield": True,
-        "group" : "apc_charges",
-        "name": "apc_max",
-        "input": "number",
-        "datatype": "integer",
-        "help" : {
-            "placeholder" : "Highest APC Charged"
-        },
-        "validate":[
-            {"required_if": {"field": "apc", "value": "y", "message" : "Value required because you answered YES to previous question"}}
-        ],
-        "attr": {
-            "min": "1"
-        }
-    }
-
     HAS_WAIVER = {
         "name": "has_waiver",
-        "label": "Does the journal provide APC waivers or discounts for authors?",
+        "label": "Does the journal provide a waiver or discount "
+                 "on publication fees for authors?",
         "input": "radio",
         "options": [
             {"display": "Yes", "value": "y", "subfields": ["waiver_url"]},
             {"display": "No", "value": "n"}
         ],
         "help": {
-            "long_help": ["Answer Yes if the journal provides APC waivers for authors from low-income economies, "
-                          "discounts for authors from lower middle-income economies, and/or waivers and discounts for "
-                          "other authors with demonstrable needs. "]
+            "long_help": ["Answer <strong>Yes</strong> if the journal provides"
+                          " publication fee waivers for authors from "
+                          "low-income economies, discounts for authors from "
+                          "lower middle-income economies, and/or waivers and "
+                          "discounts for other authors with "
+                          "demonstrable needs."]
         },
         "validate": [
             "required"
