@@ -449,7 +449,7 @@ QUERY_ROUTE = {
             "auth" : False,
             "role" : None,
             "query_validator" : "public_query_validator",
-            "query_filters" : ["only_in_doaj"],
+            "query_filters" : ["only_in_doaj", "last_update_fallback"],
             "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Journal",
             "required_parameters" : {"ref" : ["ssw", "public_journal", "subject_page"]}
@@ -595,6 +595,7 @@ QUERY_FILTERS = {
     "editor" : "portality.lib.query_filters.editor",
     "strip_facets" : "portality.lib.query_filters.strip_facets",
     "es_type_fix" : "portality.lib.query_filters.es_type_fix",
+    "last_update_fallback" : "portality.lib.query_filters.last_update_fallback",
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
