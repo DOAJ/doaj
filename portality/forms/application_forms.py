@@ -75,7 +75,7 @@ class FieldDefinitions:
             "long_help": ["See <a href='https://blog.doaj.org/2020/11/17/"
                           "what-does-doaj-define-as-open-access/' "
                           "target='_blank' rel='noopener'>"
-                          "DOAJ's definition of open access explained "
+                          "DOAJ’s definition of open access explained "
                           "in full</a>."],
             "doaj_criteria": "You must answer 'Yes'"
         },
