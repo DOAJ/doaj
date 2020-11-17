@@ -89,20 +89,25 @@
   &__blog {
     margin-bottom: $spacing-04;
 
+    h3 {
+      @include typescale-06;
+      line-height: 1.25;
+    }
+
     article {
       margin-bottom: $spacing-04;
 
-      &:first-of-type a {
-        margin-top: $spacing-03;
-        margin-bottom: $spacing-05;
-        display: block;
-      }
+      // &:first-of-type a {
+      //   margin-top: $spacing-03;
+      //   margin-bottom: $spacing-05;
+      //   display: block;
+      // }
+      //
+      // &:not(:first-of-type) h3 {
+      //   font-size: 1em;
+      // }
 
-      &:not(:first-of-type) h3 {
-        font-size: 1em;
-      }
-
-      &:nth-of-type(6) {
+      &:nth-of-type(4) {
         clear: both; // Make sure fifth blog post starts on new line
       }
     }
