@@ -1,7 +1,5 @@
 .editorial-panel {
   margin-top: 0;
-  max-height: 60vh;
-  overflow-y: scroll;
 
   select, textarea, input {
     width: 100%;
@@ -10,8 +8,17 @@
   @media (min-width: 992px) {
     position: -webkit-sticky;
     position: sticky;
-    top: 60px; // sticky header + 10px 
-    max-height: 70vh;
+    top: 55px; // sticky header + 5px
+
+    &__save {
+      position: sticky;
+      top: 0;
+    }
+
+    &__content {
+      max-height: 70vh;
+      overflow-y: scroll;
+    }
 
     select, textarea, input, label, p {
       width: 20vw;
