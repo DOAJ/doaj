@@ -147,11 +147,11 @@ Journals that are rejected must wait 6 months from the date of rejection before 
 2. Your application will be reviewed by an editor. You may receive an email alerting you when this process has started.
 3. The editor may need to contact you as part of the review process. Please answer any questions they send you. This helps us process your application correctly. Be aware that we will reject an application if, after one month, we haven't received answers to our questions.
 4. The editor reviewing your application may be a volunteer and will not have a doaj.org email address. Check your spam folder frequently just in case the emails have ended up there.
-5. If your application is accepted, an email is sent to you with your account details. You need these to log in and upload article metadata, send us updates about your journal, or manage your account.
+5. If your application is accepted, you will receive an email to confirm this.
 
 ### Time from submission to decision
 
-The time from submission to decision varies greatly and is dependent on the responsiveness of the journal contact and/or applicant. It can take up to six months for a decision to be reached but often a decision is reached within three months.
+The time from submission to decision varies greatly and is dependent on the responsiveness of the journal contact and/or applicant. Generally a decision is reached within three months.
 We cannot provide a status update for applications which are less than three months old.
 
 ---
