@@ -10,28 +10,26 @@
 
 {% block editor_content scoped %}
 <body id="apply">
-    <main class="container">
+    <main class="container page-content">
+        <h1>{{ obj.bibjson().title }}</h1>
         {% include "application_form/_backend_validation.html" %}
-        <div class="row">
+        <form id="{{ form_id }}"
+              data-context = "{{ formulaic_context.name }}"
+              class="row application_form form form--compact"
+              novalidate
+              action="{{ form_action }}"
+              method="post"
+              data-formulaic-after="{{ formulaic_after }}">
 
-            <form id="{{ form_id }}"
-                  data-context = "{{ formulaic_context.name }}"
-                  class="row application_form"
-                  novalidate
-                  action="{{ form_action }}"
-                  method="post"
-                  data-formulaic-after="{{ formulaic_after }}">
-
-                <div class="col-md-8 page">
-                    <section class="page-content">
-                        {% include "application_form/_fieldsets.html" %}
-                    </section>
-                </div>
-                <div class="col-md-4 editorial-panel">
-                    {% include "application_form/assed/journal.html" %}
-                </div>
-            </form>
-        </div>
+            <div class="col-md-8 page">
+                <section class="page-content">
+                    {% include "application_form/_fieldsets.html" %}
+                </section>
+            </div>
+            <div class="col-md-4 editorial-panel">
+                {% include "application_form/assed/journal.html" %}
+            </div>
+        </form>
     </main>
  </body>
 {% endblock %}
