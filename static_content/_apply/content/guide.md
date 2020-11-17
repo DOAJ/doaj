@@ -101,14 +101,6 @@ The following information must be available online, and easily accessible from t
 
 ---
 
-### Footnote
-
-Applications that contain information that is inaccurate or wrong, or that have answers missing, are automatically rejected.
-
-Journals that are rejected must wait 6 months from the date of rejection before applying again unless otherwise advised by DOAJ.
-
----
-
 ## Additional criteria for some journal types
 
 {:.tabular-list}
@@ -160,7 +152,8 @@ We cannot provide a status update for applications which are less than three mon
 
 You will receive an email giving the reasons for rejection of the application. Unless otherwise advised by DOAJ staff, you may not submit another application for the same journal until 6 months after the date of the notification of rejection.
 
-You are responsible for providing accurate information when submitting an application. In cases where journal information is found to be untrue or misleading, DOAJ may decide not to allow further applications from the publisher for a period of up to three years.
+You are responsible for providing accurate information when submitting an application. Applications that contain information that is inaccurate or wrong, or that have answers missing, are automatically rejected. 
+In cases where journal information is found to be untrue or misleading, DOAJ may decide not to allow further applications from the publisher for a period of up to three years.
 
 DOAJ accepts only journals that follow good publishing practice. If our review finds a publisher is not adhering to best practice, or has questionable publishing practices, DOAJ will not allow further applications from that publisher for a period of up to three years.
 
