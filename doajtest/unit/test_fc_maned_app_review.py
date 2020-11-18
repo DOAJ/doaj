@@ -198,6 +198,13 @@ class TestManEdAppReview(DoajTestCase):
         ready_application = models.Application(**ApplicationFixtureFactory.make_application_source())
         ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
 
+        owner = models.Account()
+        owner.set_id("owner")
+        owner.add_role("publisher")
+        owner.save(blocking=True)
+
+        ready_application.set_owner(owner.id)
+
         formulaic_context = ApplicationFormFactory.context("admin")
         fc = formulaic_context.processor(source=ready_application)
 

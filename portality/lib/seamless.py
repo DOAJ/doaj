@@ -994,8 +994,8 @@ class Construct(object):
             # now go through and make sure the fields are the right shape:
             for field_name, instructions in struct.fields:
                 for k,v in instructions.items():
-                    if not isinstance(v, list) and not isinstance(v, str):
-                        raise SeamlessException("Argument '{a}' in field '{b}' at '{c}' is not a string or list".format(a=k, b=field_name, c=context))
+                    if not isinstance(v, list) and not isinstance(v, str) and not isinstance(v, bool):
+                        raise SeamlessException("Argument '{a}' in field '{b}' at '{c}' is not a string, list or boolean".format(a=k, b=field_name, c=context))
 
             # then make sure the objects are ok
             for o in struct.objects:
@@ -1010,8 +1010,8 @@ class Construct(object):
                 if contains not in ["object", "field"]:
                     raise SeamlessException("'contains' argument in list '{x}' at '{y}' contains illegal value '{z}'".format(x=field_name, y=context, z=contains))
                 for k,v in instructions.items():
-                    if not isinstance(v, list) and not isinstance(v, str):
-                        raise SeamlessException("Argument '{a}' in list '{b}' at '{c}' is not a string or list".format(a=k, b=field_name, c=context))
+                    if not isinstance(v, list) and not isinstance(v, str) and not isinstance(v, bool):
+                        raise SeamlessException("Argument '{a}' in list '{b}' at '{c}' is not a string, list or boolean".format(a=k, b=field_name, c=context))
 
             # make sure the requireds are correct
             for o in struct.required:

@@ -6,7 +6,7 @@ from werkzeug.datastructures import MultiDict
 from wtforms import StringField, Form, validators
 
 from portality import models
-from portality.formcontext import validate
+from portality.forms import validate
 
 class TestReservedUsernames(DoajTestCase):
     def setUp(self):

@@ -7,7 +7,7 @@ from portality import constants
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.forms.application_forms import ApplicationFormFactory
+from portality.forms.application_forms import ApplicationFormFactory, JournalFormFactory
 
 
 UPDATE_REQUEST_SOURCE_TEST_1 = ApplicationFixtureFactory.make_update_request_source()
@@ -94,11 +94,6 @@ class TestPublicApplicationEmails(DoajTestCase):
         # Construct an application form
         fc = ApplicationFormFactory.context("public")
         processor = fc.processor(source=application)
-        #fc = formcontext.ApplicationFormFactory.get_form_context(
-        #    role=None,
-        #    source=application
-        #)
-        #assert isinstance(fc, formcontext.PublicApplication)
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
         with self.app_test.test_request_context():
@@ -163,6 +158,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # an email is sent to the editor and assigned associate editor
         ready_application = models.Suggestion(**APPLICATION_SOURCE_TEST_1)
         ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
+        ready_application.remove_current_journal()
 
         owner = models.Account()
         owner.set_id(ready_application.owner)
@@ -171,24 +167,27 @@ class TestApplicationReviewEmails(DoajTestCase):
         owner.save(blocking=True)
 
         # Construct an application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="admin",
-            source=ready_application
-        )
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=ready_application)
+
+        # fc = formcontext.ApplicationFormFactory.get_form_context(
+        #     role="admin",
+        #     source=ready_application
+        # )
+        # assert isinstance(fc, formcontext.ManEdApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
-        fc.finalise()
+        processor.finalise(acc)
 
         # Use the captured info stream to get email send logs
         info_stream_contents = self.info_stream.getvalue()
 
         # Prove we went from to and from the right statuses
-        assert fc.source.application_status == constants.APPLICATION_STATUS_READY
-        assert fc.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
+        assert processor.source.application_status == constants.APPLICATION_STATUS_READY
+        assert processor.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
 
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from ready back to in progress.
@@ -220,24 +219,26 @@ class TestApplicationReviewEmails(DoajTestCase):
         completed_application.set_application_status(constants.APPLICATION_STATUS_COMPLETED)
 
         # Construct an application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="admin",
-            source=completed_application
-        )
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=completed_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(
+        #     role="admin",
+        #     source=completed_application
+        # )
+        # assert isinstance(fc, formcontext.ManEdApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
-        fc.finalise()
+        processor.finalise(acc)
 
         # Use the captured info stream to get email send logs
         info_stream_contents = self.info_stream.getvalue()
 
         # Prove we went from to and from the right statuses
-        assert fc.source.application_status == constants.APPLICATION_STATUS_COMPLETED
-        assert fc.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
+        assert processor.source.application_status == constants.APPLICATION_STATUS_COMPLETED
+        assert processor.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
 
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from completed back to in progress.
@@ -269,18 +270,22 @@ class TestApplicationReviewEmails(DoajTestCase):
         # Refresh the application form
         no_ed = deepcopy(ready_application.data)
         del no_ed['admin']['editor']
+        # del no_ed['admin']['current_journal']
         no_ed = models.Suggestion(**no_ed)
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
+
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=no_ed)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
 
         # Assign the associate editor and save the form
-        fc.form.editor.data = "associate_3"
+        processor.form.editor.data = "associate_3"
 
-        fc.finalise()
+        processor.finalise(acc)
 
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
-        assert fc.target.editor == "associate_3"
+        assert processor.target.editor == "associate_3"
 
         # We expect 2 emails to be sent:
         #   * to the AssEd who's been assigned,
@@ -303,23 +308,25 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             re.DOTALL)
 
         assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 3
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
 
         # Refresh the application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=ready_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
 
         # Next, if we change the editor group or assigned editor, emails should be sent to editors, & NOT the publisher
-        fc.form.editor_group.data = "Test Editor Group"
-        fc.form.editor.data = "associate_3"
+        processor.form.editor_group.data = "Test Editor Group"
+        processor.form.editor.data = "associate_3"
 
-        fc.finalise()
+        processor.finalise(acc)
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
-        assert fc.target.editor == "associate_3"
+        assert processor.target.editor == "associate_3"
 
         # We expect 2 emails to be sent:
         #   * to the editor of the assigned group,
@@ -349,12 +356,14 @@ class TestApplicationReviewEmails(DoajTestCase):
         # A Managing Editor will notify other ManEds when they set an application to 'Ready'
         # Refresh the application form
         pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_2)
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=pending_application)
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=pending_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=pending_application)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_READY
+        processor.form.application_status.data = constants.APPLICATION_STATUS_READY
 
-        fc.finalise()
+        processor.finalise(acc)
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
@@ -374,38 +383,26 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # Finally, a Managing Editor will also trigger emails to the publisher when they accept an Application
 
-        # remove the owner so it can be created again
-        owner.delete()
-
         # Refresh the application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
-        fc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=ready_application)
+        #fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
+        processor.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
-        fc.finalise()
+        processor.finalise(acc)
         info_stream_contents = self.info_stream.getvalue()
 
-        # We expect 3 emails to be sent:
-        #   * to the publisher, because they have a new account
+        # We expect 1 email to be sent:
         #   * to the publisher, informing them of the journal's acceptance
-        #   * to the journal contact, informing them of the journal's acceptance
-        publisher_template = 'account_created.txt'
-        publisher_to = re.escape(ready_application.get_latest_contact_email())
-        publisher_subject = 'account created'
-
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-        assert bool(publisher_email_matched), (publisher_template, publisher_to, publisher_subject, info_stream_contents)
-
         publisher_template = 'publisher_application_accepted.txt'
-        publisher_to = re.escape(ready_application.get_latest_contact_email())
+        publisher_to = re.escape(owner.email)
         publisher_subject = 'journal accepted'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched), (publisher_email_matched, info_stream_contents)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 3
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         ctx.pop()
 
@@ -418,6 +415,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # If an application has been set to 'ready' from another status, the ManEds are notified
         pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_2)
+        pending_application.remove_current_journal()
 
         owner = models.Account()
         owner.set_id(pending_application.owner)
@@ -426,16 +424,18 @@ class TestApplicationReviewEmails(DoajTestCase):
         owner.save(blocking=True)
 
         # Construct an application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="editor",
-            source=pending_application
-        )
-        assert isinstance(fc, formcontext.EditorApplicationReview)
+        fc = ApplicationFormFactory.context("editor")
+        processor = fc.processor(source=pending_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(
+        #     role="editor",
+        #     source=pending_application
+        # )
+        # assert isinstance(fc, formcontext.EditorApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_READY
+        processor.form.application_status.data = constants.APPLICATION_STATUS_READY
 
-        fc.finalise()
+        processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
@@ -459,16 +459,18 @@ class TestApplicationReviewEmails(DoajTestCase):
         no_ed = deepcopy(pending_application.data)
         del no_ed['admin']['editor']
         no_ed = models.Suggestion(**no_ed)
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
+        fc = ApplicationFormFactory.context("editor")
+        processor = fc.processor(source=no_ed)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
 
         # Assign the associate editor and save the form
-        fc.form.editor.data = "associate_3"
+        processor.form.editor.data = "associate_3"
 
-        fc.finalise()
+        processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
-        assert fc.target.editor == "associate_3"
+        assert processor.target.editor == "associate_3"
 
         # We expect 2 emails to be sent:
         #   * to the AssEd who's been assigned,
@@ -490,22 +492,24 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 3
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
 
         # Editors can also reassign applications to different associate editors.
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=models.Suggestion(**APPLICATION_SOURCE_TEST_2))
-        assert isinstance(fc, formcontext.EditorApplicationReview)
+        fc = ApplicationFormFactory.context("editor")
+        processor = fc.processor(source=models.Suggestion(**APPLICATION_SOURCE_TEST_2))
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=models.Suggestion(**APPLICATION_SOURCE_TEST_2))
+        # assert isinstance(fc, formcontext.EditorApplicationReview)
 
-        fc.form.editor.data = "associate_2"
+        processor.form.editor.data = "associate_2"
 
-        fc.finalise()
+        processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
-        assert fc.target.editor == "associate_2"
+        assert processor.target.editor == "associate_2"
 
         # We expect 1 email to be sent:
         #   * to the AssEd who's been assigned,
@@ -527,24 +531,26 @@ class TestApplicationReviewEmails(DoajTestCase):
         completed_application.set_application_status(constants.APPLICATION_STATUS_COMPLETED)
 
         # Construct an application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="editor",
-            source=completed_application
-        )
-        assert isinstance(fc, formcontext.EditorApplicationReview)
+        fc = ApplicationFormFactory.context("editor")
+        processor = fc.processor(source=completed_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(
+        #     role="editor",
+        #     source=completed_application
+        # )
+        # assert isinstance(fc, formcontext.EditorApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
-        fc.finalise()
+        processor.finalise()
 
         # Use the captured info stream to get email send logs
         info_stream_contents = self.info_stream.getvalue()
 
         # Prove we went from to and from the right statuses
-        assert fc.source.application_status == constants.APPLICATION_STATUS_COMPLETED
-        assert fc.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
+        assert processor.source.application_status == constants.APPLICATION_STATUS_COMPLETED
+        assert processor.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
 
         # We expect one email to be sent:
         #   * to the associate editor, informing them the application has been bounced back to in progress.
@@ -570,6 +576,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # If an application has been set to 'in progress' from 'pending', the publisher is notified
         pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_3)
+        pending_application.remove_current_journal()
 
         owner = models.Account()
         owner.set_id(pending_application.owner)
@@ -578,22 +585,24 @@ class TestApplicationReviewEmails(DoajTestCase):
         owner.save(blocking=True)
 
         # Construct an application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="associate_editor",
-            source=pending_application
-        )
-        assert isinstance(fc, formcontext.AssEdApplicationReview)
+        fc = ApplicationFormFactory.context("associate_editor")
+        processor = fc.processor(source=pending_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(
+        #     role="associate_editor",
+        #     source=pending_application
+        # )
+        # assert isinstance(fc, formcontext.AssEdApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
-        fc.finalise()
+        processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
         #   * to the publisher, notifying that an editor is viewing their application
         publisher_template = re.escape('publisher_application_inprogress.txt')
-        publisher_to = re.escape(pending_application.get_latest_contact_email())
+        publisher_to = re.escape(owner.email)
         publisher_subject = 'your application is under review'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
@@ -601,15 +610,15 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             re.DOTALL)
         print(info_stream_contents)
         assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
 
         # When the application is then set to 'completed', the editor in charge of this group is informed
-        fc.form.application_status.data = constants.APPLICATION_STATUS_COMPLETED
+        processor.form.application_status.data = constants.APPLICATION_STATUS_COMPLETED
 
-        fc.finalise()
+        processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email sent:
@@ -680,24 +689,26 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         owner.save(blocking=True)
 
         # Construct an application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="admin",
-            source=ready_application
-        )
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=ready_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(
+        #     role="admin",
+        #     source=ready_application
+        # )
+        # assert isinstance(fc, formcontext.ManEdApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
-        fc.finalise()
+        processor.finalise(acc)
 
         # Use the captured info stream to get email send logs
         info_stream_contents = self.info_stream.getvalue()
 
         # Prove we went from to and from the right statuses
-        assert fc.source.application_status == constants.APPLICATION_STATUS_READY
-        assert fc.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
+        assert processor.source.application_status == constants.APPLICATION_STATUS_READY
+        assert processor.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
 
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from ready back to in progress.
@@ -729,24 +740,26 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         completed_application.set_application_status(constants.APPLICATION_STATUS_COMPLETED)
 
         # Construct an application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="admin",
-            source=completed_application
-        )
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=completed_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(
+        #     role="admin",
+        #     source=completed_application
+        # )
+        # assert isinstance(fc, formcontext.ManEdApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
-        fc.finalise()
+        processor.finalise(acc)
 
         # Use the captured info stream to get email send logs
         info_stream_contents = self.info_stream.getvalue()
 
         # Prove we went from to and from the right statuses
-        assert fc.source.application_status == constants.APPLICATION_STATUS_COMPLETED
-        assert fc.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
+        assert processor.source.application_status == constants.APPLICATION_STATUS_COMPLETED
+        assert processor.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
 
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from completed back to in progress.
@@ -778,17 +791,19 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # Refresh the application form
         no_ed = models.Suggestion(**deepcopy(ready_application.data))
         del no_ed['admin']['editor']
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=no_ed)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
 
         # Assign the associate editor and save the form
-        fc.form.editor.data = "associate_3"
+        processor.form.editor.data = "associate_3"
 
-        fc.finalise()
+        processor.finalise(acc)
 
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
-        assert fc.target.editor == "associate_3"
+        assert processor.target.editor == "associate_3"
 
         # We expect 2 emails to be sent:
         #   * to the AssEd who's been assigned,
@@ -817,17 +832,19 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         self.info_stream.truncate(0)
 
         # Refresh the application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=ready_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
 
         # Next, if we change the editor group or assigned editor, emails should be sent to editors, & NOT the publisher
-        fc.form.editor_group.data = "Test Editor Group"
-        fc.form.editor.data = "associate_3"
+        processor.form.editor_group.data = "Test Editor Group"
+        processor.form.editor.data = "associate_3"
 
-        fc.finalise()
+        processor.finalise(acc)
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
-        assert fc.target.editor == "associate_3"
+        assert processor.target.editor == "associate_3"
 
         # We expect 2 emails to be sent:
         #   * to the editor of the assigned group,
@@ -857,12 +874,14 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # A Managing Editor will notify other ManEds when they set an application to 'Ready'
         # Refresh the application form
         pending_application = models.Suggestion(**UPDATE_REQUEST_SOURCE_TEST_2)
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=pending_application)
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=pending_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=pending_application)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_READY
+        processor.form.application_status.data = constants.APPLICATION_STATUS_READY
 
-        fc.finalise()
+        processor.finalise(acc)
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
@@ -882,38 +901,27 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # Finally, a Managing Editor will also trigger emails to the publisher when they accept an Application
 
-        # remove the owner so it can be created again
-        owner.delete()
-
         # Refresh the application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
-        fc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
+        fc = ApplicationFormFactory.context("admin")
+        processor = fc.processor(source=ready_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
+        processor.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
-        fc.finalise()
+        processor.finalise(acc)
         info_stream_contents = self.info_stream.getvalue()
 
-        # We expect 3 emails to be sent:
-        #   * to the publisher, because they have a new account
+        # We expect 1 email to be sent:
         #   * to the publisher, informing them of the journal's acceptance
         #   * to the journal contact, informing them of the journal's acceptance
-        publisher_template = 'account_created.txt'
-        publisher_to = re.escape(ready_application.get_latest_contact_email())
-        publisher_subject = 'account created'
-
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-        assert bool(publisher_email_matched), (publisher_template, publisher_to, publisher_subject, info_stream_contents)
-
         publisher_template = 'publisher_update_request_accepted.txt'
-        publisher_to = re.escape(ready_application.get_latest_contact_email())
+        publisher_to = re.escape(owner.email)
         publisher_subject = 'journal accepted'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched), (publisher_email_matched, info_stream_contents)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         ctx.pop()
 
@@ -934,16 +942,18 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         owner.save(blocking=True)
 
         # Construct an application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="editor",
-            source=pending_application
-        )
-        assert isinstance(fc, formcontext.EditorApplicationReview)
+        fc = ApplicationFormFactory.context("editor")
+        processor = fc.processor(source=pending_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(
+        #     role="editor",
+        #     source=pending_application
+        # )
+        # assert isinstance(fc, formcontext.EditorApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_READY
+        processor.form.application_status.data = constants.APPLICATION_STATUS_READY
 
-        fc.finalise()
+        processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
@@ -966,16 +976,18 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # Refresh the application form
         no_ed = models.Suggestion(**deepcopy(pending_application.data))
         del no_ed['admin']['editor']
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
+        fc = ApplicationFormFactory.context("editor")
+        processor = fc.processor(source=no_ed)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
 
         # Assign the associate editor and save the form
-        fc.form.editor.data = "associate_3"
+        processor.form.editor.data = "associate_3"
 
-        fc.finalise()
+        processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
-        assert fc.target.editor == "associate_3"
+        assert processor.target.editor == "associate_3"
 
         # We expect 2 emails to be sent:
         #   * to the AssEd who's been assigned,
@@ -1003,16 +1015,18 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         self.info_stream.truncate(0)
 
         # Editors can also reassign applications to different associate editors.
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=models.Suggestion(**UPDATE_REQUEST_SOURCE_TEST_2))
-        assert isinstance(fc, formcontext.EditorApplicationReview)
+        fc = ApplicationFormFactory.context("editor")
+        processor = fc.processor(source=models.Suggestion(**UPDATE_REQUEST_SOURCE_TEST_2))
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=models.Suggestion(**UPDATE_REQUEST_SOURCE_TEST_2))
+        # assert isinstance(fc, formcontext.EditorApplicationReview)
 
-        fc.form.editor.data = "associate_2"
+        processor.form.editor.data = "associate_2"
 
-        fc.finalise()
+        processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
-        assert fc.target.editor == "associate_2"
+        assert processor.target.editor == "associate_2"
 
         # We expect 1 email to be sent:
         #   * to the AssEd who's been assigned,
@@ -1034,24 +1048,26 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         completed_application.set_application_status(constants.APPLICATION_STATUS_COMPLETED)
 
         # Construct an application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="editor",
-            source=completed_application
-        )
-        assert isinstance(fc, formcontext.EditorApplicationReview)
+        fc = ApplicationFormFactory.context("editor")
+        processor = fc.processor(source=completed_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(
+        #     role="editor",
+        #     source=completed_application
+        # )
+        # assert isinstance(fc, formcontext.EditorApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
-        fc.finalise()
+        processor.finalise()
 
         # Use the captured info stream to get email send logs
         info_stream_contents = self.info_stream.getvalue()
 
         # Prove we went from to and from the right statuses
-        assert fc.source.application_status == constants.APPLICATION_STATUS_COMPLETED
-        assert fc.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
+        assert processor.source.application_status == constants.APPLICATION_STATUS_COMPLETED
+        assert processor.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
 
         # We expect one email to be sent:
         #   * to the associate editor, informing them the application has been bounced back to in progress.
@@ -1085,16 +1101,18 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         owner.save(blocking=True)
 
         # Construct an application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="associate_editor",
-            source=pending_application
-        )
-        assert isinstance(fc, formcontext.AssEdApplicationReview)
+        fc = ApplicationFormFactory.context("associate_editor")
+        processor = fc.processor(source=pending_application)
+        # fc = formcontext.ApplicationFormFactory.get_form_context(
+        #     role="associate_editor",
+        #     source=pending_application
+        # )
+        # assert isinstance(fc, formcontext.AssEdApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
-        fc.finalise()
+        processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
@@ -1113,9 +1131,9 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         self.info_stream.truncate(0)
 
         # When the application is then set to 'completed', the editor in charge of this group is informed
-        fc.form.application_status.data = constants.APPLICATION_STATUS_COMPLETED
+        processor.form.application_status.data = constants.APPLICATION_STATUS_COMPLETED
 
-        fc.finalise()
+        processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email sent:
@@ -1167,22 +1185,24 @@ class TestJournalReviewEmails(DoajTestCase):
         journal = models.Journal(**JOURNAL_SOURCE_TEST_1)
 
         # Construct an journal form
-        fc = formcontext.JournalFormFactory.get_form_context(
-            role="admin",
-            source=journal
-        )
-        assert isinstance(fc, formcontext.ManEdJournalReview)
+        fc = JournalFormFactory.context("admin")
+        processor = fc.processor(source=journal)
+        # fc = formcontext.JournalFormFactory.get_form_context(
+        #     role="admin",
+        #     source=journal
+        # )
+        # assert isinstance(fc, formcontext.ManEdJournalReview)
 
         # If we change the editor group or assigned editor, emails should be sent to editors
-        fc.form.editor_group.data = "Test Editor Group"
-        fc.form.editor.data = "associate_3"
+        processor.form.editor_group.data = "Test Editor Group"
+        processor.form.editor.data = "associate_3"
 
         with self.app_test.test_request_context():
-            fc.finalise()
+            processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
-        assert fc.target.editor == "associate_3"
+        assert processor.target.editor == "associate_3"
 
         # We expect 2 emails to be sent:
         #   * to the editor of the assigned group,
@@ -1211,24 +1231,28 @@ class TestJournalReviewEmails(DoajTestCase):
         journal = models.Journal(**JOURNAL_SOURCE_TEST_2)
 
         # Construct an journal form
-        fc = formcontext.JournalFormFactory.get_form_context(
-            role="editor",
-            source=journal
-        )
-        assert isinstance(fc, formcontext.EditorJournalReview)
+        fc = JournalFormFactory.context("editor")
+        processor = fc.processor(source=journal)
+        # fc = formcontext.JournalFormFactory.get_form_context(
+        #     role="editor",
+        #     source=journal
+        # )
+        # assert isinstance(fc, formcontext.EditorJournalReview)
 
         # Editors can reassign journals to associate editors.
-        fc = formcontext.JournalFormFactory.get_form_context(role="editor", source=models.Journal(**JOURNAL_SOURCE_TEST_2))
-        assert isinstance(fc, formcontext.EditorJournalReview)
+        fc = JournalFormFactory.context("editor")
+        processor = fc.processor(source=models.Journal(**JOURNAL_SOURCE_TEST_2))
+        # fc = formcontext.JournalFormFactory.get_form_context(role="editor", source=models.Journal(**JOURNAL_SOURCE_TEST_2))
+        # assert isinstance(fc, formcontext.EditorJournalReview)
 
-        fc.form.editor.data = "associate_2"
+        processor.form.editor.data = "associate_2"
 
         with self.app_test.test_request_context():
-            fc.finalise()
+            processor.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
-        assert fc.target.editor == "associate_2"
+        assert processor.target.editor == "associate_2"
 
         # We expect 1 email to be sent:
         #   * to the AssEd who's been assigned

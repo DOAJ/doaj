@@ -224,8 +224,11 @@ class JournalLikeBibJSON(SeamlessMixin):
     def article_license_display(self, val):
         self.__seamless__.set_with_struct("article.license_display", val)
 
-    def add_article_license_display(self, val):
-        self.__seamless__.add_to_list_with_struct("article.license_display", val)
+    # I've taken this out but left the commented code here to remind us.  It used to be that you could
+    # have multiple license displays, but now you can't.  The data model still allows for it, but the
+    # model should not, unless we reverse that decision at some point in the future
+    # def add_article_license_display(self, val):
+    #     self.__seamless__.add_to_list_with_struct("article.license_display", val)
 
     @property
     def article_license_display_example_url(self):

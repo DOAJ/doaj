@@ -57,6 +57,8 @@ class AuthorisationService(object):
             ]:
                 raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_STATUS)
 
+            return True
+
         elif account.has_role("edit_suggestion"):
             # user must be either the "admin.editor" of the suggestion, or the editor of the "admin.editor_group"
             # is the user the currently assigned editor of the suggestion?

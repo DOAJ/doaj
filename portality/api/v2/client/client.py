@@ -1,7 +1,7 @@
 from portality.core import app
 from portality.lib import httputil
 import esprit, json
-from portality.api.v1.client import models
+from portality.api.v2.client import models
 
 
 DOAJ_RETRY_CODES = [

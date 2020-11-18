@@ -11,7 +11,7 @@ from portality import models
 from werkzeug.datastructures import MultiDict
 from copy import deepcopy
 from portality import lcc
-from portality.models import Journal
+from portality.models import Journal, Application
 from portality.forms.application_forms import ApplicationFormFactory
 
 from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
@@ -69,7 +69,7 @@ class TestCrosswalks(DoajTestCase):
 
         obj = ApplicationFormXWalk.form2obj(form)
 
-        assert isinstance(obj, Journal)
+        assert isinstance(obj, Application)
 
         xwalked = obj.bibjson().data
         compare = deepcopy(APPLICATION_SOURCE.get("bibjson"))
@@ -81,6 +81,11 @@ class TestCrosswalks(DoajTestCase):
         form = ApplicationFormXWalk.obj2form(j)
 
         compare = deepcopy(APPLICATION_FORMINFO)
+
+        # sort the notes so they are comparable
+        form.get("notes").sort(key=lambda x: x["note_id"])
+        compare.get("notes").sort(key=lambda x: x["note_id"])
+
         assert form == compare, diff_dicts(form, compare, 'xwalked', 'fixture')
 
     def test_05_doaj_article_xml_xwalk(self):

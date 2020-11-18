@@ -1,28 +1,27 @@
 {
   "parameters": [
     {
-      "name": "test_id",
-      "type": "index"
+      "type": "index",
+      "name": "test_id"
     },
     {
-      "name": "duplicate",
       "type": "generated",
       "values": {
         "same_as_update_article_id": {},
-        "different_than_update_article_id": {},
-        "none": {}
-      }
+        "none": {},
+        "different_than_update_article_id": {}
+      },
+      "name": "duplicate"
     },
     {
-      "name": "merge_duplicate",
       "type": "generated",
       "values": {
-        "yes": {},
-        "no": {}
-      }
+        "no": {},
+        "yes": {}
+      },
+      "name": "merge_duplicate"
     },
     {
-      "name": "is_update",
       "type": "conditional",
       "values": {
         "0": {
@@ -39,35 +38,35 @@
         "1": {
           "conditions": [
             {
+              "merge_duplicate": {
+                "or": [
+                  "yes"
+                ]
+              },
               "duplicate": {
                 "or": [
                   "same_as_update_article_id"
                 ]
-              },
-              "merge_duplicate": {
-                "or": [
-                  "yes"
-                ]
               }
             },
             {
-              "duplicate": {
-                "or": [
-                  "none"
-                ]
-              },
               "merge_duplicate": {
                 "or": [
                   "yes"
+                ]
+              },
+              "duplicate": {
+                "or": [
+                  "none"
                 ]
               }
             }
           ]
         }
-      }
+      },
+      "name": "is_update"
     },
     {
-      "name": "raises",
       "type": "conditional",
       "values": {
         "DuplicateArticle": {
@@ -81,7 +80,8 @@
             }
           ]
         }
-      }
+      },
+      "name": "raises"
     }
   ]
 }

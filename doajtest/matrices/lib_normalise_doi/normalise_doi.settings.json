@@ -1,74 +1,73 @@
 {
   "parameters": [
     {
-      "name": "test_id",
-      "type": "index"
+      "type": "index",
+      "name": "test_id"
     },
     {
-      "name": "doi",
       "type": "generated",
       "values": {
-        "none": {
+        "exists": {
           "constraints": {
-            "prefix": {
-              "or": [
+            "whitespace": {
+              "nor": [
                 "-"
               ]
             },
-            "whitespace": {
-              "or": [
+            "prefix": {
+              "nor": [
                 "-"
               ]
             }
           }
         },
-        "exists": {
+        "none": {
           "constraints": {
-            "prefix": {
-              "nor": [
+            "whitespace": {
+              "or": [
                 "-"
               ]
             },
-            "whitespace": {
-              "nor": [
+            "prefix": {
+              "or": [
                 "-"
               ]
             }
           }
         }
-      }
+      },
+      "name": "doi"
     },
     {
-      "name": "prefix",
       "type": "generated",
       "values": {
-        "-": {},
-        "none": {},
-        "doi:": {},
-        "info:doi/": {},
-        "https://dx.doi.org/": {},
         "http://dx.doi.org/": {},
         "https://doi.org/": {},
         "http://doi.org/": {},
         "http://hdl.handle.net/": {},
-        "https://hdl.handle.net/": {},
+        "https://dx.doi.org/": {},
         "info:hdl/": {},
+        "doi:": {},
+        "info:doi/": {},
+        "none": {},
+        "-": {},
+        "https://hdl.handle.net/": {},
         "invalid": {}
-      }
+      },
+      "name": "prefix"
     },
     {
-      "name": "whitespace",
       "type": "generated",
       "values": {
+        "no": {},
         "-": {},
-        "yes": {},
-        "no": {}
-      }
+        "yes": {}
+      },
+      "name": "whitespace"
     },
     {
-      "name": "raises",
-      "type": "conditional",
       "default": "",
+      "type": "conditional",
       "values": {
         "ValueError": {
           "conditions": [
@@ -81,7 +80,8 @@
             }
           ]
         }
-      }
+      },
+      "name": "raises"
     }
   ]
 }

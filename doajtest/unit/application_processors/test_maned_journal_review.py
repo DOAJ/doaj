@@ -49,9 +49,16 @@ class TestManEdJournalReview(DoajTestCase):
     def test_01_maned_review_success(self):
         """Give the Managing Editor's journal form a full workout"""
 
+        journal = models.Journal(**JOURNAL_SOURCE)
+        owner = models.Account()
+        owner.set_id("owner")
+        owner.save(blocking=True)
+        journal.set_owner(owner.id)
+        JOURNAL_FORM["owner"] = owner.id
+
         # we start by constructing it from source
         formulaic_context = JournalFormFactory.context("admin")
-        fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
+        fc = formulaic_context.processor(source=journal)
         # fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=models.Journal(**JOURNAL_SOURCE))
         assert isinstance(fc, ManEdJournalReview)
         assert fc.form is not None
@@ -63,7 +70,7 @@ class TestManEdJournalReview(DoajTestCase):
         # now construct it from form data (with a known source)
         fc = formulaic_context.processor(
             formdata=JOURNAL_FORM,
-            source=models.Journal(**JOURNAL_SOURCE)
+            source=journal
         )
 
         assert isinstance(fc, ManEdJournalReview)

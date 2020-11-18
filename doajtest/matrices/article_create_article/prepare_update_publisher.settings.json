@@ -1,30 +1,30 @@
 {
   "parameters": [
     {
-      "name": "test_id",
-      "type": "index"
+      "type": "index",
+      "name": "test_id"
     },
     {
-      "name": "duplicate",
       "type": "generated",
       "values": {
-        "same_as_article_id": {},
         "different_than_article_id": {},
-        "none": {}
-      }
+        "none": {},
+        "same_as_article_id": {}
+      },
+      "name": "duplicate"
     },
     {
-      "name": "merge_duplicate",
       "type": "generated",
       "values": {
-        "yes": {},
-        "no": {}
-      }
+        "no": {},
+        "yes": {}
+      },
+      "name": "merge_duplicate"
     },
     {
-      "name": "doi_or_ft_updated",
       "type": "generated",
       "values": {
+        "no": {},
         "yes": {
           "constraints": {
             "duplicate": {
@@ -33,12 +33,11 @@
               ]
             }
           }
-        },
-        "no": {}
-      }
+        }
+      },
+      "name": "doi_or_ft_updated"
     },
     {
-      "name": "is_update",
       "type": "conditional",
       "values": {
         "0": {
@@ -62,9 +61,9 @@
         "1": {
           "conditions": [
             {
-              "duplicate": {
+              "doi_or_ft_updated": {
                 "or": [
-                  "same_as_article_id"
+                  "no"
                 ]
               },
               "merge_duplicate": {
@@ -72,18 +71,18 @@
                   "yes"
                 ]
               },
-              "doi_or_ft_updated": {
+              "duplicate": {
                 "or": [
-                  "no"
+                  "same_as_article_id"
                 ]
               }
             }
           ]
         }
-      }
+      },
+      "name": "is_update"
     },
     {
-      "name": "raises",
       "type": "conditional",
       "values": {
         "DuplicateArticle": {
@@ -103,20 +102,21 @@
               }
             },
             {
-              "duplicate": {
-                "or": [
-                  "same_as_article_id"
-                ]
-              },
               "merge_duplicate": {
                 "or": [
                   "no"
+                ]
+              },
+              "duplicate": {
+                "or": [
+                  "same_as_article_id"
                 ]
               }
             }
           ]
         }
-      }
+      },
+      "name": "raises"
     }
   ]
 }

@@ -115,7 +115,7 @@ class Journal2QuestionXwalk(object):
             return ", ".join(aids)
 
         def yes_or_blank(val):
-            return "Yes" if val in [True, "True", "Yes", "true", "yes"] else ''
+            return "Yes" if val in [True, "True", "Yes", "true", "yes", "y"] else ''
 
         def license_checkbox(val):
             opts = {}
@@ -145,10 +145,10 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("alternative_title"), forminfo.get("alternative_title")))
         kvs.append((cls.q("pissn"), forminfo.get("pissn")))
         kvs.append((cls.q("eissn"), forminfo.get("eissn")))
-        kvs.append((cls.q("publisher.publisher_name"), forminfo.get("publisher", {}).get("publisher_name")))
-        kvs.append((cls.q("publisher.publisher_country"), datasets.get_country_name(forminfo.get("publisher", {}).get("publisher_country"))))
-        kvs.append((cls.q("institution.institution_name"), forminfo.get("institution", {}).get("institution_name")))
-        kvs.append((cls.q("institution.institution_country"), datasets.get_country_name(forminfo.get("institution", {}).get("institution_country"))))
+        kvs.append((cls.q("publisher.publisher_name"), forminfo.get("publisher_name")))
+        kvs.append((cls.q("publisher.publisher_country"), datasets.get_country_name(forminfo.get("publisher_country"))))
+        kvs.append((cls.q("institution.institution_name"), forminfo.get("institution_name")))
+        kvs.append((cls.q("institution.institution_country"), datasets.get_country_name(forminfo.get("institution_country"))))
         kvs.append((cls.q("continues"), ", ".join(forminfo.get("continues"))))
         kvs.append((cls.q("continued_by"), ", ".join(forminfo.get("continued_by"))))
         kvs.append((cls.q("apc"), yes_no_or_blank(forminfo.get("apc"))))
@@ -193,7 +193,7 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("publication_time_weeks"), str(forminfo.get("publication_time_weeks"))))
         kvs.append((cls.q("oa_statement_url"), forminfo.get("oa_statement_url")))
 
-        kvs.append((cls.q("license_display"), ", ".join(forminfo.get("license_display"))))
+        kvs.append((cls.q("license_display"), yes_or_blank(forminfo.get("license_display"))))
         kvs.append((cls.q("license_display_example_url"), forminfo.get("license_display_example_url")))
 
         lic = ", ".join(forminfo.get("license", []))

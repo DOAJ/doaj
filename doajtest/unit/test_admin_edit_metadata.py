@@ -3,7 +3,7 @@ from doajtest.helpers import DoajTestCase
 from portality.models import Article, Account, Journal
 from flask import url_for
 from doajtest.unit.resources.articles_metadata_form import ArticleMetadataFactory
-
+from flask_login import login_user
 
 class TestAdminEditMetadata(DoajTestCase):
 
@@ -22,6 +22,7 @@ class TestAdminEditMetadata(DoajTestCase):
         self.j.save(blocking=True)
         self.a = Article(**ArticleFixtureFactory.make_article_source(in_doaj=True))
         self.a.save(blocking=True)
+        self.publisher = publisher_account
 
     def tearDown(self):
         super(TestAdminEditMetadata, self).tearDown()
@@ -38,7 +39,7 @@ class TestAdminEditMetadata(DoajTestCase):
     @staticmethod
     def login(app, username, password):
         return app.post('/account/login',
-                        data=dict(username=username, password=password),
+                        data=dict(user=username, password=password),
                         follow_redirects=True)
 
     @staticmethod
@@ -49,7 +50,7 @@ class TestAdminEditMetadata(DoajTestCase):
         """ Ensure only Admin can open the article metadata form """
 
         with self.app_test.test_client() as t_client:
-            self.login(t_client, "admin", "password123")
+            login_request = self.login(t_client, "admin", "password123")
             resp = t_client.get(url_for('admin.article_page', article_id=self.a.id), follow_redirects=False)
             assert resp.status_code == 200, "expected: 200, received: {}".format(resp.status)
 

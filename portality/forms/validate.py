@@ -436,7 +436,7 @@ class RequiredIfOtherValue(MultiFieldValidator):
             dr = validators.DataRequired(self.message)
             dr(form, field)
         else:
-            if not field.data or not field.data.strip():
+            if not field.data or len(field.data) == 0:
                 raise validators.StopValidation()
 
 

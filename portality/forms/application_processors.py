@@ -256,6 +256,9 @@ class AdminApplication(ApplicationProcessor):
             self.target.set_owner(self.source.owner)
 
     def finalise(self, account, save_target=True, email_alert=True):
+        """
+        account is the administrator account carrying out the action
+        """
 
         if self.source is None:
             raise Exception("You cannot edit a not-existent application")

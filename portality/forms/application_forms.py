@@ -2182,7 +2182,14 @@ def merge_disabled_notes(notes_group, original_form):
         if entry.data.get("note") != "":
             merged.append(entry)
     for entry in original_form.notes.entries:
-        merged.append(entry)
+        d = entry.data
+        keep = True
+        for m in merged:
+            if m.data.get("id") == entry.data.get("id"):
+                keep = False
+                break
+        if keep:
+            merged.append(entry)
 
     while True:
         try:

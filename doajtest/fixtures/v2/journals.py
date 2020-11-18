@@ -67,16 +67,16 @@ JOURNAL_SOURCE = {
         "editor_group": "editorgroup",
         "editor": "associate",
         "in_doaj": False,
-        "notes": [
-            {"note": "Second Note", "date": "2014-05-22T00:00:00Z", "id": "abcd"},
-            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id": "1234"}
+        "notes" : [
+            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234"},
+            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd"}
         ],
-        "owner": "Owner",
+        "owner": "publisher",
         "related_applications": [
             {"application_id": "asdfghjkl", "date_accepted": "2018-01-01T00:00:00Z"},
             {"application_id": "zxcvbnm"}
         ],
-        "seal": True,
+        "seal": False,
         "ticked": True
     },
     "bibjson": JOURNAL_LIKE_BIBJSON
@@ -192,7 +192,7 @@ JOURNAL_QUESTION_ANSWERS = [
     'http://plagiarism.screening',
     '8',
     'http://oa.statement',
-    'Embed, Display',
+    'Yes',
     'http://licence.embedded',
     "Publisher's own license",
     'Attribution, No Commercial Usage',

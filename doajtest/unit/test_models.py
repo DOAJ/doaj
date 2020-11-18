@@ -291,14 +291,11 @@ class TestModels(DoajTestCase):
         s.set_related_journal("123456789")
         s.set_application_status(constants.APPLICATION_STATUS_REJECTED)
         s.date_applied = "2001-01-01T00:00:00Z"
-        s.set_applicant("test", "test@test.com")
 
         assert s.current_journal == "9876543"
         assert s.related_journal == "123456789"
         assert s.application_status == constants.APPLICATION_STATUS_REJECTED
         assert s.date_applied == "2001-01-01T00:00:00Z"
-        assert s.applicant.get("name") == "test"
-        assert s.applicant.get("email") == "test@test.com"
 
         # check over ordered note reading
         s.add_note("another note", "2010-01-01T00:00:00Z")
@@ -336,10 +333,7 @@ class TestModels(DoajTestCase):
 
         # check deprecated methods (they still need to work)
         s.suggested_on = "2003-01-01T00:00:00Z"
-        s.set_suggester("test2", "test2@test.com")
         assert s.suggested_on == "2003-01-01T00:00:00Z"
-        assert s.suggester.get("name") == "test2"
-        assert s.suggester.get("email") == "test2@test.com"
 
     def test_05_sync_owners(self):
         # suggestion with no current_journal
@@ -624,8 +618,8 @@ class TestModels(DoajTestCase):
 
         assert bj.alternative_title == "Alternative Title"
         assert bj.boai is True
-        assert bj.discontinued_date == "2010-01-01"
-        assert bj.discontinued_datestamp.strftime("%Y-%m-%d") == "2010-01-01"
+        assert bj.discontinued_date == "2001-01-01"
+        assert bj.discontinued_datestamp.strftime("%Y-%m-%d") == "2001-01-01"
         assert bj.eissn == "9876-5432"
         assert bj.pissn == "1234-5678"
         assert bj.publication_time_weeks == 8
@@ -641,23 +635,23 @@ class TestModels(DoajTestCase):
         assert bj.apc[0].get("price") == 2
         assert bj.apc_url == "http://apc.com"
         assert bj.has_apc is True
-        assert bj.article_license_display == ["embed", "display"]
+        assert bj.article_license_display == ["Embed"]
         assert bj.article_license_display_example_url == "http://licence.embedded"
         assert bj.article_orcid is True
-        assert bj.article_i4oc_open_citations is True
+        assert bj.article_i4oc_open_citations is False
         assert bj.author_retains_copyright is True
         assert bj.copyright_url == "http://copyright.com"
         assert bj.deposit_policy == ["Sherpa/Romeo", "Store it"]
         assert bj.has_deposit_policy is True
         assert bj.deposit_policy_url == "http://deposit.policy"
-        assert bj.editorial_review_process == ["Open peer review"]
+        assert bj.editorial_review_process == ["Open peer review", "some bloke checks it out"]
         assert bj.editorial_review_url == "http://review.process"
         assert bj.editorial_board_url == "http://editorial.board"
         assert bj.institution == "Society Institution"
         assert bj.institution_country == "US"
         assert bj.has_other_charges is True
         assert bj.other_charges_url == "http://other.charges"
-        assert bj.pid_scheme == ["DOI", "ARK", "PURL"]
+        assert bj.pid_scheme == ["DOI", "ARK", "PURL", "PIDMachine"]
         assert bj.plagiarism_detection is True
         assert bj.plagiarism_url == "http://plagiarism.screening"
         assert bj.preservation is not None
@@ -669,7 +663,7 @@ class TestModels(DoajTestCase):
         assert bj.journal_url == "http://journal.url"
         assert bj.aims_scope_url == "http://aims.scope"
         assert bj.author_instructions_url == "http://author.instructions.com"
-        assert bj.license_terms_url == "http://license.terms"
+        assert bj.license_terms_url == "http://licence.url"
         assert bj.has_waiver is True
         assert bj.waiver_url == "http://waiver.policy"
 
@@ -686,7 +680,7 @@ class TestModels(DoajTestCase):
         bj.replaces = ["3333-3333"]
         bj.subject = [{"scheme": "TEST", "term": "first", "code": "one"}]
         bj.apc_url = "http://apc2.com"
-        bj.article_license_display = "no"
+        bj.article_license_display = "No"
         bj.article_license_display_example_url = "http://licence2.embedded"
         bj.article_orcid = False
         bj.article_i4oc_open_citations = False
@@ -727,7 +721,7 @@ class TestModels(DoajTestCase):
         assert bj.replaces == ["3333-3333"]
         assert len(bj.subject) == 1
         assert bj.apc_url == "http://apc2.com"
-        assert bj.article_license_display == ["no"]
+        assert bj.article_license_display == ["No"]
         assert bj.article_license_display_example_url == "http://licence2.embedded"
         assert bj.article_orcid is False
         assert bj.article_i4oc_open_citations is False
@@ -773,7 +767,6 @@ class TestModels(DoajTestCase):
         bj.add_pid_scheme("PURL")
         bj.add_preservation("MOUNTAIN")
         bj.add_preservation(libraries="LSE")
-        bj.add_article_license_display("embed")
 
         assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
         assert bj.keywords == ["new", "terms", "keyword"]
@@ -785,7 +778,6 @@ class TestModels(DoajTestCase):
         assert bj.deposit_policy == ["Never", "OK"]
         assert bj.pid_scheme == ["Handle", "PURL"]
         assert bj.preservation_summary == ["LOCKSS", "MOUNTAIN", ["A national library", "UCL"], ["A national library", "LSE"]]
-        assert bj.article_license_display == ["no", "embed"]
 
         # special methods
         assert bj.issns() == ["1111-111X", "0000-000X"], bj.issns()
@@ -798,7 +790,7 @@ class TestModels(DoajTestCase):
         assert bj.has_deposit_policy is True
 
         with self.assertRaises(seamless.SeamlessException):
-            bj.add_article_license_display("notallowedvalue")
+            bj.article_license_display = "notallowedvalue"
 
         # deprecated methods (they still need to work)
         bj.publication_time = 3
@@ -1303,7 +1295,7 @@ class TestModels(DoajTestCase):
         changed = a.add_journal_metadata(j, reg)
 
         assert changed is True
-        assert a.has_seal() is True
+        assert a.has_seal() is False
         assert a.is_in_doaj() is True
         assert a.bibjson().journal_issns == j.bibjson().issns()
         assert a.bibjson().publisher == j.bibjson().publisher
@@ -1402,10 +1394,11 @@ class TestModels(DoajTestCase):
 
     def test_31_cache(self):
         models.Cache.cache_site_statistics({
-            "articles" : 10,
-            "journals" : 20,
+            "journals" : 10,
+            "new_journals" : 20,
             "countries" : 30,
-            "searchable" : 40
+            "abstracts" : 40,
+            "no_apc" : 50
         })
 
         models.Cache.cache_csv("/csv/filename.csv")
@@ -1417,10 +1410,11 @@ class TestModels(DoajTestCase):
         time.sleep(1)
 
         stats = models.Cache.get_site_statistics()
-        assert stats["articles"] == 10
-        assert stats["journals"] == 20
+        assert stats["journals"] == 10
+        assert stats["new_journals"] == 20
         assert stats["countries"] == 30
-        assert stats["searchable"] == 40
+        assert stats["abstracts"] == 40
+        assert stats["no_apc"] == 50
 
         assert models.Cache.get_latest_csv().get("url") == "/csv/filename.csv"
 
