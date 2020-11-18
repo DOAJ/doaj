@@ -22,16 +22,20 @@
               <section class="col-sm-6">
                   <h2 class="label">Funding</h2>
                   <p>
-                      DOAJ is independent. All funding is via donations.
+                      DOAJ is independent. All support is via donations.
                   </p>
                   <div class="row">
                     <p class="col-xs-6 stat">
-                        <span class="stat__number">78%</span>
-                        <span class="stat__description">from supporters</span>
+                        <span class="stat__number">82%</span>
+                        <span class="stat__description">
+                          <a href="{{ url_for('doaj.supporters') }}">from academic organisations</a>
+                        </span>
                     </p>
                     <p class="col-xs-6 stat">
-                        <span class="stat__number">22%</span>
-                        <span class="stat__description">from sponsors</span>
+                        <span class="stat__number">18%</span>
+                        <span class="stat__description">
+                          <a href="{{ url_for('doaj.sponsors') }}">from sponsors</a>
+                        </span>
                     </p>
                   </div>
                   <p>
