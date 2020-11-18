@@ -1,7 +1,12 @@
-<aside class="highlight highlight--aside editorial-panel">
+{% if obj %}
+    {% if obj.application_status != constants.APPLICATION_STATUS_ACCEPTED %}
+        <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot save the application because it contains some invalid fields. Please review the answers and admin fields and try again.</i></p>
+        <button id="submitBtn" class="button button--primary" type="button">Save</button>
+    {% endif %}
+    <input type="hidden" name="id" value="{{ obj.id }}">
+{% endif %}
 
-
-
+<aside class="editorial-panel__content">
     <fieldset class="editorial-panel__buttons">
         {#        TODO: change suggestion to variable #}
         <h3 class="label"> LOCKED FOR EDITING UNTIL <span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></h3>
@@ -102,12 +107,4 @@
             {% endfor %}
         </div>
     </fieldset>
-
-    {% if obj %}
-        {% if obj.application_status != constants.APPLICATION_STATUS_ACCEPTED %}
-            <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot save the application because it contains some invalid fields. Please review the answers and admin fields and try again.</i></p>
-            <button id="submitBtn" class="button button--primary button button--primary button--primary_editorial" type="button">Save</button>
-        {% endif %}
-        <input type="hidden" name="id" value="{{ obj.id }}">
-    {% endif %}
 </aside>

@@ -31,28 +31,26 @@
 <a href="#metadata">Metadata</a>
 <ul class="page-nav__sublist">
 <li class="page-nav__item item-h3">
-<a href="#how-can-i-get-journal-metadata-from-doaj">How can I get journal metadata from DOAJ?</a>
+<a href="#failed-xml-uploads-explained">Failed XML uploads explained</a>
 <ul class="page-nav__sublist">
-<li class="page-nav__item item-h4"><a href="#api">API</a></li>
-<li class="page-nav__item item-h4"><a href="#atom-feed">Atom feed</a></li>
-<li class="page-nav__item item-h4"><a href="#crawling">Crawling</a></li>
-<li class="page-nav__item item-h4"><a href="#csv-file">CSV file</a></li>
-<li class="page-nav__item item-h4"><a href="#data-dumps">Data dumps</a></li>
-<li class="page-nav__item item-h4"><a href="#oai-pmh">OAI-PMH</a></li>
+<li class="page-nav__item item-h4"><a href="#x-articles-imported-y-new-z-updated-n-articles-failed">X articles imported (Y new, Z updated); N articles failed</a></li>
+<li class="page-nav__item item-h4"><a href="#all-articles-in-file-failed-to-import">All articles in file failed to import</a></li>
+<li class="page-nav__item item-h4"><a href="#error-occurred-ingesting-the-records-in-the-document">Error occurred ingesting the records in the document</a></li>
+<li class="page-nav__item item-h4"><a href="#unanticipated-error-when-importing-articles">Unanticipated error when importing articles</a></li>
+<li class="page-nav__item item-h4"><a href="#the-file-at-the-url-was-too-large">The file at the URL was too large</a></li>
+<li class="page-nav__item item-h4"><a href="#the-url-could-not-be-accessed">The URL could not be accessed</a></li>
+<li class="page-nav__item item-h4"><a href="#unable-to-parse-file">Unable to parse file</a></li>
+<li class="page-nav__item item-h4"><a href="#unable-to-parse-xml-file">Unable to parse XML file</a></li>
+<li class="page-nav__item item-h4"><a href="#unable-to-validate-document-with-identified-schema">Unable to validate document with identified schema</a></li>
+<li class="page-nav__item item-h4"><a href="#reasons-for-individual-article-import-failures">Reasons for individual article import failures</a></li>
+<li class="page-nav__item item-h4"><a href="#one-or-more-articles-in-this-batch-have-duplicate-identifiers">One or more articles in this batch have duplicate identifiers</a></li>
+<li class="page-nav__item item-h4"><a href="#one-or-more-articles-in-this-batch-matched-multiple-articles-as-duplicates-entire-batch-ingest-halted">One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted</a></li>
 </ul>
 </li>
-<li class="page-nav__item item-h3"><a href="#why-do-some-journals-have-no-or-very-little-article-metadata-in-doaj">Why do some journals have no or very little article metadata in DOAJ?</a></li>
 </ul>
 </li>
 <li class="page-nav__item item-h2"><a href="#do-you-have-any-restrictions-on-the-reuse-of-your-metadata">Do you have any restrictions on the reuse of your metadata?</a></li>
 <li class="page-nav__item item-h2"><a href="#what-code-is-doaj-built-with">What code is DOAJ built with?</a></li>
-<li class="page-nav__item item-h2">
-<a href="#finding-content-in-doaj">Finding content in DOAJ</a>
-<ul class="page-nav__sublist">
-<li class="page-nav__item item-h3"><a href="#browsing-by-subject">Browsing by subject</a></li>
-<li class="page-nav__item item-h3"><a href="#searching-by-keyword">Searching by keyword</a></li>
-</ul>
-</li>
 </ul>
           </nav>
 
@@ -72,17 +70,17 @@
 
 <ol>
   <li>
-<a href="">Support us</a> with a financial donation
+<a href="/support/">Support us</a> with a financial donation
     <ul>
       <li>All donations received are spent on DOAJ activities or developments.</li>
     </ul>
   </li>
-  <li>If you have evidence that a journal in DOAJ might be questionable, <a href="">contact us</a>.
+  <li>If you have evidence that a journal in DOAJ might be questionable, <a href="/contact/">contact us</a>.
     <ul>
       <li>All information shared with DOAJ is done so in confidence and is never published.</li>
     </ul>
   </li>
-  <li>If you find a broken link or something that is out of date or incomplete, <a href="">contact us</a>.
+  <li>If you find a broken link or something that is out of date or incomplete, <a href="/contact/">contact us</a>.
     <ul>
       <li>We are always grateful when our users are our eyes and ears.</li>
     </ul>
@@ -96,11 +94,11 @@
 
 <h3 id="i-have-found-a-broken-link-what-should-i-do">I have found a broken link. What should I do?</h3>
 
-<p><a href="">Contact us</a> with the details. For broken links in articles, include the journal’s ISSN, title and the title of the article.</p>
+<p><a href="/contact/">Contact us</a> with the details. For broken links in articles, include the journal’s ISSN, title and the title of the article.</p>
 
 <h3 id="i-think-that-a-questionable-journal-is-indexed-in-doaj-what-should-i-do">I think that a questionable journal is indexed in DOAJ. What should I do?</h3>
 
-<p>Please <a href="">contact us</a> with the details, including the ISSN, and we will investigate. Information shared with DOAJ is done so in confidence.</p>
+<p>Please <a href="/contact/">contact us</a> with the details, including the ISSN, and we will investigate. Information shared with DOAJ is done so in confidence.</p>
 
 <h3 id="i-know-a-journal-which-should-be-in-doaj-but-isnt-what-should-i-do">I know a journal which should be in DOAJ but isn’t. What should I do?</h3>
 
@@ -108,7 +106,7 @@
 
 <h3 id="the-journal-i-am-looking-for-isnt-in-doaj-why-what-should-i-do">The journal I am looking for isn’t in DOAJ. Why? What should I do?</h3>
 
-<p>Maybe the journal hasn’t applied to us or its application is still in progress. It may be that the journal was removed from DOAJ. <a href="">Contact us</a> to see if the journal has a pending application.</p>
+<p>Maybe the journal hasn’t applied to us or its application is still in progress. It may be that the journal was removed from DOAJ. <a href="/contact/">Contact us</a> to see if the journal has a pending application.</p>
 
 <h3 id="how-do-i-report-a-bug-or-ask-for-technical-help">How do I report a bug or ask for technical help?</h3>
 
@@ -143,55 +141,179 @@
 <hr>
 <h2 id="account">Account</h2>
 <h3 id="when-do-i-need-an-account">When do I need an account?</h3>
-<p>If you are not a publisher you do not need an account. All of our content is Open Access and available on our website. If you are a publisher and have lost your account, please [contact us] stating your issn and we will find out what happened.</p>
+<p>If you are not a publisher you do not need an account. All of our content is Open Access and available on our website. If you are a publisher and have lost your account, please <a href="/contact">contact us</a> stating your issn and we will find out what happened.</p>
 <h3 id="how-can-i-reset-my-password">How can I reset my password?</h3>
-<p>To reset your password please go here: https://doaj-static.netlify.app/password-reset/. Please [contact us] if you did not get a password reset link.</p>
+<p><a href="/password-reset/">Reset your password here.</a>. Please <a href="/contact/">contact us</a> if you did not get a password reset link.</p>
 <h3 id="how-can-i-merge-journals-into-the-same-account">How can I merge journals into the same account?</h3>
-<p>If your institution has several journals that are spread into different accounts and you would like to have a single one, please [contact us].</p>
+<p>If your institution has several journals that are spread into different accounts and you would like to have a single one, please <a href="/contact/">contact us</a>.</p>
 
 <h2 id="metadata">Metadata</h2>
 
-<h3 id="how-can-i-get-journal-metadata-from-doaj">How can I get journal metadata from DOAJ?</h3>
+<h3 id="failed-xml-uploads-explained">Failed XML uploads explained</h3>
 
-<h4 id="api">API</h4>
+<p>This section describes the possible error messages that you may see when you upload an article XML file to DOAJ. Depending on the message in the “Notes” column of your <a href="/publisher/uploadfile">History of uploads</a> table, some corrective actions may be available to you.</p>
 
-<p>A <a href="">search API</a> is available. Some functions require an API key. To get your API key, go to your account page. If no API key is available, <a href="">contact us</a>.</p>
+<p>In cases where there is no action to be taken, or the suggested actions have not successfully resolved the issues, please <a href="">contact us</a> with the following details:</p>
 
-<h4 id="atom-feed">Atom feed</h4>
-
-<p>We have <a href="/feed">an Atom feed</a> of journals which is updated every time a new journal is added to DOAJ.</p>
-
-<h4 id="crawling">Crawling</h4>
-
-<p>You may crawl DOAJ as long as you follow our good behaviour guidelines for crawling:</p>
 <ul>
-  <li>follow our robot.txt file http://doaj.org/robots.txt</li>
-  <li>use our sitemap</li>
-  <li>obey our rate limit</li>
+  <li>The time of the file upload</li>
+  <li>The exact error message as it appears in the “Notes” column</li>
+  <li>Your publisher account username</li>
+  <li>A copy of the file you had problems with</li>
+  <li>A screenshot of your File upload area</li>
 </ul>
 
-<p>If your crawler hits our servers too often, or your crawler starts to affect DOAJ’s performance in any way, then your access will be restricted or even blocked. (It’s faster and easier for you to collect our metadata if you connect via the API.)</p>
+<h4 id="x-articles-imported-y-new-z-updated-n-articles-failed">
+<a id="some_articles_failed"></a>X articles imported (Y new, Z updated); N articles failed</h4>
 
-<h4 id="csv-file">CSV file</h4>
+<p><strong>Reason</strong>: From within the provided file, there were some successful article imports (X), but one or more failed article imports (N)</p>
 
-<p>You can download the list of journals as a CSV (comma-separated) file. This can be imported into any compatible analysis program. The CSV file is updated every 30 minutes.</p>
+<p><strong>Resolution</strong>: Individual articles can fail for a number of reasons. See the section <a href="#Reasons%20for%20individual%20article%20import%20failures">Reasons for individual article import failures</a> below</p>
+
+<h4 id="all-articles-in-file-failed-to-import">
+<a id="All articles in file failed to import"></a>All articles in file failed to import</h4>
+
+<p><strong>Reason</strong>: From within the uploaded file, there were no successful article imports and one or more failed article imports</p>
+
+<p><strong>Resolution</strong>: Individual articles can fail for a number of reasons. See the section <a href="#Reasons%20for%20individual%20article%20import%20failures">Reasons for individual article import failures</a> below</p>
+
+<h4 id="error-occurred-ingesting-the-records-in-the-document">
+<a id="Error occurred ingesting the records in the document"></a>Error occurred ingesting the records in the document</h4>
+
+<p><strong>Reason</strong>: An unexpected software exception occurred - you may have found a bug!</p>
+
+<p><strong>Resolution</strong>: Please <a href="/contact/">contact us</a> immediately with the relevant details.</p>
+
+<h4 id="unanticipated-error-when-importing-articles">
+<a id="Unanticipated error when importing articles"></a>Unanticipated error when importing articles</h4>
+
+<p><strong>Reason</strong>: Something unexpected happened when we tried to import your articles - you may have found a bug!</p>
+
+<p><strong>Resolution</strong>: Please <a href="/contact/">contact us</a> immediately with the details:</p>
+
+<ol>
+  <li>Your user account</li>
+  <li>The contact details for the person reporting the bug (or at least a proxy for them, so that we can request more details). That might be you or someone working on your behalf.</li>
+  <li>Was the problem repeatable? Did you try several times with the same result?</li>
+  <li>What environment are you in? Specifically browser, or if not in the browser then any useful information about your API client such as the user agent.</li>
+  <li>At what time the incident occurred. Both date and time ideally. If it happened several times, then all dates/times that were recorded, or a range.</li>
+  <li>What were you trying to do? As much detail and context as possible. Send a screenshot! An image helps.</li>
+  <li>What happened, what error message was received? Provide the exact error message, don’t paraphrase. A screenshot could be provided here.</li>
+  <li>Which area of the system did this happen in? Generally, in the UI/API/OAI, and ideally specifically: which URL were you on when it happened, or which URL were you trying to access?</li>
+  <li>Send copies of any data you sent to the system. For example, article XML files uploaded, or payloads send to the API, if available.</li>
+  <li>What had you expected to happen?</li>
+</ol>
+
+<p>We may also ask you to supply the file that you tried to upload, so please keep a copy of it until the issue is resolved.</p>
+
+<h4 id="the-file-at-the-url-was-too-large">
+<a id="The file at the URL was too large"></a>The file at the URL was too large</h4>
+
+<p><strong>Reason</strong>: A URL (either HTTP or FTP) you provided to the form field “Provide a URL where we can download the XML” led to a file which was larger than 250Mb</p>
+
+<p><strong>Resolution</strong>: Please provide a smaller file in either case. You can split the articles across two or more schema valid documents, and make them available to us separately.</p>
+
+<h4 id="the-url-could-not-be-accessed">
+<a id="The URL could not be accessed"></a>The URL could not be accessed</h4>
+
+<p><strong>Reason 1</strong>: The HTTP URL you provided could not be resolved to a resource on the web (e.g. your web server responded with a 404 Not Found)</p>
+
+<p><strong>Resolution 1</strong>: Check the following regarding the URL your provided to the form field “Provide a URL where we can download the XML”:</p>
+
 <ul>
-  <li>Download the file to your computer</li>
-  <li>Import the file into a spreadsheet processing program (like Excel or OpenOffice)</li>
-  <li>Make sure you choose Unicode (UTF-8) as the file origin.</li>
+  <li>That the URL is the correct URL</li>
+  <li>That there are no access restrictions on the URL. For example, authentication is required, or the URL is IP restricted to within your organisation.</li>
 </ul>
 
-<h4 id="data-dumps">Data dumps</h4>
+<p><strong>Reason 2</strong>: The download from an HTTP URL you provided failed part way through for an unspecified reason</p>
 
-<p>You can <a href="">download all of our journal and article metadata</a> as two static files. They are refreshed weekly.</p>
+<p><strong>Resolution 2</strong>: Re-try the upload, as this may be an intermittent network issue.</p>
 
-<h4 id="oai-pmh">OAI-PMH</h4>
+<p>If you are still unable to get the upload to work after a several attempts, please <a href="/contact/">contact us</a> with the relevant details.</p>
 
-<p>DOAJ supports the OAI protocol for metadata harvesting (OAI-PMH). Any OAI compatible service can obtain records from DOAJ. The base URL is <code class="language-plaintext highlighter-rouge">http://www.doaj.org/oai</code>. You can add most OAI verbs and other commands directly on to that. There is a full description of this service on the <a href="">OAI-PMH documentation page</a>. Our current OAI offering is standardised around Dublin Core.</p>
+<h4 id="unable-to-parse-file">
+<a id="Unable to parse file"></a>Unable to parse file</h4>
 
-<h3 id="why-do-some-journals-have-no-or-very-little-article-metadata-in-doaj">Why do some journals have no or very little article metadata in DOAJ?</h3>
+<p><strong>Reason</strong>: The XML file you provided (either downloaded from a URL or uploaded via the web form) could not be read as an XML file</p>
 
-<p>We do not yet crawl publisher sites to collect article metadata. Instead, we ask publishers to upload the metadata to us. If a journal in DOAJ has no articles, it is because the metadata hasn’t been sent to us.</p>
+<p><strong>Resolution</strong>: Check that the file really is valid XML.</p>
+
+<p>In some cases this will be easy - you may have uploaded/provided the wrong file, so double-check that it is the correct one. You’d get this error, for example, if you have uploaded a Word document or a PDF by mistake.</p>
+
+<p>In other cases files can look very much like XML, but still be invalid. They should be run through an XML validator to ensure they have the correct structure and that there are no illegal characters.</p>
+
+<p>Sometimes, special characters - especially those in scientific articles - are submitted in the wrong format. XML does not support many special characters as-is but those that it does can be <a href="https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Predefined_entities_in_XML" target="_blank" rel="noopener">found on Wikipedia</a>.</p>
+
+<p>You can use one of these validators to check your XML:</p>
+
+<ul>
+  <li>
+<a href="http://www.utilities-online.info/xsdvalidation/" target="_blank" rel="noopener">W3C Validator</a> - paste the contents of the XML into the left-hand box on this page</li>
+  <li>
+<a href="https://www.w3schools.com/xml/xml_validator.asp" target="_blank" rel="noopener">W3Schools</a> - paste the contents of the XML into one of the boxes on this page</li>
+  <li>
+<a href="https://www.xmlvalidation.com/" target="_blank" rel="noopener">xmlvalidation.com</a> - paste the contents of the XML into one of the boxes on this page, or upload the file</li>
+</ul>
+
+<h4 id="unable-to-parse-xml-file">
+<a id="Unable to parse XML file"></a>Unable to parse XML file</h4>
+
+<p>See <a href="#Unable%20to%20parse%20file">“Unable to parse file”</a></p>
+
+<h4 id="unable-to-validate-document-with-identified-schema">
+<a id="Unable to validate document with identified schema"></a>Unable to validate document with identified schema</h4>
+
+<p><strong>Reason</strong>: No XML schema could be found which would read the provided XML document (in particular, the DOAJ standard schema)</p>
+
+<p><strong>Resolution</strong>: Check that the file conforms to the DOAJ schema, using a validator.</p>
+
+<p>Often the problem arises because the XML is missing a required tag. If you try to upload XML to DOAJ that is missing a specific tag, such as <publicationdate> then the schema validation will fail. You can see exactly [which tags are required here](/docs/xml/).</publicationdate></p>
+
+<p>If you are trying to upload a file that was automatically generated by the OJS DOAJ plugin, then you should first contact OJS for help.</p>
+
+<p>The DOAJ schema is on our site, here: <a href="http://doaj.org/static/doaj/doajArticles.xsd" target="_blank" rel="noopener">http://doaj.org/static/doaj/doajArticles.xsd</a></p>
+
+<p>To validate the provided XML against the schema, you can use one of these services:</p>
+
+<ul>
+  <li>
+<a href="http://www.utilities-online.info/xsdvalidation" target="_blank" rel="noopener">W3C Validator</a> - paste the contents of the XML into the left-hand box on this page, and the contents of the schema (XSD) into the right-hand box.</li>
+  <li>
+<a href="https://www.freeformatter.com/xml-validator-xsd.html" target="_blank" rel="noopener">freeformatter.com</a> - paste the contents of the XML into the top box, and the contents of the schema (XSD) into the bottom box. Or, instead, provide a URL to either of them (you can use the URL <a href="http://doaj.org/static/doaj/doajArticles.xsd" target="_blank" rel="noopener">http://doaj.org/static/doaj/doajArticles.xsd</a> for the DOAJ schema)</li>
+</ul>
+
+<p>If both of these services regard the provided XML as schema valid, please <a href="/contact/">contact us</a> with the relevant details.</p>
+
+<h4 id="reasons-for-individual-article-import-failures">
+<a id="Reasons for individual article import failures"></a>Reasons for individual article import failures</h4>
+
+<p><strong>Reason</strong>: Article belongs to a journal that does not belong to your user account</p>
+
+<p>You can only upload XML for the journals that are IN DOAJ and that appear in the list under ‘Your Journals’ in the publisher area. If you have more than one account and you would like to merge them, please contact us.</p>
+
+<p>The Article’s stated ISSNs must match to a journal that is owned by the user account from which you are providing the XML file. If the ISSNs do not match any journals or match a journal that is owned by a different account, the import of that article will fail.</p>
+
+<p>Note that it is also possible that if an article has more than one ISSN (i.e. an E-ISSN and a P-ISSN), that those ISSNs could match more than one Journal (one ISSN matching one journal, the other ISSN matching another). If both matched journals are owned by your account, this will not stop the article from being imported, but if one of the matched journals is owned by a different account this will cause the import of the article to fail.</p>
+
+<p>A journal may have two ISSNs: an ISSN for the print version and an ISSN for the electronic version. Sometimes the ISSNs of the journal have changed. If you need to have the ISSNs of your DOAJ record updated, please <a href="/contact/">contact us</a> and we will check that the ISSNs are registered at <a href="https://portal.issn.org/" target="_blank" rel="noopener">the ISSN Portal</a> and will then update the record accordingly.</p>
+
+<p><strong>Resolution</strong>: Check that all the Article ISSNs in the file are correct</p>
+
+<p>If you believe all the ISSNs for the articles are correct, please <a href="/contact/">contact us</a> with the relevant details.</p>
+
+<h4 id="one-or-more-articles-in-this-batch-have-duplicate-identifiers">
+<a id="One or more articles in this batch have duplicate identifiers"></a>One or more articles in this batch have duplicate identifiers</h4>
+
+<p><strong>Reason</strong>: At least two of the articles in the uploaded file contain the same DOI and/or the same fulltext url</p>
+
+<p><strong>Resolution</strong>: Ensure that there are no duplicated articles in the file. Ensure that you are using the correct DOIs and URLs for all the articles.</p>
+
+<h4 id="one-or-more-articles-in-this-batch-matched-multiple-articles-as-duplicates-entire-batch-ingest-halted">
+<a id="One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted"></a>One or more articles in this batch matched multiple articles as duplicates; entire batch ingest halted</h4>
+
+<p><strong>Reason</strong>: At least one of your articles matched two or more other articles already in DOAJ, and as a result we don’t know which one to update.</p>
+
+<p><strong>Resolution</strong>: Ensure that all your articles have the correct DOI and Fulltext links. If you still don’t have any luck, please <a href="/contact/">contact us</a> with the details; we may need to clean up your existing articles manually.</p>
 
 <hr>
 
@@ -208,26 +330,6 @@
 <p>DOAJ is a Python/Flask web app with a JSON document store. The code is open source and can be found in <a href="https://github.com/DOAJ/doaj" target="_blank" rel="noopener">our GitHub repository</a>.</p>
 
 <p>DOAJ uses Bootstrap which is the framework used to build the DOAJ website. This contains some Javascript for some of its features.</p>
-
-<hr>
-
-<h2 id="finding-content-in-doaj">Finding content in DOAJ</h2>
-
-<h3 id="browsing-by-subject">Browsing by subject</h3>
-
-<p>The subject classifications used to <a href="">Browse by subject</a> page are structured as follows:</p>
-
-<ul>
-  <li>subjects separated by a full stop (.) are part of the same category. For example: ‘Philosophy. Psychology. Religion’ is one category.</li>
-  <li>where two subjects are separated by a colon (:), the second subject is a subcategory of the first. For example: ‘Philosophy. Psychology. Religion: Philosophy (General)’. This journal has been categorised as General Philosophy.</li>
-  <li>where subjects are separated by a pipe (|), the second category has no relation to the first. For example: ‘Philosophy. Psychology. Religion: Philosophy (General) | Social Sciences: Social sciences (General)’ means that this journal has been categorised both as General Philosophy and General Social Sciences.</li>
-</ul>
-
-<h3 id="searching-by-keyword">Searching by keyword</h3>
-
-<p>You can choose to filter your search results by ‘keyword’.</p>
-
-<p>Journal keywords are chosen by the person applying for a journal. They are reviewed and edited by the DOAJ Team. They are more arbitrary than the subject classification.</p>
 
 
 

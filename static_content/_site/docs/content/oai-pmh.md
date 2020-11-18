@@ -41,7 +41,7 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
       <dc:identifier>1330-4860</dc:identifier>
       <dc:identifier>1846-3878</dc:identifier>
       <dc:identifier>
-        http://doaj.org/toc/9dfe4879964541069dff9bb6d15b65a2
+        http://doaj.org/search?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22id%22%3A%229dfe4879964541069dff9bb6d15b65a2%22%7D%7D%5D%7D%7D%7D
       </dc:identifier>
       <dc:subject>economics</dc:subject>
       <dc:subject>post-socialist Europe</dc:subject>
@@ -104,7 +104,6 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
 | `subject`     | Free\-text keywords or formal subject classifications\. Formal classifications are prefixed by their scheme \(e\.g\. `CLASSIFICATION:Science`\), except in the case of Library of Congress Classification\. LCC subjects are denoted by an additional attribute on this element, `xsi:type="dcterms:LCSH"`\. |
 | `language`    | The languages that the journal publishing this article publishes in\. Does not necessarily strictly denote the language of this article, and there may be multiple language fields provided\.                                                                                                                 |
 | `relation`    | Links to related resources: the full\-text url                                                                                                                                                                                                                                                                |
-| `provenance`  | Includes information about the journal's content re\-use policy\. Will be one of the Creative Commons licences\. This does not necessarily indicate the article's re\-use policy\.                                                                                                                            |
 | `publisher`   | The publisher/provider of the journal this article appears in\.                                                                                                                                                                                                                                               |
 | `type`        | The type of the object; always contains "article"                                                                                                                                                                                                                                                             |
 | `date`        | The approximate date of publication\.                                                                                                                                                                                                                                                                         |
@@ -133,7 +132,7 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
       <dc:identifier>0102-311X</dc:identifier>
       <dc:identifier>1678-4464</dc:identifier>
       <dc:identifier>
-        https://doaj.org/article/2f032c66cd6047bdadaf0eddd7ab3341
+        http://doaj.org/search?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22id%22%3A%222f032c66cd6047bdadaf0eddd7ab3341%22%7D%7D%5D%7D%7D%7D
       </dc:identifier>
       <dc:date>2006-01-01T00:00:00Z</dc:date>
       <dc:relation>
@@ -168,7 +167,6 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
       <dc:language>English</dc:language>
       <dc:language>Spanish</dc:language>
       <dc:language>Portuguese</dc:language>
-      <dc:rights>CC BY-NC</dc:rights>
     </oai_dc:dc>
   </metadata>
 </record>
@@ -178,6 +176,7 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
 
 | Date changes were made live                                                                                                                                                                                                                       | Changes         |
 |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------|
+| 25 November 2020                                                                                                                                                                                                                                  | The `dc:provenance` element was removed, as we no longer synchronise provenance information to our article records from the journal\. |
 | 22 August 2016                                                                                                                                                                                                                                    | The `dc:rights` element was removed, as it was technically inaccurate \- it represented the Journal's overall licence policy, not the specific rights for the article\. This information is now in `dc:provenance`\. |
 | 20 April 2015                                                                                                                                                                                                                                     | The `identifier` element will now point to the DOAJ article page rather than the `/search` page\. E\.g\. [`https://doaj.org/article/0000178c89214dc8b82df1a25c0c478e`](https://doaj.org/article/0000178c89214dc8b82df1a25c0c478e) <br/><br/>Up to two new `relation` elements will appear for each article, containing URL\-s to the Table of Contents page for the article's journal\. The page can be reached via both print ISSN and E\-ISSN, so up to two such links might appear\. <br/><br/>`subject` elements which represent a Library of Congress Classification \(LCC\) topic will now be marked with an additional OAI DC\-compliant attribute to denote this: `xsi:type="dcterms:LCSH"`\. LCC subjects will no longer be prefixed by `LCC:`\. |
 | 13 December 2013                                                                                                                                                                                                                                  | Initial release |

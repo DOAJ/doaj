@@ -1,5 +1,6 @@
-<aside class="highlight highlight--aside editorial-panel">
+<button id="submitBtn" class="button button--primary" type="button">Save</button>
 
+<aside class="editorial-panel__content">
     <fieldset class="editorial-panel__buttons">
         <h3 class="label"> LOCKED FOR EDITING UNTIL <span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></h3>
         <button type="button" class="button button--secondary" id="unlock" data-type="journal" data-id="{{obj.id}}">Unlock & Close</button>
@@ -102,7 +103,6 @@
     </fieldset>
 #}
     <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot save the journal because it contains some invalid fields. Please review the answers and admin fields and try again.</i></p>
-    <button id="submitBtn" class="button button--primary button button--primary button--primary_editorial" type="button">Save</button>
     {% if obj %}
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}

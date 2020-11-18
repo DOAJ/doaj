@@ -177,12 +177,14 @@
 
                                             {# Other charges #}
                                             {% if bibjson.has_other_charges %}
-                                                and there are {% if bibjson.other_charges_url %}<a href="{% if bibjson.other_charges_url %}" target="_blank" rel="noopener">{% endif %}other charges{% if bibjson.other_charges_url %}</a>.{% endif %}
+                                                and there are
+                                                {% if bibjson.other_charges_url %}<a href="{{ bibjson.other_charges_url }}" target="_blank" rel="noopener">{% endif %}
+                                                  other charges
+                                                {% if bibjson.other_charges_url %}</a>.{% endif %}
                                             {% else %}
                                                 and there are <strong>no other charges.</strong>
                                             {% endif %}
                                                 </p>
-                                            {% endif %}
                                         {# Waivers #}
                                         {% if bibjson.waiver_url %}
                                             <p>
