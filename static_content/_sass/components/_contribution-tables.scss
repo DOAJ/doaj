@@ -28,6 +28,15 @@
     }
   }
 
+  .label {
+    margin: 0;
+  }
+
+  .tabs__panel {
+    padding: $spacing-03;
+    background-color: $fair-pink;
+  }
+
   &__type {
     padding-bottom: $spacing-03;
     border-bottom: 1px dashed $grapefruit;
