@@ -14,6 +14,7 @@
         <h1>{{ obj.bibjson().title }}</h1>
         {% include "application_form/_edit_status.html" %}
         {% include "application_form/_backend_validation.html" %}
+
         <form id="{{ form_id }}"
               data-context="{{ formulaic_context.name }}"
               class="row application_form form form--compact"
@@ -25,6 +26,9 @@
 
             <div class="col-md-8 page">
                 <section class="page-content">
+                  
+                    {% include 'formcontext/_application_diff.html' %}
+
                     {% include "application_form/_fieldsets.html" %}
                 </section>
             </div>
