@@ -2273,10 +2273,13 @@ class IntRangeBuilder:
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-type"] = "digits"
-        if "gte" in settings:
-            html_attrs["data-parsley-min"] = settings.get("gte")
-        if "lte" in settings:
-            html_attrs["data-parsley-max"] = settings.get("lte")
+        if "gte" in settings and "lte" in settings:
+            html_attrs["data-parsley-range"] = "[" + str(settings.get("gte")) + ", " + str(settings.get("lte")) + "]"
+        else:
+            if "gte" in settings:
+                html_attrs["data-parsley-min"] = settings.get("gte")
+            if "lte" in settings:
+                html_attrs["data-parsley-max"] = settings.get("lte")
 
     @staticmethod
     def wtforms(field, settings):
