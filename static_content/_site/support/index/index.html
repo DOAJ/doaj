@@ -49,7 +49,7 @@
 </head>
 
 
-  <body class="with-sidenav" data-spy="scroll" data-offset="70" style="position: relative;">
+  <body class="with-sidenav">
     <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
@@ -609,13 +609,47 @@
 
         <div class="col-md-4 col-md-push-8">
           
-          <nav class="page-nav nav" data-spy="affix">
-            <h2 class="page-nav__heading">Jump to:</h2>
-            <ul class="page-nav__list">
-<li class="page-nav__item item-h2"><a href="#make-a-one-time-donation">Make a one-time donation</a></li>
-</ul>
-          </nav>
+          
+            
+            <aside class="highlight highlight--aside">
+              <h2 class="label">Make a one-time donation</h2>
+              <p><em>You will be redirected to Paypal’s website.</em></p>
+              <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="hosted_button_id" value="UP6B3VXCP2FHJ">
+                <input type="hidden" name="on0" value="One-off payment">
+                <label for="support-one-off">Please select a donation type</label>
+                <div class="input-group">
+                    <select name="os0" id="support-one-off">
+                  	 <option value="Individual">Individual </option>
+                  	 <option value="Academic Library">Academic Library </option>
+                  	 <option value="Library Consortium">Library Consortium </option>
+                  	 <option value="Aggregator">Aggregator </option>
+                    </select>
+                  <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button">
+                </div>
+              </form>
+            </aside>
+            
 
+            
+
+            
+
+            <aside class="promo">
+              <p class="label">Just so you know…</p>
+
+              
+              
+              
+              
+
+              <h2 class="promo__heading">Understanding copyright and licensing</h2>
+              <p class="promo__text">
+                Copyright declares who owns the rights to the website’s content and its published academic content. Licensing describes the terms under which the website’s readers are allowed to use or re-use the copyrighted content.
+                <a href="https://doaj-static.netlify.app/apply/guide/#copyright-and-licensing" target="_blank" class="promo__link">Learn more</a>
+              </p>
+            </aside>
           
         </div>
 
@@ -650,25 +684,310 @@
 
 <p>Supporting DOAJ will give your organisation a range of benefits.</p>
 
-<h2 id="make-a-one-time-donation">Make a one-time donation</h2>
+<hr>
 
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-  <input type="hidden" name="cmd" value="_s-xclick">
-  <input type="hidden" name="hosted_button_id" value="UP6B3VXCP2FHJ">
-  <input type="hidden" name="on0" value="One-off payment">
-  <label for="support-one-off">Please select a donation type</label>
-  <div class="input-group">
-      <select name="os0" id="support-one-off">
-    	 <option value="Individual - one-time payment">Individual - one-time payment </option>
-    	 <option value="Academic Library - one-time payment">Academic Library - one-time payment </option>
-    	 <option value="Library Consortium - one-time payment">Library Consortium - one-time payment </option>
-    	 <option value="Aggregator - one-time payment">Aggregator - one-time payment </option>
-      </select>
-    <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button">
-  </div>
-</form>
+<ul class="contribution-tables">
+  <!-- Academic institutions -->
+  <li class="contribution-tables__type">
+    <h3>For academic institutions, including:</h3>
+    <ul>
+      <li>Individual institutions</li>
+      <li>Academic libraries</li>
+      <li>A university or universities</li>
+      <li>Colleges</li>
+    </ul>
+    <p class="contribution-tables__choice">
+      <strong data-toggle="collapse" data-target="#support-institutions" aria-expanded="false">
+        → I’m part of an academic institution
+      </strong>
+    </p>
+    <div id="support-institutions" class="collapse" aria-expanded="false">
 
-<p><em>You will be redirected to Paypal’s website.</em></p>
+      <div class="tabs">
+        <nav class="tabs__menu">
+          <ul class="tabs__list" role="tablist">
+            <li class="tabs__item">
+              <a href="#support-institutions-large" role="tab" aria-selected="false">→ It’s a <strong>large</strong> institution.</a>
+            </li>
+            <li class="tabs__item">
+              <a href="#support-institutions-small" role="tab" aria-selected="false">→ It’s a <strong>small</strong> institution.</a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="tabs__content">
+          <div id="support-institutions-large" class="tabs__panel" role="tabpanel" aria-hidden="true">
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>£ (GBP)</th>
+                  <th>€ (EUR)</th>
+                  <th>$ (USD)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th colspan="4">
+                    <strong class="label">One-year commitment</strong>
+                  </th>
+                </tr>
+                <tr>
+                  <td>Basic</td>
+                  <td>750</td>
+                  <td>825</td>
+                  <td>975</td>
+                </tr>
+                <tr>
+                  <td>Sustaining</td>
+                  <td>3,000</td>
+                  <td>3,300</td>
+                  <td>3,900</td>
+                </tr>
+                <tr>
+                  <th colspan="4">
+                    <strong class="label">Three-year commitment (15% discount) — Payment is upfront</strong>
+                  </th>
+                </tr>
+                <tr>
+                  <td>Basic</td>
+                  <td>1,913</td>
+                  <td>2,104</td>
+                  <td>2,486</td>
+                </tr>
+                <tr>
+                  <td>Sustaining</td>
+                  <td>7,650</td>
+                  <td>8,415</td>
+                  <td>9,945</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="support-institutions-small" class="tabs__panel" role="tabpanel" aria-hidden="true">
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>£ (GBP)</th>
+                  <th>€ (EUR)</th>
+                  <th>$ (USD)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th colspan="4">
+                    <strong class="label">One-year commitment</strong>
+                  </th>
+                </tr>
+                <tr>
+                  <td>Basic</td>
+                  <td>375</td>
+                  <td>413</td>
+                  <td>488</td>
+                </tr>
+                <tr>
+                  <td>Sustaining</td>
+                  <td>1,500</td>
+                  <td>1,650</td>
+                  <td>1,950</td>
+                </tr>
+                <tr>
+                  <th colspan="4">
+                    <strong class="label">Three-year commitment (15% discount) — Payment is upfront</strong>
+                  </th>
+                </tr>
+                <tr>
+                  <td>Basic</td>
+                  <td>956</td>
+                  <td>1,052</td>
+                  <td>1,243</td>
+                </tr>
+                <tr>
+                  <td>Sustaining</td>
+                  <td>3,825</td>
+                  <td>4,208</td>
+                  <td>4,973</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <p><small>The definition as to Large/Small is at the discretion of the institution.</small></p>
+
+    </div>
+  </li>
+
+  <!-- Institutions that are members of a consortium -->
+  <li class="contribution-tables__type">
+    <h3>For institutions that are members of:</h3>
+    <ul>
+      <li>A billing consortium</li>
+      <li>A library network</li>
+    </ul>
+    <p class="contribution-tables__choice">
+      <strong data-toggle="collapse" data-target="#support-members" aria-expanded="false">
+        → I’m part of a member institution
+      </strong>
+    </p>
+    <div id="support-members" class="collapse" aria-expanded="false">
+      <div class="tabs">
+        <nav class="tabs__menu">
+          <ul class="tabs__list" role="tablist">
+            <li class="tabs__item">
+              <a href="#support-members-large" role="tab" aria-selected="false">→ It’s a <strong>large</strong> institution.</a>
+            </li>
+            <li class="tabs__item">
+              &lt;a href="#support-members-small" role="tab" aria-selected="false"→ &gt;→ It’s a <strong>small</strong> institution.&lt;/a&gt;
+            </li>
+          </ul>
+        </nav>
+
+        <div class="tabs__content">
+          <div id="support-members-large" class="tabs__panel" role="tabpanel" aria-hidden="true">
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>£ (GBP)</th>
+                  <th>€ (EUR)</th>
+                  <th>$ (USD)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th colspan="4">
+                    <strong class="label">One-year commitment</strong>
+                  </th>
+                </tr>
+                <tr>
+                  <td>Basic</td>
+                  <td>525</td>
+                  <td>578</td>
+                  <td>683</td>
+                </tr>
+                <tr>
+                  <td>Sustaining</td>
+                  <td>2,100</td>
+                  <td>2,310</td>
+                  <td>2,730</td>
+                </tr>
+                <tr>
+                  <th colspan="4">
+                    <strong class="label">Three-year commitment (15% discount) — Payment is upfront</strong>
+                  </th>
+                </tr>
+                <tr>
+                  <td>Basic</td>
+                  <td>1,913</td>
+                  <td>2,104</td>
+                  <td>2,486</td>
+                </tr>
+                <tr>
+                  <td>Sustaining</td>
+                  <td>7,650</td>
+                  <td>8,415</td>
+                  <td>9,945</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="support-members-small" class="tabs__panel" role="tabpanel" aria-hidden="true">
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>£ (GBP)</th>
+                  <th>€ (EUR)</th>
+                  <th>$ (USD)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th colspan="4">
+                    <strong class="label">One-year commitment</strong>
+                  </th>
+                </tr>
+                <tr>
+                  <td>Basic</td>
+                  <td>263</td>
+                  <td>289</td>
+                  <td>341</td>
+                </tr>
+                <tr>
+                  <td>Sustaining</td>
+                  <td>1,050</td>
+                  <td>1,155</td>
+                  <td>1,365</td>
+                </tr>
+                <tr>
+                  <th colspan="4">
+                    <strong class="label">Three-year commitment (15% discount) — Payment is upfront</strong>
+                  </th>
+                </tr>
+                <tr>
+                  <td>Basic</td>
+                  <td>669</td>
+                  <td>736</td>
+                  <td>870</td>
+                </tr>
+                <tr>
+                  <td>Sustaining</td>
+                  <td>2,678</td>
+                  <td>2,945</td>
+                  <td>3,481</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <p><small>The definition as to Large/Small is at the discretion of the consortium.</small></p>
+    </div>
+  </li>
+  <li class="contribution-tables__type">
+    <h3>For organisations that are:</h3>
+    <ul>
+      <li>Consortia</li>
+      <li>Library networks</li>
+    </ul>
+    <p class="contribution-tables__choice">
+      <strong data-toggle="collapse" data-target="#support-orgs" aria-expanded="false">
+        → I’m part of a member institution
+      </strong>
+    </p>
+    <div id="support-orgs" class="collapse" aria-expanded="false">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>£ (GBP)</th>
+            <th>€ (EUR)</th>
+            <th>$ (USD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Annual</td>
+            <td>3,000</td>
+            <td>3,300</td>
+            <td>3,900</td>
+          </tr>
+          <tr>
+            <td>Three-year commitment (15% discount, paid upfront)</td>
+            <td>7,650</td>
+            <td>8,415</td>
+            <td>9,945</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </li>
+</ul>
 
 
 

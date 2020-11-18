@@ -28,8 +28,14 @@
     }
   }
 
+  // TODO: Not very nice BEM, need to fix these later
   .label {
     margin: 0;
+  }
+
+  .tabs__item {
+    padding: $spacing-03 $spacing-02 0 $spacing-02;
+    background-color: $fair-pink;
   }
 
   .tabs__panel {
