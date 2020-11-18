@@ -3,7 +3,7 @@ layout: sidenav
 fragment: true
 title: Support DOAJ
 section: Support
-toc: true
+toc: false
 sticky_sidenav: true
 highlight: false
 ---

@@ -4,7 +4,7 @@ fragment: false
 title: Support DOAJ
 order: 1
 section: Support
-toc: true
+toc: false
 sticky_sidenav: true
 highlight: false
 ---
