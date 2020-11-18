@@ -1182,7 +1182,7 @@ class FieldDefinitions:
 
     DEPOSIT_POLICY_OTHER = {
         "name": "deposit_policy_other",
-        "label": "Name of website where policy is registered",
+        "label": "Name of other website where policy is registered",
         "input": "text",
         "conditional": [{"field": "deposit_policy", "value": "other"}],
         "validate": [
@@ -1207,7 +1207,7 @@ class FieldDefinitions:
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
             "doaj_criteria": "You must provide a URL",
-            "short_help": "Link to the policy in the selected directory or on "
+            "short_help": "Link to the policy in a directory or on the "
                           "publisher’s site",
             "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
