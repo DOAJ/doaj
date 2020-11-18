@@ -328,6 +328,9 @@ class OwnerExists(object):
         if not isinstance(username, str):
             raise validators.ValidationError('Invalid username (not a string) passed to OwnerExists validator.')
 
+        if username == "":
+            return
+        
         acc = Account.pull(username)
         if not acc:
             raise validators.ValidationError(self.message.format(reserved=username))
