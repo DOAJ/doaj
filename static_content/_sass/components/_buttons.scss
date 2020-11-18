@@ -87,29 +87,7 @@ input[disabled] + label {
   }
 }
 
-// "Flat 3D"-style buttons for CTAs only
-.button--cta {
-  position: relative;
-  left: 0;
-  top: 0;
-  transition: all 0.15s ease;
-  border-color: $grapefruit;
-  box-shadow: $spacing-01 $spacing-01 0 0 $grapefruit;
-  background-color: $warm-white;
-  color: $grapefruit;
-
-  &:hover,
-  &:active,
-  &:focus {
-    left: $spacing-01;
-    top: $spacing-01;
-    box-shadow: 0 0 0 0 $grapefruit;
-    background-color: $grapefruit;
-    border-color: $grapefruit;
-  }
-}
-
-
+.button--cta,
 input[type="submit"],
 button[type="submit"] {
   background-color: $grapefruit;
