@@ -276,6 +276,7 @@ class Article(DomainObject):
             rbj.title = jbib.title
 
         bibjson.remove_journal_licences()
+        """
         for lic in jbib.licences:
             bibjson.add_journal_license(
                 lic.get("type"),
@@ -283,6 +284,7 @@ class Article(DomainObject):
                 lic.get("url")
             )
             rbj.add_license(lic.get("type"), lic.get("url"))
+        """
 
         if len(jbib.language) > 0:
             jlang = jbib.language
@@ -386,7 +388,6 @@ class Article(DomainObject):
         classification = []
         langs = []
         country = None
-        licenses = []
         publisher = []
         classification_paths = []
         unpunctitle = None
@@ -435,10 +436,6 @@ class Article(DomainObject):
         elif cbib.journal_country:
             country = datasets.get_country_name(cbib.journal_country)
 
-        # get the type of the license
-        for lic in cbib.journal_licenses:
-            licenses.append(lic.get("type"))
-
         # copy the publisher/provider
         if cbib.publisher:
             publisher.append(cbib.publisher)
@@ -448,7 +445,6 @@ class Article(DomainObject):
         subjects = list(set(subjects))
         schema_subjects = list(set(schema_subjects))
         classification = list(set(classification))
-        licenses = list(set(licenses))
         publisher = list(set(publisher))
         langs = list(set(langs))
         schema_codes = list(set(schema_codes))
@@ -518,8 +514,6 @@ class Article(DomainObject):
             self.data["index"]["classification"] = classification
         if len(publisher) > 0:
             self.data["index"]["publisher"] = publisher
-        if len(licenses) > 0:
-            self.data["index"]["license"] = licenses
         if len(langs) > 0:
             self.data["index"]["language"] = langs
         if country is not None:
@@ -727,8 +721,6 @@ class ArticleBibJSON(GenericBibJSON):
     def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
         """
         DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
-
-        :return:
         """
         warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         lobj = {"title": licence_title, "type": licence_type}
@@ -743,8 +735,6 @@ class ArticleBibJSON(GenericBibJSON):
     def get_journal_license(self):
         """
         DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
-
-        :return:
         """
         warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         lics = self._get_list("journal.license")
@@ -756,19 +746,15 @@ class ArticleBibJSON(GenericBibJSON):
     def journal_licenses(self):
         """
         DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
-
-        :return:
         """
         warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         return self._get_list("journal.license")
 
     def remove_journal_licences(self):
         """
-        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
-
-        :return:
+        PENDING DEPRECATION - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
         """
-        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
+        warnings.warn("PENDING DEPRECATION - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", PendingDeprecationWarning)
         self._delete("journal.license")
 
     def get_publication_date(self, date_format='%Y-%m-%dT%H:%M:%SZ'):

@@ -64,24 +64,6 @@
                                                 "publisher": {
                                                     "type": "string"
                                                 }, 
-                                                "license": {
-                                                    "items": {
-                                                        "type": "object", 
-                                                        "properties": {
-                                                            "url": {
-                                                                "type": "string"
-                                                            }, 
-                                                            "type": {
-                                                                "type": "string"
-                                                            }, 
-                                                            "title": {
-                                                                "type": "string"
-                                                            }
-                                                        }, 
-                                                        "title": "license"
-                                                    }, 
-                                                    "type": "array"
-                                                }, 
                                                 "language": {
                                                     "items": {
                                                         "type": "string"

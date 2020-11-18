@@ -13,9 +13,9 @@ DOAJ_VERSION = "3.1.7"
 
 OFFLINE_MODE = False
 
-# List the features we want to be active (once upon a time we had an api v1 but it's been deleted so is no longer valid)
-FEATURES = ['api2']
-VALID_FEATURES = ['api2']
+# List the features we want to be active (API v1 remains with redirects to v2 features)
+FEATURES = ['api1', 'api2']
+VALID_FEATURES = ['api1', 'api2']
 
 API_VERSION = "2.0.0"
 

@@ -15,7 +15,7 @@ GA_ACTIONS = app.config.get('GA_ACTIONS_API', {})
 
 API_v2_ERROR = "Version 1 is no longer supported."
 
-# the API v2 is not supported anymore, this file handles api v2 requests:
+# the API v1 is not supported anymore, this file handles api v2 requests:
 # requests to articles are redirected to v2
 # other requests raise the 400 Error
 
@@ -51,7 +51,7 @@ def create_article():
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('retrieve_article', 'Retrieve article'),
                           record_value_of_which_arg='article_id')
 def retrieve_article(article_id):
-    return redirect(url_for('api_v2.retrieve_article', article_id=article_id))
+    return redirect(url_for('api_v2.retrieve_article', article_id=article_id, **request.args), code=301)
 
 
 @blueprint.route("/articles/<article_id>", methods=["PUT"])
@@ -60,7 +60,7 @@ def retrieve_article(article_id):
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('update_article', 'Update article'),
                           record_value_of_which_arg='article_id')
 def update_article(article_id):
-    return redirect(url_for('api_v2.search_articles', article_id=article_id, **request.args), code=301)
+    return redirect(url_for('api_v2.update_article', article_id=article_id, **request.args), code=301)
 
 
 @blueprint.route("/articles/<article_id>", methods=["DELETE"])
