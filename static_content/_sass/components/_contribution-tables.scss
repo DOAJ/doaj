@@ -1,0 +1,45 @@
+.contribution-tables {
+  margin-left: 0;
+  padding-left: 0;
+  list-style: none;
+
+  > li > ul {
+    margin-left: 0;
+  }
+
+  table {
+    width: 100%;
+
+    th {
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: smaller;
+    }
+
+    th:first-child {
+      width: 40%;
+    }
+
+    th:not(:first-child),
+    td:not(:first-child) {
+      width: 20%;
+      text-align: right;
+      font-weight: 600;
+    }
+  }
+
+  &__type {
+    padding-bottom: $spacing-03;
+    border-bottom: 1px dashed $grapefruit;
+  }
+
+  &__choice {
+    margin: 0;
+    cursor: pointer;
+  }
+
+  &__subchoice {
+    padding-left: $spacing-04;
+    border-left: 1px solid $sanguine;
+  }
+}
