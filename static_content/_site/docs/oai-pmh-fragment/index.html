@@ -247,10 +247,6 @@
       <td>Links to related resources: the full-text url</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">provenance</code></td>
-      <td>Includes information about the journal’s content re-use policy. Will be one of the Creative Commons licences. This does not necessarily indicate the article’s re-use policy.</td>
-    </tr>
-    <tr>
       <td><code class="language-plaintext highlighter-rouge">publisher</code></td>
       <td>The publisher/provider of the journal this article appears in.</td>
     </tr>
@@ -329,7 +325,6 @@
       <span class="nt">&lt;dc:language&gt;</span>English<span class="nt">&lt;/dc:language&gt;</span>
       <span class="nt">&lt;dc:language&gt;</span>Spanish<span class="nt">&lt;/dc:language&gt;</span>
       <span class="nt">&lt;dc:language&gt;</span>Portuguese<span class="nt">&lt;/dc:language&gt;</span>
-      <span class="nt">&lt;dc:rights&gt;</span>CC BY-NC<span class="nt">&lt;/dc:rights&gt;</span>
     <span class="nt">&lt;/oai_dc:dc&gt;</span>
   <span class="nt">&lt;/metadata&gt;</span>
 <span class="nt">&lt;/record&gt;</span>
@@ -345,6 +340,10 @@
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td>25 November 2020</td>
+      <td>The <code class="language-plaintext highlighter-rouge">dc:provenance</code> element was removed, as we no longer synchronise provenance information to our article records from the journal.</td>
+    </tr>
     <tr>
       <td>22 August 2016</td>
       <td>The <code class="language-plaintext highlighter-rouge">dc:rights</code> element was removed, as it was technically inaccurate - it represented the Journal’s overall licence policy, not the specific rights for the article. This information is now in <code class="language-plaintext highlighter-rouge">dc:provenance</code>.</td>
