@@ -1731,7 +1731,7 @@ class FieldSetDefinitions:
 
     APC = {
         "name": "apc",
-        "label": "Article processing charges (APCs)",
+        "label": "Publication fees",
         "fields": [
             FieldDefinitions.APC["name"],
             FieldDefinitions.APC_URL["name"],
@@ -1743,7 +1743,7 @@ class FieldSetDefinitions:
 
     APC_WAIVERS = {
         "name": "apc_waivers",
-        "label": "APC waivers",
+        "label": "Publication fee waivers",
         "fields": [
             FieldDefinitions.HAS_WAIVER["name"],
             FieldDefinitions.WAIVER_URL["name"],
