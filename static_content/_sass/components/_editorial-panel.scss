@@ -1,25 +1,24 @@
 .editorial-panel {
-  max-height: 50vh;
-  overflow-y: scroll;
+  margin-top: 0;
 
   select, textarea, input {
     width: 100%;
   }
 
-  fieldset {
-    margin: 0;
-    padding: $spacing-03 0;
-    border-top: 1px dashed rgba($dark-grey, 0.5);
-
-    &:first-of-type {
-      border: 0;
-      margin-bottom: $spacing-03;
-    }
-  }
-
   @media (min-width: 992px) {
-    position: fixed;
-    max-height: 70vh;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 55px; // sticky header + 5px
+
+    &__save {
+      position: sticky;
+      top: 0;
+    }
+
+    &__content {
+      max-height: 70vh;
+      overflow-y: scroll;
+    }
 
     select, textarea, input, label, p {
       width: 20vw;

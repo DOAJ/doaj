@@ -134,7 +134,6 @@ $.extend(true, doaj, {
                             <aside class="filters">\
                               <h2 class="filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
                                 <span data-feather="sliders" aria-hidden="true"></span> Refine search results \
-                                <span data-feather="chevron-down" aria-hidden="true"></span>\
                               </h2>\
                               <ul class="collapse filters__list" id="filters" aria-expanded="false">\
                                   {{FACETS}}\
@@ -897,7 +896,7 @@ $.extend(true, doaj, {
                 var shareButtonFrag = "";
                 var shareButtonClass = edges.css_classes(this.namespace, "toggle-share", this);
                 var modalId = edges.css_id(this.namespace, "modal", this);
-                shareButtonFrag = '<button href="#" data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + '" type="button">' + this.shareLinkText + '</button>';
+                shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--secondary" role="button">' + this.shareLinkText + '</button>';
 
                 var shorten = "";
                 if (this.component.urlShortener) {

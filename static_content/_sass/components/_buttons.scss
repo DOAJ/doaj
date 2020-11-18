@@ -32,10 +32,10 @@ input[type="button"],
     color: $warm-white;
   }
 
-  svg {
+  .feather {
     position: relative;
     top: 0.1em;
-    height: 1em;
+    height: 0.75em;
   }
 
   + .button {
@@ -59,16 +59,6 @@ input[disabled],
   box-shadow: none;
   font-style: italic;
   cursor: not-allowed;
-
-  &:hover,
-  &:active,
-  &:focus {
-    left: 0;
-    top: 0;
-    background-color: rgba($dark-grey, 0.5) !important;
-    border-color: rgba($dark-grey, 0.5) !important;
-    color: $warm-black !important;
-  }
 }
 
 input[disabled] + label {
