@@ -2364,7 +2364,8 @@ $.extend(true, doaj, {
                         }
                     }
                 }
-
+                // We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+                /*
                 var license = "";
                 if (edges.hasProp(resultobj, "bibjson.journal.license") && resultobj.bibjson.journal.license.length > 0) {
                     for (var i = 0; i < resultobj.bibjson.journal.license.length; i++) {
@@ -2372,6 +2373,7 @@ $.extend(true, doaj, {
                         license += '<a href="' + lic.url + '" target="_blank" rel="noopener">' + lic.type + '</a> ';
                     }
                 }
+                */
 
                 var published = "";
                 if (edges.hasProp(resultobj, "bibjson.journal.publisher")) {
@@ -2407,15 +2409,16 @@ $.extend(true, doaj, {
                             <a href="/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
                           </li>\
                           <li>\
-                            ' + license + '\
-                          </li>\
-                          <li>\
                             ' + published + '\
                           </li>\
                         </ul>\
                       </aside>\
                     </article></li>';
-
+                        /*
+                         <li>\
+                            ' + license + '\
+                         </li>\
+                         */
                 // close off the result and return
                 return frag;
             };
