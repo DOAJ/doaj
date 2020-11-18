@@ -148,10 +148,6 @@ class OAI_DC_Article(OAI_DC):
                 langel = etree.SubElement(oai_dc, self.DC + "language")
                 set_text(langel, language)
 
-        if bibjson.get_journal_license() is not None:
-            prov = etree.SubElement(oai_dc, self.DC + "provenance")
-            set_text(prov, "Journal Licence(s): " + ", ".join([lic.get("type") for lic in bibjson.journal_licenses if "type" in lic]))
-
         citation = self._make_citation(bibjson)
         if citation is not None:
             cite = etree.SubElement(oai_dc, self.DC + "source")

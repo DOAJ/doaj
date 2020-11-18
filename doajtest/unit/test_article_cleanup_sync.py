@@ -295,13 +295,13 @@ class TestArticleCleanupSync(DoajTestCase):
             a1.add_journal_metadata(j)
 
         with self.assertWarns(DeprecationWarning):
-            lic = a1.bibjson().get_journal_license()
+            _ = a1.bibjson().get_journal_license()
 
-        with self.assertWarns(DeprecationWarning):
+        with self.assertWarns(PendingDeprecationWarning):
             a1.bibjson().remove_journal_licences()
 
         with self.assertWarns(DeprecationWarning):
-            a1.bibjson().set_journal_license(licence_title=lic['title'], licence_type=lic['type'], url=lic['url'])
+            a1.bibjson().set_journal_license(licence_title='title1', licence_type='CC', url='http://example.com/license')
 
         with self.assertWarns(DeprecationWarning):
             a1.bibjson().add_journal_license('Title2', 'CC', 'https://example.com')

@@ -30,15 +30,6 @@ The JSON structure of the model is as follows:
             "language": [
                 "string"
             ], 
-            "license": [
-                {
-                    "open_access": true, 
-                    "title": "string", 
-                    "type": "string", 
-                    "url": "string", 
-                    "version": "string"
-                }
-            ], 
             "number": "string", 
             "publisher": "string", 
             "start_page": "string", 
@@ -88,11 +79,6 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | bibjson.journal.country | The country of the publisher using the ISO-3166 2-letter country codes.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created | unicode |  |  |
 | bibjson.journal.end_page | End page of the article in the journal | unicode |  |  |
 | bibjson.journal.language | The language of the Journal using the ISO-639-1 2-letter language codes.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created | unicode |  |  |
-| bibjson.journal.license.open_access | Is the parent journal Open Access? You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created | bool |  |  |
-| bibjson.journal.license.title | The name of the licence of the parent journal. You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created | unicode |  |  |
-| bibjson.journal.license.type | The type of the licence of the parent journal.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created | unicode |  |  |
-| bibjson.journal.license.url | The URL for the licence terms of the parent journal.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created | unicode |  |  |
-| bibjson.journal.license.version | The version of the licence terms of the parent journal.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created | unicode |  |  |
 | bibjson.journal.number | The issue number of the journal within which this article appears | unicode |  |  |
 | bibjson.journal.publisher | The name of the publisher of the journal.  You can retrieve this value from DOAJ, and it will be **populated for you** when an article is created | unicode |  |  |
 | bibjson.journal.start_page | The start page of the article in the journal | unicode |  |  |

@@ -154,15 +154,6 @@ ARTICLE_SOURCE = {
             "number": "99",
             "publisher": "The Publisher",
             "title": "The Title",
-            "license": [
-                {
-                    "title": "CC BY",
-                    "type": "CC BY",
-                    "url": "http://license.example.com",
-                    "version": "1.0",
-                    "open_access": True,
-                }
-            ],
             "language": ["EN", "FR"],
             "country": "US"
         },

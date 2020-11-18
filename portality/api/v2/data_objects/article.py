@@ -77,20 +77,20 @@ BASE_ARTICLE_STRUCT = {
                         "country": {"coerce": "unicode"}
                     },
                     "lists": {
-                        "license": {"contains": "object"},
+                        # "license": {"contains": "object"},
                         "language": {"coerce": "unicode", "contains": "field"}
                     },
                     "structs": {
-
-                        "license": {
-                            "fields": {
-                                "title": {"coerce": "license"},
-                                "type": {"coerce": "license"},
-                                "url": {"coerce": "unicode"},
-                                "version": {"coerce": "unicode"},
-                                "open_access": {"coerce": "bool"},
-                            }
-                        }
+                       # We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+                        # "license": {
+                        #     "fields": {
+                        #         "title": {"coerce": "license"},
+                        #         "type": {"coerce": "license"},
+                        #         "url": {"coerce": "unicode"},
+                        #         "version": {"coerce": "unicode"},
+                        #         "open_access": {"coerce": "bool"},
+                        #     }
+                        # }
                     }
                 },
 
