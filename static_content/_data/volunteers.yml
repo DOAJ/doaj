@@ -881,12 +881,27 @@ ass_ed:
   country: USA
   language: English
 
+- name: Ricardo Alejandro Fagoaga Hernández 
+  area: History
+  year_since:
+  city: Ciudad de Mexico
+  country: Mexico
+  language: Spanish, English
+
 - name: Richard James
   area: Medicine
   year_since:
   city: Philadelphia, PA
   country: USA
   language: English
+  
+- name: Riitta Koikkalainen
+  area: Librarianship
+  year_since:
+  city: Helsinki
+  country: Finland
+  language: Finnish, English
+
 
 - name: Roberto Sarmiento
   area: Engineering
@@ -894,22 +909,56 @@ ass_ed:
   city: San Luis Potosi
   country: Mexico
   language: Spanish, English
-
-
+  
 - name: S. Mohammad Amini
   area: Science
   year_since:
   city: Esfahan
   country: Iran
   language: Farsi, English
+  
+- name: Sami Syrjämäki
+  area: Humanities, Social Sciences
+  year_since:
+  city: Helsinki
+  country: Finland
+  language: Finnish, English
 
-- name: Sandra Aceng
+- name: Sandra Müller
+  area: 
+  year_since:
+  city:
+  country: 
+  language: German, English
+  
+- name: Sandra Studer
+  area: 
+  year_since:
+  city:
+  country: 
+  language: German, English
+  
+- name: Sara Jalalzadeh Asrjadidi
+  area: Librarianship
+  year_since:
+  city: Tabriz
+  country: Azerbaijan
+  language: Azerbaijani, English
+  
+- name: Sara Ricetto
+  area: 
+  year_since:
+  city:
+  country: Italy
+  language: Italian, English
+  
+
+- name: Sumi Kang
   area: Social Sciences
-  year_since: "2020"
-  city: Kampala
-  country: Uganda
-  language: English, Luo
-  photo: "aceng.jpg"
+  year_since:
+  city: Sejong
+  country: Korea
+  language: Korean, English
 
 - name: Sara Ricetto
   area: Open Access, Open Science
@@ -919,11 +968,32 @@ ass_ed:
   language: Italian, English, German
 
 - name: Simone Rosenkranz
-  area:
+  area: Humanities
   year_since:
-  city:
-  country:
-  language:
+  city: Luzern
+  country: Switzerland
+  language: German, English
+  
+- name: Soeharto Fisika
+  area: Humanities
+  year_since:
+  city: 
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Sofia Fagiolo
+  area: Librarianship
+  year_since:
+  city: Rome
+  country: Italy
+  language: Italian, English
+
+- name: Soon Kim
+  area: 
+  year_since:
+  city: 
+  country: Republic of Korea
+  language: Korean, English
 
 - name: Stewart C Baker
   area: Humanities, Library Science
@@ -932,20 +1002,34 @@ ass_ed:
   country: USA
   language: English, Japanese
 
+- name: Souleymane Sogoba
+  area: Statistics
+  year_since:
+  city: Bamako
+  country: Mali
+  language: French
+  photo: "sogoba1.jpg"
+  
 - name: Sumi Kang
   area: Social Sciences
   year_since:
   city: Sejong
   country: Korea
   language: Korean, English
-
-- name: Souleymane Sogoba
-  area: Statistics
-  year_since: "2020"
-  city: Bamako
-  country: Mali
-  language: French
-  photo: "sogoba1.jpg"
+  
+- name: Swasti Maharani
+  area: Mathematics
+  year_since:
+  city: Jawa Timur
+  country: Indonesia
+  language: Indonesian, English
+  
+- name: Taner Kemal Erdağ
+  area: Mathematics
+  year_since:
+  city: Ízmir
+  country: Turkey
+  language: Turkish, English
 
 - name: Teodor Mihaela
   area: Humanities, Social Sciences
@@ -960,6 +1044,14 @@ ass_ed:
   city: Prague
   country: Czech Republic
   language: Czech, Slovak, English
+  
+- name: Tommaso Fava
+  area: 
+  year_since:
+  city: 
+  country: Italy
+  language: Italian, English
+
 
 - name: Umar Khasan
   area: Social Sciences
@@ -967,6 +1059,14 @@ ass_ed:
   city: Bangkalan
   country: Indonesia
   language: Indonesian, English
+  
+- name: Volkan Demir
+  area: Science
+  year_since:
+  city: Istanbul
+  country: Turkey
+  language: Turkish, English
+
 
 - name: Weronika Kortas
   area: Humanities, Social Sciences
@@ -988,3 +1088,19 @@ ass_ed:
   city: Chungju
   country: Korea
   language: Korean, English
+  
+- name: Yvonne Leimgruber
+  area: Librarianship
+  year_since:
+  city: Lucerne
+  country: Switzerland
+  language: German, English
+
+- name: Zhe Jiang
+  area: 
+  year_since:
+  city: 
+  country: China
+  language: Chinese, English
+
+
