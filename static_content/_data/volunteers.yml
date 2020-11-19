@@ -343,6 +343,27 @@ ass_ed:
   city: Querétaro
   country: Mexico
   language: Spanish, English
+  
+- name: Dwi Fajar Saputra
+  area: Librarianship
+  year_since:
+  city: Jakarta
+  country: Indonesia
+  language: Indonesian, English
+  
+- name: Eeva Henrikssson
+  area: Social Sciences
+  year_since:
+  city: 
+  country: Finland
+  language: Finnish, English
+  
+- name: Eko Pramudya Laksana
+  area: Social Sciences
+  year_since:
+  city: Malang
+  country: Indonesia
+  language: Indonesian, English
 
 - name: Elisangela Gisele do Carmo
   area: Gerontology
@@ -352,11 +373,18 @@ ass_ed:
   language: Portuguese, English
 
 - name: Elli Papadopoulou
-  area:
+  area: Librarianship
   year_since:
-  city:
-  country:
-  language:
+  city: Marousi
+  country: Greece
+  language: Greek, English
+  
+- name: Emma Molls
+  area: Librarianship
+  year_since:
+  city: Minneapolis, MN
+  country: USA
+  language: English
 
 - name: Enes Sukic
   area: Science
@@ -374,7 +402,7 @@ ass_ed:
 
 - name: Faith Oronga Amatika-Omondi
   area: Librarianship
-  year_since: "2020"
+  year_since:
   city:
   country: Kenya
   language: English
