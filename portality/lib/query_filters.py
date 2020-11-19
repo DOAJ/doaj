@@ -45,6 +45,12 @@ def update_request(q):
     return q
 
 
+def not_update_request(q):
+    q.clear_match_all()
+    q.add_must({"missing" : {"field" : "admin.current_journal"}})
+    return q
+
+
 def associate(q):
     q.clear_match_all()
     q.add_must({"term" : {"admin.editor.exact" : current_user.id}})

@@ -485,7 +485,7 @@ QUERY_ROUTE = {
         "applications" : {
             "auth" : True,
             "role" : "publisher",
-            "query_filters" : ["owner"],
+            "query_filters" : ["owner", "not_update_request"],
             "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.AllPublisherApplications"
         },
@@ -596,6 +596,7 @@ QUERY_FILTERS = {
     "strip_facets" : "portality.lib.query_filters.strip_facets",
     "es_type_fix" : "portality.lib.query_filters.es_type_fix",
     "last_update_fallback" : "portality.lib.query_filters.last_update_fallback",
+    "not_update_request" : "portality.lib.query_filters.not_update_request",
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",

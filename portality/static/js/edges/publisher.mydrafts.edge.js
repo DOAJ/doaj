@@ -9,7 +9,7 @@ $.extend(true, doaj, {
                     var status = resultobj.admin.application_status;
                     var result = "";
                     var view = '(<a href="' + doaj.publisherUpdatesSearchConfig.journalReadOnlyUrl + resultobj['id'] + '">view request</a>)';
-                    if (status === "update_request" || status == "revisions_required") {
+                    if (status === "update_request" || status === "revisions_required") {
                         var actionUrl = doaj.publisherUpdatesSearchConfig.journalUpdateUrl + resultobj.admin.current_journal;
                         result = '<span><a class="edit_suggestion_link" href="' + actionUrl;
                         result += '"';
@@ -41,30 +41,12 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                // edges.newPager({
-                //     id: "top-pager",
-                //     category: "top-pager",
-                //     renderer : doaj.renderers.newPagerRenderer({
-                //         numberFormat: countFormat,
-                //         scrollSelector: "#top-pager"
-                //     })
-                // }),
-
                 // results display
                 edges.newResultsDisplay({
                     id: "results",
                     category: "results",
                     renderer : doaj.renderers.newPublisherApplicationRenderer()
-                }),
-
-                // edges.newPager({
-                //     id: "bottom-pager",
-                //     category: "bottom-pager",
-                //     renderer : doaj.renderers.newPagerRenderer({
-                //         numberFormat: countFormat,
-                //         scrollSelector: "#top-pager"    // FIXME: these selectors don't work, why not?
-                //     })
-                // })
+                })
             ];
             var e = edges.newEdge({
                 selector: selector,
@@ -75,7 +57,7 @@ $.extend(true, doaj, {
                     must: [
                         es.newTermsFilter({
                             field: "admin.application_status.exact",
-                            values: ["update_request", "revisions_requried", "pending", "in progress", "completed", "on hold", "ready", "draft"]
+                            values: ["revisions_requried", "pending", "in progress", "completed", "on hold", "ready", "draft"]
                         })
                     ],
                     sort: [{"field" : "last_updated", "order" : "desc"}],
