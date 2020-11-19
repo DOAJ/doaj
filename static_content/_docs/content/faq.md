@@ -91,26 +91,26 @@ In cases where there is no action to be taken, or the suggested actions have not
 **Resolution**: Please [contact us](/contact/) immediately with the details:
 
 1. The contact details for the person reporting the bug (or a proxy for them) so that we can request more detail if needed.
-    + That might be you or someone working on your behalf.
-  2. The user account you are logged in to when the problem occurred.
-  3. Tell us which area of the system this happened in. Generally: in the UI/API/OAI; and ideally specifically:
-    + which URL were you on when it happened, or
-    + which URL were you trying to access.
-  4. At what date and time the incident occurred.
-    + If it happened several times, then all dates/times that were recorded, or a range.
-  5. What were you trying to do? As much detail and context as possible.
-    + Send a screenshot of the entire screen. An image always helps.
-  6. What happened? What error message was received?
-    + Provide the exact error message; don't paraphrase
-    + Send a screenshot
-    + What did you expect to happen?
-    + Was the problem repeatable?
-    + Did you try several times with the same result?
-  7. What environment are you in?
-    + Specifically which browser or,
-    + If not in the browser, any useful information about your API client such as the user agent.
-  8. Send copies of any data you sent to the system.
-    + For example, article XML files uploaded, or payloads sent to the API.
+  + That might be you or someone working on your behalf.
+2. The user account you are logged in to when the problem occurred.
+3. Tell us which area of the system this happened in. Generally: in the UI/API/OAI; and ideally specifically:
+  + which URL were you on when it happened, or
+  + which URL were you trying to access.
+4. At what date and time the incident occurred.
+  + If it happened several times, then all dates/times that were recorded, or a range.
+5. What were you trying to do? As much detail and context as possible.
+  + Send a screenshot of the entire screen. An image always helps.
+6. What happened? What error message was received?
+  + Provide the exact error message; don't paraphrase
+  + Send a screenshot
+  + What did you expect to happen?
+  + Was the problem repeatable?
+  + Did you try several times with the same result?
+7. What environment are you in?
+  + Specifically which browser or,
+  + If not in the browser, any useful information about your API client such as the user agent.
+8. Send copies of any data you sent to the system.
+  + For example, article XML files uploaded, or payloads sent to the API.
 
 Don’t send us your passwords or API keys.
 
