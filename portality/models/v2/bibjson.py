@@ -383,7 +383,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def has_pid_scheme(self):
-        return self.__seamless__.get_single("pid_scheme.has_pid_scheme", False)
+        return self.__seamless__.get_single("pid_scheme.has_pid_scheme")
 
     @has_pid_scheme.setter
     def has_pid_scheme(self, val):
