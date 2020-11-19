@@ -308,13 +308,13 @@ ass_ed:
   country: Poland
   language: Polish, English
 
-- name: Deborah Lins e Nóbrega
-  area: Social Sciences
+- name: Débora Domingo-Calabuig
+  area: Science, Technology
   year_since:
-  city: Brasilia
-  country: Brazil
-  language: Portuguese, English
-  photo: "DéborahLins.jpeg"
+  city: Valencia
+  country: Spain
+  language: Spanish, English
+  
 
 - name: Dedi Rahman Nur
   area: Social Sciences
@@ -322,13 +322,6 @@ ass_ed:
   city: Samarinda
   country: Indonesia
   language: Indonesian, English
-
-- name: Dian Eka Indriani
-  area:
-  year_since:
-  city:
-  country:
-  language:
 
 - name: Dr. Eko Supraptono
   area: Technology
@@ -341,8 +334,15 @@ ass_ed:
   area:
   year_since:
   city:
-  country:
-  language:
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Driselda Sánchez Aguirre
+  area: Social Sciences
+  year_since:
+  city: Querétaro
+  country: Mexico
+  language: Spanish, English
 
 - name: Elisangela Gisele do Carmo
   area: Gerontology
