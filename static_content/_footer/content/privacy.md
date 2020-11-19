@@ -73,6 +73,8 @@ When you use DOAJ, cookies are set on your machine. There are 3 sites currently 
 *   jquery - we use jquery.com to load the javascript framework.
 *   doaj.org - a small number of required cookies for the application to function, for example when you log in and when you click away the cookie consent banner.
 *   schema - if you upload article metadata to us via the Upload Article XML tab, we place a cookie on your machine which allows us to remember which XSD schema you used the last time you uploaded XML to us: doaj or Crossref
+*   hotjar - we use hotjar to do unmoderated monitoring of users journeys through our site. We look at where they click on a page, where they stop in a process (such as submitting an application) and we collect feedback via the Hotjar chat app.
+*   twitter - on our homepage is an embedded Twitter feed. This app comes with cookies so make Twiiter work, such as checking to see if you are logged in, or whether you have specific advertising preferences.
 
 You can disable these cookies at any time by using the privacy settings in your browser however the performance and some functions of the site may be affected.
 
