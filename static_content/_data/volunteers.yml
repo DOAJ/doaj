@@ -130,11 +130,11 @@ ass_ed:
   language: Tamil, Urdu, Hindi, English
 
 - name: Aji Prasetya Wibawa
-  area:
+  area: Technology
   year_since:
-  city:
-  country:
-  language:
+  city: Malang
+  country: Indonesia
+  language: Indonesian, English
 
 - name: Alessandro Pierno
   area: Humanities
@@ -339,7 +339,7 @@ ass_ed:
   language: Indonesian, English
 
 - name: Dr. Ir. Dyah Rini Indriyanti
-  area:
+  area: Science
   year_since:
   city:
   country: Indonesia
@@ -362,7 +362,7 @@ ass_ed:
 - name: Eeva Henrikssson
   area: Social Sciences
   year_since:
-  city: 
+  city: Helsinki
   country: Finland
   language: Finnish, English
   
@@ -461,11 +461,11 @@ ass_ed:
   language: German, Swedish, English
 
 - name: Gertrud Pluskwik
-  area:
+  area: Librarianship
   year_since:
-  city:
-  country:
-  language:
+  city: Basel
+  country: Switzerland
+  language: German, English
 
 - name: Hanae Lrhoul
   area:
