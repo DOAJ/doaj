@@ -6,12 +6,13 @@ from flask_login import current_user
 
 from portality import models, lock
 from portality.core import app
-from portality.formcontext import formcontext
 
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
+from portality.forms.application_forms import ApplicationFormFactory
+from portality.lib.formulaic import FormulaicException
 
 
 def suggestion_manage(selection_query, dry_run=True, editor_group='', note='', application_status=''):
@@ -59,6 +60,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
         """
         job = self.background_job
         params = job.params
+        account = models.Account.pull(job.user)
 
         ids = self.get_param(params, 'ids')
         editor_group = self.get_param(params, 'editor_group')
@@ -77,7 +79,9 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
                 job.add_audit_message("Suggestion with id {} does not exist, skipping".format(suggestion_id))
                 continue
 
-            fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=s)
+            formulaic_context = ApplicationFormFactory.context("admin")
+            fc = formulaic_context.processor(source=s)
+            # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=s)
 
             if editor_group:
                 job.add_audit_message(
@@ -110,8 +114,8 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
             if updated:
                 if fc.validate():
                     try:
-                        fc.finalise()
-                    except formcontext.FormContextException as e:
+                        fc.finalise(account)
+                    except FormulaicException as e:
                         job.add_audit_message(
                             "Form context exception while bulk editing suggestion {} :\n{}".format(suggestion_id, str(e)))
                 else:

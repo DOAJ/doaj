@@ -330,7 +330,7 @@ class OwnerExists(object):
 
         if username == "":
             return
-        
+
         acc = Account.pull(username)
         if not acc:
             raise validators.ValidationError(self.message.format(reserved=username))

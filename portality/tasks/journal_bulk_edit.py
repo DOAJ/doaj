@@ -125,7 +125,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                     fc.form[k].data = v
                 else:
                     if v:
-                        fc.doaj_seal.data = v
+                        fc.form.doaj_seal.data = v
                 updated = True
 
             if note:

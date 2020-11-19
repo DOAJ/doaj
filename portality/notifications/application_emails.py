@@ -40,6 +40,7 @@ def send_editor_group_email(obj):
     else:
         app.logger.error("Attempted to send editor group email for something that's not an Application or Journal")
         return
+
     eg = models.EditorGroup.pull_by_key("name", obj.editor_group)
     if eg is None:
         return
@@ -70,8 +71,14 @@ def send_assoc_editor_email(obj):
         app.logger.error("Attempted to send email to editors for something that's not an Application or Journal")
         return
 
+    if obj.editor is None:
+        return
+
     assoc_editor = models.Account.pull(obj.editor)
     eg = models.EditorGroup.pull_by_key("name", obj.editor_group)
+
+    if assoc_editor is None or eg is None:
+        return
 
     url_root = app.config.get("BASE_URL")
     to = [assoc_editor.email]

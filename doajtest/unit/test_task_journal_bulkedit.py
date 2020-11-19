@@ -164,10 +164,14 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         """Bulk assign an editor group to a bunch of journals using a background task"""
         new_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors(group_name='Test Editor Group')
 
+        acc = models.Account()
+        acc.set_id("test1")
+        acc.save(blocking=True)
+
         # test dry run
         summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
                                  publisher_name="my replacement publisher",
-                                 doaj_seal=True,
+                                 change_doaj_seal=True,
                                  publisher_country="AF",
                                  owner="test1",
                                  dry_run=True)
@@ -175,7 +179,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
         summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
                                  publisher_name="my replacement publisher",
-                                 doaj_seal=True,
+                                 change_doaj_seal=True,
                                  publisher_country="AF",
                                  owner="test1",
                                  dry_run=False)
@@ -200,6 +204,10 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
     def test_06_bulk_edit_formcontext(self):
         source = JournalFixtureFactory.make_bulk_edit_data()
+
+        acc = models.Account()
+        acc.set_id("testuser")
+        acc.save(blocking=True)
 
         # we start by constructing it from source
         formulaic_context = JournalFormFactory.context("bulk_edit")
@@ -232,7 +240,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
         # test dry run
         summary = journal_manage({"query": {"terms": {"_id": [journal.id]}}},
-                                 doaj_seal=True,
+                                 change_doaj_seal=True,
                                  dry_run=False)
 
         sleep(2)
