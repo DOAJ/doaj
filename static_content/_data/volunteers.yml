@@ -225,6 +225,29 @@ ass_ed:
   city: Canberra
   country: Australia
   language: English
+  
+- name: Antti-Jussi Nygård
+  area: History
+  year_since:
+  city: Turku
+  country: Finland
+  language: English, Finnish
+  
+
+- name: Arbain Arbain
+  area: Humanities
+  year_since:
+  city: Samarinda
+  country: Indonesia
+  language: Indonesian, English
+  
+  
+- name: Barbara Łuszczek
+  area: Librarianship
+  year_since:
+  city: Bydgoszcz
+  country: Poland
+  language: Polish, English
 
 - name: Ben Catt
   area: Librarianship, Research Support
@@ -232,6 +255,13 @@ ass_ed:
   city: York
   country: United Kingdom
   language: English
+  
+- name: Busro Busro
+  area: Humanities
+  year_since:
+  city: Bandung
+  country: Indonesia
+  language: Indonesian, English
   
 - name: Carlos Alegre
   area: Social Sciences
@@ -241,14 +271,12 @@ ass_ed:
   language: Spanish, English
   photo: "CarlosAlegre.jpg"
  
-  
-- name: Christine Davidian
+  - name: Christine Davidian
   area: Technology
   year_since:
   city: Glassboro, NJ
   country: USA
   language: English, French
-
 
 - name: Constancy Aleru
   area: Medical Sciences
@@ -258,14 +286,27 @@ ass_ed:
   language: English, French
   photo: "aleru.jpg"
 
+- name: Dania Deroy Dominguez
+  area: Social Sciences
+  year_since:
+  city: La Habana
+  country: Cuba
+  language: English, French
+
 - name: Danner Sagala
   area: Science
-  year_since: "2020"
+  year_since:
   city: Bengkulu
   country: Indonesia
   language: Indonesian, English
   photo: "sagala.jpg"
 
+- name: Daria Chrześcijańska
+  area: Technology
+  year_since:
+  city: Toruń
+  country: Poland
+  language: Polish, English
 
 - name: Deborah Lins e Nóbrega
   area: Social Sciences
