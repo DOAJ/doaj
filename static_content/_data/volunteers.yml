@@ -51,7 +51,15 @@ ed:
   country: USA
   language: Russian, German, English
   featured: true
+  
 
+- name: Ikhwan Arief
+  area: Science, Technology
+  year_since:
+  city: Padang, West Sumatra
+  country: Indonesia
+  language: Indonesian, English
+  
 - name: Lut Tamam
   area: Medicine
   year_since:
@@ -400,6 +408,15 @@ ass_ed:
   country: Turkey
   language: Turkish, English
 
+
+- name: Eva Höglund
+  area: Social Sciences
+  year_since:
+  city: Turku
+  country: Finland
+  language: Finnish, English
+
+
 - name: Faith Oronga Amatika-Omondi
   area: Librarianship
   year_since:
@@ -411,7 +428,7 @@ ass_ed:
 
 - name: Faizal Risdianto
   area: Humanities
-  year_since: "2020"
+  year_since:
   city: Solo
   country: Indonesia
   language: Indonesian, English
@@ -433,11 +450,11 @@ ass_ed:
   language: Italian, English
 
 - name: Georgios Leontidis
-  area:
+  area: Technology
   year_since:
-  city:
-  country:
-  language:
+  city: Aberdeen
+  country: UK
+  language: English
 
 - name: Gerald Langhanke
   area: Science, Technology
@@ -462,11 +479,26 @@ ass_ed:
 
 - name: Handoko
   area: Information Technology
-  year_since: "2020"
+  year_since:
   city: Padang
   country: Indonesia
   language: Indonesian, English
   photo: "handoko.jpg"
+  
+- name: Haydar Oruç
+  area: Humanities
+  year_since:
+  city: Sakarya
+  country: Turkey
+  language: Turkish, English
+  
+- name: Hyun Jung Yi
+  area: 
+  year_since:
+  city: 
+  country: Republic of Korea
+  language: Korean, English
+
 
 - name: Iryna Kuchma
   area: Humanities, Social Sciences
@@ -497,6 +529,85 @@ ass_ed:
   country: Lebanon
   language: Arabic, French, English
 
+- name: Janne Pölönen
+  area: 
+  year_since:
+  city: 
+  country: 
+  language: English
+  
+- name: Jiayi Xu
+  area: 
+  year_since:
+  city: 
+  country: 
+  language: English
+  
+- name: Jinjin Liu
+  area: 
+  year_since:
+  city: 
+  country: 
+  language: English
+  
+- name: João Sousa
+  area: 
+  year_since:
+  city: 
+  country: 
+  language: Portuguese, English
+  
+- name: Johanna Glader
+  area: 
+  year_since:
+  city: 
+  country: 
+  language: English
+  
+ - name: JooYeun Son
+  area: 
+  year_since:
+  city: 
+  country: 
+  language: Korean, English
+
+
+- name: José Darío Martínez Ezquerro 
+  area: 
+  year_since:
+  city: 
+  country: 
+  language: Spanish, English
+  
+- name: José Molina
+  area: 
+  year_since:
+  city: 
+  country: 
+  language: Spanish, English
+ 
+ 
+- name: Juliana Soares Lima
+  area: 
+  year_since:
+  city: 
+  country: 
+  language: Portuguese, English
+
+- name: Jussi Mannisto
+  area: 
+  year_since:
+  city: 
+  country: 
+  language: English
+  
+
+- name: JuYeon Park
+  area: 
+  year_since:
+  city: 
+  country: 
+  language: Korean, English
 
 - name: Kamil B. Varınca
   area: Science
