@@ -149,12 +149,26 @@ ass_ed:
   country: USA
   language: English
 
+- name: Amir Aidun
+  area: Science
+  year_since:
+  city: Tehran
+  country: Iran
+  language: Farsi, English
+
 - name: Ana Fresco-Santalla
   area: Humanities
   year_since:
   city: Granada
   country: Spain
   language: Galician, Portuguese, Spanish, English
+
+- name: Ana Melro
+  area: Science, Technology
+  year_since:
+  city: Exeter
+  country: UK
+  language: Portuguese, English
 
 - name: Andista Candra Yusro
   area: Social Sciences
@@ -181,8 +195,8 @@ ass_ed:
   area:
   year_since:
   city:
-  country:
-  language:
+  country: USA
+  language: English
 
 - name: Andronic Octavian
   area: Medicine
