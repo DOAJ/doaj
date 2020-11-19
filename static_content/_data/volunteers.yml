@@ -38,7 +38,7 @@ ed:
 - name: Geoff Husic
   area: Humanities, Social Sciences
   year_since:
-  city: Lawrence
+  city: Lawrence, KS
   country: USA
   language: Russian, German, English
   featured: true
@@ -74,17 +74,17 @@ ed:
   language: Persian, English, Azeri
 
 - name: S.Suharto
-  area: Humanities, Social sciences
+  area: Humanities, Social Sciences
   year_since:
   city: Semarang
   country: Indonesia
   language: Indonesian, English
 
 - name: Scott Richard St. Louis
-  area: Humanities, Social sciences, Technology
+  area: Humanities, Social Sciences, Technology
   year_since:
-  city: Ann Arbor
-  country: United States
+  city: Ann Arbor, MI
+  country: USA
   language: English, French
 
 - name: Souheil Houissa
@@ -249,7 +249,7 @@ ass_ed:
   year_since:
   city: Samarinda
   country: Indonesia
-  language: Bahasa Indonesia, English
+  language: Indonesian, English
 
 - name: Dian Eka Indriani
   area:
@@ -261,8 +261,8 @@ ass_ed:
 - name: Dr. Eko Supraptono
   area: Technology
   year_since:
-  city: Indonesia
-  country: Semarang
+  city: Semarang
+  country: Indonesia
   language: Indonesian, English
 
 - name: Dr. Ir. Dyah Rini Indriyanti
@@ -275,7 +275,7 @@ ass_ed:
 - name: Elisangela Gisele do Carmo
   area: Gerontology
   year_since:
-  city: Rio Claro- São Paulo
+  city: Rio Claro-São Paulo
   country: Brazil
   language: Portuguese, English
 
@@ -373,7 +373,7 @@ ass_ed:
   year_since:
   city: Kyiv
   country: Ukraine
-  language: Ukranian, English, French, Polish
+  language: Ukrainian, English, French, Polish
 
 - name: Isabel Margalejo Ferrández
   area: Social Sciences
@@ -416,7 +416,7 @@ ass_ed:
 - name: Katharine Dunn
   area: Scholarly Publishing
   year_since:
-  city: Cambridge
+  city: Cambridge, MA
   country: USA
   language: English
 
@@ -453,7 +453,7 @@ ass_ed:
 - name: Lorri Peters
   area: Science
   year_since:
-  city: College Station
+  city: College Station, TX
   country: USA
   language: English
 
@@ -544,7 +544,7 @@ ass_ed:
   year_since:
   city: Kyiv
   country: Ukraine
-  language: Ukranian, Russian, English, Polish
+  language: Ukrainian, Russian, English, Polish
 
 - name: Prof. Dr. Sudarmin
   area:
@@ -570,7 +570,7 @@ ass_ed:
 - name: Richard James
   area: Medicine
   year_since:
-  city: Philadelphia
+  city: Philadelphia, PA
   country: USA
   language: English
 
