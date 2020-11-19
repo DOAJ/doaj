@@ -18,6 +18,15 @@ ed:
   city: Pittsburg, PA
   country: USA
   language: English
+  
+  
+- name: Eeva Savolainen 
+  area: Library and Information Studies
+  year_since:
+  city: Espoo
+  country: Finland
+  language: Finnish, English
+  featured: true
 
 - name: Emilie Champagne
   area: Science
