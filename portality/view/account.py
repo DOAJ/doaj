@@ -307,7 +307,7 @@ class RegisterForm(RedirectForm):
         validators.DataRequired(),
         validators.Length(min=3, max=254),
         validators.Email(message='Must be a valid email address'),
-        EmailAvailable()
+        EmailAvailable(message="That email address is already in use. Please <a href='https://github.com/account/forgot'>reset your password</a>. If you still cannot login, <a href='https://github.com/contact'>contact us</a>.")
     ])
     roles = StringField('Roles')
 
