@@ -794,6 +794,7 @@ ass_ed:
   city: Bejaia
   country: Algeria
   language: Arabic, French, English, Kabyle
+  photo: "nourelhouda.png" 
 
 - name: Oleksii Vasyliev
   area: Science, Technology
