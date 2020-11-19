@@ -2,48 +2,44 @@
 
 ### How can I contribute to DOAJ?
 
-1. [Support us](/support/) with a financial donation
-  + All donations received are spent on DOAJ activities or developments.
+1. [Support us](/support/) with a financial contribution
+  + Contributions help keep the DOAJ service running and allow us to develop it further.
 2. If you have evidence that a journal in DOAJ might be questionable, [contact us](/contact/).
   + All information shared with DOAJ is done so in confidence and is never published.
+  + Include the ISSN of the journal when you email us.
 3. If you find a broken link or something that is out of date or incomplete, [contact us](/contact/).
   + We are always grateful when our users are our eyes and ears.
+  + For broken links in articles, include the journal's ISSN, title and the title of the article.
 4. Become a volunteer
   + From time to time, we put out a call for volunteers. Follow us on [Twitter](https://twitter.com/doajplus) or [our blog](https://blog.doaj.org/) to find out when the next call is published.
-
-### I have found a broken link. What should I do?
-
-  [Contact us](/contact/) with the details. For broken links in articles, include the journal's ISSN, title and the title of the article.
-
-### I think that a questionable journal is indexed in DOAJ. What should I do?
-
-  Please [contact us](/contact/) with the details, including the ISSN, and we will investigate. Information shared with DOAJ is done so in confidence.
 
 ### I know a journal which should be in DOAJ but isn’t. What should I do?
 
   Contact the journal and ask them to submit an application. You can also send us the details of the journal—title and ISSN—and we will contact them.
 
-### The journal I am looking for isn't in DOAJ. Why? What should I do?
+### The journal I am looking for isn't in DOAJ. Why?
 
-  Maybe the journal hasn't applied to us or its application is still in progress. It may be that the journal was removed from DOAJ. [Contact us](/contact/) to see if the journal has a pending application.
+  Maybe the journal hasn't applied to us or its application is still in progress. Maybe the journal was [removed from DOAJ](https://docs.google.com/spreadsheets/d/183mRBRqs2jOyP0qZWXN8dUd02D4vL0Mov_kgYF8HORM/edit#gid=1650882189&range=A1).
 
 ### How do I report a bug or ask for technical help?
 
-  There is a specific set of information that you need to provide to us. You may not be able to provide the details for all of these but fill in as many as you can:
+  If you are a registered GitHub user, or you don't mind becoming one, you can [log a GitHub issue](https://github.com/DOAJ/doaj/issues/new) directly in our repository. Alternatively, you can send the information we ask for below to [our helpdesk](mailto:feedback@doaj.org).
+  
+ <a id="How to report a bug"></a>When you report a bug, please include the following information. (You may not be able to provide every detail but fill in as many as you can.)
 
   1. The contact details for the person reporting the bug (or a proxy for them) so that we can request more detail if needed.
     + That might be you or someone working on your behalf.
   2. The user account you are logged in to when the problem occurred.
   3. Tell us which area of the system this happened in. Generally: in the UI/API/OAI; and ideally specifically:
     + which URL were you on when it happened, or
-    + which URL were you trying to access?
+    + which URL were you trying to access.
   4. At what date and time the incident occurred.
     + If it happened several times, then all dates/times that were recorded, or a range.
   5. What were you trying to do? As much detail and context as possible.
-    + Send a screenshot. An image always helps.
-  6. What happened, what error message was received?
-    + Provide the exact error message, don't paraphrase.
-    + Send a screenshot.
+    + Send a screenshot of the entire screen. An image always helps.
+  6. What happened? What error message was received?
+    + Provide the exact error message; don't paraphrase
+    + Send a screenshot
     + What did you expect to happen?
     + Was the problem repeatable?
     + Did you try several times with the same result?
@@ -53,24 +49,16 @@
   8. Send copies of any data you sent to the system.
     + For example, article XML files uploaded, or payloads sent to the API.
 
-Send the information to [feedback@doaj.org](mailto:feedback@doaj.org). If you are familiar with GitHub, you can [create the bug ticket](https://github.com/DOAJ/doaj/issues/new/choose) yourself. Don’t send us your passwords or API keys.
+Don’t send us your passwords or API keys.
 
 ---
-## Account
-### When do I need an account?
-If you are not a publisher you do not need an account. All of our content is Open Access and available on our website. If you are a publisher and have lost your account, please [contact us](/contact) stating your issn and we will find out what happened.
-### How can I reset my password?
-[Reset your password here.](/password-reset/). Please [contact us](/contact/) if you did not get a password reset link. 
-### How can I merge journals into the same account?
-If your institution has several journals that are spread into different accounts and you would like to have a single one, please [contact us](/contact/).
-
 ## Metadata
 
 ### Failed XML uploads explained
 
 This section describes the possible error messages that you may see when you upload an article XML file to DOAJ. Depending on the message in the "Notes" column of your [History of uploads](/publisher/uploadfile) table, some corrective actions may be available to you.
 
-In cases where there is no action to be taken, or the suggested actions have not successfully resolved the issues, please [contact us]({{ url_for('doaj.contact') }}) with the following details:
+In cases where there is no action to be taken, or the suggested actions have not successfully resolved the issues, please [contact us](/contact/) with the following details:
 
 *   The time of the file upload
 *   The exact error message as it appears in the "Notes" column
@@ -102,18 +90,29 @@ In cases where there is no action to be taken, or the suggested actions have not
 
 **Resolution**: Please [contact us](/contact/) immediately with the details:
 
-1.  Your user account
-2.  The contact details for the person reporting the bug (or at least a proxy for them, so that we can request more details). That might be you or someone working on your behalf.
-3.  Was the problem repeatable? Did you try several times with the same result?
-4.  What environment are you in? Specifically browser, or if not in the browser then any useful information about your API client such as the user agent.
-5.  At what time the incident occurred. Both date and time ideally. If it happened several times, then all dates/times that were recorded, or a range.
-6.  What were you trying to do? As much detail and context as possible. Send a screenshot! An image helps.
-7.  What happened, what error message was received? Provide the exact error message, don't paraphrase. A screenshot could be provided here.
-8.  Which area of the system did this happen in? Generally, in the UI/API/OAI, and ideally specifically: which URL were you on when it happened, or which URL were you trying to access?
-9.  Send copies of any data you sent to the system. For example, article XML files uploaded, or payloads send to the API, if available.
-10. What had you expected to happen?
+1. The contact details for the person reporting the bug (or a proxy for them) so that we can request more detail if needed.
+    + That might be you or someone working on your behalf.
+  2. The user account you are logged in to when the problem occurred.
+  3. Tell us which area of the system this happened in. Generally: in the UI/API/OAI; and ideally specifically:
+    + which URL were you on when it happened, or
+    + which URL were you trying to access.
+  4. At what date and time the incident occurred.
+    + If it happened several times, then all dates/times that were recorded, or a range.
+  5. What were you trying to do? As much detail and context as possible.
+    + Send a screenshot of the entire screen. An image always helps.
+  6. What happened? What error message was received?
+    + Provide the exact error message; don't paraphrase
+    + Send a screenshot
+    + What did you expect to happen?
+    + Was the problem repeatable?
+    + Did you try several times with the same result?
+  7. What environment are you in?
+    + Specifically which browser or,
+    + If not in the browser, any useful information about your API client such as the user agent.
+  8. Send copies of any data you sent to the system.
+    + For example, article XML files uploaded, or payloads sent to the API.
 
-We may also ask you to supply the file that you tried to upload, so please keep a copy of it until the issue is resolved.
+Don’t send us your passwords or API keys.
 
 #### <a id="The file at the URL was too large"></a>The file at the URL was too large
 
@@ -204,19 +203,3 @@ If you believe all the ISSNs for the articles are correct, please [contact us](/
 **Reason**: At least one of your articles matched two or more other articles already in DOAJ, and as a result we don't know which one to update.
 
 **Resolution**: Ensure that all your articles have the correct DOI and Fulltext links. If you still don't have any luck, please [contact us](/contact/) with the details; we may need to clean up your existing articles manually.
-
----
-
-## Do you have any restrictions on the reuse of your metadata?
-
-The data in DOAJ is currently licensed to you under a [Creative Commons Attribution-ShareAlike License (CC BY-SA)](https://creativecommons.org/licenses/by-sa/4.0/). You should familiarise yourself with [the legal code](https://creativecommons.org/licenses/by-sa/4.0/legalcode) for this license.
-
-The rights of the site-generated metadata in the Atom feed are listed in the feed.
-
----
-
-## What code is DOAJ built with?
-
-DOAJ is a Python/Flask web app with a JSON document store. The code is open source and can be found in [our GitHub repository](https://github.com/DOAJ/doaj).
-
-DOAJ uses Bootstrap which is the framework used to build the DOAJ website. This contains some Javascript for some of its features.
