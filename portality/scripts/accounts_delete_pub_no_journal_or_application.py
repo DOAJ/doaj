@@ -1,7 +1,7 @@
 """
-Delete all non-editorial user accounts not assigned to a journal
+Delete all non-editorial user accounts not assigned to a journal or application
 
-python accounts_delete_pub_no_journal.py [-r deletion_report.csv]
+python accounts_delete_pub_no_journal_or_application.py [-r deletion_report.csv]
 """
 
 import esprit
@@ -13,7 +13,7 @@ from portality import models
 EXCLUDED_ROLES = {'associate_editor', 'editor', 'admin', 'ultra_bulk_delete'}
 
 
-def accounts_with_no_journals(conn, csvwriter=None):
+def accounts_with_no_journals_or_applications(conn, csvwriter=None):
     """ Scroll through all accounts, return those with no journal unless they have excluded roles
     :param conn: An Elasticsearch connection
     :param csvwriter: A CSV writer to output the accounts to
@@ -25,7 +25,8 @@ def accounts_with_no_journals(conn, csvwriter=None):
             continue
 
         issns = models.Journal.issns_by_owner(account.id)
-        if len(issns) == 0:
+        apps = models.Suggestion.get_by_owner(account.id)
+        if len(issns) == len(apps) == 0:
             gathered_account_ids.append(account.id)
 
             # Write the user summary to CSV if provided
@@ -38,8 +39,6 @@ def accounts_with_no_journals(conn, csvwriter=None):
                     account.last_updated,
                     account.role
                 ])
-
-        # todo: progress feedback would be nice
 
     return gathered_account_ids
 
@@ -69,7 +68,7 @@ if __name__ == "__main__":
             writer = csv.writer(f)
             writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Roles"])
 
-            accounts_to_delete = accounts_with_no_journals(conn, writer)
+            accounts_to_delete = accounts_with_no_journals_or_applications(conn, writer)
 
         print("Done!")
         exit()
