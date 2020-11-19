@@ -408,14 +408,12 @@ ass_ed:
   country: Turkey
   language: Turkish, English
 
-
 - name: Eva Höglund
   area: Social Sciences
   year_since:
   city: Turku
   country: Finland
   language: Finnish, English
-
 
 - name: Faith Oronga Amatika-Omondi
   area: Librarianship
@@ -424,7 +422,6 @@ ass_ed:
   country: Kenya
   language: English
   photo: "oronga.jpg"
-
 
 - name: Faizal Risdianto
   area: Humanities
@@ -631,10 +628,9 @@ ass_ed:
   country: USA
   language: English
 
-
 - name: Khoirul Fathoni
   area:
-  year_since: "2020"
+  year_since:
   city:
   country: Indonesia
   language: Indonesian, English
@@ -646,6 +642,20 @@ ass_ed:
   city: Charlottetown
   country: Canada
   language: English
+  
+- name: Leena Huovinen
+  area:
+  year_since:
+  city:
+  country: Finland
+  language: Finnish, English
+ 
+- name: Lena Lönngren
+  area:
+  year_since:
+  city:
+  country: Finland
+  language: Finnish, English
 
 - name: Liana Penabad Camacho
   area: Social Sciences
@@ -654,12 +664,12 @@ ass_ed:
   country: Costa Rica
   language: Spanish, English
 
-- name: Lin Zhu
+- name: Lina Marcela Blandón García
   area:
   year_since:
   city:
   country:
-  language:
+  language: Spanish, English
 
 - name: Lorri Peters
   area: Science
