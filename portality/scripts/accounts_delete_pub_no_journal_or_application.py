@@ -10,7 +10,7 @@ from portality.core import app
 from portality import models
 
 # set of roles to exclude from the deletes
-EXCLUDED_ROLES = {'associate_editor', 'editor', 'admin', 'ultra_bulk_delete'}
+EXCLUDED_ROLES = {'associate_editor', 'editor', 'admin', 'ultra_bulk_delete', 'jct_inprogress'}
 
 
 def accounts_with_no_journals_or_applications(conn, csvwriter=None):

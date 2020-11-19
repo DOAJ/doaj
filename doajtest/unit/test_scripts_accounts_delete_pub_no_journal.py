@@ -101,7 +101,7 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
 
     def test_03_excluded_roles(self):
         """ Check accounts with roles we exclude from delete are retained despite no journals or applications """
-        EXCLUDED_LIST = ['associate_editor', 'editor', 'admin', 'ultra_bulk_delete']
+        EXCLUDED_LIST = ['associate_editor', 'editor', 'admin', 'ultra_bulk_delete', 'jct_inprogress']
 
         sources = [
             AccountFixtureFactory.make_managing_editor_source(),
