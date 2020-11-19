@@ -28,11 +28,11 @@
  <a id="How to report a bug"></a>When you report a bug, please include the following information. (You may not be able to provide every detail but fill in as many as you can.)
 
   1. The contact details for the person reporting the bug (or a proxy for them) so that we can request more detail if needed.
-    + That might be you or someone working on your behalf.
+    - That might be you or someone working on your behalf.
   2. The user account you are logged in to when the problem occurred.
   3. Tell us which area of the system this happened in. Generally: in the UI/API/OAI; and ideally specifically:
-    + which URL were you on when it happened, or
-    + which URL were you trying to access.
+    - which URL were you on when it happened, or
+    - which URL were you trying to access.
   4. At what date and time the incident occurred.
     + If it happened several times, then all dates/times that were recorded, or a range.
   5. What were you trying to do? As much detail and context as possible.
