@@ -2,7 +2,6 @@
 # with contact info, research area, city, country, year, portrait
 
 ## All editors
-
 ed:
 - name: Alicia Aparicio
   area: Humanities, Social Sciences
@@ -18,9 +17,9 @@ ed:
   city: Pittsburg, PA
   country: USA
   language: English
-  
-  
-- name: Eeva Savolainen 
+
+
+- name: Eeva Savolainen
   area: Library and Information Studies
   year_since:
   city: Espoo
@@ -51,7 +50,7 @@ ed:
   country: USA
   language: Russian, German, English
   featured: true
-  
+
 
 - name: Ikhwan Arief
   area: Science, Technology
@@ -59,7 +58,7 @@ ed:
   city: Padang, West Sumatra
   country: Indonesia
   language: Indonesian, English
-  
+
 - name: Lut Tamam
   area: Medicine
   year_since:
@@ -226,14 +225,14 @@ ass_ed:
   city: Canberra
   country: Australia
   language: English
-  
+
 - name: Antti-Jussi Nygård
   area: History
   year_since:
   city: Turku
   country: Finland
   language: English, Finnish
-  
+
 
 - name: Arbain Arbain
   area: Humanities
@@ -241,8 +240,8 @@ ass_ed:
   city: Samarinda
   country: Indonesia
   language: Indonesian, English
-  
-  
+
+
 - name: Barbara Łuszczek
   area: Librarianship
   year_since:
@@ -256,14 +255,14 @@ ass_ed:
   city: York
   country: United Kingdom
   language: English
-  
+
 - name: Busro Busro
   area: Humanities
   year_since:
   city: Bandung
   country: Indonesia
   language: Indonesian, English
-  
+
 - name: Carlos Alegre
   area: Social Sciences
   year_since:
@@ -271,8 +270,8 @@ ass_ed:
   country: Argentina
   language: Spanish, English
   photo: "CarlosAlegre.jpg"
- 
-  - name: Christine Davidian
+
+- name: Christine Davidian
   area: Technology
   year_since:
   city: Glassboro, NJ
@@ -315,7 +314,7 @@ ass_ed:
   city: Valencia
   country: Spain
   language: Spanish, English
-  
+
 
 - name: Dedi Rahman Nur
   area: Social Sciences
@@ -344,21 +343,21 @@ ass_ed:
   city: Querétaro
   country: Mexico
   language: Spanish, English
-  
+
 - name: Dwi Fajar Saputra
   area: Librarianship
   year_since:
   city: Jakarta
   country: Indonesia
   language: Indonesian, English
-  
+
 - name: Eeva Henrikssson
   area: Social Sciences
   year_since:
   city: Helsinki
   country: Finland
   language: Finnish, English
-  
+
 - name: Eko Pramudya Laksana
   area: Social Sciences
   year_since:
@@ -379,7 +378,7 @@ ass_ed:
   city: Marousi
   country: Greece
   language: Greek, English
-  
+
 - name: Emma Molls
   area: Librarianship
   year_since:
@@ -467,18 +466,18 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "handoko.jpg"
-  
+
 - name: Haydar Oruç
   area: Humanities
   year_since:
   city: Sakarya
   country: Turkey
   language: Turkish, English
-  
+
 - name: Hyun Jung Yi
-  area: 
+  area:
   year_since:
-  city: 
+  city:
   country: Republic of Korea
   language: Korean, English
 
@@ -513,83 +512,83 @@ ass_ed:
   language: Arabic, French, English
 
 - name: Janne Pölönen
-  area: 
+  area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language: English
-  
+
 - name: Jiayi Xu
-  area: 
+  area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language: English
-  
+
 - name: Jinjin Liu
-  area: 
+  area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language: English
-  
+
 - name: João Sousa
-  area: 
+  area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language: Portuguese, English
-  
+
 - name: Johanna Glader
-  area: 
+  area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language: English
-  
- - name: JooYeun Son
-  area: 
+
+- name: JooYeun Son
+  area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language: Korean, English
 
 
-- name: José Darío Martínez Ezquerro 
-  area: 
+- name: José Darío Martínez Ezquerro
+  area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language: Spanish, English
-  
+
 - name: José Molina
-  area: 
+  area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language: Spanish, English
- 
- 
+
+
 - name: Juliana Soares Lima
-  area: 
+  area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language: Portuguese, English
 
 - name: Jussi Mannisto
-  area: 
+  area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language: English
-  
+
 
 - name: JuYeon Park
-  area: 
+  area:
   year_since:
-  city: 
-  country: 
+  city:
+  country:
   language: Korean, English
 
 - name: Kamil B. Varınca
@@ -628,14 +627,14 @@ ass_ed:
   city: Charlottetown
   country: Canada
   language: English
-  
+
 - name: Leena Huovinen
   area:
   year_since:
   city:
   country: Finland
   language: Finnish, English
- 
+
 - name: Lena Lönngren
   area:
   year_since:
@@ -663,14 +662,14 @@ ass_ed:
   city: College Station, TX
   country: USA
   language: English
-  
+
 - name: Lucas Helal
   area:
   year_since:
   city:
   country:
   language: English
-  
+
 - name: Maarit Koskela
   area:
   year_since:
@@ -713,7 +712,7 @@ ass_ed:
   city: Cartago
   country: Costa Rica
   language: Spanish, English
-  
+
 - name: Mario Alejandro Marín
   area:
   year_since:
@@ -766,12 +765,12 @@ ass_ed:
   city: Surabaya
   country: Indonesia
   language: Indonesian, English
-  
+
 - name: Nathalia Avila
   area:
   year_since:
   city:
-  country: 
+  country:
   language: Spanish, English
 
 - name: Nour El Houda Belhamel
@@ -780,7 +779,7 @@ ass_ed:
   city: Bejaia
   country: Algeria
   language: Arabic, French, English, Kabyle
-  photo: "nourelhouda.png" 
+  photo: "nourelhouda.png"
 
 - name: Oleksii Vasyliev
   area: Science, Technology
@@ -788,14 +787,14 @@ ass_ed:
   city: Kyiv
   country: Ukraine
   language: Ukrainian, Russian, English, Polish
-  
+
 - name: Olga Kirillova
   area:
   year_since:
   city:
   country:
   language:
-  
+
 - name: Oskia Aguirre
   area:
   year_since:
@@ -817,18 +816,18 @@ ass_ed:
   city:
   country:
   language: Spanish, English
-  
+
 - name: Princess Uju E. Nwafor-Orizu
   area:
   year_since:
   city:
   country:
   language: English
-  
+
 - name: Prof. Dr. Sudarmin
   area: Science
   year_since:
-  city: 
+  city:
   country: Indonesia
   language: Indonesian, English
 
@@ -838,14 +837,14 @@ ass_ed:
   city:
   country: Qtar
   language: Arabic, English
-  
+
 - name: Ran Dang
   area:
   year_since:
   city:
   country: Malaysia
   language: English
-  
+
 - name: Raúl Sampieri
   area: Science
   year_since:
@@ -868,7 +867,7 @@ ass_ed:
   country: USA
   language: English
 
-- name: Ricardo Alejandro Fagoaga Hernández 
+- name: Ricardo Alejandro Fagoaga Hernández
   area: History
   year_since:
   city: Ciudad de Mexico
@@ -881,7 +880,7 @@ ass_ed:
   city: Philadelphia, PA
   country: USA
   language: English
-  
+
 - name: Riitta Koikkalainen
   area: Librarianship
   year_since:
@@ -896,14 +895,14 @@ ass_ed:
   city: San Luis Potosi
   country: Mexico
   language: Spanish, English
-  
+
 - name: S. Mohammad Amini
   area: Science
   year_since:
   city: Esfahan
   country: Iran
   language: Farsi, English
-  
+
 - name: Sami Syrjämäki
   area: Humanities, Social Sciences
   year_since:
@@ -912,33 +911,33 @@ ass_ed:
   language: Finnish, English
 
 - name: Sandra Müller
-  area: 
+  area:
   year_since:
   city:
-  country: 
+  country:
   language: German, English
-  
+
 - name: Sandra Studer
-  area: 
+  area:
   year_since:
   city:
-  country: 
+  country:
   language: German, English
-  
+
 - name: Sara Jalalzadeh Asrjadidi
   area: Librarianship
   year_since:
   city: Tabriz
   country: Azerbaijan
   language: Azerbaijani, English
-  
+
 - name: Sara Ricetto
-  area: 
+  area:
   year_since:
   city:
   country: Italy
   language: Italian, English
-  
+
 
 - name: Sumi Kang
   area: Social Sciences
@@ -960,11 +959,11 @@ ass_ed:
   city: Luzern
   country: Switzerland
   language: German, English
-  
+
 - name: Soeharto Fisika
   area: Humanities
   year_since:
-  city: 
+  city:
   country: Indonesia
   language: Indonesian, English
 
@@ -976,9 +975,9 @@ ass_ed:
   language: Italian, English
 
 - name: Soon Kim
-  area: 
+  area:
   year_since:
-  city: 
+  city:
   country: Republic of Korea
   language: Korean, English
 
@@ -996,21 +995,21 @@ ass_ed:
   country: Mali
   language: French
   photo: "sogoba1.jpg"
-  
+
 - name: Sumi Kang
   area: Social Sciences
   year_since:
   city: Sejong
   country: Korea
   language: Korean, English
-  
+
 - name: Swasti Maharani
   area: Mathematics
   year_since:
   city: Jawa Timur
   country: Indonesia
   language: Indonesian, English
-  
+
 - name: Taner Kemal Erdağ
   area: Mathematics
   year_since:
@@ -1031,7 +1030,7 @@ ass_ed:
   city: Prague
   country: Czech Republic
   language: Czech, Slovak, English
-  
+
 - name: Tommaso Fava
   area: Librarianship
   year_since:
@@ -1046,7 +1045,7 @@ ass_ed:
   city: Bangkalan
   country: Indonesia
   language: Indonesian, English
-  
+
 - name: Volkan Demir
   area: Science
   year_since:
@@ -1075,7 +1074,7 @@ ass_ed:
   city: Chungju
   country: Korea
   language: Korean, English
-  
+
 - name: Yvonne Leimgruber
   area: Librarianship
   year_since:
@@ -1089,5 +1088,3 @@ ass_ed:
   city: Shanghai
   country: China
   language: Chinese, English
-
-
