@@ -5,23 +5,22 @@
       "name": "test_id"
     },
     {
-      "type": "generated",
       "values": {
         "exists": {},
         "none": {}
       },
+      "type": "generated",
       "name": "doi"
     },
     {
-      "type": "generated",
       "values": {
         "exists": {},
         "none": {}
       },
+      "type": "generated",
       "name": "fulltext_url"
     },
     {
-      "type": "conditional",
       "values": {
         "no": {
           "conditions": [
@@ -58,6 +57,7 @@
           ]
         }
       },
+      "type": "conditional",
       "name": "is_acceptable"
     }
   ]

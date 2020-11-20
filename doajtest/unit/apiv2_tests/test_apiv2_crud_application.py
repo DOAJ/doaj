@@ -273,7 +273,7 @@ class TestCrudApplication(DoajTestCase):
                 raise
 
     def test_03c_update_update_request_fail(self):
-        # update request target in disallowed status
+        # account requesting update request is not permitted
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.set_id(journal.makeid())
         journal.save(blocking=True)
@@ -281,6 +281,7 @@ class TestCrudApplication(DoajTestCase):
             data = ApplicationFixtureFactory.incoming_application()
             data["admin"]["current_journal"] = journal.id
             publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            publisher.set_id("randompublisher")
             try:
                 a = ApplicationsCrudApi.create(data, publisher)
             except Api404Error as e:

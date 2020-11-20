@@ -83,7 +83,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert fc.target.created_date == "2000-01-01T00:00:00Z"
         assert fc.target.id == "abcdefghijk"
         assert len(fc.target.notes) == 2
-        assert fc.target.owner == "Owner"
+        assert fc.target.owner == "publisher"
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"
         assert fc.target.application_status == constants.APPLICATION_STATUS_UPDATE_REQUEST # because it hasn't been finalised yet
