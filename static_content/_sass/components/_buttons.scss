@@ -65,7 +65,7 @@ input[disabled] + label {
   color: rgba($dark-grey, 0.5)
 }
 
-// "Flat 3D"-style buttons for CTA buttons only
+// "Flat 3D"-style buttons for primary buttons only
 .button--primary {
   position: relative;
   left: 0;
@@ -87,6 +87,7 @@ input[disabled] + label {
   }
 }
 
+.button--cta,
 input[type="submit"],
 button[type="submit"] {
   background-color: $grapefruit;

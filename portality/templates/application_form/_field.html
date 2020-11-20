@@ -1,4 +1,4 @@
-<div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
+<div class="form__question {% if f.has_conditional %} form__subquestion {% endif %}" id="{{ f.name }}">
     <a name="question__{{ f.name }}"></a>
     {% set label %}
     <label for="{{ f.name }}">
