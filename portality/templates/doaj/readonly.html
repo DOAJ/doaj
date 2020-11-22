@@ -1,14 +1,8 @@
-{% extends "layouts/sidebar-page.html" %}
+{% extends "layouts/single_col_page.html" %}
 
-{% block content %}
+{% block page_title %}Down for maintenance &ndash; {% endblock %}
+{% block title %}This page is currently offline for maintenance{% endblock %}
 
-<div class="row">
-    <div class="col-md-12 main-content">
-        <h1 style="margin-bottom: 40px">This page is currently offline for maintenance</h1>
-
-        <p>This page is currently unavailable while we carry out some essential maintenance to the DOAJ.  Please check again later.</p>
-
-    </div>
-</div>
-
+{% block single_col_content %}
+    <p>This page is currently unavailable while we carry out some essential maintenance to the DOAJ.  Please check again later.</p>
 {% endblock %}
