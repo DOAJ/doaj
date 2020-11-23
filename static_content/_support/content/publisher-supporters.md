@@ -1,8 +1,8 @@
 Supporting DOAJ is a way for publishers to show their commitment, not only to open access, but to a community-driven, non-profit, and diverse organisation.
 
-To make it easier for publishers to choose the level of support that they are most comfortable with, we offer a variety of options. The list below shows suggested contributions based on business size, or publishers can offer any amount of their choosing. It is also possible to choose a discounted 3-year sustaining contribution, based on the rates below, or a single annual ammount.
+To make it easier for publishers to choose the level of support that they are most comfortable with, we offer a variety of options. The list below shows suggested contributions based on business size, or publishers can offer any amount of their choosing. You can process your payment on the right.
 
-For more information, [contact us](mailto:feedback@doaj.org) stating the name of your organisation.
+It is also possible to choose a discounted 3-year sustaining contribution, based on the rates below, or a single annual ammount. For more information about that, [contact us](mailto:feedback@doaj.org) stating the name of your organisation.
 
 {:.tabular-list}
 - Extra large
