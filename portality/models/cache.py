@@ -1,6 +1,10 @@
+""" The cache contains file metadata for the sitemap, journal csv, and the public data dump. It also holds site stats
+ for the front page """
+
 from portality.dao import DomainObject
 from datetime import datetime
 from portality.core import app
+
 
 class Cache(DomainObject):
     __type__ = "cache"
