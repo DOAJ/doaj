@@ -2,7 +2,7 @@ The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open 
 
 DOAJ is financially supported by many libraries, publishers and other like-minded organisations. Supporting DOAJ demonstrates a firm commitment to open access and the infrastructure that supports it.
 
-DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) which provide the basis of the [DOAJ basic criteria](/apply/guide) for inclusion.
+DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) that provide the basis of the [DOAJ basic criteria](/apply/guide) for inclusion.
 
 ## Our mission
 
