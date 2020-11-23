@@ -172,17 +172,17 @@
                                                     {% endfor %}
                                                 {% endif %}
                                             {% else %}
-                                                There are <strong class="label label--large">no publication fees</strong> (<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">article processing charges or APCs</a>) to publish with this journal.
+                                                There are <strong class="label label--large">no publication fees</strong> (<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">article processing charges or APCs</a>) to publish with this journal{% if bibjson.has_other_charges %}{% else %}.{% endif %}
                                             {% endif %}
 
                                             {# Other charges #}
-                                            {% if bibjson.has_other_charges %}
+                                            {% if bibjson.has_other_charges and bibjson.apc %}
                                                 and there are
                                                 {% if bibjson.other_charges_url %}<a href="{{ bibjson.other_charges_url }}" target="_blank" rel="noopener">{% endif %}
-                                                  other charges
-                                                {% if bibjson.other_charges_url %}</a>.{% endif %}
-                                            {% else %}
-                                                and there are <strong>no other charges.</strong>
+                                                  other charges{% if bibjson.other_charges_url %}</a>.{% endif %}
+                                            {% elif bibjson.has_other_charges and bibjson.apc != true %}
+                                                but there are
+                                                {% if bibjson.other_charges_url %}<a href="{{ bibjson.other_charges_url }}" target="_blank" rel="noopener">{% endif %}
                                             {% endif %}
                                                 </p>
                                         {# Waivers #}
