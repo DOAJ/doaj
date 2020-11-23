@@ -33,7 +33,7 @@ def docs():
                               _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
     return render_template('api/v2/api_docs.html',
                            api_version=API_VERSION_NUMBER,
-                           base_url=url_for('.api_v2_root', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
+                           base_url=app.config.get("BASE_API_URL", url_for('.api_v2_root')),
                            contact_us_url=url_for('doaj.contact'),
                            account_url=account_url)
 

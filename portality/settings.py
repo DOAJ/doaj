@@ -34,7 +34,7 @@ elif BASE_URL.startswith('http://'):
 else:
     BASE_DOMAIN = BASE_URL
 
-BASE_API_URL = "http://doaj.org/api/v2/"
+BASE_API_URL = "https://doaj.org/api/v2/"
 API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
 API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
 
