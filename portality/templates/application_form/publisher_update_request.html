@@ -23,19 +23,11 @@
             <div class="col-md-8">
                 <section class="page-content">
 
-                    <h2>Journal Update Request Form</h2>
+                    <h2>Journal update request form</h2>
+                    <p class="alert alert--message">This form is only for updating an existing journal in DOAJ. The information in the form below has been copied from the current journal entry. Once you submit the update, it will go to our Editorial Team for review.</p>
 
-<p>This form is only for updating an existing journal in DOAJ. The information in the form below has been copied from
-    the current journal entry. Once you submit the update, it will go to our Editorial Team for review.</p>
-
-                    {#
-                    <p>You may not change Questions 1, 3-5, and 9-11 (Journal Title, Alternative Title, ISSNs, contact details). If you
-    want to change those, send an email to <a href="mailto:feedback@doaj.org">feedback@doaj.org</a> with the new information.</p>
-
-<p>Guides to filling in this form are also available in <a href="{{ url_for('doaj.translated') }}">other languages</a>
- (العربية, 中文, فارسی, français, Bahasa Indonesia, Italiano, Polski, Português, Română, Русский, Español, Türkçe, Українська)
-    </p>#}
-
+                    {# <p>You may not change Questions 1, 3-5, and 9-11 (Journal Title, Alternative Title, ISSNs, contact details). If you want to change those, send an email to <a href="mailto:feedback@doaj.org">feedback@doaj.org</a> with the new information.</p>
+                    <p>Guides to filling in this form are also available in <a href="{{ url_for('doaj.translated') }}">other languages</a> (العربية, 中文, فارسی, français, Bahasa Indonesia, Italiano, Polski, Português, Română, Русский, Español, Türkçe, Українська)</p>#}
 
                     <form id="{{ form_id }}"
                       data-context = "{{ formulaic_context.name }}"
