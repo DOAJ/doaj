@@ -756,6 +756,29 @@ class DomainObject(UserDict, object):
         for id, lu in ids_and_last_updateds:
             cls.block(id, lu, sleep=sleep, max_retry_seconds=individual_max_retry_seconds)
 
+    @classmethod
+    def blockdeleted(cls, id, sleep=0.5, max_retry_seconds=30):
+        query = deepcopy(block_query)
+        query["query"]["bool"]["must"][0]["term"]["id.exact"] = id
+        start_time = datetime.now()
+        while True:
+            res = cls.query(q=query)
+            hits = res.get("hits", {}).get("hits", [])
+            if len(hits) == 0:
+                return
+            else:
+                if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
+                    raise BlockTimeOutException(
+                        "Attempting to block until record with id {id} deleted from Elasticsearch, but this has not happened after {limit}".format(
+                            id=id, limit=max_retry_seconds))
+
+            time.sleep(sleep)
+
+    @classmethod
+    def blockalldeleted(cls, ids, sleep=0.05, individual_max_retry_seconds=30):
+        for id in ids:
+            cls.blockdeleted(id, sleep, individual_max_retry_seconds)
+
 
 class BlockTimeOutException(Exception):
     pass
