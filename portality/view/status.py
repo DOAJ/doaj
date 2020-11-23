@@ -191,14 +191,14 @@ def status():
         res['background']['info'].append('Error when trying to check background job journal_csv in the last 2 hours - could be a problem with this job or with main queue')
         res['stable'] = False
     try:
-        # check if prune_es_backups, which should run at 9.30am every day, has completed in the last 24 hours (which confirms long running queue)
+        # check if prune_es_backups, which should run at 9.30am every day, has completed in the last 24.5 hours (which confirms long running queue)
         qprune = {"query": {"bool": {"must": [
             {"term": {"status": "complete"}},
-            {"term": {"action":"prune_es_backups"}},
-            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 86400))}}}
+            {"term": {"action": "prune_es_backups"}},
+            {"range": {"created_date": {"gte": dates.format(dates.before(datetime.utcnow(), 88200))}}}
         ]}}, "size": 1, "sort": {"created_date": {"order": "desc"}}}
         rprune = models.BackgroundJob.send_query(qprune)['hits']['hits'][0]['_source']
-        res['background']['info'].append('prune_es_backups has run in the last 24 hours, confirming long running queue is running')
+        res['background']['info'].append('prune_es_backups has run in the last 24.5 hours, confirming long running queue is running')
     except:
         res['background']['status'] = 'Unstable'
         res['background']['info'].append('Error when trying to check background job prune_es_backups in the last 24 hours - could be a problem with this job or with long running queue')

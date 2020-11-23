@@ -1,4 +1,5 @@
 import os
+
 from portality import constants
 
 # Use these options to place the application into READ ONLY mode
@@ -73,7 +74,7 @@ SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 
 # elasticsearch settings
-ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
+ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://localhost:9200') # remember the http:// or https://
 
 # 2 sets of elasticsearch DB settings - index-per-project and index-per-type. Keep both for now so we can migrate.
 # e.g. host:port/index/type/id
@@ -96,8 +97,8 @@ ES_TERMS_LIMIT = 1024
 APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in production.cfg (or dev.cfg etc)
 
 # huey/redis settings
-HUEY_REDIS_HOST = '127.0.0.1'
-HUEY_REDIS_PORT = 6379
+HUEY_REDIS_HOST = os.getenv('HUEY_REDIS_HOST', '127.0.0.1')
+HUEY_REDIS_PORT = os.getenv('HUEY_REDIS_PORT', 6379)
 HUEY_EAGER = False
 
 #  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
@@ -1066,3 +1067,4 @@ HARVESTER_EMAIL_SUBJECT_PREFIX = "[harvester] "
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+
