@@ -37,13 +37,9 @@
     padding: $spacing-02 30px $spacing-02 $spacing-02;
   }
 
-  input, select, textarea {
+  input, select, textarea, button {
     margin-bottom: $spacing-03;
     max-width: 100%;
     font-size: 1em;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
   }
 }

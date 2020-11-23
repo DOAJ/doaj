@@ -19,139 +19,161 @@
           </nav>
 
           {% else %}
-
-          {% if page.relative_path == '_support/publisher-supporters.md' or page.relative_path == '_support/publisher-supporters-fragment.md' %}
-          <aside class="highlight highlight--aside">
-            <h2 class="label">Become a publisher supporter</h2>
-
-            <p><em>You will be redirected to Paypal’s website.</em></p>
-
-            <div class="tabs">
-              <nav class="tabs__menu">
-                <ul class="tabs__list" role="tablist">
-                  <li class="tabs__item">
-                    <a href="#pub-supporters-yearly" role="tab" aria-selected="true">Yearly</a>
-                  </li>
-                  <li class="tabs__item"role="presentation">
-                    <a href="#pub-supporters-one-time" role="tab" aria-selected="false">One-time donation</a>
-                  </li>
-                </ul>
-              </nav>
-
-              <div class="tabs__content">
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="pub-supporters-yearly" class="tabs__panel" role="tabpanel" aria-hidden="false">
-                  <input type="hidden" name="cmd" value="_s-xclick">
-                  <input type="hidden" name="hosted_button_id" value="T8RHKSMJ2JN7S">
-                  <input type="hidden" name="on0" value="Please select a yearly contribution based on your size">
-                  <label for="support-publishers-yearly">Please select a yearly contribution based on your size.</label>
-                  <select id="support-publishers-yearly" name="os0">
-                    <option value="Extra large">Extra large: £3,000.00 GBP (yearly)</option>
-                    <option value="Large">Large: £1,000.00 GBP (yearly)</option>
-                    <option value="Medium">Medium: £500.00 GBP (yearly)</option>
-                    <option value="Small">Small: £200.00 GBP (yearly)</option>
-                  </select>
-                  <input type="hidden" name="currency_code" value="GBP">
-                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-                </form>
-
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="pub-supporters-one-time" class="tabs__panel" role="tabpanel" aria-hidden="true">
-                  <input type="hidden" name="cmd" value="_s-xclick">
-                  <input type="hidden" name="hosted_button_id" value="7JEXFR4S7X2VN">
-                  <input type="hidden" name="on0" value="Please select your business size">
-                  <label for="support-publishers-yearly">Please select your business size for a one-time donation.</label>
-                  <select name="os0">
-                    <option value="Extra large">Extra large: £3,000.00 GBP</option>
-                    <option value="Large">Large: £1,000.00 GBP</option>
-                    <option value="Medium">Medium: £500.00 GBP</option>
-                    <option value="Small">Small: £200.00 GBP</option>
-                  </select>
-                  <input type="hidden" name="currency_code" value="GBP">
+          
+            {% if page.relative_path == '_support/index.md' or page.relative_path == '_support/index-fragment.md' %}
+            <aside class="highlight highlight--aside">
+              <h2 class="label">Make a one-time donation</h2>
+              <p><em>You will be redirected to Paypal’s website.</em></p>
+              <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="hosted_button_id" value="UP6B3VXCP2FHJ">
+                <input type="hidden" name="on0" value="One-off payment">
+                <label for="support-one-off">Please select a donation type</label>
+                <div class="input-group">
+                    <select name="os0" id="support-one-off">
+                  	 <option value="Individual">Individual </option>
+                  	 <option value="Academic Library">Academic Library </option>
+                  	 <option value="Library Consortium">Library Consortium </option>
+                  	 <option value="Aggregator">Aggregator </option>
+                    </select>
                   <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-                </form>
+                </div>
+              </form>
+            </aside>
+            {% endif %}
+
+            {% if page.relative_path == '_support/publisher-supporters.md' or page.relative_path == '_support/publisher-supporters-fragment.md' %}
+            <aside class="highlight highlight--aside">
+              <h2 class="label">Become a publisher supporter</h2>
+
+              <p><em>You will be redirected to Paypal’s website.</em></p>
+
+              <div class="tabs">
+                <nav class="tabs__menu">
+                  <ul class="tabs__list" role="tablist">
+                    <li class="tabs__item">
+                      <a href="#pub-supporters-yearly" role="tab" aria-selected="true">Yearly</a>
+                    </li>
+                    <li class="tabs__item"role="presentation">
+                      <a href="#pub-supporters-one-time" role="tab" aria-selected="false">One-time donation</a>
+                    </li>
+                  </ul>
+                </nav>
+
+                <div class="tabs__content">
+                  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="pub-supporters-yearly" class="tabs__panel" role="tabpanel" aria-hidden="false">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="T8RHKSMJ2JN7S">
+                    <input type="hidden" name="on0" value="Please select a yearly contribution based on your size">
+                    <label for="support-publishers-yearly">Please select a yearly contribution based on your size.</label>
+                    <select id="support-publishers-yearly" name="os0">
+                      <option value="Extra large">Extra large: £3,000.00 GBP (yearly)</option>
+                      <option value="Large">Large: £1,000.00 GBP (yearly)</option>
+                      <option value="Medium">Medium: £500.00 GBP (yearly)</option>
+                      <option value="Small">Small: £200.00 GBP (yearly)</option>
+                    </select>
+                    <input type="hidden" name="currency_code" value="GBP">
+                    <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                  </form>
+
+                  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="pub-supporters-one-time" class="tabs__panel" role="tabpanel" aria-hidden="true">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="7JEXFR4S7X2VN">
+                    <input type="hidden" name="on0" value="Please select your business size">
+                    <label for="support-publishers-yearly">Please select your business size for a one-time donation.</label>
+                    <select name="os0">
+                      <option value="Extra large">Extra large: £3,000.00 GBP</option>
+                      <option value="Large">Large: £1,000.00 GBP</option>
+                      <option value="Medium">Medium: £500.00 GBP</option>
+                      <option value="Small">Small: £200.00 GBP</option>
+                    </select>
+                    <input type="hidden" name="currency_code" value="GBP">
+                    <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                  </form>
+                </div>
               </div>
-            </div>
-          </aside>
-          {% endif %}
+            </aside>
+            {% endif %}
 
-          {% if page.relative_path == '_support/supporters.md' or page.relative_path == '_support/publisher-supporters-fragment.md' %}
-          <aside class="highlight highlight--aside">
-            <h2 class="label">Become a yearly supporter</h2>
-            <p><em>You will be redirected to Paypal’s website.</em></p>
-            <p>Please select your currency and organisation type for an annually-recurring payment.</p>
+            {% if page.relative_path == '_support/supporters.md' or page.relative_path == '_support/supporters-fragment.md' %}
+            <aside class="highlight highlight--aside">
+              <h2 class="label">Become a yearly supporter</h2>
+              <p><em>You will be redirected to Paypal’s website.</em></p>
+              <p>Please select your currency and organisation type for an annually-recurring payment.</p>
 
-            <div class="tabs">
-              <nav class="tabs__menu">
-                <ul class="tabs__list" role="tablist">
-                  <li class="tabs__item">
-                    <a href="#supporters-gbp" role="tab" aria-selected="true">£ (GBP)</a>
-                  </li>
-                  <li class="tabs__item"role="presentation">
-                    <a href="#supporters-eur" role="tab" aria-selected="false">€ (EUR)</a>
-                  </li>
-                  <li class="tabs__item" role="presentation">
-                    <a href="#supporters-usd" role="tab" aria-selected="false">$ (USD)</a>
-                  </li>
-                </ul>
-              </nav>
+              <div class="tabs">
+                <nav class="tabs__menu">
+                  <ul class="tabs__list" role="tablist">
+                    <li class="tabs__item">
+                      <a href="#supporters-gbp" role="tab" aria-selected="true">£ (GBP)</a>
+                    </li>
+                    <li class="tabs__item"role="presentation">
+                      <a href="#supporters-eur" role="tab" aria-selected="false">€ (EUR)</a>
+                    </li>
+                    <li class="tabs__item" role="presentation">
+                      <a href="#supporters-usd" role="tab" aria-selected="false">$ (USD)</a>
+                    </li>
+                  </ul>
+                </nav>
 
-              <div class="tabs__content">
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-gbp" class="tabs__panel" role="tabpanel" aria-hidden="false">
-                  <input type="hidden" name="cmd" value="_s-xclick">
-                  <input type="hidden" name="hosted_button_id" value="PDKWBTFHT9JMN">
-                  <input type="hidden" name="on0" value="Please select your organisation type">
-                  <label for="support-yearly">Please select your organisation type</label>
-                  <select name="os0">
-                    <option value="Academic Library">Academic Library: £540.00 GBP (yearly)</option>
-                    <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): £5,400.00 GBP (yearly)</option>
-                  </select>
-                  <input type="hidden" name="currency_code" value="GBP">
-                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-                </form>
+                <div class="tabs__content">
+                  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-gbp" class="tabs__panel" role="tabpanel" aria-hidden="false">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="PDKWBTFHT9JMN">
+                    <input type="hidden" name="on0" value="Please select your organisation type">
+                    <label for="support-yearly">Please select your organisation type</label>
+                    <select name="os0">
+                      <option value="Academic Library">Academic Library: £540.00 GBP (yearly)</option>
+                      <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): £5,400.00 GBP (yearly)</option>
+                    </select>
+                    <input type="hidden" name="currency_code" value="GBP">
+                    <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                  </form>
 
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-eur" class="tabs__panel" role="tabpanel" aria-hidden="true">
-                  <input type="hidden" name="cmd" value="_s-xclick">
-                  <input type="hidden" name="hosted_button_id" value="LNYVLCWX8GNKJ">
-                  <input type="hidden" name="on0" value="Please select your organisation type">
-                  <label for="support-yearly">Please select your organisation type</label>
-                  <select name="os0">
-                    <option value="Academic Library">Academic Library: €585.00 EUR (yearly)</option>
-                    <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): €5,850.0 GBP (yearly)</option>
-                  </select>
-                  <input type="hidden" name="currency_code" value="EUR">
-                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-                </form>
+                  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-eur" class="tabs__panel" role="tabpanel" aria-hidden="true">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="LNYVLCWX8GNKJ">
+                    <input type="hidden" name="on0" value="Please select your organisation type">
+                    <label for="support-yearly">Please select your organisation type</label>
+                    <select name="os0">
+                      <option value="Academic Library">Academic Library: €585.00 EUR (yearly)</option>
+                      <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): €5,850.0 GBP (yearly)</option>
+                    </select>
+                    <input type="hidden" name="currency_code" value="EUR">
+                    <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                  </form>
 
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-usd" class="tabs__panel" role="tabpanel" aria-hidden="true">
-                  <input type="hidden" name="cmd" value="_s-xclick">
-                  <input type="hidden" name="hosted_button_id" value="GH72VHCDRDW9A">
-                  <input type="hidden" name="on0" value="Please select your organisation type">
-                  <label for="support-yearly">Please select your organisation type</label>
-                  <select name="os0">
-                    <option value="Academic Library">Academic Library: $675.00 USD (yearly)</option>
-                    <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): $6,750.00 USD (yearly)</option>
-                  </select>
-                  <input type="hidden" name="currency_code" value="EUR">
-                  <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-                </form>
+                  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="supporters-usd" class="tabs__panel" role="tabpanel" aria-hidden="true">
+                    <input type="hidden" name="cmd" value="_s-xclick">
+                    <input type="hidden" name="hosted_button_id" value="GH72VHCDRDW9A">
+                    <input type="hidden" name="on0" value="Please select your organisation type">
+                    <label for="support-yearly">Please select your organisation type</label>
+                    <select name="os0">
+                      <option value="Academic Library">Academic Library: $675.00 USD (yearly)</option>
+                      <option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): $6,750.00 USD (yearly)</option>
+                    </select>
+                    <input type="hidden" name="currency_code" value="EUR">
+                    <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                  </form>
+                </div>
               </div>
-            </div>
-          </aside>
-          {% endif %}
+            </aside>
+            {% endif %}
 
-          <aside class="promo">
-            <p class="label">Just so you know&hellip;</p>
+            <aside class="promo">
+              <p class="label">Just so you know&hellip;</p>
 
-            {% assign min = 0 %}
-            {% assign max = site.data.promo.size %}
-            {% assign diff = max | minus: min %}
-            {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
+              {% assign min = 0 %}
+              {% assign max = site.data.promo.size %}
+              {% assign diff = max | minus: min %}
+              {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
 
-            <h2 class="promo__heading">{{ site.data.promo[random].title }}</h2>
-            <p class="promo__text">
-              {{ site.data.promo[random].summary }}
-              <a href="{{ site.data.promo[random].url }}" target="_blank" class="promo__link">Learn more</a>
-            </p>
-          </aside>
+              <h2 class="promo__heading">{{ site.data.promo[random].title }}</h2>
+              <p class="promo__text">
+                {{ site.data.promo[random].summary }}
+                <a href="{{ site.data.promo[random].url }}" target="_blank" class="promo__link">Learn more</a>
+              </p>
+            </aside>
           {% endif %}
         </div>
 
