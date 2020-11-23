@@ -12,7 +12,7 @@ DOAJ's mission is to increase the visibility, accessibility, reputation, usage a
 
 DOAJ is an independent non-profit organisation managed by [Infrastructure Services for Open Access C.I.C.](http://is4oa.org/) (IS4OA), a  [community interest company](https://en.wikipedia.org/wiki/Community_interest_company) based in the United Kingdom. DOAJ relies entirely on the voluntary donations of its supporters and sponsors. Neither DOAJ or IS4OA receives grants or funding from any other source.
 
-DOAJ has an [Advisory Board and Council](/advisory-board-council), the members of which carry out their duties voluntarily.
+DOAJ has an [Advisory Board and Council](/about/advisory-board-council), the members of which carry out their duties voluntarily.
 
 DOAJ has the support of over 100 voluntary editorial staff who help us to review applications for journals to be indexed. All volunteers are bound by an agreement and must declare any conflicts of interest.
 
