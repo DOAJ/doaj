@@ -160,8 +160,8 @@
                                         <p>
                                             {# APCs #}
                                             {% if bibjson.apc %}
-                                                It costs <strong class="label label--large">{{ bibjson.apc[0].get("price", "price unknown") }} {{ bibjson.apc[0].get("currency", " currency unknown") }}</strong> for APCs
-                                                ({% if bibjson.apc_url%}<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">{% endif %}article processing charges{% if bibjson.apc_url%}</a>{% endif %})
+                                                The journal charges <strong class="label label--large">{{ bibjson.apc[0].get("price", "price unknown") }} {{ bibjson.apc[0].get("currency", " currency unknown") }}</strong> as {% if bibjson.apc_url%}<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">{% endif %}publication fees{% if bibjson.apc_url%}</a>{% endif %} (article processing charges or APCs)
+
                                                 {% if bibjson.apc|length > 1 %}
                                                     In other currencies the APC is
                                                     {% for apc in bibjson.apc %}
@@ -172,7 +172,7 @@
                                                     {% endfor %}
                                                 {% endif %}
                                             {% else %}
-                                                There are <strong class="label label--large">No APC<span style="text-transform: lowercase;">s</span></strong> (<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">article processing charges</a>) to publish with this journal.
+                                                There are <strong class="label label--large">no publication fees</strong> (<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">article processing charges or APCs</a>) to publish with this journal.
                                             {% endif %}
 
                                             {# Other charges #}
