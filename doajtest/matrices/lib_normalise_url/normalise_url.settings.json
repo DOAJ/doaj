@@ -1,11 +1,10 @@
 {
   "parameters": [
     {
-      "type": "index",
-      "name": "test_id"
+      "name": "test_id",
+      "type": "index"
     },
     {
-      "type": "generated",
       "values": {
         "exists": {
           "constraints": {
@@ -36,35 +35,35 @@
           }
         }
       },
-      "name": "url"
+      "name": "url",
+      "type": "generated"
     },
     {
-      "type": "generated",
       "values": {
-        "invalid": {},
+        "unknown": {},
         "http": {},
-        "none": {},
         "ftps": {},
         "ftp": {},
         "-": {},
         "https": {},
-        "unknown": {},
-        "//": {}
+        "//": {},
+        "none": {},
+        "invalid": {}
       },
-      "name": "scheme"
+      "name": "scheme",
+      "type": "generated"
     },
     {
-      "type": "generated",
       "values": {
-        "no": {},
+        "yes": {},
         "-": {},
-        "yes": {}
+        "no": {}
       },
-      "name": "whitespace"
+      "name": "whitespace",
+      "type": "generated"
     },
     {
       "default": "",
-      "type": "conditional",
       "values": {
         "ValueError": {
           "conditions": [
@@ -85,7 +84,8 @@
           ]
         }
       },
-      "name": "raises"
+      "name": "raises",
+      "type": "conditional"
     }
   ]
 }
