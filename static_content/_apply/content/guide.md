@@ -165,17 +165,15 @@ Please ensure that, if you do apply again after the exclusion period, the journa
 
 ## Updating your journal record
 
-To update the information that we hold about your journal, you should:
-- log into your account
-- click 'Publisher' under 'My account' to go to your Publisher dashboard
-- go to the My journals tab
-- click the black 'Update' button next to the journal you wish to update
+For journals which are accepted into DOAJ, it is important that the information we hold about them is up to date. 
 
-A 'Journal update request form' will open with the current answers prefilled. Change those questions which need to be updated. If you haven't updated your record since before November 2020 when we updated our application form, we suggest that you do a thorough review and update of every answer.
+You can update that information by logging into your account and going to your '[Publisher dashboard](/publisher/)'. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button, next to each journal record, to submit and update to us.
 
-When you are happy that all answers are correct, submit the update to us.
+A 'Journal update request form' will open with the current answers pre-filled. Change any answers which need to be updated. If you haven't updated the journal since before November 2020, when we revised the form, we suggest that you review every answer. Some questions will be unanswered as those were added in November 2020.
 
-Updates are processed within six weeks of submission.
+Once all the answers are answered and correct, submit the update to us.
+
+Updates are reviewed by the DOAJ Editorial team for accuracy and we aim to process them within six weeks of submission.
 
 ---
 
