@@ -163,6 +163,22 @@ Please ensure that, if you do apply again after the exclusion period, the journa
 
 ---
 
+## Updating your journal record
+
+To update the information that we hold about your journal, you should:
+- log into your account
+- click 'Publisher' under 'My account' to go to your Publisher dashboard
+- go to the My journals tab
+- click the black 'Update' button next to the journal you wish to update
+
+A 'Journal update request form' will open with the current answers prefilled. Change those questions which need to be updated. If you haven't updated your record since before November 2020 when we updated our application form, we suggest that you do a thorough review and update of every answer.
+
+When you are happy that all answers are correct, submit the update to us.
+
+Updates are processed within six weeks of submission.
+
+---
+
 ## Appeals
 
 If you would like to appeal against a decision to reject your application for more than 6 months or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, [managing-editors@doaj.org](mailto:managing-editors@doaj.org).
