@@ -22,6 +22,7 @@ def load_j2a_cases():
     owner_account.set_id(journal.owner)
 
     non_owner_publisher = Account(**deepcopy(account_source))
+    non_owner_publisher.set_id("ramdomname")
 
     non_publisher = Account(**deepcopy(account_source))
     non_publisher.remove_role("publisher")

@@ -40,6 +40,9 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
             self.suggestions[-1].set_editor("0987654321")
             self.suggestions[-1].save()
 
+        blocklist = [(s.id, s.last_updated) for s in self.suggestions]
+        models.Application.blockall(blocklist)
+
         self.default_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors()
 
         self.forbidden_accounts = [
@@ -65,7 +68,9 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, editor_group=new_eg.name, dry_run=False)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        sleep(1)
+        blocklist = [(s.id, s.last_updated) for s in self.suggestions]
+        models.Application.blockall(blocklist)
+        # sleep(1)
 
         job = models.BackgroundJob.all()[0]
 
@@ -86,7 +91,9 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, note="Test note", dry_run=False)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        sleep(1)
+        blocklist = [(s.id, s.last_updated) for s in self.suggestions]
+        models.Application.blockall(blocklist)
+        # sleep(1)
 
         job = models.BackgroundJob.all()[0]
 
@@ -173,7 +180,9 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=False)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        sleep(1)
+        blocklist = [(s.id, s.last_updated) for s in self.suggestions]
+        models.Application.blockall(blocklist)
+        # sleep(1)
 
         job = models.BackgroundJob.all()[0]
 

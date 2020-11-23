@@ -1,20 +1,19 @@
 {
   "parameters": [
     {
-      "type": "index",
-      "name": "test_id"
+      "name": "test_id",
+      "type": "index"
     },
     {
-      "type": "generated",
       "values": {
         "exists": {
           "constraints": {
-            "whitespace": {
+            "prefix": {
               "nor": [
                 "-"
               ]
             },
-            "prefix": {
+            "whitespace": {
               "nor": [
                 "-"
               ]
@@ -23,12 +22,12 @@
         },
         "none": {
           "constraints": {
-            "whitespace": {
+            "prefix": {
               "or": [
                 "-"
               ]
             },
-            "prefix": {
+            "whitespace": {
               "or": [
                 "-"
               ]
@@ -36,38 +35,38 @@
           }
         }
       },
-      "name": "doi"
+      "name": "doi",
+      "type": "generated"
     },
     {
-      "type": "generated",
       "values": {
-        "http://dx.doi.org/": {},
         "https://doi.org/": {},
-        "http://doi.org/": {},
-        "http://hdl.handle.net/": {},
-        "https://dx.doi.org/": {},
-        "info:hdl/": {},
         "doi:": {},
+        "http://dx.doi.org/": {},
+        "http://doi.org/": {},
         "info:doi/": {},
+        "info:hdl/": {},
         "none": {},
         "-": {},
-        "https://hdl.handle.net/": {},
-        "invalid": {}
+        "http://hdl.handle.net/": {},
+        "https://dx.doi.org/": {},
+        "invalid": {},
+        "https://hdl.handle.net/": {}
       },
-      "name": "prefix"
+      "name": "prefix",
+      "type": "generated"
     },
     {
-      "type": "generated",
       "values": {
-        "no": {},
+        "yes": {},
         "-": {},
-        "yes": {}
+        "no": {}
       },
-      "name": "whitespace"
+      "name": "whitespace",
+      "type": "generated"
     },
     {
       "default": "",
-      "type": "conditional",
       "values": {
         "ValueError": {
           "conditions": [
@@ -81,7 +80,8 @@
           ]
         }
       },
-      "name": "raises"
+      "name": "raises",
+      "type": "conditional"
     }
   ]
 }

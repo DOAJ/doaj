@@ -82,6 +82,13 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
         assert self.svc.has_permissions(publisher_owner, article, True)
         assert self.svc.has_permissions(admin, article, True)
         failed_result = self.svc.has_permissions(publisher_stranged, article, True)
-        assert failed_result == {'success': 0, 'fail': 1, 'update': 0, 'new': 0, 'shared': [],
-                                 'unowned': [pissn, eissn],
-                                 'unmatched': []}, "received: {}".format(failed_result)
+        assert failed_result["success"] == 0
+        assert failed_result["fail"] == 1
+        assert failed_result["update"] == 0
+        assert failed_result["new"] == 0
+        assert len(failed_result["shared"]) == 0
+        assert len(failed_result["unmatched"]) == 0
+        assert failed_result["unowned"].sort() == [pissn, eissn].sort()
+        # assert failed_result == {'success': 0, 'fail': 1, 'update': 0, 'new': 0, 'shared': [],
+        #                          'unowned': [pissn, eissn],
+        #                          'unmatched': []}, "received: {}".format(failed_result)

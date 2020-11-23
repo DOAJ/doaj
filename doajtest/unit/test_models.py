@@ -991,7 +991,7 @@ class TestModels(DoajTestCase):
 
         # We no longer display the journal's licences within the article metadata
         with self.assertWarns(DeprecationWarning):
-            assert bj.get_journal_license().get("title") == "CC NC"
+            assert bj.get_journal_license().get("title") == "CC-BY"
 
         del bj.year
         del bj.month

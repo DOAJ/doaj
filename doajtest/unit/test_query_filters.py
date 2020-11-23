@@ -34,7 +34,7 @@ class TestQueryFilters(DoajTestCase):
         self.app_test.config['UPDATE_REQUEST_SHOW_OLDEST'] = '2018-05-03'
 
         newq = query_filters.update_request(self.q)
-        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{"range" : {"created_date" : {"gte" : '2018-05-03'}}}]}}}}}, newq.as_dict()
+        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{"range" : {"created_date" : {"gte" : '2018-05-03'}}}, {"exists" : {"field" : "admin.current_journal"}}]}}}}}, newq.as_dict()
 
         self.app_test.config['UPDATE_REQUEST_SHOW_OLDEST'] = old_update_request_show_oldest
 

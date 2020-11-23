@@ -1,28 +1,27 @@
 {
   "parameters": [
     {
-      "type": "index",
-      "name": "test_id"
+      "name": "test_id",
+      "type": "index"
     },
     {
-      "type": "generated",
       "values": {
+        "different_than_update_article_id": {},
         "same_as_update_article_id": {},
-        "none": {},
-        "different_than_update_article_id": {}
+        "none": {}
       },
-      "name": "duplicate"
+      "name": "duplicate",
+      "type": "generated"
     },
     {
-      "type": "generated",
       "values": {
-        "no": {},
-        "yes": {}
+        "yes": {},
+        "no": {}
       },
-      "name": "merge_duplicate"
+      "name": "merge_duplicate",
+      "type": "generated"
     },
     {
-      "type": "conditional",
       "values": {
         "0": {
           "conditions": [
@@ -64,10 +63,10 @@
           ]
         }
       },
-      "name": "is_update"
+      "name": "is_update",
+      "type": "conditional"
     },
     {
-      "type": "conditional",
       "values": {
         "DuplicateArticle": {
           "conditions": [
@@ -81,7 +80,8 @@
           ]
         }
       },
-      "name": "raises"
+      "name": "raises",
+      "type": "conditional"
     }
   ]
 }

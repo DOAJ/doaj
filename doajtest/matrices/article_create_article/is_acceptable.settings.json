@@ -1,44 +1,27 @@
 {
   "parameters": [
     {
-      "type": "index",
-      "name": "test_id"
+      "name": "test_id",
+      "type": "index"
     },
     {
-      "type": "generated",
       "values": {
         "exists": {},
         "none": {}
       },
-      "name": "doi"
+      "name": "doi",
+      "type": "generated"
     },
     {
-      "type": "generated",
       "values": {
         "exists": {},
         "none": {}
       },
-      "name": "fulltext_url"
+      "name": "fulltext_url",
+      "type": "generated"
     },
     {
-      "type": "conditional",
       "values": {
-        "no": {
-          "conditions": [
-            {
-              "doi": {
-                "or": [
-                  "none"
-                ]
-              },
-              "fulltext_url": {
-                "or": [
-                  "none"
-                ]
-              }
-            }
-          ]
-        },
         "yes": {
           "conditions": [
             {
@@ -56,9 +39,26 @@
               }
             }
           ]
+        },
+        "no": {
+          "conditions": [
+            {
+              "doi": {
+                "or": [
+                  "none"
+                ]
+              },
+              "fulltext_url": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
         }
       },
-      "name": "is_acceptable"
+      "name": "is_acceptable",
+      "type": "conditional"
     }
   ]
 }

@@ -1,30 +1,28 @@
 {
   "parameters": [
     {
-      "type": "index",
-      "name": "test_id"
+      "name": "test_id",
+      "type": "index"
     },
     {
-      "type": "generated",
       "values": {
         "different_than_article_id": {},
         "none": {},
         "same_as_article_id": {}
       },
-      "name": "duplicate"
+      "name": "duplicate",
+      "type": "generated"
     },
     {
-      "type": "generated",
       "values": {
-        "no": {},
-        "yes": {}
+        "yes": {},
+        "no": {}
       },
-      "name": "merge_duplicate"
+      "name": "merge_duplicate",
+      "type": "generated"
     },
     {
-      "type": "generated",
       "values": {
-        "no": {},
         "yes": {
           "constraints": {
             "duplicate": {
@@ -33,12 +31,13 @@
               ]
             }
           }
-        }
+        },
+        "no": {}
       },
-      "name": "doi_or_ft_updated"
+      "name": "doi_or_ft_updated",
+      "type": "generated"
     },
     {
-      "type": "conditional",
       "values": {
         "0": {
           "conditions": [
@@ -61,11 +60,6 @@
         "1": {
           "conditions": [
             {
-              "doi_or_ft_updated": {
-                "or": [
-                  "no"
-                ]
-              },
               "merge_duplicate": {
                 "or": [
                   "yes"
@@ -75,15 +69,20 @@
                 "or": [
                   "same_as_article_id"
                 ]
+              },
+              "doi_or_ft_updated": {
+                "or": [
+                  "no"
+                ]
               }
             }
           ]
         }
       },
-      "name": "is_update"
+      "name": "is_update",
+      "type": "conditional"
     },
     {
-      "type": "conditional",
       "values": {
         "DuplicateArticle": {
           "conditions": [
@@ -116,7 +115,8 @@
           ]
         }
       },
-      "name": "raises"
+      "name": "raises",
+      "type": "conditional"
     }
   ]
 }
