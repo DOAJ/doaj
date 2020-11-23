@@ -316,7 +316,7 @@
     {# Flash notifications #}
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
-            <section class="container flash_container">
+
               {% set category_url_indicator = '+contains-url' %}
 
               {% for category, message in messages %}
@@ -330,18 +330,18 @@
                   {% if category == "error" %}
                       {% set category = "danger" %}
                   {% endif %}
-
-                  <p class="alert alert--{{category}}">
-                      <span data-feather="alert-octagon" aria-hidden="true"></span>
-                      {% if message_has_url %}
-                          {{ message | safe }}
-                      {% else %}
-                          {{ message }}
-                      {% endif %}
-                      &nbsp;<span class="flash_close alert__close" role="button">(Dismiss)</span>
-                  </p>
+                  <section class="container flash_container">
+                      <p class="alert alert--{{category}}">
+                        <span data-feather="alert-octagon" aria-hidden="true"></span>
+                        {% if message_has_url %}
+                        {{ message | safe }}
+                        {% else %}
+                        {{ message }}
+                        {% endif %}
+                        &nbsp;<span class="flash_close alert__close" role="button">(Dismiss)</span>
+                      </p>
+                  </section>
               {% endfor %}
-            </section>
         {% endif %}
     {% endwith %}
 
