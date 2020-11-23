@@ -209,6 +209,9 @@ class TestArticleCleanupSync(DoajTestCase):
         a4 = models.Article(**source4)
         a4.save(blocking=True)
 
+        # putting this sleep in makes sure that there's no confusion when blocking by time at the second granularity
+        time.sleep(1)
+
         # run the sync/cleanup job
         job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser", write=True)
         task = article_cleanup_sync.ArticleCleanupSyncBackgroundTask(job)
