@@ -36,12 +36,12 @@ Open access journals published in any language may apply.
 
 - The journal must have its own dedicated URL and homepage that is accessible from any location
 - The website must be clear and easy to navigate
-- The journal  should adhere to the guidelines described in the Principles of Transparency and Best Practice in Scholarly Publishing
+- The journal should adhere to the guidelines described in the Principles of Transparency and Best Practice in Scholarly Publishing
 - Each article must be available as an individual, full-text article
   - one unique URL per article
   - HTML or PDF, as a minimum
 
-The following information must be available online, and linked to from the journal homepage:
+The following information must be available online, and easily accessible from the journal homepage:
 - Open access policy
 - Aims and scope
 - Editorial board (including institutional affiliations of all members)
@@ -79,6 +79,7 @@ The following information must be available online, and linked to from the journ
   - If the journal is run by a student body, it must have an advisory board of which at least two members have a PhD or equivalent.
 - All articles must pass through a quality control system (peer review) before publication.
   - The type and details of the peer review process must be stated clearly on the website.
+- Use of a plagiarism checking service is recommended, but not required for inclusion in DOAJ.
 
 ---
 
@@ -88,6 +89,7 @@ The following information must be available online, and linked to from the journ
 - DOAJ recommends the use of [Creative Commons](https://creativecommons.org/) licenses for this purpose.
 - If Creative Commons licensing is not used, similar terms and conditions should be applied.
   - Extra care must be taken to state these terms clearly.
+- It is recommended that licensing information is displayed or embedded in full text articles, but this is not required for inclusion in DOAJ.
 
 ---
 
@@ -96,31 +98,6 @@ The following information must be available online, and linked to from the journ
 - The copyright terms applied to the published content must be clearly stated and separate from the copyright terms applied to the website.
 - Copyright terms must not contradict the licensing terms or the terms of the open access policy.
   - “All rights reserved” is never appropriate for open access content.
-
----
-
-### Footnote
-
-Applications that contain information that is inaccurate or wrong, or that have answers missing, are automatically rejected.
-
-Journals that are rejected must wait 6 months from the date of rejection before applying again unless otherwise advised by DOAJ.
-
----
-
-## Recommendations
-
-We recommend that:
-- journals use a plagiarism checking software. You must specify the name and make of the software.
-
-- publishers are fully transparent about their publication fees and other fees.
-
-- the journal publishes ORCiD IDs with the articles.
-
-- the ORCiD IDs of editorial board members and reviewers are displayed.
-
-- publishers make all citations available according to the [I4OC goals](https://i4oc.org/#goals).
-
-- the journal uses an archiving scheme which is a registered Keeper in the [Keepers Registry](https://keepers.issn.org/)
 
 ---
 
@@ -159,14 +136,14 @@ We recommend that:
 
 1. Your application is successfully submitted when you see a _Thank You_ screen and receive a confirmation email.
   - If you do not receive that email, contact us.
-2. Your application will then be reviewed. You may receive an email alerting you when this process has started.
-3. One of our volunteer Associate Editors might contact you as part of the review process. Please answer any questions they send you. This helps us process your application correctly. Be aware that we will reject an application if, after one month, we haven't received answers to our questions.
-4. The person reviewing your application may be a volunteer and therefore will not have a doaj.org email address. Check your spam folder frequently just in case the emails have ended up there.
-5. If your application is accepted, an email is sent to you with your account details. You need these to log in and upload article metadata, send us updates about your journal, or manage your account.
+2. Your application will be reviewed by an editor. You may receive an email alerting you when this process has started.
+3. The editor may need to contact you as part of the review process. Please answer any questions they send you. This helps us process your application correctly. Be aware that we will reject an application if, after one month, we haven't received answers to our questions.
+4. The editor reviewing your application may be a volunteer and will not have a doaj.org email address. Check your spam folder frequently just in case the emails have ended up there.
+5. If your application is accepted, you will receive an email to confirm this.
 
 ### Time from submission to decision
 
-The time from submission to decision varies greatly and is dependent on the responsiveness of the journal contact and/or applicant. It can take up to six months for a decision to be reached but often a decision is reached within three months.
+The time from submission to decision varies greatly and is dependent on the responsiveness of the journal contact and/or applicant. Generally a decision is reached within three months.
 We cannot provide a status update for applications which are less than three months old.
 
 ---
@@ -175,7 +152,8 @@ We cannot provide a status update for applications which are less than three mon
 
 You will receive an email giving the reasons for rejection of the application. Unless otherwise advised by DOAJ staff, you may not submit another application for the same journal until 6 months after the date of the notification of rejection.
 
-You are responsible for providing accurate information when submitting an application. In cases where journal information is found to be untrue or misleading, DOAJ may decide not to allow further applications from the publisher for a period of up to three years.
+You are responsible for providing accurate information when submitting an application. Applications that contain information that is inaccurate or wrong, or that have answers missing, are automatically rejected. 
+In cases where journal information is found to be untrue or misleading, DOAJ may decide not to allow further applications from the publisher for a period of up to three years.
 
 DOAJ accepts only journals that follow good publishing practice. If our review finds a publisher is not adhering to best practice, or has questionable publishing practices, DOAJ will not allow further applications from that publisher for a period of up to three years.
 

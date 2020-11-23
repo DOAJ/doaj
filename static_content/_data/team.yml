@@ -19,7 +19,7 @@
 - name: Clara Armengou
   role: Project and Communications Manager
   photo: clara.jpg
-  bio: 'Clara has several years of experience in the scholarly publishing industry. She worked at Cambridge University Press as an Open Access Project Manager until 2015. She also works in science communication as a freelancer at the University Pompeu Fabra, Barcelona. Clara speaks Spanish, Catalan, English and some German and French. She loves cetaceans, freediving, cycling, and is an enthusiast cook.'
+  bio: 'Clara has 10 years experience in the scholarly publishing industry. She worked at Cambridge University Press as an Open Access Project Manager until 2015. She also works in science communication as a freelancer at the University Pompeu Fabra, Barcelona. Clara speaks Spanish, Catalan, English and some German and French. She loves cetaceans, freediving, cycling, and is an enthusiast cook.'
   coi:
     2016: https://drive.google.com/file/d/0ByRf6PVViI-mbDFybndLbldEbFE/view?usp=sharing
     2018: https://drive.google.com/file/d/1LHmZSZ6bwf6U71fNvIibJa6R1lquNhfR/view?usp=sharing)
@@ -43,7 +43,7 @@
 
 - name: Ilaria Fava
   role: Managing Editor
-  photo: ilaria.jpg
+  photo: Ilaria.jpg
   bio: 'Ilaria is a librarian with several years of experience within the Open Access community in her home country of Italy, where she has dealt with Open Access issues at both a national and international level. She also serves the Göttingen State and University Library working on Open Science projects.
 Based in Rome and Göttingen, Ilaria loves baking cakes; she speaks Italian, English, some Spanish and a little German.'
   coi:
@@ -86,16 +86,23 @@ Based in Rome and Göttingen, Ilaria loves baking cakes; she speaks Italian, Eng
     2020:
 
 - name: Paula Marjamäki
+  role: Managing Editor
+  photo:
+  bio: 'Paula, based in southern Finland, is a published researcher and holds a PhD in Biological Sciences from the University of Exeter. She is a big believer in open science, and has been actively involved in science outreach throughout her academic career. She joined the DOAJ team in March 2020 as the Database Assistant before moving to editorial duties in August 2020, with a focus on managing applications from Nordic countries.Outside of work she is a natural history enthusiast, and enjoys yoga, hiking, and participating in various dog sports with her Swiss shepherd.'
+  coi:
+    2020:
+
+- name: Popi Florou
   role: Database Assistant
   photo:
-  bio: 'Paula is a published researcher and holds a PhD in Biological Sciences from the University of Exeter. She has extensive experience managing and maintaining large databases and has been an advocate for open science for many years.'
+  bio: "For the past 20 years, Popi has been working as a support Librarian for the Greek National Consortium for Academic and Research Institutions. During all those years, she has been mainly responsible for the management of the Consortium's electronic resources database and portal and she has also also involved to almost all the Consortium's projects including and not exclusively the support and promotion of Open Access as a means of recording, promoting and outreaching its members' qualitative research."
   coi:
     2020:
 
 - name: Rikard Zeylon
   role: Managing Editor
   photo:
-  bio: 'Rikard has a Bachelor of Arts degree with a Major in Cultural Sciences and a specialization in publishing.'
+  bio: 'Rikard has a Bachelor of Arts degree with a Major in Cultural Sciences and a specialization in publishing. He enjoys reading about Philosophy and Religion.'
   coi:
     2016: https://drive.google.com/file/d/0ByRf6PVViI-mdnJPdldOM0hUMFU/view?usp=sharing
     2018: https://drive.google.com/file/d/1tOnW8L6TwolyLpIXwMKTITf9wGh_ukLb/view?usp=sharing

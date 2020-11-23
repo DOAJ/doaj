@@ -1,4 +1,4 @@
-The DOAJ Seal may be awarded to journals that demonstrate best practice in open access publishing. Around 10% of journals indexed in DOAJ have been awarded the Seal.
+The DOAJ Seal is awarded to journals that demonstrate best practice in open access publishing. Around 10% of journals indexed in DOAJ have been awarded the Seal.
 
 **Journals do not need to meet the Seal criteria to be accepted into DOAJ.**
 
@@ -17,7 +17,7 @@ All seven criteria must be met for a journal to be awarded the Seal. Failure to 
         - Internet Archive
         - PubMed Central
 2. Permanent article identifiers
-    - Articles must use permanent article identifiers. (DOI, ARK or Handle are the most commonly used.)
+    - Articles must use permanent article identifiers. DOI, ARK or Handle are the most commonly used.
     - All permanent links must resolve correctly.
 3. Metadata supply to DOAJ
     - Article metadata must be uploaded to DOAJ regularly.
@@ -35,5 +35,5 @@ All seven criteria must be met for a journal to be awarded the Seal. Failure to 
     - Authors must be permitted to deposit all versions of their paper in an institutional or subject repository.
         - Preprint
         - Author's Accepted Manuscript
-        - Version of Record
+        - Published article (Version of Record)
     - An embargo may not be applied.
