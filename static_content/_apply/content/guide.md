@@ -157,7 +157,7 @@ In cases where journal information is found to be untrue or misleading, DOAJ may
 
 DOAJ accepts only journals that follow good publishing practice. If our review finds a publisher is not adhering to best practice, or has questionable publishing practices, DOAJ will not allow further applications from that publisher for a period of up to three years.
 
-Journals already accepted into DOAJ may also be removed if they are found to be no longer adhering to DOAJ criteria or publishing best practice.
+Journals already accepted into DOAJ may be removed if they are found to be no longer adhering to DOAJ criteria or publishing best practice.
 
 Please ensure that, if you do apply again after the exclusion period, the journal meets the DOAJ criteria for inclusion and any necessary changes have been made to the journal website or policies.
 
@@ -165,15 +165,15 @@ Please ensure that, if you do apply again after the exclusion period, the journa
 
 ## Updating your journal record
 
-For journals which are accepted into DOAJ, it is important that the information we hold about them is up to date. 
+For journals that have been accepted into DOAJ, it is important that the information we hold about them is up to date. 
 
-You can update that information by logging into your account and going to your '[Publisher dashboard](/publisher/)'. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button, next to each journal record, to submit and update to us.
+You can update the journal information by logging into your account and going to your Publisher dashboard. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button, next to each journal record, to submit an update request to us.
 
-A 'Journal update request form' will open with the current answers pre-filled. Change any answers which need to be updated. If you haven't updated the journal since before November 2020, when we revised the form, we suggest that you review every answer. Some questions will be unanswered as those were added in November 2020.
+A journal update request form will open with the current answers pre-filled. Change any answers that need to be updated. If you haven't updated the journal since before November 2020, when we revised the form, we suggest that you review every answer. Note that some questions may not have an answer, as new questions were added in November 2020.
 
-Once all the answers are answered and correct, submit the update to us.
+Once you have amended and reviewed the answers, submit the update request to us.
 
-Updates are reviewed by the DOAJ Editorial team for accuracy and we aim to process them within six weeks of submission.
+Update requests are reviewed by the DOAJ editorial team for accuracy and we aim to process them within six weeks of submission.
 
 ---
 
