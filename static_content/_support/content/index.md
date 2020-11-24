@@ -4,7 +4,7 @@ The suggested contributions for academic organisations are detailed below: choos
 
 Publishers can choose to support us with [contributions](/support/publisher-supporter/) or a [sponsorship](/support/sponsors/).
 
-For those of you wishing to make a one-off donation, please use the form to the right.
+For those of you wishing to make a one-off donation, you can do that on this page too.
 
 ---
 
