@@ -7,22 +7,27 @@
 <script type="text/javascript" src="/static_content/_site/js/vendors/bootstrap.js"></script>
 
 {% if not config.get("DEBUG", True) %}
-    <!-- Global Site Tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ config.get('GOOGLE_ANALYTICS_ID') }}"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-46560124-1"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments)}
+      function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', '{{ config.get('GOOGLE_ANALYTICS_ID') }}', {
-          'custom_map': {'dimension1': 'OAI:Action'}
-      });
+      gtag('config', 'UA-46560124-1');
     </script>
 
-    {% if config.get("HOTJAR_ID") %}
-        <!-- hotjar -->
-        <script> (function(h,o,t,j,a,r){ h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)}; h._hjSettings={hjid:{{ config.get("HOTJAR_ID") }},hjsv:6}; a=o.getElementsByTagName('head')[0]; r=o.createElement('script');r.async=1; r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv; a.appendChild(r); })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv='); </script>
-    {% endif %}
+    <!-- Hotjar Tracking Code for https://doaj.org -->
+    <script>
+        (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+            h._hjSettings={hjid:1039257,hjsv:6};
+            a=o.getElementsByTagName('head')[0];
+            r=o.createElement('script');r.async=1;
+            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+            a.appendChild(r);
+        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+    </script>
 
     {# FIXME: I don't think we need these any more? #}
     {% if edit_suggestion_page or edit_journal_page or subject_page %}
