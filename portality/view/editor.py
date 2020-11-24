@@ -92,7 +92,7 @@ def journal_page(journal_id):
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=journal)
-        if processor.validate(current_user):
+        if processor.validate():
             try:
                 processor.finalise()
                 flash('Journal updated.', 'success')
