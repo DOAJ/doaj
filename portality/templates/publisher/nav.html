@@ -3,13 +3,15 @@
 {% set urs = url_for('publisher.updates_in_progress') %}
 {% set xml = url_for('publisher.upload_file') %}
 {% set metadata = url_for('publisher.metadata') %}
+{% set help = url_for('publisher.help') %}
 
 {% set tabs = [
     (index, "My drafts"),
     (journals, "My journals"),
     (urs, "My update requests"),
     (xml, "Upload article XML"),
-    (metadata, "Enter article metadata")
+    (metadata, "Enter article metadata"),
+    (help, "Help"),
     ]
 %}
 

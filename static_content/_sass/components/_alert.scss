@@ -5,7 +5,7 @@
   padding: $spacing-03;
   margin: $spacing-02 0;
   background-color: $fair-pink;
-  border: 1px dashed $grapefruit;
+  border: 1px solid $warm-black;
   @include typescale-06;
 
   &__close {
@@ -14,18 +14,16 @@
   }
 
   &--message {
-    border: 1px solid $warm-black;
+    background-color: $warm-black;
+    color: $warm-white;
+
+    a {
+      color: $warm-white;
+    }
   }
 
   &--danger {
-    background-color: $grapefruit;
-    border: 0;
-
-    svg path,
-    svg line,
-    svg polygon {
-      stroke: $warm-white;
-    }
+    border: 2px solid $grapefruit;
   }
 
   code {
