@@ -82,7 +82,13 @@ class JournalStatsQuery(object):
 
 class ArticleStatsQuery(object):
     q = {
-        "query" : {"match_all" : {}},
+        "query": {
+            "bool": {
+                "must": [
+                    {"term": {"admin.in_doaj": True}}
+                ]
+            }
+        },
         "size" : 0,
         "aggs" : {
             "abstracts" : {
