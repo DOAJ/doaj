@@ -44,7 +44,7 @@ class JournalArticle(DomainObject):
         # get the article data
         qa = ArticleStatsQuery()
         article_data = Article.query(q=qa.q)
-        stats["abstracts"] = "{0:,}".format(article_data.get("aggregations", {}).get("abstracts", {}).get("value", 0))
+        stats["abstracts"] = "{0:,}".format(article_data.get("hits", {}).get("total", 0))
 
         # now cache and return
         Cache.cache_site_statistics(stats)
@@ -93,10 +93,5 @@ class ArticleStatsQuery(object):
                 }
             }
         },
-        "size": 0,
-        "aggs": {
-            "abstracts": {
-                "value_count": {"field": "bibjson.abstract.exact"}
-            }
-        }
+        "size": 0
     }
