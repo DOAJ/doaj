@@ -96,7 +96,7 @@ doaj.af.BaseApplicationForm = class {
                         let text = this.convertValueToText(value);
 
                         if (f.validate && $.inArray("is_url", f.validate) !== -1) {
-                            text = '<a href="' + text + '" target="_blank">' + text + '</a>';
+                            text = '<a href="' + text + '" target="_blank" rel="noopener">' + text + '</a>';
                         }
 
                         let html = `
@@ -848,4 +848,3 @@ window.Parsley.addValidator("notIf", {
     },
     priority: 1
 });
-

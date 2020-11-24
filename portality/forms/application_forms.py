@@ -1810,7 +1810,7 @@ class FieldSetDefinitions:
 
     REASSIGN = {
         "name": "reassign",
-        "label": "Assign publish account",
+        "label": "Re-assign publisher account",
         "fields": [
             FieldDefinitions.OWNER["name"]
         ]
