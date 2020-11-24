@@ -6,36 +6,36 @@ The Directory of Open Access Journals ("DOAJ"), managed independently by [IS4OA]
 
 ### Who to contact at DOAJ about protecting your privacy
 
-The DOAJ Operations Manager, Dom Mitchell, has assumed responsibility of the DOAJ data policy and implementing the changes required by the GDPR which came into effect on 25th May 2018. If you have any questions or concerns about any of the information laid out in this Notice, or any other question about how DOAJ protects or uses your data, please send an email to Dom: [dom@doaj.org](mailto:dom@doaj.org). Alternatively, you can write to him: Dom Mitchell, c/o DOAJ, IS4OA, Sandløkken 9, 2791 Dragør, DENMARK.
+The DOAJ Operations Manager, Dom Mitchell, has assumed responsibility of the DOAJ data policy and implementing the changes required by the GDPR which came into effect on 25th May 2018. If you have any questions or concerns about any of the information laid out in this Notice, or any other question about how DOAJ protects or uses your data, please [send an email to Dom](mailto:dom@doaj.org). Alternatively, you can write to him: Dom Mitchell, c/o DOAJ, IS4OA, Sandløkken 9, 2791 Dragør, DENMARK.
 
 ### The Policy
 
-This is the website for Directory of Open Access Journals, which is a web site managed by [Infrastructure Services for Open Access](https://is4oa.org/), a UK-based Community Interest Company, registered in the UK. The DOAJ does not have an app. The DOAJ uses WordPress for its blogs: [News Service](https://blog.doaj.org/) and [DOAJ Best Practice Guide](https://www.doajbestpracticeguide.org/). This Privacy Information Notice pertains to this website and its operations.
+This is the website for Directory of Open Access Journals, which is a website managed by [Infrastructure Services for Open Access](https://is4oa.org/), a UK-based Community Interest Company, registered in the UK. The DOAJ does not have an app. The DOAJ uses WordPress for its blogs: [News Service](https://blog.doaj.org/) and [DOAJ Best Practice Guide](https://www.doajbestpracticeguide.org/). This Privacy Information Notice pertains to this website (https://doaj.org) and its operations only.
 
 ### 1) THE INFORMATION WE COLLECT AND HOW WE USE IT
 
 #### 1a Journal Applications
 
-When someone applies for a journal to be in DOAJ, we ask them to provide two different sets of contact details: one for the Applicant and one for the Journal Contact. Those details are:
+When someone applies for a journal to be in DOAJ, we ask them to register or sign in. This is the **Account holder**:In that process, we collect
 
 Name
 
 Email Address
 
-We must have these details to process the application. If an application is successful, a user account is created which stores the journal contact's email address and their name. We will use that email address to contact you from time to time for the following reasons:
+We must have these details to process the application. We will use that email address to contact you from time to time for the following reasons:
 
-1.  to ask you about an update to the information we hold on the journal(s).
-2.  to inform you that we have changed the status of the journal in DOAJ.
-3.  to inform you of any major changes that will affect how you carry out your tasks in the [Publisher Area](/account/login) (where you log into DOAJ with your DOAJ account.)
-4.  to inform you about a new feature or piece of functionality which affects the way you do your work in DOAJ.
-5.  to send you occasional DOAJ marketing emails.\*
-6.  to contact you regarding a question on article metadata which is linked to the journal in DOAJ.
+1.  to ask you about an update to the information we hold on the journal(s)
+2.  to inform you that we have changed the status of the journal in DOAJ
+3.  to inform you of any major changes that will affect how you carry out your tasks on the [Publisher dashboard](/publisher/)
+4.  to inform you about a new feature or piece of functionality which affects the way you do your work in DOAJ
+5.  to send you occasional DOAJ marketing emails\*
+6.  to contact you regarding a question on article metadata which is linked to the journal in DOAJ
 
 \*see section 7 below.
 
-It is not possible for the review emails, created by the DOAJ Team and Volunteers, to be sent to Applicants or Journal Contacts from within the system. Therefore email addresses and names are copied into emails, created in whatever email program the DOAJ Team member or Volunteer uses. All DOAJ Team members use a dedicated DOAJ workspace, provided by Google and the email client is Gmail. Gmail automatically saves email addresses that we send emails to. Our use of Gmail and the protection of your personal data within it is governed by [Google's Privacy Policy](https://policies.google.com/privacy/update), [Data Processing Amendment for G Suite](https://gsuite.google.com/terms/dpa_terms.html), and [Data Processing and Security Terms for Google Cloud Platform](https://cloud.google.com/terms/data-processing-term).
+It is not possible for emails, generated during the review process, to be sent to Account holders from within the DOAJ system. Therefore email addresses and names are copied into emails, created in whatever email program the DOAJ Team member or Volunteer uses. DOAJ Team members use a dedicated DOAJ workspace, via Google Workspace and the email client is with Gmail. Gmail automatically saves email addresses that we send emails to. Our use of Gmail and the protection of your personal data within it is governed by [Google's Privacy Policy](https://policies.google.com/privacy/update), [Data Processing Amendment for G Suite](https://gsuite.google.com/terms/dpa_terms.html), and [Data Processing and Security Terms for Google Cloud Platform](https://cloud.google.com/terms/data-processing-term).
 
-You may access, review and edit your account details by [logging into your DOAJ account](/account/login). We will never give out your email address to any 3rd party and we never discuss the details of your account or journal applications with anyone apart from you or confirmed representatives from your organisation.
+You may access, review and edit your account details by [logging into your DOAJ account](/account/login). We will never give out your email address to any 3rd party and we never discuss the details of your account or journal applications with anyone apart from you or a representative that we have confirmed is from your organisation.
 
 #### 1b DOAJ Volunteer Applications
 
