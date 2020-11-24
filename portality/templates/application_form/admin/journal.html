@@ -12,10 +12,10 @@
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("reassign") %}
-        <h3 class="label" type="button" data-toggle="collapse" data-target="#reassign" aria-expanded="false"> {{ fs.label }}
+        <h3 class="label" type="button" data-toggle="collapse" data-target="#reassign__admin_container" aria-expanded="false"> {{ fs.label }}
             <span data-feather="plus" aria-hidden="true"></span>
         </h3>
-        <div class="collapse" id="reassign" aria-expanded="false">
+        <div class="collapse" id="reassign__admin_container" aria-expanded="false">
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
                 {%  include field_template %}
@@ -27,8 +27,8 @@
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("reviewers") %}
-        <h3 class="label" type="button" data-toggle="collapse" data-target="#reviewers" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
-        <div class="collapse" id="reviewers" aria-expanded="false">
+        <h3 class="label" type="button" data-toggle="collapse" data-target="#reviewers__admin_container" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
+        <div class="collapse" id="reviewers__admin_container" aria-expanded="false">
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
                 {%  include field_template %}
@@ -43,8 +43,8 @@
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("continuations") %}
-        <h3 class="label" type="button" data-toggle="collapse" data-target="#continuations" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
-        <div class="collapse" id="continuations" aria-expanded="false">
+        <h3 class="label" type="button" data-toggle="collapse" data-target="#continuations__admin_container" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
+        <div class="collapse" id="continuations__admin_container" aria-expanded="false">
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
                 {%  include field_template %}
@@ -53,8 +53,8 @@
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("subject") %}
-        <h3 class="label" type="button" data-toggle="collapse" data-target="#subject" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
-        <div class="collapse" id="subject" aria-expanded="false">
+        <h3 class="label" type="button" data-toggle="collapse" data-target="#subject__admin_container" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
+        <div class="collapse" id="subject__admin_container" aria-expanded="false">
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
                 {%  include field_template %}
@@ -75,8 +75,8 @@
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("notes") %}
-        <h3 class="label" type="button" data-toggle="collapse" data-target="#notes" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
-        <div class="collapse" id="notes" aria-expanded="false">
+        <h3 class="label" type="button" data-toggle="collapse" data-target="#notes__admin_container" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
+        <div class="collapse" id="notes__admin_container" aria-expanded="false">
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
                 {%  include field_template %}

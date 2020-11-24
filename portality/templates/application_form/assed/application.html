@@ -31,8 +31,8 @@
 #}
     <fieldset>
         {% set fs = formulaic_context.fieldset("status") %}
-        <h3 class="label" type="button" data-toggle="collapse" data-target="#status" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
-        <div class="collapse" id="status" aria-expanded="false">
+        <h3 class="label" type="button" data-toggle="collapse" data-target="#status__admin_container" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
+        <div class="collapse" id="status__admin_container" aria-expanded="false">
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
                 {%  include field_template %}
@@ -74,8 +74,8 @@
     #}
     <fieldset>
         {% set fs = formulaic_context.fieldset("subject") %}
-        <h3 class="label" type="button" data-toggle="collapse" data-target="#subject" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
-        <div class="collapse" id="subject" aria-expanded="false">
+        <h3 class="label" type="button" data-toggle="collapse" data-target="#subject__admin_container" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
+        <div class="collapse" id="subject__admin_container" aria-expanded="false">
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
                 {%  include field_template %}
@@ -98,8 +98,8 @@
     #}
     <fieldset>
         {% set fs = formulaic_context.fieldset("notes") %}
-        <h3 class="label" type="button" data-toggle="collapse" data-target="#notes" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
-        <div class="collapse" id="notes" aria-expanded="false">
+        <h3 class="label" type="button" data-toggle="collapse" data-target="#notes__admin_container" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>
+        <div class="collapse" id="notes__admin_container" aria-expanded="false">
 
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
