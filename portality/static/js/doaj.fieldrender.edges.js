@@ -1151,7 +1151,7 @@ $.extend(true, doaj, {
 
                 var searchFieldIdSelector = edges.css_id_selector(this.namespace, "fields", this);
                 var field = this.component.jq(searchFieldIdSelector).val();
-                this.component.setSearchField(val);
+                this.component.setSearchField(field);
             };
 
             this.clearSearch = function (element) {
