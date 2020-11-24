@@ -1,15 +1,10 @@
-Supporting DOAJ is the only way to ensure that we can continue to provide you and the academic community with this vital open access resource. We are very grateful to all our supporters in libraries, publishers and other organisations around the world.
+Support of DOAJ by academic organisations is vital and we are proud to acknowledge that over 80% of our support comes to us this way. We are very grateful to all our supporting academic organisations from around the world.
 
-You can support us:
+The suggested contributions for academic organisations are detailed below: choose the most appropriate option for your organisation. 
 
-+ with a one-time donation - see below.
-+ with an annual contribution or a longer-term contribution, often over three years, having a greater impact on the future of DOAJ and allowing for more sustainable development
-  * Libraries, consortia, all public organisations - see [Supporters page](/support/supporters/)
-  * Publishers - see our [publisher supporters page](/support/publisher-supporter/)
-+ via [sponsorship](/support/sponsors/)
-  * For more information email [dom@doaj.org](mailto:dom@doaj.org?subject=DOAJ Sponsorship)
+Publishers can choose to support us with [contributions](/support/publisher-supporter/) or a [sponsorship](/support/sponsors/).
 
-Supporting DOAJ will give your organisation a range of benefits.
+For those of you wishing to make a one-off donation, you can do that on this page too.
 
 ---
 

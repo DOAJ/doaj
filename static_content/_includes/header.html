@@ -150,7 +150,7 @@
 
 {% if page.fragment == false %}
 <!-- Admin-only edit buttons: ONLY FOR STATIC PAGES EDITABLE ON GITHUB -->
-<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/{{ page.section|downcase }}/content/{{ page.name }}" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
+<a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/feature/af_redesign__static_content/static_content/_{{ page.section|downcase }}/content/{{ page.name }}" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
 {% assign current_page = page.name %}
 {% assign size = current_page | size | minus: 3 %}

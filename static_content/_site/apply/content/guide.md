@@ -148,6 +148,20 @@ We cannot provide a status update for applications which are less than three mon
 
 ---
 
+## Updating your journal record
+
+For journals that have been accepted into DOAJ, it is important that the information we hold about them is up to date. 
+
+You can update the journal information by logging into your account and going to your Publisher dashboard. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button, next to each journal record, to submit an update request to us.
+
+A journal update request form will open with the current answers pre-filled. Change any answers that need to be updated. If you haven't updated the journal since before November 2020, when we revised the form, we suggest that you review every answer. Note that some questions may not have an answer, as new questions were added in November 2020.
+
+Once you have amended and reviewed the answers, submit the update request to us.
+
+Update requests are reviewed by the DOAJ editorial team for accuracy and we aim to process them within six weeks of submission.
+
+---
+
 ## If your application is rejected
 
 You will receive an email giving the reasons for rejection of the application. Unless otherwise advised by DOAJ staff, you may not submit another application for the same journal until 6 months after the date of the notification of rejection.
@@ -157,7 +171,7 @@ In cases where journal information is found to be untrue or misleading, DOAJ may
 
 DOAJ accepts only journals that follow good publishing practice. If our review finds a publisher is not adhering to best practice, or has questionable publishing practices, DOAJ will not allow further applications from that publisher for a period of up to three years.
 
-Journals already accepted into DOAJ may also be removed if they are found to be no longer adhering to DOAJ criteria or publishing best practice.
+Journals already accepted into DOAJ may be removed if they are found to be no longer adhering to DOAJ criteria or publishing best practice.
 
 Please ensure that, if you do apply again after the exclusion period, the journal meets the DOAJ criteria for inclusion and any necessary changes have been made to the journal website or policies.
 

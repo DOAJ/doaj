@@ -14,7 +14,7 @@ ed:
 - name: David Scherer
   area: Library and Information Studies
   year_since:
-  city: Pittsburg, PA
+  city: Pittsburgh, PA
   country: USA
   language: English
 
@@ -74,6 +74,7 @@ ed:
   country: Poland
   language: Polish, English
   featured: true
+  photo: "napa.jpg"
 
 - name: Paola Galimberti
   area: Research Evaluation
@@ -167,7 +168,7 @@ ass_ed:
   area: Science, Technology
   year_since:
   city: Exeter
-  country: UK
+  country: United Kingdom
   language: Portuguese, English
 
 - name: Andista Candra Yusro
@@ -902,6 +903,7 @@ ass_ed:
   city: Esfahan
   country: Iran
   language: Farsi, English
+  photo: "amini.jpeg"
 
 - name: Sami Syrjämäki
   area: Humanities, Social Sciences

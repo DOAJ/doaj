@@ -17,12 +17,6 @@ board:
   coi:
     2019: https://drive.google.com/open?id=1rSCL0KHewtg6626kf2_YB-0i18IxcoiN
 
-- name: Rolf Halse
-  institution:  Norwegian Centre for Research Data (NSD)
-  country: Norway
-  coi:
-    2019: https://drive.google.com/open?id=1H3riYNmzEKcireyuCtpAU04Ogd7ZVvJD
-
 - name: Emma Molls
   institution: University of Minnesota
   country: United States
@@ -47,7 +41,7 @@ board:
   coi:
     2019: https://drive.google.com/open?id=1PG8alnPEbKDLhr6E3Ly1it-kQ_0srnNi
 
-- name: Steven Vidovic (CHAIR)
+- name: Steven Vidovic (Chair)
   institution: University of Southampton
   country: United Kingdom
   coi:
