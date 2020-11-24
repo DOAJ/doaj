@@ -902,6 +902,7 @@ ass_ed:
   city: Esfahan
   country: Iran
   language: Farsi, English
+  photo: "amini.jpeg"
 
 - name: Sami Syrjämäki
   area: Humanities, Social Sciences
