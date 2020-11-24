@@ -80,13 +80,23 @@ class JournalStatsQuery(object):
         }
     }
 
+
 class ArticleStatsQuery(object):
     q = {
-        "query" : {"match_all" : {}},
-        "size" : 0,
-        "aggs" : {
-            "abstracts" : {
-                "value_count" : {"field" : "bibjson.abstract.exact"}
+        "query": {
+            "filtered": {
+                "query": {"match_all": {}},
+                "filter": {
+                    "bool": {
+                        "must": {"term": {"admin.in_doaj": "true"}}
+                    }
+                }
+            }
+        },
+        "size": 0,
+        "aggs": {
+            "abstracts": {
+                "value_count": {"field": "bibjson.abstract.exact"}
             }
         }
     }
