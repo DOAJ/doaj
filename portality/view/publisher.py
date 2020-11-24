@@ -255,7 +255,7 @@ def metadata():
         return fc.render_template(validated=validated)
 
 
-@blueprint.route("/publisher/help")
+@blueprint.route("/help")
 @login_required
 @ssl_required
 def help():
