@@ -54,7 +54,7 @@ class News(DomainObject):
     @summary.setter
     def summary(self, s): self.data["summary"] = s
 
-    def published_formatted(self, format="%a, %d %b %Y at %H:%M"):
+    def published_formatted(self, format="%-d %B %Y"):
         try:
             dt = datetime.strptime(self.published, "%Y-%m-%dT%H:%M:%SZ")
             return dt.strftime(format)

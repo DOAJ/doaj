@@ -30,7 +30,7 @@ function autocomplete(selector, doc_field, doc_type, mininput, include_input, al
             ajax: ajax,
             createSearchChoice: csc,
             initSelection : initSel,
-            placeholder: "Choose a value",
+            placeholder: "Start typing…",
             allowClear: allow_clear
         });
     } else {
@@ -39,7 +39,7 @@ function autocomplete(selector, doc_field, doc_type, mininput, include_input, al
             minimumInputLength: mininput,
             ajax: ajax,
             initSelection : initSel,
-            placeholder: "Choose a value",
+            placeholder: "Start typing…",
             allowClear: allow_clear
         });
     }

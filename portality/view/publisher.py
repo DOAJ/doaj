@@ -8,9 +8,12 @@ from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.formcontext import formcontext
+from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 from portality.ui.messages import Messages
 from portality import lock
+from portality.models import DraftApplication
+from portality.lcc import lcc_jstree
 
 from huey.exceptions import TaskException
 
@@ -28,6 +31,33 @@ def restrict():
 @ssl_required
 def index():
     return render_template("publisher/index.html")
+
+
+@blueprint.route("/journal")
+@login_required
+@ssl_required
+def journals():
+    return render_template("publisher/journals.html", lcc_tree=lcc_jstree)
+
+
+@blueprint.route("/application/<application_id>/delete", methods=["GET"])
+def delete_application(application_id):
+    # if this is a draft application, we can just remove it
+    draft_application = DraftApplication.pull(application_id)
+    if draft_application is not None:
+        draft_application.delete()
+        return redirect(url_for("publisher.deleted_thanks"))
+
+    # otherwise delegate to the application service to sort this out
+    appService = DOAJ.applicationService()
+    appService.delete_application(application_id, current_user._get_current_object())
+
+    return redirect(url_for("publisher.deleted_thanks"))
+
+
+@blueprint.route("/application/deleted")
+def deleted_thanks():
+    return render_template("publisher/application_deleted.html")
 
 
 @blueprint.route("/update_request/<journal_id>", methods=["GET", "POST", "DELETE"])
@@ -79,36 +109,41 @@ def update_request(journal_id):
         if alock is not None: alock.delete()
         return redirect(url_for("publisher.updates_in_progress"))
 
+    fc = ApplicationFormFactory.context("update_request")
+
     # if we are requesting the page with a GET, we just want to show the form
     if request.method == "GET":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=application)
-        return fc.render_template(edit_suggestion_page=True)
+        fc.processor(source=application)
+        return fc.render_template(obj=application)
+        #fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=application)
+        #return fc.render_template(edit_suggestion_page=True)
 
     # if we are requesting the page with a POST, we need to accept the data and handle it
     elif request.method == "POST":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=request.form, source=application)
-        if fc.validate():
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=request.form, source=application)
+        processor = fc.processor(formdata=request.form, source=application)
+        if processor.validate():
             try:
-                fc.finalise()
+                processor.finalise()
                 Messages.flash(Messages.APPLICATION_UPDATE_SUBMITTED_FLASH)
-                for a in fc.alert:
+                for a in processor.alert:
                     Messages.flash_with_url(a, "success")
                 return redirect(url_for("publisher.updates_in_progress"))
-            except formcontext.FormContextException as e:
+            except Exception as e:
                 Messages.flash(str(e))
                 return redirect(url_for("publisher.update_request", journal_id=journal_id, _anchor='cannot_edit'))
             finally:
                 if jlock is not None: jlock.delete()
                 if alock is not None: alock.delete()
         else:
-            return fc.render_template(edit_suggestion_page=True)
+            return fc.render_template(obj=application)
 
 
-@blueprint.route("/view_update_request/<application_id>", methods=["GET", "POST"])
+@blueprint.route("/view_application/<application_id>", methods=["GET"])
 @login_required
 @ssl_required
 @write_required()
-def update_request_readonly(application_id):
+def application_readonly(application_id):
     # DOAJ BLL for this request
     applicationService = DOAJ.applicationService()
     authService = DOAJ.authorisationService()
@@ -119,8 +154,19 @@ def update_request_readonly(application_id):
     except AuthoriseException as e:
         abort(404)
 
-    fc = formcontext.ApplicationFormFactory.get_form_context(role="update_request_readonly", source=application)
-    return fc.render_template(no_sidebar=True)
+    fc = ApplicationFormFactory.context("application_read_only")
+    fc.processor(source=application)
+    # fc = formcontext.ApplicationFormFactory.get_form_context(role="update_request_readonly", source=application)
+    return fc.render_template(obj=application)
+
+
+@blueprint.route("/view_update_request/<application_id>", methods=["GET", "POST"])
+@login_required
+@ssl_required
+@write_required()
+def update_request_readonly(application_id):
+    return redirect(url_for("publisher.application_readonly", application_id=application_id))
+
 
 @blueprint.route('/progress')
 @login_required
@@ -142,7 +188,7 @@ def upload_file():
         if schema is None:
             schema = ""
         return render_template('publisher/uploadmetadata.html', previous=previous, schema=schema)
-    
+
     # otherwise we are dealing with a POST - file upload or supply of url
     f = request.files.get("file")
     schema = request.values.get("schema")
@@ -166,11 +212,11 @@ def upload_file():
     if f is not None and f.filename != "":
         flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
         return resp
-    
+
     if url is not None and url != "":
         flash("File reference successfully received - it will be processed shortly", "success")
         return resp
-    
+
     flash("No file or URL provided", "error")
     return resp
 
@@ -184,7 +230,7 @@ def metadata():
     if request.method == "GET":
         fc = formcontext.ArticleFormFactory.get_from_context(user=user, role="publisher")
         return fc.render_template()
-    
+
     # if this is a post request, a form button has been hit and we need to do
     # a bunch of work
     elif request.method == "POST":
@@ -223,4 +269,3 @@ def _validate_authors(form, require=1):
         if name is not None and name != "":
             counted += 1
     return counted >= require
-

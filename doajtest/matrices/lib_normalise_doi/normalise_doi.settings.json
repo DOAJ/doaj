@@ -5,23 +5,7 @@
       "type": "index"
     },
     {
-      "name": "doi",
-      "type": "generated",
       "values": {
-        "none": {
-          "constraints": {
-            "prefix": {
-              "or": [
-                "-"
-              ]
-            },
-            "whitespace": {
-              "or": [
-                "-"
-              ]
-            }
-          }
-        },
         "exists": {
           "constraints": {
             "prefix": {
@@ -35,39 +19,53 @@
               ]
             }
           }
+        },
+        "none": {
+          "constraints": {
+            "prefix": {
+              "or": [
+                "-"
+              ]
+            },
+            "whitespace": {
+              "or": [
+                "-"
+              ]
+            }
+          }
         }
-      }
+      },
+      "name": "doi",
+      "type": "generated"
     },
     {
-      "name": "prefix",
-      "type": "generated",
       "values": {
-        "-": {},
-        "none": {},
-        "doi:": {},
-        "info:doi/": {},
-        "https://dx.doi.org/": {},
-        "http://dx.doi.org/": {},
         "https://doi.org/": {},
+        "doi:": {},
+        "http://dx.doi.org/": {},
         "http://doi.org/": {},
-        "http://hdl.handle.net/": {},
-        "https://hdl.handle.net/": {},
+        "info:doi/": {},
         "info:hdl/": {},
-        "invalid": {}
-      }
-    },
-    {
-      "name": "whitespace",
-      "type": "generated",
-      "values": {
+        "none": {},
         "-": {},
-        "yes": {},
-        "no": {}
-      }
+        "http://hdl.handle.net/": {},
+        "https://dx.doi.org/": {},
+        "invalid": {},
+        "https://hdl.handle.net/": {}
+      },
+      "name": "prefix",
+      "type": "generated"
     },
     {
-      "name": "raises",
-      "type": "conditional",
+      "values": {
+        "yes": {},
+        "-": {},
+        "no": {}
+      },
+      "name": "whitespace",
+      "type": "generated"
+    },
+    {
       "default": "",
       "values": {
         "ValueError": {
@@ -81,7 +79,9 @@
             }
           ]
         }
-      }
+      },
+      "name": "raises",
+      "type": "conditional"
     }
   ]
 }

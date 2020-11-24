@@ -1,17 +1,17 @@
-import json
-
-from portality.dao import DomainObject
-from portality.models import Journal, shared_structs
-from portality.models.bibjson import GenericBibJSON
-from copy import deepcopy
-from datetime import datetime
-from portality import datasets, constants
-from portality.core import app
-from portality.lib import normalise
-
 import string
+import warnings
+
 from unidecode import unidecode
 from functools import reduce
+from copy import deepcopy
+from datetime import datetime
+
+from portality import datasets, constants
+from portality.dao import DomainObject
+from portality.models import Journal
+from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article specifically uses the v1 BibJSON
+from portality.models.v1 import shared_structs
+from portality.lib import normalise
 
 
 class NoJournalException(Exception):
@@ -275,28 +275,16 @@ class Article(DomainObject):
                 bibjson.journal_title = jbib.title
             rbj.title = jbib.title
 
-        if jbib.get_license() is not None:
-            lic = jbib.get_license()
-            alic = bibjson.get_journal_license()
-
-            if lic is not None and (alic is None or (lic.get("title") != alic.get("title") or
-                    lic.get("type") != alic.get("type") or
-                    lic.get("url") != alic.get("url") or
-                    lic.get("version") != alic.get("version") or
-                    lic.get("open_access") != alic.get("open_access"))):
-
-                bibjson.set_journal_license(lic.get("title"),
-                                            lic.get("type"),
-                                            lic.get("url"),
-                                            lic.get("version"),
-                                            lic.get("open_access"))
-                trip = True
-
-            rbj.set_license(lic.get("title"),
-                            lic.get("type"),
-                            lic.get("url"),
-                            lic.get("version"),
-                            lic.get("open_access"))
+        bibjson.remove_journal_licences()
+        """
+        for lic in jbib.licences:
+            bibjson.add_journal_license(
+                lic.get("type"),
+                lic.get("type"),
+                lic.get("url")
+            )
+            rbj.add_license(lic.get("type"), lic.get("url"))
+        """
 
         if len(jbib.language) > 0:
             jlang = jbib.language
@@ -396,10 +384,10 @@ class Article(DomainObject):
         subjects = []
         schema_subjects = []
         schema_codes = []
+        schema_codes_tree = []
         classification = []
         langs = []
         country = None
-        licenses = []
         publisher = []
         classification_paths = []
         unpunctitle = None
@@ -448,11 +436,6 @@ class Article(DomainObject):
         elif cbib.journal_country:
             country = datasets.get_country_name(cbib.journal_country)
 
-        # get the title of the license
-        lic = cbib.get_journal_license()
-        if lic is not None:
-            licenses.append(lic.get("title"))
-
         # copy the publisher/provider
         if cbib.publisher:
             publisher.append(cbib.publisher)
@@ -462,7 +445,6 @@ class Article(DomainObject):
         subjects = list(set(subjects))
         schema_subjects = list(set(schema_subjects))
         classification = list(set(classification))
-        licenses = list(set(licenses))
         publisher = list(set(publisher))
         langs = list(set(langs))
         schema_codes = list(set(schema_codes))
@@ -482,6 +464,7 @@ class Article(DomainObject):
 
         # normalise the classification paths, so we only store the longest ones
         classification_paths = lcc.longest(classification_paths)
+        schema_codes_tree = cbib.lcc_codes_full_list()
 
         # create an unpunctitle
         if cbib.title is not None:
@@ -531,8 +514,6 @@ class Article(DomainObject):
             self.data["index"]["classification"] = classification
         if len(publisher) > 0:
             self.data["index"]["publisher"] = publisher
-        if len(licenses) > 0:
-            self.data["index"]["license"] = licenses
         if len(langs) > 0:
             self.data["index"]["language"] = langs
         if country is not None:
@@ -551,6 +532,8 @@ class Article(DomainObject):
             self.data["index"]["doi"] = doi
         if fulltext is not None:
             self.data["index"]["fulltext"] = fulltext
+        if len(schema_codes_tree) > 0:
+            self.data["index"]["schema_codes_tree"] = schema_codes_tree
 
     def prep(self):
         self._generate_index()
@@ -719,7 +702,13 @@ class ArticleBibJSON(GenericBibJSON):
     def author(self, authors):
         self._set_with_struct("author", authors)
 
-    def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+    def add_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+
+        :return:
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         lobj = {"title": licence_title, "type": licence_type}
         if url is not None:
             lobj["url"] = url
@@ -727,14 +716,46 @@ class ArticleBibJSON(GenericBibJSON):
             lobj["version"] = version
         if open_access is not None:
             lobj["open_access"] = open_access
+        self._add_to_list_with_struct("journal.license", lobj)
 
+    def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
+        lobj = {"title": licence_title, "type": licence_type}
+        if url is not None:
+            lobj["url"] = url
+        if version is not None:
+            lobj["version"] = version
+        if open_access is not None:
+            lobj["open_access"] = open_access
         self._set_with_struct("journal.license", lobj)
 
     def get_journal_license(self):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         lics = self._get_list("journal.license")
         if len(lics) == 0:
             return None
         return lics[0]
+
+    @property
+    def journal_licenses(self):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
+        return self._get_list("journal.license")
+
+    def remove_journal_licences(self):
+        """
+        PENDING DEPRECATION - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+        """
+        warnings.warn("PENDING DEPRECATION - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", PendingDeprecationWarning)
+        self._delete("journal.license")
 
     def get_publication_date(self, date_format='%Y-%m-%dT%H:%M:%SZ'):
         # work out what the date of publication is
@@ -830,6 +851,20 @@ class ArticleBibJSON(GenericBibJSON):
                 citation += end
 
         return jtitle.strip(), citation
+
+    def lcc_codes_full_list(self):
+        full_list = set()
+
+        from portality.lcc import lcc  # inline import since this hits the database
+        for subs in self.subjects():
+            scheme = subs.get("scheme")
+            if scheme != "LCC":
+                continue
+            code = subs.get("code")
+            expanded = lcc.expand_codes(code)
+            full_list.update(expanded)
+
+        return ["LCC:" + x for x in full_list if x is not None]
 
 ARTICLE_BIBJSON_EXTENSION = {
     "objects" : ["bibjson"],

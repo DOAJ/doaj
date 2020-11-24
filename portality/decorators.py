@@ -3,7 +3,7 @@ from functools import wraps
 from flask import request, abort, redirect, flash, url_for, render_template, make_response
 from flask_login import login_user, current_user
 
-from portality.api.v1.common import Api401Error
+from portality.api.common import Api401Error
 
 from portality.core import app
 from portality.models import Account

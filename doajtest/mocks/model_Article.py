@@ -12,7 +12,8 @@ class ModelArticleMockFactory(object):
             j = Journal(**source)
             bj = j.bibjson()
             bj.title = spec.get("title", "Journal Title")
-            bj.remove_identifiers()
+            del bj.eissn
+            del bj.pissn
             if "pissn" in spec:
                 bj.add_identifier(bj.P_ISSN, spec.get("pissn"))
             if "eissn" in spec:

@@ -4,7 +4,7 @@ $.extend(true, doaj, {
         activeEdges: {},
 
         editUserLink : function (val, resultobj, renderer) {
-            var result = '<a class="edit_user_link" href="';
+            var result = '<a class="edit_user_link button" href="';
             result += doaj.userSearchConfig.userEditUrl;
             result += resultobj['id'];
             result += '" target="_blank"';
@@ -25,7 +25,7 @@ $.extend(true, doaj, {
                     }
                 }
             };
-            return '<a style="margin-left: 10px; margin-right: 10px" href="/admin/journals?source=' + encodeURIComponent(JSON.stringify(q)) + '">View Journals</a>'
+            return '<br/><a class="button" href="/admin/journals?source=' + encodeURIComponent(JSON.stringify(q)) + '">View Journals</a>'
         },
 
         init : function(params) {
@@ -68,15 +68,15 @@ $.extend(true, doaj, {
                         {'display':'Created Date','field':'created_date'},
                         {'display':'Last Modified Date','field':'last_updated'},
                         {'display':'User ID','field':'id'},
-                        {'display':'Email Address','field':'email'}
+                        {'display':'Email address','field':'email'}
                     ],
                     fieldOptions: [
                         {'display':'User ID','field':'id'},
-                        {'display':'Email Address','field':'email'}
+                        {'display':'Email address','field':'email'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
-                        freetextSubmitDelay: 1000,
+                        freetextSubmitDelay: -1,
                         searchButton: true,
                         searchPlaceholder: "Search Users"
                     })
@@ -110,9 +110,9 @@ $.extend(true, doaj, {
                         rowDisplay : [
                             [
                                 {
-                                    "pre" : "<strong>",
+                                    "pre" : "<h3>",
                                     "field" : "id",
-                                    "post" : "</strong>"
+                                    "post" : "</h3>"
                                 }
                             ],
                             [

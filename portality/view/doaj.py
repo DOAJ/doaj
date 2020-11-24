@@ -2,7 +2,7 @@ from flask import Blueprint, request, flash, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 import urllib.request, urllib.parse, urllib.error
-from jinja2.exceptions import TemplateNotFound
+from portality.forms.application_forms import ApplicationFormFactory
 
 from portality import dao
 from portality import models
@@ -15,6 +15,7 @@ from portality.view.forms import ContactUs
 from portality.app_email import send_contact_form
 from portality.lib import analytics
 from portality.ui.messages import Messages
+from portality.forms.application_forms import JournalFormFactory
 
 import json
 import os
@@ -25,7 +26,12 @@ blueprint = Blueprint('doaj', __name__)
 @blueprint.route("/")
 def home():
     news = blog.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
-    return render_template('doaj/index.html', news=news)
+    recent_journals = models.Journal.recent(max=16)
+    return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
+
+@blueprint.route('/login/')
+def login():
+    return redirect(url_for('account.login'))
 
 @blueprint.route("/cookie_consent")
 def cookie_consent():
@@ -51,19 +57,18 @@ def dismiss_site_note():
     return resp
 
 
-
 @blueprint.route("/news")
 def news():
     news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))
     return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
 
 
-@blueprint.route("/widgets")
-def widgets():
-    return render_template('doaj/widgets.html',
-                           env=app.config.get("DOAJENV"),
-                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
-                           )
+# @blueprint.route("/widgets")
+# def widgets():
+#     return render_template('doaj/widgets.html',
+#                            env=app.config.get("DOAJENV"),
+#                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+#                            )
 
 @blueprint.route("/ssw_demo")
 def ssw_demo():
@@ -96,9 +101,19 @@ def fqw_hit():
     return '', 204
 
 
-@blueprint.route("/search", methods=['GET'])
+@blueprint.route("/search/journals", methods=["GET"])
+def journals_search():
+    return render_template("doaj/journals_search.html", lcc_tree=lcc_jstree)
+
+
+@blueprint.route("/search/articles", methods=["GET"])
+def articles_search():
+    return render_template("doaj/articles_search.html", lcc_tree=lcc_jstree)
+
+
+@blueprint.route("/search/", methods=['GET'])
 def search():
-    return render_template('doaj/search.html')
+    return redirect(url_for("doaj.journals_search"), 301)
 
 
 @blueprint.route("/search", methods=['POST'])
@@ -107,42 +122,46 @@ def search_post():
     if request.form.get('origin') != 'ui':
         abort(400)                                              # bad request - we must receive searches from our own UI
 
-    filters = None
-    if not (request.form.get('include_journals') and request.form.get('include_articles')):
-        filters = []
-        if request.form.get('include_journals'):
-            filters.append(dao.Facetview2.make_term_filter("_type", "journal"))
-        elif request.form.get('include_articles'):
-            filters.append(dao.Facetview2.make_term_filter("_type", "article"))
-
-    query = dao.Facetview2.make_query(request.form.get("q"), filters=filters, default_operator="AND")
     ref = request.form.get("ref")
     if ref is None:
-        abort(400)                                                                                # Referrer is required
+        abort(400)  # Referrer is required
+
+    ct = request.form.get("content-type")
+    kw = request.form.get("keywords")
+    field = request.form.get("fields")
+
+    if kw is None:
+        kw = request.form.get("q")  # back-compat for the simple search widget
+
+    field_map = {
+        "all" : (None, None),
+        "title" : ("bibjson.title", "bibjson.title"),
+        "abstract" : (None, "bibjson.abstract"),
+        "subject" : ("index.classification", "index.classification"),
+        "author" : (None, "bibjson.author.name")
+    }
+    default_field_opts = field_map.get(field, None)
+    default_field = None
+
+    route = ""
+    if not ct or ct == "journals":
+        route = url_for("doaj.journals_search")
+        if default_field_opts:
+            default_field = default_field_opts[0]
+    elif ct == "articles":
+        route = url_for("doaj.articles_search")
+        if default_field_opts:
+            default_field = default_field_opts[1]
     else:
-        return redirect(url_for('.search') + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
+        abort(400)
 
+    query = dao.Facetview2.make_query(kw, default_field=default_field, default_operator="AND")
 
-@blueprint.route("/subjects")
-def subjects():
-    return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
+    return redirect(route + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
 
+#############################################
 
-@blueprint.route("/application/new", methods=["GET", "POST"])
-@write_required()
-def suggestion():
-    if request.method == "GET":
-        fc = formcontext.ApplicationFormFactory.get_form_context()
-        return fc.render_template(edit_suggestion_page=True)
-    elif request.method == "POST":
-        fc = formcontext.ApplicationFormFactory.get_form_context(form_data=request.form)
-        if fc.validate():
-            fc.finalise()
-            return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
-        else:
-            return fc.render_template(edit_suggestion_page=True)
-
-
+# FIXME: this should really live somewhere else more appropirate to who can access it
 @blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
 @login_required
 @ssl_required
@@ -158,14 +177,10 @@ def journal_readonly(journal_id):
     if j is None:
         abort(404)
 
-    fc = formcontext.JournalFormFactory.get_form_context(role='readonly', source=j)
-    return fc.render_template(edit_journal_page=True)
+    fc = JournalFormFactory.context("readonly")
+    fc.processor(source=j)
+    return fc.render_template(obj=j, lcc_tree=lcc_jstree)
 
-
-@blueprint.route("/application/thanks", methods=["GET"])
-def suggestion_thanks():
-    return render_template('doaj/suggest_thanks.html')
-    
 
 @blueprint.route("/csv")
 @analytics.sends_ga_event(event_category=app.config.get('GA_CATEGORY_JOURNALCSV', 'JournalCSV'), event_action=app.config.get('GA_ACTION_JOURNALCSV', 'Download'))
@@ -188,18 +203,18 @@ def sitemap():
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
 
 
-@blueprint.route("/public-data-dump")
-def public_data_dump():
-    data_dump = models.Cache.get_public_data_dump()
-    show_article = data_dump.get("article", {}).get("url") is not None
-    article_size = data_dump.get("article", {}).get("size")
-    show_journal = data_dump.get("journal", {}).get("url") is not None
-    journal_size = data_dump.get("journal", {}).get("size")
-    return render_template("doaj/public_data_dump.html",
-                           show_article=show_article,
-                           article_size=article_size,
-                           show_journal=show_journal,
-                           journal_size=journal_size)
+# @blueprint.route("/public-data-dump")
+# def public_data_dump():
+#     data_dump = models.Cache.get_public_data_dump()
+#     show_article = data_dump.get("article", {}).get("url") is not None
+#     article_size = data_dump.get("article", {}).get("size")
+#     show_journal = data_dump.get("journal", {}).get("url") is not None
+#     journal_size = data_dump.get("journal", {}).get("size")
+#     return render_template("doaj/public_data_dump.html",
+#                            show_article=show_article,
+#                            article_size=article_size,
+#                            show_journal=show_journal,
+#                            journal_size=journal_size)
 
 
 @blueprint.route("/public-data-dump/<record_type>")
@@ -361,35 +376,36 @@ def article_page(identifier=None):
 
     return render_template('doaj/article.html', article=article, journal=journal)
 
-@blueprint.route("/contact", methods=["GET", "POST"])
-def contact():
-    if request.method == "GET":
-        form = ContactUs()
-        if current_user.is_authenticated:
-            form.email.data = current_user.email
-        return render_template("doaj/contact.html", form=form)
-    elif request.method == "POST":
-        prepop = request.values.get("ref")
-        form = ContactUs(request.form)
-
-        if current_user.is_authenticated and (form.email.data is None or form.email.data == ""):
-            form.email.data = current_user.email
-
-        if prepop is not None:
-            return render_template("doaj/contact.html", form=form)
-
-        if not form.validate():
-            return render_template("doaj/contact.html", form=form)
-
-        data = _verify_recaptcha(form.recaptcha_value.data)
-        if data["success"]:
-            send_contact_form(form)
-            flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
-            form = ContactUs()
-            return render_template("doaj/contact.html", form=form)
-        else:
-            flash("Your form could not be submitted,", "error")
-            return render_template("doaj/contact.html", form=form)
+# Not using this form for now but we might bring it back later
+# @blueprint.route("/contact/", methods=["GET", "POST"])
+# def contact():
+#     if request.method == "GET":
+#         form = ContactUs()
+#         if current_user.is_authenticated:
+#             form.email.data = current_user.email
+#         return render_template("doaj/contact.html", form=form)
+#     elif request.method == "POST":
+#         prepop = request.values.get("ref")
+#         form = ContactUs(request.form)
+#
+#         if current_user.is_authenticated and (form.email.data is None or form.email.data == ""):
+#             form.email.data = current_user.email
+#
+#         if prepop is not None:
+#             return render_template("doaj/contact.html", form=form)
+#
+#         if not form.validate():
+#             return render_template("doaj/contact.html", form=form)
+#
+#         data = _verify_recaptcha(form.recaptcha_value.data)
+#         if data["success"]:
+#             send_contact_form(form)
+#             flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
+#             form = ContactUs()
+#             return render_template("doaj/contact.html", form=form)
+#         else:
+#             flash("Your form could not be submitted,", "error")
+#             return render_template("doaj/contact.html", form=form)
 
 def _verify_recaptcha(g_recaptcha_response):
     with urllib.request.urlopen('https://www.google.com/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY") + '&response=' + g_recaptcha_response) as url:
@@ -404,33 +420,146 @@ def get_site_key():
 ###############################################################
 
 
-@blueprint.route("/about")
-def about():
-    return render_template('doaj/about.html')
-
-@blueprint.route("/publishers")
-def publishers():
-    return render_template('doaj/publishers.html')
+@blueprint.route("/googlebdb21861de30fe30.html")
+def google_webmaster_tools():
+    return 'google-site-verification: googlebdb21861de30fe30.html'
 
 
-@blueprint.route("/faq")
+@blueprint.route("/accessibility/")
+def accessibility():
+    return render_template("layouts/static_page.html", page_frag="/accessibility-fragment.html", page_title="Accessibility statement for doaj.org")
+
+
+@blueprint.route("/privacy/")
+def privacy():
+    return render_template("layouts/static_page.html", page_frag="/privacy-fragment.html", page_title="Privacy information notice")
+
+
+@blueprint.route("/contact/")
+def contact():
+    return render_template("layouts/static_page.html", page_frag="/contact-fragment.html", page_title="Contact us")
+
+
+@blueprint.route("/terms/")
+def terms():
+    return render_template("layouts/static_page.html", page_frag="/terms-fragment.html", page_title="Terms & conditions")
+
+
+@blueprint.route("/support/")
+def support():
+    return render_template("layouts/static_page.html", page_frag="/support/index-fragment/index.html", page_title="Support DOAJ")
+
+
+@blueprint.route("/support/sponsors/")
+def sponsors():
+    return render_template("layouts/static_page.html", page_frag="/support/sponsors-fragment/index.html", page_title="Sponsors")
+
+
+@blueprint.route("/support/publisher-supporters/")
+def publisher_supporters():
+    return render_template("layouts/static_page.html", page_frag="/support/publisher-supporters-fragment/index.html", page_title="Publisher supporters")
+
+
+@blueprint.route("/support/supporters/")
+def supporters():
+    return render_template("layouts/static_page.html", page_frag="/support/supporters-fragment/index.html", page_title="Supporters")
+
+
+@blueprint.route("/apply/guide/")
+def guide():
+    return render_template("layouts/static_page.html", page_frag="/apply/guide-fragment/index.html", page_title="Guide to applying")
+
+
+@blueprint.route("/apply/seal/")
+def seal():
+    return render_template("layouts/static_page.html", page_frag="/apply/seal-fragment/index.html", page_title="The DOAJ Seal")
+
+
+@blueprint.route("/apply/transparency/")
+def transparency():
+    return render_template("layouts/static_page.html", page_frag="/apply/transparency-fragment/index.html", page_title="Transparency & best practice")
+
+
+@blueprint.route("/apply/why-index/")
+def why_index():
+    return render_template("layouts/static_page.html", page_frag="/apply/why-index-fragment/index.html", page_title="Why index your journal in DOAJ?")
+
+
+@blueprint.route("/docs/oai-pmh/")
+def oai_pmh():
+    return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh-fragment/index.html", page_title="OAI-PMH")
+
+
+@blueprint.route('/docs/api/')
+def docs():
+    return redirect(url_for('api_v2.docs'))
+
+
+@blueprint.route("/docs/xml/")
+def xml():
+    return render_template("layouts/static_page.html", page_frag="/docs/xml-fragment/index.html", page_title="XML")
+
+
+@blueprint.route("/docs/widgets/")
+def widgets():
+    return render_template("layouts/static_page.html", page_frag="/docs/widgets-fragment/index.html", page_title="Widgets")
+
+
+@blueprint.route("/docs/public-data-dump/")
+def public_data_dump():
+    return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump-fragment/index.html", page_title="Public data dump")
+
+
+@blueprint.route("/docs/openurl/")
+def openurl():
+    return render_template("layouts/static_page.html", page_frag="/docs/openurl-fragment/index.html", page_title="OpenURL")
+
+
+@blueprint.route("/docs/faq/")
 def faq():
-    return render_template("doaj/faq.html")
+    return render_template("layouts/static_page.html", page_frag="/docs/faq-fragment/index.html", page_title="FAQs")
 
 
-@blueprint.route("/features")
-def features():
-    return render_template("doaj/features.html")
+@blueprint.route("/about/")
+def about():
+    return render_template("layouts/static_page.html", page_frag="/about/index-fragment/index.html", page_title="About DOAJ")
 
 
-@blueprint.route("/features/oai_doaj/1.0/")
-def doajArticles_oai_namespace_page():
-    return render_template("doaj/doajArticles_oai_namespace.html")
+@blueprint.route("/about/ambassadors/")
+def ambassadors():
+    return render_template("layouts/static_page.html", page_frag="/about/ambassadors-fragment/index.html", page_title="Ambassadors")
 
 
-@blueprint.route("/oainfo")
-def oainfo():
-    return render_template("doaj/oainfo.html")
+@blueprint.route("/about/advisory-board-council/")
+def abc():
+    return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council-fragment/index.html", page_title="Advisory Board & Council")
+
+
+@blueprint.route("/about/editorial-subcommittee/")
+def editorial_subcommittee():
+    return render_template("layouts/static_page.html", page_frag="/about/editorial-subcommittee-fragment/index.html", page_title="Editorial Subcommittee")
+
+
+@blueprint.route("/about/volunteers/")
+def volunteers():
+    return render_template("layouts/static_page.html", page_frag="/about/volunteers-fragment/index.html", page_title="Volunteers")
+
+
+@blueprint.route("/about/team/")
+def team():
+    return render_template("layouts/static_page.html", page_frag="/about/team-fragment/index.html", page_title="DOAJ team")
+
+
+# LEGACY ROUTES
+@blueprint.route("/subjects")
+def subjects():
+    # return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
+    return redirect(url_for("doaj.journals_search"), 301)
+
+
+@blueprint.route("/application/new")
+def old_application():
+    return redirect(url_for("apply.public_application", **request.args), code=308)
 
 
 @blueprint.route("/<cc>/mejorespracticas")
@@ -438,80 +567,62 @@ def oainfo():
 @blueprint.route("/<cc>/bestpractice")
 @blueprint.route("/<cc>/editionsavante")
 @blueprint.route("/bestpractice")
+@blueprint.route("/oainfo")
 def bestpractice(cc=None):
-    # FIXME: if we go for full multilingual support, it would be better to put this in the template
-    # loader and have it check for templates in the desired language, and provide fall-back
-    if cc is not None:
-        try:
-            return render_template("doaj/i18n/" + cc + "/bestpractice.html")
-        except TemplateNotFound:
-            pass
-    return render_template("doaj/bestpractice.html")
-
-
-@blueprint.route("/members")
-def members():
-    return render_template("doaj/members.html")
-
-
-@blueprint.route("/membership")
-def membership():
-    return render_template("doaj/membership.html")
-
-
-@blueprint.route("/sponsors")
-def sponsors():
-    return render_template("doaj/our_sponsors.html")
-
-
-@blueprint.route("/volunteers")
-def volunteers():
-    return render_template("doaj/volunteers.html")
-
-
-@blueprint.route("/support")
-def support():
-    return render_template("doaj/support.html")
-
-
-@blueprint.route("/publishermembers")
-def publishermembers():
-    return render_template("doaj/publishermembers.html")
+    return redirect(url_for("doaj.transparency", **request.args), code=308)
 
 
 @blueprint.route("/suggest", methods=['GET'])
 def suggest():
-    return redirect(url_for('.suggestion'), code=301)
+    return redirect(url_for('.suggestion', **request.args), code=301)
 
 
-@blueprint.route("/support_thanks")
-def support_doaj_thanks():
-    return render_template("doaj/support_thanks.html")
+@blueprint.route("/membership")
+def membership():
+    return redirect(url_for("doaj.support", **request.args), code=308)
 
 
-@blueprint.route("/translated")
-def translated():
-    return render_template("doaj/translated.html")
+@blueprint.route("/publishermembers")
+def old_sponsors():
+    return redirect(url_for("doaj.sponsors", **request.args), code=308)
 
 
-@blueprint.route("/googlebdb21861de30fe30.html")
-def google_webmaster_tools():
-    return 'google-site-verification: googlebdb21861de30fe30.html'
+@blueprint.route("/members")
+def members():
+    return redirect(url_for("doaj.supporters", **request.args), code=308)
 
 
-# an informational page about content licensing rights
-@blueprint.route('/rights')
-def rights():
-    return render_template('doaj/rights.html')
+@blueprint.route('/features')
+def features():
+    return redirect(url_for("doaj.xml", **request.args), code=308)
 
 
-# A page about the SCOSS partnership
-@blueprint.route('/scoss')
-def scoss():
-    return render_template('doaj/scoss.html')
+# @blueprint.route('/widgets')
+# def old_widgets():
+#     return redirect(url_for("doaj.widgets", **request.args), code=308)
 
 
-# A page about privacy information
-@blueprint.route('/privacy')
-def privacy():
-    return render_template('doaj/privacy.html')
+# @blueprint.route("/public-data-dump/<record_type>")
+# def old_public_data_dump(record_type):
+#     return redirect(url_for("doaj.public_data_dump", **request.args), code=308)
+
+
+@blueprint.route("/openurl/help")
+def old_openurl():
+    return redirect(url_for("doaj.openurl", **request.args), code=308)
+
+
+@blueprint.route("/faq")
+def old_faq():
+    return redirect(url_for("doaj.faq", **request.args), code=308)
+
+
+@blueprint.route("/publishers")
+def publishers():
+    return render_template("layouts/static_page.html")
+
+
+# Redirects necessitated by new templates
+@blueprint.route("/password-reset/")
+def new_password_reset():
+    return redirect(url_for('account.forgot'), code=301)

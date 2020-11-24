@@ -10,7 +10,7 @@ from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, HiddenField
 
 from portality import models
-from portality.formcontext.validate import OptionalIf, MaxLen
+from portality.forms.validate import OptionalIf, MaxLen
 
 
 ##########################################################################

@@ -1,50 +1,91 @@
 {% if current_journal %}
-    <h3>This application is an update for an existing journal</h3>
-    <p>This application updates the journal <a href="{{ url_for('doaj.journal_readonly', journal_id=current_journal.id) }}" target="_blank">{{ current_journal.bibjson().title }}</a></p>
-    <p>The following fields have changed in the new application: (<a href="#" class="show_hide_diff_table" data-state="shown">hide</a>)</p>
+<h2 class="alert">
+  <span data-feather="alert-triangle" aria-hidden="true"></span>
+  The following fields have changed:
+</h2>
 
-    <div class="form_diff">
-    <table class="diff_table">
-        <thead>
-            <tr>
-                <td width="40%">Question</td>
-                <td width="60%">Previous and New Values</td>
-            </tr>
-        </thead>
-        <tbody>
-            {% for tup in form_diff %}
-                <tr>
-                    <td>
-                        {% if tup[1] != 0 %}
-                            <a class="animated" href="#{{ tup[0] }}-container">{{ tup[1] }}) {{ tup[2] }}</a>
-                        {% else %}
-                            {{ tup[2] }}
-                        {% endif %}
-                    </td>
-                    <td>
-                        <table class="inner_comparison_table">
-                            <tr>
-                                <td><strong>Previous</strong></td>
-                                {% if tup[2] == 'Subjects' %}
-                                    <td>{{ tup[3] | form_diff_table_subject_expand }}</td>
-                                {% else %}
-                                    <td>{{ tup[3] | form_diff_table_comparison_value }}</td>
-                                {% endif %}
-                            </tr>
-                            <tr>
-                                <td><strong>New</strong></td>
-                                {% if tup[2] == 'Subjects' %}
-                                    <td>{{ tup[4] | form_diff_table_subject_expand }}</td>
-                                {% else %}
-                                    <td>{{ tup[4] | form_diff_table_comparison_value }}</td>
-                                {% endif %}
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    </div>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 30%"></th>
+      <th style="width: 35%;">Previous</th>
+      <th style="width: 35%;">New</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for k, v in form_diff.items() %}
+    {% set previous = v['a'] %}
+    {% set new = v['b'] %}
+    <tr>
+      <td>
+        <a href="#{{ k }}">{{ k }}</a>
+      </td>
+      <td>
+        {# FIXME: Probably not a great way to find all diffs of URLs #}
+        {% if k.endswith('_url') %}
+          {% if previous == None or previous == [] %}
+            <em>[Nothing]</em>
+          {% else %}
+            <a href="{{ previous }}" target="_blank" rel="noopener" style="word-break: break-all">
+              {{ previous }}
+            </a>
+          {% endif %}
 
+        {# FIXME: Also not a super nice way to show APCs? #}
+        {% elif k == 'apc_charges' %}
+          {% if previous == None or previous == [] %}
+            <em>[Nothing]</em>
+          {% else %}
+            {{ previous[0]['apc_currency'] }} {{ previous[0]['apc_max'] }}
+          {% endif %}
+
+        {% else %}
+          {% if previous == None or previous == [] %}
+            <em>[Nothing]</em>
+          {% elif previous == 'y' %}
+            Yes
+          {% elif previous == 'n' %}
+            No
+          {% else %}
+            {{ previous }}
+          {% endif %}
+
+        {% endif %}
+      </td>
+      <td>
+        {# FIXME: Probably not a great way to find all diffs of URLs #}
+        {% if k.endswith('_url') %}
+          {% if new == None or new == [] %}
+            <em>[Nothing]</em>
+          {% else %}
+            <a href="{{ new }}" target="_blank" rel="noopener" style="word-break: break-all">
+              {{ new }}
+            </a>
+          {% endif %}
+
+        {# FIXME: Also not a super nice way to show APCs? #}
+        {% elif k == 'apc_charges' %}
+          {% if new == None or new == [] %}
+            <em>[Nothing]</em>
+          {% else %}
+            {{ new[0]['apc_currency'] }} {{ new[0]['apc_max'] }}
+          {% endif %}
+
+        {% else %}
+          {% if new == None or new == [] %}
+            <em>[Nothing]</em>
+          {% elif new == 'y' %}
+            Yes
+          {% elif new == 'n' %}
+            No
+          {% else %}
+            {{ new }}
+          {% endif %}
+
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endif %}

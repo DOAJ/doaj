@@ -3,8 +3,8 @@ import esprit
 
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures.accounts import AccountFixtureFactory
-from doajtest.fixtures.journals import JournalFixtureFactory
-from doajtest.fixtures.applications import ApplicationFixtureFactory
+from doajtest.fixtures.v2.journals import JournalFixtureFactory
+from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
 
 from portality import models
 from portality.constants import APPLICATION_STATUSES_ALL
@@ -15,10 +15,13 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
 
     def setUp(self):
         super(TestScriptsAccountsDeletePubNoJournal, self).setUp()
-        self.es_conn = esprit.raw.make_connection(None, self.app_test.config["ELASTIC_SEARCH_HOST"], None, self.app_test.config["ELASTIC_SEARCH_DB"])
+        self.es_conn = esprit.raw.make_connection(None, self.app_test.config["ELASTIC_SEARCH_HOST"], None, "")
 
     def test_01_dont_delete_if_journal_exists(self):
         """ Ensure the script doesn't delete accounts that own a journal """
+
+        account_blocklist = []
+        journal_blocklist = []
 
         # Create accounts without journals attached
         expected_deletes = []
@@ -28,6 +31,7 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
             pubaccount.set_id()
             expected_deletes.append(pubaccount.id)
             pubaccount.save()
+            account_blocklist.append((pubaccount.id, pubaccount.last_updated))
 
         # Create accounts with journals
         for i in range(5):
@@ -35,6 +39,7 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
             pubaccount = models.Account(**pubsource)
             pubaccount.set_id()
             pubaccount.save()
+            account_blocklist.append((pubaccount.id, pubaccount.last_updated))
 
             # Attach a journal, some in doaj and some not
             jsource = JournalFixtureFactory.make_journal_source(in_doaj=bool(i % 2))
@@ -42,8 +47,12 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
             j.set_id()
             j.set_owner(pubaccount.id)
             j.save()
+            journal_blocklist.append((j.id, j.last_updated))
 
-        time.sleep(1)
+        models.Account.blockall(account_blocklist)
+        models.Journal.blockall(journal_blocklist)
+
+        # time.sleep(1)
 
         # Check we get the expected accounts to delete
         ids_to_delete = accounts_with_no_journals_or_applications(self.es_conn)
@@ -51,7 +60,9 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
 
         # Run the deletes
         delete_accounts_by_id(self.es_conn, ids_to_delete)
-        time.sleep(1)
+        # time.sleep(1)
+
+        models.Account.blockalldeleted(ids_to_delete)
 
         # Check we only have the accounts with journals remaining in the index
         assert len(models.Account.all()) == 5

@@ -1,11 +1,12 @@
+import time
+
+from datetime import datetime
+
 from doajtest.helpers import DoajTestCase
 from doajtest import fixtures
 
 from portality import background, models
 from portality.tasks import article_cleanup_sync
-
-from datetime import datetime
-import time
 
 
 class TestArticleCleanupSync(DoajTestCase):
@@ -208,12 +209,20 @@ class TestArticleCleanupSync(DoajTestCase):
         a4 = models.Article(**source4)
         a4.save(blocking=True)
 
+        # putting this sleep in makes sure that there's no confusion when blocking by time at the second granularity
+        time.sleep(1)
+
         # run the sync/cleanup job
         job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser", write=True)
         task = article_cleanup_sync.ArticleCleanupSyncBackgroundTask(job)
         background.BackgroundApi.execute(task)
 
-        time.sleep(2)
+        models.Article.blockall([
+            (a1.id, a1.last_updated),
+            (a2.id, a2.last_updated),
+            (a3.id, a3.last_updated),
+            (a4.id, a4.last_updated)
+        ])
 
         # retrieve any updated records
         a1u = models.Article.pull(a1.id)
@@ -267,3 +276,35 @@ class TestArticleCleanupSync(DoajTestCase):
 
         best = task._get_best_journal([j3, j4])
         assert best.id == j3.id
+
+    def test_06_dont_sync_license(self):
+        """ We're no longer syncing journal licenses to articles - https://github.com/DOAJ/doajPM/issues/2548 """
+
+        # a journal from which we will sync metadata
+        source = fixtures.JournalFixtureFactory.make_journal_source(in_doaj=True)
+        j = models.Journal(**source)
+        assert j.bibjson().licences is not None
+
+        # the identifiers to allow us to connect articles to the journal
+        eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)[0]
+        pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)[0]
+
+        # an article source which is already synchronised with its journal
+        source2 = fixtures.ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, with_journal_info=False,
+                                                                     with_id=False)
+        a1 = models.Article(**source2)
+
+        with self.assertWarns(DeprecationWarning):
+            a1.add_journal_metadata(j)
+
+        with self.assertWarns(DeprecationWarning):
+            _ = a1.bibjson().get_journal_license()
+
+        with self.assertWarns(PendingDeprecationWarning):
+            a1.bibjson().remove_journal_licences()
+
+        with self.assertWarns(DeprecationWarning):
+            a1.bibjson().set_journal_license(licence_title='title1', licence_type='CC', url='http://example.com/license')
+
+        with self.assertWarns(DeprecationWarning):
+            a1.bibjson().add_journal_license('Title2', 'CC', 'https://example.com')

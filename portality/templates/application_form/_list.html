@@ -1,0 +1,61 @@
+<div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
+    <label>
+        {% autoescape off %}{{ f.label }}{% endautoescape %}
+        {% if f.help("long_help") %}
+            <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-{{ f.name }}"></span><span class="sr-only">More help</span>
+        {% endif %}
+        {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
+    </label>
+    {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
+    {% if f.has_widget("multiple_field") or f.has_widget("infinite_repeat") %}
+        {% set add_button %}
+            <p class="add_field__button_div">
+                <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add </button>
+            </p>
+        {% endset %}
+
+        {% if f.repeatable.add_button_placement == "top" %}
+            {{ add_button }}
+        {% endif %}
+
+        <div class="removable_field">
+            <div class= 'multiple_input'>
+                {% for entry in f.wtfield %}
+                    {% set entry_template = f.entry_template %}
+                    {% include entry_template %}
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if f.repeatable.add_button_placement != "top" %}
+            {{ add_button }}
+        {% endif %}
+
+    {% else %}
+        {% include entry_template %}
+    {% endif %}
+    <div id="{{ f.name }}_checkbox-errors"></div>
+
+    {% if form_diff %}
+        {% if f.name in form_diff %}
+        <p class="alert alert--message">
+          <strong>WAS:</strong>
+          <em>
+            {% if form_diff[f.name].a == 'n' %}
+              No
+            {% elif form_diff[f.name].a == 'y' %}
+              Yes
+            {% else %}
+              {{ form_diff[f.name].a }}
+            {% endif %}
+          </em>
+        </p>
+        {% endif %}
+    {% endif %}
+
+    {% if f.help("short_help") %}
+       <p><small>{{ f.help("short_help") | safe }}</small></p>
+    {% endif %}
+
+    {% include "application_form/modal.html" %}
+</div>

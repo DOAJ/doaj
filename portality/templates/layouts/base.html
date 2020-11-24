@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block page_title %}{% endblock %} Directory of Open Access Journals (DOAJ)</title>
+  <meta name="description" content="{% block meta_description %}DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.{% endblock %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+
+  <!-- PWA -->
+  <link rel="manifest" href="/static_content/manifest.json">
+
+  <!-- generics -->
+  <link rel="icon" href="/static_content/img/favicon/32.png" sizes="32x32">
+  <link rel="icon" href="/static_content/img/favicon/57.png" sizes="57x57">
+  <link rel="icon" href="/static_content/img/favicon/76.png" sizes="76x76">
+  <link rel="icon" href="/static_content/img/favicon/96.png" sizes="96x96">
+  <link rel="icon" href="/static_content/img/favicon/128.png" sizes="128x128">
+  <link rel="icon" href="/static_content/img/favicon/192.png" sizes="192x192">
+  <link rel="icon" href="/static_content/img/favicon/228.png" sizes="228x228">
+
+  <!-- Android -->
+  <link rel="shortcut icon" sizes="196x196" href="/static_content/img/favicon/196.png">
+
+  <!-- iOS -->
+  <link rel="apple-touch-icon" href="/static_content/img/favicon/120.png" sizes="120x120">
+  <link rel="apple-touch-icon" href="/static_content/img/favicon/152.png" sizes="152x152">
+  <link rel="apple-touch-icon" href="/static_content/img/favicon/180.png" sizes="180x180">
+
+  <!-- Windows 8 IE 10-->
+  <meta name="msapplication-TileColor" content="#F8F3EF">
+  <meta name="msapplication-TileImage" content="/img/favicon/144.png">
+
+  <meta name="theme-color" content="#282624">
+  {% block extra_meta_tags %}{% endblock %}
+
+  <!-- Faster Google font loading from https://csswizardry.com/2020/05/the-fastest-google-fonts/ -->
+  <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin />
+
+  <link rel="preload"
+        as="style"
+        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" />
+
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap"
+        media="print" onload="this.media='all'" />
+
+  <noscript>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" />
+  </noscript>
+
+  <link rel="stylesheet" type="text/css" href="/static/vendor/select2-3.5.4/select2.css">
+
+  {# Page-specific styles  todo: select2 could possibly go here #}
+  {% block extra_stylesheets %}{% endblock %}
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="/static_content/_site/css/main.css">
+
+  <!-- Feather icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+{% if not request.cookies.get(config.get("CONSENT_COOKIE_KEY")) %}
+    {% include "doaj/cookie_consent.html" %}
+{% endif %}
+
+<body class="{% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
+
+  {% include "includes/header.html" %}
+
+    {% block main_panel %}
+        {% block content %}{% endblock %}
+    {% endblock %}
+
+    {% include "includes/footer.html" %}
+
+    {% include '_js_includes.html' %}
+
+    {% block extra_js_bottom %}{% endblock extra_js_bottom %}
+
+    {% if not request.cookies.get("doaj-consent") %}
+      <script type="text/javascript">
+      jQuery(document).ready(function() {
+          $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
+          $(".site-note-dismiss").on("click", dissmissSiteNote);
+      });
+      </script>
+    {% endif %}
+
+</body>
+</html>

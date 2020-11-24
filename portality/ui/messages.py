@@ -2,6 +2,9 @@ from flask import flash
 
 
 class Messages(object):
+    ADMIN__QUICK_REJECT__NO_OWNER = """There is no user attached to this application. 
+        <a href="https://testdoaj.cottagelabs.com/account/register" target="_blank">Assign a user account first</a>."""
+
     APPLICATION_UPDATE_SUBMITTED_FLASH = ("""
         Your update request has been submitted. You may make further changes until the DOAJ Editorial Team picks it up
         for review. Click 'Edit this update request' to make further changes.
@@ -57,6 +60,8 @@ class Messages(object):
 
     CONSENT_COOKIE_VALUE = """By using the DOAJ website you have agreed to our cookie policy."""
 
+    FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR = "We were unable to send you an email confirmation - possible problem with the email address provided"
+    FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR = 'Error sending application received email.'
 
     @classmethod
     def flash(cls, tup):

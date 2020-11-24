@@ -1,0 +1,66 @@
+{% extends "admin/admin_base.html" %}
+
+{% set formulaic_after = url_for("admin.application", application_id=obj.id) %}
+{% set form_id = "maned_form" %}
+{% set form_action = url_for("admin.application", application_id=obj.id) %}
+
+{% set js_validation = True %}
+{% set auto_save = 0 %}
+{% set notabs = true %}
+
+{% block content scoped %}
+<body id="apply">
+    <main class="container page-content">
+        <h1>{{ obj.bibjson().title }}</h1>
+        {% include "application_form/_edit_status.html" %}
+        {% include "application_form/_backend_validation.html" %}
+
+        <form id="{{ form_id }}"
+              data-context="{{ formulaic_context.name }}"
+              class="row application_form form form--compact"
+              novalidate
+              action="{{ form_action }}"
+              method="post"
+              data-formulaic-after="{{ formulaic_after }}"
+                >
+
+            <div class="col-md-8 page">
+                <section class="page-content">
+                  
+                    {% include 'formcontext/_application_diff.html' %}
+
+                    {% include "application_form/_fieldsets.html" %}
+                </section>
+            </div>
+            <div class="col-md-4 editorial-panel">
+                {% include "application_form/admin/application.html" %}
+            </div>
+        </form>
+
+    {% if obj.application_status not in ["accepted", "rejected"] %}
+        {% set fs = formulaic_context.fieldset("quick_reject") %}
+        <div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
+            <div class="modal__dialog" role="document">
+                <h3 class="modal__title" id="modalLabel-quick_reject">
+                    “{{ fs.label | safe }}”
+                </h3>
+            <p>{{ obj.id }}</p>
+                <form method="post" data-id="{{ obj.id }}" action="{{ url_for('admin.application_quick_reject', application_id=obj.id) }}" id="application_quick_reject_form">
+                    {% for f in fs.fields() %}
+                        {% set field_template = f.template %}
+                        {%  include field_template %}
+                    {% endfor %}
+                    <button class="button button--primary" type="submit" id="submit_quick_reject">Quick Reject</button>
+                </form>
+                <button type="button" data-dismiss="modal" class="modal__close">Close</button>
+            </div>
+        </div>
+    {% endif %}
+
+    </main>
+ </body>
+{% endblock %}
+
+{% block extra_js_bottom scoped %}
+    {% include "application_form/js/_form_js.html" %}
+{% endblock %}

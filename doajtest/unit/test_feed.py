@@ -1,21 +1,12 @@
-from datetime import datetime
+import time
 
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.view import atom
-import time
 from lxml import etree
 
+
 class TestFeed(DoajTestCase):
-
-    def setUp(self):
-        super(TestFeed, self).setUp()
-        # this loads the LCC data
-        from portality import lcc
-        time.sleep(1)
-
-    def tearDown(self):
-        super(TestFeed, self).tearDown()
 
     def test_01_object(self):
         # first try requesting a feed over the empty test index

@@ -1,5 +1,5 @@
 import esprit, json, gzip, shutil
-from portality.core import app, initialise_index
+from portality.core import app, es_connection, initialise_index
 from portality.store import StoreFactory
 from botocore.exceptions import ClientError
 
@@ -41,7 +41,7 @@ def do_import(config):
 
     # re-initialise the index (sorting out mappings, etc)
     print("==Initialising Index for Mappings==")
-    initialise_index(app)
+    initialise_index(app, es_connection)
 
     mainStore = StoreFactory.get("anon_data")
     tempStore = StoreFactory.tmp()

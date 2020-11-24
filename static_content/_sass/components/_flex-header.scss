@@ -1,0 +1,14 @@
+.flex-header {
+  display: flex;
+  margin-bottom: $spacing-04;
+}
+
+.flex-header__child {
+  margin-top: 0;
+  flex: 1;
+
+  &:last-child {
+    width: 25%;
+    text-align: right;
+  }
+}

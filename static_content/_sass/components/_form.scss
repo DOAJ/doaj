@@ -1,0 +1,110 @@
+/* General form styles
+   Question = groups paragraph text, label, input for a single question */
+
+.form {
+
+  textarea {
+    height: 20vh;
+  }
+
+  button {
+    margin: $spacing-03 0;
+  }
+}
+
+.form__header {
+  margin-bottom: 0;
+  padding-bottom: $spacing-03;
+  border-bottom: 1px solid rgba($dark-grey, 0.5);
+  width: 75%;
+
+  + .form__question {
+    margin-top: $spacing-03;
+  }
+}
+
+.form__question {
+  margin: $spacing-05 0;
+
+  p, label {
+    margin-bottom: $spacing-03;
+    @include typescale-05;
+  }
+
+  small {
+    display: block;
+    margin-top: -$spacing-02;
+    color: $dark-grey;
+  }
+
+  input, select, textarea {
+    width: 75%;
+
+    &[type="number"] {
+      width: 25%;
+    }
+  }
+
+  input[type="checkbox"] + label {
+    display: table;
+  }
+
+  input[type="checkbox"] + label,
+  input[type="radio"] + label {
+    font-size: 1rem;
+  }
+}
+
+.form__question--optional {
+  color: rgba($dark-grey, 0.5);
+  font-size: 1rem;
+}
+
+.form__subquestion {
+  display: none;
+  margin-top: -$spacing-04;
+  padding-left: $spacing-04;
+  border-left: 1px solid $sanguine;
+}
+
+.form__long-help {
+  cursor: pointer;
+
+  &:hover {
+    stroke: $grapefruit;
+  }
+}
+
+/* Compact form */
+.form--compact {
+  font-size: smaller;
+
+  h1 {
+    margin-top: 0;
+  }
+
+  fieldset {
+    margin: $spacing-04 0;
+    padding: $spacing-03;
+    background-color: $fair-pink;
+  }
+
+  small {
+    font-size: 1em;
+  }
+
+  .form__header {
+    margin: $spacing-03 0;
+    font-size: 1em;
+    font-weight: 600;
+  }
+
+  .form__question {
+    margin: 0 0 $spacing-03 0;
+
+    input[type="checkbox"]+label,
+    input[type="radio"]+label {
+      font-size: 1em;
+    }
+  }
+}

@@ -8,6 +8,8 @@ import esprit
 import csv
 from portality.core import app
 from portality import models
+from portality.util import ipt_prefix
+from portality.core import es_connection
 
 # set of roles to exclude from the deletes
 EXCLUDED_ROLES = {'associate_editor', 'editor', 'admin', 'ultra_bulk_delete', 'jct_inprogress'}
@@ -19,7 +21,7 @@ def accounts_with_no_journals_or_applications(conn, csvwriter=None):
     :param csvwriter: A CSV writer to output the accounts to
     """
     gathered_account_ids = []
-    for acc in esprit.tasks.scroll(conn, 'account', page_size=100, keepalive='1m'):
+    for acc in esprit.tasks.scroll(conn, ipt_prefix('account'), page_size=100, keepalive='1m'):
         account = models.Account(**acc)
         if set(account.role).intersection(EXCLUDED_ROLES):
             continue
@@ -44,7 +46,7 @@ def accounts_with_no_journals_or_applications(conn, csvwriter=None):
 
 
 def delete_accounts_by_id(conn, id_list):
-    esprit.raw.bulk_delete(conn, 'account', id_list)
+    esprit.raw.bulk_delete(conn, ipt_prefix('account'), id_list)
 
 
 if __name__ == "__main__":
@@ -55,7 +57,8 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--instructions", help="CSV of accounts to delete, ID must be first column")
     args = parser.parse_args()
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+    # conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+    conn = es_connection
 
     if args.report and args.instructions:
         print("\nPlease provide EITHER -r or -i arguments with CSV filenames.")

@@ -14,9 +14,11 @@ DOAJ_VERSION = "3.1.7"
 
 OFFLINE_MODE = False
 
-# List the features we want to be active
-FEATURES = ['api']
-VALID_FEATURES = ['api']
+# List the features we want to be active (API v1 remains with redirects to v2 features)
+FEATURES = ['api1', 'api2']
+VALID_FEATURES = ['api1', 'api2']
+
+API_VERSION = "2.0.0"
 
 # ========================
 # MAIN SETTINGS
@@ -31,7 +33,10 @@ elif BASE_URL.startswith('http://'):
     BASE_DOMAIN = BASE_URL[7:]
 else:
     BASE_DOMAIN = BASE_URL
-API_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
+
+BASE_API_URL = "https://doaj.org/api/v2/"
+API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
+API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
 
 # Used when generating external links, e.g. in the API docs
 PREFERRED_URL_SCHEME = 'https'
@@ -70,8 +75,17 @@ VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://localhost:9200') # remember the http:// or https://
+
+# 2 sets of elasticsearch DB settings - index-per-project and index-per-type. Keep both for now so we can migrate.
+# e.g. host:port/index/type/id
 ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
+
+# e.g. host:port/type/doc/id
+ELASTIC_SEARCH_INDEX_PER_TYPE = True
+ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
+ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
+
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "1.7.5"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
@@ -113,13 +127,21 @@ DEBUG_PYCHARM_PORT = 6000
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True
 
+# paths where static content should be served from.
+# * in the order you want them searched
+# * relative to the portality directory
+STATIC_PATHS = [
+    "static",
+    "../static_content"
+]
+
 # =======================
 # email settings
 
 # Settings for Flask-Mail. Set in app.cfg
 MAIL_SERVER = None          # default localhost
 MAIL_PORT = 25              # default 25
-#MAIL_USE_TLS               # default FalseW
+#MAIL_USE_TLS               # default False
 #MAIL_USE_SSL               # default False
 #MAIL_DEBUG                 # default app.debug
 #MAIL_USERNAME              # default None
@@ -195,14 +217,6 @@ ASSOC_ED_NOTIFICATION_STATUSES = [
 ]
 
 # ========================
-# user login settings
-
-# amount of time a reset token is valid for (86400 is 24 hours)
-PASSWORD_RESET_TIMEOUT = 86400
-# amount of time a reset token for a new account is valid for
-PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
-
-# ========================
 # publisher settings
 
 # the earliest date accepted on the publisher's 'enter article metadata' form.
@@ -216,9 +230,16 @@ TICK_THRESHOLD = '2014-03-19T00:00:00Z'
 # authorisation settings
 
 # Can people register publicly? If false, only the superuser can create new accounts
-# PUBLIC_REGISTER = False
+PUBLIC_REGISTER = True
 
 SUPER_USER_ROLE = "admin"
+
+LOGIN_VIA_ACCOUNT_ID = True
+
+# amount of time a reset token is valid for (86400 is 24 hours)
+PASSWORD_RESET_TIMEOUT = 86400
+# amount of time a reset token for a new account is valid for
+PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 #"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
 TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api", "ultra_bulk_delete"]
@@ -228,6 +249,7 @@ ROLE_MAP = {
         "associate_editor",     # note, these don't cascade, so we still need to list all the low-level roles
         "edit_journal",
         "edit_suggestion",
+        "edit_application",      # todo: switchover from suggestion to application
         "editor_area",
         "assign_to_associate",
         "list_group_journals",
@@ -254,7 +276,8 @@ FACET_FIELD = ".exact"
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal",
-    "portality.models.Suggestion",
+    "portality.models.Application",
+    "portality.models.DraftApplication",
     "portality.models.harvester.HarvestState"
 ]
 
@@ -289,6 +312,80 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
                 "store": True
             }
         }
+    },
+    "unicode_lower": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "isolang": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "isolang_2letter": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "country_code": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "currency_code": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "issn": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "url": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "utcdatetimemicros": {
+        "type": "date",
+        "format": "dateOptionalTime"
     },
     "utcdatetime": {
         "type": "date",
@@ -335,15 +432,12 @@ MAPPINGS = {
     }
 }
 MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['suggestion'] = {'suggestion': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['article_history'] = {'article_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['journal_history'] = {'journal_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
 
@@ -352,22 +446,33 @@ MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
 
 QUERY_ROUTE = {
     "query" : {
-        "journal,article" : {
+        "journal" : {
             "auth" : False,
             "role" : None,
             "query_validator" : "public_query_validator",
-            "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter", "prune_author_emails"],
-            "dao" : "portality.models.search.JournalArticle",
-            "required_parameters" : {"ref" : ["fqw", "public_journal_article", "subject_page"]}
+            "query_filters" : ["only_in_doaj", "last_update_fallback"],
+            "result_filters" : ["public_result_filter"],
+            "dao" : "portality.models.Journal",
+            "required_parameters" : {"ref" : ["ssw", "public_journal", "subject_page"]}
         },
         "article" : {
             "auth" : False,
             "role" : None,
+            "query_validator" : "public_query_validator",
             "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter", "prune_author_emails"],
+            "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Article",
-            "required_parameters" : {"ref" : ["toc"]}
+            "required_parameters" : {"ref" : ["public_article", "toc", "subject_page"]}
+        },
+        # back-compat for fixed query widget
+        "journal,article" : {
+            "auth" : False,
+            "role" : None,
+            "query_validator" : "public_query_validator",
+            "query_filters" : ["only_in_doaj", "strip_facets", "es_type_fix"],
+            "result_filters" : ["public_result_filter", "add_fqw_facets", "fqw_back_compat"],
+            "dao" : "portality.models.JournalArticle",
+            "required_parameters" : {"ref" : ["fqw"]}
         }
     },
     "publisher_query" : {
@@ -375,15 +480,22 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "publisher",
             "query_filters" : ["owner", "only_in_doaj"],
-            "result_filters" : ["publisher_result_filter", "prune_author_emails"],
+            "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.Journal"
         },
-        "suggestion" : {
+        "applications" : {
+            "auth" : True,
+            "role" : "publisher",
+            "query_filters" : ["owner", "not_update_request"],
+            "result_filters" : ["publisher_result_filter"],
+            "dao" : "portality.models.AllPublisherApplications"
+        },
+        "update_requests" : {
             "auth" : True,
             "role" : "publisher",
             "query_filters" : ["owner", "update_request"],
-            "result_filters" : ["publisher_result_filter", "prune_author_emails"],
-            "dao" : "portality.models.Suggestion"
+            "result_filters" : ["publisher_result_filter"],
+            "dao" : "portality.models.Application"
         }
     },
     "admin_query" : {
@@ -429,7 +541,7 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "associate_editor",
             "query_filters" : ["associate"],
-            "dao" : "portality.models.Suggestion"
+            "dao" : "portality.models.Application"
         }
     },
     "editor_query" : {
@@ -443,7 +555,7 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "editor",
             "query_filters" : ["editor"],
-            "dao" : "portality.models.Suggestion"
+            "dao" : "portality.models.Application"
         }
     },
     "api_query" : {
@@ -482,11 +594,16 @@ QUERY_FILTERS = {
     "update_request" : "portality.lib.query_filters.update_request",
     "associate" : "portality.lib.query_filters.associate",
     "editor" : "portality.lib.query_filters.editor",
+    "strip_facets" : "portality.lib.query_filters.strip_facets",
+    "es_type_fix" : "portality.lib.query_filters.es_type_fix",
+    "last_update_fallback" : "portality.lib.query_filters.last_update_fallback",
+    "not_update_request" : "portality.lib.query_filters.not_update_request",
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
     "publisher_result_filter": "portality.lib.query_filters.publisher_result_filter",
-    "prune_author_emails": "portality.lib.query_filters.prune_author_emails",
+    "add_fqw_facets" : "portality.lib.query_filters.add_fqw_facets",
+    "fqw_back_compat" : "portality.lib.query_filters.fqw_back_compat",
 
     # source filters
     "private_source": "portality.lib.query_filters.private_source",
@@ -496,10 +613,12 @@ QUERY_FILTERS = {
 UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"
 
 AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
-    "bibjson.publisher" : "index.publisher_ac",
-    "bibjson.institution" : "index.institution_ac",
-    "bibjson.provider" : "index.provider_ac"
+    "bibjson.publisher.name" : "index.publisher_ac",
+    "bibjson.institution.name" : "index.institution_ac"
 }
+
+# save the public application form as a draft every 60 seconds
+PUBLIC_FORM_AUTOSAVE = 60000
 
 # ========================
 # MEDIA SETTINGS
@@ -659,21 +778,6 @@ STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 TOC_CHANGEFREQ = "monthly"
 
 STATIC_PAGES = [
-    ("", "monthly"), # home page
-    # ("/search", "daily"),  # taken out since javascript-enabled bots were spidering this, causing enormous load - there should be other ways to present a list of all journals to them if we need to
-    ("/toc", "monthly"),
-    ("/application/new", "monthly"),
-    ("/about", "monthly"),
-    ("/publishers", "monthly"),
-    ("/support", "monthly"),
-    ("/contact", "yearly"),
-    ("/members", "monthly"),
-    ("/membership", "monthly"),
-    ("/publishermembers", "monthly"),
-    ("/faq", "monthly"),
-    ("/features", "monthly"),
-    ("/oainfo", "monthly"),
-    ("/sponsors", "monthly")
 ]
 
 
@@ -684,7 +788,7 @@ BLOG_URL = "http://doajournals.wordpress.com/"
 
 BLOG_FEED_URL = "http://doajournals.wordpress.com/feed/atom/"
 
-FRONT_PAGE_NEWS_ITEMS = 3
+FRONT_PAGE_NEWS_ITEMS = 9
 
 NEWS_PAGE_NEWS_ITEMS = 20
 
@@ -902,11 +1006,12 @@ ELASTIC_APM = {
 CONSENT_COOKIE_KEY = "doaj-cookie-consent"
 
 # site notes, which can be configured to run any time with any content
-SITE_NOTE_ACTIVE = True
+SITE_NOTE_ACTIVE = False
 SITE_NOTE_KEY = "doaj-site-note"
-SITE_NOTE_SLEEP = 604800    # every 7 days
+SITE_NOTE_SLEEP = 259200    # every 3 days
 SITE_NOTE_COOKIE_VALUE = "You have seen our most recent site wide announcement"
 SITE_NOTE_TEMPLATE = "doaj/site_note.html"
+
 
 #############################################
 ## Harvester Configuration
@@ -921,7 +1026,8 @@ DOAJ_QUERY_ENDPOINT = "query"
 
 DOAJ_SEARCH_TYPE = "journal,article"
 
-DOAJ_API_BASE_URL = "https://doaj.org/api/v1/"
+DOAJ_API1_BASE_URL = "https://doaj.org/api/v1/"
+DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
 
 
 ## EPMC Client configuration

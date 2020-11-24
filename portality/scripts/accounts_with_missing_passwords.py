@@ -8,7 +8,8 @@ python accounts_with_missing_passwords.py -o accounts.csv
 """
 import csv
 import esprit
-from portality.core import app
+from portality.core import es_connection
+from portality.util import ipt_prefix
 from portality import models
 
 MISSING_PASSWORD = {
@@ -27,7 +28,7 @@ MISSING_PASSWORD = {
 
 def publishers_with_journals():
     """ Get accounts for all publishers with journals in the DOAJ """
-    for acc in esprit.tasks.scroll(conn, 'account', q=MISSING_PASSWORD, page_size=100, keepalive='1m'):
+    for acc in esprit.tasks.scroll(conn, ipt_prefix('account'), q=MISSING_PASSWORD, page_size=100, keepalive='1m'):
         publisher_account = models.Account(**acc)
         journal_ids = publisher_account.journal
         if journal_ids is not None:
@@ -50,7 +51,7 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+    conn = es_connection
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)

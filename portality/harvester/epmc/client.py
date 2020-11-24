@@ -1,5 +1,5 @@
 from portality.core import app
-from portality.lib import http
+from portality.lib import httputil
 import urllib.request, urllib.parse, urllib.error, string
 from portality.harvester.epmc import models
 from portality.harvester.epmc.queries import QueryBuilder
@@ -142,7 +142,7 @@ class EuropePMC(object):
             url += "&cursorMark=" + qcursor
         app.logger.debug("Requesting EPMC metadata from " + url)
 
-        resp = http.get(url)
+        resp = httputil.get(url)
         if resp is None:
             raise EuropePMCException(message="could not get a response from EPMC")
         if resp.status_code != 200:
@@ -162,7 +162,7 @@ class EuropePMC(object):
     def fulltext(cls, pmcid):
         url = app.config.get("EPMC_REST_API") + pmcid + "/fullTextXML"
         app.logger.debug("Searching for Fulltext at " + url)
-        resp = http.get(url)
+        resp = httputil.get(url)
         if resp is None:
             raise EuropePMCException(message="could not get a response for fulltext from EPMC")
         if resp.status_code != 200:

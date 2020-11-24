@@ -1,4 +1,4 @@
-from portality.lib import dataobj, dates, plugin
+from portality.lib import dates, plugin
 from datetime import datetime
 import json
 
