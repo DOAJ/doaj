@@ -344,7 +344,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
                     return false;
                 }
             } else {
-                if (inp.val() !== "") {
+                if (inp.val() !== "" && inp.val() !== "Start typing…") {    // FIXME: hack to get around select2 poor behaviour
                     return false;
                 }
             }
