@@ -24,6 +24,8 @@ from portality.models.v2.journal import JournalLikeBibJSON as JournalLikeBibJSON
 from portality.models.v1.journal import Journal as JournalV1
 from portality.models.v2.journal import Journal as JournalV2
 
+from portality.models.search import JournalArticle
+
 import esprit
 from datetime import datetime, timedelta
 
@@ -665,3 +667,6 @@ for smt, tmt, source_model, target_model, processor in migrate_types:
         total += len(batch)
         print(datetime.now(), "final result set / writing ", len(batch), "to", tt, ";", total, "of", max)
         esprit.raw.bulk(tconn, batch, idkey="id", type_=tt, bulk_type="create")
+
+# Renew the site statistics since their structure has changed
+_ = JournalArticle.site_statistics()
