@@ -15,8 +15,8 @@ SUPPORTED_GENRES = ['journal', 'article']
 
 # Mapping from OpenURL schema to both supported models (Journal, Article)
 OPENURL_TO_ES = {
-    'aulast': (None, 'author.name.exact'),
-    'aucorp': (None, 'author.affiliation.exact'),
+    'aulast': (None, 'bibjson.author.name.exact'),
+    'aucorp': (None, 'bibjson.author.affiliation.exact'),
     'atitle': (None, 'bibjson.title.exact'),
     'jtitle': ('index.title.exact', 'bibjson.journal.title.exact'),    # Note we use index.title.exact for journals, to support continuations
     'stitle': ('bibjson.alternative_title.exact', None),
@@ -115,7 +115,7 @@ class OpenURLRequest(object):
                 # This time we've definitely failed
                 return None
 
-        if results.get('hits', {}).get('hits', [{}])[0].get('_type') == 'journal':
+        if results.get('hits', {}).get('hits', [{}])[0].get('_source', {}).get('es_type') == 'journal':
 
             # construct a journal object around the result
             journal = Journal(**results['hits']['hits'][0])
@@ -142,7 +142,7 @@ class OpenURLRequest(object):
                 jtoc_url = url_for("doaj.toc", identifier=ident)
             return jtoc_url
 
-        elif results.get('hits', {}).get('hits',[{}])[0].get('_type') == 'article':
+        elif results.get('hits', {}).get('hits', [{}])[0].get('_source', {}).get('es_type') == 'article':
             return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
 
     def query_for_vol(self, journalobj):

@@ -1,0 +1,90 @@
+<script type="text/javascript">
+
+    let setup_maned = () => {
+        currentTab = 6;
+        previousTab = 5;
+
+        $(".application-nav__list-item").each((idx, x) => {
+            x.className = "application-nav__list-item application-nav__list-item--active";
+        });
+
+        $("#submitBtn").hide();
+        $("#saveDraft").hide();
+    }
+
+    let _generate_values_preview = () => {
+        $(".admin_value_preview").each((i,elem) => {
+            let id = $(elem).attr("id").split("-")[0];
+            let inputs = $("#"+id).find("select, input")
+            if (inputs.length === 1) {
+                $(elem).html($(inputs[0]).val())
+            }
+            else if (inputs.length === 2){
+                $(elem).html($(inputs[0]).val() + " (" + $(inputs[1]).val() + ")")
+            }
+        })
+    }
+
+    let modify_review_page = () => {
+        let page = $(".page");
+        page.removeClass("col-md-8");
+        page.addClass("col-md-12");
+        let buttons = $(".buttons");
+        buttons.addClass("col-md-8 col-md-offset-4")
+        $(".editorial-panel").hide();
+        _generate_values_preview();
+    }
+
+    let default_page_view = () => {
+        let page = $(".page");
+        page.removeClass("col-md-12");
+        page.addClass("col-md-8");
+        let buttons = $(".buttons");
+        buttons.removeClass("col-md-8 col-md-offset-4")
+        $(".editorial-panel").show();
+    }
+
+    let modify_view = () => {
+        if (currentTab === 6) {
+            modify_review_page();
+        }
+        else {
+            default_page_view();
+        }
+    }
+
+    $("#open_quick_reject").on("click", (e) => {
+        e.preventDefault();
+        $("#modal-quick_reject").show();
+    })
+
+    let unlock = (params) => {
+        let type = params.type;
+        let id = params.id;
+
+        let success_callback = (data) => {
+            window.open('', '_self', ''); //open the current window
+            window.close();
+        }
+
+        let error_callback = (jqXHR, textStatus, errorThrown) => {
+            alert("error releasing lock: " + textStatus + " " + errorThrown)
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/service/unlock/" + type + "/" + id,
+            contentType: "application/json",
+            dataType: "json",
+            success : success_callback,
+            error: error_callback
+        })
+    }
+
+    $("#unlock").click(function(event) {
+        event.preventDefault();
+        let id = $(this).attr("data-id");
+        let type = $(this).attr("data-type");
+        unlock({type : type, id : id})
+    });
+</script>

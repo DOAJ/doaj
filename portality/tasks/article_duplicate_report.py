@@ -9,13 +9,14 @@ import esprit
 import os
 import shutil
 import json
+import csv
 from datetime import datetime
 from portality import models
 from portality.lib import dates
-from portality.core import app
-import csv
+from portality.core import app, es_connection
 from portality.bll.doaj import DOAJ
 from portality.bll import exceptions
+from portality.util import ipt_prefix
 
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
@@ -123,9 +124,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
     @classmethod
     def _make_csv_dump(self, tmpdir, filename):
-        # Connection to the ES index, rely on esprit sorting out the port from the host
-        conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None,
-                                          app.config["ELASTIC_SEARCH_DB"])
+        # Connection to the ES index
+        conn = es_connection
 
         if not filename:
             filename = 'tmp_articles_' + dates.today() + '.csv'
@@ -173,7 +173,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         }
 
         count = 0
-        for a in esprit.tasks.scroll(connection, 'article', q=scroll_query, page_size=1000, keepalive='1m'):
+        for a in esprit.tasks.scroll(connection, ipt_prefix('article'), q=scroll_query, page_size=1000, keepalive='1m'):
             row = [
                 a['id'],
                 a['created_date'],

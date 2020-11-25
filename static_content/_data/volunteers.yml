@@ -1,0 +1,1092 @@
+# List of volunteers by role
+# with contact info, research area, city, country, year, portrait
+
+## All editors
+ed:
+- name: Alicia Aparicio
+  area: Humanities, Social Sciences
+  year_since:
+  city: Buenos Aires
+  country: Argentina
+  language: Spanish
+  featured: true
+
+- name: David Scherer
+  area: Library and Information Studies
+  year_since:
+  city: Pittsburgh, PA
+  country: USA
+  language: English
+
+
+- name: Eeva Savolainen
+  area: Library and Information Studies
+  year_since:
+  city: Espoo
+  country: Finland
+  language: Finnish, English
+
+
+- name: Emilie Champagne
+  area: Science
+  year_since:
+  city: Québec
+  country: Canada
+  language: French, English
+  featured: true
+
+- name: Fei Yu
+  area: Librarianship, Scholarly Publishing, Data Management
+  year_since:
+  city: Brisbane
+  country: Australia
+  language: Chinese, English
+  featured: true
+
+- name: Geoff Husic
+  area: Humanities, Social Sciences
+  year_since:
+  city: Lawrence, KS
+  country: USA
+  language: Russian, German, English
+  featured: true
+
+
+- name: Ikhwan Arief
+  area: Science, Technology
+  year_since:
+  city: Padang, West Sumatra
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Lut Tamam
+  area: Medicine
+  year_since:
+  city: Adana
+  country: Turkey
+  language: Turkish, English
+  featured: true
+
+- name: Natalia Pamuła-Cieślak
+  area: Humanities, Social Sciences
+  year_since:
+  city: Toruń
+  country: Poland
+  language: Polish, English
+  featured: true
+  photo: "napa.jpg"
+
+- name: Paola Galimberti
+  area: Research Evaluation
+  year_since:
+  city: Milan
+  country: Italy
+  language: Italian, German, English
+  featured: true
+
+- name: Rasoul Zavaraqi
+  area: Knowledge and Information Science
+  year_since:
+  city: Tabriz
+  country: Iran
+  language: Persian, English, Azeri
+
+- name: S.Suharto
+  area: Humanities, Social Sciences
+  year_since:
+  city: Semarang
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Scott Richard St. Louis
+  area: Humanities, Social Sciences, Technology
+  year_since:
+  city: Ann Arbor, MI
+  country: USA
+  language: English, French
+
+- name: Souheil Houissa
+  area: Library and Information Science
+  year_since:
+  city: Tunis
+  country: Tunisia
+  language: Arabic, French, English
+
+- name: Xiaotian Chen
+  area: Librarianship
+  year_since:
+  city:
+  country: China
+  language: Chinese, English
+
+## All associate editors
+
+ass_ed:
+- name: A. Sulthan
+  area: Social Sciences
+  year_since:
+  city: Coimbatore
+  country: India
+  language: Tamil, Urdu, Hindi, English
+
+- name: Alessandro Pierno
+  area: Humanities
+  year_since:
+  city: Florence
+  country: Italy
+  language: Italian, English, Spanish
+
+- name: Alfonso Bustos
+  area:
+  year_since:
+  city:
+  country:
+  language:
+
+- name: Amanda Page
+  area: Librarianship
+  year_since:
+  city:
+  country: USA
+  language: English
+
+- name: Amir Aidun
+  area: Science
+  year_since:
+  city: Tehran
+  country: Iran
+  language: Farsi, English
+
+- name: Ana Fresco-Santalla
+  area: Humanities
+  year_since:
+  city: Granada
+  country: Spain
+  language: Galician, Portuguese, Spanish, English
+
+- name: Ana Melro
+  area: Science, Technology
+  year_since:
+  city: Exeter
+  country: United Kingdom
+  language: Portuguese, English
+
+- name: Andista Candra Yusro
+  area: Social Sciences
+  year_since:
+  city: Madiun
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Andrea Imre
+  area: Library Science, Music, General
+  year_since:
+  city: Carbondale, IL
+  country: USA
+  language: Hungarian, English
+
+- name: Andrea Marchitelli
+  area: Librarianship
+  year_since:
+  city: Rome
+  country: Italy
+  language: Italian, English
+
+- name: Andrea Wright
+  area:
+  year_since:
+  city:
+  country: USA
+  language: English
+
+- name: Andronic Octavian
+  area: Medicine
+  year_since:
+  city: Bucharest
+  country: Romania
+  language: Romanian, English
+
+- name: Anna Wolodko
+  area: Library Science
+  year_since:
+  city: Warsaw
+  country: Poland
+  language: Polish, English
+
+- name: Annarita Barbaro
+  area: Humanities
+  year_since:
+  city: Rome
+  country: Italy
+  language: Italian, English
+
+- name: Anne Lahey
+  area: Libraries, Scholarly Communication
+  year_since:
+  city: Canberra
+  country: Australia
+  language: English
+
+- name: Antti-Jussi Nygård
+  area: History
+  year_since:
+  city: Turku
+  country: Finland
+  language: English, Finnish
+
+
+- name: Arbain Arbain
+  area: Humanities
+  year_since:
+  city: Samarinda
+  country: Indonesia
+  language: Indonesian, English
+
+
+- name: Barbara Łuszczek
+  area: Librarianship
+  year_since:
+  city: Bydgoszcz
+  country: Poland
+  language: Polish, English
+
+- name: Ben Catt
+  area: Librarianship, Research Support
+  year_since:
+  city: York
+  country: United Kingdom
+  language: English
+
+- name: Busro Busro
+  area: Humanities
+  year_since:
+  city: Bandung
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Carlos Alegre
+  area: Social Sciences
+  year_since:
+  city: Rosario
+  country: Argentina
+  language: Spanish, English
+  photo: "CarlosAlegre.jpg"
+
+- name: Christine Davidian
+  area: Technology
+  year_since:
+  city: Glassboro, NJ
+  country: USA
+  language: English, French
+
+- name: Constancy Aleru
+  area: Medical Sciences
+  year_since:
+  city: Port Harcourt
+  country: Nigeria
+  language: English, French
+  photo: "aleru.jpg"
+
+- name: Dania Deroy Dominguez
+  area: Social Sciences
+  year_since:
+  city: La Habana
+  country: Cuba
+  language: English, French
+
+- name: Danner Sagala
+  area: Science
+  year_since:
+  city: Bengkulu
+  country: Indonesia
+  language: Indonesian, English
+  photo: "sagala.jpg"
+
+- name: Daria Chrześcijańska
+  area: Technology
+  year_since:
+  city: Toruń
+  country: Poland
+  language: Polish, English
+
+- name: Débora Domingo-Calabuig
+  area: Science, Technology
+  year_since:
+  city: Valencia
+  country: Spain
+  language: Spanish, English
+
+
+- name: Dedi Rahman Nur
+  area: Social Sciences
+  year_since:
+  city: Samarinda
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Dr. Eko Supraptono
+  area: Technology
+  year_since:
+  city: Semarang
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Dr. Ir. Dyah Rini Indriyanti
+  area: Science
+  year_since:
+  city:
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Driselda Sánchez Aguirre
+  area: Social Sciences
+  year_since:
+  city: Querétaro
+  country: Mexico
+  language: Spanish, English
+
+- name: Dwi Fajar Saputra
+  area: Librarianship
+  year_since:
+  city: Jakarta
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Eeva Henrikssson
+  area: Social Sciences
+  year_since:
+  city: Helsinki
+  country: Finland
+  language: Finnish, English
+
+- name: Eko Pramudya Laksana
+  area: Social Sciences
+  year_since:
+  city: Malang
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Elisangela Gisele do Carmo
+  area: Gerontology
+  year_since:
+  city: Rio Claro-São Paulo
+  country: Brazil
+  language: Portuguese, English
+
+- name: Elli Papadopoulou
+  area: Librarianship
+  year_since:
+  city: Marousi
+  country: Greece
+  language: Greek, English
+
+- name: Emma Molls
+  area: Librarianship
+  year_since:
+  city: Minneapolis, MN
+  country: USA
+  language: English
+
+- name: Enes Sukic
+  area: Science
+  year_since:
+  city: Novi Pazar
+  country: Serbia
+  language: Serbo-Croat-Bosnian, English, Turkish
+
+- name: Enver Ahmet Demir
+  area: Medicine
+  year_since:
+  city: Hatay
+  country: Turkey
+  language: Turkish, English
+
+- name: Eva Höglund
+  area: Social Sciences
+  year_since:
+  city: Turku
+  country: Finland
+  language: Finnish, English
+
+- name: Faith Oronga Amatika-Omondi
+  area: Librarianship
+  year_since:
+  city:
+  country: Kenya
+  language: English
+  photo: "oronga.jpg"
+
+- name: Faizal Risdianto
+  area: Humanities
+  year_since:
+  city: Solo
+  country: Indonesia
+  language: Indonesian, English
+  photo: "faizal.jpg"
+
+
+- name: Francesca Soldati
+  area: Science
+  year_since:
+  city: Lincoln
+  country: United Kingdom
+  language: Italian, English, Spanish
+
+- name: Francesco Cavinato
+  area: Humanities, Social Sciences
+  year_since:
+  city: Bologna
+  country: Italy
+  language: Italian, English
+
+- name: Gerald Langhanke
+  area: Science, Technology
+  year_since:
+  city: Darmstadt
+  country: Germany
+  language: German, Swedish, English
+
+- name: Gertrud Pluskwik
+  area: Librarianship
+  year_since:
+  city: Basel
+  country: Switzerland
+  language: German, English
+
+- name: Hanae Lrhoul
+  area:
+  year_since:
+  city:
+  country:
+  language:
+
+- name: Handoko
+  area: Information Technology
+  year_since:
+  city: Padang
+  country: Indonesia
+  language: Indonesian, English
+  photo: "handoko.jpg"
+
+- name: Haydar Oruç
+  area: Humanities
+  year_since:
+  city: Sakarya
+  country: Turkey
+  language: Turkish, English
+
+- name: Hyun Jung Yi
+  area:
+  year_since:
+  city:
+  country: Republic of Korea
+  language: Korean, English
+
+
+- name: Iryna Kuchma
+  area: Humanities, Social Sciences
+  year_since:
+  city: Kyiv
+  country: Ukraine
+  language: Ukrainian, English, French, Polish
+
+- name: Isabel Margalejo Ferrández
+  area: Social Sciences
+  year_since:
+  city: Valencia
+  country: Spain
+  language: Spanish, English
+
+- name: Jacinto Dávila
+  area: Technology
+  year_since:
+  city: Mérida
+  country: Venezuela
+  language: Spanish, English
+  photo: "JacintoDavila.png"
+
+- name: Jamila Jaber
+  area: Library and Information Science
+  year_since:
+  city: Beirut
+  country: Lebanon
+  language: Arabic, French, English
+
+- name: Janne Pölönen
+  area:
+  year_since:
+  city:
+  country:
+  language: English
+
+- name: Jiayi Xu
+  area:
+  year_since:
+  city:
+  country:
+  language: English
+
+- name: Jinjin Liu
+  area:
+  year_since:
+  city:
+  country:
+  language: English
+
+- name: João Sousa
+  area:
+  year_since:
+  city:
+  country:
+  language: Portuguese, English
+
+- name: Johanna Glader
+  area:
+  year_since:
+  city:
+  country:
+  language: English
+
+- name: JooYeun Son
+  area:
+  year_since:
+  city:
+  country:
+  language: Korean, English
+
+
+- name: José Darío Martínez Ezquerro
+  area:
+  year_since:
+  city:
+  country:
+  language: Spanish, English
+
+- name: José Molina
+  area:
+  year_since:
+  city:
+  country:
+  language: Spanish, English
+
+
+- name: Juliana Soares Lima
+  area:
+  year_since:
+  city:
+  country:
+  language: Portuguese, English
+
+- name: Jussi Mannisto
+  area:
+  year_since:
+  city:
+  country:
+  language: English
+
+
+- name: JuYeon Park
+  area:
+  year_since:
+  city:
+  country:
+  language: Korean, English
+
+- name: Kamil B. Varınca
+  area: Science
+  year_since:
+  city: Adiyaman
+  country: Turkey
+  language: Turkish, English
+
+- name: Karima Akool Al-Sahili
+  area: Medicine
+  year_since:
+  city: Baghdad
+  country: Iraq
+  language: Arabic, English, Swedish
+  photo: "karima.jpg"
+
+- name: Katharine Dunn
+  area: Scholarly Publishing
+  year_since:
+  city: Cambridge, MA
+  country: USA
+  language: English
+
+- name: Khoirul Fathoni
+  area:
+  year_since:
+  city:
+  country: Indonesia
+  language: Indonesian, English
+  photo:
+
+- name: Kimberly Mears
+  area: Medicine
+  year_since:
+  city: Charlottetown
+  country: Canada
+  language: English
+
+- name: Leena Huovinen
+  area:
+  year_since:
+  city:
+  country: Finland
+  language: Finnish, English
+
+- name: Lena Lönngren
+  area:
+  year_since:
+  city:
+  country: Finland
+  language: Finnish, English
+
+- name: Liana Penabad Camacho
+  area: Social Sciences
+  year_since:
+  city: San José
+  country: Costa Rica
+  language: Spanish, English
+
+- name: Lina Marcela Blandón García
+  area:
+  year_since:
+  city:
+  country:
+  language: Spanish, English
+
+- name: Lorri Peters
+  area: Science
+  year_since:
+  city: College Station, TX
+  country: USA
+  language: English
+
+- name: Lucas Helal
+  area:
+  year_since:
+  city:
+  country:
+  language: English
+
+- name: Maarit Koskela
+  area:
+  year_since:
+  city:
+  country:
+  language: English
+
+
+- name: Marcau Flavius-Cristian
+  area: Social Sciences
+  year_since:
+  city: Târgu jiu
+  country: Romania
+  language: Romanian, English
+
+- name: Marco Tullney
+  area: Social Sciences, Technology
+  year_since:
+  city: Hannover
+  country: Germany
+  language: German, English
+
+- name: Maria Chiara Pievatolo
+  area: Humanities, Social Sciences
+  year_since:
+  city: Pisa
+  country: Italy
+  language: Italian, English, German
+
+- name: Maria Manuel Borges
+  area: Social Sciences
+  year_since:
+  city: V.N Gaia
+  country: Portugal
+  language: Portuguese, Spanish, English
+
+- name: Mariana Solano Hernandez
+  area: Science
+  year_since:
+  city: Cartago
+  country: Costa Rica
+  language: Spanish, English
+
+- name: Mario Alejandro Marín
+  area:
+  year_since:
+  city:
+  country:
+  language: Spanish, English
+
+- name: Maryam Jamilah
+  area:
+  year_since:
+  city:
+  country:
+  language:
+  photo: "jamilah.jpg"
+
+- name: Melih Sever
+  area:
+  year_since:
+  city:
+  country: Turkey
+  language: English
+
+- name: Miguel-Ángel Vera-Baceta
+  area: Social Sciences
+  year_since:
+  city: Murcia
+  country: Spain
+  language: Spanish, English
+  photo: "MiguelAVera.jpeg"
+
+- name: Milagro Castro
+  area: Social Sciences
+  year_since:
+  city: Palmares
+  country: Costa Rica
+  language: Spanish, English
+  photo: "MilagroCastro.jpg"
+
+- name: Milton Ramirez
+  area:
+  year_since:
+  city:
+  country: Spain
+  language: Spanish, English
+  photo: "MiltonRamirez.jpg"
+
+- name: Muhamad Ratodi
+  area: Public Health
+  year_since:
+  city: Surabaya
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Nathalia Avila
+  area:
+  year_since:
+  city:
+  country:
+  language: Spanish, English
+
+- name: Nour El Houda Belhamel
+  area: Science, Technology, Medicine
+  year_since:
+  city: Bejaia
+  country: Algeria
+  language: Arabic, French, English, Kabyle
+  photo: "nourelhouda.png"
+
+- name: Oleksii Vasyliev
+  area: Science, Technology
+  year_since:
+  city: Kyiv
+  country: Ukraine
+  language: Ukrainian, Russian, English, Polish
+
+- name: Olga Kirillova
+  area:
+  year_since:
+  city:
+  country:
+  language:
+
+- name: Oskia Aguirre
+  area:
+  year_since:
+  city:
+  country:
+  language: Spanish, English
+
+
+- name: Pablo Hernandez
+  area:
+  year_since:
+  city:
+  country:
+  language: Spanish, English
+
+- name: Paula Carina de Araújo
+  area:
+  year_since:
+  city:
+  country:
+  language: Spanish, English
+
+- name: Princess Uju E. Nwafor-Orizu
+  area:
+  year_since:
+  city:
+  country:
+  language: English
+
+- name: Prof. Dr. Sudarmin
+  area: Science
+  year_since:
+  city:
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Ramazan Turgut
+  area:
+  year_since:
+  city:
+  country: Qtar
+  language: Arabic, English
+
+- name: Ran Dang
+  area:
+  year_since:
+  city:
+  country: Malaysia
+  language: English
+
+- name: Raúl Sampieri
+  area: Science
+  year_since:
+  city:
+  country: Mexico
+  language: Spanish, English
+
+
+- name: Remedios Melero (Reme)
+  area: Social Sciences
+  year_since:
+  city: Valencia
+  country: Spain
+  language: Spanish, English, Italian, Catalan
+
+- name: Rhonda Marker
+  area: Humanities, Social Sciences
+  year_since:
+  city: New Brunswick, NJ
+  country: USA
+  language: English
+
+- name: Ricardo Alejandro Fagoaga Hernández
+  area: History
+  year_since:
+  city: Ciudad de Mexico
+  country: Mexico
+  language: Spanish, English
+
+- name: Richard James
+  area: Medicine
+  year_since:
+  city: Philadelphia, PA
+  country: USA
+  language: English
+
+- name: Riitta Koikkalainen
+  area: Librarianship
+  year_since:
+  city: Helsinki
+  country: Finland
+  language: Finnish, English
+
+
+- name: Roberto Sarmiento
+  area: Engineering
+  year_since:
+  city: San Luis Potosi
+  country: Mexico
+  language: Spanish, English
+
+- name: S. Mohammad Amini
+  area: Science
+  year_since:
+  city: Esfahan
+  country: Iran
+  language: Farsi, English
+  photo: "amini.jpeg"
+
+- name: Sami Syrjämäki
+  area: Humanities, Social Sciences
+  year_since:
+  city: Helsinki
+  country: Finland
+  language: Finnish, English
+
+- name: Sandra Müller
+  area:
+  year_since:
+  city:
+  country:
+  language: German, English
+
+- name: Sandra Studer
+  area:
+  year_since:
+  city:
+  country:
+  language: German, English
+
+- name: Sara Jalalzadeh Asrjadidi
+  area: Librarianship
+  year_since:
+  city: Tabriz
+  country: Azerbaijan
+  language: Azerbaijani, English
+
+- name: Sara Ricetto
+  area:
+  year_since:
+  city:
+  country: Italy
+  language: Italian, English
+
+
+- name: Sumi Kang
+  area: Social Sciences
+  year_since:
+  city: Sejong
+  country: Korea
+  language: Korean, English
+
+- name: Sara Ricetto
+  area: Open Access, Open Science
+  year_since:
+  city: Milan
+  country: Italy
+  language: Italian, English, German
+
+- name: Simone Rosenkranz
+  area: Humanities
+  year_since:
+  city: Luzern
+  country: Switzerland
+  language: German, English
+
+- name: Soeharto Fisika
+  area: Humanities
+  year_since:
+  city:
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Sofia Fagiolo
+  area: Librarianship
+  year_since:
+  city: Rome
+  country: Italy
+  language: Italian, English
+
+- name: Soon Kim
+  area:
+  year_since:
+  city:
+  country: Republic of Korea
+  language: Korean, English
+
+- name: Stewart C Baker
+  area: Humanities, Library Science
+  year_since:
+  city: Monmouth, OR
+  country: USA
+  language: English, Japanese
+
+- name: Souleymane Sogoba
+  area: Statistics
+  year_since:
+  city: Bamako
+  country: Mali
+  language: French
+  photo: "sogoba1.jpg"
+
+- name: Sumi Kang
+  area: Social Sciences
+  year_since:
+  city: Sejong
+  country: Korea
+  language: Korean, English
+
+- name: Swasti Maharani
+  area: Mathematics
+  year_since:
+  city: Jawa Timur
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Taner Kemal Erdağ
+  area: Mathematics
+  year_since:
+  city: Ízmir
+  country: Turkey
+  language: Turkish, English
+
+- name: Teodor Mihaela
+  area: Humanities, Social Sciences
+  year_since:
+  city: Bucharest
+  country: Romania
+  language: Romanian, English, French
+
+- name: Tereza Simandlová
+  area: Humanities
+  year_since:
+  city: Prague
+  country: Czech Republic
+  language: Czech, Slovak, English
+
+- name: Tommaso Fava
+  area: Librarianship
+  year_since:
+  city: Padova
+  country: Italy
+  language: Italian, English
+
+
+- name: Umar Khasan
+  area: Social Sciences
+  year_since:
+  city: Bangkalan
+  country: Indonesia
+  language: Indonesian, English
+
+- name: Volkan Demir
+  area: Science
+  year_since:
+  city: Istanbul
+  country: Turkey
+  language: Turkish, English
+
+
+- name: Weronika Kortas
+  area: Humanities, Social Sciences
+  year_since:
+  city: Toruń
+  country: Poland
+  language: Polish, English
+
+- name: Yaping Liu
+  area: Medical and Healthcare Management
+  year_since:
+  city: Sydney
+  country: Australia
+  language: Chinese, English
+
+- name: Yoonhee Cho
+  area: Medicine
+  year_since:
+  city: Chungju
+  country: Korea
+  language: Korean, English
+
+- name: Yvonne Leimgruber
+  area: Librarianship
+  year_since:
+  city: Lucerne
+  country: Switzerland
+  language: German, English
+
+- name: Zhe Jiang (Sophia)
+  area: Social Sciences
+  year_since:
+  city: Shanghai
+  country: China
+  language: Chinese, English

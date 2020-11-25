@@ -5,7 +5,7 @@ $.extend(true, doaj, {
 
         journalSelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
                 // var type = doaj.currentFVOptions.active_filters._type;
                 if (type && type.length > 0) {
                     type = type[0];
@@ -22,7 +22,7 @@ $.extend(true, doaj, {
 
         anySelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
                 if (!type || type.length === 0) {
                     return {
                         valid: false,
@@ -35,7 +35,7 @@ $.extend(true, doaj, {
 
         typeSelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
                 if (type && type.length > 0) {
                     return type[0].value;
                 }
@@ -51,7 +51,8 @@ $.extend(true, doaj, {
             if (!resultobj.suggestion && resultobj.bibjson.journal) {
                 // if it's not a suggestion or a journal .. (it's an article!)
                 // we really need to expose _type ...
-                var result = '<a class="delete_article_link" href="';
+                var result = '<br/>'
+                result += '<a class="delete_article_link button" href="';
                 result += "/admin/delete/article/";
                 result += resultobj['id'];
                 result += '" target="_blank"';
@@ -63,8 +64,7 @@ $.extend(true, doaj, {
 
         editArticle : function (val, resultobj, renderer) {
             if (!resultobj.suggestion && resultobj.bibjson.journal) {
-                var result = ' | '
-                result += '<a class="edit_article_link" href="';
+                var result = '<a class="edit_article_link button" href="';
                 result += doaj.adminJournalArticleSearchConfig.articleEditUrl;
                 result += resultobj['id'];
                 result += '" target="_blank"';
@@ -79,7 +79,7 @@ $.extend(true, doaj, {
                 // if it's not a suggestion or an article .. (it's a
                 // journal!)
                 // we really need to expose _type ...
-                var result = '<a class="edit_journal_link" href="';
+                var result = '<a class="edit_journal_link button" href="';
                 result += doaj.adminJournalArticleSearchConfig.journalEditUrl;
                 result += resultobj['id'];
                 result += '" target="_blank"';
@@ -111,7 +111,7 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "journals_articles",
                     category: "facet",
-                    field: "_type",
+                    field: "es_type",
                     display: "Journals vs Articles",
                     valueMap : {
                         "journal" : "Journals",
@@ -144,6 +144,20 @@ $.extend(true, doaj, {
                     })
                 }),
                 edges.newRefiningANDTermSelector({
+                    id: "author_pays",
+                    category: "facet",
+                    field: "index.has_apc.exact",
+                    display: "Publication charges?",
+                    deactivateThreshold: 1,
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: false,
+                        togglable: true,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+                edges.newRefiningANDTermSelector({
                     id: "journal_language",
                     category: "facet",
                     field: "index.language.exact",
@@ -160,22 +174,8 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "publisher",
                     category: "facet",
-                    field: "bibjson.publisher.exact",
+                    field: "bibjson.publisher.name.exact",
                     display: "Publisher",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "platform_host_aggregator",
-                    category: "facet",
-                    field: "bibjson.provider.exact",
-                    display: "Platform, Host, Aggregator",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -219,26 +219,6 @@ $.extend(true, doaj, {
                     field: "index.country.exact",
                     display: "Country of publisher",
                     deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "author_pays",
-                    category: "facet",
-                    field: "bibjson.author_pays.exact",
-                    display: "Publication charges?",
-                    deactivateThreshold: 1,
-                    valueMap : {
-                        "N" : "No",
-                        "Y" : "Yes",
-                        "NY" : "No Information",
-                        "CON" : "Conditional"
-                    },
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
@@ -309,7 +289,7 @@ $.extend(true, doaj, {
                         {'display':'DOI', 'field' : 'bibjson.identifier.id'},
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal Language','field':'index.language'},
-                        {'display':'Publisher','field':'bibjson.publisher'},
+                        {'display':'Publisher','field':'bibjson.publisher.name'},
 
                         {'display':'Article: Abstract','field':'bibjson.abstract'},
                         {'display':'Article: Author\'s name','field':'bibjson.author.name'},
@@ -317,12 +297,11 @@ $.extend(true, doaj, {
                         {'display':'Article: Year','field':'bibjson.year'},
                         {'display':'Article: Journal Title','field':'bibjson.journal.title'},
 
-                        {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
-                        {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'}
+                        {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
-                        freetextSubmitDelay: 1000,
+                        freetextSubmitDelay: -1,
                         searchButton: true,
                         searchPlaceholder: "Search All Journals and Articles"
                     })
@@ -389,31 +368,13 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre": "<strong>Publisher</strong>: ",
-                                    "field": "bibjson.publisher"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Platform, Host, Aggregator</strong>: ",
-                                    "field": "bibjson.provider"
+                                    "field": "bibjson.publisher.name"
                                 }
                             ],
                             [
                                 {
                                     "pre": "<strong>Publication charges?</strong>: ",
                                     "valueFunction": doaj.fieldRender.authorPays
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Started publishing Open Access content in</strong>: ",
-                                    "field": "bibjson.oa_start.year"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Stopped publishing Open Access content in</strong>: ",
-                                    "field": "bibjson.oa_end.year"
                                 }
                             ],
                             [
@@ -562,33 +523,26 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "_type": "Showing",
+                        "es_type": "Showing",
                         "admin.in_doaj" : "In DOAJ?",
                         "index.language.exact" : "Journal Language",
-                        "bibjson.publisher.exact" : "Publisher",
-                        "bibjson.provider.exact" : "Platform, Host, Aggregator",
+                        "bibjson.publisher.name.exact" : "Publisher",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",
                         "index.country.exact" : "Country of publisher",
-                        "bibjson.author_pays.exact" : "Publication charges?",
                         "index.license.exact" : "Journal License",
                         "bibjson.year.exact" : "Year of publication",
-                        "bibjson.journal.title.exact" : "Journal title"
+                        "bibjson.journal.title.exact" : "Journal title",
+                        "index.has_apc.exact" : "Publication charges?"
                     },
                     valueMaps : {
-                        "_type" : {
+                        "es_type" : {
                             "journal" : "Journals",
                             "article" : "Articles"
                         },
                         "admin.in_doaj" : {
                             "T" : "True",
                             "F" : "False"
-                        },
-                        "bibjson.author_pays.exact" : {
-                            "N" : "No",
-                            "Y" : "Yes",
-                            "NY" : "No Information",
-                            "CON" : "Conditional"
                         }
                     }
                 }),
@@ -617,17 +571,13 @@ $.extend(true, doaj, {
             var mfb = doaj.multiFormBox.newMultiFormBox({
                 edge : e,
                 selector: "#admin-bulk-box",
-                widths: {
-                    edit_metadata: "600px"
-                },
                 bindings : {
                     editor_group : function(context) {
                         autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
                     },
                     edit_metadata : function(context) {
-                        autocomplete($('#publisher', context), 'bibjson.publisher');
-                        autocomplete($('#platform', context), 'bibjson.provider');
-                        $('#country', context).select2();
+                        autocomplete($('#publisher_name', context), 'bibjson.publisher.name');
+                        $('#publisher_country', context).select2();
                         autocomplete($('#owner', context), 'id', 'account');
                     }
                 },
@@ -666,7 +616,7 @@ $.extend(true, doaj, {
 
                         // now check that at least one field has been completed
                         var found = false;
-                        var fields = ["#publisher", "#platform", "#country", "#owner", "#contact_name", "#contact_email", "#doaj_seal"];
+                        var fields = ["#publisher_name", "#publisher_country", "#owner", "#doaj_seal"];
                         for (var i = 0; i < fields.length; i++) {
                             var val = context.find(fields[i]).val();
                             if (val !== "") {
@@ -675,16 +625,6 @@ $.extend(true, doaj, {
                         }
                         if (!found) {
                             return {valid: false};
-                        }
-
-                        // now check for valid field contents
-                        // quick and dirty email check - this will be done properly server-side
-                        var email = context.find("#contact_email").val();
-                        if (email !== "") {
-                            var match = email.match(/.+\@.+\..+/);
-                            if (match === null) {
-                                return {valid: false, error_id: "invalid_email"};
-                            }
                         }
 
                         return {valid: true};
@@ -710,7 +650,7 @@ $.extend(true, doaj, {
                     },
                     edit_metadata : {
                         data : function(context) {
-                            var seal = $('#doaj_seal', context).val();
+                            var seal = $('#change_doaj_seal', context).val();
                             if (seal === "True") {
                                 seal = true;
                             } else if (seal === "False") {
@@ -718,13 +658,10 @@ $.extend(true, doaj, {
                             }
                             var data = {
                                 metadata : {
-                                    publisher: $('#publisher', context).select2("val"),
-                                    platform: $('#platform', context).select2("val"),
-                                    country: $('#country', context).select2("val"),
+                                    publisher_name: $('#publisher_name', context).select2("val"),
+                                    publisher_country: $('#publisher_country', context).select2("val"),
                                     owner: $('#owner', context).select2("val"),
-                                    contact_name: $('#contact_name', context).val(),
-                                    contact_email: $('#contact_email', context).val(),
-                                    doaj_seal: seal
+                                    change_doaj_seal: seal
                                 }
                             };
                             return data;

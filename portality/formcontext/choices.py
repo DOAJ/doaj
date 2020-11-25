@@ -86,6 +86,12 @@ class Choices(object):
         ('NY', 'No information'),
     ]
 
+    _license_display = [
+        ('no', 'no'),
+        ('embed', 'embed'),
+        ('display', 'display')
+    ]
+
     _application_status_base = [        # This is all the Associate Editor sees
         ('', ' '),
         (constants.APPLICATION_STATUS_PENDING, 'Pending'),
@@ -288,8 +294,8 @@ class Choices(object):
         return [cls.FALSE]
 
     @classmethod
-    def licence_embedded(cls):
-        return cls.binary()
+    def licence_display(cls):
+        return cls._license_display
 
     @classmethod
     def licence_embedded_url_optional(cls):
@@ -333,6 +339,26 @@ class Choices(object):
     @classmethod
     def copyright_url_optional(cls):
         return [cls.FALSE]
+
+    @classmethod
+    def deposit_policy_url_optional(cls):
+        return [cls.FALSE]
+
+    @classmethod
+    def other_charges(cls):
+        return cls.binary()
+
+    @classmethod
+    def other_charges_url_optional(cls):
+        return [cls.FALSE]
+
+    @classmethod
+    def orcid(cls):
+        return cls.binary()
+
+    @classmethod
+    def i40c_open_citations(cls):
+        return cls.binary()
 
     @classmethod
     def publishing_rights(cls):

@@ -109,6 +109,8 @@ class TestBLLDeleteApplication(DoajTestCase):
         if application is not None:
             if acc is not None:
                 application.set_owner(acc.id)
+            else:
+                application.set_owner("randomuser")
             application.save(blocking=True)
             application_id = application.id
         elif application_type == "not_found":

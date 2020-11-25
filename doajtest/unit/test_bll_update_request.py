@@ -150,10 +150,3 @@ class TestBLLUpdateRequest(DoajTestCase):
             elif db_app == "yes" and application.id is not None:
                 indb = Suggestion.q2obj(q="id.exact:" + application.id)
                 assert indb is not None
-
-            if current_app_count == 0 and comp_app_count == 0 and application is not None:
-                assert application.article_metadata is None
-                assert application.articles_last_year is None
-            elif application is not None:
-                assert application.article_metadata is not None
-                assert application.articles_last_year is not None

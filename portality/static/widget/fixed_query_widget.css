@@ -4,8 +4,6 @@
     margin-right: auto;
 }
 
-/* THE STYLES USUALLY INHERITED FROM DOAJ/FACETVIEW ETC todo: use these rather than multiple massive style sheets */
-/*
 #doaj-fixed-query-widget .pull-left {
     float: left !important;
 }
@@ -159,4 +157,4 @@
     background-position: 14px 14px;
     background-repeat: no-repeat;
 }
-*/
+

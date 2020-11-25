@@ -1,17 +1,14 @@
 {% extends "admin/admin_base.html" %}
 
-{% block extra_stylesheets %}
-    {% include "_edges_common_css.html" %}
-{% endblock %}
+{% include "_edges_common_css.html" %}
 
 {% block admin_content %}
+<h1>Background jobs</h1>
 
 <div id="background_jobs"></div>
-
 {% endblock %}
 
 {% block extra_js_bottom %}
-
     <script type="text/javascript">
     $.extend(true, doaj, {
         adminBackgroundJobsSearchConfig : {
@@ -22,6 +19,4 @@
 
     {% include "_edges_common_js.html" %}
     <script type="text/javascript" src="/static/js/edges/admin.background_jobs.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
 {% endblock %}
-

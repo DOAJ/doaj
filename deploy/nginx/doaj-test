@@ -58,5 +58,3 @@ server {
         proxy_pass http://doaj_index;
     }
 }
-
-

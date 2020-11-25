@@ -5,25 +5,23 @@
       "type": "index"
     },
     {
-      "name": "duplicate",
-      "type": "generated",
       "values": {
-        "same_as_update_article_id": {},
         "different_than_update_article_id": {},
+        "same_as_update_article_id": {},
         "none": {}
-      }
+      },
+      "name": "duplicate",
+      "type": "generated"
     },
     {
-      "name": "merge_duplicate",
-      "type": "generated",
       "values": {
         "yes": {},
         "no": {}
-      }
+      },
+      "name": "merge_duplicate",
+      "type": "generated"
     },
     {
-      "name": "is_update",
-      "type": "conditional",
       "values": {
         "0": {
           "conditions": [
@@ -39,36 +37,36 @@
         "1": {
           "conditions": [
             {
+              "merge_duplicate": {
+                "or": [
+                  "yes"
+                ]
+              },
               "duplicate": {
                 "or": [
                   "same_as_update_article_id"
                 ]
-              },
-              "merge_duplicate": {
-                "or": [
-                  "yes"
-                ]
               }
             },
             {
-              "duplicate": {
-                "or": [
-                  "none"
-                ]
-              },
               "merge_duplicate": {
                 "or": [
                   "yes"
+                ]
+              },
+              "duplicate": {
+                "or": [
+                  "none"
                 ]
               }
             }
           ]
         }
-      }
+      },
+      "name": "is_update",
+      "type": "conditional"
     },
     {
-      "name": "raises",
-      "type": "conditional",
       "values": {
         "DuplicateArticle": {
           "conditions": [
@@ -81,7 +79,9 @@
             }
           ]
         }
-      }
+      },
+      "name": "raises",
+      "type": "conditional"
     }
   ]
 }

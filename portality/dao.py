@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import time
 import re
 
-from portality.core import app
+from portality.core import app, es_connection
 import urllib.parse
 import json
 
@@ -44,13 +44,19 @@ class DomainObject(UserDict, object):
     @classmethod
     def target_whole_index(cls):
         t = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/') + '/'
-        t += app.config['ELASTIC_SEARCH_DB'] + '/'
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE'] and cls.__type__ is not None:
+            t += ','.join([app.config['ELASTIC_SEARCH_DB_PREFIX'] + t for t in cls.__type__.split(',')]) + '/'
+        else:
+            t += app.config['ELASTIC_SEARCH_DB'] + '/'
         return t
             
     @classmethod
     def target(cls):
         t = cls.target_whole_index()
-        t += cls.__type__ + '/'
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+            t += esprit.raw.INDEX_PER_TYPE_SUBSTITUTE + '/'
+        else:
+            t += cls.__type__ + '/'
         return t
     
     @classmethod
@@ -108,6 +114,9 @@ class DomainObject(UserDict, object):
 
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
+
+        if 'es_type' not in self.data and self.__type__ is not None:
+            self.data['es_type'] = self.__type__
 
         now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         if (blocking or differentiate) and "last_updated" in self.data:
@@ -217,7 +226,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def pull(cls, id_):
         """Retrieve object by id."""
-        if id_ is None:
+        if id_ is None or id_ == '':
             return None
 
         # swallow any network exceptions
@@ -233,7 +242,7 @@ class DomainObject(UserDict, object):
             return None
         else:
             try:
-                return cls(**out.json())
+                rec = out.json()
             except Exception as e:
                 app.logger.exception("Cannot decode JSON. Object: {}, "
                                      "Status Code: {}, "
@@ -244,6 +253,9 @@ class DomainObject(UserDict, object):
                                              out.reason,
                                              str(e)))
                 raise e
+            if "error" in rec and "status" in rec and rec["status"] >= 400:
+                raise Exception("ES returned an error: {x}".format(x=json.dumps(rec)))
+            return cls(**rec)
 
     @classmethod
     def pull_by_key(cls, key, value):
@@ -432,9 +444,11 @@ class DomainObject(UserDict, object):
             app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
             return
 
-        r = requests.delete(cls.target_whole_index())
-        return r
-    
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+            return esprit.raw.delete_index_by_prefix(es_connection, app.config['ELASTIC_SEARCH_DB_PREFIX'])
+        else:
+            return esprit.raw.delete_index(es_connection)
+
     def update(self, doc):
         """
         add the provided doc to the existing object
@@ -742,6 +756,29 @@ class DomainObject(UserDict, object):
         for id, lu in ids_and_last_updateds:
             cls.block(id, lu, sleep=sleep, max_retry_seconds=individual_max_retry_seconds)
 
+    @classmethod
+    def blockdeleted(cls, id, sleep=0.5, max_retry_seconds=30):
+        query = deepcopy(block_query)
+        query["query"]["bool"]["must"][0]["term"]["id.exact"] = id
+        start_time = datetime.now()
+        while True:
+            res = cls.query(q=query)
+            hits = res.get("hits", {}).get("hits", [])
+            if len(hits) == 0:
+                return
+            else:
+                if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
+                    raise BlockTimeOutException(
+                        "Attempting to block until record with id {id} deleted from Elasticsearch, but this has not happened after {limit}".format(
+                            id=id, limit=max_retry_seconds))
+
+            time.sleep(sleep)
+
+    @classmethod
+    def blockalldeleted(cls, ids, sleep=0.05, individual_max_retry_seconds=30):
+        for id in ids:
+            cls.blockdeleted(id, sleep, individual_max_retry_seconds)
+
 
 class BlockTimeOutException(Exception):
     pass
@@ -800,10 +837,12 @@ class Facetview2(object):
         return {"term": {term: value}}
 
     @staticmethod
-    def make_query(query_string=None, filters=None, default_operator="OR", sort_parameter=None, sort_order="asc"):
+    def make_query(query_string=None, filters=None, default_operator="OR", sort_parameter=None, sort_order="asc", default_field=None):
         query_part = {"match_all": {}}
         if query_string is not None:
             query_part = {"query_string": {"query": query_string, "default_operator": default_operator}}
+            if default_field is not None:
+                query_part["query_string"]["default_field"] = default_field
         query = {"query": query_part}
 
         if filters is not None:

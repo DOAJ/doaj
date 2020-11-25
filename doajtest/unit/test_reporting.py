@@ -161,9 +161,11 @@ class TestReporting(DoajTestCase):
 
     def test_03_apps_by_country(self):
         apps = ApplicationFixtureFactory.make_application_spread(APPLICATION_YEAR_OUTPUT, "year")
+        blocklist = []
         for a in apps:
             a.save()
-        time.sleep(2)
+            blocklist.append((a.id, a.last_updated))
+        models.Application.blockall(blocklist)
 
         outfiles = reporting.content_reports("1970-01-01T00:00:00Z", dates.now(), TMP_DIR)
 

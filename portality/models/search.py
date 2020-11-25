@@ -1,8 +1,7 @@
 from portality.dao import DomainObject
 from portality.models.cache import Cache
-import sys
-import locale
-from copy import deepcopy
+from portality.models import Journal, Article
+
 
 class JournalArticle(DomainObject):
     __type__ = 'journal,article'
@@ -10,7 +9,7 @@ class JournalArticle(DomainObject):
 
     @classmethod
     def site_statistics(cls):
-        # first check the cache
+
         stats = Cache.get_site_statistics()
         if stats is not None:
             return stats
@@ -19,51 +18,33 @@ class JournalArticle(DomainObject):
         # cache a new set
 
         # prep the query and result objects
-        q = JournalArticleQuery()
         stats = {           # Note these values all have to be strings
-            "articles" : "0",
             "journals" : "0",
             "countries" : "0",
-            "searchable" : "0"
+            "abstracts" : "0",
+            "new_journals" : "0",
+            "no_apc" : "0"
         }
 
-        # do the query
-        res = cls.query(q=q.site_statistics())
+        # get the journal data
+        q = JournalStatsQuery()
+        journal_data = Journal.query(q=q.stats)
 
-        # pull the journal and article facets out
-        terms = res.get("facets", {}).get("type", {}).get("terms", [])
+        stats["journals"] = "{0:,}".format(journal_data.get("hits", {}).get("total", 0))
+        stats["countries"] = "{0:,}".format(len(journal_data.get("aggregations", {}).get("countries", {}).get("buckets", [])))
 
-        # can't use the Python , option when formatting numbers since we
-        # need to be compatible with Python 2.6
-        # otherwise we would be able to do "{0:,}".format(t.get("count", 0))
+        apc_buckets = journal_data.get("aggregations", {}).get("apcs", {}).get("buckets", [])
+        for b in apc_buckets:
+            if b.get("key") == "No":
+                stats["no_apc"] = "{0:,}".format(b.get("doc_count"))
+                break
 
-        if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-            locale.setlocale(locale.LC_ALL, 'en_US')
-            for t in terms:
-                if t.get("term") == "journal":
-                    stats["journals"] = locale.format("%d", t.get("count", 0), grouping=True)
-                if t.get("term") == "article":
-                    stats["articles"] = locale.format("%d", t.get("count", 0), grouping=True)
+        stats["new_journals"] = "{0:,}".format(journal_data.get("aggregations", {}).get("creation", {}).get("buckets", [])[0].get("doc_count", 0))
 
-            # count the size of the countries facet
-            stats["countries"] = locale.format("%d", len(res.get("facets", {}).get("countries", {}).get("terms", [])), grouping=True)
-
-            # count the size of the journals facet (which tells us how many journals have articles)
-            stats["searchable"] = locale.format("%d", len(res.get("facets", {}).get("journals", {}).get("terms", [])), grouping=True)
-
-            locale.resetlocale()
-        else:
-            for t in terms:
-                if t.get("term") == "journal":
-                    stats["journals"] = "{0:,}".format(t.get("count", 0))
-                if t.get("term") == "article":
-                    stats["articles"] = "{0:,}".format(t.get("count", 0))
-
-            # count the size of the countries facet
-            stats["countries"] = "{0:,}".format(len(res.get("facets", {}).get("countries", {}).get("terms", [])))
-
-            # count the size of the journals facet (which tells us how many journals have articles)
-            stats["searchable"] = "{0:,}".format(len(res.get("facets", {}).get("journals", {}).get("terms", [])))
+        # get the article data
+        qa = ArticleStatsQuery()
+        article_data = Article.query(q=qa.q)
+        stats["abstracts"] = "{0:,}".format(article_data.get("hits", {}).get("total", 0))
 
         # now cache and return
         Cache.cache_site_statistics(stats)
@@ -71,28 +52,46 @@ class JournalArticle(DomainObject):
         return stats
 
 
-class JournalArticleQuery(object):
+class JournalStatsQuery(object):
     stats = {
-        "query":{
-            "bool" : {
-                "must" : [
-                    {"term" : {"admin.in_doaj" : True}}
+        "query": {
+            "bool": {
+                "must": [
+                    {"term": {"admin.in_doaj": True}}
                 ]
             }
         },
-        "size" : 0,
-        "facets" : {
-            "type" : {
-                "terms" : {"field" : "_type"}
-            },
+        "size": 0,
+        "aggs": {
             "countries" : {
-                "terms" : {"field" : "index.country.exact", "size" : 10000 }
+            	"terms" : {"field" : "index.country.exact", "size" : 500}
             },
-            "journals" : {
-                "terms" : {"field" : "bibjson.journal.title.exact", "size" : 15000 }
+            "apcs" : {
+                "terms" : {"field" : "index.has_apc.exact"}
+            },
+            "creation" : {
+                "date_range" : {
+                    "field" : "created_date",
+                    "ranges" : [
+                        {"from" : "now-1M"}
+                    ]
+                }
             }
         }
     }
 
-    def site_statistics(self):
-        return deepcopy(self.stats)
+
+class ArticleStatsQuery(object):
+    q = {
+        "query": {
+            "filtered": {
+                "query": {"match_all": {}},
+                "filter": {
+                    "bool": {
+                        "must": {"term": {"admin.in_doaj": "true"}}
+                    }
+                }
+            }
+        },
+        "size": 0
+    }

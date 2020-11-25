@@ -1,4 +1,4 @@
-from flask import Blueprint, make_response
+from flask import Blueprint
 from flask_login import current_user
 from flask import abort
 from portality.decorators import api_key_required
@@ -25,7 +25,7 @@ def inprogress():
         abort(404)
 
     records = []
-    for application in models.Suggestion.list_by_status(INCLUDE_STATUSES):
+    for application in models.Application.list_by_status(INCLUDE_STATUSES):
         record = JCTInProgressXWalk.application2jct(application)
         records.append(record)
 

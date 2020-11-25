@@ -1,21 +1,18 @@
 {% extends "editor/editor_base.html" %}
 
-{% block extra_stylesheets %}
-    {% include "_edges_common_css.html" %}
-{% endblock %}
+{% include "_edges_common_css.html" %}
 
 {% block editor_content %}
+<h1>Your group’s applications</h1>
 
 <div id="group_applications"></div>
-
 {% endblock %}
 
 {% block extra_js_bottom %}
-
     <script type="text/javascript">
     $.extend(true, doaj, {
         editorGroupApplicationsSearchConfig : {
-            applicationEditUrl : "{{ url_for('editor.suggestion_page', suggestion_id='') }}",
+            applicationEditUrl : "{{ url_for('editor.application', application_id='') }}",
             readOnlyJournalUrl: "{{ url_for('doaj.journal_readonly', journal_id="") }}",
             searchPath : '/editor_query/suggestion/_search'
         }
@@ -24,5 +21,4 @@
 
     {% include "_edges_common_js.html" %}
     <script type="text/javascript" src="/static/js/edges/editor.groupapplications.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
 {% endblock %}

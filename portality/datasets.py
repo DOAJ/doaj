@@ -17,9 +17,9 @@ def _generate_country_options():
 def _generate_currency_options():
     currency_options_ = [(CURRENCY_DEFAULT, CURRENCY_DEFAULT)]
 
-    for cu in sorted(pycountry.currencies, key=lambda x: x.alpha_3):
+    for cu in sorted(pycountry.currencies, key=lambda x: x.name):
         try:
-            currency_options_.append((cu.alpha_3, '{code} - {name}'.format(code=cu.alpha_3, name=cu.name)))
+            currency_options_.append((cu.alpha_3, '{name} ({code})'.format(code=cu.alpha_3, name=cu.name)))
         except AttributeError:
             continue
 
@@ -28,7 +28,7 @@ def _generate_currency_options():
 
 def _generate_language_options():
     """ Gather the languages with 2-character codes (ISO 639-2b) """
-    language_options_ = []
+    language_options_ = [('', '')]
     for l in sorted(pycountry.languages, key=lambda x: x.name):
         try:
             language_options_.append((l.alpha_2.upper(), l.name))
@@ -43,12 +43,14 @@ def _generate_license_options():
     licenses_ = {
         # The titles and types are made to match the current values of journals in the DOAJ.
         # DOAJ currently assumes type and title are the same.
-        "CC BY": {'BY': True, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC BY'},
-        "CC BY-SA": {'BY': True, 'NC': False, 'ND': False, 'SA': True, 'form_label': 'CC BY-SA'},
-        "CC BY-NC": {'BY': True, 'NC': True, 'ND': False, 'SA': False, 'form_label': 'CC BY-NC'},
-        "CC BY-ND": {'BY': True, 'NC': False, 'ND': True, 'SA': False, 'form_label': 'CC BY-ND'},
-        "CC BY-NC-ND": {'BY': True, 'NC': True, 'ND': True, 'SA': False, 'form_label': 'CC BY-NC-ND'},
-        "CC BY-NC-SA": {'BY': True, 'NC': True, 'ND': False, 'SA': True, 'form_label': 'CC BY-NC-SA'},
+        "CC BY": {'BY': True, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC BY', "url" : "https://creativecommons.org/licenses/by/4.0/"},
+        "CC BY-SA": {'BY': True, 'NC': False, 'ND': False, 'SA': True, 'form_label': 'CC BY-SA', "url" : "https://creativecommons.org/licenses/by-sa/4.0/"},
+        "CC BY-ND": {'BY': True, 'NC': False, 'ND': True, 'SA': False, 'form_label': 'CC BY-ND', "url" : "https://creativecommons.org/licenses/by-nd/4.0/"},
+        "CC BY-NC": {'BY': True, 'NC': True, 'ND': False, 'SA': False, 'form_label': 'CC BY-NC', "url" : "https://creativecommons.org/licenses/by-nc/4.0/"},
+        "CC BY-NC-SA": {'BY': True, 'NC': True, 'ND': False, 'SA': True, 'form_label': 'CC BY-NC-SA', "url" : "https://creativecommons.org/licenses/by-nc-sa/4.0/"},
+        "CC BY-NC-ND": {'BY': True, 'NC': True, 'ND': True, 'SA': False, 'form_label': 'CC BY-NC-ND', "url" : "https://creativecommons.org/licenses/by-nc-nd/4.0/"},
+        "CC0" : {'BY': False, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC0', "url" : "https://creativecommons.org/publicdomain/zero/1.0/"},
+        "Public domain" : {'BY': False, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC BY', "url" : "https://creativecommons.org/publicdomain/mark/1.0/"},
     }
 
     # The top-level keys in the licenses dict should always be == to the "type" of each license object

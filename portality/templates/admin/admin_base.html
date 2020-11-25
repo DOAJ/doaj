@@ -1,15 +1,17 @@
-{% extends "base.html" %}
+{% extends "layouts/base.html" %}
+
+{% block extra_stylesheets %}
+<link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
 
 {% block content %}
-  
-  <div class="row">
-    <div class="col-md-12">
-      {% include 'admin/nav.html' %}
+<main class="container">
+  <h2>Admin dashboard</h2>
+  {% include 'admin/nav.html' %}
 
-      {% block admin_content %}
-      {% endblock %}
-
-    </div>
-  </div>
-  
+  <section class="page-content">
+    {% block admin_content %}
+    {% endblock %}
+  </section>
+</main>
 {% endblock %}

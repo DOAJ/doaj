@@ -42,6 +42,8 @@ def unlock(object_type, object_id):
 @blueprint.route("/shorten", methods=["POST"])
 @jsonp
 def shorten():
+    # Enable this if you are testing and you want to see the front end work, without working bit.ly credentials
+    # return make_response(json.dumps({"url" : "testing url"}))
     try:
         # parse the json
         d = json.loads(request.data)
@@ -68,6 +70,9 @@ def shorten():
         # make the request
         resp = requests.post(bitly, headers=headers, data=json.dumps(payload))
         shorturl = resp.json().get('link')
+
+        if not shorturl:
+            abort(400)
 
         # make the response
         answer = make_response(json.dumps({"url": shorturl}))

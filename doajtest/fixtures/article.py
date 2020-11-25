@@ -1,6 +1,6 @@
 import os
-from lxml import etree
-from io import StringIO, BytesIO
+import rstr
+from portality.regex import ISSN_COMPILED, DOI_COMPILED
 from copy import deepcopy
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
@@ -74,6 +74,31 @@ class ArticleFixtureFactory(object):
         return source
 
     @staticmethod
+    def make_many_article_sources(count=2, in_doaj=False, pissn=None, eissn=None):
+        article_sources = []
+        for i in range(0, count):
+            template = deepcopy(ARTICLE_SOURCE)
+            _issn = pissn or rstr.xeger(ISSN_COMPILED)
+
+            template['id'] = '{0}articleid{1}'.format(_issn, i)
+
+            # now some very quick and very dirty date generation
+            fakemonth = i % 12 + 1
+            template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
+
+            # Remove template ISSNs and add new ones
+            template['bibjson']['identifier'] = []
+            template['bibjson']['identifier'].append({'type': 'pissn', 'id': _issn})
+            template['bibjson']['identifier'].append({'type': 'eissn', 'id': eissn or rstr.xeger(ISSN_COMPILED)})
+            template['bibjson']['identifier'].append({'type': 'doi', 'id': rstr.xeger(DOI_COMPILED)})
+
+            template['admin']['in_doaj'] = in_doaj
+            template['bibjson']['title'] = rstr.rstr(rstr.normal(), 32)
+            template['bibjson']['link'][0]['url'] = 'http://example.com/{0}article{1}'.format(_issn, i)
+            article_sources.append(deepcopy(template))
+        return article_sources
+
+    @staticmethod
     def make_incoming_api_article(doi=None, fulltext=None):
         template = deepcopy(ARTICLE_SOURCE)
         template['bibjson']['journal']['start_page'] = template['bibjson']['start_page']
@@ -129,15 +154,6 @@ ARTICLE_SOURCE = {
             "number": "99",
             "publisher": "The Publisher",
             "title": "The Title",
-            "license": [
-                {
-                    "title": "CC BY",
-                    "type": "CC BY",
-                    "url": "http://license.example.com",
-                    "version": "1.0",
-                    "open_access": True,
-                }
-            ],
             "language": ["EN", "FR"],
             "country": "US"
         },
@@ -187,7 +203,8 @@ ARTICLE_STRUCT = {
     "fields": {
         "id": {"coerce": "unicode"},  # Note that we'll leave these in for ease of use by the
         "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
-        "last_updated": {"coerce": "utcdatetime"}  # to the real object
+        "last_updated": {"coerce": "utcdatetime"},  # to the real object
+        "es_type": {"coerce": "unicode"}
     },
     "objects": ["admin", "bibjson"],
 

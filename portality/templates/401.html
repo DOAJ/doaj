@@ -1,9 +1,13 @@
-{% extends "/base.html" %}
+{% extends "layouts/single_col_page.html" %}
 
-{% block content %}
+{% block body_class %}error-page{% endblock %}
+{% block page_title %}401: Unauthorised &ndash; {% endblock %}
+{% block title %}<strong>401 &mdash;</strong> <br/>Unauthorised{% endblock %}
 
-<h2>Unauthorised</h2>
-
-<p>Sorry, you are not authorised to view this.</p>
-
+{% block single_col_content %}
+<p>Sorry, you are not authorised to view this page.</p>
+<p>
+    <strong>If you are looking for a specific journal</strong>, it might have been withdrawn from the index.<br/><br/>
+    <a href="{{ url_for('doaj.contact') }}" class="button">Contact us</a>
+</p>
 {% endblock %}

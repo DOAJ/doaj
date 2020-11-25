@@ -1,4 +1,4 @@
-from portality.api.v1.client import client as doajclient
+from portality.api.v2.client import client as doajclient
 from portality.core import app
 from portality.lib import plugin
 from portality.decorators import capture_sigterm

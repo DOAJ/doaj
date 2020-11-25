@@ -123,8 +123,8 @@ class TestBLLJournalCSV(DoajTestCase):
             for i in range(len(noissns)):
                 noissn = noissns[i]
                 bj = noissn.bibjson()
-                bj.remove_identifiers(idtype=bj.P_ISSN)
-                bj.remove_identifiers(idtype=bj.E_ISSN)
+                del bj.eissn
+                del bj.pissn
                 noissn.set_id("no_issn_{i}".format(i=i))
             journals += noissns
 
@@ -203,8 +203,8 @@ class TestBLLJournalCSV(DoajTestCase):
                     alt_title = row[2]
                     issn = row[3]
                     eissn = row[4]
-                    article_count = int(row[55])
-                    article_latest = row[56]
+                    article_count = int(row[50])
+                    article_latest = row[51]
 
                     assert alt_title == "Заглавие на журнала"
                     assert issn in comparisons[issn]["issns"]

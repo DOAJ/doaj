@@ -3,29 +3,6 @@ $.extend(true, doaj, {
     adminApplicationsSearch : {
         activeEdges : {},
 
-        editSuggestion : function (val, resultobj, renderer) {
-            if (resultobj['suggestion']) {
-                // determine the link name
-                var linkName = "Review application";
-                if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
-                    linkName = "View finished application";
-                    if (resultobj.admin.related_journal) {
-                        linkName = "View finished update";
-                    }
-                } else if (resultobj.admin.current_journal) {
-                    linkName = "Review update";
-                }
-
-                var result = '<a class="edit_suggestion_link" href="';
-                result += doaj.adminApplicationsSearchConfig.applicationEditUrl;
-                result += resultobj['id'];
-                result += '" target="_blank"';
-                result += '>' + linkName + '</a>';
-                return result;
-            }
-            return false;
-        },
-
         relatedJournal : function (val, resultobj, renderer) {
             var result = "";
             if (resultobj.admin) {
@@ -153,6 +130,20 @@ $.extend(true, doaj, {
                     })
                 }),
                 edges.newRefiningANDTermSelector({
+                    id: "author_pays",
+                    category: "facet",
+                    field: "index.has_apc.exact",
+                    display: "Publication charges?",
+                    deactivateThreshold: 1,
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: false,
+                        togglable: true,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+                edges.newRefiningANDTermSelector({
                     id: "classification",
                     category: "facet",
                     field: "index.classification.exact",
@@ -211,22 +202,8 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "publisher",
                     category: "facet",
-                    field: "bibjson.publisher.exact",
+                    field: "bibjson.publisher.name.exact",
                     display: "Publisher",
-                    deactivateThreshold : 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
-                    id: "provider",
-                    category: "facet",
-                    field: "bibjson.provider.exact",
-                    display: "Platform, Host, Aggregator",
                     deactivateThreshold : 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -256,7 +233,7 @@ $.extend(true, doaj, {
                     id: "search-controller",
                     category: "controller",
                     sortOptions: [
-                        {'display':'Date applied','field':'suggestion.suggested_on'},
+                        {'display':'Date applied','field':'admin.date_applied'},
                         {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
                         {'display':'Title','field':'index.unpunctitle.exact'}
                     ],
@@ -267,14 +244,13 @@ $.extend(true, doaj, {
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal Language','field':'index.language'},
-                        {'display':'Publisher','field':'bibjson.publisher'},
+                        {'display':'Publisher','field':'bibjson.publisher.name'},
 
-                        {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
-                        {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'}
+                        {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
-                        freetextSubmitDelay: 1000,
+                        freetextSubmitDelay: -1,
                         searchButton: true,
                         searchPlaceholder: "Search All Applications"
                     })
@@ -356,32 +332,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>Description</strong>: ",
-                                    "field" : "suggestion.description"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre" : "<strong>Contact</strong>: ",
-                                    "field" : "admin.contact.name"
-                                },
-                                {
-                                    "field" : "admin.contact.email"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Application by</strong>: ",
-                                    "field": "suggestion.suggester.name",
-                                    "post" : " "
-                                },
-                                {
-                                    "pre" : "<strong>Applicant email</strong>: ",
-                                    "field": "suggestion.suggester.email"
-                                }
-                            ],
-                            [
-                                {
                                     "pre": "<strong>Classification</strong>: ",
                                     "field": "index.classification"
                                 }
@@ -395,31 +345,13 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre": "<strong>Publisher</strong>: ",
-                                    "field": "bibjson.publisher"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Platform, Host, Aggregator</strong>: ",
-                                    "field": "bibjson.provider"
+                                    "field": "bibjson.publisher.name"
                                 }
                             ],
                             [
                                 {
                                     "pre": "<strong>Publication charges?</strong>: ",
                                     valueFunction: doaj.fieldRender.authorPays
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Started publishing Open Access content in</strong>: ",
-                                    "field": "bibjson.oa_start.year"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Stopped publishing Open Access content in</strong>: ",
-                                    "field": "bibjson.oa_end.year"
                                 }
                             ],
                             [
@@ -481,9 +413,9 @@ $.extend(true, doaj, {
                         'index.language.exact' : 'Journal Language',
                         'index.country.exact' : 'Country of publisher',
                         'index.subject.exact' : 'Subject',
-                        'bibjson.publisher.exact' : 'Publisher',
+                        'bibjson.publisher.name.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
-                        'bibjson.author_pays.exact' : 'Publication charges?',
+                        "index.has_apc.exact" : "Publication charges?",
                         'index.license.exact' : 'Journal License'
                     },
                     valueMaps : {
@@ -509,7 +441,7 @@ $.extend(true, doaj, {
                 search_url: search_url,
                 manageUrl: true,
                 openingQuery : es.newQuery({
-                    sort: {"field" : "suggestion.suggested_on", "order" : "asc"}
+                    sort: {"field" : "admin.date_applied", "order" : "asc"}
                 }),
                 components: components,
                 callbacks : {

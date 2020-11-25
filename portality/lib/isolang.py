@@ -6,7 +6,7 @@ def find(lang):
     try:
         return as_dict(pycountry.languages.lookup(lang))
     except LookupError:
-        return as_dict({})
+        return {}
 
 
 def as_dict(language_object):

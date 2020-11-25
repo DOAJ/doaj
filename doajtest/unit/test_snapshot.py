@@ -61,13 +61,9 @@ class TestSnapshot(DoajTestCase):
         j = models.Journal()
         b = j.bibjson()
         b.title = "Example journal"
-        b.add_url("http://examplejournal.telfor.rs")
 
         # the snapshot is part of the save method
-        j.save()
-
-        # let the index catch up, then we can check this worked
-        time.sleep(5)
+        j.save(blocking=True)
 
         history_files = self.list_today_journal_history_files()
         assert len(history_files) == 1

@@ -1,0 +1,30 @@
+<div class="form__question">
+    <a name="question__{{ f.name }}"></a>
+    <label>
+        {% autoescape off %}{{ f.label }}{% endautoescape%}
+        {% if f.help("long_help") %}
+            <span class="form__long-help" data-feather="help-circle" data-toggle="modal" data-target="#modal-{{ f.name }}"></span> {% endif %}
+        {% if f.optional %}<span class="form__question--is-optional">(Optional)</span>{% endif %}
+    </label>
+    <div class="input-group">
+        {% for subfield in f.group_subfields() %}
+            {% set f = subfield %}
+            {{ f.render_form_control() }}
+            {% if f.help("short_help") %}
+                <p><small>{{ f.help("short_help") }}</small></p>
+            {% endif %}
+            {% if f.has_errors() %}
+                {% for error in f.errors() %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if f.has_widget("multiple_field") %}
+        <div style="display: flex; flex-grow: 2; flex-direction: column; align-items: flex-start" class="add_field__button_div">
+            <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add </button>
+        </div>
+    {% endif %}
+</div>
+
+{% include "application_form/modal.html" %}

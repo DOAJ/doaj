@@ -104,7 +104,8 @@ BACKGROUND_STRUCT = {
         "status": {"coerce": "unicode", "allowed_values": ["queued", "processing", "complete", "error", "cancelled"]},
         "user": {"coerce": "unicode"},
         "action": {"coerce": "unicode"},
-        "queue_id": {"coerce": "unicode"}
+        "queue_id": {"coerce": "unicode"},
+        "es_type": {"coerce": "unicode"}
     },
     "lists": {
         "audit": {"contains": "object"}

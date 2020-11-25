@@ -1,5 +1,72 @@
 /** base namespace for all DOAJ-specific functions */
 var doaj = {
+    init : function() {
+        // Use Feather icons
+        feather.replace();
+
+        // Responsive menu
+        var openMenu = document.querySelector(".secondary-nav__menu-toggle");
+        var nav = document.querySelector(".secondary-nav__menu");
+
+        openMenu.addEventListener('click', function() {
+            nav.classList.toggle("secondary-nav__menu-toggle--active");
+        }, false);
+
+        // Display back-to-top button on scroll
+        var topBtn = document.getElementById("top");
+
+        function displayTopBtn() {
+            if (topBtn) {
+                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                    topBtn.style.display = "flex";
+                } else {
+                    topBtn.style.display = "none";
+                }
+            }
+        }
+
+        // Hide header menu on down scroll; display on scroll up
+        var prevScrollPos = window.pageYOffset;
+
+        function hideNav() {
+            var currentScrollPos = window.pageYOffset;
+
+            if (prevScrollPos > currentScrollPos) {
+                document.getElementById("primary-nav").style.top = "0";
+            } else {
+                document.getElementById("primary-nav").style.top = "-50px";
+            }
+
+            prevScrollPos = currentScrollPos;
+        }
+
+        window.onscroll = function() {
+            displayTopBtn();
+            hideNav();
+        };
+
+        // Tabs
+        jQuery (function($) {
+            $("[role='tab']").click(function(e) {
+                e.preventDefault();
+                $(this).attr("aria-selected", "true");
+                $(this).parent().siblings().children().attr("aria-selected", "false");
+                var tabpanelShow = $(this).attr("href");
+                $(tabpanelShow).attr("aria-hidden", "false");
+                $(tabpanelShow).siblings().attr("aria-hidden", "true");
+            });
+        });
+
+        // Close flash notifications
+        jQuery(document).ready(function($) {
+            $(".flash_close").on("click", function(event) {
+                event.preventDefault();
+                var container = $(this).parents(".alert");
+                container.remove();
+            });
+        });
+    },
+
     bitlyShortener : function(query, success_callback, error_callback) {
 
         function callbackWrapper(data) {
@@ -62,6 +129,14 @@ var doaj = {
         "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "https://creativecommons.org/licenses/by-sa/4.0/"]
     },
 
+    humanYearMonth : function(datestr) {
+        var date = new Date(datestr);
+        var monthnum = date.getUTCMonth();
+        var year = date.getUTCFullYear();
+
+        return doaj.monthmap[monthnum] + " " + String(year);
+    },
+
     humanDate : function(datestr) {
         var date = new Date(datestr);
         var dom = date.getUTCDate();
@@ -117,7 +192,7 @@ function setCookieConsent(event) {
         type: "GET",
         url: "/cookie_consent",
         success: function() {
-            $("#cookie-consent-banner").remove();
+            $("#cookie-consent").remove();
         },
         error : function() {
             alert("We weren't able to set your cookie consent preferences, please try again later.");

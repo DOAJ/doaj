@@ -5,9 +5,14 @@ from flask_login import current_user, login_required
 from portality.core import app
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality import models
+from portality.bll import DOAJ, exceptions
+from portality.lcc import lcc_jstree
 
 from portality import lock
-from portality.formcontext import formcontext
+from portality.forms.application_forms import ApplicationFormFactory, JournalFormFactory
+from portality import constants
+from portality.crosswalks.application_form import ApplicationFormXWalk
+
 from portality.util import flash_with_url
 
 blueprint = Blueprint('editor', __name__)
@@ -55,110 +60,98 @@ def associate_suggestions():
 @ssl_required
 @write_required()
 def journal_page(journal_id):
-    # user must have the role "edit_journal"
-    if not current_user.has_role("edit_journal"):
-        abort(401)
+    auth_svc = DOAJ.authorisationService()
+    journal_svc = DOAJ.journalService()
 
-    # get the journal, so we can check our permissions against it
-    j = models.Journal.pull(journal_id)
-    if j is None:
+    journal, _ = journal_svc.journal(journal_id)
+    if journal is None:
         abort(404)
 
-    # user must be either the "admin.editor" of the journal, or the editor of the "admin.editor_group"
-
-    # is the user the currently assigned editor of the journal?
-    passed = False
-    if j.editor == current_user.id:
-        passed = True
-
-    # now check whether the user is the editor of the editor group
-    role = "associate_editor"
-    eg = models.EditorGroup.pull_by_key("name", j.editor_group)
-    if eg is not None and eg.editor == current_user.id:
-        passed = True
-        role = "editor"
-
-    # if the user wasn't the editor or the owner of the editor group, unauthorised
-    if not passed:
+    try:
+        auth_svc.can_edit_journal(current_user._get_current_object(), journal)
+    except exceptions.AuthoriseException:
         abort(401)
+
+    # # now check whether the user is the editor of the editor group
+    role = "associate_editor"
+    eg = models.EditorGroup.pull_by_key("name", journal.editor_group)
+    if eg is not None and eg.editor == current_user.id:
+        role = "editor"
 
     # attempt to get a lock on the object
     try:
-        lockinfo = lock.lock("journal", journal_id, current_user.id)
+        lockinfo = lock.lock(constants.LOCK_JOURNAL, journal_id, current_user.id)
     except lock.Locked as l:
-        return render_template("editor/journal_locked.html", journal=j, lock=l.lock, edit_journal_page=True)
+        return render_template("editor/journal_locked.html", journal=journal, lock=l.lock, lcc_tree=lcc_jstree)
+
+    fc = JournalFormFactory.context(role)
 
     if request.method == "GET":
-        fc = formcontext.JournalFormFactory.get_form_context(role=role, source=j)
-        return fc.render_template(edit_journal_page=True, lock=lockinfo)
+        fc.processor(source=journal)
+        return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
+
     elif request.method == "POST":
-        fc = formcontext.JournalFormFactory.get_form_context(role=role, form_data=request.form, source=j)
-        if fc.validate():
+        processor = fc.processor(formdata=request.form, source=journal)
+        if processor.validate():
             try:
-                fc.finalise()
+                processor.finalise()
                 flash('Journal updated.', 'success')
-                for a in fc.alert:
+                for a in processor.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("editor.journal_page", journal_id=j.id, _anchor='done'))
-            except formcontext.FormContextException as e:
+                return redirect(url_for("editor.journal_page", journal_id=journal.id, _anchor='done'))
+            except Exception as e:
                 flash(str(e))
-                return redirect(url_for("editor.journal_page", journal_id=j.id, _anchor='cannot_edit'))
+                return redirect(url_for("editor.journal_page", journal_id=journal.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(edit_journal_page=True, lock=lockinfo)
+            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
 
 
-@blueprint.route('/suggestion/<suggestion_id>', methods=["GET", "POST"])
+@blueprint.route("/application/<application_id>", methods=["GET", "POST"])
+@write_required()
 @login_required
 @ssl_required
-@write_required()
-def suggestion_page(suggestion_id):
-    # user must have the role "edit_journal"
-    if not current_user.has_role("edit_suggestion"):
-        abort(401)
+def application(application_id):
+    ap = models.Application.pull(application_id)
 
-    # get the suggestion, so we can check our permissions against it
-    s = models.Suggestion.pull(suggestion_id)
-    if s is None:
+    if ap is None:
         abort(404)
 
-    # user must be either the "admin.editor" of the suggestion, or the editor of the "admin.editor_group"
-
-    # is the user the currently assigned editor of the suggestion?
-    passed = False
-    if s.editor == current_user.id:
-        passed = True
-
-    # now check whether the user is the editor of the editor group
-    role = "associate_editor"
-    eg = models.EditorGroup.pull_by_key("name", s.editor_group)
-    if eg is not None and eg.editor == current_user.id:
-        passed = True
-        role = "editor"
-
-    # if the user wasn't the editor or the owner of the editor group, unauthorised
-    if not passed:
+    auth_svc = DOAJ.authorisationService()
+    try:
+        auth_svc.can_edit_application(current_user._get_current_object(), ap)
+    except exceptions.AuthoriseException:
         abort(401)
 
-    # attempt to get a lock on the object
     try:
-        lockinfo = lock.lock("suggestion", suggestion_id, current_user.id)
+        lockinfo = lock.lock(constants.LOCK_APPLICATION, application_id, current_user.id)
     except lock.Locked as l:
-        return render_template("editor/suggestion_locked.html", suggestion=s, lock=l.lock, edit_suggestion_page=True)
+        return render_template("editor/suggestion_locked.html", suggestion=ap, lock=l.lock, edit_suggestion_page=True)
+
+    form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
+
+    # Edit role is either associate_editor or editor, depending whether the user is group leader
+    eg = models.EditorGroup.pull_by_key("name", ap.editor_group)
+    role = 'editor' if eg is not None and eg.editor == current_user.id else 'associate_editor'
+    fc = ApplicationFormFactory.context(role)
 
     if request.method == "GET":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role=role, source=s)
-        return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
+        fc.processor(source=ap)
+        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
+                                  lcc_tree=lcc_jstree)
+
     elif request.method == "POST":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role=role, form_data=request.form, source=s)
-        if fc.validate():
+        processor = fc.processor(formdata=request.form, source=ap)
+        if processor.validate():
             try:
-                fc.finalise()
+                processor.finalise()
                 flash('Application updated.', 'success')
-                for a in fc.alert:
+                for a in processor.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("editor.suggestion_page", suggestion_id=s.id, _anchor='done'))
-            except formcontext.FormContextException as e:
+                return redirect(url_for("editor.application", application_id=ap.id, _anchor='done'))
+            except Exception as e:
                 flash(str(e))
-                return redirect(url_for("editor.suggestion_page", suggestion_id=s.id, _anchor='cannot_edit'))
+                return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
+                                  lcc_tree=lcc_jstree)
         else:
-            return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
+                                  lcc_tree=lcc_jstree)

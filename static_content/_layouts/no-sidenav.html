@@ -1,0 +1,237 @@
+{% if page.fragment == false %}
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include head.html %}
+
+  <body class="no-sidenav-page">
+    {% include header.html %}
+{% endif %}
+
+    <main class="page-content">
+      {% if page.highlight %}<div class="highlight">{% endif %}
+        <header class="container">
+          {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
+          <h1>{{ page.title }}</h1>
+          <div class="row">
+            <div class="col-md-8">
+              {{ content }}
+            </div>
+
+            {% if page.aside %}
+            <div class="col-md-4">
+              <aside class="promo">
+                <p class="label">A reminder&hellip;</p>
+                <h2 class="promo__heading">In case of a rejection</h2>
+                <p class="promo__text">
+                  You are responsible for providing accurate information when submitting your application. If the information provided is not sufficient or is incomplete, the application may be rejected.
+                  <a href="{{ site.baseurl }}guide#if-your-application-is-rejected" class="promo__link">What happens if my application is rejected?</a>
+                </p>
+              </aside>
+            </div>
+            {% endif %}
+          </div>
+        </header>
+      {% if page.highlight %}</div>{% endif %}
+
+      <div class="container">
+        {% if page.relative_path == '_about/team.md' or page.relative_path == '_about/team-fragment.md' %}
+          <!-- About section: team -->
+          <ul class="row title-list">
+            {% for i in site.data.team %}
+            <li class="col-sm-6 col-md-4 col-lg-3">
+              <div class="title-list__text">
+                <figure class="portrait">
+                  {% if i.photo %}
+                    <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                  {% else %}
+                    <div class="portrait__img--empty"></div>
+                  {% endif %}
+                </figure>
+                <p class="label">{{ i.role }}</p>
+                <h2 class="title-list__heading">{{ i.name }}</h2>
+                <p class="title-list__para">
+                  {{ i.bio }}
+                </p>
+                {% if i.coi %}
+                <div class="title-list__para">
+                  <h3 class="label label--tertiary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
+                    {% for j in i.coi %}
+                    <li><a href="{{ j[1] }}" target="_blank" class="tag">{{ j[0] }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                {% endif %}
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+
+        {% elsif page.relative_path == '_about/ambassadors.md' or page.relative_path == '_about/ambassadors-fragment.md' %}
+          <!-- About section: ambassadors -->
+          <h2>Ambassadors</h2>
+          <ul class="row title-list">
+            {% for i in site.data.ambassadors %}
+            <li class="col-sm-6 col-md-4 col-lg-3">
+              <div class="title-list__text">
+                <figure class="portrait">
+                  {% if i.photo %}
+                <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/ambassadors/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                  {% else %}
+                <div class="portrait__img--empty"></div>
+                  {% endif %}
+                </figure>
+                <p class="label">{{ i.region }}</p>
+                <h3 class="title-list__heading">{{ i.name }}</h3>
+                {% if i.bio %}
+                <p class="title-list__para">
+                  {{ i.bio }}
+                </p>
+                {% endif %}
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+
+        {% elsif page.relative_path == '_about/editorial-subcommittee.md' or page.relative_path == '_about/editorial-subcommittee-fragment.md' %}
+          <!-- About section: editorial subcommittee -->
+          <h2>Members</h2>
+          <ul class="row title-list">
+            {% for i in site.data.editorial-subcommittee %}
+            <li class="col-sm-6 col-md-4 col-lg-3">
+              <div class="title-list__text">
+                <p class="label">{{ i.region }}</p>
+                <h3 class="title-list__heading">{{ i.name }}</h3>
+                <p class="label label--secondary title-list__para">
+                  {{ i.org }}
+                </p>
+                <p class="title-list__para">
+                  {{ i.bio }}
+                </p>
+                {% if i.coi %}
+                <div class="title-list__para">
+                  <h3 class="label label--tertiary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
+                    {% for j in i.coi %}
+                    <li><a href="{{ j[1] }}" target="_blank" class="tag">{{ j[0] }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                {% endif %}
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+
+        {% elsif page.relative_path == '_about/advisory-board-council.md' or page.relative_path == '_about/advisory-board-council-fragment.md' %}
+          <!-- About section: advisory board & council -->
+          <h2>Advisory Board</h2>
+          <p>The DOAJ Advisory Board was elected by the community to provide advice and expertise to the DOAJ Team. The Board is governed by <a href="https://docs.google.com/document/d/1jXOga20kU61i-vzdQmPtn5uZUckzX8EwU6Zx7Xd3AQ4/edit?usp=sharing">Terms of reference</a>. All board members started in August 2019.</p>
+          <ul class="row title-list">
+            {% for i in site.data.advisory-board-council.board %}
+            <li class="col-xs-6 col-md-4 col-lg-3">
+              <div class="title-list__text">
+                <p class="label">{{ i.country }}</p>
+                <h3 class="title-list__heading">{{ i.name }}</h3>
+                <p class="title-list__para">
+                  {{ i.institution }}<br/>
+                </p>
+                {% if i.coi %}
+                <div class="title-list__para">
+                  <h3 class="label label--tertiary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
+                    {% for j in i.coi %}
+                    <li><a href="{{ j[1] }}" target="_blank" class="tag">{{ j[0] }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                {% endif %}
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+
+          <h2>Council</h2>
+          <p>The DOAJ Council was elected by the community to provide advice and expertise to the Advisory Board and assist them with their recommendations to the DOAJ Team. The Council is governed by <a href="https://docs.google.com/document/d/1jXOga20kU61i-vzdQmPtn5uZUckzX8EwU6Zx7Xd3AQ4/edit?usp=sharing">Terms of reference</a>. All Council members started in September 2019 unless otherwise stated.</p>
+          <ul class="row title-list">
+            {% for i in site.data.advisory-board-council.council %}
+            <li class="col-xs-6 col-md-4 col-lg-3">
+              <div class="title-list__text">
+                <p class="label">{{ i.country }}</p>
+                <h3 class="title-list__heading">{{ i.name }}</h3>
+                <p class="title-list__para">
+                  {{ i.institution }}<br/>
+                </p>
+                {% if i.coi %}
+                <div class="title-list__para">
+                  <h3 class="label label--tertiary">Conflict of interest statement(s):</h3>
+                  <ul class="tags">
+                    {% for j in i.coi %}
+                    <li><a href="{{ j[1] }}" target="_blank" class="tag">{{ j[0] }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                {% endif %}
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+
+        {% elsif page.relative_path == '_about/volunteers.md' or page.relative_path == '_about/volunteers-fragment.md' %}
+          <!-- About section: volunteers -->
+          <h2>Editors</h2>
+          <ul class="row title-list">
+            {% for i in site.data.volunteers.ed %}
+            {% if i.area %}
+            <li class="col-xs-6 col-md-4 col-lg-3">
+              <div class="title-list__text">
+                {% if i.photo %}
+                <figure class="portrait portrait--small">
+                  <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                </figure>
+                {% endif %}
+                <p class="label">{% if i.city %}{{ i.city }}, {% endif %}{{ i.country }}</p>
+                <h3 class="title-list__heading">{{ i.name }}</h3>
+                <p class="label label--tertiary">
+                  {{ i.area }}<br/>
+                  {{ i.language }}<br/>
+                </p>
+              </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+
+          <h2>Associate editors</h2>
+          <ul class="row title-list">
+            {% for i in site.data.volunteers.ass_ed %}
+            {% if i.area %}
+            <li class="col-xs-6 col-md-4 col-lg-3">
+              <div class="title-list__text">
+                {% if i.photo %}
+                <figure class="portrait portrait--small">
+                  <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                </figure>
+                {% endif %}
+                <p class="label">{% if i.city %}{{ i.city }}, {% endif %}{{ i.country }}</p>
+                <h3 class="title-list__heading">{{ i.name }}</h3>
+                <p class="label label--tertiary">
+                  {{ i.area }}<br/>
+                  {{ i.language }}<br/>
+                </p>
+              </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </main>
+
+{% if page.fragment == false %}
+    {% include footer.html %}
+  </body>
+
+</html>
+{% endif %}

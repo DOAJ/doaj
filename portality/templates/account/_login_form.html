@@ -1,0 +1,16 @@
+{% block login_form %}
+
+    {% from "_formhelpers.html" import render_field %}
+
+    <form method="post" action="">
+        <div class="form__question">
+            {{ render_field(form.user, placeholder="email@example.com") }}
+        </div>
+        <div class="form__question">
+            {{ render_field(form.password, placeholder="********") }}
+        </div>
+        {{ render_field(form.next) }}
+      <input type="submit" class="button button--primary" value="Log in" />
+    </form>
+
+{% endblock %}

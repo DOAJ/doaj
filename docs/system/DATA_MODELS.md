@@ -30,15 +30,6 @@
             "number" : "journal issue number",
             "publisher" : "<publisher>",
             "title" : "<journal title (taken from journal record)>"
-            "license" : [
-                {
-                    "title" : "<name of licence>",
-                    "type" : "<type>", 
-                    "url" : "<url>", 
-                    "version" : "<version>",
-                    "open_access": true|false,
-                }
-            ],
             "language" : "[list of journal's languages]",
             "country" : "<country of publication>",
             "issn" : "<issn from journal.bibjson().get_preferred_issn() (taken from journal record)>",
@@ -87,7 +78,6 @@
         "classification" : [<list of classification terms without prefixes>],
         "language" : [<list of languages of the journal>],
         "country" : "<country of journal publication>",
-        "license" : [<list of titles of licences>],
         "publisher" : "<publisher>",
         "classification_paths" : [<list of all expanded LCC terms, with parents>],
         "unpunctitle" : "<title without punctuation>",

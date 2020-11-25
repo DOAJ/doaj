@@ -1,0 +1,29 @@
+{% block register_form %}
+
+    {% from "_formhelpers.html" import render_field %}
+
+    <form method="post" action="">
+        <input type="hidden" name="next" value="/register" />
+            <div class="form__question">
+                {% if current_user.is_authenticated and current_user.has_role("create_user") %}
+                {# Admins can specify a user ID #}
+                    {{ render_field(form.identifier) }}<br/>
+                {% endif %}
+                {{ render_field(form.name, placeholder="Firstname Lastname") }}
+            </div>
+            <div class="form__question">
+                {{ render_field(form.email, placeholder="user@example.com") }}
+            </div>
+            {% if current_user.is_authenticated and current_user.has_role("create_user") %}
+                {# Admins can specify a user ID #}
+                <div class="form__question">
+                {{ render_field(form.roles) }}
+                </div>
+            {% endif %}
+            {{ render_field(form.next) }}
+        <div class="actions">
+          <input type="submit" class="button button--primary" value="Register" />
+        </div>
+    </form>
+
+{% endblock %}

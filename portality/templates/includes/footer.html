@@ -1,0 +1,190 @@
+<footer class="page-footer">
+    <div class="container">
+        <a class="back-to-top" data-spy="affix" href="#" id="top"><span aria-hidden="true" data-feather="arrow-up"></span><span class="sr-only">Back to top</span></a>
+        <section class="row">
+            <div class="col-xs-6 col-sm-4 col-lg-2">
+                <h2>
+                    Search
+                </h2>
+                <ul>
+                    <li>
+                        <a href="{{ url_for('doaj.journals_search') }}">Journals</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.articles_search') }}">Articles</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-6 col-sm-4 col-lg-2">
+                <h2>
+                    Documentation
+                </h2>
+                <ul>
+                    <li>
+                        <a href="{{ url_for('doaj.docs') }}">API</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.oai_pmh') }}">OAI-PMH</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.widgets') }}">Widgets</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.public_data_dump') }}">Public data dump</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.openurl') }}">OpenURL</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.xml') }}">XML</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.faq') }}">FAQs</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-6 col-sm-4 col-lg-2">
+                <h2>
+                    About
+                </h2>
+                <ul>
+                    <li>
+                        <a href="{{ url_for('doaj.about') }}">About DOAJ</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.team') }}">DOAJ team</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.ambassadors') }}">Ambassadors</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.abc') }}">Advisory Board &amp; Council</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.editorial_subcommittee') }}">Editorial Subcommittee</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.volunteers') }}">Volunteers</a>
+                    </li>
+                    <li>
+                        <a href="https://blog.doaj.org" rel="noopener" target="_blank">News</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-6 col-sm-4 col-lg-2">
+                <h2>
+                    Support
+                </h2>
+                <ul>
+                    <li>
+                        <a href="{{ url_for('doaj.support') }}">Support DOAJ</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.sponsors') }}">Sponsors</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.publisher_supporters') }}">Publisher supporters</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.supporters') }}">Supporters</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-6 col-sm-4 col-lg-2">
+                <h2>
+                    Apply
+                </h2>
+                <ul>
+                    <li>
+                        <a href="{{ url_for('apply.public_application') }}">Application form</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.guide') }}">Guide to applying</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.seal') }}">The DOAJ Seal</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.transparency') }}">Transparency &amp; best practice</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.why_index') }}">Why index your journal in DOAJ?</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-6 col-sm-4 col-lg-2">
+                <h2>
+                    Stay up to date
+                </h2>
+                <ul>
+                    <li>
+                        <a href="https://twitter.com/DOAJplus" rel="noopener" target="_blank"><span aria-hidden="true" data-feather="twitter"></span> Twitter</a>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" rel="noopener" target="_blank"><span aria-hidden="true" data-feather="facebook"></span> Facebook</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/DOAJ" rel="noopener" target="_blank"><span aria-hidden="true" data-feather="github"></span> Github</a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" rel="noopener" target="_blank"><span aria-hidden="true" data-feather="linkedin"></span> Linkedin</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('atom.feed') }}"><span aria-hidden="true" data-feather="rss"></span> Atom feed</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <section class="legal">
+            <h2 class="sr-only">
+                Legal &amp; admin
+            </h2>
+            <div>
+                <p>
+                    © DOAJ 2020 default by all rights reserved <a href="{{ url_for('doaj.terms') }}" style="text-decoration: underline;">unless otherwise specified</a>.
+                </p>
+                <ul>
+                    <li>
+                        <a href="{{ url_for('doaj.accessibility') }}">Accessibility</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.privacy') }}">Privacy</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.contact') }}">Contact</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('doaj.terms') }}">T&amp;Cs</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <a href="https://is4oa.org/" rel="noopener" target="_blank">IS4OA</a>
+                    </li>
+                    <li>
+                        <a href="https://cottagelabs.com/" rel="noopener" target="_blank">Cottage Labs LLP</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <p>
+                    <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank" title="See license summary">
+                        {% include "svg/cc.svg" %}
+                        {% include "svg/by.svg" %}
+                        {% include "svg/sa.svg" %}
+                    </a>
+                    <br>
+                    <strong>Content</strong> on this site is licensed under a Creative Commons <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank" style="text-decoration: underline;">Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) license</a>.
+                </p>
+                <p>
+                    <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener" target="_blank" title="See license summary">
+                        {% include "svg/cc.svg" %}
+                        {% include "includes/svg/zero.svg" %}
+                    </a>
+                    <br>
+                    Copyrights and related rights for <strong>article metadata</strong> waived via <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="noopener" target="_blank" style="text-decoration: underline;">CC0 1.0 Universal (CC0) Public Domain Dedication</a>.
+                </p>
+            </div>
+        </section>
+    </div>
+</footer>

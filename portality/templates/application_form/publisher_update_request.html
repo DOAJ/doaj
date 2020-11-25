@@ -1,0 +1,70 @@
+{% extends "publisher/publisher_base.html" %}
+
+{% set form_id = "update_request" %}
+{% set form_action = url_for("publisher.update_request", journal_id=obj.current_journal) %}
+{% set formulaic_after = url_for("publisher.updates_in_progress") %}
+
+{% set js_validation = True %}
+{% set auto_save = 0 %}
+{% set TAB1 = {"title": "Open access compliance", "fieldsets": ["basic_compliance"]} %}
+{% set TAB2 = {"title": "About the Journal", "fieldsets": ["about_the_journal", "publisher", "society_or_institution"]} %}
+{% set TAB3 = {"title": "Copyright & licensing", "fieldsets": ["licensing", "embedded_licensing", "copyright"]} %}
+{% set TAB4 = {"title": "Editorial", "fieldsets": ["peer_review", "plagiarism", "editorial"]} %}
+{% set TAB5 = {"title": "Business model", "fieldsets": ["apc", "apc_waivers", "other_fees"]} %}
+{% set TAB6 = {"title": "Best practice", "fieldsets": ["archiving_policy", "deposit_policy", "unique_identifiers"]} %}
+{% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6] %}
+
+{% block publisher_content scoped %}
+
+<body id="apply">
+    <main class="container">
+        {% include "application_form/_backend_validation.html" %}
+        <div class="row">
+            <div class="col-md-8">
+                <section class="page-content">
+
+                    <h2>Journal update request form</h2>
+                    <p class="alert alert--message">This form is only for updating an existing journal in DOAJ. The information in the form below has been copied from the current journal entry. Once you submit the update, it will go to our Editorial Team for review.</p>
+
+                    {# <p>You may not change Questions 1, 3-5, and 9-11 (Journal Title, Alternative Title, ISSNs, contact details). If you want to change those, send an email to <a href="mailto:feedback@doaj.org">feedback@doaj.org</a> with the new information.</p>
+                    <p>Guides to filling in this form are also available in <a href="{{ url_for('doaj.translated') }}">other languages</a> (العربية, 中文, فارسی, français, Bahasa Indonesia, Italiano, Polski, Português, Română, Русский, Español, Türkçe, Українська)</p>#}
+
+                    <form id="{{ form_id }}"
+                      data-context = "{{ formulaic_context.name }}"
+                      class="application_form"
+                      novalidate
+                      action="{{ form_action }}"
+                      method="post"
+                      data-formulaic-after="{{ formulaic_after }}">
+
+                        {% include "application_form/_fieldsets.html" %}
+
+                        <div class="tab form-section">
+                            {% include "application_form/07-review/index.html" %}
+                        </div>
+                        <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot submit the application because it contains some invalid fields. Please review your answers and try again.</i></p>
+                        {% include "application_form/_buttons.html" %}
+
+                        <input type="hidden" name="id" value="{{ obj.id }}">
+
+                    </form>
+                </section>
+            </div>
+
+            <div class="col-md-4">
+                <div >
+                    {% include "application_form/pagination_menu.html" %}
+                </div>
+                <div class="row">
+                    {% include "application_form/aside_menu.html" %}
+                </div>
+            </div>
+        </div>
+    </main>
+ </body>
+
+{% endblock %}
+
+{% block extra_js_bottom scoped %}
+    {% include "application_form/js/_form_js.html" %}
+{% endblock %}

@@ -5,16 +5,18 @@ For each article in the DOAJ index:
     * Applies the journal's information to the article metadata as needed
 """
 
-from portality.tasks.redis_huey import long_running, schedule
-from portality.decorators import write_required
-
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException
-
 import esprit
 import json
-from portality import models
-from portality.core import app
+
 from datetime import datetime
+
+from portality import models
+from portality.core import app, es_connection
+from portality.tasks.redis_huey import long_running, schedule
+from portality.decorators import write_required
+from portality.background import BackgroundTask, BackgroundApi, BackgroundException
+from portality.util import ipt_prefix
+
 
 class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
@@ -41,12 +43,12 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         same_count = 0
         deleted_count = 0
 
-        # Connection to the ES index, rely on esprit sorting out the port from the host
-        conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+        # Connection to the ES index, imported from the main app configuration
+        conn = es_connection
 
         # Scroll though all articles in the index
         i = 0
-        for a in esprit.tasks.scroll(conn, 'article', q={"query" : {"match_all" : {}}, "sort" : ["_doc"]}, page_size=100, keepalive='5m'):
+        for a in esprit.tasks.scroll(conn, ipt_prefix('article'), q={"query": {"match_all": {}}, "sort": ["_doc"]}, page_size=100, keepalive='5m'):
             try:
                 article_model = models.Article(_source=a)
 
@@ -118,7 +120,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
             if len(delete_batch) >= batch_size:
                 job.add_audit_message("Deleting {x} articles".format(x=len(delete_batch)))
-                esprit.raw.bulk_delete(conn, 'article', delete_batch)
+                esprit.raw.bulk_delete(conn, ipt_prefix('article'), delete_batch)
                 delete_batch.clear()
 
         # Finish the last part-batches of writes or deletes
@@ -127,7 +129,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
             models.Article.bulk(write_batch)
         if len(delete_batch) > 0:
             job.add_audit_message("Deleting {x} articles".format(x=len(delete_batch)))
-            esprit.raw.bulk_delete(conn, 'article', delete_batch)
+            esprit.raw.bulk_delete(conn, ipt_prefix('article'), delete_batch)
             delete_batch.clear()
 
         if write_changes:
@@ -234,6 +236,7 @@ def scheduled_article_cleanup_sync():
     user = app.config.get("SYSTEM_USERNAME")
     job = ArticleCleanupSyncBackgroundTask.prepare(user)
     ArticleCleanupSyncBackgroundTask.submit(job)
+
 
 @long_running.task()
 @write_required(script=True)

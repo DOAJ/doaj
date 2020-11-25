@@ -1,0 +1,37 @@
+/* Alert boxes */
+
+.alert {
+  display: inline-block;
+  padding: $spacing-03;
+  margin: $spacing-02 0;
+  background-color: $fair-pink;
+  border: 1px solid $warm-black;
+  @include typescale-06;
+
+  &__close {
+    float: right;
+    cursor: pointer;
+  }
+
+  &--message {
+    background-color: $warm-black;
+    color: $warm-white;
+
+    a {
+      color: $warm-white;
+    }
+  }
+
+  &--danger {
+    border: 2px solid $grapefruit;
+  }
+
+  code {
+    background-color: rgba($dark-grey, 0.1);
+  }
+
+  svg {
+    height: 1em;
+    vertical-align: middle;
+  }
+}

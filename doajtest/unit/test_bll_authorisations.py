@@ -26,6 +26,7 @@ def create_update_cases():
     owner_account.set_id(journal.owner)
 
     non_owner_publisher = Account(**deepcopy(account_source))
+    non_owner_publisher.set_id("somethingrandom")
 
     non_publisher = Account(**deepcopy(account_source))
     non_publisher.remove_role("publisher")
@@ -48,16 +49,17 @@ def create_edit_cases():
     application_source = ApplicationFixtureFactory.make_application_source()
     account_source = AccountFixtureFactory.make_publisher_source()
 
-    editable_application = Suggestion(**application_source)
+    editable_application = Suggestion(**deepcopy(application_source))
     editable_application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
-    non_editable_application = Suggestion(**application_source)
+    non_editable_application = Suggestion(**deepcopy(application_source))
     non_editable_application.set_application_status(constants.APPLICATION_STATUS_READY)
 
     owner_account = Account(**deepcopy(account_source))
     owner_account.set_id(editable_application.owner)
 
     non_owner_publisher = Account(**deepcopy(account_source))
+    non_owner_publisher.set_id("somethingrandom")
 
     non_publisher = Account(**deepcopy(account_source))
     non_publisher.remove_role("publisher")
@@ -123,6 +125,8 @@ class TestBLLAuthorisations(DoajTestCase):
 
             if owner == "yes":
                 application.set_owner(account.id)
+            elif application is not None:
+                application.set_owner("randomowner")
 
 
         svc = DOAJ.authorisationService()

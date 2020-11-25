@@ -107,7 +107,7 @@ class TestTOC(DoajTestCase):
         j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         pissn = j.bibjson().first_pissn
         # remove eissn
-        j.bibjson().remove_identifiers(idtype=j.bibjson().E_ISSN, id=j.bibjson().first_eissn)
+        del j.bibjson().eissn
 
         j.set_last_manual_update()
         j.save(blocking=True)
@@ -122,7 +122,7 @@ class TestTOC(DoajTestCase):
         j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         eissn = j.bibjson().first_eissn
         # remove pissn
-        j.bibjson().remove_identifiers(idtype=j.bibjson().P_ISSN, id=j.bibjson().first_pissn)
+        del j.bibjson().pissn
 
         j.set_last_manual_update()
         j.save(blocking=True)

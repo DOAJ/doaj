@@ -1,6 +1,7 @@
 from portality.dao import DomainObject
 from portality.models import Account
 
+
 class EditorGroup(DomainObject):
     __type__ = "editor_group"
 
@@ -17,14 +18,14 @@ class EditorGroup(DomainObject):
     @classmethod
     def groups_by_editor(cls, editor):
         q = EditorGroupMemberQuery(editor=editor)
-        iter = cls.iterate(q.query(), page_size=100)
-        return iter
+        _iter = cls.iterate(q.query(), page_size=100)
+        return _iter
 
     @classmethod
     def groups_by_associate(cls, associate):
         q = EditorGroupMemberQuery(associate=associate)
-        iter = cls.iterate(q.query(), page_size=100)
-        return iter
+        _iter = cls.iterate(q.query(), page_size=100)
+        return _iter
 
     @property
     def name(self):
@@ -64,12 +65,20 @@ class EditorGroup(DomainObject):
             accs.append(acc)
         return accs
 
+    def is_member(self, account_name):
+        """ Determine if an account is a member of this Editor Group """
+        all_eds = self.associates + [self.editor]
+        return account_name in all_eds
+
+
 class EditorGroupQuery(object):
     def __init__(self, name):
         self.name = name
+
     def query(self):
-        q = {"query" : {"term" : {"name.exact" : self.name}}}
+        q = {"query": {"term": {"name.exact": self.name}}}
         return q
+
 
 class EditorGroupMemberQuery(object):
     def __init__(self, editor=None, associate=None):
@@ -77,11 +86,11 @@ class EditorGroupMemberQuery(object):
         self.associate = associate
 
     def query(self):
-        q = {"query" : {"bool" : {"should" : []}}}
+        q = {"query": {"bool": {"should": []}}}
         if self.editor is not None:
-            et = {"term" : {"editor.exact" : self.editor}}
+            et = {"term": {"editor.exact": self.editor}}
             q["query"]["bool"]["should"].append(et)
         if self.associate is not None:
-            at = {"term" : {"associates.exact" : self.associate}}
+            at = {"term": {"associates.exact": self.associate}}
             q["query"]["bool"]["should"].append(at)
         return q
