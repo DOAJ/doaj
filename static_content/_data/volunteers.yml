@@ -805,11 +805,12 @@ ass_ed:
 
 
 - name: Pablo Hernandez
-  area:
+  area: Science
   year_since:
-  city:
-  country:
+  city: Caracas
+  country: Venezuela
   language: Spanish, English
+  photo: "pablohernandez.jpg"
 
 - name: Paula Carina de Araújo
   area:
