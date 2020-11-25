@@ -2070,7 +2070,7 @@ $.extend(true, doaj, {
             this.namespace = "doaj-public-search";
 
             this.draw = function () {
-                var frag = "<li class='alert'><p><strong>No results found</strong> that match your search.</p> <p>Try removing some of the filters you have set, modifying the text in the search box, or use less specific search terms.</p></li>";
+                var frag = "<li class='alert'><p><strong>No results found</strong> that match your search.</p> <p>Try removing some of the filters you have set, modifying the text in the search box, or using less specific search terms.</p></li>";
                 if (this.component.results === false) {
                     frag = "";
                 }
