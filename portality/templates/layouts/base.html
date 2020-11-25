@@ -31,6 +31,24 @@
   <meta name="msapplication-TileImage" content="/img/favicon/144.png">
 
   <meta name="theme-color" content="#282624">
+
+  <!-- OpenGraph -->
+  <meta property="og:url" content="https://doaj.org">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content=" Directory of Open Access Journals">
+  <meta property="og:description" content="DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.">
+  <meta property="og:image" content="https://doaj.org/static/doaj/images/og/img.png">{# TODO: change to relative paths #}
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="doaj.org">
+  <meta property="twitter:creator" content="@DOAJplus">
+  <meta property="twitter:url" content="https://doaj.org">
+  <meta name="twitter:title" content=" Directory of Open Access Journals">
+  <meta name="twitter:description" content="DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.">
+  <meta name="twitter:image" content="https://doaj.org/static/doaj/images/og/img.png">{# TODO: change to relative paths #}
+
+
   {% block extra_meta_tags %}{% endblock %}
 
   <!-- Faster Google font loading from https://csswizardry.com/2020/05/the-fastest-google-fonts/ -->
@@ -51,6 +69,7 @@
           href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" />
   </noscript>
 
+  {# TODO: only include on pages that use select2 #}
   <link rel="stylesheet" type="text/css" href="/static/vendor/select2-3.5.4/select2.css">
 
   {# Page-specific styles  todo: select2 could possibly go here #}
