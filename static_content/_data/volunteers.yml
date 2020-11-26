@@ -416,14 +416,6 @@ ass_ed:
   language: English
   photo: "oronga.jpg"
 
-- name: Faizal Risdianto
-  area: Humanities
-  year_since:
-  city: Solo
-  country: Indonesia
-  language: Indonesian, English
-  photo: "faizal.jpg"
-
 
 - name: Francesca Soldati
   area: Science
@@ -454,11 +446,11 @@ ass_ed:
   language: German, English
 
 - name: Hanae Lrhoul
-  area:
+  area: Librarianship
   year_since:
-  city:
-  country:
-  language:
+  city: Rabat
+  country: Morocco
+  language: Arab, French, English
 
 - name: Handoko
   area: Information Technology
@@ -556,10 +548,10 @@ ass_ed:
 
 
 - name: José Darío Martínez Ezquerro
-  area:
+  area: Medicine
   year_since:
   city:
-  country:
+  country: Mexico
   language: Spanish, English
 
 - name: José Molina
@@ -615,7 +607,7 @@ ass_ed:
   language: English
 
 - name: Khoirul Fathoni
-  area:
+  area: Humanities
   year_since:
   city:
   country: Indonesia
@@ -630,7 +622,7 @@ ass_ed:
   language: English
 
 - name: Leena Huovinen
-  area:
+  area: Humanities and Social Sciences
   year_since:
   city:
   country: Finland
@@ -651,10 +643,10 @@ ass_ed:
   language: Spanish, English
 
 - name: Lina Marcela Blandón García
-  area:
+  area: Science
   year_since:
   city:
-  country:
+  country: Colombia
   language: Spanish, English
 
 - name: Lorri Peters
@@ -722,7 +714,7 @@ ass_ed:
   language: Spanish, English
 
 - name: Maryam Jamilah
-  area:
+  area: Science
   year_since:
   city:
   country:
@@ -730,7 +722,7 @@ ass_ed:
   photo: "jamilah.jpg"
 
 - name: Melih Sever
-  area:
+  area: Social Sciences
   year_since:
   city:
   country: Turkey
@@ -753,7 +745,7 @@ ass_ed:
   photo: "MilagroCastro.jpg"
 
 - name: Milton Ramirez
-  area:
+  area: Humanities and Social Sciences
   year_since:
   city:
   country: Spain
@@ -820,11 +812,12 @@ ass_ed:
   language: Spanish, English
 
 - name: Princess Uju E. Nwafor-Orizu
-  area:
+  area: Medicine
   year_since:
   city:
   country:
   language: English
+  photo: 
 
 - name: Prof. Dr. Sudarmin
   area: Science
@@ -942,13 +935,6 @@ ass_ed:
   language: Italian, English
 
 
-- name: Sumi Kang
-  area: Social Sciences
-  year_since:
-  city: Sejong
-  country: Korea
-  language: Korean, English
-
 - name: Sara Ricetto
   area: Open Access, Open Science
   year_since:
@@ -999,12 +985,6 @@ ass_ed:
   language: French
   photo: "sogoba1.jpg"
 
-- name: Sumi Kang
-  area: Social Sciences
-  year_since:
-  city: Sejong
-  country: Korea
-  language: Korean, English
 
 - name: Swasti Maharani
   area: Mathematics
@@ -1014,7 +994,7 @@ ass_ed:
   language: Indonesian, English
 
 - name: Taner Kemal Erdağ
-  area: Mathematics
+  area: Medicine
   year_since:
   city: Ízmir
   country: Turkey
