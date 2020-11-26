@@ -61,6 +61,7 @@
 
   <!-- Feather icons -->
   <script src="https://unpkg.com/feather-icons"></script>
+</head>
 
 {% if not request.cookies.get(config.get("CONSENT_COOKIE_KEY")) %}
     {% include "doaj/cookie_consent.html" %}

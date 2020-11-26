@@ -41,7 +41,7 @@ If you cannot view the map or the embedded spreadsheet on our [_Supporters_](/su
 
 We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page or think we’re not meeting accessibility requirements, you can do any of the following:
 
-- Submit a [GitHub issue](https://github.com/DOAJ/doaj/issues/new)
+- Submit a [GitHub issue](https://github.com/DOAJ/doaj/issues/new/choose)
 - **Email** Dom Mitchell, DOAJ Operations Manager, [dom@doaj.org](mailto:dom@doaj.org)  
 - **Call** Dom Mitchell, [+44(0) 20 7097 8565](tel:+442070978565)
 
