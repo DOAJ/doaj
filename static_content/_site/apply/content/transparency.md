@@ -1,9 +1,3 @@
-<label for="languages">Show me this guide in&hellip;</label>
-<select name="languages" id="languages">
-  <option value="en">English</option>
-  <option value="fr">Français</option>
-  <option value="es">Español</option>
-</select>
 
 ## Introduction
 
