@@ -100,6 +100,10 @@ bronze:
   url: https://plos.org/
   logo: plos.svg
 
+- name: Relawan Jurnal Indonesia
+  url: http://relawanjurnal.id/
+  logo: RelawanJurnalIndonesia.png
+
 - name: Royal Society of Chemistry
   url: https://www.rsc.org/
   logo: rsc.png
