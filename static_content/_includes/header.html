@@ -155,7 +155,7 @@
 {% assign current_page = page.name %}
 {% assign size = current_page | size | minus: 3 %}
 
-{% if page.name == 'ambassadors.md' or page.name == 'advisory-board-council.md' or page.name == 'publisher-supporters.md' or page.name == 'sponsors.md' or page.name == 'supporters.md' or page.name == 'team.md' or page.name == 'volunteers.md' or page.name == 'editorial-subcommittee.md' %}
+{% if page.fragment == false and page.no-sidenav == true %}
 <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/static_pages/static_content/_data/{{ current_page | slice: 0, size }}.yml" target="_blank" rel="noopener"><span class="sr-only">Edit data content</span><span data-feather="database" aria-hidden="true"></span></a>
 {% endif %}
 {% endif %}
