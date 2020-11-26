@@ -6,6 +6,15 @@
 
   <body class="with-sidenav"{% if page.toc %} data-spy="scroll" data-offset="70" style="position: relative;"{% endif %}>
     {% include header.html %}
+    
+    <!-- Github markdown file edit buttons: a silly workaround to be displayed on static pages -->
+    {% assign gh_url = page.url | slice: 1, page.url.size | split: "/" %}
+
+    <!-- For text files, .md -->
+    <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/static_pages/static_content/_{{ gh_url[0] }}/content/{{ gh_url[1] }}.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
+
+    <!-- For data files, .yml -->
+    <a class="admin-edit" href="https://github.com/DOAJ/doaj/blob/static_pages/static_content/_data/{{ gh_url[1] }}.yml" target="_blank" rel="noopener"><span class="sr-only">Edit data content</span><span data-feather="database" aria-hidden="true"></span></a>
 {% endif %}
 
     <main class="container">
