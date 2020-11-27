@@ -394,13 +394,6 @@ ass_ed:
   country: Serbia
   language: Serbo-Croat-Bosnian, English, Turkish
 
-- name: Enver Ahmet Demir
-  area: Medicine
-  year_since:
-  city: Hatay
-  country: Turkey
-  language: Turkish, English
-
 - name: Eva Höglund
   area: Social Sciences
   year_since:
