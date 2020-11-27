@@ -871,11 +871,12 @@ ass_ed:
   language: English
 
 - name: Riitta Koikkalainen
-  area: Librarianship
+  area: Philosophy, Sociology, and Cultural Studies
   year_since:
   city: Helsinki
   country: Finland
   language: Finnish, English
+  photo: "riitta.jpeg"
 
 
 - name: Roberto Sarmiento
