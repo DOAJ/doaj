@@ -394,13 +394,6 @@ ass_ed:
   country: Serbia
   language: Serbo-Croat-Bosnian, English, Turkish
 
-- name: Enver Ahmet Demir
-  area: Medicine
-  year_since:
-  city: Hatay
-  country: Turkey
-  language: Turkish, English
-
 - name: Eva Höglund
   area: Social Sciences
   year_since:
@@ -657,11 +650,12 @@ ass_ed:
   language: English
 
 - name: Lucas Helal
-  area:
+  area: Public Health
   year_since:
-  city:
-  country:
+  city: Otawa
+  country: Canada
   language: English
+  photo: "lucashelal.jpg"
 
 - name: Maarit Koskela
   area:
@@ -805,11 +799,11 @@ ass_ed:
   photo: "pablohernandez.jpg"
 
 - name: Paula Carina de Araújo
-  area:
+  area: Librarianship
   year_since:
   city:
-  country:
-  language: Spanish, English
+  country: Brazil
+  language: Portuguese, English
 
 - name: Princess Uju E. Nwafor-Orizu
   area: Medicine
@@ -877,11 +871,12 @@ ass_ed:
   language: English
 
 - name: Riitta Koikkalainen
-  area: Librarianship
+  area: Philosophy, Sociology, and Cultural Studies
   year_since:
   city: Helsinki
   country: Finland
   language: Finnish, English
+  photo: "riitta.jpeg"
 
 
 - name: Roberto Sarmiento
