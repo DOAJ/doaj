@@ -650,10 +650,10 @@ ass_ed:
   language: English
 
 - name: Lucas Helal
-  area:
+  area: Public Health
   year_since:
-  city:
-  country:
+  city: Otawa
+  country: Canada
   language: English
 
 - name: Maarit Koskela
@@ -798,11 +798,11 @@ ass_ed:
   photo: "pablohernandez.jpg"
 
 - name: Paula Carina de Araújo
-  area:
+  area: Librarianship
   year_since:
   city:
-  country:
-  language: Spanish, English
+  country: Brazil
+  language: Portuguese, English
 
 - name: Princess Uju E. Nwafor-Orizu
   area: Medicine
