@@ -674,8 +674,8 @@ class ArticleForm(Form):
 
     volume = IntegerField("Volume", [validators.Optional()])
     number = IntegerField("Issue", [validators.Optional()])
-    start = IntegerField("Start", [validators.Optional()])
-    end = IntegerField("End", [validators.Optional()])
+    start = StringField("Start", [validators.Optional()])
+    end = StringField("End", [validators.Optional()])
 
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)
