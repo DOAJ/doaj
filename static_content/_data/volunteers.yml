@@ -505,17 +505,17 @@ ass_ed:
   language: English
 
 - name: Jiayi Xu
-  area:
+  area: Publishing
   year_since:
-  city:
-  country:
-  language: English
+  city: Chongqing
+  country: China
+  language: Chinese,English
 
 - name: Jinjin Liu
-  area:
+  area: Social Sciences, Medicine
   year_since:
-  city:
-  country:
+  city: Hainan
+  country: China
   language: English
 
 - name: João Sousa
@@ -652,9 +652,9 @@ ass_ed:
 - name: Lucas Helal
   area: Public Health
   year_since:
-  city: Otawa
-  country: Canada
-  language: English
+  city: Criciúma
+  country: Brazil
+  language: Portuguese, Spanish, English
   photo: "lucashelal.jpg"
 
 - name: Maarit Koskela
@@ -830,8 +830,8 @@ ass_ed:
 - name: Ran Dang
   area: Biology, Medical Sciences
   year_since:
-  city:
-  country: Malaysia
+  city: Zhengzhou
+  country: China
   language: Chinese, English
 
 - name: Raúl Sampieri
