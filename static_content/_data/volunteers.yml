@@ -821,18 +821,18 @@ ass_ed:
   language: Indonesian, English
 
 - name: Ramazan Turgut
-  area:
+  area: Social Science
   year_since:
   city:
-  country: Qtar
-  language: Arabic, English
+  country: Turkey
+  language: Turkish, English, Dutch
 
 - name: Ran Dang
-  area:
+  area: Biology, Medical Sciences
   year_since:
   city:
   country: Malaysia
-  language: English
+  language: Chinese, English
 
 - name: Raúl Sampieri
   area: Science
