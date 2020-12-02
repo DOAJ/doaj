@@ -531,7 +531,25 @@ class FieldDefinitions:
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
                           "If Creative Commons licensing is not used, then select <em>Publisher's own license</em> and enter "
-                          "more details below."],
+                          "more details below.",
+                          "More information on CC licenses: <br/>"
+                          "<a href='https://creativecommons.org/licenses/by/4.0/"
+                          "' target='_blank' 'rel='noopener'>CC BY</a> <br/>"
+                          "<a href='https://creativecommons.org/licenses/by-sa/4.0/"
+                          "' target='_blank' 'rel='noopener'>CC BY-SA</a> <br/>"
+                          "<a href='https://creativecommons.org/licenses/by-nd/4.0/"
+                          "' target='_blank' 'rel='noopener'>CC BY-ND</a> <br/>"
+                          "<a href='https://creativecommons.org/licenses/by-nc/4.0/"
+                          "' target='_blank' 'rel='noopener'>CC BY-NC</a> <br/>"
+                          "<a href='https://creativecommons.org/licenses/by-nc-sa/4.0/"
+                          "' target='_blank' 'rel='noopener'>CC BY-NC-SA</a> <br/>"
+                          "<a href='https://creativecommons.org/licenses/by-nc-nd/4.0/"
+                          "' target='_blank' 'rel='noopener'>CC BY-NC-ND</a>",
+                          "<a href='https://wiki.creativecommons.org/wiki/CC0_"
+                          "FAQ#What_is_the_difference_between_CC0_and_the_Publ"
+                          "ic_Domain_Mark_.28.22PDM.22.29.3F' target='_blank' "
+                          "rel='noopener'>What is the difference between CC0 "
+                          "and the Public Domain Mark (\"PDM\")?</a>"],
             "doaj_criteria": "Content must be licensed",
             "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
         },
