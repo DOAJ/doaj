@@ -833,6 +833,7 @@ ass_ed:
   city: Zhengzhou
   country: China
   language: Chinese, English
+  photo: "randang.jpg"
 
 - name: Raúl Sampieri
   area: Science
@@ -902,17 +903,17 @@ ass_ed:
   language: Finnish, English
 
 - name: Sandra Müller
-  area:
+  area: Librarianship
   year_since:
-  city:
-  country:
+  city: Lucerne
+  country: Switzerland
   language: German, English
 
 - name: Sandra Studer
-  area:
+  area: Librarianship
   year_since:
-  city:
-  country:
+  city: Lucerne
+  country: Switzerland
   language: German, English
 
 - name: Sara Jalalzadeh Asrjadidi
@@ -923,9 +924,9 @@ ass_ed:
   language: Azerbaijani, English
 
 - name: Sara Ricetto
-  area:
+  area: Humanities
   year_since:
-  city:
+  city: Milan
   country: Italy
   language: Italian, English
 
