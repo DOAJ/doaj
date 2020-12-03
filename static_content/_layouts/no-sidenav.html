@@ -67,7 +67,11 @@
                   <h3 class="label label--tertiary">Conflict of interest statement(s):</h3>
                   <ul class="tags">
                     {% for j in i.coi %}
-                    <li><a href="{{ j[1] }}" target="_blank" class="tag">{{ j[0] }}</a></li>
+                    <li>
+                      {% if j[1] %}<a href="{{ j[1] }}" target="_blank" class="tag">{% endif %}
+                        {{ j[0] }}
+                      {% if j[1] %}</a>{% endif %}
+                    </li>
                     {% endfor %}
                   </ul>
                 </div>
@@ -123,7 +127,11 @@
                   <h3 class="label label--tertiary">Conflict of interest statement(s):</h3>
                   <ul class="tags">
                     {% for j in i.coi %}
-                    <li><a href="{{ j[1] }}" target="_blank" class="tag">{{ j[0] }}</a></li>
+                    <li>
+                      {% if j[1] %}<a href="{{ j[1] }}" target="_blank" class="tag">{% endif %}
+                        {{ j[0] }}
+                      {% if j[1] %}</a>{% endif %}
+                    </li>
                     {% endfor %}
                   </ul>
                 </div>
@@ -151,7 +159,11 @@
                   <h3 class="label label--tertiary">Conflict of interest statement(s):</h3>
                   <ul class="tags">
                     {% for j in i.coi %}
-                    <li><a href="{{ j[1] }}" target="_blank" class="tag">{{ j[0] }}</a></li>
+                    <li>
+                      {% if j[1] %}<a href="{{ j[1] }}" target="_blank" class="tag">{% endif %}
+                        {{ j[0] }}
+                      {% if j[1] %}</a>{% endif %}
+                    </li>
                     {% endfor %}
                   </ul>
                 </div>
@@ -177,7 +189,11 @@
                   <h3 class="label label--tertiary">Conflict of interest statement(s):</h3>
                   <ul class="tags">
                     {% for j in i.coi %}
-                    <li><a href="{{ j[1] }}" target="_blank" class="tag">{{ j[0] }}</a></li>
+                    <li>
+                      {% if j[1] %}<a href="{{ j[1] }}" target="_blank" class="tag">{% endif %}
+                        {{ j[0] }}
+                      {% if j[1] %}</a>{% endif %}
+                    </li>
                     {% endfor %}
                   </ul>
                 </div>

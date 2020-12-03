@@ -10,12 +10,7 @@
             <div class="row">
                 <div class="col-xs-4 col-sm-6">
                     <a href="/" class="logo">
-                        {# a11y: only h1 when it’s the homepage; otherwise h1 should solely be used for the page title #}
-                        {% if request.endpoint == 'doaj.home' %}
-                            <h1 class="sr-only">The Directory of Open Access Journals</h1>
-                        {% else %}
-                            <h2 class="sr-only">The Directory of Open Access Journals</h2>
-                        {% endif %}
+                        <h2 class="sr-only">The Directory of Open Access Journals</h2>
                         {% include "svg/logo.svg" %}
                     </a>
                 </div>
@@ -84,9 +79,11 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0" role="button">
-                            <span data-feather="search" aria-hidden="true"></span>
-                            <span class="sr-only"> Search</span>
+                        <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0">
+                            <span role="button">
+                                <span data-feather="search" aria-hidden="true"></span>
+                                <span class="sr-only"> Search</span>
+                            </span>
                         </li>
                     </ul>
                 </nav>
@@ -95,9 +92,9 @@
     </div>
     <nav class="secondary-nav {% if endpoint|length == 1 or endpoint[endpoint|length-1] in highlighted %} secondary-nav--precedes-highlight {% endif %}">
         <div class="container">
-            <span class="secondary-nav__menu-toggle" aria-label="Click to open menu" role="button">
+            <div class="secondary-nav__menu-toggle" aria-label="Click to open menu" role="button">
                 <span data-feather="menu" aria-hidden="true"></span> <h2 class="secondary-nav__header">Menu</h2>
-            </span>
+            </div>
             <ul class="nav-bar secondary-nav__menu">
                 <li class="dropdown">
                     <span class="dropdown__trigger nav-bar__link" id="menu-journals-articles" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
@@ -201,11 +198,11 @@
                 </li>
                 {% if not current_user.is_anonymous %}
                     <li class="dropdown">
-                        <span class="dropdown__trigger nav-bar__link" id="menu-about" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
+                        <span class="dropdown__trigger nav-bar__link" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
                             My Account
                             <span data-feather="chevron-down" aria-hidden="true"></span>
                         </span>
-                        <ul class="dropdown__menu" aria-labelledby="menu-about">
+                        <ul class="dropdown__menu" aria-labelledby="menu-account">
                             {% if current_user.has_role("admin") %}
                                 <li>
                                     <a href="{{ url_for('admin.index') }}" class="dropdown__link">
@@ -331,6 +328,7 @@
                       {% set category = "danger" %}
                   {% endif %}
                   <section class="container flash_container">
+                      <h2 class="sr-only">Notifications</h2>
                       <p class="alert alert--{{category}}">
                         <span data-feather="alert-octagon" aria-hidden="true"></span>
                         {% if message_has_url %}
@@ -394,7 +392,7 @@
                     </p>
                     {# TODO: define query for recent journals, six months? 1 year? #}
                     {# <p class="col-md-2 stat">
-                  <a href='{{ url_for('doaj.journals_search')?source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22range%22%3A%7B%22created_date%22%3A%7B%22gte%22%3A%221546300800000%22%7D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D'>
+                  <a href='{{ url_for("doaj.journals_search")?source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22range%22%3A%7B%22created_date%22%3A%7B%22gte%22%3A%221546300800000%22%7D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D'>
                       <span class="stat__number">{{ statistics.new_journals }}</span>
                       <span class="stat__description">new journals</span>
                   </a>

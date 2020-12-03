@@ -106,10 +106,10 @@
 
                             {# TODO: do not display this block if there are no affiliations or ORCiDs #}
                             <p>
-                                <a class="button" type="button" data-toggle="collapse" data-target="#authors-affiliations" aria-expanded="false">
+                                <span class="button" role="button" data-toggle="collapse" data-target="#authors-affiliations" aria-expanded="false">
                                     Affiliations
                                     <span data-feather="plus" aria-hidden="true"></span>
-                                </a>
+                                </span>
                             </p>
                             <dl id="authors-affiliations" class="collapse" aria-expanded="false">
                                 {% for author in bibjson.author %}

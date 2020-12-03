@@ -139,7 +139,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["The journal title must match what is displayed on the website and what is registered at the "
-                          "<a href='https://portal.issn.org/' target='_blank'> ISSN Portal</a>.",
+                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>.",
                           "For translated titles, you may add the "
                           "translation as an alternative title."],
             "placeholder": "Journal title",
@@ -222,7 +222,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal.</a>",
+                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
                           "The ISSN must match what is given on the journal website."],
             "placeholder": "2049-3630",
             "doaj_criteria": "ISSN must be provided"
@@ -252,7 +252,7 @@ class FieldDefinitions:
             "admin" : {
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -262,7 +262,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -272,7 +272,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -295,7 +295,7 @@ class FieldDefinitions:
         "input": "text",
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                          "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal</a>",
+                          "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
                           "The ISSN must match what is given on the journal website."],
             "placeholder": "0378-5955",
             "doaj_criteria": "ISSN must be provided"
@@ -323,7 +323,7 @@ class FieldDefinitions:
             "admin" : {
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -333,7 +333,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -343,7 +343,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "help": {
                     "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
-                                  "<a href='https://portal.issn.org/' target='_blank' > ISSN Portal.</a>",
+                                  "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
@@ -1259,7 +1259,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
                          "located. The most common type of PID is the digital object identifier (DOI). ",
-                         "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' >Read more about PIDs.</a>"],
+                         "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>"],
         },
         "validate": [
             "required"
@@ -1319,7 +1319,7 @@ class FieldDefinitions:
         ],
         "default" : "",
         "help": {
-            "long_help": ["The <a href='https://i4oc.org/#goals' target='_blank'>I4OC standards</a> ask that citations are structured, separable, and open. "],
+            "long_help": ["The <a href='https://i4oc.org/#goals' target='_blank' rel='noopener'>I4OC standards</a> ask that citations are structured, separable, and open. "],
         },
         "contexts" : {
             "public" : {
