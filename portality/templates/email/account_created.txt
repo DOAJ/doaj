@@ -6,6 +6,8 @@ Please visit {{ reset_url }} and choose a password. You have {{ timeout_days }} 
 
 When choosing a password, it is your responsibility to choose one which is secure. Try to use a mixture of upper and lower case letters, punctuation, spaces, numbers and letters. DOAJ does not have access to your password.
 
+**If you did not create this account yourself, or you believe that this account has been created in error, please contact us immediately.**
+
 Regards,
 The DOAJ Editorial Team
 
