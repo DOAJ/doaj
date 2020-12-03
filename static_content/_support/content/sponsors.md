@@ -1,5 +1,7 @@
 ## Benefits for supporting publisher organisations 2021
 
+([A downloadable version](https://docs.google.com/document/d/1xTVxUvqLkh2-r53cYlWdSIHsPGSnhcE7gi7bRFCaJik/edit?usp=sharing) of these benefits is available.)
+
 | Basic contribution       | Sustaining contribution (25% higher than Basic) | Premier contribution (50% higher than Basic) |
 |--------------------------|-------------------------------------------------|----------------------------------------------|
 | Your logo on our website | Your logo on our website                        | Your logo on our website                     |
