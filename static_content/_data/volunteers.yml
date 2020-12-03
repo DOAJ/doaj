@@ -728,7 +728,7 @@ ass_ed:
   city: Murcia
   country: Spain
   language: Spanish, English
-  photo: "MiguelAVera.jpeg"
+  photo: "MiguelAVera.jpg"
 
 - name: Milagro Castro
   area: Social Sciences
@@ -877,7 +877,7 @@ ass_ed:
   city: Helsinki
   country: Finland
   language: Finnish, English
-  photo: "riitta.jpeg"
+  photo: "riitta.jpg"
 
 
 - name: Roberto Sarmiento
@@ -893,7 +893,7 @@ ass_ed:
   city: Esfahan
   country: Iran
   language: Farsi, English
-  photo: "amini.jpeg"
+  photo: "amini.jpg"
 
 - name: Sami Syrjämäki
   area: Humanities, Social Sciences
