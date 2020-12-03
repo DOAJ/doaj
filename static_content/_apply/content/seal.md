@@ -2,7 +2,7 @@ The DOAJ Seal is awarded to journals that demonstrate best practice in open acce
 
 **Journals do not need to meet the Seal criteria to be accepted into DOAJ.**
 
-There are seven criteria which a journal must meet to be eligible for the DOAJ Seal. These relate to best practice in long term preservation, use of permanent identifiers, discoverability, reuse policies and authors' rights.
+There are seven criteria which a journal must meet to be eligible for the DOAJ Seal. These relate to best practice in long term preservation, use of persistent identifiers, discoverability, reuse policies and authors' rights.
 
 ---
 
@@ -16,9 +16,9 @@ All seven criteria must be met for a journal to be awarded the Seal. Failure to 
         - any archiving agency included in [Keepers Registry](https://keepers.issn.org/keepers)
         - Internet Archive
         - PubMed Central
-2. Permanent article identifiers
-    - Articles must use permanent article identifiers. DOI, ARK or Handle are the most commonly used.
-    - All permanent links must resolve correctly.
+2. Persistent article identifiers
+    - Articles must use persistent article identifiers. DOI, ARK or Handle are the most commonly used.
+    - All persistent links must resolve correctly.
 3. Metadata supply to DOAJ
     - Article metadata must be uploaded to DOAJ regularly.
 4. License type

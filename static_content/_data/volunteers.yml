@@ -101,7 +101,7 @@ ed:
 - name: Scott Richard St. Louis
   area: Humanities, Social Sciences, Technology
   year_since:
-  city: Ann Arbor, MI
+  city:
   country: USA
   language: English, French
 
@@ -505,17 +505,17 @@ ass_ed:
   language: English
 
 - name: Jiayi Xu
-  area:
+  area: Publishing
   year_since:
-  city:
-  country:
-  language: English
+  city: Chongqing
+  country: China
+  language: Chinese,English
 
 - name: Jinjin Liu
-  area:
+  area: Social Sciences, Medicine
   year_since:
-  city:
-  country:
+  city: Hainan
+  country: China
   language: English
 
 - name: João Sousa
@@ -652,9 +652,9 @@ ass_ed:
 - name: Lucas Helal
   area: Public Health
   year_since:
-  city: Otawa
-  country: Canada
-  language: English
+  city: Criciúma
+  country: Brazil
+  language: Portuguese, Spanish, English
   photo: "lucashelal.jpg"
 
 - name: Maarit Koskela
@@ -821,18 +821,19 @@ ass_ed:
   language: Indonesian, English
 
 - name: Ramazan Turgut
-  area:
+  area: Social Science
   year_since:
   city:
-  country: Qtar
-  language: Arabic, English
+  country: Turkey
+  language: Turkish, English, Dutch
 
 - name: Ran Dang
-  area:
+  area: Biology, Medical Sciences
   year_since:
-  city:
-  country: Malaysia
-  language: English
+  city: Zhengzhou
+  country: China
+  language: Chinese, English
+  photo: "randang.jpg"
 
 - name: Raúl Sampieri
   area: Science
@@ -902,17 +903,17 @@ ass_ed:
   language: Finnish, English
 
 - name: Sandra Müller
-  area:
+  area: Librarianship
   year_since:
-  city:
-  country:
+  city: Lucerne
+  country: Switzerland
   language: German, English
 
 - name: Sandra Studer
-  area:
+  area: Librarianship
   year_since:
-  city:
-  country:
+  city: Lucerne
+  country: Switzerland
   language: German, English
 
 - name: Sara Jalalzadeh Asrjadidi
@@ -923,9 +924,9 @@ ass_ed:
   language: Azerbaijani, English
 
 - name: Sara Ricetto
-  area:
+  area: Humanities
   year_since:
-  city:
+  city: Milan
   country: Italy
   language: Italian, English
 
