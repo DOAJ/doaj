@@ -1,4 +1,5 @@
 import json
+import urllib.request
 from functools import wraps
 from flask import request, current_app, flash, make_response
 from urllib.parse import urlparse, urljoin
@@ -131,3 +132,9 @@ def ipt_prefix(type):
         return app.config['ELASTIC_SEARCH_DB_PREFIX'] + type
     else:
         return type
+
+
+def verify_recaptcha(g_recaptcha_response):
+    with urllib.request.urlopen('https://www.google.com/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY") + '&response=' + g_recaptcha_response) as url:
+        data = json.loads(url.read().decode())
+        return data

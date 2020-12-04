@@ -1,5 +1,16 @@
 {% extends "layouts/base.html" %}
 
+{% block page_title %}Register &ndash; {% endblock %}
+
+{% block extra_stylesheets %}
+    <style>
+        #recaptcha_div iframe {
+            padding: unset;
+            border: unset;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 <main class="page-content">
     <section class="container">
@@ -30,6 +41,10 @@
         $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
     });
     </script>
+
 {% endif %}
+    <!-- reCAPTCHA for the register form -->
+    <script type="text/javascript" src="/static/js/recaptcha.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 
 {% endblock %}
