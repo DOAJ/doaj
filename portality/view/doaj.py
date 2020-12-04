@@ -404,10 +404,6 @@ def article_page(identifier=None):
 #             return render_template("doaj/contact.html", form=form)
 
 
-@app.route('/get_site_key')
-def get_site_key():
-    return app.config.get('RECAPTCHA_SITE_KEY', '')
-
 ###############################################################
 # The various static endpoints
 ###############################################################

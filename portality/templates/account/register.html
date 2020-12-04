@@ -1,5 +1,16 @@
 {% extends "layouts/base.html" %}
 
+{% block page_title %}Register &ndash; {% endblock %}
+
+{% block extra_stylesheets %}
+    <style>
+        #recaptcha_div iframe {
+            padding: unset;
+            border: unset;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 <main class="page-content">
     <section class="container">
@@ -31,34 +42,9 @@
     });
     </script>
 
-    <script type="text/javascript">
-        var onloadCallback = function() {
-
-            $("#submitBtn").prop("disabled", true);
-
-            var captchaCallback = function(param) {
-              $('#recaptcha_value').val(param);
-              $("#submitBtn").prop("disabled", false);
-          };
-
-            function ajax1() {
-                 return $.get("get_site_key");
-            }
-
-            $.when(ajax1()).done(function(key) {
-                grecaptcha.render('html_element', {
-                        'sitekey' : key,
-                        'callback' : captchaCallback,
-                    });
-                }
-            );
-        };
-    </script>
-    <!--<script type="text/javascript" src="/static/js/contact.js?v={{config.get('DOAJ_VERSION')}}"></script>-->
-
-
-    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
-
 {% endif %}
+    <!-- reCAPTCHA for the register form -->
+    <script type="text/javascript" src="/static/js/recaptcha.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 
 {% endblock %}
