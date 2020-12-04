@@ -310,6 +310,7 @@ class RegisterForm(RedirectForm):
         EmailAvailable(message="That email address is already in use. Please <a href='/account/forgot'>reset your password</a>. If you still cannot login, <a href='/contact'>contact us</a>.")
     ])
     roles = StringField('Roles')
+    recaptcha_value = HiddenField()
 
 
 @blueprint.route('/register', methods=['GET', 'POST'])
@@ -323,24 +324,29 @@ def register():
 
     form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
     if request.method == 'POST' and form.validate():
-        account = Account.make_account(email=form.email.data, username=form.identifier.data, name=form.name.data,
-                                       roles=[r.strip() for r in form.roles.data.split(',')])
-        account.save()
+        recap_data = util.verify_recaptcha(form.recaptcha_value.data)
+        if recap_data["success"]:
+            account = Account.make_account(email=form.email.data, username=form.identifier.data, name=form.name.data,
+                                           roles=[r.strip() for r in form.roles.data.split(',')])
+            account.save()
 
-        send_account_created_email(account)
+            send_account_created_email(account)
 
-        if app.config.get('DEBUG', False):
-            util.flash_with_url('Debug mode - url for verify is <a href={0}>{0}</a>'.format(url_for('account.reset', reset_token=account.reset_token)))
+            if app.config.get('DEBUG', False):
+                util.flash_with_url('Debug mode - url for verify is <a href={0}>{0}</a>'.format(url_for('account.reset', reset_token=account.reset_token)))
 
-        if current_user.is_authenticated:
-            util.flash_with_url('Account created for {0}. View Account: <a href={1}>{1}</a>'.format(account.email, url_for('.username', username=account.id)))
-            return redirect(url_for('.index'))
-        else:
-            flash('Thank you, please verify email address ' + form.email.data + ' to set your password and login.',
-                  'success')
+            if current_user.is_authenticated:
+                util.flash_with_url('Account created for {0}. View Account: <a href={1}>{1}</a>'.format(account.email, url_for('.username', username=account.id)))
+                return redirect(url_for('.index'))
+            else:
+                flash('Thank you, please verify email address ' + form.email.data + ' to set your password and login.',
+                      'success')
 
-        # We must redirect home because the user now needs to verify their email address.
-        return redirect(url_for('doaj.home'))
+            # We must redirect home because the user now needs to verify their email address.
+            return redirect(url_for('doaj.home'))
+
+        else:  # recaptcha fail
+            util.flash("reCAPTCHA failed, please retry.")
 
     if request.method == 'POST' and not form.validate():
         flash('Please correct the errors', 'error')

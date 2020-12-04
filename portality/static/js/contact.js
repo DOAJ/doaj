@@ -1,5 +1,4 @@
 /*jshint esversion: 6 */
-//import * as config from '/dev.cfg';
 
 jQuery(document).ready(function($) {
 
@@ -19,29 +18,4 @@ jQuery(document).ready(function($) {
 
     calculateRemaining();
 
-
 });
-
-var onloadCallback = function() {
-
-    $("#submitBtn").prop("disabled", true);
-
-    var captchaCallback = function(param) {
-      $('#recaptcha_value').val(param);
-      $("#submitBtn").prop("disabled", false);
-  };
-
-    function ajax1() {
-         return $.get("get_site_key");
-    }
-
-    $.when(ajax1()).done(function(key) {
-        grecaptcha.render('html_element', {
-                'sitekey' : key,
-                'callback' : captchaCallback,
-            });
-        }
-    );
-
-
-};
