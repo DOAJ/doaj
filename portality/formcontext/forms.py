@@ -672,10 +672,10 @@ class ArticleForm(Form):
     pissn = DOAJSelectField("Print", [ThisOrThat("eissn", "Either this field or Online ISSN is required")], choices=[]) # choices set at construction
     eissn = DOAJSelectField("Online", [ThisOrThat("pissn", "Either this field or Print ISSN is required")], choices=[]) # choices set at construction
 
-    volume = IntegerField("Volume", [validators.Optional()])
-    number = IntegerField("Issue", [validators.Optional()])
-    start = IntegerField("Start", [validators.Optional()])
-    end = IntegerField("End", [validators.Optional()])
+    volume = StringField("Volume", [validators.Optional()])
+    number = StringField("Issue", [validators.Optional()])
+    start = StringField("Start", [validators.Optional()])
+    end = StringField("End", [validators.Optional()])
 
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)
