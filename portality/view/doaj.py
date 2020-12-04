@@ -1,18 +1,14 @@
-from flask import Blueprint, request, flash, make_response
+from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 import urllib.request, urllib.parse, urllib.error
-from portality.forms.application_forms import ApplicationFormFactory
 
 from portality import dao
 from portality import models
 from portality import blog
 from portality.core import app
-from portality.decorators import ssl_required, write_required
-from portality.formcontext import formcontext
+from portality.decorators import ssl_required
 from portality.lcc import lcc_jstree
-from portality.view.forms import ContactUs
-from portality.app_email import send_contact_form
 from portality.lib import analytics
 from portality.ui.messages import Messages
 from portality.forms.application_forms import JournalFormFactory
@@ -407,14 +403,11 @@ def article_page(identifier=None):
 #             flash("Your form could not be submitted,", "error")
 #             return render_template("doaj/contact.html", form=form)
 
-def _verify_recaptcha(g_recaptcha_response):
-    with urllib.request.urlopen('https://www.google.com/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY") + '&response=' + g_recaptcha_response) as url:
-        data = json.loads(url.read().decode())
-        return data
 
 @app.route('/get_site_key')
 def get_site_key():
-    return app.config.get('RECAPTCHA_SITE_KEY')
+    return app.config.get('RECAPTCHA_SITE_KEY', '')
+
 ###############################################################
 # The various static endpoints
 ###############################################################

@@ -30,6 +30,35 @@
         $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
     });
     </script>
+
+    <script type="text/javascript">
+        var onloadCallback = function() {
+
+            $("#submitBtn").prop("disabled", true);
+
+            var captchaCallback = function(param) {
+              $('#recaptcha_value').val(param);
+              $("#submitBtn").prop("disabled", false);
+          };
+
+            function ajax1() {
+                 return $.get("get_site_key");
+            }
+
+            $.when(ajax1()).done(function(key) {
+                grecaptcha.render('html_element', {
+                        'sitekey' : key,
+                        'callback' : captchaCallback,
+                    });
+                }
+            );
+        };
+    </script>
+    <!--<script type="text/javascript" src="/static/js/contact.js?v={{config.get('DOAJ_VERSION')}}"></script>-->
+
+
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+
 {% endif %}
 
 {% endblock %}
