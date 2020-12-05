@@ -388,7 +388,8 @@ $.extend(true, doaj, {
                         "index.subject.exact" : "Subject",
                         "index.language.exact" : "Journal Language",
                         "index.country.exact" : "Country of publisher",
-                        "index.title.exact" : "Journal Title"
+                        "index.title.exact" : "Journal Title",
+                        "index.has_apc.exact" : "Publication charges?"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
