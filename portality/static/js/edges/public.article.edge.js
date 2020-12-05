@@ -168,7 +168,8 @@ $.extend(true, doaj, {
                     fieldDisplays : {
                         "index.schema_codes_tree.exact" : "Subject",
                         "bibjson.journal.title.exact" : "Journals",
-                        "index.date" : "Year of publication"
+                        "index.date" : "Year of publication",
+                        "index.has_seal.exact" : "Journal has the Seal"
                     },
                     rangeFunctions : {
                         "index.date" : doaj.valueMaps.displayYearPeriod

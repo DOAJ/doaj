@@ -496,7 +496,8 @@ $.extend(true, doaj, {
                         "index.language.exact" : "Journal Language",
                         "index.country.exact" : "Country of publisher",
                         "index.continued.exact" : "Continued",
-                        "bibjson.discontinued_date" : "Discontinued Year"
+                        "bibjson.discontinued_date" : "Discontinued Year",
+                        "index.has_apc.exact" : "Publication charges?"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
