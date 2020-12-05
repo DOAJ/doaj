@@ -42,6 +42,7 @@ Open access journals published in any language may apply.
   - HTML or PDF, as a minimum
 
 The following information must be available online, and easily accessible from the journal homepage:
+
 - Open access policy
 - Aims and scope
 - Editorial board (including institutional affiliations of all members)
