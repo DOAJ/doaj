@@ -1545,7 +1545,6 @@ class FieldDefinitions:
             "short_help": "Selecting a subject will not automatically select its sub-categories"
         },
         "validate": [
-            {"max_tags": {"max": 2, "message": "You have chosen too many"}},
             {"required_if" : {"field" : "application_status",
                               "value" : [
                                     constants.APPLICATION_STATUS_IN_PROGRESS,
@@ -1568,8 +1567,7 @@ class FieldDefinitions:
         "contexts" : {
             "associate_editor" : {
                 "validate" : [
-                    "required",
-                    {"max_tags": {"max": 2, "message": "You have chosen too many"}}
+                    "required"
                 ]
             }
         }

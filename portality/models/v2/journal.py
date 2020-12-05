@@ -2,6 +2,7 @@ from portality.dao import DomainObject
 from portality.core import app
 from portality.models.v2.bibjson import JournalLikeBibJSON
 from portality.models.v2 import shared_structs
+from portality.models.account import Account
 from portality.lib import es_data_mapping, dates, coerce
 from portality.lib.seamless import SeamlessMixin
 from portality.lib.coerce import COERCE_MAP
@@ -191,6 +192,12 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     def remove_owner(self):
         self.__seamless__.delete("admin.owner")
+
+    @property
+    def owner_account(self):
+        if self.owner:
+            return Account.pull(self.owner)
+        return None
 
     @property
     def editor_group(self):
