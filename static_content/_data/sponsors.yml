@@ -1,8 +1,8 @@
 # List of sponsors separated by tiers (premier, sustaining, basic)
 
-premier contributors:
+gold:
 
-sustaining contributors:
+silver:
 - name: Copernicus Publications
   url: https://www.ieee.org/
   logo: copernicus.svg
@@ -43,7 +43,7 @@ sustaining contributors:
   url: https://ufm.dk/
   logo: ufm.svg
 
-basic:
+bronze:
 - name: Physical Review Journals
   url: https://journals.aps.org/
   logo: aps.svg
