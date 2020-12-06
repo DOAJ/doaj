@@ -29,10 +29,14 @@ class JournalGenericXWalk(object):
     def form_diff(cls, a_formdata, b_formdata):
         diff = {}
         for k, v in b_formdata.items():
-            if k in a_formdata and a_formdata[k] != v:
-                diff[k] = {"a" : a_formdata[k], "b" : v}
-            # elif k not in journal_form and q_num != 0:
-            #     diff.append((k, q_num, q.text, Messages.DIFF_TABLE_NOT_PRESENT, v))
+            if k in a_formdata:
+                if isinstance(a_formdata[k], list):
+                    if set(a_formdata[k]) != set(v):
+                        diff[k] = {"a": a_formdata[k], "b": v}
+                elif a_formdata[k] != v:
+                    diff[k] = {"a" : a_formdata[k], "b" : v}
+            # if k in a_formdata and a_formdata[k] != v:
+            #     diff[k] = {"a" : a_formdata[k], "b" : v}
 
         return diff
 
