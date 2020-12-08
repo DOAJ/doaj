@@ -1,0 +1,17 @@
+default "";
+/application/new /apply;
+/publishers /apply/guide;
+/oainfo /apply/transparency;
+/bestpractice /apply/transparency;
+/membership /support;
+/sponsors /support/sponsors;
+/publishermembers /support/publisher-supporters;
+/members /support/supporters;
+/api/v1/docs /docs/api;
+/features /docs/xml;
+/widgets /docs/widgets;
+/public-data-dump /docs/public-data-dump;
+/openurl/help /docs/openurl;
+/faq /about/faq;
+/subjects /search/journals;
+/suggestion/ /application/;

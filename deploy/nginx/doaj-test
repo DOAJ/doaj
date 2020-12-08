@@ -15,24 +15,9 @@ upstream doaj_index {
 }
 
 # Redirect map for legacy page routes https://github.com/DOAJ/doajPM/issues/2398
+map_hash_bucket_size 64;
 map $request_uri $new_uri {
-    default "";
-    /application/new /apply;
-    /publishers /apply/guide;
-    /oainfo /apply/transparency;
-    /bestpractice /apply/transparency;
-    /membership /support;
-    /sponsors /support/sponsors;
-    /publishermembers /support/publisher-supporters;
-    /members /support/supporters;
-    /api/v1/docs /docs/api;
-    /features /docs/xml;
-    /widgets /docs/widgets;
-    /public-data-dump /docs/public-data-dump;
-    /openurl/help /docs/openurl;
-    /faq /about/faq;
-    /subjects /search/journals;
-    /suggestion/ /application/;
+    include /etc/nginx/doaj-redirects.map
 }
 
 server {
@@ -54,6 +39,7 @@ server {
 
     if ($new_uri != "") {
         rewrite ^(.*)$ $new_uri permanent;
+        # return 301 $new_uri
     }
 
     location / {
