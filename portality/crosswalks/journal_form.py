@@ -27,16 +27,40 @@ class JournalGenericXWalk(object):
 
     @classmethod
     def form_diff(cls, a_formdata, b_formdata):
+
+        def _serialise(x):
+            if isinstance(x, list):
+                return "; ".join(sorted([_serialise(y) for y in x]))
+            elif isinstance(x, dict):
+                kvs = []
+                for k, v in x.items():
+                    kvs.append(k + ":" + str(v))
+                kvs.sort()
+                return ", ".join(kvs)
+            else:
+                return x
+
         diff = {}
         for k, v in b_formdata.items():
             if k in a_formdata:
                 if isinstance(a_formdata[k], list):
-                    if set(a_formdata[k]) != set(v):
-                        diff[k] = {"a": a_formdata[k], "b": v}
-                elif a_formdata[k] != v:
-                    diff[k] = {"a" : a_formdata[k], "b" : v}
-            # if k in a_formdata and a_formdata[k] != v:
-            #     diff[k] = {"a" : a_formdata[k], "b" : v}
+                    for entry in a_formdata[k]:
+                        if entry not in v:
+                            diff[k] = {"a" : _serialise(a_formdata[k]), "b" : _serialise(v)}
+                            break
+                    for entry in v:
+                        if entry not in a_formdata[k]:
+                            diff[k] = {"a": _serialise(a_formdata[k]), "b": _serialise(v)}
+                            break
+
+                elif isinstance(a_formdata[k], dict):
+                    pass    # No instances of this in our current form, so leaving it out
+                else:
+                    if a_formdata[k] != v:
+                        diff[k] = {"a" : a_formdata[k], "b" : v}
+
+            else:
+                diff[k] = {"a" : "", "b": _serialise(v)}
 
         return diff
 

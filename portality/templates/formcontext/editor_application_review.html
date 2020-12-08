@@ -9,7 +9,7 @@
 {% include 'formcontext/_lockable_header.html' %}
 
 {# include the table for comparing applications with journals that have changed #}
-{% include 'formcontext/_application_diff.html' %}
+{% include 'application_form/_application_diff.html' %}
 
 <form method="post" action="#first_problem" class="form-horizontal application_journal_form" id="suggest_form">
     {% if form_context.errors %}
