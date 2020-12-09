@@ -4,7 +4,7 @@ Dear {{ publisher_name }},
 
 Your update request for "{{ application_title }}" has been assigned to a Managing Editor for review.
 
-Thank you for helping to keep the DOAJ database up-to-date-
+Thank you for helping to keep the DOAJ database up-to-date.
 
 The DOAJ Team
 
