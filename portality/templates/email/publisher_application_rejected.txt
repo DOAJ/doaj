@@ -1,14 +1,17 @@
+{% if publisher_name %}
 Dear {{ publisher_name }},
+{% endif %}
 
-The application which you submitted for "{{ journal_title }}" on {{ date_applied }} has been rejected as the journal does not meet our basic criteria. 
+The application which you submitted for "{{ journal_title }}" on {{ date_applied }} has been rejected as the journal does not meet our basic criteria (https://doaj.org/apply/guide/). 
 
 Reason for rejection:
 ---------------------
 {% if note %} {{ note }} {% endif %}
 
-You may submit a new application 6 months after this email unless advised otherwise by DOAJ staff. Before you reapply, please make any necessary changes to ensure your journal adheres to our criteria. For further details read our information for publishers at https://doaj.org/publishers 
+You may submit a new application 6 months after the date of this email unless advised otherwise by a member of the DOAJ Editorial Team. Before you apply again, make any necessary changes to ensure your journal adheres to our criteria: https://doaj.org/apply/guide/.
 
-Best Regards,
+Yours faithfully
+
 DOAJ Editorial Team
 
 **This is an automated message. Please do not reply to this message.**
