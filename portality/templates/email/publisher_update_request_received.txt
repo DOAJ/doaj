@@ -6,7 +6,7 @@ Dear {{ publisher_name }},
 
 Thank you for submitting an update to your journal. This has been safely received. A Managing Editor will start to review it soon. In the meantime, your original journal record is still visible in DOAJ and you may continue to upload article metadata to us.
 
-Please save this email as a record of when you submitted your update. We cannot give status updates for submissions which are less than 3 months old. Before you contact us requesting information on the status of an update, please check your Spam folder to ensure that a member of our editorial team (a volunteer who may not have a doaj.org email address) has not already contacted you.
+Please save this email as a record of when you submitted your update. Before you contact us requesting a status update, please check your Spam folder to ensure that a member of our editorial team has not already contacted you.
 
 Yours faithfully,
 
