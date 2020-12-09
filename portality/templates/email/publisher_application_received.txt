@@ -1,4 +1,6 @@
+{% if publisher_name %}
 Dear {{ publisher_name }},
+{% endif %}
 
 {{ title }}
 {{ url }}
