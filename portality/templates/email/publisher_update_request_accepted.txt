@@ -1,9 +1,13 @@
+{% if publisher_name %}
 Dear {{ publisher_name }},
+{% endif %}
 
-Congratulations! The changes which you sent us for {{ journal_title }} have been reviewed and the journal record updated. Please note that some of the changes you suggested may have been omitted and replaced with other values by the Managing Editor checking the information against what is displayed on your website. You may review the journal record here: {{ url_root }}/publisher/.
+Congratulations! The changes which you sent us for {{ journal_title }} have been reviewed and the journal record updated. Please note that some of the changes you suggested may have been omitted and replaced with other values by the Managing Editor who carried out the review. Review the journal record here: {{ url_root }}/publisher/.
 
-We are delighted that you have updated this journal in DOAJ. Please don't hesitate to contact us if you have any questions.
+Thank you for updating this journal and helping to keep the DOAJ database up-to-date.
+
+Best wishes,
 
 The DOAJ Team
 
-**This is an automated message. Please do not reply to this message.**
+**This is an automated message.**
