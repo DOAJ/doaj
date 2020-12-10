@@ -1329,6 +1329,26 @@ $.extend(true, doaj, {
                     results = "<li>No data to show</li>";
                 }
 
+                // if we want the active filters, render them
+                var filterFrag = "";
+                if (ts.selected.length > 0) {
+                    var resultClass = edges.css_classes(namespace, "result", this);
+                    for (var i = 0; i < ts.selected.length; i++) {
+                        var filt = ts.selected[i];
+                        //var def = this._getFilterDef(filt);
+                        //if (def) {
+                        // filterFrag += '<div class="' + resultClass + '"><strong>' + edges.escapeHtml(filt);
+                        //if (this.showCount) {
+                        //    filterFrag += " (" + def.count + ")";
+                        //}
+                        let id = edges.safeId(filt);
+                        filterFrag += '<li>\
+                                <input class="' + checkboxClass + '" data-key="' + edges.escapeHtml(filt) + '" id="' + id + '" type="checkbox" name="' + id + '" checked="checked">\
+                                <label for="' + id + '" class="filter__label">' + edges.escapeHtml(filt) + '</label>\
+                            </li>';
+                        //}
+                    }
+                }
 
                 // render a list of the values
                 if (ts.terms.length > 0) {
@@ -1343,6 +1363,7 @@ $.extend(true, doaj, {
                         var active = $.inArray(val.term.toString(), ts.selected) > -1;
                         var checked = "";
                         if (active) {
+                            continue;
                             checked = ' checked="checked" ';
                         }
                         var count = "";
@@ -1377,25 +1398,6 @@ $.extend(true, doaj, {
                 }
 
                 /*
-                // if we want the active filters, render them
-                var filterFrag = "";
-                if (ts.selected.length > 0) {
-                    for (var i = 0; i < ts.selected.length; i++) {
-                        var filt = ts.selected[i];
-                        var def = this._getFilterDef(filt);
-                        if (def) {
-                            filterFrag += '<div class="' + resultClass + '"><strong>' + edges.escapeHtml(def.display);
-                            if (this.showCount) {
-                                filterFrag += " (" + def.count + ")";
-                            }
-                            filterFrag += '&nbsp;<a href="#" class="' + filterRemoveClass + '" data-key="' + edges.escapeHtml(def.term) + '">';
-                            filterFrag += '<i class="glyphicon glyphicon-black glyphicon-remove"></i></a>';
-                            filterFrag += "</strong></a></div>";
-                        }
-                    }
-                }*/
-
-                /*
                 // render the overall facet
                 var frag = '<div class="' + facetClass + '">\
                         <div class="' + headerClass + '"><div class="row"> \
@@ -1426,7 +1428,7 @@ $.extend(true, doaj, {
                     </div>';
 
                 // substitute in the component parts
-                frag = frag.replace(/{{FILTERS}}/g, results);
+                frag = frag.replace(/{{FILTERS}}/g, filterFrag + results);
 
                 // now render it into the page
                 ts.context.html(frag);

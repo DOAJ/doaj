@@ -73,14 +73,14 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "bibjson.journal.title.exact",
                     display: "Journals",
-                    size: 40,
+                    size: 100,
                     syncCounts: false,
                     lifecycle: "update",
                     orderBy: "count",
                     orderDir: "desc",
                     renderer : doaj.renderers.newORTermSelectorRenderer({
                         showCount: true,
-                        hideEmpty: false,
+                        hideEmpty: true,
                         open: false,
                         togglable: true
                     })
@@ -167,7 +167,7 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays : {
                         "index.schema_codes_tree.exact" : "Subject",
-                        "bibjson.journal.title.exact" : "Journals",
+                        "bibjson.journal.title.exact" : "Journal",
                         "index.date" : "Year of publication",
                         "index.has_seal.exact" : "Journal has the Seal"
                     },
