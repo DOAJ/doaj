@@ -1,6 +1,8 @@
+{% if publisher_name %}
 Dear {{ publisher_name }},
+{% endif %}
 
-Your application for "{{ application_title }}" has been assigned to an editor for review for inclusion in the DOAJ.
+Your application for "{{ application_title }}" has been assigned to an editor for review for inclusion in the DOAJ. Please look out for further communications about the application. These may come from someone who is not using a DOAJ email address: https://doaj.org/about/volunteers/
 
 The DOAJ Team
 

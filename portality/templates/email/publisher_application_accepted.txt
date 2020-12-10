@@ -1,4 +1,6 @@
+{% if publisher_name %}
 Dear {{ publisher_name }},
+{% endif %}
 
 An application was submitted for the journal {{ journal_title }} and this has been accepted into DOAJ.
 
