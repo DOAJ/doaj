@@ -1,9 +1,10 @@
+{% if publisher_name %}
 Dear {{ publisher_name }},
+{% endif %}
 
 The application for "{{ journal_title }}" is now being reviewed by an Associate Editor.
-The Associate Editor will have questions about it and will send you an email. She/he will not necessarily email you from a doaj.org email address. Unfortunately, these emails may end up in your Spam folder so please check your Spam folder regularly.
+The Associate Editor (https://doaj.org/about/volunteers/) may contact you by email with questions. They may not be using a doaj.org email address. These emails can end up in your Spam folder so please check your Spam folder regularly.
 
 The DOAJ Team
 
-***
-This is an automated message. Please do not reply to this email.
+**This is an automated message.**

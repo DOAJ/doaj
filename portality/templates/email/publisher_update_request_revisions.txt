@@ -1,9 +1,11 @@
+{% if publisher_name %}
 Dear {{ publisher_name }},
+{% endif %}
 
-The update which you submitted for "{{ journal_title }}" requires some revisions before it can be accepted. The Editorial Team member responsible for your request will contact you to explain the changes that are needed.
+The update which you submitted for "{{ journal_title }}" requires some revisions before it can be accepted. The Managing Editor reviewing your update will contact you to explain the changes that are needed.
 
 Thank you,
 
 The DOAJ Team
 
-**This is an automated message. Please do not reply to this message.**
+**This is an automated message.**

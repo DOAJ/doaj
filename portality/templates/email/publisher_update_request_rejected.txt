@@ -1,14 +1,16 @@
+{% if publisher_name %}
 Dear {{ publisher_name }},
+{% endif %}
 
-The update request which you submitted for "{{ journal_title }}" has been rejected. This is either because:
+The update which you submitted for "{{ journal_title }}" has been rejected. This is either because:
 
-- we were unable to verify the information which you provided with the information stated on your website. Please double check your website and submit a new update request when you are ready; or
-- we already have one active update in the system. Additional update requests are rejected without review.
+- we were unable to verify the information which you provided with the information stated on your website. Please double check your website and submit a new update when you are ready; or
+- we already have one active update in the system. Additional updates are rejected without review.
 
-If you have any questions about this or require further details, please email feedback@doaj.org.
+If you have any questions about this or require further details, please contact our Help Desk: feedback@doaj.org.
 
 Yours faithfully,
 
 The DOAJ Editorial Team
 
-**This is an automated message. Please do not reply to this message.**
+**This is an automated message.**

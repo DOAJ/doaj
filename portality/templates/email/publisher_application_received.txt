@@ -1,21 +1,23 @@
+{% if publisher_name %}
 Dear {{ publisher_name }},
+{% endif %}
 
 {{ title }}
 {{ url }}
 
-We have received your application.
+Thank you for your application.
 
-DOAJ receives hundreds of applications every month. We will review yours as soon as we can. You will receive an email from us when the review is complete or if we have questions about your application.
+We receives hundreds of applications every month. We will review yours as soon as we can. You will receive an email from us when the review is complete or if we have questions.
 
-If you need to make a change to your application, send an email to feedback@doaj.org. You must include your ISSN.
+If you need to make a change to your application, send an email to our Help desk: feedback@doaj.org. Please include your ISSN.
 
 We cannot reply to emails requesting a status update for applications which are less than three months old.
 
-If you write to us, check first that there is nothing in your spam folder from us or one of our volunteers. Our volunteers may not be emailing from a DOAJ email address: check that their name is here https://doaj.org/volunteers.
+If you write to us, check first that there is nothing in your Spam folder from us or one of our volunteers. Our volunteers may not be emailing from a DOAJ email address so you can check that their name is here https://doaj.org/about/volunteers/.
 
 Yours faithfully,
 
 The DOAJ Editorial Team
 
 ***
-This is an automated message. Please do not reply to this email.
+This is an automated message.
