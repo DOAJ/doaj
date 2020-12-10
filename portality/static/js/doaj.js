@@ -65,6 +65,8 @@ var doaj = {
                 container.remove();
             });
         });
+
+        doaj.bindMiniSearch();
     },
 
     bitlyShortener : function(query, success_callback, error_callback) {
@@ -114,6 +116,35 @@ var doaj = {
         if (!toc_id) { toc_id = journal.id; }
 
         return toc_id;
+    },
+
+    bindMiniSearch : function() {
+        const namespace = "doaj-minisearch";
+        const container = "." + namespace + "--container";
+        $(container + " [name=content-type]").on("change", function() {
+            let that = $(this);
+            if (!that.is(":checked")) {
+                return;
+            }
+            let fields = that.parents(container).find("[name=fields]");
+            if (that.val() === "journals") {
+                fields.html(`
+                    <option value="all">In all fields</option>
+                    <option value="title">Title</option>
+                    <option value="issn">ISSN</option>
+                    <option value="subject">Subject</option>
+                    <option value="publisher">Publisher</option>
+                `)
+            } else {
+                fields.html(`
+                    <option value="all">In all fields</option>
+                    <option value="title">Title</option>
+                    <option value="abstract">Abstract</option>
+                    <option value="subject">Subject</option>
+                    <option value="author">Author</option>
+                `)
+            }
+        });
     },
 
     monthmap : [

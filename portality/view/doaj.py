@@ -129,12 +129,15 @@ def search_post():
     if kw is None:
         kw = request.form.get("q")  # back-compat for the simple search widget
 
+    # lhs for journals, rhs for articles
     field_map = {
         "all" : (None, None),
         "title" : ("bibjson.title", "bibjson.title"),
         "abstract" : (None, "bibjson.abstract"),
         "subject" : ("index.classification", "index.classification"),
-        "author" : (None, "bibjson.author.name")
+        "author" : (None, "bibjson.author.name"),
+        "issn" : ("index.issn.exact", None),
+        "publisher" : ("bibjson.publisher.name", None)
     }
     default_field_opts = field_map.get(field, None)
     default_field = None
