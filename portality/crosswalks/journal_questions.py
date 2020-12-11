@@ -14,7 +14,7 @@ class Journal2QuestionXwalk(object):
         ("alternative_title", "Alternative title"),
         ("apc_charges.apc_max", "APC amount"),
         ("apc_url", "APC information URL"),
-        ("preservation_service", "Preservations Services"),
+        ("preservation_service", "Preservation Services"),
         ("preservation_service_library", "Preservation Service: national library"),
         ("preservation_service_url", "Preservation information URL"),
         ("copyright_author_retains", "Author holds copyright without restrictions"),

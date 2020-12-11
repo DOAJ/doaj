@@ -168,10 +168,12 @@ class JournalService(object):
             :return: a list of (key, value) tuples for our metadata
             """
             kvs = [
+                ("Subjects", ' | '.join(journal.bibjson().lcc_paths())),
                 ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
-                ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
+                #("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
                 ("Added on Date", journal.created_date),
-                ("Subjects", ' | '.join(journal.bibjson().lcc_paths()))
+                ("Last updated Date", journal.last_manual_update),
+                ("URL in DOAJ", app.config.get('JOURNAL_TOC_URL_FRAG', 'https://doaj.org/toc/') + journal.id)
             ]
             return kvs
 
