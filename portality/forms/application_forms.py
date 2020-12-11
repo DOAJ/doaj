@@ -1362,14 +1362,24 @@ class FieldDefinitions:
         "input": "checkbox",
         "validate": [
             {
-                "only_if" : {"fields" : [
-                    {"field" : "license_display", "value" : "y"},
-                    {"field" : "copyright_author_retains", "value" : "y"},
-                    {"field" : "preservation_service", "not" : "none"},
-                    {"field" : "preservation_service_url", "not" : ""},
-                    {"field" : "deposit_policy", "not" : "none"},
-                    {"field" : "persistent_identifiers", "value" : "DOI"}
-                ]}
+                "only_if" : {
+                    "fields" : [
+                        {"field" : "license_display", "value" : "y"},
+                        {"field" : "copyright_author_retains", "value" : "y"},
+                        {"field" : "preservation_service", "not" : "none"},
+                        {"field" : "preservation_service_url", "not" : ""},
+                        {"field" : "deposit_policy", "not" : "none"},
+                        {"field" : "persistent_identifiers", "not" : "none"},
+                        {"field" : "license", "or" : ["CC BY", "CC BY-SA", "CC BY-NC", "CC BY-NC-SA"]}
+                    ],
+                    "message" : "In order to award the query: the license must be CC BY, CC BY-SA, CC BY-NC, or CC BY-NC-SA; "
+                                "the license must be displayed or embedded; "
+                                "the author must retain their copyright; "
+                                "the journal must make use of a preservation service; "
+                                "a url for the preservation service must be provided; "
+                                "the journal must have a deposit policy; "
+                                "the journal must use a persistent identifier"
+                }
             }
         ]
     }
@@ -2419,6 +2429,9 @@ class OnlyIfBuilder:
                 html_attrs["data-parsley-only-if-value_" + f["field"]] = f["value"]
             if "not" in f:
                 html_attrs["data-parsley-only-if-not_" + f["field"]] = f["not"]
+            if "or" in f:
+                html_attrs["data-parsley-only-if-or_" + f["field"]] = ",".join(f["or"])
+        html_attrs["data-parsley-only-if-message"] = settings.get("message")
 
     @staticmethod
     def wtforms(fields, settings):
