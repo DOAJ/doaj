@@ -34,7 +34,10 @@
     {% else %}
         {% include entry_template %}
     {% endif %}
+
+    {% if f.help("render_error_box") != False %} {# some fields have custom error boxes #}
     <div id="{{ f.name }}_checkbox-errors"></div>
+    {% endif %}
 
     {% if form_diff %}
         {% if f.name in form_diff %}

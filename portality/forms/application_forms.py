@@ -1413,6 +1413,9 @@ class FieldDefinitions:
             "reserved_usernames",
             "owner_exists"
         ],
+        "help" : {
+            "render_error_box": False,
+        },
         "widgets": [
             {"autocomplete": {"type" : "account", "field": "id", "include" : False}},
             "clickable_owner"
@@ -1436,16 +1439,21 @@ class FieldDefinitions:
         "validate": [
             "required"
         ],
+        "help" : {
+            "render_error_box" : False
+        },
         "disabled" : "application_status_disabled",
         "contexts" : {
             "associate_editor" : {
                 "help" : {
+                    "render_error_box": False,
                     "short_help" : "Set the status to 'In Progress' to signal to the applicant that you have started your review."
                                     "Set the status to 'Ready' to alert the Editor that you have completed your review."
                 }
             },
             "editor" : {
                 "help" : {
+                    "render_error_box" : False,
                     "short_help" : "Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed."
                                     "Set the status to 'Completed' to alert the Managing Editor that you have completed your review."
                 }
@@ -1484,7 +1492,10 @@ class FieldDefinitions:
         "options_fn": "editor_choices",
         "validate" : [
             { "group_member" : {"group_field" : "editor_group"}}
-        ]
+        ],
+        "help" : {
+            "render_error_box": False
+        }
     }
 
     DISCONTINUED_DATE = {
@@ -1505,7 +1516,8 @@ class FieldDefinitions:
         ],
         "help" : {
             "short_help" : "Please enter the discontinued date in the form YYYY-MM-DD (e.g. 2020-11-23).  "
-                           "If the day of the month is not known, please use '01' (e.g. 2020-11-01)"
+                           "If the day of the month is not known, please use '01' (e.g. 2020-11-01)",
+            "render_error_box" : False
         }
     }
 
@@ -1525,7 +1537,10 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "tagentry"
-        ]
+        ],
+        "help" : {
+            "render_error_box": False
+        }
     }
 
     CONTINUED_BY = {
@@ -1544,7 +1559,10 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "tagentry"
-        ]
+        ],
+        "help" : {
+            "render_error_box": False
+        }
     }
 
     SUBJECT = {
@@ -1552,7 +1570,8 @@ class FieldDefinitions:
         "label": "Assign one or a maximum of two subject classifications",
         "input": "taglist",
         "help": {
-            "short_help": "Selecting a subject will not automatically select its sub-categories"
+            "short_help": "Selecting a subject will not automatically select its sub-categories",
+            "render_error_box" : False,
         },
         "validate": [
             {"required_if" : {"field" : "application_status",

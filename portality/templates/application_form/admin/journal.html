@@ -25,6 +25,7 @@
         <p>
             <small>Assigned: <strong><code class="admin_value_preview" id="reassign-value" data-source="#owner"></code></strong></small>
         </p>
+        <div id="owner_checkbox-errors"></div>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("reviewers") %}
@@ -41,6 +42,7 @@
                 Editor: <strong><code class="admin_value_preview" id="reviewers-value" data-source="#editor"></code></strong>
             </small>
         </p>
+        <div id="editor_checkbox-errors"></div>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("continuations") %}
@@ -51,6 +53,9 @@
                 {%  include field_template %}
             {% endfor %}
         </div>
+        <div id="discontinued_date_checkbox-errors"></div>
+        <div id="continues_checkbox-errors"></div>
+        <div id="continued_by_checkbox-errors"></div>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("subject") %}
@@ -65,6 +70,7 @@
         <p>
             <small>Selected: <strong><code class="admin_value_preview" id="subject-value" data-source="#subject"></code></strong></small>
         </p>
+        <div id="subject_checkbox-errors"></div>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("seal") %}
