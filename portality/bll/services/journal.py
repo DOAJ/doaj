@@ -150,6 +150,10 @@ class JournalService(object):
                 article_kvs = _get_article_kvs(j)
                 cols[issn] = kvs + meta_kvs + article_kvs
 
+                # Get the toc URL separately from the meta kvs because it needs to be inserted earlier in the CSV
+                toc_kv = _get_doaj_toc_kv(j)
+                cols[issn].insert(2, toc_kv)
+
             issns = cols.keys()
 
             csvwriter = csv.writer(file_object)
@@ -172,10 +176,12 @@ class JournalService(object):
                 ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
                 #("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
                 ("Added on Date", journal.created_date),
-                ("Last updated Date", journal.last_manual_update),
-                ("URL in DOAJ", app.config.get('JOURNAL_TOC_URL_FRAG', 'https://doaj.org/toc/') + journal.id)
+                ("Last updated Date", journal.last_manual_update)
             ]
             return kvs
+
+        def _get_doaj_toc_kv(journal):
+            return "URL in DOAJ", app.config.get('JOURNAL_TOC_URL_FRAG', 'https://doaj.org/toc/') + journal.id
 
         def _get_article_kvs(journal):
             stats = journal.article_stats()
