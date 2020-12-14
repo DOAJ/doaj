@@ -38,6 +38,10 @@ BASE_API_URL = "https://doaj.org/api/v2/"
 API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
 API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
 
+# URL used for the journal ToC URL in the journal CSV export
+# NOTE: must be the correct route as configured in view/doaj.py
+JOURNAL_TOC_URL_FRAG = BASE_URL + '/toc/'
+
 # Used when generating external links, e.g. in the API docs
 PREFERRED_URL_SCHEME = 'https'
 

@@ -5,22 +5,24 @@
       "type": "index"
     },
     {
-      "values": {
-        "exists": {},
-        "none": {}
-      },
       "name": "doi",
-      "type": "generated"
-    },
-    {
+      "type": "generated",
       "values": {
         "exists": {},
         "none": {}
-      },
-      "name": "fulltext_url",
-      "type": "generated"
+      }
     },
     {
+      "name": "fulltext_url",
+      "type": "generated",
+      "values": {
+        "exists": {},
+        "none": {}
+      }
+    },
+    {
+      "name": "is_acceptable",
+      "type": "conditional",
       "values": {
         "yes": {
           "conditions": [
@@ -56,9 +58,7 @@
             }
           ]
         }
-      },
-      "name": "is_acceptable",
-      "type": "conditional"
+      }
     }
   ]
 }
