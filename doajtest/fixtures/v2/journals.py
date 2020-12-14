@@ -107,12 +107,12 @@ JOURNAL_BULK_EDIT = {
 CSV_HEADERS = [
     "Journal title",
     "Journal URL",
-    #"URL in DOAJ",  # (added outside journal2questions)
+    "URL in DOAJ",  # (added outside journal2questions)
     "Alternative title",
     "Journal ISSN (print version)",
     "Journal EISSN (online version)",
     "Keywords",
-    "Languages in which the journal accepts manuscripts"
+    "Languages in which the journal accepts manuscripts",
     "Publisher",
     "Country of publisher",
     "Society or institution",

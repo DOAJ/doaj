@@ -5,44 +5,22 @@
       "type": "index"
     },
     {
+      "name": "article",
+      "type": "generated",
       "values": {
-        "exists": {
-          "constraints": {
-            "seen_eissn": {
-              "nor": [
-                "-"
-              ]
-            },
-            "article_eissn": {
-              "nor": [
-                "-"
-              ]
-            },
-            "article_pissn": {
-              "nor": [
-                "-"
-              ]
-            },
-            "seen_pissn": {
-              "nor": [
-                "-"
-              ]
-            }
-          }
-        },
         "none": {
           "constraints": {
-            "seen_eissn": {
-              "or": [
-                "-"
-              ]
-            },
             "article_eissn": {
               "or": [
                 "-"
               ]
             },
             "article_pissn": {
+              "or": [
+                "-"
+              ]
+            },
+            "seen_eissn": {
               "or": [
                 "-"
               ]
@@ -53,15 +31,39 @@
               ]
             }
           }
+        },
+        "exists": {
+          "constraints": {
+            "article_eissn": {
+              "nor": [
+                "-"
+              ]
+            },
+            "article_pissn": {
+              "nor": [
+                "-"
+              ]
+            },
+            "seen_eissn": {
+              "nor": [
+                "-"
+              ]
+            },
+            "seen_pissn": {
+              "nor": [
+                "-"
+              ]
+            }
+          }
         }
-      },
-      "name": "article",
-      "type": "generated"
+      }
     },
     {
+      "name": "article_eissn",
+      "type": "generated",
       "values": {
-        "yes": {},
         "-": {},
+        "yes": {},
         "no": {
           "constraints": {
             "article_pissn": {
@@ -71,14 +73,14 @@
             }
           }
         }
-      },
-      "name": "article_eissn",
-      "type": "generated"
+      }
     },
     {
+      "name": "article_pissn",
+      "type": "generated",
       "values": {
-        "yes": {},
         "-": {},
+        "yes": {},
         "no": {
           "constraints": {
             "article_eissn": {
@@ -88,47 +90,38 @@
             }
           }
         }
-      },
-      "name": "article_pissn",
-      "type": "generated"
+      }
     },
     {
-      "values": {
-        "exists": {},
-        "none": {}
-      },
       "name": "owner",
-      "type": "generated"
+      "type": "generated",
+      "values": {
+        "none": {},
+        "exists": {}
+      }
     },
     {
-      "values": {
-        "yes": {},
-        "-": {},
-        "no": {}
-      },
       "name": "seen_eissn",
-      "type": "generated"
-    },
-    {
+      "type": "generated",
       "values": {
-        "yes": {},
         "-": {},
+        "yes": {},
         "no": {}
-      },
-      "name": "seen_pissn",
-      "type": "generated"
+      }
     },
     {
+      "name": "seen_pissn",
+      "type": "generated",
       "values": {
-        "mix": {
-          "constraints": {
-            "owner": {
-              "or": [
-                "exists"
-              ]
-            }
-          }
-        },
+        "-": {},
+        "yes": {},
+        "no": {}
+      }
+    },
+    {
+      "name": "journal_owner",
+      "type": "generated",
+      "values": {
         "none": {},
         "correct": {
           "constraints": {
@@ -139,12 +132,21 @@
             }
           }
         },
-        "incorrect": {}
-      },
-      "name": "journal_owner",
-      "type": "generated"
+        "incorrect": {},
+        "mix": {
+          "constraints": {
+            "owner": {
+              "or": [
+                "exists"
+              ]
+            }
+          }
+        }
+      }
     },
     {
+      "name": "raises",
+      "type": "conditional",
       "default": "",
       "values": {
         "ArgumentException": {
@@ -165,9 +167,7 @@
             }
           ]
         }
-      },
-      "name": "raises",
-      "type": "conditional"
+      }
     }
   ]
 }
