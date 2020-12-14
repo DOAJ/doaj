@@ -45,6 +45,9 @@ JOURNAL_TOC_URL_FRAG = BASE_URL + '/toc/'
 # Used when generating external links, e.g. in the API docs
 PREFERRED_URL_SCHEME = 'https'
 
+# Whether the app is running behind a proxy, for generating URLs based on X-Forwarded-Proto
+PROXIED = False
+
 # make this something secret in your overriding app.cfg
 SECRET_KEY = "default-key"
 
