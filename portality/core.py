@@ -36,8 +36,8 @@ def create_app():
     CORS(app)
     initialise_apm(app)
     DebugToolbarExtension(app)
-    _app = proxyfix(app)
-    return _app
+    proxyfix(app)
+    return app
 
 
 def configure_app(app):
@@ -184,8 +184,7 @@ def initialise_apm(app):
 def proxyfix(app):
     if app.config.get('PROXIED', False):
         from werkzeug.middleware.proxy_fix import ProxyFix
-        return ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
-    return app
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 
 def setup_jinja(app):
