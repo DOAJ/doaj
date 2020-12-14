@@ -1472,6 +1472,7 @@ class FieldDefinitions:
         "label": "Individual",
         "input": "select",
         "options_fn": "editor_choices",
+        "default" : "",
         "validate" : [
             { "group_member" : {"group_field" : "editor_group"}}
         ]

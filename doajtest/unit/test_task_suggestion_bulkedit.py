@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
 
 import json
-from time import sleep
 
 from flask_login import logout_user
 
@@ -37,7 +36,9 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         for app_src in ApplicationFixtureFactory.make_many_application_sources(count=TEST_SUGGESTION_COUNT):
             self.suggestions.append(models.Suggestion(**app_src))
             self.suggestions[-1].set_editor_group("1234567890")
-            self.suggestions[-1].set_editor("0987654321")
+            # self.suggestions[-1].set_editor("0987654321")
+            self.suggestions[-1].remove_editor()
+            self.suggestions[-1].bibjson().institution_country = None
             self.suggestions[-1].save()
 
         blocklist = [(s.id, s.last_updated) for s in self.suggestions]
