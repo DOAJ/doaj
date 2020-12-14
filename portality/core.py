@@ -1,6 +1,7 @@
 import os
 import threading
 
+import flask
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
@@ -16,7 +17,6 @@ from portality.lib import es_data_mapping
 import esprit
 
 login_manager = LoginManager()
-
 
 @login_manager.user_loader
 def load_account_for_login_manager(userid):
@@ -203,3 +203,12 @@ def setup_jinja(app):
 
 app = create_app()
 es_connection = create_es_connection(app)
+
+# FIXME: this is not great, we really need to find the actual solution
+# MONKEY PATCH on Flask redirect, to deal with issue with SSL context in live.
+original_redirect = flask.redirect
+def patched_redirect(location, code=302, Response=None):
+    if not location.startswith("http"):
+        location = app.config.get("BASE_URL") + location
+    return original_redirect(location, code, Response)
+flask.redirect = patched_redirect
