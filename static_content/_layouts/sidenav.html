@@ -6,7 +6,7 @@
 
   <body class="with-sidenav"{% if page.toc %} data-spy="scroll" data-offset="70" style="position: relative;"{% endif %}>
     {% include header.html %}
-    
+
     <!-- Github markdown file edit buttons: a silly workaround to be displayed on static pages -->
     {% assign gh_url = page.url | slice: 1, page.url.size | split: "/" %}
 
@@ -129,7 +129,7 @@
             {% if page.relative_path == '_support/sponsors.md' or page.relative_path == '_support/sponsors-fragment.md' %}
               {% comment %} Support section: sponsors {% endcomment %}
               {% if site.data.sponsors.gold %}
-              <h3><span data-feather="award" aria-hidden="true" class="stroke-gold"></span> Gold sponsor</h3>
+              <h3><span data-feather="award" aria-hidden="true" class="stroke-gold"></span> Premier contributors</h3>
               <div class="row">
                 {% for i in site.data.sponsors.gold %}
                 <div class="col-xs-6 sponsor">
@@ -141,7 +141,7 @@
               </div>
               {% endif %}
 
-              <h3><span data-feather="award" aria-hidden="true" class="stroke-silver"></span> Silver sponsors</h3>
+              <h3><span data-feather="award" aria-hidden="true" class="stroke-silver"></span> Sustaining contributors</h3>
               <div class="row">
                 {% for i in site.data.sponsors.silver %}
                 <div class="col-xs-4 sponsor">
@@ -152,7 +152,7 @@
                 {% endfor %}
               </div>
 
-              <h3><span data-feather="award" aria-hidden="true" class="stroke-bronze"></span> Bronze sponsors</h3>
+              <h3><span data-feather="award" aria-hidden="true" class="stroke-bronze"></span> Basic contributors</h3>
               <div class="row">
                 {% for i in site.data.sponsors.bronze %}
                 <div class="col-xs-4 sponsor">
