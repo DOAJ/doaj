@@ -258,11 +258,14 @@ def autocomplete(doc_type, field_name):
     # you shouldn't return lists top-level in a JSON response:
     # http://flask.pocoo.org/docs/security/#json-security
 
+
 @blueprint.route("/toc/<identifier>")
 @blueprint.route("/toc/<identifier>/<volume>")
 @blueprint.route("/toc/<identifier>/<volume>/<issue>")
 def toc(identifier=None, volume=None, issue=None):
-    # identifier may be the journal id or an issn
+    """ Table of Contents page for a journal. identifier may be the journal id or an issn """
+    # If this route is changed, update JOURNAL_TOC_URL_FRAG in settings.py (partial ToC page link for journal CSV)
+
     journal = None
     issn_ref = False
 

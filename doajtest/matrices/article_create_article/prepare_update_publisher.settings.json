@@ -5,23 +5,25 @@
       "type": "index"
     },
     {
-      "values": {
-        "different_than_article_id": {},
-        "none": {},
-        "same_as_article_id": {}
-      },
       "name": "duplicate",
-      "type": "generated"
+      "type": "generated",
+      "values": {
+        "same_as_article_id": {},
+        "different_than_article_id": {},
+        "none": {}
+      }
     },
     {
+      "name": "merge_duplicate",
+      "type": "generated",
       "values": {
         "yes": {},
         "no": {}
-      },
-      "name": "merge_duplicate",
-      "type": "generated"
+      }
     },
     {
+      "name": "doi_or_ft_updated",
+      "type": "generated",
       "values": {
         "yes": {
           "constraints": {
@@ -33,11 +35,11 @@
           }
         },
         "no": {}
-      },
-      "name": "doi_or_ft_updated",
-      "type": "generated"
+      }
     },
     {
+      "name": "is_update",
+      "type": "conditional",
       "values": {
         "0": {
           "conditions": [
@@ -60,14 +62,14 @@
         "1": {
           "conditions": [
             {
-              "merge_duplicate": {
-                "or": [
-                  "yes"
-                ]
-              },
               "duplicate": {
                 "or": [
                   "same_as_article_id"
+                ]
+              },
+              "merge_duplicate": {
+                "or": [
+                  "yes"
                 ]
               },
               "doi_or_ft_updated": {
@@ -78,11 +80,11 @@
             }
           ]
         }
-      },
-      "name": "is_update",
-      "type": "conditional"
+      }
     },
     {
+      "name": "raises",
+      "type": "conditional",
       "values": {
         "DuplicateArticle": {
           "conditions": [
@@ -101,22 +103,20 @@
               }
             },
             {
-              "merge_duplicate": {
-                "or": [
-                  "no"
-                ]
-              },
               "duplicate": {
                 "or": [
                   "same_as_article_id"
+                ]
+              },
+              "merge_duplicate": {
+                "or": [
+                  "no"
                 ]
               }
             }
           ]
         }
-      },
-      "name": "raises",
-      "type": "conditional"
+      }
     }
   ]
 }

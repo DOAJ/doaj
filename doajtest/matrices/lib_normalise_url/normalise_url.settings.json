@@ -5,21 +5,9 @@
       "type": "index"
     },
     {
+      "name": "url",
+      "type": "generated",
       "values": {
-        "exists": {
-          "constraints": {
-            "scheme": {
-              "nor": [
-                "-"
-              ]
-            },
-            "whitespace": {
-              "nor": [
-                "-"
-              ]
-            }
-          }
-        },
         "none": {
           "constraints": {
             "scheme": {
@@ -33,36 +21,50 @@
               ]
             }
           }
+        },
+        "exists": {
+          "constraints": {
+            "scheme": {
+              "nor": [
+                "-"
+              ]
+            },
+            "whitespace": {
+              "nor": [
+                "-"
+              ]
+            }
+          }
         }
-      },
-      "name": "url",
-      "type": "generated"
+      }
     },
     {
-      "values": {
-        "unknown": {},
-        "http": {},
-        "ftps": {},
-        "ftp": {},
-        "-": {},
-        "https": {},
-        "//": {},
-        "none": {},
-        "invalid": {}
-      },
       "name": "scheme",
-      "type": "generated"
-    },
-    {
+      "type": "generated",
       "values": {
-        "yes": {},
         "-": {},
-        "no": {}
-      },
-      "name": "whitespace",
-      "type": "generated"
+        "http": {},
+        "https": {},
+        "ftp": {},
+        "ftps": {},
+        "invalid": {},
+        "unknown": {},
+        "none": {},
+        "//": {}
+      }
     },
     {
+      "name": "whitespace",
+      "type": "generated",
+      "values": {
+        "-": {},
+        "yes": {},
+        "no": {}
+      }
+    },
+    {
+      "name": "raises",
+      "type": "conditional",
       "default": "",
       "values": {
         "ValueError": {
@@ -83,9 +85,7 @@
             }
           ]
         }
-      },
-      "name": "raises",
-      "type": "conditional"
+      }
     }
   ]
 }
