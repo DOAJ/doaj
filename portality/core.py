@@ -36,6 +36,7 @@ def create_app():
     CORS(app)
     initialise_apm(app)
     DebugToolbarExtension(app)
+    proxyfix(app)
     return app
 
 
@@ -178,6 +179,12 @@ def initialise_apm(app):
         from elasticapm.contrib.flask import ElasticAPM
         app.logger.info("Configuring Elastic APM")
         apm = ElasticAPM(app, logging=True)
+
+
+def proxyfix(app):
+    if app.config.get('PROXIED', False):
+        from werkzeug.middleware.proxy_fix import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 
 def setup_jinja(app):
