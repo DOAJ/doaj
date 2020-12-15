@@ -344,12 +344,12 @@
     {% endwith %}
 
     {# Display large search header on homepage only #}
-    {% if request.endpoint == 'doaj.home' %}
+    {% if request.endpoint == 'doaj.home' %} {#  FIXME: this is a bad way to decide if to incorporate this box #}
         <section class="homepage__search">
             <div class="container">
                 <p class="label">The Directory of Open Access Journals</p>
                 <h1>Find open access journals & articles.</h1>
-                <form class="row" role="search" action="{{ url_for('doaj.search_post') }}" method="post">
+                <form class="row doaj-minisearch--container" role="search" action="{{ url_for('doaj.search_post') }}" method="post">
                     <input type="hidden" name="ref" value="homepage-box">
                     <input type="hidden" name="origin" value="ui">
                     <div class="col-xs-12 col-md-8">
@@ -370,9 +370,9 @@
                             <select class="input-group__input" name="fields" id="fields">
                                 <option value="all">In all fields</option>
                                 <option value="title">Title</option>
-                                <option value="abstract">Abstract</option>
+                                <option value="issn">ISSN</option>
                                 <option value="subject">Subject</option>
-                                <option value="author">Author</option>
+                                <option value="publisher">Publisher</option>
                             </select>
 
                             <button class="input-group__input" type="submit">Search</button>
@@ -425,7 +425,7 @@
 {# Quick search modal #}
 <section class="modal" id="modal-search" tabindex="-1" role="dialog">
     <div class="modal__dialog" role="document">
-        <form class="quick-search__form" role="search" action="{{ url_for('doaj.search_post') }}" method="post">
+        <form class="quick-search__form doaj-minisearch--container" role="search" action="{{ url_for('doaj.search_post') }}" method="post">
             <input type="hidden" name="ref" value="quick-search">
             <input type="hidden" name="origin" value="ui">
             <h2 class="modal__title">Quick search</h2>
@@ -443,9 +443,9 @@
                 <select name="fields" id="quick-search-fields" class="input-group__input">
                     <option value="all">In all fields</option>
                     <option value="title">Title</option>
-                    <option value="abstract">Abstract</option>
+                    <option value="issn">ISSN</option>
                     <option value="subject">Subject</option>
-                    <option value="author">Author</option>
+                    <option value="publisher">Publisher</option>
                 </select>
                 <button type="submit">
                     <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
