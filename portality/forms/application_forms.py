@@ -1546,20 +1546,19 @@ class FieldDefinitions:
             "short_help": "Selecting a subject will not automatically select its sub-categories"
         },
         "validate": [
-            {"required_if" : {"field" : "application_status",
-                              "value" : [
-                                    constants.APPLICATION_STATUS_IN_PROGRESS,
-                                    constants.APPLICATION_STATUS_READY,
-                                    constants.APPLICATION_STATUS_COMPLETED,
-                                    constants.APPLICATION_STATUS_ACCEPTED
-                              ],
-                              "message" : "This field is required when setting the Application Status to {x}, {y}, {z} or {a}".format(
-                                  x=constants.APPLICATION_STATUS_IN_PROGRESS,
-                                  y=constants.APPLICATION_STATUS_READY,
-                                  z=constants.APPLICATION_STATUS_COMPLETED,
-                                  a=constants.APPLICATION_STATUS_ACCEPTED
-                              )
-                            }
+            {"required_if" : {
+                "field" : "application_status",
+                    "value" : [
+                        constants.APPLICATION_STATUS_READY,
+                        constants.APPLICATION_STATUS_COMPLETED,
+                        constants.APPLICATION_STATUS_ACCEPTED
+                    ],
+                    "message" : "This field is required when setting the Application Status to {y}, {z} or {a}".format(
+                      y=constants.APPLICATION_STATUS_READY,
+                      z=constants.APPLICATION_STATUS_COMPLETED,
+                      a=constants.APPLICATION_STATUS_ACCEPTED
+                    )
+                }
              }
         ],
         "widgets": [
