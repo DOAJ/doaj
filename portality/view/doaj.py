@@ -447,7 +447,7 @@ def support():
 
 @blueprint.route("/support/sponsors/")
 def sponsors():
-    return render_template("layouts/static_page.html", page_frag="/support/sponsors-fragment/index.html", page_title="Sponsors")
+    return render_template("layouts/static_page.html", page_frag="/support/sponsors-fragment/index.html", page_title="Contributors")
 
 
 @blueprint.route("/support/publisher-supporters/")
