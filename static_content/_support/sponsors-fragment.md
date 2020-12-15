@@ -1,7 +1,7 @@
 ---
 layout: sidenav
 fragment: true
-title: Sponsors
+title: Contributors (Publishers and Aggregators)
 section: Support
 toc: true
 sticky_sidenav: true
