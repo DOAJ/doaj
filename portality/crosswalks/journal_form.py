@@ -314,8 +314,10 @@ class JournalGenericXWalk(object):
         forminfo["pissn"] = bibjson.pissn
         forminfo["eissn"] = bibjson.eissn
 
-        forminfo["institution_name"] = bibjson.institution_name
-        forminfo["institution_country"] = bibjson.institution_country
+        if bibjson.institution_name:
+            forminfo["institution_name"] = bibjson.institution_name
+        if bibjson.institution_country:
+            forminfo["institution_country"] = bibjson.institution_country
 
         forminfo['keywords'] = bibjson.keywords             # fixme: all keywords are being rendered as one single item
         forminfo['language'] = bibjson.language
