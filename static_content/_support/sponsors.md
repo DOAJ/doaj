@@ -1,7 +1,7 @@
 ---
 layout: sidenav
 fragment: false
-title: Sponsors
+title: Contributors (Publishers and Aggregators)
 order: 2
 section: Support
 toc: true
