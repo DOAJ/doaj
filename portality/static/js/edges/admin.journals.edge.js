@@ -425,7 +425,7 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre": "<strong>Publisher</strong>: ",
-                                    "field": "bibjson.publisher"
+                                    "field": "bibjson.publisher.name"
                                 }
                             ],
                             [
