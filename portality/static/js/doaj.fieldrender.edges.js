@@ -1335,18 +1335,12 @@ $.extend(true, doaj, {
                     var resultClass = edges.css_classes(namespace, "result", this);
                     for (var i = 0; i < ts.selected.length; i++) {
                         var filt = ts.selected[i];
-                        //var def = this._getFilterDef(filt);
-                        //if (def) {
-                        // filterFrag += '<div class="' + resultClass + '"><strong>' + edges.escapeHtml(filt);
-                        //if (this.showCount) {
-                        //    filterFrag += " (" + def.count + ")";
-                        //}
+                        var display = this.component._translate(filt);
                         let id = edges.safeId(filt);
                         filterFrag += '<li>\
                                 <input class="' + checkboxClass + '" data-key="' + edges.escapeHtml(filt) + '" id="' + id + '" type="checkbox" name="' + id + '" checked="checked">\
-                                <label for="' + id + '" class="filter__label">' + edges.escapeHtml(filt) + '</label>\
+                                <label for="' + id + '" class="filter__label">' + edges.escapeHtml(display) + '</label>\
                             </li>';
-                        //}
                     }
                 }
 

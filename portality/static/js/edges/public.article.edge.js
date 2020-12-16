@@ -76,6 +76,7 @@ $.extend(true, doaj, {
                     size: 100,
                     syncCounts: false,
                     lifecycle: "update",
+                    updateType: "fresh",
                     orderBy: "count",
                     orderDir: "desc",
                     renderer : doaj.renderers.newORTermSelectorRenderer({
