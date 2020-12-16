@@ -1592,7 +1592,15 @@ class FieldDefinitions:
             {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}},
             "note_modal"
         ],
-        "merge_disabled" : "merge_disabled_notes"
+        "merge_disabled" : "merge_disabled_notes",
+        "contexts" : {
+            "admin" : {
+                "widgets": [
+                    {"infinite_repeat": {"enable_on_repeat": ["textarea"], "allow_delete" : True}},
+                    "note_modal"
+                ],
+            }
+        }
     }
 
     NOTE = {

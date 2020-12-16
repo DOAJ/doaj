@@ -1310,8 +1310,7 @@ var formulaic = {
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
                     var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
 
-                    container.append('<a href="#" class="' + viewClass + '">view note</a>');
-                    container.append(`
+                    container.append(`<div><a href="#" class="` + viewClass + `">view note</a>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                             <div class="modal__dialog" role="document">
                                 <p class="label">NOTE</p> 
@@ -1321,6 +1320,7 @@ var formulaic = {
                                 ` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `                        
                                 <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
                             </div>
+                        </div>
                         </div>
                     `);
                 }
@@ -1391,6 +1391,10 @@ var formulaic = {
 
                 edges.on(this.addFieldBtn, "click", this, "addField");
                 edges.on(this.removeFieldBtns, "click", this, "removeField");
+
+                if (this.args.allow_delete) {
+                    this.removeFieldBtns.show();
+                }
             };
 
             this.addField = function() {
