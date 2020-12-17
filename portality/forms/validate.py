@@ -464,9 +464,9 @@ class OnlyIf(MultiFieldValidator):
             other = others[o_f["field"]]
             if self.ignore_empty and (not other.data or not field.data):
                 continue
-            if o_f.get('value') is None:
-                # No target value supplied - succeed if the other field is truthy
-                if other.data:
+            if o_f.get("or") is not None:
+                # succeed if the value is in the list
+                if other.data in o_f["or"]:
                     continue
             if o_f.get('not') is not None:
                 # Succeed if the value doesn't equal the one specified
@@ -475,6 +475,10 @@ class OnlyIf(MultiFieldValidator):
             if o_f.get('value') is not None:
                 if other.data == o_f['value']:
                     # Succeed if the other field has the specified value
+                    continue
+            if o_f.get('value') is None:
+                # No target value supplied - succeed if the other field is truthy
+                if other.data:
                     continue
             raise validators.ValidationError(self.message)
 

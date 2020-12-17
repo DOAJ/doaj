@@ -1,3 +1,4 @@
+<p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot save the journal because it contains some invalid fields. Please review the answers and admin fields and try again.</i></p>
 <button id="submitBtn" class="button button--cta editorial-panel__save" type="button">Save</button>
 
 <aside class="editorial-panel__content">
@@ -24,6 +25,7 @@
         <p>
             <small>Assigned: <strong><code class="admin_value_preview" id="reassign-value" data-source="#owner"></code></strong></small>
         </p>
+        <div id="owner_checkbox-errors"></div>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("reviewers") %}
@@ -40,6 +42,7 @@
                 Editor: <strong><code class="admin_value_preview" id="reviewers-value" data-source="#editor"></code></strong>
             </small>
         </p>
+        <div id="editor_checkbox-errors"></div>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("continuations") %}
@@ -50,6 +53,9 @@
                 {%  include field_template %}
             {% endfor %}
         </div>
+        <div id="discontinued_date_checkbox-errors"></div>
+        <div id="continues_checkbox-errors"></div>
+        <div id="continued_by_checkbox-errors"></div>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("subject") %}
@@ -64,6 +70,7 @@
         <p>
             <small>Selected: <strong><code class="admin_value_preview" id="subject-value" data-source="#subject"></code></strong></small>
         </p>
+        <div id="subject_checkbox-errors"></div>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("seal") %}
@@ -90,7 +97,6 @@
             {%  include field_template %}
         {% endfor %}
     </fieldset>
-    <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot save the journal because it contains some invalid fields. Please review the answers and admin fields and try again.</i></p>
     {% if obj %}
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}
