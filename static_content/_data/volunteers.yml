@@ -783,12 +783,12 @@ ass_ed:
   country:
   language:
 
-- name: Oskia Aguirre
-  area:
+- name: Oskia Agirre
+  area: Library and Information Science
   year_since:
-  city:
+  city: Donostia, Spain
   country:
-  language: Spanish, English
+  language: Euskera, Spanish, English
 
 
 - name: Pablo Hernandez
