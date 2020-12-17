@@ -42,6 +42,7 @@
         <p>
             <small>Status: <strong><code class="admin_value_preview" id="status-value" data-source="#application_status"></code></strong></small>
         </p>
+        <div id="application_status_checkbox-errors"></div>
     </fieldset>
     <fieldset>
         {% set fs = formulaic_context.fieldset("reviewers") %}
@@ -58,6 +59,7 @@
                 Editor: <strong><code class="admin_value_preview" id="reviewers-value" data-source="#editor"></code></strong>
             </small>
         </p>
+        <div id="editor_checkbox-errors"></div>
     </fieldset>
 {#
     <fieldset>
@@ -84,6 +86,7 @@
         <p>
             <small>Selected: <strong><code class="admin_value_preview" id="subject-value" data-source="#subject"></code></strong></small>
         </p>
+        <div id="subject_checkbox-errors"></div>
     </fieldset>
 {#
     <fieldset>

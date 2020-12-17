@@ -1362,14 +1362,24 @@ class FieldDefinitions:
         "input": "checkbox",
         "validate": [
             {
-                "only_if" : {"fields" : [
-                    {"field" : "license_display", "value" : "y"},
-                    {"field" : "copyright_author_retains", "value" : "y"},
-                    {"field" : "preservation_service", "not" : "none"},
-                    {"field" : "preservation_service_url", "not" : ""},
-                    {"field" : "deposit_policy", "not" : "none"},
-                    {"field" : "persistent_identifiers", "value" : "DOI"}
-                ]}
+                "only_if" : {
+                    "fields" : [
+                        {"field" : "license_display", "value" : "y"},
+                        {"field" : "copyright_author_retains", "value" : "y"},
+                        {"field" : "preservation_service", "not" : "none"},
+                        {"field" : "preservation_service_url", "not" : ""},
+                        {"field" : "deposit_policy", "not" : "none"},
+                        {"field" : "persistent_identifiers", "not" : "none"},
+                        {"field" : "license", "or" : ["CC BY", "CC BY-SA", "CC BY-NC", "CC BY-NC-SA"]}
+                    ],
+                    "message" : "In order to award the query: the license must be CC BY, CC BY-SA, CC BY-NC, or CC BY-NC-SA; "
+                                "the license must be displayed or embedded; "
+                                "the author must retain their copyright; "
+                                "the journal must make use of a preservation service; "
+                                "a url for the preservation service must be provided; "
+                                "the journal must have a deposit policy; "
+                                "the journal must use a persistent identifier"
+                }
             }
         ]
     }
@@ -1403,6 +1413,9 @@ class FieldDefinitions:
             "reserved_usernames",
             "owner_exists"
         ],
+        "help" : {
+            "render_error_box": False,
+        },
         "widgets": [
             {"autocomplete": {"type" : "account", "field": "id", "include" : False}},
             "clickable_owner"
@@ -1426,16 +1439,21 @@ class FieldDefinitions:
         "validate": [
             "required"
         ],
+        "help" : {
+            "render_error_box" : False
+        },
         "disabled" : "application_status_disabled",
         "contexts" : {
             "associate_editor" : {
                 "help" : {
+                    "render_error_box": False,
                     "short_help" : "Set the status to 'In Progress' to signal to the applicant that you have started your review."
                                     "Set the status to 'Ready' to alert the Editor that you have completed your review."
                 }
             },
             "editor" : {
                 "help" : {
+                    "render_error_box" : False,
                     "short_help" : "Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed."
                                     "Set the status to 'Completed' to alert the Managing Editor that you have completed your review."
                 }
@@ -1475,7 +1493,10 @@ class FieldDefinitions:
         "default" : "",
         "validate" : [
             { "group_member" : {"group_field" : "editor_group"}}
-        ]
+        ],
+        "help" : {
+            "render_error_box": False
+        }
     }
 
     DISCONTINUED_DATE = {
@@ -1496,7 +1517,8 @@ class FieldDefinitions:
         ],
         "help" : {
             "short_help" : "Please enter the discontinued date in the form YYYY-MM-DD (e.g. 2020-11-23).  "
-                           "If the day of the month is not known, please use '01' (e.g. 2020-11-01)"
+                           "If the day of the month is not known, please use '01' (e.g. 2020-11-01)",
+            "render_error_box" : False
         }
     }
 
@@ -1516,7 +1538,10 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "tagentry"
-        ]
+        ],
+        "help" : {
+            "render_error_box": False
+        }
     }
 
     CONTINUED_BY = {
@@ -1535,7 +1560,10 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "tagentry"
-        ]
+        ],
+        "help" : {
+            "render_error_box": False
+        }
     }
 
     SUBJECT = {
@@ -1543,7 +1571,8 @@ class FieldDefinitions:
         "label": "Assign one or a maximum of two subject classifications",
         "input": "taglist",
         "help": {
-            "short_help": "Selecting a subject will not automatically select its sub-categories"
+            "short_help": "Selecting a subject will not automatically select its sub-categories",
+            "render_error_box" : False,
         },
         "validate": [
             {"required_if" : {
@@ -2419,6 +2448,9 @@ class OnlyIfBuilder:
                 html_attrs["data-parsley-only-if-value_" + f["field"]] = f["value"]
             if "not" in f:
                 html_attrs["data-parsley-only-if-not_" + f["field"]] = f["not"]
+            if "or" in f:
+                html_attrs["data-parsley-only-if-or_" + f["field"]] = ",".join(f["or"])
+        html_attrs["data-parsley-only-if-message"] = settings.get("message")
 
     @staticmethod
     def wtforms(fields, settings):

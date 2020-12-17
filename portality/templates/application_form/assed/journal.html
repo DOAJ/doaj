@@ -1,3 +1,4 @@
+<p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot save the journal because it contains some invalid fields. Please review the answers and admin fields and try again.</i></p>
 <button id="submitBtn" class="button button--cta" type="button">Save</button>
 
 <aside class="editorial-panel__content">
@@ -72,6 +73,7 @@
         <p>
             <small>Selected: <strong><code class="admin_value_preview" id="subject-value" data-source="#subject"></code></strong></small>
         </p>
+        <div id="subject_checkbox-errors"></div>
     </fieldset>
 {#
     <fieldset>
@@ -102,7 +104,6 @@
         {% endfor %}
     </fieldset>
 #}
-    <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot save the journal because it contains some invalid fields. Please review the answers and admin fields and try again.</i></p>
     {% if obj %}
         <input type="hidden" name="id" value="{{ obj.id }}">
     {% endif %}
