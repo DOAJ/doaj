@@ -1576,7 +1576,7 @@ class FieldDefinitions:
     NOTES = {
         "name" : "notes",
         "input": "group",
-        "label": "Note",
+        "label": "Notes",
         "repeatable" : {
             "initial" : 1,
             "add_button_placement" : "top"

@@ -27,14 +27,14 @@
 
             <div class="col-md-8 page">
                 <section class="page-content">
-                  
                     {% include 'application_form/_application_diff.html' %}
-
+                    {% include 'application_form/editorial_form_fields.html' %}
                     {% include "application_form/_fieldsets.html" %}
                 </section>
             </div>
             <div class="col-md-4 editorial-panel">
-                {% include "application_form/admin/application.html" %}
+                {% include "application_form/editorial_side_panel.html" %}
+                {# {% include "application_form/admin/application.html" %} #}
             </div>
         </form>
 
