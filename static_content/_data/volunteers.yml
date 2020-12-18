@@ -393,7 +393,8 @@ ass_ed:
   year_since:
   city: Novi Pazar
   country: Serbia
-  language: Serbo-Croat-Bosnian, English, Turkish
+  language: Bosnian, Serbian, English, Turkish
+  photo: "enes sukic.jpg"
 
 - name: Eva Höglund
   area: Social Sciences
