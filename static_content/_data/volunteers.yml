@@ -393,7 +393,8 @@ ass_ed:
   year_since:
   city: Novi Pazar
   country: Serbia
-  language: Serbo-Croat-Bosnian, English, Turkish
+  language: Bosnian, Serbian, English, Turkish
+  photo: "enes sukic.jpg"
 
 - name: Eva Höglund
   area: Social Sciences
@@ -783,12 +784,12 @@ ass_ed:
   country:
   language:
 
-- name: Oskia Aguirre
-  area:
+- name: Oskia Agirre
+  area: Library and Information Science
   year_since:
-  city:
-  country:
-  language: Spanish, English
+  city: Donostia
+  country: Spain
+  language: Euskera, Spanish, English
 
 
 - name: Pablo Hernandez
