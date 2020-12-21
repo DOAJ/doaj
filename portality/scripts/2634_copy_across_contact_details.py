@@ -71,12 +71,20 @@ def add_note_to_new_application(_id, owner, suggester, contact):
     if application is not None:
         note = 'Details from old index added by script doajPM issue 2634 - \n'
         if owner:
-            note += 'Owner ID (not found in current index): {0}\n'.format(owner)
+            note += '\nOwner ID (not found in current index): {0}\n'.format(owner)
         if suggester:
-            note += 'Suggester - name: {0}, email: {1}\n'.format(suggester.get('name'), suggester.get('email'))
+            note += '\nSuggester\n'
+            if suggester.get('name'):
+                note += suggester['name'] + '\n'
+            if suggester.get('email'):
+                note += suggester['email'] + '\n'
         if contact:
+            note += '\nContact\n'
             for con in contact:
-                note += 'Contact - name: {0}, email: {1}\n'.format(con.get('name'), con.get('email'))
+                if con.get('name'):
+                    note += con['name'] + '\n'
+                if con.get('email'):
+                    note += con['email'] + '\n'
 
         if owner == suggester == contact == '':
             note += 'No contact details found in old index'
