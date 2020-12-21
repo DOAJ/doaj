@@ -73,9 +73,10 @@ def add_note_to_new_application(_id, owner, suggester, contact):
         if owner:
             note += 'Owner ID (not found in current index): {0}\n'.format(owner)
         if suggester:
-            note += 'Suggester: {0}\n'.format(suggester)
+            note += 'Suggester - name: {0}, email: {1}\n'.format(suggester.get('name'), suggester.get('email'))
         if contact:
-            note += 'Contact: {0}\n'.format(contact)
+            for con in contact:
+                note += 'Contact - name: {0}, email: {1}\n'.format(con.get('name'), con.get('email'))
 
         if owner == suggester == contact == '':
             note += 'No contact details found in old index'
