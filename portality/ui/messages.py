@@ -7,7 +7,7 @@ class Messages(object):
 
     APPLICATION_UPDATE_SUBMITTED_FLASH = ("""
         Your update request has been submitted. You may make further changes until the DOAJ Editorial Team picks it up
-        for review. Click 'Edit this update request' to make further changes.
+        for review. Click the 'Edit' button to make further changes, or 'Delete' to cancel the request.
         """, 'success')
 
     ARTICLE_METADATA_SUBMITTED_FLASH = ("Article created/updated", "success")

@@ -108,9 +108,10 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.language.exact",
                     display: "Languages",
-                    size: 40,
+                    size: 100,
                     syncCounts: false,
                     lifecycle: "update",
+                    updateType: "fresh",
                     orderBy: "count",
                     orderDir: "desc",
                     renderer : doaj.renderers.newORTermSelectorRenderer({
@@ -129,6 +130,7 @@ $.extend(true, doaj, {
                     size: 99,
                     syncCounts: false,
                     lifecycle: "update",
+                    updateType: "fresh",
                     renderer : doaj.renderers.newORTermSelectorRenderer({
                         showCount: true,
                         hideEmpty: false,
@@ -142,9 +144,10 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "bibjson.publisher.name.exact",
                     display: "Publishers",
-                    size: 40,
+                    size: 100,
                     syncCounts: false,
                     lifecycle: "update",
+                    updateType: "fresh",
                     orderBy: "count",
                     orderDir: "desc",
                     renderer : doaj.renderers.newORTermSelectorRenderer({
@@ -160,9 +163,10 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.country.exact",
                     display: "Publishers' countries",
-                    size: 40,
+                    size: 100,
                     syncCounts: false,
                     lifecycle: "update",
+                    updateType: "fresh",
                     orderBy: "count",
                     orderDir: "desc",
                     renderer : doaj.renderers.newORTermSelectorRenderer({
@@ -181,6 +185,7 @@ $.extend(true, doaj, {
                     size: 99,
                     syncCounts: false,
                     lifecycle: "update",
+                    updateType: "fresh",
                     renderer : doaj.renderers.newORTermSelectorRenderer({
                         showCount: true,
                         hideEmpty: false,

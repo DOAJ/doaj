@@ -12,7 +12,7 @@
         <h3 class="label"> LOCKED FOR EDITING UNTIL <span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></h3>
         <button type="button" class="button button--secondary" id="unlock" data-type="suggestion" data-id="{{obj.id}}">Unlock & Close</button>
 
-        {% if obj.application_status not in ["accepted", "rejected"] %}
+        {% if obj.application_status not in ["accepted", "rejected"] and obj.current_journal == None %}
         <button class="button button--primary" type="button" id="open_quick_reject" data-toggle="modal" data-target="#modal-quick_reject">Quick Reject</button>
         {% endif %}
 

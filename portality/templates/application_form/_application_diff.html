@@ -1,0 +1,47 @@
+{% macro value(x) %}
+    {% if x == None or x == "" or x == [] %}
+        <em>[Nothing]</em>
+    {% elif x.startswith("http") %}
+        <a href="{{ x }}" target="_blank" rel="noopener" style="word-break: break-all">{{ x }}</a>
+    {% elif x == "y" %}
+        Yes
+    {% elif x == "n" %}
+        No
+    {% else %}
+        {{ x }}
+    {% endif %}
+{% endmacro %}
+
+{% if current_journal %}
+    <h2 class="alert">
+        <span data-feather="alert-triangle" aria-hidden="true"></span>
+        The following fields have changed:
+    </h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 30%"></th>
+            <th style="width: 35%;">Previous</th>
+            <th style="width: 35%;">New</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for k, v in form_diff|dictsort if k != "application_status" %}
+            {% set previous = v['a'] %}
+            {% set new = v['b'] %}
+            <tr>
+                <td>
+                    <a href="#question__{{ k }}">{{ k }}</a>
+                </td>
+                <td>
+                    {{ value(previous) }}
+                </td>
+                <td>
+                    {{ value(new) }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

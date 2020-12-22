@@ -52,7 +52,11 @@ def index():
 @login_required
 @ssl_required
 def journals():
-    return redirect(url_for("admin.index"))
+    qs = request.query_string
+    target = url_for("admin.index")
+    if qs:
+        target += "?" + qs.decode()
+    return redirect(target)
 
 
 @blueprint.route("/journals", methods=["POST", "DELETE"])
