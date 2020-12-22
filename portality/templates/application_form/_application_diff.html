@@ -1,7 +1,7 @@
 {% macro value(x) %}
     {% if x == None or x == "" or x == [] %}
         <em>[Nothing]</em>
-    {% elif x.startswith("http") %}
+    {% elif x is string and x.startswith("http") %}
         <a href="{{ x }}" target="_blank" rel="noopener" style="word-break: break-all">{{ x }}</a>
     {% elif x == "y" %}
         Yes
