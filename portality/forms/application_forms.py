@@ -1426,18 +1426,23 @@ class FieldDefinitions:
         "validate": [
             "required"
         ],
+        "help" : {
+            "update_requests_diff" : False
+        },
         "disabled" : "application_status_disabled",
         "contexts" : {
             "associate_editor" : {
                 "help" : {
                     "short_help" : "Set the status to 'In Progress' to signal to the applicant that you have started your review."
-                                    "Set the status to 'Ready' to alert the Editor that you have completed your review."
+                                    "Set the status to 'Ready' to alert the Editor that you have completed your review.",
+                    "update_requests_diff": False
                 }
             },
             "editor" : {
                 "help" : {
                     "short_help" : "Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed."
-                                    "Set the status to 'Completed' to alert the Managing Editor that you have completed your review."
+                                    "Set the status to 'Completed' to alert the Managing Editor that you have completed your review.",
+                    "update_requests_diff": False
                 }
             }
         },

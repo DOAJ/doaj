@@ -38,7 +38,7 @@
     <div id="{{ f.name }}_checkbox-errors"></div>
 
     {% if form_diff %}
-        {% if f.name in form_diff %}
+        {% if f.help("update_requests_diff", True) and f.name in form_diff %}
         <p class="alert alert--message">
           <strong>WAS:</strong>
           <em>

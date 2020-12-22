@@ -477,8 +477,8 @@ class FormulaicField(object):
     def get(self, attr, default=None):
         return self._definition.get(attr, default)
 
-    def help(self, key):
-        return self._definition.get("help", {}).get(key)
+    def help(self, key, default=None):
+        return self._definition.get("help", {}).get(key, default)
 
     @property
     def optional(self):
