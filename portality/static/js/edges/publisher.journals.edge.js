@@ -54,6 +54,7 @@ $.extend(true, doaj, {
                     size: 99,
                     syncCounts: false,
                     lifecycle: "update",
+                    updateType: "fresh",
                     renderer : doaj.renderers.newORTermSelectorRenderer({
                         showCount: true,
                         hideEmpty: false,
@@ -77,6 +78,7 @@ $.extend(true, doaj, {
                     size: 99,
                     syncCounts: false,
                     lifecycle: "update",
+                    updateType: "fresh",
                     renderer : doaj.renderers.newORTermSelectorRenderer({
                         showCount: true,
                         hideEmpty: false,

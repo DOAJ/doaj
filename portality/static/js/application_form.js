@@ -783,6 +783,10 @@ window.Parsley.addValidator("onlyIf", {
                 let field = fields[i];
                 let otherValue = parsleyInstance.$element.attr("data-parsley-only-if-value_" + field);
                 let not = parsleyInstance.$element.attr("data-parsley-only-if-not_" + field);
+                let or = parsleyInstance.$element.attr("data-parsley-only-if-or_" + field);
+                if (or) {
+                    or = or.split(",").map((x) => x.trim());
+                }
 
                 let other = $("[name=" + field + "]");
                 let type = other.attr("type");
@@ -803,6 +807,12 @@ window.Parsley.addValidator("onlyIf", {
                 if (not) {
                     if (other.val() === not) {
                          return false;
+                    }
+                }
+
+                if (or) {
+                    if ($.inArray(other.val(), or) === -1 ) {
+                        return false;
                     }
                 }
             }
