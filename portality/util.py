@@ -135,6 +135,6 @@ def ipt_prefix(type):
 
 
 def verify_recaptcha(g_recaptcha_response):
-    with urllib.request.urlopen('https://www.google.com/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY") + '&response=' + g_recaptcha_response) as url:
+    with urllib.request.urlopen('https://www.recaptcha.net/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY") + '&response=' + g_recaptcha_response) as url:
         data = json.loads(url.read().decode())
         return data
