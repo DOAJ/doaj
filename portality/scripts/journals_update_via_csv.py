@@ -64,9 +64,12 @@ if __name__ == "__main__":
                 if j is not None:
                     # Load remaining rows into application form as an update
                     update_form, updates = journal_questions.Journal2QuestionXwalk.question2form(j, row)
-                    if args.verbose:
-                        print('\n' + j.id)
-                        [print(upd) for upd in updates]
+                    if len(updates) > 0:
+                        if args.verbose:
+                            print('\n' + j.id)
+                            [print(upd) for upd in updates]
+                    else:
+                        updates = ['NO CHANGES']
 
                     # validate update_form
                     formulaic_context = JournalFormFactory.context("admin")
@@ -89,7 +92,7 @@ if __name__ == "__main__":
                             print('Failed validation - {1}'.format(j.id, fc.form.errors))
 
                     # Write a report to CSV out file
-                    writer.writerow([j.id, str(success), updates, fc.form.errors])
+                    writer.writerow([j.id, str(success), ' | '.join(updates), fc.form.errors])
                 else:
-                    print("WARNING: no journal found for ID {0}".format(row['ID']))
+                    print("\nWARNING: no journal found for ID {0}".format(row['ID']))
                     writer.writerow([row['ID'], str(success), "NOT FOUND", ''])
