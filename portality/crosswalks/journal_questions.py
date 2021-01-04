@@ -87,6 +87,18 @@ class Journal2QuestionXwalk(object):
         return -1
 
     @classmethod
+    def p(cls, ident):
+        """ p is a backwards q - i.e. get the question from the CSV heading """
+        if ident in cls.DEGEN.values():
+            for k, v in cls.DEGEN.items():
+                if ident == v:
+                    ident = k
+        for k, q in cls.QTUP:
+            if q == ident:
+                return k
+        return None
+
+    @classmethod
     def question_list(cls):
         return [q for _, q in cls.QTUP]
 
@@ -119,7 +131,7 @@ class Journal2QuestionXwalk(object):
 
         def license_checkbox(val):
             opts = {}
-            [opts.update({k : v}) for k,v  in choices.Choices.licence_checkbox()]
+            [opts.update({k: v}) for k, v in choices.Choices.licence_checkbox()]
             nv = [opts.get(v) for v in val]
             return ", ".join(nv)
 
@@ -219,3 +231,50 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("subject"), "|".join(forminfo.get("subject"))))
 
         return kvs
+
+    @classmethod
+    def question2form(cls, journal, questions):
+        """ Create a Journal (update) form from the CSV questions
+        :param journal - A journal object to base the form on
+        :param questions - a dict of header and value as provided by csv.DictReader
+               {'header': 'answer', 'header2': 'answer2'...}
+
+        :return: A MultiDict of updates to the form for validation and a formatted string of what was changed
+        """
+
+        # Undo the transformations applied to specific fields. TODO: Add these as they are encountered in the wild
+        REVERSE_TRANSFORM_MAP = {
+            'license': lambda x: [lic.strip() for lic in x.split(',')],
+            'publication_time_weeks': lambda x: int(x)
+        }
+
+        def csv2formval(key, value):
+            try:
+                return REVERSE_TRANSFORM_MAP[key](value)
+            except KeyError:
+                # This field doesn't appear in the map, return unchanged.
+                return value
+
+        # start by converting the object to the forminfo version
+        forminfo = JournalFormXWalk.obj2form(journal)
+
+        # Collect the update report
+        updates = []
+
+        for k, v in questions.items():
+            # Only deal with a question if there's a value - TODO: what does this mean for yes_no_or_blank?
+            if len(v.strip()) > 0:
+                # Get the question key from the CSV column header
+                form_key = cls.p(k)
+
+                # Account for columns that might not correspond to the form
+                if form_key is not None:
+
+                    # Only update if the value is changed (apply the reverse transformation to get the form value back)
+                    current_val = forminfo.get(form_key)
+                    update_val = csv2formval(form_key, v)
+                    if current_val != update_val:
+                        updates.append('Updating {0}, from "{1}" to "{2}"'.format(form_key, current_val, update_val))
+                        forminfo[form_key] = update_val
+
+        return JournalFormXWalk.forminfo2multidict(forminfo), updates
