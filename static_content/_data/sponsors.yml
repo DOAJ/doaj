@@ -4,7 +4,7 @@ gold:
 
 silver:
 - name: Copernicus Publications
-  url: https://www.ieee.org/
+  url: https://publications.copernicus.org
   logo: copernicus.svg
 
 - name: Elsevier
@@ -34,6 +34,10 @@ silver:
 - name: OCLC
   url: https://www.oclc.org/
   logo: oclc.svg
+  
+- name: OUP
+  url: https://global.oup.com/
+  logo: OUP.jpg
 
 - name: Swedish Research Council
   url: https://vr.se/english.html
