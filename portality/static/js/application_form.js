@@ -440,7 +440,10 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         this.form.find(":input").on("change", () => {
             this._generate_values_preview();
-        })
+        });
+
+        // do a pre-validation to highlight any fields that require attention
+        this.form.parsley().validate();
     }
 
     displayableDiffValue(was) {
@@ -753,7 +756,6 @@ window.Parsley.addValidator("optionalIf", {
     validateString : function(value, requirement) {
         let theOtherField = $("[name = " + requirement + "]");
         if (!!value || !!($(theOtherField)).val()) {
-            $(theOtherField).parsley().reset();
             return true;
         }
         return false;
