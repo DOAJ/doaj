@@ -68,7 +68,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         q = JournalQuery()
         q.find_by_issn(issns, in_doaj=in_doaj, max=max)
         result = cls.query(q=q.query)
-        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too (i.e. Suggestion)
+        # create an array of objects, using cls rather than Journal, which means subclasses can use it too
         records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
 
@@ -78,6 +78,14 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         res = cls.query(q=q.query())
         issns = [term.get("term") for term in res.get("facets", {}).get("issns", {}).get("terms", [])]
         return issns
+
+    @classmethod
+    def get_by_owner(cls, owner):
+        q = OwnerQuery(owner)
+        res = cls.query(q=q.query())
+        # get_by_owner() in application.py predates this, but I've made it an override because it does application stuff
+        records = [cls(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
+        return records
 
     @classmethod
     def issns_by_query(cls, query):
@@ -90,7 +98,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def find_by_journal_url(cls, url, in_doaj=None, max=10):
         q = JournalURLQuery(url, in_doaj, max)
         result = cls.query(q=q.query())
-        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too
+        # create an array of objects, using cls rather than Journal, which means subclasses can use it too
         records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
 
@@ -98,7 +106,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def recent(cls, max=10):
         q = RecentJournalsQuery(max)
         result = cls.query(q=q.query())
-        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too
+        # create an array of objects, using cls rather than Journal, which means subclasses can use it too
         records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
 
@@ -977,6 +985,16 @@ class IssnQuery(object):
 
     def query(self):
         return self._query
+
+
+class OwnerQuery(IssnQuery):
+    """ Query to supply all full journal sources by owner """
+    base_query = {
+        "query": {
+            "term": {"admin.owner.exact": "<owner id here>"}
+        },
+        "size": 10000,
+    }
 
 
 class PublisherQuery(object):

@@ -1426,6 +1426,17 @@ class TestModels(DoajTestCase):
         assert models.Cache.get_public_data_dump().get("journal").get("url") == "http://example.com/journal"
         assert models.Cache.get_public_data_dump().get("journal").get("size") == 200
 
+    def test_32_journal_like_object_discovery(self):
+        """ Check that the JournalLikeObject can retrieve the correct results for Journals and Applications """
+        # todo - tests for the shared journallike code
+        # find_by_issn(cls, issns, in_doaj=None, max=10)
+        # issns_by_owner(cls, owner)
+        # get_by_owner(cls, owner)
+        # issns_by_query(cls, query):
+        # find_by_journal_url(cls, url, in_doaj=None, max=10)
+        # recent(cls, max=10):
+        pass
+
 
 # TODO: reinstate this test when author emails have been disallowed again
 '''
