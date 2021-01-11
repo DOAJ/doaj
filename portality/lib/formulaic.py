@@ -728,6 +728,7 @@ class FormProcessor(object):
         self._alert = []
         self._info = ''
         self._formulaic = parent
+        self._status_not_requiring_validation = ['rejected']
 
         # now create our form instance, with the form_data (if there is any)
         if formdata is not None:
@@ -910,11 +911,14 @@ class FormProcessor(object):
     def validate(self):
         self.pre_validate()
         f = self.form
-        valid = False
         if f is not None:
-            valid = f.validate()
+            if f.application_status.data in self._status_not_requiring_validation:
+                return True
+            else:
+                return f.validate()
 
-        return valid
+        else:
+            return False
 
     @property
     def errors(self):

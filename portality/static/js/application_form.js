@@ -422,6 +422,8 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     constructor(params) {
         super(params);
 
+        this.statusesNotRequiringValidation = ["rejected"];
+
         this.formDiff = edges.getParam(params.formDiff, false);
 
         this.sections.each((idx, sec) => {
@@ -545,13 +547,12 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             }
             return false;
         }
-        return recurse(code, doaj.af.lccTree)
+        return recurse(code, doaj.af.lccTree);
     }
 
     submitapplication() {
         this.form.parsley();
-        let optional = this.jq("#make_all_fields_optional").is(":checked");
-        if (optional) {
+        if (this.setAllFieldsOptionalIfAppropriate()) {
             this.form.parsley().destroy();
         } else {
             this.form.parsley().whenValidate().done(() => {
@@ -563,6 +564,11 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         }
         this.form.submit();
     }
+
+    setAllFieldsOptionalIfAppropriate() {
+        return this.statusesNotRequiringValidation.includes(this.jq("#application_status").val());
+    }
+
 };
 
 doaj.af.newPublicApplicationForm = function(params) {
