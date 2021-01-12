@@ -44,7 +44,7 @@ The JSON structure of the model is as follows:
             ],
             "url": "string"
         },
-        "discontinued_date": "2020-07-01",
+        "discontinued_date": "2021-01-11",
         "editorial": {
             "board_url": "string",
             "review_process": [
@@ -129,10 +129,10 @@ The JSON structure of the model is as follows:
             "url": "string"
         }
     },
-    "created_date": "2020-07-01T15:43:20Z",
+    "created_date": "2021-01-11T14:08:20Z",
     "id": "string",
-    "last_manual_update": "2020-07-01T15:43:20Z",
-    "last_updated": "2020-07-01T15:43:20Z"
+    "last_manual_update": "2021-01-11T14:08:20Z",
+    "last_updated": "2021-01-11T14:08:20Z"
 }
 ```
 
@@ -187,7 +187,7 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | bibjson.preservation.has_preservation |  | bool |  |  |
 | bibjson.preservation.national_library |  | str |  |  |
 | bibjson.preservation.service |  | str |  |  |
-| bibjson.preservation.url |  | str |  |  |
+| bibjson.preservation.url |  | str | URL |  |
 | bibjson.publication_time_weeks |  | int |  |  |
 | bibjson.publisher.country |  | str |  |  |
 | bibjson.publisher.name |  | str |  |  |
