@@ -259,8 +259,7 @@ select {
 
 input[type="checkbox"],
 input[type="radio"] {
-  position: absolute;
-  clip: rect(0, 0, 0, 0);
+  display: none;
 
   + label {
     margin: 0 0 $spacing-03 0;
