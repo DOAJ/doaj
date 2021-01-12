@@ -2,7 +2,7 @@ import json
 import time
 
 from portality import constants
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.lib import dataobj
@@ -1428,15 +1428,70 @@ class TestModels(DoajTestCase):
 
     def test_32_journal_like_object_discovery(self):
         """ Check that the JournalLikeObject can retrieve the correct results for Journals and Applications """
-        # todo - tests for the shared journallike code
+        # todo - more tests for the shared journallike code
+
+        # Create accounts with journals
+        account_blocklist = []
+        journal_blocklist = []
+        application_blocklist = []
+
+        # Create account without journals attached
+        pubsource = AccountFixtureFactory.make_publisher_source()
+        pubaccount_no_journal = models.Account(**pubsource)
+        pubaccount_no_journal.set_id()
+        pubaccount_no_journal.save()
+        account_blocklist.append((pubaccount_no_journal.id, pubaccount_no_journal.last_updated))
+
+        for i in range(3):
+            pubsource = AccountFixtureFactory.make_publisher_source()
+            pubaccount = models.Account(**pubsource)
+            pubaccount.set_id()
+            pubaccount.save()
+            account_blocklist.append((pubaccount.id, pubaccount.last_updated))
+
+            # Attach a few applications and journals, some in doaj and some not
+            for j in range(4):
+                jsource = JournalFixtureFactory.make_journal_source(in_doaj=bool(j % 2))
+                a = models.Journal(**jsource)
+                a.set_id()
+                a.set_owner(pubaccount.id)
+                a.save()
+                journal_blocklist.append((a.id, a.last_updated))
+
+                asource = ApplicationFixtureFactory.make_application_source()
+                a = models.Application(**asource)
+                a.set_id()
+                a.set_owner(pubaccount.id)
+                a.save()
+                application_blocklist.append((a.id, a.last_updated))
+
+        models.Account.blockall(account_blocklist)
+        models.Journal.blockall(journal_blocklist)
+        models.Application.blockall(application_blocklist)
+
+        # Check we don't get anything when we request by owner with the owner who has no journallike objects
+        print(pubaccount_no_journal.id)
+        assert len(models.Journal.issns_by_owner(pubaccount_no_journal.id)) == 0
+        assert len(models.Application.issns_by_owner(pubaccount_no_journal.id)) == 0
+        assert len(models.Journal.get_by_owner(pubaccount_no_journal.id)) == 0
+        assert len(models.Application.get_by_owner(pubaccount_no_journal.id)) == 0
+
+        # Ensure we get all journals and applications for a given owner (including those not in doaj)
+        last_owner_id = account_blocklist.pop()[0]
+        owned_journals = models.Journal.get_by_owner(last_owner_id)
+        assert len(owned_journals) == 4
+        assert isinstance(owned_journals.pop(), models.Journal)
+
+        owned_applications = models.Application.get_by_owner(last_owner_id)
+        assert len(owned_applications) == 4
+        assert isinstance(owned_applications.pop(), models.Application)
+
         # find_by_issn(cls, issns, in_doaj=None, max=10)
         # issns_by_owner(cls, owner)
         # get_by_owner(cls, owner)
         # issns_by_query(cls, query):
         # find_by_journal_url(cls, url, in_doaj=None, max=10)
         # recent(cls, max=10):
-        pass
-
 
 # TODO: reinstate this test when author emails have been disallowed again
 '''
