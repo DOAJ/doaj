@@ -9,7 +9,7 @@ from portality.ui.messages import Messages
 
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
-from flask import url_for, request
+from flask import url_for, request, has_request_context
 from flask_login import current_user
 
 from wtforms import FormField, FieldList
@@ -282,13 +282,14 @@ class AdminApplication(ApplicationProcessor):
 
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
-            j = applicationService.accept_application(self.target, current_user._get_current_object())
+            j = applicationService.accept_application(self.target, account)
             # record the url the journal is available at in the admin are and alert the user
-            jurl = url_for("doaj.toc", identifier=j.toc_id)
-            if self.source.current_journal is not None:  # todo: are alerts displayed?
-                self.add_alert('<a href="{url}" target="_blank">Existing journal updated</a>.'.format(url=jurl))
-            else:
-                self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
+            if has_request_context():
+                jurl = url_for("doaj.toc", identifier=j.toc_id)
+                if self.source.current_journal is not None:  # todo: are alerts displayed?
+                    self.add_alert('<a href="{url}" target="_blank">Existing journal updated</a>.'.format(url=jurl))
+                else:
+                    self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
 
             # Add the journal to the account and send the notification email
             try:
@@ -300,7 +301,8 @@ class AdminApplication(ApplicationProcessor):
                 owner.save()
 
                 # for all acceptances, send an email to the owner of the journal
-                self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
+                if has_request_context():
+                    self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
             except AttributeError:
                 raise Exception("Account {owner} does not exist".format(owner=j.owner))
             except app_email.EmailException:

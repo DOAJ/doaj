@@ -11,27 +11,46 @@ NOTE: depending on which fields are required, we may need to add new value trans
       CSV columns questions back to the form. See portality/crosswalks/journal_questions.py
 """
 
-import csv
-from portality.models import Journal
+import csv, time
+from portality import lock, constants
+from portality.core import app
+from portality.models import Journal, Account
 from portality.crosswalks import journal_questions
 from doajtest.fixtures import JournalFixtureFactory
 
-from portality.forms.application_forms import JournalFormFactory
+from portality.forms.application_forms import ApplicationFormFactory
+
+from portality.bll import DOAJ
+from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
+
+SYSTEM_ACCOUNT = {
+    "email": "steve@cottagelabs.com",
+    "name": "script_journals_csv_update",
+    "role": ['admin'],
+    "id": "script_journals_csv_update"
+}
+
+sys_acc = Account(**SYSTEM_ACCOUNT)
 
 if __name__ == "__main__":
     import argparse
 
+    # fixme: force and strict might need to be untangled
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--infile", help="path to journal update spreadsheet", required=True)
-    parser.add_argument("-o", "--out", help="output summary file path", required=True)
+    parser.add_argument("-o", "--out", help="output summary csv file path", required=True)
     parser.add_argument("-f", "--force", help="disable strict checking of CSV structure (enforces all JournalCSV headings", action='store_true')
-    parser.add_argument("-v", "--verbose", help="output more info on CSV errors and updated data", action='store_true')
     parser.add_argument("-d", "--dry-run", help="run this script without actually making index changes", action='store_true')
+    parser.add_argument("-s", "--strict", help="require strict form validation of incoming CSVs", action='store_true')
     args = parser.parse_args()
+
+    # Disable app emails so this doesn't spam users
+    app.config['ENABLE_EMAIL'] = False
+    app.config['ENABLE_PUBLISHER_EMAIL'] = False
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(['ID', 'Updated', 'Changes', 'Errors'])
+        writer.writerow(['ID', 'Changes', 'Errors'])
 
         with open(args.infile, 'r', encoding='utf-8') as g:
             reader = csv.DictReader(g)
@@ -42,13 +61,12 @@ if __name__ == "__main__":
             if header_row[1:] != expected_headers:
                 print("\nWARNING: CSV input file is the wrong format. "
                       "Expected ID column followed by the JournalCSV columns.\n")
-                if args.verbose:
-                    for i in range(0, len(expected_headers)):
-                        try:
-                            if expected_headers[i] != header_row[i+1]:
-                                print('At column no {0} expected "{1}", found "{2}"'.format(i+1, expected_headers[i], header_row[i+1]))
-                        except IndexError:
-                            print('At column no {0} expected "{1}", found <NO DATA>'.format(i+1, expected_headers[i]))
+                for i in range(0, len(expected_headers)):
+                    try:
+                        if expected_headers[i] != header_row[i+1]:
+                            print('At column no {0} expected "{1}", found "{2}"'.format(i+1, expected_headers[i], header_row[i+1]))
+                    except IndexError:
+                        print('At column no {0} expected "{1}", found <NO DATA>'.format(i+1, expected_headers[i]))
                 if not args.force:
                     print("\nERROR - CSV is wrong shape, exiting. Use --force to do this update anyway (and you know the consequences)")
                     exit(1)
@@ -57,42 +75,75 @@ if __name__ == "__main__":
             print('\nContinuing to update records...\n')
 
             for row in reader:
-                success = False
-
                 # Pull by ID
                 j = Journal.pull(row['ID'])
                 if j is not None:
+                    print('\n' + j.id)
                     # Load remaining rows into application form as an update
                     update_form, updates = journal_questions.Journal2QuestionXwalk.question2form(j, row)
                     if len(updates) > 0:
-                        if args.verbose:
-                            print('\n' + j.id)
-                            [print(upd) for upd in updates]
-                    else:
-                        updates = ['NO CHANGES']
+                        [print(upd) for upd in updates]
 
-                    # validate update_form
-                    formulaic_context = JournalFormFactory.context("admin")
-                    fc = formulaic_context.processor(
-                        formdata=update_form,
-                        source=j
-                    )
+                        # Create an update request for this journal
+                        update_req = None
+                        jlock = None
+                        alock = None
+                        try:
+                            update_req, jlock, alock = DOAJ.applicationService().update_request_for_journal(j.id, account=j.owner_account)
+                        except AuthoriseException as e:
+                            print('Could not create update request: {0}'.format(e.reason))
+                        except lock.Locked as e:
+                            print('Could not edit journal - locked.')
 
-                    if fc.validate():
+                        # validate update_form
+                        formulaic_context = ApplicationFormFactory.context("update_request")
+                        fc = formulaic_context.processor(
+                            formdata=update_form,
+                            source=update_req
+                        )
+
+                        if not fc.validate():
+                            print('Failed validation - {0}'.format(fc.form.errors))
+                            failed_on_supplied = False  # todo: ignore validation on fields that aren't supplied
+
+                            if args.strict or failed_on_supplied:
+                                # Write a report to CSV out file
+                                writer.writerow([j.id, ' | '.join(updates), fc.form.errors])
+                                continue
+                            else:
+                                print('Strict mode not requested, applying update...')
+
                         try:
                             if not args.dry_run:
-                                # Save the journal
+                                # Save the update request
                                 fc.finalise()
-                                success = True
-                        except Exception as e:
-                            if args.verbose:
-                                print('Failed to finalise: {1}'.format(j.id, str(e)))
-                    else:
-                        if args.verbose:
-                            print('Failed validation - {1}'.format(j.id, fc.form.errors))
 
-                    # Write a report to CSV out file
-                    writer.writerow([j.id, str(success), ' | '.join(updates), fc.form.errors])
+                            # This is the update request, in 'update request' state
+                            update_req_for_review = fc.target
+
+                            # Create an Admin update request review form
+                            formulaic_context2 = ApplicationFormFactory.context("admin")
+                            fc2 = formulaic_context2.processor(
+                                source=update_req_for_review
+                            )
+
+                            # Accept the update request, and finalise to complete the changes
+                            fc2.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
+
+                            if not args.dry_run:
+                                fc2.finalise(sys_acc)
+                                print('Journal has been updated.')
+                        except Exception as e:
+                            writer.writerow([j.id, ' | '.join(updates), 'COULD NOT FINALISE'])
+                            print('Failed to finalise: {1}'.format(j.id, str(e)))
+                            raise
+                        finally:
+                            if jlock is not None:
+                                jlock.delete()
+                            if alock is not None:
+                                alock.delete()
+                    else:
+                        updates = ['NO CHANGES']
                 else:
                     print("\nWARNING: no journal found for ID {0}".format(row['ID']))
-                    writer.writerow([row['ID'], str(success), "NOT FOUND", ''])
+                    writer.writerow([row['ID'], "NOT FOUND", ''])

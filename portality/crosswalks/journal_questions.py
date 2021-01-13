@@ -19,7 +19,7 @@ class Journal2QuestionXwalk(object):
         ("preservation_service_url", "Preservation information URL"),
         ("copyright_author_retains", "Author holds copyright without restrictions"),
         ("copyright_url", "Copyright information URL"),
-        ("publisher.publisher_country", "Country of publisher"),
+        ("publisher_country", "Country of publisher"),
         ("deposit_policy", "Deposit policy directory"),
         ("review_process", "Review process"),
         ("review_url", "Review process information URL"),
@@ -27,7 +27,7 @@ class Journal2QuestionXwalk(object):
         ("eissn", "Journal EISSN (online version)"),
         ("continues", "Continues"),
         ("continued_by", "Continued By"),
-        ("institution.institution_name", "Society or institution"),
+        ("institution_name", "Society or institution"),
         ("keywords", "Keywords"),
         ("language", "Languages in which the journal accepts manuscripts"),
         ("license_attributes", "License attributes"),
@@ -46,10 +46,10 @@ class Journal2QuestionXwalk(object):
         ("plagiarism_detection", "Journal plagiarism screening policy"),
         ("plagiarism_url", "Plagiarism information URL"),
         ("publication_time_weeks", "Average number of weeks between article submission and publication"),
-        ("publisher.publisher_name", "Publisher"),
+        ("publisher_name", "Publisher"),
         ("other_charges_url", "Other submission fees information URL"),
         ("title", "Journal title"),
-        ("institution.institution_country", "Country of society or institution"),
+        ("institution_country", "Country of society or institution"),
         ("apc", "APC"),
         ("has_other_charges", "Has other fees"),
         ("has_waiver", "Journal waiver policy (for developing country authors etc)"),
@@ -60,10 +60,10 @@ class Journal2QuestionXwalk(object):
     ]
 
     DEGEN = {
-        "preservation_service_other" : "preservation_service",
+        "preservation_service_other": "preservation_service",
         "deposit_policy_other": "deposit_policy",
-        "review_process_other" : "review_process",
-        "persistent_identifiers_other" : "persistent_identifiers"
+        "review_process_other": "review_process",
+        "persistent_identifiers_other": "persistent_identifiers"
     }
 
     @classmethod
@@ -160,10 +160,10 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("eissn"), forminfo.get("eissn")))
         kvs.append((cls.q("keywords"), ", ".join(forminfo.get("keywords", []))))
         kvs.append((cls.q("language"), languages(forminfo.get("language", []))))
-        kvs.append((cls.q("publisher.publisher_name"), forminfo.get("publisher_name")))
-        kvs.append((cls.q("publisher.publisher_country"), datasets.get_country_name(forminfo.get("publisher_country"))))
-        kvs.append((cls.q("institution.institution_name"), forminfo.get("institution_name")))
-        kvs.append((cls.q("institution.institution_country"), datasets.get_country_name(forminfo.get("institution_country"))))
+        kvs.append((cls.q("publisher_name"), forminfo.get("publisher_name")))
+        kvs.append((cls.q("publisher_country"), datasets.get_country_name(forminfo.get("publisher_country"))))
+        kvs.append((cls.q("institution_name"), forminfo.get("institution_name")))
+        kvs.append((cls.q("institution_country"), datasets.get_country_name(forminfo.get("institution_country"))))
 
         # Copyright & licensing
         lic = ", ".join(forminfo.get("license", []))
@@ -246,6 +246,7 @@ class Journal2QuestionXwalk(object):
         REVERSE_TRANSFORM_MAP = {
             'license': lambda x: [lic.strip() for lic in x.split(',')],
             'publication_time_weeks': lambda x: int(x)
+            # Country names to codes for institution, publisher
         }
 
         def csv2formval(key, value):
