@@ -507,6 +507,7 @@ class EditorApplication(ApplicationProcessor):
         # if we need to email the associate because they have just been assigned, handle that here.
         if new_associate_assigned:
             try:
+                self.add_alert("New editor assigned - email with confirmation has been sent")
                 emails.send_assoc_editor_email(self.target)
             except app_email.EmailException:
                 self.add_alert("Problem sending email to associate editor - probably address is invalid")
