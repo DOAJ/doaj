@@ -7,6 +7,10 @@ silver:
   url: https://publications.copernicus.org
   logo: copernicus.svg
 
+- name: Danish Agency for Science and Higher Education
+  url: https://ufm.dk/
+  logo: ufm.svg
+  
 - name: Elsevier
   url: https://www.elsevier.com/
   logo: elsevier.svg
@@ -43,9 +47,9 @@ silver:
   url: https://vr.se/english.html
   logo: vr.svg
 
-- name: Danish Agency for Science and Higher Education
-  url: https://ufm.dk/
-  logo: ufm.svg
+- name: Ubiquity Press
+  url: https://www.ubiquitypress.com/
+  logo: ubiquity.svg
 
 bronze:
 - name: Physical Review Journals
@@ -131,10 +135,6 @@ bronze:
 - name: Taylor & Francis Group
   url: https://www.taylorandfrancisgroup.com/
   logo: tf.svg
-
-- name: Ubiquity Press
-  url: https://www.ubiquitypress.com/
-  logo: ubiquity.svg
 
 - name: Wiley
   url: https://wiley.com/
