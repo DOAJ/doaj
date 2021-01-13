@@ -250,6 +250,11 @@ class Journal2QuestionXwalk(object):
         }
 
         def csv2formval(key, value):
+            # We keep getting naff data with trailing whitespace, so strip those out
+            if isinstance(value, str):
+                value = value.strip()
+
+            # Apply the reverse transformation back from display value to storage value.
             try:
                 return REVERSE_TRANSFORM_MAP[key](value)
             except KeyError:
