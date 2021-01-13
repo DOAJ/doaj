@@ -92,8 +92,12 @@ if __name__ == "__main__":
                             update_req, jlock, alock = DOAJ.applicationService().update_request_for_journal(j.id, account=j.owner_account)
                         except AuthoriseException as e:
                             print('Could not create update request: {0}'.format(e.reason))
+                            writer.writerow([j.id, ' | '.join(updates), 'COULD NOT UPDATE - ' + str(e)])
+                            continue
                         except lock.Locked as e:
                             print('Could not edit journal - locked.')
+                            writer.writerow([j.id, ' | '.join(updates), 'JOURNAL LOCKED - ' + str(e)])
+                            continue
 
                         # validate update_form
                         formulaic_context = ApplicationFormFactory.context("update_request")
@@ -110,7 +114,7 @@ if __name__ == "__main__":
                                 # Write a report to CSV out file
                                 writer.writerow([j.id, ' | '.join(updates), fc.form.errors])
                                 continue
-                            else:
+                            elif not args.dry_run:
                                 print('Strict mode not requested, applying update...')
 
                         try:
@@ -118,23 +122,21 @@ if __name__ == "__main__":
                                 # Save the update request
                                 fc.finalise()
 
-                            # This is the update request, in 'update request' state
-                            update_req_for_review = fc.target
+                                # This is the update request, in 'update request' state
+                                update_req_for_review = fc.target
 
-                            # Create an Admin update request review form
-                            formulaic_context2 = ApplicationFormFactory.context("admin")
-                            fc2 = formulaic_context2.processor(
-                                source=update_req_for_review
-                            )
+                                # Create an Admin update request review form
+                                formulaic_context2 = ApplicationFormFactory.context("admin")
+                                fc2 = formulaic_context2.processor(
+                                    source=update_req_for_review
+                                )
 
-                            # Accept the update request, and finalise to complete the changes
-                            fc2.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
-
-                            if not args.dry_run:
+                                # Accept the update request, and finalise to complete the changes
+                                fc2.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
                                 fc2.finalise(sys_acc)
                                 print('Journal has been updated.')
                         except Exception as e:
-                            writer.writerow([j.id, ' | '.join(updates), 'COULD NOT FINALISE'])
+                            writer.writerow([j.id, ' | '.join(updates), 'COULD NOT FINALISE - ' + str(e)])
                             print('Failed to finalise: {1}'.format(j.id, str(e)))
                             raise
                         finally:
