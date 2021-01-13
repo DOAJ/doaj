@@ -35,13 +35,12 @@ sys_acc = Account(**SYSTEM_ACCOUNT)
 if __name__ == "__main__":
     import argparse
 
-    # fixme: force and strict might need to be untangled
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--infile", help="path to journal update spreadsheet", required=True)
-    parser.add_argument("-o", "--out", help="output summary csv file path", required=True)
-    parser.add_argument("-f", "--force", help="disable strict checking of CSV structure (enforces all JournalCSV headings", action='store_true')
-    parser.add_argument("-d", "--dry-run", help="run this script without actually making index changes", action='store_true')
-    parser.add_argument("-s", "--strict", help="require strict form validation of incoming CSVs", action='store_true')
+    parser.add_argument("-i", "--infile", help="Path to journal update spreadsheet", required=True)
+    parser.add_argument("-o", "--out", help="Output summary csv file path", required=True)
+    parser.add_argument("-s", "--skip-strict", help="Skip strict checking of CSV structure (JournalCSV headings check)", action='store_true')
+    parser.add_argument("-d", "--dry-run", help="Run this script without actually making index changes", action='store_true')
+    parser.add_argument("-f", "--force", help="Force update despite failed validation", action='store_true')
     args = parser.parse_args()
 
     # Disable app emails so this doesn't spam users
@@ -67,7 +66,7 @@ if __name__ == "__main__":
                             print('At column no {0} expected "{1}", found "{2}"'.format(i+1, expected_headers[i], header_row[i+1]))
                     except IndexError:
                         print('At column no {0} expected "{1}", found <NO DATA>'.format(i+1, expected_headers[i]))
-                if not args.force:
+                if not args.skip_strict:
                     print("\nERROR - CSV is wrong shape, exiting. Use --force to do this update anyway (and you know the consequences)")
                     exit(1)
             else:
@@ -92,7 +91,7 @@ if __name__ == "__main__":
                             update_req, jlock, alock = DOAJ.applicationService().update_request_for_journal(j.id, account=j.owner_account)
                         except AuthoriseException as e:
                             print('Could not create update request: {0}'.format(e.reason))
-                            writer.writerow([j.id, ' | '.join(updates), 'COULD NOT UPDATE - ' + str(e)])
+                            writer.writerow([j.id, ' | '.join(updates), 'COULD NOT UPDATE - ' + str(e.reason)])
                             continue
                         except lock.Locked as e:
                             print('Could not edit journal - locked.')
@@ -110,7 +109,7 @@ if __name__ == "__main__":
                             print('Failed validation - {0}'.format(fc.form.errors))
                             failed_on_supplied = False  # todo: ignore validation on fields that aren't supplied
 
-                            if args.strict or failed_on_supplied:
+                            if (not args.force) or failed_on_supplied:
                                 # Write a report to CSV out file
                                 writer.writerow([j.id, ' | '.join(updates), fc.form.errors])
                                 continue
