@@ -123,7 +123,7 @@ class TestBLLDeleteApplication(DoajTestCase):
         if raises != "":
             with self.assertRaises(EXCEPTIONS[raises]):
                 svc.delete_application(application_id, acc)
-            time.sleep(1)
+            time.sleep(1.5)
             check_locks(application, cj, rj, acc)
         else:
             svc.delete_application(application_id, acc)
