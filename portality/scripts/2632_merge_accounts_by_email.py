@@ -13,7 +13,7 @@ def merge_accounts_to_latest(acc_list, dry_run=False):
 
     try:
         l_id = accs.pop()['id']
-        latest = Account.pull(l_id)
+        latest = Account.pull_by_key('id', l_id)
     except IndexError:
         # pop from empty list, we couldn't pull any accounts at all from this group
         return
@@ -34,7 +34,7 @@ def merge_accounts_to_latest(acc_list, dry_run=False):
                     j.save()
 
             # Initialise the model just to delete it
-            old_acc = Account.pull(old['id'])
+            old_acc = Account.pull_by_key('id', old['id'])
             if old_acc is not None:
                 print(f'\tDeleting account {old_acc.id}')
                 if not dry_run:
