@@ -422,7 +422,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     constructor(params) {
         super(params);
 
-        this.statusesNotRequiringValidation = ["rejected"];
+        this.statusesNotRequiringValidation = ['rejected', 'pending', 'in progress', 'on hold'];
 
         this.formDiff = edges.getParam(params.formDiff, false);
 
