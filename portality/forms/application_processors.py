@@ -447,6 +447,16 @@ class AdminApplication(ApplicationProcessor):
             self.add_alert('Sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.exception('Error sending application approved email failed - ' + magic)
 
+    def validate(self):
+        _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']
+        # make use of the ability to disable validation, otherwise, let it run
+        if self.form is not None:
+            if self.form.application_status.data in _statuses_not_requiring_validation:
+                self.pre_validate()
+                return True
+
+        return super(AdminApplication, self).validate()
+
 
 class EditorApplication(ApplicationProcessor):
     """
