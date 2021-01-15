@@ -1357,12 +1357,13 @@ var formulaic = {
             this.idRx = /(.+?-)(\d+)(-.+)/;
             this.template = "";
             this.container = false;
+            this.divs = false;
 
             this.init = function() {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 for (var i = 0 ; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none"><span data-feather="x" /></button>'));
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none">delete <span data-feather="x" /></button>'));
                     feather.replace();
                 }
 
@@ -1457,6 +1458,7 @@ var formulaic = {
             this.removeField = function(element) {
                 var container = $(element).parents("div[name='" + this.fieldDef["name"] + "__group']");
                 container.remove();
+                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
             };
 
             this.init();
